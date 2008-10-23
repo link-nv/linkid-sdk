@@ -3,11 +3,8 @@ package net.link.safeonline.demo.cinema.webapp;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Date;
-import java.util.Locale;
 
 import javax.ejb.EJB;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.demo.cinema.CinemaConstants;
 import net.link.safeonline.demo.cinema.entity.CinemaTicketEntity;
@@ -18,24 +15,24 @@ import net.link.safeonline.sdk.auth.filter.LoginManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.wicket.Session;
+import org.apache.wicket.RedirectToUrlException;
+import org.apache.wicket.RequestCycle;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.MarkupStream;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.protocol.http.RequestUtils;
 import org.apache.wicket.protocol.http.WebRequest;
-import org.apache.wicket.protocol.http.WebResponse;
-import org.apache.wicket.request.target.basic.RedirectRequestTarget;
+import org.apache.wicket.request.target.component.BookmarkablePageRequestTarget;
 
 
 public class LayoutPage extends WebPage {
 
     private static final long serialVersionUID = 1L;
-    static final Locale       CURRENCY         = Locale.FRANCE;
 
     Log                       LOG              = LogFactory.getLog(getClass());
 
@@ -119,7 +116,7 @@ public class LayoutPage extends WebPage {
             add(new SelectedTheatre("theatre"));
             add(new SelectedTime("time"));
             add(new SelectedRoom("room"));
-            add(new SelectedTicket("ticket"));
+            add(new SelectedPrice("payment"));
         }
 
 
@@ -219,7 +216,7 @@ public class LayoutPage extends WebPage {
 
             // Put time in label (formatted) or hide if no time selected.
             if (CinemaSession.isTimeSet()) {
-                this.time.setObject(WicketUtil.format(Session.get(), CinemaSession.get().getTime()));
+                this.time.setObject(WicketUtil.format(getLocale(), CinemaSession.get().getTime()));
             } else {
                 setVisible(false);
             }
@@ -259,95 +256,100 @@ public class LayoutPage extends WebPage {
         }
     }
 
-    class SelectedTicket extends WebMarkupContainer {
+    class SelectedPrice extends WebMarkupContainer {
 
         private static final long serialVersionUID = 1L;
-        private Model<String>     price;
+        private IModel<String>    price;
 
 
-        public SelectedTicket(String id) {
+        public SelectedPrice(String id) {
 
             super(id);
 
             add(new Label("price", this.price = new Model<String>()));
-            add(new PayForm("pay"));
 
-            // Put name of the room in label or hide if no room selected.
+            // Check to see if our ticket data is complete - if so, create a ticket.
+            if (!CinemaSession.isTicketSet()) {
+                if (CinemaSession.isFilmAndTheaterSet() && CinemaSession.isTimeAndRoomSet()
+                        && CinemaSession.isSeatSet() && CinemaSession.isUserSet()) {
+                    try {
+                        CinemaSession.get().setTicket(
+                                LayoutPage.this.ticketService.createTicket(CinemaSession.get().getUser(), CinemaSession
+                                        .get().getFilm(), CinemaSession.get().getTime(), CinemaSession.get()
+                                        .getOccupation()));
+                    }
+
+                    catch (IllegalStateException e) {
+                        LayoutPage.this.LOG.error("Removing seat selection.", e);
+                        CinemaSession.get().toggleSeat(CinemaSession.get().getOccupation().getSeat());
+                    }
+                }
+            }
+
+            // Put price in label or hide if ticket is not complete.
             if (CinemaSession.isTicketSet()) {
-                this.price.setObject(WicketUtil.format(CURRENCY, LayoutPage.this.ticketService
+                this.price.setObject(WicketUtil.format(CinemaSession.CURRENCY, LayoutPage.this.ticketService
                         .calculatePrice(CinemaSession.get().getTicket())));
             } else {
                 setVisible(false);
             }
-        }
+
+            add(new Link<String>("pay") {
+
+                private static final long serialVersionUID = 1L;
 
 
-        class PayForm extends Form<String> {
+                @Override
+                public void onClick() {
 
-            private static final long serialVersionUID = 1L;
+                    if (!CinemaSession.isTicketSet())
+                        return;
 
-
-            public PayForm(String id) {
-
-                super(id);
-            }
-
-            @Override
-            protected void onSubmit() {
-
-                if (!CinemaSession.isTicketSet())
-                    return;
-
-                // Redirect the user to demo-payment
-                HttpServletRequest request = ((WebRequest) getRequest()).getHttpServletRequest();
-                HttpServletResponse response = ((WebResponse) getResponse()).getHttpServletResponse();
-
-                String paymentTarget = response.encodeRedirectURL(request.getRequestURL().toString());
-
-                try {
+                    // Redirect the user to demo-payment
                     String paymentUsername = CinemaSession.get().getUser().getName();
                     CinemaTicketEntity ticket = CinemaSession.get().getTicket();
                     double paymentPrice = ticket.getPrice();
                     String paymentMessage = String.format("Viewing of %s at %s in %s.", LayoutPage.this.ticketService
-                            .getFilmName(ticket), WicketUtil.format(Session.get(), new Date(ticket.getTime())),
+                            .getFilmName(ticket), WicketUtil.format(getLocale(), new Date(ticket.getTime())),
                             LayoutPage.this.ticketService.getTheatreName(ticket));
+                    String paymentTargetUrl = RequestUtils.toAbsolutePath(RequestCycle.get().urlFor(
+                            new BookmarkablePageRequestTarget(TicketPage.class)).toString());
 
-                    String redirectUrl = String.format("%s%s?user=%s&recipient=%s&amount=%s&message=%s&target=%s",
+                    try {
+                        String redirectUrl = String.format("%s?user=%s&recipient=%s&amount=%s&message=%s&target=%s",
 
-                    // Demo-Payment Host. (same as ours)
-                            paymentTarget.replaceFirst("[^/]*/$", ""),
+                        // Demo-Payment application.
+                                RequestUtils.toAbsolutePath("../demo-payment/entry.seam"),
 
-                            // Demo-Payment application.
-                            "demo-payment/entry.seam",
+                                // Paying user's OLAS name.
+                                URLEncoder.encode(paymentUsername, "UTF-8"),
 
-                            // Paying user's OLAS name.
-                            URLEncoder.encode(paymentUsername, "UTF-8"),
+                                // Payment Recipient.
+                                URLEncoder.encode(CinemaConstants.PAYMENT_RECIPIENT, "UTF-8"),
 
-                            // Payment Recipient.
-                            URLEncoder.encode(CinemaConstants.PAYMENT_RECIPIENT, "UTF-8"),
+                                // Payment Amount.
+                                URLEncoder.encode(Double.toString(paymentPrice), "UTF-8"),
 
-                            // Payment Amount.
-                            URLEncoder.encode(Double.toString(paymentPrice), "UTF-8"),
+                                // Payment Message.
+                                URLEncoder.encode(paymentMessage, "UTF-8"),
 
-                            // Payment Message.
-                            URLEncoder.encode(paymentMessage, "UTF-8"),
+                                // Return page after payment completion.
+                                URLEncoder.encode(paymentTargetUrl, "UTF-8"));
 
-                            // Return page after payment completion.
-                            URLEncoder.encode(paymentTarget, "UTF-8"));
+                        // FIXME: Cheat by reserving ticket before payment has
+                        // actually been completed.
+                        LayoutPage.this.ticketService.reserve(CinemaSession.get().getTicket());
+                        CinemaSession.get().resetTicket();
 
-                    // FIXME: Cheat by reserving ticket before payment has
-                    // actually been completed.
-                    LayoutPage.this.ticketService.reserve(CinemaSession.get().getTicket());
-                    CinemaSession.get().resetTicket();
+                        // Redirect user to demo-payment.
+                        throw new RedirectToUrlException(redirectUrl);
+                    }
 
-                    // Redirect user to demo-payment.
-                    getRequestCycle().setRequestTarget(new RedirectRequestTarget(redirectUrl));
+                    catch (UnsupportedEncodingException e) {
+                        LayoutPage.this.LOG.error("URL encoding error", e);
+                    }
                 }
-
-                catch (UnsupportedEncodingException e) {
-                    LayoutPage.this.LOG.error("URL encoding error", e);
-                }
-            }
+            });
         }
     }
 }

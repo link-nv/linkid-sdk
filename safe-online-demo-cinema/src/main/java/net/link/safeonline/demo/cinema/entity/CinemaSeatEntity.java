@@ -35,7 +35,7 @@ public class CinemaSeatEntity implements Serializable {
     private long               id;
 
     @ManyToOne
-    private CinemaRoomEntity         room;
+    private CinemaRoomEntity   room;
     private int                x;
     private int                y;
 

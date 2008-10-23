@@ -7,9 +7,7 @@
 package net.link.safeonline.demo.cinema.webapp;
 
 import java.util.Date;
-
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import java.util.Locale;
 
 import net.link.safeonline.demo.cinema.entity.CinemaFilmEntity;
 import net.link.safeonline.demo.cinema.entity.CinemaRoomEntity;
@@ -18,12 +16,10 @@ import net.link.safeonline.demo.cinema.entity.CinemaSeatOccupationEntity;
 import net.link.safeonline.demo.cinema.entity.CinemaTheatreEntity;
 import net.link.safeonline.demo.cinema.entity.CinemaTicketEntity;
 import net.link.safeonline.demo.cinema.entity.CinemaUserEntity;
-import net.link.safeonline.demo.cinema.service.TicketService;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Request;
 import org.apache.wicket.Session;
+import org.apache.wicket.protocol.http.WebSession;
 
 
 /**
@@ -40,35 +36,23 @@ import org.apache.wicket.Session;
  * 
  * @author mbillemo
  */
-public class CinemaSession extends Session {
+public class CinemaSession extends WebSession {
 
-    private static final long       serialVersionUID = 1L;
-    private static final Log        LOG              = LogFactory.getLog(CinemaSession.class);
+    private static final long          serialVersionUID = 1L;
+    public static final Locale         CURRENCY         = Locale.FRANCE;
 
-    private transient TicketService ticketService;
-
-    private CinemaUserEntity              user;
-    private CinemaFilmEntity              film;
-    private CinemaTheatreEntity           theatre;
-    private Date                    time;
-    private CinemaRoomEntity              room;
-    private CinemaSeatOccupationEntity    occupation;
-    private CinemaTicketEntity            ticket;
+    private CinemaUserEntity           user;
+    private CinemaFilmEntity           film;
+    private CinemaTheatreEntity        theatre;
+    private Date                       time;
+    private CinemaRoomEntity           room;
+    private CinemaSeatOccupationEntity occupation;
+    private CinemaTicketEntity         ticket;
 
 
     public CinemaSession(Request request) {
 
         super(request);
-
-        try {
-            InitialContext context = new InitialContext();
-
-            this.ticketService = (TicketService) context.lookup(TicketService.BINDING);
-        }
-
-        catch (NamingException e) {
-            LOG.error("EJB Injection On Session Failed.", e);
-        }
     }
 
     public void setUser(CinemaUserEntity user) {
@@ -158,23 +142,19 @@ public class CinemaSession extends Session {
     }
 
     /**
+     * @param ticket
+     *            The complete ticket for the selections made by the user.
+     */
+    public void setTicket(CinemaTicketEntity ticket) {
+
+        this.ticket = ticket;
+    }
+
+    /**
      * @return The complete ticket for the selections made by the user or <code>null</code> if not all required
      *         selections have been made yet.
      */
     public CinemaTicketEntity getTicket() {
-
-        if (this.ticket == null) {
-            if (getUser() != null && getFilm() != null && getTime() != null && getOccupation() != null) {
-                try {
-                    this.ticket = this.ticketService.createTicket(getUser(), getFilm(), getTime(), getOccupation());
-                }
-
-                catch (IllegalStateException e) {
-                    LOG.error("Removing seat selection.", e);
-                    this.occupation = null;
-                }
-            }
-        }
 
         return this.ticket;
     }
@@ -367,7 +347,7 @@ public class CinemaSession extends Session {
 
     /**
      * Operates on the current session.
-     *
+     * 
      * @return <code>true</code> if there is a user logged in and has a {@link CinemaUserEntity} set.
      */
     public static boolean isUserSet() {

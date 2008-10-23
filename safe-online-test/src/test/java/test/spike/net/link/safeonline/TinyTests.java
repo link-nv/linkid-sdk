@@ -15,6 +15,9 @@
  */
 package test.spike.net.link.safeonline;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 import org.junit.Test;
 
 
@@ -32,23 +35,12 @@ import org.junit.Test;
 public class TinyTests {
 
     @Test
-    public void testPrimitiveClassNames() {
+    public void testCurrency() {
 
-        for (java.lang.reflect.Method m : getClass().getMethods())
-            if (m.getName().equals("dummy")) {
-
-                System.out.println("Generic Paramter Types:");
-                print(m.getGenericParameterTypes());
-
-                System.out.println("Paramter Types:");
-                print(m.getParameterTypes());
-
-                System.out.println("Type Paramters:");
-                print(m.getTypeParameters());
-            }
+        System.out.println(NumberFormat.getCurrencyInstance(Locale.FRANCE).format(2.5d));
     }
 
-    private void print(Object[] array) {
+    void print(Object[] array) {
 
         boolean first = true;
         for (Object element : array) {

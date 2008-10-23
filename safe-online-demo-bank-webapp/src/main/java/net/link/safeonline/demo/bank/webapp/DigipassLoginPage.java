@@ -1,6 +1,9 @@
 package net.link.safeonline.demo.bank.webapp;
 
+import net.link.safeonline.demo.bank.entity.BankUserEntity;
+
 import org.apache.wicket.Page;
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.Model;
@@ -19,13 +22,12 @@ public class DigipassLoginPage extends LayoutPage {
     public DigipassLoginPage() {
 
         // If logged in, send user to the ticket history page.
-        if (BankSession.isUserSet()) {
-            setResponsePage(AccountPage.class);
-            return;
-        }
-        
+        if (BankSession.isUserSet())
+            throw new RestartResponseException(AccountPage.class);
+
         add(new OTPForm("otpForm"));
     }
+
 
     final class OTPForm extends Form<String> {
 
@@ -33,11 +35,11 @@ public class DigipassLoginPage extends LayoutPage {
         private Model<String>     bankId;
         private Model<String>     otp;
 
-        
+
         public OTPForm(String id) {
 
             super(id);
-            
+
             add(new TextField<String>("bankId", this.bankId = new Model<String>()));
             add(new TextField<String>("otp", this.otp = new Model<String>()));
         }
@@ -45,13 +47,27 @@ public class DigipassLoginPage extends LayoutPage {
         @Override
         protected void onSubmit() {
 
-            if (Integer.parseInt(this.otp.getObject()) % 2 == 0) {
-                BankSession.get().setUser(getUserService().getBankUser(this.bankId.getObject()));
-                setResponsePage(AccountPage.class);
-                setRedirect(true);
+            try {
+                if (Integer.parseInt(this.otp.getObject()) % 2 == 0) {
+                    BankUserEntity user = getUserService().getBankUser(this.bankId.getObject());
+                    if (user == null) {
+                        error("User was not found.");
+                    }
+
+                    else {
+                        BankSession.get().setUser(user);
+                        setResponsePage(AccountPage.class);
+                        setRedirect(true);
+                    }
+                }
+            }
+
+            catch (NumberFormatException e) {
+                error("The OTP must be a valid number.");
             }
         }
     }
+
 
     /**
      * {@inheritDoc}

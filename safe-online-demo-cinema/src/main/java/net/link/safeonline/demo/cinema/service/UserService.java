@@ -37,7 +37,7 @@ public interface UserService extends CinemaService {
      *
      * @return The {@link CinemaUserEntity} that maps the given username in the cinema database.
      */
-    public CinemaUserEntity getUser(String username);
+    public CinemaUserEntity getUser(String olasId);
 
     /**
      * Update the given user's attributes from OLAS.

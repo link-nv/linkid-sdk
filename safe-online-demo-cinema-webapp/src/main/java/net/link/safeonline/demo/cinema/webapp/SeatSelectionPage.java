@@ -9,6 +9,7 @@ import net.link.safeonline.demo.cinema.entity.CinemaSeatEntity;
 import net.link.safeonline.demo.cinema.service.RoomService;
 import net.link.safeonline.demo.cinema.service.SeatService;
 
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
@@ -45,11 +46,9 @@ public class SeatSelectionPage extends LayoutPage {
      */
     public SeatSelectionPage() {
 
-        // If room and time selected, send user to the seat selection page.
-        if (!CinemaSession.isTimeAndRoomSet()) {
-            setResponsePage(TimeRoomSelectionPage.class);
-            return;
-        }
+        // If time or room are not yet set, go back.
+        if (!CinemaSession.isTimeAndRoomSet())
+            throw new RestartResponseException( TimeRoomSelectionPage.class);
 
         add(new Label("headerTitle", "Seat Selection"));
 
@@ -98,7 +97,7 @@ public class SeatSelectionPage extends LayoutPage {
                 row.set(seat.getX() - 1, seat);
             }
 
-            add(new ListView<List<CinemaSeatEntity>>("row", rows) {
+            add(new ListView<List<CinemaSeatEntity>>("rows", rows) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -106,7 +105,7 @@ public class SeatSelectionPage extends LayoutPage {
                 @Override
                 protected void populateItem(ListItem<List<CinemaSeatEntity>> rowItem) {
 
-                    rowItem.add(new ListView<CinemaSeatEntity>("column", rowItem.getModelObject()) {
+                    rowItem.add(new ListView<CinemaSeatEntity>("columns", rowItem.getModelObject()) {
 
                         private static final long serialVersionUID = 1L;
 

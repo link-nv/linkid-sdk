@@ -1,11 +1,14 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 package net.link.safeonline.demo.wicket.tools;
 
+import java.security.PrivateKey;
+import java.security.KeyStore.PrivateKeyEntry;
+import java.security.cert.X509Certificate;
 import java.text.DateFormat;
 import java.text.NumberFormat;
 import java.util.Date;
@@ -15,13 +18,16 @@ import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+import net.link.safeonline.demo.wicket.javaee.DummyAnnotJavaEEInjector;
 import net.link.safeonline.demo.wicket.service.OlasNamingStrategy;
+import net.link.safeonline.demo.wicket.tools.olas.DummyAttributeClient;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
+import net.link.safeonline.sdk.ws.attrib.AttributeClient;
+import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Request;
-import org.apache.wicket.Session;
 import org.apache.wicket.injection.ComponentInjector;
 import org.apache.wicket.injection.ConfigurableInjector;
 import org.apache.wicket.injection.web.InjectorHolder;
@@ -46,44 +52,59 @@ import org.wicketstuff.javaee.injection.AnnotJavaEEInjector;
  */
 public abstract class WicketUtil {
 
-    static final Log                  LOG      = LogFactory.getLog(WicketUtil.class);
-    static final ConfigurableInjector injector = new AnnotJavaEEInjector(new OlasNamingStrategy());
+    static final Log            LOG         = LogFactory.getLog(WicketUtil.class);
+    static ConfigurableInjector injector;
+
+    private static final String WS_LOCATION = "WsLocation";
+    private static boolean      isUnitTest;
 
 
     /**
-     * @return A string that is the formatted representation of the given date according to the user's locale in short
-     *         form.
+     * @return A formatter according to the given locale in short form.
      */
-    public static String format(Session session, Date date) {
+    public static DateFormat getDateFormat(Locale locale) {
 
-        return format(session.getLocale(), date);
+        return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale);
     }
 
     /**
-     * @return A string that is the formatted representation of the given amount of currency according to the user's
-     *         locale.
-     */
-    public static String format(Session session, Number number) {
-
-        return format(session.getLocale(), number);
-    }
-
-    /**
-     * @return A string that is the formatted representation of the given date according to the user's locale in short
+     * @return A string that is the formatted representation of the given date according to the given locale in short
      *         form.
      */
     public static String format(Locale locale, Date date) {
 
-        return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT, locale).format(date);
+        return getDateFormat(locale).format(date);
     }
 
     /**
-     * @return A string that is the formatted representation of the given amount of currency according to the user's
+     * @return A formatter according to the given locale's currency.
+     */
+    public static NumberFormat getCurrencyFormat(Locale locale) {
+
+        return NumberFormat.getCurrencyInstance(locale);
+    }
+
+    /**
+     * @return A string that is the formatted representation of the given amount of currency according to the given
      *         locale.
      */
     public static String format(Locale locale, Number number) {
 
-        return NumberFormat.getCurrencyInstance(locale).format(number);
+        return getCurrencyFormat(locale).format(number);
+    }
+
+    static ConfigurableInjector getInjector() {
+
+        if (injector == null) {
+            if (!isUnitTest) {
+                injector = new AnnotJavaEEInjector(new OlasNamingStrategy());
+            } else {
+                // Inside Unit Test
+                injector = new DummyAnnotJavaEEInjector();
+            }
+        }
+
+        return injector;
     }
 
     /**
@@ -96,7 +117,7 @@ public abstract class WicketUtil {
         application.addComponentInstantiationListener(new ComponentInjector() {
 
             {
-                InjectorHolder.setInjector(injector);
+                InjectorHolder.setInjector(getInjector());
             }
         });
     }
@@ -106,7 +127,7 @@ public abstract class WicketUtil {
      */
     public static void inject(Object injectee) {
 
-        injector.inject(injectee);
+        getInjector().inject(injectee);
     }
 
     /**
@@ -134,5 +155,40 @@ public abstract class WicketUtil {
     public static String getUserId(Request request) throws ServletException {
 
         return LoginManager.getUserId(toServletRequest(request));
+    }
+
+    /**
+     * Telling {@link WicketUtil} that we're unit testing will make it generate dummy services to emulate OLAS services
+     * that are not available in the unit testing framework.
+     */
+    public static void setUnitTesting(boolean unitTesting) {
+
+        isUnitTest = unitTesting;
+    }
+
+    /**
+     * Retrieve a proxy to the OLAS attribute web service.
+     * 
+     * @param loginRequest
+     *            The request that contains a session with a servlet context that has the WsLocation init parameter set.<br>
+     *            Note: This can be <code>null</code> for unit tests - it is not used. {@link DummyAttributeClient} is
+     *            used instead, provided you called {@link #setUnitTesting(boolean)}.
+     */
+    public static AttributeClient getOLASAttributeService(HttpServletRequest loginRequest,
+            PrivateKeyEntry privateKeyEntry) {
+
+        if (!isUnitTest) {
+            // Find the location of the OLAS web services to use.
+            String wsLocation = loginRequest.getSession().getServletContext().getInitParameter(WS_LOCATION);
+
+            // Find the key and certificate of the bank application.
+            X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
+            PrivateKey privateKey = privateKeyEntry.getPrivateKey();
+
+            // Create the attribute service client.
+            return new AttributeClientImpl(wsLocation, certificate, privateKey);
+        }
+
+        return new DummyAttributeClient();
     }
 }

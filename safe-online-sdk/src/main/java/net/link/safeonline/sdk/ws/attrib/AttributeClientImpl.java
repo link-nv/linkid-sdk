@@ -91,7 +91,7 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
         WSSecurityClientHandler.addNewHandler(this.port, clientCertificate, clientPrivateKey);
     }
 
-    public <Type> Type getAttributeValue(String userId, String attributeName, Class<Type> valueClass)
+    public <T> T getAttributeValue(String userId, String attributeName, Class<T> valueClass)
             throws AttributeNotFoundException, RequestDeniedException, WSClientTransportException,
             AttributeUnavailableException {
 
@@ -105,11 +105,11 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
 
         checkStatus(response);
 
-        Type result = getAttributeValue(response, valueClass);
+        T result = getAttributeValue(response, valueClass);
         return result;
     }
 
-    private <Type> Type getAttributeValue(ResponseType response, Class<Type> valueClass) {
+    private <T> T getAttributeValue(ResponseType response, Class<T> valueClass) {
 
         List<Object> assertions = response.getAssertionOrEncryptedAssertion();
         if (assertions.isEmpty())
@@ -139,7 +139,7 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
              * Multi-valued attribute.
              */
             Class<?> componentType = valueClass.getComponentType();
-            Type result = valueClass.cast(Array.newInstance(componentType, attributeValues.size()));
+            T result = valueClass.cast(Array.newInstance(componentType, attributeValues.size()));
 
             int idx = 0;
             for (Object attributeValue : attributeValues) {
@@ -176,7 +176,7 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
         if (false == valueClass.isInstance(value))
             throw new IllegalArgumentException("expected type: " + valueClass.getName() + "; actual type: "
                     + value.getClass().getName());
-        Type attributeValue = valueClass.cast(value);
+        T attributeValue = valueClass.cast(value);
         return attributeValue;
 
     }
@@ -214,9 +214,8 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
                     throw new AttributeNotFoundException();
                 else if (SamlpSecondLevelErrorCode.REQUEST_DENIED == samlpSecondLevelErrorCode)
                     throw new RequestDeniedException();
-                else if (SamlpSecondLevelErrorCode.ATTRIBUTE_UNAVAILABLE == samlpSecondLevelErrorCode) {
+                else if (SamlpSecondLevelErrorCode.ATTRIBUTE_UNAVAILABLE == samlpSecondLevelErrorCode)
                     throw new AttributeUnavailableException();
-                }
                 LOG.debug("second level status code: " + secondLevelStatusCode.getValue());
             }
             throw new RuntimeException("error: " + statusCodeValue);
@@ -327,36 +326,38 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
         return attributes;
     }
 
-    @SuppressWarnings("unchecked")
-    public <Type> Type getIdentity(String subjectLogin, Class<Type> identityCardClass)
-            throws AttributeNotFoundException, RequestDeniedException, WSClientTransportException,
-            AttributeUnavailableException {
+    public <T> T getIdentity(String userId, Class<T> identityCardClass) throws AttributeNotFoundException,
+            RequestDeniedException, WSClientTransportException, AttributeUnavailableException {
 
-        IdentityCard identityCardAnnotation = identityCardClass.getAnnotation(IdentityCard.class);
-        if (null == identityCardAnnotation)
+        if (!identityCardClass.isAnnotationPresent(IdentityCard.class))
             throw new IllegalArgumentException("identity card class should be annotated with @IdentityCard");
-        Type identityCard;
+
         try {
-            identityCard = identityCardClass.newInstance();
-        } catch (Exception e) {
+            T identityCard = identityCardClass.newInstance();
+            Method[] methods = identityCardClass.getMethods();
+
+            for (Method method : methods) {
+                if (!method.isAnnotationPresent(IdentityAttribute.class)) {
+                    continue;
+                }
+
+                String attributeName = method.getAnnotation(IdentityAttribute.class).value();
+                Class<?> valueClass = method.getReturnType();
+                Object attributeValue = getAttributeValue(userId, attributeName, valueClass);
+                Method setMethod = CompoundUtil.getSetMethod(identityCardClass, method);
+
+                try {
+                    setMethod.invoke(identityCard, new Object[] { attributeValue });
+                } catch (Exception e) {
+                    throw new RuntimeException("error: " + e.getMessage());
+                }
+            }
+
+            return identityCard;
+        }
+
+        catch (Exception e) {
             throw new RuntimeException("could not instantiate the identity card class");
         }
-        Method[] methods = identityCardClass.getMethods();
-        for (Method method : methods) {
-            IdentityAttribute identityAttributeAnnotation = method.getAnnotation(IdentityAttribute.class);
-            if (null == identityAttributeAnnotation) {
-                continue;
-            }
-            String attributeName = identityAttributeAnnotation.value();
-            Class valueClass = method.getReturnType();
-            Object attributeValue = getAttributeValue(subjectLogin, attributeName, valueClass);
-            Method setMethod = CompoundUtil.getSetMethod(identityCardClass, method);
-            try {
-                setMethod.invoke(identityCard, new Object[] { attributeValue });
-            } catch (Exception e) {
-                throw new RuntimeException("error: " + e.getMessage());
-            }
-        }
-        return identityCard;
     }
 }

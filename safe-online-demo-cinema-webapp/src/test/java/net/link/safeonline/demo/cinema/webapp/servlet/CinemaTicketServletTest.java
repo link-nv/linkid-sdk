@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package test.unit.net.link.safeonline.demo.cinema.servlet;
+package net.link.safeonline.demo.cinema.webapp.servlet;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;

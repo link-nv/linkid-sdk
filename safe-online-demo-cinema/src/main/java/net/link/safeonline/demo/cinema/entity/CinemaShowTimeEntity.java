@@ -29,7 +29,7 @@ import javax.persistence.Id;
  * @author mbillemo
  */
 @Entity
-public class CinemaShowTimeEntity implements Serializable {
+public class CinemaShowTimeEntity implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 1L;
 
@@ -51,8 +51,8 @@ public class CinemaShowTimeEntity implements Serializable {
 
     }
 
-    public CinemaShowTimeEntity(Integer monStart, Integer tueStart, Integer wedStart, Integer thuStart, Integer friStart,
-            Integer satStart, Integer sunStart) {
+    public CinemaShowTimeEntity(Integer monStart, Integer tueStart, Integer wedStart, Integer thuStart,
+            Integer friStart, Integer satStart, Integer sunStart) {
 
         this.monStart = monStart;
         this.tueStart = tueStart;
@@ -118,5 +118,15 @@ public class CinemaShowTimeEntity implements Serializable {
     public Integer getSunStart() {
 
         return this.sunStart;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CinemaShowTimeEntity clone() {
+
+        return new CinemaShowTimeEntity(this.monStart, this.tueStart, this.wedStart, this.thuStart, this.friStart,
+                this.satStart, this.sunStart);
     }
 }

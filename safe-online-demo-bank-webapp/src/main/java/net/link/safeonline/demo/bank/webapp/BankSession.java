@@ -12,6 +12,7 @@ import net.link.safeonline.demo.bank.entity.BankUserEntity;
 
 import org.apache.wicket.Request;
 import org.apache.wicket.Session;
+import org.apache.wicket.protocol.http.WebSession;
 
 
 /**
@@ -28,7 +29,7 @@ import org.apache.wicket.Session;
  * 
  * @author mbillemo
  */
-public class BankSession extends Session {
+public class BankSession extends WebSession {
 
     private static final long  serialVersionUID = 1L;
     public static final Locale CURRENCY         = Locale.FRANCE;
