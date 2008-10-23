@@ -11,10 +11,8 @@ import javax.ejb.Stateful;
 
 import net.link.safeonline.demo.payment.CustomerSearch;
 import net.link.safeonline.demo.payment.CustomerStatus;
-import net.link.safeonline.demo.payment.PaymentConstants;
 
 import org.jboss.annotation.ejb.LocalBinding;
-import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
@@ -26,7 +24,6 @@ import org.jboss.seam.log.Log;
 @Stateful
 @Name("customerSearch")
 @LocalBinding(jndiBinding = "SafeOnlinePaymentDemo/CustomerSearchBean/local")
-@SecurityDomain(PaymentConstants.SECURITY_DOMAIN)
 public class CustomerSearchBean extends AbstractPaymentDataClientBean implements CustomerSearch {
 
     @Logger

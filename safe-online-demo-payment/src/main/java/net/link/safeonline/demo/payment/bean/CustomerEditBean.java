@@ -11,7 +11,6 @@ import javax.ejb.Stateful;
 
 import net.link.safeonline.demo.payment.CustomerEdit;
 import net.link.safeonline.demo.payment.CustomerStatus;
-import net.link.safeonline.demo.payment.PaymentConstants;
 import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
@@ -20,7 +19,6 @@ import net.link.safeonline.sdk.ws.data.DataClient;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 
 import org.jboss.annotation.ejb.LocalBinding;
-import org.jboss.annotation.security.SecurityDomain;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.annotations.Name;
@@ -31,7 +29,6 @@ import org.jboss.seam.log.Log;
 @Stateful
 @Name("customerEdit")
 @LocalBinding(jndiBinding = "SafeOnlinePaymentDemo/CustomerEditBean/local")
-@SecurityDomain(PaymentConstants.SECURITY_DOMAIN)
 public class CustomerEditBean extends AbstractPaymentDataClientBean implements CustomerEdit {
 
     @Logger

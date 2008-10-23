@@ -405,15 +405,6 @@ public class CinemaWebTests extends AbstractWicketTests {
      * {@inheritDoc}
      */
     @Override
-    protected String getOLASUser() {
-
-        return "tester";
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     protected Class<? extends HttpServlet> getLogoutServlet() {
 
         return LogoutServlet.class;

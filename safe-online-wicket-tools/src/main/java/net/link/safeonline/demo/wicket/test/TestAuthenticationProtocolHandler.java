@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.demo.wicket.test.MockHttpServletRequest.Method;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
+import net.link.safeonline.sdk.auth.AuthenticationProtocolContext;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;
 import net.link.safeonline.sdk.auth.SupportedAuthenticationProtocol;
 import net.link.safeonline.sdk.auth.servlet.LoginServlet;
@@ -26,6 +27,7 @@ import net.link.safeonline.sdk.auth.servlet.LogoutServlet;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Session;
+import org.apache.ws.security.util.UUIDGenerator;
 
 
 /**
@@ -45,20 +47,32 @@ import org.apache.wicket.Session;
 @SupportedAuthenticationProtocol(AuthenticationProtocol.UNIT_TEST)
 public class TestAuthenticationProtocolHandler implements AuthenticationProtocolHandler {
 
-    private static final long           serialVersionUID = 1L;
-    static final Log                    LOG              = LogFactory.getLog(TestAuthenticationProtocolHandler.class);
+    private static final long           serialVersionUID    = 1L;
+    static final Log                    LOG                 = LogFactory
+                                                                    .getLog(TestAuthenticationProtocolHandler.class);
 
-    private static String               authenticatedUserId;
+    private static String               authenticatedUserId = UUIDGenerator.getUUID();
+    private static String               authenticatedDevice = "test-device";
     static Class<? extends HttpServlet> applicationLogoutServlet;
 
 
     /**
+     * This is a random UUID by default.
+     * 
      * @param userId
      *            The userId returned by and used for the dummy OLAS services.
      */
-    public static void setAuthenticatingUser(String userId) {
+    public static void setAuthenticatingUserId(String userId) {
 
         authenticatedUserId = userId;
+    }
+
+    /**
+     * @return The userId returned by and used for the dummy OLAS services (default: a random UUID).
+     */
+    public static String getAuthenticatingUserId() {
+
+        return authenticatedUserId;
     }
 
     /**
@@ -94,12 +108,12 @@ public class TestAuthenticationProtocolHandler implements AuthenticationProtocol
     /**
      * {@inheritDoc}
      */
-    public String finalizeAuthentication(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
-            throws ServletException {
+    public AuthenticationProtocolContext finalizeAuthentication(HttpServletRequest httpRequest,
+            HttpServletResponse httpResponse) throws ServletException {
 
         LOG.info("Finalizing Authentication for userId: " + authenticatedUserId);
 
-        return authenticatedUserId;
+        return new AuthenticationProtocolContext(authenticatedUserId, authenticatedDevice);
     }
 
     /**

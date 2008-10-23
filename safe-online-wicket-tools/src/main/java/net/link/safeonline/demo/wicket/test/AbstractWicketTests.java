@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -38,15 +38,15 @@ import org.junit.BeforeClass;
 /**
  * <h2>{@link AbstractWicketTests}<br>
  * <sub>[in short] (TODO).</sub></h2>
- * 
+ *
  * <p>
  * [description / usage].
  * </p>
- * 
+ *
  * <p>
  * <i>Oct 7, 2008</i>
  * </p>
- * 
+ *
  * @author lhunath
  */
 public abstract class AbstractWicketTests {
@@ -67,9 +67,9 @@ public abstract class AbstractWicketTests {
     public void setup() {
 
         // Dummy OLAS Setup.
-        TestAuthenticationProtocolHandler.setAuthenticatingUser(getOLASUser());
+        TestAuthenticationProtocolHandler.setAuthenticatingUserId(getOLASUserId());
         TestAuthenticationProtocolHandler.setLogoutServlet(getLogoutServlet());
-        DummyAttributeClient.setAttribute(getOLASUser(), "urn:net:lin-k:safe-online:attribute:login", getOLASUser());
+        DummyAttributeClient.setAttribute(getOLASUserId(), "urn:net:lin-k:safe-online:attribute:login", getOLASUserId());
 
         // Set up an HSQL entity manager.
         this.entityTestManager = new EntityTestManager();
@@ -142,7 +142,10 @@ public abstract class AbstractWicketTests {
     /**
      * @return The userId that is provided by and for the dummy OLAS services.
      */
-    protected abstract String getOLASUser();
+    protected String getOLASUserId() {
+
+        return TestAuthenticationProtocolHandler.getAuthenticatingUserId();
+    }
 
     /**
      * @return The application specific logout servlet.

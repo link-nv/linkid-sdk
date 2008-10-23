@@ -40,7 +40,7 @@ public class TinyTests {
         System.out.println(NumberFormat.getCurrencyInstance(Locale.FRANCE).format(2.5d));
     }
 
-    private void print(Object[] array) {
+    void print(Object[] array) {
 
         boolean first = true;
         for (Object element : array) {
