@@ -2,33 +2,30 @@
 <assembly xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/assembly-1.0.0.xsd">
+
 	<formats>
 		<format>zip</format>
 	</formats>
+
 	<fileSets>
+
+        <!-- Exclude the HSQL stuff from Base-Distribution: we use MySQL. -->
 		<fileSet>
-			<directory>
-                target/files/safe-online-base-distribution-1.2-SNAPSHOT/jboss
-			</directory>
+			<directory>target/files/safe-online-base-distribution-1.2-SNAPSHOT/jboss</directory>
 			<outputDirectory>jboss</outputDirectory>
 			<excludes>
-				<exclude>
-					server/default/deploy/jms/hsqldb-jdbc2-service.xml
-				</exclude>
+				<exclude>server/default/deploy/jms/hsqldb-jdbc2-service.xml</exclude>
 				<exclude>server/default/conf/jboss-minimal.xml</exclude>
 				<exclude>server/default/deploy/jboss-messaging.sar/hsqldb-persistence-service.xml</exclude>
 				<exclude>server/default/deploy/hsql-safe-online-ds.xml</exclude>
 				<exclude>server/default/deploy/hsqldb-ds.xml</exclude>
 				<exclude>server/default/lib/hsqldb.jar</exclude>
 				<exclude>server/default/lib/hsqldb-plugin.jar</exclude>
-				<exclude>
-					server/default/deploy/jms/hsqldb-jdbc-state-service.xml
-				</exclude>
-				<exclude>readme.html</exclude>
-				<exclude>bin/*.sh</exclude>
-				<exclude>server/default/lib/jboss-seam*.jar</exclude>
+				<exclude>server/default/deploy/jms/hsqldb-jdbc-state-service.xml</exclude>
 			</excludes>
 		</fileSet>
+
+        <!-- Runtime scripts                                -> /scripts -->
 		<fileSet>
 			<directory>
                 target/files/safe-online-base-distribution-1.2-SNAPSHOT/scripts 
@@ -36,38 +33,30 @@
 			<outputDirectory>scripts</outputDirectory>
 			<fileMode>0500</fileMode>
 		</fileSet>
-		<fileSet>
-			<directory>
-                target/files/safe-online-base-distribution-1.2-SNAPSHOT/jboss
-			</directory>
-			<outputDirectory>jboss</outputDirectory>
-			<includes>
-				<include>bin/*.sh</include>
-			</includes>
-			<fileMode>0500</fileMode>
-		</fileSet>
+
+        <!-- This artifact's custom JBoss configuration     -> /jboss -->
 		<fileSet>
 			<directory>target/classes/jboss</directory>
 			<outputDirectory>jboss</outputDirectory>
 		</fileSet>
-	</fileSets>
-    <files>
-        <!-- We manage this file ourselves because the DS is different for the agent than for OLAS -->
-		<!--file>
-            <source>target/files/resources/mysql-safe-online-ds.xml</source>
-			<outputDirectory>jboss/server/default/deploy</outputDirectory>
-		</file-->
-		<file>
-			<source>target/files/mysql-connector-java-5.1.5.jar</source>
+
+        <!-- This artifact's dependencies                   -> /jboss/server/default/lib -->
+		<fileSet>
+			<directory>target/dependency</directory>
+			<excludes>
+				<exclude>safe-online*</exclude>
+			</excludes>
 			<outputDirectory>jboss/server/default/lib</outputDirectory>
-		</file>
-		<file>
-			<source>
-                target/files/safe-online-performance-agent-service-1.2-SNAPSHOT.sar
-			</source>
-			<outputDirectory>
-				jboss/server/default/deploy
-			</outputDirectory>
-		</file>
-	</files>
+		</fileSet>
+
+        <!-- Performance-Agent-Service                      -> /jboss/server/default/deploy -->
+		<fileSet>
+			<directory>target/dependency</directory>
+			<includes>
+				<include>safe-online-performance-agent-service*</include>
+			</includes>
+            <outputDirectory>jboss/server/default/deploy</outputDirectory>
+		</fileSet>
+	</fileSets>
+
 </assembly>

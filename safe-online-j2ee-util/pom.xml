@@ -31,10 +31,6 @@
 
         <!-- Specific Dependencies: External -->
         <dependency>
-            <groupId>tomcat</groupId>
-            <artifactId>catalina</artifactId>
-        </dependency>
-        <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>

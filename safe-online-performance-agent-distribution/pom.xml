@@ -96,6 +96,18 @@
 							</outputDirectory>
 						</configuration>
 					</execution>
+					<execution>
+						<id>copy-deps</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory> ${project.build.directory}/dependency 
+							</outputDirectory>
+							<excludeScope> provided </excludeScope>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
             <plugin>
@@ -145,13 +157,16 @@
 
 	<dependencies>
 
-        <!-- Specific Dependencies: OLAS -->
+        <!-- Specific Dependencies: Distribution -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-base-distribution</artifactId>
 			<version>1.2-SNAPSHOT</version>
+            <scope>provided</scope>
 			<type>zip</type>
 		</dependency>
+
+        <!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-performance-agent-service</artifactId>
