@@ -132,8 +132,12 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
     }
 
     /**
-     * Handles the outbound SOAP message. This method will simply add an unsigned WS-Security Timestamp in the SOAP
-     * header. This is required for .NET 2/3 clients by the WCF Framework.
+     * Handles the outbound SOAP message. This method will add an unsigned WS-Security Timestamp in the SOAP header in
+     * case the message integrity check is set to false. This means the .NET WCF BasicHttpBinding over SSL is used. The
+     * unsigned timestamp is required for .NET 2/3 clients by the WCF framework.
+     * 
+     * If the OLAS binding ( AssymetricBinding without encryption in .NET WCF ) is used a signed timestamp will be added
+     * in the SOAP header. This is required for .NET 2/3 clients by the WCF framework.
      * 
      * @param document
      */
@@ -231,10 +235,9 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
             throw WSSecurityUtil.createSOAPFaultException("The signature or decryption was invalid", "FailedCheck");
         }
         LOG.debug("results: " + wsSecurityEngineResults);
-        if (null == wsSecurityEngineResults) {
+        if (null == wsSecurityEngineResults)
             throw WSSecurityUtil.createSOAPFaultException(
                     "An error was discovered processing the <wsse:Security> header.", "InvalidSecurity");
-        }
         Timestamp timestamp = null;
         Set<String> signedElements = null;
         for (WSSecurityEngineResult result : wsSecurityEngineResults) {
@@ -253,22 +256,19 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
             }
         }
 
-        if (null == signedElements) {
+        if (null == signedElements)
             throw WSSecurityUtil.createSOAPFaultException("The signature or decryption was invalid", "FailedCheck");
-        }
         LOG.debug("signed elements: " + signedElements);
         soapMessageContext.put(SIGNED_ELEMENTS_CONTEXT_KEY, signedElements);
 
         /*
          * Check timestamp.
          */
-        if (null == timestamp) {
+        if (null == timestamp)
             throw WSSecurityUtil.createSOAPFaultException("missing Timestamp in WS-Security header", "InvalidSecurity");
-        }
         String timestampId = timestamp.getID();
-        if (false == signedElements.contains(timestampId)) {
+        if (false == signedElements.contains(timestampId))
             throw WSSecurityUtil.createSOAPFaultException("Timestamp not signed", "FailedCheck");
-        }
         Calendar created = timestamp.getCreated();
         long maxOffset = this.wsSecurityConfigurationService.getMaximumWsSecurityTimestampOffset();
         DateTime createdDateTime = new DateTime(created);

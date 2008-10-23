@@ -315,12 +315,16 @@ public static class MyCompounded {
 			<code>SecurityTokenReference</code>
 			according to 7.2 - Direct References.
 		</para>
-		<para> Since .NET 3.0 WCF web service clients do not sign the SOAP
-			body per default when using SSL (since in this case the integrity has
-			already been provided by the transport layer) we've foreseen the
-			option within OLAS to disable the verification of the SOAP Body
-			digestion by the WS-Security signature. This can be configured per
-			application by the OLAS operator.</para>
+		<para> The BasicHttpBinding over SSL in .NET 3.0 WCF web service
+			clients will not sign the SOAP body per default (since in this case
+			the integrity has already been provided by the transport layer).
+			Therefore we've foreseen the option within OLAS to disable the
+			verification of the SOAP Body digestion by the WS-Security signature.
+			The .NET SDK provides a custom OLAS binding which will also sign the
+			body and optionally additional elements ( as required by the Liberty
+			Alliance ID-WSF Data Service 2.1 for the TargetIdentity SOAP header
+			). Which binding to use can be configured per application by the OLAS
+			operator.</para>
 		<para>
 			An example SOAP message with WS-Security header is given in the
 			following example (we removed the namespace declaration attributes
@@ -382,9 +386,17 @@ public static class MyCompounded {
 			</programlisting>
 		</para>
 		<para>
-			The response SOAP messages will contain an unsigned
+			If the SOAP body was not signed in the request ( as is the case with
+			the BasicHttpBinding over SSL in .NET 3 WCF clients ), the response
+			SOAP messages will contain an unsigned
 			<code>Timestamp</code>
-			WS-Security SOAP header. This was done for compatibility with .NET.
+			WS-Security SOAP header. This is required by the WCF framework.
+			If the
+			custom .NET 3 WCF OLAS binding or the java clients were used so the
+			SOAP body and addiotnal fields are signed, the request will contain a
+			signed
+			<code>Timestamp</code>
+			WS-Security SOAP header. This is required by the WCF framework.
 		</para>
 		<para>
 			Basically every web service comes with a corresponding SDK client

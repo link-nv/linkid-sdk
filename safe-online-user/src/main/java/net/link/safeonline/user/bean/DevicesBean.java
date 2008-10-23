@@ -276,7 +276,7 @@ public class DevicesBean implements Devices {
     @RolesAllowed(UserConstants.USER_ROLE)
     public String removeDevice() throws DeviceNotFoundException, IOException {
 
-        if (!deviceRemovalAllowed()) {
+        if (!deviceRemovalDisablingAllowed()) {
             this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
             return null;
         }
@@ -297,7 +297,7 @@ public class DevicesBean implements Devices {
         return null;
     }
 
-    private boolean deviceRemovalAllowed() {
+    private boolean deviceRemovalDisablingAllowed() {
 
         if (this.deviceRegistrations.size() == 1)
             return false;
@@ -328,7 +328,7 @@ public class DevicesBean implements Devices {
     public String disableDevice() throws DeviceNotFoundException, IOException, SubjectNotFoundException,
             PermissionDeniedException, AttributeTypeNotFoundException {
 
-        if (!deviceRemovalAllowed()) {
+        if (!deviceRemovalDisablingAllowed()) {
             this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
             return null;
         }

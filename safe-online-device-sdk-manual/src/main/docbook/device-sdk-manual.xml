@@ -30,9 +30,12 @@
 				OLAS authentication device provider. Information on the necessary
 				setup will be explained.</para>
 		</abstract>
-		<para> All communication for the services provided by the remote OLAS
-			authentication device provider will be done according to the OASIS
-			SAML version 2.0 Web SSO profile with HTTP POST binding.</para>
+		<para> Authentication by the remote OLAS device provider will be done
+			according to the OASIS SAML version 2.0 Web SSO profile with HTTP
+			POST binding. All other device operations provided by the device
+			provider are according to a custom extension to the OASIS SAML
+			version 2.0 RequestAbstractType and StatusResponseType. The HTTP POST
+			binding is used for this.</para>
 		<para>
 			Following services can be provided by the device provider :
 			<itemizedlist>
@@ -48,13 +51,16 @@
 				<listitem>
 					Updating
 				</listitem>
+				<listitem>
+					Disabling / Enabling
+				</listitem>
 			</itemizedlist>
 		</para>
-		<para> Below the protocol is shown as is used for authentication of an
-			OLAS device by a remote device provider.</para>
 		<para>
-			Below the protocol is shown as is used for registration, removal and
-			updating of an OLAS device issued by a remote device provider.
+			Below the protocol is shown as is used for registration and
+			authentication of an OLAS device by a remote device provider. The
+			removal, updating, disabling/enabling of a device follows the same
+			protocol as with registration.
 			<mediaobject>
 				<imageobject>
 					<imagedata format="PNG" align="center" scale="55"
@@ -283,16 +289,20 @@
 		</para>
 	</chapter>
 	<chapter id="operation">
-		<title>Device Registration / Removal / Updating</title>
+		<title>Device Registration / Removal / Updating / Disabling /
+			Enabling</title>
 		<abstract>
 			<para> This chapter will give an overview of the setup needed to
-				integrate a registration, removal and updating service from the
-				remote device provider towards OLAS.</para>
+				integrate a registration, removal, updating and disabling/enabling
+				service from the remote device provider towards OLAS.</para>
 		</abstract>
 		<para> Following 2 servlets are provided by the device SDK to handle
-			an incoming SAML request from OLAS and send out a SAML response to
-			OLAS. The incoming SAML request will containing the request device
-			operation, being REGISTER, REMOVE or UPDATE.</para>
+			an incoming OLAS Device Operation request and send out an OLAS Device
+			Operation response to OLAS. The incoming request will contain the
+			request device operation, being REGISTER, NEW_ACCOUNT_REGISTER,
+			REMOVE, UPDATE or DISABLE. The device operation NEW_ACCOUNT_REGISTER
+			is used in case a new OLAS user is registrating his initial device.
+		</para>
 		<para>
 			<variablelist>
 				<varlistentry>
@@ -321,34 +331,48 @@
 			The
 			<code>LandingServlet</code>
 			can contain following 3 optional init parameters, representing the
-			target URL's for each device operation REGISTER, REMOVE and UPDATE
-			being respectively
+			target URL's for each device operation REGISTER ( or
+			NEW_ACCOUNT_REGISTER ), REMOVE, UPDATE AND
+			DISABLE being respectively
 			<code>RegistrationUrl</code>
 			,
 			<code>RemovalUrl</code>
-			and
+			,
 			<code>UpdateUrl</code>
+			and
+			<code>DisableUrl</code>
 			. If one of these parameters are not specified, and still a request
-			for this operation is returned, the servlet will return a SAML
-			response containing a
+			for this operation is returned, the servlet will return a response
+			containing an
 			<code>Operation not supported</code>
 			status.
 		</para>
 		<para>
-			When the landing servlet has finished handling the incoming SAML
-			request, an instance of the class
+			When the landing servlet has finished handling the incoming request,
+			an instance of the class
 			<code>ProtocolContext</code>
 			will be initialized on the HttpSession. This will contain the user ID
 			of the subject who is performing the requested device operation. This
 			is the ID that should be returned during authentication to OLAS. It
 			will also contain the device we want to perform a device operation on
-			as well as the operation.
+			as well as the operation. Optionally it can contain the device the
+			user has used to authenticated itself towards OLAS before issuing the
+			device operation. This will not be the case when the device operation
+			is NEW_ACCOUNT_REGISTER as it will be the OLAS user's initial device
+			that is being registrated. Optionally the request can also contain an
+			attribute string. This string represents the user attribute related
+			to a specific device registration.
 		</para>
 		<para>
-			Two session parameters will also be pushed on the HttpSession, namely
+			Following session parameters will also be pushed on the HttpSession,
+			namely
 			<code>userId</code>
-			and
+			,
 			<code>operation</code>
+			,
+			<code>authenticatedDevice</code>
+			and
+			<code>attribute</code>
 			.
 		</para>
 		<para>
@@ -425,6 +449,10 @@
 			<param-value>update-device.jsf</param-value>
 		</init-param>
 		<init-param>
+			<param-name>DisableUrl</param-name>
+			<param-value>disable-device.jsf</param-value>
+		</init-param>
+		<init-param>
 			<param-name>ErrorPage</param-name>
 			<param-value>protocol-error.seam</param-value>
 		</init-param>
@@ -479,6 +507,10 @@
 		<init-param>
 			<param-name>UpdateUrl</param-name>
 			<param-value>update-device.jsf</param-value>
+		</init-param>
+		<init-param>
+			<param-name>DisableUrl</param-name>
+			<param-value>disable-device.jsf</param-value>
 		</init-param>
 		<init-param>
 			<param-name>ServletEndpointUrl</param-name>
