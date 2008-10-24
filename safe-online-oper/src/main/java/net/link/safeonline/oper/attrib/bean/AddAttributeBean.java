@@ -88,7 +88,7 @@ public class AddAttributeBean implements AddAttribute {
 
     private String                    locationOption;
 
-    private Long                      cacheTimeout;
+    private Long                      cacheTimeout     = new Long(0);
 
     private String                    plugin;
 
