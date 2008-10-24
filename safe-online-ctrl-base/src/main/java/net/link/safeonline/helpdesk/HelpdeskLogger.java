@@ -19,9 +19,9 @@ import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.ctrl.ControlBaseConstants;
 import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.entity.HistoryEventType;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
-import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
@@ -112,6 +112,17 @@ public class HelpdeskLogger {
         return principal;
     }
 
+    private static SubjectEntity findSubject(HttpSession session) {
+
+        String userId = (String) session.getAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
+        if (null != userId) {
+            SubjectService subjectService = EjbUtils
+                    .getEJB("SafeOnline/SubjectServiceBean/local", SubjectService.class);
+            return subjectService.findExceptionSubject(userId);
+        }
+        return null;
+    }
+
     private static void add(HttpSession session, String message, String principal, LogLevelType logLevel) {
 
         HelpdeskManager helpdeskManager = EjbUtils
@@ -145,16 +156,15 @@ public class HelpdeskLogger {
         HelpdeskManager helpdeskManager = EjbUtils
                 .getEJB("SafeOnline/HelpdeskManagerBean/local", HelpdeskManager.class);
 
-        SubjectManager subjectManager = EjbUtils.getEJB("SafeOnline/SubjectManagerBean/local", SubjectManager.class);
-
         HistoryDAO historyDAO = EjbUtils.getEJB("SafeOnline/HistoryDAOBean/local", HistoryDAO.class);
 
         LOG.debug("persisting volatile context for user " + principal + " size=" + helpdeskContext.size());
         Long id = helpdeskManager.persist(location, helpdeskContext);
 
         if (!principal.equals(UNKNOWN_USER)) {
-            historyDAO.addHistoryEntry(subjectManager.getCallerSubject(), HistoryEventType.HELPDESK_ID, Collections
-                    .singletonMap(SafeOnlineConstants.INFO_PROPERTY, id.toString()));
+            SubjectEntity subject = findSubject(session);
+            historyDAO.addHistoryEntry(subject, HistoryEventType.HELPDESK_ID, Collections.singletonMap(
+                    SafeOnlineConstants.INFO_PROPERTY, id.toString()));
         }
 
         /*

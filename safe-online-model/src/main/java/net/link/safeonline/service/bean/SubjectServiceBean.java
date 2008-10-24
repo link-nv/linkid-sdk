@@ -103,6 +103,12 @@ public class SubjectServiceBean implements SubjectService, SubjectServiceRemote 
         return getSubjectLogin(userId);
     }
 
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public SubjectEntity findExceptionSubject(String userId) {
+
+        return findSubject(userId);
+    }
+
     public String getSubjectLogin(String userId) {
 
         LOG.debug("get subject user login: " + userId);
@@ -128,9 +134,8 @@ public class SubjectServiceBean implements SubjectService, SubjectServiceRemote 
         LOG.debug("get subject login: " + login);
         SubjectEntity subject = this.subjectIdentifierDAO.findSubject(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN,
                 login);
-        if (null == subject) {
+        if (null == subject)
             throw new SubjectNotFoundException();
-        }
 
         return subject;
     }

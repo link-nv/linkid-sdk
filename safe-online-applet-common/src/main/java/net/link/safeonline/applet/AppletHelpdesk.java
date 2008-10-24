@@ -21,7 +21,7 @@ import net.link.safeonline.shared.helpdesk.LogLevelType;
  */
 public interface AppletHelpdesk {
 
-    boolean addHelpdeskEvent(String message, LogLevelType logLevel) throws IOException;
+    void addHelpdeskEvent(String message, LogLevelType logLevel) throws IOException;
 
     boolean clearHelpdesk() throws IOException;
 
