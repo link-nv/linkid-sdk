@@ -40,15 +40,13 @@ import com.sun.xml.ws.client.ClientTransportException;
 
 /**
  * Implementation WS-Notification producer service.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
-public class NotificationSubscriptionManagerClientImpl extends AbstractMessageAccessor implements
-        NotificationSubscriptionManagerClient {
+public class NotificationSubscriptionManagerClientImpl extends AbstractMessageAccessor implements NotificationSubscriptionManagerClient {
 
-    private static final Log                          LOG = LogFactory
-                                                                  .getLog(NotificationSubscriptionManagerClientImpl.class);
+    private static final Log                          LOG = LogFactory.getLog(NotificationSubscriptionManagerClientImpl.class);
 
     private final NotificationSubscriptionManagerPort port;
 
@@ -57,7 +55,7 @@ public class NotificationSubscriptionManagerClientImpl extends AbstractMessageAc
 
     /**
      * Main constructor.
-     *
+     * 
      * @param location
      *            the location (host:port) of the attribute web service.
      * @param clientCertificate
@@ -65,8 +63,7 @@ public class NotificationSubscriptionManagerClientImpl extends AbstractMessageAc
      * @param clientPrivateKey
      *            the private key corresponding with the client certificate.
      */
-    public NotificationSubscriptionManagerClientImpl(String location, X509Certificate clientCertificate,
-            PrivateKey clientPrivateKey) {
+    public NotificationSubscriptionManagerClientImpl(String location, X509Certificate clientCertificate, PrivateKey clientPrivateKey) {
 
         NotificationSubscriptionManagerService service = NotificationSubscriptionManagerServiceFactory.newInstance();
         this.port = service.getNotificationSubscriptionManagerPort();
@@ -91,7 +88,7 @@ public class NotificationSubscriptionManagerClientImpl extends AbstractMessageAc
     }
 
     public void unsubscribe(String topic, String address) throws SubscriptionNotFoundException, RequestDeniedException,
-            WSClientTransportException {
+                                                         WSClientTransportException {
 
         LOG.debug("unsubscribe");
         UnsubscribeRequest request = new UnsubscribeRequest();

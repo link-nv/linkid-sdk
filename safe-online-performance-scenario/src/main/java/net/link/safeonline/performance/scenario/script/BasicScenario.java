@@ -41,7 +41,7 @@ import org.apache.commons.logging.LogFactory;
 /**
  * <h2>{@link BasicScenario}<br>
  * <sub>A basic scenario that runs all basic drivers to test OLAS on every field available through the SDK.</sub></h2>
- *
+ * 
  * <p>
  * We perform the following, in order:
  * <ul>
@@ -50,11 +50,11 @@ import org.apache.commons.logging.LogFactory;
  * <li>{@link AttribDriver#getAttributes(PrivateKeyEntry, String)}</li>
  * </ul>
  * </p>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class BasicScenario implements Scenario {
@@ -84,10 +84,8 @@ public class BasicScenario implements Scenario {
 
         LOG.debug("retrieving performance keys..");
         try {
-            PerformanceService service = (PerformanceService) getInitialContext(execution.getHostname()).lookup(
-                    PerformanceService.BINDING);
-            this.applicationKey = new KeyStore.PrivateKeyEntry(service.getPrivateKey(), new Certificate[] { service
-                    .getCertificate() });
+            PerformanceService service = (PerformanceService) getInitialContext(execution.getHostname()).lookup(PerformanceService.BINDING);
+            this.applicationKey = new KeyStore.PrivateKeyEntry(service.getPrivateKey(), new Certificate[] { service.getCertificate() });
         } catch (NamingException e) {
             LOG.error("OLAS couldn't provide performance keys.", e);
         }

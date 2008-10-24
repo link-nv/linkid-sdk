@@ -27,9 +27,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Implementation of application authentication service.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Stateless
 public class ApplicationAuthenticationServiceBean implements ApplicationAuthenticationService {

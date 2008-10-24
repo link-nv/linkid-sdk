@@ -76,7 +76,7 @@ public class CinemaSeatOccupationEntity implements Serializable {
 
     /**
      * Make sure this seat occupation can no longer be taken by anyone else.
-     *
+     * 
      * @throws IllegalStateException
      *             If the seat occupation has already been reserved.
      */
@@ -94,7 +94,7 @@ public class CinemaSeatOccupationEntity implements Serializable {
     @Override
     public String toString() {
 
-        return String.format("{Occ: %s - %s}", this.seat, DateFormat.getDateTimeInstance(DateFormat.SHORT,
-                DateFormat.SHORT).format(this.start));
+        return String.format("{Occ: %s - %s}", this.seat, DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
+                this.start));
     }
 }

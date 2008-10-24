@@ -24,11 +24,10 @@ public interface AccountService {
 
     /**
      * Removes the specified account, not removing the subject identifers.
-     *
+     * 
      * @param userId
      * @throws SubjectNotFoundException
      * @throws MessageHandlerNotFoundException
      */
-    void removeAccount(String userId) throws SubjectNotFoundException, SubscriptionNotFoundException,
-            MessageHandlerNotFoundException;
+    void removeAccount(String userId) throws SubjectNotFoundException, SubscriptionNotFoundException, MessageHandlerNotFoundException;
 }

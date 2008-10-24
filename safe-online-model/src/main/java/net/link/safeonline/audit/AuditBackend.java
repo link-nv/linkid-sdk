@@ -9,9 +9,9 @@ package net.link.safeonline.audit;
 
 /**
  * Interface for audit backends.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public interface AuditBackend {
 

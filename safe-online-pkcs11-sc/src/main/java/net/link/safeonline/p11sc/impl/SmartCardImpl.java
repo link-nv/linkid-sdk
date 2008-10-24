@@ -165,8 +165,8 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
         throw new IllegalArgumentException("no config found for card: " + smartCardAlias);
     }
 
-    public void open(String smartCardAlias) throws SmartCardNotFoundException, NoPkcs11LibraryException,
-            MissingSmartCardReaderException, UnsupportedSmartCardException {
+    public void open(String smartCardAlias) throws SmartCardNotFoundException, NoPkcs11LibraryException, MissingSmartCardReaderException,
+                                           UnsupportedSmartCardException {
 
         SmartCardConfig smartCardConfig = getSmartCardConfig(smartCardAlias);
 
@@ -240,14 +240,12 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
         }
     }
 
-    private void loadCertificates(SmartCardConfig smartCardConfig) throws KeyStoreException, IOException,
-            NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException {
+    private void loadCertificates(SmartCardConfig smartCardConfig) throws KeyStoreException, IOException, NoSuchAlgorithmException,
+                                                                  CertificateException, UnrecoverableKeyException {
 
         CallbackHandler callbackHandler = new PKCS11CallbackHandler(this.smartCardPinCallback);
-        KeyStore.CallbackHandlerProtection callbackHandlerProtection = new KeyStore.CallbackHandlerProtection(
-                callbackHandler);
-        KeyStore.Builder builder = KeyStore.Builder.newInstance("PKCS11", this.pkcs11Provider,
-                callbackHandlerProtection);
+        KeyStore.CallbackHandlerProtection callbackHandlerProtection = new KeyStore.CallbackHandlerProtection(callbackHandler);
+        KeyStore.Builder builder = KeyStore.Builder.newInstance("PKCS11", this.pkcs11Provider, callbackHandlerProtection);
 
         KeyStore keyStore = builder.getKeyStore();
         keyStore.load(null, null);
@@ -272,8 +270,7 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
         this.authenticationCertificatePath = constructCertificatePath(this.authenticationCertificate, certificates);
     }
 
-    private List<X509Certificate> constructCertificatePath(X509Certificate certificate,
-            List<X509Certificate> certificateRepo) {
+    private List<X509Certificate> constructCertificatePath(X509Certificate certificate, List<X509Certificate> certificateRepo) {
 
         List<X509Certificate> certificatePath = new LinkedList<X509Certificate>();
         certificatePath.add(certificate);
@@ -307,8 +304,7 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
         return null;
     }
 
-    private void loadSecurityProvider(File existingDriverLocation, long slotIdx) throws IOException,
-            FileNotFoundException {
+    private void loadSecurityProvider(File existingDriverLocation, long slotIdx) throws IOException, FileNotFoundException {
 
         File tmpConfigFile = File.createTempFile("pkcs11", "conf");
         tmpConfigFile.deleteOnExit();
@@ -370,8 +366,8 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
         }
     }
 
-    private long getBestEffortSlotIdx(File pkcs11LibraryFile) throws SmartCardNotFoundException,
-            MissingSmartCardReaderException, UnsupportedSmartCardException {
+    private long getBestEffortSlotIdx(File pkcs11LibraryFile) throws SmartCardNotFoundException, MissingSmartCardReaderException,
+                                                             UnsupportedSmartCardException {
 
         String pkcs11Library = pkcs11LibraryFile.getAbsolutePath();
         try {
@@ -401,15 +397,14 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
                     }
                     break;
                 }
-                if (Arrays.equals(new Class[] { String.class, String.class, CK_C_INITIALIZE_ARGS.class, Boolean.TYPE },
-                        paramTypes)) {
+                if (Arrays.equals(new Class[] { String.class, String.class, CK_C_INITIALIZE_ARGS.class, Boolean.TYPE }, paramTypes)) {
                     /*
                      * Java 1.6
                      */
                     try {
                         CK_C_INITIALIZE_ARGS ck_c_initialize_args = new CK_C_INITIALIZE_ARGS();
-                        pkcs11 = (PKCS11) method.invoke(null, new Object[] { pkcs11Library, "C_GetFunctionList",
-                                ck_c_initialize_args, false });
+                        pkcs11 = (PKCS11) method.invoke(null, new Object[] { pkcs11Library, "C_GetFunctionList", ck_c_initialize_args,
+                                false });
                     } catch (Exception e) {
                         LOG.error("error during invocation of getInstance: " + e.getMessage());
                         return 0; // best effort
@@ -423,8 +418,8 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
             }
             try {
                 /*
-                 * It has been reported that one needs to wait for 5 milliseconds between the getInstance and the
-                 * C_GetSlotList invocation for the BeID smart card to avoid possible CKR_BUFFER_TOO_SMALL errors..
+                 * It has been reported that one needs to wait for 5 milliseconds between the getInstance and the C_GetSlotList invocation
+                 * for the BeID smart card to avoid possible CKR_BUFFER_TOO_SMALL errors..
                  */
                 Thread.sleep(5);
             } catch (InterruptedException e) {
@@ -466,9 +461,9 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
             }
             throw new SmartCardNotFoundException();
             /*
-             * Do not call pkcs11.C_Finalize(null) here since this could trigger a CKR_CRYPTOKI_NOT_INITIALIZED error
-             * when using the OpenSC PKCS11 driver. The PKCS11 class is caching the PKCS11 wrappers on a per-driver-path
-             * basis. If you finalize the PKCS11 wrapper you're finished using it.
+             * Do not call pkcs11.C_Finalize(null) here since this could trigger a CKR_CRYPTOKI_NOT_INITIALIZED error when using the OpenSC
+             * PKCS11 driver. The PKCS11 class is caching the PKCS11 wrappers on a per-driver-path basis. If you finalize the PKCS11 wrapper
+             * you're finished using it.
              */
         } catch (PKCS11Exception e) {
             throw new RuntimeException("PKCS11 error: " + e.getMessage(), e);

@@ -55,8 +55,7 @@ public class RegistrationServlet extends AbstractInjectionServlet {
 
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws IOException,
-            ServletException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
         HttpSession session = request.getSession();
 

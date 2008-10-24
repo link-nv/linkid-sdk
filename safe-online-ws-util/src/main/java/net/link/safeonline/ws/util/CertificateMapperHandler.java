@@ -31,12 +31,12 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- * Certificate JAX-WS Login Handler. This JAX-WS SOAP handler maps a trusted certificate to or an application Id, or a
- * device name, or an olas node name. For this it uses the {@link ApplicationAuthenticationService},
- * {@link DeviceAuthenticationService} and {@link NodeAuthenticationService} service.
- *
+ * Certificate JAX-WS Login Handler. This JAX-WS SOAP handler maps a trusted certificate to or an application Id, or a device name, or an
+ * olas node name. For this it uses the {@link ApplicationAuthenticationService}, {@link DeviceAuthenticationService} and
+ * {@link NodeAuthenticationService} service.
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class CertificateMapperHandler implements SOAPHandler<SOAPMessageContext> {
 
@@ -55,12 +55,11 @@ public class CertificateMapperHandler implements SOAPHandler<SOAPMessageContext>
     public void postConstructCallback() {
 
         System.setProperty("com.sun.xml.ws.fault.SOAPFaultBuilder.disableCaptureStackTrace", "true");
-        this.applicationAuthenticationService = EjbUtils.getEJB(
-                "SafeOnline/ApplicationAuthenticationServiceBean/local", ApplicationAuthenticationService.class);
+        this.applicationAuthenticationService = EjbUtils.getEJB("SafeOnline/ApplicationAuthenticationServiceBean/local",
+                ApplicationAuthenticationService.class);
         this.deviceAuthenticationService = EjbUtils.getEJB("SafeOnline/DeviceAuthenticationServiceBean/local",
                 DeviceAuthenticationService.class);
-        this.nodeAuthenticationService = EjbUtils.getEJB("SafeOnline/NodeAuthenticationServiceBean/local",
-                NodeAuthenticationService.class);
+        this.nodeAuthenticationService = EjbUtils.getEJB("SafeOnline/NodeAuthenticationServiceBean/local", NodeAuthenticationService.class);
     }
 
     public Set<QName> getHeaders() {
@@ -145,7 +144,7 @@ public class CertificateMapperHandler implements SOAPHandler<SOAPMessageContext>
 
     /**
      * Gives back the Id that have been written on the given SOAP message context by a handler instance of this type.
-     *
+     * 
      * @param soapMessageContext
      */
     public static String getId(SOAPMessageContext soapMessageContext) {

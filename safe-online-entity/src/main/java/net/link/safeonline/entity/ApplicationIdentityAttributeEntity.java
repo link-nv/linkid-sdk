@@ -47,8 +47,8 @@ public class ApplicationIdentityAttributeEntity implements Serializable {
         // empty
     }
 
-    public ApplicationIdentityAttributeEntity(ApplicationIdentityEntity applicationIdentity,
-            AttributeTypeEntity attributeType, boolean required, boolean dataMining) {
+    public ApplicationIdentityAttributeEntity(ApplicationIdentityEntity applicationIdentity, AttributeTypeEntity attributeType,
+                                              boolean required, boolean dataMining) {
 
         String applicationName = applicationIdentity.getApplication().getName();
         long identityVersion = applicationIdentity.getIdentityVersion();
@@ -172,7 +172,7 @@ public class ApplicationIdentityAttributeEntity implements Serializable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("pk", this.pk).append("required",
-                this.required).toString();
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("pk", this.pk).append("required", this.required)
+                                                                          .toString();
     }
 }

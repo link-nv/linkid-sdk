@@ -27,8 +27,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- * This filter performs the actual login using the identity as received from the SafeOnline authentication web
- * application.
+ * This filter performs the actual login using the identity as received from the SafeOnline authentication web application.
  * 
  * @author fcorneli
  * 
@@ -49,35 +48,30 @@ public class AuthnResponseFilter extends AbstractInjectionFilter {
         LOG.debug("destroy");
     }
 
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-            ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         LOG.debug("doFilter: " + httpRequest.getRequestURL());
 
-        AuthenticationProtocolHandler protocolHandler = AuthenticationProtocolManager
-                .findAuthenticationProtocolHandler(httpRequest);
+        AuthenticationProtocolHandler protocolHandler = AuthenticationProtocolManager.findAuthenticationProtocolHandler(httpRequest);
         if (null == protocolHandler) {
             /*
-             * This means that no authentication process is active. Two possibilities: (1) user still needs to start the
-             * login process, or (2) the user is already authenticated. Either way, we simply continue without doing
-             * anything.
+             * This means that no authentication process is active. Two possibilities: (1) user still needs to start the login process, or
+             * (2) the user is already authenticated. Either way, we simply continue without doing anything.
              */
             chain.doFilter(request, response);
             return;
         }
 
         /*
-         * In this case there is an authentication process active. Possibilities: (1) the handler is capable of
-         * processing the incoming authentication response yielding an authenticated user. (2) the incoming request has
-         * nothing to do with authentication, thus the authentication handler stays quite. (3) the authentication
-         * handler explodes on the incoming authentication response because for example it has an invalid signature or
-         * it failed to link the authentication response with the current session.
+         * In this case there is an authentication process active. Possibilities: (1) the handler is capable of processing the incoming
+         * authentication response yielding an authenticated user. (2) the incoming request has nothing to do with authentication, thus the
+         * authentication handler stays quite. (3) the authentication handler explodes on the incoming authentication response because for
+         * example it has an invalid signature or it failed to link the authentication response with the current session.
          */
 
         HttpServletResponse httpResponse = (HttpServletResponse) response;
-        AuthenticationProtocolContext authenticationProtocolContext = protocolHandler.finalizeAuthentication(
-                httpRequest, httpResponse);
+        AuthenticationProtocolContext authenticationProtocolContext = protocolHandler.finalizeAuthentication(httpRequest, httpResponse);
         if (null != authenticationProtocolContext) {
             LoginManager.setUserId(authenticationProtocolContext.getUserId(), httpRequest, this.userIdSessionParameter);
             LoginManager.setAuthenticatedDevice(authenticationProtocolContext.getAuthenticatedDevice(), httpRequest,

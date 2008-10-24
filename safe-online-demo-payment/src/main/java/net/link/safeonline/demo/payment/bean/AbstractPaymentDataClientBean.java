@@ -45,9 +45,9 @@ import org.jboss.seam.log.Log;
 
 /**
  * Abstract class for data client beans. Inherit from this class if you need a {@link DataClient} component.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public abstract class AbstractPaymentDataClientBean implements AbstractPaymentDataClient {
 
@@ -134,9 +134,8 @@ public abstract class AbstractPaymentDataClientBean implements AbstractPaymentDa
     }
 
     /**
-     * Gives back the lawyer status of a subject. This method also sets the {@link FacesMessages} in case something goes
-     * wrong.
-     *
+     * Gives back the lawyer status of a subject. This method also sets the {@link FacesMessages} in case something goes wrong.
+     * 
      * @param subjectLogin
      * @return the lawyer status or <code>null</code> in case of error.
      */
@@ -164,8 +163,7 @@ public abstract class AbstractPaymentDataClientBean implements AbstractPaymentDa
         Attribute<Boolean> juniorAttribute;
         DataClient currentDataClient = getDataClient();
         try {
-            juniorAttribute = currentDataClient.getAttributeValue(userId, DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME,
-                    Boolean.class);
+            juniorAttribute = currentDataClient.getAttributeValue(userId, DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, Boolean.class);
         } catch (WSClientTransportException e) {
             this.facesMessages.add("connection error: " + e.getMessage());
             return null;
@@ -185,7 +183,7 @@ public abstract class AbstractPaymentDataClientBean implements AbstractPaymentDa
 
     /**
      * Returns the username for this user Id. Sets {@link FacesMessages} in case something goes wrong.
-     *
+     * 
      * @param userId
      */
     protected String getUsername(String userId) {
@@ -193,8 +191,7 @@ public abstract class AbstractPaymentDataClientBean implements AbstractPaymentDa
         String username = null;
         AttributeClient currentAttributeClient = getAttributeClient();
         try {
-            username = currentAttributeClient.getAttributeValue(userId, DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME,
-                    String.class);
+            username = currentAttributeClient.getAttributeValue(userId, DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, String.class);
         } catch (WSClientTransportException e) {
             this.facesMessages.add("connection error: " + e.getMessage());
             return null;

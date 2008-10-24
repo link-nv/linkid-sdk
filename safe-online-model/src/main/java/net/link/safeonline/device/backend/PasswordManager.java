@@ -18,15 +18,14 @@ public interface PasswordManager {
 
     void setPassword(SubjectEntity subject, String password) throws PermissionDeniedException;
 
-    void changePassword(SubjectEntity subject, String oldPassword, String newPassword)
-            throws PermissionDeniedException, DeviceNotFoundException;
+    void changePassword(SubjectEntity subject, String oldPassword, String newPassword) throws PermissionDeniedException,
+                                                                                      DeviceNotFoundException;
 
     boolean validatePassword(SubjectEntity subject, String password) throws DeviceNotFoundException;
 
     boolean isPasswordConfigured(SubjectEntity subject);
 
-    void removePassword(SubjectEntity subject, String password) throws DeviceNotFoundException,
-            PermissionDeniedException;
+    void removePassword(SubjectEntity subject, String password) throws DeviceNotFoundException, PermissionDeniedException;
 
     boolean isDisabled(SubjectEntity subject) throws DeviceNotFoundException;
 

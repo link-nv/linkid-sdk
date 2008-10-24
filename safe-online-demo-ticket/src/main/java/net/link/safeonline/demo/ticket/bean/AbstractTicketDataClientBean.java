@@ -135,8 +135,7 @@ public abstract class AbstractTicketDataClientBean implements AbstractTicketData
         String username = null;
         AttributeClient tempAttributeClient = getAttributeClient();
         try {
-            username = tempAttributeClient.getAttributeValue(userId, DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME,
-                    String.class);
+            username = tempAttributeClient.getAttributeValue(userId, DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, String.class);
         } catch (WSClientTransportException e) {
             this.facesMessages.add("connection error: " + e.getMessage());
             return null;

@@ -9,9 +9,9 @@ package net.link.safeonline;
 
 /**
  * Defines the SafeOnline Application Roles.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class SafeOnlineApplicationRoles {
 

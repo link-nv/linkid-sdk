@@ -23,9 +23,9 @@ import org.bouncycastle.openssl.PEMReader;
 
 /**
  * Implementation component for PKI client.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class PkiClientImpl implements PkiClient {
 

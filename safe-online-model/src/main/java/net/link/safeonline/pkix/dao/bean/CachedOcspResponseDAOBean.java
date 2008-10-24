@@ -39,12 +39,10 @@ public class CachedOcspResponseDAOBean implements CachedOcspResponseDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                CachedOcspResponseEntity.QueryInterface.class);
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, CachedOcspResponseEntity.QueryInterface.class);
     }
 
-    public CachedOcspResponseEntity addCachedOcspResponse(String key, CachedOcspResultType result,
-            TrustDomainEntity trustDomain) {
+    public CachedOcspResponseEntity addCachedOcspResponse(String key, CachedOcspResultType result, TrustDomainEntity trustDomain) {
 
         LOG.debug("adding ocsp response to cache: key " + key);
 
@@ -89,7 +87,6 @@ public class CachedOcspResponseDAOBean implements CachedOcspResponseDAO {
     public void clearOcspCacheExpiredForTrustDomain(TrustDomainEntity trustDomain) {
 
         LOG.debug("clearing expired ocsp cache entries");
-        this.queryObject.deleteExpired(trustDomain, new Date(System.currentTimeMillis()
-                - trustDomain.getOcspCacheTimeOutMillis()));
+        this.queryObject.deleteExpired(trustDomain, new Date(System.currentTimeMillis() - trustDomain.getOcspCacheTimeOutMillis()));
     }
 }

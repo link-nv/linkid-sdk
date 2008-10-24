@@ -101,13 +101,10 @@ public class LandingServletTest {
                 "SafeOnline/WSSecurityConfigurationBean/local");
 
         this.mockWSSecurityConfigurationService = EasyMock.createMock(WSSecurityConfigurationService.class);
-        this.jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local",
-                this.mockWSSecurityConfigurationService);
-        expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(
-                Long.MAX_VALUE);
-        expect(
-                this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck((X509Certificate) EasyMock
-                        .anyObject())).andStubReturn(true);
+        this.jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local", this.mockWSSecurityConfigurationService);
+        expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck((X509Certificate) EasyMock.anyObject())).andStubReturn(
+                true);
         replay(this.mockWSSecurityConfigurationService);
 
         this.webServiceTestUtils = new WebServiceTestUtils();
@@ -177,9 +174,8 @@ public class LandingServletTest {
 
         // setup
         this.wantedDevices = Collections.singleton(this.deviceName);
-        String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(this.applicationName, this.applicationName,
-                null, this.keyPair, "http://test.authn.service", this.servletEndpointUrl, new Challenge<String>(),
-                this.wantedDevices, false);
+        String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(this.applicationName, this.applicationName, null, this.keyPair,
+                "http://test.authn.service", this.servletEndpointUrl, new Challenge<String>(), this.wantedDevices, false);
         String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest.getBytes());
         NameValuePair[] postData = { new NameValuePair("SAMLRequest", encodedSamlAuthnRequest) };
 
@@ -200,7 +196,7 @@ public class LandingServletTest {
         String resultApplicationName = (String) this.servletTestManager.getSessionAttribute("applicationName");
         assertEquals(this.applicationName, resultApplicationName);
         AuthenticationContext authenticationContext = (AuthenticationContext) this.servletTestManager
-                .getSessionAttribute(AuthenticationContext.AUTHENTICATION_CONTEXT);
+                                                                                                     .getSessionAttribute(AuthenticationContext.AUTHENTICATION_CONTEXT);
         assertNotNull(authenticationContext);
         assertEquals(this.applicationName, authenticationContext.getApplication());
         assertEquals(this.applicationName, authenticationContext.getApplicationFriendlyName());

@@ -47,7 +47,7 @@ public interface OSGIAttributeService {
      * @throws SubjectNotFoundException
      */
     public List<Attribute> getAttribute(String userId, String attributeName) throws AttributeTypeNotFoundException,
-            AttributeNotFoundException, UnsupportedDataTypeException, AttributeUnavailableException,
-            SubjectNotFoundException;
+                                                                            AttributeNotFoundException, UnsupportedDataTypeException,
+                                                                            AttributeUnavailableException, SubjectNotFoundException;
 
 }

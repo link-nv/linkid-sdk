@@ -27,19 +27,19 @@ public interface AccountMergingService {
 
     /**
      * Figure out what will be removed, kept or imported from the source account.
-     *
+     * 
      * @param sourceAccountName
      * @throws SubjectNotFoundException
      * @throws AttributeTypeNotFoundException
      * @throws EmptyDevicePolicyException
      * @throws ApplicationNotFoundException
      */
-    AccountMergingDO getAccountMergingDO(String sourceAccountName) throws SubjectNotFoundException,
-            AttributeTypeNotFoundException, ApplicationNotFoundException, EmptyDevicePolicyException;
+    AccountMergingDO getAccountMergingDO(String sourceAccountName) throws SubjectNotFoundException, AttributeTypeNotFoundException,
+                                                                  ApplicationNotFoundException, EmptyDevicePolicyException;
 
     /**
      * Commit the calculated changes from merging with the source account.
-     *
+     * 
      * @param accountMergingDO
      * @param neededDevices
      * @throws AttributeTypeNotFoundException
@@ -48,8 +48,10 @@ public interface AccountMergingService {
      * @throws SubscriptionNotFoundException
      * @throws MessageHandlerNotFoundException
      */
-    void mergeAccount(AccountMergingDO accountMergingDO, Set<DeviceEntity> neededDevices)
-            throws AttributeTypeNotFoundException, SubjectNotFoundException, PermissionDeniedException,
-            SubscriptionNotFoundException, MessageHandlerNotFoundException;
+    void mergeAccount(AccountMergingDO accountMergingDO, Set<DeviceEntity> neededDevices) throws AttributeTypeNotFoundException,
+                                                                                         SubjectNotFoundException,
+                                                                                         PermissionDeniedException,
+                                                                                         SubscriptionNotFoundException,
+                                                                                         MessageHandlerNotFoundException;
 
 }

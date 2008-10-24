@@ -18,11 +18,11 @@ import javax.persistence.NamedQuery;
 /**
  * <h2>{@link DriverExceptionEntity}<br>
  * <sub>Holds problems encountered during driver execution.</sub></h2>
- *
+ * 
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 @Entity

@@ -47,18 +47,13 @@ public class IdentityStatementStructure extends AbstractStatementStructure {
         DERInteger version = DERInteger.getInstance(tbsSequence.getObjectAt(DERIdentityStatement.VERSION_IDX));
         if (version.getValue().intValue() != DERIdentityStatement.VERSION)
             throw new DecodingException();
-        this.sessionId = DERVisibleString.getInstance(tbsSequence.getObjectAt(DERIdentityStatement.SESSION_IDX))
-                .getString();
+        this.sessionId = DERVisibleString.getInstance(tbsSequence.getObjectAt(DERIdentityStatement.SESSION_IDX)).getString();
         this.user = DERVisibleString.getInstance(tbsSequence.getObjectAt(DERIdentityStatement.USER_IDX)).getString();
-        this.operation = DERVisibleString.getInstance(tbsSequence.getObjectAt(DERIdentityStatement.OPERATION_IDX))
-                .getString();
-        this.givenName = DERVisibleString.getInstance(tbsSequence.getObjectAt(DERIdentityStatement.GIVEN_NAME_IDX))
-                .getString();
-        this.surname = DERVisibleString.getInstance(tbsSequence.getObjectAt(DERIdentityStatement.SURNAME_IDX))
-                .getString();
+        this.operation = DERVisibleString.getInstance(tbsSequence.getObjectAt(DERIdentityStatement.OPERATION_IDX)).getString();
+        this.givenName = DERVisibleString.getInstance(tbsSequence.getObjectAt(DERIdentityStatement.GIVEN_NAME_IDX)).getString();
+        this.surname = DERVisibleString.getInstance(tbsSequence.getObjectAt(DERIdentityStatement.SURNAME_IDX)).getString();
 
-        ASN1Sequence derAuthCert = ASN1Sequence
-                .getInstance(tbsSequence.getObjectAt(DERIdentityStatement.AUTH_CERT_IDX));
+        ASN1Sequence derAuthCert = ASN1Sequence.getInstance(tbsSequence.getObjectAt(DERIdentityStatement.AUTH_CERT_IDX));
 
         this.authCert = decodeCertificate(derAuthCert.getDEREncoded());
     }

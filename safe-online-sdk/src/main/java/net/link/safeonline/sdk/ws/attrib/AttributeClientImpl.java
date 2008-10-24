@@ -91,9 +91,10 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
         WSSecurityClientHandler.addNewHandler(this.port, clientCertificate, clientPrivateKey);
     }
 
-    public <T> T getAttributeValue(String userId, String attributeName, Class<T> valueClass)
-            throws AttributeNotFoundException, RequestDeniedException, WSClientTransportException,
-            AttributeUnavailableException {
+    public <T> T getAttributeValue(String userId, String attributeName, Class<T> valueClass) throws AttributeNotFoundException,
+                                                                                            RequestDeniedException,
+                                                                                            WSClientTransportException,
+                                                                                            AttributeUnavailableException {
 
         LOG.debug("get attribute value for subject " + userId + " attribute name " + attributeName);
 
@@ -130,8 +131,7 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
         if (null == attributeValues.get(0))
             return null;
 
-        if (Boolean.valueOf(attribute.getOtherAttributes().get(WebServiceConstants.MULTIVALUED_ATTRIBUTE))
-                ^ valueClass.isArray())
+        if (Boolean.valueOf(attribute.getOtherAttributes().get(WebServiceConstants.MULTIVALUED_ATTRIBUTE)) ^ valueClass.isArray())
             throw new IllegalArgumentException("multivalued and [] type mismatch");
 
         if (valueClass.isArray()) {
@@ -174,8 +174,7 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
             return null;
 
         if (false == valueClass.isInstance(value))
-            throw new IllegalArgumentException("expected type: " + valueClass.getName() + "; actual type: "
-                    + value.getClass().getName());
+            throw new IllegalArgumentException("expected type: " + valueClass.getName() + "; actual type: " + value.getClass().getName());
         T attributeValue = valueClass.cast(value);
         return attributeValue;
 
@@ -195,13 +194,12 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
     }
 
     private void checkStatus(ResponseType response) throws AttributeNotFoundException, RequestDeniedException,
-            AttributeUnavailableException {
+                                                   AttributeUnavailableException {
 
         StatusType status = response.getStatus();
         StatusCodeType statusCode = status.getStatusCode();
         String statusCodeValue = statusCode.getValue();
-        SamlpTopLevelErrorCode samlpTopLevelErrorCode = SamlpTopLevelErrorCode
-                .getSamlpTopLevelErrorCode(statusCodeValue);
+        SamlpTopLevelErrorCode samlpTopLevelErrorCode = SamlpTopLevelErrorCode.getSamlpTopLevelErrorCode(statusCodeValue);
         if (SamlpTopLevelErrorCode.SUCCESS != samlpTopLevelErrorCode) {
             LOG.error("status code: " + statusCodeValue);
             LOG.error("status message: " + status.getStatusMessage());
@@ -209,7 +207,7 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
             if (null != secondLevelStatusCode) {
                 String secondLevelStatusCodeValue = secondLevelStatusCode.getValue();
                 SamlpSecondLevelErrorCode samlpSecondLevelErrorCode = SamlpSecondLevelErrorCode
-                        .getSamlpTopLevelErrorCode(secondLevelStatusCodeValue);
+                                                                                               .getSamlpTopLevelErrorCode(secondLevelStatusCodeValue);
                 if (SamlpSecondLevelErrorCode.INVALID_ATTRIBUTE_NAME_OR_VALUE == samlpSecondLevelErrorCode)
                     throw new AttributeNotFoundException();
                 else if (SamlpSecondLevelErrorCode.REQUEST_DENIED == samlpSecondLevelErrorCode)
@@ -263,7 +261,8 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
     }
 
     public void getAttributeValues(String userId, Map<String, Object> attributes) throws AttributeNotFoundException,
-            RequestDeniedException, WSClientTransportException, AttributeUnavailableException {
+                                                                                 RequestDeniedException, WSClientTransportException,
+                                                                                 AttributeUnavailableException {
 
         AttributeQueryType request = getAttributeQuery(userId, attributes);
         SafeOnlineTrustManager.configureSsl();
@@ -314,8 +313,8 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
         }
     }
 
-    public Map<String, Object> getAttributeValues(String userId) throws RequestDeniedException,
-            WSClientTransportException, AttributeNotFoundException, AttributeUnavailableException {
+    public Map<String, Object> getAttributeValues(String userId) throws RequestDeniedException, WSClientTransportException,
+                                                                AttributeNotFoundException, AttributeUnavailableException {
 
         Map<String, Object> attributes = new HashMap<String, Object>();
         AttributeQueryType request = getAttributeQuery(userId, attributes);
@@ -326,8 +325,8 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
         return attributes;
     }
 
-    public <T> T getIdentity(String userId, Class<T> identityCardClass) throws AttributeNotFoundException,
-            RequestDeniedException, WSClientTransportException, AttributeUnavailableException {
+    public <T> T getIdentity(String userId, Class<T> identityCardClass) throws AttributeNotFoundException, RequestDeniedException,
+                                                                       WSClientTransportException, AttributeUnavailableException {
 
         if (!identityCardClass.isAnnotationPresent(IdentityCard.class))
             throw new IllegalArgumentException("identity card class should be annotated with @IdentityCard");

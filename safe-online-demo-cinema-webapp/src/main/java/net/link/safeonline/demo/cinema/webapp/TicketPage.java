@@ -47,7 +47,7 @@ public class TicketPage extends LayoutPage {
     public TicketPage() {
 
         if (!CinemaSession.isUserSet())
-            throw new RestartResponseException( LoginPage.class);
+            throw new RestartResponseException(LoginPage.class);
 
         add(new Label("headerTitle", "Ticket History"));
 
@@ -80,8 +80,7 @@ public class TicketPage extends LayoutPage {
 
             super(id);
 
-            final List<CinemaTicketEntity> data = TicketPage.this.ticketService.getTickets(CinemaSession.get()
-                    .getUser());
+            final List<CinemaTicketEntity> data = TicketPage.this.ticketService.getTickets(CinemaSession.get().getUser());
 
             add(new ListView<CinemaTicketEntity>("list", data) {
 

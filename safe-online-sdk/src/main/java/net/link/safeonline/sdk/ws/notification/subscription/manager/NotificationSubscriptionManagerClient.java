@@ -15,22 +15,21 @@ import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 
 /**
  * WS Notification Subscription Manager Service Client interface.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public interface NotificationSubscriptionManagerClient extends MessageAccessor {
 
     /**
      * Unsubscribe the specified consumer address to the specified Topic.
-     *
+     * 
      * @param topic
      * @param address
      * @throws SubscriptionNotFoundException
      * @throws RequestDeniedException
      * @throws WSClientTransportException
      */
-    void unsubscribe(String topic, String address) throws SubscriptionNotFoundException, RequestDeniedException,
-            WSClientTransportException;
+    void unsubscribe(String topic, String address) throws SubscriptionNotFoundException, RequestDeniedException, WSClientTransportException;
 
 }

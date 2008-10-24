@@ -20,6 +20,7 @@ import net.link.safeonline.util.servlet.annotation.Init;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 /**
  * <h2>{@link LogoutServlet}<br>
  * <sub>Logout servlet.</sub></h2>
@@ -36,20 +37,20 @@ import org.apache.commons.logging.LogFactory;
  */
 public class LogoutServlet extends AbstractInjectionServlet {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private static final Log LOG = LogFactory.getLog(LogoutServlet.class);
+    private static final Log  LOG              = LogFactory.getLog(LogoutServlet.class);
 
-	@Init(name = "LogoutExitUrl")
-	private String logoutExitUrl;
+    @Init(name = "LogoutExitUrl")
+    private String            logoutExitUrl;
 
-	@Override
-	public void invokeGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
 
-		LOG.debug("invoke get");
+    @Override
+    public void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        LOG.debug("invoke get");
 
         LoginManager.invalidateSession(request);
         response.sendRedirect(this.logoutExitUrl);
-	}
+    }
 }

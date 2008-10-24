@@ -23,11 +23,11 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- * JMX bean that manages the authentication identity of the SafeOnline instance. This identity is used for
- * authenticating this olas node to other olas nodes.
- *
+ * JMX bean that manages the authentication identity of the SafeOnline instance. This identity is used for authenticating this olas node to
+ * other olas nodes.
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class AuthIdentityService implements AuthIdentityServiceMBean {
 
@@ -82,8 +82,8 @@ public class AuthIdentityService implements AuthIdentityServiceMBean {
 
         PrivateKeyEntry privateKeyEntry;
         try {
-            privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(this.keyStoreType, keyStoreInputStream,
-                    this.keyStorePassword, this.keyStorePassword);
+            privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(this.keyStoreType, keyStoreInputStream, this.keyStorePassword,
+                    this.keyStorePassword);
         } finally {
             IOUtils.closeQuietly(keyStoreInputStream);
         }

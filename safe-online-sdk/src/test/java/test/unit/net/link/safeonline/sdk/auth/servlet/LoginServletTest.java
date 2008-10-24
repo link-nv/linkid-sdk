@@ -133,8 +133,7 @@ public class LoginServletTest {
         this.servletTestManager.setSessionAttribute(AuthenticationProtocolManager.TARGET_ATTRIBUTE, target);
         String userId = UUID.randomUUID().toString();
         String authenticatedDevice = "test-device";
-        AuthenticationProtocolContext authenticationProtocolContext = new AuthenticationProtocolContext(userId,
-                authenticatedDevice);
+        AuthenticationProtocolContext authenticationProtocolContext = new AuthenticationProtocolContext(userId, authenticatedDevice);
 
         // expectations
         expect(
@@ -156,11 +155,10 @@ public class LoginServletTest {
         assertEquals(HttpServletResponse.SC_MOVED_TEMPORARILY, statusCode);
         String responseBody = getMethod.getResponseBodyAsString();
         LOG.debug("response body: " + responseBody);
-        String resultUserId = (String) this.servletTestManager
-                .getSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
+        String resultUserId = (String) this.servletTestManager.getSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
         assertEquals(userId, resultUserId);
         String resultAuthenticatedDevice = (String) this.servletTestManager
-                .getSessionAttribute(LoginManager.AUTHENTICATED_DEVICE_SESSION_ATTRIBUTE);
+                                                                           .getSessionAttribute(LoginManager.AUTHENTICATED_DEVICE_SESSION_ATTRIBUTE);
         assertEquals(authenticatedDevice, resultAuthenticatedDevice);
         String resultTarget = getMethod.getResponseHeader("Location").getValue();
         assertEquals(target, resultTarget);

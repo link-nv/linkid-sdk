@@ -148,13 +148,11 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements DeviceR
         Locale viewLocale = facesContext.getViewRoot().getLocale();
         List<SelectItem> applicationDevices = new LinkedList<SelectItem>();
 
-        List<DeviceEntity> devicePolicy = this.devicePolicyService.getDevicePolicy(this.application,
-                this.requiredDevicePolicy);
+        List<DeviceEntity> devicePolicy = this.devicePolicyService.getDevicePolicy(this.application, this.requiredDevicePolicy);
         for (DeviceEntity deviceEntity : devicePolicy) {
             String deviceName = this.devicePolicyService.getDeviceDescription(deviceEntity.getName(), viewLocale);
             SelectItem applicationDevice = new SelectItem(deviceEntity.getName(), deviceName);
-            this.log.debug("device " + deviceName + ": " + deviceEntity.isRegistrable() + " (path="
-                    + deviceEntity.getRegistrationPath());
+            this.log.debug("device " + deviceName + ": " + deviceEntity.isRegistrable() + " (path=" + deviceEntity.getRegistrationPath());
             applicationDevice.setDisabled(!deviceEntity.isRegistrable());
             applicationDevices.add(applicationDevice);
         }

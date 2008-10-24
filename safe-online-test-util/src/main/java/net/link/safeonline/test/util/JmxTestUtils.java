@@ -53,8 +53,8 @@ public class JmxTestUtils {
      * @throws MBeanRegistrationException
      * @throws NotCompliantMBeanException
      */
-    public void setUp(String mbeanName) throws MalformedObjectNameException, NullPointerException,
-            InstanceAlreadyExistsException, MBeanRegistrationException, NotCompliantMBeanException {
+    public void setUp(String mbeanName) throws MalformedObjectNameException, NullPointerException, InstanceAlreadyExistsException,
+                                       MBeanRegistrationException, NotCompliantMBeanException {
 
         if (null == this.mbeanServer) {
             this.mbeanServer = getMBeanServer();

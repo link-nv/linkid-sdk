@@ -16,11 +16,11 @@ import net.link.safeonline.performance.scenario.charts.Chart;
 /**
  * <h2>{@link Scenario}<br>
  * <sub>This interface defines what a {@link Scenario} should implement to be launchable in the agent.</sub></h2>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public interface Scenario extends Runnable {
@@ -31,8 +31,8 @@ public interface Scenario extends Runnable {
     public void prepare(ExecutionEntity execution, ScenarioTimingEntity agentTime);
 
     /**
-     * Implement this method to provide am HTML formatted description string for your scenario: You should explain what
-     * it does and how it works.
+     * Implement this method to provide am HTML formatted description string for your scenario: You should explain what it does and how it
+     * works.
      */
     public String getDescription();
 

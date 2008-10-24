@@ -26,15 +26,15 @@ import org.junit.Test;
 /**
  * <h2>{@link FilmServiceTest}<br>
  * <sub>Unit tests for {@link FilmService}.</sub></h2>
- *
+ * 
  * <p>
  * [description / usage].
  * </p>
- *
+ * 
  * <p>
  * <i>Oct 16, 2008</i>
  * </p>
- *
+ * 
  * @author lhunath
  */
 public class FilmServiceTest extends AbstractCinemaServiceTest {
@@ -114,30 +114,28 @@ public class FilmServiceTest extends AbstractCinemaServiceTest {
         Map<String, List<CinemaFilmEntity>> sampleTheatresFilms = new HashMap<String, List<CinemaFilmEntity>>();
         for (String theatreName : testTheatreNames) {
             CinemaTheatreEntity theatre = (CinemaTheatreEntity) this.em.createQuery(
-                    "SELECT t FROM CinemaTheatreEntity t WHERE t.name = :name").setParameter("name", theatreName)
-                    .getSingleResult();
+                    "SELECT t FROM CinemaTheatreEntity t WHERE t.name = :name").setParameter("name", theatreName).getSingleResult();
 
             sampleTheatresFilms.put(theatreName, this.filmService.getFilmsThatPlayIn(theatre));
         }
 
         // Verify && all films for each theatre accessible per theatre.
-        assertTrue(String.format("theatre amount mismatch: test: %s - sample: %s", testTheatreNames,
-                sampleTheatresFilms.keySet()), //
+        assertTrue(String.format("theatre amount mismatch: test: %s - sample: %s", testTheatreNames, sampleTheatresFilms.keySet()), //
                 testTheatreNames.size() == sampleTheatresFilms.keySet().size());
         for (String theatreName : testTheatreNames) {
             List<String> testTheatreFilmNames = testTheatresFilmNames.get(theatreName);
             List<CinemaFilmEntity> sampleTheatreFilms = sampleTheatresFilms.get(theatreName);
 
-            assertTrue(String.format("film amount mismatch for theatre %s: test: %s - sample: %s", theatreName,
-                    testTheatreFilmNames, sampleTheatreFilms), //
+            assertTrue(String.format("film amount mismatch for theatre %s: test: %s - sample: %s", theatreName, testTheatreFilmNames,
+                    sampleTheatreFilms), //
                     testTheatreFilmNames.size() == sampleTheatreFilms.size());
 
             for (CinemaFilmEntity sampleTheatreFilm : sampleTheatreFilms) {
                 String sampleTheatreFilmName = sampleTheatreFilm.getName();
                 int sampleTheatreFilmIndex = testTheatreFilmNames.indexOf(sampleTheatreFilmName);
 
-                assertFalse(String.format("film not found for theatre %s: test: %s - sample: %s", theatreName,
-                        testTheatreFilmNames, sampleTheatreFilmName), //
+                assertFalse(String.format("film not found for theatre %s: test: %s - sample: %s", theatreName, testTheatreFilmNames,
+                        sampleTheatreFilmName), //
                         sampleTheatreFilmIndex == -1);
 
                 testTheatreFilmNames.remove(sampleTheatreFilmIndex); // Don't let doubles foil the test.

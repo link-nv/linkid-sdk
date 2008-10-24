@@ -34,11 +34,11 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- * Login handling servlet. After SafeOnline performed its authentication it will redirect to this servlet. This servlet
- * will retrieve the 'bar admin' attribute. Depending on the value of this attribute we redirect to a different page.
- *
+ * Login handling servlet. After SafeOnline performed its authentication it will redirect to this servlet. This servlet will retrieve the
+ * 'bar admin' attribute. Depending on the value of this attribute we redirect to a different page.
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class LoginServlet extends HttpServlet {
 
@@ -69,12 +69,10 @@ public class LoginServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         /*
-         * Since the SAML protocol can enter the application via an HTTP POST we also need to implement the doPost
-         * method.
+         * Since the SAML protocol can enter the application via an HTTP POST we also need to implement the doPost method.
          */
         doGet(request, response);
     }
@@ -88,8 +86,7 @@ public class LoginServlet extends HttpServlet {
 
         Attribute<Boolean> barAdminAttribute;
         try {
-            barAdminAttribute = this.dataClient.getAttributeValue(username,
-                    DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME, Boolean.class);
+            barAdminAttribute = this.dataClient.getAttributeValue(username, DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME, Boolean.class);
         } catch (RequestDeniedException e) {
             throw new ServletException("count not retrieve baradmin attribute");
         } catch (SubjectNotFoundException e) {

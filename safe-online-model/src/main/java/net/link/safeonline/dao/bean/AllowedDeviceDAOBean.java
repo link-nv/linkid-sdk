@@ -34,8 +34,7 @@ public class AllowedDeviceDAOBean implements AllowedDeviceDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                AllowedDeviceEntity.QueryInterface.class);
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, AllowedDeviceEntity.QueryInterface.class);
     }
 
     public AllowedDeviceEntity addAllowedDevice(ApplicationEntity application, DeviceEntity device, int weight) {

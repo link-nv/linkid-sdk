@@ -12,8 +12,7 @@ import net.link.safeonline.webapp.Page;
 
 public class DemoPrescriptionPrescriptionAuthenticated extends Page {
 
-    public static final String PAGE_NAME = SAFE_ONLINE_DEMO_PRESCRIPTION_WEBAPP_PREFIX
-                                                 + "/prescription-authenticated.seam";
+    public static final String PAGE_NAME = SAFE_ONLINE_DEMO_PRESCRIPTION_WEBAPP_PREFIX + "/prescription-authenticated.seam";
 
 
     public DemoPrescriptionPrescriptionAuthenticated() {

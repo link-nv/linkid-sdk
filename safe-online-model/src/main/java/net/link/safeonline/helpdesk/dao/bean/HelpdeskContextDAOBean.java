@@ -44,15 +44,14 @@ public class HelpdeskContextDAOBean implements HelpdeskContextDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                HelpdeskContextEntity.QueryInterface.class);
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, HelpdeskContextEntity.QueryInterface.class);
     }
 
     public HelpdeskContextEntity createHelpdeskContext(String location) {
 
         HelpdeskContextEntity helpdeskContext = new HelpdeskContextEntity(location);
         this.entityManager.persist(helpdeskContext);
-        
+
         LOG.debug("created helpdesk context: " + helpdeskContext.getId());
         return helpdeskContext;
     }
@@ -79,7 +78,7 @@ public class HelpdeskContextDAOBean implements HelpdeskContextDAO {
         HelpdeskContextEntity context = this.entityManager.find(HelpdeskContextEntity.class, logId);
         if (null == context)
             throw new HelpdeskContextNotFoundException();
-        
+
         this.entityManager.remove(context);
     }
 }

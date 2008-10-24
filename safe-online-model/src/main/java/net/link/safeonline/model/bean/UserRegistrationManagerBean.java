@@ -64,7 +64,7 @@ public class UserRegistrationManagerBean implements UserRegistrationManager {
     private ApplicationEntity getSafeOnlineUserApplication() {
 
         ApplicationEntity safeOnlineUserApplication = this.applicationDAO
-                .findApplication(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
+                                                                         .findApplication(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
         if (null == safeOnlineUserApplication)
             throw new EJBException("SafeOnline user application not found");
         return safeOnlineUserApplication;

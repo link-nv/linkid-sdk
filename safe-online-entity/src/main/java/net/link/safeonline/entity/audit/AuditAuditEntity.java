@@ -35,9 +35,9 @@ import net.link.safeonline.jpa.annotation.UpdateMethod;
 
 /**
  * Audit entity about audit system itself.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Entity
 @Table(name = "audit_audit")

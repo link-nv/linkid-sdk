@@ -24,9 +24,9 @@ import org.jboss.system.ServiceMBeanSupport;
 
 /**
  * Service that prepares the runtime for the SafeOnline application.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class RuntimeService extends ServiceMBeanSupport implements RuntimeServiceMBean {
 
@@ -78,8 +78,7 @@ public class RuntimeService extends ServiceMBeanSupport implements RuntimeServic
         if (false == handlerKeys.contains(AuditContextPolicyContextHandler.AUDIT_CONTEXT_KEY)) {
             LOG.debug("Registering audit context policy context handler...");
             AuditContextPolicyContextHandler auditContextPolicyContextHandler = new AuditContextPolicyContextHandler();
-            PolicyContext.registerHandler(AuditContextPolicyContextHandler.AUDIT_CONTEXT_KEY,
-                    auditContextPolicyContextHandler, false);
+            PolicyContext.registerHandler(AuditContextPolicyContextHandler.AUDIT_CONTEXT_KEY, auditContextPolicyContextHandler, false);
         }
     }
 
@@ -90,8 +89,7 @@ public class RuntimeService extends ServiceMBeanSupport implements RuntimeServic
         if (false == handlerKeys.contains(ProfilingPolicyContextHandler.PROFILING_CONTEXT_KEY)) {
             LOG.debug("Registering profiling policy context handler...");
             ProfilingPolicyContextHandler profilingPolicyContextHandler = new ProfilingPolicyContextHandler();
-            PolicyContext.registerHandler(ProfilingPolicyContextHandler.PROFILING_CONTEXT_KEY,
-                    profilingPolicyContextHandler, false);
+            PolicyContext.registerHandler(ProfilingPolicyContextHandler.PROFILING_CONTEXT_KEY, profilingPolicyContextHandler, false);
         }
     }
 }

@@ -23,14 +23,14 @@ import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 /**
  * <h2>{@link ScenarioSpeedCorrelationChart}<br>
  * <sub>TODO</sub></h2>
- *
+ * 
  * <p>
  * </p>
- *
+ * 
  * <p>
  * <i>Mar 3, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ScenarioSpeedCorrelationChart extends AbstractCorrelationChart {
@@ -50,7 +50,7 @@ public class ScenarioSpeedCorrelationChart extends AbstractCorrelationChart {
 
     /**
      * Active Scenarios: Amount of scenarios currently running.
-     *
+     * 
      * {@inheritDoc}
      */
     @Override
@@ -61,7 +61,7 @@ public class ScenarioSpeedCorrelationChart extends AbstractCorrelationChart {
 
     /**
      * Agent Duration: Time (in seconds) of a single scenario execution on the agent.
-     *
+     * 
      * {@inheritDoc}
      */
     @Override

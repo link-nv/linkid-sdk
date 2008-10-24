@@ -29,9 +29,8 @@ import org.apache.commons.logging.LogFactory;
 /**
  * Device registration landing page.
  * 
- * This landing servlet handles the SAML requests sent out by an external device provider, and sends back a response
- * containing the UUID for the registrating OLAS subject for this device. This landing is used for registration,
- * updating and removal.
+ * This landing servlet handles the SAML requests sent out by an external device provider, and sends back a response containing the UUID for
+ * the registrating OLAS subject for this device. This landing is used for registration, updating and removal.
  * 
  * @author wvdhaute
  * 
@@ -58,20 +57,18 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
 
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         LOG.debug("doPost");
 
         /**
-         * Wrap the request to use the servlet endpoint url. To prevent failure when behind a reverse proxy or
-         * loadbalancer when opensaml is checking the destination field.
+         * Wrap the request to use the servlet endpoint url. To prevent failure when behind a reverse proxy or loadbalancer when opensaml is
+         * checking the destination field.
          */
-        HttpServletRequestEndpointWrapper requestWrapper = new HttpServletRequestEndpointWrapper(request,
-                this.servletEndpointUrl);
+        HttpServletRequestEndpointWrapper requestWrapper = new HttpServletRequestEndpointWrapper(request, this.servletEndpointUrl);
 
-        DeviceOperationService deviceOperationService = (DeviceOperationService) requestWrapper.getSession()
-                .getAttribute(DeviceOperationService.DEVICE_OPERATION_SERVICE_ATTRIBUTE);
+        DeviceOperationService deviceOperationService = (DeviceOperationService) requestWrapper.getSession().getAttribute(
+                DeviceOperationService.DEVICE_OPERATION_SERVICE_ATTRIBUTE);
         if (null == deviceOperationService) {
             redirectToErrorPage(requestWrapper, response, this.errorPage, this.resourceBundleName, new ErrorMessage(
                     DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));

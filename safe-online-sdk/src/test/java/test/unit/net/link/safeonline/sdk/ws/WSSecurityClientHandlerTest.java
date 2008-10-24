@@ -57,8 +57,7 @@ public class WSSecurityClientHandlerTest {
 
         // setup
         MessageFactory messageFactory = MessageFactory.newInstance(SOAPConstants.SOAP_1_1_PROTOCOL);
-        InputStream testSoapMessageInputStream = WSSecurityClientHandlerTest.class
-                .getResourceAsStream("/test-soap-message.xml");
+        InputStream testSoapMessageInputStream = WSSecurityClientHandlerTest.class.getResourceAsStream("/test-soap-message.xml");
 
         SOAPMessage message = messageFactory.createMessage(null, testSoapMessageInputStream);
 
@@ -79,13 +78,12 @@ public class WSSecurityClientHandlerTest {
                 "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd");
         nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ds", "http://www.w3.org/2000/09/xmldsig#");
 
-        Node resultNode = XPathAPI.selectSingleNode(resultSoapPart,
-                "/soap:Envelope/soap:Header/wsse:Security[@soap:mustUnderstand = '1']", nsElement);
+        Node resultNode = XPathAPI.selectSingleNode(resultSoapPart, "/soap:Envelope/soap:Header/wsse:Security[@soap:mustUnderstand = '1']",
+                nsElement);
         assertNotNull(resultNode);
 
         resultNode = XPathAPI.selectSingleNode(resultSoapPart,
-                "/soap:Envelope/soap:Header/wsse:Security/ds:Signature/ds:SignedInfo/ds:Reference[@URI='#test-id']",
-                nsElement);
+                "/soap:Envelope/soap:Header/wsse:Security/ds:Signature/ds:SignedInfo/ds:Reference[@URI='#test-id']", nsElement);
         assertNotNull(resultNode);
 
         assertEquals(3.0, XPathAPI.eval(resultSoapPart, "count(//ds:Reference)", nsElement).num());
@@ -99,8 +97,7 @@ public class WSSecurityClientHandlerTest {
 
         // setup
         MessageFactory messageFactory = MessageFactory.newInstance(SOAPConstants.SOAP_1_1_PROTOCOL);
-        InputStream testSoapMessageInputStream = WSSecurityClientHandlerTest.class
-                .getResourceAsStream("/test-soap-message.xml");
+        InputStream testSoapMessageInputStream = WSSecurityClientHandlerTest.class.getResourceAsStream("/test-soap-message.xml");
 
         SOAPMessage message = messageFactory.createMessage(null, testSoapMessageInputStream);
 

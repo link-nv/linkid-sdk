@@ -43,9 +43,9 @@ import org.jdesktop.swingworker.SwingWorker;
 
 /**
  * Panel to start the jetty authentication servlet
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class AuthUser extends JPanel implements Observer {
 
@@ -99,8 +99,8 @@ public class AuthUser extends JPanel implements Observer {
 
         JLabel applicationLabel = new JLabel(APPLICATION.getMessage());
 
-        JSplitPane logPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(this.requestArea1),
-                new JScrollPane(this.requestArea2));
+        JSplitPane logPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, new JScrollPane(this.requestArea1), new JScrollPane(
+                this.requestArea2));
         logPanel.setDividerSize(3);
         logPanel.setResizeWeight(0.5);
         this.requestArea1.setEnabled(false);

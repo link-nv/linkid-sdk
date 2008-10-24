@@ -16,9 +16,9 @@ import java.lang.annotation.Target;
 
 /**
  * Used to mark a method parameter as being using as JPA query injection parameter.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
@@ -27,7 +27,7 @@ public @interface QueryParam {
 
     /**
      * Name of the parameter within the query.
-     *
+     * 
      */
     String value();
 }

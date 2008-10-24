@@ -141,15 +141,14 @@ public class AuthenticationServiceBeanTest {
         keyGen.init(128, new SecureRandom());
         AuthenticationServiceBeanTest.ssoKey = keyGen.generateKey();
 
-        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getSsoKey",
-                new MBeanActionHandler() {
+        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getSsoKey", new MBeanActionHandler() {
 
-                    @SuppressWarnings("synthetic-access")
-                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
+            @SuppressWarnings("synthetic-access")
+            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-                        return ssoKey;
-                    }
-                });
+                return ssoKey;
+            }
+        });
     }
 
     @Before
@@ -201,11 +200,10 @@ public class AuthenticationServiceBeanTest {
 
         EJBTestUtils.init(this.testedInstance);
 
-        this.mockObjects = new Object[] { this.mockSubjectService, this.mockPasswordDeviceService,
-                this.mockApplicationDAO, this.mockSubscriptionDAO, this.mockHistoryDAO, this.mockStatisticDAO,
-                this.mockStatisticDataPointDAO, this.mockDeviceDAO, this.mockApplicationAuthenticationService,
-                this.mockPkiValidator, this.mockDevicePolicyService, this.mockApplicationPoolDAO,
-                this.mockSecurityAuditLogger, this.mockUserIdMappingService };
+        this.mockObjects = new Object[] { this.mockSubjectService, this.mockPasswordDeviceService, this.mockApplicationDAO,
+                this.mockSubscriptionDAO, this.mockHistoryDAO, this.mockStatisticDAO, this.mockStatisticDataPointDAO, this.mockDeviceDAO,
+                this.mockApplicationAuthenticationService, this.mockPkiValidator, this.mockDevicePolicyService,
+                this.mockApplicationPoolDAO, this.mockSecurityAuditLogger, this.mockUserIdMappingService };
     }
 
     @After
@@ -222,23 +220,21 @@ public class AuthenticationServiceBeanTest {
         String password = "test-password";
 
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair,
-                "CN=TestApplication");
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, null,
-                applicationCert);
+        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair, "CN=TestApplication");
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, null, applicationCert);
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null,
-                applicationKeyPair, assertionConsumerService, destinationUrl, null, null, false);
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
+                assertionConsumerService, destinationUrl, null, null, false);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
         expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
                 Collections.singletonList(applicationCert));
-        expect(
-                this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-                        applicationCert)).andReturn(PkiResult.VALID);
+        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
+                                                                                                                                     .andReturn(
+                                                                                                                                             PkiResult.VALID);
 
         // stubs
         SubjectEntity subject = new SubjectEntity(login);
@@ -248,8 +244,8 @@ public class AuthenticationServiceBeanTest {
 
         DeviceClassEntity deviceClass = new DeviceClassEntity(SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
                 SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
-        DeviceEntity device = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, deviceClass, null,
-                null, null, null, null, null, null);
+        DeviceEntity device = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, deviceClass, null, null, null, null, null,
+                null, null);
         expect(this.mockDeviceDAO.getDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)).andReturn(device);
 
         // prepare
@@ -270,22 +266,21 @@ public class AuthenticationServiceBeanTest {
 
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair,
-                "CN=TestApplication");
+        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair, "CN=TestApplication");
         String applicationName = "test-application-id";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null,
-                applicationKeyPair, assertionConsumerService, destinationUrl, null, null, false);
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
+                assertionConsumerService, destinationUrl, null, null, false);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
         expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
                 Collections.singletonList(applicationCert));
-        expect(
-                this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-                        applicationCert)).andReturn(PkiResult.VALID);
+        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
+                                                                                                                                     .andReturn(
+                                                                                                                                             PkiResult.VALID);
 
         // prepare
         replay(this.mockObjects);
@@ -305,33 +300,30 @@ public class AuthenticationServiceBeanTest {
 
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair,
-                "CN=TestApplication");
+        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair, "CN=TestApplication");
         String applicationName = "test-application-id";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
         Set<String> devices = new HashSet<String>();
         devices.add(SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null,
-                applicationKeyPair, assertionConsumerService, destinationUrl, null, devices, false);
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
+                assertionConsumerService, destinationUrl, null, devices, false);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
         expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
                 Collections.singletonList(applicationCert));
-        expect(
-                this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-                        applicationCert)).andReturn(PkiResult.VALID);
+        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
+                                                                                                                                     .andReturn(
+                                                                                                                                             PkiResult.VALID);
 
         List<DeviceEntity> authnDevices = new LinkedList<DeviceEntity>();
-        DeviceEntity passwordDevice = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID,
-                new DeviceClassEntity(SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
-                        SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null, null, null,
-                null);
+        DeviceEntity passwordDevice = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, new DeviceClassEntity(
+                SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null,
+                null, null, null);
         authnDevices.add(passwordDevice);
-        expect(this.mockDevicePolicyService.listDevices(SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS))
-                .andReturn(authnDevices);
+        expect(this.mockDevicePolicyService.listDevices(SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS)).andReturn(authnDevices);
 
         // prepare
         replay(this.mockObjects);
@@ -360,16 +352,14 @@ public class AuthenticationServiceBeanTest {
         KeyPair foobarKeyPair = PkiTestUtils.generateKeyPair();
         X509Certificate foobarCert = PkiTestUtils.generateSelfSignedCertificate(foobarKeyPair, "CN=TestApplication");
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null,
-                applicationKeyPair, assertionConsumerService, destinationUrl, null, null, false);
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
+                assertionConsumerService, destinationUrl, null, null, false);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
-        expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
-                Collections.singletonList(foobarCert));
-        expect(
-                this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-                        foobarCert)).andReturn(PkiResult.VALID);
+        expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(Collections.singletonList(foobarCert));
+        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, foobarCert)).andReturn(
+                PkiResult.VALID);
 
         // prepare
         replay(this.mockObjects);
@@ -389,22 +379,21 @@ public class AuthenticationServiceBeanTest {
 
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair,
-                "CN=TestApplication");
+        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair, "CN=TestApplication");
         String applicationName = "test-application-id";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null,
-                applicationKeyPair, assertionConsumerService, destinationUrl, null, null, false);
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
+                assertionConsumerService, destinationUrl, null, null, false);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
         expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
                 Collections.singletonList(applicationCert));
-        expect(
-                this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-                        applicationCert)).andReturn(PkiResult.INVALID);
+        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
+                                                                                                                                     .andReturn(
+                                                                                                                                             PkiResult.INVALID);
 
         // prepare
         replay(this.mockObjects);
@@ -424,45 +413,42 @@ public class AuthenticationServiceBeanTest {
 
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair,
-                "CN=TestApplication");
+        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair, "CN=TestApplication");
         String applicationName = "test-application-id";
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, null,
-                applicationCert);
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, null, applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
         applicationPool.setApplications(Collections.singletonList(application));
         application.setApplicationPools(Collections.singletonList(applicationPool));
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null,
-                applicationKeyPair, assertionConsumerService, destinationUrl, null, null, true);
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
+                assertionConsumerService, destinationUrl, null, null, true);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         String userId = UUID.randomUUID().toString();
         SubjectEntity subject = new SubjectEntity(userId);
 
         DeviceEntity device = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, new DeviceClassEntity(
-                SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS),
-                null, null, null, null, null, null, null);
+                SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null,
+                null, null, null);
         Cookie ssoCookie = getSsoCookie(subject, application, device, null);
 
         // expectations
         expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
                 Collections.singletonList(applicationCert));
-        expect(
-                this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-                        applicationCert)).andReturn(PkiResult.VALID);
+        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
+                                                                                                                                     .andReturn(
+                                                                                                                                             PkiResult.VALID);
         expect(this.mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
         expect(this.mockSubjectService.findSubject(userId)).andStubReturn(subject);
         expect(this.mockApplicationDAO.findApplication(applicationName)).andStubReturn(application);
         expect(this.mockApplicationPoolDAO.listCommonApplicationPools(application, application)).andStubReturn(
                 Collections.singletonList(applicationPool));
         expect(this.mockDeviceDAO.findDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)).andStubReturn(device);
-        expect(this.mockDevicePolicyService.getDevicePolicy(applicationName, null)).andStubReturn(
-                Collections.singletonList(device));
+        expect(this.mockDevicePolicyService.getDevicePolicy(applicationName, null)).andStubReturn(Collections.singletonList(device));
 
         // prepare
         replay(this.mockObjects);
@@ -491,37 +477,35 @@ public class AuthenticationServiceBeanTest {
 
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair,
-                "CN=TestApplication");
+        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair, "CN=TestApplication");
         String applicationName = "test-application-id";
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, null,
-                applicationCert);
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, null, applicationCert);
         application.setSsoEnabled(false);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
         applicationPool.setApplications(Collections.singletonList(application));
         application.setApplicationPools(Collections.singletonList(applicationPool));
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null,
-                applicationKeyPair, assertionConsumerService, destinationUrl, null, null, true);
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
+                assertionConsumerService, destinationUrl, null, null, true);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         String userId = UUID.randomUUID().toString();
         SubjectEntity subject = new SubjectEntity(userId);
 
         DeviceEntity device = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, new DeviceClassEntity(
-                SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS),
-                null, null, null, null, null, null, null);
+                SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null,
+                null, null, null);
         Cookie ssoCookie = getSsoCookie(subject, application, device, null);
 
         // expectations
         expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
                 Collections.singletonList(applicationCert));
-        expect(
-                this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-                        applicationCert)).andReturn(PkiResult.VALID);
+        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
+                                                                                                                                     .andReturn(
+                                                                                                                                             PkiResult.VALID);
         expect(this.mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
 
         // prepare
@@ -547,37 +531,35 @@ public class AuthenticationServiceBeanTest {
 
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair,
-                "CN=TestApplication");
+        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair, "CN=TestApplication");
         String applicationName = "test-application-id";
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, null,
-                applicationCert);
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, null, applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
         applicationPool.setApplications(Collections.singletonList(application));
         application.setApplicationPools(Collections.singletonList(applicationPool));
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null,
-                applicationKeyPair, assertionConsumerService, destinationUrl, null, null, false);
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
+                assertionConsumerService, destinationUrl, null, null, false);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         String userId = UUID.randomUUID().toString();
         SubjectEntity subject = new SubjectEntity(userId);
 
         DeviceEntity device = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, new DeviceClassEntity(
-                SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS),
-                null, null, null, null, null, null, null);
+                SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null,
+                null, null, null);
         Cookie ssoCookie = getSsoCookie(subject, application, device, null);
 
         // expectations
         expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
                 Collections.singletonList(applicationCert));
-        expect(
-                this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-                        applicationCert)).andReturn(PkiResult.VALID);
+        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
+                                                                                                                                     .andReturn(
+                                                                                                                                             PkiResult.VALID);
         expect(this.mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
 
         // prepare
@@ -602,21 +584,19 @@ public class AuthenticationServiceBeanTest {
 
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair,
-                "CN=TestApplication");
+        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair, "CN=TestApplication");
         String applicationName = "test-application-id";
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, null,
-                applicationCert);
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, null, applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
         applicationPool.setApplications(Collections.singletonList(application));
         application.setApplicationPools(Collections.singletonList(applicationPool));
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null,
-                applicationKeyPair, assertionConsumerService, destinationUrl, null, null, true);
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
+                assertionConsumerService, destinationUrl, null, null, true);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         Cookie ssoCookie = getInvalidSsoCookie(applicationName);
@@ -624,9 +604,9 @@ public class AuthenticationServiceBeanTest {
         // expectations
         expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
                 Collections.singletonList(applicationCert));
-        expect(
-                this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-                        applicationCert)).andReturn(PkiResult.VALID);
+        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
+                                                                                                                                     .andReturn(
+                                                                                                                                             PkiResult.VALID);
         expect(this.mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
         this.mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION,
                 AuthenticationServiceBean.SECURITY_MESSAGE_INVALID_COOKIE);
@@ -651,41 +631,39 @@ public class AuthenticationServiceBeanTest {
 
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair,
-                "CN=TestApplication");
+        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair, "CN=TestApplication");
         String applicationName = "test-application-id";
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, null,
-                applicationCert);
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, null, applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
         applicationPool.setApplications(Collections.singletonList(application));
         application.setApplicationPools(Collections.singletonList(applicationPool));
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null,
-                applicationKeyPair, assertionConsumerService, destinationUrl, null, null, true);
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
+                assertionConsumerService, destinationUrl, null, null, true);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         String invalidUser = "foobar";
         SubjectEntity invalidSubject = new SubjectEntity(invalidUser);
 
         DeviceEntity device = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, new DeviceClassEntity(
-                SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS),
-                null, null, null, null, null, null, null);
+                SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null,
+                null, null, null);
         Cookie ssoCookie = getSsoCookie(invalidSubject, application, device, null);
 
         // expectations
         expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
                 Collections.singletonList(applicationCert));
-        expect(
-                this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-                        applicationCert)).andReturn(PkiResult.VALID);
+        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
+                                                                                                                                     .andReturn(
+                                                                                                                                             PkiResult.VALID);
         expect(this.mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
         expect(this.mockSubjectService.findSubject(invalidUser)).andStubReturn(null);
-        this.mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION,
-                AuthenticationServiceBean.SECURITY_MESSAGE_INVALID_USER + invalidUser);
+        this.mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, AuthenticationServiceBean.SECURITY_MESSAGE_INVALID_USER
+                + invalidUser);
 
         // prepare
         replay(this.mockObjects);
@@ -707,41 +685,39 @@ public class AuthenticationServiceBeanTest {
 
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair,
-                "CN=TestApplication");
+        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair, "CN=TestApplication");
         String applicationName = "test-application-id";
         String invalidApplicationName = "foobar-application";
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, null,
-                applicationCert);
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, null, applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
         applicationPool.setApplications(Collections.singletonList(application));
         application.setApplicationPools(Collections.singletonList(applicationPool));
 
-        ApplicationEntity invalidApplication = new ApplicationEntity(invalidApplicationName, null, null, null, null,
-                null, null, applicationCert);
+        ApplicationEntity invalidApplication = new ApplicationEntity(invalidApplicationName, null, null, null, null, null, null,
+                applicationCert);
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null,
-                applicationKeyPair, assertionConsumerService, destinationUrl, null, null, true);
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
+                assertionConsumerService, destinationUrl, null, null, true);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         String userId = UUID.randomUUID().toString();
         SubjectEntity subject = new SubjectEntity(userId);
 
         DeviceEntity device = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, new DeviceClassEntity(
-                SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS),
-                null, null, null, null, null, null, null);
+                SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null,
+                null, null, null);
         Cookie ssoCookie = getSsoCookie(subject, invalidApplication, device, null);
 
         // expectations
         expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
                 Collections.singletonList(applicationCert));
-        expect(
-                this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-                        applicationCert)).andReturn(PkiResult.VALID);
+        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
+                                                                                                                                     .andReturn(
+                                                                                                                                             PkiResult.VALID);
         expect(this.mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
         expect(this.mockSubjectService.findSubject(userId)).andStubReturn(subject);
         expect(this.mockApplicationDAO.findApplication(invalidApplicationName)).andStubReturn(null);
@@ -768,40 +744,38 @@ public class AuthenticationServiceBeanTest {
 
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair,
-                "CN=TestApplication");
+        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair, "CN=TestApplication");
         String applicationName = "test-application-id";
         String cookieApplicationName = "cookie-test-application-id";
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, null,
-                applicationCert);
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, null, applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
         applicationPool.setApplications(Collections.singletonList(application));
         application.setApplicationPools(Collections.singletonList(applicationPool));
-        ApplicationEntity cookieApplication = new ApplicationEntity(cookieApplicationName, null, null, null, null,
-                null, null, applicationCert);
+        ApplicationEntity cookieApplication = new ApplicationEntity(cookieApplicationName, null, null, null, null, null, null,
+                applicationCert);
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null,
-                applicationKeyPair, assertionConsumerService, destinationUrl, null, null, true);
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
+                assertionConsumerService, destinationUrl, null, null, true);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         String userId = UUID.randomUUID().toString();
         SubjectEntity subject = new SubjectEntity(userId);
 
         DeviceEntity device = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, new DeviceClassEntity(
-                SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS),
-                null, null, null, null, null, null, null);
+                SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null,
+                null, null, null);
         Cookie ssoCookie = getSsoCookie(subject, cookieApplication, device, null);
 
         // expectations
         expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
                 Collections.singletonList(applicationCert));
-        expect(
-                this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-                        applicationCert)).andReturn(PkiResult.VALID);
+        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
+                                                                                                                                     .andReturn(
+                                                                                                                                             PkiResult.VALID);
         expect(this.mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
         expect(this.mockSubjectService.findSubject(userId)).andStubReturn(subject);
         expect(this.mockApplicationDAO.findApplication(cookieApplicationName)).andStubReturn(cookieApplication);
@@ -828,8 +802,8 @@ public class AuthenticationServiceBeanTest {
     }
 
     /**
-     * Following situation is tested: 3 applications, 2 application pools, 1st and 3rd application have resp. 1st and
-     * 3rd application pool. 2nd application has both application pools.
+     * Following situation is tested: 3 applications, 2 application pools, 1st and 3rd application have resp. 1st and 3rd application pool.
+     * 2nd application has both application pools.
      * 
      * 1st application logs in, 2nd application used sso due to 1st.
      * 
@@ -840,8 +814,7 @@ public class AuthenticationServiceBeanTest {
 
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair,
-                "CN=TestApplication");
+        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair, "CN=TestApplication");
         String application1Name = "test-application-id-1";
         String application2Name = "test-application-id-2";
         String application3Name = "test-application-id-3";
@@ -850,14 +823,11 @@ public class AuthenticationServiceBeanTest {
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
 
-        ApplicationEntity application1 = new ApplicationEntity(application1Name, null, null, null, null, null, null,
-                applicationCert);
+        ApplicationEntity application1 = new ApplicationEntity(application1Name, null, null, null, null, null, null, applicationCert);
         application1.setSsoEnabled(true);
-        ApplicationEntity application2 = new ApplicationEntity(application2Name, null, null, null, null, null, null,
-                applicationCert);
+        ApplicationEntity application2 = new ApplicationEntity(application2Name, null, null, null, null, null, null, applicationCert);
         application2.setSsoEnabled(true);
-        ApplicationEntity application3 = new ApplicationEntity(application3Name, null, null, null, null, null, null,
-                applicationCert);
+        ApplicationEntity application3 = new ApplicationEntity(application3Name, null, null, null, null, null, null, applicationCert);
         application3.setSsoEnabled(true);
 
         List<ApplicationEntity> applicationPool1List = new LinkedList<ApplicationEntity>();
@@ -879,24 +849,24 @@ public class AuthenticationServiceBeanTest {
         application2.setApplicationPools(application2PoolList);
         application3.setApplicationPools(Collections.singletonList(applicationPool2));
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(application3Name, application3Name, null,
-                applicationKeyPair, assertionConsumerService, destinationUrl, null, null, true);
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(application3Name, application3Name, null, applicationKeyPair,
+                assertionConsumerService, destinationUrl, null, null, true);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         String userId = UUID.randomUUID().toString();
         SubjectEntity subject = new SubjectEntity(userId);
 
         DeviceEntity device = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, new DeviceClassEntity(
-                SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS),
-                null, null, null, null, null, null, null);
+                SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null,
+                null, null, null);
         Cookie ssoCookie = getSsoCookie(subject, application1, device, Collections.singletonList(application2));
 
         // expectations
         expect(this.mockApplicationAuthenticationService.getCertificates(application3Name)).andReturn(
                 Collections.singletonList(applicationCert));
-        expect(
-                this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-                        applicationCert)).andReturn(PkiResult.VALID);
+        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
+                                                                                                                                     .andReturn(
+                                                                                                                                             PkiResult.VALID);
         expect(this.mockApplicationDAO.getApplication(application3Name)).andStubReturn(application3);
         expect(this.mockSubjectService.findSubject(userId)).andStubReturn(subject);
         expect(this.mockApplicationDAO.findApplication(application1Name)).andStubReturn(application1);
@@ -928,39 +898,36 @@ public class AuthenticationServiceBeanTest {
 
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair,
-                "CN=TestApplication");
+        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair, "CN=TestApplication");
         String applicationName = "test-application-id";
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, null,
-                applicationCert);
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, null, applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
         applicationPool.setApplications(Collections.singletonList(application));
         application.setApplicationPools(Collections.singletonList(applicationPool));
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null,
-                applicationKeyPair, assertionConsumerService, destinationUrl, null, null, true);
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
+                assertionConsumerService, destinationUrl, null, null, true);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         String userId = UUID.randomUUID().toString();
         SubjectEntity subject = new SubjectEntity(userId);
 
         String invalidDeviceName = "foobar-device";
-        DeviceEntity invalidDevice = new DeviceEntity(invalidDeviceName, new DeviceClassEntity(
-                SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS),
-                null, null, null, null, null, null, null);
+        DeviceEntity invalidDevice = new DeviceEntity(invalidDeviceName, new DeviceClassEntity(SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
+                SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null, null, null, null);
 
         Cookie ssoCookie = getSsoCookie(subject, application, invalidDevice, null);
 
         // expectations
         expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
                 Collections.singletonList(applicationCert));
-        expect(
-                this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-                        applicationCert)).andReturn(PkiResult.VALID);
+        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
+                                                                                                                                     .andReturn(
+                                                                                                                                             PkiResult.VALID);
         expect(this.mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
         expect(this.mockSubjectService.findSubject(userId)).andStubReturn(subject);
         expect(this.mockApplicationDAO.findApplication(applicationName)).andStubReturn(application);
@@ -990,45 +957,42 @@ public class AuthenticationServiceBeanTest {
 
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair,
-                "CN=TestApplication");
+        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair, "CN=TestApplication");
         String applicationName = "test-application-id";
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, null,
-                applicationCert);
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, null, applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
         applicationPool.setApplications(Collections.singletonList(application));
         application.setApplicationPools(Collections.singletonList(applicationPool));
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null,
-                applicationKeyPair, assertionConsumerService, destinationUrl, null, null, true);
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
+                assertionConsumerService, destinationUrl, null, null, true);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         String userId = UUID.randomUUID().toString();
         SubjectEntity subject = new SubjectEntity(userId);
 
         DeviceEntity device = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, new DeviceClassEntity(
-                SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS),
-                null, null, null, null, null, null, null);
+                SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null,
+                null, null, null);
         Cookie ssoCookie = getSsoCookie(subject, application, device, null);
 
         // expectations
         expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
                 Collections.singletonList(applicationCert));
-        expect(
-                this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-                        applicationCert)).andReturn(PkiResult.VALID);
+        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
+                                                                                                                                     .andReturn(
+                                                                                                                                             PkiResult.VALID);
         expect(this.mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
         expect(this.mockSubjectService.findSubject(userId)).andStubReturn(subject);
         expect(this.mockApplicationDAO.findApplication(applicationName)).andStubReturn(application);
         expect(this.mockApplicationPoolDAO.listCommonApplicationPools(application, application)).andStubReturn(
                 Collections.singletonList(applicationPool));
         expect(this.mockDeviceDAO.findDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)).andStubReturn(device);
-        expect(this.mockDevicePolicyService.getDevicePolicy(applicationName, null)).andStubReturn(
-                new LinkedList<DeviceEntity>());
+        expect(this.mockDevicePolicyService.getDevicePolicy(applicationName, null)).andStubReturn(new LinkedList<DeviceEntity>());
 
         // prepare
         replay(this.mockObjects);
@@ -1053,45 +1017,42 @@ public class AuthenticationServiceBeanTest {
 
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair,
-                "CN=TestApplication");
+        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair, "CN=TestApplication");
         String applicationName = "test-application-id";
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, null,
-                applicationCert);
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, null, applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
         applicationPool.setApplications(Collections.singletonList(application));
         application.setApplicationPools(Collections.singletonList(applicationPool));
 
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null,
-                applicationKeyPair, assertionConsumerService, destinationUrl, null, null, true);
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
+                assertionConsumerService, destinationUrl, null, null, true);
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         String userId = UUID.randomUUID().toString();
         SubjectEntity subject = new SubjectEntity(userId);
 
         DeviceEntity device = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, new DeviceClassEntity(
-                SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS),
-                null, null, null, null, null, null, null);
+                SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null,
+                null, null, null);
         Cookie ssoCookie = getExpiredSsoCookie(subject, application, device);
 
         // expectations
         expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
                 Collections.singletonList(applicationCert));
-        expect(
-                this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-                        applicationCert)).andReturn(PkiResult.VALID);
+        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
+                                                                                                                                     .andReturn(
+                                                                                                                                             PkiResult.VALID);
         expect(this.mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
         expect(this.mockSubjectService.findSubject(userId)).andStubReturn(subject);
         expect(this.mockApplicationDAO.findApplication(applicationName)).andStubReturn(application);
         expect(this.mockApplicationPoolDAO.listCommonApplicationPools(application, application)).andStubReturn(
                 Collections.singletonList(applicationPool));
         expect(this.mockDeviceDAO.findDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)).andStubReturn(device);
-        expect(this.mockDevicePolicyService.getDevicePolicy(applicationName, null)).andStubReturn(
-                Collections.singletonList(device));
+        expect(this.mockDevicePolicyService.getDevicePolicy(applicationName, null)).andStubReturn(Collections.singletonList(device));
 
         // prepare
         replay(this.mockObjects);
@@ -1118,7 +1079,7 @@ public class AuthenticationServiceBeanTest {
     }
 
     private Cookie getSsoCookie(SubjectEntity subject, ApplicationEntity application, DeviceEntity device,
-            List<ApplicationEntity> ssoApplications) throws Exception {
+                                List<ApplicationEntity> ssoApplications) throws Exception {
 
         DateTime now = new DateTime();
         SingleSignOn sso = new SingleSignOn(subject, application, device, now);
@@ -1132,15 +1093,13 @@ public class AuthenticationServiceBeanTest {
         encryptCipher.init(Cipher.ENCRYPT_MODE, ssoKey);
         byte[] encryptedBytes = encryptCipher.doFinal(value.getBytes("UTF-8"));
         String encryptedValue = new sun.misc.BASE64Encoder().encode(encryptedBytes);
-        Cookie ssoCookie = new Cookie(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX + "." + application.getName(),
-                encryptedValue);
+        Cookie ssoCookie = new Cookie(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX + "." + application.getName(), encryptedValue);
         ssoCookie.setPath("/olas-auth/");
         ssoCookie.setMaxAge(-1);
         return ssoCookie;
     }
 
-    private Cookie getExpiredSsoCookie(SubjectEntity subject, ApplicationEntity application, DeviceEntity device)
-            throws Exception {
+    private Cookie getExpiredSsoCookie(SubjectEntity subject, ApplicationEntity application, DeviceEntity device) throws Exception {
 
         DateTime now = new DateTime();
         DateTime authTime = now.minusDays(7);
@@ -1152,8 +1111,7 @@ public class AuthenticationServiceBeanTest {
         encryptCipher.init(Cipher.ENCRYPT_MODE, ssoKey);
         byte[] encryptedBytes = encryptCipher.doFinal(value.getBytes("UTF-8"));
         String encryptedValue = new sun.misc.BASE64Encoder().encode(encryptedBytes);
-        Cookie ssoCookie = new Cookie(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX + "." + application.getName(),
-                encryptedValue);
+        Cookie ssoCookie = new Cookie(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX + "." + application.getName(), encryptedValue);
         ssoCookie.setPath("/olas-auth/");
         ssoCookie.setMaxAge(-1);
         return ssoCookie;
@@ -1168,8 +1126,7 @@ public class AuthenticationServiceBeanTest {
         encryptCipher.init(Cipher.ENCRYPT_MODE, ssoKey);
         byte[] encryptedBytes = encryptCipher.doFinal(value.getBytes("UTF-8"));
         String encryptedValue = new sun.misc.BASE64Encoder().encode(encryptedBytes);
-        Cookie ssoCookie = new Cookie(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX + "." + applicationId,
-                encryptedValue);
+        Cookie ssoCookie = new Cookie(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX + "." + applicationId, encryptedValue);
         ssoCookie.setPath("/olas-auth/");
         ssoCookie.setMaxAge(-1);
         return ssoCookie;
@@ -1181,10 +1138,9 @@ public class AuthenticationServiceBeanTest {
         // setup
         String applicationName = "test-application-id";
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair,
-                "CN=TestApplication");
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, new ApplicationOwnerEntity(),
-                null, null, null, null, applicationCert);
+        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair, "CN=TestApplication");
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, new ApplicationOwnerEntity(), null, null, null, null,
+                applicationCert);
         application.setSsoLogoutUrl(new URL("http", "test.host", "logout"));
 
         String applicationUserId = UUID.randomUUID().toString();
@@ -1193,17 +1149,17 @@ public class AuthenticationServiceBeanTest {
 
         String destinationUrl = "http://test.destination.url";
 
-        String encodedLogoutRequest = LogoutRequestFactory.createLogoutRequest(applicationUserId, applicationName,
-                applicationKeyPair, destinationUrl, null);
+        String encodedLogoutRequest = LogoutRequestFactory.createLogoutRequest(applicationUserId, applicationName, applicationKeyPair,
+                destinationUrl, null);
         LogoutRequest logoutRequest = getLogoutRequest(encodedLogoutRequest);
 
         // expectations
         expect(this.mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
         expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
                 Collections.singletonList(applicationCert));
-        expect(
-                this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-                        applicationCert)).andReturn(PkiResult.VALID);
+        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
+                                                                                                                                     .andReturn(
+                                                                                                                                             PkiResult.VALID);
         expect(this.mockUserIdMappingService.findUserId(applicationName, applicationUserId)).andStubReturn(userId);
         expect(this.mockSubjectService.getSubject(userId)).andStubReturn(subject);
 

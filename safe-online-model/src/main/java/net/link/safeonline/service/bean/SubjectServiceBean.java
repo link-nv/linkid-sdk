@@ -111,8 +111,7 @@ public class SubjectServiceBean implements SubjectService, SubjectServiceRemote 
             return null;
 
         try {
-            AttributeEntity loginAttribute = this.attributeDAO.getAttribute(SafeOnlineConstants.LOGIN_ATTRIBTUE,
-                    subject);
+            AttributeEntity loginAttribute = this.attributeDAO.getAttribute(SafeOnlineConstants.LOGIN_ATTRIBTUE, subject);
             return loginAttribute.getStringValue();
         }
 
@@ -126,8 +125,7 @@ public class SubjectServiceBean implements SubjectService, SubjectServiceRemote 
     public SubjectEntity getSubjectFromUserName(String login) throws SubjectNotFoundException {
 
         LOG.debug("get subject login: " + login);
-        SubjectEntity subject = this.subjectIdentifierDAO.findSubject(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN,
-                login);
+        SubjectEntity subject = this.subjectIdentifierDAO.findSubject(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN, login);
         if (null == subject) {
             throw new SubjectNotFoundException();
         }
@@ -138,8 +136,7 @@ public class SubjectServiceBean implements SubjectService, SubjectServiceRemote 
     public List<String> listUsers(String prefix) throws AttributeTypeNotFoundException {
 
         List<String> userList = new LinkedList<String>();
-        AttributeTypeEntity loginAttributeType = this.attributeTypeDAO
-                .getAttributeType(SafeOnlineConstants.LOGIN_ATTRIBTUE);
+        AttributeTypeEntity loginAttributeType = this.attributeTypeDAO.getAttributeType(SafeOnlineConstants.LOGIN_ATTRIBTUE);
         List<AttributeEntity> loginAttributes = this.attributeDAO.listAttributes(prefix, loginAttributeType);
 
         for (AttributeEntity loginAttribute : loginAttributes) {

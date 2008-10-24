@@ -28,11 +28,11 @@ import org.jboss.annotation.ejb.LocalBinding;
 /**
  * <h2>{@link ExecutionServiceBean}<br>
  * <sub>Service bean for {@link ExecutionEntity}.</sub></h2>
- *
+ * 
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- *
+ * 
  * @see ExecutionService
  * @author mbillemo
  */
@@ -48,11 +48,10 @@ public class ExecutionServiceBean extends AbstractProfilingServiceBean implement
      * {@inheritDoc}
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public ExecutionEntity addExecution(String scenarioName, Integer agents, Integer workers, Date startTime,
-            Long duration, String hostname, Boolean useSsl) {
+    public ExecutionEntity addExecution(String scenarioName, Integer agents, Integer workers, Date startTime, Long duration,
+                                        String hostname, Boolean useSsl) {
 
-        ExecutionEntity execution = new ExecutionEntity(scenarioName, agents, workers, startTime, duration, hostname,
-                useSsl);
+        ExecutionEntity execution = new ExecutionEntity(scenarioName, agents, workers, startTime, duration, hostname, useSsl);
         this.em.persist(execution);
 
         return execution;
@@ -80,8 +79,7 @@ public class ExecutionServiceBean extends AbstractProfilingServiceBean implement
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public ExecutionEntity getExecution(Date startTime) {
 
-        return (ExecutionEntity) this.em.createNamedQuery(ExecutionEntity.findById)
-                .setParameter("startTime", startTime).getSingleResult();
+        return (ExecutionEntity) this.em.createNamedQuery(ExecutionEntity.findById).setParameter("startTime", startTime).getSingleResult();
     }
 
     /**
@@ -112,7 +110,7 @@ public class ExecutionServiceBean extends AbstractProfilingServiceBean implement
      */
     public void updateSpeed(ExecutionEntity execution) {
 
-        execution.setSpeed((Double) this.em.createNamedQuery(ExecutionEntity.calcSpeed).setParameter("execution",
-                execution).getSingleResult());
+        execution.setSpeed((Double) this.em.createNamedQuery(ExecutionEntity.calcSpeed).setParameter("execution", execution)
+                                           .getSingleResult());
     }
 }

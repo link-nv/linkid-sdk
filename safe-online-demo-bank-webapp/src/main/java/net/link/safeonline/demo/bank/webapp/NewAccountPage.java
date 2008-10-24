@@ -85,14 +85,12 @@ public class NewAccountPage extends LayoutPage {
         return "Open Account";
     }
 
-
     void createAccount(String name) {
 
         if (getAccountService().createAccount(BankSession.get().getUser(), name) != null) {
             setResponsePage(AccountPage.class);
         }
     }
-
 
     /**
      * {@inheritDoc}

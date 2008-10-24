@@ -27,7 +27,7 @@ import org.jfree.data.time.Millisecond;
 
 /**
  * @author mbillemo
- *
+ * 
  */
 public class JFreeChartTest extends TestCase {
 
@@ -45,8 +45,8 @@ public class JFreeChartTest extends TestCase {
 
         // Chart.
         BarRenderer renderer = new StackedBarRenderer();
-        CategoryPlot plot = new CategoryPlot(dataset, new CategoryAxis("domainAxis"), new PeriodAxis("periodAxis",
-                new Millisecond(new Date(0)), new Millisecond(new Date(15))), renderer);
+        CategoryPlot plot = new CategoryPlot(dataset, new CategoryAxis("domainAxis"), new PeriodAxis("periodAxis", new Millisecond(
+                new Date(0)), new Millisecond(new Date(15))), renderer);
         JFreeChart chart = new JFreeChart("JFreeChart Test", plot);
         BufferedImage image = chart.createBufferedImage(800, 600);
 

@@ -45,8 +45,8 @@ public class DummyAttributeClient implements AttributeClient {
     /**
      * Set an attribute for a given user to the given value.
      * 
-     * @return As per contract of {@link Map#put(Object, Object)}, this method returns the previous value of the given
-     *         attribute, if one was set. Otherwise it returns <code>null</code>.
+     * @return As per contract of {@link Map#put(Object, Object)}, this method returns the previous value of the given attribute, if one was
+     *         set. Otherwise it returns <code>null</code>.
      */
     public static Object setAttribute(String user, String attribute, Object value) {
 
@@ -61,24 +61,25 @@ public class DummyAttributeClient implements AttributeClient {
     /**
      * {@inheritDoc}
      */
-    public <T> T getAttributeValue(String userId, String attributeName, Class<T> valueClass)
-            throws AttributeNotFoundException, RequestDeniedException, WSClientTransportException,
-            AttributeUnavailableException {
+    public <T> T getAttributeValue(String userId, String attributeName, Class<T> valueClass) throws AttributeNotFoundException,
+                                                                                            RequestDeniedException,
+                                                                                            WSClientTransportException,
+                                                                                            AttributeUnavailableException {
 
         Object attributeValue = DummyAttributeClient.usersAttributes.get(userId).get(attributeName);
         if (attributeValue == null || valueClass.isAssignableFrom(attributeValue.getClass()))
             return valueClass.cast(attributeValue);
 
-        throw new IllegalArgumentException("Attribute '" + attributeName + "' of user id '" + userId
-                + "' is not assignable to '" + valueClass + "'.  It is: " + attributeValue.getClass() + ": "
-                + attributeValue);
+        throw new IllegalArgumentException("Attribute '" + attributeName + "' of user id '" + userId + "' is not assignable to '"
+                + valueClass + "'.  It is: " + attributeValue.getClass() + ": " + attributeValue);
     }
 
     /**
      * {@inheritDoc}
      */
     public void getAttributeValues(String userId, Map<String, Object> attributes) throws AttributeNotFoundException,
-            RequestDeniedException, WSClientTransportException, AttributeUnavailableException {
+                                                                                 RequestDeniedException, WSClientTransportException,
+                                                                                 AttributeUnavailableException {
 
         attributes.clear();
         attributes.putAll(getAttributeValues(userId));
@@ -87,8 +88,8 @@ public class DummyAttributeClient implements AttributeClient {
     /**
      * {@inheritDoc}
      */
-    public Map<String, Object> getAttributeValues(String userId) throws RequestDeniedException,
-            WSClientTransportException, AttributeNotFoundException, AttributeUnavailableException {
+    public Map<String, Object> getAttributeValues(String userId) throws RequestDeniedException, WSClientTransportException,
+                                                                AttributeNotFoundException, AttributeUnavailableException {
 
         return DummyAttributeClient.usersAttributes.get(userId);
     }
@@ -96,8 +97,8 @@ public class DummyAttributeClient implements AttributeClient {
     /**
      * {@inheritDoc}
      */
-    public <T> T getIdentity(String userId, Class<T> identityCardClass) throws AttributeNotFoundException,
-            RequestDeniedException, WSClientTransportException, AttributeUnavailableException {
+    public <T> T getIdentity(String userId, Class<T> identityCardClass) throws AttributeNotFoundException, RequestDeniedException,
+                                                                       WSClientTransportException, AttributeUnavailableException {
 
         if (!identityCardClass.isAnnotationPresent(IdentityCard.class))
             throw new IllegalArgumentException("identity card class should be annotated with @IdentityCard");

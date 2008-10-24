@@ -60,21 +60,18 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
 
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         /**
-         * Wrap the request to use the servlet endpoint url. To prevent failure when behind a reverse proxy or
-         * loadbalancer when opensaml is checking the destination field.
+         * Wrap the request to use the servlet endpoint url. To prevent failure when behind a reverse proxy or loadbalancer when opensaml is
+         * checking the destination field.
          */
-        HttpServletRequestEndpointWrapper requestWrapper = new HttpServletRequestEndpointWrapper(request,
-                this.servletEndpointUrl);
+        HttpServletRequestEndpointWrapper requestWrapper = new HttpServletRequestEndpointWrapper(request, this.servletEndpointUrl);
 
         /*
          * Authenticate
          */
-        AuthenticationService authenticationService = AuthenticationServiceManager
-                .getAuthenticationService(requestWrapper.getSession());
+        AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(requestWrapper.getSession());
         String userId;
         try {
             userId = authenticationService.authenticate(requestWrapper);
@@ -99,8 +96,7 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
             /*
              * Authentication failed but user requested to try another device
              */
-            HelpdeskLogger.add(requestWrapper.getSession(), "authentication failed, request to try another device",
-                    LogLevelType.ERROR);
+            HelpdeskLogger.add(requestWrapper.getSession(), "authentication failed, request to try another device", LogLevelType.ERROR);
 
             response.sendRedirect(this.tryAnotherDeviceUrl);
         } else if (null == userId) {

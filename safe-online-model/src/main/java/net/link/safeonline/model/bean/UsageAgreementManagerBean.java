@@ -32,11 +32,9 @@ public class UsageAgreementManagerBean implements UsageAgreementManager {
     private UsageAgreementDAO usageAgreementDAO;
 
 
-    public void setUsageAgreement(ApplicationEntity application, Long usageAgreementVersion)
-            throws UsageAgreementNotFoundException {
+    public void setUsageAgreement(ApplicationEntity application, Long usageAgreementVersion) throws UsageAgreementNotFoundException {
 
-        LOG.debug("set usage agreement for application: " + application.getName() + " to version: "
-                + usageAgreementVersion);
+        LOG.debug("set usage agreement for application: " + application.getName() + " to version: " + usageAgreementVersion);
         this.usageAgreementDAO.findUsageAgreement(application, usageAgreementVersion);
         application.setCurrentApplicationUsageAgreement(usageAgreementVersion);
     }
@@ -53,8 +51,7 @@ public class UsageAgreementManagerBean implements UsageAgreementManager {
             newUsageAgreementVersion = application.getCurrentApplicationUsageAgreement() + 1;
         }
 
-        UsageAgreementEntity newUsageAgreement = this.usageAgreementDAO.addUsageAgreement(application,
-                newUsageAgreementVersion);
+        UsageAgreementEntity newUsageAgreement = this.usageAgreementDAO.addUsageAgreement(application, newUsageAgreementVersion);
 
         for (UsageAgreementTextEntity draftUsageAgreementText : draftUsageAgreement.getUsageAgreementTexts()) {
             this.usageAgreementDAO.addUsageAgreementText(newUsageAgreement, draftUsageAgreementText.getText(),
@@ -71,25 +68,22 @@ public class UsageAgreementManagerBean implements UsageAgreementManager {
 
         LOG.debug("update global usage agreement");
         GlobalUsageAgreementEntity draftUsageAgreement = this.usageAgreementDAO
-                .getGlobalUsageAgreement(GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION);
+                                                                               .getGlobalUsageAgreement(GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION);
         GlobalUsageAgreementEntity currentUsageAgreement = this.usageAgreementDAO.getGlobalUsageAgreement();
         long newUsageAgreementVersion;
         long currentUsageAgreementVersion = currentUsageAgreement.getUsageAgreementVersion().longValue();
         if (currentUsageAgreementVersion == GlobalUsageAgreementEntity.EMPTY_GLOBAL_USAGE_AGREEMENT_VERSION.longValue()
-                || currentUsageAgreementVersion == GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION
-                        .longValue()) {
+                || currentUsageAgreementVersion == GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION.longValue()) {
             newUsageAgreementVersion = GlobalUsageAgreementEntity.INITIAL_GLOBAL_USAGE_AGREEMENT_VERSION;
         } else {
             newUsageAgreementVersion = currentUsageAgreement.getUsageAgreementVersion() + 1;
         }
-        GlobalUsageAgreementEntity newUsageAgreement = this.usageAgreementDAO
-                .addGlobalUsageAgreement(newUsageAgreementVersion);
+        GlobalUsageAgreementEntity newUsageAgreement = this.usageAgreementDAO.addGlobalUsageAgreement(newUsageAgreementVersion);
         for (UsageAgreementTextEntity draftUsageAgreementText : draftUsageAgreement.getUsageAgreementTexts()) {
             this.usageAgreementDAO.addGlobalUsageAgreementText(newUsageAgreement, draftUsageAgreementText.getText(),
                     draftUsageAgreementText.getLanguage());
         }
 
-        this.usageAgreementDAO
-                .removeGlobalUsageAgreement(GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION);
+        this.usageAgreementDAO.removeGlobalUsageAgreement(GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION);
     }
 }

@@ -20,22 +20,22 @@ import net.link.safeonline.pkix.exception.CertificateEncodingException;
 
 /**
  * Interface to service for retrieving information about applications.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Local
 public interface NodeService {
 
     /**
      * Gives back all known olas nodes
-     *
+     * 
      */
     List<NodeEntity> listNodes();
 
     /**
      * Gives back the olas node entity for a given node name.
-     *
+     * 
      * @param nodeName
      * @throws NodeNotFoundException
      */
@@ -50,46 +50,43 @@ public interface NodeService {
      * @throws CertificateEncodingException
      */
     void addNode(String name, String protocol, String hostname, int port, int sslPort, byte[] encodedAuthnCertificate,
-            byte[] encodedSigningCertificate) throws ExistingNodeException, CertificateEncodingException;
+                 byte[] encodedSigningCertificate) throws ExistingNodeException, CertificateEncodingException;
 
     /**
      * Removes an olas node.
-     *
+     * 
      * @param name
      */
     void removeNode(String name) throws NodeNotFoundException, PermissionDeniedException;
 
     /**
      * Updates the Olas node's hostname.
-     *
+     * 
      * @param nodeName
      * @param hostname
      * @param port
      * @param sslPort
      * @throws NodeNotFoundException
      */
-    void updateLocation(String nodeName, String protocol, String hostname, int port, int sslPort)
-            throws NodeNotFoundException;
+    void updateLocation(String nodeName, String protocol, String hostname, int port, int sslPort) throws NodeNotFoundException;
 
     /**
      * Updates the OLAS node's authn certificate.
-     *
+     * 
      * @param nodeName
      * @param certificateData
      * @throws CertificateEncodingException
      * @throws NodeNotFoundException
      */
-    void updateAuthnCertificate(String nodeName, byte[] certificateData) throws CertificateEncodingException,
-            NodeNotFoundException;
+    void updateAuthnCertificate(String nodeName, byte[] certificateData) throws CertificateEncodingException, NodeNotFoundException;
 
     /**
      * Updates the OLAS node's signing certificate.
-     *
+     * 
      * @param nodeName
      * @param certificateData
      * @throws CertificateEncodingException
      * @throws NodeNotFoundException
      */
-    void updateSigningCertificate(String nodeName, byte[] certificateData) throws CertificateEncodingException,
-            NodeNotFoundException;
+    void updateSigningCertificate(String nodeName, byte[] certificateData) throws CertificateEncodingException, NodeNotFoundException;
 }

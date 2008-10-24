@@ -61,9 +61,9 @@ import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 
 /**
  * Application Console main frame.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class ApplicationConsole extends JFrame implements Observer {
 
@@ -299,8 +299,7 @@ public class ApplicationConsole extends JFrame implements Observer {
         try {
             tmpXmlFile = File.createTempFile(prefix, ".xml");
             FileUtils.writeStringToFile(tmpXmlFile, DomUtils.domToString(doc));
-            this.browserLauncher.openURLinBrowser((String) this.browserCombo.getSelectedItem(), "file://"
-                    + tmpXmlFile.getAbsolutePath());
+            this.browserLauncher.openURLinBrowser((String) this.browserCombo.getSelectedItem(), "file://" + tmpXmlFile.getAbsolutePath());
         } catch (TransformerException e) {
             LOG.error("Failed to transform SOAP document to plain-text", e);
         } catch (IOException e) {
@@ -324,7 +323,7 @@ public class ApplicationConsole extends JFrame implements Observer {
 
 
     /*
-     *
+     * 
      * Action classes
      */
     public class LoadIdAction extends AbstractAction {

@@ -15,8 +15,7 @@ import java.util.StringTokenizer;
 
 public class BirthDateConvertor implements Convertor<Date> {
 
-    private static final String MONTHS[][] = {
-            { "JAN", "FEV", "MARS", "AVR", "MAI", "JUIN", "JUIL", "AOUT", "SEPT", "OCT", "NOV", "DEC" },
+    private static final String MONTHS[][] = { { "JAN", "FEV", "MARS", "AVR", "MAI", "JUIN", "JUIL", "AOUT", "SEPT", "OCT", "NOV", "DEC" },
             { "JAN", "FEB", "MAAR", "APR", "MEI", "JUN", "JUL", "AUG", "SEP", "OKT", "NOV", "DEC" },
             { "JAN", "FEB", "M\u00C4R", "APR", "MAI", "JUN", "JUL", "AUG", "SEP", "OKT", "NOV", "DEZ" } };
 

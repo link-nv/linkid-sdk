@@ -10,7 +10,6 @@ package net.link.safeonline.data.ws;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public enum TopLevelStatusCode {
     OK("OK"), FAILED("Failed");
 
@@ -19,8 +18,10 @@ public enum TopLevelStatusCode {
     private static Map<String, TopLevelStatusCode> statusCodes = new HashMap<String, TopLevelStatusCode>();
 
     static {
-        for (TopLevelStatusCode topLevelStatusCode : TopLevelStatusCode.values()) {
-            TopLevelStatusCode.statusCodes.put(topLevelStatusCode.getCode(), topLevelStatusCode);
+        for (TopLevelStatusCode topLevelStatusCode : TopLevelStatusCode
+                .values()) {
+            TopLevelStatusCode.statusCodes.put(topLevelStatusCode.getCode(),
+                    topLevelStatusCode);
         }
     }
 
@@ -30,14 +31,17 @@ public enum TopLevelStatusCode {
         this.code = code;
     }
 
+
     public String getCode() {
 
         return this.code;
     }
 
+
     public static TopLevelStatusCode fromCode(String code) {
 
-        TopLevelStatusCode topLevelStatusCode = TopLevelStatusCode.statusCodes.get(code);
+        TopLevelStatusCode topLevelStatusCode = TopLevelStatusCode.statusCodes
+                .get(code);
         if (null == topLevelStatusCode)
             throw new IllegalArgumentException("unknown code: " + code);
         return topLevelStatusCode;

@@ -23,8 +23,8 @@ import org.apache.wicket.markup.html.list.ListView;
  * <sub>Wicket backend for theatre and film selection page.</sub></h2>
  * 
  * <p>
- * On this page the user selects a film and the theatre in which he'd like to view his film. Upon selecting either it is
- * added to the session and the other's view is limited to only those entities that still apply.
+ * On this page the user selects a film and the theatre in which he'd like to view his film. Upon selecting either it is added to the
+ * session and the other's view is limited to only those entities that still apply.
  * </p>
  * 
  * <p>
@@ -69,8 +69,7 @@ public class FilmTheatreSelectionPage extends LayoutPage {
      * <p>
      * This form shows some information on films.
      * 
-     * When no theatre is selected, it lists all films, otherwise it limits the film selection to those available in the
-     * selected theatre.
+     * When no theatre is selected, it lists all films, otherwise it limits the film selection to those available in the selected theatre.
      * 
      * The user can then select a film to purchase a ticket for.
      * </p>
@@ -147,8 +146,7 @@ public class FilmTheatreSelectionPage extends LayoutPage {
      * <p>
      * This form shows some information on theatres.
      * 
-     * When no film is selected, it lists all theatres, otherwise it limits the theatre selection to those that play the
-     * selected film.
+     * When no film is selected, it lists all theatres, otherwise it limits the theatre selection to those that play the selected film.
      * 
      * The user can then select a theatre to purchase a ticket for.
      * <p>

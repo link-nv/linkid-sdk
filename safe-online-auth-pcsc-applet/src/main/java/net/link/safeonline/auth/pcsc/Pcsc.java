@@ -221,8 +221,7 @@ public class Pcsc {
         return this.photo;
     }
 
-    public boolean verifyRnSignature() throws CardException, CertificateException, InvalidKeyException,
-            SignatureException {
+    public boolean verifyRnSignature() throws CardException, CertificateException, InvalidKeyException, SignatureException {
 
         byte[] signatureData = readFile(EF_SGN_RN);
         LOG.debug("RN signature size: " + signatureData.length);
@@ -253,8 +252,7 @@ public class Pcsc {
         return result;
     }
 
-    public boolean verifyAddressSignature() throws CardException, CertificateException, InvalidKeyException,
-            SignatureException {
+    public boolean verifyAddressSignature() throws CardException, CertificateException, InvalidKeyException, SignatureException {
 
         byte[] signatureData = readFile(EF_SGN_ADDRESS);
         Signature signature;
@@ -286,8 +284,7 @@ public class Pcsc {
 
         // 4 = size of following data block, 80 = algo tag, 0x01 = RSA PKCS#1,
         // 0x84 = key tag, 0x82 = authn key
-        CommandAPDU setApdu = new CommandAPDU(0x00, 0x22, 0x41, 0xB6, new byte[] { 0x04, (byte) 0x80, 0x01,
-                (byte) 0x84, (byte) 0x82 });
+        CommandAPDU setApdu = new CommandAPDU(0x00, 0x22, 0x41, 0xB6, new byte[] { 0x04, (byte) 0x80, 0x01, (byte) 0x84, (byte) 0x82 });
         ResponseAPDU responseApdu = this.cardChannel.transmit(setApdu);
         checkResponseSW(responseApdu);
 
@@ -300,16 +297,16 @@ public class Pcsc {
             pinOutput.write(bcd);
         }
         byte[] pinBcd = pinOutput.toByteArray();
-        byte[] verifyData = new byte[] { (byte) (0x20 | pin.length()), (byte) 0xFF, (byte) 0xFF, (byte) 0xFF,
-                (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF };
+        byte[] verifyData = new byte[] { (byte) (0x20 | pin.length()), (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF,
+                (byte) 0xFF, (byte) 0xFF };
         System.arraycopy(pinBcd, 0, verifyData, 1, pin.length() / 2);
 
         CommandAPDU verifyApdu = new CommandAPDU(0x00, 0x20, 0x00, 0x01, verifyData);
         responseApdu = this.cardChannel.transmit(verifyApdu);
         checkResponseSW(responseApdu);
 
-        byte[] ALGORITHM_IDENTIFIER_SHA1 = new byte[] { 0x30, 0x21, 0x30, 0x09, 0x06, 0x05, 0x2B, 0x0E, 0x03, 0x02,
-                0x1A, 0x05, 0x00, 0x04, 0x14 };
+        byte[] ALGORITHM_IDENTIFIER_SHA1 = new byte[] { 0x30, 0x21, 0x30, 0x09, 0x06, 0x05, 0x2B, 0x0E, 0x03, 0x02, 0x1A, 0x05, 0x00, 0x04,
+                0x14 };
         ByteArrayOutputStream signData = new ByteArrayOutputStream();
         signData.write(ALGORITHM_IDENTIFIER_SHA1);
         signData.write(digest);
@@ -326,28 +323,25 @@ public class Pcsc {
     private X509Certificate getCertificate(byte[] fullAid) throws CardException, CertificateException {
 
         byte[] data = readFile(fullAid);
-        X509Certificate certificate = (X509Certificate) this.certificateFactory
-                .generateCertificate(new ByteArrayInputStream(data));
+        X509Certificate certificate = (X509Certificate) this.certificateFactory.generateCertificate(new ByteArrayInputStream(data));
         return certificate;
     }
 
     private void checkResponseSW(ResponseAPDU responseApdu) {
 
         if (0x90 != responseApdu.getSW1()) {
-            LOG.debug("SW1-SW2: " + Integer.toHexString(responseApdu.getSW1()) + "-"
-                    + Integer.toHexString(responseApdu.getSW2()));
+            LOG.debug("SW1-SW2: " + Integer.toHexString(responseApdu.getSW1()) + "-" + Integer.toHexString(responseApdu.getSW2()));
             throw new RuntimeException("SW1: " + Integer.toHexString(responseApdu.getSW1()));
         }
         if (0x00 != responseApdu.getSW2()) {
-            LOG.debug("SW1-SW2: " + Integer.toHexString(responseApdu.getSW1()) + "-"
-                    + Integer.toHexString(responseApdu.getSW2()));
+            LOG.debug("SW1-SW2: " + Integer.toHexString(responseApdu.getSW1()) + "-" + Integer.toHexString(responseApdu.getSW2()));
             throw new RuntimeException("SW2: " + Integer.toHexString(responseApdu.getSW2()));
         }
     }
 
     /**
      * TLV: Tag Length Value structure.
-     *
+     * 
      * @param <T>
      * @param data
      * @param type

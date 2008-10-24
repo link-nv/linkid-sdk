@@ -51,8 +51,8 @@ public interface SubjectService {
     SubjectEntity addSubject(String login) throws AttributeTypeNotFoundException;
 
     /**
-     * Adds a subject with the specified user ID. Does NOT add a login attribute and SubjectIdentifier. This method is
-     * used when the subject is created from a NodeMapping ID.
+     * Adds a subject with the specified user ID. Does NOT add a login attribute and SubjectIdentifier. This method is used when the subject
+     * is created from a NodeMapping ID.
      */
     SubjectEntity addSubjectWithoutLogin(String userId);
 
@@ -75,16 +75,14 @@ public interface SubjectService {
     SubjectEntity getSubjectFromUserName(String login) throws SubjectNotFoundException;
 
     /**
-     * Returns the value of the login attribute associated with the given user ID. Returns <code>null</code> if not
-     * found.
+     * Returns the value of the login attribute associated with the given user ID. Returns <code>null</code> if not found.
      * 
      * @param userId
      */
     String getSubjectLogin(String userId);
 
     /**
-     * Same as getSubjectLogin but this can be called from within exception handling code ( meaning a transaction is
-     * created )
+     * Same as getSubjectLogin but this can be called from within exception handling code ( meaning a transaction is created )
      * 
      * @param userId
      */

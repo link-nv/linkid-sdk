@@ -56,9 +56,7 @@ public class ConfigurationInterceptor {
     private Object configure(InvocationContext invocationContext) throws Exception {
 
         Object target = invocationContext.getTarget();
-        LOG
-                .debug("Configuring: " + target.getClass().getName() + " (method: " + getMethodName(invocationContext)
-                        + ")");
+        LOG.debug("Configuring: " + target.getClass().getName() + " (method: " + getMethodName(invocationContext) + ")");
 
         try {
 
@@ -87,8 +85,7 @@ public class ConfigurationInterceptor {
         return invocationContext.proceed();
     }
 
-    private void setValue(ConfigItemEntity configItem, Field field, Object target) throws IllegalArgumentException,
-            IllegalAccessException {
+    private void setValue(ConfigItemEntity configItem, Field field, Object target) throws IllegalArgumentException, IllegalAccessException {
 
         Class<?> fieldType = field.getType();
         Object value;

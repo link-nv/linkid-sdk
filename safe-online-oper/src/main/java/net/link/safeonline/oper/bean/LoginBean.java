@@ -21,17 +21,17 @@ import org.jboss.seam.annotations.Scope;
 
 
 /**
- * This Seam components implements the login interface. This component cannot live within the security domain of the
- * SafeOnline user web application since the user still has to logon onto the system.
- *
+ * This Seam components implements the login interface. This component cannot live within the security domain of the SafeOnline user web
+ * application since the user still has to logon onto the system.
+ * 
  * @author fcorneli
- *
- *         Seam component name lookup clashes between two WARs. Because of this we have to prefix the user and operator
- *         Seam components' names.
- *
- *         Because of http session timeout being set to 5 minutes in web.xml we have to make sure that the lifecycle of
- *         the login bean that has session scope is longer than 5 minutes. Thus we take 5 + 1 minutes.
- *
+ * 
+ *         Seam component name lookup clashes between two WARs. Because of this we have to prefix the user and operator Seam components'
+ *         names.
+ * 
+ *         Because of http session timeout being set to 5 minutes in web.xml we have to make sure that the lifecycle of the login bean that
+ *         has session scope is longer than 5 minutes. Thus we take 5 + 1 minutes.
+ * 
  */
 @Stateful
 @Name("operLogin")

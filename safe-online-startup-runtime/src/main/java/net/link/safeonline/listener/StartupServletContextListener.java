@@ -28,12 +28,12 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- * This servlet context listener will start and stop all components registered in JNDI under the prefix defined by the
- * web.xml context-param StartableJndiPrefix. These components should implement the {@link Startable} interface.
- *
+ * This servlet context listener will start and stop all components registered in JNDI under the prefix defined by the web.xml context-param
+ * StartableJndiPrefix. These components should implement the {@link Startable} interface.
+ * 
  * @see Startable
  * @author fcorneli
- *
+ * 
  */
 public class StartupServletContextListener implements ServletContextListener {
 
@@ -142,7 +142,7 @@ public class StartupServletContextListener implements ServletContextListener {
                 }
             }
         }
-        
+
         return info;
     }
 }

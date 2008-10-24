@@ -73,8 +73,8 @@ public class AttributeProviderPK implements Serializable {
         if (false == obj instanceof AttributeProviderPK)
             return false;
         AttributeProviderPK rhs = (AttributeProviderPK) obj;
-        return new EqualsBuilder().append(this.applicationName, rhs.applicationName).append(this.attributeTypeName,
-                rhs.attributeTypeName).isEquals();
+        return new EqualsBuilder().append(this.applicationName, rhs.applicationName).append(this.attributeTypeName, rhs.attributeTypeName)
+                                  .isEquals();
     }
 
     @Override
@@ -86,7 +86,7 @@ public class AttributeProviderPK implements Serializable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("application", this.applicationName).append("attribute type",
-                this.attributeTypeName).toString();
+        return new ToStringBuilder(this).append("application", this.applicationName).append("attribute type", this.attributeTypeName)
+                                        .toString();
     }
 }

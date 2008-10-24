@@ -105,8 +105,8 @@ public class SafeOnlineLoginModule implements LoginModule {
         return optionValue;
     }
 
-    public void initialize(Subject newSubject, CallbackHandler newCallbackHandler,
-            @SuppressWarnings("unchecked") Map sharedState, @SuppressWarnings("unchecked") Map options) {
+    public void initialize(Subject newSubject, CallbackHandler newCallbackHandler, @SuppressWarnings("unchecked") Map sharedState,
+                           @SuppressWarnings("unchecked") Map options) {
 
         LOG.debug("initialize");
 
@@ -180,8 +180,7 @@ public class SafeOnlineLoginModule implements LoginModule {
     private AuthorizationService getAuthorizationService() throws LoginException {
 
         try {
-            AuthorizationService authorizationService = EjbUtils.getEJB(this.authorizationServiceJndiName,
-                    AuthorizationService.class);
+            AuthorizationService authorizationService = EjbUtils.getEJB(this.authorizationServiceJndiName, AuthorizationService.class);
             return authorizationService;
         } catch (RuntimeException e) {
             throw new LoginException("JNDI lookup error: " + e.getMessage());
@@ -200,8 +199,8 @@ public class SafeOnlineLoginModule implements LoginModule {
             throw new LoginException("could not remove authenticated principal");
         }
         /*
-         * Despite the fact that JBoss AbstractServerLoginModule is not removing the roles on the subject, we clear here
-         * all data on the subject.
+         * Despite the fact that JBoss AbstractServerLoginModule is not removing the roles on the subject, we clear here all data on the
+         * subject.
          */
         this.subject.getPrincipals().clear();
         this.subject.getPublicCredentials().clear();

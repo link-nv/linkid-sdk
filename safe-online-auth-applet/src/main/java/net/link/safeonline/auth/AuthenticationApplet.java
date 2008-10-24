@@ -45,8 +45,7 @@ public class AuthenticationApplet extends AppletBase {
         outputDetailMessage("Session: " + sessionId);
         outputDetailMessage("Application: " + applicationId);
         try {
-            byte[] authenticationStatement = AuthenticationStatementFactory.createAuthenticationStatement(sessionId,
-                    applicationId, signer);
+            byte[] authenticationStatement = AuthenticationStatementFactory.createAuthenticationStatement(sessionId, applicationId, signer);
             return authenticationStatement;
         } catch (RuntimeException e) {
             outputDetailMessage("runtime exception: " + e.getMessage());

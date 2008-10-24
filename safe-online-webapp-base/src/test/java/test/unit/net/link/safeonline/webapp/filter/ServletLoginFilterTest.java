@@ -64,8 +64,7 @@ public class ServletLoginFilterTest extends TestCase {
         initialSessionAttributes.put(LoginManager.USERID_SESSION_ATTRIBUTE, this.userId);
 
         this.servletTestManager = new ServletTestManager();
-        this.servletTestManager.setUp(ServletLoginFilterTestServlet.class, ServletLoginFilter.class, null,
-                initialSessionAttributes);
+        this.servletTestManager.setUp(ServletLoginFilterTestServlet.class, ServletLoginFilter.class, null, initialSessionAttributes);
 
         ServletLoginFilterTestServlet.reset();
     }
@@ -89,8 +88,7 @@ public class ServletLoginFilterTest extends TestCase {
         GetMethod getMethod = new GetMethod(this.servletTestManager.getServletLocation());
 
         // stubs
-        expect(this.mockAuthorizationService.getRoles(this.userId)).andStubReturn(
-                Collections.singleton(testExpectedRole));
+        expect(this.mockAuthorizationService.getRoles(this.userId)).andStubReturn(Collections.singleton(testExpectedRole));
         replay(this.mockAuthorizationService);
 
         // operate

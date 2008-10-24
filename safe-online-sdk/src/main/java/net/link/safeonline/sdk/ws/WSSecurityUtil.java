@@ -27,8 +27,7 @@ public class WSSecurityUtil {
         try {
             SOAPFactory soapFactory = SOAPFactory.newInstance();
             soapFault = soapFactory.createFault(faultString, new QName(
-                    "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd", wsseFaultCode,
-                    "wsse"));
+                    "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd", wsseFaultCode, "wsse"));
         } catch (SOAPException e) {
             throw new RuntimeException("SOAP error");
         }

@@ -68,8 +68,7 @@ public class PkiServiceBean implements PkiService, PkiServiceRemote {
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void addTrustDomain(String name, boolean performOcspCheck, long ocspCacheTimeOutMillis)
-            throws ExistingTrustDomainException {
+    public void addTrustDomain(String name, boolean performOcspCheck, long ocspCacheTimeOutMillis) throws ExistingTrustDomainException {
 
         TrustDomainEntity existingTrustDomain = this.trustDomainDAO.findTrustDomain(name);
         if (null != existingTrustDomain)
@@ -90,7 +89,7 @@ public class PkiServiceBean implements PkiService, PkiServiceRemote {
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public void addTrustPoint(String domainName, byte[] encodedCertificate) throws TrustDomainNotFoundException,
-            CertificateEncodingException, ExistingTrustPointException {
+                                                                           CertificateEncodingException, ExistingTrustPointException {
 
         TrustDomainEntity trustDomain = this.trustDomainDAO.getTrustDomain(domainName);
         X509Certificate certificate = PkiUtils.decodeCertificate(encodedCertificate);

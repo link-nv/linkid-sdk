@@ -40,8 +40,7 @@ public class HashingTest {
 
         byte[] plainText = text.getBytes("UTF8");
 
-        MessageDigest messageDigest = MessageDigest.getInstance("SHA-512",
-                new org.bouncycastle.jce.provider.BouncyCastleProvider());
+        MessageDigest messageDigest = MessageDigest.getInstance("SHA-512", new org.bouncycastle.jce.provider.BouncyCastleProvider());
 
         System.out.println("\n" + messageDigest.getProvider().getInfo());
 

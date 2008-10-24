@@ -67,8 +67,7 @@ public class ApplicationLoginHandlerTest extends TestCase {
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
         X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
         context.put(WSSecurityServerHandler.CERTIFICATE_PROPERTY, certificate);
-        context.put(CertificateValidatorHandler.CERTIFICATE_DOMAIN_PROPERTY,
-                CertificateValidatorHandler.CertificateDomain.APPLICATION);
+        context.put(CertificateValidatorHandler.CERTIFICATE_DOMAIN_PROPERTY, CertificateValidatorHandler.CertificateDomain.APPLICATION);
 
         JaasTestUtils.initJaasLoginModule(TestLoginModule.class);
 
@@ -106,8 +105,7 @@ public class ApplicationLoginHandlerTest extends TestCase {
         }
 
         public void initialize(Subject newSubject, CallbackHandler newCallbackHandler,
-                @SuppressWarnings("unused") Map<String, ?> sharedState,
-                @SuppressWarnings("unused") Map<String, ?> options) {
+                               @SuppressWarnings("unused") Map<String, ?> sharedState, @SuppressWarnings("unused") Map<String, ?> options) {
 
             LOG.debug("initialize");
             this.subject = newSubject;

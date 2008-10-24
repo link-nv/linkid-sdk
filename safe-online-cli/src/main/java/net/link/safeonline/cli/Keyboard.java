@@ -16,9 +16,9 @@ import java.util.StringTokenizer;
 
 /**
  * Keyboard helper class.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class Keyboard {
 

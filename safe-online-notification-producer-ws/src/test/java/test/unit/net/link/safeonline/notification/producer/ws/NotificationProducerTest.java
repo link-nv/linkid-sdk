@@ -14,7 +14,6 @@ import javax.xml.ws.wsaddressing.W3CEndpointReferenceBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 
-
 public class NotificationProducerTest {
 
     @Test
@@ -29,7 +28,8 @@ public class NotificationProducerTest {
 
         DOMResult domResult = new DOMResult();
         endpoint.writeTo(domResult);
-        String resultAddress = domResult.getNode().getFirstChild().getFirstChild().getFirstChild().getNodeValue();
+        String resultAddress = domResult.getNode().getFirstChild()
+                .getFirstChild().getFirstChild().getNodeValue();
         Assert.assertEquals(address, resultAddress);
 
     }

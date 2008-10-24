@@ -9,9 +9,9 @@ package net.link.safeonline.data.ws;
 
 /**
  * Holds various constants used by the data web service.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class DataServiceConstants {
 
@@ -19,7 +19,6 @@ public class DataServiceConstants {
 
         // empty
     }
-
 
     public static final String ATTRIBUTE_OBJECT_TYPE          = "Attribute";
 

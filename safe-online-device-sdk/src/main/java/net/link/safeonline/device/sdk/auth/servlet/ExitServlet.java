@@ -29,15 +29,13 @@ public class ExitServlet extends AbstractInjectionServlet {
 
 
     @Override
-    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         handleExit(request, response);
     }
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         handleExit(request, response);
     }
@@ -49,8 +47,7 @@ public class ExitServlet extends AbstractInjectionServlet {
             /*
              * If no protocol handler is active at this point then something must be going wrong here.
              */
-            redirectToErrorPage(request, response, this.errorPage, null, new ErrorMessage(
-                    "No protocol handler is active"));
+            redirectToErrorPage(request, response, this.errorPage, null, new ErrorMessage("No protocol handler is active"));
             return;
 
         }

@@ -74,8 +74,8 @@ public class NewTransactionPage extends LayoutPage {
             super(id);
 
             add(new TextArea<String>("description", this.description = new Model<String>()));
-            add(new RadioChoice<BankAccountEntity>("source", this.source = new Model<BankAccountEntity>(),
-                    getUserService().getAccounts(BankSession.get().getUser())));
+            add(new RadioChoice<BankAccountEntity>("source", this.source = new Model<BankAccountEntity>(), getUserService().getAccounts(
+                    BankSession.get().getUser())));
             add(new TextField<String>("target", this.target = new Model<String>()));
             add(new TextField<String>("amount", this.amount = new Model<String>()));
         }
@@ -83,8 +83,8 @@ public class NewTransactionPage extends LayoutPage {
         @Override
         protected void onSubmit() {
 
-            if (getTransactionService().createTransaction(this.description.getObject(), this.source.getObject(),
-                    this.target.getObject(), Double.parseDouble(this.amount.getObject())) != null) {
+            if (getTransactionService().createTransaction(this.description.getObject(), this.source.getObject(), this.target.getObject(),
+                    Double.parseDouble(this.amount.getObject())) != null) {
                 setResponsePage(AccountPage.class);
             }
         }

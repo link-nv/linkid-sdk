@@ -35,8 +35,7 @@ import org.apache.commons.logging.LogFactory;
 /**
  * Device registration landing page.
  * 
- * This landing page handles the SAML response returned by the remote device issuer to notify the success of the
- * registration.
+ * This landing page handles the SAML response returned by the remote device issuer to notify the success of the registration.
  * 
  * @author wvdhaute
  * 
@@ -45,8 +44,7 @@ public class DeviceRegistrationLandingServlet extends AbstractInjectionServlet {
 
     private static final long  serialVersionUID               = 1L;
 
-    private static final Log   LOG                            = LogFactory
-                                                                      .getLog(DeviceRegistrationLandingServlet.class);
+    private static final Log   LOG                            = LogFactory.getLog(DeviceRegistrationLandingServlet.class);
 
     public static final String RESOURCE_BASE                  = "messages.webapp";
 
@@ -69,20 +67,17 @@ public class DeviceRegistrationLandingServlet extends AbstractInjectionServlet {
 
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         LOG.debug("doPost");
 
         /**
-         * Wrap the request to use the servlet endpoint url. To prevent failure when behind a reverse proxy or
-         * loadbalancer when opensaml is checking the destination field.
+         * Wrap the request to use the servlet endpoint url. To prevent failure when behind a reverse proxy or loadbalancer when opensaml is
+         * checking the destination field.
          */
-        HttpServletRequestEndpointWrapper requestWrapper = new HttpServletRequestEndpointWrapper(request,
-                this.servletEndpointUrl);
+        HttpServletRequestEndpointWrapper requestWrapper = new HttpServletRequestEndpointWrapper(request, this.servletEndpointUrl);
 
-        AuthenticationService authenticationService = AuthenticationServiceManager
-                .getAuthenticationService(requestWrapper.getSession());
+        AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(requestWrapper.getSession());
         String userId;
         try {
             userId = authenticationService.register(requestWrapper);

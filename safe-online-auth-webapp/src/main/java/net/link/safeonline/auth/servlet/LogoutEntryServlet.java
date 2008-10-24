@@ -32,9 +32,9 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- * Entry point for logout requests send to the authentication web application. This servlet will try to find out which
- * authentication protocol is being used by the client web browser to initiate a single logout procedure. We manage the
- * authentication entry via a bare-bone servlet since we:
+ * Entry point for logout requests send to the authentication web application. This servlet will try to find out which authentication
+ * protocol is being used by the client web browser to initiate a single logout procedure. We manage the authentication entry via a
+ * bare-bone servlet since we:
  * <ul>
  * <li>need to be able to do some low-level GET or POST parameter parsing and processing.</li>
  * <li>we want the entry point to be UI technology independent.</li>
@@ -44,12 +44,10 @@ import org.apache.commons.logging.LogFactory;
  * The following servlet init parameters are required:
  * </p>
  * <ul>
- * <li><code>ServletEndpointUrl</code>: used if behind proxy, load balancer ... . For example the SAML2 protocol
- * will check the destination field in the SAML logout request against the actual destination of the servlet request.
- * <li><code>UnsupportedProtocolUrl</code>: will be used to redirect to when an unsupported authentication protocol
- * is encountered.</li>
- * <li><code>ProtocolErrorUrl</code>: will be used to redirect to when an authentication protocol error is
- * encountered.</li>
+ * <li><code>ServletEndpointUrl</code>: used if behind proxy, load balancer ... . For example the SAML2 protocol will check the destination
+ * field in the SAML logout request against the actual destination of the servlet request.
+ * <li><code>UnsupportedProtocolUrl</code>: will be used to redirect to when an unsupported authentication protocol is encountered.</li>
+ * <li><code>ProtocolErrorUrl</code>: will be used to redirect to when an authentication protocol error is encountered.</li>
  * </ul>
  * 
  * @author wvdhaute
@@ -82,15 +80,13 @@ public class LogoutEntryServlet extends AbstractInjectionServlet {
 
 
     @Override
-    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         handleLanding(request, response);
     }
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         handleLanding(request, response);
     }
@@ -98,19 +94,17 @@ public class LogoutEntryServlet extends AbstractInjectionServlet {
     private void handleLanding(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         /**
-         * Wrap the request to use the servlet endpoint url. To prevent failure when behind a reverse proxy or
-         * loadbalancer when opensaml is checking the destination field.
+         * Wrap the request to use the servlet endpoint url. To prevent failure when behind a reverse proxy or loadbalancer when opensaml is
+         * checking the destination field.
          */
-        HttpServletRequestEndpointWrapper logoutRequestWrapper = new HttpServletRequestEndpointWrapper(request,
-                this.servletEndpointUrl);
+        HttpServletRequestEndpointWrapper logoutRequestWrapper = new HttpServletRequestEndpointWrapper(request, this.servletEndpointUrl);
 
         LogoutProtocolContext logoutProtocolContext;
         try {
             logoutProtocolContext = ProtocolHandlerManager.handleLogoutRequest(logoutRequestWrapper);
         } catch (ProtocolException e) {
-            redirectToErrorPage(request, response, this.protocolErrorUrl, null, new ErrorMessage(
-                    PROTOCOL_NAME_ATTRIBUTE, e.getProtocolName()), new ErrorMessage(PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e
-                    .getMessage()));
+            redirectToErrorPage(request, response, this.protocolErrorUrl, null, new ErrorMessage(PROTOCOL_NAME_ATTRIBUTE,
+                    e.getProtocolName()), new ErrorMessage(PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
             return;
         }
 
@@ -122,14 +116,14 @@ public class LogoutEntryServlet extends AbstractInjectionServlet {
         /*
          * Store target to send LogoutResponse to later on
          */
-        logoutRequestWrapper.getSession().setAttribute(LogoutExitServlet.LOGOUT_TARGET_ATTRIBUTE,
-                logoutProtocolContext.getTarget());
+        logoutRequestWrapper.getSession().setAttribute(LogoutExitServlet.LOGOUT_TARGET_ATTRIBUTE, logoutProtocolContext.getTarget());
 
         /*
          * Check Single Sign-On Cookies and send logout requests to the authenticated applications
          */
         AuthenticationService authenticationService = AuthenticationServiceManager
-                .getAuthenticationService(logoutRequestWrapper.getSession());
+                                                                                  .getAuthenticationService(logoutRequestWrapper
+                                                                                                                                .getSession());
         Cookie[] cookies = logoutRequestWrapper.getCookies();
         if (null != cookies) {
             for (Cookie cookie : cookies) {

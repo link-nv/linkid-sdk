@@ -62,13 +62,11 @@ import org.w3c.dom.Node;
  */
 public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> {
 
-    private static final Log               LOG                         = LogFactory
-                                                                               .getLog(WSSecurityServerHandler.class);
+    private static final Log               LOG                         = LogFactory.getLog(WSSecurityServerHandler.class);
 
     public static final String             CERTIFICATE_PROPERTY        = WSSecurityServerHandler.class + ".x509";
 
-    public static final String             SIGNED_ELEMENTS_CONTEXT_KEY = WSSecurityServerHandler.class
-                                                                               + ".signed.elements";
+    public static final String             SIGNED_ELEMENTS_CONTEXT_KEY = WSSecurityServerHandler.class + ".signed.elements";
 
     private WSSecurityConfigurationService wsSecurityConfigurationService;
 
@@ -99,8 +97,7 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
     public Set<QName> getHeaders() {
 
         Set<QName> headers = new HashSet<QName>();
-        headers.add(new QName("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
-                "Security"));
+        headers.add(new QName("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd", "Security"));
         return headers;
     }
 
@@ -132,12 +129,12 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
     }
 
     /**
-     * Handles the outbound SOAP message. This method will add an unsigned WS-Security Timestamp in the SOAP header in
-     * case the message integrity check is set to false. This means the .NET WCF BasicHttpBinding over SSL is used. The
-     * unsigned timestamp is required for .NET 2/3 clients by the WCF framework.
+     * Handles the outbound SOAP message. This method will add an unsigned WS-Security Timestamp in the SOAP header in case the message
+     * integrity check is set to false. This means the .NET WCF BasicHttpBinding over SSL is used. The unsigned timestamp is required for
+     * .NET 2/3 clients by the WCF framework.
      * 
-     * If the OLAS binding ( AssymetricBinding without encryption in .NET WCF ) is used a signed timestamp will be added
-     * in the SOAP header. This is required for .NET 2/3 clients by the WCF framework.
+     * If the OLAS binding ( AssymetricBinding without encryption in .NET WCF ) is used a signed timestamp will be added in the SOAP header.
+     * This is required for .NET 2/3 clients by the WCF framework.
      * 
      * @param document
      */
@@ -170,8 +167,7 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
             try {
                 wsSecSignature.prepare(document, crypto, wsSecHeader);
 
-                SOAPConstants soapConstants = org.apache.ws.security.util.WSSecurityUtil.getSOAPConstants(document
-                        .getDocumentElement());
+                SOAPConstants soapConstants = org.apache.ws.security.util.WSSecurityUtil.getSOAPConstants(document.getDocumentElement());
 
                 Vector<WSEncryptionPart> wsEncryptionParts = new Vector<WSEncryptionPart>();
                 WSEncryptionPart wsEncryptionPart = new WSEncryptionPart(soapConstants.getBodyQName().getLocalPart(),
@@ -181,8 +177,8 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
                 WSSecTimestamp wsSecTimeStamp = new WSSecTimestamp();
                 wsSecTimeStamp.setTimeToLive(0);
                 /*
-                 * If ttl is zero then there will be no Expires element within the Timestamp. Eventually we want to let
-                 * the service itself decide how long the message validity period is.
+                 * If ttl is zero then there will be no Expires element within the Timestamp. Eventually we want to let the service itself
+                 * decide how long the message validity period is.
                  */
                 wsSecTimeStamp.prepare(document);
                 wsSecTimeStamp.prependToHeader(wsSecHeader);
@@ -236,8 +232,8 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
         }
         LOG.debug("results: " + wsSecurityEngineResults);
         if (null == wsSecurityEngineResults)
-            throw WSSecurityUtil.createSOAPFaultException(
-                    "An error was discovered processing the <wsse:Security> header.", "InvalidSecurity");
+            throw WSSecurityUtil.createSOAPFaultException("An error was discovered processing the <wsse:Security> header.",
+                    "InvalidSecurity");
         Timestamp timestamp = null;
         Set<String> signedElements = null;
         for (WSSecurityEngineResult result : wsSecurityEngineResults) {
@@ -278,8 +274,7 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
         if (offset > maxOffset) {
             LOG.debug("timestamp offset: " + offset);
             LOG.debug("maximum allowed offset: " + maxOffset);
-            throw WSSecurityUtil.createSOAPFaultException("WS-Security Created Timestamp offset exceeded",
-                    "FailedCheck");
+            throw WSSecurityUtil.createSOAPFaultException("WS-Security Created Timestamp offset exceeded", "FailedCheck");
         }
     }
 

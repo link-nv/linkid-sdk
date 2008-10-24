@@ -22,8 +22,7 @@ import org.opensaml.xml.security.SecurityException;
 
 public class SamlRequestSecurityPolicyResolver implements SecurityPolicyResolver {
 
-    //private final static Logger LOGGER = LoggerFactory.getLogger(SamlRequestSecurityPolicyResolver.class);
-
+    // private final static Logger LOGGER = LoggerFactory.getLogger(SamlRequestSecurityPolicyResolver.class);
 
     public Iterable<SecurityPolicy> resolve(MessageContext messageContext) throws SecurityException {
 
@@ -34,7 +33,7 @@ public class SamlRequestSecurityPolicyResolver implements SecurityPolicyResolver
 
     public SecurityPolicy resolveSingle(MessageContext messageContext) throws SecurityException {
 
-        //LOGGER.debug("resolveSingle via slf4j");
+        // LOGGER.debug("resolveSingle via slf4j");
         SecurityPolicy securityPolicy = new BasicSecurityPolicy();
         List<SecurityPolicyRule> securityPolicyRules = securityPolicy.getPolicyRules();
         securityPolicyRules.add(new HTTPRule(null, "POST", false));

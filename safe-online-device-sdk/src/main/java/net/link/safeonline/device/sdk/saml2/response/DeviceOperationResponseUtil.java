@@ -79,9 +79,10 @@ public class DeviceOperationResponseUtil {
      * @param privateKey
      * @throws ServletException
      */
-    public static DeviceOperationResponse validateResponse(DateTime now, HttpServletRequest httpRequest,
-            String expectedInResponseTo, DeviceOperationType expectedDeviceOperation, String stsWsLocation,
-            X509Certificate certificate, PrivateKey privateKey, TrustDomainType trustDomain) throws ServletException {
+    public static DeviceOperationResponse validateResponse(DateTime now, HttpServletRequest httpRequest, String expectedInResponseTo,
+                                                           DeviceOperationType expectedDeviceOperation, String stsWsLocation,
+                                                           X509Certificate certificate, PrivateKey privateKey, TrustDomainType trustDomain)
+                                                                                                                                           throws ServletException {
 
         if (false == "POST".equals(httpRequest.getMethod()))
             return null;
@@ -132,8 +133,7 @@ public class DeviceOperationResponseUtil {
             throw new ServletException("DOM parsing error");
         }
         Element samlElement = samlDocument.getDocumentElement();
-        SecurityTokenServiceClient stsClient = new SecurityTokenServiceClientImpl(stsWsLocation, certificate,
-                privateKey);
+        SecurityTokenServiceClient stsClient = new SecurityTokenServiceClientImpl(stsWsLocation, certificate, privateKey);
         try {
             stsClient.validate(samlElement, trustDomain);
         } catch (RuntimeException e) {

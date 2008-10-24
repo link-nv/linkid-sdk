@@ -19,11 +19,11 @@ import net.link.safeonline.performance.console.swing.ui.ChartWindow;
 /**
  * <h2>{@link ScenarioCharterThread}<br>
  * <sub>This thread generates charts on a given agent.</sub></h2>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ScenarioCharterThread extends ScenarioThread {

@@ -46,8 +46,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  * Attribute Cache JPA Entity. Representing cached attributes values for remote attributes. The TTL is configured in the
  * {@link AttributeTypeEntity}.
  * 
- * Sits as many-to-many between {@link AttributeTypeEntity} and {@link SubjectEntity}. Multi-valued attributes are
- * implemented via {@link #getAttributeIndex()}.
+ * Sits as many-to-many between {@link AttributeTypeEntity} and {@link SubjectEntity}. Multi-valued attributes are implemented via
+ * {@link #getAttributeIndex()}.
  * 
  * @author wvdhaute
  * 
@@ -56,11 +56,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @Table(name = "attribute_cache")
 @NamedQueries( {
         @NamedQuery(name = QUERY_ALL, query = "SELECT a FROM AttributeCacheEntity AS a"),
-        @NamedQuery(name = QUERY_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE, query = "SELECT a "
-                + "FROM AttributeCacheEntity AS a " + "WHERE a.subject = :" + SUBJECT_PARAM
-                + " AND a.attributeType = :" + ATTRIBUTE_TYPE_PARAM + " ORDER BY a.attributeIndex"),
-        @NamedQuery(name = QUERY_DELETE_WHERE_OLDER, query = "DELETE FROM AttributeCacheEntity AS a "
-                + "WHERE a.entryDate < :ageLimit") })
+        @NamedQuery(name = QUERY_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE, query = "SELECT a " + "FROM AttributeCacheEntity AS a "
+                + "WHERE a.subject = :" + SUBJECT_PARAM + " AND a.attributeType = :" + ATTRIBUTE_TYPE_PARAM + " ORDER BY a.attributeIndex"),
+        @NamedQuery(name = QUERY_DELETE_WHERE_OLDER, query = "DELETE FROM AttributeCacheEntity AS a " + "WHERE a.entryDate < :ageLimit") })
 public class AttributeCacheEntity implements Serializable {
 
     private static final long   serialVersionUID                       = 1L;
@@ -117,8 +115,7 @@ public class AttributeCacheEntity implements Serializable {
     }
 
     @EmbeddedId
-    @AttributeOverrides( {
-            @AttributeOverride(name = "attributeType", column = @Column(name = ATTRIBUTE_TYPE_COLUMN_NAME)),
+    @AttributeOverrides( { @AttributeOverride(name = "attributeType", column = @Column(name = ATTRIBUTE_TYPE_COLUMN_NAME)),
             @AttributeOverride(name = "subject", column = @Column(name = SUBJECT_COLUMN_NAME)),
             @AttributeOverride(name = "attributeIndex", column = @Column(name = ATTRIBUTE_INDEX_COLUMN_NAME)) })
     public AttributePK getPk() {
@@ -166,8 +163,7 @@ public class AttributeCacheEntity implements Serializable {
     }
 
     /**
-     * The attribute index is used for implementing the multi-valued attributes. For single-value attributes that
-     * attribute index is zero.
+     * The attribute index is used for implementing the multi-valued attributes. For single-value attributes that attribute index is zero.
      * 
      */
     @Column(name = ATTRIBUTE_INDEX_COLUMN_NAME, insertable = false, updatable = false)
@@ -237,8 +233,8 @@ public class AttributeCacheEntity implements Serializable {
 
 
     /**
-     * We don't manage the member attributes of a compounded attribute directly via the database because the
-     * relationship is to complex to express. This field is filled in by the DAO layer upon request.
+     * We don't manage the member attributes of a compounded attribute directly via the database because the relationship is to complex to
+     * express. This field is filled in by the DAO layer upon request.
      * 
      */
     @Transient
@@ -367,7 +363,7 @@ public class AttributeCacheEntity implements Serializable {
 
         @QueryMethod(QUERY_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE)
         List<AttributeCacheEntity> listAttributes(@QueryParam(SUBJECT_PARAM) SubjectEntity subject,
-                @QueryParam(ATTRIBUTE_TYPE_PARAM) AttributeTypeEntity attributeType);
+                                                  @QueryParam(ATTRIBUTE_TYPE_PARAM) AttributeTypeEntity attributeType);
 
         @UpdateMethod(QUERY_DELETE_WHERE_OLDER)
         void deleteWhereOlder(@QueryParam("ageLimit") Date ageLimit);

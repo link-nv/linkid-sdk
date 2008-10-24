@@ -52,30 +52,28 @@ public class PkiServiceBeanTest extends TestCase {
 
         final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
         final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate",
-                new MBeanActionHandler() {
+        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
 
-                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
+            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-                        return authCertificate;
-                    }
-                });
+                return authCertificate;
+            }
+        });
 
         jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
         final KeyPair keyPair = PkiTestUtils.generateKeyPair();
         final X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
-                new MBeanActionHandler() {
+        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
 
-                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
+            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-                        return certificate;
-                    }
-                });
+                return certificate;
+            }
+        });
 
-        Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager);
+        Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class, SafeOnlineTestContainer.sessionBeans,
+                entityManager);
         systemStartable.postStart();
         this.entityTestManager.refreshEntityManager();
     }
@@ -90,8 +88,8 @@ public class PkiServiceBeanTest extends TestCase {
     public void testAddRemoveTrustDomain() throws Exception {
 
         EntityManager entityManager = this.entityTestManager.getEntityManager();
-        PkiService pkiService = EJBTestUtils.newInstance(PkiServiceBean.class, SafeOnlineTestContainer.sessionBeans,
-                entityManager, "test-operator", SafeOnlineRoles.OPERATOR_ROLE);
+        PkiService pkiService = EJBTestUtils.newInstance(PkiServiceBean.class, SafeOnlineTestContainer.sessionBeans, entityManager,
+                "test-operator", SafeOnlineRoles.OPERATOR_ROLE);
 
         pkiService.addTrustDomain("test-trust-domain", true);
         TrustDomainEntity trustDomain = pkiService.getTrustDomain("test-trust-domain");
@@ -108,8 +106,8 @@ public class PkiServiceBeanTest extends TestCase {
     public void testAddTrustPointWithFakeCertificateThrowsException() throws Exception {
 
         EntityManager entityManager = this.entityTestManager.getEntityManager();
-        PkiService pkiService = EJBTestUtils.newInstance(PkiServiceBean.class, SafeOnlineTestContainer.sessionBeans,
-                entityManager, "test-operator", SafeOnlineRoles.OPERATOR_ROLE);
+        PkiService pkiService = EJBTestUtils.newInstance(PkiServiceBean.class, SafeOnlineTestContainer.sessionBeans, entityManager,
+                "test-operator", SafeOnlineRoles.OPERATOR_ROLE);
 
         pkiService.addTrustDomain("test-trust-domain", true);
         try {
@@ -127,8 +125,8 @@ public class PkiServiceBeanTest extends TestCase {
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
         X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
 
-        PkiService pkiService = EJBTestUtils.newInstance(PkiServiceBean.class, SafeOnlineTestContainer.sessionBeans,
-                entityManager, "test-operator", SafeOnlineRoles.OPERATOR_ROLE);
+        PkiService pkiService = EJBTestUtils.newInstance(PkiServiceBean.class, SafeOnlineTestContainer.sessionBeans, entityManager,
+                "test-operator", SafeOnlineRoles.OPERATOR_ROLE);
 
         pkiService.addTrustDomain("test-trust-domain", true);
         List<TrustPointEntity> result = pkiService.listTrustPoints("test-trust-domain");

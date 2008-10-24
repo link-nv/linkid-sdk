@@ -34,8 +34,7 @@ public class StatisticDataPointDAOBean implements StatisticDataPointDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                StatisticDataPointEntity.QueryInterface.class);
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, StatisticDataPointEntity.QueryInterface.class);
     }
 
     public StatisticDataPointEntity addStatisticDataPoint(String name, StatisticEntity statistic, long x, long y, long z) {

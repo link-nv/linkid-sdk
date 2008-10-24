@@ -56,8 +56,8 @@ public class DeviceOperationRequestUtil {
      * @throws ServletException
      */
     public static DeviceOperationRequest validateRequest(HttpServletRequest request, String stsWsLocation,
-            X509Certificate applicationCertificate, PrivateKey applicationPrivateKey, TrustDomainType trustDomain)
-            throws ServletException {
+                                                         X509Certificate applicationCertificate, PrivateKey applicationPrivateKey,
+                                                         TrustDomainType trustDomain) throws ServletException {
 
         String encodedSamlRequest = request.getParameter("SAMLRequest");
         if (null == encodedSamlRequest)
@@ -76,8 +76,8 @@ public class DeviceOperationRequestUtil {
             throw new ServletException("DOM parsing error");
         }
         Element samlElement = samlDocument.getDocumentElement();
-        SecurityTokenServiceClient stsClient = new SecurityTokenServiceClientImpl(stsWsLocation,
-                applicationCertificate, applicationPrivateKey);
+        SecurityTokenServiceClient stsClient = new SecurityTokenServiceClientImpl(stsWsLocation, applicationCertificate,
+                applicationPrivateKey);
         try {
             stsClient.validate(samlElement, trustDomain);
         } catch (RuntimeException e) {

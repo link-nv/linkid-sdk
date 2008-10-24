@@ -51,8 +51,7 @@ public class RemoveUserMessageHandler implements MessageHandler {
 
     public void init() {
 
-        this.userIdMappingService = EjbUtils.getEJB("SafeOnline/UserIdMappingServiceBean/local",
-                UserIdMappingService.class);
+        this.userIdMappingService = EjbUtils.getEJB("SafeOnline/UserIdMappingServiceBean/local", UserIdMappingService.class);
         this.nodeMappingService = EjbUtils.getEJB("SafeOnline/NodeMappingServiceBean/local", NodeMappingService.class);
         this.nodeAccountService = EjbUtils.getEJB("SafeOnline/NodeAccountServiceBean/local", NodeAccountService.class);
         this.subjectService = EjbUtils.getEJB("SafeOnline/SubjectServiceBean/local", SubjectService.class);

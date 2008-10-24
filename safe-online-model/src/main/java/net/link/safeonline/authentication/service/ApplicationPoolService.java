@@ -54,7 +54,8 @@ public interface ApplicationPoolService {
      * 
      */
     ApplicationPoolEntity addApplicationPool(String name, Long ssoTimeout, List<String> applicationList)
-            throws ExistingApplicationPoolException, ApplicationNotFoundException;
+                                                                                                        throws ExistingApplicationPoolException,
+                                                                                                        ApplicationNotFoundException;
 
     /**
      * Removes an application pool.
@@ -77,7 +78,7 @@ public interface ApplicationPoolService {
      * @throws ApplicationPoolNotFoundException
      * @throws ApplicationNotFoundException
      */
-    void updateApplicationList(String applicationPoolName, List<String> applicationNameList)
-            throws ApplicationPoolNotFoundException, ApplicationNotFoundException;
+    void updateApplicationList(String applicationPoolName, List<String> applicationNameList) throws ApplicationPoolNotFoundException,
+                                                                                            ApplicationNotFoundException;
 
 }

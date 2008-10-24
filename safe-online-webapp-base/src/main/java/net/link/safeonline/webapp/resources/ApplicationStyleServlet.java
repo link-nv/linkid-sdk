@@ -32,16 +32,16 @@ import org.apache.velocity.runtime.log.Log4JLogChute;
 /**
  * <h2>{@link ApplicationStyleServlet}<br>
  * <sub>This servlet generates CSS style for colouring web applications.</sub></h2>
- *
+ * 
  * <p>
- * CSS is generated as declared in <code>style.css.vm</code> in this project's resource folder. Color variables in there
- * are calculated in this servlet based off of the current application's configured base color.
+ * CSS is generated as declared in <code>style.css.vm</code> in this project's resource folder. Color variables in there are calculated in
+ * this servlet based off of the current application's configured base color.
  * </p>
- *
+ * 
  * <p>
  * <i>May 13, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ApplicationStyleServlet extends AbstractInjectionServlet {
@@ -83,8 +83,7 @@ public class ApplicationStyleServlet extends AbstractInjectionServlet {
         velocityProperties.put("resource.loader", "class");
         velocityProperties.put(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, Log4JLogChute.class.getName());
         velocityProperties.put(Log4JLogChute.RUNTIME_LOG_LOG4J_LOGGER, getClass().getName());
-        velocityProperties.put("class.resource.loader.class",
-                "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+        velocityProperties.put("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
 
         this.velocity = new VelocityEngine();
         try {
@@ -98,8 +97,7 @@ public class ApplicationStyleServlet extends AbstractInjectionServlet {
      * @{inheritDoc
      */
     @Override
-    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         String applicationName = request.getParameter("applicationName");
         if (null == applicationName)

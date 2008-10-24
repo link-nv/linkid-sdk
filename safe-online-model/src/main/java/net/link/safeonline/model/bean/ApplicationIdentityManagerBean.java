@@ -48,9 +48,10 @@ public class ApplicationIdentityManagerBean implements ApplicationIdentityManage
     private AttributeTypeDAO       attributeTypeDAO;
 
 
-    public void updateApplicationIdentity(String applicationId,
-            List<IdentityAttributeTypeDO> newApplicationIdentityAttributes) throws ApplicationNotFoundException,
-            ApplicationIdentityNotFoundException, AttributeTypeNotFoundException {
+    public void updateApplicationIdentity(String applicationId, List<IdentityAttributeTypeDO> newApplicationIdentityAttributes)
+                                                                                                                               throws ApplicationNotFoundException,
+                                                                                                                               ApplicationIdentityNotFoundException,
+                                                                                                                               AttributeTypeNotFoundException {
 
         LOG.debug("update application identity for application: " + applicationId);
 
@@ -82,8 +83,7 @@ public class ApplicationIdentityManagerBean implements ApplicationIdentityManage
                 AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attribute.getName());
                 boolean required = attribute.isRequired();
                 boolean dataMining = attribute.isDataMining();
-                this.applicationIdentityDAO.addApplicationIdentityAttribute(applicationIdentity, attributeType,
-                        required, dataMining);
+                this.applicationIdentityDAO.addApplicationIdentityAttribute(applicationIdentity, attributeType, required, dataMining);
             }
             LOG.debug("setting new identity version on application: " + newIdentityVersion);
             application.setCurrentApplicationIdentity(newIdentityVersion);
@@ -105,8 +105,8 @@ public class ApplicationIdentityManagerBean implements ApplicationIdentityManage
         List<ApplicationIdentityAttributeEntity> toRemove = new LinkedList<ApplicationIdentityAttributeEntity>();
 
         for (ApplicationIdentityAttributeEntity applicationIdentityAttribute : applicationIdentity.getAttributes()) {
-            IdentityAttributeTypeDO newIdentityAttribute = newIdentityAttributesMap.get(applicationIdentityAttribute
-                    .getAttributeTypeName());
+            IdentityAttributeTypeDO newIdentityAttribute = newIdentityAttributesMap
+                                                                                   .get(applicationIdentityAttribute.getAttributeTypeName());
             if (null != newIdentityAttribute) {
                 /*
                  * In this case just update the existing identity attribute.

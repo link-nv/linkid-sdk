@@ -50,8 +50,7 @@ public class OSGIHostActivator implements BundleActivator, Serializable {
 
         // Initialize olas attribute service
         OlasAttributeServiceFactory serviceFactory = new OlasAttributeServiceFactory();
-        this.olasAttributeServiceRegistration = context.registerService(OlasAttributeService.class.getName(),
-                serviceFactory, null);
+        this.olasAttributeServiceRegistration = context.registerService(OlasAttributeService.class.getName(), serviceFactory, null);
 
     }
 

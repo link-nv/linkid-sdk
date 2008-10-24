@@ -33,8 +33,7 @@ import net.link.safeonline.jpa.annotation.UpdateMethod;
 @Entity
 @Table(name = "statistic_data_point")
 @NamedQueries( {
-        @NamedQuery(name = DELETE_WHERE_STATISTIC, query = "DELETE FROM StatisticDataPointEntity "
-                + "WHERE statistic = :statistic"),
+        @NamedQuery(name = DELETE_WHERE_STATISTIC, query = "DELETE FROM StatisticDataPointEntity " + "WHERE statistic = :statistic"),
         @NamedQuery(name = QUERY_WHERE_NAME_AND_STATISTIC, query = "SELECT dp FROM StatisticDataPointEntity "
                 + "AS dp WHERE dp.statistic = :statistic " + "AND dp.name = :name"),
         @NamedQuery(name = DELETE_WHERE_STATISTIC_EXPIRED, query = "DELETE FROM StatisticDataPointEntity "
@@ -161,10 +160,9 @@ public class StatisticDataPointEntity implements Serializable {
 
         @QueryMethod(QUERY_WHERE_NAME_AND_STATISTIC)
         List<StatisticDataPointEntity> listStatisticDataPoints(@QueryParam("name") String name,
-                @QueryParam("statistic") StatisticEntity statistic);
+                                                               @QueryParam("statistic") StatisticEntity statistic);
 
         @UpdateMethod(DELETE_WHERE_STATISTIC_EXPIRED)
-        void deleteWhereStatisticExpired(@QueryParam("statistic") StatisticEntity statistic,
-                @QueryParam("ageLimit") Date ageLimit);
+        void deleteWhereStatisticExpired(@QueryParam("statistic") StatisticEntity statistic, @QueryParam("ageLimit") Date ageLimit);
     }
 }

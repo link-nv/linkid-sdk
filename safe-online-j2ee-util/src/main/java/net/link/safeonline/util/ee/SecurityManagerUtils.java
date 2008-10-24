@@ -33,9 +33,9 @@ public class SecurityManagerUtils {
     }
 
     /**
-     * Flushes the JBoss security manager credential cache for a certain principal. This method is accessing the JBoss
-     * security manager via JMX.
-     *
+     * Flushes the JBoss security manager credential cache for a certain principal. This method is accessing the JBoss security manager via
+     * JMX.
+     * 
      * @param login
      * @param securityDomain
      */

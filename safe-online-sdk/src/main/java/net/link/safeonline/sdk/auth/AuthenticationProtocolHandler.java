@@ -19,9 +19,9 @@ import javax.servlet.http.HttpServletResponse;
 
 
 /**
- * Interface for authentication protocol handlers. Protocol handlers are stateful since they must be capable of handling
- * the challenge-response aspect of the authentication protocol. Since protocol handlers are stored in the HTTP session
- * they must be serializable.
+ * Interface for authentication protocol handlers. Protocol handlers are stateful since they must be capable of handling the
+ * challenge-response aspect of the authentication protocol. Since protocol handlers are stored in the HTTP session they must be
+ * serializable.
  * 
  * @author fcorneli
  * 
@@ -46,9 +46,8 @@ public interface AuthenticationProtocolHandler extends Serializable {
      * @param configParams
      *            additional specific authentication protocol configuration parameters.
      */
-    void init(String authnServiceUrl, String applicationName, String applicationFriendlyName,
-            KeyPair applicationKeyPair, X509Certificate applicationCertificate, boolean ssoEnabled,
-            Map<String, String> configParams);
+    void init(String authnServiceUrl, String applicationName, String applicationFriendlyName, KeyPair applicationKeyPair,
+              X509Certificate applicationCertificate, boolean ssoEnabled, Map<String, String> configParams);
 
     /**
      * Initiates the authentication request towards the SafeOnline authentication web application.
@@ -60,20 +59,19 @@ public interface AuthenticationProtocolHandler extends Serializable {
      * @throws IOException
      * @throws ServletException
      */
-    void initiateAuthentication(HttpServletRequest request, HttpServletResponse response, String targetUrl)
-            throws IOException, ServletException;
+    void initiateAuthentication(HttpServletRequest request, HttpServletResponse response, String targetUrl) throws IOException,
+                                                                                                           ServletException;
 
     /**
      * Finalize the active authentication process.
      * 
      * @param httpRequest
      * @param httpResponse
-     * @return the authenticated user Id or <code>null</code> if the handler thinks the request has nothing to do with
-     *         authentication.
+     * @return the authenticated user Id or <code>null</code> if the handler thinks the request has nothing to do with authentication.
      * @throws ServletException
      */
-    AuthenticationProtocolContext finalizeAuthentication(HttpServletRequest httpRequest,
-            HttpServletResponse httpResponse) throws ServletException;
+    AuthenticationProtocolContext finalizeAuthentication(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
+                                                                                                                          throws ServletException;
 
     /**
      * Initiates the logout request towards the SafeOnline authentication web application.
@@ -88,8 +86,8 @@ public interface AuthenticationProtocolHandler extends Serializable {
      * @throws IOException
      * @throws ServletException
      */
-    void initiateLogout(HttpServletRequest request, HttpServletResponse response, String targetUrl, String subjectName)
-            throws IOException, ServletException;
+    void initiateLogout(HttpServletRequest request, HttpServletResponse response, String targetUrl, String subjectName) throws IOException,
+                                                                                                                       ServletException;
 
     /**
      * Finalize the logout process.
@@ -100,8 +98,7 @@ public interface AuthenticationProtocolHandler extends Serializable {
     boolean finalizeLogout(HttpServletRequest request, HttpServletResponse response) throws ServletException;
 
     /**
-     * Handle an incoming logout request, sent from the authentication webapp due to a logout request from another
-     * application.
+     * Handle an incoming logout request, sent from the authentication webapp due to a logout request from another application.
      * 
      * @return userId
      * @throws ServletException
@@ -119,6 +116,5 @@ public interface AuthenticationProtocolHandler extends Serializable {
      * @throws IOException
      * @throws ServletException
      */
-    void sendLogoutResponse(boolean success, HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException;
+    void sendLogoutResponse(boolean success, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
 }

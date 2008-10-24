@@ -24,9 +24,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * This filter gets the contents of the request and makes it available to subscribers in a StringBuffer object.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class LogFilter implements Filter {
 
@@ -38,8 +38,7 @@ public class LogFilter implements Filter {
         LOG.debug("destroy");
     }
 
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-            ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         LOG.debug("doFilter: " + httpRequest.getRequestURL());

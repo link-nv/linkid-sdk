@@ -118,8 +118,8 @@ public class CinemaWebTests extends AbstractWicketTests {
     /**
      * Log in using OLAS.<br>
      * <br>
-     * Create a new film ticket for the first film in the first theatre, in the first room it plays in for that theatre,
-     * at the first available time on Monday (see {@link InitializationService}).<br>
+     * Create a new film ticket for the first film in the first theatre, in the first room it plays in for that theatre, at the first
+     * available time on Monday (see {@link InitializationService}).<br>
      * <br>
      * We end up on the {@link TicketPage}.
      */
@@ -162,8 +162,7 @@ public class CinemaWebTests extends AbstractWicketTests {
 
         // FilmTheatreSelectionPage: Find our film.
         @SuppressWarnings("unchecked")
-        ListView<CinemaFilmEntity> films = (ListView<CinemaFilmEntity>) this.wicket
-                .getComponentFromLastRenderedPage("films:list");
+        ListView<CinemaFilmEntity> films = (ListView<CinemaFilmEntity>) this.wicket.getComponentFromLastRenderedPage("films:list");
         Iterator<? extends ListItem<CinemaFilmEntity>> filmsIt = films.iterator();
 
         String filmLink = null;
@@ -191,7 +190,7 @@ public class CinemaWebTests extends AbstractWicketTests {
         // FilmTheatreSelectionPage: Find our theatre.
         @SuppressWarnings("unchecked")
         ListView<CinemaTheatreEntity> theatres = (ListView<CinemaTheatreEntity>) this.wicket
-                .getComponentFromLastRenderedPage("theatres:list");
+                                                                                            .getComponentFromLastRenderedPage("theatres:list");
         Iterator<? extends ListItem<CinemaTheatreEntity>> theatresIt = theatres.iterator();
 
         String theatreLink = null;
@@ -245,8 +244,7 @@ public class CinemaWebTests extends AbstractWicketTests {
 
         // TimeRoomSelectionPage: Find our room.
         @SuppressWarnings("unchecked")
-        ListView<CinemaRoomEntity> rooms = (ListView<CinemaRoomEntity>) this.wicket
-                .getComponentFromLastRenderedPage("rooms:list");
+        ListView<CinemaRoomEntity> rooms = (ListView<CinemaRoomEntity>) this.wicket.getComponentFromLastRenderedPage("rooms:list");
         Iterator<? extends ListItem<CinemaRoomEntity>> roomsIt = rooms.iterator();
 
         String roomLink = null;
@@ -274,7 +272,7 @@ public class CinemaWebTests extends AbstractWicketTests {
         // SeatSelectionPage: Find our seat.
         @SuppressWarnings("unchecked")
         ListView<List<CinemaSeatEntity>> rows = (ListView<List<CinemaSeatEntity>>) this.wicket
-                .getComponentFromLastRenderedPage("seats:rows");
+                                                                                              .getComponentFromLastRenderedPage("seats:rows");
         Iterator<? extends ListItem<List<CinemaSeatEntity>>> rowsIt = rows.iterator();
 
         String seatLink = null;
@@ -310,17 +308,12 @@ public class CinemaWebTests extends AbstractWicketTests {
         this.wicket.assertComponent("ticket:payment", SelectedPrice.class);
 
         // - Collect sample data.
-        String sampleTimeString = this.wicket.getComponentFromLastRenderedPage("ticket:time:time")
-                .getDefaultModelObjectAsString();
-        String samplePriceString = this.wicket.getComponentFromLastRenderedPage("ticket:payment:price")
-                .getDefaultModelObjectAsString();
+        String sampleTimeString = this.wicket.getComponentFromLastRenderedPage("ticket:time:time").getDefaultModelObjectAsString();
+        String samplePriceString = this.wicket.getComponentFromLastRenderedPage("ticket:payment:price").getDefaultModelObjectAsString();
         try {
-            String sampleFilmName = this.wicket.getComponentFromLastRenderedPage("ticket:film:name")
-                    .getDefaultModelObjectAsString();
-            String sampleTheatreName = this.wicket.getComponentFromLastRenderedPage("ticket:theatre:name")
-                    .getDefaultModelObjectAsString();
-            String sampleRoomName = this.wicket.getComponentFromLastRenderedPage("ticket:room:name")
-                    .getDefaultModelObjectAsString();
+            String sampleFilmName = this.wicket.getComponentFromLastRenderedPage("ticket:film:name").getDefaultModelObjectAsString();
+            String sampleTheatreName = this.wicket.getComponentFromLastRenderedPage("ticket:theatre:name").getDefaultModelObjectAsString();
+            String sampleRoomName = this.wicket.getComponentFromLastRenderedPage("ticket:room:name").getDefaultModelObjectAsString();
             Number samplePrice = WicketUtil.getCurrencyFormat(CinemaSession.CURRENCY).parse(samplePriceString);
             Date sampleTime = WicketUtil.getDateFormat(Session.get().getLocale()).parse(sampleTimeString);
 
@@ -365,8 +358,7 @@ public class CinemaWebTests extends AbstractWicketTests {
 
         this.wicket.dumpPage();
         @SuppressWarnings("unchecked")
-        ListView<CinemaTicketEntity> tickets = (ListView<CinemaTicketEntity>) this.wicket
-                .getComponentFromLastRenderedPage("tickets:list");
+        ListView<CinemaTicketEntity> tickets = (ListView<CinemaTicketEntity>) this.wicket.getComponentFromLastRenderedPage("tickets:list");
         assertNotNull("No tickets in ticket history.", //
                 tickets);
         assertTrue(String.format("Expected (exactly) one ticket: sample: %s", tickets.getList()), //
@@ -425,8 +417,8 @@ public class CinemaWebTests extends AbstractWicketTests {
     @Override
     protected Class<?>[] getServiceBeans() {
 
-        return new Class[] { FilmServiceBean.class, InitializationServiceBean.class, RoomServiceBean.class,
-                SeatServiceBean.class, TheatreServiceBean.class, TicketServiceBean.class, UserServiceBean.class };
+        return new Class[] { FilmServiceBean.class, InitializationServiceBean.class, RoomServiceBean.class, SeatServiceBean.class,
+                TheatreServiceBean.class, TicketServiceBean.class, UserServiceBean.class };
     }
 
     /**
@@ -435,8 +427,7 @@ public class CinemaWebTests extends AbstractWicketTests {
     @Override
     protected Class<?>[] getEntities() {
 
-        return new Class[] { CinemaFilmEntity.class, CinemaRoomEntity.class, CinemaSeatEntity.class,
-                CinemaSeatOccupationEntity.class, CinemaShowTimeEntity.class, CinemaTheatreEntity.class,
-                CinemaTicketEntity.class, CinemaUserEntity.class };
+        return new Class[] { CinemaFilmEntity.class, CinemaRoomEntity.class, CinemaSeatEntity.class, CinemaSeatOccupationEntity.class,
+                CinemaShowTimeEntity.class, CinemaTheatreEntity.class, CinemaTicketEntity.class, CinemaUserEntity.class };
     }
 }

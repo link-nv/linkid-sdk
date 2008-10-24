@@ -151,8 +151,8 @@ public class CinemaSession extends WebSession {
     }
 
     /**
-     * @return The complete ticket for the selections made by the user or <code>null</code> if not all required
-     *         selections have been made yet.
+     * @return The complete ticket for the selections made by the user or <code>null</code> if not all required selections have been made
+     *         yet.
      */
     public CinemaTicketEntity getTicket() {
 

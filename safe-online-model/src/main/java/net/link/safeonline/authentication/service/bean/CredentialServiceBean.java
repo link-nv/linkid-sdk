@@ -52,8 +52,8 @@ public class CredentialServiceBean implements CredentialService, CredentialServi
 
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public void changePassword(String oldPassword, String newPassword) throws PermissionDeniedException,
-            DeviceNotFoundException, SubjectNotFoundException {
+    public void changePassword(String oldPassword, String newPassword) throws PermissionDeniedException, DeviceNotFoundException,
+                                                                      SubjectNotFoundException {
 
         LOG.debug("change password");
         SubjectEntity subject = this.subjectManager.getCallerSubject();
@@ -75,8 +75,7 @@ public class CredentialServiceBean implements CredentialService, CredentialServi
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public void removePassword(String password) throws DeviceNotFoundException, PermissionDeniedException,
-            SubjectNotFoundException {
+    public void removePassword(String password) throws DeviceNotFoundException, PermissionDeniedException, SubjectNotFoundException {
 
         LOG.debug("remove password");
         SubjectEntity subject = this.subjectManager.getCallerSubject();

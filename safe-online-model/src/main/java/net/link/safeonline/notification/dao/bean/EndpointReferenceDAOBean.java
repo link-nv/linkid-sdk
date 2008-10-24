@@ -46,8 +46,7 @@ public class EndpointReferenceDAOBean implements EndpointReferenceDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                EndpointReferenceEntity.QueryInterface.class);
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, EndpointReferenceEntity.QueryInterface.class);
     }
 
     public EndpointReferenceEntity addEndpointReference(String address, ApplicationEntity application) {
@@ -79,7 +78,7 @@ public class EndpointReferenceDAOBean implements EndpointReferenceDAO {
     }
 
     public EndpointReferenceEntity getEndpointReference(String address, ApplicationEntity application)
-            throws EndpointReferenceNotFoundException {
+                                                                                                      throws EndpointReferenceNotFoundException {
 
         EndpointReferenceEntity endpointReference = findEndpointReference(address, application);
         if (null == endpointReference)
@@ -87,8 +86,7 @@ public class EndpointReferenceDAOBean implements EndpointReferenceDAO {
         return endpointReference;
     }
 
-    public EndpointReferenceEntity getEndpointReference(String address, NodeEntity node)
-            throws EndpointReferenceNotFoundException {
+    public EndpointReferenceEntity getEndpointReference(String address, NodeEntity node) throws EndpointReferenceNotFoundException {
 
         EndpointReferenceEntity endpointReference = findEndpointReference(address, node);
         if (null == endpointReference)

@@ -48,8 +48,8 @@ public class PasswordManagerBean implements PasswordManager {
     private AttributeTypeDAO    attributeTypeDAO;
 
 
-    public void changePassword(SubjectEntity subject, String oldPassword, String newPassword)
-            throws PermissionDeniedException, DeviceNotFoundException {
+    public void changePassword(SubjectEntity subject, String oldPassword, String newPassword) throws PermissionDeniedException,
+                                                                                             DeviceNotFoundException {
 
         if (isPasswordConfigured(subject)) {
             if (!validatePassword(subject, oldPassword))
@@ -75,16 +75,12 @@ public class PasswordManagerBean implements PasswordManager {
         AttributeTypeEntity passwordDeviceAttributeType;
         AttributeTypeEntity passwordDeviceDisableAttributeType;
         try {
-            passwordHashAttributeType = this.attributeTypeDAO
-                    .getAttributeType(SafeOnlineConstants.PASSWORD_HASH_ATTRIBUTE);
-            passwordSeedAttributeType = this.attributeTypeDAO
-                    .getAttributeType(SafeOnlineConstants.PASSWORD_SEED_ATTRIBUTE);
-            passwordAlgorithmAttributeType = this.attributeTypeDAO
-                    .getAttributeType(SafeOnlineConstants.PASSWORD_ALGORITHM_ATTRIBUTE);
-            passwordDeviceAttributeType = this.attributeTypeDAO
-                    .getAttributeType(SafeOnlineConstants.PASSWORD_DEVICE_ATTRIBUTE);
+            passwordHashAttributeType = this.attributeTypeDAO.getAttributeType(SafeOnlineConstants.PASSWORD_HASH_ATTRIBUTE);
+            passwordSeedAttributeType = this.attributeTypeDAO.getAttributeType(SafeOnlineConstants.PASSWORD_SEED_ATTRIBUTE);
+            passwordAlgorithmAttributeType = this.attributeTypeDAO.getAttributeType(SafeOnlineConstants.PASSWORD_ALGORITHM_ATTRIBUTE);
+            passwordDeviceAttributeType = this.attributeTypeDAO.getAttributeType(SafeOnlineConstants.PASSWORD_DEVICE_ATTRIBUTE);
             passwordDeviceDisableAttributeType = this.attributeTypeDAO
-                    .getAttributeType(SafeOnlineConstants.PASSWORD_DEVICE_DISABLE_ATTRIBUTE);
+                                                                      .getAttributeType(SafeOnlineConstants.PASSWORD_DEVICE_DISABLE_ATTRIBUTE);
         } catch (AttributeTypeNotFoundException e) {
             throw new EJBException("password attribute types not found");
         }
@@ -103,13 +99,11 @@ public class PasswordManagerBean implements PasswordManager {
             passwordAttribute.seed.setStringValue(seed);
             passwordAttribute.algorithm.setStringValue(defaultHashingAlgorithm);
         } catch (DeviceNotFoundException e) {
-            AttributeEntity hashAttribute = this.attributeDAO.addAttribute(passwordHashAttributeType, subject,
-                    hashValue);
+            AttributeEntity hashAttribute = this.attributeDAO.addAttribute(passwordHashAttributeType, subject, hashValue);
             AttributeEntity seedAttribute = this.attributeDAO.addAttribute(passwordSeedAttributeType, subject, seed);
-            AttributeEntity algorithmAttribute = this.attributeDAO.addAttribute(passwordAlgorithmAttributeType,
-                    subject, defaultHashingAlgorithm);
-            AttributeEntity disableAttribute = this.attributeDAO.addAttribute(passwordDeviceDisableAttributeType,
-                    subject);
+            AttributeEntity algorithmAttribute = this.attributeDAO.addAttribute(passwordAlgorithmAttributeType, subject,
+                    defaultHashingAlgorithm);
+            AttributeEntity disableAttribute = this.attributeDAO.addAttribute(passwordDeviceDisableAttributeType, subject);
             disableAttribute.setBooleanValue(false);
             List<AttributeEntity> members = new LinkedList<AttributeEntity>();
             members.add(hashAttribute);
@@ -156,16 +150,13 @@ public class PasswordManagerBean implements PasswordManager {
 
     private Password getPasswordAttribute(SubjectEntity subject) throws DeviceNotFoundException {
 
-        AttributeEntity passwordHashAttribute = this.attributeDAO.findAttribute(
-                SafeOnlineConstants.PASSWORD_HASH_ATTRIBUTE, subject);
-        AttributeEntity passwordSeedAttribute = this.attributeDAO.findAttribute(
-                SafeOnlineConstants.PASSWORD_SEED_ATTRIBUTE, subject);
-        AttributeEntity passwordAlgorithmAttribute = this.attributeDAO.findAttribute(
-                SafeOnlineConstants.PASSWORD_ALGORITHM_ATTRIBUTE, subject);
-        AttributeEntity passwordDisableAttribute = this.attributeDAO.findAttribute(
-                SafeOnlineConstants.PASSWORD_DEVICE_DISABLE_ATTRIBUTE, subject);
-        AttributeEntity passwordParentAttribute = this.attributeDAO.findAttribute(
-                SafeOnlineConstants.PASSWORD_DEVICE_ATTRIBUTE, subject);
+        AttributeEntity passwordHashAttribute = this.attributeDAO.findAttribute(SafeOnlineConstants.PASSWORD_HASH_ATTRIBUTE, subject);
+        AttributeEntity passwordSeedAttribute = this.attributeDAO.findAttribute(SafeOnlineConstants.PASSWORD_SEED_ATTRIBUTE, subject);
+        AttributeEntity passwordAlgorithmAttribute = this.attributeDAO.findAttribute(SafeOnlineConstants.PASSWORD_ALGORITHM_ATTRIBUTE,
+                subject);
+        AttributeEntity passwordDisableAttribute = this.attributeDAO.findAttribute(SafeOnlineConstants.PASSWORD_DEVICE_DISABLE_ATTRIBUTE,
+                subject);
+        AttributeEntity passwordParentAttribute = this.attributeDAO.findAttribute(SafeOnlineConstants.PASSWORD_DEVICE_ATTRIBUTE, subject);
         if (null == passwordHashAttribute || null == passwordSeedAttribute || null == passwordAlgorithmAttribute
                 || null == passwordParentAttribute || null == passwordDisableAttribute)
             throw new DeviceNotFoundException();
@@ -175,8 +166,8 @@ public class PasswordManagerBean implements PasswordManager {
         if (null == hash || null == seed || null == algorithm)
             throw new DeviceNotFoundException();
 
-        return new Password(passwordHashAttribute, passwordSeedAttribute, passwordAlgorithmAttribute,
-                passwordDisableAttribute, passwordParentAttribute);
+        return new Password(passwordHashAttribute, passwordSeedAttribute, passwordAlgorithmAttribute, passwordDisableAttribute,
+                passwordParentAttribute);
     }
 
     public boolean isPasswordConfigured(SubjectEntity subject) {
@@ -189,8 +180,7 @@ public class PasswordManagerBean implements PasswordManager {
         return true;
     }
 
-    public void removePassword(SubjectEntity subject, String password) throws DeviceNotFoundException,
-            PermissionDeniedException {
+    public void removePassword(SubjectEntity subject, String password) throws DeviceNotFoundException, PermissionDeniedException {
 
         if (!validatePassword(subject, password))
             throw new PermissionDeniedException("password mismatch");
@@ -223,8 +213,8 @@ public class PasswordManagerBean implements PasswordManager {
         public AttributeEntity parent;
 
 
-        public Password(AttributeEntity hash, AttributeEntity seed, AttributeEntity algorithm,
-                AttributeEntity disabled, AttributeEntity parent) {
+        public Password(AttributeEntity hash, AttributeEntity seed, AttributeEntity algorithm, AttributeEntity disabled,
+                        AttributeEntity parent) {
 
             this.hash = hash;
             this.seed = seed;

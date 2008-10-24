@@ -45,7 +45,7 @@ public class AuditMessage implements Serializable {
 
         Message message = session.createMessage();
         message.setLongProperty("auditContextId", this.auditContextId);
-        
+
         return message;
     }
 

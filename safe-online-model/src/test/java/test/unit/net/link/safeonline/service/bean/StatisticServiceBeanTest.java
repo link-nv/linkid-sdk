@@ -72,30 +72,28 @@ public class StatisticServiceBeanTest extends TestCase {
 
         final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
         final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate",
-                new MBeanActionHandler() {
+        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
 
-                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
+            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-                        return authCertificate;
-                    }
-                });
+                return authCertificate;
+            }
+        });
 
         jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
         final KeyPair keyPair = PkiTestUtils.generateKeyPair();
         final X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
-                new MBeanActionHandler() {
+        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
 
-                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
+            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-                        return certificate;
-                    }
-                });
+                return certificate;
+            }
+        });
 
-        Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager);
+        Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class, SafeOnlineTestContainer.sessionBeans,
+                entityManager);
         systemStartable.postStart();
         this.entityTestManager.refreshEntityManager();
     }
@@ -130,11 +128,10 @@ public class StatisticServiceBeanTest extends TestCase {
         passwordDeviceService.register(testAdminSubject, "secret");
         applicationService.registerApplicationOwner(testApplicationOwnerName, testAdminLogin);
 
-        applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null,
-                null, null, null, null, false, false, false, null);
+        applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null, null, null,
+                false, false, false, null);
         ApplicationEntity application = applicationService.getApplication(testApplicationName);
-        StatisticDAO statisticDAO = EJBTestUtils.newInstance(StatisticDAOBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager);
+        StatisticDAO statisticDAO = EJBTestUtils.newInstance(StatisticDAOBean.class, SafeOnlineTestContainer.sessionBeans, entityManager);
 
         StatisticEntity statistic = statisticDAO.addStatistic(testChartName, testDomain, application);
 
@@ -142,20 +139,16 @@ public class StatisticServiceBeanTest extends TestCase {
         StatisticDataPointEntity dp = new StatisticDataPointEntity("Cat A", statistic, new Date(), generator.nextInt(),
                 generator.nextInt(), generator.nextInt());
         statistic.getStatisticDataPoints().add(dp);
-        dp = new StatisticDataPointEntity("Cat B", statistic, new Date(), generator.nextInt(), generator.nextInt(),
-                generator.nextInt());
+        dp = new StatisticDataPointEntity("Cat B", statistic, new Date(), generator.nextInt(), generator.nextInt(), generator.nextInt());
         statistic.getStatisticDataPoints().add(dp);
-        dp = new StatisticDataPointEntity("Cat C", statistic, new Date(), generator.nextInt(), generator.nextInt(),
-                generator.nextInt());
+        dp = new StatisticDataPointEntity("Cat C", statistic, new Date(), generator.nextInt(), generator.nextInt(), generator.nextInt());
         statistic.getStatisticDataPoints().add(dp);
-        dp = new StatisticDataPointEntity("Cat D", statistic, new Date(), generator.nextInt(), generator.nextInt(),
-                generator.nextInt());
+        dp = new StatisticDataPointEntity("Cat D", statistic, new Date(), generator.nextInt(), generator.nextInt(), generator.nextInt());
         statistic.getStatisticDataPoints().add(dp);
 
         // operate
-        StatisticService statisticService = EJBTestUtils.newInstance(StatisticServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator",
-                SafeOnlineRoles.GLOBAL_OPERATOR_ROLE, SafeOnlineRoles.OPERATOR_ROLE);
+        StatisticService statisticService = EJBTestUtils.newInstance(StatisticServiceBean.class, SafeOnlineTestContainer.sessionBeans,
+                entityManager, "test-operator", SafeOnlineRoles.GLOBAL_OPERATOR_ROLE, SafeOnlineRoles.OPERATOR_ROLE);
 
         JFreeChart chart = statisticService.getChart(testChartName, testDomain, testApplicationName);
 
@@ -188,11 +181,10 @@ public class StatisticServiceBeanTest extends TestCase {
         passwordDeviceService.register(testAdminSubject, "secret");
         applicationService.registerApplicationOwner(testApplicationOwnerName, testAdminLogin);
 
-        applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null,
-                null, null, null, null, false, false, false, null);
+        applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null, null, null,
+                false, false, false, null);
         ApplicationEntity application = applicationService.getApplication(testApplicationName);
-        StatisticDAO statisticDAO = EJBTestUtils.newInstance(StatisticDAOBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager);
+        StatisticDAO statisticDAO = EJBTestUtils.newInstance(StatisticDAOBean.class, SafeOnlineTestContainer.sessionBeans, entityManager);
 
         StatisticEntity statistic = statisticDAO.addStatistic(testChartName, testDomain, application);
 
@@ -200,20 +192,16 @@ public class StatisticServiceBeanTest extends TestCase {
         StatisticDataPointEntity dp = new StatisticDataPointEntity("Cat A", statistic, new Date(), generator.nextInt(),
                 generator.nextInt(), generator.nextInt());
         statistic.getStatisticDataPoints().add(dp);
-        dp = new StatisticDataPointEntity("Cat B", statistic, new Date(), generator.nextInt(), generator.nextInt(),
-                generator.nextInt());
+        dp = new StatisticDataPointEntity("Cat B", statistic, new Date(), generator.nextInt(), generator.nextInt(), generator.nextInt());
         statistic.getStatisticDataPoints().add(dp);
-        dp = new StatisticDataPointEntity("Cat C", statistic, new Date(), generator.nextInt(), generator.nextInt(),
-                generator.nextInt());
+        dp = new StatisticDataPointEntity("Cat C", statistic, new Date(), generator.nextInt(), generator.nextInt(), generator.nextInt());
         statistic.getStatisticDataPoints().add(dp);
-        dp = new StatisticDataPointEntity("Cat D", statistic, new Date(), generator.nextInt(), generator.nextInt(),
-                generator.nextInt());
+        dp = new StatisticDataPointEntity("Cat D", statistic, new Date(), generator.nextInt(), generator.nextInt(), generator.nextInt());
         statistic.getStatisticDataPoints().add(dp);
 
         // operate
-        StatisticService statisticService = EJBTestUtils.newInstance(StatisticServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator",
-                SafeOnlineRoles.GLOBAL_OPERATOR_ROLE, SafeOnlineRoles.OPERATOR_ROLE);
+        StatisticService statisticService = EJBTestUtils.newInstance(StatisticServiceBean.class, SafeOnlineTestContainer.sessionBeans,
+                entityManager, "test-operator", SafeOnlineRoles.GLOBAL_OPERATOR_ROLE, SafeOnlineRoles.OPERATOR_ROLE);
 
         HSSFWorkbook workbook = statisticService.exportStatistic(testChartName, testDomain, testApplicationName);
 

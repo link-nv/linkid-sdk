@@ -16,9 +16,9 @@ import java.lang.annotation.Target;
 
 /**
  * Is used to specify a mapped compounded attribute member attribute for a property or field.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Documented
 @Target( { ElementType.FIELD, ElementType.METHOD })
@@ -27,7 +27,7 @@ public @interface CompoundMember {
 
     /**
      * The name of the member attribute.
-     *
+     * 
      */
     String value();
 }

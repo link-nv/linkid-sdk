@@ -38,8 +38,7 @@ public class SchedulingDAOBean implements SchedulingDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                SchedulingEntity.QueryInterface.class);
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, SchedulingEntity.QueryInterface.class);
     }
 
     public SchedulingEntity addScheduling(String name, String cronExpression) {

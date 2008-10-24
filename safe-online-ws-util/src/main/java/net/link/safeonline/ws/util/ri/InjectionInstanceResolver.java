@@ -24,12 +24,12 @@ import com.sun.xml.ws.server.AbstractMultiInstanceResolver;
 
 
 /**
- * Implementation class for injection JAX-WS RI instance resolver. This JAX-WS RI instance resolver injects JNDI
- * components. Simply use the EJB annotation with mappedName attribute on the injection fields of your JAX-WS endpoints.
- * Use only to inject stateless session beans. This cannot be used for injection of stateful session beans.
- *
+ * Implementation class for injection JAX-WS RI instance resolver. This JAX-WS RI instance resolver injects JNDI components. Simply use the
+ * EJB annotation with mappedName attribute on the injection fields of your JAX-WS endpoints. Use only to inject stateless session beans.
+ * This cannot be used for injection of stateful session beans.
+ * 
  * @author fcorneli
- *
+ * 
  * @param <T>
  */
 public class InjectionInstanceResolver<T> extends AbstractMultiInstanceResolver<T> {

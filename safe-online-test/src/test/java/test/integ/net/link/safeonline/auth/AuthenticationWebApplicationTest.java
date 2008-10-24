@@ -81,9 +81,8 @@ public class AuthenticationWebApplicationTest {
         postMethod.setRequestHeader("Cookie", "deflowered=true");
 
         KeyPair keyPair = new KeyPair(publicKey, privateKey);
-        String authnRequest = AuthnRequestFactory.createAuthnRequest("performance-application",
-                "performance-application", null, keyPair, "http://localhost:1234/performance-application", null, null,
-                null, false);
+        String authnRequest = AuthnRequestFactory.createAuthnRequest("performance-application", "performance-application", null, keyPair,
+                "http://localhost:1234/performance-application", null, null, null, false);
         LOG.debug("authentication request: " + authnRequest);
         String encodedAuthnRequest = new String(Base64.encodeBase64(authnRequest.getBytes()));
 
@@ -187,18 +186,18 @@ public class AuthenticationWebApplicationTest {
             return null;
         }
 
-        public Socket createSocket(String host, int port, InetAddress localAddress, int localPort) throws IOException,
-                UnknownHostException {
+        public Socket createSocket(String host, int port, InetAddress localAddress, int localPort) throws IOException, UnknownHostException {
 
             LOG.debug("createSocket: " + host + ":" + port + ", local: " + localAddress + ":" + localPort);
             return null;
         }
 
-        public Socket createSocket(String host, int port, InetAddress localAddress, int localPort,
-                HttpConnectionParams params) throws IOException, UnknownHostException, ConnectTimeoutException {
+        public Socket createSocket(String host, int port, InetAddress localAddress, int localPort, HttpConnectionParams params)
+                                                                                                                               throws IOException,
+                                                                                                                               UnknownHostException,
+                                                                                                                               ConnectTimeoutException {
 
-            LOG.debug("createSocket: " + host + ":" + port + ", local: " + localAddress + ":" + localPort
-                    + ", params: " + params);
+            LOG.debug("createSocket: " + host + ":" + port + ", local: " + localAddress + ":" + localPort + ", params: " + params);
 
             Socket socket = this.sslSocketFactory.createSocket(host, port, localAddress, localPort);
             return socket;

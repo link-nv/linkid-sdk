@@ -18,9 +18,9 @@ import javax.servlet.UnavailableException;
 
 /**
  * Specifies that the field should be resolved from the servlet context parameter list.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 @Documented
 @Target(ElementType.FIELD)
@@ -32,7 +32,7 @@ public @interface Context {
 
     /**
      * The name of the context parameter.
-     *
+     * 
      */
     String name();
 

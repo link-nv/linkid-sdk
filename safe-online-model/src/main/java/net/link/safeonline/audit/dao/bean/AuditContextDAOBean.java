@@ -58,8 +58,7 @@ public class AuditContextDAOBean implements AuditContextDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                AuditContextEntity.QueryInterface.class);
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, AuditContextEntity.QueryInterface.class);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -91,11 +90,11 @@ public class AuditContextDAOBean implements AuditContextDAO {
 
         Date ageLimit = new Date(System.currentTimeMillis() - ageInMinutes * 60 * 1000);
         LOG.debug("Cleaning audit contexts older then " + ageLimit);
-        
+
         List<AuditContextEntity> contexts = this.queryObject.listContextsOlderThen(ageLimit);
         for (AuditContextEntity context : contexts) {
             LOG.debug("Cleaning context " + context.getId());
-        
+
             this.auditAuditDAO.cleanup(context.getId());
             this.accessAuditDAO.cleanup(context.getId());
             this.securityAuditDAO.cleanup(context.getId());
@@ -113,7 +112,7 @@ public class AuditContextDAOBean implements AuditContextDAO {
 
         AuditContextEntity auditContext = getAuditContext(auditContextId);
         this.entityManager.remove(auditContext);
-        
+
         return true;
     }
 

@@ -75,8 +75,8 @@ import org.apache.commons.logging.LogFactory;
  * </p>
  * 
  * <p>
- * SafeOnline extensions: we communicate the multivalued property of an attribute via the
- * AttributeServiceConstants#MULTIVALUED_ATTRIBUTE XML attribute on the SAML XML "Attribute" element.
+ * SafeOnline extensions: we communicate the multivalued property of an attribute via the AttributeServiceConstants#MULTIVALUED_ATTRIBUTE
+ * XML attribute on the SAML XML "Attribute" element.
  * </p>
  * 
  * @author fcorneli
@@ -145,8 +145,7 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 
     private String findUserId(String applicationUserId) throws ApplicationNotFoundException {
 
-        ApplicationManager applicationManager = EjbUtils.getEJB("SafeOnline/ApplicationManagerBean/local",
-                ApplicationManager.class);
+        ApplicationManager applicationManager = EjbUtils.getEJB("SafeOnline/ApplicationManagerBean/local", ApplicationManager.class);
         ApplicationEntity application = applicationManager.getCallerApplication();
 
         ApplicationIdentifierMappingService applicationIdentifierMappingService = EjbUtils.getEJB(
@@ -225,8 +224,9 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
         return response;
     }
 
-    private Object getAttributeValue(String subjectLogin, String attributeName) throws SubjectNotFoundException,
-            PermissionDeniedException, AttributeTypeNotFoundException, AttributeUnavailableException {
+    private Object getAttributeValue(String subjectLogin, String attributeName) throws SubjectNotFoundException, PermissionDeniedException,
+                                                                               AttributeTypeNotFoundException,
+                                                                               AttributeUnavailableException {
 
         if (this.certificateDomain.equals(CertificateDomain.APPLICATION))
             return this.attributeService.getConfirmedAttributeValue(subjectLogin, attributeName);
@@ -235,8 +235,8 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
         return null;
     }
 
-    private Map<String, Object> getAttributeValues(String subjectLogin) throws SubjectNotFoundException,
-            PermissionDeniedException, AttributeTypeNotFoundException, AttributeUnavailableException {
+    private Map<String, Object> getAttributeValues(String subjectLogin) throws SubjectNotFoundException, PermissionDeniedException,
+                                                                       AttributeTypeNotFoundException, AttributeUnavailableException {
 
         if (this.certificateDomain.equals(CertificateDomain.APPLICATION))
             return this.attributeService.getConfirmedAttributeValues(subjectLogin);
@@ -271,8 +271,7 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
         } else {
             detailMessage = "Attribute not found: " + attributeName;
         }
-        ResponseType response = createRequesterErrorResponse(SamlpSecondLevelErrorCode.INVALID_ATTRIBUTE_NAME_OR_VALUE,
-                detailMessage);
+        ResponseType response = createRequesterErrorResponse(SamlpSecondLevelErrorCode.INVALID_ATTRIBUTE_NAME_OR_VALUE, detailMessage);
         return response;
     }
 
@@ -288,15 +287,14 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
         } else {
             detailMessage = "Attribute not found: " + attributeName;
         }
-        ResponseType response = createRequesterErrorResponse(SamlpSecondLevelErrorCode.ATTRIBUTE_UNAVAILABLE,
-                detailMessage);
+        ResponseType response = createRequesterErrorResponse(SamlpSecondLevelErrorCode.ATTRIBUTE_UNAVAILABLE, detailMessage);
         return response;
     }
 
     private ResponseType createUnknownPrincipalResponse(String subjectLogin) {
 
-        ResponseType response = createRequesterErrorResponse(SamlpSecondLevelErrorCode.UNKNOWN_PRINCIPAL,
-                "Subject not found: " + subjectLogin);
+        ResponseType response = createRequesterErrorResponse(SamlpSecondLevelErrorCode.UNKNOWN_PRINCIPAL, "Subject not found: "
+                + subjectLogin);
         return response;
     }
 
@@ -312,8 +310,7 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
      * @param statusMessage
      *            the optional status message.
      */
-    private ResponseType createRequesterErrorResponse(SamlpSecondLevelErrorCode secondLevelStatusCode,
-            String statusMessage) {
+    private ResponseType createRequesterErrorResponse(SamlpSecondLevelErrorCode secondLevelStatusCode, String statusMessage) {
 
         ResponseType response = createGenericResponse(SamlpTopLevelErrorCode.REQUESTER);
 
@@ -418,8 +415,7 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
         GregorianCalendar gregorianCalendar = new GregorianCalendar();
         Date now = new Date();
         gregorianCalendar.setTime(now);
-        XMLGregorianCalendar currentXmlGregorianCalendar = this.datatypeFactory
-                .newXMLGregorianCalendar(gregorianCalendar);
+        XMLGregorianCalendar currentXmlGregorianCalendar = this.datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
         return currentXmlGregorianCalendar;
     }
 }

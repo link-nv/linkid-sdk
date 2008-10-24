@@ -17,15 +17,15 @@ import javax.persistence.Id;
 /**
  * <h2>{@link CinemaShowTimeEntity}<br>
  * <sub>[in short] (TODO).</sub></h2>
- *
+ * 
  * <p>
  * [description / usage].
  * </p>
- *
+ * 
  * <p>
  * <i>Jun 12, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 @Entity
@@ -51,8 +51,8 @@ public class CinemaShowTimeEntity implements Serializable, Cloneable {
 
     }
 
-    public CinemaShowTimeEntity(Integer monStart, Integer tueStart, Integer wedStart, Integer thuStart,
-            Integer friStart, Integer satStart, Integer sunStart) {
+    public CinemaShowTimeEntity(Integer monStart, Integer tueStart, Integer wedStart, Integer thuStart, Integer friStart, Integer satStart,
+                                Integer sunStart) {
 
         this.monStart = monStart;
         this.tueStart = tueStart;
@@ -69,9 +69,9 @@ public class CinemaShowTimeEntity implements Serializable, Cloneable {
     @Override
     public String toString() {
 
-        return String.format("[M: %s, T: %s, W: %s, T: %s, F: %s, S: %s, S: %s]", timeToStr(this.monStart),
-                timeToStr(this.tueStart), timeToStr(this.wedStart), timeToStr(this.thuStart), timeToStr(this.friStart),
-                timeToStr(this.satStart), timeToStr(this.sunStart));
+        return String.format("[M: %s, T: %s, W: %s, T: %s, F: %s, S: %s, S: %s]", timeToStr(this.monStart), timeToStr(this.tueStart),
+                timeToStr(this.wedStart), timeToStr(this.thuStart), timeToStr(this.friStart), timeToStr(this.satStart),
+                timeToStr(this.sunStart));
     }
 
     private String timeToStr(Integer time) {
@@ -126,7 +126,7 @@ public class CinemaShowTimeEntity implements Serializable, Cloneable {
     @Override
     public CinemaShowTimeEntity clone() {
 
-        return new CinemaShowTimeEntity(this.monStart, this.tueStart, this.wedStart, this.thuStart, this.friStart,
-                this.satStart, this.sunStart);
+        return new CinemaShowTimeEntity(this.monStart, this.tueStart, this.wedStart, this.thuStart, this.friStart, this.satStart,
+                this.sunStart);
     }
 }

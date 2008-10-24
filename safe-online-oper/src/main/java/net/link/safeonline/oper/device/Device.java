@@ -35,14 +35,14 @@ public interface Device {
     String view();
 
     String add() throws ExistingDeviceException, CertificateEncodingException, DeviceClassNotFoundException,
-            AttributeTypeNotFoundException, NodeNotFoundException, IOException, PermissionDeniedException;
+                AttributeTypeNotFoundException, NodeNotFoundException, IOException, PermissionDeniedException;
 
     String remove() throws DeviceNotFoundException, DeviceDescriptionNotFoundException, DevicePropertyNotFoundException;
 
     String edit();
 
-    String save() throws DeviceNotFoundException, CertificateEncodingException, IOException,
-            AttributeTypeNotFoundException, PermissionDeniedException;
+    String save() throws DeviceNotFoundException, CertificateEncodingException, IOException, AttributeTypeNotFoundException,
+                 PermissionDeniedException;
 
     /*
      * Accessors

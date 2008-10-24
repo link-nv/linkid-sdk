@@ -43,19 +43,18 @@ import org.apache.commons.lang.builder.ToStringStyle;
 @Entity
 @Table(name = "subscription")
 @NamedQueries( {
-        @NamedQuery(name = QUERY_WHERE_SUBJECT, query = "SELECT subscription "
-                + "FROM SubscriptionEntity AS subscription " + "WHERE subscription.subject = :subject"),
-        @NamedQuery(name = QUERY_COUNT_WHERE_APPLICATION, query = "SELECT COUNT(*) "
-                + "FROM SubscriptionEntity AS subscription " + "WHERE subscription.application = :application"),
+        @NamedQuery(name = QUERY_WHERE_SUBJECT, query = "SELECT subscription " + "FROM SubscriptionEntity AS subscription "
+                + "WHERE subscription.subject = :subject"),
+        @NamedQuery(name = QUERY_COUNT_WHERE_APPLICATION, query = "SELECT COUNT(*) " + "FROM SubscriptionEntity AS subscription "
+                + "WHERE subscription.application = :application"),
         @NamedQuery(name = QUERY_COUNT_WHERE_APPLICATION_AND_ACTIVE, query = "SELECT COUNT(*) "
                 + "FROM SubscriptionEntity AS subscription " + "WHERE subscription.application = :application "
                 + "AND subscription.lastLogin > :lastLogin"),
-        @NamedQuery(name = QUERY_WHERE_APPLICATION, query = "SELECT subscription "
-                + "FROM SubscriptionEntity AS subscription " + "WHERE subscription.application = :application"),
+        @NamedQuery(name = QUERY_WHERE_APPLICATION, query = "SELECT subscription " + "FROM SubscriptionEntity AS subscription "
+                + "WHERE subscription.application = :application"),
         @NamedQuery(name = DELETE_ALL_SUBJECT, query = "DELETE FROM SubscriptionEntity AS subscription "
                 + "WHERE subscription.subject = :subject"),
-        @NamedQuery(name = QUERY_WHERE_USER_APPLICATION_ID, query = "SELECT subscription "
-                + "FROM SubscriptionEntity AS subscription "
+        @NamedQuery(name = QUERY_WHERE_USER_APPLICATION_ID, query = "SELECT subscription " + "FROM SubscriptionEntity AS subscription "
                 + "WHERE subscription.subscriptionUserId = :subscriptionUserId") })
 public class SubscriptionEntity implements Serializable {
 
@@ -95,8 +94,8 @@ public class SubscriptionEntity implements Serializable {
         // empty
     }
 
-    public SubscriptionEntity(SubscriptionOwnerType subscriptionOwnerType, SubjectEntity subject,
-            String subscriptionUserId, ApplicationEntity application) {
+    public SubscriptionEntity(SubscriptionOwnerType subscriptionOwnerType, SubjectEntity subject, String subscriptionUserId,
+                              ApplicationEntity application) {
 
         this.subscriptionOwnerType = subscriptionOwnerType;
         this.subject = subject;
@@ -210,8 +209,8 @@ public class SubscriptionEntity implements Serializable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("pk", this.pk).append("ownerType",
-                this.subscriptionOwnerType).toString();
+        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("pk", this.pk).append("ownerType", this.subscriptionOwnerType)
+                                                                    .toString();
     }
 
 
@@ -222,7 +221,7 @@ public class SubscriptionEntity implements Serializable {
 
         @QueryMethod(QUERY_COUNT_WHERE_APPLICATION_AND_ACTIVE)
         long getNumberOfActiveSubscriptions(@QueryParam("application") ApplicationEntity application,
-                @QueryParam("lastLogin") Date lastLogin);
+                                            @QueryParam("lastLogin") Date lastLogin);
 
         @QueryMethod(QUERY_COUNT_WHERE_APPLICATION)
         long getNumberOfSubscriptions(@QueryParam("application") ApplicationEntity application);

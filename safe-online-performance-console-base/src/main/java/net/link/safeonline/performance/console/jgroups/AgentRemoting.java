@@ -61,32 +61,32 @@ public class AgentRemoting implements Receiver, ChannelListener {
 
         this.agentStateListeners = new ArrayList<AgentStateListener>();
 
-            if (null == this.channel || !this.channel.isOpen()) {
-                URL jgroupsConfig = getClass().getResource("/jgroups.xml");
-                if (jgroupsConfig == null)
-                    throw new IllegalStateException("The JGroups configuration file cannot be found.");
+        if (null == this.channel || !this.channel.isOpen()) {
+            URL jgroupsConfig = getClass().getResource("/jgroups.xml");
+            if (jgroupsConfig == null)
+                throw new IllegalStateException("The JGroups configuration file cannot be found.");
 
-                // Give as much info on why this error happened.
+            // Give as much info on why this error happened.
+            try {
+                this.channel = new JChannel(jgroupsConfig);
+            } catch (ChannelException e) {
                 try {
-                    this.channel = new JChannel(jgroupsConfig);
-                } catch (ChannelException e) {
-                    try {
-                        StringBuffer jgroupsConfigData = new StringBuffer();
-                        InputStream stream = jgroupsConfig.openStream();
-                        byte[] bytes = new byte[4092];
-                        int read = 0;
-                        while ((read = stream.read(bytes)) >= 0) {
-                            jgroupsConfigData.append(new String(bytes, 0, read));
-                        }
-                        
-                        LOG.debug("The following JGroups config caused the error:");
-                        LOG.debug(jgroupsConfigData.toString());
-                    } catch (IOException ee) {
+                    StringBuffer jgroupsConfigData = new StringBuffer();
+                    InputStream stream = jgroupsConfig.openStream();
+                    byte[] bytes = new byte[4092];
+                    int read = 0;
+                    while ((read = stream.read(bytes)) >= 0) {
+                        jgroupsConfigData.append(new String(bytes, 0, read));
                     }
-                    
-                    throw new IllegalStateException("Channel configuration unusable.", e);
+
+                    LOG.debug("The following JGroups config caused the error:");
+                    LOG.debug(jgroupsConfigData.toString());
+                } catch (IOException ee) {
                 }
+
+                throw new IllegalStateException("Channel configuration unusable.", e);
             }
+        }
 
         this.channel.addChannelListener(AgentRemoting.this);
         this.channel.setReceiver(AgentRemoting.this);

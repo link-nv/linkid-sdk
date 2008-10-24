@@ -31,20 +31,21 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- * Certificate Validator JAX-WS Handler. This JAX-WS SOAP handler will validate the incoming certificate as being a
- * trusted application, device or olas node certificate.
- *
+ * Certificate Validator JAX-WS Handler. This JAX-WS SOAP handler will validate the incoming certificate as being a trusted application,
+ * device or olas node certificate.
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class CertificateValidatorHandler implements SOAPHandler<SOAPMessageContext> {
 
-    public static final String CERTIFICATE_DOMAIN_PROPERTY = CertificateValidatorHandler.class.getName()
-                                                                   + ".CertificateDomain";
+    public static final String CERTIFICATE_DOMAIN_PROPERTY = CertificateValidatorHandler.class.getName() + ".CertificateDomain";
 
 
     public enum CertificateDomain {
-        APPLICATION, DEVICE, NODE
+        APPLICATION,
+        DEVICE,
+        NODE
     }
 
 
@@ -97,16 +98,14 @@ public class CertificateValidatorHandler implements SOAPHandler<SOAPMessageConte
         }
         PkiResult result;
         try {
-            result = this.pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-                    certificate);
+            result = this.pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate);
             setCertificateDomain(CertificateDomain.APPLICATION, context);
         } catch (TrustDomainNotFoundException e) {
             throw WSSecurityUtil.createSOAPFaultException("application trust domain not found", "FailedAuthentication");
         }
         if (PkiResult.VALID != result) {
             try {
-                result = this.pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN,
-                        certificate);
+                result = this.pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN, certificate);
                 setCertificateDomain(CertificateDomain.DEVICE, context);
             } catch (TrustDomainNotFoundException e) {
                 throw WSSecurityUtil.createSOAPFaultException("devices trust domain not found", "FailedAuthentication");
@@ -114,8 +113,7 @@ public class CertificateValidatorHandler implements SOAPHandler<SOAPMessageConte
         }
         if (PkiResult.VALID != result) {
             try {
-                result = this.pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN,
-                        certificate);
+                result = this.pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN, certificate);
                 setCertificateDomain(CertificateDomain.NODE, context);
             } catch (TrustDomainNotFoundException e) {
                 throw WSSecurityUtil.createSOAPFaultException("olas trust domain not found", "FailedAuthentication");
@@ -150,7 +148,7 @@ public class CertificateValidatorHandler implements SOAPHandler<SOAPMessageConte
 
     /**
      * Returns the certificate domain from the requester.
-     *
+     * 
      * @param context
      * @throws CertificateDomainException
      */

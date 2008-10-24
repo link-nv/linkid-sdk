@@ -28,9 +28,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * JSF validator for {@link AttributeDO}.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class AttributeValidator implements Validator {
 

@@ -18,11 +18,11 @@ import net.link.safeonline.data.AttributeDO;
 
 
 /**
- * JSF output component for name of {@link AttributeDO}. The visual effect will depend on the category of the attribute.
- * A compounded entry will appear in bold, a member entry will appear in italic.
- *
+ * JSF output component for name of {@link AttributeDO}. The visual effect will depend on the category of the attribute. A compounded entry
+ * will appear in bold, a member entry will appear in italic.
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class AttributeNameOutputComponent extends UIOutput {
 
@@ -60,8 +60,7 @@ public class AttributeNameOutputComponent extends UIOutput {
         }
         if (attribute.isCompounded()) {
             response.startElement("span", null);
-            response.writeAttribute("class", COMPOUNDED_DEFAULT + " " + this.compoundedStyleClass,
-                    "compoundedStyleClass");
+            response.writeAttribute("class", COMPOUNDED_DEFAULT + " " + this.compoundedStyleClass, "compoundedStyleClass");
             response.write(attributeName);
             response.endElement("span");
         } else if (attribute.isMember()) {

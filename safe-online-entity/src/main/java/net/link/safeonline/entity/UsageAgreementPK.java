@@ -72,8 +72,8 @@ public class UsageAgreementPK implements Serializable {
         if (false == obj instanceof UsageAgreementPK)
             return false;
         UsageAgreementPK rhs = (UsageAgreementPK) obj;
-        return new EqualsBuilder().append(this.application, rhs.application).append(this.usageAgreementVersion,
-                rhs.usageAgreementVersion).isEquals();
+        return new EqualsBuilder().append(this.application, rhs.application).append(this.usageAgreementVersion, rhs.usageAgreementVersion)
+                                  .isEquals();
     }
 
     @Override
@@ -85,8 +85,8 @@ public class UsageAgreementPK implements Serializable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("application", this.application).append("usageAgreementVersion",
-                this.usageAgreementVersion).toString();
+        return new ToStringBuilder(this).append("application", this.application)
+                                        .append("usageAgreementVersion", this.usageAgreementVersion).toString();
     }
 
 }

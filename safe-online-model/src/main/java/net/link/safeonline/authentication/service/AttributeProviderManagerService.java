@@ -27,5 +27,6 @@ public interface AttributeProviderManagerService {
     void removeAttributeProvider(AttributeProviderEntity attributeProvider) throws AttributeProviderNotFoundException;
 
     void addAttributeProvider(String applicationName, String attributeName) throws ApplicationNotFoundException,
-            AttributeTypeNotFoundException, ExistingAttributeProviderException, PermissionDeniedException;
+                                                                           AttributeTypeNotFoundException,
+                                                                           ExistingAttributeProviderException, PermissionDeniedException;
 }

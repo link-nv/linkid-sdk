@@ -58,8 +58,8 @@ public class PrescriptionFillBean extends AbstractPrescriptionDataClientBean imp
     private PrescriptionEntity       selectedPrescription;
 
     /**
-     * Fill prescription entity. We have to use a field different from selectedPrescription because the
-     * DataModelSelection annotation is causing the selectedPrescription field to become null.
+     * Fill prescription entity. We have to use a field different from selectedPrescription because the DataModelSelection annotation is
+     * causing the selectedPrescription field to become null.
      */
     @In(value = SELECTED_PRESCRIPTION, required = false)
     private PrescriptionEntity       fillPrescription;

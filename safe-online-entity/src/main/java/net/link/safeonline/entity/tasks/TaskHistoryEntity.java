@@ -142,9 +142,8 @@ public class TaskHistoryEntity implements Serializable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("id", this.id).append("task", this.task.getName()).append("result",
-                this.result).append("message", this.message).append("date", this.executionDate).append("time",
-                this.executionTime).toString();
+        return new ToStringBuilder(this).append("id", this.id).append("task", this.task.getName()).append("result", this.result).append(
+                "message", this.message).append("date", this.executionDate).append("time", this.executionTime).toString();
     }
 
     @Override

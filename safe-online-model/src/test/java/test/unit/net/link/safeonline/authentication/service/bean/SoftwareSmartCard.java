@@ -92,8 +92,7 @@ public class SoftwareSmartCard implements SmartCard {
         return this.surname;
     }
 
-    public void init(@SuppressWarnings("unused") List<SmartCardConfig> smartCardConfigs,
-            SmartCardInteraction smartCardInteraction) {
+    public void init(@SuppressWarnings("unused") List<SmartCardConfig> smartCardConfigs, SmartCardInteraction smartCardInteraction) {
 
     }
 

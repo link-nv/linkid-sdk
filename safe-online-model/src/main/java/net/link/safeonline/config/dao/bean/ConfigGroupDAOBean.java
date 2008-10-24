@@ -32,8 +32,7 @@ public class ConfigGroupDAOBean implements ConfigGroupDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                ConfigGroupEntity.QueryInterface.class);
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, ConfigGroupEntity.QueryInterface.class);
     }
 
     public ConfigGroupEntity addConfigGroup(String name) {

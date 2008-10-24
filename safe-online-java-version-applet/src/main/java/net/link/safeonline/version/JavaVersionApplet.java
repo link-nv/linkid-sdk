@@ -16,9 +16,9 @@ import java.util.List;
 
 /**
  * Detects the Java runtime. This covers the Java version and the availability of PKCS#11 drivers.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class JavaVersionApplet extends Applet {
 

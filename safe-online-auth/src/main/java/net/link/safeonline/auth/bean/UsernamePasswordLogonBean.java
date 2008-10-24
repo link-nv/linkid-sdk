@@ -78,8 +78,8 @@ public class UsernamePasswordLogonBean extends AbstractLoginBean implements User
             boolean authenticated = this.authenticationService.authenticate(this.loginname, this.password);
             if (false == authenticated) {
                 /*
-                 * The abort will be correctly handled by the authentication service manager. That way we allow the user
-                 * to retry the initial authentication step.
+                 * The abort will be correctly handled by the authentication service manager. That way we allow the user to retry the
+                 * initial authentication step.
                  */
                 this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
                 HelpdeskLogger.add("login failed: " + this.loginname, LogLevelType.ERROR);
@@ -102,8 +102,7 @@ public class UsernamePasswordLogonBean extends AbstractLoginBean implements User
             return null;
         }
 
-        super.login(this.loginname, SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, this.authenticationService
-                .getSsoCookie());
+        super.login(this.loginname, SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, this.authenticationService.getSsoCookie());
 
         return null;
     }

@@ -20,15 +20,15 @@ import org.apache.commons.logging.LogFactory;
 /**
  * <h2>{@link CinemaStartupListener}<br>
  * <sub>[in short] (TODO).</sub></h2>
- *
+ * 
  * <p>
  * [description / usage].
  * </p>
- *
+ * 
  * <p>
  * <i>Jun 23, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class CinemaStartupListener implements ServletContextListener {

@@ -8,5 +8,6 @@
 package net.link.safeonline.auth.pcsc;
 
 public enum Sex {
-    MALE, FEMALE
+    MALE,
+    FEMALE
 }

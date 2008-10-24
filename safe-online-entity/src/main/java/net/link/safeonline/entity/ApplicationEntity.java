@@ -49,12 +49,11 @@ import org.apache.commons.lang.builder.ToStringStyle;
 @Table(name = "application")
 @NamedQueries( {
         @NamedQuery(name = QUERY_WHERE_ALL, query = "FROM ApplicationEntity"),
-        @NamedQuery(name = QUERY_WHERE_USER_ALL, query = "SELECT application "
-                + "FROM ApplicationEntity AS application " + "WHERE application.allowUserSubscription = true"),
+        @NamedQuery(name = QUERY_WHERE_USER_ALL, query = "SELECT application " + "FROM ApplicationEntity AS application "
+                + "WHERE application.allowUserSubscription = true"),
         @NamedQuery(name = QUERY_WHERE_OWNER, query = "SELECT application " + "FROM ApplicationEntity AS application "
                 + "WHERE application.applicationOwner = :applicationOwner"),
-        @NamedQuery(name = QUERY_WHERE_CERT_SUBJECT, query = "SELECT application "
-                + "FROM ApplicationEntity AS application "
+        @NamedQuery(name = QUERY_WHERE_CERT_SUBJECT, query = "SELECT application " + "FROM ApplicationEntity AS application "
                 + "WHERE application.certificateSubject = :certificateSubject") })
 @EntityListeners(SecurityApplicationEntityListener.class)
 public class ApplicationEntity implements Serializable {
@@ -123,27 +122,25 @@ public class ApplicationEntity implements Serializable {
         // empty
     }
 
-    public ApplicationEntity(String name, String friendlyName, ApplicationOwnerEntity applicationOwner,
-            String description, URL applicationUrl, byte[] applicationLogo, Color applicationColor,
-            X509Certificate certificate) {
+    public ApplicationEntity(String name, String friendlyName, ApplicationOwnerEntity applicationOwner, String description,
+                             URL applicationUrl, byte[] applicationLogo, Color applicationColor, X509Certificate certificate) {
 
-        this(name, friendlyName, applicationOwner, description, applicationUrl, applicationLogo, applicationColor,
-                true, true, certificate, 0, 0);
+        this(name, friendlyName, applicationOwner, description, applicationUrl, applicationLogo, applicationColor, true, true, certificate,
+             0, 0);
     }
 
-    public ApplicationEntity(String name, String friendlyName, ApplicationOwnerEntity applicationOwner,
-            String description, URL applicationUrl, byte[] applicationLogo, Color applicationColor,
-            boolean allowUserSubscription, boolean removable, X509Certificate certificate, long identityVersion,
-            long usageAgreementVersion) {
+    public ApplicationEntity(String name, String friendlyName, ApplicationOwnerEntity applicationOwner, String description,
+                             URL applicationUrl, byte[] applicationLogo, Color applicationColor, boolean allowUserSubscription,
+                             boolean removable, X509Certificate certificate, long identityVersion, long usageAgreementVersion) {
 
-        this(name, friendlyName, applicationOwner, description, applicationUrl, applicationLogo, applicationColor,
-                allowUserSubscription, removable, certificate, identityVersion, usageAgreementVersion, false);
+        this(name, friendlyName, applicationOwner, description, applicationUrl, applicationLogo, applicationColor, allowUserSubscription,
+             removable, certificate, identityVersion, usageAgreementVersion, false);
     }
 
-    public ApplicationEntity(String name, String friendlyName, ApplicationOwnerEntity applicationOwner,
-            String description, URL applicationUrl, byte[] applicationLogo, Color applicationColor,
-            boolean allowUserSubscription, boolean removable, X509Certificate certificate, long identityVersion,
-            long usageAgreementVersion, boolean deviceRestriction) {
+    public ApplicationEntity(String name, String friendlyName, ApplicationOwnerEntity applicationOwner, String description,
+                             URL applicationUrl, byte[] applicationLogo, Color applicationColor, boolean allowUserSubscription,
+                             boolean removable, X509Certificate certificate, long identityVersion, long usageAgreementVersion,
+                             boolean deviceRestriction) {
 
         this.name = name;
         this.friendlyName = friendlyName;
@@ -254,8 +251,8 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * Marks whether a user is allowed to subscribe himself onto this application. This field prevents users from
-     * subscribing themselves onto the operator web application or the application owner web application.
+     * Marks whether a user is allowed to subscribe himself onto this application. This field prevents users from subscribing themselves
+     * onto the operator web application or the application owner web application.
      * 
      */
     public boolean isAllowUserSubscription() {
@@ -269,9 +266,9 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * Marks whether the operator can remove this application. This prevents the operator from removing critical
-     * application like the SafeOnline user web application, the SafeOnline application owner web application, the
-     * SafeOnline authentication web application and the SafeOnline operator web application.
+     * Marks whether the operator can remove this application. This prevents the operator from removing critical application like the
+     * SafeOnline user web application, the SafeOnline application owner web application, the SafeOnline authentication web application and
+     * the SafeOnline operator web application.
      * 
      */
     public boolean isRemovable() {
@@ -285,8 +282,8 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * Gives back the application owner of this application. Each application has an application owner. The application
-     * owner is allowed to perform certain operations regarding this application.
+     * Gives back the application owner of this application. Each application has an application owner. The application owner is allowed to
+     * perform certain operations regarding this application.
      * 
      */
     @ManyToOne(optional = false)
@@ -301,9 +298,8 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * Gives back the current application identity version number. Each application can have multiple application
-     * identities. Each application identity has a version number. This field marks the currently active application
-     * identity version.
+     * Gives back the current application identity version number. Each application can have multiple application identities. Each
+     * application identity has a version number. This field marks the currently active application identity version.
      * 
      */
     public long getCurrentApplicationIdentity() {
@@ -317,9 +313,8 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * Gives back the current application usage agreement version number. Each application can have multiple usage
-     * agreement identities. Each application usage agreement has a version number. This field marks the currently
-     * active application usage agreement version.
+     * Gives back the current application usage agreement version number. Each application can have multiple usage agreement identities.
+     * Each application usage agreement has a version number. This field marks the currently active application usage agreement version.
      * 
      */
     @Column(name = "currentUsageAg")
@@ -334,8 +329,8 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * The certificate subject is used during application authentication phase to associate a given certificate with
-     * it's corresponding application.
+     * The certificate subject is used during application authentication phase to associate a given certificate with it's corresponding
+     * application.
      * 
      */
     @Column(unique = true)
@@ -345,8 +340,8 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * Sets the certificate subject. Do not use this method directly. Use {@link #setCertificate(X509Certificate)
-     * setCertificate} instead. JPA requires this setter.
+     * Sets the certificate subject. Do not use this method directly. Use {@link #setCertificate(X509Certificate) setCertificate} instead.
+     * JPA requires this setter.
      * 
      * @param certificateSubject
      * @see #setCertificate(X509Certificate)
@@ -357,8 +352,7 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * Sets the X509 certificate subject of the application. Use this method to update the certificate subject for this
-     * application.
+     * Sets the X509 certificate subject of the application. Use this method to update the certificate subject for this application.
      * 
      * @param certificate
      */
@@ -397,8 +391,8 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * When set to <code>true</code> the WS-Security SOAP handlers will not check whether the SOAP body has been
-     * signed. This is required for compatability with .NET 3.0 WCF clients.
+     * When set to <code>true</code> the WS-Security SOAP handlers will not check whether the SOAP body has been signed. This is required
+     * for compatability with .NET 3.0 WCF clients.
      * 
      */
     public boolean isSkipMessageIntegrityCheck() {
@@ -412,8 +406,7 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * When set to <code>true</code> Single Sign-On will be enabled for this application. This can still be overridden
-     * by the webapp.
+     * When set to <code>true</code> Single Sign-On will be enabled for this application. This can still be overridden by the webapp.
      */
     public boolean isSsoEnabled() {
 
@@ -466,9 +459,9 @@ public class ApplicationEntity implements Serializable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("name", this.name).append("description",
-                this.description).append("allowUserSubscription", this.allowUserSubscription).append("removable",
-                this.removable).toString();
+        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("name", this.name).append("description", this.description)
+                                                                    .append("allowUserSubscription", this.allowUserSubscription).append(
+                                                                            "removable", this.removable).toString();
     }
 
 
@@ -482,10 +475,9 @@ public class ApplicationEntity implements Serializable {
 
         @QueryMethod(QUERY_WHERE_OWNER)
         List<ApplicationEntity> listApplicationsWhereApplicationOwner(
-                @QueryParam("applicationOwner") ApplicationOwnerEntity applicationOwner);
+                                                                      @QueryParam("applicationOwner") ApplicationOwnerEntity applicationOwner);
 
         @QueryMethod(QUERY_WHERE_CERT_SUBJECT)
-        List<ApplicationEntity> listApplicationsWhereCertificateSubject(
-                @QueryParam("certificateSubject") String certificateSubject);
+        List<ApplicationEntity> listApplicationsWhereCertificateSubject(@QueryParam("certificateSubject") String certificateSubject);
     }
 }

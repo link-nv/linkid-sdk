@@ -29,13 +29,13 @@ import org.jdesktop.swingworker.SwingWorker;
 
 /**
  * SafeOnline services util class
- *
+ * 
  * <p>
  * Used to access to the attribute and data SafeOnline web services
  * </p>
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class ServicesUtils extends Observable {
 
@@ -63,35 +63,32 @@ public class ServicesUtils extends Observable {
     }
 
     /*
-     *
+     * 
      * Name Identifier web service methods
      */
     NameIdentifierMappingClient getNameIdentifierMappingClient() {
 
         if (null == this.nameClient) {
             this.nameClient = new NameIdentifierMappingClientImpl(this.consoleManager.getLocation(),
-                    (X509Certificate) this.consoleManager.getIdentity().getCertificate(), this.consoleManager
-                            .getIdentity().getPrivateKey());
+                    (X509Certificate) this.consoleManager.getIdentity().getCertificate(), this.consoleManager.getIdentity().getPrivateKey());
         }
         return this.nameClient;
     }
 
-    public String getUserId(String username) throws SubjectNotFoundException, RequestDeniedException,
-            WSClientTransportException {
+    public String getUserId(String username) throws SubjectNotFoundException, RequestDeniedException, WSClientTransportException {
 
         return getNameIdentifierMappingClient().getUserId(username);
     }
 
     /*
-     *
+     * 
      * Attribute web service methods
      */
     AttributeClient getAttributeClient() {
 
         if (null == this.attributeClient) {
             this.attributeClient = new AttributeClientImpl(this.consoleManager.getLocation(),
-                    (X509Certificate) this.consoleManager.getIdentity().getCertificate(), this.consoleManager
-                            .getIdentity().getPrivateKey());
+                    (X509Certificate) this.consoleManager.getIdentity().getCertificate(), this.consoleManager.getIdentity().getPrivateKey());
         }
 
         this.consoleManager.setMessageAccessor(this.attributeClient);
@@ -136,15 +133,15 @@ public class ServicesUtils extends Observable {
     }
 
     /*
-     *
+     * 
      * Data web service methods
      */
     DataClient getDataClient() {
 
         if (null == this.dataClient) {
-            this.dataClient = new DataClientImpl(this.consoleManager.getLocation(),
-                    (X509Certificate) this.consoleManager.getIdentity().getCertificate(), this.consoleManager
-                            .getIdentity().getPrivateKey());
+            this.dataClient = new DataClientImpl(this.consoleManager.getLocation(), (X509Certificate) this.consoleManager.getIdentity()
+                                                                                                                         .getCertificate(),
+                    this.consoleManager.getIdentity().getPrivateKey());
         }
 
         this.consoleManager.setMessageAccessor(this.dataClient);

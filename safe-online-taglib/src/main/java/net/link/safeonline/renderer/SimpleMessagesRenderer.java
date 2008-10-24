@@ -25,11 +25,10 @@ public class SimpleMessagesRenderer extends MessagesRenderer {
         ResponseWriter writer = null;
 
         if (context == null)
-            throw new NullPointerException(MessageUtils.getExceptionMessageString(
-                    MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context"));
+            throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context"));
         if (component == null)
-            throw new NullPointerException(MessageUtils.getExceptionMessageString(
-                    MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "component"));
+            throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID,
+                    "component"));
 
         if (logger.isLoggable(Level.FINER)) {
             logger.log(Level.FINER, "End encoding component " + component.getId());
@@ -38,8 +37,7 @@ public class SimpleMessagesRenderer extends MessagesRenderer {
         // false.
         if (!component.isRendered()) {
             if (logger.isLoggable(Level.FINE)) {
-                logger.fine("End encoding component " + component.getId() + " since "
-                        + "rendered attribute is set to false ");
+                logger.fine("End encoding component " + component.getId() + " since " + "rendered attribute is set to false ");
             }
             return;
         }

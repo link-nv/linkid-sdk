@@ -13,14 +13,14 @@ import oasis.names.tc.saml._2_0.protocol.NameIdentifierMappingService;
 
 import org.junit.Test;
 
-
 public class NameIdentifierMappingServiceFactoryTest {
 
     @Test
     public void testNewInstance() throws Exception {
 
         // operate
-        NameIdentifierMappingService service = NameIdentifierMappingServiceFactory.newInstance();
+        NameIdentifierMappingService service = NameIdentifierMappingServiceFactory
+                .newInstance();
 
         // verify
         assertNotNull(service);

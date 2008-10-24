@@ -37,9 +37,9 @@ import com.sun.xml.ws.client.ClientTransportException;
 
 /**
  * Implementation WS-Notification producer service.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class NotificationProducerClientImpl extends AbstractMessageAccessor implements NotificationProducerClient {
 
@@ -52,7 +52,7 @@ public class NotificationProducerClientImpl extends AbstractMessageAccessor impl
 
     /**
      * Main constructor.
-     *
+     * 
      * @param location
      *            the location (host:port) of the attribute web service.
      * @param clientCertificate
@@ -60,8 +60,7 @@ public class NotificationProducerClientImpl extends AbstractMessageAccessor impl
      * @param clientPrivateKey
      *            the private key corresponding with the client certificate.
      */
-    public NotificationProducerClientImpl(String location, X509Certificate clientCertificate,
-            PrivateKey clientPrivateKey) {
+    public NotificationProducerClientImpl(String location, X509Certificate clientCertificate, PrivateKey clientPrivateKey) {
 
         NotificationProducerService service = NotificationProducerServiceFactory.newInstance();
         this.port = service.getNotificationProducerPort();

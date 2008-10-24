@@ -13,9 +13,9 @@ import net.link.safeonline.shared.statement.IdentityProvider;
 
 /**
  * Interface for statement provider.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public interface StatementProvider {
 

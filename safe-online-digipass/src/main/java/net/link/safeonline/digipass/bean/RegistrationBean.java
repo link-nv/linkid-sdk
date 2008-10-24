@@ -61,11 +61,10 @@ public class RegistrationBean implements Registration {
         this.serialNumber = null;
     }
 
-    @ErrorHandling( {
-            @Error(exceptionClass = SubjectNotFoundException.class, messageId = "errorSubjectNotFound", fieldId = "login"),
+    @ErrorHandling( { @Error(exceptionClass = SubjectNotFoundException.class, messageId = "errorSubjectNotFound", fieldId = "login"),
             @Error(exceptionClass = ArgumentIntegrityException.class, messageId = "errorDigipassRegistered", fieldId = "serialNumber") })
     public String register() throws PermissionDeniedException, SubjectNotFoundException, ArgumentIntegrityException,
-            AttributeTypeNotFoundException {
+                            AttributeTypeNotFoundException {
 
         this.log.debug("register digipas with sn=" + this.serialNumber + " for user: " + this.loginName);
         this.digipassDeviceService.register(this.loginName, this.serialNumber);

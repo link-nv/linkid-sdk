@@ -55,10 +55,8 @@ public class AuthnResponseFilterTest {
 
         this.mockProtocolHandler = createMock(AuthenticationProtocolHandler.class);
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
-        initialSessionAttributes
-                .put(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE, this.mockProtocolHandler);
-        this.servletTestManager
-                .setUp(LoginTestServlet.class, AuthnResponseFilter.class, null, initialSessionAttributes);
+        initialSessionAttributes.put(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE, this.mockProtocolHandler);
+        this.servletTestManager.setUp(LoginTestServlet.class, AuthnResponseFilter.class, null, initialSessionAttributes);
     }
 
 
@@ -91,9 +89,9 @@ public class AuthnResponseFilterTest {
         GetMethod getMethod = new GetMethod(this.servletTestManager.getServletLocation());
 
         // expectations
-        expect(
-                this.mockProtocolHandler.finalizeAuthentication((HttpServletRequest) anyObject(),
-                        (HttpServletResponse) anyObject())).andReturn(null);
+        expect(this.mockProtocolHandler.finalizeAuthentication((HttpServletRequest) anyObject(), (HttpServletResponse) anyObject()))
+                                                                                                                                    .andReturn(
+                                                                                                                                            null);
 
         // prepare
         replay(this.mockProtocolHandler);
@@ -117,11 +115,10 @@ public class AuthnResponseFilterTest {
         // expectations
         String userId = UUID.randomUUID().toString();
         String authenticatedDevice = "test-device";
-        AuthenticationProtocolContext authenticationProtocolContext = new AuthenticationProtocolContext(userId,
-                authenticatedDevice);
-        expect(
-                this.mockProtocolHandler.finalizeAuthentication((HttpServletRequest) anyObject(),
-                        (HttpServletResponse) anyObject())).andReturn(authenticationProtocolContext);
+        AuthenticationProtocolContext authenticationProtocolContext = new AuthenticationProtocolContext(userId, authenticatedDevice);
+        expect(this.mockProtocolHandler.finalizeAuthentication((HttpServletRequest) anyObject(), (HttpServletResponse) anyObject()))
+                                                                                                                                    .andReturn(
+                                                                                                                                            authenticationProtocolContext);
 
         // prepare
         replay(this.mockProtocolHandler);
@@ -131,12 +128,11 @@ public class AuthnResponseFilterTest {
 
         // verify
         assertEquals(HttpStatus.SC_OK, statusCode);
-        String resultUserId = (String) this.servletTestManager
-                .getSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
+        String resultUserId = (String) this.servletTestManager.getSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
         LOG.debug("result userId: " + resultUserId);
         assertEquals(userId, resultUserId);
         String resultAuthenticatedDevice = (String) this.servletTestManager
-                .getSessionAttribute(LoginManager.AUTHENTICATED_DEVICE_SESSION_ATTRIBUTE);
+                                                                           .getSessionAttribute(LoginManager.AUTHENTICATED_DEVICE_SESSION_ATTRIBUTE);
         LOG.debug("result authenticatedDevice: " + resultAuthenticatedDevice);
         assertEquals(authenticatedDevice, resultAuthenticatedDevice);
     }

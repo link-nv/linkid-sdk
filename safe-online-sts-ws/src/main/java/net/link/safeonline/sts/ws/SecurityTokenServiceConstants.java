@@ -14,7 +14,6 @@ public class SecurityTokenServiceConstants {
         // empty
     }
 
-
     public static final String STATUS_VALID      = "http://docs.oasis-open.org/ws-sx/ws-trust/200512/status/valid";
 
     public static final String STATUS_INVALID    = "http://docs.oasis-open.org/ws-sx/ws-trust/200512/status/invalid";

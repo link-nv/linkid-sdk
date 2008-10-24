@@ -32,8 +32,7 @@ public class DeviceOperationResponseBuilder extends AbstractSAMLObjectBuilder<De
     @Override
     public DeviceOperationResponse buildObject() {
 
-        return buildObject(SAMLConstants.SAML20P_NS, DeviceOperationResponse.DEFAULT_ELEMENT_LOCAL_NAME,
-                SAMLConstants.SAML20P_PREFIX);
+        return buildObject(SAMLConstants.SAML20P_NS, DeviceOperationResponse.DEFAULT_ELEMENT_LOCAL_NAME, SAMLConstants.SAML20P_PREFIX);
     }
 
     /**

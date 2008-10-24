@@ -19,9 +19,9 @@ import net.link.safeonline.jpa.annotation.UpdateMethod;
 
 /**
  * Factory for query objects.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class QueryObjectFactory {
 
@@ -31,10 +31,9 @@ public class QueryObjectFactory {
     }
 
     /**
-     * Creates a new query object from the given query object interface. The methods on this interface should be
-     * annotated via {@link QueryMethod} or {@link UpdateMethod}. If the method has parameters one should annotated
-     * these via {@link QueryParam}.
-     *
+     * Creates a new query object from the given query object interface. The methods on this interface should be annotated via
+     * {@link QueryMethod} or {@link UpdateMethod}. If the method has parameters one should annotated these via {@link QueryParam}.
+     * 
      * @param <T>
      * @param entityManager
      *            the JPA entity manager used by the returned query object.
@@ -50,8 +49,7 @@ public class QueryObjectFactory {
         InvocationHandler invocationHandler = new QueryObjectInvocationHandler(entityManager);
         Thread currentThread = Thread.currentThread();
         ClassLoader classLoader = currentThread.getContextClassLoader();
-        T queryObject = (T) Proxy
-                .newProxyInstance(classLoader, new Class[] { queryObjectInterface }, invocationHandler);
+        T queryObject = (T) Proxy.newProxyInstance(classLoader, new Class[] { queryObjectInterface }, invocationHandler);
         return queryObject;
     }
 }

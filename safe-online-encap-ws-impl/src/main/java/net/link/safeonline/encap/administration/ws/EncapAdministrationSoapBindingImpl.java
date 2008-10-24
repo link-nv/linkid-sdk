@@ -38,7 +38,7 @@ public class EncapAdministrationSoapBindingImpl implements BankIdAdministration 
      * @param orgId
      *            Bank organisation identifier
      * @return MSecResponse
-     *
+     * 
      */
     public MSecResponse lock(String msisdn, String orgId) throws RemoteException {
 

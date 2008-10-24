@@ -33,8 +33,7 @@ public class ConfigItemDAOBean implements ConfigItemDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                ConfigItemEntity.QueryInterface.class);
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, ConfigItemEntity.QueryInterface.class);
     }
 
     public ConfigItemEntity addConfigItem(String name, String value, String valueType, ConfigGroupEntity configGroup) {

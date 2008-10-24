@@ -29,19 +29,19 @@ import javax.swing.border.Border;
 /**
  * <h2>{@link HoverActionAdaptor}<br>
  * <sub>A mouse adaptor that invokes an action when one of its components is clicked.</sub></h2>
- *
+ * 
  * <p>
- * You are to implement {@link #clicked(JComponent)} yourself to provide the actions that must be undertaken whenever a
- * managed component is clicked.<br>
+ * You are to implement {@link #clicked(JComponent)} yourself to provide the actions that must be undertaken whenever a managed component is
+ * clicked.<br>
  * <br>
- * This adaptor will take care of showing a nice border around the managed components whenever they are hovered over and
- * hide this border whilst they are not.
+ * This adaptor will take care of showing a nice border around the managed components whenever they are hovered over and hide this border
+ * whilst they are not.
  * </p>
- *
+ * 
  * <p>
  * <i>Feb 21, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public abstract class HoverActionAdaptor extends MouseAdapter {
@@ -49,10 +49,8 @@ public abstract class HoverActionAdaptor extends MouseAdapter {
     private static final int         TOP          = 0, LEFT = 0, BOTTOM = 1, RIGHT = 0;
 
     private static final Border      EMPTY_BORDER = BorderFactory.createEmptyBorder(TOP, LEFT, BOTTOM, RIGHT);
-    private static final Border      HOVER_BORDER = BorderFactory.createMatteBorder(TOP, LEFT, BOTTOM, RIGHT,
-                                                          Color.lightGray);
-    private static final Border      PRESS_BORDER = BorderFactory.createMatteBorder(TOP, LEFT, BOTTOM, RIGHT,
-                                                          Color.black);
+    private static final Border      HOVER_BORDER = BorderFactory.createMatteBorder(TOP, LEFT, BOTTOM, RIGHT, Color.lightGray);
+    private static final Border      PRESS_BORDER = BorderFactory.createMatteBorder(TOP, LEFT, BOTTOM, RIGHT, Color.black);
     private Map<JComponent, Boolean> managedComponents;
 
 

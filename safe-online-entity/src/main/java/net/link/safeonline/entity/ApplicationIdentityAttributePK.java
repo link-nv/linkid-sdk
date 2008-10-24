@@ -81,22 +81,20 @@ public class ApplicationIdentityAttributePK implements Serializable {
         if (false == obj instanceof ApplicationIdentityAttributePK)
             return false;
         ApplicationIdentityAttributePK rhs = (ApplicationIdentityAttributePK) obj;
-        return new EqualsBuilder().append(this.application, rhs.application).append(this.identityVersion,
-                rhs.identityVersion).append(this.attributeTypeName, rhs.attributeTypeName).isEquals();
+        return new EqualsBuilder().append(this.application, rhs.application).append(this.identityVersion, rhs.identityVersion).append(
+                this.attributeTypeName, rhs.attributeTypeName).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.application).append(this.identityVersion).append(
-                this.attributeTypeName).toHashCode();
+        return new HashCodeBuilder().append(this.application).append(this.identityVersion).append(this.attributeTypeName).toHashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("application", this.application)
-                .append("identityVersion", this.identityVersion).append("attributeType", this.attributeTypeName)
-                .toString();
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("application", this.application).append(
+                "identityVersion", this.identityVersion).append("attributeType", this.attributeTypeName).toString();
     }
 }

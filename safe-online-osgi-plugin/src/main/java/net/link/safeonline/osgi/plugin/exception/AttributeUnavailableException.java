@@ -11,8 +11,8 @@ package net.link.safeonline.osgi.plugin.exception;
  * <sub>Attribute Unavailable Exception.</sub></h2>
  * 
  * <p>
- * Exception thrown when a requested attribute is not available. Reasons can be
- * that the OSGi plugin responsible for this type is not running.
+ * Exception thrown when a requested attribute is not available. Reasons can be that the OSGi plugin responsible for this type is not
+ * running.
  * </p>
  * 
  * <p>
@@ -23,16 +23,19 @@ package net.link.safeonline.osgi.plugin.exception;
  */
 public class AttributeUnavailableException extends Exception {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private final String errorMessage;
+    private final String      errorMessage;
 
-	public AttributeUnavailableException(String errorMessage) {
-		this.errorMessage = errorMessage;
-	}
 
-	public String getErrorMessage() {
-		return this.errorMessage;
-	}
+    public AttributeUnavailableException(String errorMessage) {
+
+        this.errorMessage = errorMessage;
+    }
+
+    public String getErrorMessage() {
+
+        return this.errorMessage;
+    }
 
 }

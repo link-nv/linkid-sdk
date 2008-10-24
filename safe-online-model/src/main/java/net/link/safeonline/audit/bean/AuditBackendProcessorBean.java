@@ -39,8 +39,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 
-@MessageDriven(activationConfig = {
-        @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
+@MessageDriven(activationConfig = { @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
         @ActivationConfigProperty(propertyName = "destination", propertyValue = AuditConstants.AUDIT_BACKEND_QUEUE_NAME),
         @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge") })
 public class AuditBackendProcessorBean implements MessageListener {
@@ -127,15 +126,14 @@ public class AuditBackendProcessorBean implements MessageListener {
     private void addAuditAudit(Exception exception, long auditContextId) {
 
         String message = exception.getMessage();
-        
+
         try {
             AuditContextEntity auditContext = this.auditContextDAO.getAuditContext(auditContextId);
             this.auditAuditDAO.addAuditAudit(auditContext, message);
         }
 
         catch (AuditContextNotFoundException e) {
-            this.auditAuditDAO
-                    .addAuditAudit("audit backend error for audit context " + auditContextId + ": " + message);
+            this.auditAuditDAO.addAuditAudit("audit backend error for audit context " + auditContextId + ": " + message);
         }
     }
 
@@ -146,24 +144,24 @@ public class AuditBackendProcessorBean implements MessageListener {
         InitialContext initialContext = new InitialContext();
         Context context = (Context) initialContext.lookup(AuditBackend.JNDI_CONTEXT);
         NamingEnumeration<NameClassPair> result = initialContext.list(AuditBackend.JNDI_CONTEXT);
-        
+
         while (result.hasMore()) {
             NameClassPair nameClassPair = result.next();
             String objectName = nameClassPair.getName();
             LOG.debug(objectName + ":" + nameClassPair.getClassName());
-            
+
             Object object = context.lookup(objectName);
             if (!(object instanceof AuditBackend)) {
-                String message = "object \"" + AuditBackend.JNDI_CONTEXT + "/" + objectName + "\" is not a "
-                        + AuditBackend.class.getName() + "; it is " + (object == null? "null": "a " + object.getClass().getName());
+                String message = "object \"" + AuditBackend.JNDI_CONTEXT + "/" + objectName + "\" is not a " + AuditBackend.class.getName()
+                        + "; it is " + (object == null? "null": "a " + object.getClass().getName());
                 LOG.error(message);
                 throw new IllegalStateException(message);
             }
-            
+
             AuditBackend auditBackend = (AuditBackend) PortableRemoteObject.narrow(object, AuditBackend.class);
             auditBackends.add(auditBackend);
         }
-        
+
         return auditBackends;
     }
 }

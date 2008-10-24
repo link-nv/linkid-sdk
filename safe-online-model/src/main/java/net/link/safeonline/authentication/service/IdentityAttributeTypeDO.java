@@ -12,9 +12,9 @@ import java.io.Serializable;
 
 /**
  * Identity Attribute Type Data Object. Used to transfer attribute type data between service and user application.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class IdentityAttributeTypeDO implements Serializable {
 
@@ -29,7 +29,7 @@ public class IdentityAttributeTypeDO implements Serializable {
 
     /**
      * Main constructor.
-     *
+     * 
      * @param name
      * @param required
      * @param dataMining
@@ -43,7 +43,7 @@ public class IdentityAttributeTypeDO implements Serializable {
 
     /**
      * Convenience constructor. This will make for a required identity attribute.
-     *
+     * 
      * @param name
      */
     public IdentityAttributeTypeDO(String name) {
@@ -53,7 +53,7 @@ public class IdentityAttributeTypeDO implements Serializable {
 
     /**
      * Gives back the URN name of the attribute type.
-     *
+     * 
      */
     public String getName() {
 
@@ -67,7 +67,7 @@ public class IdentityAttributeTypeDO implements Serializable {
 
     /**
      * Gives back whether this attribute is a required attribute for the identity.
-     *
+     * 
      */
     public boolean isRequired() {
 
@@ -81,7 +81,7 @@ public class IdentityAttributeTypeDO implements Serializable {
 
     /**
      * Returns whether this attribute can only be accessed in an anonymous way
-     *
+     * 
      */
     public boolean isDataMining() {
 

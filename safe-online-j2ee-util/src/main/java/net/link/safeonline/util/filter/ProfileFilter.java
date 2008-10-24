@@ -30,9 +30,9 @@ import org.jboss.jms.server.messagecounter.MessageCounter;
 
 /**
  * Servlet Filter profiles the request and adds the results as headers of the response.<br>
- *
+ * 
  * @author mbillemo
- *
+ * 
  */
 public class ProfileFilter implements Filter {
 
@@ -48,8 +48,7 @@ public class ProfileFilter implements Filter {
     }
 
 
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-            ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         // Only attempt to profile HTTP requests.
         if (!(response instanceof HttpServletResponse)) {
@@ -63,8 +62,7 @@ public class ProfileFilter implements Filter {
         ProfilingPolicyContextHandler.setProfileData(profileData);
 
         // Buffer the response so we can add our own headers.
-        BufferedServletResponseWrapper responseWrapper = new BufferedServletResponseWrapper(
-                (HttpServletResponse) response);
+        BufferedServletResponseWrapper responseWrapper = new BufferedServletResponseWrapper((HttpServletResponse) response);
 
         long startFreeMem = getFreeMemory();
         long startTime = System.currentTimeMillis();
@@ -114,8 +112,8 @@ public class ProfileFilter implements Filter {
 
         try {
             @SuppressWarnings("unchecked")
-            List<MessageCounter> queues = (List<MessageCounter>) rmi.getAttribute(new ObjectName(
-                    "jboss.messaging:service=ServerPeer"), "MessageCounters");
+            List<MessageCounter> queues = (List<MessageCounter>) rmi.getAttribute(new ObjectName("jboss.messaging:service=ServerPeer"),
+                    "MessageCounters");
 
             try {
                 for (MessageCounter queue : queues)

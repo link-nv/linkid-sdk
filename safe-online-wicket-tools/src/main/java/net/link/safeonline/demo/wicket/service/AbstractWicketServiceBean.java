@@ -45,8 +45,8 @@ public abstract class AbstractWicketServiceBean {
 
 
     /**
-     * Install a default entity manager which will be used for any new services. This is mostly useful for installing an
-     * entity manager in an environment where there is no enterprise container that provides one.
+     * Install a default entity manager which will be used for any new services. This is mostly useful for installing an entity manager in
+     * an environment where there is no enterprise container that provides one.
      */
     public static void setDefaultEntityManager(EntityManager entityManager) {
 
@@ -73,8 +73,7 @@ public abstract class AbstractWicketServiceBean {
         }
 
         if (primaryKey == null)
-            throw new IllegalArgumentException(
-                    "Tried to attach an object that is either not an entity or has no primary key annotation.");
+            throw new IllegalArgumentException("Tried to attach an object that is either not an entity or has no primary key annotation.");
 
         // Create a real entity by searching for the primary key.
         @SuppressWarnings("unchecked")

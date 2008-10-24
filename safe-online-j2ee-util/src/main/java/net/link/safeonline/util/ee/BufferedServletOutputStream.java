@@ -15,9 +15,9 @@ import javax.servlet.ServletOutputStream;
 
 /**
  * A buffered servlet output stream. The buffering happens in memory via a simple byte array output stream.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class BufferedServletOutputStream extends ServletOutputStream {
 
@@ -62,7 +62,7 @@ public class BufferedServletOutputStream extends ServletOutputStream {
 
     /**
      * Gives back the data that this servlet output stream has been buffering.
-     *
+     * 
      */
     public byte[] getData() {
 

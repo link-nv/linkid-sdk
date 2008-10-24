@@ -96,12 +96,11 @@ public class AttributeProviderBean implements AttributeProvider {
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public String add() throws ExistingAttributeProviderException, ApplicationNotFoundException,
-            AttributeTypeNotFoundException, PermissionDeniedException {
+    public String add() throws ExistingAttributeProviderException, ApplicationNotFoundException, AttributeTypeNotFoundException,
+                       PermissionDeniedException {
 
         this.log.debug("add application provider: " + this.application);
-        this.attributeProviderManagerService.addAttributeProvider(this.application, this.selectedAttributeType
-                .getName());
+        this.attributeProviderManagerService.addAttributeProvider(this.application, this.selectedAttributeType.getName());
         return "success";
     }
 

@@ -8,5 +8,8 @@
 package net.link.safeonline.entity.audit;
 
 public enum OperationStateType {
-    BEGIN, NORMAL_END, BUSINESS_EXCEPTION_END, SYSTEM_EXCEPTION_END
+    BEGIN,
+    NORMAL_END,
+    BUSINESS_EXCEPTION_END,
+    SYSTEM_EXCEPTION_END
 }

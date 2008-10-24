@@ -9,15 +9,15 @@ package net.link.safeonline.applet;
 
 /**
  * Interface for applet controller components.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public interface AppletController extends Runnable {
 
     /**
      * Initializes the controller component. Thus injects its dependencies.
-     *
+     * 
      * @param appletView
      * @param runtimeContext
      * @param statementProvider

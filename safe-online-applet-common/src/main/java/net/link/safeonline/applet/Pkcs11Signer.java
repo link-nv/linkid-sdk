@@ -13,9 +13,9 @@ import net.link.safeonline.shared.JceSigner;
 
 /**
  * PKCS#11 signer implementation.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class Pkcs11Signer extends JceSigner {
 

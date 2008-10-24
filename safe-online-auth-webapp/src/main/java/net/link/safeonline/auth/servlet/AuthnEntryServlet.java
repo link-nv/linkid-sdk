@@ -37,9 +37,8 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- * Generic entry point for the authentication web application. This servlet will try to find out which authentication
- * protocol is being used by the client web browser to initiate an authentication procedure. We manage the
- * authentication entry via a bare-bone servlet since we:
+ * Generic entry point for the authentication web application. This servlet will try to find out which authentication protocol is being used
+ * by the client web browser to initiate an authentication procedure. We manage the authentication entry via a bare-bone servlet since we:
  * <ul>
  * <li>need to be able to do some low-level GET or POST parameter parsing and processing.</li>
  * <li>we want the entry point to be UI technology independent.</li>
@@ -49,14 +48,12 @@ import org.apache.commons.logging.LogFactory;
  * The following servlet init parameters are required:
  * </p>
  * <ul>
- * <li><code>StartUrl</code>: points to the relative/absolute URL to which this servlet will redirect after
- * successful authentication protocol entry.</li>
- * <li><code>FirstTimeUrl</code>: points to the relative/absolute URL to which this servlet will redirect after
- * first visit and successful authentication protocol entry.</li>
- * <li><code>UnsupportedProtocolUrl</code>: will be used to redirect to when an unsupported authentication protocol
- * is encountered.</li>
- * <li><code>ProtocolErrorUrl</code>: will be used to redirect to when an authentication protocol error is
- * encountered.</li>
+ * <li><code>StartUrl</code>: points to the relative/absolute URL to which this servlet will redirect after successful authentication
+ * protocol entry.</li>
+ * <li><code>FirstTimeUrl</code>: points to the relative/absolute URL to which this servlet will redirect after first visit and successful
+ * authentication protocol entry.</li>
+ * <li><code>UnsupportedProtocolUrl</code>: will be used to redirect to when an unsupported authentication protocol is encountered.</li>
+ * <li><code>ProtocolErrorUrl</code>: will be used to redirect to when an authentication protocol error is encountered.</li>
  * </ul>
  * 
  * @author fcorneli
@@ -95,15 +92,13 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
 
 
     @Override
-    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         handleLanding(request, response);
     }
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         handleLanding(request, response);
     }
@@ -111,19 +106,17 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
     private void handleLanding(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         /**
-         * Wrap the request to use the servlet endpoint url. To prevent failure when behind a reverse proxy or
-         * loadbalancer when opensaml is checking the destination field.
+         * Wrap the request to use the servlet endpoint url. To prevent failure when behind a reverse proxy or loadbalancer when opensaml is
+         * checking the destination field.
          */
-        HttpServletRequestEndpointWrapper authnRequestWrapper = new HttpServletRequestEndpointWrapper(request,
-                this.servletEndpointUrl);
+        HttpServletRequestEndpointWrapper authnRequestWrapper = new HttpServletRequestEndpointWrapper(request, this.servletEndpointUrl);
 
         ProtocolContext protocolContext;
         try {
             protocolContext = ProtocolHandlerManager.handleRequest(authnRequestWrapper);
         } catch (ProtocolException e) {
-            redirectToErrorPage(request, response, this.protocolErrorUrl, null, new ErrorMessage(
-                    PROTOCOL_NAME_ATTRIBUTE, e.getProtocolName()), new ErrorMessage(PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e
-                    .getMessage()));
+            redirectToErrorPage(request, response, this.protocolErrorUrl, null, new ErrorMessage(PROTOCOL_NAME_ATTRIBUTE,
+                    e.getProtocolName()), new ErrorMessage(PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
             return;
         }
 
@@ -136,8 +129,7 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
          * Set the language cookie if language was specified in the browser post
          */
         if (null != protocolContext.getLanguage()) {
-            Cookie authLanguageCookie = new Cookie(SafeOnlineCookies.AUTH_LANGUAGE_COOKIE, protocolContext
-                    .getLanguage());
+            Cookie authLanguageCookie = new Cookie(SafeOnlineCookies.AUTH_LANGUAGE_COOKIE, protocolContext.getLanguage());
             authLanguageCookie.setPath(this.cookiePath);
             authLanguageCookie.setMaxAge(60 * 60 * 24 * 30 * 6);
             response.addCookie(authLanguageCookie);
@@ -166,7 +158,8 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
          * Check Single Sign-On
          */
         AuthenticationService authenticationService = AuthenticationServiceManager
-                .getAuthenticationService(authnRequestWrapper.getSession());
+                                                                                  .getAuthenticationService(authnRequestWrapper
+                                                                                                                               .getSession());
         Cookie[] cookies = authnRequestWrapper.getCookies();
         boolean validSso = false;
         if (null != cookies) {

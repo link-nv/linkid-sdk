@@ -9,12 +9,13 @@ package net.link.safeonline.shared.helpdesk;
 
 /**
  * Helpdesk event logging levels
- *
+ * 
  * @author wvdhaute
  */
 
 public enum LogLevelType {
 
-    INFO, ERROR
+    INFO,
+    ERROR
 
 }

@@ -48,8 +48,8 @@ public class DERIdentityStatement extends AbstractDERStatement {
     private final String          surname;
 
 
-    public DERIdentityStatement(X509Certificate authenticationCertificate, String sessionId, String user,
-            String operation, String givenName, String surname) {
+    public DERIdentityStatement(X509Certificate authenticationCertificate, String sessionId, String user, String operation,
+                                String givenName, String surname) {
 
         this.authenticationCertificate = authenticationCertificate;
         this.sessionId = sessionId;

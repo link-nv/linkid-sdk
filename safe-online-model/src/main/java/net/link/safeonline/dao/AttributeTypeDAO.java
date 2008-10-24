@@ -65,8 +65,7 @@ public interface AttributeTypeDAO {
 
     List<AttributeTypeDescriptionEntity> listDescriptions(AttributeTypeEntity attributeType);
 
-    void addAttributeTypeDescription(AttributeTypeEntity attributeType,
-            AttributeTypeDescriptionEntity newAttributeTypeDescription);
+    void addAttributeTypeDescription(AttributeTypeEntity attributeType, AttributeTypeDescriptionEntity newAttributeTypeDescription);
 
     /**
      * Removes an attribute type description. The entity parameter should be an attached entity.
@@ -78,13 +77,12 @@ public interface AttributeTypeDAO {
     void saveDescription(AttributeTypeDescriptionEntity attributeTypeDescription);
 
     AttributeTypeDescriptionEntity getDescription(AttributeTypeDescriptionPK attributeTypeDescriptionPK)
-            throws AttributeTypeDescriptionNotFoundException;
+                                                                                                        throws AttributeTypeDescriptionNotFoundException;
 
     AttributeTypeDescriptionEntity findDescription(AttributeTypeDescriptionPK attributeTypeDescriptionPK);
 
     /**
-     * Returns a map containing a list of unique values of an attribute with a count of how many times these values
-     * occur
+     * Returns a map containing a list of unique values of an attribute with a count of how many times these values occur
      * 
      * @param attributeType
      */
@@ -98,12 +96,10 @@ public interface AttributeTypeDAO {
      */
     AttributeTypeEntity getParent(AttributeTypeEntity memberAttributeType) throws AttributeTypeNotFoundException;
 
-    CompoundedAttributeTypeMemberEntity getMemberEntry(AttributeTypeEntity memberAttributeType)
-            throws AttributeTypeNotFoundException;
+    CompoundedAttributeTypeMemberEntity getMemberEntry(AttributeTypeEntity memberAttributeType) throws AttributeTypeNotFoundException;
 
     /**
-     * Removes the compounded member attribute type entities ( not the actual member attribute type ) of the given
-     * parent.
+     * Removes the compounded member attribute type entities ( not the actual member attribute type ) of the given parent.
      * 
      * @param parentAttributeType
      */

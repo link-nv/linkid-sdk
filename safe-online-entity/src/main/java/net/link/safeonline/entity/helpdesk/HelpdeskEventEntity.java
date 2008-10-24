@@ -47,8 +47,7 @@ import net.link.safeonline.shared.helpdesk.LogLevelType;
                 + "WHERE event.time < :ageLimit AND event.logLevel = :logLevel"),
         @NamedQuery(name = QUERY_LIST_USER_CONTEXTS, query = "SELECT DISTINCT event.helpdeskContext "
                 + "FROM HelpdeskEventEntity AS event " + "WHERE event.principal = :principal"),
-        @NamedQuery(name = QUERY_LIST_USERS, query = "SELECT DISTINCT event.principal "
-                + "FROM HelpdeskEventEntity AS event") })
+        @NamedQuery(name = QUERY_LIST_USERS, query = "SELECT DISTINCT event.principal " + "FROM HelpdeskEventEntity AS event") })
 public class HelpdeskEventEntity implements Serializable {
 
     private static final long     serialVersionUID             = 1L;
@@ -89,8 +88,7 @@ public class HelpdeskEventEntity implements Serializable {
         this.time = new Date();
     }
 
-    public HelpdeskEventEntity(HelpdeskContextEntity helpdeskContext, Date time, String message, String principal,
-            LogLevelType logLevel) {
+    public HelpdeskEventEntity(HelpdeskContextEntity helpdeskContext, Date time, String message, String principal, LogLevelType logLevel) {
 
         this.helpdeskContext = helpdeskContext;
         this.time = time;

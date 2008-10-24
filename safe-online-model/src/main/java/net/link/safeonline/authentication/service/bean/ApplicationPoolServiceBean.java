@@ -66,7 +66,8 @@ public class ApplicationPoolServiceBean implements ApplicationPoolService, Appli
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public ApplicationPoolEntity addApplicationPool(String name, Long ssoTimeout, List<String> applicationNameList)
-            throws ExistingApplicationPoolException, ApplicationNotFoundException {
+                                                                                                                   throws ExistingApplicationPoolException,
+                                                                                                                   ApplicationNotFoundException {
 
         LOG.debug("add application pool: " + name);
         checkExistingApplicationPool(name);
@@ -122,7 +123,8 @@ public class ApplicationPoolServiceBean implements ApplicationPoolService, Appli
      */
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public void updateApplicationList(String applicationPoolName, List<String> applicationNameList)
-            throws ApplicationPoolNotFoundException, ApplicationNotFoundException {
+                                                                                                   throws ApplicationPoolNotFoundException,
+                                                                                                   ApplicationNotFoundException {
 
         LOG.debug("update application list for application pool: " + applicationPoolName);
         ApplicationPoolEntity applicationPool = this.applicationPoolDAO.getApplicationPool(applicationPoolName);

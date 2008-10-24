@@ -10,6 +10,7 @@ import org.apache.wicket.Page;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.link.PageLink;
 
+
 public class LoginPage extends LayoutPage {
 
     private static final long serialVersionUID = 1L;
@@ -51,14 +52,14 @@ public class LoginPage extends LayoutPage {
         add(new PageLink("digipassLoginLink", DigipassLoginPage.class));
     }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected String getHeaderTitle() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getHeaderTitle() {
 
-		return "Login Page";
-	}
+        return "Login Page";
+    }
 
     /**
      * {@inheritDoc}
@@ -69,12 +70,12 @@ public class LoginPage extends LayoutPage {
         return null;
     }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	Class<? extends Page> getPageLinkDestination() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    Class<? extends Page> getPageLinkDestination() {
 
-		return LoginPage.class;
-	}
+        return LoginPage.class;
+    }
 }

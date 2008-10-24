@@ -47,12 +47,12 @@ public class PrescriptionEditBean extends AbstractPrescriptionDataClientBean imp
     public String persist() {
 
         try {
-            createOrUpdateAttribute(DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME, Boolean.valueOf(this.userStatus
-                    .isAdmin()), Boolean.class);
-            createOrUpdateAttribute(DemoConstants.PRESCRIPTION_CARE_PROVIDER_ATTRIBUTE_NAME, Boolean
-                    .valueOf(this.userStatus.isCareProvider()), Boolean.class);
-            createOrUpdateAttribute(DemoConstants.PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME, Boolean
-                    .valueOf(this.userStatus.isPharmacist()), Boolean.class);
+            createOrUpdateAttribute(DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME, Boolean.valueOf(this.userStatus.isAdmin()),
+                    Boolean.class);
+            createOrUpdateAttribute(DemoConstants.PRESCRIPTION_CARE_PROVIDER_ATTRIBUTE_NAME,
+                    Boolean.valueOf(this.userStatus.isCareProvider()), Boolean.class);
+            createOrUpdateAttribute(DemoConstants.PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME, Boolean.valueOf(this.userStatus.isPharmacist()),
+                    Boolean.class);
         } catch (WSClientTransportException e) {
             this.facesMessages.add("connection error");
             return null;
@@ -70,8 +70,10 @@ public class PrescriptionEditBean extends AbstractPrescriptionDataClientBean imp
     }
 
     private void createOrUpdateAttribute(String attributeName, Object attributeValue, Class<?> expectedClass)
-            throws WSClientTransportException, RequestDeniedException, SubjectNotFoundException,
-            AttributeNotFoundException {
+                                                                                                             throws WSClientTransportException,
+                                                                                                             RequestDeniedException,
+                                                                                                             SubjectNotFoundException,
+                                                                                                             AttributeNotFoundException {
 
         DataClient dataClient = getDataClient();
         String userId = this.userStatus.getUserId();

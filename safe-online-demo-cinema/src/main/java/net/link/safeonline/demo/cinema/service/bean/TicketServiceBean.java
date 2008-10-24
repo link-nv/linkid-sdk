@@ -48,8 +48,7 @@ public class TicketServiceBean extends AbstractCinemaServiceBean implements Tick
     /**
      * {@inheritDoc}
      */
-    public CinemaTicketEntity createTicket(CinemaUserEntity user, CinemaFilmEntity film, Date time,
-            CinemaSeatOccupationEntity occupation) {
+    public CinemaTicketEntity createTicket(CinemaUserEntity user, CinemaFilmEntity film, Date time, CinemaSeatOccupationEntity occupation) {
 
         // Occupy our seat.
         CinemaSeatOccupationEntity ticketOccupation = this.seatService.validate(occupation);
@@ -136,8 +135,7 @@ public class TicketServiceBean extends AbstractCinemaServiceBean implements Tick
     public List<CinemaTicketEntity> getTickets(CinemaUserEntity user) {
 
         CinemaUserEntity attachedUser = attach(user);
-        return this.em.createNamedQuery(CinemaTicketEntity.getByUser).setParameter("user", attachedUser)
-                .getResultList();
+        return this.em.createNamedQuery(CinemaTicketEntity.getByUser).setParameter("user", attachedUser).getResultList();
     }
 
     /**

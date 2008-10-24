@@ -64,9 +64,9 @@ import com.sun.xml.ws.client.ClientTransportException;
 
 /**
  * Implementation of the data client. This class is using JAX-WS, secured via WS-Security and server-side SSL.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class DataClientImpl extends AbstractMessageAccessor implements DataClient {
 
@@ -81,7 +81,7 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
 
     /**
      * Main constructor.
-     *
+     * 
      * @param location
      *            the location (i.e. host:port) of the data web service.
      * @param clientCertificate
@@ -99,8 +99,8 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
         registerMessageLoggerHandler(this.port);
 
         /*
-         * The order of the JAX-WS handlers is important. For outbound messages the TargetIdentity SOAP handler needs to
-         * come first since it feeds additional XML Id's to be signed by the WS-Security handler.
+         * The order of the JAX-WS handlers is important. For outbound messages the TargetIdentity SOAP handler needs to come first since it
+         * feeds additional XML Id's to be signed by the WS-Security handler.
          */
         this.targetIdentityHandler = new TargetIdentityClientHandler();
         initTargetIdentityHandler();
@@ -125,8 +125,8 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
         bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location);
     }
 
-    public void setAttributeValue(String subjectLogin, String attributeName, Object attributeValue)
-            throws WSClientTransportException, AttributeNotFoundException {
+    public void setAttributeValue(String subjectLogin, String attributeName, Object attributeValue) throws WSClientTransportException,
+                                                                                                   AttributeNotFoundException {
 
         this.targetIdentityHandler.setTargetIdentity(subjectLogin);
 
@@ -167,8 +167,7 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
             if (secondLevelStatusList.size() > 0) {
                 StatusType secondLevelStatus = secondLevelStatusList.get(0);
                 LOG.debug("second level status: " + secondLevelStatus.getCode());
-                SecondLevelStatusCode secondLevelStatusCode = SecondLevelStatusCode.fromCode(secondLevelStatus
-                        .getCode());
+                SecondLevelStatusCode secondLevelStatusCode = SecondLevelStatusCode.fromCode(secondLevelStatus.getCode());
                 LOG.debug("second level status comment: " + secondLevelStatus.getComment());
                 switch (secondLevelStatusCode) {
                     case INVALID_DATA:
@@ -185,7 +184,9 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
 
     @SuppressWarnings("unchecked")
     public <Type> Attribute<Type> getAttributeValue(String userId, String attributeName, Class<Type> expectedValueClass)
-            throws WSClientTransportException, RequestDeniedException, SubjectNotFoundException {
+                                                                                                                        throws WSClientTransportException,
+                                                                                                                        RequestDeniedException,
+                                                                                                                        SubjectNotFoundException {
 
         this.targetIdentityHandler.setTargetIdentity(userId);
 
@@ -223,8 +224,7 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
                     throw new RuntimeException("ID-WSF DST error");
                 }
                 StatusType secondLevelStatus = secondLevelStatuses.get(0);
-                SecondLevelStatusCode secondLevelStatusCode = SecondLevelStatusCode.fromCode(secondLevelStatus
-                        .getCode());
+                SecondLevelStatusCode secondLevelStatusCode = SecondLevelStatusCode.fromCode(secondLevelStatus.getCode());
                 if (SecondLevelStatusCode.NOT_AUTHORIZED == secondLevelStatusCode) {
                     throw new RequestDeniedException();
                 }
@@ -268,8 +268,7 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
             /*
              * Multi-valued attribute expected.
              */
-            if (false == Boolean.TRUE.toString().equals(
-                    attribute.getOtherAttributes().get(WebServiceConstants.MULTIVALUED_ATTRIBUTE))) {
+            if (false == Boolean.TRUE.toString().equals(attribute.getOtherAttributes().get(WebServiceConstants.MULTIVALUED_ATTRIBUTE))) {
                 String msg = "expected multivalued attribute, but received single-valued attribute";
                 LOG.error(msg);
                 throw new IllegalArgumentException(msg);
@@ -286,16 +285,14 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
                     AttributeType compoundAttribute = (AttributeType) attributeValue;
                     CompoundBuilder compoundBuilder = new CompoundBuilder(componentType);
 
-                    String attributeId = compoundAttribute.getOtherAttributes().get(
-                            WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID);
+                    String attributeId = compoundAttribute.getOtherAttributes().get(WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID);
                     compoundBuilder.setCompoundId(attributeId);
 
                     List<Object> memberAttributes = compoundAttribute.getAttributeValue();
                     for (Object memberAttributeObject : memberAttributes) {
                         AttributeType memberAttribute = (AttributeType) memberAttributeObject;
                         String memberName = memberAttribute.getName();
-                        Object memberAttributeValue = convertFromXmlDatatypeToClientDatatype(memberAttribute
-                                .getAttributeValue().get(0));
+                        Object memberAttributeValue = convertFromXmlDatatypeToClientDatatype(memberAttribute.getAttributeValue().get(0));
                         compoundBuilder.setCompoundProperty(memberName, memberAttributeValue);
                     }
 
@@ -316,8 +313,8 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
          * Single-valued attribute expected.
          */
         if (false == expectedValueClass.isInstance(firstAttributeValue)) {
-            throw new IllegalArgumentException("type mismatch: expected " + expectedValueClass.getName()
-                    + "; received: " + firstAttributeValue.getClass().getName());
+            throw new IllegalArgumentException("type mismatch: expected " + expectedValueClass.getName() + "; received: "
+                    + firstAttributeValue.getClass().getName());
         }
         Type value = (Type) firstAttributeValue;
 
@@ -337,8 +334,7 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
         return result;
     }
 
-    public void createAttribute(String userId, String attributeName, Object attributeValue)
-            throws WSClientTransportException {
+    public void createAttribute(String userId, String attributeName, Object attributeValue) throws WSClientTransportException {
 
         this.targetIdentityHandler.setTargetIdentity(userId);
 
@@ -375,9 +371,9 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
 
     /**
      * Sets the attribute value within the target SAML attribute element.
-     *
+     * 
      * The input attribute value can be an Integer, Boolean or array of these in case of a multivalued attribute.
-     *
+     * 
      * @param attributeValue
      * @param targetAttribute
      * @param newAttribute
@@ -393,8 +389,7 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
             return;
         }
         if (attributeValue.getClass().isArray()) {
-            targetAttribute.getOtherAttributes()
-                    .put(WebServiceConstants.MULTIVALUED_ATTRIBUTE, Boolean.TRUE.toString());
+            targetAttribute.getOtherAttributes().put(WebServiceConstants.MULTIVALUED_ATTRIBUTE, Boolean.TRUE.toString());
             int size = Array.getLength(attributeValue);
             for (int idx = 0; idx < size; idx++) {
                 Object value = Array.get(attributeValue, idx);
@@ -445,16 +440,15 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
             compoundAttribute.getOtherAttributes().put(WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID, id);
         } else if (false == isNewAttribute) {
             /*
-             * The @Id property is really required to be able to target the correct compound attribute record within the
-             * system. In case we're creating a new compounded attribute record the attribute Id is of no use.
+             * The @Id property is really required to be able to target the correct compound attribute record within the system. In case
+             * we're creating a new compounded attribute record the attribute Id is of no use.
              */
             throw new IllegalArgumentException("Missing @Id property on compound attribute value");
         }
         return compoundAttribute;
     }
 
-    public void removeAttribute(String userIdn, String attributeName, String attributeId)
-            throws WSClientTransportException {
+    public void removeAttribute(String userIdn, String attributeName, String attributeId) throws WSClientTransportException {
 
         LOG.debug("remove attribute " + attributeName + " for subject " + userIdn);
         this.targetIdentityHandler.setTargetIdentity(userIdn);

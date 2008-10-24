@@ -29,7 +29,7 @@ import org.junit.Test;
  * <p>
  * <i>Dec 19, 2007</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class TinyTests {

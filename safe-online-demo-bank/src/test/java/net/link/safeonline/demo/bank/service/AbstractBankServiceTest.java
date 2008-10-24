@@ -43,7 +43,7 @@ public abstract class AbstractBankServiceTest extends AbstractServiceTest {
     @Override
     protected Class<?>[] getServices() {
 
-        return new Class<?>[] { AccountServiceBean.class, InitializationServiceBean.class,
-                TransactionServiceBean.class, UserServiceBean.class };
+        return new Class<?>[] { AccountServiceBean.class, InitializationServiceBean.class, TransactionServiceBean.class,
+                UserServiceBean.class };
     }
 }

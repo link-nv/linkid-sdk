@@ -31,8 +31,8 @@ import org.apache.commons.logging.LogFactory;
  * JMX bean that manages the identity of the SafeOnline instance. This identity is used for signing of SAML tokens.
  * 
  * <p>
- * This identity service can be extended later on when other types of identity tokens must be supported. For example:
- * HSMs via PKCS#11 drivers.
+ * This identity service can be extended later on when other types of identity tokens must be supported. For example: HSMs via PKCS#11
+ * drivers.
  * </p>
  * 
  * @author fcorneli
@@ -93,8 +93,8 @@ public class IdentityService implements IdentityServiceMBean {
 
         PrivateKeyEntry privateKeyEntry;
         try {
-            privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(this.keyStoreType, keyStoreInputStream,
-                    this.keyStorePassword, this.keyStorePassword);
+            privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(this.keyStoreType, keyStoreInputStream, this.keyStorePassword,
+                    this.keyStorePassword);
         } finally {
             IOUtils.closeQuietly(keyStoreInputStream);
         }

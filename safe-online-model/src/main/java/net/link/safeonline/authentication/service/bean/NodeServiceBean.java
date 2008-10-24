@@ -71,9 +71,8 @@ public class NodeServiceBean implements NodeService, NodeServiceRemote {
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void addNode(String name, String protocol, String hostname, int port, int sslPort,
-            byte[] encodedAuthnCertificate, byte[] encodedSigningCertificate) throws ExistingNodeException,
-            CertificateEncodingException {
+    public void addNode(String name, String protocol, String hostname, int port, int sslPort, byte[] encodedAuthnCertificate,
+                        byte[] encodedSigningCertificate) throws ExistingNodeException, CertificateEncodingException {
 
         LOG.debug("add olas node: " + name);
         checkExistingNode(name);
@@ -107,8 +106,7 @@ public class NodeServiceBean implements NodeService, NodeServiceRemote {
         // check if present in an attribute type
         List<AttributeTypeEntity> nodeAttributeTypes = this.attributeTypeDAO.listAttributeTypes(node);
         if (nodeAttributeTypes.size() > 0)
-            throw new PermissionDeniedException("Still attribute types attached to this node",
-                    "errorPermissionNodeHasAttributes");
+            throw new PermissionDeniedException("Still attribute types attached to this node", "errorPermissionNodeHasAttributes");
 
         this.olasDAO.removeNode(node);
     }
@@ -120,8 +118,7 @@ public class NodeServiceBean implements NodeService, NodeServiceRemote {
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void updateAuthnCertificate(String nodeName, byte[] certificateData) throws CertificateEncodingException,
-            NodeNotFoundException {
+    public void updateAuthnCertificate(String nodeName, byte[] certificateData) throws CertificateEncodingException, NodeNotFoundException {
 
         LOG.debug("updating olas node authentication certificate for " + nodeName);
         X509Certificate certificate = PkiUtils.decodeCertificate(certificateData);
@@ -132,7 +129,7 @@ public class NodeServiceBean implements NodeService, NodeServiceRemote {
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public void updateSigningCertificate(String nodeName, byte[] certificateData) throws CertificateEncodingException,
-            NodeNotFoundException {
+                                                                                 NodeNotFoundException {
 
         LOG.debug("updating olas node certificate for " + nodeName);
         X509Certificate certificate = PkiUtils.decodeCertificate(certificateData);
@@ -142,8 +139,7 @@ public class NodeServiceBean implements NodeService, NodeServiceRemote {
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void updateLocation(String nodeName, String protocol, String hostname, int port, int sslPort)
-            throws NodeNotFoundException {
+    public void updateLocation(String nodeName, String protocol, String hostname, int port, int sslPort) throws NodeNotFoundException {
 
         LOG.debug("update olas node location for " + nodeName);
         NodeEntity node = this.olasDAO.getNode(nodeName);

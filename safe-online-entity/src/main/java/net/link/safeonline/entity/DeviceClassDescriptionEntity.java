@@ -89,8 +89,7 @@ public class DeviceClassDescriptionEntity implements Serializable {
     }
 
     @EmbeddedId
-    @AttributeOverrides( {
-            @AttributeOverride(name = "deviceClassName", column = @Column(name = DEVICE_CLASS_COLUMN_NAME)),
+    @AttributeOverrides( { @AttributeOverride(name = "deviceClassName", column = @Column(name = DEVICE_CLASS_COLUMN_NAME)),
             @AttributeOverride(name = "language", column = @Column(name = LANGUAGE_COLUMN_NAME)) })
     public DeviceClassDescriptionPK getPk() {
 

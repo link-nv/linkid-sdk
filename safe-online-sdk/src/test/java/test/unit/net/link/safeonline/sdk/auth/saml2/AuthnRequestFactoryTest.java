@@ -84,12 +84,10 @@ public class AuthnRequestFactoryTest {
         Document resultDocument = DomTestUtils.parseDocument(result);
 
         Element nsElement = createNsElement(resultDocument);
-        Element authnRequestElement = (Element) XPathAPI.selectSingleNode(resultDocument, "/samlp2:AuthnRequest",
-                nsElement);
+        Element authnRequestElement = (Element) XPathAPI.selectSingleNode(resultDocument, "/samlp2:AuthnRequest", nsElement);
         assertNotNull(authnRequestElement);
 
-        Element issuerElement = (Element) XPathAPI.selectSingleNode(resultDocument,
-                "/samlp2:AuthnRequest/saml2:Issuer", nsElement);
+        Element issuerElement = (Element) XPathAPI.selectSingleNode(resultDocument, "/samlp2:AuthnRequest/saml2:Issuer", nsElement);
         assertNotNull(issuerElement);
         assertEquals(applicationName, issuerElement.getTextContent());
 
@@ -98,30 +96,26 @@ public class AuthnRequestFactoryTest {
         assertNotNull(resultAssertionConsumerServiceURLNode);
         assertEquals(assertionConsumerServiceURL, resultAssertionConsumerServiceURLNode.getTextContent());
 
-        Node protocolBindingNode = XPathAPI.selectSingleNode(resultDocument, "/samlp2:AuthnRequest/@ProtocolBinding",
-                nsElement);
+        Node protocolBindingNode = XPathAPI.selectSingleNode(resultDocument, "/samlp2:AuthnRequest/@ProtocolBinding", nsElement);
         assertNotNull(protocolBindingNode);
         LOG.debug("protocol binding: " + protocolBindingNode.getTextContent());
         assertEquals("urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST", protocolBindingNode.getTextContent());
 
-        Node destinationNode = XPathAPI
-                .selectSingleNode(resultDocument, "/samlp2:AuthnRequest/@Destination", nsElement);
+        Node destinationNode = XPathAPI.selectSingleNode(resultDocument, "/samlp2:AuthnRequest/@Destination", nsElement);
         assertNotNull(destinationNode);
         assertEquals(destinationURL, destinationNode.getTextContent());
 
-        Node allowCreateNode = XPathAPI.selectSingleNode(resultDocument,
-                "/samlp2:AuthnRequest/samlp2:NameIDPolicy/@AllowCreate", nsElement);
+        Node allowCreateNode = XPathAPI
+                                       .selectSingleNode(resultDocument, "/samlp2:AuthnRequest/samlp2:NameIDPolicy/@AllowCreate", nsElement);
         assertNotNull(allowCreateNode);
         assertEquals("true", allowCreateNode.getTextContent());
 
         // verify signature
-        NodeList signatureNodeList = resultDocument.getElementsByTagNameNS(javax.xml.crypto.dsig.XMLSignature.XMLNS,
-                "Signature");
+        NodeList signatureNodeList = resultDocument.getElementsByTagNameNS(javax.xml.crypto.dsig.XMLSignature.XMLNS, "Signature");
         assertEquals(1, signatureNodeList.getLength());
 
         DOMValidateContext validateContext = new DOMValidateContext(keyPair.getPublic(), signatureNodeList.item(0));
-        XMLSignatureFactory signatureFactory = XMLSignatureFactory.getInstance("DOM",
-                new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
+        XMLSignatureFactory signatureFactory = XMLSignatureFactory.getInstance("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
 
         XMLSignature signature = signatureFactory.unmarshalXMLSignature(validateContext);
         boolean resultValidity = signature.validate(validateContext);
@@ -143,8 +137,8 @@ public class AuthnRequestFactoryTest {
         LOG.debug("key pair algo: " + keyPair.getPublic().getAlgorithm());
 
         // operate
-        String result = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, keyPair, null,
-                null, null, null, false);
+        String result = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, keyPair, null, null, null, null,
+                false);
         LOG.debug("result: " + result);
     }
 

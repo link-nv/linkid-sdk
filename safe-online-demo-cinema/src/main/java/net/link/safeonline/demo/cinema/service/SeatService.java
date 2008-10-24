@@ -19,15 +19,15 @@ import net.link.safeonline.demo.cinema.entity.CinemaSeatOccupationEntity;
 /**
  * <h2>{@link SeatService}<br>
  * <sub>Service bean for {@link CinemaSeatEntity}.</sub></h2>
- *
+ * 
  * <p>
  * Provide access to {@link CinemaSeatEntity}s.
  * </p>
- *
+ * 
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 @Local
@@ -47,8 +47,7 @@ public interface SeatService extends CinemaService {
     public boolean isOccupied(CinemaSeatEntity seat, Date start);
 
     /**
-     * Verify that the seat described by the given occupation is not already occupied. If it is not, occupy it (but do
-     * not yet reserve it).
+     * Verify that the seat described by the given occupation is not already occupied. If it is not, occupy it (but do not yet reserve it).
      * 
      * @return The persisted seat occupation.
      * @throws IllegalStateException
@@ -57,8 +56,7 @@ public interface SeatService extends CinemaService {
     public CinemaSeatOccupationEntity validate(CinemaSeatOccupationEntity occupation) throws IllegalStateException;
 
     /**
-     * Verify that the given seat is not already occupied on the given time. If it is not, occupy it (but do not yet
-     * reserve it).
+     * Verify that the given seat is not already occupied on the given time. If it is not, occupy it (but do not yet reserve it).
      * 
      * @return The persisted seat occupation.
      * @throws IllegalStateException

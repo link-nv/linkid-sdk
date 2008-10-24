@@ -15,11 +15,11 @@ import java.util.Map;
 /**
  * <h2>{@link ScenarioExecution}<br>
  * <sub>A data structure that holds the results of a scenario execution.</sub></h2>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ScenarioExecution implements Serializable, Comparable<ScenarioExecution>, Cloneable {
@@ -38,8 +38,8 @@ public class ScenarioExecution implements Serializable, Comparable<ScenarioExecu
     private Date                  startTime;
 
 
-    public ScenarioExecution(String scenarioName, String scenarioDescription, Integer agents, Integer workers,
-            Date startTime, Long duration, String hostname, Boolean useSsl, Double speed) {
+    public ScenarioExecution(String scenarioName, String scenarioDescription, Integer agents, Integer workers, Date startTime,
+                             Long duration, String hostname, Boolean useSsl, Double speed) {
 
         this.scenarioName = scenarioName;
         this.scenarioDescription = scenarioDescription;
@@ -118,23 +118,22 @@ public class ScenarioExecution implements Serializable, Comparable<ScenarioExecu
             formattedStartTime = new SimpleDateFormat("HH:mm").format(this.startTime);
         }
 
-        return String.format("%s: [%s] %sx%s (%s min): %s #/s", this.scenarioName == null? "N/A": this.scenarioName
-                .replaceFirst(".*\\.", ""), formattedStartTime == null? "N/A": formattedStartTime,
-                this.agents == null? "N/A": this.agents, this.workers == null? "N/A": this.workers,
-                this.duration == null? "N/A": this.duration / 60000, this.speed == null? "N/A": String.format("%.2f",
-                        this.speed));
+        return String.format("%s: [%s] %sx%s (%s min): %s #/s", this.scenarioName == null? "N/A": this.scenarioName.replaceFirst(".*\\.",
+                ""), formattedStartTime == null? "N/A": formattedStartTime, this.agents == null? "N/A": this.agents,
+                this.workers == null? "N/A": this.workers, this.duration == null? "N/A": this.duration / 60000, this.speed == null? "N/A"
+                        : String.format("%.2f", this.speed));
     }
 
     /**
      * <b>NOTE</b>: The clone will <b>NOT</b> contain no charts even if this instance does!
-     *
+     * 
      * {@inheritDoc}
      */
     @Override
     public ScenarioExecution clone() {
 
-        return new ScenarioExecution(this.scenarioName, this.scenarioDescription, this.agents, this.workers,
-                this.startTime, this.duration, this.hostname, this.ssl, this.speed);
+        return new ScenarioExecution(this.scenarioName, this.scenarioDescription, this.agents, this.workers, this.startTime, this.duration,
+                this.hostname, this.ssl, this.speed);
     }
 
     /**
@@ -153,8 +152,7 @@ public class ScenarioExecution implements Serializable, Comparable<ScenarioExecu
     }
 
     /**
-     * @return <code>true</code> If this execution and the other execution were executed in the same execution request
-     *         by the console.
+     * @return <code>true</code> If this execution and the other execution were executed in the same execution request by the console.
      */
     public boolean equalRequest(ScenarioExecution o) {
 
@@ -198,9 +196,9 @@ public class ScenarioExecution implements Serializable, Comparable<ScenarioExecu
 
     /**
      * {@inheritDoc}
-     *
-     * Assure contract with equals; for {@link ScenarioExecution}s with the same startTime (execution id) compare
-     * hashCode to differentiate other possible differences (like speed).
+     * 
+     * Assure contract with equals; for {@link ScenarioExecution}s with the same startTime (execution id) compare hashCode to differentiate
+     * other possible differences (like speed).
      */
     public int compareTo(ScenarioExecution o) {
 

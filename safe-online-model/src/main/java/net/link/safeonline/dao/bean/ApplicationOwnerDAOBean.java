@@ -42,8 +42,7 @@ public class ApplicationOwnerDAOBean implements ApplicationOwnerDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                ApplicationOwnerEntity.QueryInterface.class);
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, ApplicationOwnerEntity.QueryInterface.class);
     }
 
     public ApplicationOwnerEntity findApplicationOwner(String name) {
@@ -76,8 +75,7 @@ public class ApplicationOwnerDAOBean implements ApplicationOwnerDAO {
         return applicationOwners;
     }
 
-    public ApplicationOwnerEntity getApplicationOwner(SubjectEntity adminSubject)
-            throws ApplicationOwnerNotFoundException {
+    public ApplicationOwnerEntity getApplicationOwner(SubjectEntity adminSubject) throws ApplicationOwnerNotFoundException {
 
         ApplicationOwnerEntity applicationOwner = findApplicationOwner(adminSubject);
         if (null == applicationOwner)
@@ -101,8 +99,7 @@ public class ApplicationOwnerDAOBean implements ApplicationOwnerDAO {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void removeApplication(ApplicationEntity application) {
 
-        LOG.debug("remove application " + application.getName() + " from owner: "
-                + application.getApplicationOwner().getName());
+        LOG.debug("remove application " + application.getName() + " from owner: " + application.getApplicationOwner().getName());
         ApplicationOwnerEntity applicationOwner = findApplicationOwner(application.getApplicationOwner().getName());
         applicationOwner.getApplications().remove(application);
     }

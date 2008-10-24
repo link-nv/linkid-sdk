@@ -41,16 +41,15 @@ import org.jboss.security.SimplePrincipal;
 
 
 /**
- * JAAS login module that performs authentication and authorization for devices. This module is used by the SafeOnline
- * core device security domain. The login module links an X509 certificate with a device principal.
- *
+ * JAAS login module that performs authentication and authorization for devices. This module is used by the SafeOnline core device security
+ * domain. The login module links an X509 certificate with a device principal.
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class SafeOnlineDeviceLoginModule implements LoginModule {
 
-    private static final Log   LOG                                      = LogFactory
-                                                                                .getLog(SafeOnlineDeviceLoginModule.class);
+    private static final Log   LOG                                      = LogFactory.getLog(SafeOnlineDeviceLoginModule.class);
 
     private Subject            subject;
 
@@ -103,8 +102,8 @@ public class SafeOnlineDeviceLoginModule implements LoginModule {
         return optionValue;
     }
 
-    public void initialize(Subject newSubject, CallbackHandler newCallbackHandler,
-            @SuppressWarnings("unchecked") Map sharedState, @SuppressWarnings("unchecked") Map options) {
+    public void initialize(Subject newSubject, CallbackHandler newCallbackHandler, @SuppressWarnings("unchecked") Map sharedState,
+                           @SuppressWarnings("unchecked") Map options) {
 
         LOG.debug("initialize: " + this);
 
@@ -184,8 +183,8 @@ public class SafeOnlineDeviceLoginModule implements LoginModule {
     private DeviceAuthenticationService getDeviceAuthenticationService() throws LoginException {
 
         try {
-            DeviceAuthenticationService deviceAuthenticationService = EjbUtils.getEJB(
-                    this.authenticationServiceJndiName, DeviceAuthenticationService.class);
+            DeviceAuthenticationService deviceAuthenticationService = EjbUtils.getEJB(this.authenticationServiceJndiName,
+                    DeviceAuthenticationService.class);
             return deviceAuthenticationService;
         } catch (RuntimeException e) {
             throw new LoginException("JNDI lookup error: " + e.getMessage());
@@ -202,8 +201,8 @@ public class SafeOnlineDeviceLoginModule implements LoginModule {
         if (!result)
             throw new LoginException("could not remove authenticated principal");
         /*
-         * Despite the fact that JBoss AbstractServerLoginModule is not removing the roles on the subject, we clear here
-         * all data on the subject.
+         * Despite the fact that JBoss AbstractServerLoginModule is not removing the roles on the subject, we clear here all data on the
+         * subject.
          */
         this.subject.getPrincipals().clear();
         this.subject.getPublicCredentials().clear();

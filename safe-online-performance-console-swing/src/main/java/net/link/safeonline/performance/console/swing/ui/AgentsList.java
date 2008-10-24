@@ -26,11 +26,11 @@ import com.jgoodies.forms.layout.FormLayout;
 /**
  * <h2>{@link AgentsList}<br>
  * <sub>A list that visualises agent status.</sub></h2>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class AgentsList extends JPanel implements AgentStateListener {
@@ -155,8 +155,7 @@ public class AgentsList extends JPanel implements AgentStateListener {
     }
 
     /**
-     * Updates the selected agents in {@link ConsoleData}. Fired by {@link AgentPanel} when its selection status
-     * changes.
+     * Updates the selected agents in {@link ConsoleData}. Fired by {@link AgentPanel} when its selection status changes.
      */
     public void fireListSelectionChanged() {
 

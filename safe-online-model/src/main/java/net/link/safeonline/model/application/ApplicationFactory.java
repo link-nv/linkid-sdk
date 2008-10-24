@@ -13,9 +13,9 @@ import net.link.safeonline.entity.ApplicationEntity;
 
 /**
  * Factory for domain model Application objects.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class ApplicationFactory {
 
@@ -26,13 +26,13 @@ public class ApplicationFactory {
 
     /**
      * Gives back the domain model object corresponding with the given application name.
-     *
+     * 
      * @param applicationContext
      * @param applicationName
      * @throws ApplicationNotFoundException
      */
     public static Application getApplication(ApplicationContext applicationContext, String applicationName)
-            throws ApplicationNotFoundException {
+                                                                                                           throws ApplicationNotFoundException {
 
         ApplicationEntity applicationEntity = applicationContext.getApplicationDAO().getApplication(applicationName);
         Application application = new Application(applicationEntity);

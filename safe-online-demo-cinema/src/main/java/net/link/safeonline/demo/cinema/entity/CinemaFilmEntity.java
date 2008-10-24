@@ -23,8 +23,7 @@ import javax.persistence.OneToMany;
 
 
 @Entity
-@NamedQueries( {
-        @NamedQuery(name = CinemaFilmEntity.getAll, query = "SELECT f FROM CinemaFilmEntity f"),
+@NamedQueries( { @NamedQuery(name = CinemaFilmEntity.getAll, query = "SELECT f FROM CinemaFilmEntity f"),
         @NamedQuery(name = CinemaFilmEntity.getById, query = "SELECT f FROM CinemaFilmEntity f WHERE f.id = :id"),
         @NamedQuery(name = CinemaFilmEntity.getAllFrom, query = "SELECT r.films FROM CinemaRoomEntity r WHERE r.theatre = :theatre") })
 public class CinemaFilmEntity implements Serializable {
@@ -59,8 +58,7 @@ public class CinemaFilmEntity implements Serializable {
      * @param duration
      *            The duration of the film in seconds.
      */
-    public CinemaFilmEntity(String name, String description, long duration, long price,
-            Collection<CinemaShowTimeEntity> times) {
+    public CinemaFilmEntity(String name, String description, long duration, long price, Collection<CinemaShowTimeEntity> times) {
 
         this.name = name;
         this.description = description;

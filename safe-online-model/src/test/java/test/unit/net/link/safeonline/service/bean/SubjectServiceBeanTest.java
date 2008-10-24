@@ -47,15 +47,14 @@ public class SubjectServiceBeanTest {
         this.entityTestManager = new EntityTestManager();
         this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
         EntityManager entityManager = this.entityTestManager.getEntityManager();
-        this.testedInstance = EJBTestUtils.newInstance(SubjectServiceBean.class, SafeOnlineTestContainer.sessionBeans,
-                entityManager);
+        this.testedInstance = EJBTestUtils.newInstance(SubjectServiceBean.class, SafeOnlineTestContainer.sessionBeans, entityManager);
 
         this.attributeTypeDAO = new AttributeTypeDAOBean();
         EJBTestUtils.inject(this.attributeTypeDAO, entityManager);
         EJBTestUtils.init(this.attributeTypeDAO);
 
-        this.attributeTypeDAO.addAttributeType(new AttributeTypeEntity(SafeOnlineConstants.LOGIN_ATTRIBTUE,
-                DatatypeType.STRING, false, false));
+        this.attributeTypeDAO.addAttributeType(new AttributeTypeEntity(SafeOnlineConstants.LOGIN_ATTRIBTUE, DatatypeType.STRING, false,
+                false));
     }
 
     @After

@@ -44,8 +44,8 @@ public class NonEmptyStringValidatorTest extends TestCase {
 
         this.mockValidatorResult = createMock(ValidatorResult.class);
 
-        this.nonEmptyStringSampleAnnotation = (NonEmptyString) NonEmptyStringValidatorTest.class.getDeclaredMethod(
-                "sampleFunc", String.class).getParameterAnnotations()[0][0];
+        this.nonEmptyStringSampleAnnotation = (NonEmptyString) NonEmptyStringValidatorTest.class.getDeclaredMethod("sampleFunc",
+                String.class).getParameterAnnotations()[0][0];
     }
 
     public void testNullStringIsInvalid() throws Exception {

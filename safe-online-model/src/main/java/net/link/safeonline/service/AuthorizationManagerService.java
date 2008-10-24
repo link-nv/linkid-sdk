@@ -21,9 +21,9 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 public interface AuthorizationManagerService {
 
     /**
-     * Gives back a set of roles for a given login. The assignment of these roles to a certain principal depends on the
-     * security measures against attacks of the SafeOnline core.
-     *
+     * Gives back a set of roles for a given login. The assignment of these roles to a certain principal depends on the security measures
+     * against attacks of the SafeOnline core.
+     * 
      * @param login
      * @throws SubjectNotFoundException
      */
@@ -31,13 +31,13 @@ public interface AuthorizationManagerService {
 
     /**
      * Gives back all available roles supported by the system.
-     *
+     * 
      */
     Set<String> getAvailableRoles();
 
     /**
      * Update the roles for the given subject.
-     *
+     * 
      * @param login
      * @param roles
      * @throws RoleNotFoundException
@@ -46,7 +46,7 @@ public interface AuthorizationManagerService {
 
     /**
      * Gives back a list of available user logins starting with a specified prefix.
-     *
+     * 
      * @param prefix
      * @throws AttributeTypeNotFoundException
      */

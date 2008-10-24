@@ -19,15 +19,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 
-
 /**
  * Unit test for ping service factory.
- *
+ * 
  * @author fcorneli
  */
 public class PingServiceFactoryTest {
 
-    private static final Log LOG = LogFactory.getLog(PingServiceFactoryTest.class);
+    private static final Log LOG = LogFactory
+                                         .getLog(PingServiceFactoryTest.class);
 
 
     @Test
@@ -41,7 +41,8 @@ public class PingServiceFactoryTest {
         QName serviceName = result.getServiceName();
         LOG.debug("service name: " + serviceName);
         assertEquals("PingService", serviceName.getLocalPart());
-        assertEquals("urn:net:lin-k:safe-online:ping", serviceName.getNamespaceURI());
+        assertEquals("urn:net:lin-k:safe-online:ping", serviceName
+                .getNamespaceURI());
         LOG.debug("service name prefix: " + serviceName.getPrefix());
     }
 }

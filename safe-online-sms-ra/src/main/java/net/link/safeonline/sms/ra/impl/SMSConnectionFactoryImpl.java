@@ -28,8 +28,7 @@ public class SMSConnectionFactoryImpl implements SMSConnectionFactory {
     private transient SMSManagedConnectionFactory smsManagedConnectionFactory;
 
 
-    public SMSConnectionFactoryImpl(ConnectionManager connectionManager,
-            SMSManagedConnectionFactory smsManagedConnectionFactory) {
+    public SMSConnectionFactoryImpl(ConnectionManager connectionManager, SMSManagedConnectionFactory smsManagedConnectionFactory) {
 
         LOG.debug("created");
         this.connectionManager = connectionManager;
@@ -41,8 +40,7 @@ public class SMSConnectionFactoryImpl implements SMSConnectionFactory {
         LOG.debug("Getting connection");
         SMSConnection smsConnection = null;
         try {
-            smsConnection = (SMSConnection) this.connectionManager.allocateConnection(this.smsManagedConnectionFactory,
-                    null);
+            smsConnection = (SMSConnection) this.connectionManager.allocateConnection(this.smsManagedConnectionFactory, null);
         } catch (ResourceException e) {
             throw new NamingException("Unable to get Connection: " + e);
         }

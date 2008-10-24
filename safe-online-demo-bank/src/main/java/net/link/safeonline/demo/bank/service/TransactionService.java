@@ -40,9 +40,8 @@ public interface TransactionService extends BankService {
      * 
      * @return The {@link BankAccountEntity} that was created for the user.
      */
-    public BankTransactionEntity createTransaction(String description, BankAccountEntity source, String target,
-            double amount);
-    
+    public BankTransactionEntity createTransaction(String description, BankAccountEntity source, String target, double amount);
+
     /**
      * Return a sorted collection of transactions made from and to accounts owned by the given user.
      * 

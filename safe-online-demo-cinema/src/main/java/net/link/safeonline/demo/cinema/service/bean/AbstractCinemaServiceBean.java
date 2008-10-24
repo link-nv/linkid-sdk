@@ -15,22 +15,23 @@ import net.link.safeonline.demo.wicket.service.AbstractWicketServiceBean;
 /**
  * <h2>{@link AbstractCinemaServiceBean}<br>
  * <sub>Abstract class for the entity services.</sub></h2>
- *
+ * 
  * <p>
  * Provides access to the {@link EntityManager}.
  * </p>
- *
+ * 
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public abstract class AbstractCinemaServiceBean extends AbstractWicketServiceBean {
 
     @PersistenceContext(unitName = "DemoCinemaEntityManager")
-    EntityManager                em  = defaultEntityManager;
-    
+    EntityManager em = defaultEntityManager;
+
+
     /**
      * {@inheritDoc}
      */

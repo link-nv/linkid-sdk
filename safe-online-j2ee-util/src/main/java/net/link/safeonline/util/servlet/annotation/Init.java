@@ -18,9 +18,9 @@ import javax.servlet.UnavailableException;
 
 /**
  * Specifies that the field should be resolved from the servlet init parameter list.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 @Documented
 @Target(ElementType.FIELD)
@@ -32,7 +32,7 @@ public @interface Init {
 
     /**
      * The name of the init parameter.
-     *
+     * 
      */
     String name();
 

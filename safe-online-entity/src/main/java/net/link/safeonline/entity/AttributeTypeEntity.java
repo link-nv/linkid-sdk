@@ -58,40 +58,35 @@ import org.hibernate.annotations.IndexColumn;
         @NamedQuery(name = QUERY_WHERE_VISIBLE, query = "FROM AttributeTypeEntity a WHERE a.userVisible = true"),
         @NamedQuery(name = QUERY_WHERE_TYPE, query = "FROM AttributeTypeEntity a WHERE a.type = :type"),
         @NamedQuery(name = QUERY_CATEGORIZE_STRING, query = "SELECT a.stringValue, COUNT(a.stringValue) "
-                + "FROM AttributeEntity a, SubscriptionEntity s, "
-                + "ApplicationIdentityEntity i, ApplicationIdentityAttributeEntity aia "
+                + "FROM AttributeEntity a, SubscriptionEntity s, " + "ApplicationIdentityEntity i, ApplicationIdentityAttributeEntity aia "
                 + "WHERE a.subject = s.subject " + "AND s.confirmedIdentityVersion = i.pk.identityVersion "
-                + "AND s.application = i.application " + "AND :application = s.application "
-                + "AND aia.applicationIdentity = i " + "AND :attributeType = aia.attributeType "
-                + "AND aia.attributeType = a.attributeType " + "AND a.stringValue IS NOT NULL GROUP BY a.stringValue"),
+                + "AND s.application = i.application " + "AND :application = s.application " + "AND aia.applicationIdentity = i "
+                + "AND :attributeType = aia.attributeType " + "AND aia.attributeType = a.attributeType "
+                + "AND a.stringValue IS NOT NULL GROUP BY a.stringValue"),
         @NamedQuery(name = QUERY_CATEGORIZE_BOOLEAN, query = "SELECT a.booleanValue, COUNT(a.booleanValue) "
-                + "FROM AttributeEntity a, SubscriptionEntity s, "
-                + "ApplicationIdentityEntity i, ApplicationIdentityAttributeEntity aia "
+                + "FROM AttributeEntity a, SubscriptionEntity s, " + "ApplicationIdentityEntity i, ApplicationIdentityAttributeEntity aia "
                 + "WHERE a.subject = s.subject " + "AND s.confirmedIdentityVersion = i.pk.identityVersion "
-                + "AND s.application = i.application " + "AND :application = s.application "
-                + "AND aia.applicationIdentity = i " + "AND :attributeType = aia.attributeType "
-                + "AND aia.attributeType = a.attributeType " + "AND a.booleanValue IS NOT NULL GROUP BY a.booleanValue"),
+                + "AND s.application = i.application " + "AND :application = s.application " + "AND aia.applicationIdentity = i "
+                + "AND :attributeType = aia.attributeType " + "AND aia.attributeType = a.attributeType "
+                + "AND a.booleanValue IS NOT NULL GROUP BY a.booleanValue"),
         @NamedQuery(name = QUERY_CATEGORIZE_INTEGER, query = "SELECT a.integerValue, COUNT(a.integerValue) "
-                + "FROM AttributeEntity a, SubscriptionEntity s, "
-                + "ApplicationIdentityEntity i, ApplicationIdentityAttributeEntity aia "
+                + "FROM AttributeEntity a, SubscriptionEntity s, " + "ApplicationIdentityEntity i, ApplicationIdentityAttributeEntity aia "
                 + "WHERE a.subject = s.subject " + "AND s.confirmedIdentityVersion = i.pk.identityVersion "
-                + "AND s.application = i.application " + "AND :application = s.application "
-                + "AND aia.applicationIdentity = i " + "AND :attributeType = aia.attributeType "
-                + "AND aia.attributeType = a.attributeType " + "AND a.integerValue IS NOT NULL GROUP BY a.integerValue"),
+                + "AND s.application = i.application " + "AND :application = s.application " + "AND aia.applicationIdentity = i "
+                + "AND :attributeType = aia.attributeType " + "AND aia.attributeType = a.attributeType "
+                + "AND a.integerValue IS NOT NULL GROUP BY a.integerValue"),
         @NamedQuery(name = QUERY_CATEGORIZE_DOUBLE, query = "SELECT a.doubleValue, COUNT(a.doubleValue) "
-                + "FROM AttributeEntity a, SubscriptionEntity s, "
-                + "ApplicationIdentityEntity i, ApplicationIdentityAttributeEntity aia "
+                + "FROM AttributeEntity a, SubscriptionEntity s, " + "ApplicationIdentityEntity i, ApplicationIdentityAttributeEntity aia "
                 + "WHERE a.subject = s.subject " + "AND s.confirmedIdentityVersion = i.pk.identityVersion "
-                + "AND s.application = i.application " + "AND :application = s.application "
-                + "AND aia.applicationIdentity = i " + "AND :attributeType = aia.attributeType "
-                + "AND aia.attributeType = a.attributeType " + "AND a.doubleValue IS NOT NULL GROUP BY a.doubleValue"),
+                + "AND s.application = i.application " + "AND :application = s.application " + "AND aia.applicationIdentity = i "
+                + "AND :attributeType = aia.attributeType " + "AND aia.attributeType = a.attributeType "
+                + "AND a.doubleValue IS NOT NULL GROUP BY a.doubleValue"),
         @NamedQuery(name = QUERY_CATEGORIZE_DATE, query = "SELECT a.dateValue, COUNT(a.dateValue) "
-                + "FROM AttributeEntity a, SubscriptionEntity s, "
-                + "ApplicationIdentityEntity i, ApplicationIdentityAttributeEntity aia "
+                + "FROM AttributeEntity a, SubscriptionEntity s, " + "ApplicationIdentityEntity i, ApplicationIdentityAttributeEntity aia "
                 + "WHERE a.subject = s.subject " + "AND s.confirmedIdentityVersion = i.pk.identityVersion "
-                + "AND s.application = i.application " + "AND :application = s.application "
-                + "AND aia.applicationIdentity = i " + "AND :attributeType = aia.attributeType "
-                + "AND aia.attributeType = a.attributeType " + "AND a.dateValue IS NOT NULL GROUP BY a.dateValue") })
+                + "AND s.application = i.application " + "AND :application = s.application " + "AND aia.applicationIdentity = i "
+                + "AND :attributeType = aia.attributeType " + "AND aia.attributeType = a.attributeType "
+                + "AND a.dateValue IS NOT NULL GROUP BY a.dateValue") })
 public class AttributeTypeEntity implements Serializable {
 
     public static final String                          QUERY_WHERE_ALL          = "at.all";
@@ -238,9 +233,8 @@ public class AttributeTypeEntity implements Serializable {
     }
 
     /**
-     * Marks whether this attribute type is a member of a compounded attribute type. This field is used to have a
-     * performant implementation of the restriction that an attribute type can only participate in one compounded
-     * attribute type.
+     * Marks whether this attribute type is a member of a compounded attribute type. This field is used to have a performant implementation
+     * of the restriction that an attribute type can only participate in one compounded attribute type.
      * 
      */
     public boolean isCompoundMember() {
@@ -275,10 +269,9 @@ public class AttributeTypeEntity implements Serializable {
     public void addMember(AttributeTypeEntity memberAttributeType, int memberSequence, boolean required) {
 
         if (memberAttributeType.isCompoundMember())
-            throw new EJBException("attribute type cannot be member of more than one compounded: "
-                    + memberAttributeType.getName());
-        CompoundedAttributeTypeMemberEntity member = new CompoundedAttributeTypeMemberEntity(this, memberAttributeType,
-                memberSequence, required);
+            throw new EJBException("attribute type cannot be member of more than one compounded: " + memberAttributeType.getName());
+        CompoundedAttributeTypeMemberEntity member = new CompoundedAttributeTypeMemberEntity(this, memberAttributeType, memberSequence,
+                required);
         getMembers().add(member);
         memberAttributeType.setCompoundMember(true);
     }
@@ -390,23 +383,23 @@ public class AttributeTypeEntity implements Serializable {
 
         @QueryMethod(QUERY_CATEGORIZE_STRING)
         Query createQueryCategorizeString(@QueryParam("application") ApplicationEntity application,
-                @QueryParam("attributeType") AttributeTypeEntity attributeType);
+                                          @QueryParam("attributeType") AttributeTypeEntity attributeType);
 
         @QueryMethod(QUERY_CATEGORIZE_BOOLEAN)
         Query createQueryCategorizeBoolean(@QueryParam("application") ApplicationEntity application,
-                @QueryParam("attributeType") AttributeTypeEntity attributeType);
+                                           @QueryParam("attributeType") AttributeTypeEntity attributeType);
 
         @QueryMethod(QUERY_CATEGORIZE_INTEGER)
         Query createQueryCategorizeInteger(@QueryParam("application") ApplicationEntity application,
-                @QueryParam("attributeType") AttributeTypeEntity attributeType);
+                                           @QueryParam("attributeType") AttributeTypeEntity attributeType);
 
         @QueryMethod(QUERY_CATEGORIZE_DOUBLE)
         Query createQueryCategorizeDouble(@QueryParam("application") ApplicationEntity application,
-                @QueryParam("attributeType") AttributeTypeEntity attributeType);
+                                          @QueryParam("attributeType") AttributeTypeEntity attributeType);
 
         @QueryMethod(QUERY_CATEGORIZE_DATE)
         Query createQueryCategorizeDate(@QueryParam("application") ApplicationEntity application,
-                @QueryParam("attributeType") AttributeTypeEntity attributeType);
+                                        @QueryParam("attributeType") AttributeTypeEntity attributeType);
 
     }
 }

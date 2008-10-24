@@ -56,8 +56,7 @@ import org.apache.commons.logging.LogFactory;
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
 public class CredentialManagerBean implements CredentialManager {
 
-    private static final Log     LOG                                      = LogFactory
-                                                                                  .getLog(CredentialManagerBean.class);
+    private static final Log     LOG                                      = LogFactory.getLog(CredentialManagerBean.class);
 
     public static final String   SECURITY_MESSAGE_SESSION_ID_MISMATCH     = "Session ID mismatch";
 
@@ -90,9 +89,16 @@ public class CredentialManagerBean implements CredentialManager {
 
 
     public String authenticate(String sessionId, String applicationId, AuthenticationStatement authenticationStatement)
-            throws ArgumentIntegrityException, TrustDomainNotFoundException, SubjectNotFoundException,
-            PkiRevokedException, PkiSuspendedException, PkiExpiredException, PkiNotYetValidException,
-            PkiInvalidException, DeviceNotFoundException, DeviceDisabledException {
+                                                                                                                       throws ArgumentIntegrityException,
+                                                                                                                       TrustDomainNotFoundException,
+                                                                                                                       SubjectNotFoundException,
+                                                                                                                       PkiRevokedException,
+                                                                                                                       PkiSuspendedException,
+                                                                                                                       PkiExpiredException,
+                                                                                                                       PkiNotYetValidException,
+                                                                                                                       PkiInvalidException,
+                                                                                                                       DeviceNotFoundException,
+                                                                                                                       DeviceDisabledException {
 
         X509Certificate certificate = authenticationStatement.verifyIntegrity();
         if (null == certificate)
@@ -118,14 +124,12 @@ public class CredentialManagerBean implements CredentialManager {
             throw new PkiInvalidException();
 
         if (false == sessionId.equals(statementSessionId)) {
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION,
-                    SECURITY_MESSAGE_SESSION_ID_MISMATCH);
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_SESSION_ID_MISMATCH);
             throw new ArgumentIntegrityException();
         }
 
         if (false == applicationId.equals(statementApplicationId)) {
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION,
-                    SECURITY_MESSAGE_APPLICATION_ID_MISMATCH);
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_APPLICATION_ID_MISMATCH);
             throw new ArgumentIntegrityException();
         }
 
@@ -142,10 +146,18 @@ public class CredentialManagerBean implements CredentialManager {
     }
 
     public void mergeIdentityStatement(String sessionId, String userId, String operation, byte[] identityStatementData)
-            throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException,
-            AttributeTypeNotFoundException, DeviceNotFoundException, AttributeNotFoundException,
-            AlreadyRegisteredException, PkiRevokedException, PkiSuspendedException, PkiExpiredException,
-            PkiNotYetValidException, PkiInvalidException {
+                                                                                                                       throws TrustDomainNotFoundException,
+                                                                                                                       PermissionDeniedException,
+                                                                                                                       ArgumentIntegrityException,
+                                                                                                                       AttributeTypeNotFoundException,
+                                                                                                                       DeviceNotFoundException,
+                                                                                                                       AttributeNotFoundException,
+                                                                                                                       AlreadyRegisteredException,
+                                                                                                                       PkiRevokedException,
+                                                                                                                       PkiSuspendedException,
+                                                                                                                       PkiExpiredException,
+                                                                                                                       PkiNotYetValidException,
+                                                                                                                       PkiInvalidException {
 
         /*
          * First check integrity of the received identity statement.
@@ -190,13 +202,11 @@ public class CredentialManagerBean implements CredentialManager {
             throw new PermissionDeniedException(SECURITY_MESSAGE_USER_MISMATCH);
         }
         if (false == sessionId.equals(statementSessionId)) {
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION,
-                    SECURITY_MESSAGE_SESSION_ID_MISMATCH);
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_SESSION_ID_MISMATCH);
             throw new ArgumentIntegrityException();
         }
         if (false == operation.equals(statementOperation)) {
-            this.securityAuditLogger
-                    .addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_OPERATION_MISMATCH);
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_OPERATION_MISMATCH);
             throw new ArgumentIntegrityException();
         }
 
@@ -225,10 +235,10 @@ public class CredentialManagerBean implements CredentialManager {
             throw new AlreadyRegisteredException();
         }
         /*
-         * The user can only have one subject identifier for the domain. We don't want the user to block identifiers of
-         * cards that he is no longer using since there is the possibility that these cards are to be used by other
-         * subjects. Such a strategy of course only makes sense for authentication devices for which a subject can have
-         * only one. This is for example the case for BeID identity cards.
+         * The user can only have one subject identifier for the domain. We don't want the user to block identifiers of cards that he is no
+         * longer using since there is the possibility that these cards are to be used by other subjects. Such a strategy of course only
+         * makes sense for authentication devices for which a subject can have only one. This is for example the case for BeID identity
+         * cards.
          */
         this.subjectIdentifierDAO.removeOtherSubjectIdentifiers(domain, identifier, subject);
 
@@ -248,8 +258,8 @@ public class CredentialManagerBean implements CredentialManager {
         pkiProvider.storeDeviceAttribute(subject, index);
     }
 
-    private void setOrUpdateAttribute(IdentityStatementAttributes identityStatementAttribute, SubjectEntity subject,
-            String value, PkiProvider pkiProvider, long index) throws AttributeTypeNotFoundException {
+    private void setOrUpdateAttribute(IdentityStatementAttributes identityStatementAttribute, SubjectEntity subject, String value,
+                                      PkiProvider pkiProvider, long index) throws AttributeTypeNotFoundException {
 
         String attributeName = pkiProvider.mapAttribute(identityStatementAttribute);
         AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeName);
@@ -257,9 +267,17 @@ public class CredentialManagerBean implements CredentialManager {
     }
 
     public void removeIdentity(String sessionId, String userId, String operation, byte[] identityStatementData)
-            throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException,
-            AttributeTypeNotFoundException, SubjectNotFoundException, DeviceNotFoundException, PkiRevokedException,
-            PkiSuspendedException, PkiExpiredException, PkiNotYetValidException, PkiInvalidException {
+                                                                                                               throws TrustDomainNotFoundException,
+                                                                                                               PermissionDeniedException,
+                                                                                                               ArgumentIntegrityException,
+                                                                                                               AttributeTypeNotFoundException,
+                                                                                                               SubjectNotFoundException,
+                                                                                                               DeviceNotFoundException,
+                                                                                                               PkiRevokedException,
+                                                                                                               PkiSuspendedException,
+                                                                                                               PkiExpiredException,
+                                                                                                               PkiNotYetValidException,
+                                                                                                               PkiInvalidException {
 
         /*
          * First check integrity of the received identity statement.
@@ -304,13 +322,11 @@ public class CredentialManagerBean implements CredentialManager {
             throw new PermissionDeniedException(SECURITY_MESSAGE_USER_MISMATCH);
         }
         if (false == sessionId.equals(statementSessionId)) {
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION,
-                    SECURITY_MESSAGE_SESSION_ID_MISMATCH);
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_SESSION_ID_MISMATCH);
             throw new ArgumentIntegrityException();
         }
         if (false == operation.equals(statementOperation)) {
-            this.securityAuditLogger
-                    .addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_OPERATION_MISMATCH);
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_OPERATION_MISMATCH);
             throw new ArgumentIntegrityException();
         }
 

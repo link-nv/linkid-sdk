@@ -23,11 +23,11 @@ import org.jboss.annotation.ejb.LocalBinding;
 /**
  * <h2>{@link DriverProfileServiceBean}<br>
  * <sub>Service bean for {@link DriverProfileEntity}.</sub></h2>
- *
+ * 
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- *
+ * 
  * @see DriverProfileService
  * @author mbillemo
  */
@@ -58,8 +58,8 @@ public class DriverProfileServiceBean extends AbstractProfilingServiceBean imple
     public DriverProfileEntity getProfile(String driverClassName, ExecutionEntity execution) {
 
         try {
-            return (DriverProfileEntity) this.em.createNamedQuery(DriverProfileEntity.findByExecution).setParameter(
-                    "driverClassName", driverClassName).setParameter("execution", execution).getSingleResult();
+            return (DriverProfileEntity) this.em.createNamedQuery(DriverProfileEntity.findByExecution).setParameter("driverClassName",
+                    driverClassName).setParameter("execution", execution).getSingleResult();
         } catch (NoResultException e) {
             if (this.ctx == null) {
                 LOG.warn("No EJB3 context found: " + "assuming we're running outside a container.");

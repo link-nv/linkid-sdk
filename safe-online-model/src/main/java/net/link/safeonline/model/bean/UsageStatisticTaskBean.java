@@ -81,14 +81,13 @@ public class UsageStatisticTaskBean implements Task {
             long totalSubscriptions = this.subscriptionDAO.getNumberOfSubscriptions(application);
             long activeSubscriptions = this.subscriptionDAO.getActiveNumberOfSubscriptions(application, activeLimit);
 
-            StatisticEntity statistic = this.statisticDAO.findOrAddStatisticByNameDomainAndApplication(statisticName,
-                    statisticDomain, application);
+            StatisticEntity statistic = this.statisticDAO.findOrAddStatisticByNameDomainAndApplication(statisticName, statisticDomain,
+                    application);
 
-            StatisticDataPointEntity loginCounterDP = this.statisticDataPointDAO.findOrAddStatisticDataPoint(
-                    loginCounter, statistic);
+            StatisticDataPointEntity loginCounterDP = this.statisticDataPointDAO.findOrAddStatisticDataPoint(loginCounter, statistic);
 
-            this.statisticDataPointDAO.addStatisticDataPoint(statisticName, statistic, totalSubscriptions,
-                    activeSubscriptions, loginCounterDP.getX());
+            this.statisticDataPointDAO.addStatisticDataPoint(statisticName, statistic, totalSubscriptions, activeSubscriptions,
+                    loginCounterDP.getX());
             this.statisticDataPointDAO.cleanStatisticDataPoints(statistic, ageLimit);
             loginCounterDP.setX(0);
 

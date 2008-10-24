@@ -40,10 +40,9 @@ import org.w3c.dom.Document;
 
 
 /**
- * JAX-WS SOAP Handler that provides the client-side WS-Security. This handler will add the WS-Security SOAP header
- * element as required by the SafeOnline web service authentication module. Per default this handler will sign the Body
- * element of the SOAP envelope. You can make this handler to sign additional XML elements via the
- * {@link #addToBeSignedId(String, SOAPMessageContext)} method.
+ * JAX-WS SOAP Handler that provides the client-side WS-Security. This handler will add the WS-Security SOAP header element as required by
+ * the SafeOnline web service authentication module. Per default this handler will sign the Body element of the SOAP envelope. You can make
+ * this handler to sign additional XML elements via the {@link #addToBeSignedId(String, SOAPMessageContext)} method.
  * 
  * @author fcorneli
  * 
@@ -79,8 +78,7 @@ public class WSSecurityClientHandler implements SOAPHandler<SOAPMessageContext> 
     public Set<QName> getHeaders() {
 
         Set<QName> headers = new HashSet<QName>();
-        headers.add(new QName("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
-                "Security"));
+        headers.add(new QName("http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd", "Security"));
         return headers;
     }
 
@@ -142,8 +140,8 @@ public class WSSecurityClientHandler implements SOAPHandler<SOAPMessageContext> 
             WSSecTimestamp wsSecTimeStamp = new WSSecTimestamp();
             wsSecTimeStamp.setTimeToLive(0);
             /*
-             * If ttl is zero then there will be no Expires element within the Timestamp. Eventually we want to let the
-             * service itself decide how long the message validity period is.
+             * If ttl is zero then there will be no Expires element within the Timestamp. Eventually we want to let the service itself
+             * decide how long the message validity period is.
              */
             wsSecTimeStamp.prepare(document);
             wsSecTimeStamp.prependToHeader(wsSecHeader);
@@ -169,8 +167,7 @@ public class WSSecurityClientHandler implements SOAPHandler<SOAPMessageContext> 
     }
 
     /**
-     * When <code>true</code> the SOAP Body will not get signed by the WS-Security signature. This behavior is similar
-     * to .NET WCF clients.
+     * When <code>true</code> the SOAP Body will not get signed by the WS-Security signature. This behavior is similar to .NET WCF clients.
      * 
      */
     public boolean isSkipBodySigning() {

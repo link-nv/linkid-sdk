@@ -30,9 +30,9 @@ import org.jboss.security.SimplePrincipal;
 
 /**
  * Implementation of application ownership security constraint.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class SecurityApplicationEntityListener {
 
@@ -49,8 +49,7 @@ public class SecurityApplicationEntityListener {
         Subject subject;
         try {
             /*
-             * JSR-115: Java Authorization Contract for Containers (JACC) 4.6.1.1. Container Subject Policy Context
-             * Handler
+             * JSR-115: Java Authorization Contract for Containers (JACC) 4.6.1.1. Container Subject Policy Context Handler
              */
             String contextId = PolicyContext.getContextID();
             LOG.debug("context Id: " + contextId);

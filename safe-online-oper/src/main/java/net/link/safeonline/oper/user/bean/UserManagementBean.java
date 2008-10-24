@@ -107,7 +107,7 @@ public class UserManagementBean implements UserManagement {
 
     private List<SubscriptionEntity>    subscriptionList;
 
-    private List<DeviceRegistrationDO>       deviceRegistrationList;
+    private List<DeviceRegistrationDO>  deviceRegistrationList;
 
     private List<AttributeDO>           attributeList;
 
@@ -129,7 +129,7 @@ public class UserManagementBean implements UserManagement {
     @Begin
     @ErrorHandling( { @Error(exceptionClass = SubjectNotFoundException.class, messageId = "errorSubjectNotFound", fieldId = "user") })
     public String search() throws SubjectNotFoundException, DeviceNotFoundException, PermissionDeniedException,
-            AttributeTypeNotFoundException {
+                          AttributeTypeNotFoundException {
 
         this.log.debug("search: #0", this.user);
         getUserInfo(this.user);
@@ -143,8 +143,8 @@ public class UserManagementBean implements UserManagement {
         return viewLocale;
     }
 
-    private void getUserInfo(String username) throws SubjectNotFoundException, DeviceNotFoundException,
-            PermissionDeniedException, AttributeTypeNotFoundException {
+    private void getUserInfo(String username) throws SubjectNotFoundException, DeviceNotFoundException, PermissionDeniedException,
+                                             AttributeTypeNotFoundException {
 
         SubjectEntity subject = this.subjectService.getSubjectFromUserName(username);
 
@@ -199,8 +199,7 @@ public class UserManagementBean implements UserManagement {
 
     @End
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public String removeConfirm() throws SubjectNotFoundException, SubscriptionNotFoundException,
-            MessageHandlerNotFoundException {
+    public String removeConfirm() throws SubjectNotFoundException, SubscriptionNotFoundException, MessageHandlerNotFoundException {
 
         this.log.debug("confirm remove: " + this.user);
         SubjectEntity subject = this.subjectService.getSubjectFromUserName(this.user);

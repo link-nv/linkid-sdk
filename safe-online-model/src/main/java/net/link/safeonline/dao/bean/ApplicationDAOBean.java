@@ -42,8 +42,7 @@ public class ApplicationDAOBean implements ApplicationDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                ApplicationEntity.QueryInterface.class);
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, ApplicationEntity.QueryInterface.class);
     }
 
     public ApplicationEntity findApplication(String applicationName) {
@@ -54,12 +53,12 @@ public class ApplicationDAOBean implements ApplicationDAO {
     }
 
     public ApplicationEntity addApplication(String applicationName, String applicationFriendlyName,
-            ApplicationOwnerEntity applicationOwner, String description, URL applicationUrl, byte[] applicationLogo,
-            Color applicationColor, X509Certificate certificate) {
+                                            ApplicationOwnerEntity applicationOwner, String description, URL applicationUrl,
+                                            byte[] applicationLogo, Color applicationColor, X509Certificate certificate) {
 
         LOG.debug("adding application: " + applicationName);
-        ApplicationEntity application = new ApplicationEntity(applicationName, applicationFriendlyName,
-                applicationOwner, description, applicationUrl, applicationLogo, applicationColor, certificate);
+        ApplicationEntity application = new ApplicationEntity(applicationName, applicationFriendlyName, applicationOwner, description,
+                applicationUrl, applicationLogo, applicationColor, certificate);
         this.entityManager.persist(application);
         return application;
     }
@@ -86,14 +85,14 @@ public class ApplicationDAOBean implements ApplicationDAO {
     }
 
     public ApplicationEntity addApplication(String applicationName, String applicationFriendlyName,
-            ApplicationOwnerEntity applicationOwner, boolean allowUserSubscription, boolean removable,
-            String description, URL applicationUrl, byte[] applicationLogo, Color applicationColor,
-            X509Certificate certificate, long initialIdentityVersion, long usageAgreementVersion) {
+                                            ApplicationOwnerEntity applicationOwner, boolean allowUserSubscription, boolean removable,
+                                            String description, URL applicationUrl, byte[] applicationLogo, Color applicationColor,
+                                            X509Certificate certificate, long initialIdentityVersion, long usageAgreementVersion) {
 
         LOG.debug("adding application: " + applicationName);
-        ApplicationEntity application = new ApplicationEntity(applicationName, applicationFriendlyName,
-                applicationOwner, description, applicationUrl, applicationLogo, applicationColor,
-                allowUserSubscription, removable, certificate, initialIdentityVersion, usageAgreementVersion);
+        ApplicationEntity application = new ApplicationEntity(applicationName, applicationFriendlyName, applicationOwner, description,
+                applicationUrl, applicationLogo, applicationColor, allowUserSubscription, removable, certificate, initialIdentityVersion,
+                usageAgreementVersion);
         this.entityManager.persist(application);
         return application;
     }
@@ -113,8 +112,10 @@ public class ApplicationDAOBean implements ApplicationDAO {
 
     public ApplicationEntity getApplication(X509Certificate certificate) throws ApplicationNotFoundException {
 
-        List<ApplicationEntity> applications = this.queryObject.listApplicationsWhereCertificateSubject(certificate
-                .getSubjectX500Principal().getName());
+        List<ApplicationEntity> applications = this.queryObject
+                                                               .listApplicationsWhereCertificateSubject(certificate
+                                                                                                                   .getSubjectX500Principal()
+                                                                                                                   .getName());
         if (applications.isEmpty())
             throw new ApplicationNotFoundException();
         ApplicationEntity application = applications.get(0);
@@ -123,8 +124,10 @@ public class ApplicationDAOBean implements ApplicationDAO {
 
     public ApplicationEntity findApplication(X509Certificate certificate) {
 
-        List<ApplicationEntity> applications = this.queryObject.listApplicationsWhereCertificateSubject(certificate
-                .getSubjectX500Principal().getName());
+        List<ApplicationEntity> applications = this.queryObject
+                                                               .listApplicationsWhereCertificateSubject(certificate
+                                                                                                                   .getSubjectX500Principal()
+                                                                                                                   .getName());
         if (applications.isEmpty())
             return null;
         ApplicationEntity application = applications.get(0);

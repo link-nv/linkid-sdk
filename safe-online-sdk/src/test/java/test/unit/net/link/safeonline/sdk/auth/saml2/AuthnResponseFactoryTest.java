@@ -51,8 +51,8 @@ public class AuthnResponseFactoryTest {
 
         // operate
         long begin = System.currentTimeMillis();
-        String result = AuthnResponseFactory.createAuthResponse(inResponseTo, applicationName, issuerName, subjectName,
-                samlName, signerKeyPair, validity, target);
+        String result = AuthnResponseFactory.createAuthResponse(inResponseTo, applicationName, issuerName, subjectName, samlName,
+                signerKeyPair, validity, target);
         long end = System.currentTimeMillis();
 
         // verify
@@ -72,10 +72,8 @@ public class AuthnResponseFactoryTest {
 
         // Document document = responseElement.getOwnerDocument();
         Element nsElement = resultDocument.createElement("nsElement");
-        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:samlp",
-                "urn:oasis:names:tc:SAML:2.0:protocol");
-        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:saml",
-                "urn:oasis:names:tc:SAML:2.0:assertion");
+        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:samlp", "urn:oasis:names:tc:SAML:2.0:protocol");
+        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:saml", "urn:oasis:names:tc:SAML:2.0:assertion");
 
         Node issuerNode = XPathAPI.selectSingleNode(resultDocument, "/samlp:Response/saml:Issuer", nsElement);
         assertNotNull(issuerNode);
@@ -85,11 +83,8 @@ public class AuthnResponseFactoryTest {
         assertNotNull(audienceNode);
         assertEquals(applicationName, audienceNode.getTextContent());
 
-        Node recipientNode = XPathAPI
-                .selectSingleNode(
-                        resultDocument,
-                        "/samlp:Response/saml:Assertion/saml:Subject/saml:SubjectConfirmation/saml:SubjectConfirmationData/@Recipient",
-                        nsElement);
+        Node recipientNode = XPathAPI.selectSingleNode(resultDocument,
+                "/samlp:Response/saml:Assertion/saml:Subject/saml:SubjectConfirmation/saml:SubjectConfirmationData/@Recipient", nsElement);
         assertNotNull(recipientNode);
         LOG.debug("recipient: " + recipientNode.getTextContent());
         assertEquals(target, recipientNode.getTextContent());
@@ -125,17 +120,14 @@ public class AuthnResponseFactoryTest {
         assertNotNull(inResponseToNode);
         assertEquals(inResponseTo, inResponseToNode.getTextContent());
 
-        Node statusNode = XPathAPI.selectSingleNode(resultDocument,
-                "/samlp:Response/samlp:Status/samlp:StatusCode/@Value");
+        Node statusNode = XPathAPI.selectSingleNode(resultDocument, "/samlp:Response/samlp:Status/samlp:StatusCode/@Value");
         assertNotNull(statusNode);
         assertEquals(StatusCode.AUTHN_FAILED_URI, statusNode.getTextContent());
 
         // Document document = responseElement.getOwnerDocument();
         Element nsElement = resultDocument.createElement("nsElement");
-        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:samlp",
-                "urn:oasis:names:tc:SAML:2.0:protocol");
-        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:saml",
-                "urn:oasis:names:tc:SAML:2.0:assertion");
+        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:samlp", "urn:oasis:names:tc:SAML:2.0:protocol");
+        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:saml", "urn:oasis:names:tc:SAML:2.0:assertion");
 
         Node issuerNode = XPathAPI.selectSingleNode(resultDocument, "/samlp:Response/saml:Issuer", nsElement);
         assertNotNull(issuerNode);

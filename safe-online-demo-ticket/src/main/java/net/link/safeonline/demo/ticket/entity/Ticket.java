@@ -27,8 +27,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "demo_ticket")
-@NamedQueries(@NamedQuery(name = QUERY_WHERE_OWNER, query = "SELECT ticket FROM Ticket AS ticket "
-        + "WHERE ticket.owner = :owner"))
+@NamedQueries(@NamedQuery(name = QUERY_WHERE_OWNER, query = "SELECT ticket FROM Ticket AS ticket " + "WHERE ticket.owner = :owner"))
 public class Ticket implements Serializable {
 
     private static final long  serialVersionUID  = 1L;
@@ -37,8 +36,12 @@ public class Ticket implements Serializable {
 
 
     public enum Site {
-        GENT("Gent"), BRUSSEL("Brussel"), ANTWERPEN("Antwerpen"), HERZELE("Herzele"), MELLE("Melle"), GENTBRUGGE(
-                "Gentbrugge");
+        GENT("Gent"),
+        BRUSSEL("Brussel"),
+        ANTWERPEN("Antwerpen"),
+        HERZELE("Herzele"),
+        MELLE("Melle"),
+        GENTBRUGGE("Gentbrugge");
 
         private final String name;
 

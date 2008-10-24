@@ -44,8 +44,8 @@ public interface Devices {
 
     String updateDevice() throws DeviceNotFoundException, IOException;
 
-    String disableDevice() throws DeviceNotFoundException, IOException, SubjectNotFoundException,
-            PermissionDeniedException, AttributeTypeNotFoundException;
+    String disableDevice() throws DeviceNotFoundException, IOException, SubjectNotFoundException, PermissionDeniedException,
+                          AttributeTypeNotFoundException;
 
     String changePassword() throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException;
 
@@ -64,5 +64,5 @@ public interface Devices {
     List<DeviceEntry> devicesFactory() throws SubjectNotFoundException, DeviceNotFoundException;
 
     List<DeviceRegistrationDO> deviceRegistrationsFactory() throws SubjectNotFoundException, DeviceNotFoundException,
-            PermissionDeniedException, AttributeTypeNotFoundException;
+                                                           PermissionDeniedException, AttributeTypeNotFoundException;
 }

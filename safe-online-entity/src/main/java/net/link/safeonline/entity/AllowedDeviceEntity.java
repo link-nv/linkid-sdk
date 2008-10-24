@@ -33,13 +33,12 @@ import net.link.safeonline.jpa.annotation.UpdateMethod;
 @Entity
 @Table(name = "alloweddevices", uniqueConstraints = @UniqueConstraint(columnNames = { "application", "device" }))
 @NamedQueries( {
-        @NamedQuery(name = QUERY_WHERE_APPLICATION, query = "SELECT allowedDevice "
-                + "FROM AllowedDeviceEntity AS allowedDevice " + "WHERE allowedDevice.application = :application"),
+        @NamedQuery(name = QUERY_WHERE_APPLICATION, query = "SELECT allowedDevice " + "FROM AllowedDeviceEntity AS allowedDevice "
+                + "WHERE allowedDevice.application = :application"),
         @NamedQuery(name = DELETE_WHERE_APPLICATION, query = "DELETE FROM AllowedDeviceEntity "
                 + "AS allowedDevice WHERE allowedDevice.application = :application"),
-        @NamedQuery(name = QUERY_WHERE_APPLICATION_DEVICE, query = "SELECT allowedDevice "
-                + "FROM AllowedDeviceEntity AS allowedDevice " + "WHERE allowedDevice.application = :application AND "
-                + "allowedDevice.device = :device") })
+        @NamedQuery(name = QUERY_WHERE_APPLICATION_DEVICE, query = "SELECT allowedDevice " + "FROM AllowedDeviceEntity AS allowedDevice "
+                + "WHERE allowedDevice.application = :application AND " + "allowedDevice.device = :device") })
 public class AllowedDeviceEntity implements Serializable {
 
     private static final long  serialVersionUID               = 1L;
@@ -127,7 +126,6 @@ public class AllowedDeviceEntity implements Serializable {
         void deleteAllowedDevices(@QueryParam("application") ApplicationEntity application);
 
         @QueryMethod(value = QUERY_WHERE_APPLICATION_DEVICE, nullable = true)
-        AllowedDeviceEntity find(@QueryParam("application") ApplicationEntity application,
-                @QueryParam("device") DeviceEntity device);
+        AllowedDeviceEntity find(@QueryParam("application") ApplicationEntity application, @QueryParam("device") DeviceEntity device);
     }
 }

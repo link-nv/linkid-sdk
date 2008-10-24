@@ -54,8 +54,7 @@ public class PaymentEntity implements Serializable {
         // empty
     }
 
-    public PaymentEntity(UserEntity owner, Date paymentDate, String visa, double amount, String recipient,
-            String message) {
+    public PaymentEntity(UserEntity owner, Date paymentDate, String visa, double amount, String recipient, String message) {
 
         this.owner = owner;
         this.paymentDate = paymentDate;

@@ -36,8 +36,8 @@ public class CachedOcspResponseDAOBeanTest extends TestCase {
          */
         this.entityTestManager.setUp(TrustDomainEntity.class, CachedOcspResponseEntity.class);
 
-        this.testedInstance = EJBTestUtils.newInstance(CachedOcspResponseDAOBean.class,
-                SafeOnlineTestContainer.sessionBeans, this.entityTestManager.getEntityManager());
+        this.testedInstance = EJBTestUtils.newInstance(CachedOcspResponseDAOBean.class, SafeOnlineTestContainer.sessionBeans,
+                this.entityTestManager.getEntityManager());
     }
 
     @Override
@@ -55,8 +55,8 @@ public class CachedOcspResponseDAOBeanTest extends TestCase {
         cachedOcspResponse = this.testedInstance.findCachedOcspResponse(key);
         this.testedInstance.removeCachedOcspResponse(cachedOcspResponse);
 
-        this.testedInstance = EJBTestUtils.newInstance(CachedOcspResponseDAOBean.class,
-                SafeOnlineTestContainer.sessionBeans, this.entityTestManager.refreshEntityManager());
+        this.testedInstance = EJBTestUtils.newInstance(CachedOcspResponseDAOBean.class, SafeOnlineTestContainer.sessionBeans,
+                this.entityTestManager.refreshEntityManager());
 
         this.testedInstance.addCachedOcspResponse(key, result, null);
     }
@@ -64,8 +64,7 @@ public class CachedOcspResponseDAOBeanTest extends TestCase {
     public void testClearOcspCacheExpired() {
 
         TrustDomainEntity trustDomainExpired = new TrustDomainEntity("trustdomainExpired", true, 0);
-        TrustDomainEntity trustDomainNotExpired = new TrustDomainEntity("trustdomainNotExpired", true, System
-                .currentTimeMillis());
+        TrustDomainEntity trustDomainNotExpired = new TrustDomainEntity("trustdomainNotExpired", true, System.currentTimeMillis());
         EntityManager entityManager = this.entityTestManager.getEntityManager();
         entityManager.persist(trustDomainExpired);
         entityManager.persist(trustDomainNotExpired);

@@ -54,8 +54,7 @@ public class PkiServletTest {
         this.certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
 
         GetCertificateMBeanActionHandler actionHandler = new GetCertificateMBeanActionHandler(this.certificate);
-        this.jmxTestUtils
-                .registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate", actionHandler);
+        this.jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate", actionHandler);
 
         this.servletTestManager = new ServletTestManager();
         this.servletTestManager.setUp(PkiServlet.class);

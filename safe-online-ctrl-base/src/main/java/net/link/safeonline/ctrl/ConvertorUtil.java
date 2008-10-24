@@ -13,9 +13,9 @@ import java.util.List;
 
 /**
  * Implementation of the convertor design pattern.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class ConvertorUtil {
 
@@ -26,7 +26,7 @@ public class ConvertorUtil {
 
     /**
      * Converts one list to another one.
-     *
+     * 
      * @param <TypeIn>
      * @param <TypeOut>
      * @param inputList

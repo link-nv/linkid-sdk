@@ -28,11 +28,11 @@ import org.jboss.security.auth.callback.UsernamePasswordHandler;
 
 /**
  * JAX-WS Login Handler. This JAX-WS SOAP handler will perform the JAAS login for applications, devices or olas nodes.
- *
+ * 
  * The JAAS login is performed using certificate and the id ( application name, device name, olas node name ).
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class LoginHandler implements SOAPHandler<SOAPMessageContext> {
 

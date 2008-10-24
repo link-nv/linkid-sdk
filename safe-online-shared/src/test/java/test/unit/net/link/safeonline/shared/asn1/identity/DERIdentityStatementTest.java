@@ -44,8 +44,7 @@ public class DERIdentityStatementTest extends TestCase {
         byte[] signature = "signature-value".getBytes();
 
         // operate
-        DERIdentityStatement identityStatement = new DERIdentityStatement(authCert, sessionId, user, operation,
-                givenName, surname);
+        DERIdentityStatement identityStatement = new DERIdentityStatement(authCert, sessionId, user, operation, givenName, surname);
         identityStatement.setSignature(signature);
         byte[] result = identityStatement.getEncoded();
 
@@ -56,24 +55,19 @@ public class DERIdentityStatementTest extends TestCase {
         DERInteger version = DERInteger.getInstance(bodySequence.getObjectAt(DERIdentityStatement.VERSION_IDX));
         assertEquals(1, version.getValue().intValue());
 
-        DERVisibleString sessionIdString = DERVisibleString.getInstance(bodySequence
-                .getObjectAt(DERIdentityStatement.SESSION_IDX));
+        DERVisibleString sessionIdString = DERVisibleString.getInstance(bodySequence.getObjectAt(DERIdentityStatement.SESSION_IDX));
         assertEquals(sessionId, sessionIdString.getString());
 
-        DERVisibleString userString = DERVisibleString.getInstance(bodySequence
-                .getObjectAt(DERIdentityStatement.USER_IDX));
+        DERVisibleString userString = DERVisibleString.getInstance(bodySequence.getObjectAt(DERIdentityStatement.USER_IDX));
         assertEquals(user, userString.getString());
 
-        DERVisibleString operationString = DERVisibleString.getInstance(bodySequence
-                .getObjectAt(DERIdentityStatement.OPERATION_IDX));
+        DERVisibleString operationString = DERVisibleString.getInstance(bodySequence.getObjectAt(DERIdentityStatement.OPERATION_IDX));
         assertEquals(operation, operationString.getString());
 
-        DERVisibleString givenNameString = DERVisibleString.getInstance(bodySequence
-                .getObjectAt(DERIdentityStatement.GIVEN_NAME_IDX));
+        DERVisibleString givenNameString = DERVisibleString.getInstance(bodySequence.getObjectAt(DERIdentityStatement.GIVEN_NAME_IDX));
         assertEquals(givenName, givenNameString.getString());
 
-        DERVisibleString surnameString = DERVisibleString.getInstance(bodySequence
-                .getObjectAt(DERIdentityStatement.SURNAME_IDX));
+        DERVisibleString surnameString = DERVisibleString.getInstance(bodySequence.getObjectAt(DERIdentityStatement.SURNAME_IDX));
         assertEquals(surname, surnameString.getString());
 
         DEREncodable encodedCert = bodySequence.getObjectAt(DERIdentityStatement.AUTH_CERT_IDX);

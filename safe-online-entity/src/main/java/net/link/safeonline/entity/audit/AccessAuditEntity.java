@@ -39,9 +39,9 @@ import net.link.safeonline.jpa.annotation.UpdateMethod;
 
 /**
  * Access Audit entity.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Entity
 @Table(name = "access_audit")
@@ -52,8 +52,8 @@ import net.link.safeonline.jpa.annotation.UpdateMethod;
                 + "WHERE record.auditContext.id = :contextId"),
         @NamedQuery(name = COUNT_WHERE_CONTEXTID, query = "SELECT COUNT(*) " + "FROM AccessAuditEntity AS record "
                 + "WHERE record.auditContext.id = :contextId AND " + "record.operationState IN (2, 3)"),
-        @NamedQuery(name = QUERY_LIST_USER, query = "SELECT DISTINCT record.principal "
-                + "FROM AccessAuditEntity AS record " + "WHERE record.principal IS NOT NULL"),
+        @NamedQuery(name = QUERY_LIST_USER, query = "SELECT DISTINCT record.principal " + "FROM AccessAuditEntity AS record "
+                + "WHERE record.principal IS NOT NULL"),
         @NamedQuery(name = QUERY_WHERE_USER, query = "SELECT record " + "FROM AccessAuditEntity AS record "
                 + "WHERE record.principal = :principal"),
         @NamedQuery(name = QUERY_WHERE_AGELIMIT, query = "SELECT record " + "FROM AccessAuditEntity AS record "
@@ -92,8 +92,7 @@ public class AccessAuditEntity implements Serializable {
         // empty
     }
 
-    public AccessAuditEntity(AuditContextEntity auditContext, String operation, OperationStateType operationState,
-            String principal) {
+    public AccessAuditEntity(AuditContextEntity auditContext, String operation, OperationStateType operationState, String principal) {
 
         this.auditContext = auditContext;
         this.operation = operation;

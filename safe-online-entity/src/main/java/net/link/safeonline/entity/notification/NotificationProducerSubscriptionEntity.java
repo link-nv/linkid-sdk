@@ -31,9 +31,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
  * WS-Notification producer subscription.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 @Entity
 @Table(name = "prod_subscr")

@@ -37,8 +37,7 @@ public class DERSequenceTest extends TestCase {
 
         // verify
         assertNotNull(result);
-        org.bouncycastle.asn1.DERSequence resultSequence = (org.bouncycastle.asn1.DERSequence) ASN1Object
-                .fromByteArray(result);
+        org.bouncycastle.asn1.DERSequence resultSequence = (org.bouncycastle.asn1.DERSequence) ASN1Object.fromByteArray(result);
         assertEquals(sequenceList.size(), resultSequence.size());
         org.bouncycastle.asn1.DERInteger resultInt1 = (org.bouncycastle.asn1.DERInteger) resultSequence.getObjectAt(0);
         org.bouncycastle.asn1.DERInteger resultInt2 = (org.bouncycastle.asn1.DERInteger) resultSequence.getObjectAt(1);

@@ -71,9 +71,8 @@ public class LogoutRequestFactory {
 
 
     /**
-     * Creates a SAML2 logout request. For the moment we allow the Service Provider to pass on the Assertion Consumer
-     * Service URL itself. Later on we could use the SAML Metadata service or a persistent server-side application field
-     * to locate this service.
+     * Creates a SAML2 logout request. For the moment we allow the Service Provider to pass on the Assertion Consumer Service URL itself.
+     * Later on we could use the SAML Metadata service or a persistent server-side application field to locate this service.
      * 
      * @param subjectName
      * @param issuerName
@@ -83,8 +82,8 @@ public class LogoutRequestFactory {
      * @param challenge
      *            the optional challenge (output variable).
      */
-    public static String createLogoutRequest(String subjectName, String issuerName, KeyPair signerKeyPair,
-            String destinationURL, Challenge<String> challenge) {
+    public static String createLogoutRequest(String subjectName, String issuerName, KeyPair signerKeyPair, String destinationURL,
+                                             Challenge<String> challenge) {
 
         if (null == signerKeyPair)
             throw new IllegalArgumentException("signer key pair should not be null");
@@ -130,8 +129,7 @@ public class LogoutRequestFactory {
     private static String signLogoutRequest(LogoutRequest logoutRequest, KeyPair signerKeyPair) {
 
         XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
-        SignatureBuilder signatureBuilder = (SignatureBuilder) builderFactory
-                .getBuilder(Signature.DEFAULT_ELEMENT_NAME);
+        SignatureBuilder signatureBuilder = (SignatureBuilder) builderFactory.getBuilder(Signature.DEFAULT_ELEMENT_NAME);
         Signature signature = signatureBuilder.buildObject();
         signature.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
         String algorithm = signerKeyPair.getPrivate().getAlgorithm();
@@ -141,8 +139,7 @@ public class LogoutRequestFactory {
             signature.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_DSA);
         }
         logoutRequest.setSignature(signature);
-        BasicCredential signingCredential = SecurityHelper.getSimpleCredential(signerKeyPair.getPublic(), signerKeyPair
-                .getPrivate());
+        BasicCredential signingCredential = SecurityHelper.getSimpleCredential(signerKeyPair.getPublic(), signerKeyPair.getPrivate());
         signature.setSigningCredential(signingCredential);
 
         // marshalling
@@ -173,14 +170,12 @@ public class LogoutRequestFactory {
     }
 
     @SuppressWarnings("unchecked")
-    private static <Type extends SAMLObject> Type buildXMLObject(@SuppressWarnings("unused") Class<Type> clazz,
-            QName objectQName) {
+    private static <Type extends SAMLObject> Type buildXMLObject(@SuppressWarnings("unused") Class<Type> clazz, QName objectQName) {
 
         XMLObjectBuilder<Type> builder = Configuration.getBuilderFactory().getBuilder(objectQName);
         if (builder == null)
             throw new RuntimeException("Unable to retrieve builder for object QName " + objectQName);
-        Type object = builder.buildObject(objectQName.getNamespaceURI(), objectQName.getLocalPart(), objectQName
-                .getPrefix());
+        Type object = builder.buildObject(objectQName.getNamespaceURI(), objectQName.getLocalPart(), objectQName.getPrefix());
         return object;
     }
 }

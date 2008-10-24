@@ -89,8 +89,7 @@ import org.jboss.seam.faces.FacesMessages;
 @Interceptors(ErrorMessageInterceptor.class)
 public class ApplicationBean implements Application {
 
-    private static final Log           LOG                                         = LogFactory
-                                                                                           .getLog(ApplicationBean.class);
+    private static final Log           LOG                                         = LogFactory.getLog(ApplicationBean.class);
 
     private static final String        NEW_IDENTITY_ATTRIBUTES_NAME                = "newIdentityAttributes";
 
@@ -231,16 +230,15 @@ public class ApplicationBean implements Application {
 
     @Factory(APPLICATION_IDENTITY_ATTRIBUTES_NAME)
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public void applicationIdentityAttributesFactory() throws ApplicationNotFoundException,
-            ApplicationIdentityNotFoundException, PermissionDeniedException {
+    public void applicationIdentityAttributesFactory() throws ApplicationNotFoundException, ApplicationIdentityNotFoundException,
+                                                      PermissionDeniedException {
 
         LOG.debug("application identity attributes factory");
         String applicationName = this.selectedApplication.getName();
 
         this.applicationIdentityAttributes = this.applicationService.getCurrentApplicationIdentity(applicationName);
         this.numberOfSubscriptions = this.subscriptionService.getNumberOfSubscriptions(applicationName);
-        this.ownerAdminName = this.subjectService.getSubjectLogin(this.selectedApplication.getApplicationOwner()
-                .getAdmin().getUserId());
+        this.ownerAdminName = this.subjectService.getSubjectLogin(this.selectedApplication.getApplicationOwner().getAdmin().getUserId());
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -266,8 +264,8 @@ public class ApplicationBean implements Application {
                 newApplicationUrl = new URL(this.applicationUrl);
             } catch (MalformedURLException e) {
                 LOG.debug("illegal URL format: " + this.applicationUrl);
-                this.facesMessages.addToControlFromResourceBundle("applicationUrl", FacesMessage.SEVERITY_ERROR,
-                        "errorIllegalUrl", this.applicationUrl);
+                this.facesMessages.addToControlFromResourceBundle("applicationUrl", FacesMessage.SEVERITY_ERROR, "errorIllegalUrl",
+                        this.applicationUrl);
                 return null;
             }
         }
@@ -279,23 +277,19 @@ public class ApplicationBean implements Application {
                 }
             } catch (IOException e) {
                 LOG.debug("couldn't fetch uploaded data for application logo.");
-                this.facesMessages.addToControlFromResourceBundle("applicationLogo", FacesMessage.SEVERITY_ERROR,
-                        "errorUploadLogoFetch");
+                this.facesMessages.addToControlFromResourceBundle("applicationLogo", FacesMessage.SEVERITY_ERROR, "errorUploadLogoFetch");
                 return null;
             } catch (MagicParseException e) {
                 LOG.debug("uploaded logo is not an image.");
-                this.facesMessages.addToControlFromResourceBundle("applicationLogo", FacesMessage.SEVERITY_ERROR,
-                        "errorUploadLogoType");
+                this.facesMessages.addToControlFromResourceBundle("applicationLogo", FacesMessage.SEVERITY_ERROR, "errorUploadLogoType");
                 return null;
             } catch (MagicMatchNotFoundException e) {
                 LOG.debug("uploaded logo is not an image.");
-                this.facesMessages.addToControlFromResourceBundle("applicationLogo", FacesMessage.SEVERITY_ERROR,
-                        "errorUploadLogoType");
+                this.facesMessages.addToControlFromResourceBundle("applicationLogo", FacesMessage.SEVERITY_ERROR, "errorUploadLogoType");
                 return null;
             } catch (MagicException e) {
                 LOG.debug("uploaded logo is not an image.");
-                this.facesMessages.addToControlFromResourceBundle("applicationLogo", FacesMessage.SEVERITY_ERROR,
-                        "errorUploadLogoType");
+                this.facesMessages.addToControlFromResourceBundle("applicationLogo", FacesMessage.SEVERITY_ERROR, "errorUploadLogoType");
                 return null;
             }
         }
@@ -304,8 +298,8 @@ public class ApplicationBean implements Application {
                 newApplicationColor = Color.decode(this.applicationColor);
             } catch (NumberFormatException e) {
                 LOG.debug("illegal Color format: " + this.applicationColor);
-                this.facesMessages.addToControlFromResourceBundle("applicationColor", FacesMessage.SEVERITY_ERROR,
-                        "errorIllegalColor", this.applicationColor);
+                this.facesMessages.addToControlFromResourceBundle("applicationColor", FacesMessage.SEVERITY_ERROR, "errorIllegalColor",
+                        this.applicationColor);
                 return null;
             }
         }
@@ -314,8 +308,8 @@ public class ApplicationBean implements Application {
                 newSsoLogoutUrl = new URL(this.ssoLogoutUrl);
             } catch (MalformedURLException e) {
                 LOG.debug("illegal URL format: " + this.ssoLogoutUrl);
-                this.facesMessages.addToControlFromResourceBundle("ssoLogoutUrl", FacesMessage.SEVERITY_ERROR,
-                        "errorIllegalUrl", this.ssoLogoutUrl);
+                this.facesMessages.addToControlFromResourceBundle("ssoLogoutUrl", FacesMessage.SEVERITY_ERROR, "errorIllegalUrl",
+                        this.ssoLogoutUrl);
                 return null;
             }
         }
@@ -336,25 +330,24 @@ public class ApplicationBean implements Application {
             } else {
                 encodedCertificate = null;
             }
-            this.applicationService.addApplication(this.name, this.friendlyName, this.applicationOwner,
-                    this.description, this.idmapping, IdScopeType.valueOf(this.applicationIdScope), newApplicationUrl,
-                    newApplicationLogo, newApplicationColor, encodedCertificate, tempIdentityAttributes,
-                    this.skipMessageIntegrityCheck, this.deviceRestriction, this.ssoEnabled, newSsoLogoutUrl);
+            this.applicationService.addApplication(this.name, this.friendlyName, this.applicationOwner, this.description, this.idmapping,
+                    IdScopeType.valueOf(this.applicationIdScope), newApplicationUrl, newApplicationLogo, newApplicationColor,
+                    encodedCertificate, tempIdentityAttributes, this.skipMessageIntegrityCheck, this.deviceRestriction, this.ssoEnabled,
+                    newSsoLogoutUrl);
 
         } catch (ExistingApplicationException e) {
             LOG.debug("application already exists: " + this.name);
-            this.facesMessages.addToControlFromResourceBundle("name", FacesMessage.SEVERITY_ERROR,
-                    "errorApplicationAlreadyExists", this.name);
+            this.facesMessages.addToControlFromResourceBundle("name", FacesMessage.SEVERITY_ERROR, "errorApplicationAlreadyExists",
+                    this.name);
             return null;
         } catch (ApplicationOwnerNotFoundException e) {
             LOG.debug("application owner not found: " + this.applicationOwner);
-            this.facesMessages.addToControlFromResourceBundle("owner", FacesMessage.SEVERITY_ERROR,
-                    "errorApplicationOwnerNotFound", this.applicationOwner);
+            this.facesMessages.addToControlFromResourceBundle("owner", FacesMessage.SEVERITY_ERROR, "errorApplicationOwnerNotFound",
+                    this.applicationOwner);
             return null;
         } catch (CertificateEncodingException e) {
             LOG.debug("X509 certificate encoding error");
-            this.facesMessages.addToControlFromResourceBundle("fileupload", FacesMessage.SEVERITY_ERROR,
-                    "errorX509Encoding");
+            this.facesMessages.addToControlFromResourceBundle("fileupload", FacesMessage.SEVERITY_ERROR, "errorX509Encoding");
             return null;
         }
 
@@ -540,8 +533,7 @@ public class ApplicationBean implements Application {
             this.applicationService.removeApplication(applicationName);
         } catch (PermissionDeniedException e) {
             LOG.debug("permission denied to remove: " + applicationName);
-            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), e
-                    .getResourceArgs());
+            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), e.getResourceArgs());
             return null;
         }
         applicationListFactory();
@@ -563,10 +555,11 @@ public class ApplicationBean implements Application {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     @Factory(IDENTITY_ATTRIBUTES_NAME)
     public void identityAttributesFactory() throws ApplicationNotFoundException, ApplicationIdentityNotFoundException,
-            PermissionDeniedException {
+                                           PermissionDeniedException {
 
         Set<ApplicationIdentityAttributeEntity> currentIdentityAttributes = this.applicationService
-                .getCurrentApplicationIdentity(this.selectedApplication.getName());
+                                                                                                   .getCurrentApplicationIdentity(this.selectedApplication
+                                                                                                                                                          .getName());
 
         /*
          * Construct a map for fast lookup. The key is the attribute type name.
@@ -595,8 +588,7 @@ public class ApplicationBean implements Application {
                     dataMining = true;
                 }
             }
-            IdentityAttribute identityAttribute = new IdentityAttribute(attributeType.getName(), included, required,
-                    dataMining);
+            IdentityAttribute identityAttribute = new IdentityAttribute(attributeType.getName(), included, required, dataMining);
             this.identityAttributes.add(identityAttribute);
         }
     }
@@ -622,7 +614,7 @@ public class ApplicationBean implements Application {
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String save() throws CertificateEncodingException, ApplicationNotFoundException, IOException,
-            ApplicationIdentityNotFoundException, AttributeTypeNotFoundException, PermissionDeniedException {
+                        ApplicationIdentityNotFoundException, AttributeTypeNotFoundException, PermissionDeniedException {
 
         String applicationId = this.selectedApplication.getName();
         LOG.debug("save application: " + applicationId);
@@ -636,8 +628,8 @@ public class ApplicationBean implements Application {
                 newApplicationUrl = new URL(this.applicationUrl);
             } catch (MalformedURLException e) {
                 LOG.debug("illegal URL format: " + this.applicationUrl);
-                this.facesMessages.addToControlFromResourceBundle("applicationUrl", FacesMessage.SEVERITY_ERROR,
-                        "errorIllegalUrl", this.applicationUrl);
+                this.facesMessages.addToControlFromResourceBundle("applicationUrl", FacesMessage.SEVERITY_ERROR, "errorIllegalUrl",
+                        this.applicationUrl);
                 return null;
             }
         }
@@ -646,8 +638,7 @@ public class ApplicationBean implements Application {
                 newApplicationLogo = getUpFileContent(this.applicationLogoFile);
             } catch (IOException e) {
                 LOG.debug("couldn't fetch uploaded data for application logo.");
-                this.facesMessages.addToControlFromResourceBundle("applicationLogo", FacesMessage.SEVERITY_ERROR,
-                        "errorUploadLogo");
+                this.facesMessages.addToControlFromResourceBundle("applicationLogo", FacesMessage.SEVERITY_ERROR, "errorUploadLogo");
                 return null;
             }
         }
@@ -656,8 +647,8 @@ public class ApplicationBean implements Application {
                 newApplicationColor = Color.decode(this.applicationColor);
             } catch (NumberFormatException e) {
                 LOG.debug("illegal Color format: " + this.applicationColor);
-                this.facesMessages.addToControlFromResourceBundle("applicationColor", FacesMessage.SEVERITY_ERROR,
-                        "errorIllegalColor", this.applicationColor);
+                this.facesMessages.addToControlFromResourceBundle("applicationColor", FacesMessage.SEVERITY_ERROR, "errorIllegalColor",
+                        this.applicationColor);
                 return null;
             }
         }
@@ -666,8 +657,8 @@ public class ApplicationBean implements Application {
                 newSsoLogoutUrl = new URL(this.ssoLogoutUrl);
             } catch (MalformedURLException e) {
                 LOG.debug("illegal URL format: " + this.ssoLogoutUrl);
-                this.facesMessages.addToControlFromResourceBundle("ssoLogoutUrl", FacesMessage.SEVERITY_ERROR,
-                        "errorIllegalUrl", this.ssoLogoutUrl);
+                this.facesMessages.addToControlFromResourceBundle("ssoLogoutUrl", FacesMessage.SEVERITY_ERROR, "errorIllegalUrl",
+                        this.ssoLogoutUrl);
                 return null;
             }
         }
@@ -749,9 +740,8 @@ public class ApplicationBean implements Application {
             this.applicationLogo = this.selectedApplication.getApplicationLogo();
         }
         if (null != this.selectedApplication.getApplicationColor()) {
-            this.applicationColor = String.format("#%02x%02x%02x", this.selectedApplication.getApplicationColor()
-                    .getRed(), this.selectedApplication.getApplicationColor().getGreen(), this.selectedApplication
-                    .getApplicationColor().getBlue());
+            this.applicationColor = String.format("#%02x%02x%02x", this.selectedApplication.getApplicationColor().getRed(),
+                    this.selectedApplication.getApplicationColor().getGreen(), this.selectedApplication.getApplicationColor().getBlue());
         }
         this.idmapping = this.selectedApplication.isIdentifierMappingAllowed();
 
@@ -777,8 +767,7 @@ public class ApplicationBean implements Application {
     public List<SelectItem> availableApplicationOwnersFactory() {
 
         List<ApplicationOwnerEntity> applicationOwners = this.applicationService.listApplicationOwners();
-        List<SelectItem> availableApplicationOwners = ConvertorUtil.convert(applicationOwners,
-                new ApplicationOwnerSelectItemConvertor());
+        List<SelectItem> availableApplicationOwners = ConvertorUtil.convert(applicationOwners, new ApplicationOwnerSelectItemConvertor());
         return availableApplicationOwners;
     }
 
@@ -799,8 +788,7 @@ public class ApplicationBean implements Application {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();
 
-        String text = this.usageAgreementService.getUsageAgreementText(this.selectedApplication.getName(), viewLocale
-                .getLanguage());
+        String text = this.usageAgreementService.getUsageAgreementText(this.selectedApplication.getName(), viewLocale.getLanguage());
         if (null == text)
             return "";
         return text;
@@ -818,8 +806,7 @@ public class ApplicationBean implements Application {
 
         List<DeviceEntity> deviceList = this.deviceService.listDevices();
         for (DeviceEntity deviceEntity : deviceList) {
-            String deviceDescription = this.devicePolicyService
-                    .getDeviceDescription(deviceEntity.getName(), viewLocale);
+            String deviceDescription = this.devicePolicyService.getDeviceDescription(deviceEntity.getName(), viewLocale);
             this.allowedDevices.add(new DeviceEntry(deviceEntity, deviceDescription, defaultValue, 0));
         }
 
@@ -845,8 +832,7 @@ public class ApplicationBean implements Application {
         if (null == this.selectedApplication)
             return;
         LOG.debug("usage agreement list factory");
-        this.selectedApplicationUsageAgreements = this.usageAgreementService
-                .getUsageAgreements(this.selectedApplication.getName());
+        this.selectedApplicationUsageAgreements = this.usageAgreementService.getUsageAgreements(this.selectedApplication.getName());
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -861,10 +847,8 @@ public class ApplicationBean implements Application {
     public String editUsageAgreement() throws ApplicationNotFoundException, PermissionDeniedException {
 
         LOG.debug("edit usage agreement for application: " + this.selectedApplication.getName());
-        this.draftUsageAgreement = this.usageAgreementService
-                .getDraftUsageAgreement(this.selectedApplication.getName());
-        this.currentUsageAgreement = this.usageAgreementService.getCurrentUsageAgreement(this.selectedApplication
-                .getName());
+        this.draftUsageAgreement = this.usageAgreementService.getDraftUsageAgreement(this.selectedApplication.getName());
+        this.currentUsageAgreement = this.usageAgreementService.getCurrentUsageAgreement(this.selectedApplication.getName());
         return "edit-usage-agreement";
     }
 

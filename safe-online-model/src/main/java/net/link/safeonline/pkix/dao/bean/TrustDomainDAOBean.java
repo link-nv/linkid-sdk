@@ -38,8 +38,7 @@ public class TrustDomainDAOBean implements TrustDomainDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                TrustDomainEntity.QueryInterface.class);
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, TrustDomainEntity.QueryInterface.class);
     }
 
     public List<TrustDomainEntity> listTrustDomains() {

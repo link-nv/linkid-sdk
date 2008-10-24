@@ -6,24 +6,28 @@ import net.link.safeonline.option.connection.manager.ws.generated.ConnectionMana
 import net.link.safeonline.option.device.OptionDevice;
 import net.link.safeonline.option.device.exception.OptionDeviceException;
 
+
 @WebService(portName = "ConnectionManagerPort", targetNamespace = "http://ws.manager.connection.option.safeonline.link.net/", serviceName = "ConnectionManagerService")
 public class ConnectionManagerServiceImpl implements ConnectionManager {
 
-	OptionDevice optionDevice;
+    OptionDevice optionDevice;
 
-	public ConnectionManagerServiceImpl(OptionDevice optionDevice) {
-		this.optionDevice = optionDevice;
-	}
 
-	public String getIMEI() {
-		String IMEI;
+    public ConnectionManagerServiceImpl(OptionDevice optionDevice) {
 
-		try {
-			IMEI = this.optionDevice.getIMEI();
-		} catch (OptionDeviceException e) {
-			return null;
-		}
-		return IMEI;
-	}
+        this.optionDevice = optionDevice;
+    }
+
+    public String getIMEI() {
+
+        String IMEI;
+
+        try {
+            IMEI = this.optionDevice.getIMEI();
+        } catch (OptionDeviceException e) {
+            return null;
+        }
+        return IMEI;
+    }
 
 }

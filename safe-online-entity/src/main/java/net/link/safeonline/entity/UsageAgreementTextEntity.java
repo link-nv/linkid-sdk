@@ -35,14 +35,10 @@ import org.apache.commons.lang.builder.ToStringStyle;
 @Entity
 @NamedQueries( {
         @NamedQuery(name = QUERY_WHERE_OWNER_AND_VERSION, query = "SELECT usageAgreementText "
-                + "FROM UsageAgreementTextEntity AS usageAgreementText "
-                + "WHERE usageAgreementText.pk.owner = :owner "
-                + "AND usageAgreementText.pk.usageAgreementVersion = :version "
-                + "ORDER BY usageAgreementText.pk.language DESC"),
-        @NamedQuery(name = DELETE_WHERE_OWNER_AND_VERSION, query = "DELETE "
-                + "FROM UsageAgreementTextEntity AS usageAgreementText "
-                + "WHERE usageAgreementText.pk.owner = :owner "
-                + "AND usageAgreementText.pk.usageAgreementVersion = :version") })
+                + "FROM UsageAgreementTextEntity AS usageAgreementText " + "WHERE usageAgreementText.pk.owner = :owner "
+                + "AND usageAgreementText.pk.usageAgreementVersion = :version " + "ORDER BY usageAgreementText.pk.language DESC"),
+        @NamedQuery(name = DELETE_WHERE_OWNER_AND_VERSION, query = "DELETE " + "FROM UsageAgreementTextEntity AS usageAgreementText "
+                + "WHERE usageAgreementText.pk.owner = :owner " + "AND usageAgreementText.pk.usageAgreementVersion = :version") })
 @Table(name = "UsageAgText")
 public class UsageAgreementTextEntity implements Serializable {
 
@@ -65,15 +61,14 @@ public class UsageAgreementTextEntity implements Serializable {
     public UsageAgreementTextEntity(GlobalUsageAgreementEntity globalUsageAgreement, String text, String language) {
 
         this.text = text;
-        this.pk = new UsageAgreementTextPK(GlobalUsageAgreementEntity.GLOBAL_USAGE_AGREEMENT, globalUsageAgreement
-                .getUsageAgreementVersion(), language);
+        this.pk = new UsageAgreementTextPK(GlobalUsageAgreementEntity.GLOBAL_USAGE_AGREEMENT,
+                globalUsageAgreement.getUsageAgreementVersion(), language);
     }
 
     public UsageAgreementTextEntity(UsageAgreementEntity usageAgreement, String text, String language) {
 
         this.text = text;
-        this.pk = new UsageAgreementTextPK(usageAgreement.getApplication().getName(), usageAgreement
-                .getUsageAgreementVersion(), language);
+        this.pk = new UsageAgreementTextPK(usageAgreement.getApplication().getName(), usageAgreement.getUsageAgreementVersion(), language);
     }
 
     @Lob
@@ -145,8 +140,7 @@ public class UsageAgreementTextEntity implements Serializable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("pk", this.pk).append("text",
-                this.text).toString();
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("pk", this.pk).append("text", this.text).toString();
     }
 
 
@@ -154,11 +148,10 @@ public class UsageAgreementTextEntity implements Serializable {
 
         @QueryMethod(QUERY_WHERE_OWNER_AND_VERSION)
         List<UsageAgreementTextEntity> listUsageAgreementTexts(@QueryParam("owner") String ownerName,
-                @QueryParam("version") Long usageAgreementVersion);
+                                                               @QueryParam("version") Long usageAgreementVersion);
 
         @UpdateMethod(DELETE_WHERE_OWNER_AND_VERSION)
-        void removeUsageAgreementTexts(@QueryParam("owner") String ownerName,
-                @QueryParam("version") Long usageAgreementVersion);
+        void removeUsageAgreementTexts(@QueryParam("owner") String ownerName, @QueryParam("version") Long usageAgreementVersion);
     }
 
 }

@@ -57,8 +57,7 @@ public class PcscTest {
         Card card = cardTerminal.connect("T=0");
         CardChannel channel = card.getBasicChannel();
 
-        PcscSigner pcscSigner = new PcscSigner(channel, new TestPcscSignerLogger(), new AuthenticationMessages(Locale
-                .getDefault()));
+        PcscSigner pcscSigner = new PcscSigner(channel, new TestPcscSignerLogger(), new AuthenticationMessages(Locale.getDefault()));
 
         pcscSigner.sign("hello world".getBytes());
     }

@@ -19,9 +19,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * JAAS test utility class.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class JaasTestUtils {
 
@@ -43,8 +43,7 @@ public class JaasTestUtils {
         System.setProperty("java.security.auth.login.config", jaasConfigFile.getAbsolutePath());
 
         /*
-         * We install a shutdown hook to cleanup the JAAS config file afterwards. Else we risk of flooding the /tmp
-         * directory with junk.
+         * We install a shutdown hook to cleanup the JAAS config file afterwards. Else we risk of flooding the /tmp directory with junk.
          */
         Runtime runtime = Runtime.getRuntime();
         JaasCleanupShutdownHook cleanupShutdownHook = new JaasCleanupShutdownHook(jaasConfigFile);

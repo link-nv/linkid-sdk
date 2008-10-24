@@ -39,30 +39,28 @@ public class SystemInitializationStartableBeanTest extends TestCase {
 
         final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
         final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate",
-                new MBeanActionHandler() {
+        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
 
-                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
+            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-                        return authCertificate;
-                    }
-                });
+                return authCertificate;
+            }
+        });
 
         jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
         final KeyPair keyPair = PkiTestUtils.generateKeyPair();
         final X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
-                new MBeanActionHandler() {
+        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
 
-                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
+            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-                        return certificate;
-                    }
-                });
+                return certificate;
+            }
+        });
 
-        Startable testedInstance = EJBTestUtils.newInstance(SystemInitializationStartableBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager);
+        Startable testedInstance = EJBTestUtils.newInstance(SystemInitializationStartableBean.class, SafeOnlineTestContainer.sessionBeans,
+                entityManager);
 
         // operate
         testedInstance.postStart();

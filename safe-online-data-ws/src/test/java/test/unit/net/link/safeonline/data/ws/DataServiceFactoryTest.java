@@ -14,10 +14,10 @@ import net.link.safeonline.data.ws.DataServiceFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-
 public class DataServiceFactoryTest extends TestCase {
 
-    private static final Log LOG = LogFactory.getLog(DataServiceFactoryTest.class);
+    private static final Log LOG = LogFactory
+                                         .getLog(DataServiceFactoryTest.class);
 
 
     public void testNewInstance() throws Exception {

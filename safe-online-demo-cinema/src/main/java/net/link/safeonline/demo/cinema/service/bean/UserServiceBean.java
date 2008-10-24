@@ -46,8 +46,8 @@ public class UserServiceBean extends AbstractCinemaServiceBean implements UserSe
 
         CinemaUserEntity user;
         try {
-            user = (CinemaUserEntity) this.em.createNamedQuery(CinemaUserEntity.getByOlasId).setParameter("olasId",
-                    olasId).getSingleResult();
+            user = (CinemaUserEntity) this.em.createNamedQuery(CinemaUserEntity.getByOlasId).setParameter("olasId", olasId)
+                                             .getSingleResult();
         }
 
         catch (NoResultException e) {
@@ -64,25 +64,23 @@ public class UserServiceBean extends AbstractCinemaServiceBean implements UserSe
     public CinemaUserEntity updateUser(CinemaUserEntity user, HttpServletRequest loginRequest) {
 
         try {
-            AttributeClient attributeClient = WicketUtil.getOLASAttributeService(loginRequest, DemoCinemaKeyStoreUtils
-                    .getPrivateKeyEntry());
+            AttributeClient attributeClient = WicketUtil
+                                                        .getOLASAttributeService(loginRequest, DemoCinemaKeyStoreUtils.getPrivateKeyEntry());
             CinemaUserEntity userEntity = attach(user);
 
             // National registry number of user.
-            String nrns[] = attributeClient.getAttributeValue(userEntity.getOlasId(), BeIdConstants.NRN_ATTRIBUTE,
-                    String[].class);
+            String nrns[] = attributeClient.getAttributeValue(userEntity.getOlasId(), BeIdConstants.NRN_ATTRIBUTE, String[].class);
             if (nrns != null && nrns.length > 0) {
                 userEntity.setNrn(nrns[0]);
             }
 
             // OLAS username of the user.
-            String name = attributeClient.getAttributeValue(userEntity.getOlasId(),
-                    DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, String.class);
+            String name = attributeClient.getAttributeValue(userEntity.getOlasId(), DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, String.class);
             userEntity.setName(name);
 
             // Does user have a junior account?
-            Boolean juniorValue = attributeClient.getAttributeValue(userEntity.getOlasId(),
-                    DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, Boolean.class);
+            Boolean juniorValue = attributeClient.getAttributeValue(userEntity.getOlasId(), DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME,
+                    Boolean.class);
             userEntity.setJunior(juniorValue != null && juniorValue.booleanValue() == true);
 
             return userEntity;

@@ -23,22 +23,22 @@ import net.link.safeonline.notification.exception.MessageHandlerNotFoundExceptio
 @Local
 public interface NotificationProducerService {
 
-    public void sendNotification(String topic, List<String> message) throws SubscriptionNotFoundException,
-            MessageHandlerNotFoundException;
+    public void sendNotification(String topic, List<String> message) throws SubscriptionNotFoundException, MessageHandlerNotFoundException;
 
     public void subscribe(String topic, String address, X509Certificate certificate) throws PermissionDeniedException;
 
-    public void unsubscribe(String topic, String address, X509Certificate certificate)
-            throws SubscriptionNotFoundException, PermissionDeniedException, EndpointReferenceNotFoundException;
+    public void unsubscribe(String topic, String address, X509Certificate certificate) throws SubscriptionNotFoundException,
+                                                                                      PermissionDeniedException,
+                                                                                      EndpointReferenceNotFoundException;
 
     public void subscribe(String topic, String address, NodeEntity node);
 
     public void subscribe(String topic, String address, ApplicationEntity application);
 
     public void unsubscribe(String topic, String address, NodeEntity node) throws SubscriptionNotFoundException,
-            EndpointReferenceNotFoundException;
+                                                                          EndpointReferenceNotFoundException;
 
-    public void unsubscribe(String topic, String address, ApplicationEntity application)
-            throws SubscriptionNotFoundException, EndpointReferenceNotFoundException;
+    public void unsubscribe(String topic, String address, ApplicationEntity application) throws SubscriptionNotFoundException,
+                                                                                        EndpointReferenceNotFoundException;
 
 }

@@ -24,8 +24,7 @@ public interface StatisticDAO {
 
     StatisticEntity findStatisticByNameDomainAndApplication(String name, String domain, ApplicationEntity application);
 
-    StatisticEntity findOrAddStatisticByNameDomainAndApplication(String name, String domain,
-            ApplicationEntity application);
+    StatisticEntity findOrAddStatisticByNameDomainAndApplication(String name, String domain, ApplicationEntity application);
 
     List<StatisticEntity> listStatistics(ApplicationEntity application);
 

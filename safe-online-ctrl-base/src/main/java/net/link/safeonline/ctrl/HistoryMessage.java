@@ -12,9 +12,9 @@ import java.util.Date;
 
 /**
  * Small wrapper class used by view.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class HistoryMessage {
 

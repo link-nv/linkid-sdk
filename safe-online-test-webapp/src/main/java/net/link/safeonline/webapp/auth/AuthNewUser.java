@@ -160,8 +160,7 @@ public class AuthNewUser extends Page {
 
             try {
                 HttpClient httpClient = new HttpClient();
-                HttpMethod method = new GetMethod(AuthNewUser.this.acceptanceTestManager.getSafeOnlineLocation()
-                        + CAPTCHA);
+                HttpMethod method = new GetMethod(AuthNewUser.this.acceptanceTestManager.getSafeOnlineLocation() + CAPTCHA);
                 method.setRequestHeader("Cookie", "JSESSIONID=" + this.jSessionId);
 
                 httpClient.executeMethod(method);

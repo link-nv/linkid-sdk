@@ -72,8 +72,7 @@ public class CinemaTicketServlet extends HttpServlet {
         try {
             date = new Date(Long.valueOf(time) * 1000);
         } catch (NumberFormatException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST,
-                    "Time parameter does not contain a valid timestamp: " + time);
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Time parameter does not contain a valid timestamp: " + time);
             return;
         }
 
@@ -105,8 +104,7 @@ public class CinemaTicketServlet extends HttpServlet {
         // Check whether there is a ticket for user at time in theatre for film.
         else {
             if (!this.ticketService.isValid(nrn, date, theatre, film)) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-                        "The user has no tickets for this time and day.");
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "The user has no tickets for this time and day.");
             }
         }
 

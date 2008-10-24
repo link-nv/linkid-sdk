@@ -25,17 +25,17 @@ import net.link.safeonline.data.AttributeDO;
 public interface DigipassDeviceService {
 
     String authenticate(String loginName, String token) throws SubjectNotFoundException, PermissionDeniedException,
-            DeviceNotFoundException, DeviceDisabledException;
+                                                       DeviceNotFoundException, DeviceDisabledException;
 
     String register(String loginName, String serialNumber) throws ArgumentIntegrityException, SubjectNotFoundException,
-            PermissionDeniedException, AttributeTypeNotFoundException;
+                                                          PermissionDeniedException, AttributeTypeNotFoundException;
 
-    void remove(String loginName, String serialNumber) throws SubjectNotFoundException, DigipassException,
-            PermissionDeniedException, DeviceNotFoundException, AttributeTypeNotFoundException;
+    void remove(String loginName, String serialNumber) throws SubjectNotFoundException, DigipassException, PermissionDeniedException,
+                                                      DeviceNotFoundException, AttributeTypeNotFoundException;
 
-    List<AttributeDO> getDigipasses(String loginName, Locale locale) throws SubjectNotFoundException,
-            PermissionDeniedException, DeviceNotFoundException;
+    List<AttributeDO> getDigipasses(String loginName, Locale locale) throws SubjectNotFoundException, PermissionDeniedException,
+                                                                    DeviceNotFoundException;
 
     void disable(String userId, String serialNumber) throws SubjectNotFoundException, DeviceNotFoundException,
-            DeviceRegistrationNotFoundException;
+                                                    DeviceRegistrationNotFoundException;
 }

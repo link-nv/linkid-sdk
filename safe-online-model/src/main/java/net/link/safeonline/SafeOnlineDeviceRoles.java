@@ -9,9 +9,9 @@ package net.link.safeonline;
 
 /**
  * Defines the SafeOnline Device Roles.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class SafeOnlineDeviceRoles {
 

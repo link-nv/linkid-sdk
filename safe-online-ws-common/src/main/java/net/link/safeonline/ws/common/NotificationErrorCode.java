@@ -13,14 +13,14 @@ import java.util.Map;
 
 /**
  * Error codes used by the WS-Notification WS's.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public enum NotificationErrorCode {
-    SUCCESS("urn:net:lin-k:safe-online:topic:user:remove:status:Success"), SUBSCRIPTION_NOT_FOUND(
-            "urn:net:lin-k:safe-online:topic:user:remove:status:SubscriptionNotFound"), PERMISSION_DENIED(
-            "urn:net:lin-k:safe-online:topic:user:remove:status:PermissionDenied");
+    SUCCESS("urn:net:lin-k:safe-online:topic:user:remove:status:Success"),
+    SUBSCRIPTION_NOT_FOUND("urn:net:lin-k:safe-online:topic:user:remove:status:SubscriptionNotFound"),
+    PERMISSION_DENIED("urn:net:lin-k:safe-online:topic:user:remove:status:PermissionDenied");
 
     private final String                                    errorCode;
 

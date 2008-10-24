@@ -29,14 +29,14 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- * This service serves as a mapping between the SafeOnline global user id and the required application's user id as
- * specified in the application's id scope.
- *
- * This service does not live within a security domain as it is used by services in the application security domain as
- * well as in the user security domain.
- *
+ * This service serves as a mapping between the SafeOnline global user id and the required application's user id as specified in the
+ * application's id scope.
+ * 
+ * This service does not live within a security domain as it is used by services in the application security domain as well as in the user
+ * security domain.
+ * 
  * @author wvdhaute
- *
+ * 
  */
 
 @Stateless
@@ -58,7 +58,7 @@ public class UserIdMappingServiceBean implements UserIdMappingService {
 
 
     public String getApplicationUserId(String applicationName, String userId) throws ApplicationNotFoundException,
-            SubscriptionNotFoundException {
+                                                                             SubscriptionNotFoundException {
 
         ApplicationEntity application = this.applicationDAO.getApplication(applicationName);
         IdScopeType idScope = application.getIdScope();
@@ -73,16 +73,14 @@ public class UserIdMappingServiceBean implements UserIdMappingService {
     private String getApplicationScopeId(ApplicationEntity application, String userId) {
 
         SubjectEntity subject = this.subjectService.findSubject(userId);
-        ApplicationScopeIdEntity subjectApplicationScopeId = this.applicationScopeIdDAO.findApplicationScopeId(subject,
-                application);
+        ApplicationScopeIdEntity subjectApplicationScopeId = this.applicationScopeIdDAO.findApplicationScopeId(subject, application);
         if (null == subjectApplicationScopeId) {
             subjectApplicationScopeId = this.applicationScopeIdDAO.addApplicationScopeId(subject, application);
         }
         return subjectApplicationScopeId.getId();
     }
 
-    private String getSubscriptionScopeId(ApplicationEntity application, String userId)
-            throws SubscriptionNotFoundException {
+    private String getSubscriptionScopeId(ApplicationEntity application, String userId) throws SubscriptionNotFoundException {
 
         SubjectEntity subject = this.subjectService.findSubject(userId);
         SubscriptionEntity subscription = this.subscriptionDAO.findSubscription(subject, application);
@@ -118,8 +116,7 @@ public class UserIdMappingServiceBean implements UserIdMappingService {
     private String findUserIdFromApplicationScope(String applicationUserId) {
 
         LOG.debug("getUserIdFromApplicationScope: " + applicationUserId);
-        ApplicationScopeIdEntity applicationScopeId = this.applicationScopeIdDAO
-                .findApplicationScopeId(applicationUserId);
+        ApplicationScopeIdEntity applicationScopeId = this.applicationScopeIdDAO.findApplicationScopeId(applicationUserId);
         if (null == applicationScopeId)
             return null;
         return applicationScopeId.getSubject().getUserId();

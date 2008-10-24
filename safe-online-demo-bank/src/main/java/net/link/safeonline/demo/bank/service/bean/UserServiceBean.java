@@ -47,8 +47,7 @@ public class UserServiceBean extends AbstractBankServiceBean implements UserServ
     public BankUserEntity getBankUser(String bankId) {
 
         try {
-            return (BankUserEntity) this.em.createNamedQuery(BankUserEntity.getByBankId).setParameter("bankId", bankId)
-                    .getSingleResult();
+            return (BankUserEntity) this.em.createNamedQuery(BankUserEntity.getByBankId).setParameter("bankId", bankId).getSingleResult();
         } catch (NoResultException e) {
             return null;
         }
@@ -60,8 +59,7 @@ public class UserServiceBean extends AbstractBankServiceBean implements UserServ
     public BankUserEntity getOLASUser(String olasId) {
 
         try {
-            return (BankUserEntity) this.em.createNamedQuery(BankUserEntity.getByOlasId).setParameter("olasId", olasId)
-                    .getSingleResult();
+            return (BankUserEntity) this.em.createNamedQuery(BankUserEntity.getByOlasId).setParameter("olasId", olasId).getSingleResult();
         }
 
         catch (NoResultException e) {
@@ -98,16 +96,14 @@ public class UserServiceBean extends AbstractBankServiceBean implements UserServ
     public BankUserEntity updateUser(BankUserEntity user, HttpServletRequest loginRequest) {
 
         try {
-            AttributeClient attributeClient = WicketUtil.getOLASAttributeService(loginRequest, DemoBankKeyStoreUtils
-                    .getPrivateKeyEntry());
+            AttributeClient attributeClient = WicketUtil.getOLASAttributeService(loginRequest, DemoBankKeyStoreUtils.getPrivateKeyEntry());
 
             BankUserEntity userEntity = attach(user);
             if (userEntity.getOlasId() == null)
                 return userEntity;
 
             // OLAS username of the user.
-            String name = attributeClient.getAttributeValue(userEntity.getOlasId(),
-                    DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, String.class);
+            String name = attributeClient.getAttributeValue(userEntity.getOlasId(), DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, String.class);
             userEntity.setName(name);
 
             return userEntity;

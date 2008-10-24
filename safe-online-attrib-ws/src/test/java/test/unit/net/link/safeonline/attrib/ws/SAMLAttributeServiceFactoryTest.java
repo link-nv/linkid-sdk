@@ -11,7 +11,6 @@ import junit.framework.TestCase;
 import net.link.safeonline.attrib.ws.SAMLAttributeServiceFactory;
 import oasis.names.tc.saml._2_0.protocol.SAMLAttributeService;
 
-
 public class SAMLAttributeServiceFactoryTest extends TestCase {
 
     public void testNewInstance() throws Exception {

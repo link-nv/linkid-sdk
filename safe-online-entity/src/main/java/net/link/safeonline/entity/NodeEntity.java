@@ -33,13 +33,11 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 /**
  * This entity represents an OLAS node in the OLAS network.
  * 
- * An OLAS node has an authentication certificate used to authenticate against other OLAS node when using its web
- * services.
+ * An OLAS node has an authentication certificate used to authenticate against other OLAS node when using its web services.
  * 
  * An OLAS node also has a signing certificate used for signing SAML tokens issued from this node.
  * 
- * This entity is for example used by remote attributes to identify the location of the actual attribute in the OLAS
- * network.
+ * This entity is for example used by remote attributes to identify the location of the actual attribute in the OLAS network.
  * 
  * @author wvdhaute
  * 
@@ -82,8 +80,8 @@ public class NodeEntity implements Serializable {
         // empty
     }
 
-    public NodeEntity(String name, String protocol, String hostname, int port, int sslPort,
-            X509Certificate authnCertificate, X509Certificate signingCertificate) {
+    public NodeEntity(String name, String protocol, String hostname, int port, int sslPort, X509Certificate authnCertificate,
+                      X509Certificate signingCertificate) {
 
         this.name = name;
         this.protocol = protocol;
@@ -155,8 +153,7 @@ public class NodeEntity implements Serializable {
     @Transient
     public String getLocation() {
 
-        return String.format("%s://%s:%d", this.protocol, this.hostname, this.protocol.equals("http")? this.port
-                : this.sslPort);
+        return String.format("%s://%s:%d", this.protocol, this.hostname, this.protocol.equals("http")? this.port: this.sslPort);
     }
 
     /**
@@ -184,8 +181,8 @@ public class NodeEntity implements Serializable {
     }
 
     /**
-     * Sets the authentication certificate subject. Do not use this method directly. Use
-     * {@link #setAuthnCertificate(X509Certificate) setCertificate} instead. JPA requires this setter.
+     * Sets the authentication certificate subject. Do not use this method directly. Use {@link #setAuthnCertificate(X509Certificate)
+     * setCertificate} instead. JPA requires this setter.
      * 
      * @param authnCertificateSubject
      * @see #setAuthnCertificate(X509Certificate)
@@ -196,8 +193,8 @@ public class NodeEntity implements Serializable {
     }
 
     /**
-     * Sets the X509 certificate of the application. Use this method to update the application certificate since this
-     * method keeps the certificate identifier in sync with the certificate.
+     * Sets the X509 certificate of the application. Use this method to update the application certificate since this method keeps the
+     * certificate identifier in sync with the certificate.
      * 
      * @param authnCertificate
      */
@@ -214,8 +211,8 @@ public class NodeEntity implements Serializable {
     }
 
     /**
-     * Sets the signing certificate subject. Do not use this method directly. Use
-     * {@link #setAuthnCertificate(X509Certificate) setCertificate} instead. JPA requires this setter.
+     * Sets the signing certificate subject. Do not use this method directly. Use {@link #setAuthnCertificate(X509Certificate)
+     * setCertificate} instead. JPA requires this setter.
      * 
      * @param signingCertificateSubject
      * @see #setSigningCertificate(X509Certificate)
@@ -226,8 +223,8 @@ public class NodeEntity implements Serializable {
     }
 
     /**
-     * Sets the X509 certificate of the application. Use this method to update the application certificate since this
-     * method keeps the certificate identifier in sync with the certificate.
+     * Sets the X509 certificate of the application. Use this method to update the application certificate since this method keeps the
+     * certificate identifier in sync with the certificate.
      * 
      * @param signingCertificate
      */
@@ -269,11 +266,9 @@ public class NodeEntity implements Serializable {
         List<NodeEntity> listNodeEntities();
 
         @QueryMethod(QUERY_WHERE_AUTHN_CERT_SUBJECT)
-        List<NodeEntity> listNodeEntitiesWhereAuthnCertificateSubject(
-                @QueryParam("certificateSubject") String certificateSubject);
+        List<NodeEntity> listNodeEntitiesWhereAuthnCertificateSubject(@QueryParam("certificateSubject") String certificateSubject);
 
         @QueryMethod(QUERY_WHERE_SIGNING_CERT_SUBJECT)
-        List<NodeEntity> listNodeEntitiesWhereSigningCertificateSubject(
-                @QueryParam("certificateSubject") String certificateSubject);
+        List<NodeEntity> listNodeEntitiesWhereSigningCertificateSubject(@QueryParam("certificateSubject") String certificateSubject);
     }
 }

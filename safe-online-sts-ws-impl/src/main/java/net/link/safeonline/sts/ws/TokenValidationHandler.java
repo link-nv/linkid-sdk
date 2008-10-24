@@ -137,11 +137,10 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
             XMLSignature xmlSignature = new XMLSignature(tokenSignatureElement, null);
             LOG.debug("checking token signature");
             if (trustDomain == TrustDomainType.NODE) {
-                NodeAuthenticationService nodeAuthenticationService = EjbUtils.getEJB(
-                        "SafeOnline/NodeAuthenticationServiceBean/local", NodeAuthenticationService.class);
+                NodeAuthenticationService nodeAuthenticationService = EjbUtils.getEJB("SafeOnline/NodeAuthenticationServiceBean/local",
+                        NodeAuthenticationService.class);
                 try {
-                    List<X509Certificate> nodeSigningCertificates = nodeAuthenticationService
-                            .getSigningCertificates(issuerName);
+                    List<X509Certificate> nodeSigningCertificates = nodeAuthenticationService.getSigningCertificates(issuerName);
                     result = false;
                     for (X509Certificate nodeSigningCertificate : nodeSigningCertificates) {
                         result = xmlSignature.checkSignatureValue(nodeSigningCertificate);
@@ -170,12 +169,10 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
                     throw createSOAPFaultException("unknown token issuer: " + issuerName, "InvalidSecurityToken");
                 }
             } else if (trustDomain == TrustDomainType.APPLICATION) {
-                ApplicationAuthenticationService applicationAuthenticationService = EjbUtils
-                        .getEJB("SafeOnline/ApplicationAuthenticationServiceBean/local",
-                                ApplicationAuthenticationService.class);
+                ApplicationAuthenticationService applicationAuthenticationService = EjbUtils.getEJB(
+                        "SafeOnline/ApplicationAuthenticationServiceBean/local", ApplicationAuthenticationService.class);
                 try {
-                    List<X509Certificate> applicationCertificates = applicationAuthenticationService
-                            .getCertificates(issuerName);
+                    List<X509Certificate> applicationCertificates = applicationAuthenticationService.getCertificates(issuerName);
                     result = false;
                     for (X509Certificate applicationCertificate : applicationCertificates) {
                         result = xmlSignature.checkSignatureValue(applicationCertificate);
@@ -215,8 +212,7 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
         nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ds", "http://www.w3.org/2000/09/xmldsig#");
         nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:samlp", "urn:oasis:names:tc:SAML:2.0:protocol");
         nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:saml", "urn:oasis:names:tc:SAML:2.0:assertion");
-        nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:wst",
-                "http://docs.oasis-open.org/ws-sx/ws-trust/200512/");
+        nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:wst", "http://docs.oasis-open.org/ws-sx/ws-trust/200512/");
         try {
             LOG.debug("document: " + domToString(document));
         } catch (TransformerException e1) {
@@ -224,38 +220,30 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
         }
         try {
             Element tokenSignatureElement = (Element) XPathAPI.selectSingleNode(document,
-                    "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:Response/ds:Signature",
-                    nsElement);
+                    "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:Response/ds:Signature", nsElement);
             if (null == tokenSignatureElement) {
-                tokenSignatureElement = (Element) XPathAPI
-                        .selectSingleNode(
-                                document,
-                                "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:AuthnRequest/ds:Signature",
-                                nsElement);
+                tokenSignatureElement = (Element) XPathAPI.selectSingleNode(document,
+                        "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:AuthnRequest/ds:Signature", nsElement);
                 if (null == tokenSignatureElement) {
-                    tokenSignatureElement = (Element) XPathAPI
-                            .selectSingleNode(
-                                    document,
-                                    "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:LogoutResponse/ds:Signature",
-                                    nsElement);
+                    tokenSignatureElement = (Element) XPathAPI.selectSingleNode(document,
+                            "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:LogoutResponse/ds:Signature",
+                            nsElement);
                     if (null == tokenSignatureElement) {
-                        tokenSignatureElement = (Element) XPathAPI
-                                .selectSingleNode(
-                                        document,
-                                        "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:LogoutRequest/ds:Signature",
-                                        nsElement);
+                        tokenSignatureElement = (Element) XPathAPI.selectSingleNode(document,
+                                "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:LogoutRequest/ds:Signature",
+                                nsElement);
                         if (null == tokenSignatureElement) {
                             tokenSignatureElement = (Element) XPathAPI
-                                    .selectSingleNode(
-                                            document,
-                                            "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:DeviceOperationRequest/ds:Signature",
-                                            nsElement);
+                                                                      .selectSingleNode(
+                                                                              document,
+                                                                              "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:DeviceOperationRequest/ds:Signature",
+                                                                              nsElement);
                             if (null == tokenSignatureElement) {
                                 tokenSignatureElement = (Element) XPathAPI
-                                        .selectSingleNode(
-                                                document,
-                                                "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:DeviceOperationResponse/ds:Signature",
-                                                nsElement);
+                                                                          .selectSingleNode(
+                                                                                  document,
+                                                                                  "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:DeviceOperationResponse/ds:Signature",
+                                                                                  nsElement);
                             }
                         }
                     }
@@ -279,8 +267,7 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
         nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ds", "http://www.w3.org/2000/09/xmldsig#");
         nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:samlp", "urn:oasis:names:tc:SAML:2.0:protocol");
         nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:saml", "urn:oasis:names:tc:SAML:2.0:assertion");
-        nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:wst",
-                "http://docs.oasis-open.org/ws-sx/ws-trust/200512/");
+        nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:wst", "http://docs.oasis-open.org/ws-sx/ws-trust/200512/");
         try {
             LOG.debug("document: " + domToString(document));
         } catch (TransformerException e1) {
@@ -288,38 +275,30 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
         }
         try {
             Element issuerElement = (Element) XPathAPI.selectSingleNode(document,
-                    "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:Response/saml:Issuer",
-                    nsElement);
+                    "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:Response/saml:Issuer", nsElement);
             if (null == issuerElement) {
-                issuerElement = (Element) XPathAPI
-                        .selectSingleNode(
-                                document,
-                                "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:AuthnRequest/saml:Issuer",
-                                nsElement);
+                issuerElement = (Element) XPathAPI.selectSingleNode(document,
+                        "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:AuthnRequest/saml:Issuer", nsElement);
                 if (null == issuerElement) {
-                    issuerElement = (Element) XPathAPI
-                            .selectSingleNode(
-                                    document,
-                                    "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:LogoutResponse/saml:Issuer",
-                                    nsElement);
+                    issuerElement = (Element) XPathAPI.selectSingleNode(document,
+                            "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:LogoutResponse/saml:Issuer",
+                            nsElement);
                     if (null == issuerElement) {
-                        issuerElement = (Element) XPathAPI
-                                .selectSingleNode(
-                                        document,
-                                        "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:LogoutRequest/saml:Issuer",
-                                        nsElement);
+                        issuerElement = (Element) XPathAPI.selectSingleNode(document,
+                                "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:LogoutRequest/saml:Issuer",
+                                nsElement);
                         if (null == issuerElement) {
                             issuerElement = (Element) XPathAPI
-                                    .selectSingleNode(
-                                            document,
-                                            "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:DeviceOperationResponse/saml:Issuer",
-                                            nsElement);
+                                                              .selectSingleNode(
+                                                                      document,
+                                                                      "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:DeviceOperationResponse/saml:Issuer",
+                                                                      nsElement);
                             if (null == issuerElement) {
                                 issuerElement = (Element) XPathAPI
-                                        .selectSingleNode(
-                                                document,
-                                                "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:DeviceOperationRequest/saml:Issuer",
-                                                nsElement);
+                                                                  .selectSingleNode(
+                                                                          document,
+                                                                          "/soap:Envelope/soap:Body/wst:RequestSecurityToken/wst:ValidateTarget/samlp:DeviceOperationRequest/saml:Issuer",
+                                                                          nsElement);
                             }
                         }
                     }
@@ -338,8 +317,7 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
         nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:ds", "http://www.w3.org/2000/09/xmldsig#");
         nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:samlp", "urn:oasis:names:tc:SAML:2.0:protocol");
         nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:saml", "urn:oasis:names:tc:SAML:2.0:assertion");
-        nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:wst",
-                "http://docs.oasis-open.org/ws-sx/ws-trust/200512/");
+        nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:wst", "http://docs.oasis-open.org/ws-sx/ws-trust/200512/");
         try {
             LOG.debug("document: " + domToString(document));
         } catch (TransformerException e1) {
@@ -385,8 +363,8 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
         SOAPFault soapFault;
         try {
             SOAPFactory soapFactory = SOAPFactory.newInstance();
-            soapFault = soapFactory.createFault(faultString, new QName(
-                    "http://docs.oasis-open.org/ws-sx/ws-trust/200512", wstFaultCode, "wst"));
+            soapFault = soapFactory.createFault(faultString, new QName("http://docs.oasis-open.org/ws-sx/ws-trust/200512", wstFaultCode,
+                    "wst"));
         } catch (SOAPException e) {
             throw new RuntimeException("SOAP error");
         }

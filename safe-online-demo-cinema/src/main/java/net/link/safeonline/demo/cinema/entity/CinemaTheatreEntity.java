@@ -18,8 +18,7 @@ import javax.persistence.NamedQuery;
 
 
 @Entity
-@NamedQueries( {
-        @NamedQuery(name = CinemaTheatreEntity.getAll, query = "SELECT t FROM CinemaTheatreEntity t"),
+@NamedQueries( { @NamedQuery(name = CinemaTheatreEntity.getAll, query = "SELECT t FROM CinemaTheatreEntity t"),
         @NamedQuery(name = CinemaTheatreEntity.getById, query = "SELECT t FROM CinemaTheatreEntity t WHERE t.id = :id"),
         @NamedQuery(name = CinemaTheatreEntity.getAllFor, query = "SELECT r.theatre FROM CinemaRoomEntity r WHERE :film MEMBER OF r.films") })
 public class CinemaTheatreEntity implements Serializable {

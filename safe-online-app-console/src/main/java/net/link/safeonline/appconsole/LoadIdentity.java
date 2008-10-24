@@ -50,9 +50,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Panel to load an application identify
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class LoadIdentity extends JPanel {
 
@@ -77,7 +77,7 @@ public class LoadIdentity extends JPanel {
 
     /**
      * Main constructor.
-     *
+     * 
      * @param applicationConsole
      */
     public LoadIdentity(ApplicationConsole applicationConsole) {
@@ -196,15 +196,12 @@ public class LoadIdentity extends JPanel {
             JOptionPane.showMessageDialog(this, ERROR_OPEN_KEYSTORE.getMessage(), "", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        char[] keyStorePassword = this.keyStorePasswordField.getPassword().length == 0? null
-                : this.keyStorePasswordField.getPassword();
-        char[] keyEntryPassword = this.keyEntryPasswordField.getPassword().length == 0? null
-                : this.keyEntryPasswordField.getPassword();
+        char[] keyStorePassword = this.keyStorePasswordField.getPassword().length == 0? null: this.keyStorePasswordField.getPassword();
+        char[] keyEntryPassword = this.keyEntryPasswordField.getPassword().length == 0? null: this.keyEntryPasswordField.getPassword();
 
         PrivateKeyEntry privateKeyEntry;
         try {
-            privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(keyStoreType, keyStoreInputStream, keyStorePassword,
-                    keyEntryPassword);
+            privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(keyStoreType, keyStoreInputStream, keyStorePassword, keyEntryPassword);
         } catch (RuntimeException e) {
             JOptionPane.showMessageDialog(this, e.getMessage(), "", JOptionPane.ERROR_MESSAGE);
             return;
@@ -241,8 +238,7 @@ public class LoadIdentity extends JPanel {
         public boolean accept(File file) {
 
             String filename = file.getName();
-            if (file.isDirectory() || filename.endsWith(".p12") || filename.endsWith(".jks")
-                    || filename.endsWith(".pfx"))
+            if (file.isDirectory() || filename.endsWith(".p12") || filename.endsWith(".jks") || filename.endsWith(".pfx"))
                 return true;
             return false;
         }

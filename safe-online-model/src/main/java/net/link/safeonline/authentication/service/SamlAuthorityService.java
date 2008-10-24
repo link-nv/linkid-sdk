@@ -12,22 +12,22 @@ import javax.ejb.Local;
 
 /**
  * Interface for SAML authority service.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Local
 public interface SamlAuthorityService {
 
     /**
      * Gives back the name of the SAML assertion issuer.
-     *
+     * 
      */
     String getIssuerName();
 
     /**
      * Gives back the validity of the authentication assertions issued by this party.
-     *
+     * 
      */
     int getAuthnAssertionValidity();
 }

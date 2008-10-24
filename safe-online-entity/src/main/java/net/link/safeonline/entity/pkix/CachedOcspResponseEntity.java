@@ -37,16 +37,13 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @Entity
 @Table(name = "cached_ocsp_responses")
 @NamedQueries( {
-        @NamedQuery(name = QUERY_WHERE_KEY, query = "SELECT cachedOcspResponse "
-                + "FROM CachedOcspResponseEntity AS CachedOcspResponse " + "WHERE CachedOcspResponse.key = :key"),
+        @NamedQuery(name = QUERY_WHERE_KEY, query = "SELECT cachedOcspResponse " + "FROM CachedOcspResponseEntity AS CachedOcspResponse "
+                + "WHERE CachedOcspResponse.key = :key"),
         @NamedQuery(name = QUERY_DELETE_ALL, query = "DELETE FROM CachedOcspResponseEntity"),
-        @NamedQuery(name = QUERY_DELETE_PER_DOMAIN, query = "DELETE "
-                + "FROM CachedOcspResponseEntity AS CachedOcspResponse "
+        @NamedQuery(name = QUERY_DELETE_PER_DOMAIN, query = "DELETE " + "FROM CachedOcspResponseEntity AS CachedOcspResponse "
                 + "WHERE CachedOcspResponse.trustDomain = :trustDomain"),
-        @NamedQuery(name = QUERY_DELETE_EXPIRED, query = "DELETE "
-                + "FROM CachedOcspResponseEntity AS CachedOcspResponse "
-                + "WHERE CachedOcspResponse.entryDate < :expiryTime "
-                + "AND CachedOcspResponse.trustDomain = :trustDomain") })
+        @NamedQuery(name = QUERY_DELETE_EXPIRED, query = "DELETE " + "FROM CachedOcspResponseEntity AS CachedOcspResponse "
+                + "WHERE CachedOcspResponse.entryDate < :expiryTime " + "AND CachedOcspResponse.trustDomain = :trustDomain") })
 public class CachedOcspResponseEntity implements Serializable {
 
     private static final long    serialVersionUID        = 1L;
@@ -142,8 +139,8 @@ public class CachedOcspResponseEntity implements Serializable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("id", this.id).append("key", this.key).append("result", this.result)
-                .append("entry date", this.entryDate).toString();
+        return new ToStringBuilder(this).append("id", this.id).append("key", this.key).append("result", this.result).append("entry date",
+                this.entryDate).toString();
     }
 
     @Override
@@ -178,7 +175,6 @@ public class CachedOcspResponseEntity implements Serializable {
         void deletePerDomain(@QueryParam("trustDomain") TrustDomainEntity trustDomain);
 
         @UpdateMethod(QUERY_DELETE_EXPIRED)
-        void deleteExpired(@QueryParam("trustDomain") TrustDomainEntity trustDomain,
-                @QueryParam("expiryTime") Date expiryTime);
+        void deleteExpired(@QueryParam("trustDomain") TrustDomainEntity trustDomain, @QueryParam("expiryTime") Date expiryTime);
     }
 }

@@ -84,9 +84,8 @@ public class OptionController implements AppletController {
         if (null == this.port) {
             try {
                 this.appletView.outputDetailMessage("Contacting connection manager");
-                ConnectionManagerService service = new ConnectionManagerService(new URL(ConnectionManagerConstants.URL
-                        + "?wsdl"), new QName(ConnectionManagerConstants.NAMESPACE,
-                        ConnectionManagerConstants.LOCALPART));
+                ConnectionManagerService service = new ConnectionManagerService(new URL(ConnectionManagerConstants.URL + "?wsdl"),
+                        new QName(ConnectionManagerConstants.NAMESPACE, ConnectionManagerConstants.LOCALPART));
                 this.port = service.getConnectionManagerPort();
             } catch (Throwable e) {
                 this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages.getString(KEY.ERROR));

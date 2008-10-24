@@ -26,7 +26,7 @@ public interface UsageAgreementDAO {
     UsageAgreementEntity getUsageAgreement(ApplicationEntity application, Long usageAgreementVersion);
 
     UsageAgreementEntity findUsageAgreement(ApplicationEntity application, Long usageAgreementVersion)
-            throws UsageAgreementNotFoundException;
+                                                                                                      throws UsageAgreementNotFoundException;
 
     List<UsageAgreementEntity> listUsageAgreements(ApplicationEntity application);
 
@@ -34,7 +34,7 @@ public interface UsageAgreementDAO {
 
     /**
      * Removes a usage agreement. This will also remove the usage agreement texts related.
-     *
+     * 
      * @param usageAgreement
      */
     void removeUsageAgreement(ApplicationEntity application, Long usageAgreementVersion);
@@ -48,7 +48,7 @@ public interface UsageAgreementDAO {
     UsageAgreementTextEntity getUsageAgreementText(UsageAgreementEntity usageAgreement, String language);
 
     UsageAgreementTextEntity findUsageAgreementText(UsageAgreementEntity usageAgreement, String language)
-            throws UsageAgreementTextNotFoundException;
+                                                                                                         throws UsageAgreementTextNotFoundException;
 
     GlobalUsageAgreementEntity addGlobalUsageAgreement(Long draftGlobalUsageAgreementVersion);
 
@@ -56,8 +56,7 @@ public interface UsageAgreementDAO {
 
     GlobalUsageAgreementEntity getGlobalUsageAgreement(Long draftGlobalUsageAgreementVersion);
 
-    UsageAgreementTextEntity addGlobalUsageAgreementText(GlobalUsageAgreementEntity draftUsageAgreement, String text,
-            String language);
+    UsageAgreementTextEntity addGlobalUsageAgreementText(GlobalUsageAgreementEntity draftUsageAgreement, String text, String language);
 
     void removeGlobalUsageAgreement(Long usageAgreementVersion);
 

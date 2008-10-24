@@ -42,9 +42,8 @@ public abstract class AbstractCinemaServiceTest extends AbstractServiceTest {
     @Override
     protected Class<?>[] getEntities() {
 
-        return new Class<?>[] { CinemaFilmEntity.class, CinemaRoomEntity.class, CinemaSeatEntity.class,
-                CinemaSeatOccupationEntity.class, CinemaShowTimeEntity.class, CinemaTheatreEntity.class,
-                CinemaTicketEntity.class, CinemaUserEntity.class };
+        return new Class<?>[] { CinemaFilmEntity.class, CinemaRoomEntity.class, CinemaSeatEntity.class, CinemaSeatOccupationEntity.class,
+                CinemaShowTimeEntity.class, CinemaTheatreEntity.class, CinemaTicketEntity.class, CinemaUserEntity.class };
     }
 
     /**
@@ -53,7 +52,7 @@ public abstract class AbstractCinemaServiceTest extends AbstractServiceTest {
     @Override
     protected Class<?>[] getServices() {
 
-        return new Class<?>[] { FilmServiceBean.class, InitializationServiceBean.class, RoomServiceBean.class,
-                SeatServiceBean.class, TheatreServiceBean.class, TicketServiceBean.class, UserServiceBean.class };
+        return new Class<?>[] { FilmServiceBean.class, InitializationServiceBean.class, RoomServiceBean.class, SeatServiceBean.class,
+                TheatreServiceBean.class, TicketServiceBean.class, UserServiceBean.class };
     }
 }

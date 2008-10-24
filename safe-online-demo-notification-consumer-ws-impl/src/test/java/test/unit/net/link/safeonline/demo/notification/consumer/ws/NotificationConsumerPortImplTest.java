@@ -49,8 +49,7 @@ import org.oasis_open.docs.wsn.b_2.TopicExpressionType;
 
 public class NotificationConsumerPortImplTest {
 
-    private static final Log                                           LOG = LogFactory
-                                                                                   .getLog(NotificationConsumerPortImplTest.class);
+    private static final Log                                           LOG = LogFactory.getLog(NotificationConsumerPortImplTest.class);
 
     private WebServiceTestUtils                                        webServiceTestUtils;
 
@@ -83,14 +82,11 @@ public class NotificationConsumerPortImplTest {
 
         this.mockObjects = new Object[] { this.mockWSSecurityConfigurationService, this.mockNotificationConsumerService };
 
-        this.jndiTestUtils.bindComponent("SafeOnlineZDemo/WSSecurityConfigurationBean/local",
-                this.mockWSSecurityConfigurationService);
-        this.jndiTestUtils.bindComponent("SafeOnlineZDemo/NotificationConsumerServiceBean/local",
-                this.mockNotificationConsumerService);
+        this.jndiTestUtils.bindComponent("SafeOnlineZDemo/WSSecurityConfigurationBean/local", this.mockWSSecurityConfigurationService);
+        this.jndiTestUtils.bindComponent("SafeOnlineZDemo/NotificationConsumerServiceBean/local", this.mockNotificationConsumerService);
 
         // expectations
-        expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(
-                Long.MAX_VALUE);
+        expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
 
         JaasTestUtils.initJaasLoginModule(DummyLoginModule.class);
         NotificationConsumerPort wsPort = new NotificationConsumerPortImpl();
@@ -107,8 +103,7 @@ public class NotificationConsumerPortImplTest {
         BindingProvider bindingProvider = (BindingProvider) this.clientPort;
         Binding binding = bindingProvider.getBinding();
         List<Handler> handlerChain = binding.getHandlerChain();
-        Handler<SOAPMessageContext> wsSecurityHandler = new WSSecurityClientHandler(this.certificate, keyPair
-                .getPrivate());
+        Handler<SOAPMessageContext> wsSecurityHandler = new WSSecurityClientHandler(this.certificate, keyPair.getPrivate());
         handlerChain.add(wsSecurityHandler);
         binding.setHandlerChain(handlerChain);
 
@@ -148,8 +143,7 @@ public class NotificationConsumerPortImplTest {
 
         // expectations
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
-        this.mockNotificationConsumerService.handleMessage(SafeOnlineConstants.TOPIC_REMOVE_USER, destination,
-                messageContent);
+        this.mockNotificationConsumerService.handleMessage(SafeOnlineConstants.TOPIC_REMOVE_USER, destination, messageContent);
 
         // prepare
         replay(this.mockObjects);

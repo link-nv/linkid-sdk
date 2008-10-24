@@ -45,8 +45,7 @@ public class DummyEncapWebServiceTest {
         // setup
         String endpoint = ENCAP_LOCATION + "/mSecBankIdActivation";
         URL endpointURL = new URL(endpoint);
-        MSecBankIdActivationSoapBindingStub activationStub = new MSecBankIdActivationSoapBindingStub(endpointURL,
-                new Service());
+        MSecBankIdActivationSoapBindingStub activationStub = new MSecBankIdActivationSoapBindingStub(endpointURL, new Service());
 
         // operate
         ActivationInitResponse activationResponse = activationStub.activate(VALID_MOBILE, "1", null);
@@ -59,8 +58,7 @@ public class DummyEncapWebServiceTest {
         // setup
         String endpoint = ENCAP_LOCATION + "/mSecBankIdAdministration";
         URL endpointURL = new URL(endpoint);
-        MSecBankIdAdministrationSoapBindingStub adminStub = new MSecBankIdAdministrationSoapBindingStub(endpointURL,
-                new Service());
+        MSecBankIdAdministrationSoapBindingStub adminStub = new MSecBankIdAdministrationSoapBindingStub(endpointURL, new Service());
 
         // operate
         http.MSecResponse adminResponse = adminStub.lock(VALID_MOBILE, "-1");
@@ -79,8 +77,7 @@ public class DummyEncapWebServiceTest {
         // setup
         String endpoint = ENCAP_LOCATION + "/mSecBankIdAdministration";
         URL endpointURL = new URL(endpoint);
-        MSecBankIdAdministrationSoapBindingStub adminStub = new MSecBankIdAdministrationSoapBindingStub(endpointURL,
-                new Service());
+        MSecBankIdAdministrationSoapBindingStub adminStub = new MSecBankIdAdministrationSoapBindingStub(endpointURL, new Service());
 
         // operate
         http.MSecResponse adminResponse = adminStub.unLock(VALID_MOBILE, "-1");
@@ -99,8 +96,7 @@ public class DummyEncapWebServiceTest {
         // setup
         String endpoint = ENCAP_LOCATION + "/mSecBankIdAdministration";
         URL endpointURL = new URL(endpoint);
-        MSecBankIdAdministrationSoapBindingStub adminStub = new MSecBankIdAdministrationSoapBindingStub(endpointURL,
-                new Service());
+        MSecBankIdAdministrationSoapBindingStub adminStub = new MSecBankIdAdministrationSoapBindingStub(endpointURL, new Service());
 
         // operate
         http.MSecResponse adminResponse = adminStub.remove(VALID_MOBILE, "-1");
@@ -119,8 +115,7 @@ public class DummyEncapWebServiceTest {
         // setup
         String endpoint = ENCAP_LOCATION + "/mSecBankIdAdministration";
         URL endpointURL = new URL(endpoint);
-        MSecBankIdAdministrationSoapBindingStub adminStub = new MSecBankIdAdministrationSoapBindingStub(endpointURL,
-                new Service());
+        MSecBankIdAdministrationSoapBindingStub adminStub = new MSecBankIdAdministrationSoapBindingStub(endpointURL, new Service());
 
         // operate
         http.MSecResponse adminResponse = adminStub.showStatus(VALID_MOBILE, "-1");

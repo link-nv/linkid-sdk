@@ -36,7 +36,7 @@ abstract public class AbstractStatement<T extends AbstractStatementStructure> {
 
     /**
      * Verifies the integrity of the statement.
-     *
+     * 
      */
     public X509Certificate verifyIntegrity() {
 

@@ -81,8 +81,8 @@ public class ResourceAuditEntity implements Serializable {
         // empty
     }
 
-    public ResourceAuditEntity(AuditContextEntity auditContext, ResourceNameType resourceName,
-            ResourceLevelType resourceLevel, String sourceComponent, String message) {
+    public ResourceAuditEntity(AuditContextEntity auditContext, ResourceNameType resourceName, ResourceLevelType resourceLevel,
+                               String sourceComponent, String message) {
 
         this.auditContext = auditContext;
         this.resourceName = resourceName;

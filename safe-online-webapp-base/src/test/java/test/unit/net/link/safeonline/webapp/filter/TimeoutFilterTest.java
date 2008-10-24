@@ -52,8 +52,7 @@ public class TimeoutFilterTest {
         filterInitParameters.put("LoginSessionAttribute", LoginManager.USERID_SESSION_ATTRIBUTE);
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
         initialSessionAttributes.put(LoginManager.USERID_SESSION_ATTRIBUTE, UUID.randomUUID().toString());
-        this.servletTestManager.setUp(TestServlet.class, TimeoutFilter.class, filterInitParameters,
-                initialSessionAttributes);
+        this.servletTestManager.setUp(TestServlet.class, TimeoutFilter.class, filterInitParameters, initialSessionAttributes);
     }
 
     @After

@@ -28,8 +28,7 @@ public class ConfigurationTestUtils {
             Configurable configurable = field.getAnnotation(Configurable.class);
             if (configurable != null) {
                 field.setAccessible(true);
-                if (configurable.name().equals(name)
-                        || configurable.name().equals("") && field.getName().equals(name)) {
+                if (configurable.name().equals(name) || configurable.name().equals("") && field.getName().equals(name)) {
                     LOG.debug("setting field: " + name + " to: " + value);
                     field.set(target, value);
                 }

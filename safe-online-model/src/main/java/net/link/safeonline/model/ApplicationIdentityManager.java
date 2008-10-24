@@ -18,20 +18,18 @@ import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 
 
 /**
- * Interface for the application identity manager component. This component manages the lifecycle of an application
- * identity.
- *
+ * Interface for the application identity manager component. This component manages the lifecycle of an application identity.
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Local
 public interface ApplicationIdentityManager {
 
     /**
-     * Updates the identity of an application. This COULD cause the application to receive a new identity version. In
-     * case of a new identity version each application user will have to reconfirm the usafe of application identity
-     * attributes.
-     *
+     * Updates the identity of an application. This COULD cause the application to receive a new identity version. In case of a new identity
+     * version each application user will have to reconfirm the usafe of application identity attributes.
+     * 
      * @param applicationId
      * @param applicationIdentityAttributes
      * @throws ApplicationNotFoundException
@@ -39,6 +37,8 @@ public interface ApplicationIdentityManager {
      * @throws AttributeTypeNotFoundException
      */
     void updateApplicationIdentity(String applicationId, List<IdentityAttributeTypeDO> applicationIdentityAttributes)
-            throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, AttributeTypeNotFoundException;
+                                                                                                                     throws ApplicationNotFoundException,
+                                                                                                                     ApplicationIdentityNotFoundException,
+                                                                                                                     AttributeTypeNotFoundException;
 
 }

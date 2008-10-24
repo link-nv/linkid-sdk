@@ -8,9 +8,9 @@ package net.link.safeonline.ctrl.error;
 
 /**
  * Used by {@link ErrorMessageInterceptor} for some default exception-error message handlers.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class ErrorHandle {
 

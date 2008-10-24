@@ -33,8 +33,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @Entity
 @Table(name = "task")
 @NamedQueries( {
-        @NamedQuery(name = QUERY_WHERE_JNDINAME, query = "SELECT task " + "FROM TaskEntity AS task "
-                + "WHERE task.jndiName = :jndiName"),
+        @NamedQuery(name = QUERY_WHERE_JNDINAME, query = "SELECT task " + "FROM TaskEntity AS task " + "WHERE task.jndiName = :jndiName"),
         @NamedQuery(name = QUERY_LIST_ALL, query = "SELECT task " + "FROM TaskEntity AS task") })
 public class TaskEntity implements Serializable {
 
@@ -117,8 +116,8 @@ public class TaskEntity implements Serializable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("jndiName", this.jndiName).append("name", this.name).append(
-                "schedulingEntity", this.scheduling.getName()).toString();
+        return new ToStringBuilder(this).append("jndiName", this.jndiName).append("name", this.name).append("schedulingEntity",
+                this.scheduling.getName()).toString();
     }
 
     @Override

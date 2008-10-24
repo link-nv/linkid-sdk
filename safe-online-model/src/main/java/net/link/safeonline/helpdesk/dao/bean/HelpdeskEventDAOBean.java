@@ -39,8 +39,7 @@ public class HelpdeskEventDAOBean implements HelpdeskEventDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                HelpdeskEventEntity.QueryInterface.class);
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, HelpdeskEventEntity.QueryInterface.class);
     }
 
     public void persist(List<HelpdeskEventEntity> helpdeskEvents) {
@@ -58,7 +57,7 @@ public class HelpdeskEventDAOBean implements HelpdeskEventDAO {
     public void clearEvents(long ageInMinutes, LogLevelType logLevel) {
 
         Date ageLimit = new Date(System.currentTimeMillis() - ageInMinutes * 60 * 1000);
-        
+
         LOG.debug("clearing helpdesk " + logLevel.toString() + " events older than: " + ageLimit);
         this.queryObject.deleteEvents(ageLimit, logLevel);
     }

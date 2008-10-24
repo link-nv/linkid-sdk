@@ -1,6 +1,5 @@
 package net.link.safeonline.digipass.servlet;
 
-
 import java.io.IOException;
 
 import javax.ejb.EJB;
@@ -29,36 +28,33 @@ import org.apache.commons.logging.LogFactory;
  */
 public class DisableServlet extends AbstractInjectionServlet {
 
-    private static final long  serialVersionUID = 1L;
+    private static final long     serialVersionUID = 1L;
 
-    private static final Log   LOG              = LogFactory.getLog(DisableServlet.class);
+    private static final Log      LOG              = LogFactory.getLog(DisableServlet.class);
 
     @Init(name = "DisablePath")
-    private String             disablePath;
+    private String                disablePath;
 
     @Init(name = "DeviceExitPath")
-    private String             deviceExitPath;
+    private String                deviceExitPath;
 
     @EJB(mappedName = "SafeOnlineDigipass/DigipassDeviceServiceBean/local")
     private DigipassDeviceService digipassDeviceService;
 
 
     @Override
-    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         handleLanding(request, response);
     }
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         handleLanding(request, response);
     }
 
-    private void handleLanding(HttpServletRequest request, HttpServletResponse response) throws IOException,
-            ServletException {
+    private void handleLanding(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
         String attribute = DeviceOperationManager.findAttribute(request.getSession());
         if (null == attribute) {

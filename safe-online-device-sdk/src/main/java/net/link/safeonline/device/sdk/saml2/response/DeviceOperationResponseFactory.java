@@ -67,9 +67,8 @@ public class DeviceOperationResponseFactory {
                 "org.apache.xerces.jaxp.validation.XMLSchemaFactory");
         try {
             DefaultBootstrap.bootstrap();
-            Configuration.registerObjectProvider(DeviceOperationResponse.DEFAULT_ELEMENT_NAME,
-                    new DeviceOperationResponseBuilder(), new DeviceOperationResponseMarshaller(),
-                    new DeviceOperationResponseUnmarshaller(), null);
+            Configuration.registerObjectProvider(DeviceOperationResponse.DEFAULT_ELEMENT_NAME, new DeviceOperationResponseBuilder(),
+                    new DeviceOperationResponseMarshaller(), new DeviceOperationResponseUnmarshaller(), null);
         } catch (ConfigurationException e) {
             throw new RuntimeException("could not bootstrap the OpenSAML2 library");
         }
@@ -87,37 +86,38 @@ public class DeviceOperationResponseFactory {
      * @param deviceOperation
      *            The device operation executed
      */
-    public static String createDeviceOperationResponse(String inResponseTo, DeviceOperationType deviceOperation,
-            String issuerName, String subjectName, String device, KeyPair signerKeyPair, int validity, String target) {
+    public static String createDeviceOperationResponse(String inResponseTo, DeviceOperationType deviceOperation, String issuerName,
+                                                       String subjectName, String device, KeyPair signerKeyPair, int validity, String target) {
 
-        return createDeviceOperationResponse(inResponseTo, deviceOperation, issuerName, subjectName, device,
-                signerKeyPair, validity, target, StatusCode.SUCCESS_URI);
+        return createDeviceOperationResponse(inResponseTo, deviceOperation, issuerName, subjectName, device, signerKeyPair, validity,
+                target, StatusCode.SUCCESS_URI);
     }
 
     /**
      * Creates a signed device operation response with status failed.
      */
-    public static String createDeviceOperationResponseFailed(String inResponseTo, DeviceOperationType deviceOperation,
-            String issuerName, String subjectName, String device, KeyPair signerKeyPair, int validity, String target) {
+    public static String createDeviceOperationResponseFailed(String inResponseTo, DeviceOperationType deviceOperation, String issuerName,
+                                                             String subjectName, String device, KeyPair signerKeyPair, int validity,
+                                                             String target) {
 
-        return createDeviceOperationResponse(inResponseTo, deviceOperation, issuerName, subjectName, device,
-                signerKeyPair, validity, target, DeviceOperationResponse.FAILED_URI);
+        return createDeviceOperationResponse(inResponseTo, deviceOperation, issuerName, subjectName, device, signerKeyPair, validity,
+                target, DeviceOperationResponse.FAILED_URI);
     }
 
     /**
      * Creates a signed authentication response with status unsupported.
      */
-    public static String createDeviceOperationResponseUnsupported(String inResponseTo,
-            DeviceOperationType deviceOperation, String issuerName, String subjectName, String device,
-            KeyPair signerKeyPair, int validity, String target) {
+    public static String createDeviceOperationResponseUnsupported(String inResponseTo, DeviceOperationType deviceOperation,
+                                                                  String issuerName, String subjectName, String device,
+                                                                  KeyPair signerKeyPair, int validity, String target) {
 
-        return createDeviceOperationResponse(inResponseTo, deviceOperation, issuerName, subjectName, device,
-                signerKeyPair, validity, target, StatusCode.REQUEST_UNSUPPORTED_URI);
+        return createDeviceOperationResponse(inResponseTo, deviceOperation, issuerName, subjectName, device, signerKeyPair, validity,
+                target, StatusCode.REQUEST_UNSUPPORTED_URI);
     }
 
-    private static String createDeviceOperationResponse(String inResponseTo, DeviceOperationType deviceOperation,
-            String issuerName, String subjectName, String device, KeyPair signerKeyPair, int validity, String target,
-            String statusCodeURI) {
+    private static String createDeviceOperationResponse(String inResponseTo, DeviceOperationType deviceOperation, String issuerName,
+                                                        String subjectName, String device, KeyPair signerKeyPair, int validity,
+                                                        String target, String statusCodeURI) {
 
         if (null == signerKeyPair)
             throw new IllegalArgumentException("signer key pair should not be null");
@@ -130,8 +130,7 @@ public class DeviceOperationResponseFactory {
         if (null == subjectName)
             throw new IllegalArgumentException("subjectName should not be null");
 
-        DeviceOperationResponse response = buildXMLObject(DeviceOperationResponse.class,
-                DeviceOperationResponse.DEFAULT_ELEMENT_NAME);
+        DeviceOperationResponse response = buildXMLObject(DeviceOperationResponse.class, DeviceOperationResponse.DEFAULT_ELEMENT_NAME);
 
         DateTime now = new DateTime();
 
@@ -161,8 +160,7 @@ public class DeviceOperationResponseFactory {
         status.setStatusCode(statusCode);
         response.setStatus(status);
 
-        if (statusCodeURI.equals(StatusCode.SUCCESS_URI)
-                && deviceOperation.equals(DeviceOperationType.NEW_ACCOUNT_REGISTER)) {
+        if (statusCodeURI.equals(StatusCode.SUCCESS_URI) && deviceOperation.equals(DeviceOperationType.NEW_ACCOUNT_REGISTER)) {
             addAssertion(response, inResponseTo, subjectName, issuerName, device, validity, target, new DateTime());
         }
 
@@ -177,8 +175,8 @@ public class DeviceOperationResponseFactory {
      * @param audienceName
      *            This can be or the application name authenticated for, or the device operation executed
      */
-    private static void addAssertion(DeviceOperationResponse response, String inResponseTo, String subjectName,
-            String issuerName, String samlName, int validity, String target, DateTime authenticationDate) {
+    private static void addAssertion(DeviceOperationResponse response, String inResponseTo, String subjectName, String issuerName,
+                                     String samlName, int validity, String target, DateTime authenticationDate) {
 
         DateTime now = new DateTime();
         DateTime notAfter = now.plusSeconds(validity);
@@ -212,8 +210,7 @@ public class DeviceOperationResponseFactory {
         assertion.setConditions(conditions);
 
         List<SubjectConfirmation> subjectConfirmations = subject.getSubjectConfirmations();
-        SubjectConfirmation subjectConfirmation = buildXMLObject(SubjectConfirmation.class,
-                SubjectConfirmation.DEFAULT_ELEMENT_NAME);
+        SubjectConfirmation subjectConfirmation = buildXMLObject(SubjectConfirmation.class, SubjectConfirmation.DEFAULT_ELEMENT_NAME);
         subjectConfirmation.setMethod("urn:oasis:names:tc:SAML:2.0:cm:bearer");
         SubjectConfirmationData subjectConfirmationData = buildXMLObject(SubjectConfirmationData.class,
                 SubjectConfirmationData.DEFAULT_ELEMENT_NAME);
@@ -230,8 +227,7 @@ public class DeviceOperationResponseFactory {
         AuthnContext authnContext = buildXMLObject(AuthnContext.class, AuthnContext.DEFAULT_ELEMENT_NAME);
         authnStatement.setAuthnContext(authnContext);
 
-        AuthnContextClassRef authnContextClassRef = buildXMLObject(AuthnContextClassRef.class,
-                AuthnContextClassRef.DEFAULT_ELEMENT_NAME);
+        AuthnContextClassRef authnContextClassRef = buildXMLObject(AuthnContextClassRef.class, AuthnContextClassRef.DEFAULT_ELEMENT_NAME);
         authnContext.setAuthnContextClassRef(authnContextClassRef);
         authnContextClassRef.setAuthnContextClassRef(samlName);
     }
@@ -242,8 +238,7 @@ public class DeviceOperationResponseFactory {
     private static String signResponse(DeviceOperationResponse response, KeyPair signerKeyPair) {
 
         XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
-        SignatureBuilder signatureBuilder = (SignatureBuilder) builderFactory
-                .getBuilder(Signature.DEFAULT_ELEMENT_NAME);
+        SignatureBuilder signatureBuilder = (SignatureBuilder) builderFactory.getBuilder(Signature.DEFAULT_ELEMENT_NAME);
         Signature signature = signatureBuilder.buildObject();
         signature.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
         String algorithm = signerKeyPair.getPrivate().getAlgorithm();
@@ -253,8 +248,7 @@ public class DeviceOperationResponseFactory {
             signature.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_DSA);
         }
         response.setSignature(signature);
-        BasicCredential signingCredential = SecurityHelper.getSimpleCredential(signerKeyPair.getPublic(), signerKeyPair
-                .getPrivate());
+        BasicCredential signingCredential = SecurityHelper.getSimpleCredential(signerKeyPair.getPublic(), signerKeyPair.getPrivate());
         signature.setSigningCredential(signingCredential);
 
         // marshalling
@@ -284,14 +278,12 @@ public class DeviceOperationResponseFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public static <Type extends SAMLObject> Type buildXMLObject(@SuppressWarnings("unused") Class<Type> clazz,
-            QName objectQName) {
+    public static <Type extends SAMLObject> Type buildXMLObject(@SuppressWarnings("unused") Class<Type> clazz, QName objectQName) {
 
         XMLObjectBuilder<Type> builder = Configuration.getBuilderFactory().getBuilder(objectQName);
         if (builder == null)
             throw new RuntimeException("Unable to retrieve builder for object QName " + objectQName);
-        Type object = builder.buildObject(objectQName.getNamespaceURI(), objectQName.getLocalPart(), objectQName
-                .getPrefix());
+        Type object = builder.buildObject(objectQName.getNamespaceURI(), objectQName.getLocalPart(), objectQName.getPrefix());
         return object;
     }
 }

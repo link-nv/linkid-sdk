@@ -24,9 +24,9 @@ import com.sun.net.httpserver.HttpServer;
 
 /**
  * Web Service Test Utils. Can be used to unit test JAX-WS endpoint implementations.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class WebServiceTestUtils {
 

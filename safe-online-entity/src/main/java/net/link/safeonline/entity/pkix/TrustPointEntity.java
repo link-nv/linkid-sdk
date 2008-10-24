@@ -46,8 +46,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @NamedQueries( {
         @NamedQuery(name = QUERY_WHERE_DOMAIN, query = "SELECT trustPoint " + "FROM TrustPointEntity AS trustPoint "
                 + "WHERE trustPoint.trustDomain = :trustDomain"),
-        @NamedQuery(name = QUERY_WHERE_CERT_SUBJECT, query = "SELECT trustPoint "
-                + "FROM TrustPointEntity AS trustPoint " + "WHERE trustPoint.subjectName = :certificateSubject") })
+        @NamedQuery(name = QUERY_WHERE_CERT_SUBJECT, query = "SELECT trustPoint " + "FROM TrustPointEntity AS trustPoint "
+                + "WHERE trustPoint.subjectName = :certificateSubject") })
 public class TrustPointEntity implements Serializable {
 
     private static final long         serialVersionUID         = 1L;

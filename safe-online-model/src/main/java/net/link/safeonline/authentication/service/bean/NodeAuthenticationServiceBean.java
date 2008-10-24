@@ -28,9 +28,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Implementation of node authentication service.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 @Stateless
 public class NodeAuthenticationServiceBean implements NodeAuthenticationService {

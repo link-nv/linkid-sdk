@@ -69,8 +69,8 @@ public class DeviceOperationRequestFactoryTest {
 
         // operate
         long begin = System.currentTimeMillis();
-        String result = DeviceOperationRequestFactory.createDeviceOperationRequest(nodeName, subject, keyPair,
-                serviceURL, destinationURL, deviceOperation, challenge, device, authenticatedDevice, null);
+        String result = DeviceOperationRequestFactory.createDeviceOperationRequest(nodeName, subject, keyPair, serviceURL, destinationURL,
+                deviceOperation, challenge, device, authenticatedDevice, null);
         long end = System.currentTimeMillis();
 
         // verify
@@ -89,54 +89,48 @@ public class DeviceOperationRequestFactoryTest {
         Document resultDocument = DomTestUtils.parseDocument(result);
 
         Element nsElement = createNsElement(resultDocument);
-        Element deviceOperationRequestElement = (Element) XPathAPI.selectSingleNode(resultDocument, "/"
-                + SAMLConstants.SAML20P_PREFIX + ":" + DeviceOperationRequest.DEFAULT_ELEMENT_LOCAL_NAME, nsElement);
+        Element deviceOperationRequestElement = (Element) XPathAPI.selectSingleNode(resultDocument, "/" + SAMLConstants.SAML20P_PREFIX
+                + ":" + DeviceOperationRequest.DEFAULT_ELEMENT_LOCAL_NAME, nsElement);
         assertNotNull(deviceOperationRequestElement);
 
-        Element issuerElement = (Element) XPathAPI.selectSingleNode(resultDocument, "/" + SAMLConstants.SAML20P_PREFIX
-                + ":" + DeviceOperationRequest.DEFAULT_ELEMENT_LOCAL_NAME + "/" + SAMLConstants.SAML20_PREFIX
-                + ":Issuer", nsElement);
+        Element issuerElement = (Element) XPathAPI.selectSingleNode(resultDocument, "/" + SAMLConstants.SAML20P_PREFIX + ":"
+                + DeviceOperationRequest.DEFAULT_ELEMENT_LOCAL_NAME + "/" + SAMLConstants.SAML20_PREFIX + ":Issuer", nsElement);
         assertNotNull(issuerElement);
         assertEquals(nodeName, issuerElement.getTextContent());
 
         Node resultServiceURLNode = XPathAPI.selectSingleNode(resultDocument, "/" + SAMLConstants.SAML20P_PREFIX + ":"
-                + DeviceOperationRequest.DEFAULT_ELEMENT_LOCAL_NAME + "/@ "
-                + DeviceOperationRequest.SERVICE_URL_ATTRIB_NAME, nsElement);
+                + DeviceOperationRequest.DEFAULT_ELEMENT_LOCAL_NAME + "/@ " + DeviceOperationRequest.SERVICE_URL_ATTRIB_NAME, nsElement);
         assertNotNull(resultServiceURLNode);
         assertEquals(serviceURL, resultServiceURLNode.getTextContent());
 
         Node protocolBindingNode = XPathAPI.selectSingleNode(resultDocument, "/" + SAMLConstants.SAML20P_PREFIX + ":"
-                + DeviceOperationRequest.DEFAULT_ELEMENT_LOCAL_NAME + "/@ "
-                + DeviceOperationRequest.PROTOCOL_BINDING_ATTRIB_NAME, nsElement);
+                + DeviceOperationRequest.DEFAULT_ELEMENT_LOCAL_NAME + "/@ " + DeviceOperationRequest.PROTOCOL_BINDING_ATTRIB_NAME,
+                nsElement);
         assertNotNull(protocolBindingNode);
         assertEquals("urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST", protocolBindingNode.getTextContent());
 
         Node destinationNode = XPathAPI.selectSingleNode(resultDocument, "/" + SAMLConstants.SAML20P_PREFIX + ":"
-                + DeviceOperationRequest.DEFAULT_ELEMENT_LOCAL_NAME + "/@ "
-                + RequestAbstractType.DESTINATION_ATTRIB_NAME, nsElement);
+                + DeviceOperationRequest.DEFAULT_ELEMENT_LOCAL_NAME + "/@ " + RequestAbstractType.DESTINATION_ATTRIB_NAME, nsElement);
         assertNotNull(destinationNode);
         assertEquals(destinationURL, destinationNode.getTextContent());
 
         Node deviceOperationNode = XPathAPI.selectSingleNode(resultDocument, "/" + SAMLConstants.SAML20P_PREFIX + ":"
-                + DeviceOperationRequest.DEFAULT_ELEMENT_LOCAL_NAME + "/@ "
-                + DeviceOperationRequest.DEVICE_OPERATION_ATTRIB_NAME, nsElement);
+                + DeviceOperationRequest.DEFAULT_ELEMENT_LOCAL_NAME + "/@ " + DeviceOperationRequest.DEVICE_OPERATION_ATTRIB_NAME,
+                nsElement);
         assertNotNull(deviceOperationNode);
         assertEquals(deviceOperation.name(), deviceOperationNode.getTextContent());
 
-        Node deviceNode = XPathAPI.selectSingleNode(resultDocument,
-                "/" + SAMLConstants.SAML20P_PREFIX + ":" + DeviceOperationRequest.DEFAULT_ELEMENT_LOCAL_NAME + "/@ "
-                        + DeviceOperationRequest.DEVICE_ATTRIB_NAME, nsElement);
+        Node deviceNode = XPathAPI.selectSingleNode(resultDocument, "/" + SAMLConstants.SAML20P_PREFIX + ":"
+                + DeviceOperationRequest.DEFAULT_ELEMENT_LOCAL_NAME + "/@ " + DeviceOperationRequest.DEVICE_ATTRIB_NAME, nsElement);
         assertNotNull(deviceNode);
         assertEquals(device, deviceNode.getTextContent());
 
         // verify signature
-        NodeList signatureNodeList = resultDocument.getElementsByTagNameNS(javax.xml.crypto.dsig.XMLSignature.XMLNS,
-                "Signature");
+        NodeList signatureNodeList = resultDocument.getElementsByTagNameNS(javax.xml.crypto.dsig.XMLSignature.XMLNS, "Signature");
         assertEquals(1, signatureNodeList.getLength());
 
         DOMValidateContext validateContext = new DOMValidateContext(keyPair.getPublic(), signatureNodeList.item(0));
-        XMLSignatureFactory signatureFactory = XMLSignatureFactory.getInstance("DOM",
-                new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
+        XMLSignatureFactory signatureFactory = XMLSignatureFactory.getInstance("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
 
         XMLSignature signature = signatureFactory.unmarshalXMLSignature(validateContext);
         boolean resultValidity = signature.validate(validateContext);
@@ -152,10 +146,8 @@ public class DeviceOperationRequestFactoryTest {
     private Element createNsElement(Document document) {
 
         Element nsElement = document.createElement("nsElement");
-        nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:" + SAMLConstants.SAML20P_PREFIX,
-                SAMLConstants.SAML20P_NS);
-        nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:" + SAMLConstants.SAML20_PREFIX,
-                SAMLConstants.SAML20_NS);
+        nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:" + SAMLConstants.SAML20P_PREFIX, SAMLConstants.SAML20P_NS);
+        nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:" + SAMLConstants.SAML20_PREFIX, SAMLConstants.SAML20_NS);
         return nsElement;
     }
 }

@@ -106,16 +106,16 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
             subscription = this.notificationProducerDAO.addSubscription(topic);
         }
 
-        EndpointReferenceEntity endpointReference = this.endpointReferenceDAO.findEndpointReference(address,
-                application);
+        EndpointReferenceEntity endpointReference = this.endpointReferenceDAO.findEndpointReference(address, application);
         if (null == endpointReference) {
             endpointReference = this.endpointReferenceDAO.addEndpointReference(address, application);
         }
         subscription.getConsumers().add(endpointReference);
     }
 
-    public void unsubscribe(String topic, String address, X509Certificate certificate)
-            throws SubscriptionNotFoundException, PermissionDeniedException, EndpointReferenceNotFoundException {
+    public void unsubscribe(String topic, String address, X509Certificate certificate) throws SubscriptionNotFoundException,
+                                                                                      PermissionDeniedException,
+                                                                                      EndpointReferenceNotFoundException {
 
         LOG.debug("unsubscribe");
         ApplicationEntity application = this.applicationDAO.findApplication(certificate);
@@ -132,7 +132,7 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
     }
 
     public void unsubscribe(String topic, String address, NodeEntity node) throws SubscriptionNotFoundException,
-            EndpointReferenceNotFoundException {
+                                                                          EndpointReferenceNotFoundException {
 
         LOG.debug("unsubscribe node " + node.getName() + " from topic " + topic);
         NotificationProducerSubscriptionEntity subscription = this.notificationProducerDAO.getSubscription(topic);
@@ -141,19 +141,17 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
         subscription.getConsumers().remove(endpointReference);
     }
 
-    public void unsubscribe(String topic, String address, ApplicationEntity application)
-            throws SubscriptionNotFoundException, EndpointReferenceNotFoundException {
+    public void unsubscribe(String topic, String address, ApplicationEntity application) throws SubscriptionNotFoundException,
+                                                                                        EndpointReferenceNotFoundException {
 
         LOG.debug("unsubscribe application " + application.getName() + " from topic " + topic);
         NotificationProducerSubscriptionEntity subscription = this.notificationProducerDAO.getSubscription(topic);
 
-        EndpointReferenceEntity endpointReference = this.endpointReferenceDAO
-                .getEndpointReference(address, application);
+        EndpointReferenceEntity endpointReference = this.endpointReferenceDAO.getEndpointReference(address, application);
         subscription.getConsumers().remove(endpointReference);
     }
 
-    public void sendNotification(String topic, List<String> message) throws SubscriptionNotFoundException,
-            MessageHandlerNotFoundException {
+    public void sendNotification(String topic, List<String> message) throws SubscriptionNotFoundException, MessageHandlerNotFoundException {
 
         LOG.debug("send notification for topic: " + topic);
         NotificationProducerSubscriptionEntity subscription = this.notificationProducerDAO.findSubscription(topic);
@@ -166,8 +164,8 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
                 MessageHandlerManager.sendMessage(topic, message, consumer);
             } catch (WSClientTransportException e) {
                 LOG.debug("Failed to send messsage for topic " + topic + " to consumer: " + e.getLocation());
-                this.resourceAuditLogger.addResourceAudit(ResourceNameType.WS, ResourceLevelType.RESOURCE_UNAVAILABLE,
-                        e.getLocation(), "Failed to send notification for topic " + topic);
+                this.resourceAuditLogger.addResourceAudit(ResourceNameType.WS, ResourceLevelType.RESOURCE_UNAVAILABLE, e.getLocation(),
+                        "Failed to send notification for topic " + topic);
             }
         }
     }

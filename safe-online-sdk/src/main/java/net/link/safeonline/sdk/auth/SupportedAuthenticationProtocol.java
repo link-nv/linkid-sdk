@@ -16,9 +16,9 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation to mark authentication protocol handler implemention classes.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Documented
 @Target(ElementType.TYPE)

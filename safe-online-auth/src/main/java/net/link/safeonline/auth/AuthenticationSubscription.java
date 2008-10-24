@@ -25,13 +25,13 @@ public interface AuthenticationSubscription {
      * Actions.
      */
     String subscribe() throws ApplicationNotFoundException, AlreadySubscribedException, PermissionDeniedException,
-            SubscriptionNotFoundException, ApplicationIdentityNotFoundException, AttributeTypeNotFoundException,
-            AttributeUnavailableException;
+                      SubscriptionNotFoundException, ApplicationIdentityNotFoundException, AttributeTypeNotFoundException,
+                      AttributeUnavailableException;
 
     /*
      * Accessors
      */
     String getUsageAgreement();
-    
+
     String getApplicationUrl();
 }

@@ -42,8 +42,7 @@ public class ApplicationIdentityDAOBean implements ApplicationIdentityDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                ApplicationIdentityEntity.QueryInterface.class);
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, ApplicationIdentityEntity.QueryInterface.class);
     }
 
     public ApplicationIdentityEntity addApplicationIdentity(ApplicationEntity application, long identityVersion) {
@@ -55,11 +54,10 @@ public class ApplicationIdentityDAOBean implements ApplicationIdentityDAO {
     }
 
     public ApplicationIdentityEntity getApplicationIdentity(ApplicationEntity application, long identityVersion)
-            throws ApplicationIdentityNotFoundException {
+                                                                                                                throws ApplicationIdentityNotFoundException {
 
         ApplicationIdentityPK applicationIdentityPK = new ApplicationIdentityPK(application.getName(), identityVersion);
-        ApplicationIdentityEntity applicationIdentity = this.entityManager.find(ApplicationIdentityEntity.class,
-                applicationIdentityPK);
+        ApplicationIdentityEntity applicationIdentity = this.entityManager.find(ApplicationIdentityEntity.class, applicationIdentityPK);
         if (null == applicationIdentity)
             throw new ApplicationIdentityNotFoundException();
         return applicationIdentity;
@@ -76,15 +74,14 @@ public class ApplicationIdentityDAOBean implements ApplicationIdentityDAO {
         this.entityManager.remove(applicationIdentity);
     }
 
-    public ApplicationIdentityAttributeEntity addApplicationIdentityAttribute(
-            ApplicationIdentityEntity applicationIdentity, AttributeTypeEntity attributeType, boolean required,
-            boolean dataMining) {
+    public ApplicationIdentityAttributeEntity addApplicationIdentityAttribute(ApplicationIdentityEntity applicationIdentity,
+                                                                              AttributeTypeEntity attributeType, boolean required,
+                                                                              boolean dataMining) {
 
         LOG.debug("add application identity attribute: " + attributeType.getName() + " to application "
-                + applicationIdentity.getApplication().getName() + "; id version: "
-                + applicationIdentity.getIdentityVersion());
-        ApplicationIdentityAttributeEntity applicationIdentityAttribute = new ApplicationIdentityAttributeEntity(
-                applicationIdentity, attributeType, required, dataMining);
+                + applicationIdentity.getApplication().getName() + "; id version: " + applicationIdentity.getIdentityVersion());
+        ApplicationIdentityAttributeEntity applicationIdentityAttribute = new ApplicationIdentityAttributeEntity(applicationIdentity,
+                attributeType, required, dataMining);
         this.entityManager.persist(applicationIdentityAttribute);
         /*
          * Update both sides of the relationship.

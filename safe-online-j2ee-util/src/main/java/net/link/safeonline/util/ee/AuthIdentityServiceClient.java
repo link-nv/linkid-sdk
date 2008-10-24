@@ -21,11 +21,11 @@ import org.jboss.mx.util.MBeanServerLocator;
 
 
 /**
- * Client for SafeOnline Authentication Identity Service JMX bean. This service manages the key pair of the SafeOnline
- * service itself. See also: safe-online-service.
- *
+ * Client for SafeOnline Authentication Identity Service JMX bean. This service manages the key pair of the SafeOnline service itself. See
+ * also: safe-online-service.
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class AuthIdentityServiceClient {
 
@@ -54,7 +54,7 @@ public class AuthIdentityServiceClient {
 
     /**
      * Gives back the private key of the SafeOnline service entity.
-     *
+     * 
      */
     public PrivateKey getPrivateKey() {
 
@@ -62,8 +62,7 @@ public class AuthIdentityServiceClient {
         String[] signature = {};
         PrivateKey privateKey;
         try {
-            privateKey = (PrivateKey) this.server.invoke(this.authIdentityServiceName, "getPrivateKey", params,
-                    signature);
+            privateKey = (PrivateKey) this.server.invoke(this.authIdentityServiceName, "getPrivateKey", params, signature);
         } catch (Exception e) {
             throw new RuntimeException("invoke error: " + e.getMessage(), e);
         }
@@ -72,7 +71,7 @@ public class AuthIdentityServiceClient {
 
     /**
      * Gives back the public key of the SafeOnline service entity.
-     *
+     * 
      */
     public PublicKey getPublicKey() {
 
@@ -89,7 +88,7 @@ public class AuthIdentityServiceClient {
 
     /**
      * Gives back the X509 certificate of the SafeOnline service entity.
-     *
+     * 
      */
     public X509Certificate getCertificate() {
 
@@ -97,8 +96,7 @@ public class AuthIdentityServiceClient {
         String[] signature = {};
         X509Certificate certificate;
         try {
-            certificate = (X509Certificate) this.server.invoke(this.authIdentityServiceName, "getCertificate", params,
-                    signature);
+            certificate = (X509Certificate) this.server.invoke(this.authIdentityServiceName, "getCertificate", params, signature);
         } catch (Exception e) {
             throw new RuntimeException("invoke error: " + e.getMessage(), e);
         }

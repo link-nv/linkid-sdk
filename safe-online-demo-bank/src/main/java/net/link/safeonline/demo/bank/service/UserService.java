@@ -36,8 +36,7 @@ public interface UserService extends BankService {
 
 
     /**
-     * @return The {@link BankUserEntity} with the given Bank ID, or <code>null</code> if no such ID is known by the
-     *         bank.
+     * @return The {@link BankUserEntity} with the given Bank ID, or <code>null</code> if no such ID is known by the bank.
      */
     public BankUserEntity getBankUser(String bankId);
 

@@ -18,15 +18,15 @@ import net.link.safeonline.demo.cinema.entity.CinemaTheatreEntity;
 /**
  * <h2>{@link RoomService}<br>
  * <sub>Service bean for {@link CinemaRoomEntity}.</sub></h2>
- *
+ * 
  * <p>
  * Provide access to {@link CinemaRoomEntity}s based on which theatre you want to view which movie in.
  * </p>
- *
+ * 
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 @Local

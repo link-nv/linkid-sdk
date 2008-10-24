@@ -22,94 +22,92 @@ import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 public class AttributeBean {
 
-	private static final Log LOG = LogFactory.getLog(AttributeBean.class);
+    private static final Log LOG = LogFactory.getLog(AttributeBean.class);
 
-	private String attributeName;
+    private String           attributeName;
 
-	private String attributeWebServiceLocation;
+    private String           attributeWebServiceLocation;
 
-	private String attributeValue;
+    private String           attributeValue;
 
-	private String subjectLogin;
+    private String           subjectLogin;
 
-	private X509Certificate certificate;
+    private X509Certificate  certificate;
 
-	private PrivateKey privateKey;
+    private PrivateKey       privateKey;
 
-	public String getSubjectLogin() {
 
-		return this.subjectLogin;
-	}
+    public String getSubjectLogin() {
 
-	public void setSubjectLogin(String subjectLogin) {
+        return this.subjectLogin;
+    }
 
-		this.subjectLogin = subjectLogin;
-	}
+    public void setSubjectLogin(String subjectLogin) {
 
-	public String getAttributeName() {
+        this.subjectLogin = subjectLogin;
+    }
 
-		return this.attributeName;
-	}
+    public String getAttributeName() {
 
-	public void setAttributeName(String attributeName) {
+        return this.attributeName;
+    }
 
-		this.attributeName = attributeName;
-	}
+    public void setAttributeName(String attributeName) {
 
-	public String getAttributeWebServiceLocation() {
+        this.attributeName = attributeName;
+    }
 
-		return this.attributeWebServiceLocation;
-	}
+    public String getAttributeWebServiceLocation() {
 
-	public void setAttributeWebServiceLocation(
-			String attributeWebServiceLocation) {
+        return this.attributeWebServiceLocation;
+    }
 
-		this.attributeWebServiceLocation = attributeWebServiceLocation;
-	}
+    public void setAttributeWebServiceLocation(String attributeWebServiceLocation) {
 
-	public X509Certificate getCertificate() {
+        this.attributeWebServiceLocation = attributeWebServiceLocation;
+    }
 
-		return this.certificate;
-	}
+    public X509Certificate getCertificate() {
 
-	public PrivateKey getPrivateKey() {
+        return this.certificate;
+    }
 
-		return this.privateKey;
-	}
+    public PrivateKey getPrivateKey() {
 
-	private void loadCertificate() {
+        return this.privateKey;
+    }
 
-		PrivateKeyEntry privateKeyEntry = DemoKeyStoreUtil.getPrivateKeyEntry();
-		this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
-		this.privateKey = privateKeyEntry.getPrivateKey();
-	}
+    private void loadCertificate() {
 
-	public String getAttributeValue() {
+        PrivateKeyEntry privateKeyEntry = DemoKeyStoreUtil.getPrivateKeyEntry();
+        this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
+        this.privateKey = privateKeyEntry.getPrivateKey();
+    }
 
-		if (null == this.attributeValue) {
-			loadCertificate();
-			AttributeClient attributeClient = new AttributeClientImpl(
-					this.attributeWebServiceLocation, this.certificate,
-					this.privateKey);
-			try {
-				this.attributeValue = attributeClient.getAttributeValue(
-						this.subjectLogin, this.attributeName, String.class);
-			} catch (AttributeNotFoundException e) {
-				LOG.error("attribute not found: " + e.getMessage());
-				return "[attribute not found]";
-			} catch (RequestDeniedException e) {
-				LOG.error("request denied");
-				return "[request denied]";
-			} catch (WSClientTransportException e) {
-				LOG.error("connection error. check your SSL setup");
-				return "[connection error. check your SSL setup]";
-			} catch (AttributeUnavailableException e) {
-				LOG.error("attribute unavailable: " + this.attributeName);
-				return "[attribute unavailable: " + this.attributeName + "]";
-			}
-		}
-		return this.attributeValue;
-	}
+    public String getAttributeValue() {
+
+        if (null == this.attributeValue) {
+            loadCertificate();
+            AttributeClient attributeClient = new AttributeClientImpl(this.attributeWebServiceLocation, this.certificate, this.privateKey);
+            try {
+                this.attributeValue = attributeClient.getAttributeValue(this.subjectLogin, this.attributeName, String.class);
+            } catch (AttributeNotFoundException e) {
+                LOG.error("attribute not found: " + e.getMessage());
+                return "[attribute not found]";
+            } catch (RequestDeniedException e) {
+                LOG.error("request denied");
+                return "[request denied]";
+            } catch (WSClientTransportException e) {
+                LOG.error("connection error. check your SSL setup");
+                return "[connection error. check your SSL setup]";
+            } catch (AttributeUnavailableException e) {
+                LOG.error("attribute unavailable: " + this.attributeName);
+                return "[attribute unavailable: " + this.attributeName + "]";
+            }
+        }
+        return this.attributeValue;
+    }
 }

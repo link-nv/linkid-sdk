@@ -96,7 +96,7 @@ public class SubscriptionsBean implements Subscriptions {
 
     @RolesAllowed(UserConstants.USER_ROLE)
     public String viewSubscription() throws SubscriptionNotFoundException, ApplicationNotFoundException,
-            ApplicationIdentityNotFoundException {
+                                    ApplicationIdentityNotFoundException {
 
         String applicationName = this.selectedSubscription.getApplication().getName();
         LOG.debug("view subscription: " + applicationName);
@@ -114,8 +114,7 @@ public class SubscriptionsBean implements Subscriptions {
         try {
             this.subscriptionService.unsubscribe(applicationName);
         } catch (PermissionDeniedException e) {
-            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorUserMayNotUnsubscribeFrom",
-                    applicationName);
+            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorUserMayNotUnsubscribeFrom", applicationName);
             return null;
         }
         subscriptionListFactory();
@@ -145,7 +144,7 @@ public class SubscriptionsBean implements Subscriptions {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();
         SubjectEntity subject = this.subjectManager.getCallerSubject();
-        return this.usageAgreementService.getGlobalUsageAgreementText(viewLocale.getLanguage(), subject
-                .getConfirmedUsageAgreementVersion());
+        return this.usageAgreementService
+                                         .getGlobalUsageAgreementText(viewLocale.getLanguage(), subject.getConfirmedUsageAgreementVersion());
     }
 }

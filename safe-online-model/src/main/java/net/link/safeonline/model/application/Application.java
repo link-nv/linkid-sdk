@@ -13,9 +13,9 @@ import net.link.safeonline.entity.ApplicationEntity;
 
 /**
  * Domain Model class for Application.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class Application {
 
@@ -24,7 +24,7 @@ public class Application {
 
     /**
      * Main constructor.
-     *
+     * 
      * @param entity
      */
     public Application(ApplicationEntity entity) {
@@ -34,7 +34,7 @@ public class Application {
 
     /**
      * Check whether a user is allowed to subscribe onto this application.
-     *
+     * 
      * @throws PermissionDeniedException
      */
     public void checkUserSubscriptionPermission() throws PermissionDeniedException {
@@ -45,7 +45,7 @@ public class Application {
 
     /**
      * Gives back the underlying persistent application entity.
-     *
+     * 
      */
     public ApplicationEntity getEntity() {
 

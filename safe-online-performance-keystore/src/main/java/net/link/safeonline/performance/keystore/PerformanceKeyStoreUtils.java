@@ -17,16 +17,15 @@ import java.util.Enumeration;
 /**
  * <h2>{@link PerformanceKeyStoreUtils}<br>
  * <sub>Access to performance-application keys from the keystore.</sub></h2>
- *
+ * 
  * <p>
- * The private key and certificate will be lazily loaded from the default keystore file if not yet available upon the
- * first request for it.
+ * The private key and certificate will be lazily loaded from the default keystore file if not yet available upon the first request for it.
  * </p>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class PerformanceKeyStoreUtils {
@@ -48,8 +47,7 @@ public class PerformanceKeyStoreUtils {
         return privateKeyEntry;
     }
 
-    private static PrivateKeyEntry loadPrivateKeyEntry(String keystoreType, String keyStorePassword,
-            String keyEntryPassword) {
+    private static PrivateKeyEntry loadPrivateKeyEntry(String keystoreType, String keyStorePassword, String keyEntryPassword) {
 
         /* Find the keystore. */
         String keyStoreResource = "safe-online-performance-keystore.jks";
@@ -92,8 +90,7 @@ public class PerformanceKeyStoreUtils {
 
         /* Get the private key entry. */
         try {
-            return (PrivateKeyEntry) keyStore.getEntry(alias, new KeyStore.PasswordProtection(keyEntryPassword
-                    .toCharArray()));
+            return (PrivateKeyEntry) keyStore.getEntry(alias, new KeyStore.PasswordProtection(keyEntryPassword.toCharArray()));
         } catch (Exception e) {
             throw new RuntimeException("error retrieving key: " + e.getMessage(), e);
         }

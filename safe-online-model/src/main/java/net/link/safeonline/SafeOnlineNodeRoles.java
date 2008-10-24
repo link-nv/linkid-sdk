@@ -9,9 +9,9 @@ package net.link.safeonline;
 
 /**
  * Defines the SafeOnline Node Roles.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class SafeOnlineNodeRoles {
 

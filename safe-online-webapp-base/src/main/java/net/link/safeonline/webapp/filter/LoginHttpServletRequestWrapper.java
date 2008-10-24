@@ -16,9 +16,9 @@ import javax.servlet.http.HttpServletRequestWrapper;
 
 /**
  * Login HTTP Servlet Request Wrapper. This wrapper adds user principal and roles to the request.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class LoginHttpServletRequestWrapper extends HttpServletRequestWrapper {
 

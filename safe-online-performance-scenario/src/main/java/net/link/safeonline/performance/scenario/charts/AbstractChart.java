@@ -51,7 +51,7 @@ import org.jfree.ui.RectangleAnchor;
 /**
  * <h2>{@link AbstractChart}<br>
  * <sub>The basis of chart generators.</sub></h2>
- *
+ * 
  * <p>
  * This class implements several helper methods that will be very convenient in generating and rendering charts.<br>
  * <br>
@@ -62,277 +62,264 @@ import org.jfree.ui.RectangleAnchor;
  * <li>{@link #isTimingProcessed()}</li>
  * </ul>
  * </p>
- *
+ * 
  * <p>
  * <i>Feb 22, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public abstract class AbstractChart implements Chart {
 
-	final Log LOG = LogFactory.getLog(getClass());
+    final Log                                    LOG             = LogFactory.getLog(getClass());
 
-	private static ImageEncoder encoder = ImageEncoderFactory.newInstance(
-			"png", 0.9f, true);
+    private static ImageEncoder                  encoder         = ImageEncoderFactory.newInstance("png", 0.9f, true);
 
-	protected String title;
-	private boolean linked;
-	private List<AbstractChart> links;
+    protected String                             title;
+    private boolean                              linked;
+    private List<AbstractChart>                  links;
 
-	private XYPlot plot;
-	private static Map<Collection<Chart>, Range> sharedRangesMap = new HashMap<Collection<Chart>, Range>();
+    private XYPlot                               plot;
+    private static Map<Collection<Chart>, Range> sharedRangesMap = new HashMap<Collection<Chart>, Range>();
 
-	public AbstractChart(String title) {
 
-		this.title = title;
-		this.linked = false;
-		this.links = new ArrayList<AbstractChart>();
-	}
+    public AbstractChart(String title) {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getTitle() {
+        this.title = title;
+        this.linked = false;
+        this.links = new ArrayList<AbstractChart>();
+    }
 
-		return this.title;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public String getTitle() {
 
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * Post-processing here calculates ranges for shared axes.<br>
-	 * We also cache the plot for use in {@link #render(int)}.
-	 */
-	public void postProcess() {
+        return this.title;
+    }
 
-		this.plot = getPlot();
-		if (this.plot == null)
-			return;
-		if (this.plot.getDomainAxis() == null) {
-			this.LOG.warn("Plot for " + getClass().getName()
-					+ " has no domain axis!");
-			return;
-		}
+    /**
+     * {@inheritDoc}
+     * 
+     * Post-processing here calculates ranges for shared axes.<br>
+     * We also cache the plot for use in {@link #render(int)}.
+     */
+    public void postProcess() {
 
-		for (Map.Entry<Collection<Chart>, Range> entry : sharedRangesMap
-				.entrySet()) {
-			Collection<Chart> charts = entry.getKey();
-			Range range = entry.getValue();
+        this.plot = getPlot();
+        if (this.plot == null)
+            return;
+        if (this.plot.getDomainAxis() == null) {
+            this.LOG.warn("Plot for " + getClass().getName() + " has no domain axis!");
+            return;
+        }
 
-			if (charts.contains(this)) {
-				Range plotRange = this.plot.getDomainAxis().getRange();
-				sharedRangesMap.put(charts, Range.combine(range, plotRange));
+        for (Map.Entry<Collection<Chart>, Range> entry : sharedRangesMap.entrySet()) {
+            Collection<Chart> charts = entry.getKey();
+            Range range = entry.getValue();
 
-				break;
-			}
-		}
-	}
+            if (charts.contains(this)) {
+                Range plotRange = this.plot.getDomainAxis().getRange();
+                sharedRangesMap.put(charts, Range.combine(range, plotRange));
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public byte[][] render(int dataPoints) {
+                break;
+            }
+        }
+    }
 
-		// Don't render when linked or when no plot was prepared.
-		if (this.linked || this.plot == null)
-			return null;
+    /**
+     * {@inheritDoc}
+     */
+    public byte[][] render(int dataPoints) {
 
-		// Apply the shared range if this chart is in the shared ranges map.
-		for (Map.Entry<Collection<Chart>, Range> entry : sharedRangesMap
-				.entrySet()) {
-			Collection<Chart> charts = entry.getKey();
-			Range range = entry.getValue();
+        // Don't render when linked or when no plot was prepared.
+        if (this.linked || this.plot == null)
+            return null;
 
-			if (charts.contains(this)) {
-				this.plot.getDomainAxis().setRange(range);
+        // Apply the shared range if this chart is in the shared ranges map.
+        for (Map.Entry<Collection<Chart>, Range> entry : sharedRangesMap.entrySet()) {
+            Collection<Chart> charts = entry.getKey();
+            Range range = entry.getValue();
 
-				break;
-			}
-		}
+            if (charts.contains(this)) {
+                this.plot.getDomainAxis().setRange(range);
 
-		// Shove all linked charts in one plot.
-		if (!this.links.isEmpty()) {
-			XYPlot basePlot = this.plot;
-			CombinedDomainXYPlot combinedPlot;
+                break;
+            }
+        }
 
-			this.plot = combinedPlot = new CombinedDomainXYPlot(basePlot
-					.getDomainAxis());
+        // Shove all linked charts in one plot.
+        if (!this.links.isEmpty()) {
+            XYPlot basePlot = this.plot;
+            CombinedDomainXYPlot combinedPlot;
 
-			combinedPlot.add(basePlot);
+            this.plot = combinedPlot = new CombinedDomainXYPlot(basePlot.getDomainAxis());
 
-			for (AbstractChart link : this.links) {
-				XYPlot linkedPlot = link.getPlot();
-				if (linkedPlot != null) {
+            combinedPlot.add(basePlot);
+
+            for (AbstractChart link : this.links) {
+                XYPlot linkedPlot = link.getPlot();
+                if (linkedPlot != null) {
                     combinedPlot.add(linkedPlot);
                 }
-			}
-		}
+            }
+        }
 
-		// Not linked, add average markers.
-		else {
-			XYDataset set = this.plot.getDataset();
-			if (set != null) {
+        // Not linked, add average markers.
+        else {
+            XYDataset set = this.plot.getDataset();
+            if (set != null) {
                 for (int i = 0; i < set.getSeriesCount(); ++i) {
-					double sum = 0;
-					for (int j = 0; j < set.getItemCount(i); ++j) {
+                    double sum = 0;
+                    for (int j = 0; j < set.getItemCount(i); ++j) {
                         sum += set.getYValue(i, j);
                     }
 
-					ValueMarker marker = new ValueMarker(sum
-							/ set.getItemCount(i));
-					marker.setLabel("Average " + i + "                ");
-					marker.setLabelAnchor(RectangleAnchor.TOP_RIGHT);
-					this.plot.addRangeMarker(marker);
-				}
+                    ValueMarker marker = new ValueMarker(sum / set.getItemCount(i));
+                    marker.setLabel("Average " + i + "                ");
+                    marker.setLabelAnchor(RectangleAnchor.TOP_RIGHT);
+                    this.plot.addRangeMarker(marker);
+                }
             }
-		}
+        }
 
-		JFreeChart chart = new JFreeChart(this.plot);
-		return new byte[][] { getImage(chart, dataPoints) };
-	}
+        JFreeChart chart = new JFreeChart(this.plot);
+        return new byte[][] { getImage(chart, dataPoints) };
+    }
 
-	/**
-	 * Implement this method to generate the plot that depicts the chart your
-	 * module generates.
-	 */
-	protected abstract XYPlot getPlot();
+    /**
+     * Implement this method to generate the plot that depicts the chart your module generates.
+     */
+    protected abstract XYPlot getPlot();
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void processData(ProfileDataEntity data) {
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void processData(ProfileDataEntity data) {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean isDataProcessed() {
+    }
 
-		return false;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isDataProcessed() {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void processError(DriverExceptionEntity error) {
-	}
+        return false;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean isErrorProcessed() {
+    /**
+     * {@inheritDoc}
+     */
+    public void processError(DriverExceptionEntity error) {
 
-		return false;
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void processTiming(ScenarioTimingEntity data) {
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isErrorProcessed() {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean isTimingProcessed() {
+        return false;
+    }
 
-		return false;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void processTiming(ScenarioTimingEntity data) {
 
-	/**
-	 * Link this plot with the given other plots.<br>
-	 * <br>
-	 * The other plots will all use the domain axis of this plot and will not
-	 * generate a chart of their own. A single chart will be generated for all
-	 * plots linked to this one.<br>
-	 * <br>
-	 * <b>NOTE: Do not chain link plots, links do not work recursively. All
-	 * plots beyond the first level of the chain will no longer be visible in
-	 * the charts.</b>
-	 */
-	public void linkWith(AbstractChart... charts) {
+    }
 
-		for (AbstractChart chart : charts) {
-			chart.isLinked();
-			this.links.add(chart);
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isTimingProcessed() {
 
-	private void isLinked() {
+        return false;
+    }
 
-		this.linked = true;
-	}
+    /**
+     * Link this plot with the given other plots.<br>
+     * <br>
+     * The other plots will all use the domain axis of this plot and will not generate a chart of their own. A single chart will be
+     * generated for all plots linked to this one.<br>
+     * <br>
+     * <b>NOTE: Do not chain link plots, links do not work recursively. All plots beyond the first level of the chain will no longer be
+     * visible in the charts.</b>
+     */
+    public void linkWith(AbstractChart... charts) {
 
-	protected Long getMeasurement(Set<MeasurementEntity> measurements,
-			String type) throws NoSuchElementException {
+        for (AbstractChart chart : charts) {
+            chart.isLinked();
+            this.links.add(chart);
+        }
+    }
 
-		for (MeasurementEntity e : measurements)
-			if (type.equals(e.getMeasurement()))
-				return e.getDuration();
+    private void isLinked() {
 
-		this.LOG.debug("for: " + measurements);
-		throw new NoSuchElementException("Element " + type
-				+ " could not be found.");
-	}
+        this.linked = true;
+    }
 
-	protected boolean isEmpty(Map<String, ? extends Series> data) {
+    protected Long getMeasurement(Set<MeasurementEntity> measurements, String type) throws NoSuchElementException {
 
-		for (Series series : data.values())
-			if (!series.isEmpty())
-				return false;
+        for (MeasurementEntity e : measurements)
+            if (type.equals(e.getMeasurement()))
+                return e.getDuration();
 
-		return true;
-	}
+        this.LOG.debug("for: " + measurements);
+        throw new NoSuchElementException("Element " + type + " could not be found.");
+    }
 
-	protected byte[] getImage(JFreeChart chart, int width) {
+    protected boolean isEmpty(Map<String, ? extends Series> data) {
 
-		return getImage(chart, width, width);
-	}
+        for (Series series : data.values())
+            if (!series.isEmpty())
+                return false;
 
-	protected byte[] getImage(JFreeChart chart, int width, int height) {
+        return true;
+    }
 
-		try {
-			chart.setBackgroundPaint(Color.white);
-			return encoder.encode(chart.createBufferedImage(width, height));
-		} catch (IOException e) {
-			return null;
-		}
-	}
+    protected byte[] getImage(JFreeChart chart, int width) {
 
-	<S> S getService(Class<S> service, String binding) {
+        return getImage(chart, width, width);
+    }
 
-		try {
-			InitialContext initialContext = new InitialContext();
-			return service.cast(initialContext.lookup(binding));
-		} catch (NoInitialContextException e) {
-			try {
-				return service.cast(Class.forName(
-						service.getName().replaceFirst("\\.([^\\.]*)$",
-								".bean.$1Bean")).newInstance());
-			} catch (InstantiationException ee) {
-				this.LOG.error("Couldn't create service " + service + " at "
-						+ binding, ee);
-				throw new RuntimeException(ee);
-			} catch (IllegalAccessException ee) {
-				this.LOG.error("Couldn't access service " + service + " at "
-						+ binding, ee);
-				throw new RuntimeException(ee);
-			} catch (ClassNotFoundException ee) {
-				this.LOG.error("Couldn't find service "
-						+ service.getName().replaceFirst("\\.([^\\.]*)$",
-								".bean.$1Bean") + " at " + binding, ee);
-				throw new RuntimeException(ee);
-			}
-		} catch (NamingException e) {
-			this.LOG.error("Couldn't find service " + service + " at "
-					+ binding, e);
-			throw new RuntimeException(e);
-		}
-	}
+    protected byte[] getImage(JFreeChart chart, int width, int height) {
 
-	public static void sharedTimeAxis(Collection<Chart> charts) {
+        try {
+            chart.setBackgroundPaint(Color.white);
+            return encoder.encode(chart.createBufferedImage(width, height));
+        } catch (IOException e) {
+            return null;
+        }
+    }
 
-		sharedRangesMap.put(charts, null);
-	}
+    <S> S getService(Class<S> service, String binding) {
+
+        try {
+            InitialContext initialContext = new InitialContext();
+            return service.cast(initialContext.lookup(binding));
+        } catch (NoInitialContextException e) {
+            try {
+                return service.cast(Class.forName(service.getName().replaceFirst("\\.([^\\.]*)$", ".bean.$1Bean")).newInstance());
+            } catch (InstantiationException ee) {
+                this.LOG.error("Couldn't create service " + service + " at " + binding, ee);
+                throw new RuntimeException(ee);
+            } catch (IllegalAccessException ee) {
+                this.LOG.error("Couldn't access service " + service + " at " + binding, ee);
+                throw new RuntimeException(ee);
+            } catch (ClassNotFoundException ee) {
+                this.LOG.error("Couldn't find service " + service.getName().replaceFirst("\\.([^\\.]*)$", ".bean.$1Bean") + " at "
+                        + binding, ee);
+                throw new RuntimeException(ee);
+            }
+        } catch (NamingException e) {
+            this.LOG.error("Couldn't find service " + service + " at " + binding, e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void sharedTimeAxis(Collection<Chart> charts) {
+
+        sharedRangesMap.put(charts, null);
+    }
 }

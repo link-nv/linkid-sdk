@@ -42,15 +42,13 @@ public class ApplicationScopeIdDAOBean implements ApplicationScopeIdDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                ApplicationScopeIdEntity.QueryInterface.class);
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, ApplicationScopeIdEntity.QueryInterface.class);
     }
 
     public ApplicationScopeIdEntity addApplicationScopeId(SubjectEntity subject, ApplicationEntity application) {
 
         String id = this.idGenerator.generateId();
-        LOG.debug("add application scope id=" + id + " for " + subject.getUserId() + " and application "
-                + application.getName());
+        LOG.debug("add application scope id=" + id + " for " + subject.getUserId() + " and application " + application.getName());
         ApplicationScopeIdEntity applicationScopeId = new ApplicationScopeIdEntity(subject, id, application);
         this.entityManager.persist(applicationScopeId);
         return applicationScopeId;

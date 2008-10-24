@@ -50,15 +50,13 @@ public interface UserManagement {
     /*
      * Actions.
      */
-    String search() throws SubjectNotFoundException, DeviceNotFoundException, PermissionDeniedException,
-            AttributeTypeNotFoundException;
+    String search() throws SubjectNotFoundException, DeviceNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException;
 
     String save() throws SubjectNotFoundException, RoleNotFoundException;
 
     String remove();
 
-    String removeConfirm() throws SubjectNotFoundException, SubscriptionNotFoundException,
-            MessageHandlerNotFoundException;
+    String removeConfirm() throws SubjectNotFoundException, SubscriptionNotFoundException, MessageHandlerNotFoundException;
 
     String removeCancel();
 

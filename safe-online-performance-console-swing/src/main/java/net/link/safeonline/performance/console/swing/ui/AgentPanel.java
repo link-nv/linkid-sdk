@@ -33,19 +33,18 @@ import com.jgoodies.forms.layout.FormLayout;
 /**
  * <h2>{@link AgentPanel}<br>
  * <sub>[in short] (TODO).</sub></h2>
- *
+ * 
  * <p>
  * [description / usage].
  * </p>
- *
+ * 
  * <p>
  * <i>Apr 2, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
-public class AgentPanel extends JPanel implements MouseListener, AgentStatusListener, AgentSelectionListener,
-        ExecutionSelectionListener {
+public class AgentPanel extends JPanel implements MouseListener, AgentStatusListener, AgentSelectionListener, ExecutionSelectionListener {
 
     private static final long serialVersionUID = 1L;
 
@@ -175,8 +174,7 @@ public class AgentPanel extends JPanel implements MouseListener, AgentStatusList
         } else {
             this.title.setText("[Unknown]");
         }
-        this.title.setForeground(this.state == null? Color.gray: this.agent.isHealthy()? Color.green.darker()
-                : Color.red);
+        this.title.setForeground(this.state == null? Color.gray: this.agent.isHealthy()? Color.green.darker(): Color.red);
 
         if (this.agent.getState() != null) {
             this.state.setText(this.agent.getState().getState());
@@ -212,8 +210,7 @@ public class AgentPanel extends JPanel implements MouseListener, AgentStatusList
                 this.speedGraph.update(lastExecution.getSpeed());
 
                 /* Check how much time is left. */
-                long timeLeft = lastExecution.getStartTime().getTime() + lastExecution.getDuration()
-                        - System.currentTimeMillis();
+                long timeLeft = lastExecution.getStartTime().getTime() + lastExecution.getDuration() - System.currentTimeMillis();
 
                 /* If there is time left, show a progress bar. */
                 if (timeLeft > 0) {

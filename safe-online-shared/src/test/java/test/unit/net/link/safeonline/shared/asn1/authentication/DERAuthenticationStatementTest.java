@@ -36,8 +36,7 @@ public class DERAuthenticationStatementTest extends TestCase {
         byte[] signature = "signature-value".getBytes();
 
         // operate
-        DERAuthenticationStatement authenticationStatement = new DERAuthenticationStatement(sessionId, applicationId,
-                authCert);
+        DERAuthenticationStatement authenticationStatement = new DERAuthenticationStatement(sessionId, applicationId, authCert);
         authenticationStatement.setSignature(signature);
 
         byte[] result = authenticationStatement.getEncoded();
@@ -49,21 +48,18 @@ public class DERAuthenticationStatementTest extends TestCase {
         assertEquals(2, sequence.size());
         ASN1Sequence tbsSequence = ASN1Sequence.getInstance(sequence.getObjectAt(AbstractDERStatement.TBS_IDX));
         assertEquals(4, tbsSequence.size());
-        DERInteger resultVersion = DERInteger.getInstance(tbsSequence
-                .getObjectAt(DERAuthenticationStatement.TBS_VERSION_IDX));
+        DERInteger resultVersion = DERInteger.getInstance(tbsSequence.getObjectAt(DERAuthenticationStatement.TBS_VERSION_IDX));
         assertEquals(DERAuthenticationStatement.VERSION, resultVersion.getValue().intValue());
-        DERVisibleString resultSession = DERVisibleString.getInstance(tbsSequence
-                .getObjectAt(DERAuthenticationStatement.TBS_SESSION_IDX));
+        DERVisibleString resultSession = DERVisibleString.getInstance(tbsSequence.getObjectAt(DERAuthenticationStatement.TBS_SESSION_IDX));
         assertEquals(sessionId, resultSession.getString());
-        DERVisibleString resultApplication = DERVisibleString.getInstance(tbsSequence
-                .getObjectAt(DERAuthenticationStatement.TBS_APPLICATION_IDX));
+        DERVisibleString resultApplication = DERVisibleString
+                                                             .getInstance(tbsSequence
+                                                                                     .getObjectAt(DERAuthenticationStatement.TBS_APPLICATION_IDX));
         assertEquals(applicationId, resultApplication.getString());
-        byte[] resultEncodedCert = tbsSequence.getObjectAt(DERAuthenticationStatement.TBS_AUTH_CERT_IDX).getDERObject()
-                .getDEREncoded();
+        byte[] resultEncodedCert = tbsSequence.getObjectAt(DERAuthenticationStatement.TBS_AUTH_CERT_IDX).getDERObject().getDEREncoded();
         assertTrue(Arrays.equals(resultEncodedCert, authCert.getEncoded()));
 
-        DERBitString resultSignature = DERBitString.getInstance(sequence
-                .getObjectAt(AbstractDERStatement.SIGNATURE_IDX));
+        DERBitString resultSignature = DERBitString.getInstance(sequence.getObjectAt(AbstractDERStatement.SIGNATURE_IDX));
         assertTrue(Arrays.equals(signature, resultSignature.getBytes()));
     }
 }

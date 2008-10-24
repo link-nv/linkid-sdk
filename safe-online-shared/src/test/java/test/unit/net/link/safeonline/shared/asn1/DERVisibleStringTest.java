@@ -26,8 +26,7 @@ public class DERVisibleStringTest extends TestCase {
 
         // verify
         assertNotNull(result);
-        org.bouncycastle.asn1.DERVisibleString resultString = (org.bouncycastle.asn1.DERVisibleString) ASN1Object
-                .fromByteArray(result);
+        org.bouncycastle.asn1.DERVisibleString resultString = (org.bouncycastle.asn1.DERVisibleString) ASN1Object.fromByteArray(result);
         assertEquals(value, resultString.getString());
     }
 }

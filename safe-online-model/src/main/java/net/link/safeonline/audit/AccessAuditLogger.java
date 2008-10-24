@@ -35,9 +35,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * EJB3 access audit logger.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class AccessAuditLogger {
 
@@ -147,8 +147,7 @@ public class AccessAuditLogger {
             callerPrincipal = this.sessionContext.getCallerPrincipal();
         } catch (IllegalStateException e) {
             /*
-             * Under JBoss we get an IllegalStateException instead of a null principal if there is no identifiable
-             * caller principal.
+             * Under JBoss we get an IllegalStateException instead of a null principal if there is no identifiable caller principal.
              */
             LOG.debug("getCallerPrincipal throws IllegalStateException");
             return null;

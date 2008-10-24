@@ -31,8 +31,8 @@ public interface CredentialService {
      * @throws PermissionDeniedException
      * @throws SubjectNotFoundException
      */
-    void changePassword(String oldPassword, String newPassword) throws PermissionDeniedException,
-            DeviceNotFoundException, SubjectNotFoundException;
+    void changePassword(String oldPassword, String newPassword) throws PermissionDeniedException, DeviceNotFoundException,
+                                                               SubjectNotFoundException;
 
     /**
      * Register password for the current user.
@@ -41,8 +41,7 @@ public interface CredentialService {
      * @throws PermissionDeniedException
      * @throws SubjectNotFoundException
      */
-    void registerPassword(String password) throws PermissionDeniedException, DeviceNotFoundException,
-            SubjectNotFoundException;
+    void registerPassword(String password) throws PermissionDeniedException, DeviceNotFoundException, SubjectNotFoundException;
 
     /**
      * Removes the password of the current user. For this to happen the password must match.
@@ -52,8 +51,7 @@ public interface CredentialService {
      * @throws PermissionDeniedException
      * @throws SubjectNotFoundException
      */
-    void removePassword(String password) throws DeviceNotFoundException, PermissionDeniedException,
-            SubjectNotFoundException;
+    void removePassword(String password) throws DeviceNotFoundException, PermissionDeniedException, SubjectNotFoundException;
 
     /**
      * Gives back <code>true</code> if the user already has a password configured.

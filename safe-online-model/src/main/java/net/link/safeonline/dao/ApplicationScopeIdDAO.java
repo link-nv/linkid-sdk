@@ -16,9 +16,9 @@ import net.link.safeonline.entity.SubjectEntity;
 
 /**
  * Application Scope Id entity data access object interface definition.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 @Local
 public interface ApplicationScopeIdDAO {

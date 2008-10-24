@@ -16,15 +16,15 @@ import org.apache.commons.logging.LogFactory;
 /**
  * <h2>{@link AbstractProfilingServiceBean}<br>
  * <sub>Abstract class for the entity services.</sub></h2>
- *
+ * 
  * <p>
  * Provides access to the {@link EntityManager}.
  * </p>
- *
+ * 
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public abstract class AbstractProfilingServiceBean {
@@ -38,8 +38,8 @@ public abstract class AbstractProfilingServiceBean {
 
 
     /**
-     * Install a default entity manager which will be used for any new services. This is mostly useful for installing an
-     * entity manager in an environment where there is no enterprise container that provides one.
+     * Install a default entity manager which will be used for any new services. This is mostly useful for installing an entity manager in
+     * an environment where there is no enterprise container that provides one.
      */
     public static void setDefaultEntityManager(EntityManager entityManager) {
 

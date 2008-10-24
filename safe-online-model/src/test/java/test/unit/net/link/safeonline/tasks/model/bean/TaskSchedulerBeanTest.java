@@ -83,29 +83,27 @@ public class TaskSchedulerBeanTest {
 
         final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
         final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate",
-                new MBeanActionHandler() {
+        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
 
-                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
+            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-                        return authCertificate;
-                    }
-                });
+                return authCertificate;
+            }
+        });
 
         jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
         final KeyPair keyPair = PkiTestUtils.generateKeyPair();
         final X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
-                new MBeanActionHandler() {
+        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
 
-                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
+            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-                        return certificate;
-                    }
-                });
+                return certificate;
+            }
+        });
 
-        Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager);
+        Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class, SafeOnlineTestContainer.sessionBeans,
+                entityManager);
 
         systemStartable.postStart();
 
@@ -150,8 +148,7 @@ public class TaskSchedulerBeanTest {
 
         // setup
         EntityManager entityManager = this.entityTestManager.getEntityManager();
-        this.testedInstance = EJBTestUtils.newInstance(TaskSchedulerBean.class, SafeOnlineTestContainer.sessionBeans,
-                entityManager);
+        this.testedInstance = EJBTestUtils.newInstance(TaskSchedulerBean.class, SafeOnlineTestContainer.sessionBeans, entityManager);
 
         Task testTaskComponent = new TestTask();
         String testTaskJndiName = "SafeOnline/task/TestTaskComponent";
@@ -164,8 +161,8 @@ public class TaskSchedulerBeanTest {
         entityTransaction.commit();
         entityTransaction.begin();
 
-        SchedulingDAO schedulingDAO = EJBTestUtils.newInstance(SchedulingDAOBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager);
+        SchedulingDAO schedulingDAO = EJBTestUtils
+                                                  .newInstance(SchedulingDAOBean.class, SafeOnlineTestContainer.sessionBeans, entityManager);
         SchedulingEntity defaultScheduling = schedulingDAO.findSchedulingByName("default");
         assertNotNull(defaultScheduling);
         List<TaskEntity> defaultTasks = defaultScheduling.getTasks();
@@ -177,8 +174,7 @@ public class TaskSchedulerBeanTest {
 
         LOG.debug("------------------ SECOND POST START ----------------------------");
         /*
-         * We run postStart twice since the task scheduler bean must be capable of rebooting using a non-volatile
-         * database.
+         * We run postStart twice since the task scheduler bean must be capable of rebooting using a non-volatile database.
          */
         this.testedInstance.postStart();
     }

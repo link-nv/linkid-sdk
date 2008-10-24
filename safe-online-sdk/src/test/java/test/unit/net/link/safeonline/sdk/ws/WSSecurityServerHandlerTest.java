@@ -91,8 +91,7 @@ public class WSSecurityServerHandlerTest {
 
         this.mockWSSecurityConfigurationService = createMock(WSSecurityConfigurationService.class);
 
-        this.jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local",
-                this.mockWSSecurityConfigurationService);
+        this.jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local", this.mockWSSecurityConfigurationService);
         this.testedInstance = new WSSecurityServerHandler();
         this.testedInstance.postConstructCallback();
 
@@ -110,8 +109,7 @@ public class WSSecurityServerHandlerTest {
 
         // setup
         MessageFactory messageFactory = MessageFactory.newInstance(SOAPConstants.SOAP_1_1_PROTOCOL);
-        InputStream testSoapMessageInputStream = WSSecurityServerHandlerTest.class
-                .getResourceAsStream("/test-ws-security-message.xml");
+        InputStream testSoapMessageInputStream = WSSecurityServerHandlerTest.class.getResourceAsStream("/test-ws-security-message.xml");
         assertNotNull(testSoapMessageInputStream);
 
         SOAPMessage message = messageFactory.createMessage(null, testSoapMessageInputStream);
@@ -119,8 +117,7 @@ public class WSSecurityServerHandlerTest {
         SOAPMessageContext soapMessageContext = new TestSOAPMessageContext(message, false);
 
         // stubs
-        expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(
-                Long.MAX_VALUE);
+        expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
 
         // prepare
         replay(this.mockObjects);
@@ -144,8 +141,7 @@ public class WSSecurityServerHandlerTest {
         X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
 
         MessageFactory messageFactory = MessageFactory.newInstance(SOAPConstants.SOAP_1_1_PROTOCOL);
-        InputStream testSoapMessageInputStream = WSSecurityServerHandlerTest.class
-                .getResourceAsStream("/test-soap-message.xml");
+        InputStream testSoapMessageInputStream = WSSecurityServerHandlerTest.class.getResourceAsStream("/test-soap-message.xml");
         assertNotNull(testSoapMessageInputStream);
 
         SOAPMessage message = messageFactory.createMessage(null, testSoapMessageInputStream);
@@ -190,8 +186,7 @@ public class WSSecurityServerHandlerTest {
         X509Certificate olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=OLAS");
 
         MessageFactory messageFactory = MessageFactory.newInstance(SOAPConstants.SOAP_1_1_PROTOCOL);
-        InputStream testSoapMessageInputStream = WSSecurityServerHandlerTest.class
-                .getResourceAsStream("/test-soap-message.xml");
+        InputStream testSoapMessageInputStream = WSSecurityServerHandlerTest.class.getResourceAsStream("/test-soap-message.xml");
         assertNotNull(testSoapMessageInputStream);
 
         SOAPMessage message = messageFactory.createMessage(null, testSoapMessageInputStream);
@@ -204,8 +199,7 @@ public class WSSecurityServerHandlerTest {
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andStubReturn(false);
         expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
         expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
-        expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(
-                Long.MAX_VALUE);
+        expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
 
         // prepare
         replay(this.mockObjects);
@@ -225,8 +219,7 @@ public class WSSecurityServerHandlerTest {
         verify(this.mockObjects);
         X509Certificate resultCertificate = WSSecurityServerHandler.getCertificate(soapMessageContext);
         assertNotNull(resultCertificate);
-        Set<String> signedElements = (Set<String>) soapMessageContext
-                .get(WSSecurityServerHandler.SIGNED_ELEMENTS_CONTEXT_KEY);
+        Set<String> signedElements = (Set<String>) soapMessageContext.get(WSSecurityServerHandler.SIGNED_ELEMENTS_CONTEXT_KEY);
         assertEquals(2, signedElements.size());
         LOG.debug("signed elements: " + signedElements);
     }
@@ -237,7 +230,7 @@ public class WSSecurityServerHandlerTest {
         // setup
         MessageFactory messageFactory = MessageFactory.newInstance(SOAPConstants.SOAP_1_1_PROTOCOL);
         InputStream testSoapMessageInputStream = WSSecurityServerHandlerTest.class
-                .getResourceAsStream("/test-ws-security-invalid-message.xml");
+                                                                                  .getResourceAsStream("/test-ws-security-invalid-message.xml");
         assertNotNull(testSoapMessageInputStream);
 
         SOAPMessage message = messageFactory.createMessage(null, testSoapMessageInputStream);
@@ -273,8 +266,7 @@ public class WSSecurityServerHandlerTest {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware(true);
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Document document = documentBuilder.parse(WSSecurityServerHandlerTest.class
-                .getResourceAsStream("/test-soap-message.xml"));
+        Document document = documentBuilder.parse(WSSecurityServerHandlerTest.class.getResourceAsStream("/test-soap-message.xml"));
 
         // use WSSecurityClientHandler to sign message
         LOG.debug("adding WS-Security SOAP header");
@@ -286,8 +278,7 @@ public class WSSecurityServerHandlerTest {
         try {
             wsSecSignature.prepare(document, crypto, wsSecHeader);
 
-            org.apache.ws.security.SOAPConstants soapConstants = WSSecurityUtil.getSOAPConstants(document
-                    .getDocumentElement());
+            org.apache.ws.security.SOAPConstants soapConstants = WSSecurityUtil.getSOAPConstants(document.getDocumentElement());
 
             Vector<WSEncryptionPart> wsEncryptionParts = new Vector<WSEncryptionPart>();
             WSEncryptionPart wsEncryptionPart = new WSEncryptionPart(soapConstants.getBodyQName().getLocalPart(),
@@ -297,8 +288,8 @@ public class WSSecurityServerHandlerTest {
             WSSecTimestamp wsSecTimeStamp = new WSSecTimestamp();
             wsSecTimeStamp.setTimeToLive(0);
             /*
-             * If ttl is zero then there will be no Expires element within the Timestamp. Eventually we want to let the
-             * service itself decide how long the message validity period is.
+             * If ttl is zero then there will be no Expires element within the Timestamp. Eventually we want to let the service itself
+             * decide how long the message validity period is.
              */
             wsSecTimeStamp.prepare(document);
             wsSecTimeStamp.prependToHeader(wsSecHeader);
@@ -318,8 +309,7 @@ public class WSSecurityServerHandlerTest {
         LOG.debug("document: " + DomTestUtils.domToString(document));
 
         // stubs
-        expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(
-                Long.MAX_VALUE);
+        expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
 
         // prepare
         replay(this.mockObjects);
@@ -358,8 +348,7 @@ public class WSSecurityServerHandlerTest {
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware(true);
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        Document document = documentBuilder.parse(WSSecurityServerHandlerTest.class
-                .getResourceAsStream("/test-soap-message.xml"));
+        Document document = documentBuilder.parse(WSSecurityServerHandlerTest.class.getResourceAsStream("/test-soap-message.xml"));
 
         // use WSSecurityClientHandler to sign message
         LOG.debug("adding WS-Security SOAP header");
@@ -379,8 +368,8 @@ public class WSSecurityServerHandlerTest {
             WSSecTimestamp wsSecTimeStamp = new WSSecTimestamp();
             wsSecTimeStamp.setTimeToLive(0);
             /*
-             * If ttl is zero then there will be no Expires element within the Timestamp. Eventually we want to let the
-             * service itself decide how long the message validity period is.
+             * If ttl is zero then there will be no Expires element within the Timestamp. Eventually we want to let the service itself
+             * decide how long the message validity period is.
              */
             wsSecTimeStamp.prepare(document);
             wsSecTimeStamp.prependToHeader(wsSecHeader);

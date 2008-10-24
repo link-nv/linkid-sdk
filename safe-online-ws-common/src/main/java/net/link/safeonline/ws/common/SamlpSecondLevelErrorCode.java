@@ -15,19 +15,19 @@ import java.util.Map;
  * SAMLp version 2.0 Second-Level Error Code.
  * 
  * <p>
- * Specification: 3.2.2.2 Element StatusCode - Assertions and Protocols for the OASIS Security Assertion Markup Language
- * (SAML) V2.0 - OASIS Standard, 15 March 2005
+ * Specification: 3.2.2.2 Element StatusCode - Assertions and Protocols for the OASIS Security Assertion Markup Language (SAML) V2.0 - OASIS
+ * Standard, 15 March 2005
  * </p>
  * 
  * @author fcorneli
  * 
  */
 public enum SamlpSecondLevelErrorCode {
-    INVALID_ATTRIBUTE_NAME_OR_VALUE("urn:oasis:names:tc:SAML:2.0:status:InvalidAttrNameOrValue"), ATTRIBUTE_UNAVAILABLE(
-            "urn:net:lin-k:safe-online:SAML:2.0:status:AttributeUnavailable"), UNKNOWN_PRINCIPAL(
-            "urn:oasis:names:tc:SAML:2.0:status:UnknownPrincipal"), REQUEST_DENIED(
-            "urn:oasis:names:tc:SAML:2.0:status:RequestDenied"), INVALID_NAMEID_POLICY(
-            "urn:oasis:names:tc:SAML:2.0:status:InvalidNameIDPolicy");
+    INVALID_ATTRIBUTE_NAME_OR_VALUE("urn:oasis:names:tc:SAML:2.0:status:InvalidAttrNameOrValue"),
+    ATTRIBUTE_UNAVAILABLE("urn:net:lin-k:safe-online:SAML:2.0:status:AttributeUnavailable"),
+    UNKNOWN_PRINCIPAL("urn:oasis:names:tc:SAML:2.0:status:UnknownPrincipal"),
+    REQUEST_DENIED("urn:oasis:names:tc:SAML:2.0:status:RequestDenied"),
+    INVALID_NAMEID_POLICY("urn:oasis:names:tc:SAML:2.0:status:InvalidNameIDPolicy");
 
     private final String                                        errorCode;
 

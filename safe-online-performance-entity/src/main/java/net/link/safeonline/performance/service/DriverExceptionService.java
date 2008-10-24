@@ -19,14 +19,14 @@ import net.link.safeonline.performance.service.bean.DriverExceptionServiceBean;
 /**
  * <h2>{@link DriverExceptionServiceBean}<br>
  * <sub>Service bean for {@link DriverExceptionEntity}.</sub></h2>
- *
+ * 
  * <p>
  * Create {@link DriverExceptionEntity}s from {@link DriverException}s
  * </p>
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 @Local
@@ -52,8 +52,8 @@ public interface DriverExceptionService {
      * <br>
      * The resulting list will be ordered by execution start time.<br>
      * <br>
-     * This method will limit the amount of {@link DriverExceptionEntity}s generated to the given amount of data points,
-     * possibly averaging out many results inbetween.<br>
+     * This method will limit the amount of {@link DriverExceptionEntity}s generated to the given amount of data points, possibly averaging
+     * out many results inbetween.<br>
      * <br>
      * <b>The resulting entity beans will be detached!</b>
      */

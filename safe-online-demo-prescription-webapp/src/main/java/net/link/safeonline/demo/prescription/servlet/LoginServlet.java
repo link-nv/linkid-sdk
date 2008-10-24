@@ -34,14 +34,14 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- * Login handling servlet. After SafeOnline performed its authentication it will redirect to this servlet. This servlet
- * will retrieve the 'admin' attribute. Depending on the value of this attribute we redirect to a different page.
- *
- * If the user has multiple roles active this servlet will redirect to a page where the user can select the role under
- * which he would like to operate.
- *
+ * Login handling servlet. After SafeOnline performed its authentication it will redirect to this servlet. This servlet will retrieve the
+ * 'admin' attribute. Depending on the value of this attribute we redirect to a different page.
+ * 
+ * If the user has multiple roles active this servlet will redirect to a page where the user can select the role under which he would like
+ * to operate.
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class LoginServlet extends HttpServlet {
 
@@ -70,12 +70,10 @@ public class LoginServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         /*
-         * Since the SAML protocol can enter the application via an HTTP POST we also need to implement the doPost
-         * method.
+         * Since the SAML protocol can enter the application via an HTTP POST we also need to implement the doPost method.
          */
         doGet(request, response);
     }
@@ -158,8 +156,7 @@ public class LoginServlet extends HttpServlet {
         return attribute.getValue();
     }
 
-    private void redirectToPage(String page, String role, HttpSession session, HttpServletResponse response)
-            throws IOException {
+    private void redirectToPage(String page, String role, HttpSession session, HttpServletResponse response) throws IOException {
 
         session.setAttribute("role", role);
         response.sendRedirect(page);
@@ -180,8 +177,7 @@ public class LoginServlet extends HttpServlet {
         redirectToPage("./patient.seam", PrescriptionConstants.PATIENT_ROLE, session, response);
     }
 
-    private void redirectToRolesPage(@SuppressWarnings("unused") HttpSession session, HttpServletResponse response)
-            throws IOException {
+    private void redirectToRolesPage(@SuppressWarnings("unused") HttpSession session, HttpServletResponse response) throws IOException {
 
         response.sendRedirect("./roles.seam");
     }

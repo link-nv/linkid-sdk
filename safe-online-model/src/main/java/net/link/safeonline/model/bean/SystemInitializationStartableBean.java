@@ -38,8 +38,8 @@ import org.jboss.annotation.ejb.LocalBinding;
 /**
  * This component will initialize the system at startup.
  * 
- * For now it creates initial users, applications and subscriptions. This to allow for admins to gain access to the
- * system and thus to bootstrap the SafeOnline core.
+ * For now it creates initial users, applications and subscriptions. This to allow for admins to gain access to the system and thus to
+ * bootstrap the SafeOnline core.
  * 
  * @author fcorneli
  * 
@@ -80,26 +80,22 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         X509Certificate helpdeskCert = (X509Certificate) HelpdeskKeyStoreUtils.getPrivateKeyEntry().getCertificate();
 
         try {
-            this.registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
-                    "owner", "The SafeOnline User Web Application.", new URL(protocol, hostname, hostport, "/"
-                            + userWebappName), getLogo("/logo.jpg"), null, false, false, userCert, false,
-                    IdScopeType.USER, true, new URL(protocolssl, hostname, hostportssl, "/" + userWebappName
-                            + "/logout")));
-            this.registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME,
-                    "owner", "The SafeOnline Operator Web Application.", new URL(protocol, hostname, hostport, "/"
-                            + operWebappName), getLogo("/logo.jpg"), Color.decode("#2c0075"), false, false, operCert,
-                    false, IdScopeType.USER, true, new URL(protocolssl, hostname, hostportssl, "/" + operWebappName
-                            + "/logout")));
-            this.registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME,
-                    "owner", "The SafeOnline Application Owner Web Application.", new URL(protocol, hostname, hostport,
-                            "/" + ownerWebappName), getLogo("/logo.jpg"), Color.decode("#001975"), false, false,
-                    ownerCert, false, IdScopeType.USER, true, new URL(protocolssl, hostname, hostportssl, "/"
-                            + ownerWebappName + "/logout")));
-            this.registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME,
-                    "owner", "The SafeOnline Helpdesk Web Application.", new URL(protocol, hostname, hostport, "/"
-                            + helpdeskWebappName), getLogo("/logo.jpg"), Color.decode("#006f73"), false, false,
-                    helpdeskCert, false, IdScopeType.USER, true, new URL(protocolssl, hostname, hostportssl, "/"
-                            + helpdeskWebappName + "/logout")));
+            this.registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, "owner",
+                    "The SafeOnline User Web Application.", new URL(protocol, hostname, hostport, "/" + userWebappName),
+                    getLogo("/logo.jpg"), null, false, false, userCert, false, IdScopeType.USER, true, new URL(protocolssl, hostname,
+                            hostportssl, "/" + userWebappName + "/logout")));
+            this.registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME, "owner",
+                    "The SafeOnline Operator Web Application.", new URL(protocol, hostname, hostport, "/" + operWebappName),
+                    getLogo("/logo.jpg"), Color.decode("#2c0075"), false, false, operCert, false, IdScopeType.USER, true, new URL(
+                            protocolssl, hostname, hostportssl, "/" + operWebappName + "/logout")));
+            this.registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME, "owner",
+                    "The SafeOnline Application Owner Web Application.", new URL(protocol, hostname, hostport, "/" + ownerWebappName),
+                    getLogo("/logo.jpg"), Color.decode("#001975"), false, false, ownerCert, false, IdScopeType.USER, true, new URL(
+                            protocolssl, hostname, hostportssl, "/" + ownerWebappName + "/logout")));
+            this.registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME, "owner",
+                    "The SafeOnline Helpdesk Web Application.", new URL(protocol, hostname, hostport, "/" + helpdeskWebappName),
+                    getLogo("/logo.jpg"), Color.decode("#006f73"), false, false, helpdeskCert, false, IdScopeType.USER, true, new URL(
+                            protocolssl, hostname, hostportssl, "/" + helpdeskWebappName + "/logout")));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed Application URL exception: " + e.getMessage());
         }
@@ -138,30 +134,26 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         IdentityServiceClient identityServiceClient = new IdentityServiceClient();
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
 
-        this.node = new Node(nodeName, sslprotocol, hostname, hostport, hostportssl, authIdentityServiceClient
-                .getCertificate(), identityServiceClient.getCertificate());
-        this.trustedCertificates.put(authIdentityServiceClient.getCertificate(),
-                SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
-        this.trustedCertificates.put(identityServiceClient.getCertificate(),
-                SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
+        this.node = new Node(nodeName, sslprotocol, hostname, hostport, hostportssl, authIdentityServiceClient.getCertificate(),
+                identityServiceClient.getCertificate());
+        this.trustedCertificates.put(authIdentityServiceClient.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
+        this.trustedCertificates.put(identityServiceClient.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
     }
 
     private void configureAttributeTypes() {
 
-        AttributeTypeEntity nameAttributeType = new AttributeTypeEntity(SafeOnlineConstants.NAME_ATTRIBUTE,
-                DatatypeType.STRING, true, true);
+        AttributeTypeEntity nameAttributeType = new AttributeTypeEntity(SafeOnlineConstants.NAME_ATTRIBUTE, DatatypeType.STRING, true, true);
         this.attributeTypes.add(nameAttributeType);
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(nameAttributeType, Locale.ENGLISH
-                .getLanguage(), "Name", null));
+        this.attributeTypeDescriptions
+                                      .add(new AttributeTypeDescriptionEntity(nameAttributeType, Locale.ENGLISH.getLanguage(), "Name", null));
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(nameAttributeType, "nl", "Naam", null));
 
-        AttributeTypeEntity loginAttributeType = new AttributeTypeEntity(SafeOnlineConstants.LOGIN_ATTRIBTUE,
-                DatatypeType.STRING, false, false);
+        AttributeTypeEntity loginAttributeType = new AttributeTypeEntity(SafeOnlineConstants.LOGIN_ATTRIBTUE, DatatypeType.STRING, false,
+                false);
         this.attributeTypes.add(loginAttributeType);
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(loginAttributeType, Locale.ENGLISH
-                .getLanguage(), "Login name", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(loginAttributeType, "nl", "Login naam",
-                null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(loginAttributeType, Locale.ENGLISH.getLanguage(),
+                "Login name", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(loginAttributeType, "nl", "Login naam", null));
     }
 
     private void configureDevices() {
@@ -170,8 +162,7 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
                 SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS));
         this.deviceClasses.add(new DeviceClass(SafeOnlineConstants.MOBILE_DEVICE_CLASS,
                 SafeOnlineConstants.MOBILE_DEVICE_AUTH_CONTEXT_CLASS));
-        this.deviceClasses.add(new DeviceClass(SafeOnlineConstants.PKI_DEVICE_CLASS,
-                SafeOnlineConstants.PKI_DEVICE_AUTH_CONTEXT_CLASS));
+        this.deviceClasses.add(new DeviceClass(SafeOnlineConstants.PKI_DEVICE_CLASS, SafeOnlineConstants.PKI_DEVICE_AUTH_CONTEXT_CLASS));
         this.deviceClasses.add(new DeviceClass(SafeOnlineConstants.DIGIPASS_DEVICE_CLASS,
                 SafeOnlineConstants.DIGIPASS_DEVICE_AUTH_CONTEXT_CLASS));
 
@@ -180,25 +171,24 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 
     private void configurePasswordDevice() {
 
-        AttributeTypeEntity passwordHashAttributeType = new AttributeTypeEntity(
-                SafeOnlineConstants.PASSWORD_HASH_ATTRIBUTE, DatatypeType.STRING, false, false);
-        AttributeTypeEntity passwordSeedAttributeType = new AttributeTypeEntity(
-                SafeOnlineConstants.PASSWORD_SEED_ATTRIBUTE, DatatypeType.STRING, false, false);
-        AttributeTypeEntity passwordAlgorithmAttributeType = new AttributeTypeEntity(
-                SafeOnlineConstants.PASSWORD_ALGORITHM_ATTRIBUTE, DatatypeType.STRING, false, false);
+        AttributeTypeEntity passwordHashAttributeType = new AttributeTypeEntity(SafeOnlineConstants.PASSWORD_HASH_ATTRIBUTE,
+                DatatypeType.STRING, false, false);
+        AttributeTypeEntity passwordSeedAttributeType = new AttributeTypeEntity(SafeOnlineConstants.PASSWORD_SEED_ATTRIBUTE,
+                DatatypeType.STRING, false, false);
+        AttributeTypeEntity passwordAlgorithmAttributeType = new AttributeTypeEntity(SafeOnlineConstants.PASSWORD_ALGORITHM_ATTRIBUTE,
+                DatatypeType.STRING, false, false);
         this.attributeTypes.add(passwordHashAttributeType);
         this.attributeTypes.add(passwordSeedAttributeType);
         this.attributeTypes.add(passwordAlgorithmAttributeType);
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordHashAttributeType, Locale.ENGLISH
-                .getLanguage(), "Password hash", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordSeedAttributeType, Locale.ENGLISH
-                .getLanguage(), "Password hash seed", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordAlgorithmAttributeType,
-                Locale.ENGLISH.getLanguage(), "Password hash algorithm", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordHashAttributeType, "nl",
-                "Wachtwoord hash", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordSeedAttributeType, "nl",
-                "Wachtwoord hash seed", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordHashAttributeType, Locale.ENGLISH.getLanguage(),
+                "Password hash", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordSeedAttributeType, Locale.ENGLISH.getLanguage(),
+                "Password hash seed", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordAlgorithmAttributeType, Locale.ENGLISH.getLanguage(),
+                "Password hash algorithm", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordHashAttributeType, "nl", "Wachtwoord hash", null));
+        this.attributeTypeDescriptions
+                                      .add(new AttributeTypeDescriptionEntity(passwordSeedAttributeType, "nl", "Wachtwoord hash seed", null));
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordAlgorithmAttributeType, "nl",
                 "Wachtwoord hash algoritme", null));
 
@@ -211,28 +201,25 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordDeviceDisableAttributeType, "nl",
                 "Paswoord Disable Attribuut", null));
 
-        AttributeTypeEntity passwordDeviceAttributeType = new AttributeTypeEntity(
-                SafeOnlineConstants.PASSWORD_DEVICE_ATTRIBUTE, DatatypeType.COMPOUNDED, false, false);
+        AttributeTypeEntity passwordDeviceAttributeType = new AttributeTypeEntity(SafeOnlineConstants.PASSWORD_DEVICE_ATTRIBUTE,
+                DatatypeType.COMPOUNDED, false, false);
         passwordDeviceAttributeType.setMultivalued(true);
         passwordDeviceAttributeType.addMember(passwordHashAttributeType, 0, true);
         passwordDeviceAttributeType.addMember(passwordSeedAttributeType, 1, true);
         passwordDeviceAttributeType.addMember(passwordAlgorithmAttributeType, 2, true);
         passwordDeviceAttributeType.addMember(passwordDeviceDisableAttributeType, 3, true);
         this.attributeTypes.add(passwordDeviceAttributeType);
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordDeviceAttributeType,
-                Locale.ENGLISH.getLanguage(), "Password", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordDeviceAttributeType, "nl",
-                "Wachtwoord", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordDeviceAttributeType, Locale.ENGLISH.getLanguage(),
+                "Password", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordDeviceAttributeType, "nl", "Wachtwoord", null));
 
-        this.devices.add(new Device(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID,
-                SafeOnlineConstants.PASSWORD_DEVICE_CLASS, null, "password/username-password.seam",
-                "password/register-password.seam", "password/remove-password.seam", "password/register-password.seam",
-                "disable-dummy-path.seam", null,
-                        passwordDeviceAttributeType, null, passwordDeviceDisableAttributeType));
-        this.deviceDescriptions.add(new DeviceDescription(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, "nl",
-                "Paswoord"));
-        this.deviceDescriptions.add(new DeviceDescription(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID,
-                Locale.ENGLISH.getLanguage(), "Password"));
+        this.devices.add(new Device(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, SafeOnlineConstants.PASSWORD_DEVICE_CLASS, null,
+                "password/username-password.seam", "password/register-password.seam", "password/remove-password.seam",
+                "password/register-password.seam", "disable-dummy-path.seam", null, passwordDeviceAttributeType, null,
+                passwordDeviceDisableAttributeType));
+        this.deviceDescriptions.add(new DeviceDescription(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, "nl", "Paswoord"));
+        this.deviceDescriptions.add(new DeviceDescription(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, Locale.ENGLISH.getLanguage(),
+                "Password"));
     }
 
     @Override

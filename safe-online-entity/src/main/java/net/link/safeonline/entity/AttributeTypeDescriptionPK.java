@@ -65,8 +65,7 @@ public class AttributeTypeDescriptionPK implements Serializable {
         if (false == obj instanceof SubscriptionPK)
             return false;
         AttributeTypeDescriptionPK rhs = (AttributeTypeDescriptionPK) obj;
-        return new EqualsBuilder().append(this.language, rhs.language).append(this.attributeType, rhs.attributeType)
-                .isEquals();
+        return new EqualsBuilder().append(this.language, rhs.language).append(this.attributeType, rhs.attributeType).isEquals();
     }
 
     @Override
@@ -78,7 +77,6 @@ public class AttributeTypeDescriptionPK implements Serializable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("language", this.language).append("attributeType", this.attributeType)
-                .toString();
+        return new ToStringBuilder(this).append("language", this.language).append("attributeType", this.attributeType).toString();
     }
 }

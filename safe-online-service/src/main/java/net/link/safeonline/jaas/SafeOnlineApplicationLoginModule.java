@@ -41,17 +41,15 @@ import org.jboss.security.SimplePrincipal;
 
 
 /**
- * JAAS login module that performs authentication and authorization for applications. This module is used by the
- * SafeOnline core application security domain. The login module links an X509 certificate with an application
- * principal.
- *
+ * JAAS login module that performs authentication and authorization for applications. This module is used by the SafeOnline core application
+ * security domain. The login module links an X509 certificate with an application principal.
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class SafeOnlineApplicationLoginModule implements LoginModule {
 
-    private static final Log   LOG                                      = LogFactory
-                                                                                .getLog(SafeOnlineApplicationLoginModule.class);
+    private static final Log   LOG                                      = LogFactory.getLog(SafeOnlineApplicationLoginModule.class);
 
     private Subject            subject;
 
@@ -104,8 +102,8 @@ public class SafeOnlineApplicationLoginModule implements LoginModule {
         return optionValue;
     }
 
-    public void initialize(Subject newSubject, CallbackHandler newCallbackHandler,
-            @SuppressWarnings("unchecked") Map sharedState, @SuppressWarnings("unchecked") Map options) {
+    public void initialize(Subject newSubject, CallbackHandler newCallbackHandler, @SuppressWarnings("unchecked") Map sharedState,
+                           @SuppressWarnings("unchecked") Map options) {
 
         LOG.debug("initialize: " + this);
 
@@ -185,8 +183,8 @@ public class SafeOnlineApplicationLoginModule implements LoginModule {
     private ApplicationAuthenticationService getApplicationAuthenticationService() throws LoginException {
 
         try {
-            ApplicationAuthenticationService applicationAuthenticationService = EjbUtils.getEJB(
-                    this.authenticationServiceJndiName, ApplicationAuthenticationService.class);
+            ApplicationAuthenticationService applicationAuthenticationService = EjbUtils.getEJB(this.authenticationServiceJndiName,
+                    ApplicationAuthenticationService.class);
             return applicationAuthenticationService;
         } catch (RuntimeException e) {
             throw new LoginException("JNDI lookup error: " + e.getMessage());
@@ -203,8 +201,8 @@ public class SafeOnlineApplicationLoginModule implements LoginModule {
         if (!result)
             throw new LoginException("could not remove authenticated principal");
         /*
-         * Despite the fact that JBoss AbstractServerLoginModule is not removing the roles on the subject, we clear here
-         * all data on the subject.
+         * Despite the fact that JBoss AbstractServerLoginModule is not removing the roles on the subject, we clear here all data on the
+         * subject.
          */
         this.subject.getPrincipals().clear();
         this.subject.getPublicCredentials().clear();

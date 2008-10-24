@@ -11,6 +11,7 @@ import javax.ejb.ApplicationException;
 import net.link.safeonline.authentication.exception.SafeOnlineException;
 import net.link.safeonline.shared.SharedConstants;
 
+
 /**
  * <h2>{@link OptionAuthenticationException}<br>
  * <sub>[in short] (TODO).</sub></h2>
@@ -28,9 +29,11 @@ import net.link.safeonline.shared.SharedConstants;
 @ApplicationException(rollback = true)
 public class OptionAuthenticationException extends SafeOnlineException {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public OptionAuthenticationException() {
-		super(null, SharedConstants.PERMISSION_DENIED_ERROR);
-	}
+
+    public OptionAuthenticationException() {
+
+        super(null, SharedConstants.PERMISSION_DENIED_ERROR);
+    }
 }

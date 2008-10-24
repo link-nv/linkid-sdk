@@ -9,9 +9,9 @@ package net.link.safeonline.sdk.ws.encap;
 
 /**
  * Some constants from the ENCAP web services
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class EncapConstants {
 

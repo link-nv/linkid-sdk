@@ -88,21 +88,19 @@ public class LandingServlet extends AbstractInjectionServlet {
         if (null != keyStoreInputStream) {
             PrivateKeyEntry privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(this.keyStoreType, keyStoreInputStream,
                     this.keyStorePassword, this.keyStorePassword);
-            this.applicationKeyPair = new KeyPair(privateKeyEntry.getCertificate().getPublicKey(), privateKeyEntry
-                    .getPrivateKey());
+            this.applicationKeyPair = new KeyPair(privateKeyEntry.getCertificate().getPublicKey(), privateKeyEntry.getPrivateKey());
             this.applicationCertificate = (X509Certificate) privateKeyEntry.getCertificate();
         }
     }
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         LOG.debug("doPost");
 
         /**
-         * Wrap the request to use the servlet endpoint url if defined. To prevent failure when behind a reverse proxy
-         * or loadbalancer when opensaml is checking the destination field.
+         * Wrap the request to use the servlet endpoint url if defined. To prevent failure when behind a reverse proxy or loadbalancer when
+         * opensaml is checking the destination field.
          */
         HttpServletRequestEndpointWrapper requestWrapper;
         if (null != this.servletEndpointUrl) {

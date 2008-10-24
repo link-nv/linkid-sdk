@@ -36,8 +36,7 @@ public class ResourceAuditLoggerBean implements ResourceAuditLogger {
     private ResourceAuditDAO resourceAuditDAO;
 
 
-    public void addResourceAudit(ResourceNameType resourceName, ResourceLevelType resourceLevel,
-            String sourceComponent, String message) {
+    public void addResourceAudit(ResourceNameType resourceName, ResourceLevelType resourceLevel, String sourceComponent, String message) {
 
         try {
             Long auditContextId = (Long) PolicyContext.getContext(AuditContextPolicyContextHandler.AUDIT_CONTEXT_KEY);
@@ -49,8 +48,7 @@ public class ResourceAuditLoggerBean implements ResourceAuditLogger {
             try {
                 AuditContextEntity auditContext = this.auditContextDAO.getAuditContext(auditContextId);
 
-                this.resourceAuditDAO.addResourceAudit(auditContext, resourceName, resourceLevel, sourceComponent,
-                        message);
+                this.resourceAuditDAO.addResourceAudit(auditContext, resourceName, resourceLevel, sourceComponent, message);
             }
 
             catch (AuditContextNotFoundException e) {

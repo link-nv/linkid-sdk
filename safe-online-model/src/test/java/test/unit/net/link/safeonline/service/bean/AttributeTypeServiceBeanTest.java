@@ -47,9 +47,8 @@ public class AttributeTypeServiceBeanTest {
         this.entityTestManager = new EntityTestManager();
         this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
         EntityManager entityManager = this.entityTestManager.getEntityManager();
-        this.testedInstance = EJBTestUtils.newInstance(AttributeTypeServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator",
-                SafeOnlineRoles.GLOBAL_OPERATOR_ROLE, SafeOnlineRoles.OPERATOR_ROLE);
+        this.testedInstance = EJBTestUtils.newInstance(AttributeTypeServiceBean.class, SafeOnlineTestContainer.sessionBeans, entityManager,
+                "test-operator", SafeOnlineRoles.GLOBAL_OPERATOR_ROLE, SafeOnlineRoles.OPERATOR_ROLE);
     }
 
     @After
@@ -81,26 +80,22 @@ public class AttributeTypeServiceBeanTest {
 
         // setup
         String memberAttributeName = "test-attribute-type-name-" + UUID.randomUUID().toString();
-        AttributeTypeEntity memberAttributeType = new AttributeTypeEntity(memberAttributeName, DatatypeType.STRING,
-                true, true);
+        AttributeTypeEntity memberAttributeType = new AttributeTypeEntity(memberAttributeName, DatatypeType.STRING, true, true);
 
         String nonMemberAttributeName = "test-attribute-type-name" + UUID.randomUUID().toString();
-        AttributeTypeEntity nonMemberAttributeType = new AttributeTypeEntity(nonMemberAttributeName,
-                DatatypeType.STRING, true, true);
+        AttributeTypeEntity nonMemberAttributeType = new AttributeTypeEntity(nonMemberAttributeName, DatatypeType.STRING, true, true);
         nonMemberAttributeType.setMultivalued(true);
 
         String compoundedAttributeTypeName = "test-attribute-type-name" + UUID.randomUUID().toString();
-        AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(compoundedAttributeTypeName,
-                DatatypeType.STRING, true, true);
+        AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(compoundedAttributeTypeName, DatatypeType.STRING, true, true);
 
         // operate
         this.testedInstance.add(memberAttributeType);
         this.testedInstance.add(nonMemberAttributeType);
 
         /*
-         * Next is important in order to emulate correct behaviour of the entities. They should be detached since
-         * addMember is setting fields on the detached entities that should not directly be visible in the database
-         * itself.
+         * Next is important in order to emulate correct behaviour of the entities. They should be detached since addMember is setting
+         * fields on the detached entities that should not directly be visible in the database itself.
          */
         EntityManager entityManager = this.entityTestManager.getEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
@@ -129,12 +124,10 @@ public class AttributeTypeServiceBeanTest {
 
         // setup
         String memberAttributeName = "test-attribute-type-name-" + UUID.randomUUID().toString();
-        AttributeTypeEntity memberAttributeType = new AttributeTypeEntity(memberAttributeName, DatatypeType.STRING,
-                true, true);
+        AttributeTypeEntity memberAttributeType = new AttributeTypeEntity(memberAttributeName, DatatypeType.STRING, true, true);
 
         String compoundedAttributeTypeName = "test-attribute-type-name" + UUID.randomUUID().toString();
-        AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(compoundedAttributeTypeName,
-                DatatypeType.STRING, true, true);
+        AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(compoundedAttributeTypeName, DatatypeType.STRING, true, true);
         this.testedInstance.add(memberAttributeType);
 
         EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -145,8 +138,8 @@ public class AttributeTypeServiceBeanTest {
         compoundedAttributeType.addMember(memberAttributeType, 0, true);
 
         String compoundedCompoundedAttributeTypeName = "test-attribute-type-name" + UUID.randomUUID().toString();
-        AttributeTypeEntity compoundedCompoundedAttributeType = new AttributeTypeEntity(
-                compoundedCompoundedAttributeTypeName, DatatypeType.STRING, true, true);
+        AttributeTypeEntity compoundedCompoundedAttributeType = new AttributeTypeEntity(compoundedCompoundedAttributeTypeName,
+                DatatypeType.STRING, true, true);
 
         compoundedCompoundedAttributeType.addMember(compoundedAttributeType, 0, true);
 
@@ -166,8 +159,7 @@ public class AttributeTypeServiceBeanTest {
 
         // setup
         String memberAttributeName = "test-member-attribute-type-name-" + UUID.randomUUID().toString();
-        AttributeTypeEntity memberAttributeType = new AttributeTypeEntity(memberAttributeName, DatatypeType.STRING,
-                true, true);
+        AttributeTypeEntity memberAttributeType = new AttributeTypeEntity(memberAttributeName, DatatypeType.STRING, true, true);
         this.testedInstance.add(memberAttributeType);
 
         EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -177,13 +169,12 @@ public class AttributeTypeServiceBeanTest {
         entityManager.clear();
 
         String compoundedAttributeTypeName = "test-compounded-attribute-type-name" + UUID.randomUUID().toString();
-        AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(compoundedAttributeTypeName,
-                DatatypeType.STRING, true, true);
+        AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(compoundedAttributeTypeName, DatatypeType.STRING, true, true);
         compoundedAttributeType.addMember(memberAttributeType, 0, true);
 
         String compoundedCompoundedAttributeTypeName = "test-attribute-type-name" + UUID.randomUUID().toString();
-        AttributeTypeEntity compounded2AttributeType = new AttributeTypeEntity(compoundedCompoundedAttributeTypeName,
-                DatatypeType.STRING, true, true);
+        AttributeTypeEntity compounded2AttributeType = new AttributeTypeEntity(compoundedCompoundedAttributeTypeName, DatatypeType.STRING,
+                true, true);
         try {
             compounded2AttributeType.addMember(memberAttributeType, 0, true);
             fail();

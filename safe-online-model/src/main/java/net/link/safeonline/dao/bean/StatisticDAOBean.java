@@ -39,8 +39,7 @@ public class StatisticDAOBean implements StatisticDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                StatisticEntity.QueryInterface.class);
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, StatisticEntity.QueryInterface.class);
     }
 
     public StatisticEntity addStatistic(String name, String domain, ApplicationEntity application) {
@@ -56,8 +55,7 @@ public class StatisticDAOBean implements StatisticDAO {
         return result;
     }
 
-    public StatisticEntity findStatisticByNameDomainAndApplication(String name, String domain,
-            ApplicationEntity application) {
+    public StatisticEntity findStatisticByNameDomainAndApplication(String name, String domain, ApplicationEntity application) {
 
         try {
             if (null == application)
@@ -68,8 +66,7 @@ public class StatisticDAOBean implements StatisticDAO {
         }
     }
 
-    public StatisticEntity findOrAddStatisticByNameDomainAndApplication(String name, String domain,
-            ApplicationEntity application) {
+    public StatisticEntity findOrAddStatisticByNameDomainAndApplication(String name, String domain, ApplicationEntity application) {
 
         StatisticEntity statistic = this.findStatisticByNameDomainAndApplication(name, domain, application);
         if (statistic == null) {

@@ -119,8 +119,9 @@ public class ApplicationScopeIdEntity implements Serializable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("subject", this.subject).append(
-                "application", this.application).append("id", this.id).toString();
+        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("subject", this.subject)
+                                                                    .append("application", this.application).append("id", this.id)
+                                                                    .toString();
     }
 
 
@@ -128,7 +129,7 @@ public class ApplicationScopeIdEntity implements Serializable {
 
         @QueryMethod(value = QUERY_WHERE_SUBJECT_APPLICATION, nullable = true)
         ApplicationScopeIdEntity findApplicationScopeId(@QueryParam("subject") SubjectEntity subject,
-                @QueryParam("application") ApplicationEntity application);
+                                                        @QueryParam("application") ApplicationEntity application);
 
         @UpdateMethod(value = DELETE_ALL_WHERE_SUBJECT)
         void deleteAll(@QueryParam("subject") SubjectEntity subject);

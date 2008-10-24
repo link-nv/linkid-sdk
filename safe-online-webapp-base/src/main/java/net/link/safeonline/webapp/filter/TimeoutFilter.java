@@ -26,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Servlet Filter that handles browser timeout events.
- *
+ * 
  * <p>
  * The init parameters for this filter are:
  * </p>
@@ -34,9 +34,9 @@ import org.apache.commons.logging.LogFactory;
  * <li><code>TimeoutPath</code>: the path to the timeout page.</li>
  * <li><code>LoginSessionAttribute</code>: the HTTP session attribute that indicated a logged in user.</li>
  * </ul>
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class TimeoutFilter extends AbstractInjectionFilter {
 
@@ -45,13 +45,13 @@ public class TimeoutFilter extends AbstractInjectionFilter {
     @Init(name = "TimeoutPath")
     private String           timeoutPath;
 
+
     public void destroy() {
 
         LOG.debug("destroy");
     }
 
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-            ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         LOG.debug("doFilter");
         HttpServletRequest httpRequest = (HttpServletRequest) request;
@@ -81,8 +81,8 @@ public class TimeoutFilter extends AbstractInjectionFilter {
             return;
         }
         /*
-         * In this case no corresponding session context for the given requested session Id was found. This could be an
-         * indication that the browser caused a timeout on the web application. We detect this via the login cookie.
+         * In this case no corresponding session context for the given requested session Id was found. This could be an indication that the
+         * browser caused a timeout on the web application. We detect this via the login cookie.
          */
         if (true == hasCookie(SafeOnlineCookies.LOGIN_COOKIE, httpRequest)) {
             LOG.debug("forwarding to timeout path: " + this.timeoutPath);
@@ -91,8 +91,8 @@ public class TimeoutFilter extends AbstractInjectionFilter {
             return;
         }
         /*
-         * If no login cookie was found, then the browser indeed caused a timeout on the HTTP session, but since the
-         * user was not yet logged in, it's not that harmful.
+         * If no login cookie was found, then the browser indeed caused a timeout on the HTTP session, but since the user was not yet logged
+         * in, it's not that harmful.
          */
         LOG.debug("non harmful timeout");
         chain.doFilter(request, response);

@@ -15,9 +15,9 @@ import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 
 /**
  * WS Notification Producer Service Client interface.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public interface NotificationConsumerClient extends MessageAccessor {
 

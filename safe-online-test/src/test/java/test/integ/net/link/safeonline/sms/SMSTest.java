@@ -10,7 +10,7 @@ public class SMSTest {
 
     /**
      * You need to connect a GSM phone to your system to test this
-     *
+     * 
      */
     @Test
     public void testSMS() throws Exception {

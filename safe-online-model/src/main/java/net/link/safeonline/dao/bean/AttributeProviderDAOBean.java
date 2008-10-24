@@ -42,12 +42,10 @@ public class AttributeProviderDAOBean implements AttributeProviderDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                AttributeProviderEntity.QueryInterface.class);
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, AttributeProviderEntity.QueryInterface.class);
     }
 
-    public AttributeProviderEntity findAttributeProvider(ApplicationEntity application,
-            AttributeTypeEntity attributeType) {
+    public AttributeProviderEntity findAttributeProvider(ApplicationEntity application, AttributeTypeEntity attributeType) {
 
         AttributeProviderPK pk = new AttributeProviderPK(application, attributeType);
         AttributeProviderEntity attributeProvider = this.entityManager.find(AttributeProviderEntity.class, pk);

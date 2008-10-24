@@ -113,8 +113,7 @@ public class DeviceBean implements Device {
         Locale viewLocale = facesContext.getViewRoot().getLocale();
         List<SelectItem> applicationDevices = new LinkedList<SelectItem>();
 
-        List<DeviceEntity> devicePolicy = this.devicePolicyService.getDevicePolicy(this.application,
-                this.requiredDevicePolicy);
+        List<DeviceEntity> devicePolicy = this.devicePolicyService.getDevicePolicy(this.application, this.requiredDevicePolicy);
         for (DeviceEntity device : devicePolicy) {
             String deviceName = this.devicePolicyService.getDeviceDescription(device.getName(), viewLocale);
             SelectItem applicationDevice = new SelectItem(device.getName(), deviceName);

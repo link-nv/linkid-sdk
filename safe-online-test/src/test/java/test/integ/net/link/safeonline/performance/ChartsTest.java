@@ -82,8 +82,7 @@ public class ChartsTest extends AbstractDataTest {
 
         // Execution to chart.
         // ExecutionEntity execution = getLatestExecution();
-        ExecutionEntity execution = this.executionService
-                .getExecution(new Date(1204796106 * 1000l));
+        ExecutionEntity execution = this.executionService.getExecution(new Date(1204796106 * 1000l));
 
         // Chart modules to render.
         Set<Chart> charts = new HashSet<Chart>();
@@ -99,22 +98,18 @@ public class ChartsTest extends AbstractDataTest {
     /**
      * Instantiate a scenario object of the class used in the given execution.
      */
-    private Scenario createScenario(ExecutionEntity execution)
-            throws InstantiationException, IllegalAccessException,
-            ClassNotFoundException {
+    private Scenario createScenario(ExecutionEntity execution) throws InstantiationException, IllegalAccessException,
+                                                              ClassNotFoundException {
 
         String scenarioName = execution.getScenarioName();
-        return (Scenario) Thread.currentThread().getContextClassLoader()
-                .loadClass(scenarioName).newInstance();
+        return (Scenario) Thread.currentThread().getContextClassLoader().loadClass(scenarioName).newInstance();
     }
 
     /**
-     * Render all charts registered with the scenario used in the given
-     * execution.
+     * Render all charts registered with the scenario used in the given execution.
      */
     @SuppressWarnings("unused")
-    private Map<String, byte[][]> getAllCharts(ExecutionEntity execution)
-            throws Exception {
+    private Map<String, byte[][]> getAllCharts(ExecutionEntity execution) throws Exception {
 
         List<? extends Chart> charts = createScenario(execution).getCharts();
         return getCharts(execution, charts.toArray(new Chart[charts.size()]));
@@ -123,8 +118,7 @@ public class ChartsTest extends AbstractDataTest {
     /**
      * Render given charts with data from the given execution.
      */
-    private Map<String, byte[][]> getCharts(ExecutionEntity execution,
-            Chart... charts) throws Exception {
+    private Map<String, byte[][]> getCharts(ExecutionEntity execution, Chart... charts) throws Exception {
 
         // Divide the charts over three lists depending on data they chart.
         List<Chart> dataCharts, errorCharts, timingCharts;
@@ -144,8 +138,7 @@ public class ChartsTest extends AbstractDataTest {
         }
 
         // Retrieve scenario timings recorded during the execution.
-        LinkedList<ScenarioTimingEntity> scenarioTimings = this.scenarioTimingService
-                .getExecutionTimings(execution, DATA_POINTS);
+        LinkedList<ScenarioTimingEntity> scenarioTimings = this.scenarioTimingService.getExecutionTimings(execution, DATA_POINTS);
         if (!timingCharts.isEmpty()) {
 
             int i = 0, t = scenarioTimings.size();
@@ -182,21 +175,17 @@ public class ChartsTest extends AbstractDataTest {
             List<DriverExceptionEntity> profileErrors = null;
             if (this.datalimit == null) {
                 if (!dataCharts.isEmpty()) {
-                    profileData = this.profileDataService.getProfileData(
-                            profile, scenarioTimings);
+                    profileData = this.profileDataService.getProfileData(profile, scenarioTimings);
                 }
                 if (!errorCharts.isEmpty()) {
-                    profileErrors = this.driverExceptionService
-                            .getProfileErrors(profile, DATA_POINTS);
+                    profileErrors = this.driverExceptionService.getProfileErrors(profile, DATA_POINTS);
                 }
             } else {
                 if (!dataCharts.isEmpty()) {
-                    profileData = this.profileDataService
-                            .getAllProfileData(profile);
+                    profileData = this.profileDataService.getAllProfileData(profile);
                 }
                 if (!errorCharts.isEmpty()) {
-                    profileErrors = this.driverExceptionService
-                            .getAllProfileErrors(profile);
+                    profileErrors = this.driverExceptionService.getAllProfileErrors(profile);
                 }
             }
 
@@ -215,8 +204,7 @@ public class ChartsTest extends AbstractDataTest {
 
                     // Show data completion percentage.
                     if (++j % Math.max(1, u / 100) == 0) {
-                        this.LOG.debug("data  : " + 100 * i / t + "%, 0%, "
-                                + 100 * j / u + "% ..");
+                        this.LOG.debug("data  : " + 100 * i / t + "%, 0%, " + 100 * j / u + "% ..");
                     }
                     if (this.datalimit != null && j > this.datalimit) {
                         break;
@@ -239,8 +227,7 @@ public class ChartsTest extends AbstractDataTest {
 
                     // Show data completion percentage.
                     if (++j % Math.max(1, u / 100) == 0) {
-                        this.LOG.debug("errors: " + 100 * i / t + "%, 50%, "
-                                + 100 * j / u + "% ..");
+                        this.LOG.debug("errors: " + 100 * i / t + "%, 50%, " + 100 * j / u + "% ..");
                     }
                     if (this.datalimit != null && j > this.datalimit) {
                         break;
@@ -295,8 +282,7 @@ public class ChartsTest extends AbstractDataTest {
 
         // Add the images.
         for (Map.Entry<String, byte[][]> chart : charts.entrySet()) {
-            JLabel image = new JLabel(chart.getKey(), new ImageIcon(chart
-                    .getValue()[0]), SwingConstants.CENTER);
+            JLabel image = new JLabel(chart.getKey(), new ImageIcon(chart.getValue()[0]), SwingConstants.CENTER);
             image.setVerticalTextPosition(SwingConstants.TOP);
             image.setHorizontalTextPosition(SwingConstants.CENTER);
             contentPane.add(image);

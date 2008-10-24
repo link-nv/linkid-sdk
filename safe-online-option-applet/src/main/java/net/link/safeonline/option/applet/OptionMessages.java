@@ -20,9 +20,17 @@ import java.util.ResourceBundle;
 public class OptionMessages {
 
     public static enum KEY {
-        START("start"), ERROR("error"), NO_DATACARD("noDatacard"), DONE("done"), SENDING("sending"), PIN("pin"), PERMISSION_DENIED(
-                "permissionDenied"), NOT_SUBSCRIBED("notSubscribed"), DATACARD_NOT_REGISTERED("datacardNotRegistered"), ENTER_PIN(
-                "enterPin"), DATACARD_DISABLED("datacardDisabled");
+        START("start"),
+        ERROR("error"),
+        NO_DATACARD("noDatacard"),
+        DONE("done"),
+        SENDING("sending"),
+        PIN("pin"),
+        PERMISSION_DENIED("permissionDenied"),
+        NOT_SUBSCRIBED("notSubscribed"),
+        DATACARD_NOT_REGISTERED("datacardNotRegistered"),
+        ENTER_PIN("enterPin"),
+        DATACARD_DISABLED("datacardDisabled");
 
         private final String key;
 

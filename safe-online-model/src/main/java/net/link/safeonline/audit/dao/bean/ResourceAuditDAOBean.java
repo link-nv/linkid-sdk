@@ -38,16 +38,14 @@ public class ResourceAuditDAOBean implements ResourceAuditDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                ResourceAuditEntity.QueryInterface.class);
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, ResourceAuditEntity.QueryInterface.class);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void addResourceAudit(AuditContextEntity auditContext, ResourceNameType resourceName,
-            ResourceLevelType resourceLevel, String sourceComponent, String message) {
+    public void addResourceAudit(AuditContextEntity auditContext, ResourceNameType resourceName, ResourceLevelType resourceLevel,
+                                 String sourceComponent, String message) {
 
-        ResourceAuditEntity resourceAudit = new ResourceAuditEntity(auditContext, resourceName, resourceLevel,
-                sourceComponent, message);
+        ResourceAuditEntity resourceAudit = new ResourceAuditEntity(auditContext, resourceName, resourceLevel, sourceComponent, message);
         this.entityManager.persist(resourceAudit);
     }
 
@@ -74,7 +72,7 @@ public class ResourceAuditDAOBean implements ResourceAuditDAO {
     public boolean hasRecords(long id) {
 
         long count = this.queryObject.countRecords(id);
-        
+
         return 0 != count;
     }
 }

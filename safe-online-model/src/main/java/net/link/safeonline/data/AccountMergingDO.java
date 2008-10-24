@@ -22,9 +22,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Used to store the resulting data of account merging and to transfer data between service and user web application.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class AccountMergingDO implements Serializable {
 
@@ -225,8 +225,7 @@ public class AccountMergingDO implements Serializable {
                 LOG.debug("  * " + choosableAttribute.getSourceAttribute().getIndex() + ": "
                         + choosableAttribute.getSourceAttribute().getType());
                 LOG.debug("    * source: " + choosableAttribute.getSourceAttribute().getIndex() + ": "
-                        + choosableAttribute.getSourceAttribute().getValue() + " (selected:"
-                        + choosableAttribute.isSourceSelected() + ")");
+                        + choosableAttribute.getSourceAttribute().getValue() + " (selected:" + choosableAttribute.isSourceSelected() + ")");
                 LOG.debug("    * target: " + choosableAttribute.getTargetAttribute().getIndex() + ": "
                         + choosableAttribute.getTargetAttribute().getValue());
             }

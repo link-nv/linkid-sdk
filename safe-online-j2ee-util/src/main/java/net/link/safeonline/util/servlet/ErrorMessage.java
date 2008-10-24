@@ -8,9 +8,9 @@ package net.link.safeonline.util.servlet;
 
 /**
  * Wrapper class that hols a name-value pair for error messages. Used by {@link AbstractInjectionServlet}.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class ErrorMessage {
 

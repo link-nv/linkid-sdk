@@ -37,7 +37,7 @@ public class BankTransactionEntity implements Serializable, Comparable<BankTrans
     private String             description;
 
     @ManyToOne
-    private BankAccountEntity      source;
+    private BankAccountEntity  source;
 
     private String             target;
 

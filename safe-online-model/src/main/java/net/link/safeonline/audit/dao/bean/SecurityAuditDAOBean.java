@@ -37,16 +37,13 @@ public class SecurityAuditDAOBean implements SecurityAuditDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                SecurityAuditEntity.QueryInterface.class);
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, SecurityAuditEntity.QueryInterface.class);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void addSecurityAudit(AuditContextEntity auditContext, SecurityThreatType securityThreat,
-            String targetPrincipal, String message) {
+    public void addSecurityAudit(AuditContextEntity auditContext, SecurityThreatType securityThreat, String targetPrincipal, String message) {
 
-        SecurityAuditEntity securityAudit = new SecurityAuditEntity(auditContext, securityThreat, targetPrincipal,
-                message);
+        SecurityAuditEntity securityAudit = new SecurityAuditEntity(auditContext, securityThreat, targetPrincipal, message);
         this.entityManager.persist(securityAudit);
     }
 
@@ -83,7 +80,7 @@ public class SecurityAuditDAOBean implements SecurityAuditDAO {
     public boolean hasRecords(long id) {
 
         long count = this.queryObject.countRecords(id);
-        
+
         return 0 != count;
     }
 }

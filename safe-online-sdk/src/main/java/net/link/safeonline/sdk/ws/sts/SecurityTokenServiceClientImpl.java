@@ -38,7 +38,7 @@ import com.sun.xml.ws.client.ClientTransportException;
 
 /**
  * Implementation of Security Token Service Client.
- *
+ * 
  * @author fcorneli
  */
 public class SecurityTokenServiceClientImpl extends AbstractMessageAccessor implements SecurityTokenServiceClient {
@@ -52,7 +52,7 @@ public class SecurityTokenServiceClientImpl extends AbstractMessageAccessor impl
 
     /**
      * Main constructor.
-     *
+     * 
      * @param location
      *            the location (host:port) of the attribute web service.
      * @param clientCertificate
@@ -60,8 +60,7 @@ public class SecurityTokenServiceClientImpl extends AbstractMessageAccessor impl
      * @param clientPrivateKey
      *            the private key corresponding with the client certificate.
      */
-    public SecurityTokenServiceClientImpl(String location, X509Certificate clientCertificate,
-            PrivateKey clientPrivateKey) {
+    public SecurityTokenServiceClientImpl(String location, X509Certificate clientCertificate, PrivateKey clientPrivateKey) {
 
         SecurityTokenService service = SecurityTokenServiceFactory.newInstance();
         this.port = service.getSecurityTokenServicePort();
@@ -84,8 +83,8 @@ public class SecurityTokenServiceClientImpl extends AbstractMessageAccessor impl
         LOG.debug("invoke");
         RequestSecurityTokenType request = new RequestSecurityTokenType();
         ObjectFactory objectFactory = new ObjectFactory();
-        JAXBElement<String> requestType = objectFactory.createRequestType(WebServiceConstants.WS_TRUST_REQUEST_TYPE
-                + "Validate#" + trustDomain);
+        JAXBElement<String> requestType = objectFactory.createRequestType(WebServiceConstants.WS_TRUST_REQUEST_TYPE + "Validate#"
+                + trustDomain);
         request.getAny().add(requestType);
 
         JAXBElement<String> tokenType = objectFactory.createTokenType(SecurityTokenServiceConstants.TOKEN_TYPE_STATUS);

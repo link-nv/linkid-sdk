@@ -37,14 +37,14 @@ import org.apache.commons.logging.LogFactory;
 public class AuthenticationProtocolManager {
 
     private static final Log                                                                         LOG                            = LogFactory
-                                                                                                                                            .getLog(AuthenticationProtocolManager.class);
+                                                                                                                                                .getLog(AuthenticationProtocolManager.class);
 
     public static final String                                                                       PROTOCOL_HANDLER_ATTRIBUTE     = AuthenticationProtocolManager.class
-                                                                                                                                            .getName()
+                                                                                                                                                                         .getName()
                                                                                                                                             + ".PROTOCOL_HANDLER";
 
     public static final String                                                                       TARGET_ATTRIBUTE               = AuthenticationProtocolManager.class
-                                                                                                                                            .getName()
+                                                                                                                                                                         .getName()
                                                                                                                                             + ".TARGET";
 
     public static final String                                                                       LANDING_PAGE_INIT_PARAM        = "LandingPage";
@@ -70,10 +70,9 @@ public class AuthenticationProtocolManager {
         if (null == handlerClass)
             throw new RuntimeException("null for handler class");
         SupportedAuthenticationProtocol supportedAuthenticationProtocolAnnotation = handlerClass
-                .getAnnotation(SupportedAuthenticationProtocol.class);
+                                                                                                .getAnnotation(SupportedAuthenticationProtocol.class);
         if (null == supportedAuthenticationProtocolAnnotation)
-            throw new RuntimeException(
-                    "missing @SupportedAuthenticationProtocol on protocol handler implementation class");
+            throw new RuntimeException("missing @SupportedAuthenticationProtocol on protocol handler implementation class");
         AuthenticationProtocol authenticationProtocol = supportedAuthenticationProtocolAnnotation.value();
         if (handlerClasses.containsKey(authenticationProtocol))
             throw new RuntimeException("already registered a protocol handler for " + authenticationProtocol);
@@ -88,8 +87,8 @@ public class AuthenticationProtocolManager {
      * @throws IOException
      * @throws ServletException
      */
-    public static void initiateAuthentication(HttpServletRequest request, HttpServletResponse response)
-            throws IOException, ServletException {
+    public static void initiateAuthentication(HttpServletRequest request, HttpServletResponse response) throws IOException,
+                                                                                                       ServletException {
 
         String target = request.getRequestURL().toString();
         initiateAuthentication(request, response, target);
@@ -104,8 +103,8 @@ public class AuthenticationProtocolManager {
      * @throws IOException
      * @throws ServletException
      */
-    public static void initiateAuthentication(HttpServletRequest request, HttpServletResponse response, String target)
-            throws IOException, ServletException {
+    public static void initiateAuthentication(HttpServletRequest request, HttpServletResponse response, String target) throws IOException,
+                                                                                                                      ServletException {
 
         AuthenticationProtocolHandler protocolHandler = findAuthenticationProtocolHandler(request);
         if (null == protocolHandler)
@@ -146,15 +145,14 @@ public class AuthenticationProtocolManager {
         String target = findTarget(request);
         if (null == target)
             throw new IllegalStateException("target attribute is null");
-        
+
         return target;
     }
 
     /**
      * Gives back the possible stored target attribute value.
      * 
-     * Can return <code>null</code> in case this protocol manager was created due to an incoming logout request in a
-     * Single Logout process.
+     * Can return <code>null</code> in case this protocol manager was created due to an incoming logout request in a Single Logout process.
      * 
      */
     public static String findTarget(HttpServletRequest request) {
@@ -176,8 +174,9 @@ public class AuthenticationProtocolManager {
      * @throws IOException
      * @throws ServletException
      */
-    public static void initiateLogout(HttpServletRequest request, HttpServletResponse response, String target,
-            String subjectName) throws IOException, ServletException {
+    public static void initiateLogout(HttpServletRequest request, HttpServletResponse response, String target, String subjectName)
+                                                                                                                                  throws IOException,
+                                                                                                                                  ServletException {
 
         AuthenticationProtocolHandler protocolHandler = findAuthenticationProtocolHandler(request);
         if (null == protocolHandler)
@@ -195,9 +194,9 @@ public class AuthenticationProtocolManager {
     }
 
     /**
-     * Returns a new authentication protocol handler for the requested authentication protocol. The returned handler has
-     * already been initialized. This method will fail if a previous protocol handler was already bound to the HTTP
-     * session corresponding with the given HTTP servlet request.
+     * Returns a new authentication protocol handler for the requested authentication protocol. The returned handler has already been
+     * initialized. This method will fail if a previous protocol handler was already bound to the HTTP session corresponding with the given
+     * HTTP servlet request.
      * 
      * @param authenticationProtocol
      * @param authnServiceUrl
@@ -208,19 +207,20 @@ public class AuthenticationProtocolManager {
      * @param httpRequest
      * @throws ServletException
      */
-    public static AuthenticationProtocolHandler createAuthenticationProtocolHandler(
-            AuthenticationProtocol authenticationProtocol, String authnServiceUrl, String applicationName,
-            String applicationFriendlyName, KeyPair applicationKeyPair, X509Certificate applicationCertificate,
-            boolean ssoEnabled, Map<String, String> inConfigParams, HttpServletRequest httpRequest)
-            throws ServletException {
+    public static AuthenticationProtocolHandler createAuthenticationProtocolHandler(AuthenticationProtocol authenticationProtocol,
+                                                                                    String authnServiceUrl, String applicationName,
+                                                                                    String applicationFriendlyName,
+                                                                                    KeyPair applicationKeyPair,
+                                                                                    X509Certificate applicationCertificate,
+                                                                                    boolean ssoEnabled, Map<String, String> inConfigParams,
+                                                                                    HttpServletRequest httpRequest) throws ServletException {
 
         HttpSession session = httpRequest.getSession();
         if (null != session.getAttribute(PROTOCOL_HANDLER_ATTRIBUTE)) {
             LOG.error("a previous protocol handler already attached to session");
         }
 
-        Class<? extends AuthenticationProtocolHandler> authnProtocolHandlerClass = handlerClasses
-                .get(authenticationProtocol);
+        Class<? extends AuthenticationProtocolHandler> authnProtocolHandlerClass = handlerClasses.get(authenticationProtocol);
         if (null == authnProtocolHandlerClass)
             throw new ServletException("no handler for authentication protocol: " + authenticationProtocol);
         if (null == authnServiceUrl)
@@ -230,8 +230,8 @@ public class AuthenticationProtocolManager {
         Map<String, String> configParams = inConfigParams;
         if (null == configParams) {
             /*
-             * While optional for the authentication protocol manager, the configuration parameters are mandatory for
-             * the authentication protocol handlers.
+             * While optional for the authentication protocol manager, the configuration parameters are mandatory for the authentication
+             * protocol handlers.
              */
             configParams = new HashMap<String, String>();
         }
@@ -241,8 +241,8 @@ public class AuthenticationProtocolManager {
         } catch (Exception e) {
             throw new ServletException("could not load the protocol handler: " + authnProtocolHandlerClass.getName());
         }
-        protocolHandler.init(authnServiceUrl, applicationName, applicationFriendlyName, applicationKeyPair,
-                applicationCertificate, ssoEnabled, configParams);
+        protocolHandler.init(authnServiceUrl, applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate,
+                ssoEnabled, configParams);
 
         /*
          * We save the stateful protocol handler into the HTTP session as attribute.
@@ -253,17 +253,15 @@ public class AuthenticationProtocolManager {
     }
 
     /**
-     * Gives back the authentication protocol handler instance bound to the HTTP session corresponding with the given
-     * HTTP servlet request. In case there is no authentication protocol handler bound to the current HTTP session
-     * <code>null</code> will be returned.
+     * Gives back the authentication protocol handler instance bound to the HTTP session corresponding with the given HTTP servlet request.
+     * In case there is no authentication protocol handler bound to the current HTTP session <code>null</code> will be returned.
      * 
      * @param httpRequest
      */
     public static AuthenticationProtocolHandler findAuthenticationProtocolHandler(HttpServletRequest httpRequest) {
 
         HttpSession session = httpRequest.getSession();
-        AuthenticationProtocolHandler protocolHandler = (AuthenticationProtocolHandler) session
-                .getAttribute(PROTOCOL_HANDLER_ATTRIBUTE);
+        AuthenticationProtocolHandler protocolHandler = (AuthenticationProtocolHandler) session.getAttribute(PROTOCOL_HANDLER_ATTRIBUTE);
         return protocolHandler;
     }
 
@@ -276,8 +274,7 @@ public class AuthenticationProtocolManager {
     public static void cleanupAuthenticationHandler(HttpServletRequest httpRequest) throws ServletException {
 
         HttpSession session = httpRequest.getSession();
-        AuthenticationProtocolHandler protocolHandler = (AuthenticationProtocolHandler) session
-                .getAttribute(PROTOCOL_HANDLER_ATTRIBUTE);
+        AuthenticationProtocolHandler protocolHandler = (AuthenticationProtocolHandler) session.getAttribute(PROTOCOL_HANDLER_ATTRIBUTE);
         if (null == protocolHandler)
             throw new ServletException("no protocol handler to cleanup");
         LOG.debug("cleanup authentication handler");

@@ -54,18 +54,18 @@ import org.jboss.annotation.ejb.TransactionTimeout;
 /**
  * <h2>{@link ScenarioControllerBean}<br>
  * <sub>This bean is the heart of the scenario application.</sub></h2>
- *
+ * 
  * <p>
- * We take care of preparing scenario execution and launching a single scenario run. As these methods are called, entity
- * objects are updated with state that can later be used to graph out the progress of the scenario execution.<br>
+ * We take care of preparing scenario execution and launching a single scenario run. As these methods are called, entity objects are updated
+ * with state that can later be used to graph out the progress of the scenario execution.<br>
  * <br>
  * Charts are also generated in this bean as registered by the scenario.
  * </p>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 @Stateless
@@ -154,8 +154,7 @@ public class ScenarioControllerBean implements ScenarioController {
      * Load a class with the given class name. TODO: Describe method.
      */
     @SuppressWarnings("unchecked")
-    private <C> Class<C> loadClass(@SuppressWarnings("unused") Class<C> clazz, String className)
-            throws ClassNotFoundException {
+    private <C> Class<C> loadClass(@SuppressWarnings("unused") Class<C> clazz, String className) throws ClassNotFoundException {
 
         return (Class<C>) Thread.currentThread().getContextClassLoader().loadClass(className);
     }
@@ -166,9 +165,8 @@ public class ScenarioControllerBean implements ScenarioController {
     public Date prepare(ExecutionMetadata metaData) {
 
         // Create the execution and fill it up with metadata.
-        ExecutionEntity execution = this.executionService.addExecution(metaData.getScenarioName(),
-                metaData.getAgents(), metaData.getWorkers(), metaData.getStartTime(), metaData.getDuration(), metaData
-                        .getHostname(), metaData.isSsl());
+        ExecutionEntity execution = this.executionService.addExecution(metaData.getScenarioName(), metaData.getAgents(),
+                metaData.getWorkers(), metaData.getStartTime(), metaData.getDuration(), metaData.getHostname(), metaData.isSsl());
         createScenario(execution.getScenarioName()).prepare(execution, null);
 
         return execution.getStartTime();
@@ -202,9 +200,9 @@ public class ScenarioControllerBean implements ScenarioController {
 
         ExecutionEntity execution = this.executionService.getExecution(executionId);
 
-        return ExecutionMetadata.createResponse(execution.getScenarioName(), getDescription(executionId), execution
-                .getAgents(), execution.getWorkers(), execution.getStartTime(), execution.getDuration(), execution
-                .getHostname(), execution.isSsl(), execution.getSpeed());
+        return ExecutionMetadata.createResponse(execution.getScenarioName(), getDescription(executionId), execution.getAgents(),
+                execution.getWorkers(), execution.getStartTime(), execution.getDuration(), execution.getHostname(), execution.isSsl(),
+                execution.getSpeed());
     }
 
     /**
@@ -225,8 +223,7 @@ public class ScenarioControllerBean implements ScenarioController {
 
         for (DriverProfileEntity profile : new TreeSet<DriverProfileEntity>(execution.getProfiles())) {
             try {
-                String driverDescription = (String) loadClass(null, profile.getDriverClassName()).getField(
-                        "DESCRIPTION").get(null);
+                String driverDescription = (String) loadClass(null, profile.getDriverClassName()).getField("DESCRIPTION").get(null);
 
                 description.append("<li>").append(driverDescription).append("</li>\n");
             } catch (Exception e) {
@@ -297,13 +294,12 @@ public class ScenarioControllerBean implements ScenarioController {
             LOG.debug(" - " + errorCharts.size() + " need(s) errors.");
 
             // Chart scenario timing data.
-            LinkedList<ScenarioTimingEntity> scenarioTimings = this.scenarioTimingService
-                    .getExecutionTimings(execution, DATA_POINTS);
+            LinkedList<ScenarioTimingEntity> scenarioTimings = this.scenarioTimingService.getExecutionTimings(execution, DATA_POINTS);
             if (!timingCharts.isEmpty()) {
                 double total = scenarioTimings.size(), current = 0;
                 LOG.debug(" - Starting timings..");
                 LOG.debug(" - - Total: " + total);
-                
+
                 for (ScenarioTimingEntity timing : scenarioTimings) {
                     if (timing != null) {
                         for (Chart chart : timingCharts) {
@@ -327,11 +323,9 @@ public class ScenarioControllerBean implements ScenarioController {
 
                 // Chart data.
                 if (!dataCharts.isEmpty()) {
-                    List<ProfileDataEntity> profileData = this.profileDataService
-                            .getProfileData(profile, scenarioTimings);
+                    List<ProfileDataEntity> profileData = this.profileDataService.getProfileData(profile, scenarioTimings);
                     double total = profileData.size(), current = 0;
-                    LOG.debug(" - Starting " + profile.getDriverClassName()
-                            + "..");
+                    LOG.debug(" - Starting " + profile.getDriverClassName() + "..");
                     LOG.debug(" - - Total: " + total);
                     for (ProfileDataEntity data : profileData) {
                         if (data != null) {
@@ -346,18 +340,16 @@ public class ScenarioControllerBean implements ScenarioController {
                             }
                         }
 
-                        execution.setChartingProgress((total * currentProfile + ++current) / (total * totalProfiles)
-                                * 0.4 + 0.4);
-                        LOG.debug(String.format(" - - %01.2f%% (data)", ((total * currentProfile + current)
-                                / (total * totalProfiles) * 0.4 + 0.4) * 100));
+                        execution.setChartingProgress((total * currentProfile + ++current) / (total * totalProfiles) * 0.4 + 0.4);
+                        LOG.debug(String.format(" - - %01.2f%% (data)",
+                                ((total * currentProfile + current) / (total * totalProfiles) * 0.4 + 0.4) * 100));
                     }
                 }
 
                 // Chart errors.
                 LOG.debug(" - - Errors..");
                 if (!errorCharts.isEmpty()) {
-                    List<DriverExceptionEntity> profileErrors = this.driverExceptionService.getProfileErrors(profile,
-                            DATA_POINTS);
+                    List<DriverExceptionEntity> profileErrors = this.driverExceptionService.getProfileErrors(profile, DATA_POINTS);
                     for (DriverExceptionEntity error : profileErrors)
                         if (error != null) {
                             for (Chart chart : errorCharts) {

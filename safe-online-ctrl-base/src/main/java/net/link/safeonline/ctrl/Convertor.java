@@ -9,9 +9,9 @@ package net.link.safeonline.ctrl;
 
 /**
  * Interface for convertor components.
- *
+ * 
  * @author fcorneli
- *
+ * 
  * @param <TypeIn>
  * @param <TypeOut>
  */

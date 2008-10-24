@@ -65,6 +65,7 @@ public class PaymentServiceEntryBean implements PaymentServiceEntry {
     @Remove
     @Destroy
     public void destroyCallback() {
+
     }
 
     public void init() {

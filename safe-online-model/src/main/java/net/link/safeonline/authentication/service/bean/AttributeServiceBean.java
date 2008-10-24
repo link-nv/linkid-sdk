@@ -76,9 +76,10 @@ public class AttributeServiceBean implements AttributeService, AttributeServiceR
 
 
     @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
-    public Object getConfirmedAttributeValue(String subjectLogin, String attributeName)
-            throws PermissionDeniedException, SubjectNotFoundException, AttributeTypeNotFoundException,
-            AttributeUnavailableException {
+    public Object getConfirmedAttributeValue(String subjectLogin, String attributeName) throws PermissionDeniedException,
+                                                                                       SubjectNotFoundException,
+                                                                                       AttributeTypeNotFoundException,
+                                                                                       AttributeUnavailableException {
 
         LOG.debug("get attribute " + attributeName + " for login " + subjectLogin);
         List<ApplicationIdentityAttributeEntity> confirmedAttributes = getConfirmedIdentityAttributes(subjectLogin);
@@ -88,8 +89,8 @@ public class AttributeServiceBean implements AttributeService, AttributeServiceR
         return this.proxyAttributeService.findAttributeValue(subject.getUserId(), attributeType.getName());
     }
 
-    private AttributeTypeEntity checkAttributeReadPermission(String attributeName,
-            List<ApplicationIdentityAttributeEntity> attributes) throws PermissionDeniedException {
+    private AttributeTypeEntity checkAttributeReadPermission(String attributeName, List<ApplicationIdentityAttributeEntity> attributes)
+                                                                                                                                       throws PermissionDeniedException {
 
         for (ApplicationIdentityAttributeEntity attribute : attributes) {
             LOG.debug("identity attribute: " + attribute.getAttributeTypeName());
@@ -100,8 +101,8 @@ public class AttributeServiceBean implements AttributeService, AttributeServiceR
         throw new PermissionDeniedException("attribute not in set of confirmed identity attributes");
     }
 
-    private List<ApplicationIdentityAttributeEntity> getConfirmedIdentityAttributes(String subjectLogin)
-            throws SubjectNotFoundException, PermissionDeniedException {
+    private List<ApplicationIdentityAttributeEntity> getConfirmedIdentityAttributes(String subjectLogin) throws SubjectNotFoundException,
+                                                                                                        PermissionDeniedException {
 
         SubjectEntity subject = this.subjectService.getSubject(subjectLogin);
         ApplicationEntity application = this.applicationManager.getCallerApplication();
@@ -126,8 +127,7 @@ public class AttributeServiceBean implements AttributeService, AttributeServiceR
 
         ApplicationIdentityEntity confirmedApplicationIdentity;
         try {
-            confirmedApplicationIdentity = this.applicationIdentityDAO.getApplicationIdentity(application,
-                    confirmedIdentityVersion);
+            confirmedApplicationIdentity = this.applicationIdentityDAO.getApplicationIdentity(application, confirmedIdentityVersion);
         } catch (ApplicationIdentityNotFoundException e) {
             throw new EJBException("application identity not found for version: " + confirmedIdentityVersion);
         }
@@ -144,8 +144,9 @@ public class AttributeServiceBean implements AttributeService, AttributeServiceR
     }
 
     @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
-    public Map<String, Object> getConfirmedAttributeValues(String subjectLogin) throws SubjectNotFoundException,
-            PermissionDeniedException, AttributeTypeNotFoundException, AttributeUnavailableException {
+    public Map<String, Object> getConfirmedAttributeValues(String subjectLogin) throws SubjectNotFoundException, PermissionDeniedException,
+                                                                               AttributeTypeNotFoundException,
+                                                                               AttributeUnavailableException {
 
         LOG.debug("get confirmed attributes for subject: " + subjectLogin);
         List<ApplicationIdentityAttributeEntity> confirmedAttributes = getConfirmedIdentityAttributes(subjectLogin);

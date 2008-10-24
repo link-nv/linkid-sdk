@@ -28,10 +28,10 @@ import net.link.safeonline.entity.NodeEntity;
 @Local
 public interface DeviceDAO {
 
-    DeviceEntity addDevice(String name, DeviceClassEntity deviceClass, NodeEntity node, String authenticationPath,
-            String registrationPath, String removalPath, String updatePath, String disablePath,
-            X509Certificate certificate, AttributeTypeEntity attributeType, AttributeTypeEntity userAttributeType,
-            AttributeTypeEntity disableAttributeType);
+    DeviceEntity addDevice(String name, DeviceClassEntity deviceClass, NodeEntity node, String authenticationPath, String registrationPath,
+                           String removalPath, String updatePath, String disablePath, X509Certificate certificate,
+                           AttributeTypeEntity attributeType, AttributeTypeEntity userAttributeType,
+                           AttributeTypeEntity disableAttributeType);
 
     List<DeviceEntity> listDevices();
 

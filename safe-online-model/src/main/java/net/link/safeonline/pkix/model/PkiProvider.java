@@ -36,8 +36,8 @@ public interface PkiProvider {
 
 
     /**
-     * Determines whether this PKI provider COULD process the given certificate. This method should not perform a
-     * complete certificate validation, that's up to the PKI validator component.
+     * Determines whether this PKI provider COULD process the given certificate. This method should not perform a complete certificate
+     * validation, that's up to the PKI validator component.
      * 
      * @param certificate
      */
@@ -63,8 +63,8 @@ public interface PkiProvider {
     String mapAttribute(IdentityStatementAttributes identityStatementAttributes);
 
     /**
-     * Stores additional attributes. This callback method allows for PKI providers to store additional attributes
-     * related to their specific device.
+     * Stores additional attributes. This callback method allows for PKI providers to store additional attributes related to their specific
+     * device.
      * 
      * @param subject
      *            the subject for which to store additional attributes.
@@ -81,8 +81,7 @@ public interface PkiProvider {
      * @throws DeviceNotFoundException
      * @throws AttributeNotFoundException
      */
-    void storeDeviceAttribute(SubjectEntity subject, long index) throws DeviceNotFoundException,
-            AttributeNotFoundException;
+    void storeDeviceAttribute(SubjectEntity subject, long index) throws DeviceNotFoundException, AttributeNotFoundException;
 
     /**
      * Gives back the identifier domain name.
@@ -124,7 +123,7 @@ public interface PkiProvider {
      * @throws DeviceRegistrationNotFoundException
      */
     void disable(String userId, String attribute) throws DeviceNotFoundException, SubjectNotFoundException,
-            DeviceRegistrationNotFoundException;
+                                                 DeviceRegistrationNotFoundException;
 
     /**
      * Returns the list of device attributes attached to the specified subjects.

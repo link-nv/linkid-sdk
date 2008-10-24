@@ -9,9 +9,9 @@ package net.link.safeonline.auth.pcsc;
 
 /**
  * Logger interface for PCSC signer.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public interface PcscSignerLogger {
 

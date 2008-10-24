@@ -89,23 +89,18 @@ public class ExportServletTest extends TestCase {
         String testApplicationName = "test-application-name-" + getName();
         getMethod.setQueryString(new NameValuePair[] { new NameValuePair("chartname", testChartName),
                 new NameValuePair("domain", testDomain), new NameValuePair("applicationname", testApplicationName) });
-        ApplicationEntity application = new ApplicationEntity(testApplicationName, null, null, null, null, null, null,
-                null);
+        ApplicationEntity application = new ApplicationEntity(testApplicationName, null, null, null, null, null, null, null);
         StatisticEntity statistic = new StatisticEntity();
         statistic.setName("test-statistic-name");
         statistic.setApplication(application);
         statistic.setCreationTime(new Date());
+        statistic.getStatisticDataPoints().add(new StatisticDataPointEntity("test-data-point", statistic, new Date(), 1, 2, 3));
         statistic.getStatisticDataPoints().add(
-                new StatisticDataPointEntity("test-data-point", statistic, new Date(), 1, 2, 3));
-        statistic.getStatisticDataPoints()
-                .add(
-                        new StatisticDataPointEntity("test-data-point", statistic, new DateTime().plusDays(1).toDate(),
-                                4, 5, 6));
+                new StatisticDataPointEntity("test-data-point", statistic, new DateTime().plusDays(1).toDate(), 4, 5, 6));
         HSSFWorkbook workbook = new HSSFWorkbook();
 
         // stubs
-        expect(this.mockStatisticService.exportStatistic(testChartName, testDomain, testApplicationName))
-                .andStubReturn(workbook);
+        expect(this.mockStatisticService.exportStatistic(testChartName, testDomain, testApplicationName)).andStubReturn(workbook);
 
         // prepare
         replay(this.mockObjects);

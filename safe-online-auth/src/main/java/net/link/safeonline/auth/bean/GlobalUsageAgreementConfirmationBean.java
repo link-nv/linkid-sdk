@@ -61,9 +61,8 @@ public class GlobalUsageAgreementConfirmationBean extends AbstractExitBean imple
 
 
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
-    public String confirm() throws ApplicationNotFoundException, SubscriptionNotFoundException,
-            ApplicationIdentityNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException,
-            AttributeUnavailableException {
+    public String confirm() throws ApplicationNotFoundException, SubscriptionNotFoundException, ApplicationIdentityNotFoundException,
+                           PermissionDeniedException, AttributeTypeNotFoundException, AttributeUnavailableException {
 
         this.log.debug("confirm global usage agreement");
         this.usageAgreementService.confirmGlobalUsageAgreementVersion();

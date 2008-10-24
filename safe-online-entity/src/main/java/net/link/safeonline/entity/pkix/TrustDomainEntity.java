@@ -95,9 +95,9 @@ public class TrustDomainEntity implements Serializable {
     }
 
     /**
-     * Marks whether the certificate validator should perform an OCSP check when OCSP access location information is
-     * available within a certificate.
-     *
+     * Marks whether the certificate validator should perform an OCSP check when OCSP access location information is available within a
+     * certificate.
+     * 
      */
     public boolean isPerformOcspCheck() {
 
@@ -111,7 +111,7 @@ public class TrustDomainEntity implements Serializable {
 
     /**
      * Indicates how long a cached OCSP lookup stays valid.
-     *
+     * 
      */
     public long getOcspCacheTimeOutMillis() {
 

@@ -26,11 +26,11 @@ import net.link.safeonline.performance.console.ScenarioExecution;
 /**
  * <h2>{@link Agent}<br>
  * <sub>Interface to all actions that can be remotely performed on an agent.</sub></h2>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public interface Agent {

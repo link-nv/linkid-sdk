@@ -54,13 +54,14 @@ public class MessageHandlerManager {
             MessageHandler messageHandler = messageHandlerClass.newInstance();
             messageHandlerMap.put(topic, messageHandler);
         } catch (Exception e) {
-            throw new RuntimeException("could not initialize protocol handler: " + messageHandlerClass.getName()
-                    + "; message: " + e.getMessage(), e);
+            throw new RuntimeException("could not initialize protocol handler: " + messageHandlerClass.getName() + "; message: "
+                    + e.getMessage(), e);
         }
     }
 
     public static void sendMessage(String topic, List<String> message, EndpointReferenceEntity consumer)
-            throws MessageHandlerNotFoundException, WSClientTransportException {
+                                                                                                        throws MessageHandlerNotFoundException,
+                                                                                                        WSClientTransportException {
 
         MessageHandler messageHandler = messageHandlerMap.get(topic);
         if (null == messageHandler)
@@ -86,8 +87,7 @@ public class MessageHandlerManager {
         }
     }
 
-    public static void handleMessage(String topic, String destination, List<String> message)
-            throws MessageHandlerNotFoundException {
+    public static void handleMessage(String topic, String destination, List<String> message) throws MessageHandlerNotFoundException {
 
         MessageHandler messageHandler = messageHandlerMap.get(topic);
         if (null == messageHandler)

@@ -52,8 +52,7 @@ public class DeviceOperationRequestUnmarshaller extends RequestAbstractTypeUnmar
     }
 
     @Override
-    protected void processChildElement(XMLObject parentSAMLObject, XMLObject childSAMLObject)
-            throws UnmarshallingException {
+    protected void processChildElement(XMLObject parentSAMLObject, XMLObject childSAMLObject) throws UnmarshallingException {
 
         DeviceOperationRequest req = (DeviceOperationRequest) parentSAMLObject;
 

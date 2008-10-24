@@ -26,8 +26,7 @@ public class DERIntegerTest extends TestCase {
 
         // verify
         assertNotNull(result);
-        org.bouncycastle.asn1.DERInteger resultInteger = (org.bouncycastle.asn1.DERInteger) ASN1Object
-                .fromByteArray(result);
+        org.bouncycastle.asn1.DERInteger resultInteger = (org.bouncycastle.asn1.DERInteger) ASN1Object.fromByteArray(result);
         assertEquals(value, resultInteger.getValue().intValue());
     }
 }

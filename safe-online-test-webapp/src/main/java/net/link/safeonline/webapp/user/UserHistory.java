@@ -22,7 +22,6 @@ public class UserHistory extends UserTemplate {
 
     public void checkHistoryPasswordLogon() {
 
-        Assert.assertTrue(Page.getSelenium().isTextPresent(
-                "Logged in successfully into application 'olas-user' using device 'password'."));
+        Assert.assertTrue(Page.getSelenium().isTextPresent("Logged in successfully into application 'olas-user' using device 'password'."));
     }
 }

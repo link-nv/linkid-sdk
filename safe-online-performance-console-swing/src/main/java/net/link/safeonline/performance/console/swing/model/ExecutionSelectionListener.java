@@ -21,11 +21,11 @@ import net.link.safeonline.performance.console.ScenarioExecution;
 /**
  * <h2>{@link ExecutionSelectionListener}<br>
  * <sub>A listener that is triggered when an execution is selected in the interface.</sub></h2>
- *
+ * 
  * <p>
  * <i>Feb 14, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public interface ExecutionSelectionListener {

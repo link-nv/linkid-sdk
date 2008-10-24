@@ -61,7 +61,7 @@ public interface AccountRegistration {
      * Actions.
      */
     String loginNext() throws ExistingUserException, AttributeTypeNotFoundException, PermissionDeniedException,
-            AttributeUnavailableException;
+                      AttributeUnavailableException;
 
     String deviceNext() throws DeviceNotFoundException, IOException;
 }

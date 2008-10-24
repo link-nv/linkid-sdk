@@ -70,9 +70,9 @@ public class AuthenticationSubscriptionBean extends AbstractExitBean implements 
 
 
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
-    public String subscribe() throws ApplicationNotFoundException, AlreadySubscribedException,
-            PermissionDeniedException, SubscriptionNotFoundException, ApplicationIdentityNotFoundException,
-            AttributeTypeNotFoundException, AttributeUnavailableException {
+    public String subscribe() throws ApplicationNotFoundException, AlreadySubscribedException, PermissionDeniedException,
+                             SubscriptionNotFoundException, ApplicationIdentityNotFoundException, AttributeTypeNotFoundException,
+                             AttributeUnavailableException {
 
         if (!this.subscriptionService.isSubscribed(this.applicationId)) {
             this.log.debug("subscribe to application #0", this.applicationId);

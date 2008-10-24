@@ -40,8 +40,7 @@ public interface Attributes {
 
     String remove();
 
-    String removeConfirm() throws AttributeTypeDescriptionNotFoundException, PermissionDeniedException,
-            AttributeTypeNotFoundException;
+    String removeConfirm() throws AttributeTypeDescriptionNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException;
 
     String savePlugin() throws AttributeTypeNotFoundException;
 

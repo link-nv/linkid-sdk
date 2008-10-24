@@ -46,8 +46,8 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- * SOAP Handler for TargetIdentity SOAP Header handling. This SOAP handler will check for the presence of the
- * TargetIdentity SOAP Header. If present it will push the found subject name onto the messaging context.
+ * SOAP Handler for TargetIdentity SOAP Header handling. This SOAP handler will check for the presence of the TargetIdentity SOAP Header. If
+ * present it will push the found subject name onto the messaging context.
  * 
  * <p>
  * Specifications: Liberty ID-WSF SOAP Binding Specification 2.0
@@ -59,13 +59,11 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
 
     private static final Log               LOG                         = LogFactory.getLog(TargetIdentityHandler.class);
 
-    public static final String             TARGET_IDENTITY_CONTEXT_VAR = TargetIdentityHandler.class.getName()
-                                                                               + ".TargetIdentity";
+    public static final String             TARGET_IDENTITY_CONTEXT_VAR = TargetIdentityHandler.class.getName() + ".TargetIdentity";
 
     public static final String             WSU_NS                      = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd";
 
-    private static final QName             TARGET_IDENTITY_NAME        = new QName(
-                                                                               DataServiceConstants.LIBERTY_SOAP_BINDING_NAMESPACE,
+    private static final QName             TARGET_IDENTITY_NAME        = new QName(DataServiceConstants.LIBERTY_SOAP_BINDING_NAMESPACE,
                                                                                "TargetIdentity");
 
     private WSSecurityConfigurationService wsSecurityConfigurationService;
@@ -97,8 +95,7 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
 
         Set<QName> headers = new HashSet<QName>();
         /*
-         * Communicate to the JAX-WS web service stack that this handler can handle the TargetIdentity SOAP header
-         * element.
+         * Communicate to the JAX-WS web service stack that this handler can handle the TargetIdentity SOAP header element.
          */
         headers.add(TARGET_IDENTITY_NAME);
         return headers;
@@ -150,8 +147,8 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
         }
     }
 
-    private void processTargetIdentityHeader(SOAPHeaderElement targetIdentityHeaderElement,
-            SOAPMessageContext soapContext) throws JAXBException {
+    private void processTargetIdentityHeader(SOAPHeaderElement targetIdentityHeaderElement, SOAPMessageContext soapContext)
+                                                                                                                           throws JAXBException {
 
         LOG.debug("processing TargetIdentity header");
 
@@ -163,8 +160,7 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
 
         if (!skipMessageIntegrityCheck) {
             /*
-             * First check whether the TargetIdentity SOAP header has been digested correctly by the WS-Security XML
-             * signature.
+             * First check whether the TargetIdentity SOAP header has been digested correctly by the WS-Security XML signature.
              */
             String id = targetIdentityHeaderElement.getAttributeNS(WSU_NS, "Id");
             if (null == id)
@@ -173,11 +169,10 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
             if (false == signed)
                 throw new RuntimeException("TargetIdentity SOAP header not signed by WS-Security");
         }
-        
+
         JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
         Unmarshaller unmarshaller = context.createUnmarshaller();
-        JAXBElement<?> jaxbElement = (JAXBElement<?>) unmarshaller.unmarshal(targetIdentityHeaderElement
-                .getFirstChild());
+        JAXBElement<?> jaxbElement = (JAXBElement<?>) unmarshaller.unmarshal(targetIdentityHeaderElement.getFirstChild());
 
         Object element = jaxbElement.getValue();
         if (false == element instanceof SubjectType)
@@ -198,8 +193,8 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
         soapContext.put(TARGET_IDENTITY_CONTEXT_VAR, userId);
         LOG.debug("scope: " + soapContext.getScope(TARGET_IDENTITY_CONTEXT_VAR));
         /*
-         * We need to set the scope to APPLICATION, else the port implementation will not be able to retrieve the value
-         * via its web service context.
+         * We need to set the scope to APPLICATION, else the port implementation will not be able to retrieve the value via its web service
+         * context.
          */
         soapContext.setScope(TARGET_IDENTITY_CONTEXT_VAR, Scope.APPLICATION);
     }
@@ -227,8 +222,7 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
     }
 
     /**
-     * Gives back the target identity. This target identity has been extracted before by this handler from the
-     * TargetIdentity SOAP header.
+     * Gives back the target identity. This target identity has been extracted before by this handler from the TargetIdentity SOAP header.
      * 
      * @param context
      * @throws TargetIdentityException

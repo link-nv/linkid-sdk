@@ -6,8 +6,6 @@
  */
 package net.link.safeonline.demo.bank.service;
 
-
-
 /**
  * <h2>{@link BankService}<br>
  * <sub>Interface for all bank services that maintains the root JNDI prefix.</sub></h2>
@@ -24,5 +22,5 @@ package net.link.safeonline.demo.bank.service;
  */
 public interface BankService {
 
-    public static final String JNDI_PREFIX      = "SafeOnlineBankDemo/";
+    public static final String JNDI_PREFIX = "SafeOnlineBankDemo/";
 }

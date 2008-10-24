@@ -87,14 +87,10 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
         this.jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
                 "SafeOnline/WSSecurityConfigurationBean/local");
 
-        WSSecurityConfigurationService mockWSSecurityConfigurationService = EasyMock
-                .createMock(WSSecurityConfigurationService.class);
-        this.jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local",
-                mockWSSecurityConfigurationService);
-        EasyMock.expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(
-                Long.MAX_VALUE);
-        EasyMock.expect(
-                mockWSSecurityConfigurationService.skipMessageIntegrityCheck((X509Certificate) EasyMock.anyObject()))
+        WSSecurityConfigurationService mockWSSecurityConfigurationService = EasyMock.createMock(WSSecurityConfigurationService.class);
+        this.jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local", mockWSSecurityConfigurationService);
+        EasyMock.expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
+        EasyMock.expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck((X509Certificate) EasyMock.anyObject()))
                 .andStubReturn(true);
         EasyMock.replay(mockWSSecurityConfigurationService);
 
@@ -161,8 +157,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
         }
 
         @Override
-        protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-                IOException {
+        protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
             KeyPair keyPair;
             try {
@@ -173,9 +168,12 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
 
             Map<String, String> configParams = Collections.singletonMap("WsLocation", this.wsLocation);
             AuthenticationProtocolHandler authenticationProtocolHandler = AuthenticationProtocolManager
-                    .createAuthenticationProtocolHandler(AuthenticationProtocol.SAML2_BROWSER_POST,
-                            "http://test.authn.service", "test-application", null, keyPair, null, false, configParams,
-                            request);
+                                                                                                       .createAuthenticationProtocolHandler(
+                                                                                                               AuthenticationProtocol.SAML2_BROWSER_POST,
+                                                                                                               "http://test.authn.service",
+                                                                                                               "test-application", null,
+                                                                                                               keyPair, null, false,
+                                                                                                               configParams, request);
             authenticationProtocolHandler.initiateAuthentication(request, response, "http://target");
         }
     }
@@ -197,8 +195,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
 
         @SuppressWarnings("unchecked")
         @Override
-        protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-                IOException {
+        protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
             srtLOG.debug("doPost");
             KeyPair keyPair;
@@ -215,13 +212,15 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
             }
             Map<String, String> configParams = Collections.singletonMap("WsLocation", this.wsLocation);
             AuthenticationProtocolHandler authenticationProtocolHandler = AuthenticationProtocolManager
-                    .createAuthenticationProtocolHandler(AuthenticationProtocol.SAML2_BROWSER_POST,
-                            "http://test.authn.service", "test-application", null, keyPair, certificate, false,
-                            configParams, request);
+                                                                                                       .createAuthenticationProtocolHandler(
+                                                                                                               AuthenticationProtocol.SAML2_BROWSER_POST,
+                                                                                                               "http://test.authn.service",
+                                                                                                               "test-application", null,
+                                                                                                               keyPair, certificate, false,
+                                                                                                               configParams, request);
             Saml2BrowserPostAuthenticationProtocolHandler saml2Handler = (Saml2BrowserPostAuthenticationProtocolHandler) authenticationProtocolHandler;
             try {
-                Field challengeField = Saml2BrowserPostAuthenticationProtocolHandler.class
-                        .getDeclaredField("challenge");
+                Field challengeField = Saml2BrowserPostAuthenticationProtocolHandler.class.getDeclaredField("challenge");
                 challengeField.setAccessible(true);
                 Challenge<String> challenge = (Challenge<String>) challengeField.get(saml2Handler);
                 challenge.setValue("test-in-response-to");
@@ -229,8 +228,8 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
                 throw new ServletException("reflection error: " + e.getMessage(), e);
             }
             Writer out = response.getWriter();
-            AuthenticationProtocolContext authenticationProtocolContext = authenticationProtocolHandler
-                    .finalizeAuthentication(request, response);
+            AuthenticationProtocolContext authenticationProtocolContext = authenticationProtocolHandler.finalizeAuthentication(request,
+                    response);
             if (null != authenticationProtocolContext) {
                 LoginManager.setUserId(authenticationProtocolContext.getUserId(), request);
                 LoginManager.setAuthenticatedDevice(authenticationProtocolContext.getAuthenticatedDevice(), request);
@@ -267,7 +266,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
 
         // operate
         URL result = Saml2BrowserPostAuthenticationProtocolHandler.class
-                .getResource(Saml2BrowserPostAuthenticationProtocolHandler.SAML2_POST_BINDING_VM_RESOURCE);
+                                                                        .getResource(Saml2BrowserPostAuthenticationProtocolHandler.SAML2_POST_BINDING_VM_RESOURCE);
 
         // verify
         assertNotNull(result);
@@ -281,13 +280,11 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
         String servletLocation = this.responseServletTestManager.getServletLocation();
         PostMethod postMethod = new PostMethod(servletLocation);
 
-        InputStream xmlInputStream = Saml2BrowserPostAuthenticationProtocolHandlerTest.class
-                .getResourceAsStream("/test-saml-response.xml");
+        InputStream xmlInputStream = Saml2BrowserPostAuthenticationProtocolHandlerTest.class.getResourceAsStream("/test-saml-response.xml");
         String xmlInputString = IOUtils.toString(xmlInputStream);
         DateTime now = new DateTime();
         xmlInputString = replaceAll("replaceWithCurrentTime", now.toString(), xmlInputString);
-        xmlInputString = replaceAll("replaceWithCurrentPlusValidityTime", now.plusMinutes(10).toString(),
-                xmlInputString);
+        xmlInputString = replaceAll("replaceWithCurrentPlusValidityTime", now.plusMinutes(10).toString(), xmlInputString);
         xmlInputString = replaceAll("replaceWithDestination", servletLocation, xmlInputString);
         ByteArrayOutputStream byteOutputStream = new ByteArrayOutputStream();
         IOUtils.copy(IOUtils.toInputStream(xmlInputString), byteOutputStream);
@@ -304,12 +301,11 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
         assertEquals(HttpStatus.SC_OK, statusCode);
         String responseBody = postMethod.getResponseBodyAsString();
         LOG.debug("response body: \"" + responseBody + "\"");
-        String userId = (String) this.responseServletTestManager
-                .getSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
+        String userId = (String) this.responseServletTestManager.getSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
         LOG.debug("authenticated userId: " + userId);
         assertNotNull(userId);
         String authenticatedDevice = (String) this.responseServletTestManager
-                .getSessionAttribute(LoginManager.AUTHENTICATED_DEVICE_SESSION_ATTRIBUTE);
+                                                                             .getSessionAttribute(LoginManager.AUTHENTICATED_DEVICE_SESSION_ATTRIBUTE);
         LOG.debug("authenticated device: " + authenticatedDevice);
         assertNotNull(authenticatedDevice);
     }

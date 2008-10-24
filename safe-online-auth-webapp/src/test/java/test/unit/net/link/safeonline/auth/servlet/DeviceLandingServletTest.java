@@ -95,15 +95,13 @@ public class DeviceLandingServletTest {
         initParams.put("DeviceErrorUrl", this.deviceErrorUrl);
         initParams.put("ServletEndpointUrl", this.servletEndpointUrl);
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
-        initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE,
-                this.mockAuthenticationService);
+        initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE, this.mockAuthenticationService);
 
         this.servletTestManager.setUp(DeviceLandingServlet.class, initParams, null, null, initialSessionAttributes);
         this.location = this.servletTestManager.getServletLocation();
         this.httpClient = new HttpClient();
 
-        this.mockObjects = new Object[] { this.mockAuthenticationService, this.mockSubjectService,
-                this.mockHelpdeskManager };
+        this.mockObjects = new Object[] { this.mockAuthenticationService, this.mockSubjectService, this.mockHelpdeskManager };
 
         expect(this.mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(50);
     }
@@ -136,8 +134,7 @@ public class DeviceLandingServletTest {
 
         // expectations
         expect(this.mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.REDIRECTED);
-        expect(this.mockAuthenticationService.authenticate((HttpServletRequest) EasyMock.anyObject())).andStubReturn(
-                null);
+        expect(this.mockAuthenticationService.authenticate((HttpServletRequest) EasyMock.anyObject())).andStubReturn(null);
         expect(this.mockSubjectService.getExceptionSubjectLogin((String) EasyMock.anyObject())).andStubReturn(null);
 
         // prepare
@@ -163,8 +160,7 @@ public class DeviceLandingServletTest {
 
         // expectations
         expect(this.mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.INITIALIZED);
-        expect(this.mockAuthenticationService.authenticate((HttpServletRequest) EasyMock.anyObject())).andStubReturn(
-                null);
+        expect(this.mockAuthenticationService.authenticate((HttpServletRequest) EasyMock.anyObject())).andStubReturn(null);
         expect(this.mockSubjectService.getExceptionSubjectLogin((String) EasyMock.anyObject())).andStubReturn(null);
 
         // prepare
@@ -193,8 +189,7 @@ public class DeviceLandingServletTest {
 
         // expectations
         expect(this.mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.REDIRECTED);
-        expect(this.mockAuthenticationService.authenticate((HttpServletRequest) EasyMock.anyObject())).andStubReturn(
-                userId);
+        expect(this.mockAuthenticationService.authenticate((HttpServletRequest) EasyMock.anyObject())).andStubReturn(userId);
         expect(this.mockAuthenticationService.getAuthenticationDevice()).andStubReturn(device);
         expect(this.mockSubjectService.getExceptionSubjectLogin((String) EasyMock.anyObject())).andStubReturn(null);
         expect(this.mockAuthenticationService.getSsoCookie()).andStubReturn(null);
@@ -217,7 +212,7 @@ public class DeviceLandingServletTest {
         assertEquals(userId, resultUserId);
 
         DeviceEntity resultDevice = (DeviceEntity) this.servletTestManager
-                .getSessionAttribute(LoginManager.AUTHENTICATION_DEVICE_ATTRIBUTE);
+                                                                          .getSessionAttribute(LoginManager.AUTHENTICATION_DEVICE_ATTRIBUTE);
         assertEquals(device, resultDevice);
     }
 }

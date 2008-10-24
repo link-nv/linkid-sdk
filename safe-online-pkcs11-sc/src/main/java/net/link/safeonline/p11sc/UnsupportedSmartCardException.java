@@ -12,9 +12,9 @@ import java.io.IOException;
 
 /**
  * Signals that the smart card is not supported for authentication.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class UnsupportedSmartCardException extends IOException {
 

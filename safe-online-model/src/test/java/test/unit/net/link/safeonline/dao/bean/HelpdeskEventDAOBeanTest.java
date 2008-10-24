@@ -62,9 +62,7 @@ public class HelpdeskEventDAOBeanTest extends TestCase {
         HelpdeskContextEntity context = this.contextDAO.createHelpdeskContext("test-location");
         List<HelpdeskEventEntity> events = new Vector<HelpdeskEventEntity>();
         events.add(new HelpdeskEventEntity(context, new Date(), "test-message-1", "test-principal", LogLevelType.INFO));
-        events
-                .add(new HelpdeskEventEntity(context, new Date(), "test-message-2", "test-principal",
-                        LogLevelType.ERROR));
+        events.add(new HelpdeskEventEntity(context, new Date(), "test-message-2", "test-principal", LogLevelType.ERROR));
         this.eventDAO.persist(events);
 
         List<HelpdeskEventEntity> persisted_events = this.eventDAO.listEvents(context.getId());

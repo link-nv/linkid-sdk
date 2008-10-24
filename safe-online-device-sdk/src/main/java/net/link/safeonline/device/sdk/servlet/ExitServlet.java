@@ -14,11 +14,10 @@ import net.link.safeonline.util.servlet.annotation.Init;
 
 
 /**
- * This servlet returns a saml authentication response from device issuer to OLAS, notifying the status of the device
- * operation.
- *
+ * This servlet returns a saml authentication response from device issuer to OLAS, notifying the status of the device operation.
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class ExitServlet extends AbstractInjectionServlet {
 
@@ -29,15 +28,13 @@ public class ExitServlet extends AbstractInjectionServlet {
 
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         invoke(request, response);
     }
 
     @Override
-    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         invoke(request, response);
     }
@@ -49,8 +46,7 @@ public class ExitServlet extends AbstractInjectionServlet {
             /*
              * If no protocol handler is active at this point then something must be going wrong here.
              */
-            redirectToErrorPage(request, response, this.errorPage, null, new ErrorMessage(
-                    "No protocol handler is active"));
+            redirectToErrorPage(request, response, this.errorPage, null, new ErrorMessage("No protocol handler is active"));
             return;
 
         }

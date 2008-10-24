@@ -22,13 +22,13 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Buffered servlet response wrapper.
- *
+ * 
  * <p>
  * See also: Servlet API version 2.4 specifications.
  * </p>
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class BufferedServletResponseWrapper extends HttpServletResponseWrapper {
 
@@ -50,7 +50,7 @@ public class BufferedServletResponseWrapper extends HttpServletResponseWrapper {
 
     /**
      * This method will commit the buffered response to the real output response.
-     *
+     * 
      * @throws IOException
      */
     public void commit() throws IOException {
@@ -78,8 +78,7 @@ public class BufferedServletResponseWrapper extends HttpServletResponseWrapper {
 
         LOG.debug("get writer");
         if (null == this.writer) {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(this.bufferedServletOutputStream,
-                    getCharacterEncoding());
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(this.bufferedServletOutputStream, getCharacterEncoding());
             this.writer = new PrintWriter(outputStreamWriter);
         }
         return this.writer;

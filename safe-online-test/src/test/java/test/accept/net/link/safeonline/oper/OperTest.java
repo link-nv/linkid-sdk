@@ -38,8 +38,7 @@ public class OperTest extends TestCase {
 
         this.acceptanceTestManager.setContext("Testing operator webapp admin login logout.");
 
-        OperOverview operOverview = PageUtils.loginOperWithPassword(this.acceptanceTestManager,
-                WebappConstants.OPER_ADMIN, "admin");
+        OperOverview operOverview = PageUtils.loginOperWithPassword(this.acceptanceTestManager, WebappConstants.OPER_ADMIN, "admin");
         operOverview.logout();
     }
 
@@ -47,8 +46,7 @@ public class OperTest extends TestCase {
 
         this.acceptanceTestManager.setContext("Testing operator webapp add application.");
 
-        OperOverview operOverview = PageUtils.loginOperWithPassword(this.acceptanceTestManager,
-                WebappConstants.OPER_ADMIN, "admin");
+        OperOverview operOverview = PageUtils.loginOperWithPassword(this.acceptanceTestManager, WebappConstants.OPER_ADMIN, "admin");
         operOverview.logout();
     }
 }

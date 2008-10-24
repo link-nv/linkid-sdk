@@ -103,14 +103,10 @@ public class LogoutServletTest {
         this.jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
                 "SafeOnline/WSSecurityConfigurationBean/local");
 
-        WSSecurityConfigurationService mockWSSecurityConfigurationService = EasyMock
-                .createMock(WSSecurityConfigurationService.class);
-        this.jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local",
-                mockWSSecurityConfigurationService);
-        EasyMock.expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(
-                Long.MAX_VALUE);
-        EasyMock.expect(
-                mockWSSecurityConfigurationService.skipMessageIntegrityCheck((X509Certificate) EasyMock.anyObject()))
+        WSSecurityConfigurationService mockWSSecurityConfigurationService = EasyMock.createMock(WSSecurityConfigurationService.class);
+        this.jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local", mockWSSecurityConfigurationService);
+        EasyMock.expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
+        EasyMock.expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck((X509Certificate) EasyMock.anyObject()))
                 .andStubReturn(true);
         EasyMock.replay(mockWSSecurityConfigurationService);
 
@@ -212,8 +208,8 @@ public class LogoutServletTest {
                 mockAuthenticationProtocolHandler);
 
         // expectations
-        mockAuthenticationProtocolHandler.sendLogoutResponse(EasyMock.anyBoolean(), (HttpServletRequest) EasyMock
-                .anyObject(), (HttpServletResponse) EasyMock.anyObject());
+        mockAuthenticationProtocolHandler.sendLogoutResponse(EasyMock.anyBoolean(), (HttpServletRequest) EasyMock.anyObject(),
+                (HttpServletResponse) EasyMock.anyObject());
 
         // prepare
         replay(mockAuthenticationProtocolHandler);
@@ -226,8 +222,7 @@ public class LogoutServletTest {
         verify(mockAuthenticationProtocolHandler);
         LOG.debug("status code: " + statusCode);
         assertEquals(HttpServletResponse.SC_OK, statusCode);
-        assertNull(this.servletTestManager
-                .getSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE));
+        assertNull(this.servletTestManager.getSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE));
     }
 
     @Test

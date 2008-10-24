@@ -158,8 +158,8 @@ public class SmartCardTest {
         URL url = SmartCardTest.class.getResource("/META-INF/safe-online-pkcs11-sc-config.properties");
         LOG.debug("URL: " + url);
         assertNotNull(url);
-        assertTrue(url.toString().matches(
-                "jar:file:.*safe-online-pkcs11-sc-beid.*\\.jar!/META-INF/safe-online-pkcs11-sc-config.properties"));
+        assertTrue(url.toString()
+                      .matches("jar:file:.*safe-online-pkcs11-sc-beid.*\\.jar!/META-INF/safe-online-pkcs11-sc-config.properties"));
 
         Enumeration<URL> enumerationResult = Thread.currentThread().getContextClassLoader().getResources(
                 "META-INF/safe-online-pkcs11-sc-config.properties");
@@ -222,8 +222,8 @@ public class SmartCardTest {
         LOG.debug("surname: " + surname);
 
         LOG.debug("Creating identity statement...");
-        byte[] identityStatement = IdentityStatementFactory.createIdentityStatement("", "fcorneli",
-                DeviceOperationType.UPDATE.name(), new Pkcs11Signer(smartCard), new BeIdIdentityProvider(smartCard));
+        byte[] identityStatement = IdentityStatementFactory.createIdentityStatement("", "fcorneli", DeviceOperationType.UPDATE.name(),
+                new Pkcs11Signer(smartCard), new BeIdIdentityProvider(smartCard));
 
         LOG.debug("Disconnecting from smart card...");
         smartCard.close();
@@ -257,8 +257,8 @@ public class SmartCardTest {
         LOG.debug("surname: " + surname);
 
         LOG.debug("Creating identity statement...");
-        byte[] identityStatement = IdentityStatementFactory.createIdentityStatement("", "fcorneli",
-                DeviceOperationType.REMOVE.name(), new Pkcs11Signer(smartCard), new BeIdIdentityProvider(smartCard));
+        byte[] identityStatement = IdentityStatementFactory.createIdentityStatement("", "fcorneli", DeviceOperationType.REMOVE.name(),
+                new Pkcs11Signer(smartCard), new BeIdIdentityProvider(smartCard));
 
         LOG.debug("Disconnecting from smart card...");
         smartCard.close();
@@ -272,9 +272,8 @@ public class SmartCardTest {
         PrivateKey privateKey = smartCard.getAuthenticationPrivateKey();
         LOG.debug("private key type: " + privateKey.getClass().getName());
         try {
-            identityStatement = IdentityStatementFactory
-                    .createIdentityStatement("", "fcorneli", DeviceOperationType.REMOVE.name(), new Pkcs11Signer(
-                            smartCard), new BeIdIdentityProvider(smartCard));
+            identityStatement = IdentityStatementFactory.createIdentityStatement("", "fcorneli", DeviceOperationType.REMOVE.name(),
+                    new Pkcs11Signer(smartCard), new BeIdIdentityProvider(smartCard));
         } catch (ProviderException e) {
             Throwable t = e.getCause();
             if (t instanceof PKCS11Exception) {
@@ -282,9 +281,8 @@ public class SmartCardTest {
                 resetPKCS11Driver();
                 smartCard.open("beid");
                 privateKey = smartCard.getAuthenticationPrivateKey();
-                identityStatement = IdentityStatementFactory.createIdentityStatement("", "fcorneli",
-                        DeviceOperationType.REMOVE.name(), new Pkcs11Signer(smartCard), new BeIdIdentityProvider(
-                                smartCard));
+                identityStatement = IdentityStatementFactory.createIdentityStatement("", "fcorneli", DeviceOperationType.REMOVE.name(),
+                        new Pkcs11Signer(smartCard), new BeIdIdentityProvider(smartCard));
             }
         }
         smartCard.close();
@@ -468,8 +466,8 @@ public class SmartCardTest {
     }
 
     @SuppressWarnings("unchecked")
-    private void resetPKCS11Driver() throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException,
-            InvocationTargetException, PKCS11Exception {
+    private void resetPKCS11Driver() throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException,
+                                    PKCS11Exception {
 
         Field moduleMapField = PKCS11.class.getDeclaredField("moduleMap");
         moduleMapField.setAccessible(true);

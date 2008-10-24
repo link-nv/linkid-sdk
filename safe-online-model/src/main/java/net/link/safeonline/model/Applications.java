@@ -21,6 +21,6 @@ public interface Applications {
     public List<ApplicationEntity> listUserApplications();
 
     public Set<ApplicationIdentityAttributeEntity> getCurrentApplicationIdentity(ApplicationEntity application)
-            throws ApplicationIdentityNotFoundException;
+                                                                                                               throws ApplicationIdentityNotFoundException;
 
 }

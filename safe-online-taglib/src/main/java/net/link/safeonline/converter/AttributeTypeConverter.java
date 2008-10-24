@@ -21,9 +21,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * AttributeTypeEntity converter
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class AttributeTypeConverter implements Converter {
 
@@ -34,8 +34,7 @@ public class AttributeTypeConverter implements Converter {
 
         AttributeTypeEntity attributeType;
 
-        AttributeTypeDAO attributeTypeDAO = EjbUtils.getEJB("SafeOnline/AttributeTypeDAOBean/local",
-                AttributeTypeDAO.class);
+        AttributeTypeDAO attributeTypeDAO = EjbUtils.getEJB("SafeOnline/AttributeTypeDAOBean/local", AttributeTypeDAO.class);
         if (null == attributeTypeDAO) {
             LOG.debug("attribute type dao not found");
             attributeType = new AttributeTypeEntity();

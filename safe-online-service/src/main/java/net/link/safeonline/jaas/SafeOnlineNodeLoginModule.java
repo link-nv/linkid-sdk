@@ -41,16 +41,15 @@ import org.jboss.security.SimplePrincipal;
 
 
 /**
- * JAAS login module that performs authentication and authorization for nodes. This module is used by the SafeOnline
- * core node security domain. The login module links an X509 certificate with a node principal.
- *
+ * JAAS login module that performs authentication and authorization for nodes. This module is used by the SafeOnline core node security
+ * domain. The login module links an X509 certificate with a node principal.
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class SafeOnlineNodeLoginModule implements LoginModule {
 
-    private static final Log   LOG                                      = LogFactory
-                                                                                .getLog(SafeOnlineNodeLoginModule.class);
+    private static final Log   LOG                                      = LogFactory.getLog(SafeOnlineNodeLoginModule.class);
 
     private Subject            subject;
 
@@ -103,8 +102,8 @@ public class SafeOnlineNodeLoginModule implements LoginModule {
         return optionValue;
     }
 
-    public void initialize(Subject newSubject, CallbackHandler newCallbackHandler,
-            @SuppressWarnings("unchecked") Map sharedState, @SuppressWarnings("unchecked") Map options) {
+    public void initialize(Subject newSubject, CallbackHandler newCallbackHandler, @SuppressWarnings("unchecked") Map sharedState,
+                           @SuppressWarnings("unchecked") Map options) {
 
         LOG.debug("initialize: " + this);
 
@@ -202,8 +201,8 @@ public class SafeOnlineNodeLoginModule implements LoginModule {
         if (!result)
             throw new LoginException("could not remove authenticated principal");
         /*
-         * Despite the fact that JBoss AbstractServerLoginModule is not removing the roles on the subject, we clear here
-         * all data on the subject.
+         * Despite the fact that JBoss AbstractServerLoginModule is not removing the roles on the subject, we clear here all data on the
+         * subject.
          */
         this.subject.getPrincipals().clear();
         this.subject.getPublicCredentials().clear();

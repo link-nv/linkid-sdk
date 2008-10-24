@@ -34,8 +34,7 @@ public class DeviceOperationRequestMarshaller extends RequestAbstractTypeMarshal
         DeviceOperationRequest req = (DeviceOperationRequest) samlObject;
 
         if (req.getProtocolBinding() != null) {
-            domElement.setAttributeNS(null, DeviceOperationRequest.PROTOCOL_BINDING_ATTRIB_NAME, req
-                    .getProtocolBinding());
+            domElement.setAttributeNS(null, DeviceOperationRequest.PROTOCOL_BINDING_ATTRIB_NAME, req.getProtocolBinding());
         }
 
         if (req.getServiceURL() != null) {
@@ -43,8 +42,7 @@ public class DeviceOperationRequestMarshaller extends RequestAbstractTypeMarshal
         }
 
         if (req.getDeviceOperation() != null) {
-            domElement.setAttributeNS(null, DeviceOperationRequest.DEVICE_OPERATION_ATTRIB_NAME, req
-                    .getDeviceOperation());
+            domElement.setAttributeNS(null, DeviceOperationRequest.DEVICE_OPERATION_ATTRIB_NAME, req.getDeviceOperation());
         }
 
         if (req.getDevice() != null) {
@@ -52,8 +50,7 @@ public class DeviceOperationRequestMarshaller extends RequestAbstractTypeMarshal
         }
 
         if (req.getAuthenticatedDevice() != null) {
-            domElement.setAttributeNS(null, DeviceOperationRequest.AUTHENTICATED_DEVICE_ATTRIB_NAME, req
-                    .getAuthenticatedDevice());
+            domElement.setAttributeNS(null, DeviceOperationRequest.AUTHENTICATED_DEVICE_ATTRIB_NAME, req.getAuthenticatedDevice());
         }
 
         if (req.getAttribute() != null) {

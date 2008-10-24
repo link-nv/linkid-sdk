@@ -83,7 +83,6 @@ public class UserServiceTest extends AbstractBankServiceTest {
 
         // - Test sample data against our original test data.
         assertTrue(String.format("accounts mismatch: test: %s - sample: %s", testAccountCodes, sampleAccountCodes), //
-                testAccountCodes.size() == sampleAccountCodes.size()
-                        && testAccountCodes.containsAll(sampleAccountCodes));
+                testAccountCodes.size() == sampleAccountCodes.size() && testAccountCodes.containsAll(sampleAccountCodes));
     }
 }

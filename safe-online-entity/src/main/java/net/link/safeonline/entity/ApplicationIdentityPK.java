@@ -73,8 +73,7 @@ public class ApplicationIdentityPK implements Serializable {
         if (false == obj instanceof ApplicationIdentityPK)
             return false;
         ApplicationIdentityPK rhs = (ApplicationIdentityPK) obj;
-        return new EqualsBuilder().append(this.application, rhs.application).append(this.identityVersion,
-                rhs.identityVersion).isEquals();
+        return new EqualsBuilder().append(this.application, rhs.application).append(this.identityVersion, rhs.identityVersion).isEquals();
     }
 
     @Override
@@ -86,7 +85,6 @@ public class ApplicationIdentityPK implements Serializable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("application", this.application).append("identityVersion",
-                this.identityVersion).toString();
+        return new ToStringBuilder(this).append("application", this.application).append("identityVersion", this.identityVersion).toString();
     }
 }

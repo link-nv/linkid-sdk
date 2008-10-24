@@ -17,9 +17,9 @@ import java.security.cert.X509Certificate;
 
 /**
  * JCE signer implementation.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class JceSigner implements Signer {
 

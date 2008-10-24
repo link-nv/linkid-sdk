@@ -21,14 +21,14 @@ import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 /**
  * <h2>{@link AbstractCorrelationChart}<br>
  * <sub>TODO</sub></h2>
- *
+ * 
  * <p>
  * </p>
- *
+ * 
  * <p>
  * <i>Mar 3, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public abstract class AbstractCorrelationChart extends AbstractMovingAverageChart {
@@ -56,7 +56,7 @@ public abstract class AbstractCorrelationChart extends AbstractMovingAverageChar
 
     /**
      * Calculate the correlation coefficient for our current period's data.
-     *
+     * 
      * {@inheritDoc}
      */
     @Override

@@ -42,17 +42,16 @@ public class EncapStartableBean extends AbstractInitBean {
 
         configureNode();
 
-        AttributeTypeEntity encapMobileAttributeType = new AttributeTypeEntity(EncapConstants.ENCAP_MOBILE_ATTRIBUTE,
-                DatatypeType.STRING, true, false);
+        AttributeTypeEntity encapMobileAttributeType = new AttributeTypeEntity(EncapConstants.ENCAP_MOBILE_ATTRIBUTE, DatatypeType.STRING,
+                true, false);
         encapMobileAttributeType.setMultivalued(true);
         this.attributeTypes.add(encapMobileAttributeType);
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(encapMobileAttributeType, Locale.ENGLISH
-                .getLanguage(), "Mobile", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(encapMobileAttributeType, "nl",
-                "Gsm nummer", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(encapMobileAttributeType, Locale.ENGLISH.getLanguage(),
+                "Mobile", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(encapMobileAttributeType, "nl", "Gsm nummer", null));
 
-        AttributeTypeEntity encapDeviceDisableAttributeType = new AttributeTypeEntity(
-                EncapConstants.ENCAP_DEVICE_DISABLE_ATTRIBUTE, DatatypeType.BOOLEAN, false, false);
+        AttributeTypeEntity encapDeviceDisableAttributeType = new AttributeTypeEntity(EncapConstants.ENCAP_DEVICE_DISABLE_ATTRIBUTE,
+                DatatypeType.BOOLEAN, false, false);
         encapDeviceDisableAttributeType.setMultivalued(true);
         this.attributeTypes.add(encapDeviceDisableAttributeType);
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(encapDeviceDisableAttributeType,
@@ -66,22 +65,20 @@ public class EncapStartableBean extends AbstractInitBean {
         encapDeviceAttributeType.addMember(encapMobileAttributeType, 0, true);
         encapDeviceAttributeType.addMember(encapDeviceDisableAttributeType, 1, true);
         this.attributeTypes.add(encapDeviceAttributeType);
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(encapDeviceAttributeType, Locale.ENGLISH
-                .getLanguage(), "Encap", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(encapDeviceAttributeType, "nl", "Encap",
-                null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(encapDeviceAttributeType, Locale.ENGLISH.getLanguage(),
+                "Encap", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(encapDeviceAttributeType, "nl", "Encap", null));
 
         X509Certificate certificate = (X509Certificate) EncapKeyStoreUtils.getPrivateKeyEntry().getCertificate();
 
         ResourceBundle properties = ResourceBundle.getBundle("config");
         String nodeName = properties.getString("olas.node.name");
 
-        this.devices.add(new Device(EncapConstants.ENCAP_DEVICE_ID, SafeOnlineConstants.MOBILE_DEVICE_CLASS, nodeName,
-                "/olas-encap/auth", "/olas-encap/device", "/olas-encap/device", null, "/olas-encap/device",
-                certificate, encapDeviceAttributeType, encapMobileAttributeType, encapDeviceDisableAttributeType));
+        this.devices.add(new Device(EncapConstants.ENCAP_DEVICE_ID, SafeOnlineConstants.MOBILE_DEVICE_CLASS, nodeName, "/olas-encap/auth",
+                "/olas-encap/device", "/olas-encap/device", null, "/olas-encap/device", certificate, encapDeviceAttributeType,
+                encapMobileAttributeType, encapDeviceDisableAttributeType));
         this.deviceDescriptions.add(new DeviceDescription(EncapConstants.ENCAP_DEVICE_ID, "nl", "GSM"));
-        this.deviceDescriptions.add(new DeviceDescription(EncapConstants.ENCAP_DEVICE_ID, Locale.ENGLISH.getLanguage(),
-                "Mobile"));
+        this.deviceDescriptions.add(new DeviceDescription(EncapConstants.ENCAP_DEVICE_ID, Locale.ENGLISH.getLanguage(), "Mobile"));
         this.trustedCertificates.put(certificate, SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
     }
 
@@ -97,10 +94,9 @@ public class EncapStartableBean extends AbstractInitBean {
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
         IdentityServiceClient identityServiceClient = new IdentityServiceClient();
 
-        this.node = new Node(nodeName, protocol, hostname, hostport, hostportssl, authIdentityServiceClient
-                .getCertificate(), identityServiceClient.getCertificate());
-        this.trustedCertificates.put(authIdentityServiceClient.getCertificate(),
-                SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
+        this.node = new Node(nodeName, protocol, hostname, hostport, hostportssl, authIdentityServiceClient.getCertificate(),
+                identityServiceClient.getCertificate());
+        this.trustedCertificates.put(authIdentityServiceClient.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
     }
 
     @Override

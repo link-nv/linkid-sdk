@@ -61,8 +61,7 @@ public class LogoutRequestFactoryTest {
 
         // operate
         long begin = System.currentTimeMillis();
-        String result = LogoutRequestFactory.createLogoutRequest(subjectName, applicationName, keyPair, destinationURL,
-                challenge);
+        String result = LogoutRequestFactory.createLogoutRequest(subjectName, applicationName, keyPair, destinationURL, challenge);
         long end = System.currentTimeMillis();
 
         // verify
@@ -81,38 +80,31 @@ public class LogoutRequestFactoryTest {
         Document resultDocument = DomTestUtils.parseDocument(result);
 
         Element nsElement = createNsElement(resultDocument);
-        Element logoutRequestElement = (Element) XPathAPI.selectSingleNode(resultDocument, "/samlp2:LogoutRequest",
-                nsElement);
+        Element logoutRequestElement = (Element) XPathAPI.selectSingleNode(resultDocument, "/samlp2:LogoutRequest", nsElement);
         assertNotNull(logoutRequestElement);
 
-        Element issuerElement = (Element) XPathAPI.selectSingleNode(resultDocument,
-                "/samlp2:LogoutRequest/saml2:Issuer", nsElement);
+        Element issuerElement = (Element) XPathAPI.selectSingleNode(resultDocument, "/samlp2:LogoutRequest/saml2:Issuer", nsElement);
         assertNotNull(issuerElement);
         assertEquals(applicationName, issuerElement.getTextContent());
 
-        Node destinationNode = XPathAPI.selectSingleNode(resultDocument, "/samlp2:LogoutRequest/@Destination",
-                nsElement);
+        Node destinationNode = XPathAPI.selectSingleNode(resultDocument, "/samlp2:LogoutRequest/@Destination", nsElement);
         assertNotNull(destinationNode);
         assertEquals(destinationURL, destinationNode.getTextContent());
 
-        Element nameIDElement = (Element) XPathAPI.selectSingleNode(resultDocument,
-                "/samlp2:LogoutRequest/saml2:NameID", nsElement);
+        Element nameIDElement = (Element) XPathAPI.selectSingleNode(resultDocument, "/samlp2:LogoutRequest/saml2:NameID", nsElement);
         assertNotNull(nameIDElement);
         assertEquals(subjectName, nameIDElement.getTextContent());
 
-        Node formatNode = XPathAPI.selectSingleNode(resultDocument, "/samlp2:LogoutRequest/saml2:NameID/@Format",
-                nsElement);
+        Node formatNode = XPathAPI.selectSingleNode(resultDocument, "/samlp2:LogoutRequest/saml2:NameID/@Format", nsElement);
         assertNotNull(formatNode);
         assertEquals("urn:oasis:names:tc:SAML:2.0:nameid-format:entity", formatNode.getTextContent());
 
         // verify signature
-        NodeList signatureNodeList = resultDocument.getElementsByTagNameNS(javax.xml.crypto.dsig.XMLSignature.XMLNS,
-                "Signature");
+        NodeList signatureNodeList = resultDocument.getElementsByTagNameNS(javax.xml.crypto.dsig.XMLSignature.XMLNS, "Signature");
         assertEquals(1, signatureNodeList.getLength());
 
         DOMValidateContext validateContext = new DOMValidateContext(keyPair.getPublic(), signatureNodeList.item(0));
-        XMLSignatureFactory signatureFactory = XMLSignatureFactory.getInstance("DOM",
-                new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
+        XMLSignatureFactory signatureFactory = XMLSignatureFactory.getInstance("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
 
         XMLSignature signature = signatureFactory.unmarshalXMLSignature(validateContext);
         boolean resultValidity = signature.validate(validateContext);

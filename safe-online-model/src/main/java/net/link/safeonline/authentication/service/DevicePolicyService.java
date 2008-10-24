@@ -28,19 +28,17 @@ import net.link.safeonline.entity.DeviceEntity;
 public interface DevicePolicyService {
 
     /**
-     * Gives back the device policy for the given application. The device policy is a set of device entities which the
-     * application accepts as authentication devices. The method signature has been optimized for ease of use in the
-     * authentication web application.
+     * Gives back the device policy for the given application. The device policy is a set of device entities which the application accepts
+     * as authentication devices. The method signature has been optimized for ease of use in the authentication web application.
      * 
      * @param applicationId
      * @param requiredDevicePolicy
-     *            the optional required device policy as communicated by the application via the authentication
-     *            protocol.
+     *            the optional required device policy as communicated by the application via the authentication protocol.
      * @throws ApplicationNotFoundException
      * @throws EmptyDevicePolicyException
      */
-    List<DeviceEntity> getDevicePolicy(String applicationId, Set<DeviceEntity> requiredDevicePolicy)
-            throws ApplicationNotFoundException, EmptyDevicePolicyException;
+    List<DeviceEntity> getDevicePolicy(String applicationId, Set<DeviceEntity> requiredDevicePolicy) throws ApplicationNotFoundException,
+                                                                                                    EmptyDevicePolicyException;
 
     /**
      * Returns all devices

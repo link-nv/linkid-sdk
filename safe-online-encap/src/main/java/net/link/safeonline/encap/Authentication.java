@@ -34,8 +34,7 @@ public interface Authentication {
      */
     String login() throws MobileAuthenticationException, IOException;
 
-    String requestOTP() throws MalformedURLException, MobileException, AttributeTypeNotFoundException,
-            AttributeNotFoundException;
+    String requestOTP() throws MalformedURLException, MobileException, AttributeTypeNotFoundException, AttributeNotFoundException;
 
     String requestNewOTP() throws MalformedURLException, MobileException;
 

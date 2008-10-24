@@ -35,11 +35,11 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 
 /**
- * Clock Drift Detector Task. Detects local clock drift using an NTP server. Since WS-Security and SAML depends on
- * timestamps to prevent replay attacks it's important to have a proper clock drift detection mechanism.
- *
+ * Clock Drift Detector Task. Detects local clock drift using an NTP server. Since WS-Security and SAML depends on timestamps to prevent
+ * replay attacks it's important to have a proper clock drift detection mechanism.
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Stateless
 @Local(Task.class)
@@ -93,13 +93,12 @@ public class ClockDriftDetectorTaskBean implements Task {
             LOG.debug("clock offset (ms): " + offset);
             if (Math.abs(offset) > this.maxClockOffset) {
                 LOG.warn("maximum clock offset reached");
-                this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DISRUPTION,
-                        "Maximum clock offset reached of " + offset + " milliseconds against NTP Server: "
-                                + ntpServerAddress);
+                this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DISRUPTION, "Maximum clock offset reached of " + offset
+                        + " milliseconds against NTP Server: " + ntpServerAddress);
             }
         } catch (SocketException e) {
-            this.resourceAuditLogger.addResourceAudit(ResourceNameType.NTP, ResourceLevelType.RESOURCE_UNAVAILABLE,
-                    this.ntpServerName, "Error contacting NTP server");
+            this.resourceAuditLogger.addResourceAudit(ResourceNameType.NTP, ResourceLevelType.RESOURCE_UNAVAILABLE, this.ntpServerName,
+                    "Error contacting NTP server");
         }
 
     }

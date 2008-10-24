@@ -28,10 +28,9 @@ public interface NodeAttributeService {
      * Gives back the value of an attribute of a certain subject.
      * 
      * <p>
-     * The returned object can be a {@link String} or {@link Boolean}, ... depending on the actual datatype used by
-     * corresponding attribute type of the requested attribute. In case of a multivalued attribute the returned object
-     * will be an array. In case of a compounded a Map will be returned. In case of a multivalued compounded an array of
-     * Maps will be returned.
+     * The returned object can be a {@link String} or {@link Boolean}, ... depending on the actual datatype used by corresponding attribute
+     * type of the requested attribute. In case of a multivalued attribute the returned object will be an array. In case of a compounded a
+     * Map will be returned. In case of a multivalued compounded an array of Maps will be returned.
      * </p>
      * 
      * @param subjectId
@@ -41,6 +40,6 @@ public interface NodeAttributeService {
      * @throws AttributeTypeNotFoundException
      * @throws AttributeUnavailableException
      */
-    Object getAttributeValue(String subjectId, String attributeName) throws PermissionDeniedException,
-            SubjectNotFoundException, AttributeTypeNotFoundException, AttributeUnavailableException;
+    Object getAttributeValue(String subjectId, String attributeName) throws PermissionDeniedException, SubjectNotFoundException,
+                                                                    AttributeTypeNotFoundException, AttributeUnavailableException;
 }

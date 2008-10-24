@@ -9,9 +9,9 @@ package net.link.safeonline.test.util;
 
 /**
  * MBean action handler interface.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public interface MBeanActionHandler {
 

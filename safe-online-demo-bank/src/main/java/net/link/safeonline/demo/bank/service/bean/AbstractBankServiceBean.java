@@ -31,6 +31,7 @@ public abstract class AbstractBankServiceBean extends AbstractWicketServiceBean 
     @PersistenceContext(unitName = "DemoBankEntityManager")
     protected EntityManager em = defaultEntityManager;
 
+
     /**
      * {@inheritDoc}
      */

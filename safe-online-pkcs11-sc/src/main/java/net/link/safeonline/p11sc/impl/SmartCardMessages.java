@@ -13,7 +13,7 @@ import java.util.ResourceBundle;
 
 /**
  * Class that manages the smart card messages.
- *
+ * 
  * @author fcorneli
  */
 public class SmartCardMessages {
@@ -41,7 +41,7 @@ public class SmartCardMessages {
 
     /**
      * Main constructor.
-     *
+     * 
      * @param locale
      */
     public SmartCardMessages(Locale locale) {

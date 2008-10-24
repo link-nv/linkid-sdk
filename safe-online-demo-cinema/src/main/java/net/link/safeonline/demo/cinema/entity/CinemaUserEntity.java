@@ -19,18 +19,18 @@ import javax.persistence.NamedQuery;
 @NamedQueries( { @NamedQuery(name = CinemaUserEntity.getByOlasId, query = "SELECT u FROM CinemaUserEntity u WHERE u.olasId = :olasId") })
 public class CinemaUserEntity implements Serializable {
 
-    private static final long        serialVersionUID = 1L;
+    private static final long  serialVersionUID = 1L;
 
-    public static final String       getByOlasId          = "CinemaUserEntity.getByOlasId";
+    public static final String getByOlasId      = "CinemaUserEntity.getByOlasId";
 
     @Id
-    private String                   olasId;
+    private String             olasId;
 
-    private boolean                  junior;
+    private boolean            junior;
 
-    private String                   nrn;
+    private String             nrn;
 
-    private String                   name;
+    private String             name;
 
 
     public CinemaUserEntity() {

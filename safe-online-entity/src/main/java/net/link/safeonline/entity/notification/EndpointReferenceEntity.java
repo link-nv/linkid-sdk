@@ -50,12 +50,10 @@ import org.apache.commons.lang.builder.ToStringBuilder;
         @NamedQuery(name = QUERY_WHERE_ADDRESS_NODE, query = "SELECT epr FROM EndpointReferenceEntity AS epr "
                 + "WHERE epr.address = :address AND epr.node = :node"),
         @NamedQuery(name = QUERY_WHERE_ADDRESS_APPLICATION, query = "SELECT epr "
-                + "FROM EndpointReferenceEntity AS epr WHERE epr.address = :address AND "
-                + "epr.application = :application"),
+                + "FROM EndpointReferenceEntity AS epr WHERE epr.address = :address AND " + "epr.application = :application"),
         @NamedQuery(name = QUERY_WHERE_APPLICATION, query = "SELECT epr FROM EndpointReferenceEntity AS epr "
                 + "WHERE epr.application = :application"),
-        @NamedQuery(name = QUERY_WHERE_NODE, query = "SELECT epr FROM EndpointReferenceEntity AS epr "
-                + "WHERE epr.node = :node") })
+        @NamedQuery(name = QUERY_WHERE_NODE, query = "SELECT epr FROM EndpointReferenceEntity AS epr " + "WHERE epr.node = :node") })
 public class EndpointReferenceEntity implements Serializable {
 
     private static final long  serialVersionUID                = 1L;
@@ -209,8 +207,7 @@ public class EndpointReferenceEntity implements Serializable {
         EndpointReferenceEntity find(@QueryParam("address") String address, @QueryParam("node") NodeEntity node);
 
         @QueryMethod(value = QUERY_WHERE_ADDRESS_APPLICATION, nullable = true)
-        EndpointReferenceEntity find(@QueryParam("address") String address,
-                @QueryParam("application") ApplicationEntity application);
+        EndpointReferenceEntity find(@QueryParam("address") String address, @QueryParam("application") ApplicationEntity application);
 
         @QueryMethod(value = QUERY_WHERE_NODE)
         List<EndpointReferenceEntity> listEndpoints(@QueryParam("node") NodeEntity node);

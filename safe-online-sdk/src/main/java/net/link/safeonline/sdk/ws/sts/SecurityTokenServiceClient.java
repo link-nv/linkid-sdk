@@ -15,14 +15,14 @@ import org.w3c.dom.Element;
 
 /**
  * Interface for Security Token Service WS-Trust client.
- *
+ * 
  * @author fcorneli
  */
 public interface SecurityTokenServiceClient extends MessageAccessor {
 
     /**
      * Validate the given (SAML) token.
-     *
+     * 
      * @param token
      * @param trustDomain
      * @throws WSClientTransportException

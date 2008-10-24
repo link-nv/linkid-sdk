@@ -38,8 +38,7 @@ public class OwnerTest extends TestCase {
 
         this.acceptanceTestManager.setContext("Testing owner webapp admin login logout");
 
-        OwnerOverview ownerOverview = PageUtils.loginOwnerWithPassword(this.acceptanceTestManager,
-                WebappConstants.OWNER_ADMIN, "secret");
+        OwnerOverview ownerOverview = PageUtils.loginOwnerWithPassword(this.acceptanceTestManager, WebappConstants.OWNER_ADMIN, "secret");
         ownerOverview.logout();
     }
 }

@@ -18,12 +18,11 @@ import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 
 
 /**
- * Interface for attribute type description decorator. The component implementing this interface will convert the
- * incoming lists to lists that have been decorated with attribute descriptions, internationalized according to the
- * given locale.
- *
+ * Interface for attribute type description decorator. The component implementing this interface will convert the incoming lists to lists
+ * that have been decorated with attribute descriptions, internationalized according to the given locale.
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Local
 public interface AttributeTypeDescriptionDecorator {
@@ -33,6 +32,5 @@ public interface AttributeTypeDescriptionDecorator {
      * @param locale
      *            the optional locale.
      */
-    List<AttributeDO> addDescriptionFromIdentityAttributes(
-            Collection<ApplicationIdentityAttributeEntity> identityAttributes, Locale locale);
+    List<AttributeDO> addDescriptionFromIdentityAttributes(Collection<ApplicationIdentityAttributeEntity> identityAttributes, Locale locale);
 }

@@ -37,14 +37,14 @@ import net.link.safeonline.shared.statement.IdentityProvider;
 
 public class PcscAppletController implements AppletController, PcscSignerLogger {
 
-    public static final byte[]     BEID_ATR_11  = new byte[] { 0x3b, (byte) 0x98, 0x13, 0x40, 0x0a, (byte) 0xa5, 0x03,
-            0x01, 0x01, 0x01, (byte) 0xad, 0x13, 0x11 };
+    public static final byte[]     BEID_ATR_11  = new byte[] { 0x3b, (byte) 0x98, 0x13, 0x40, 0x0a, (byte) 0xa5, 0x03, 0x01, 0x01, 0x01,
+            (byte) 0xad, 0x13, 0x11            };
 
-    public static final byte[]     BEID_ATR_10  = new byte[] { 0x3b, (byte) 0x98, (byte) 0x94, 0x40, 0x0a, (byte) 0xa5,
-            0x03, 0x01, 0x01, 0x01, (byte) 0xad, 0x13, 0x10 };
+    public static final byte[]     BEID_ATR_10  = new byte[] { 0x3b, (byte) 0x98, (byte) 0x94, 0x40, 0x0a, (byte) 0xa5, 0x03, 0x01, 0x01,
+            0x01, (byte) 0xad, 0x13, 0x10      };
 
-    public static final byte[]     BEID_ATR_100 = new byte[] { 0x3b, (byte) 98, (byte) 0x94, 0x40, (byte) 0xff,
-            (byte) 0xa5, 0x03, 0x01, 0x01, 0x01, (byte) 0xad, 0x13, 0x10 };
+    public static final byte[]     BEID_ATR_100 = new byte[] { 0x3b, (byte) 98, (byte) 0x94, 0x40, (byte) 0xff, (byte) 0xa5, 0x03, 0x01,
+            0x01, 0x01, (byte) 0xad, 0x13, 0x10 };
 
     private AppletView             appletView;
 
@@ -101,9 +101,8 @@ public class PcscAppletController implements AppletController, PcscSignerLogger 
             this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages.getString(KEY.ERROR));
             StackTraceElement[] stackTraceElements = e.getStackTrace();
             for (StackTraceElement stackTraceElement : stackTraceElements) {
-                this.appletView.outputDetailMessage(stackTraceElement.getClassName() + "."
-                        + stackTraceElement.getMethodName() + "(" + stackTraceElement.getFileName() + ":"
-                        + stackTraceElement.getLineNumber() + ")");
+                this.appletView.outputDetailMessage(stackTraceElement.getClassName() + "." + stackTraceElement.getMethodName() + "("
+                        + stackTraceElement.getFileName() + ":" + stackTraceElement.getLineNumber() + ")");
             }
             return;
         } finally {

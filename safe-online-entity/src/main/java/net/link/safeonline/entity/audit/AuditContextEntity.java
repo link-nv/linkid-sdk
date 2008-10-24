@@ -32,11 +32,11 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 
 /**
- * Audit Context JPA entity. This entity is kind of empty. Basically we're only interested in the automagically
- * generated audit context Id sequence.
- *
+ * Audit Context JPA entity. This entity is kind of empty. Basically we're only interested in the automagically generated audit context Id
+ * sequence.
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Entity
 @Table(name = "audit_context")

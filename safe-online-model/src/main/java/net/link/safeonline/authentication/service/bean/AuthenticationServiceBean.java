@@ -152,8 +152,8 @@ import org.opensaml.xml.validation.ValidationException;
 
 
 /**
- * Implementation of authentication service interface. This component does not live within the SafeOnline core security
- * domain (chicken-egg problem).
+ * Implementation of authentication service interface. This component does not live within the SafeOnline core security domain (chicken-egg
+ * problem).
  * 
  * @author fcorneli
  * 
@@ -162,19 +162,15 @@ import org.opensaml.xml.validation.ValidationException;
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class, InputValidation.class })
 public class AuthenticationServiceBean implements AuthenticationService, AuthenticationServiceRemote {
 
-    private static final Log        LOG                                  = LogFactory
-                                                                                 .getLog(AuthenticationServiceBean.class);
+    private static final Log        LOG                                  = LogFactory.getLog(AuthenticationServiceBean.class);
 
     public static final String      SECURITY_MESSAGE_INVALID_COOKIE      = "Attempt to use an invalid SSO Cookie";
 
-    public static final String      SECURITY_MESSAGE_INVALID_APPLICATION = SECURITY_MESSAGE_INVALID_COOKIE
-                                                                                 + ": Invalid application: ";
+    public static final String      SECURITY_MESSAGE_INVALID_APPLICATION = SECURITY_MESSAGE_INVALID_COOKIE + ": Invalid application: ";
 
-    public static final String      SECURITY_MESSAGE_INVALID_DEVICE      = SECURITY_MESSAGE_INVALID_COOKIE
-                                                                                 + ": Invalid device: ";
+    public static final String      SECURITY_MESSAGE_INVALID_DEVICE      = SECURITY_MESSAGE_INVALID_COOKIE + ": Invalid device: ";
 
-    public static final String      SECURITY_MESSAGE_INVALID_USER        = SECURITY_MESSAGE_INVALID_COOKIE
-                                                                                 + ": Invalid user: ";
+    public static final String      SECURITY_MESSAGE_INVALID_USER        = SECURITY_MESSAGE_INVALID_COOKIE + ": Invalid user: ";
 
     private SubjectEntity           authenticatedSubject;
 
@@ -279,7 +275,9 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
 
     public ProtocolContext initialize(String language, @NotNull AuthnRequest samlAuthnRequest)
-            throws AuthenticationInitializationException, ApplicationNotFoundException, TrustDomainNotFoundException {
+                                                                                              throws AuthenticationInitializationException,
+                                                                                              ApplicationNotFoundException,
+                                                                                              TrustDomainNotFoundException {
 
         Issuer issuer = samlAuthnRequest.getIssuer();
         String issuerName = issuer.getValue();
@@ -326,8 +324,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
                 List<DeviceEntity> authnDevices = this.devicePolicyService.listDevices(authnContextClassRefValue);
                 if (null == authnDevices || authnDevices.size() == 0) {
                     LOG.error("AuthnContextClassRef not supported: " + authnContextClassRefValue);
-                    throw new AuthenticationInitializationException("AuthnContextClassRef not supported: "
-                            + authnContextClassRefValue);
+                    throw new AuthenticationInitializationException("AuthnContextClassRef not supported: " + authnContextClassRefValue);
                 }
                 devices.addAll(authnDevices);
             }
@@ -345,15 +342,14 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         this.expectedChallengeId = samlAuthnRequestId;
         this.ssoEnabled = !forceAuthn;
 
-        return new ProtocolContext(this.expectedApplicationId, this.expectedApplicationFriendlyName,
-                this.expectedTarget, language, this.requiredDevicePolicy);
+        return new ProtocolContext(this.expectedApplicationId, this.expectedApplicationFriendlyName, this.expectedTarget, language,
+                this.requiredDevicePolicy);
     }
 
-    private boolean validateSignature(X509Certificate certificate, AuthnRequest samlAuthnRequest)
-            throws TrustDomainNotFoundException {
+    private boolean validateSignature(X509Certificate certificate, AuthnRequest samlAuthnRequest) throws TrustDomainNotFoundException {
 
-        PkiResult certificateValid = this.pkiValidator.validateCertificate(
-                SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate);
+        PkiResult certificateValid = this.pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+                certificate);
 
         if (PkiResult.VALID != certificateValid)
             return false;
@@ -369,8 +365,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         return true;
     }
 
-    public String redirectAuthentication(@NonEmptyString String authenticationServiceUrl,
-            @NonEmptyString String targetUrl, @NonEmptyString String device) throws NodeNotFoundException {
+    public String redirectAuthentication(@NonEmptyString String authenticationServiceUrl, @NonEmptyString String targetUrl,
+                                         @NonEmptyString String device) throws NodeNotFoundException {
 
         /*
          * Also allow redirected state in case the user manually goes back to olas-auth
@@ -390,8 +386,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         Challenge<String> challenge = new Challenge<String>();
 
         String samlRequestToken = AuthnRequestFactory.createAuthnRequest(node.getName(), this.expectedApplicationId,
-                this.expectedApplicationFriendlyName, keyPair, authenticationServiceUrl, targetUrl, challenge, devices,
-                false);
+                this.expectedApplicationFriendlyName, keyPair, authenticationServiceUrl, targetUrl, challenge, devices, false);
 
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
 
@@ -405,8 +400,9 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     }
 
     public String redirectRegistration(@NonEmptyString String registrationServiceUrl, @NonEmptyString String targetUrl,
-            @NonEmptyString String deviceName, @NonEmptyString String userId) throws NodeNotFoundException,
-            SubjectNotFoundException, DeviceNotFoundException {
+                                       @NonEmptyString String deviceName, @NonEmptyString String userId) throws NodeNotFoundException,
+                                                                                                        SubjectNotFoundException,
+                                                                                                        DeviceNotFoundException {
 
         /*
          * Also allow redirected state in case the user manually goes back to olas-auth
@@ -430,8 +426,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         if (node.equals(device.getLocation())) {
             nodeUserId = userId;
         } else {
-            NodeMappingEntity nodeMapping = this.nodeMappingService.getNodeMapping(userId, device.getLocation()
-                    .getName());
+            NodeMappingEntity nodeMapping = this.nodeMappingService.getNodeMapping(userId, device.getLocation().getName());
             nodeUserId = nodeMapping.getId();
         }
 
@@ -442,9 +437,9 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             authenticatedDevice = this.authenticationDevice.getName();
         }
 
-        String samlRequestToken = DeviceOperationRequestFactory.createDeviceOperationRequest(node.getName(),
-                nodeUserId, keyPair, registrationServiceUrl, targetUrl, DeviceOperationType.NEW_ACCOUNT_REGISTER,
-                challenge, deviceName, authenticatedDevice, null);
+        String samlRequestToken = DeviceOperationRequestFactory.createDeviceOperationRequest(node.getName(), nodeUserId, keyPair,
+                registrationServiceUrl, targetUrl, DeviceOperationType.NEW_ACCOUNT_REGISTER, challenge, deviceName, authenticatedDevice,
+                null);
 
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
 
@@ -458,7 +453,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     }
 
     public String authenticate(@NotNull HttpServletRequest request) throws NodeNotFoundException, ServletException,
-            NodeMappingNotFoundException, DeviceNotFoundException, SubjectNotFoundException {
+                                                                   NodeMappingNotFoundException, DeviceNotFoundException,
+                                                                   SubjectNotFoundException {
 
         LOG.debug("authenticate");
         if (this.authenticationState != REDIRECTED)
@@ -469,9 +465,9 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
         NodeEntity node = this.nodeAuthenticationService.getLocalNode();
 
-        Response samlResponse = ResponseUtil.validateResponse(now, request, this.expectedDeviceChallengeId,
-                this.expectedApplicationId, node.getLocation(), authIdentityServiceClient.getCertificate(),
-                authIdentityServiceClient.getPrivateKey(), TrustDomainType.DEVICE);
+        Response samlResponse = ResponseUtil.validateResponse(now, request, this.expectedDeviceChallengeId, this.expectedApplicationId,
+                node.getLocation(), authIdentityServiceClient.getCertificate(), authIdentityServiceClient.getPrivateKey(),
+                TrustDomainType.DEVICE);
         if (null == samlResponse)
             return null;
 
@@ -541,10 +537,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
     private void createSsoCookie(SecretKey ssoKey) {
 
-        if (null == this.authenticatedSubject || null == this.authenticationDevice
-                || null == this.expectedApplicationId) {
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION,
-                    "Attempt to create SSO Cookie without authenticating");
+        if (null == this.authenticatedSubject || null == this.authenticationDevice || null == this.expectedApplicationId) {
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, "Attempt to create SSO Cookie without authenticating");
             throw new IllegalStateException("don't try to create a single sign-on cookie without authenticating");
         }
 
@@ -587,15 +581,14 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             return;
         }
 
-        this.ssoCookie = new Cookie(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX + "." + this.expectedApplicationId,
-                encryptedValue);
+        this.ssoCookie = new Cookie(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX + "." + this.expectedApplicationId, encryptedValue);
         this.ssoCookie.setMaxAge(-1);
         this.ssoCookie.setPath(this.cookiePath);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public boolean checkSsoCookie(@NotNull Cookie cookie) throws ApplicationNotFoundException, InvalidCookieException,
-            EmptyDevicePolicyException {
+                                                         EmptyDevicePolicyException {
 
         LOG.debug("check single sign on cookie: " + cookie.getName());
 
@@ -608,8 +601,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         SingleSignOn sso = parseCookie(cookie);
 
-        List<ApplicationPoolEntity> commonApplicationPools = this.applicationPoolDAO.listCommonApplicationPools(
-                application, sso.application);
+        List<ApplicationPoolEntity> commonApplicationPools = this.applicationPoolDAO.listCommonApplicationPools(application,
+                sso.application);
         LOG.debug("common application pools: " + commonApplicationPools.size());
         if (0 == commonApplicationPools.size()) {
             LOG.debug("no common application pool");
@@ -625,8 +618,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         try {
             checkDevicePolicy(sso.device.getName());
         } catch (DevicePolicyException e) {
-            LOG.debug("device " + sso.device.getName() + " not enough for application " + this.expectedApplicationId
-                    + " device policy");
+            LOG.debug("device " + sso.device.getName() + " not enough for application " + this.expectedApplicationId + " device policy");
             return false;
         }
 
@@ -664,8 +656,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
      * {@inheritDoc}
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public boolean checkSsoCookieForLogout(@NotNull Cookie cookie) throws ApplicationNotFoundException,
-            InvalidCookieException {
+    public boolean checkSsoCookieForLogout(@NotNull Cookie cookie) throws ApplicationNotFoundException, InvalidCookieException {
 
         LOG.debug("check single sign on cookie for logout: " + cookie.getName());
 
@@ -740,9 +731,9 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
                 ssoApplicationsValue = ssoApplicationsValue.substring(0, ssoApplicationsValue.length() - 1);
             }
 
-            return SUBJECT_FIELD + "=" + this.subject.getUserId() + ";" + APPLICATION_FIELD + "="
-                    + this.application.getName() + ";" + DEVICE_FIELD + "=" + this.device.getName() + ";" + TIME_FIELD
-                    + "=" + this.time.toString() + ";" + SSO_APPLICATIONS_FIELD + "=" + ssoApplicationsValue;
+            return SUBJECT_FIELD + "=" + this.subject.getUserId() + ";" + APPLICATION_FIELD + "=" + this.application.getName() + ";"
+                    + DEVICE_FIELD + "=" + this.device.getName() + ";" + TIME_FIELD + "=" + this.time.toString() + ";"
+                    + SSO_APPLICATIONS_FIELD + "=" + ssoApplicationsValue;
         }
 
         public void addSsoApplication(ApplicationEntity ssoApplication) {
@@ -806,8 +797,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         // check subject property
         String[] subjectProperty = properties[0].split("=");
-        if (null == subjectProperty || subjectProperty.length != 2
-                || !subjectProperty[0].equals(SingleSignOn.SUBJECT_FIELD)) {
+        if (null == subjectProperty || subjectProperty.length != 2 || !subjectProperty[0].equals(SingleSignOn.SUBJECT_FIELD)) {
             LOG.debug(SECURITY_MESSAGE_INVALID_COOKIE);
             this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_COOKIE);
             throw new InvalidCookieException("Invalid SSO Cookie");
@@ -815,8 +805,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         SubjectEntity subject = this.subjectService.findSubject(subjectProperty[1]);
         if (null == subject) {
             LOG.debug(SECURITY_MESSAGE_INVALID_USER + subjectProperty[1]);
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_USER
-                    + subjectProperty[1]);
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_USER + subjectProperty[1]);
             throw new InvalidCookieException("Invalid SSO Cookie");
         }
 
@@ -831,15 +820,14 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         ApplicationEntity application = this.applicationDAO.findApplication(applicationProperty[1]);
         if (null == application) {
             LOG.debug(SECURITY_MESSAGE_INVALID_APPLICATION + applicationProperty[1]);
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION,
-                    SECURITY_MESSAGE_INVALID_APPLICATION + applicationProperty[1]);
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_APPLICATION
+                    + applicationProperty[1]);
             throw new InvalidCookieException("Invalid SSO Cookie");
         }
 
         // check device property
         String[] deviceProperty = properties[2].split("=");
-        if (null == deviceProperty || deviceProperty.length != 2
-                || !deviceProperty[0].equals(SingleSignOn.DEVICE_FIELD)) {
+        if (null == deviceProperty || deviceProperty.length != 2 || !deviceProperty[0].equals(SingleSignOn.DEVICE_FIELD)) {
             LOG.debug(SECURITY_MESSAGE_INVALID_COOKIE);
             this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_COOKIE);
             throw new InvalidCookieException("Invalid SSO Cookie");
@@ -847,8 +835,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         DeviceEntity device = this.deviceDAO.findDevice(deviceProperty[1]);
         if (null == device) {
             LOG.debug(SECURITY_MESSAGE_INVALID_DEVICE + deviceProperty[1]);
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_DEVICE
-                    + deviceProperty[1]);
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_DEVICE + deviceProperty[1]);
             throw new InvalidCookieException("Invalid SSO Cookie");
         }
 
@@ -877,8 +864,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
                 ApplicationEntity ssoApplication = this.applicationDAO.findApplication(ssoApplicationName);
                 if (null == ssoApplication) {
                     LOG.debug(SECURITY_MESSAGE_INVALID_APPLICATION + ssoApplicationName);
-                    this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION,
-                            SECURITY_MESSAGE_INVALID_APPLICATION + ssoApplicationName);
+                    this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_INVALID_APPLICATION
+                            + ssoApplicationName);
                     throw new InvalidCookieException("Invalid SSO Cookie");
                 }
                 sso.addSsoApplication(ssoApplication);
@@ -888,8 +875,9 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         return sso;
     }
 
-    public boolean authenticate(@NonEmptyString String loginName, @NonEmptyString String password)
-            throws SubjectNotFoundException, DeviceNotFoundException, DeviceDisabledException {
+    public boolean authenticate(@NonEmptyString String loginName, @NonEmptyString String password) throws SubjectNotFoundException,
+                                                                                                  DeviceNotFoundException,
+                                                                                                  DeviceDisabledException {
 
         SubjectEntity subject = this.passwordDeviceService.authenticate(loginName, password);
         if (null == subject)
@@ -917,7 +905,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     }
 
     public String register(@NotNull HttpServletRequest request) throws NodeNotFoundException, ServletException,
-            NodeMappingNotFoundException, DeviceNotFoundException, SubjectNotFoundException {
+                                                               NodeMappingNotFoundException, DeviceNotFoundException,
+                                                               SubjectNotFoundException {
 
         LOG.debug("register");
         if (this.authenticationState != REDIRECTED)
@@ -928,10 +917,9 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
         NodeEntity node = this.nodeAuthenticationService.getLocalNode();
 
-        DeviceOperationResponse response = DeviceOperationResponseUtil.validateResponse(now, request,
-                this.expectedDeviceChallengeId, DeviceOperationType.NEW_ACCOUNT_REGISTER, node.getLocation(),
-                authIdentityServiceClient.getCertificate(), authIdentityServiceClient.getPrivateKey(),
-                TrustDomainType.DEVICE);
+        DeviceOperationResponse response = DeviceOperationResponseUtil.validateResponse(now, request, this.expectedDeviceChallengeId,
+                DeviceOperationType.NEW_ACCOUNT_REGISTER, node.getLocation(), authIdentityServiceClient.getCertificate(),
+                authIdentityServiceClient.getPrivateKey(), TrustDomainType.DEVICE);
         if (null == response)
             return null;
 
@@ -1011,8 +999,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     }
 
     @Remove
-    public String finalizeAuthentication() throws NodeNotFoundException, SubscriptionNotFoundException,
-            ApplicationNotFoundException {
+    public String finalizeAuthentication() throws NodeNotFoundException, SubscriptionNotFoundException, ApplicationNotFoundException {
 
         LOG.debug("finalize authentication");
         if (this.authenticationState != COMMITTED)
@@ -1029,9 +1016,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         String userId = this.userIdMappingService.getApplicationUserId(this.expectedApplicationId, getUserId());
 
-        String samlResponseToken = AuthnResponseFactory.createAuthResponse(this.expectedChallengeId,
-                this.expectedApplicationId, node.getName(), userId, this.authenticationDevice
-                        .getAuthenticationContextClass(), keyPair, validity, this.expectedTarget,
+        String samlResponseToken = AuthnResponseFactory.createAuthResponse(this.expectedChallengeId, this.expectedApplicationId,
+                node.getName(), userId, this.authenticationDevice.getAuthenticationContextClass(), keyPair, validity, this.expectedTarget,
                 this.authenticationDate);
         LOG.debug("saml response token: " + samlResponseToken);
 
@@ -1050,8 +1036,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
     private void addLoginTick(ApplicationEntity application) {
 
-        StatisticEntity statistic = this.statisticDAO.findOrAddStatisticByNameDomainAndApplication(statisticName,
-                statisticDomain, application);
+        StatisticEntity statistic = this.statisticDAO.findOrAddStatisticByNameDomainAndApplication(statisticName, statisticDomain,
+                application);
 
         StatisticDataPointEntity dp = this.statisticDataPointDAO.findOrAddStatisticDataPoint(loginCounter, statistic);
 
@@ -1080,16 +1066,15 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     }
 
     private void checkRequiredIdentity() throws SubscriptionNotFoundException, ApplicationNotFoundException,
-            ApplicationIdentityNotFoundException, IdentityConfirmationRequiredException {
+                                        ApplicationIdentityNotFoundException, IdentityConfirmationRequiredException {
 
         boolean confirmationRequired = this.identityService.isConfirmationRequired(this.expectedApplicationId);
         if (true == confirmationRequired)
             throw new IdentityConfirmationRequiredException();
     }
 
-    private void checkRequiredMissingAttributes() throws ApplicationNotFoundException,
-            ApplicationIdentityNotFoundException, MissingAttributeException, PermissionDeniedException,
-            AttributeTypeNotFoundException {
+    private void checkRequiredMissingAttributes() throws ApplicationNotFoundException, ApplicationIdentityNotFoundException,
+                                                 MissingAttributeException, PermissionDeniedException, AttributeTypeNotFoundException {
 
         boolean hasMissingAttributes = this.identityService.hasMissingAttributes(this.expectedApplicationId);
         if (true == hasMissingAttributes)
@@ -1097,11 +1082,10 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     }
 
     private void checkDevicePolicy(String deviceName) throws ApplicationNotFoundException, EmptyDevicePolicyException,
-            DevicePolicyException {
+                                                     DevicePolicyException {
 
         LOG.debug("check device policy for device: " + deviceName);
-        List<DeviceEntity> devicePolicy = this.devicePolicyService.getDevicePolicy(this.expectedApplicationId,
-                this.requiredDevicePolicy);
+        List<DeviceEntity> devicePolicy = this.devicePolicyService.getDevicePolicy(this.expectedApplicationId, this.requiredDevicePolicy);
         boolean found = false;
         for (DeviceEntity device : devicePolicy) {
             LOG.debug("devicePolicy: " + device.getName());
@@ -1114,27 +1098,26 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             throw new DevicePolicyException();
     }
 
-    private void checkRequiredUsageAgreement() throws ApplicationNotFoundException,
-            UsageAgreementAcceptationRequiredException, SubscriptionNotFoundException {
+    private void checkRequiredUsageAgreement() throws ApplicationNotFoundException, UsageAgreementAcceptationRequiredException,
+                                              SubscriptionNotFoundException {
 
         boolean requiresUsageAgreementAcceptation = this.usageAgreementService
-                .requiresUsageAgreementAcceptation(this.expectedApplicationId);
+                                                                              .requiresUsageAgreementAcceptation(this.expectedApplicationId);
         if (true == requiresUsageAgreementAcceptation)
             throw new UsageAgreementAcceptationRequiredException();
     }
 
     private void checkRequiredGlobalUsageAgreement() throws UsageAgreementAcceptationRequiredException {
 
-        boolean requiresGlobalUsageAgreementAcceptation = this.usageAgreementService
-                .requiresGlobalUsageAgreementAcceptation();
+        boolean requiresGlobalUsageAgreementAcceptation = this.usageAgreementService.requiresGlobalUsageAgreementAcceptation();
         if (true == requiresGlobalUsageAgreementAcceptation)
             throw new UsageAgreementAcceptationRequiredException();
     }
 
     public void commitAuthentication() throws ApplicationNotFoundException, SubscriptionNotFoundException,
-            ApplicationIdentityNotFoundException, IdentityConfirmationRequiredException, MissingAttributeException,
-            EmptyDevicePolicyException, DevicePolicyException, UsageAgreementAcceptationRequiredException,
-            PermissionDeniedException, AttributeTypeNotFoundException {
+                                      ApplicationIdentityNotFoundException, IdentityConfirmationRequiredException,
+                                      MissingAttributeException, EmptyDevicePolicyException, DevicePolicyException,
+                                      UsageAgreementAcceptationRequiredException, PermissionDeniedException, AttributeTypeNotFoundException {
 
         LOG.debug("commitAuthentication for application: " + this.expectedApplicationId);
 
@@ -1152,15 +1135,15 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         ApplicationEntity application = this.applicationDAO.findApplication(this.expectedApplicationId);
         if (null == application) {
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, this.authenticatedSubject
-                    .getUserId(), "unknown application " + this.expectedApplicationId);
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, this.authenticatedSubject.getUserId(),
+                    "unknown application " + this.expectedApplicationId);
             throw new ApplicationNotFoundException();
         }
 
         SubscriptionEntity subscription = this.subscriptionDAO.findSubscription(this.authenticatedSubject, application);
         if (null == subscription) {
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, this.authenticatedSubject
-                    .getUserId(), "susbcription not found for " + this.expectedApplicationId);
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, this.authenticatedSubject.getUserId(),
+                    "susbcription not found for " + this.expectedApplicationId);
             throw new SubscriptionNotFoundException();
         }
 
@@ -1219,9 +1202,9 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
      * {@inheritDoc}
      * 
      */
-    public LogoutProtocolContext initialize(@NotNull LogoutRequest samlLogoutRequest)
-            throws AuthenticationInitializationException, ApplicationNotFoundException, TrustDomainNotFoundException,
-            SubjectNotFoundException {
+    public LogoutProtocolContext initialize(@NotNull LogoutRequest samlLogoutRequest) throws AuthenticationInitializationException,
+                                                                                     ApplicationNotFoundException,
+                                                                                     TrustDomainNotFoundException, SubjectNotFoundException {
 
         Issuer issuer = samlLogoutRequest.getIssuer();
         String issuerName = issuer.getValue();
@@ -1263,11 +1246,10 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
     }
 
-    private boolean validateSignature(X509Certificate certificate, LogoutRequest samlLogoutRequest)
-            throws TrustDomainNotFoundException {
+    private boolean validateSignature(X509Certificate certificate, LogoutRequest samlLogoutRequest) throws TrustDomainNotFoundException {
 
-        PkiResult certificateValid = this.pkiValidator.validateCertificate(
-                SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate);
+        PkiResult certificateValid = this.pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
+                certificate);
 
         if (PkiResult.VALID != certificateValid)
             return false;
@@ -1286,8 +1268,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     /**
      * {@inheritDoc}
      */
-    public String getLogoutRequest(ApplicationEntity application) throws SubscriptionNotFoundException,
-            ApplicationNotFoundException, NodeNotFoundException {
+    public String getLogoutRequest(ApplicationEntity application) throws SubscriptionNotFoundException, ApplicationNotFoundException,
+                                                                 NodeNotFoundException {
 
         LOG.debug("get logout request for " + application.getName());
         if (this.authenticationState != INITIALIZED)
@@ -1300,8 +1282,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         PublicKey publicKey = identityServiceClient.getPublicKey();
         KeyPair keyPair = new KeyPair(publicKey, privateKey);
 
-        String userId = this.userIdMappingService.getApplicationUserId(application.getName(), this.authenticatedSubject
-                .getUserId());
+        String userId = this.userIdMappingService.getApplicationUserId(application.getName(), this.authenticatedSubject.getUserId());
 
         this.expectedLogoutChallenge = new Challenge<String>();
 
@@ -1321,8 +1302,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     /**
      * {@inheritDoc}
      */
-    public String handleLogoutResponse(@NotNull HttpServletRequest httpRequest) throws ServletException,
-            NodeNotFoundException {
+    public String handleLogoutResponse(@NotNull HttpServletRequest httpRequest) throws ServletException, NodeNotFoundException {
 
         LOG.debug("handle logout response");
         if (this.authenticationState != LOGGING_OUT)
@@ -1331,9 +1311,9 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
         NodeEntity node = this.nodeAuthenticationService.getLocalNode();
 
-        LogoutResponse logoutResponse = ResponseUtil.validateLogoutResponse(httpRequest, this.expectedLogoutChallenge
-                .getValue(), node.getLocation(), authIdentityServiceClient.getCertificate(), authIdentityServiceClient
-                .getPrivateKey(), TrustDomainType.APPLICATION);
+        LogoutResponse logoutResponse = ResponseUtil.validateLogoutResponse(httpRequest, this.expectedLogoutChallenge.getValue(),
+                node.getLocation(), authIdentityServiceClient.getCertificate(), authIdentityServiceClient.getPrivateKey(),
+                TrustDomainType.APPLICATION);
         if (null == logoutResponse)
             return null;
 
@@ -1371,8 +1351,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         PublicKey publicKey = identityServiceClient.getPublicKey();
         KeyPair keyPair = new KeyPair(publicKey, privateKey);
 
-        String samlLogoutResponseToken = LogoutResponseFactory.createLogoutResponse(partialLogout,
-                this.expectedChallengeId, node.getName(), keyPair, this.expectedTarget);
+        String samlLogoutResponseToken = LogoutResponseFactory.createLogoutResponse(partialLogout, this.expectedChallengeId,
+                node.getName(), keyPair, this.expectedTarget);
         String encodedSamlLogoutResponseToken = Base64.encode(samlLogoutResponseToken.getBytes());
         return encodedSamlLogoutResponseToken;
     }

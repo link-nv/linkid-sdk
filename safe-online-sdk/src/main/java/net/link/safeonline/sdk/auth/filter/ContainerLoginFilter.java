@@ -22,8 +22,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- * Servlet container filter that sets the servlet container user principal according to the SafeOnline authenticated
- * user.
+ * Servlet container filter that sets the servlet container user principal according to the SafeOnline authenticated user.
  * 
  * <p>
  * The configuration of this filter should be managed via the <code>web.xml</code> deployment descriptor.
@@ -44,8 +43,7 @@ public class ContainerLoginFilter implements Filter {
         // empty
     }
 
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-            ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         boolean loggedIn = LoginManager.isAuthenticated(httpServletRequest);

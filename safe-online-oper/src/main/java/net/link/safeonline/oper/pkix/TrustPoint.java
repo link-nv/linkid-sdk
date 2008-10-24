@@ -40,8 +40,7 @@ public interface TrustPoint {
     /*
      * Actions.
      */
-    String add() throws IOException, TrustDomainNotFoundException, ExistingTrustPointException,
-            CertificateEncodingException;
+    String add() throws IOException, TrustDomainNotFoundException, ExistingTrustPointException, CertificateEncodingException;
 
     String view();
 

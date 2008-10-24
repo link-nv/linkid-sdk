@@ -38,11 +38,11 @@ import org.jgroups.Address;
 /**
  * <h2>{@link ScenarioRemoting}<br>
  * <sub>This class takes care of communication with the remote agent via RMI.</sub></h2>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ScenarioRemoting {
@@ -50,7 +50,7 @@ public class ScenarioRemoting {
     private static Log                                LOG         = LogFactory.getLog(ScenarioRemoting.class);
 
     private static Map<Thread, MBeanServerConnection> connections = Collections
-                                                                          .synchronizedMap(new HashMap<Thread, MBeanServerConnection>());
+                                                                               .synchronizedMap(new HashMap<Thread, MBeanServerConnection>());
 
     private ObjectName                                agentService;
 
@@ -88,12 +88,12 @@ public class ScenarioRemoting {
 
     /**
      * Invoke a method on the agent service deployed at AP of the given agent.
-     *
+     * 
      * @throws IllegalStateException
      *             When the RMI adaptor is not available on the given agent.
      */
-    private Object invokeFor(Address agent, String methodName, Object[] arguments, String[] argumentTypes)
-            throws MBeanException, IllegalStateException {
+    private Object invokeFor(Address agent, String methodName, Object[] arguments, String[] argumentTypes) throws MBeanException,
+                                                                                                          IllegalStateException {
 
         try {
             InitialContext context = getInitialContext(agent);
@@ -168,14 +168,13 @@ public class ScenarioRemoting {
     /**
      * Deploy the previously uploaded application.
      */
-    public void execute(Address agent, String scenarioName, Integer agents, Integer workers, Long duration,
-            String olasHost, Boolean useSsl, Date startTime) {
+    public void execute(Address agent, String scenarioName, Integer agents, Integer workers, Long duration, String olasHost,
+                        Boolean useSsl, Date startTime) {
 
         try {
-            invokeFor(agent, "execute", new Object[] { scenarioName, agents, workers, duration, olasHost, useSsl,
-                    startTime }, new String[] { String.class.getName(), Integer.class.getName(),
-                    Integer.class.getName(), Long.class.getName(), String.class.getName(), Boolean.class.getName(),
-                    Date.class.getName() });
+            invokeFor(agent, "execute", new Object[] { scenarioName, agents, workers, duration, olasHost, useSsl, startTime },
+                    new String[] { String.class.getName(), Integer.class.getName(), Integer.class.getName(), Long.class.getName(),
+                            String.class.getName(), Boolean.class.getName(), Date.class.getName() });
         } catch (MBeanException e) {
             LOG.error("Server error during execute!", e);
         }
@@ -187,8 +186,7 @@ public class ScenarioRemoting {
     public ScenarioExecution getCharts(Address agent, Date startTime) {
 
         try {
-            return (ScenarioExecution) invokeFor(agent, "getCharts", new Object[] { startTime },
-                    new String[] { Date.class.getName() });
+            return (ScenarioExecution) invokeFor(agent, "getCharts", new Object[] { startTime }, new String[] { Date.class.getName() });
         } catch (MBeanException e) {
             LOG.error("Server error during stats retrieval!", e);
 

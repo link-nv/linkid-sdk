@@ -68,7 +68,10 @@ public class AuditSearchBean implements AuditSearch {
 
 
     private enum SearchMode {
-        ID, USER, TIME, ALL
+        ID,
+        USER,
+        TIME,
+        ALL
     }
 
 
@@ -109,7 +112,7 @@ public class AuditSearchBean implements AuditSearch {
 
 
     /*
-     *
+     * 
      * Datamodels
      */
     @SuppressWarnings("unused")
@@ -147,7 +150,7 @@ public class AuditSearchBean implements AuditSearch {
 
 
     /*
-     *
+     * 
      * Accessors
      */
     public Long getSearchContextId() {
@@ -201,7 +204,7 @@ public class AuditSearchBean implements AuditSearch {
     }
 
     /*
-     *
+     * 
      * Factories
      */
     @Factory(AUDIT_CONTEXT_LIST_NAME)
@@ -281,7 +284,7 @@ public class AuditSearchBean implements AuditSearch {
     }
 
     /*
-     *
+     * 
      * Actions
      */
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -371,7 +374,7 @@ public class AuditSearchBean implements AuditSearch {
     }
 
     /*
-     *
+     * 
      * Validators
      */
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)

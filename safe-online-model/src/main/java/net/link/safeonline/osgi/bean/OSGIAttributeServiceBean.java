@@ -39,9 +39,8 @@ import org.jboss.annotation.ejb.LocalBinding;
  * <sub>OLAS Attribute Service used by OSGi plugin bundles.</sub></h2>
  * 
  * <p>
- * This EJB is used by OSGi plugin bundles when retrieving attributes from OLAS. It is called from
- * {@link OlasAttributeServiceImpl} which is an implementation of the OLAS attribute service (
- * {@link OlasAttributeService} that external plugins use.
+ * This EJB is used by OSGi plugin bundles when retrieving attributes from OLAS. It is called from {@link OlasAttributeServiceImpl} which is
+ * an implementation of the OLAS attribute service ( {@link OlasAttributeService} that external plugins use.
  * </p>
  * 
  * <p>
@@ -68,8 +67,8 @@ public class OSGIAttributeServiceBean implements OSGIAttributeService {
      * 
      */
     public List<Attribute> getAttribute(String userId, String attributeName) throws AttributeTypeNotFoundException,
-            AttributeNotFoundException, UnsupportedDataTypeException, AttributeUnavailableException,
-            SubjectNotFoundException {
+                                                                            AttributeNotFoundException, UnsupportedDataTypeException,
+                                                                            AttributeUnavailableException, SubjectNotFoundException {
 
         LOG.debug("get attribute " + attributeName + " for user " + userId);
         List<Attribute> attributeView = new LinkedList<Attribute>();
@@ -93,7 +92,7 @@ public class OSGIAttributeServiceBean implements OSGIAttributeService {
 
     @SuppressWarnings("unchecked")
     private void addValueToView(Object value, AttributeTypeEntity attributeType, List<Attribute> attributesView)
-            throws UnsupportedDataTypeException {
+                                                                                                                throws UnsupportedDataTypeException {
 
         LOG.debug("add attribute " + attributeType.getName() + " to view");
         if (!attributeType.isMultivalued()) {
@@ -117,8 +116,9 @@ public class OSGIAttributeServiceBean implements OSGIAttributeService {
                 attributesView.add(getAttributeView(attributeType, null, idx));
                 for (CompoundedAttributeTypeMemberEntity memberAttributeType : attributeType.getMembers()) {
                     LOG.debug("add compounded member attribute: " + memberAttributeType.getMember().getName());
-                    attributesView.add(getAttributeView(memberAttributeType.getMember(), memberMap
-                            .get(memberAttributeType.getMember().getName()), idx));
+                    attributesView
+                                  .add(getAttributeView(memberAttributeType.getMember(), memberMap.get(memberAttributeType.getMember()
+                                                                                                                          .getName()), idx));
                 }
                 idx++;
             }
@@ -130,8 +130,7 @@ public class OSGIAttributeServiceBean implements OSGIAttributeService {
      * 
      * @throws UnsupportedDataTypeException
      */
-    private Attribute getAttributeView(AttributeTypeEntity attributeType, Object value, int idx)
-            throws UnsupportedDataTypeException {
+    private Attribute getAttributeView(AttributeTypeEntity attributeType, Object value, int idx) throws UnsupportedDataTypeException {
 
         LOG.debug("get attribute view for type: " + attributeType.getName() + " with value: " + value);
         Attribute attributeView = new Attribute(attributeType.getName(), convertDataType(attributeType.getType()), idx);
@@ -141,8 +140,7 @@ public class OSGIAttributeServiceBean implements OSGIAttributeService {
         return attributeView;
     }
 
-    private DatatypeType convertDataType(net.link.safeonline.entity.DatatypeType dataType)
-            throws UnsupportedDataTypeException {
+    private DatatypeType convertDataType(net.link.safeonline.entity.DatatypeType dataType) throws UnsupportedDataTypeException {
 
         if (dataType.equals(net.link.safeonline.entity.DatatypeType.BOOLEAN))
             return DatatypeType.BOOLEAN;

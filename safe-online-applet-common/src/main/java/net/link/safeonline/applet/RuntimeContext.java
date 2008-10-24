@@ -13,15 +13,15 @@ import java.util.Locale;
 
 /**
  * Interface definition for runtime context. In case of an applet runtime this will somehow map to the applet context.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public interface RuntimeContext {
 
     /**
      * Gives back the parameter value, or <code>null</code> if not set.
-     *
+     * 
      * @param name
      *            the parameter name.
      * @return the parameter value, or <code>null</code> if not set.

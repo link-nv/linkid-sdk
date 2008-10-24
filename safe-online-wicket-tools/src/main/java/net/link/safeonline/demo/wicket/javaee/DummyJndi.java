@@ -21,8 +21,8 @@ import org.jboss.annotation.ejb.LocalBinding;
  * <sub>A simplistic replacement for JNDI.</sub></h2>
  * 
  * <p>
- * This is a {@link HashMap} based dummy JNDI service. Use {@link #register(String, Object)} to put your objects in it
- * and {@link #lookup(String)} to retrieve them based on their registration binding.
+ * This is a {@link HashMap} based dummy JNDI service. Use {@link #register(String, Object)} to put your objects in it and
+ * {@link #lookup(String)} to retrieve them based on their registration binding.
  * </p>
  * 
  * <p>
@@ -80,13 +80,13 @@ public class DummyJndi extends HashMap<String, Object> {
     }
 
     /**
-     * Register a bean with this dummy JNDI under the JNDI binding specified by the {@link LocalBinding} of the given
-     * bean class or the binding specified by the given local interface class.
+     * Register a bean with this dummy JNDI under the JNDI binding specified by the {@link LocalBinding} of the given bean class or the
+     * binding specified by the given local interface class.
      * 
      * @param beanClass
-     *            The class that defines the binding to use for the bean. If the class has a {@link LocalBinding}
-     *            annotation, that will determine the JNDI binding. Otherwise, if the class is a {@link Local}
-     *            interface, the {@link OlasNamingStrategy} will determine the binding to use.
+     *            The class that defines the binding to use for the bean. If the class has a {@link LocalBinding} annotation, that will
+     *            determine the JNDI binding. Otherwise, if the class is a {@link Local} interface, the {@link OlasNamingStrategy} will
+     *            determine the binding to use.
      * 
      * @param bean
      *            The bean object to register.
@@ -101,16 +101,15 @@ public class DummyJndi extends HashMap<String, Object> {
         }
 
         if (jndiBinding == null)
-            throw new IllegalArgumentException(
-                    "Could not determine the JNDI binding to bind the following bean under: " + bean + " (" + beanClass
-                            + " has no LocalBinding or Local annotation?)");
+            throw new IllegalArgumentException("Could not determine the JNDI binding to bind the following bean under: " + bean + " ("
+                    + beanClass + " has no LocalBinding or Local annotation?)");
 
         register(jndiBinding, bean);
     }
 
     /**
-     * Register a bean with this dummy JNDI implementation using its {@link LocalBinding} annotation to specify the JNDI
-     * binding to register the bean under.
+     * Register a bean with this dummy JNDI implementation using its {@link LocalBinding} annotation to specify the JNDI binding to register
+     * the bean under.
      */
     public static void registerAll(Class<?>... beanClasses) {
 
@@ -131,15 +130,14 @@ public class DummyJndi extends HashMap<String, Object> {
     }
 
     /**
-     * Register a bean with this dummy JNDI implementation using its {@link LocalBinding} annotation to specify the JNDI
-     * binding to register the bean under.
+     * Register a bean with this dummy JNDI implementation using its {@link LocalBinding} annotation to specify the JNDI binding to register
+     * the bean under.
      */
     public static void registerAll(Object... beans) {
 
         for (Object bean : beans) {
             if (!bean.getClass().isAnnotationPresent(LocalBinding.class))
-                throw new IllegalArgumentException("Attempted to register a bean (" + bean.getClass()
-                        + ") with no local binding!");
+                throw new IllegalArgumentException("Attempted to register a bean (" + bean.getClass() + ") with no local binding!");
 
             register(bean.getClass().getAnnotation(LocalBinding.class).jndiBinding(), bean);
         }

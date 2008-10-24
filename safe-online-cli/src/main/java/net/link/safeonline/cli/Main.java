@@ -15,9 +15,9 @@ import java.util.Map;
 
 /**
  * SafeOnline Command Line Interface Entry Point.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class Main {
 

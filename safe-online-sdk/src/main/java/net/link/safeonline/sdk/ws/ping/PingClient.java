@@ -13,11 +13,10 @@ import net.link.safeonline.sdk.ws.MessageAccessor;
 
 
 /**
- * Interface for ping client. The ping web service can be used to quickly check for the availability of the SafeOnline
- * services.
- *
+ * Interface for ping client. The ping web service can be used to quickly check for the availability of the SafeOnline services.
+ * 
  * @author fcorneli
- *
+ * 
  */
 public interface PingClient extends MessageAccessor {
 

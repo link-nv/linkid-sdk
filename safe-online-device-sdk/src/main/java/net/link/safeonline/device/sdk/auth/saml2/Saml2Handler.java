@@ -40,11 +40,11 @@ import org.opensaml.xml.ConfigurationException;
 
 
 /**
- * SAML handler used by remote device issuers to handle an incoming SAML authentication request and store the retrieved
- * information on the session into {@link AuthenticationContext}.
+ * SAML handler used by remote device issuers to handle an incoming SAML authentication request and store the retrieved information on the
+ * session into {@link AuthenticationContext}.
  * 
- * After authenticating it will post a SAML authentication response containing the necessary assertions or a SAML
- * authentication response telling the authentication has failed.
+ * After authenticating it will post a SAML authentication response containing the necessary assertions or a SAML authentication response
+ * telling the authentication has failed.
  * 
  * @author wvdhaute
  * 
@@ -104,8 +104,8 @@ public class Saml2Handler implements Serializable {
         return instance;
     }
 
-    public void init(Map<String, String> configParams, X509Certificate newApplicationCertificate,
-            KeyPair newApplicationKeyPair) throws AuthenticationInitializationException {
+    public void init(Map<String, String> configParams, X509Certificate newApplicationCertificate, KeyPair newApplicationKeyPair)
+                                                                                                                                throws AuthenticationInitializationException {
 
         this.stsWsLocation = configParams.get("StsWsLocation");
         this.issuer = configParams.get("DeviceName");
@@ -119,8 +119,8 @@ public class Saml2Handler implements Serializable {
 
         AuthnRequest samlAuthnRequest;
         try {
-            samlAuthnRequest = RequestUtil.validateAuthnRequest(request, this.stsWsLocation,
-                    this.applicationCertificate, this.applicationKeyPair.getPrivate(), TrustDomainType.NODE);
+            samlAuthnRequest = RequestUtil.validateAuthnRequest(request, this.stsWsLocation, this.applicationCertificate,
+                    this.applicationKeyPair.getPrivate(), TrustDomainType.NODE);
         } catch (ServletException e) {
             throw new AuthenticationInitializationException(e.getMessage());
         }
@@ -133,8 +133,7 @@ public class Saml2Handler implements Serializable {
         if (samlAuthnRequest.getConditions().getAudienceRestrictions().isEmpty())
             throw new AuthenticationInitializationException("missing audience restriction");
 
-        String application = samlAuthnRequest.getConditions().getAudienceRestrictions().get(0).getAudiences().get(0)
-                .getAudienceURI();
+        String application = samlAuthnRequest.getConditions().getAudienceRestrictions().get(0).getAudiences().get(0).getAudienceURI();
 
         if (null == application)
             throw new AuthenticationInitializationException("No target application was specified");
@@ -159,8 +158,7 @@ public class Saml2Handler implements Serializable {
             devices = null;
         }
 
-        AuthenticationContext authenticationContext = AuthenticationContext.getAuthenticationContext(request
-                .getSession());
+        AuthenticationContext authenticationContext = AuthenticationContext.getAuthenticationContext(request.getSession());
         authenticationContext.setWantedDevices(devices);
         authenticationContext.setApplication(application);
         authenticationContext.setApplicationFriendlyName(applicationFriendlyName);
@@ -173,11 +171,9 @@ public class Saml2Handler implements Serializable {
         DeviceManager.setApplicationName(applicationFriendlyName, request);
     }
 
-    public void finalizeAuthentication(HttpServletRequest request, HttpServletResponse response)
-            throws AuthenticationFinalizationException {
+    public void finalizeAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationFinalizationException {
 
-        AuthenticationContext authenticationContext = AuthenticationContext.getAuthenticationContext(request
-                .getSession());
+        AuthenticationContext authenticationContext = AuthenticationContext.getAuthenticationContext(request.getSession());
         String usedDevice = authenticationContext.getUsedDevice();
         String userId = authenticationContext.getUserId();
         String applicationId = authenticationContext.getApplication();
@@ -194,8 +190,7 @@ public class Saml2Handler implements Serializable {
             /*
              * Authentication must have failed
              */
-            samlResponseToken = AuthnResponseFactory.createAuthResponseFailed(inResponseTo, issuerName,
-                    this.applicationKeyPair, target);
+            samlResponseToken = AuthnResponseFactory.createAuthResponseFailed(inResponseTo, issuerName, this.applicationKeyPair, target);
         } else if (null == userId && null != usedDevice) {
             /*
              * Authentication failed and user requested to try another device.
@@ -207,8 +202,8 @@ public class Saml2Handler implements Serializable {
             /*
              * Authentication was successful
              */
-            samlResponseToken = AuthnResponseFactory.createAuthResponse(inResponseTo, applicationId, issuerName,
-                    userId, usedDevice, this.applicationKeyPair, validity, target);
+            samlResponseToken = AuthnResponseFactory.createAuthResponse(inResponseTo, applicationId, issuerName, userId, usedDevice,
+                    this.applicationKeyPair, validity, target);
         }
 
         String encodedSamlResponseToken = Base64.encode(samlResponseToken.getBytes());

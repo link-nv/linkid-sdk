@@ -24,8 +24,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class AuditContextPolicyContextHandler implements PolicyContextHandler {
 
-    private static final Log                     LOG               = LogFactory
-                                                                           .getLog(AuditContextPolicyContextHandler.class);
+    private static final Log                     LOG               = LogFactory.getLog(AuditContextPolicyContextHandler.class);
 
     public static final String                   AUDIT_CONTEXT_KEY = "net.link.safeonline.audit.context";
 
@@ -99,8 +98,7 @@ public class AuditContextPolicyContextHandler implements PolicyContextHandler {
         AuditContextInfo previousAuditContextInfo = auditContextInfos.get();
         if (null != previousAuditContextInfo) {
             long previousAuditContextId = previousAuditContextInfo.getAuditContextId();
-            LOG.fatal("Can't set audit context to ID: " + auditContextId + "; It's already set to ID: "
-                    + previousAuditContextId);
+            LOG.fatal("Can't set audit context to ID: " + auditContextId + "; It's already set to ID: " + previousAuditContextId);
             throw new ExistingAuditContextException(previousAuditContextId);
         }
 
@@ -144,8 +142,7 @@ public class AuditContextPolicyContextHandler implements PolicyContextHandler {
     /**
      * Unlocks the audit context for the current call.
      * 
-     * When the entire stack of audit contexts has been unlocked (the last call was completed) the audit context is
-     * removed from the thread.
+     * When the entire stack of audit contexts has been unlocked (the last call was completed) the audit context is removed from the thread.
      * 
      * @return <code>true</code>: The entire audit stack was unlocked (last entry was unlocked).
      * @throws MissingAuditContextException

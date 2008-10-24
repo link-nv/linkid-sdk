@@ -7,16 +7,17 @@ import net.link.safeonline.option.connection.manager.ws.impl.ConnectionManagerSe
 import net.link.safeonline.option.device.OptionDevice;
 import net.link.safeonline.option.device.impl.FujiDataCard;
 
+
 public class ConnectionManagerController {
 
-	OptionDevice optionDevice;
+    OptionDevice optionDevice;
 
-	public ConnectionManagerController(String port) throws Exception {
 
-		this.optionDevice = new FujiDataCard(port);
+    public ConnectionManagerController(String port) throws Exception {
 
-		Endpoint.publish(ConnectionManagerConstants.URL,
-				new ConnectionManagerServiceImpl(this.optionDevice));
-	}
+        this.optionDevice = new FujiDataCard(port);
+
+        Endpoint.publish(ConnectionManagerConstants.URL, new ConnectionManagerServiceImpl(this.optionDevice));
+    }
 
 }

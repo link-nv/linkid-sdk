@@ -18,11 +18,11 @@ import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
 /**
  * <h2>{@link IdMappingDriver}<br>
  * <sub>Provide access to the ID Mapping service.</sub></h2>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class IdMappingDriver extends ProfileDriver {
@@ -39,10 +39,10 @@ public class IdMappingDriver extends ProfileDriver {
 
     /**
      * Retrieve the ID of the user with the given username.
-     *
+     * 
      * @param applicationKey
-     *            The certificate of the application making the request. This identifies the application and gives the
-     *            request the application's authority.
+     *            The certificate of the application making the request. This identifies the application and gives the request the
+     *            application's authority.
      * @param username
      *            The username that the application wishes to know the ID for.
      * @return The ID of the user with the given username.

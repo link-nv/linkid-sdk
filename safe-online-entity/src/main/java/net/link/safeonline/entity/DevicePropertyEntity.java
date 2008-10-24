@@ -33,8 +33,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 @Entity
 @Table(name = "device_property")
-@NamedQueries( { @NamedQuery(name = QUERY_WHERE_DEVICE, query = "SELECT deviceProp "
-        + "FROM DevicePropertyEntity AS deviceProp " + "WHERE deviceProp.device = :device") })
+@NamedQueries( { @NamedQuery(name = QUERY_WHERE_DEVICE, query = "SELECT deviceProp " + "FROM DevicePropertyEntity AS deviceProp "
+        + "WHERE deviceProp.device = :device") })
 public class DevicePropertyEntity implements Serializable {
 
     private static final long  serialVersionUID          = 1L;

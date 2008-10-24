@@ -21,9 +21,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * From here we continue doing java runtime version checking.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class RegisterServlet extends HttpServlet {
 

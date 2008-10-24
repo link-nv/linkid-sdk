@@ -58,9 +58,9 @@ import org.joda.time.DateTime;
 
 /**
  * Utility class to load keystore key material.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class KeyStoreUtils {
 
@@ -78,30 +78,30 @@ public class KeyStoreUtils {
 
     /**
      * Loads a private key entry from a input stream.
-     *
+     * 
      * <p>
      * The supported types of keystores depend on the configured java security providers. Example: "pkcs12".
      * </p>
-     *
+     * 
      * <p>
      * A good alternative java security provider is <a href="http://www.bouncycastle.org/">Bouncy Castle</a>.
      * </p>
-     *
+     * 
      * @param keystoreType
      *            the type of the keystore.
      * @param keyStoreInputStream
      * @param keyStorePassword
      * @param keyEntryPassword
      */
-    public static PrivateKeyEntry loadPrivateKeyEntry(String keystoreType, InputStream keyStoreInputStream,
-            String keyStorePassword, String keyEntryPassword) {
+    public static PrivateKeyEntry loadPrivateKeyEntry(String keystoreType, InputStream keyStoreInputStream, String keyStorePassword,
+                                                      String keyEntryPassword) {
 
-        return loadPrivateKeyEntry(keystoreType, keyStoreInputStream, keyStorePassword == null? null: keyStorePassword
-                .toCharArray(), keyEntryPassword == null? null: keyEntryPassword.toCharArray());
+        return loadPrivateKeyEntry(keystoreType, keyStoreInputStream, keyStorePassword == null? null: keyStorePassword.toCharArray(),
+                keyEntryPassword == null? null: keyEntryPassword.toCharArray());
     }
 
-    public static PrivateKeyEntry loadPrivateKeyEntry(String keystoreType, InputStream keyStoreInputStream,
-            char[] keyStorePassword, char[] keyEntryPassword) {
+    public static PrivateKeyEntry loadPrivateKeyEntry(String keystoreType, InputStream keyStoreInputStream, char[] keyStorePassword,
+                                                      char[] keyEntryPassword) {
 
         KeyStore keyStore;
         try {
@@ -130,8 +130,7 @@ public class KeyStoreUtils {
             throw new RuntimeException("key store error: " + e.getMessage(), e);
         }
         try {
-            PrivateKeyEntry privateKeyEntry = (PrivateKeyEntry) keyStore.getEntry(alias,
-                    new KeyStore.PasswordProtection(keyEntryPassword));
+            PrivateKeyEntry privateKeyEntry = (PrivateKeyEntry) keyStore.getEntry(alias, new KeyStore.PasswordProtection(keyEntryPassword));
             return privateKeyEntry;
         } catch (Exception e) {
             throw new RuntimeException("error retrieving key: " + e.getMessage(), e);
@@ -144,8 +143,7 @@ public class KeyStoreUtils {
         return keyPair;
     }
 
-    public static KeyPair generateKeyPair(String algorithm) throws NoSuchAlgorithmException,
-            InvalidAlgorithmParameterException {
+    public static KeyPair generateKeyPair(String algorithm) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
 
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(algorithm);
         SecureRandom random = new SecureRandom();
@@ -160,7 +158,9 @@ public class KeyStoreUtils {
     }
 
     public static X509Certificate generateSelfSignedCertificate(KeyPair keyPair, String dn) throws InvalidKeyException,
-            IllegalStateException, NoSuchAlgorithmException, SignatureException, IOException, CertificateException {
+                                                                                           IllegalStateException, NoSuchAlgorithmException,
+                                                                                           SignatureException, IOException,
+                                                                                           CertificateException {
 
         DateTime now = new DateTime();
         DateTime future = now.plusYears(10);
@@ -168,21 +168,29 @@ public class KeyStoreUtils {
         return certificate;
     }
 
-    public static X509Certificate generateSelfSignedCertificate(KeyPair keyPair, String dn, DateTime notBefore,
-            DateTime notAfter, String signatureAlgorithm, boolean caCert, boolean timeStampingPurpose)
-            throws InvalidKeyException, IllegalStateException, NoSuchAlgorithmException, SignatureException,
-            IOException, CertificateException {
+    public static X509Certificate generateSelfSignedCertificate(KeyPair keyPair, String dn, DateTime notBefore, DateTime notAfter,
+                                                                String signatureAlgorithm, boolean caCert, boolean timeStampingPurpose)
+                                                                                                                                       throws InvalidKeyException,
+                                                                                                                                       IllegalStateException,
+                                                                                                                                       NoSuchAlgorithmException,
+                                                                                                                                       SignatureException,
+                                                                                                                                       IOException,
+                                                                                                                                       CertificateException {
 
-        X509Certificate certificate = generateCertificate(keyPair.getPublic(), dn, keyPair.getPrivate(), null,
-                notBefore, notAfter, signatureAlgorithm, caCert, timeStampingPurpose, null);
+        X509Certificate certificate = generateCertificate(keyPair.getPublic(), dn, keyPair.getPrivate(), null, notBefore, notAfter,
+                signatureAlgorithm, caCert, timeStampingPurpose, null);
         return certificate;
     }
 
-    public static X509Certificate generateCertificate(PublicKey subjectPublicKey, String subjectDn,
-            PrivateKey issuerPrivateKey, X509Certificate issuerCert, DateTime notBefore, DateTime notAfter,
-            String inSignatureAlgorithm, boolean caCert, boolean timeStampingPurpose, URI ocspUri) throws IOException,
-            InvalidKeyException, IllegalStateException, NoSuchAlgorithmException, SignatureException,
-            CertificateException {
+    public static X509Certificate generateCertificate(PublicKey subjectPublicKey, String subjectDn, PrivateKey issuerPrivateKey,
+                                                      X509Certificate issuerCert, DateTime notBefore, DateTime notAfter,
+                                                      String inSignatureAlgorithm, boolean caCert, boolean timeStampingPurpose, URI ocspUri)
+                                                                                                                                            throws IOException,
+                                                                                                                                            InvalidKeyException,
+                                                                                                                                            IllegalStateException,
+                                                                                                                                            NoSuchAlgorithmException,
+                                                                                                                                            SignatureException,
+                                                                                                                                            CertificateException {
 
         String signatureAlgorithm = inSignatureAlgorithm;
         if (null == signatureAlgorithm) {
@@ -204,30 +212,27 @@ public class KeyStoreUtils {
         certificateGenerator.setSubjectDN(new X509Principal(subjectDn));
         certificateGenerator.setSerialNumber(new BigInteger(128, new SecureRandom()));
 
-        certificateGenerator.addExtension(X509Extensions.SubjectKeyIdentifier, false,
-                createSubjectKeyId(subjectPublicKey));
+        certificateGenerator.addExtension(X509Extensions.SubjectKeyIdentifier, false, createSubjectKeyId(subjectPublicKey));
         PublicKey issuerPublicKey;
         if (null != issuerCert) {
             issuerPublicKey = issuerCert.getPublicKey();
         } else {
             issuerPublicKey = subjectPublicKey;
         }
-        certificateGenerator.addExtension(X509Extensions.AuthorityKeyIdentifier, false,
-                createAuthorityKeyId(issuerPublicKey));
+        certificateGenerator.addExtension(X509Extensions.AuthorityKeyIdentifier, false, createAuthorityKeyId(issuerPublicKey));
 
         certificateGenerator.addExtension(X509Extensions.BasicConstraints, false, new BasicConstraints(caCert));
 
         if (timeStampingPurpose) {
-            certificateGenerator.addExtension(X509Extensions.ExtendedKeyUsage, true, new ExtendedKeyUsage(
-                    new DERSequence(KeyPurposeId.id_kp_timeStamping)));
+            certificateGenerator.addExtension(X509Extensions.ExtendedKeyUsage, true, new ExtendedKeyUsage(new DERSequence(
+                    KeyPurposeId.id_kp_timeStamping)));
         }
 
         if (null != ocspUri) {
             GeneralName ocspName = new GeneralName(GeneralName.uniformResourceIdentifier, ocspUri.toString());
-            AuthorityInformationAccess authorityInformationAccess = new AuthorityInformationAccess(
-                    X509ObjectIdentifiers.ocspAccessMethod, ocspName);
-            certificateGenerator.addExtension(X509Extensions.AuthorityInfoAccess.getId(), false,
-                    authorityInformationAccess);
+            AuthorityInformationAccess authorityInformationAccess = new AuthorityInformationAccess(X509ObjectIdentifiers.ocspAccessMethod,
+                    ocspName);
+            certificateGenerator.addExtension(X509Extensions.AuthorityInfoAccess.getId(), false, authorityInformationAccess);
         }
 
         X509Certificate certificate = certificateGenerator.generate(issuerPrivateKey);
@@ -236,8 +241,7 @@ public class KeyStoreUtils {
          * Make sure the default certificate provider is active.
          */
         CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
-        certificate = (X509Certificate) certificateFactory.generateCertificate(new ByteArrayInputStream(certificate
-                .getEncoded()));
+        certificate = (X509Certificate) certificateFactory.generateCertificate(new ByteArrayInputStream(certificate.getEncoded()));
 
         return certificate;
     }
@@ -259,7 +263,7 @@ public class KeyStoreUtils {
 
     /**
      * Persist the given private key and corresponding certificate to a PKCS12 keystore file.
-     *
+     * 
      * @param pkcs12keyStore
      *            the file of the PKCS12 keystore to write the key material to.
      * @param privateKey
@@ -275,9 +279,9 @@ public class KeyStoreUtils {
      * @throws CertificateException
      * @throws IOException
      */
-    public static void persistKey(File pkcs12keyStore, PrivateKey privateKey, X509Certificate certificate,
-            char[] keyStorePassword, char[] keyEntryPassword) throws KeyStoreException, NoSuchAlgorithmException,
-            CertificateException, IOException {
+    public static void persistKey(File pkcs12keyStore, PrivateKey privateKey, X509Certificate certificate, char[] keyStorePassword,
+                                  char[] keyEntryPassword) throws KeyStoreException, NoSuchAlgorithmException, CertificateException,
+                                                          IOException {
 
         KeyStore keyStore;
         keyStore = KeyStore.getInstance("pkcs12");

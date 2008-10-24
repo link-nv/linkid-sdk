@@ -72,8 +72,7 @@ public class HelpdeskLogger {
     @SuppressWarnings("unchecked")
     public static List<HelpdeskEventEntity> getCurrent(HttpSession session) {
 
-        List<HelpdeskEventEntity> helpdeskContext = (List<HelpdeskEventEntity>) session
-                .getAttribute(ControlBaseConstants.HELPDESK_CONTEXT);
+        List<HelpdeskEventEntity> helpdeskContext = (List<HelpdeskEventEntity>) session.getAttribute(ControlBaseConstants.HELPDESK_CONTEXT);
         if (null == helpdeskContext) {
             helpdeskContext = new LinkedList<HelpdeskEventEntity>();
             session.setAttribute(ControlBaseConstants.HELPDESK_CONTEXT, helpdeskContext);
@@ -100,8 +99,7 @@ public class HelpdeskLogger {
 
         String principal = (String) session.getAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
         if (principal != null) {
-            SubjectService subjectService = EjbUtils
-                    .getEJB("SafeOnline/SubjectServiceBean/local", SubjectService.class);
+            SubjectService subjectService = EjbUtils.getEJB("SafeOnline/SubjectServiceBean/local", SubjectService.class);
             principal = subjectService.getExceptionSubjectLogin(principal);
         }
         if (principal == null) {
@@ -114,14 +112,13 @@ public class HelpdeskLogger {
 
     private static void add(HttpSession session, String message, String principal, LogLevelType logLevel) {
 
-        HelpdeskManager helpdeskManager = EjbUtils
-                .getEJB("SafeOnline/HelpdeskManagerBean/local", HelpdeskManager.class);
+        HelpdeskManager helpdeskManager = EjbUtils.getEJB("SafeOnline/HelpdeskManagerBean/local", HelpdeskManager.class);
         int helpdeskContextLimit = helpdeskManager.getHelpdeskContextLimit();
 
         List<HelpdeskEventEntity> helpdeskContext = getCurrent(session);
         if (helpdeskContext.size() >= helpdeskContextLimit) {
-            SecurityAuditLogger securityAuditLogger = EjbUtils.getEJB("SafeOnline/SecurityAuditLoggerBean/local",
-                    SecurityAuditLogger.class);
+            SecurityAuditLogger securityAuditLogger = EjbUtils
+                                                              .getEJB("SafeOnline/SecurityAuditLoggerBean/local", SecurityAuditLogger.class);
             securityAuditLogger.addSecurityAudit(SecurityThreatType.DISRUPTION, principal, message);
             LOG.debug("helpdesk context max size exceeded !");
             return;
@@ -142,8 +139,7 @@ public class HelpdeskLogger {
 
         String principal = getPrincipal(session);
 
-        HelpdeskManager helpdeskManager = EjbUtils
-                .getEJB("SafeOnline/HelpdeskManagerBean/local", HelpdeskManager.class);
+        HelpdeskManager helpdeskManager = EjbUtils.getEJB("SafeOnline/HelpdeskManagerBean/local", HelpdeskManager.class);
 
         SubjectManager subjectManager = EjbUtils.getEJB("SafeOnline/SubjectManagerBean/local", SubjectManager.class);
 
@@ -153,8 +149,8 @@ public class HelpdeskLogger {
         Long id = helpdeskManager.persist(location, helpdeskContext);
 
         if (!principal.equals(UNKNOWN_USER)) {
-            historyDAO.addHistoryEntry(subjectManager.getCallerSubject(), HistoryEventType.HELPDESK_ID, Collections
-                    .singletonMap(SafeOnlineConstants.INFO_PROPERTY, id.toString()));
+            historyDAO.addHistoryEntry(subjectManager.getCallerSubject(), HistoryEventType.HELPDESK_ID, Collections.singletonMap(
+                    SafeOnlineConstants.INFO_PROPERTY, id.toString()));
         }
 
         /*

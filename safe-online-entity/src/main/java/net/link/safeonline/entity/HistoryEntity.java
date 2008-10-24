@@ -45,12 +45,9 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 @NamedQueries( {
         @NamedQuery(name = QUERY_WHERE_SUBJECT, query = "SELECT history FROM HistoryEntity AS history "
                 + "WHERE history.subject = :subject " + "ORDER BY history.when DESC"),
-        @NamedQuery(name = QUERY_WHERE_OLDER, query = "SELECT history FROM HistoryEntity AS history "
-                + "WHERE history.when < :ageLimit "),
-        @NamedQuery(name = QUERY_DELETE_WHERE_OLDER, query = "DELETE FROM HistoryEntity AS history "
-                + "WHERE history.when < :ageLimit"),
-        @NamedQuery(name = QUERY_DELETE_ALL, query = "DELETE FROM HistoryEntity AS history "
-                + "WHERE history.subject = :subject") })
+        @NamedQuery(name = QUERY_WHERE_OLDER, query = "SELECT history FROM HistoryEntity AS history " + "WHERE history.when < :ageLimit "),
+        @NamedQuery(name = QUERY_DELETE_WHERE_OLDER, query = "DELETE FROM HistoryEntity AS history " + "WHERE history.when < :ageLimit"),
+        @NamedQuery(name = QUERY_DELETE_ALL, query = "DELETE FROM HistoryEntity AS history " + "WHERE history.subject = :subject") })
 public class HistoryEntity implements Serializable {
 
     public static final String                 QUERY_WHERE_SUBJECT      = "hist.subject";

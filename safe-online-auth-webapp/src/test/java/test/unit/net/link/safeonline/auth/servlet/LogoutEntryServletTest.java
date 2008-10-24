@@ -91,11 +91,9 @@ public class LogoutEntryServletTest {
         initParams.put("ProtocolErrorUrl", this.protocolErrorUrl);
         initParams.put("CookiePath", this.cookiePath);
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
-        initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE,
-                this.mockAuthenticationService);
+        initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE, this.mockAuthenticationService);
 
-        this.logoutEntryServletTestManager.setUp(LogoutEntryServlet.class, initParams, null, null,
-                initialSessionAttributes);
+        this.logoutEntryServletTestManager.setUp(LogoutEntryServlet.class, initParams, null, null, initialSessionAttributes);
 
         this.mockObjects = new Object[] { this.mockAuthenticationService };
     }
@@ -140,21 +138,19 @@ public class LogoutEntryServletTest {
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
         String applicationName = "test-application-id";
         String userId = UUID.randomUUID().toString();
-        String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, applicationName,
-                applicationKeyPair, this.servletEndpointUrl, null);
+        String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, applicationName, applicationKeyPair,
+                this.servletEndpointUrl, null);
         String encodedSamlLogoutRequest = Base64.encode(samlLogoutRequest.getBytes());
 
         NameValuePair[] data = { new NameValuePair("SAMLRequest", encodedSamlLogoutRequest) };
         postMethod.setRequestBody(data);
-        postMethod.addRequestHeader("Cookie", SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX + "." + applicationName
-                + "=value");
+        postMethod.addRequestHeader("Cookie", SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX + "." + applicationName + "=value");
 
         // expectations
         expect(this.mockAuthenticationService.initialize((LogoutRequest) EasyMock.anyObject())).andStubReturn(
                 new LogoutProtocolContext(applicationName, this.servletEndpointUrl));
         expect(this.mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.INIT);
-        expect(this.mockAuthenticationService.checkSsoCookieForLogout((Cookie) EasyMock.anyObject())).andStubReturn(
-                true);
+        expect(this.mockAuthenticationService.checkSsoCookieForLogout((Cookie) EasyMock.anyObject())).andStubReturn(true);
 
         // prepare
         replay(this.mockObjects);

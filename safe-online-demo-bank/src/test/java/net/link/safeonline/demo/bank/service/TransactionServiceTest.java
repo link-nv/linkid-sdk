@@ -69,12 +69,10 @@ public class TransactionServiceTest extends AbstractBankServiceTest {
 
         // Create test transaction.
         BankAccountEntity testTransactionSourceAccount = this.accountService.getAccount(testSourceCode);
-        this.transactionService.createTransaction(testDescription, testTransactionSourceAccount, testTargetCode,
-                testAmount);
+        this.transactionService.createTransaction(testDescription, testTransactionSourceAccount, testTargetCode, testAmount);
 
         // Verify && transaction created successfully.
-        List<BankTransactionEntity> transactions = this.transactionService
-                .getAllTransactions(testTransactionSourceAccount);
+        List<BankTransactionEntity> transactions = this.transactionService.getAllTransactions(testTransactionSourceAccount);
         assertTrue(transactions.size() == 1);
         BankTransactionEntity transaction = transactions.get(0);
 

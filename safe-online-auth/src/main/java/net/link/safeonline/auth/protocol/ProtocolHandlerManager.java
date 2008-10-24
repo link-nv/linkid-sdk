@@ -37,14 +37,12 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ProtocolHandlerManager {
 
-    public static final String PROTOCOL_HANDLER_ID_ATTRIBUTE              = ProtocolHandlerManager.class.getName()
-                                                                                  + ".ProtocolHandlerName";
+    public static final String PROTOCOL_HANDLER_ID_ATTRIBUTE              = ProtocolHandlerManager.class.getName() + ".ProtocolHandlerName";
 
     public static final String PROTOCOL_DONT_INVALIDATE_SESSION_ATTRIBUTE = ProtocolHandlerManager.class.getName()
                                                                                   + ".DontInvalidateSession";
 
-    private static final Log   LOG                                        = LogFactory
-                                                                                  .getLog(ProtocolHandlerManager.class);
+    private static final Log   LOG                                        = LogFactory.getLog(ProtocolHandlerManager.class);
 
 
     private ProtocolHandlerManager() {
@@ -72,15 +70,14 @@ public class ProtocolHandlerManager {
             protocolHandlerMap.put(protocolId, protocolHandler);
             protocolHandlers.add(protocolHandler);
         } catch (Exception e) {
-            throw new RuntimeException("could not initialize protocol handler: " + protocolHandlerClass.getName()
-                    + "; message: " + e.getMessage(), e);
+            throw new RuntimeException("could not initialize protocol handler: " + protocolHandlerClass.getName() + "; message: "
+                    + e.getMessage(), e);
         }
     }
 
     /**
-     * Handles the authentication protocol request. This method return a protocol context in case of a successful
-     * initiation of the authentication procedure. The method returns <code>null</code> if no appropriate
-     * authentication protocol handler has been found.
+     * Handles the authentication protocol request. This method return a protocol context in case of a successful initiation of the
+     * authentication procedure. The method returns <code>null</code> if no appropriate authentication protocol handler has been found.
      * 
      * @param request
      * @return a protocol context or <code>null</code>.
@@ -99,8 +96,7 @@ public class ProtocolHandlerManager {
                 e.setProtocolName(protocolName);
                 SecurityAuditLogger securityAuditLogger = EjbUtils.getEJB("SafeOnline/SecurityAuditLoggerBean/local",
                         SecurityAuditLogger.class);
-                securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, "Protocol: " + protocolName + " : "
-                        + e.getMessage());
+                securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, "Protocol: " + protocolName + " : " + e.getMessage());
                 throw e;
             }
             if (null != protocolContext) {
@@ -114,8 +110,8 @@ public class ProtocolHandlerManager {
     }
 
     /**
-     * Handles the authentication response according to the authentication protocol by which the current authentication
-     * procedure was initiated.
+     * Handles the authentication response according to the authentication protocol by which the current authentication procedure was
+     * initiated.
      * 
      * @param session
      * @param response
@@ -141,16 +137,15 @@ public class ProtocolHandlerManager {
         HelpdeskLogger.clear(session);
 
         /*
-         * It's important to invalidate the session here. Else we spill resources and we prevent a user to login twice
-         * since the authentication service instance was already removed from the session context.
+         * It's important to invalidate the session here. Else we spill resources and we prevent a user to login twice since the
+         * authentication service instance was already removed from the session context.
          */
         session.invalidate();
     }
 
     /**
-     * Handles the logout request. This method returns a logout protocol context in case of a successful initiation of
-     * the single logout procedure. The method returns <code>null</code> if no appropriate logout protocol handler has
-     * been found.
+     * Handles the logout request. This method returns a logout protocol context in case of a successful initiation of the single logout
+     * procedure. The method returns <code>null</code> if no appropriate logout protocol handler has been found.
      * 
      * @param request
      * @return a logout protocol context or <code>null</code>.
@@ -169,8 +164,7 @@ public class ProtocolHandlerManager {
                 e.setProtocolName(protocolName);
                 SecurityAuditLogger securityAuditLogger = EjbUtils.getEJB("SafeOnline/SecurityAuditLoggerBean/local",
                         SecurityAuditLogger.class);
-                securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, "Protocol: " + protocolName + " : "
-                        + e.getMessage());
+                securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, "Protocol: " + protocolName + " : " + e.getMessage());
                 throw e;
             }
             if (null != logoutProtocolContext) {
@@ -184,8 +178,8 @@ public class ProtocolHandlerManager {
     }
 
     /**
-     * Handles the logout response. This method returns the application name in the response if logout was successful.
-     * Else the method returns <code>null</code>.
+     * Handles the logout response. This method returns the application name in the response if logout was successful. Else the method
+     * returns <code>null</code>.
      * 
      * @param request
      * @return application name or <code>null</code>.
@@ -222,7 +216,7 @@ public class ProtocolHandlerManager {
      * @throws ProtocolException
      */
     public static void logoutRequest(ApplicationEntity application, HttpSession session, HttpServletResponse response)
-            throws ProtocolException {
+                                                                                                                      throws ProtocolException {
 
         String protocolId = (String) session.getAttribute(PROTOCOL_HANDLER_ID_ATTRIBUTE);
         if (null == protocolId)
@@ -241,8 +235,7 @@ public class ProtocolHandlerManager {
     }
 
     /**
-     * Handles the logout response according to the authentication protocol by which the current logout procedure was
-     * initiated.
+     * Handles the logout response according to the authentication protocol by which the current logout procedure was initiated.
      * 
      * @param partialLogout
      * @param target
@@ -250,8 +243,8 @@ public class ProtocolHandlerManager {
      * @param response
      * @throws ProtocolException
      */
-    public static void logoutResponse(boolean partialLogout, String target, HttpSession session,
-            HttpServletResponse response) throws ProtocolException {
+    public static void logoutResponse(boolean partialLogout, String target, HttpSession session, HttpServletResponse response)
+                                                                                                                              throws ProtocolException {
 
         String protocolId = (String) session.getAttribute(PROTOCOL_HANDLER_ID_ATTRIBUTE);
         if (null == protocolId)
@@ -269,8 +262,8 @@ public class ProtocolHandlerManager {
         }
 
         /*
-         * It's important to invalidate the session here. Else we spill resources and we prevent a user to login twice
-         * since the authentication service instance was already removed from the session context.
+         * It's important to invalidate the session here. Else we spill resources and we prevent a user to login twice since the
+         * authentication service instance was already removed from the session context.
          */
         session.invalidate();
 

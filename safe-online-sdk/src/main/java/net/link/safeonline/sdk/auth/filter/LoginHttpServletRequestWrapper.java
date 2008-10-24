@@ -17,9 +17,9 @@ import net.link.safeonline.sdk.auth.jaas.SimplePrincipal;
 
 /**
  * Login HTTP Servlet Request Wrapper. This wrapper adds user principal to the request.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class LoginHttpServletRequestWrapper extends HttpServletRequestWrapper {
 

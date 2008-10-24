@@ -9,12 +9,12 @@ package net.link.safeonline.sdk.ws.data;
 
 /**
  * Data-container class for a SafeOnline attribute.
- *
+ * 
  * @param <Type>
  *            the type of the attribute value.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class Attribute<Type> {
 
@@ -25,7 +25,7 @@ public class Attribute<Type> {
 
     /**
      * Main constructor.
-     *
+     * 
      * @param name
      * @param value
      */
@@ -37,7 +37,7 @@ public class Attribute<Type> {
 
     /**
      * Gives back the name of the attribute.
-     *
+     * 
      */
     public String getName() {
 
@@ -46,7 +46,7 @@ public class Attribute<Type> {
 
     /**
      * Gives back the value of the attribute.
-     *
+     * 
      */
     public Type getValue() {
 

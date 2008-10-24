@@ -21,8 +21,8 @@ import net.link.safeonline.entity.audit.ResourceNameType;
 @Local
 public interface ResourceAuditDAO {
 
-    void addResourceAudit(AuditContextEntity auditContext, ResourceNameType resourceName,
-            ResourceLevelType resourceLevel, String sourceComponent, String message);
+    void addResourceAudit(AuditContextEntity auditContext, ResourceNameType resourceName, ResourceLevelType resourceLevel,
+                          String sourceComponent, String message);
 
     void cleanup(Long id);
 

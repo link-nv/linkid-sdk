@@ -46,8 +46,7 @@ public class LogoutResponseFactoryTest {
 
         // operate
         long begin = System.currentTimeMillis();
-        String result = LogoutResponseFactory
-                .createLogoutResponse(inResponseTo, issuerName, signerKeyPair, destination);
+        String result = LogoutResponseFactory.createLogoutResponse(inResponseTo, issuerName, signerKeyPair, destination);
         long end = System.currentTimeMillis();
 
         // verify
@@ -71,10 +70,8 @@ public class LogoutResponseFactoryTest {
 
         // Document document = responseElement.getOwnerDocument();
         Element nsElement = resultDocument.createElement("nsElement");
-        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:samlp",
-                "urn:oasis:names:tc:SAML:2.0:protocol");
-        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:saml",
-                "urn:oasis:names:tc:SAML:2.0:assertion");
+        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:samlp", "urn:oasis:names:tc:SAML:2.0:protocol");
+        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:saml", "urn:oasis:names:tc:SAML:2.0:assertion");
 
         Node issuerNode = XPathAPI.selectSingleNode(resultDocument, "/samlp:LogoutResponse/saml:Issuer", nsElement);
         assertNotNull(issuerNode);

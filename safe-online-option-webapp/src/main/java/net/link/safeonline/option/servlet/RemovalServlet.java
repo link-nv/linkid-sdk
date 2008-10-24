@@ -45,17 +45,16 @@ import org.apache.commons.logging.LogFactory;
  */
 public class RemovalServlet extends AbstractInjectionServlet {
 
-    private static final long    serialVersionUID = 1L;
+    private static final long   serialVersionUID = 1L;
 
-    private static final Log     LOG              = LogFactory.getLog(RemovalServlet.class);
+    private static final Log    LOG              = LogFactory.getLog(RemovalServlet.class);
 
     @EJB(mappedName = "SafeOnlineOption/OptionDeviceServiceBean/local")
-    private OptionDeviceService  optionDeviceService;
+    private OptionDeviceService optionDeviceService;
 
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws IOException,
-            ServletException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
         HttpSession session = request.getSession();
 

@@ -64,8 +64,7 @@ public class DeviceClassDescriptionPK implements Serializable {
         if (false == obj instanceof DeviceClassDescriptionPK)
             return false;
         DeviceClassDescriptionPK rhs = (DeviceClassDescriptionPK) obj;
-        return new EqualsBuilder().append(this.deviceClassName, rhs.deviceClassName)
-                .append(this.language, rhs.language).isEquals();
+        return new EqualsBuilder().append(this.deviceClassName, rhs.deviceClassName).append(this.language, rhs.language).isEquals();
     }
 
     @Override
@@ -77,7 +76,6 @@ public class DeviceClassDescriptionPK implements Serializable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("deviceClassName", this.deviceClassName).append("language",
-                this.language).toString();
+        return new ToStringBuilder(this).append("deviceClassName", this.deviceClassName).append("language", this.language).toString();
     }
 }

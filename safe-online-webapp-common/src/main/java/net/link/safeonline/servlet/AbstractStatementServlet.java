@@ -25,10 +25,10 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Abstract statement servlet. Helpdesk events are handled by the helpdesk servlet.
- *
+ * 
  * @author wvdhaute
  * @see HelpdeskServlet
- *
+ * 
  */
 public abstract class AbstractStatementServlet extends AbstractInjectionServlet {
 
@@ -38,11 +38,11 @@ public abstract class AbstractStatementServlet extends AbstractInjectionServlet 
 
 
     protected abstract void processStatement(byte[] statementData, HttpSession session, HttpServletResponse response)
-            throws ServletException, IOException;
+                                                                                                                     throws ServletException,
+                                                                                                                     IOException;
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws IOException,
-            ServletException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
         LOG.debug("doPost");
         String contentType = request.getContentType();

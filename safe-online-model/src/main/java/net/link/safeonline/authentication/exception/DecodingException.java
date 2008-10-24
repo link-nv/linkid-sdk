@@ -12,9 +12,9 @@ import javax.ejb.ApplicationException;
 
 /**
  * Gets thrown when an identity or authentication statement could not be decoded properly.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @ApplicationException(rollback = true)
 public class DecodingException extends SafeOnlineException {

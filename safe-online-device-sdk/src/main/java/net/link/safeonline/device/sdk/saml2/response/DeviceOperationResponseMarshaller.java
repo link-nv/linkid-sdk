@@ -34,8 +34,7 @@ public class DeviceOperationResponseMarshaller extends StatusResponseTypeMarshal
         DeviceOperationResponse response = (DeviceOperationResponse) samlObject;
 
         if (response.getDeviceOperation() != null) {
-            domElement.setAttributeNS(null, DeviceOperationResponse.DEVICE_OPERATION_ATTRIB_NAME, response
-                    .getDeviceOperation());
+            domElement.setAttributeNS(null, DeviceOperationResponse.DEVICE_OPERATION_ATTRIB_NAME, response.getDeviceOperation());
         }
 
         if (response.getDevice() != null) {

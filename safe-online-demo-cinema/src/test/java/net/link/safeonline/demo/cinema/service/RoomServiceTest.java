@@ -100,11 +100,11 @@ public class RoomServiceTest extends AbstractCinemaServiceTest {
                     sampleRoomNames.add(room.getName());
                 }
 
-                assertTrue(String.format("room amount mismatch for theatre %s and film %s: test: %s - sample: %s",
-                        theatre.getName(), film.getName(), testRoomNames, sampleRoomNames), //
+                assertTrue(String.format("room amount mismatch for theatre %s and film %s: test: %s - sample: %s", theatre.getName(),
+                        film.getName(), testRoomNames, sampleRoomNames), //
                         testRoomNames.size() == sampleRoomNames.size());
-                assertTrue(String.format("room mismatch for theatre %s and film %s: test: %s - sample: %s", theatre
-                        .getName(), film.getName(), testRoomNames, sampleRoomNames), //
+                assertTrue(String.format("room mismatch for theatre %s and film %s: test: %s - sample: %s", theatre.getName(),
+                        film.getName(), testRoomNames, sampleRoomNames), //
                         testRoomNames.containsAll(sampleRoomNames));
             }
         }

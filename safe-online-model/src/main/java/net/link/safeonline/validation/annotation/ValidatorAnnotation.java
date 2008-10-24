@@ -20,9 +20,9 @@ import net.link.safeonline.validation.validator.Validator;
 
 /**
  * Validator meta-annotation.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Documented
 @Target(ElementType.ANNOTATION_TYPE)
@@ -31,7 +31,7 @@ public @interface ValidatorAnnotation {
 
     /**
      * The validator class that implements the validator semantics.
-     *
+     * 
      */
     @SuppressWarnings("unchecked")
     Class<? extends Validator> value();

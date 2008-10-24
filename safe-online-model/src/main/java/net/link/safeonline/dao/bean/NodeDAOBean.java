@@ -37,8 +37,8 @@ public class NodeDAOBean implements NodeDAO {
         this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, NodeEntity.QueryInterface.class);
     }
 
-    public NodeEntity addNode(String name, String protocol, String hostname, int port, int sslPort,
-            X509Certificate authnCertificate, X509Certificate signingCertificate) {
+    public NodeEntity addNode(String name, String protocol, String hostname, int port, int sslPort, X509Certificate authnCertificate,
+                              X509Certificate signingCertificate) {
 
         NodeEntity node = new NodeEntity(name, protocol, hostname, port, sslPort, authnCertificate, signingCertificate);
         this.entityManager.persist(node);
@@ -68,8 +68,8 @@ public class NodeDAOBean implements NodeDAO {
 
     public NodeEntity getNodeFromAuthnCertificate(X509Certificate authnCertificate) throws NodeNotFoundException {
 
-        List<NodeEntity> nodes = this.queryObject.listNodeEntitiesWhereAuthnCertificateSubject(authnCertificate
-                .getSubjectX500Principal().getName());
+        List<NodeEntity> nodes = this.queryObject.listNodeEntitiesWhereAuthnCertificateSubject(authnCertificate.getSubjectX500Principal()
+                                                                                                               .getName());
         if (nodes.isEmpty()) {
             throw new NodeNotFoundException();
         }
@@ -79,8 +79,8 @@ public class NodeDAOBean implements NodeDAO {
 
     public NodeEntity findNodeFromAuthnCertificate(X509Certificate authnCertificate) {
 
-        List<NodeEntity> nodes = this.queryObject.listNodeEntitiesWhereAuthnCertificateSubject(authnCertificate
-                .getSubjectX500Principal().getName());
+        List<NodeEntity> nodes = this.queryObject.listNodeEntitiesWhereAuthnCertificateSubject(authnCertificate.getSubjectX500Principal()
+                                                                                                               .getName());
         if (nodes.isEmpty())
             return null;
         NodeEntity node = nodes.get(0);
@@ -89,8 +89,10 @@ public class NodeDAOBean implements NodeDAO {
 
     public NodeEntity getNodeFromSigningCertificate(X509Certificate signingCertificate) throws NodeNotFoundException {
 
-        List<NodeEntity> nodes = this.queryObject.listNodeEntitiesWhereSigningCertificateSubject(signingCertificate
-                .getSubjectX500Principal().getName());
+        List<NodeEntity> nodes = this.queryObject
+                                                 .listNodeEntitiesWhereSigningCertificateSubject(signingCertificate
+                                                                                                                   .getSubjectX500Principal()
+                                                                                                                   .getName());
         if (nodes.isEmpty()) {
             throw new NodeNotFoundException();
         }
@@ -100,8 +102,10 @@ public class NodeDAOBean implements NodeDAO {
 
     public NodeEntity findNodeFromSigningCertificate(X509Certificate signingCertificate) {
 
-        List<NodeEntity> nodes = this.queryObject.listNodeEntitiesWhereSigningCertificateSubject(signingCertificate
-                .getSubjectX500Principal().getName());
+        List<NodeEntity> nodes = this.queryObject
+                                                 .listNodeEntitiesWhereSigningCertificateSubject(signingCertificate
+                                                                                                                   .getSubjectX500Principal()
+                                                                                                                   .getName());
         if (nodes.isEmpty())
             return null;
         NodeEntity node = nodes.get(0);

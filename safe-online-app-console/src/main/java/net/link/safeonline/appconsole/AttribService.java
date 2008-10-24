@@ -58,9 +58,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Attribute panel, uses the Safe Online attribute and data webservices via the ServicesUtils class
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class AttribService extends JPanel implements Observer {
 
@@ -176,18 +176,15 @@ public class AttribService extends JPanel implements Observer {
             public void mouseClicked(MouseEvent e) {
 
                 if (SwingUtilities.isRightMouseButton(e)) {
-                    AttribService.this.treePath = AttribService.this.attributeTree.getPathForLocation(e.getX(), e
-                            .getY());
-                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) AttribService.this.treePath
-                            .getLastPathComponent();
+                    AttribService.this.treePath = AttribService.this.attributeTree.getPathForLocation(e.getX(), e.getY());
+                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) AttribService.this.treePath.getLastPathComponent();
                     if (node.getChildCount() == 0)
                         return;
                     AttribService.this.treePopup.show(AttribService.this.attributeTree, e.getX(), e.getY());
 
                 }
                 if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() > 1) {
-                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) AttribService.this.attributeTree
-                            .getLastSelectedPathComponent();
+                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) AttribService.this.attributeTree.getLastSelectedPathComponent();
                     // only leafs(values) are editable
                     if (node.isLeaf()) {
                         editNode(node);
@@ -219,8 +216,7 @@ public class AttribService extends JPanel implements Observer {
             try {
                 return this.dateFormat.parse(newValue);
             } catch (ParseException e) {
-                JOptionPane.showMessageDialog(this, "Invalid input, not a valid date ( format=\"" + DATE_FORMAT
-                        + "\" )");
+                JOptionPane.showMessageDialog(this, "Invalid input, not a valid date ( format=\"" + DATE_FORMAT + "\" )");
                 return null;
 
             }
@@ -317,8 +313,7 @@ public class AttribService extends JPanel implements Observer {
             } else {
                 attributeValueNode = new DefaultMutableTreeNode(attributeValue);
             }
-            this.attributeTreeModel.insertNodeInto(attributeValueNode, attributeNameNode, attributeNameNode
-                    .getChildCount());
+            this.attributeTreeModel.insertNodeInto(attributeValueNode, attributeNameNode, attributeNameNode.getChildCount());
         }
     }
 
@@ -333,8 +328,7 @@ public class AttribService extends JPanel implements Observer {
 
         AttributeType attributeType = (AttributeType) attributeValue;
         DefaultMutableTreeNode attributeCompoundNameNode = new DefaultMutableTreeNode(attributeType.getName());
-        this.attributeTreeModel.insertNodeInto(attributeCompoundNameNode, attributeNameNode, attributeNameNode
-                .getChildCount());
+        this.attributeTreeModel.insertNodeInto(attributeCompoundNameNode, attributeNameNode, attributeNameNode.getChildCount());
         List<Object> attributeCompoundValues = attributeType.getAttributeValue();
         for (Object attributeCompoundValue : attributeCompoundValues) {
             addSingleValueAttribute(attributeCompoundNameNode, attributeCompoundValue);
@@ -362,9 +356,9 @@ public class AttribService extends JPanel implements Observer {
 
 
     /*
-     *
+     * 
      * Tree model listener class to catch leaf edits
-     *
+     * 
      * Upon an edit, the attribute is immediately updated through the SafeOnline web service
      */
     class AttributeTreeModelListener implements TreeModelListener {
@@ -402,7 +396,7 @@ public class AttribService extends JPanel implements Observer {
     }
 
     /*
-     *
+     * 
      * Action classes
      */
     private class GetAttributesAction extends AbstractAction {
@@ -479,19 +473,16 @@ public class AttribService extends JPanel implements Observer {
                 return;
 
             String[] attributeTypes = { "Boolean", "String", "Integer", "Double", "Date" };
-            int answer = JOptionPane
-                    .showOptionDialog(new JFrame(), "Please select the type of attribute :", "",
-                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, attributeTypes,
-                            attributeTypes[0]);
+            int answer = JOptionPane.showOptionDialog(new JFrame(), "Please select the type of attribute :", "",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, attributeTypes, attributeTypes[0]);
             if (answer == JOptionPane.CANCEL_OPTION)
                 return;
 
             Object attributeValue = null;
             if (attributeTypes[answer].equals("Boolean")) {
                 String[] booleanValues = { "true", "false" };
-                int boolAnswer = JOptionPane.showOptionDialog(new JFrame(), "What value for attribute " + attributeName
-                        + " ?", "", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, booleanValues,
-                        booleanValues[0]);
+                int boolAnswer = JOptionPane.showOptionDialog(new JFrame(), "What value for attribute " + attributeName + " ?", "",
+                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, booleanValues, booleanValues[0]);
                 if (boolAnswer == JOptionPane.CANCEL_OPTION)
                     return;
                 else if (boolAnswer == 0) {

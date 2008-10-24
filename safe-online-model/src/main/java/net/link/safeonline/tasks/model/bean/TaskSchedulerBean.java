@@ -219,10 +219,10 @@ public class TaskSchedulerBean implements TaskScheduler {
 
     /**
      * Creates a timer. We use some workaround code here because of the following issues:
-     *
+     * 
      * http://jira.jboss.com/jira/browse/JBAS-3379 http://jira.jboss.com/jira/browse/JBAS-3380
      * http://www.jboss.com/index.html?module=bb&op=viewtopic&p=3893673
-     *
+     * 
      * @param fireDate
      * @param schedulingName
      */

@@ -30,18 +30,41 @@ import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 public interface CredentialManager {
 
     String authenticate(String sessionId, String applicationId, AuthenticationStatement authenticationStatement)
-            throws ArgumentIntegrityException, TrustDomainNotFoundException, SubjectNotFoundException,
-            PkiRevokedException, PkiSuspendedException, PkiExpiredException, PkiNotYetValidException,
-            PkiInvalidException, DeviceNotFoundException, DeviceDisabledException;
+                                                                                                                throws ArgumentIntegrityException,
+                                                                                                                TrustDomainNotFoundException,
+                                                                                                                SubjectNotFoundException,
+                                                                                                                PkiRevokedException,
+                                                                                                                PkiSuspendedException,
+                                                                                                                PkiExpiredException,
+                                                                                                                PkiNotYetValidException,
+                                                                                                                PkiInvalidException,
+                                                                                                                DeviceNotFoundException,
+                                                                                                                DeviceDisabledException;
 
     void mergeIdentityStatement(String sessionId, String userId, String operation, byte[] identityStatementData)
-            throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException,
-            AttributeTypeNotFoundException, DeviceNotFoundException, AttributeNotFoundException,
-            AlreadyRegisteredException, PkiRevokedException, PkiSuspendedException, PkiExpiredException,
-            PkiNotYetValidException, PkiInvalidException;
+                                                                                                                throws TrustDomainNotFoundException,
+                                                                                                                PermissionDeniedException,
+                                                                                                                ArgumentIntegrityException,
+                                                                                                                AttributeTypeNotFoundException,
+                                                                                                                DeviceNotFoundException,
+                                                                                                                AttributeNotFoundException,
+                                                                                                                AlreadyRegisteredException,
+                                                                                                                PkiRevokedException,
+                                                                                                                PkiSuspendedException,
+                                                                                                                PkiExpiredException,
+                                                                                                                PkiNotYetValidException,
+                                                                                                                PkiInvalidException;
 
     void removeIdentity(String sessionId, String userId, String operation, byte[] identityStatementData)
-            throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException,
-            AttributeTypeNotFoundException, SubjectNotFoundException, DeviceNotFoundException, PkiRevokedException,
-            PkiSuspendedException, PkiExpiredException, PkiNotYetValidException, PkiInvalidException;
+                                                                                                        throws TrustDomainNotFoundException,
+                                                                                                        PermissionDeniedException,
+                                                                                                        ArgumentIntegrityException,
+                                                                                                        AttributeTypeNotFoundException,
+                                                                                                        SubjectNotFoundException,
+                                                                                                        DeviceNotFoundException,
+                                                                                                        PkiRevokedException,
+                                                                                                        PkiSuspendedException,
+                                                                                                        PkiExpiredException,
+                                                                                                        PkiNotYetValidException,
+                                                                                                        PkiInvalidException;
 }

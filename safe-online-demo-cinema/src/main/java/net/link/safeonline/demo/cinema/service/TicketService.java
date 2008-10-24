@@ -21,15 +21,15 @@ import net.link.safeonline.demo.cinema.entity.CinemaUserEntity;
 /**
  * <h2>{@link TicketService}<br>
  * <sub>Service bean for {@link CinemaTicketEntity}.</sub></h2>
- *
+ * 
  * <p>
  * [description / usage].
  * </p>
- *
+ * 
  * <p>
  * <i>Jun 25, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 @Local
@@ -57,31 +57,28 @@ public interface TicketService extends CinemaService {
 
     /**
      * @param time
-     *            All valid tickets at this moment in time are returned. That means, all tickets for films that start at
-     *            or before this time AND end end at or after this time.
-     *
-     * @return All tickets purchased by the subject with the given national registry number that are valid for the given
-     *         time.
+     *            All valid tickets at this moment in time are returned. That means, all tickets for films that start at or before this time
+     *            AND end end at or after this time.
+     * 
+     * @return All tickets purchased by the subject with the given national registry number that are valid for the given time.
      */
     public List<CinemaTicketEntity> getTickets(String nrn, Date time);
 
     /**
      * @param time
-     *            All valid tickets at this moment in time are returned. That means, all tickets for films that start at
-     *            or before this time AND end end at or after this time.
-     *
-     * @return All tickets purchased by the subject with the given national registry number that are valid for the given
-     *         time.
+     *            All valid tickets at this moment in time are returned. That means, all tickets for films that start at or before this time
+     *            AND end end at or after this time.
+     * 
+     * @return All tickets purchased by the subject with the given national registry number that are valid for the given time.
      */
     public List<CinemaTicketEntity> getTickets(String nrn, Date time, String theatreName);
 
     /**
      * @param time
-     *            All valid tickets at this moment in time are returned. That means, all tickets for films that start at
-     *            or before this time AND end end at or after this time.
-     *
-     * @return All tickets purchased by the subject with the given national registry number that are valid for the given
-     *         time.
+     *            All valid tickets at this moment in time are returned. That means, all tickets for films that start at or before this time
+     *            AND end end at or after this time.
+     * 
+     * @return All tickets purchased by the subject with the given national registry number that are valid for the given time.
      */
     public boolean isValid(String nrn, Date time, String theatreName, String filmName);
 

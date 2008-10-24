@@ -21,8 +21,8 @@ import org.apache.commons.lang.builder.ToStringStyle;
 
 
 /**
- * Attribute Data Object. Used to transfer data between service and user application. This has been done to make life in
- * the presentation layer easier.
+ * Attribute Data Object. Used to transfer data between service and user application. This has been done to make life in the presentation
+ * layer easier.
  * 
  * @author fcorneli
  * 
@@ -68,8 +68,8 @@ public class AttributeDO implements Serializable, Cloneable {
     private boolean           unavailable;
 
 
-    public AttributeDO(String name, DatatypeType type, boolean multivalued, long index, String humanReadableName,
-            String description, boolean editable, boolean dataMining, String stringValue, Boolean booleanValue) {
+    public AttributeDO(String name, DatatypeType type, boolean multivalued, long index, String humanReadableName, String description,
+                       boolean editable, boolean dataMining, String stringValue, Boolean booleanValue) {
 
         this.name = name;
         this.type = type;
@@ -134,10 +134,9 @@ public class AttributeDO implements Serializable, Cloneable {
     }
 
     /**
-     * Gives back the human readable name of the attribute type corresponding with this attribute. If the i18n name is
-     * <code>null</code> this method gives back the URN machine name. In case this attribute value is part of a
-     * multi-valued attribute we also append the attribute index to the human readable name. We increase the index by
-     * one since human beings tend to start counting from 1.
+     * Gives back the human readable name of the attribute type corresponding with this attribute. If the i18n name is <code>null</code>
+     * this method gives back the URN machine name. In case this attribute value is part of a multi-valued attribute we also append the
+     * attribute index to the human readable name. We increase the index by one since human beings tend to start counting from 1.
      * 
      */
     public String getHumanReadableName() {
@@ -225,8 +224,8 @@ public class AttributeDO implements Serializable, Cloneable {
     }
 
     /**
-     * Gets the value. The {@link #getValue()} and {@link #setValue(AttributeDO)} methods are used by the presentation
-     * layer to allow for easy Expression Language expressions in the JSF pages.
+     * Gets the value. The {@link #getValue()} and {@link #setValue(AttributeDO)} methods are used by the presentation layer to allow for
+     * easy Expression Language expressions in the JSF pages.
      * 
      */
     public AttributeDO getValue() {
@@ -323,8 +322,8 @@ public class AttributeDO implements Serializable, Cloneable {
     }
 
     /**
-     * Gives back the index of this attribute. This only really makes sense in the event of multi-valued attributes. For
-     * single-valued attributes the index defaults to zero.
+     * Gives back the index of this attribute. This only really makes sense in the event of multi-valued attributes. For single-valued
+     * attributes the index defaults to zero.
      * 
      */
     public long getIndex() {
@@ -352,8 +351,7 @@ public class AttributeDO implements Serializable, Cloneable {
     }
 
     /**
-     * Marks that this attribute entry is the title entry of a compounded attribute record. This flag will be used for
-     * visualization.
+     * Marks that this attribute entry is the title entry of a compounded attribute record. This flag will be used for visualization.
      * 
      */
     public boolean isCompounded() {
@@ -367,8 +365,7 @@ public class AttributeDO implements Serializable, Cloneable {
     }
 
     /**
-     * Marks that this attribute entry is a member entry of a compounded attribute record. This flag will be used for
-     * visualization.
+     * Marks that this attribute entry is a member entry of a compounded attribute record. This flag will be used for visualization.
      * 
      */
     public boolean isMember() {
@@ -426,9 +423,8 @@ public class AttributeDO implements Serializable, Cloneable {
     @Override
     public AttributeDO clone() {
 
-        AttributeDO attribute = new AttributeDO(this.name, this.type, this.multivalued, this.index,
-                this.humanReadableName, this.description, this.editable, this.dataMining, this.stringValue,
-                this.booleanValue);
+        AttributeDO attribute = new AttributeDO(this.name, this.type, this.multivalued, this.index, this.humanReadableName,
+                this.description, this.editable, this.dataMining, this.stringValue, this.booleanValue);
         attribute.integerValue = this.integerValue;
         attribute.doubleValue = this.doubleValue;
         attribute.dateValue = this.dateValue;
@@ -438,14 +434,14 @@ public class AttributeDO implements Serializable, Cloneable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("name", this.name).append(
-                "multi-valued", this.multivalued).append("index", this.index).append("string-value", this.stringValue)
-                .append("integer-value", this.integerValue).toString();
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("name", this.name).append("multi-valued",
+                this.multivalued).append("index", this.index).append("string-value", this.stringValue).append("integer-value",
+                this.integerValue).toString();
     }
 
     /**
-     * Copies the value of this attribute data object to the (attached) target attribute entity according to the
-     * datatype constraints by the given attribute type.
+     * Copies the value of this attribute data object to the (attached) target attribute entity according to the datatype constraints by the
+     * given attribute type.
      * 
      * @param attributeType
      * @param targetAttribute

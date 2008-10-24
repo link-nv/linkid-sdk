@@ -44,7 +44,7 @@ public interface ApplicationOwner {
     String add() throws SubjectNotFoundException, ExistingApplicationOwnerException, ExistingApplicationAdminException;
 
     String remove() throws SubscriptionNotFoundException, SubjectNotFoundException, ApplicationOwnerNotFoundException,
-            PermissionDeniedException;
+                   PermissionDeniedException;
 
     String view();
 

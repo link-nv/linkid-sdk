@@ -15,21 +15,25 @@ import javax.ejb.Local;
 
 /**
  * Validator for certificates through OCSP
- *
+ * 
  * @author dhouthoo
- *
+ * 
  */
 @Local
 public interface OcspValidator {
 
     public enum OcspResult {
-        FAILED, UNKNOWN, REVOKED, SUSPENDED, GOOD
+        FAILED,
+        UNKNOWN,
+        REVOKED,
+        SUSPENDED,
+        GOOD
     }
 
 
     /**
      * Given an X509 certificate and its issuerCertificate, validates the certificate using OCSP
-     *
+     * 
      * @param certificate
      * @param issuerCertificate
      */
@@ -37,14 +41,14 @@ public interface OcspValidator {
 
     /**
      * Extracts a OCSP URI from a certificate
-     *
+     * 
      * @param certificate
      */
     URI getOcspUri(X509Certificate certificate);
 
     /**
      * Performs an OCSP check just like performOcspCheck but returns a finer grained response
-     *
+     * 
      * @param ocspUri
      * @param certificate
      * @param issuerCertificate

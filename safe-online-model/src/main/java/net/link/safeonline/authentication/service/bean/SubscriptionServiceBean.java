@@ -54,8 +54,7 @@ import org.jboss.annotation.security.SecurityDomain;
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
-public class SubscriptionServiceBean implements SubscriptionService, SubscriptionServiceRemote, SubjectContext,
-        ApplicationContext {
+public class SubscriptionServiceBean implements SubscriptionService, SubscriptionServiceRemote, SubjectContext, ApplicationContext {
 
     private static final Log      LOG = LogFactory.getLog(SubscriptionServiceBean.class);
 
@@ -94,38 +93,36 @@ public class SubscriptionServiceBean implements SubscriptionService, Subscriptio
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
     public void subscribe(String applicationName) throws ApplicationNotFoundException, AlreadySubscribedException,
-            PermissionDeniedException {
+                                                 PermissionDeniedException {
 
         Subject subject = SubjectFactory.getCallerSubject(this);
         Application application = ApplicationFactory.getApplication(this, applicationName);
         subject.subscribe(application);
 
         if (application.getEntity().getIdScope().equals(IdScopeType.APPLICATION)) {
-            if (null == this.applicationScopeIdDAO.findApplicationScopeId(subject.getSubjectEntity(), application
-                    .getEntity())) {
+            if (null == this.applicationScopeIdDAO.findApplicationScopeId(subject.getSubjectEntity(), application.getEntity())) {
                 this.applicationScopeIdDAO.addApplicationScopeId(subject.getSubjectEntity(), application.getEntity());
             }
         }
 
-        this.historyDAO.addHistoryEntry(subject.getSubjectEntity(), HistoryEventType.SUBSCRIPTION_ADD, Collections
-                .singletonMap(SafeOnlineConstants.APPLICATION_PROPERTY, applicationName));
+        this.historyDAO.addHistoryEntry(subject.getSubjectEntity(), HistoryEventType.SUBSCRIPTION_ADD, Collections.singletonMap(
+                SafeOnlineConstants.APPLICATION_PROPERTY, applicationName));
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
     public void unsubscribe(String applicationName) throws ApplicationNotFoundException, SubscriptionNotFoundException,
-            PermissionDeniedException {
+                                                   PermissionDeniedException {
 
         Subject subject = SubjectFactory.getCallerSubject(this);
         Application application = ApplicationFactory.getApplication(this, applicationName);
         subject.unsubscribe(application);
 
-        this.historyDAO.addHistoryEntry(subject.getSubjectEntity(), HistoryEventType.SUBSCRIPTION_REMOVE, Collections
-                .singletonMap(SafeOnlineConstants.APPLICATION_PROPERTY, applicationName));
+        this.historyDAO.addHistoryEntry(subject.getSubjectEntity(), HistoryEventType.SUBSCRIPTION_REMOVE, Collections.singletonMap(
+                SafeOnlineConstants.APPLICATION_PROPERTY, applicationName));
     }
 
     @RolesAllowed( { SafeOnlineRoles.OPERATOR_ROLE, SafeOnlineRoles.OWNER_ROLE })
-    public long getNumberOfSubscriptions(String applicationName) throws ApplicationNotFoundException,
-            PermissionDeniedException {
+    public long getNumberOfSubscriptions(String applicationName) throws ApplicationNotFoundException, PermissionDeniedException {
 
         LOG.debug("get number of subscriptions for application: " + applicationName);
         ApplicationEntity application = this.applicationDAO.getApplication(applicationName);

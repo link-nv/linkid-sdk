@@ -35,11 +35,11 @@ import org.apache.commons.logging.LogFactory;
 /**
  * <h2>{@link ExecutionEntity}<br>
  * <sub>Holds the global metadata for a scenario execution.</sub></h2>
- *
+ * 
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 @Entity
@@ -84,8 +84,7 @@ public class ExecutionEntity {
         this.dirtySpeed = false;
     }
 
-    public ExecutionEntity(String scenarioName, Integer agents, int workers, Date startTime, long duration,
-            String hostname, Boolean ssl) {
+    public ExecutionEntity(String scenarioName, Integer agents, int workers, Date startTime, long duration, String hostname, Boolean ssl) {
 
         this();
 
@@ -225,9 +224,9 @@ public class ExecutionEntity {
     }
 
     /**
-     * The speed will only be recalculated if it has been set as dirty (which automatically happens each time a scenario
-     * has been completed for it).
-     *
+     * The speed will only be recalculated if it has been set as dirty (which automatically happens each time a scenario has been completed
+     * for it).
+     * 
      * @return The average scenario execution speed (#/s) in this execution.
      */
     public Double getSpeed() {
@@ -253,8 +252,7 @@ public class ExecutionEntity {
     }
 
     /**
-     * Signal that the speed value currently contained in this {@link ExecutionEntity} is dirty and needs to be
-     * recalculated.
+     * Signal that the speed value currently contained in this {@link ExecutionEntity} is dirty and needs to be recalculated.
      */
     public void dirtySpeed() {
 

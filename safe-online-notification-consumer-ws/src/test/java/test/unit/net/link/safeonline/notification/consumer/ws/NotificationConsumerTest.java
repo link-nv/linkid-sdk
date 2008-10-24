@@ -40,10 +40,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-
 public class NotificationConsumerTest {
 
-    private static final Log LOG = LogFactory.getLog(NotificationConsumerTest.class);
+    private static final Log LOG = LogFactory
+                                         .getLog(NotificationConsumerTest.class);
 
 
     @Test
@@ -54,22 +54,28 @@ public class NotificationConsumerTest {
 
         ObjectFactory objectFactory = new ObjectFactory();
         Notify notify = objectFactory.createNotify();
-        List<NotificationMessageHolderType> notifications = notify.getNotificationMessage();
+        List<NotificationMessageHolderType> notifications = notify
+                .getNotificationMessage();
 
-        NotificationMessageHolderType notification = objectFactory.createNotificationMessageHolderType();
+        NotificationMessageHolderType notification = objectFactory
+                .createNotificationMessageHolderType();
         TopicExpressionType topic = objectFactory.createTopicExpressionType();
-        topic.setDialect("http://docs.oasis-open.org/wsn/2004/06/TopicExpression/Simple");
+        topic
+                .setDialect("http://docs.oasis-open.org/wsn/2004/06/TopicExpression/Simple");
         notification.setTopic(topic);
 
-        Message message = objectFactory.createNotificationMessageHolderTypeMessage();
+        Message message = objectFactory
+                .createNotificationMessageHolderTypeMessage();
         notification.setMessage(message);
 
         notifications.add(notification);
 
         JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
         Marshaller marshaller = context.createMarshaller();
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory
+                .newInstance();
+        DocumentBuilder documentBuilder = documentBuilderFactory
+                .newDocumentBuilder();
         Document document = documentBuilder.newDocument();
 
         // operate
@@ -79,24 +85,29 @@ public class NotificationConsumerTest {
         LOG.debug("result document: " + domToString(document));
 
         Element nsElement = document.createElement("nsElement");
-        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:wsnt",
-                "http://docs.oasis-open.org/wsn/b-2");
-        Node resultNode = XPathAPI.selectSingleNode(document, "/wsnt:Notify/wsnt:NotificationMessage/wsnt:Message",
-                nsElement);
+        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI,
+                "xmlns:wsnt", "http://docs.oasis-open.org/wsn/b-2");
+        Node resultNode = XPathAPI
+                .selectSingleNode(document,
+                        "/wsnt:Notify/wsnt:NotificationMessage/wsnt:Message",
+                        nsElement);
         assertNotNull(resultNode);
 
         Unmarshaller unmarshaller = context.createUnmarshaller();
         Notify notifyElement = (Notify) unmarshaller.unmarshal(document);
 
-        assertNotNull(notifyElement.getNotificationMessage().get(0).getMessage());
+        assertNotNull(notifyElement.getNotificationMessage().get(0)
+                .getMessage());
     }
+
 
     public static String domToString(Node domNode) throws TransformerException {
 
         Source source = new DOMSource(domNode);
         StringWriter stringWriter = new StringWriter();
         Result result = new StreamResult(stringWriter);
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        TransformerFactory transformerFactory = TransformerFactory
+                .newInstance();
         Transformer transformer = transformerFactory.newTransformer();
         transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
         transformer.transform(source, result);

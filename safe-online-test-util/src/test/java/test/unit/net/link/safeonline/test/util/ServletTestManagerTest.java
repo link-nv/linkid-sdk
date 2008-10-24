@@ -38,9 +38,9 @@ import org.junit.Test;
 
 /**
  * Unit test for servlet test manager.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class ServletTestManagerTest {
 
@@ -95,8 +95,7 @@ public class ServletTestManagerTest {
 
         @SuppressWarnings("unchecked")
         @Override
-        protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-                IOException {
+        protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
             LOG.debug("doGet");
             called = true;
@@ -205,8 +204,7 @@ public class ServletTestManagerTest {
 
         }
 
-        public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-                ServletException {
+        public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
             called = true;
             chain.doFilter(request, response);

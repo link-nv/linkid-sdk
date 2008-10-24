@@ -14,13 +14,13 @@ import net.link.safeonline.osgi.plugin.exception.AttributeUnavailableException;
 import net.link.safeonline.osgi.plugin.exception.SubjectNotFoundException;
 import net.link.safeonline.osgi.plugin.exception.UnsupportedDataTypeException;
 
+
 /**
  * <h2>{@link OlasAttributeService}<br>
  * <sub>OLAS Attribute Service API.</sub></h2>
  * 
  * <p>
- * OLAS Attribute Service API. This service should be used if OSGi attribute
- * plugins wish to retrieve OLAS attributes.
+ * OLAS Attribute Service API. This service should be used if OSGi attribute plugins wish to retrieve OLAS attributes.
  * </p>
  * 
  * <p>
@@ -31,22 +31,20 @@ import net.link.safeonline.osgi.plugin.exception.UnsupportedDataTypeException;
  */
 public interface OlasAttributeService {
 
-	/**
-	 * Returns the attribute view from OLAS for the specified attribute name
-	 * from the specified user.
-	 * 
-	 * @param userId
-	 * @param attributeName
-	 * @return attribute view
-	 * @throws AttributeTypeNotFoundException
-	 * @throws AttributeNotFoundException
-	 * @throws UnsupportedDataTypeException
-	 * @throws AttributeUnavailableException
-	 * @throws SubjectNotFoundException
-	 */
-	public List<Attribute> getAttribute(String userId, String attributeName)
-			throws AttributeTypeNotFoundException, AttributeNotFoundException,
-			UnsupportedDataTypeException, AttributeUnavailableException,
-			SubjectNotFoundException;
+    /**
+     * Returns the attribute view from OLAS for the specified attribute name from the specified user.
+     * 
+     * @param userId
+     * @param attributeName
+     * @return attribute view
+     * @throws AttributeTypeNotFoundException
+     * @throws AttributeNotFoundException
+     * @throws UnsupportedDataTypeException
+     * @throws AttributeUnavailableException
+     * @throws SubjectNotFoundException
+     */
+    public List<Attribute> getAttribute(String userId, String attributeName) throws AttributeTypeNotFoundException,
+                                                                            AttributeNotFoundException, UnsupportedDataTypeException,
+                                                                            AttributeUnavailableException, SubjectNotFoundException;
 
 }

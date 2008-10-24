@@ -19,8 +19,7 @@ public interface Subscriptions {
 
     void subscriptionListFactory();
 
-    String viewSubscription() throws SubscriptionNotFoundException, ApplicationNotFoundException,
-            ApplicationIdentityNotFoundException;
+    String viewSubscription() throws SubscriptionNotFoundException, ApplicationNotFoundException, ApplicationIdentityNotFoundException;
 
     String unsubscribe() throws SubscriptionNotFoundException, ApplicationNotFoundException;
 

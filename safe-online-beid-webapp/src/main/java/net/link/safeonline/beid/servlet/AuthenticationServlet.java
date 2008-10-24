@@ -57,8 +57,8 @@ public class AuthenticationServlet extends AbstractStatementServlet {
 
 
     @Override
-    protected void processStatement(byte[] statementData, HttpSession session, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void processStatement(byte[] statementData, HttpSession session, HttpServletResponse response) throws ServletException,
+                                                                                                            IOException {
 
         String sessionId = session.getId();
         LOG.debug("session Id: " + sessionId);
@@ -68,8 +68,8 @@ public class AuthenticationServlet extends AbstractStatementServlet {
             authenticationContext.setUsedDevice(BeIdConstants.BEID_DEVICE_ID);
 
             AuthenticationStatement authenticationStatement = new AuthenticationStatement(statementData);
-            String deviceUserId = this.beIdDeviceService.authenticate(sessionId,
-                    authenticationContext.getApplication(), authenticationStatement);
+            String deviceUserId = this.beIdDeviceService.authenticate(sessionId, authenticationContext.getApplication(),
+                    authenticationStatement);
 
             authenticationContext.setUserId(deviceUserId);
             authenticationContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());

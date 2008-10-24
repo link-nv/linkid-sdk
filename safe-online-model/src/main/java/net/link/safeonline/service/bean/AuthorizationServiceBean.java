@@ -32,8 +32,8 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- * Implementation of the authorization service interface. This component cannot live within the SafeOnline core security
- * domain since it will be used by a JAAS login module to perform authorization of a caller principal.
+ * Implementation of the authorization service interface. This component cannot live within the SafeOnline core security domain since it
+ * will be used by a JAAS login module to perform authorization of a caller principal.
  * 
  * @author fcorneli
  * 
@@ -65,25 +65,21 @@ public class AuthorizationServiceBean implements AuthorizationService, Authoriza
             SubjectEntity subject = this.subjectService.getSubject(userId);
 
             /*
-             * For now we base the authorization on made subscriptions. Of course, later on we could let this decision
-             * depend on explicit ACL, i.e., have a trust layer to make the decision.
+             * For now we base the authorization on made subscriptions. Of course, later on we could let this decision depend on explicit
+             * ACL, i.e., have a trust layer to make the decision.
              */
-            addRoleIfSubscribed(SafeOnlineRoles.USER_ROLE, subject,
-                    SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, roles);
+            addRoleIfSubscribed(SafeOnlineRoles.USER_ROLE, subject, SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, roles);
 
-            addRoleIfSubscribed(SafeOnlineRoles.OWNER_ROLE, subject,
-                    SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME, roles);
+            addRoleIfSubscribed(SafeOnlineRoles.OWNER_ROLE, subject, SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME, roles);
 
             if (true == this.isGlobalOperator) {
                 LOG.debug("assigning global operator role");
                 addRoleIfSubscribed(SafeOnlineRoles.GLOBAL_OPERATOR_ROLE, subject,
                         SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME, roles);
             }
-            addRoleIfSubscribed(SafeOnlineRoles.OPERATOR_ROLE, subject,
-                    SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME, roles);
+            addRoleIfSubscribed(SafeOnlineRoles.OPERATOR_ROLE, subject, SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME, roles);
 
-            addRoleIfSubscribed(SafeOnlineRoles.HELPDESK_ROLE, subject,
-                    SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME, roles);
+            addRoleIfSubscribed(SafeOnlineRoles.HELPDESK_ROLE, subject, SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME, roles);
         }
 
         catch (SubjectNotFoundException e) {

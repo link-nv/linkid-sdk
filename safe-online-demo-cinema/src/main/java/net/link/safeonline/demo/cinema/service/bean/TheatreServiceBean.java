@@ -20,11 +20,11 @@ import org.jboss.annotation.ejb.LocalBinding;
 /**
  * <h2>{@link TheatreServiceBean}<br>
  * <sub>Service bean for {@link TheatreService}.</sub></h2>
- *
+ * 
  * <p>
  * <i>Jun 12, 2008</i>
  * </p>
- *
+ * 
  * @see TheatreService
  * @author mbillemo
  */

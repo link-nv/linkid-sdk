@@ -61,8 +61,7 @@ public class InputValidationTest extends TestCase {
         }
 
         public void validate(Object value, @SuppressWarnings("unused") int parameterIdx,
-                @SuppressWarnings("unused") Annotation parameterAnnotation,
-                @SuppressWarnings("unused") ValidatorResult result) {
+                             @SuppressWarnings("unused") Annotation parameterAnnotation, @SuppressWarnings("unused") ValidatorResult result) {
 
             LOG.debug("validate: " + value);
             invoked = true;

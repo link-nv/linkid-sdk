@@ -34,8 +34,8 @@ public interface AttributeProvider {
      */
     String removeProvider() throws AttributeTypeNotFoundException, AttributeProviderNotFoundException;
 
-    String add() throws ExistingAttributeProviderException, ApplicationNotFoundException,
-            AttributeTypeNotFoundException, PermissionDeniedException;
+    String add() throws ExistingAttributeProviderException, ApplicationNotFoundException, AttributeTypeNotFoundException,
+                PermissionDeniedException;
 
     /*
      * accessors

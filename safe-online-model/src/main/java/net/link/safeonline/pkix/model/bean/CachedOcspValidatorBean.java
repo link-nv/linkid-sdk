@@ -39,8 +39,7 @@ public class CachedOcspValidatorBean implements CachedOcspValidator {
     CachedOcspResponseDAO    cachedOcspResponseDAO;
 
 
-    public OcspResult performCachedOcspCheck(TrustDomainEntity trustDomain, X509Certificate certificate,
-            X509Certificate issuerCertificate) {
+    public OcspResult performCachedOcspCheck(TrustDomainEntity trustDomain, X509Certificate certificate, X509Certificate issuerCertificate) {
 
         LOG.debug("performing cached OCSP lookup");
 

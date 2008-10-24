@@ -25,9 +25,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Basic input validation interceptor for EJB3.
- *
+ * 
  * @author cornelis
- *
+ * 
  */
 public class InputValidation {
 
@@ -46,8 +46,8 @@ public class InputValidation {
         for (int parameterIdx = 0; parameterIdx < allParameterAnnotations.length; parameterIdx++) {
             Annotation[] parameterAnnotations = allParameterAnnotations[parameterIdx];
             for (Annotation parameterAnnotation : parameterAnnotations) {
-                ValidatorAnnotation validatorClassAnnotation = parameterAnnotation.annotationType().getAnnotation(
-                        ValidatorAnnotation.class);
+                ValidatorAnnotation validatorClassAnnotation = parameterAnnotation.annotationType()
+                                                                                  .getAnnotation(ValidatorAnnotation.class);
                 if (null == validatorClassAnnotation) {
                     continue;
                 }

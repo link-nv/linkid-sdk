@@ -63,8 +63,7 @@ public class InitializationServiceBean extends AbstractCinemaServiceBean impleme
             this.theatreRoomEntities.add(currentTheatreRooms);
 
             for (int r = 0; r < theatreRooms[t].length; ++r) {
-                currentTheatreRooms.add(addRoom(theatre, theatreRooms[t][r], theatreRoomSeats[t][r][0],
-                        theatreRoomSeats[t][r][1]));
+                currentTheatreRooms.add(addRoom(theatre, theatreRooms[t][r], theatreRoomSeats[t][r][0], theatreRoomSeats[t][r][1]));
             }
         }
     }
@@ -85,8 +84,7 @@ public class InitializationServiceBean extends AbstractCinemaServiceBean impleme
                 times.add(timeEntity);
             }
 
-            CinemaFilmEntity filmEntity = new CinemaFilmEntity(filmNames[f], filmDescriptions[f], filmDurations[f],
-                    filmPrices[f], times);
+            CinemaFilmEntity filmEntity = new CinemaFilmEntity(filmNames[f], filmDescriptions[f], filmDurations[f], filmPrices[f], times);
             this.em.persist(filmEntity);
 
             // Rooms.

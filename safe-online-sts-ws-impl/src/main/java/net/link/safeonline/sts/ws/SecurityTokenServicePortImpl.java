@@ -50,9 +50,9 @@ import org.w3c.dom.Element;
 
 
 /**
- * Implementation of WS-Trust 1.3 STS JAX-WS web service endpoint. Beware that we validate both the WS-Security and SAML
- * token signature via SOAP handlers. The signature validation cannot be done within the endpoint implementation since
- * JAXB somehow breaks the signature digests.
+ * Implementation of WS-Trust 1.3 STS JAX-WS web service endpoint. Beware that we validate both the WS-Security and SAML token signature via
+ * SOAP handlers. The signature validation cannot be done within the endpoint implementation since JAXB somehow breaks the signature
+ * digests.
  * 
  * @author fcorneli
  */
@@ -63,11 +63,9 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
 
     private static final Log   LOG                = LogFactory.getLog(SecurityTokenServicePortImpl.class);
 
-    private final static QName TOKEN_TYPE_QNAME   = new QName("http://docs.oasis-open.org/ws-sx/ws-trust/200512/",
-                                                          "TokenType");
+    private final static QName TOKEN_TYPE_QNAME   = new QName("http://docs.oasis-open.org/ws-sx/ws-trust/200512/", "TokenType");
 
-    private final static QName REQUEST_TYPE_QNAME = new QName("http://docs.oasis-open.org/ws-sx/ws-trust/200512/",
-                                                          "RequestType");
+    private final static QName REQUEST_TYPE_QNAME = new QName("http://docs.oasis-open.org/ws-sx/ws-trust/200512/", "RequestType");
 
     @Resource
     private WebServiceContext  context;
@@ -131,8 +129,7 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
             tokenXmlObject = unmarshaller.unmarshall(tokenElement);
         } catch (UnmarshallingException e) {
             LOG.debug("error parsing token: " + e.getMessage(), e);
-            RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
-                    "error parsing token");
+            RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID, "error parsing token");
             return response;
         }
 
@@ -171,8 +168,7 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
         if (null == tokenType) {
             tokenType = SecurityTokenServiceConstants.TOKEN_TYPE_STATUS;
         }
-        RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_VALID,
-                tokenType, null);
+        RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_VALID, tokenType, null);
         return response;
     }
 
@@ -297,8 +293,7 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
         String subjectName = samlLogoutRequest.getNameID().getValue();
         if (null == subjectName) {
             LOG.debug("missing NameID field");
-            RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
-                    "missing NameID field");
+            RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID, "missing NameID field");
             return response;
         }
         LOG.debug("subject name: " + subjectName);
@@ -306,8 +301,7 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
         return null;
     }
 
-    private RequestSecurityTokenResponseType validateDeviceOperationRequest(
-            DeviceOperationRequest deviceOperationRequest) {
+    private RequestSecurityTokenResponseType validateDeviceOperationRequest(DeviceOperationRequest deviceOperationRequest) {
 
         Issuer issuer = deviceOperationRequest.getIssuer();
         String issuerName = issuer.getValue();
@@ -316,8 +310,7 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
         String serviceURL = deviceOperationRequest.getServiceURL();
         if (null == serviceURL) {
             LOG.debug("missing service URL");
-            RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
-                    "missing service URL");
+            RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID, "missing service URL");
             return response;
         }
         LOG.debug("serviceURL: " + serviceURL);
@@ -334,8 +327,7 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
         String device = deviceOperationRequest.getDevice();
         if (null == device) {
             LOG.debug("missing device");
-            RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,
-                    "missing device");
+            RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID, "missing device");
             return response;
         }
         LOG.debug("device: " + device);
@@ -343,8 +335,7 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
         return null;
     }
 
-    private RequestSecurityTokenResponseType validateDeviceOperationResponse(
-            DeviceOperationResponse deviceOperationResponse) {
+    private RequestSecurityTokenResponseType validateDeviceOperationResponse(DeviceOperationResponse deviceOperationResponse) {
 
         String samlStatusCode = deviceOperationResponse.getStatus().getStatusCode().getValue();
         if (samlStatusCode.equals(DeviceOperationResponse.FAILED_URI))

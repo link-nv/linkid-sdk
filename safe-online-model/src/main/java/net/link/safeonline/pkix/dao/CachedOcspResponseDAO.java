@@ -19,8 +19,7 @@ public interface CachedOcspResponseDAO {
 
     CachedOcspResponseEntity findCachedOcspResponse(String key);
 
-    CachedOcspResponseEntity addCachedOcspResponse(String key, CachedOcspResultType result,
-            TrustDomainEntity trustDomain);
+    CachedOcspResponseEntity addCachedOcspResponse(String key, CachedOcspResultType result, TrustDomainEntity trustDomain);
 
     void removeCachedOcspResponse(CachedOcspResponseEntity cachedOcspResponse);
 

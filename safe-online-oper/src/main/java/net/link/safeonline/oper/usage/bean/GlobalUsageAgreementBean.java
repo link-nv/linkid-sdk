@@ -45,8 +45,7 @@ import org.jboss.seam.faces.FacesMessages;
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 public class GlobalUsageAgreementBean implements GlobalUsageAgreement {
 
-    private static final Log              LOG                              = LogFactory
-                                                                                   .getLog(GlobalUsageAgreementBean.class);
+    private static final Log              LOG                              = LogFactory.getLog(GlobalUsageAgreementBean.class);
 
     private static final String           draftUsageAgreementsTextsModel   = "globalDraftUsageAgreementsTexts";
 
@@ -183,8 +182,7 @@ public class GlobalUsageAgreementBean implements GlobalUsageAgreement {
     public String addText() {
 
         LOG.debug("add draft text: language=" + this.language);
-        this.selectedUsageAgreementText = this.usageAgreementService.createDraftGlobalUsageAgreementText(this.language,
-                "");
+        this.selectedUsageAgreementText = this.usageAgreementService.createDraftGlobalUsageAgreementText(this.language, "");
         this.draftUsageAgreementsTextsFactory();
         return "edittext";
     }
@@ -194,8 +192,7 @@ public class GlobalUsageAgreementBean implements GlobalUsageAgreement {
 
         LOG.debug("save text: language=" + this.selectedUsageAgreementText.getLanguage());
         String text = this.selectedUsageAgreementText.getText();
-        this.usageAgreementService
-                .setDraftGlobalUsageAgreementText(this.selectedUsageAgreementText.getLanguage(), text);
+        this.usageAgreementService.setDraftGlobalUsageAgreementText(this.selectedUsageAgreementText.getLanguage(), text);
         this.draftUsageAgreementsTextsFactory();
         return "saved";
 
@@ -229,8 +226,7 @@ public class GlobalUsageAgreementBean implements GlobalUsageAgreement {
     public String removeDraftText() {
 
         LOG.debug("remove draft text: language=" + this.selectedDraftUsageAgreementText.getLanguage());
-        this.usageAgreementService.removeDraftGlobalUsageAgreementText(this.selectedDraftUsageAgreementText
-                .getLanguage());
+        this.usageAgreementService.removeDraftGlobalUsageAgreementText(this.selectedDraftUsageAgreementText.getLanguage());
         this.draftUsageAgreementsTextsFactory();
         return "removed";
 
@@ -239,15 +235,12 @@ public class GlobalUsageAgreementBean implements GlobalUsageAgreement {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String editCurrentText() {
 
-        LOG
-                .debug("edit current usage agreement text: language="
-                        + this.selectedCurrentUsageAgreementText.getLanguage());
+        LOG.debug("edit current usage agreement text: language=" + this.selectedCurrentUsageAgreementText.getLanguage());
         GlobalUsageAgreementEntity draftUsageAgreement = this.usageAgreementService.getDraftGlobalUsageAgreement();
         if (null == draftUsageAgreement) {
             draftUsageAgreement = this.usageAgreementService.createDraftGlobalUsageAgreement();
         }
-        this.selectedUsageAgreementText = draftUsageAgreement
-                .getUsageAgreementText(this.selectedCurrentUsageAgreementText.getLanguage());
+        this.selectedUsageAgreementText = draftUsageAgreement.getUsageAgreementText(this.selectedCurrentUsageAgreementText.getLanguage());
         return "edittext";
 
     }

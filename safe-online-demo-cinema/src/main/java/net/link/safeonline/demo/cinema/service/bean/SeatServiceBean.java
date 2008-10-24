@@ -23,11 +23,11 @@ import org.jboss.annotation.ejb.LocalBinding;
 /**
  * <h2>{@link SeatServiceBean}<br>
  * <sub>Service bean for {@link SeatService}.</sub></h2>
- *
+ * 
  * <p>
  * <i>Jun 12, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 @Stateless
@@ -48,8 +48,8 @@ public class SeatServiceBean extends AbstractCinemaServiceBean implements SeatSe
      */
     public boolean isOccupied(CinemaSeatEntity seat, Date start) {
 
-        return !this.em.createNamedQuery(CinemaSeatOccupationEntity.getFor).setParameter("seat", seat).setParameter(
-                "start", start).getResultList().isEmpty();
+        return !this.em.createNamedQuery(CinemaSeatOccupationEntity.getFor).setParameter("seat", seat).setParameter("start", start)
+                       .getResultList().isEmpty();
     }
 
     /**
@@ -71,8 +71,7 @@ public class SeatServiceBean extends AbstractCinemaServiceBean implements SeatSe
         // whether it was reserved or not.
         try {
             CinemaSeatOccupationEntity existingOccupation = (CinemaSeatOccupationEntity) this.em.createNamedQuery(
-                    CinemaSeatOccupationEntity.getFor).setParameter("seat", seatEntity).setParameter("start", start)
-                    .getSingleResult();
+                    CinemaSeatOccupationEntity.getFor).setParameter("seat", seatEntity).setParameter("start", start).getSingleResult();
 
             if (existingOccupation.isReserved())
                 throw new IllegalStateException("Seat " + seatEntity + " has already been reserved for a customer.");

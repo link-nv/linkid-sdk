@@ -36,14 +36,11 @@ import org.apache.commons.lang.builder.ToStringStyle;
 @Entity
 @Table(name = "nodeMappings", uniqueConstraints = @UniqueConstraint(columnNames = { "subject", "node" }))
 @NamedQueries( {
-        @NamedQuery(name = QUERY_LIST_SUBJECT, query = "SELECT n " + "FROM NodeMappingEntity AS n "
-                + "WHERE n.subject = :subject"),
-        @NamedQuery(name = QUERY_LIST_NODE, query = "SELECT n " + "FROM NodeMappingEntity AS n "
-                + "WHERE n.node = :node"),
+        @NamedQuery(name = QUERY_LIST_SUBJECT, query = "SELECT n " + "FROM NodeMappingEntity AS n " + "WHERE n.subject = :subject"),
+        @NamedQuery(name = QUERY_LIST_NODE, query = "SELECT n " + "FROM NodeMappingEntity AS n " + "WHERE n.node = :node"),
         @NamedQuery(name = QUERY_SUBJECT_NODE, query = "SELECT n " + "FROM NodeMappingEntity AS n "
                 + "WHERE n.subject = :subject AND n.node = :node"),
-        @NamedQuery(name = DELETE_ALL_SUBJECT, query = "DELETE FROM NodeMappingEntity AS n "
-                + "WHERE n.subject = :subject") })
+        @NamedQuery(name = DELETE_ALL_SUBJECT, query = "DELETE FROM NodeMappingEntity AS n " + "WHERE n.subject = :subject") })
 public class NodeMappingEntity implements Serializable {
 
     private static final long  serialVersionUID   = 1L;
@@ -124,16 +121,15 @@ public class NodeMappingEntity implements Serializable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("id", this.id).append("subject",
-                this.subject.getUserId()).append("node", this.node.getName()).toString();
+        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("id", this.id).append("subject", this.subject.getUserId())
+                                                                    .append("node", this.node.getName()).toString();
     }
 
 
     public interface QueryInterface {
 
         @QueryMethod(value = QUERY_SUBJECT_NODE, nullable = true)
-        NodeMappingEntity findNodeMapping(@QueryParam("subject") SubjectEntity subject,
-                @QueryParam("node") NodeEntity node);
+        NodeMappingEntity findNodeMapping(@QueryParam("subject") SubjectEntity subject, @QueryParam("node") NodeEntity node);
 
         @QueryMethod(QUERY_LIST_SUBJECT)
         List<NodeMappingEntity> listNodeMappings(@QueryParam("subject") SubjectEntity subject);

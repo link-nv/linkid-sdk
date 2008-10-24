@@ -113,8 +113,7 @@ public class TransactionBean extends AbstractPaymentDataClientBean implements Tr
         String userId = getUserId();
         String[] values;
         try {
-            values = getAttributeClient().getAttributeValue(userId,
-                    "urn:net:lin-k:safe-online:attribute:visaCardNumber", String[].class);
+            values = getAttributeClient().getAttributeValue(userId, "urn:net:lin-k:safe-online:attribute:visaCardNumber", String[].class);
         } catch (AttributeNotFoundException e) {
             String msg = "attribute not found: " + e.getMessage();
             this.log.debug(msg);

@@ -36,17 +36,16 @@ import net.link.safeonline.model.option.exception.OptionRegistrationException;
 public interface OptionDeviceService {
 
     String authenticate(String imei, String pin) throws SubjectNotFoundException, OptionAuthenticationException,
-            OptionRegistrationException, AttributeTypeNotFoundException, AttributeNotFoundException,
-            DeviceDisabledException;
+                                                OptionRegistrationException, AttributeTypeNotFoundException, AttributeNotFoundException,
+                                                DeviceDisabledException;
 
-    void register(String userId, String imei, String pin) throws OptionAuthenticationException,
-            OptionRegistrationException, AttributeTypeNotFoundException;
+    void register(String userId, String imei, String pin) throws OptionAuthenticationException, OptionRegistrationException,
+                                                         AttributeTypeNotFoundException;
 
-    void remove(String userId, String imei, String pin) throws OptionAuthenticationException,
-            OptionRegistrationException, SubjectNotFoundException, AttributeTypeNotFoundException,
-            AttributeNotFoundException, DeviceDisabledException;
+    void remove(String userId, String imei, String pin) throws OptionAuthenticationException, OptionRegistrationException,
+                                                       SubjectNotFoundException, AttributeTypeNotFoundException,
+                                                       AttributeNotFoundException, DeviceDisabledException;
 
-    void disable(String userId, String imei) throws DeviceNotFoundException, SubjectNotFoundException,
-            DeviceRegistrationNotFoundException;
+    void disable(String userId, String imei) throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException;
 
 }

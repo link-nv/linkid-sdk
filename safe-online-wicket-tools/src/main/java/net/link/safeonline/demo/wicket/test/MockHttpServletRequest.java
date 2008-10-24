@@ -43,7 +43,8 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
 
     enum Method {
-        POST, GET
+        POST,
+        GET
     }
 
 

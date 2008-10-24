@@ -46,18 +46,16 @@ public class AuthenticationStatementStructure extends AbstractStatementStructure
 
         if (tbsSequence.size() != 4)
             throw new DecodingException();
-        DERInteger version = DERInteger
-                .getInstance(tbsSequence.getObjectAt(DERAuthenticationStatement.TBS_VERSION_IDX));
+        DERInteger version = DERInteger.getInstance(tbsSequence.getObjectAt(DERAuthenticationStatement.TBS_VERSION_IDX));
         if (DERAuthenticationStatement.VERSION != version.getValue().intValue())
             throw new DecodingException();
-        DERVisibleString derSessionId = DERVisibleString.getInstance(tbsSequence
-                .getObjectAt(DERAuthenticationStatement.TBS_SESSION_IDX));
+        DERVisibleString derSessionId = DERVisibleString.getInstance(tbsSequence.getObjectAt(DERAuthenticationStatement.TBS_SESSION_IDX));
         this.sessionId = derSessionId.getString();
-        DERVisibleString derApplicationId = DERVisibleString.getInstance(tbsSequence
-                .getObjectAt(DERAuthenticationStatement.TBS_APPLICATION_IDX));
+        DERVisibleString derApplicationId = DERVisibleString
+                                                            .getInstance(tbsSequence
+                                                                                    .getObjectAt(DERAuthenticationStatement.TBS_APPLICATION_IDX));
         this.applicationId = derApplicationId.getString();
-        ASN1Sequence derAuthCert = ASN1Sequence.getInstance(tbsSequence
-                .getObjectAt(DERAuthenticationStatement.TBS_AUTH_CERT_IDX));
+        ASN1Sequence derAuthCert = ASN1Sequence.getInstance(tbsSequence.getObjectAt(DERAuthenticationStatement.TBS_AUTH_CERT_IDX));
         this.authCert = decodeCertificate(derAuthCert.getDEREncoded());
     }
 

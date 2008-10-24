@@ -58,11 +58,10 @@ import org.jboss.seam.faces.FacesMessages;
 
 
 /**
- * Seam Error Message interceptor. This interceptor will catch exceptions and try to construct a proper error message
- * from them.
+ * Seam Error Message interceptor. This interceptor will catch exceptions and try to construct a proper error message from them.
  * 
- * The interceptor can be used on method or class level. It also has a default set of Exception-Error message pairs. It
- * will first look at a possible annotation on the method, then the class and if still not found use this default set.
+ * The interceptor can be used on method or class level. It also has a default set of Exception-Error message pairs. It will first look at a
+ * possible annotation on the method, then the class and if still not found use this default set.
  * 
  * @ErrorHandling(
  * @Error(exceptionClass = PermissionDeniedException.class, messageId = "errorUserMayNotUnsubscribeFrom") })
@@ -74,8 +73,7 @@ public class ErrorMessageInterceptor {
 
     private static final Log LOG           = LogFactory.getLog(ErrorMessageInterceptor.class);
 
-    private ErrorHandle[]    defaultErrors = {
-            new ErrorHandle(AlreadySubscribedException.class, "errorAlreadySubscribed"),
+    private ErrorHandle[]    defaultErrors = { new ErrorHandle(AlreadySubscribedException.class, "errorAlreadySubscribed"),
             new ErrorHandle(ApplicationNotFoundException.class, "errorApplicationNotFound"),
             new ErrorHandle(ApplicationOwnerNotFoundException.class, "errorApplicationOwnerNotFound"),
             new ErrorHandle(ApplicationIdentityNotFoundException.class, "errorApplicationIdentityNotFound"),
@@ -97,8 +95,7 @@ public class ErrorMessageInterceptor {
             new ErrorHandle(ExistingAttributeProviderException.class, "errorAttributeProviderAlreadyExists"),
             new ErrorHandle(ExistingDeviceException.class, "errorDeviceAlreadyExists"),
             new ErrorHandle(ExistingDeviceDescriptionException.class, "errorDeviceDescriptionAlreadyExists"),
-            new ErrorHandle(GenericJDBCException.class, "errorDataType"),
-            new ErrorHandle(IOException.class, "errorIO"),
+            new ErrorHandle(GenericJDBCException.class, "errorDataType"), new ErrorHandle(IOException.class, "errorIO"),
             new ErrorHandle(HelpdeskContextNotFoundException.class, "errorHelpdeskLogNotFound"),
             new ErrorHandle(MessageHandlerNotFoundException.class, "errorMessage"),
             new ErrorHandle(MobileAuthenticationException.class, "mobileAuthenticationFailed"),
@@ -160,8 +157,8 @@ public class ErrorMessageInterceptor {
                 if (error.fieldId().equals(Error.NOT_SPECIFIED)) {
                     FacesMessages.instance().addFromResourceBundle(FacesMessage.SEVERITY_ERROR, error.messageId());
                 } else {
-                    FacesMessages.instance().addToControlFromResourceBundle(error.fieldId(),
-                            FacesMessage.SEVERITY_ERROR, error.messageId());
+                    FacesMessages.instance()
+                                 .addToControlFromResourceBundle(error.fieldId(), FacesMessage.SEVERITY_ERROR, error.messageId());
                 }
                 return true;
             }
@@ -176,8 +173,7 @@ public class ErrorMessageInterceptor {
                 if (null == error.fieldId) {
                     FacesMessages.instance().addFromResourceBundle(FacesMessage.SEVERITY_ERROR, error.messageId);
                 } else {
-                    FacesMessages.instance().addToControlFromResourceBundle(error.fieldId, FacesMessage.SEVERITY_ERROR,
-                            error.messageId);
+                    FacesMessages.instance().addToControlFromResourceBundle(error.fieldId, FacesMessage.SEVERITY_ERROR, error.messageId);
                 }
                 return true;
             }

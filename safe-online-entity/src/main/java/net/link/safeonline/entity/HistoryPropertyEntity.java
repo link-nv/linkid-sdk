@@ -32,8 +32,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 @Entity
 @Table(name = "history_property")
-@NamedQueries( { @NamedQuery(name = QUERY_WHERE_HISTORY, query = "SELECT historyProp "
-        + "FROM HistoryPropertyEntity AS historyProp " + "WHERE historyProp.history = :history") })
+@NamedQueries( { @NamedQuery(name = QUERY_WHERE_HISTORY, query = "SELECT historyProp " + "FROM HistoryPropertyEntity AS historyProp "
+        + "WHERE historyProp.history = :history") })
 public class HistoryPropertyEntity implements Serializable {
 
     private static final long  serialVersionUID          = 1L;

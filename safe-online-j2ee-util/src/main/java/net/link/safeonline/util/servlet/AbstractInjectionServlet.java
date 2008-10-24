@@ -40,20 +40,19 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Abstract Injection Servlet.
- *
+ * 
  * <ul>
  * <li>Injects request parameters into servlet fields.
  * <li>Injects and outjects session parameters.
  * <li>Injects EJBs.
  * <li>Injects servlet init parameters. If no defaultValue is specified, an {@link UnavailableException} will be thrown.
- * <li>Injects servlet context parameters. If no defaultValue is specified, an {@link UnavailableException} will be
- * thrown.
- * <li>By default checks if the servlet is accessed with a secure connection. If context parameter <code>Protocol</code>
- * is <code>http</code> or <code>securityCheck</code> is set to <code>false</code> this check will be ommitted.
+ * <li>Injects servlet context parameters. If no defaultValue is specified, an {@link UnavailableException} will be thrown.
+ * <li>By default checks if the servlet is accessed with a secure connection. If context parameter <code>Protocol</code> is
+ * <code>http</code> or <code>securityCheck</code> is set to <code>false</code> this check will be ommitted.
  * </ul>
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public abstract class AbstractInjectionServlet extends HttpServlet {
 
@@ -68,28 +67,25 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
     public void init(ServletConfig config) throws ServletException {
 
         super.init(config);
-        
+
         initInitParameters(config);
         initContextParameters(config);
         injectEjbs();
     }
 
     @Override
-    protected final void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected final void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         doGetInvocation(request, response);
     }
 
     @Override
-    protected final void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected final void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         doPostInvocation(request, response);
     }
 
-    private void doGetInvocation(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    private void doGetInvocation(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         HttpSession session = request.getSession();
         injectRequestParameters(request);
@@ -100,8 +96,7 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
         responseWrapper.commit();
     }
 
-    private void doPostInvocation(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    private void doPostInvocation(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         HttpSession session = request.getSession();
         injectRequestParameters(request);
@@ -115,9 +110,9 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
 
     /**
      * Injection response wrapper. We use a response wrapper since we want to be able to postpone some actions.
-     *
+     * 
      * @author fcorneli
-     *
+     * 
      */
     public static class InjectionResponseWrapper extends HttpServletResponseWrapper {
 
@@ -146,14 +141,12 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
     }
 
 
-    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         super.doGet(request, response);
     }
 
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         super.doPost(request, response);
     }
@@ -340,10 +333,10 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
     }
 
     /**
-     * Redirects to the specified error page. The errorMessages entries contain as key the name of the error message
-     * attribute that will be pushed on the session. The attribute value will be looked up if a resource bundle is
-     * specified, else directly pushed onto the session.
-     *
+     * Redirects to the specified error page. The errorMessages entries contain as key the name of the error message attribute that will be
+     * pushed on the session. The attribute value will be looked up if a resource bundle is specified, else directly pushed onto the
+     * session.
+     * 
      * @param request
      * @param response
      * @param errorPage
@@ -351,16 +344,15 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
      * @param errorMessages
      * @throws IOException
      */
-    public void redirectToErrorPage(HttpServletRequest request, HttpServletResponse response, String errorPage,
-            String resourceBundleName, ErrorMessage... errorMessages) throws IOException {
+    public void redirectToErrorPage(HttpServletRequest request, HttpServletResponse response, String errorPage, String resourceBundleName,
+                                    ErrorMessage... errorMessages) throws IOException {
 
         HttpSession session = request.getSession();
         ResourceBundle resourceBundle = null;
         if (null != resourceBundleName) {
             Locale locale = request.getLocale();
             try {
-                resourceBundle = ResourceBundle.getBundle(resourceBundleName, locale, Thread.currentThread()
-                        .getContextClassLoader());
+                resourceBundle = ResourceBundle.getBundle(resourceBundleName, locale, Thread.currentThread().getContextClassLoader());
             } catch (MissingResourceException e) {
                 resourceBundle = null;
             }

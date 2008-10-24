@@ -49,7 +49,7 @@ public class ApplicationsBean implements Applications {
     }
 
     public Set<ApplicationIdentityAttributeEntity> getCurrentApplicationIdentity(ApplicationEntity application)
-            throws ApplicationIdentityNotFoundException {
+                                                                                                               throws ApplicationIdentityNotFoundException {
 
         LOG.debug("get current application identity: " + application.getName());
 

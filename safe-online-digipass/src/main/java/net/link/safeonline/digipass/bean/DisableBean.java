@@ -102,8 +102,8 @@ public class DisableBean implements Disable {
         SubjectEntity subject = this.subjectService.getSubject(this.protocolContext.getSubject());
 
         for (DeviceRegistrationDO registration : this.registrations) {
-            AttributeEntity disableAttribute = this.attributeDAO.getAttribute(registration.getDevice()
-                    .getDisableAttributeType(), subject, registration.getAttributeIndex());
+            AttributeEntity disableAttribute = this.attributeDAO.getAttribute(registration.getDevice().getDisableAttributeType(), subject,
+                    registration.getAttributeIndex());
             disableAttribute.setBooleanValue(registration.isDisabled());
         }
 
@@ -130,13 +130,12 @@ public class DisableBean implements Disable {
     public List<DeviceRegistrationDO> registrationsFactory() throws SubjectNotFoundException, DeviceNotFoundException {
 
         Locale locale = getViewLocale();
-        this.registrations = listRegistrations(net.link.safeonline.model.digipass.DigipassConstants.DIGIPASS_DEVICE_ID,
-                locale);
+        this.registrations = listRegistrations(net.link.safeonline.model.digipass.DigipassConstants.DIGIPASS_DEVICE_ID, locale);
         return this.registrations;
     }
 
-    private List<DeviceRegistrationDO> listRegistrations(String deviceId, Locale locale)
-            throws DeviceNotFoundException, SubjectNotFoundException {
+    private List<DeviceRegistrationDO> listRegistrations(String deviceId, Locale locale) throws DeviceNotFoundException,
+                                                                                        SubjectNotFoundException {
 
         this.log.debug("list registrations for device: " + deviceId);
         DeviceEntity device = this.deviceDAO.getDevice(deviceId);
@@ -151,8 +150,7 @@ public class DisableBean implements Disable {
 
         String humanReadableName = null;
         String description = null;
-        AttributeTypeDescriptionEntity attributeTypeDescription = findAttributeTypeDescription(device
-                .getUserAttributeType(), locale);
+        AttributeTypeDescriptionEntity attributeTypeDescription = findAttributeTypeDescription(device.getUserAttributeType(), locale);
         if (null != attributeTypeDescription) {
             humanReadableName = attributeTypeDescription.getName();
             description = attributeTypeDescription.getDescription();
@@ -163,12 +161,11 @@ public class DisableBean implements Disable {
 
             AttributeEntity userAttribute = this.attributeDAO.findAttribute(subject, device.getUserAttributeType(),
                     attribute.getAttributeIndex());
-            AttributeDO attributeView = new AttributeDO(device.getUserAttributeType().getName(), device
-                    .getUserAttributeType().getType(), true, attribute.getAttributeIndex(), humanReadableName,
-                    description, false, false, userAttribute.getStringValue(), null);
+            AttributeDO attributeView = new AttributeDO(device.getUserAttributeType().getName(), device.getUserAttributeType().getType(),
+                    true, attribute.getAttributeIndex(), humanReadableName, description, false, false, userAttribute.getStringValue(), null);
 
-            AttributeEntity disableAttribute = this.attributeDAO.findAttribute(subject, device
-                    .getDisableAttributeType(), attribute.getAttributeIndex());
+            AttributeEntity disableAttribute = this.attributeDAO.findAttribute(subject, device.getDisableAttributeType(),
+                    attribute.getAttributeIndex());
 
             deviceRegistrations.add(new DeviceRegistrationDO(device, attributeView, disableAttribute.getBooleanValue(),
                     attribute.getAttributeIndex()));
@@ -183,8 +180,8 @@ public class DisableBean implements Disable {
             return null;
         String language = locale.getLanguage();
         this.log.debug("trying language: " + language);
-        AttributeTypeDescriptionEntity attributeTypeDescription = this.attributeTypeDAO
-                .findDescription(new AttributeTypeDescriptionPK(attributeType.getName(), language));
+        AttributeTypeDescriptionEntity attributeTypeDescription = this.attributeTypeDAO.findDescription(new AttributeTypeDescriptionPK(
+                attributeType.getName(), language));
         return attributeTypeDescription;
     }
 }

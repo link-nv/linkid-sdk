@@ -10,7 +10,6 @@ package test.unit.net.link.safeonline.data.ws;
 import junit.framework.TestCase;
 import net.link.safeonline.data.ws.TopLevelStatusCode;
 
-
 public class TopLevelStatusCodeTest extends TestCase {
 
     public void testFromCode() throws Exception {

@@ -45,8 +45,7 @@ public class TaskHistoryDAOBeanTest extends TestCase {
 
         EntityManager entityManager = this.entityTestManager.getEntityManager();
         this.taskDAO = EJBTestUtils.newInstance(TaskDAOBean.class, SafeOnlineTestContainer.sessionBeans, entityManager);
-        this.testedInstance = EJBTestUtils.newInstance(TaskHistoryDAOBean.class, SafeOnlineTestContainer.sessionBeans,
-                entityManager);
+        this.testedInstance = EJBTestUtils.newInstance(TaskHistoryDAOBean.class, SafeOnlineTestContainer.sessionBeans, entityManager);
     }
 
     @Override
@@ -62,8 +61,7 @@ public class TaskHistoryDAOBeanTest extends TestCase {
         TaskEntity task1 = this.taskDAO.addTaskEntity("jndi", "name", null);
         Date startDate = new Date(System.currentTimeMillis());
         Date endDate = new Date(System.currentTimeMillis() + 1000);
-        TaskHistoryEntity taskHistoryEntity1 = this.testedInstance.addTaskHistoryEntity(task1, "", true, startDate,
-                endDate);
+        TaskHistoryEntity taskHistoryEntity1 = this.testedInstance.addTaskHistoryEntity(task1, "", true, startDate, endDate);
 
         // try to fetch history list from a detached task
         TaskEntity task2 = new TaskEntity("jndi", "name", null);
@@ -77,8 +75,7 @@ public class TaskHistoryDAOBeanTest extends TestCase {
         TaskEntity task = this.taskDAO.addTaskEntity("jndi", "name", null);
         Date startDate = new Date(System.currentTimeMillis());
         Date endDate = new Date(System.currentTimeMillis() + 1000);
-        TaskHistoryEntity taskHistoryEntity = this.testedInstance.addTaskHistoryEntity(task, "", true, startDate,
-                endDate);
+        TaskHistoryEntity taskHistoryEntity = this.testedInstance.addTaskHistoryEntity(task, "", true, startDate, endDate);
 
         EntityManager entityManager = this.entityTestManager.refreshEntityManager();
         this.testedInstance = EJBTestUtils.newInstance(TaskHistoryDAOBean.class, SafeOnlineTestContainer.sessionBeans,

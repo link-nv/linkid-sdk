@@ -103,17 +103,15 @@ public class EntityTest {
          * If you add entities to this list, also add them to safe-online-sql-ddl.
          */
         try {
-            this.entityTestManager.setUp(SubjectEntity.class, ApplicationEntity.class, SubscriptionEntity.class,
-                    HistoryEntity.class, HistoryPropertyEntity.class, ApplicationOwnerEntity.class,
-                    AttributeTypeEntity.class, AttributeEntity.class, TrustDomainEntity.class, TrustPointEntity.class,
-                    SubjectIdentifierEntity.class, CachedOcspResponseEntity.class, TaskEntity.class,
-                    SchedulingEntity.class, TaskHistoryEntity.class, ConfigItemEntity.class, ConfigGroupEntity.class,
+            this.entityTestManager.setUp(SubjectEntity.class, ApplicationEntity.class, SubscriptionEntity.class, HistoryEntity.class,
+                    HistoryPropertyEntity.class, ApplicationOwnerEntity.class, AttributeTypeEntity.class, AttributeEntity.class,
+                    TrustDomainEntity.class, TrustPointEntity.class, SubjectIdentifierEntity.class, CachedOcspResponseEntity.class,
+                    TaskEntity.class, SchedulingEntity.class, TaskHistoryEntity.class, ConfigItemEntity.class, ConfigGroupEntity.class,
                     StatisticEntity.class, StatisticDataPointEntity.class, ApplicationIdentityEntity.class,
-                    ApplicationIdentityAttributeEntity.class, AttributeTypeDescriptionEntity.class,
-                    AttributeProviderEntity.class, AuditContextEntity.class, AuditAuditEntity.class,
-                    HelpdeskContextEntity.class, CompoundedAttributeTypeMemberEntity.class, AccessAuditEntity.class,
-                    UsageAgreementEntity.class, UsageAgreementTextEntity.class, GlobalUsageAgreementEntity.class,
-                    NodeEntity.class, ApplicationPoolEntity.class);
+                    ApplicationIdentityAttributeEntity.class, AttributeTypeDescriptionEntity.class, AttributeProviderEntity.class,
+                    AuditContextEntity.class, AuditAuditEntity.class, HelpdeskContextEntity.class,
+                    CompoundedAttributeTypeMemberEntity.class, AccessAuditEntity.class, UsageAgreementEntity.class,
+                    UsageAgreementTextEntity.class, GlobalUsageAgreementEntity.class, NodeEntity.class, ApplicationPoolEntity.class);
         } catch (Exception e) {
             LOG.fatal("JPA annotations incorrect: " + e.getMessage(), e);
             throw new RuntimeException("JPA annotations incorrect: " + e.getMessage(), e);
@@ -163,8 +161,7 @@ public class EntityTest {
         // setup
         SubjectEntity admin = new SubjectEntity("test-admin");
         ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity("owner", admin);
-        ApplicationEntity application = new ApplicationEntity("test-application", null, applicationOwner, null, null,
-                null, null, null);
+        ApplicationEntity application = new ApplicationEntity("test-application", null, applicationOwner, null, null, null, null, null);
 
         // operate: add application
         EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -215,10 +212,8 @@ public class EntityTest {
         // setup
         SubjectEntity subject = new SubjectEntity("test-login");
         ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity("owner", subject);
-        ApplicationEntity application = new ApplicationEntity("test-application", null, applicationOwner, null, null,
-                null, null, null);
-        SubscriptionEntity subscription = new SubscriptionEntity(SubscriptionOwnerType.SUBJECT, subject, "0",
-                application);
+        ApplicationEntity application = new ApplicationEntity("test-application", null, applicationOwner, null, null, null, null, null);
+        SubscriptionEntity subscription = new SubscriptionEntity(SubscriptionOwnerType.SUBJECT, subject, "0", application);
 
         // operate & verify
         EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -238,10 +233,8 @@ public class EntityTest {
         String userApplicationId = UUID.randomUUID().toString();
         SubjectEntity subject = new SubjectEntity("test-login");
         ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity("owner", subject);
-        ApplicationEntity application = new ApplicationEntity("test-application", null, applicationOwner, null, null,
-                null, null, null);
-        SubscriptionEntity subscription = new SubscriptionEntity(SubscriptionOwnerType.SUBJECT, subject,
-                userApplicationId, application);
+        ApplicationEntity application = new ApplicationEntity("test-application", null, applicationOwner, null, null, null, null, null);
+        SubscriptionEntity subscription = new SubscriptionEntity(SubscriptionOwnerType.SUBJECT, subject, userApplicationId, application);
 
         // operate: add subscription
         EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -252,8 +245,7 @@ public class EntityTest {
 
         // verify
         entityManager = this.entityTestManager.refreshEntityManager();
-        SubscriptionEntity resultSubscription = entityManager.find(SubscriptionEntity.class, new SubscriptionPK(
-                subject, application));
+        SubscriptionEntity resultSubscription = entityManager.find(SubscriptionEntity.class, new SubscriptionPK(subject, application));
         assertNotNull(resultSubscription);
         assertEquals(subscription, resultSubscription);
 
@@ -303,13 +295,12 @@ public class EntityTest {
         assertNotNull(resultAgreementv2);
         assertFalse(resultAgreementv1.equals(resultAgreementv2));
 
-        UsageAgreementTextEntity resultAgreementTextv1En = entityManager.find(UsageAgreementTextEntity.class,
-                new UsageAgreementTextPK(GlobalUsageAgreementEntity.GLOBAL_USAGE_AGREEMENT, globalUsageAgreementv1
-                        .getUsageAgreementVersion(), Locale.ENGLISH.getLanguage()));
+        UsageAgreementTextEntity resultAgreementTextv1En = entityManager.find(UsageAgreementTextEntity.class, new UsageAgreementTextPK(
+                GlobalUsageAgreementEntity.GLOBAL_USAGE_AGREEMENT, globalUsageAgreementv1.getUsageAgreementVersion(),
+                Locale.ENGLISH.getLanguage()));
         assertNotNull(resultAgreementTextv1En);
-        UsageAgreementTextEntity resultAgreementTextv1Nl = entityManager.find(UsageAgreementTextEntity.class,
-                new UsageAgreementTextPK(GlobalUsageAgreementEntity.GLOBAL_USAGE_AGREEMENT, globalUsageAgreementv1
-                        .getUsageAgreementVersion(), "nl"));
+        UsageAgreementTextEntity resultAgreementTextv1Nl = entityManager.find(UsageAgreementTextEntity.class, new UsageAgreementTextPK(
+                GlobalUsageAgreementEntity.GLOBAL_USAGE_AGREEMENT, globalUsageAgreementv1.getUsageAgreementVersion(), "nl"));
         assertNotNull(resultAgreementTextv1Nl);
 
     }
@@ -320,12 +311,11 @@ public class EntityTest {
         // setup
         SubjectEntity subject = new SubjectEntity("test-login");
         ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity("owner", subject);
-        ApplicationEntity application = new ApplicationEntity("test-application", null, applicationOwner, null, null,
-                null, null, null);
+        ApplicationEntity application = new ApplicationEntity("test-application", null, applicationOwner, null, null, null, null, null);
         UsageAgreementEntity usageAgreementv1 = new UsageAgreementEntity(application, 1L);
         UsageAgreementEntity usageAgreementv2 = new UsageAgreementEntity(application, 2L);
-        UsageAgreementTextEntity usageAgreementTextv1En = new UsageAgreementTextEntity(usageAgreementv1,
-                "This is a usage agreement.", Locale.ENGLISH.getLanguage());
+        UsageAgreementTextEntity usageAgreementTextv1En = new UsageAgreementTextEntity(usageAgreementv1, "This is a usage agreement.",
+                Locale.ENGLISH.getLanguage());
         UsageAgreementTextEntity usageAgreementTextv1Fr = new UsageAgreementTextEntity(usageAgreementv1,
                 "Dit is een gebruikers overeenkomst.", "nl");
 
@@ -341,21 +331,19 @@ public class EntityTest {
 
         // verify
         entityManager = this.entityTestManager.refreshEntityManager();
-        UsageAgreementEntity resultAgreementv1 = entityManager.find(UsageAgreementEntity.class, new UsageAgreementPK(
-                application.getName(), 1L));
+        UsageAgreementEntity resultAgreementv1 = entityManager.find(UsageAgreementEntity.class, new UsageAgreementPK(application.getName(),
+                1L));
         assertNotNull(resultAgreementv1);
-        UsageAgreementEntity resultAgreementv2 = entityManager.find(UsageAgreementEntity.class, new UsageAgreementPK(
-                application.getName(), 2L));
+        UsageAgreementEntity resultAgreementv2 = entityManager.find(UsageAgreementEntity.class, new UsageAgreementPK(application.getName(),
+                2L));
         assertNotNull(resultAgreementv2);
         assertFalse(resultAgreementv1.equals(resultAgreementv2));
 
-        UsageAgreementTextEntity resultAgreementTextv1En = entityManager.find(UsageAgreementTextEntity.class,
-                new UsageAgreementTextPK(usageAgreementv1.getApplication().getName(), usageAgreementv1
-                        .getUsageAgreementVersion(), Locale.ENGLISH.getLanguage()));
+        UsageAgreementTextEntity resultAgreementTextv1En = entityManager.find(UsageAgreementTextEntity.class, new UsageAgreementTextPK(
+                usageAgreementv1.getApplication().getName(), usageAgreementv1.getUsageAgreementVersion(), Locale.ENGLISH.getLanguage()));
         assertNotNull(resultAgreementTextv1En);
-        UsageAgreementTextEntity resultAgreementTextv1Nl = entityManager.find(UsageAgreementTextEntity.class,
-                new UsageAgreementTextPK(usageAgreementv1.getApplication().getName(), usageAgreementv1
-                        .getUsageAgreementVersion(), "nl"));
+        UsageAgreementTextEntity resultAgreementTextv1Nl = entityManager.find(UsageAgreementTextEntity.class, new UsageAgreementTextPK(
+                usageAgreementv1.getApplication().getName(), usageAgreementv1.getUsageAgreementVersion(), "nl"));
         assertNotNull(resultAgreementTextv1Nl);
     }
 
@@ -381,8 +369,7 @@ public class EntityTest {
 
         // operate
         HistoryPropertyEntity applicationProperty = new HistoryPropertyEntity(resultHistory, "application", "test-app");
-        HistoryPropertyEntity attributeProperty = new HistoryPropertyEntity(resultHistory, "attribute",
-                "test-attribute");
+        HistoryPropertyEntity attributeProperty = new HistoryPropertyEntity(resultHistory, "attribute", "test-attribute");
         resultHistory.getProperties().put(applicationProperty.getName(), applicationProperty);
         resultHistory.getProperties().put(attributeProperty.getName(), attributeProperty);
         entityManager.persist(applicationProperty);
@@ -412,8 +399,7 @@ public class EntityTest {
 
         // verify
         entityManager = this.entityTestManager.refreshEntityManager();
-        AttributeEntity resultAttribute = entityManager.find(AttributeEntity.class, new AttributePK("password",
-                "test-login"));
+        AttributeEntity resultAttribute = entityManager.find(AttributeEntity.class, new AttributePK("password", "test-login"));
         assertNotNull(resultAttribute);
         assertEquals("test-password", resultAttribute.getStringValue());
         assertEquals(subject, resultAttribute.getSubject());
@@ -445,8 +431,7 @@ public class EntityTest {
 
         // verify
         entityManager = this.entityTestManager.refreshEntityManager();
-        AttributeEntity resultAttribute = entityManager.find(AttributeEntity.class, new AttributePK(attributeName,
-                login));
+        AttributeEntity resultAttribute = entityManager.find(AttributeEntity.class, new AttributePK(attributeName, login));
         assertNotNull(resultAttribute);
         assertEquals("value1", resultAttribute.getStringValue());
         assertEquals(subject, resultAttribute.getSubject());
@@ -511,8 +496,8 @@ public class EntityTest {
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
         String dn = "CN=Test";
         X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, dn);
-        String keyId = new String(Hex.encodeHex(new SubjectKeyIdentifierStructure(certificate
-                .getExtensionValue(X509Extensions.SubjectKeyIdentifier.getId())).getKeyIdentifier()));
+        String keyId = new String(Hex.encodeHex(new SubjectKeyIdentifierStructure(
+                certificate.getExtensionValue(X509Extensions.SubjectKeyIdentifier.getId())).getKeyIdentifier()));
 
         // operate
         EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -522,8 +507,7 @@ public class EntityTest {
 
         // verify
         entityManager = this.entityTestManager.refreshEntityManager();
-        TrustPointEntity resultTrustPoint = entityManager.find(TrustPointEntity.class, new TrustPointPK(trustDomain,
-                dn, keyId));
+        TrustPointEntity resultTrustPoint = entityManager.find(TrustPointEntity.class, new TrustPointPK(trustDomain, dn, keyId));
         assertNotNull(resultTrustPoint);
         assertEquals(trustPoint, resultTrustPoint);
 
@@ -548,8 +532,8 @@ public class EntityTest {
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
         String dn = "CN=Test";
         X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, dn);
-        String keyId = new String(Hex.encodeHex(new SubjectKeyIdentifierStructure(certificate
-                .getExtensionValue(X509Extensions.SubjectKeyIdentifier.getId())).getKeyIdentifier()));
+        String keyId = new String(Hex.encodeHex(new SubjectKeyIdentifierStructure(
+                certificate.getExtensionValue(X509Extensions.SubjectKeyIdentifier.getId())).getKeyIdentifier()));
 
         // operate
         EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -559,8 +543,7 @@ public class EntityTest {
 
         // verify
         entityManager = this.entityTestManager.refreshEntityManager();
-        TrustPointEntity resultTrustPoint = entityManager.find(TrustPointEntity.class, new TrustPointPK(trustDomain,
-                dn, keyId));
+        TrustPointEntity resultTrustPoint = entityManager.find(TrustPointEntity.class, new TrustPointPK(trustDomain, dn, keyId));
         assertNotNull(resultTrustPoint);
         assertEquals(trustPoint, resultTrustPoint);
 
@@ -596,8 +579,7 @@ public class EntityTest {
 
         // verify
         entityManager = this.entityTestManager.refreshEntityManager();
-        TrustPointEntity resultTrustPoint = entityManager.find(TrustPointEntity.class, new TrustPointPK(trustDomain,
-                dn, dn));
+        TrustPointEntity resultTrustPoint = entityManager.find(TrustPointEntity.class, new TrustPointPK(trustDomain, dn, dn));
         assertNotNull(resultTrustPoint);
         assertEquals(trustPoint, resultTrustPoint);
 
@@ -636,8 +618,8 @@ public class EntityTest {
         /*
          * Check that the delete query is not deleting our new identifier.
          */
-        SubjectIdentifierEntity.QueryInterface subjectIdentifierQueryObject = QueryObjectFactory.createQueryObject(
-                entityManager, SubjectIdentifierEntity.QueryInterface.class);
+        SubjectIdentifierEntity.QueryInterface subjectIdentifierQueryObject = QueryObjectFactory.createQueryObject(entityManager,
+                SubjectIdentifierEntity.QueryInterface.class);
         subjectIdentifierQueryObject.deleteWhereOtherIdentifiers(domain, identifier, subject);
         resultSubjectIdentifier = entityManager.find(SubjectIdentifierEntity.class, pk);
         assertNotNull(resultSubjectIdentifier);
@@ -680,8 +662,7 @@ public class EntityTest {
         String trustDomainName = "test-trust-domain-" + UUID.randomUUID().toString();
         TrustDomainEntity trustDomain = new TrustDomainEntity(trustDomainName, true);
         String key = "1234";
-        CachedOcspResponseEntity cachedOcspResponse = new CachedOcspResponseEntity(key, CachedOcspResultType.GOOD,
-                trustDomain);
+        CachedOcspResponseEntity cachedOcspResponse = new CachedOcspResponseEntity(key, CachedOcspResultType.GOOD, trustDomain);
 
         // operate
         EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -710,8 +691,7 @@ public class EntityTest {
 
         // operate + verify cache purge
         entityManager = this.entityTestManager.refreshEntityManager();
-        queryObject = QueryObjectFactory
-                .createQueryObject(entityManager, CachedOcspResponseEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, CachedOcspResponseEntity.QueryInterface.class);
         int result = queryObject.deleteAll();
         assertEquals(result, 1);
     }
@@ -782,11 +762,9 @@ public class EntityTest {
         // setup
         TaskEntity taskEntity = new TaskEntity("id", "name", null);
         long time = System.currentTimeMillis();
-        TaskHistoryEntity history = new TaskHistoryEntity(taskEntity, "message", true, new Date(time), new Date(
-                time + 1000));
+        TaskHistoryEntity history = new TaskHistoryEntity(taskEntity, "message", true, new Date(time), new Date(time + 1000));
         taskEntity.addTaskHistoryEntity(history);
-        TaskHistoryEntity history2 = new TaskHistoryEntity(taskEntity, "message", true, new Date(time), new Date(
-                time + 1000));
+        TaskHistoryEntity history2 = new TaskHistoryEntity(taskEntity, "message", true, new Date(time), new Date(time + 1000));
         taskEntity.addTaskHistoryEntity(history2);
 
         // operate + verify
@@ -824,8 +802,7 @@ public class EntityTest {
         // setup
         TaskEntity taskEntity = new TaskEntity("id", "name", null);
         long time = System.currentTimeMillis();
-        TaskHistoryEntity history = new TaskHistoryEntity(taskEntity, "message", true, new Date(time), new Date(
-                time + 1000));
+        TaskHistoryEntity history = new TaskHistoryEntity(taskEntity, "message", true, new Date(time), new Date(time + 1000));
         taskEntity.addTaskHistoryEntity(history);
 
         EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -848,18 +825,15 @@ public class EntityTest {
         // setup
         SubjectEntity admin = new SubjectEntity("test-admin");
         ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity("owner", admin);
-        ApplicationEntity application = new ApplicationEntity("test-application", null, applicationOwner, null, null,
-                null, null, null);
-        AttributeTypeEntity attributeType1 = new AttributeTypeEntity("test-attribute-type-1", DatatypeType.STRING,
-                true, true);
-        AttributeTypeEntity attributeType2 = new AttributeTypeEntity("test-attribute-type-2", DatatypeType.STRING,
-                true, true);
+        ApplicationEntity application = new ApplicationEntity("test-application", null, applicationOwner, null, null, null, null, null);
+        AttributeTypeEntity attributeType1 = new AttributeTypeEntity("test-attribute-type-1", DatatypeType.STRING, true, true);
+        AttributeTypeEntity attributeType2 = new AttributeTypeEntity("test-attribute-type-2", DatatypeType.STRING, true, true);
         long identityVersion = 10;
         ApplicationIdentityEntity applicationIdentity = new ApplicationIdentityEntity(application, identityVersion);
-        ApplicationIdentityAttributeEntity applicationIdentityAttribute1 = new ApplicationIdentityAttributeEntity(
-                applicationIdentity, attributeType1, true, false);
-        ApplicationIdentityAttributeEntity applicationIdentityAttribute2 = new ApplicationIdentityAttributeEntity(
-                applicationIdentity, attributeType2, true, false);
+        ApplicationIdentityAttributeEntity applicationIdentityAttribute1 = new ApplicationIdentityAttributeEntity(applicationIdentity,
+                attributeType1, true, false);
+        ApplicationIdentityAttributeEntity applicationIdentityAttribute2 = new ApplicationIdentityAttributeEntity(applicationIdentity,
+                attributeType2, true, false);
 
         // operate: add entities
         EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -902,10 +876,8 @@ public class EntityTest {
 
         SubjectEntity admin = new SubjectEntity("test-admin");
         ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity("owner", admin);
-        ApplicationEntity application = new ApplicationEntity("test-application", null, applicationOwner, null, null,
-                null, null, null);
-        AttributeTypeEntity attributeType = new AttributeTypeEntity("test-attribute-type", DatatypeType.STRING, true,
-                true);
+        ApplicationEntity application = new ApplicationEntity("test-application", null, applicationOwner, null, null, null, null, null);
+        AttributeTypeEntity attributeType = new AttributeTypeEntity("test-attribute-type", DatatypeType.STRING, true, true);
         ApplicationIdentityEntity applicationIdentity1 = new ApplicationIdentityEntity(application, 1);
         ApplicationIdentityEntity applicationIdentity2 = new ApplicationIdentityEntity(application, 2);
 
@@ -938,8 +910,7 @@ public class EntityTest {
 
         // setup
         StatisticEntity stat = new StatisticEntity("stat 1", "domain", null, new Date(System.currentTimeMillis()));
-        StatisticDataPointEntity data = new StatisticDataPointEntity("point 1", stat, new Date(System
-                .currentTimeMillis()), 1, 2, 3);
+        StatisticDataPointEntity data = new StatisticDataPointEntity("point 1", stat, new Date(System.currentTimeMillis()), 1, 2, 3);
         stat.getStatisticDataPoints().add(data);
 
         // operate
@@ -961,10 +932,8 @@ public class EntityTest {
         // setup
         SubjectEntity admin = new SubjectEntity("test-admin");
         ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity("owner", admin);
-        ApplicationEntity application = new ApplicationEntity("test-application", null, applicationOwner, null, null,
-                null, null, null);
-        AttributeTypeEntity attributeType = new AttributeTypeEntity("test-attribute-type", DatatypeType.STRING, false,
-                false);
+        ApplicationEntity application = new ApplicationEntity("test-application", null, applicationOwner, null, null, null, null, null);
+        AttributeTypeEntity attributeType = new AttributeTypeEntity("test-attribute-type", DatatypeType.STRING, false, false);
         AttributeProviderEntity attributeProvider = new AttributeProviderEntity(application, attributeType);
 
         // operate
@@ -977,8 +946,8 @@ public class EntityTest {
 
         // verify
         entityManager = this.entityTestManager.refreshEntityManager();
-        AttributeProviderEntity resultAttributeProvider = entityManager.find(AttributeProviderEntity.class,
-                new AttributeProviderPK(application, attributeType));
+        AttributeProviderEntity resultAttributeProvider = entityManager.find(AttributeProviderEntity.class, new AttributeProviderPK(
+                application, attributeType));
         assertNotNull(resultAttributeProvider);
         assertEquals(resultAttributeProvider, attributeProvider);
     }
@@ -1043,8 +1012,8 @@ public class EntityTest {
 
         AttributeTypeEntity parentAttributeType = new AttributeTypeEntity(testParentName, testType, true, true);
         AttributeTypeEntity memberAttributeType = new AttributeTypeEntity(testMemberName, testType, true, true);
-        CompoundedAttributeTypeMemberEntity member = new CompoundedAttributeTypeMemberEntity(parentAttributeType,
-                memberAttributeType, 0, true);
+        CompoundedAttributeTypeMemberEntity member = new CompoundedAttributeTypeMemberEntity(parentAttributeType, memberAttributeType, 0,
+                true);
 
         // operate
         EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -1071,8 +1040,8 @@ public class EntityTest {
 
         AttributeTypeEntity parentAttributeType = new AttributeTypeEntity(testParentName, testType, true, true);
         AttributeTypeEntity memberAttributeType = new AttributeTypeEntity(testMemberName, testType, true, true);
-        CompoundedAttributeTypeMemberEntity member = new CompoundedAttributeTypeMemberEntity(parentAttributeType,
-                memberAttributeType, 0, false);
+        CompoundedAttributeTypeMemberEntity member = new CompoundedAttributeTypeMemberEntity(parentAttributeType, memberAttributeType, 0,
+                false);
         parentAttributeType.getMembers().add(member);
 
         // operate
@@ -1098,8 +1067,8 @@ public class EntityTest {
 
         AttributeTypeEntity parentAttributeType = new AttributeTypeEntity(testParentName, testType, true, true);
         AttributeTypeEntity memberAttributeType = new AttributeTypeEntity(testMemberName, testType, true, true);
-        CompoundedAttributeTypeMemberEntity member = new CompoundedAttributeTypeMemberEntity(parentAttributeType,
-                memberAttributeType, 0, false);
+        CompoundedAttributeTypeMemberEntity member = new CompoundedAttributeTypeMemberEntity(parentAttributeType, memberAttributeType, 0,
+                false);
         parentAttributeType.getMembers().add(member);
 
         // operate
@@ -1123,8 +1092,7 @@ public class EntityTest {
 
         // setup
         AuditContextEntity auditContext = new AuditContextEntity();
-        AccessAuditEntity accessAudit = new AccessAuditEntity(auditContext, "test-operation", OperationStateType.BEGIN,
-                null);
+        AccessAuditEntity accessAudit = new AccessAuditEntity(auditContext, "test-operation", OperationStateType.BEGIN, null);
 
         // operate
         EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -1140,8 +1108,7 @@ public class EntityTest {
         LOG.debug("count: " + count);
         assertEquals(0, count);
 
-        accessAudit = new AccessAuditEntity(auditContext, "test-operation", OperationStateType.BUSINESS_EXCEPTION_END,
-                null);
+        accessAudit = new AccessAuditEntity(auditContext, "test-operation", OperationStateType.BUSINESS_EXCEPTION_END, null);
         entityManager.persist(accessAudit);
 
         assertEquals(2, queryObject.listRecords(auditContext.getId()).size());

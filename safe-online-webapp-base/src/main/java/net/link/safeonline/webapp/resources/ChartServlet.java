@@ -26,7 +26,7 @@ import org.jfree.chart.JFreeChart;
 
 
 public class ChartServlet extends AbstractInjectionServlet {
- 
+
     private static final long serialVersionUID = 1L;
 
     private static final Log  LOG              = LogFactory.getLog(ChartServlet.class);
@@ -36,8 +36,7 @@ public class ChartServlet extends AbstractInjectionServlet {
 
 
     @Override
-    public void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    public void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         response.setContentType("image/png");
         OutputStream out = response.getOutputStream();
@@ -67,7 +66,7 @@ public class ChartServlet extends AbstractInjectionServlet {
     }
 
     public byte[] getChart(String chartName, String domainName, String applicationName, int width, int heigth)
-            throws StatisticNotFoundException {
+                                                                                                              throws StatisticNotFoundException {
 
         LOG.debug("finding statistic: " + chartName + " for application: " + applicationName);
         JFreeChart chart = this.statisticService.getChart(chartName, domainName, applicationName);

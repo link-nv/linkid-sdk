@@ -47,11 +47,11 @@ import com.lowagie.tools.Executable;
 /**
  * <h2>{@link PDF}<br>
  * <sub>Renders charts to a PDF file and opens it.</sub></h2>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class PDF {
@@ -68,8 +68,7 @@ public class PDF {
                 speed += entry.getValue().getSpeed();
                 ++agentSpeeds;
             } else {
-                LOG.warn("Agent " + entry.getKey() + " doesn't know speed for execution "
-                        + entry.getValue().getStartTime() + "!");
+                LOG.warn("Agent " + entry.getKey() + " doesn't know speed for execution " + entry.getValue().getStartTime() + "!");
             }
 
         // Get execution metadata from the first agent.
@@ -84,8 +83,8 @@ public class PDF {
         speed *= execution.getAgents() / agentSpeeds;
 
         // Choose output.
-        File pdfFile = chooseOutputFile(new File(String.format("%s-%s-%dmin-%dx%d.pdf", new SimpleDateFormat(
-                "dd.MM.yyyy-HH.mm.ss").format(startTime), execution.getHostname().split(":")[0], duration / 60000,
+        File pdfFile = chooseOutputFile(new File(String.format("%s-%s-%dmin-%dx%d.pdf",
+                new SimpleDateFormat("dd.MM.yyyy-HH.mm.ss").format(startTime), execution.getHostname().split(":")[0], duration / 60000,
                 execution.getAgents(), execution.getWorkers())));
         if (pdfFile == null)
             return false;
@@ -104,8 +103,7 @@ public class PDF {
             }
 
             // Create the PDF document.
-            Document pdfDocument = new Document(new com.lowagie.text.Rectangle(width + 100, height + 200), 50, 50, 50,
-                    50);
+            Document pdfDocument = new Document(new com.lowagie.text.Rectangle(width + 100, height + 200), 50, 50, 50, 50);
             PdfWriter.getInstance(pdfDocument, new FileOutputStream(pdfFile));
             BaseFont font = BaseFont.createFont(BaseFont.COURIER_BOLD, BaseFont.WINANSI, false);
             pdfDocument.open();
@@ -114,18 +112,17 @@ public class PDF {
             List<Cell> frontCells = new ArrayList<Cell>();
             frontCells.add(new Cell(new Phrase("Safe Online:  Performance Testing", new Font(font, 40f))));
             frontCells.add(new Cell(new Phrase(50f, execution.getScenarioName(), new Font(font, 20f))));
-            frontCells.add(new Cell(new Phrase(150f, String.format("Started: %s at %s", DateFormat.getDateInstance(
-                    DateFormat.LONG).format(startTime), DateFormat.getTimeInstance(DateFormat.LONG).format(startTime)),
-                    new Font(font, 20f))));
-            frontCells.add(new Cell(new Phrase(50f, String.format("Using %d agent%s with %d worker%s each.", execution
-                    .getAgents(), execution.getAgents() > 1? "s": "", execution.getWorkers(),
-                    execution.getWorkers() > 1? "s": ""), new Font(font, 20f))));
-            frontCells.add(new Cell(new Phrase(50f, String.format("OLAS Host: %s", execution.getHostname()), new Font(
-                    font, 20f))));
-            frontCells.add(new Cell(new Phrase(50f, String.format("Duration: %s", ExecutionInfo
-                    .formatDuration(duration)), new Font(font, 20f))));
-            frontCells.add(new Cell(new Phrase(100f, String.format("Average Execution Speed: %.2f%s scenarios/s",
-                    speed, agentSpeeds == execution.getAgents()? "": "*"), new Font(font, 20f))));
+            frontCells.add(new Cell(new Phrase(150f, String.format("Started: %s at %s", DateFormat.getDateInstance(DateFormat.LONG).format(
+                    startTime), DateFormat.getTimeInstance(DateFormat.LONG).format(startTime)), new Font(font, 20f))));
+            frontCells
+                      .add(new Cell(new Phrase(50f, String.format("Using %d agent%s with %d worker%s each.", execution.getAgents(),
+                              execution.getAgents() > 1? "s": "", execution.getWorkers(), execution.getWorkers() > 1? "s": ""), new Font(
+                              font, 20f))));
+            frontCells.add(new Cell(new Phrase(50f, String.format("OLAS Host: %s", execution.getHostname()), new Font(font, 20f))));
+            frontCells.add(new Cell(new Phrase(50f, String.format("Duration: %s", ExecutionInfo.formatDuration(duration)), new Font(font,
+                    20f))));
+            frontCells.add(new Cell(new Phrase(100f, String.format("Average Execution Speed: %.2f%s scenarios/s", speed,
+                    agentSpeeds == execution.getAgents()? "": "*"), new Font(font, 20f))));
 
             // Style front page information and add it to the PDF.
             Table front = new Table(1);

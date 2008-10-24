@@ -44,8 +44,7 @@ public class DevicesBean implements Devices {
         this.allowedDeviceDAO.deleteAllowedDevices(application);
         if (allowedDevices != null) {
             for (AllowedDeviceEntity allowedDevice : allowedDevices) {
-                this.allowedDeviceDAO.addAllowedDevice(application, allowedDevice.getDevice(), allowedDevice
-                        .getWeight());
+                this.allowedDeviceDAO.addAllowedDevice(application, allowedDevice.getDevice(), allowedDevice.getWeight());
             }
         }
     }

@@ -68,8 +68,7 @@ public abstract class WicketUtil {
     }
 
     /**
-     * @return A string that is the formatted representation of the given date according to the given locale in short
-     *         form.
+     * @return A string that is the formatted representation of the given date according to the given locale in short form.
      */
     public static String format(Locale locale, Date date) {
 
@@ -85,8 +84,7 @@ public abstract class WicketUtil {
     }
 
     /**
-     * @return A string that is the formatted representation of the given amount of currency according to the given
-     *         locale.
+     * @return A string that is the formatted representation of the given amount of currency according to the given locale.
      */
     public static String format(Locale locale, Number number) {
 
@@ -158,8 +156,8 @@ public abstract class WicketUtil {
     }
 
     /**
-     * Telling {@link WicketUtil} that we're unit testing will make it generate dummy services to emulate OLAS services
-     * that are not available in the unit testing framework.
+     * Telling {@link WicketUtil} that we're unit testing will make it generate dummy services to emulate OLAS services that are not
+     * available in the unit testing framework.
      */
     public static void setUnitTesting(boolean unitTesting) {
 
@@ -171,11 +169,10 @@ public abstract class WicketUtil {
      * 
      * @param loginRequest
      *            The request that contains a session with a servlet context that has the WsLocation init parameter set.<br>
-     *            Note: This can be <code>null</code> for unit tests - it is not used. {@link DummyAttributeClient} is
-     *            used instead, provided you called {@link #setUnitTesting(boolean)}.
+     *            Note: This can be <code>null</code> for unit tests - it is not used. {@link DummyAttributeClient} is used instead,
+     *            provided you called {@link #setUnitTesting(boolean)}.
      */
-    public static AttributeClient getOLASAttributeService(HttpServletRequest loginRequest,
-            PrivateKeyEntry privateKeyEntry) {
+    public static AttributeClient getOLASAttributeService(HttpServletRequest loginRequest, PrivateKeyEntry privateKeyEntry) {
 
         if (!isUnitTest) {
             // Find the location of the OLAS web services to use.

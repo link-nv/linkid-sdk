@@ -56,7 +56,7 @@ public class TimeRoomSelectionPage extends LayoutPage {
 
         // If theatre and film are not yet set; go back.
         if (!CinemaSession.isFilmAndTheaterSet())
-            throw new RestartResponseException( FilmTheatreSelectionPage.class);
+            throw new RestartResponseException(FilmTheatreSelectionPage.class);
         // If room and time selected, send user to the seat selection page.
         if (CinemaSession.isTimeAndRoomSet())
             throw new RestartResponseException(SeatSelectionPage.class);
@@ -77,8 +77,7 @@ public class TimeRoomSelectionPage extends LayoutPage {
      * 
      * TODO:
      * 
-     * When no room is selected, it lists all times, otherwise it limits the time selection to those available in the
-     * selected rooms.
+     * When no room is selected, it lists all times, otherwise it limits the time selection to those available in the selected rooms.
      * 
      * The user can then select the viewing time of his choosing.
      * </p>
@@ -174,8 +173,8 @@ public class TimeRoomSelectionPage extends LayoutPage {
      * 
      * TODO:
      * 
-     * When no time is selected, it lists all rooms, otherwise it limits the room selection to those that play the film
-     * at the selected time.
+     * When no time is selected, it lists all rooms, otherwise it limits the room selection to those that play the film at the selected
+     * time.
      * 
      * The user can then select the room of his choosing.
      * <p>
@@ -197,8 +196,8 @@ public class TimeRoomSelectionPage extends LayoutPage {
 
             // Either get all rooms TODO: or just those that play the film at
             // the selected time.
-            List<CinemaRoomEntity> data = TimeRoomSelectionPage.this.roomService.getRoomsFor(CinemaSession.get()
-                    .getTheatre(), CinemaSession.get().getFilm());
+            List<CinemaRoomEntity> data = TimeRoomSelectionPage.this.roomService.getRoomsFor(CinemaSession.get().getTheatre(),
+                    CinemaSession.get().getFilm());
 
             add(new ListView<CinemaRoomEntity>("list", data) {
 

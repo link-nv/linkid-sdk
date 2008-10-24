@@ -132,8 +132,7 @@ public class ApplicationPoolEntity implements Serializable {
         List<ApplicationPoolEntity> listApplicationPools();
 
         @QueryMethod(QUERY_WHERE_APP1_APP2)
-        List<ApplicationPoolEntity> listCommonApplicationPools(
-                @QueryParam("application1") ApplicationEntity application1,
-                @QueryParam("application2") ApplicationEntity application2);
+        List<ApplicationPoolEntity> listCommonApplicationPools(@QueryParam("application1") ApplicationEntity application1,
+                                                               @QueryParam("application2") ApplicationEntity application2);
     }
 }

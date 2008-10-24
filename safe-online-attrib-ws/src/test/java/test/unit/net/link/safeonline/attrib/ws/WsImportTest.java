@@ -11,12 +11,11 @@ import org.junit.Test;
 
 import com.sun.tools.ws.WsImport;
 
-
 /**
  * Unit test for testing the (missing) off-line features of WsImport.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class WsImportTest {
 

@@ -25,9 +25,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * SafeOnline SSL trust manager. This class should be used by SafeOnline client components to setup the SSL.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class SafeOnlineTrustManager implements X509TrustManager {
 
@@ -60,9 +60,9 @@ public class SafeOnlineTrustManager implements X509TrustManager {
     }
 
     /**
-     * Sets the trusted SafeOnline server certicate to be used by this trust manager during SSL handshake for expressing
-     * trust towards the service.
-     *
+     * Sets the trusted SafeOnline server certicate to be used by this trust manager during SSL handshake for expressing trust towards the
+     * service.
+     * 
      * @param trustedCertificate
      */
     public static void setTrustedCertificate(X509Certificate trustedCertificate) {

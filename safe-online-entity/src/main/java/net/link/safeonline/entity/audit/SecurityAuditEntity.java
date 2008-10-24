@@ -47,8 +47,8 @@ import net.link.safeonline.jpa.annotation.UpdateMethod;
                 + "WHERE record.auditContext.id = :contextId"),
         @NamedQuery(name = COUNT_WHERE_CONTEXTID, query = "SELECT COUNT(*) " + "FROM SecurityAuditEntity AS record "
                 + "WHERE record.auditContext.id = :contextId"),
-        @NamedQuery(name = QUERY_LIST_USER, query = "SELECT DISTINCT record.targetPrincipal "
-                + "FROM SecurityAuditEntity AS record " + "WHERE record.targetPrincipal IS NOT NULL"),
+        @NamedQuery(name = QUERY_LIST_USER, query = "SELECT DISTINCT record.targetPrincipal " + "FROM SecurityAuditEntity AS record "
+                + "WHERE record.targetPrincipal IS NOT NULL"),
         @NamedQuery(name = QUERY_WHERE_USER, query = "SELECT record " + "FROM SecurityAuditEntity AS record "
                 + "WHERE record.targetPrincipal = :principal"),
         @NamedQuery(name = QUERY_WHERE_AGELIMIT, query = "SELECT record " + "FROM SecurityAuditEntity AS record "
@@ -89,8 +89,7 @@ public class SecurityAuditEntity implements Serializable {
         // empty
     }
 
-    public SecurityAuditEntity(AuditContextEntity auditContext, SecurityThreatType securityThreat,
-            String targetPrincipal, String message) {
+    public SecurityAuditEntity(AuditContextEntity auditContext, SecurityThreatType securityThreat, String targetPrincipal, String message) {
 
         this.auditContext = auditContext;
         this.securityThreat = securityThreat;

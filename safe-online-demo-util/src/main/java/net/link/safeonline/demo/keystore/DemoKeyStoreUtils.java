@@ -26,8 +26,8 @@ public class DemoKeyStoreUtils {
         return privateKeyEntry;
     }
 
-    private static PrivateKeyEntry loadPrivateKeyEntry(String keystoreType, InputStream keyStoreInputStream,
-            String keyStorePassword, String keyEntryPassword) {
+    private static PrivateKeyEntry loadPrivateKeyEntry(String keystoreType, InputStream keyStoreInputStream, String keyStorePassword,
+                                                       String keyEntryPassword) {
 
         KeyStore keyStore;
         try {
@@ -56,8 +56,8 @@ public class DemoKeyStoreUtils {
             throw new RuntimeException("key store error: " + e.getMessage(), e);
         }
         try {
-            PrivateKeyEntry privateKeyEntry = (PrivateKeyEntry) keyStore.getEntry(alias,
-                    new KeyStore.PasswordProtection(keyEntryPassword.toCharArray()));
+            PrivateKeyEntry privateKeyEntry = (PrivateKeyEntry) keyStore.getEntry(alias, new KeyStore.PasswordProtection(
+                    keyEntryPassword.toCharArray()));
             return privateKeyEntry;
         } catch (Exception e) {
             throw new RuntimeException("error retrieving key: " + e.getMessage(), e);

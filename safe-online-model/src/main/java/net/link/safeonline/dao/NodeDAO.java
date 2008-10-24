@@ -19,8 +19,8 @@ import net.link.safeonline.entity.NodeEntity;
 @Local
 public interface NodeDAO {
 
-    NodeEntity addNode(String name, String protocol, String hostname, int port, int sslPort,
-            X509Certificate authnCertificate, X509Certificate signingCertificate);
+    NodeEntity addNode(String name, String protocol, String hostname, int port, int sslPort, X509Certificate authnCertificate,
+                       X509Certificate signingCertificate);
 
     List<NodeEntity> listNodes();
 

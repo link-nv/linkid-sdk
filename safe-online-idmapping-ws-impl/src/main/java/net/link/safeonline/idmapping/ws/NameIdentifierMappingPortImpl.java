@@ -86,8 +86,7 @@ public class NameIdentifierMappingPortImpl implements NameIdentifierMappingPort 
             return response;
         }
         String nameIdFormat = nameIdPolicy.getFormat();
-        if (null == nameIdFormat
-                || false == NameIdentifierMappingConstants.NAMEID_FORMAT_PERSISTENT.equals(nameIdFormat)) {
+        if (null == nameIdFormat || false == NameIdentifierMappingConstants.NAMEID_FORMAT_PERSISTENT.equals(nameIdFormat)) {
             NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.INVALID_NAMEID_POLICY);
             return response;
         }
@@ -176,8 +175,7 @@ public class NameIdentifierMappingPortImpl implements NameIdentifierMappingPort 
         return response;
     }
 
-    private NameIDMappingResponseType createErrorResponse(SamlpSecondLevelErrorCode secondLevelErrorCode,
-            String statusMessage) {
+    private NameIDMappingResponseType createErrorResponse(SamlpSecondLevelErrorCode secondLevelErrorCode, String statusMessage) {
 
         NameIDMappingResponseType response = createGenericResponse(SamlpTopLevelErrorCode.RESPONDER);
         if (null != secondLevelErrorCode) {
@@ -203,8 +201,7 @@ public class NameIdentifierMappingPortImpl implements NameIdentifierMappingPort 
         GregorianCalendar gregorianCalendar = new GregorianCalendar();
         Date now = new Date();
         gregorianCalendar.setTime(now);
-        XMLGregorianCalendar currentXmlGregorianCalendar = this.datatypeFactory
-                .newXMLGregorianCalendar(gregorianCalendar);
+        XMLGregorianCalendar currentXmlGregorianCalendar = this.datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
         return currentXmlGregorianCalendar;
     }
 

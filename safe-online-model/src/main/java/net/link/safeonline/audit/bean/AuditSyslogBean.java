@@ -84,8 +84,8 @@ public class AuditSyslogBean implements AuditBackend {
 
         List<SecurityAuditEntity> securityAuditEntries = this.securityAuditDAO.listRecords(auditContextId);
         for (SecurityAuditEntity e : securityAuditEntries) {
-            String msg = String.format("Security audit context %d: principal='%s', message='%s'", e.getAuditContext()
-                    .getId(), e.getTargetPrincipal(), e.getMessage());
+            String msg = String.format("Security audit context %d: principal='%s', message='%s'", e.getAuditContext().getId(),
+                    e.getTargetPrincipal(), e.getMessage());
 
             LOG.debug(msg);
             this.syslog.log(msg);
@@ -96,10 +96,8 @@ public class AuditSyslogBean implements AuditBackend {
 
         List<ResourceAuditEntity> resourceAuditEntries = this.resourceAuditDAO.listRecords(auditContextId);
         for (ResourceAuditEntity e : resourceAuditEntries) {
-            String msg = String.format(
-                    "Resource audit context %d: resource='%s', type='%s', source='%s', message='%s'", e
-                            .getAuditContext().getId(), e.getResourceName(), e.getResourceLevel(), e
-                            .getSourceComponent(), e.getMessage());
+            String msg = String.format("Resource audit context %d: resource='%s', type='%s', source='%s', message='%s'",
+                    e.getAuditContext().getId(), e.getResourceName(), e.getResourceLevel(), e.getSourceComponent(), e.getMessage());
 
             LOG.debug(msg);
             this.syslog.log(msg);
@@ -110,11 +108,9 @@ public class AuditSyslogBean implements AuditBackend {
 
         List<AccessAuditEntity> accessAuditEntries = this.accessAuditDAO.listRecords(auditContextId);
         for (AccessAuditEntity e : accessAuditEntries)
-            if (e.getOperationState() != OperationStateType.BEGIN
-                    && e.getOperationState() != OperationStateType.NORMAL_END) {
-                String msg = String.format(
-                        "Access audit context %d: principal='%s', operation='%s', operationState='%s'", e
-                                .getAuditContext().getId(), e.getPrincipal(), e.getOperation(), e.getOperationState());
+            if (e.getOperationState() != OperationStateType.BEGIN && e.getOperationState() != OperationStateType.NORMAL_END) {
+                String msg = String.format("Access audit context %d: principal='%s', operation='%s', operationState='%s'",
+                        e.getAuditContext().getId(), e.getPrincipal(), e.getOperation(), e.getOperationState());
 
                 LOG.debug(msg);
                 this.syslog.log(msg);
@@ -125,9 +121,8 @@ public class AuditSyslogBean implements AuditBackend {
 
         List<AuditAuditEntity> auditAuditEntries = this.auditAuditDAO.listRecords(auditContextId);
         for (AuditAuditEntity e : auditAuditEntries) {
-            String msg = String.format("Audit audit context %d: message='%s'", e.getAuditContext().getId(), e
-                    .getMessage());
-            
+            String msg = String.format("Audit audit context %d: message='%s'", e.getAuditContext().getId(), e.getMessage());
+
             LOG.debug(msg);
             this.syslog.log(msg);
         }
@@ -139,7 +134,7 @@ public class AuditSyslogBean implements AuditBackend {
             LOG.debug("skipping syslog");
             return;
         }
-        
+
         logSecurityAudits(auditContextId);
         logResourceAudits(auditContextId);
         logAccessAudits(auditContextId);

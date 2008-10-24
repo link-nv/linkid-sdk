@@ -26,8 +26,7 @@ public class SmartCardConfigFactoryImpl implements SmartCardConfigFactory {
 
     public static final String SAFE_ONLINE_PKCS11_SC_CONFIG_RESOURCE_NAME = "META-INF/safe-online-pkcs11-sc-config.properties";
 
-    private static final Log   LOG                                        = LogFactory
-                                                                                  .getLog(SmartCardConfigFactoryImpl.class);
+    private static final Log   LOG                                        = LogFactory.getLog(SmartCardConfigFactoryImpl.class);
 
 
     public List<SmartCardConfig> getSmartCardConfigs() {
@@ -52,15 +51,13 @@ public class SmartCardConfigFactoryImpl implements SmartCardConfigFactory {
             String cardAlias = (String) properties.get("safe.online.pkcs11.sc.config.alias");
             SmartCardConfigImpl smartCardConfig = new SmartCardConfigImpl(cardAlias);
 
-            String authenticationKeyAlias = (String) properties
-                    .get("safe.online.pkcs11.sc.config.keymapping.authentication");
+            String authenticationKeyAlias = (String) properties.get("safe.online.pkcs11.sc.config.keymapping.authentication");
             smartCardConfig.setAuthenticationKeyAlias(authenticationKeyAlias);
 
             String signatureKeyAlias = (String) properties.get("safe.online.pkcs11.sc.config.keymapping.signature");
             smartCardConfig.setSignatureKeyAlias(signatureKeyAlias);
 
-            String identityExtractor = (String) properties
-                    .get("safe.online.pkcs11.sc.config.identity.extractor.classname");
+            String identityExtractor = (String) properties.get("safe.online.pkcs11.sc.config.identity.extractor.classname");
             smartCardConfig.setIdentityExtractorClassname(identityExtractor);
 
             Set<Object> keys = properties.keySet();
@@ -79,8 +76,7 @@ public class SmartCardConfigFactoryImpl implements SmartCardConfigFactory {
                 List<String> driverLocations = new LinkedList<String>();
                 for (Object locationKey : keys) {
                     String locationKeyStr = (String) locationKey;
-                    if (false == locationKeyStr.matches("safe\\.online\\.pkcs11\\.sc\\.config\\.library\\." + iterId
-                            + "\\.location\\..*")) {
+                    if (false == locationKeyStr.matches("safe\\.online\\.pkcs11\\.sc\\.config\\.library\\." + iterId + "\\.location\\..*")) {
                         continue;
                     }
                     LOG.debug("locationkeyStr: " + locationKeyStr);

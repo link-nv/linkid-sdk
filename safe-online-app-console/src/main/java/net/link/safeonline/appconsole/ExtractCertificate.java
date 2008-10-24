@@ -49,9 +49,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Panel to extract a certificate in DER format from a keystore.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class ExtractCertificate extends JPanel {
 
@@ -200,20 +200,18 @@ public class ExtractCertificate extends JPanel {
             JOptionPane.showMessageDialog(this, ERROR_OPEN_KEYSTORE.getMessage(), "", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        char[] keyStorePassword = this.keyStorePasswordField.getPassword().length == 0? null
-                : this.keyStorePasswordField.getPassword();
-        char[] keyEntryPassword = this.keyEntryPasswordField.getPassword().length == 0? null
-                : this.keyEntryPasswordField.getPassword();
+        char[] keyStorePassword = this.keyStorePasswordField.getPassword().length == 0? null: this.keyStorePasswordField.getPassword();
+        char[] keyEntryPassword = this.keyEntryPasswordField.getPassword().length == 0? null: this.keyEntryPasswordField.getPassword();
 
-        PrivateKeyEntry privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(keyStoreType, keyStoreInputStream,
-                keyStorePassword, keyEntryPassword);
+        PrivateKeyEntry privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(keyStoreType, keyStoreInputStream, keyStorePassword,
+                keyEntryPassword);
 
         File certificateFile;
         try {
             certificateFile = File.createTempFile("extracted_certificate", ".crt");
             KeyStoreUtils.extractCertificate(privateKeyEntry, certificateFile);
-            String msg = "Extraced certificate from keystore=\"" + keyStorePath + "\" to file: \""
-                    + certificateFile.getAbsolutePath() + "\"";
+            String msg = "Extraced certificate from keystore=\"" + keyStorePath + "\" to file: \"" + certificateFile.getAbsolutePath()
+                    + "\"";
             LOG.info(msg);
             JOptionPane.showMessageDialog(this, msg);
             this.parent.resetContent();

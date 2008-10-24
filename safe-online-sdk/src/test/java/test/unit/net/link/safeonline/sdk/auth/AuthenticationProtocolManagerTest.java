@@ -72,8 +72,7 @@ public class AuthenticationProtocolManagerTest {
     public void saml2ProtocolHandler() throws Exception {
 
         // expectations
-        expect(this.mockHttpSession.getAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE)).andReturn(
-                null);
+        expect(this.mockHttpSession.getAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE)).andReturn(null);
         this.mockHttpSession.setAttribute(eq(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE), anyObject());
 
         // prepare
@@ -82,8 +81,13 @@ public class AuthenticationProtocolManagerTest {
         // operate
         Map<String, String> configParams = Collections.singletonMap("WsLocation", "https://ws.location");
         AuthenticationProtocolHandler saml2AuthenticationProtocolHandler = AuthenticationProtocolManager
-                .createAuthenticationProtocolHandler(AuthenticationProtocol.SAML2_BROWSER_POST, "http://authn.service",
-                        "application-id", null, null, null, false, configParams, this.mockHttpServletRequest);
+                                                                                                        .createAuthenticationProtocolHandler(
+                                                                                                                AuthenticationProtocol.SAML2_BROWSER_POST,
+                                                                                                                "http://authn.service",
+                                                                                                                "application-id", null,
+                                                                                                                null, null, false,
+                                                                                                                configParams,
+                                                                                                                this.mockHttpServletRequest);
 
         // verify
         verify(this.mockObjects);
@@ -96,8 +100,7 @@ public class AuthenticationProtocolManagerTest {
         ServletTestManager servletTestManager = new ServletTestManager();
         AuthenticationProtocolHandler mockProtocolHandler = createMock(AuthenticationProtocolHandler.class);
         servletTestManager.setUp(TestServlet.class);
-        servletTestManager.setSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE,
-                mockProtocolHandler);
+        servletTestManager.setSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE, mockProtocolHandler);
         try {
             String location = servletTestManager.getServletLocation();
             mockProtocolHandler.initiateAuthentication((HttpServletRequest) EasyMock.anyObject(),
@@ -125,8 +128,7 @@ public class AuthenticationProtocolManagerTest {
         String landingPage = "login";
         initParams.put(AuthenticationProtocolManager.LANDING_PAGE_INIT_PARAM, "login");
         servletTestManager.setUp(TestServlet.class, initParams);
-        servletTestManager.setSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE,
-                mockProtocolHandler);
+        servletTestManager.setSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE, mockProtocolHandler);
         try {
             String location = servletTestManager.getServletLocation();
             mockProtocolHandler.initiateAuthentication((HttpServletRequest) EasyMock.anyObject(),
@@ -139,8 +141,7 @@ public class AuthenticationProtocolManagerTest {
             LOG.debug("status code: " + statusCode);
             verify(mockProtocolHandler);
             assertEquals(HttpStatus.SC_OK, statusCode);
-            assertEquals(location, servletTestManager
-                    .getSessionAttribute(AuthenticationProtocolManager.TARGET_ATTRIBUTE));
+            assertEquals(location, servletTestManager.getSessionAttribute(AuthenticationProtocolManager.TARGET_ATTRIBUTE));
         } finally {
             servletTestManager.tearDown();
         }
@@ -163,8 +164,7 @@ public class AuthenticationProtocolManagerTest {
         }
 
         @Override
-        protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-                IOException {
+        protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
             HttpSession session = request.getSession();
             ServletContext servletContext = session.getServletContext();

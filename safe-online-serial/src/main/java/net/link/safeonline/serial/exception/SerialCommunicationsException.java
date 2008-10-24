@@ -9,14 +9,17 @@ package net.link.safeonline.serial.exception;
 
 public class SerialCommunicationsException extends Exception {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public SerialCommunicationsException(String message) {
-		super(message);
-	}
 
-	public SerialCommunicationsException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public SerialCommunicationsException(String message) {
+
+        super(message);
+    }
+
+    public SerialCommunicationsException(String message, Throwable cause) {
+
+        super(message, cause);
+    }
 
 }

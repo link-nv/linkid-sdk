@@ -17,16 +17,16 @@ import net.link.safeonline.authentication.exception.SubscriptionNotFoundExceptio
 
 /**
  * Interface for identifier mapping service component.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Local
 public interface ApplicationIdentifierMappingService {
 
     /**
      * Returns the subject's user id using the application's id scope.
-     *
+     * 
      * @param username
      * @throws PermissionDeniedException
      * @throws ApplicationNotFoundException
@@ -34,11 +34,11 @@ public interface ApplicationIdentifierMappingService {
      * @throws SubjectNotFoundException
      */
     String getApplicationUserId(String username) throws PermissionDeniedException, ApplicationNotFoundException,
-            SubscriptionNotFoundException, SubjectNotFoundException;
+                                                SubscriptionNotFoundException, SubjectNotFoundException;
 
     /**
      * Returns the global OLAS user ID using the application's id scope. Returns null if not found.
-     *
+     * 
      * @param applicationName
      * @param applicationUserId
      * @throws ApplicationNotFoundException

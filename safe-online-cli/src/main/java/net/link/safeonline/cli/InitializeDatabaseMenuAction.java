@@ -44,8 +44,8 @@ public class InitializeDatabaseMenuAction extends AbstractMenuAction {
             }
             Statement statement = connection.createStatement();
             try {
-                statement.executeUpdate("INSERT INTO metadata(name, value) VALUES ('"
-                        + DatabaseConstants.METADATA_VERSION_NAME + "','" + databaseSchemaVersion + "')");
+                statement.executeUpdate("INSERT INTO metadata(name, value) VALUES ('" + DatabaseConstants.METADATA_VERSION_NAME + "','"
+                        + databaseSchemaVersion + "')");
             } finally {
                 statement.close();
             }

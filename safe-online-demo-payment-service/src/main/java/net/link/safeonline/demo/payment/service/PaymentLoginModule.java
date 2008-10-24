@@ -34,9 +34,8 @@ import org.jboss.security.SimplePrincipal;
 
 
 /**
- * Lawyer JAAS login module. This login module will retrieve the username and role attribute from the HTTP servlet
- * request using JACC. It uses these attribute values to populate the subject for usage within the JBoss Application
- * Server.
+ * Lawyer JAAS login module. This login module will retrieve the username and role attribute from the HTTP servlet request using JACC. It
+ * uses these attribute values to populate the subject for usage within the JBoss Application Server.
  * 
  * @author fcorneli
  * 
@@ -54,8 +53,7 @@ public class PaymentLoginModule implements LoginModule {
     private String           role;
 
 
-    public void initialize(Subject inSubject, CallbackHandler inCallbackHandler, Map<String, ?> sharedState,
-            Map<String, ?> options) {
+    public void initialize(Subject inSubject, CallbackHandler inCallbackHandler, Map<String, ?> sharedState, Map<String, ?> options) {
 
         LOG.debug("initialize");
         this.subject = inSubject;

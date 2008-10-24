@@ -147,8 +147,7 @@ public class AuthenticationBean implements Authentication {
     @Begin
     @ErrorHandling( { @Error(exceptionClass = MalformedURLException.class, messageId = "mobileCommunicationFailed"),
             @Error(exceptionClass = MobileException.class, messageId = "mobileCommunicationFailed") })
-    public String requestOTP() throws MalformedURLException, MobileException, AttributeTypeNotFoundException,
-            AttributeNotFoundException {
+    public String requestOTP() throws MalformedURLException, MobileException, AttributeTypeNotFoundException, AttributeNotFoundException {
 
         LOG.debug("check mobile: " + this.mobile);
         try {

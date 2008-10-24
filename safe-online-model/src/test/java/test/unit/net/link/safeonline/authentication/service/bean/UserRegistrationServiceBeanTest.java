@@ -62,30 +62,28 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 
         final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
         final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate",
-                new MBeanActionHandler() {
+        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
 
-                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
+            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-                        return authCertificate;
-                    }
-                });
+                return authCertificate;
+            }
+        });
 
         jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
         final KeyPair keyPair = PkiTestUtils.generateKeyPair();
         final X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
-                new MBeanActionHandler() {
+        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
 
-                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
+            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-                        return certificate;
-                    }
-                });
+                return certificate;
+            }
+        });
 
-        SystemInitializationStartableBean systemInit = EJBTestUtils.newInstance(
-                SystemInitializationStartableBean.class, SafeOnlineTestContainer.sessionBeans, entityManager);
+        SystemInitializationStartableBean systemInit = EJBTestUtils.newInstance(SystemInitializationStartableBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
         systemInit.postStart();
 
         EntityTransaction entityTransaction = entityManager.getTransaction();
@@ -118,19 +116,18 @@ public class UserRegistrationServiceBeanTest extends TestCase {
         passwordDeviceService.register(testSubject, testPassword);
 
         // verify
-        SubjectService subjectService = EJBTestUtils.newInstance(SubjectServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager);
+        SubjectService subjectService = EJBTestUtils.newInstance(SubjectServiceBean.class, SafeOnlineTestContainer.sessionBeans,
+                entityManager);
         SubjectEntity resultSubject = subjectService.getSubjectFromUserName(testLogin);
-        AttributeTypeDAO attributeTypeDAO = EJBTestUtils.newInstance(AttributeTypeDAOBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager);
+        AttributeTypeDAO attributeTypeDAO = EJBTestUtils.newInstance(AttributeTypeDAOBean.class, SafeOnlineTestContainer.sessionBeans,
+                entityManager);
         AttributeTypeEntity loginAttributeType = attributeTypeDAO.getAttributeType(SafeOnlineConstants.LOGIN_ATTRIBTUE);
-        AttributeDAO attributeDAO = EJBTestUtils.newInstance(AttributeDAOBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager);
+        AttributeDAO attributeDAO = EJBTestUtils.newInstance(AttributeDAOBean.class, SafeOnlineTestContainer.sessionBeans, entityManager);
         AttributeEntity loginAttribute = attributeDAO.getAttribute(loginAttributeType, resultSubject);
         assertEquals(testLogin, loginAttribute.getValue());
 
-        PasswordManager passwordManager = EJBTestUtils.newInstance(PasswordManagerBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager);
+        PasswordManager passwordManager = EJBTestUtils.newInstance(PasswordManagerBean.class, SafeOnlineTestContainer.sessionBeans,
+                entityManager);
 
         boolean isPasswordConfigured = passwordManager.isPasswordConfigured(resultSubject);
         assertTrue(isPasswordConfigured);

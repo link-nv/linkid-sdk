@@ -19,9 +19,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Dummy JAAS login module. Does nothing but saying 'fine by me'.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class DummyLoginModule implements LoginModule {
 
@@ -41,8 +41,7 @@ public class DummyLoginModule implements LoginModule {
     }
 
     @SuppressWarnings("unused")
-    public void initialize(Subject subject, CallbackHandler callbackHandler, Map<String, ?> sharedState,
-            Map<String, ?> options) {
+    public void initialize(Subject subject, CallbackHandler callbackHandler, Map<String, ?> sharedState, Map<String, ?> options) {
 
         LOG.debug("initialize");
     }

@@ -16,9 +16,9 @@ import java.lang.annotation.Target;
 
 /**
  * Specifies that the class represents an application identity.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Documented
 @Target(ElementType.TYPE)

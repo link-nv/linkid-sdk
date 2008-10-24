@@ -25,11 +25,11 @@ import org.jboss.annotation.ejb.LocalBinding;
 /**
  * <h2>{@link DriverExceptionServiceBean}<br>
  * <sub>Service bean for {@link DriverExceptionEntity}.</sub></h2>
- *
+ * 
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- *
+ * 
  * @see DriverExceptionService
  * @author mbillemo
  */
@@ -61,8 +61,7 @@ public class DriverExceptionServiceBean extends AbstractProfilingServiceBean imp
         }
 
         String errorClass = ProfileData.compressSignature(cause.getClass().getName());
-        String message = String.format("%s: %s (%s:%d)", errorClass, cause.getMessage(), errorSourceClass,
-                errorSourceLine);
+        String message = String.format("%s: %s (%s:%d)", errorClass, cause.getMessage(), errorSourceClass, errorSourceLine);
 
         // Create the exception entity.
         DriverExceptionEntity exceptionEntity = new DriverExceptionEntity(profile, exception.getOccurredTime(), message);
@@ -77,8 +76,7 @@ public class DriverExceptionServiceBean extends AbstractProfilingServiceBean imp
     @SuppressWarnings("unchecked")
     public List<DriverExceptionEntity> getAllProfileErrors(DriverProfileEntity profile) {
 
-        return this.em.createNamedQuery(DriverExceptionEntity.getByProfile).setParameter("profile", profile)
-                .getResultList();
+        return this.em.createNamedQuery(DriverExceptionEntity.getByProfile).setParameter("profile", profile).getResultList();
     }
 
     /**
@@ -88,10 +86,10 @@ public class DriverExceptionServiceBean extends AbstractProfilingServiceBean imp
     public List<DriverExceptionEntity> getProfileErrors(DriverProfileEntity profile, int dataPoints) {
 
         // Find the driver profile's profile data.
-        Long dataDuration = (Long) this.em.createNamedQuery(DriverExceptionEntity.getExecutionDuration).setParameter(
-                "profile", profile).getSingleResult();
-        Long dataStart = (Long) this.em.createNamedQuery(DriverExceptionEntity.getExecutionStart).setParameter(
-                "profile", profile).getSingleResult();
+        Long dataDuration = (Long) this.em.createNamedQuery(DriverExceptionEntity.getExecutionDuration).setParameter("profile", profile)
+                                          .getSingleResult();
+        Long dataStart = (Long) this.em.createNamedQuery(DriverExceptionEntity.getExecutionStart).setParameter("profile", profile)
+                                       .getSingleResult();
 
         // Bail out of there are no errors for this profile.
         if (dataDuration == null || dataStart == null || dataDuration + dataStart == 0)
@@ -101,9 +99,8 @@ public class DriverExceptionServiceBean extends AbstractProfilingServiceBean imp
 
         List<DriverExceptionEntity> pointData = new ArrayList<DriverExceptionEntity>();
         for (long point = 0; point * period < dataDuration; ++point) {
-            pointData.addAll(this.em.createNamedQuery(DriverExceptionEntity.createAverage).setParameter("profile",
-                    profile).setParameter("start", dataStart + point * period).setParameter("stop",
-                    dataStart + (point + 1) * period).getResultList());
+            pointData.addAll(this.em.createNamedQuery(DriverExceptionEntity.createAverage).setParameter("profile", profile).setParameter(
+                    "start", dataStart + point * period).setParameter("stop", dataStart + (point + 1) * period).getResultList());
         }
 
         return pointData;

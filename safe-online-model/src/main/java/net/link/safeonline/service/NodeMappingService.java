@@ -35,8 +35,8 @@ import net.link.safeonline.entity.SubjectEntity;
 public interface NodeMappingService {
 
     /**
-     * Get or create if not existing a node mapping for the specified user and node. This node mapping will be used to
-     * communicate with the remote nodes
+     * Get or create if not existing a node mapping for the specified user and node. This node mapping will be used to communicate with the
+     * remote nodes
      * 
      * @param userId
      * @param nodeName
@@ -44,8 +44,7 @@ public interface NodeMappingService {
      * @throws SubjectNotFoundException
      * @throws NodeNotFoundException
      */
-    public NodeMappingEntity getNodeMapping(String userId, String nodeName) throws SubjectNotFoundException,
-            NodeNotFoundException;
+    public NodeMappingEntity getNodeMapping(String userId, String nodeName) throws SubjectNotFoundException, NodeNotFoundException;
 
     public NodeMappingEntity getNodeMapping(String id) throws NodeMappingNotFoundException;
 

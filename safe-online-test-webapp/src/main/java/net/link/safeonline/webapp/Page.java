@@ -127,8 +127,7 @@ public abstract class Page {
 
     protected void fillInputFieldInRepeat(String label, String id, String value) {
 
-        selenium.type("//label[./span[contains(text(), '" + label + "')]]//following::input[contains(@id, '" + id
-                + "')]", value);
+        selenium.type("//label[./span[contains(text(), '" + label + "')]]//following::input[contains(@id, '" + id + "')]", value);
     }
 
     protected void clickTab(String id) {
@@ -154,14 +153,14 @@ public abstract class Page {
 
     protected void clickLinkInRow(String table, String row, String id) {
 
-        selenium.click("xpath=//table[contains(@Id, '" + table + "')]//tr[./td[contains(text(), '" + row
-                + "')]]/td/a[contains(@Id, '" + id + "')]");
+        selenium.click("xpath=//table[contains(@Id, '" + table + "')]//tr[./td[contains(text(), '" + row + "')]]/td/a[contains(@Id, '" + id
+                + "')]");
     }
 
     protected void clickLinkInRowLink(String table, String row, String id) {
 
-        selenium.click("xpath=//table[contains(@Id, '" + table + "')]//tr[./td/a[contains(text(), '" + row
-                + "')]]/td/a[contains(@Id, '" + id + "')]");
+        selenium.click("xpath=//table[contains(@Id, '" + table + "')]//tr[./td/a[contains(text(), '" + row + "')]]/td/a[contains(@Id, '"
+                + id + "')]");
     }
 
     protected void clickRowLink(String table, String row) {
@@ -239,15 +238,13 @@ public abstract class Page {
 
     protected boolean checkRowLink(String table, String row) {
 
-        return selenium.isVisible("xpath=//table[contains(@id, '" + table + "')]//tr[./td/a[contains(text(), '" + row
-                + "')]]");
+        return selenium.isVisible("xpath=//table[contains(@id, '" + table + "')]//tr[./td/a[contains(text(), '" + row + "')]]");
 
     }
 
     protected String getSafeOnlineAttributeValue(String attribute) {
 
-        return selenium.getText("//span[contains(@class, 'so-nameoutput') and contains(text(), '" + attribute
-                + "')]//following::span");
+        return selenium.getText("//span[contains(@class, 'so-nameoutput') and contains(text(), '" + attribute + "')]//following::span");
     }
 
     protected boolean checkTextPresent(String text) {

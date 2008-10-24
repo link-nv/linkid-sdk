@@ -11,12 +11,11 @@ import java.util.Observable;
 
 
 /**
- * This class manages the logging buffers sent by LogFilter. Other observers can subscribe to this class to get updates
- * of those messages.
- *
- *
+ * This class manages the logging buffers sent by LogFilter. Other observers can subscribe to this class to get updates of those messages.
+ * 
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class LogManager extends Observable {
 

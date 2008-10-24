@@ -40,8 +40,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @Table(name = "devices")
 @NamedQueries( {
         @NamedQuery(name = QUERY_LIST_ALL, query = "FROM DeviceEntity d"),
-        @NamedQuery(name = QUERY_LIST_WHERE_CLASS, query = "SELECT d FROM DeviceEntity d "
-                + "WHERE d.deviceClass = :deviceClass"),
+        @NamedQuery(name = QUERY_LIST_WHERE_CLASS, query = "SELECT d FROM DeviceEntity d " + "WHERE d.deviceClass = :deviceClass"),
         @NamedQuery(name = QUERY_LIST_WHERE_CLASS_AUTH_CTX, query = "SELECT d FROM DeviceEntity d "
                 + "WHERE d.deviceClass.authenticationContextClass = :authenticationContextClass"),
         @NamedQuery(name = QUERY_LIST_WHERE_CERT_SUBJECT, query = "SELECT device " + "FROM DeviceEntity AS device "
@@ -93,8 +92,7 @@ public class DeviceEntity implements Serializable {
     }
 
     public DeviceEntity(String name, DeviceClassEntity deviceClass, NodeEntity location, String authenticationPath,
-            String registrationPath, String removalPath, String updatePath, String disablePath,
-            X509Certificate certificate) {
+                        String registrationPath, String removalPath, String updatePath, String disablePath, X509Certificate certificate) {
 
         this.name = name;
         this.deviceClass = deviceClass;
@@ -374,8 +372,8 @@ public class DeviceEntity implements Serializable {
     }
 
     /**
-     * The certificate subject is used during application authentication phase to associate a given certificate with
-     * it's corresponding application.
+     * The certificate subject is used during application authentication phase to associate a given certificate with it's corresponding
+     * application.
      * 
      */
     @Column(unique = true)
@@ -385,8 +383,8 @@ public class DeviceEntity implements Serializable {
     }
 
     /**
-     * Sets the certificate subject. Do not use this method directly. Use {@link #setCertificate(X509Certificate)
-     * setCertificate} instead. JPA requires this setter.
+     * Sets the certificate subject. Do not use this method directly. Use {@link #setCertificate(X509Certificate) setCertificate} instead.
+     * JPA requires this setter.
      * 
      * @param certificateSubject
      * @see #setCertificate(X509Certificate)
@@ -397,8 +395,7 @@ public class DeviceEntity implements Serializable {
     }
 
     /**
-     * Sets the X509 certificate subject of the application. Use this method to update the certificate subject for this
-     * application.
+     * Sets the X509 certificate subject of the application. Use this method to update the certificate subject for this application.
      * 
      * @param certificate
      */
@@ -478,7 +475,6 @@ public class DeviceEntity implements Serializable {
         List<DeviceEntity> listDevices(@QueryParam("authenticationContextClass") String authenticationContextClass);
 
         @QueryMethod(QUERY_LIST_WHERE_CERT_SUBJECT)
-        List<DeviceEntity> listDevicesWhereCertificateSubject(
-                @QueryParam("certificateSubject") String certificateSubject);
+        List<DeviceEntity> listDevicesWhereCertificateSubject(@QueryParam("certificateSubject") String certificateSubject);
     }
 }

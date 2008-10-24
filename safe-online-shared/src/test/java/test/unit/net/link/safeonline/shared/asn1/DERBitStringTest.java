@@ -28,8 +28,9 @@ public class DERBitStringTest extends TestCase {
 
         // verify
         assertNotNull(result);
-        org.bouncycastle.asn1.DERBitString resultBitString = org.bouncycastle.asn1.DERBitString.getInstance(ASN1Object
-                .fromByteArray(result));
+        org.bouncycastle.asn1.DERBitString resultBitString = org.bouncycastle.asn1.DERBitString
+                                                                                               .getInstance(ASN1Object
+                                                                                                                      .fromByteArray(result));
         assertTrue(Arrays.equals(data, resultBitString.getBytes()));
     }
 }

@@ -30,9 +30,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Implementation of device authentication service.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 @Stateless
 public class DeviceAuthenticationServiceBean implements DeviceAuthenticationService {
@@ -69,8 +69,7 @@ public class DeviceAuthenticationServiceBean implements DeviceAuthenticationServ
         return certificates;
     }
 
-    public TrustPointEntity findTrustPoint(String domainName, X509Certificate certificate)
-            throws TrustDomainNotFoundException {
+    public TrustPointEntity findTrustPoint(String domainName, X509Certificate certificate) throws TrustDomainNotFoundException {
 
         LOG.debug("find trust point: domain=" + domainName + " cert=" + certificate);
         TrustDomainEntity trustDomain = this.trustDomainDAO.getTrustDomain(domainName);

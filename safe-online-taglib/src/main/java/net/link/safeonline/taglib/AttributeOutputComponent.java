@@ -170,8 +170,8 @@ public class AttributeOutputComponent extends UIOutput {
     @SupportedType(DatatypeType.COMPOUNDED)
     public static class CompoundedAttributeValueEncoder implements AttributeValueEncoder {
 
-        public void encode(@SuppressWarnings("unused") AttributeDO attribute,
-                @SuppressWarnings("unused") ResponseWriter response, @SuppressWarnings("unused") FacesContext context) {
+        public void encode(@SuppressWarnings("unused") AttributeDO attribute, @SuppressWarnings("unused") ResponseWriter response,
+                           @SuppressWarnings("unused") FacesContext context) {
 
             // empty
         }
@@ -211,8 +211,7 @@ public class AttributeOutputComponent extends UIOutput {
 
 
     /**
-     * Gives back an instance of the requested attribute value encoder. There is a chance for a datarace here, but we
-     * don't care.
+     * Gives back an instance of the requested attribute value encoder. There is a chance for a datarace here, but we don't care.
      * 
      * @param type
      */
@@ -228,8 +227,7 @@ public class AttributeOutputComponent extends UIOutput {
         try {
             attributeValueEncoder = attributeValueEncoderClass.newInstance();
         } catch (Exception e) {
-            throw new RuntimeException("could not create attribute value encoder instance for type: " + type + "; "
-                    + e.getMessage(), e);
+            throw new RuntimeException("could not create attribute value encoder instance for type: " + type + "; " + e.getMessage(), e);
         }
         instances.put(type, attributeValueEncoder);
         return attributeValueEncoder;

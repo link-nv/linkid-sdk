@@ -128,9 +128,8 @@ public class AppletControl implements AppletController, SmartCardPinCallback, Sm
             this.appletView.outputDetailMessage("error type: " + e.getClass().getName());
             this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages.getString("smartCardConnectError"));
             for (StackTraceElement stackTraceElement : e.getStackTrace()) {
-                this.appletView.outputDetailMessage(stackTraceElement.getClassName() + "."
-                        + stackTraceElement.getMethodName() + " (" + stackTraceElement.getFileName() + ":"
-                        + stackTraceElement.getLineNumber() + ")");
+                this.appletView.outputDetailMessage(stackTraceElement.getClassName() + "." + stackTraceElement.getMethodName() + " ("
+                        + stackTraceElement.getFileName() + ":" + stackTraceElement.getLineNumber() + ")");
             }
             this.appletView.outputDetailMessage("Disconnecting from smart card...");
             this.smartCard.close();
@@ -297,8 +296,8 @@ public class AppletControl implements AppletController, SmartCardPinCallback, Sm
         passwordPanel.add(Box.createHorizontalStrut(5));
         passwordPanel.add(passwordField);
 
-        int result = JOptionPane.showOptionDialog(null, passwordPanel, this.messages.getString("pinTitle"),
-                JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+        int result = JOptionPane.showOptionDialog(null, passwordPanel, this.messages.getString("pinTitle"), JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE, null, null, null);
         if (result == JOptionPane.OK_OPTION) {
             char[] pin = passwordField.getPassword();
             return pin;

@@ -30,7 +30,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * @author mbillemo
- *
+ * 
  */
 @SuppressWarnings("unused")
 public abstract class AbstractDataTest {
@@ -44,8 +44,8 @@ public abstract class AbstractDataTest {
     protected int                    DB_PORT  = 3306;
     protected boolean                SHOW_SQL = true;
 
-    protected final Class<?>[]       entities = new Class[] { ScenarioTimingEntity.class, ExecutionEntity.class,
-            DriverProfileEntity.class, DriverExceptionEntity.class, ProfileDataEntity.class, MeasurementEntity.class };
+    protected final Class<?>[]       entities = new Class[] { ScenarioTimingEntity.class, ExecutionEntity.class, DriverProfileEntity.class,
+            DriverExceptionEntity.class, ProfileDataEntity.class, MeasurementEntity.class };
 
     protected ExecutionService       executionService;
     protected ProfileDataService     profileDataService;
@@ -62,8 +62,7 @@ public abstract class AbstractDataTest {
         this.entityTestManager = new EntityTestManager();
 
         try {
-            this.entityTestManager.configureMySql(this.DB_HOST, this.DB_PORT, this.DB_NAME, this.DB_USER, this.DB_PASS,
-                    this.SHOW_SQL);
+            this.entityTestManager.configureMySql(this.DB_HOST, this.DB_PORT, this.DB_NAME, this.DB_USER, this.DB_PASS, this.SHOW_SQL);
             this.entityTestManager.setUp(this.entities);
 
             this.em = this.entityTestManager.getEntityManager();

@@ -32,8 +32,8 @@ public class HistoryMessageManager {
 
 
     /**
-     * Returns the i18n history message. The history properties are used to format this message. Following order is to
-     * be used in the resource bundle :
+     * Returns the i18n history message. The history properties are used to format this message. Following order is to be used in the
+     * resource bundle :
      * <ol>
      * <li>Application</li>
      * <li>Device</li>
@@ -78,7 +78,6 @@ public class HistoryMessageManager {
             info = historyEntity.getProperties().get(SafeOnlineConstants.INFO_PROPERTY).getValue();
         }
 
-        return MessageFormat.format(message, historyEntity.getSubject().getUserId(), application, device, attribute,
-                info);
+        return MessageFormat.format(message, historyEntity.getSubject().getUserId(), application, device, attribute, info);
     }
 }

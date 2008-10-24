@@ -12,9 +12,9 @@ import java.security.cert.X509Certificate;
 
 /**
  * Interface for OLAS PKI client.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public interface PkiClient {
 

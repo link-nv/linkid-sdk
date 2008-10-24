@@ -36,17 +36,16 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- * SafeOnline Authentication Request Filter. This filter can be used by servlet container based web applications for
- * authentication via SafeOnline. This filter initiates the authentication request towards the SafeOnline authentication
- * web application. The handling of the authentication response is done via the {@link AuthnResponseFilter}.
+ * SafeOnline Authentication Request Filter. This filter can be used by servlet container based web applications for authentication via
+ * SafeOnline. This filter initiates the authentication request towards the SafeOnline authentication web application. The handling of the
+ * authentication response is done via the {@link AuthnResponseFilter}.
  * 
  * <p>
  * The configuration of this filter should be managed via the <code>web.xml</code> deployment descriptor.
  * </p>
  * 
  * <p>
- * The init parameter <code>AuthenticationServiceUrl</code> should point to the Authentication Web Application entry
- * point.
+ * The init parameter <code>AuthenticationServiceUrl</code> should point to the Authentication Web Application entry point.
  * </p>
  * 
  * <p>
@@ -54,35 +53,31 @@ import org.apache.commons.logging.LogFactory;
  * </p>
  * 
  * <p>
- * The optional init parameter <code>AuthenticationProtocol</code> should contain the name of the protocol used
- * between the SafeOnline authentication web application and this service provider. This can be: SAML2_BROWSER_POST.
- * Defaults to: SAML2_BROWSER_POST
+ * The optional init parameter <code>AuthenticationProtocol</code> should contain the name of the protocol used between the SafeOnline
+ * authentication web application and this service provider. This can be: SAML2_BROWSER_POST. Defaults to: SAML2_BROWSER_POST
  * </p>
  * 
  * <p>
- * The optional keystore resource name <code>KeyStoreResource</code> init parameter. The key pair within this keystore
- * can be used by the authentication protocol handler to digitally sign the authentication request.
+ * The optional keystore resource name <code>KeyStoreResource</code> init parameter. The key pair within this keystore can be used by the
+ * authentication protocol handler to digitally sign the authentication request.
  * </p>
  * 
  * <p>
- * The optional keystore file name <code>KeyStoreFile</code> init parameter. The key pair within this keystore can be
- * used by the authentication protocol handler to digitally sign the authentication request.
+ * The optional keystore file name <code>KeyStoreFile</code> init parameter. The key pair within this keystore can be used by the
+ * authentication protocol handler to digitally sign the authentication request.
  * </p>
  * 
  * <p>
- * The optional <code>KeyStoreType</code> key store type init parameter. Accepted values are: <code>pkcs12</code>
- * and <code>jks</code>.
+ * The optional <code>KeyStoreType</code> key store type init parameter. Accepted values are: <code>pkcs12</code> and <code>jks</code>.
  * </p>
  * 
  * <p>
- * The optional <code>KeyStorePassword</code> init parameter contains the password to unlock the keystore and key
- * entry.
+ * The optional <code>KeyStorePassword</code> init parameter contains the password to unlock the keystore and key entry.
  * </p>
  * 
  * <p>
- * The optional <code>SingleSignOnEnabled</code> init parameter specified whether single sign-on can be used or not.
- * Accepted values are: <code>true</code> or <code>false</code>. If omitted, single sign-on will be enabled by
- * default.
+ * The optional <code>SingleSignOnEnabled</code> init parameter specified whether single sign-on can be used or not. Accepted values are:
+ * <code>true</code> or <code>false</code>. If omitted, single sign-on will be enabled by default.
  * </p>
  * 
  * @author fcorneli
@@ -138,8 +133,7 @@ public class AuthnRequestFilter extends AbstractInjectionFilter {
         if (null == this.authenticationProtocolString) {
             this.authenticationProtocol = DEFAULT_AUTHN_PROTOCOL;
         } else {
-            this.authenticationProtocol = AuthenticationProtocol
-                    .toAuthenticationProtocol(this.authenticationProtocolString);
+            this.authenticationProtocol = AuthenticationProtocol.toAuthenticationProtocol(this.authenticationProtocolString);
         }
         LOG.debug("authentication protocol: " + this.authenticationProtocol);
 
@@ -168,14 +162,12 @@ public class AuthnRequestFilter extends AbstractInjectionFilter {
         if (null != keyStoreInputStream) {
             PrivateKeyEntry privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(this.keyStoreType, keyStoreInputStream,
                     this.keyStorePassword, this.keyStorePassword);
-            this.applicationKeyPair = new KeyPair(privateKeyEntry.getCertificate().getPublicKey(), privateKeyEntry
-                    .getPrivateKey());
+            this.applicationKeyPair = new KeyPair(privateKeyEntry.getCertificate().getPublicKey(), privateKeyEntry.getPrivateKey());
             this.applicationCertificate = (X509Certificate) privateKeyEntry.getCertificate();
         }
     }
 
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-            ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         LOG.debug("doFilter");
         HttpServletRequest httpRequest = (HttpServletRequest) request;
@@ -188,12 +180,12 @@ public class AuthnRequestFilter extends AbstractInjectionFilter {
         }
     }
 
-    private void initiateAuthentication(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
-            throws IOException, ServletException {
+    private void initiateAuthentication(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException,
+                                                                                                         ServletException {
 
-        AuthenticationProtocolManager.createAuthenticationProtocolHandler(this.authenticationProtocol,
-                this.authenticationServiceUrl, this.applicationName, this.applicationFriendlyName,
-                this.applicationKeyPair, this.applicationCertificate, this.ssoEnabled, this.configParams, httpRequest);
+        AuthenticationProtocolManager.createAuthenticationProtocolHandler(this.authenticationProtocol, this.authenticationServiceUrl,
+                this.applicationName, this.applicationFriendlyName, this.applicationKeyPair, this.applicationCertificate, this.ssoEnabled,
+                this.configParams, httpRequest);
         AuthenticationProtocolManager.initiateAuthentication(httpRequest, httpResponse);
     }
 

@@ -48,13 +48,10 @@ public class UsageAgreementDAOBean implements UsageAgreementDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                UsageAgreementEntity.QueryInterface.class);
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, UsageAgreementEntity.QueryInterface.class);
 
-        this.textQueryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                UsageAgreementTextEntity.QueryInterface.class);
-        this.globalQueryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                GlobalUsageAgreementEntity.QueryInterface.class);
+        this.textQueryObject = QueryObjectFactory.createQueryObject(this.entityManager, UsageAgreementTextEntity.QueryInterface.class);
+        this.globalQueryObject = QueryObjectFactory.createQueryObject(this.entityManager, GlobalUsageAgreementEntity.QueryInterface.class);
     }
 
     public UsageAgreementEntity addUsageAgreement(ApplicationEntity application, Long usageAgreementVersion) {
@@ -70,15 +67,14 @@ public class UsageAgreementDAOBean implements UsageAgreementDAO {
         UsageAgreementPK usageAgreementPK = new UsageAgreementPK(application.getName(), usageAgreementVersion);
         UsageAgreementEntity usageAgreement = this.entityManager.find(UsageAgreementEntity.class, usageAgreementPK);
         if (null == usageAgreement) {
-            LOG.debug("usage agreement version: " + usageAgreementVersion + " not found for application: "
-                    + application.getName());
+            LOG.debug("usage agreement version: " + usageAgreementVersion + " not found for application: " + application.getName());
             return null;
         }
         return usageAgreement;
     }
 
     public UsageAgreementEntity findUsageAgreement(ApplicationEntity application, Long usageAgreementVersion)
-            throws UsageAgreementNotFoundException {
+                                                                                                             throws UsageAgreementNotFoundException {
 
         UsageAgreementEntity usageAgreement = getUsageAgreement(application, usageAgreementVersion);
         if (null == usageAgreement)
@@ -104,8 +100,7 @@ public class UsageAgreementDAOBean implements UsageAgreementDAO {
 
     public void removeUsageAgreement(ApplicationEntity application, Long usageAgreementVersion) {
 
-        LOG.debug("remove usage agreement for application: " + application.getName() + " version="
-                + usageAgreementVersion);
+        LOG.debug("remove usage agreement for application: " + application.getName() + " version=" + usageAgreementVersion);
         UsageAgreementEntity usageAgreement = this.getUsageAgreement(application, usageAgreementVersion);
         if (null == usageAgreement)
             return;
@@ -114,19 +109,15 @@ public class UsageAgreementDAOBean implements UsageAgreementDAO {
         this.textQueryObject.removeUsageAgreementTexts(application.getName(), usageAgreementVersion);
     }
 
-    public List<UsageAgreementTextEntity> listUsageAgreementTexts(ApplicationEntity application,
-            Long usageAgreementVersion) {
+    public List<UsageAgreementTextEntity> listUsageAgreementTexts(ApplicationEntity application, Long usageAgreementVersion) {
 
-        LOG.debug("list usage agreements texts for application: " + application.getName() + " and version: "
-                + usageAgreementVersion);
+        LOG.debug("list usage agreements texts for application: " + application.getName() + " and version: " + usageAgreementVersion);
         return this.textQueryObject.listUsageAgreementTexts(application.getName(), usageAgreementVersion);
     }
 
-    public UsageAgreementTextEntity addUsageAgreementText(UsageAgreementEntity usageAgreement, String text,
-            String language) {
+    public UsageAgreementTextEntity addUsageAgreementText(UsageAgreementEntity usageAgreement, String text, String language) {
 
-        LOG.debug("add usage agreement text: language=" + language + " version="
-                + usageAgreement.getUsageAgreementVersion());
+        LOG.debug("add usage agreement text: language=" + language + " version=" + usageAgreement.getUsageAgreementVersion());
         UsageAgreementTextEntity usageAgreementText = new UsageAgreementTextEntity(usageAgreement, text, language);
         this.entityManager.persist(usageAgreementText);
         usageAgreement.getUsageAgreementTexts().add(usageAgreementText);
@@ -135,15 +126,15 @@ public class UsageAgreementDAOBean implements UsageAgreementDAO {
 
     public void removeUsageAgreementText(UsageAgreementTextEntity usageAgreementText) {
 
-        UsageAgreementPK usageAgreementPK = new UsageAgreementPK(usageAgreementText.getOwner(), usageAgreementText
-                .getUsageAgreementVersion());
+        UsageAgreementPK usageAgreementPK = new UsageAgreementPK(usageAgreementText.getOwner(),
+                usageAgreementText.getUsageAgreementVersion());
         UsageAgreementEntity usageAgreement = this.entityManager.find(UsageAgreementEntity.class, usageAgreementPK);
         usageAgreement.getUsageAgreementTexts().remove(usageAgreementText);
         this.entityManager.remove(usageAgreementText);
     }
 
     public UsageAgreementTextEntity findUsageAgreementText(UsageAgreementEntity usageAgreement, String language)
-            throws UsageAgreementTextNotFoundException {
+                                                                                                                throws UsageAgreementTextNotFoundException {
 
         UsageAgreementTextEntity usageAgreementText = getUsageAgreementText(usageAgreement, language);
         if (null == usageAgreementText)
@@ -153,15 +144,13 @@ public class UsageAgreementDAOBean implements UsageAgreementDAO {
 
     public UsageAgreementTextEntity getUsageAgreementText(UsageAgreementEntity usageAgreement, String language) {
 
-        LOG.debug("get usage agreement text: language=" + language + " version="
-                + usageAgreement.getUsageAgreementVersion());
+        LOG.debug("get usage agreement text: language=" + language + " version=" + usageAgreement.getUsageAgreementVersion());
         UsageAgreementTextPK usageAgreementTextPK = new UsageAgreementTextPK(usageAgreement.getApplication().getName(),
                 usageAgreement.getUsageAgreementVersion(), language);
-        UsageAgreementTextEntity usageAgreementText = this.entityManager.find(UsageAgreementTextEntity.class,
-                usageAgreementTextPK);
+        UsageAgreementTextEntity usageAgreementText = this.entityManager.find(UsageAgreementTextEntity.class, usageAgreementTextPK);
         if (null == usageAgreementText) {
-            LOG.debug("usage agreement text version; " + usageAgreement.getUsageAgreementVersion()
-                    + " not found for application: " + usageAgreement.getApplication().getName());
+            LOG.debug("usage agreement text version; " + usageAgreement.getUsageAgreementVersion() + " not found for application: "
+                    + usageAgreement.getApplication().getName());
             return null;
         }
         return usageAgreementText;
@@ -176,11 +165,9 @@ public class UsageAgreementDAOBean implements UsageAgreementDAO {
 
     }
 
-    public UsageAgreementTextEntity addGlobalUsageAgreementText(GlobalUsageAgreementEntity usageAgreement, String text,
-            String language) {
+    public UsageAgreementTextEntity addGlobalUsageAgreementText(GlobalUsageAgreementEntity usageAgreement, String text, String language) {
 
-        LOG.debug("add global usage agreement text: language=" + language + " version="
-                + usageAgreement.getUsageAgreementVersion());
+        LOG.debug("add global usage agreement text: language=" + language + " version=" + usageAgreement.getUsageAgreementVersion());
         UsageAgreementTextEntity usageAgreementText = new UsageAgreementTextEntity(usageAgreement, text, language);
         this.entityManager.persist(usageAgreementText);
         usageAgreement.getUsageAgreementTexts().add(usageAgreementText);
@@ -198,8 +185,7 @@ public class UsageAgreementDAOBean implements UsageAgreementDAO {
 
     public GlobalUsageAgreementEntity getGlobalUsageAgreement(Long usageAgreementVersion) {
 
-        GlobalUsageAgreementEntity usageAgreement = this.entityManager.find(GlobalUsageAgreementEntity.class,
-                usageAgreementVersion);
+        GlobalUsageAgreementEntity usageAgreement = this.entityManager.find(GlobalUsageAgreementEntity.class, usageAgreementVersion);
         if (null == usageAgreement) {
             LOG.debug("global usage agreement version: " + usageAgreementVersion + " not found");
             return null;
@@ -207,15 +193,12 @@ public class UsageAgreementDAOBean implements UsageAgreementDAO {
         return usageAgreement;
     }
 
-    public UsageAgreementTextEntity getGlobalUsageAgreementText(GlobalUsageAgreementEntity usageAgreement,
-            String language) {
+    public UsageAgreementTextEntity getGlobalUsageAgreementText(GlobalUsageAgreementEntity usageAgreement, String language) {
 
-        LOG.debug("get usage agreement text: language=" + language + " version="
-                + usageAgreement.getUsageAgreementVersion());
-        UsageAgreementTextPK usageAgreementTextPK = new UsageAgreementTextPK(
-                GlobalUsageAgreementEntity.GLOBAL_USAGE_AGREEMENT, usageAgreement.getUsageAgreementVersion(), language);
-        UsageAgreementTextEntity usageAgreementText = this.entityManager.find(UsageAgreementTextEntity.class,
-                usageAgreementTextPK);
+        LOG.debug("get usage agreement text: language=" + language + " version=" + usageAgreement.getUsageAgreementVersion());
+        UsageAgreementTextPK usageAgreementTextPK = new UsageAgreementTextPK(GlobalUsageAgreementEntity.GLOBAL_USAGE_AGREEMENT,
+                usageAgreement.getUsageAgreementVersion(), language);
+        UsageAgreementTextEntity usageAgreementText = this.entityManager.find(UsageAgreementTextEntity.class, usageAgreementTextPK);
         if (null == usageAgreementText) {
             LOG.debug("usage agreement text version; " + usageAgreement.getUsageAgreementVersion() + " not found for");
             return null;
@@ -231,14 +214,12 @@ public class UsageAgreementDAOBean implements UsageAgreementDAO {
             return;
         this.entityManager.remove(usageAgreement);
         this.entityManager.flush();
-        this.textQueryObject.removeUsageAgreementTexts(GlobalUsageAgreementEntity.GLOBAL_USAGE_AGREEMENT,
-                usageAgreementVersion);
+        this.textQueryObject.removeUsageAgreementTexts(GlobalUsageAgreementEntity.GLOBAL_USAGE_AGREEMENT, usageAgreementVersion);
     }
 
     public void removeGlobalUsageAgreementText(UsageAgreementTextEntity usageAgreementText) {
 
-        GlobalUsageAgreementEntity usageAgreement = this.getGlobalUsageAgreement(usageAgreementText
-                .getUsageAgreementVersion());
+        GlobalUsageAgreementEntity usageAgreement = this.getGlobalUsageAgreement(usageAgreementText.getUsageAgreementVersion());
         usageAgreement.getUsageAgreementTexts().remove(usageAgreementText);
         this.entityManager.remove(usageAgreementText);
     }

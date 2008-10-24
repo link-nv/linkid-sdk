@@ -36,8 +36,8 @@ public interface EncapDeviceService {
      * @throws AttributeNotFoundException
      * @throws DeviceDisabledException
      */
-    void checkMobile(String mobile) throws SubjectNotFoundException, AttributeTypeNotFoundException,
-            AttributeNotFoundException, DeviceDisabledException;
+    void checkMobile(String mobile) throws SubjectNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException,
+                                   DeviceDisabledException;
 
     /**
      * Authenticate against the encap server and verifies with OLAS.
@@ -51,8 +51,8 @@ public interface EncapDeviceService {
      * @throws MobileAuthenticationException
      * @throws MobileException
      */
-    String authenticate(String mobile, String challengeId, String mobileOTP) throws MalformedURLException,
-            SubjectNotFoundException, MobileAuthenticationException, MobileException;
+    String authenticate(String mobile, String challengeId, String mobileOTP) throws MalformedURLException, SubjectNotFoundException,
+                                                                            MobileAuthenticationException, MobileException;
 
     /**
      * Authenticates against the encap server.
@@ -75,25 +75,23 @@ public interface EncapDeviceService {
      * @throws MobileException
      * @throws MobileRegistrationException
      */
-    String register(String mobile, String sessionId) throws MalformedURLException, MobileException,
-            MobileRegistrationException;
+    String register(String mobile, String sessionId) throws MalformedURLException, MobileException, MobileRegistrationException;
 
     /**
-     * Commits the encap registration for OLAS, creates a device subject if necessary, creates a new device registration
-     * for this mobile and attaches it to the device subject.
+     * Commits the encap registration for OLAS, creates a device subject if necessary, creates a new device registration for this mobile and
+     * attaches it to the device subject.
      * 
      * @param deviceUserId
      * @param mobile
      * @throws SubjectNotFoundException
      * @throws AttributeTypeNotFoundException
      */
-    void commitRegistration(String userId, String mobile) throws SubjectNotFoundException,
-            AttributeTypeNotFoundException;
+    void commitRegistration(String userId, String mobile) throws SubjectNotFoundException, AttributeTypeNotFoundException;
 
     void removeEncapMobile(String mobile) throws MalformedURLException, MobileException;
 
     void remove(String userId, String mobile) throws MobileException, MalformedURLException, SubjectNotFoundException,
-            AttributeTypeNotFoundException;
+                                             AttributeTypeNotFoundException;
 
     /**
      * Requests the encap server to send an OTP to the specified mobile.
@@ -124,5 +122,5 @@ public interface EncapDeviceService {
      * @throws DeviceRegistrationNotFoundException
      */
     void disable(String userId, String mobile) throws SubjectNotFoundException, DeviceNotFoundException,
-            DeviceRegistrationNotFoundException;
+                                              DeviceRegistrationNotFoundException;
 }

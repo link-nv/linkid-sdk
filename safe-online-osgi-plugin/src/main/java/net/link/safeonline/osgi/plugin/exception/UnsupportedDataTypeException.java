@@ -8,13 +8,13 @@ package net.link.safeonline.osgi.plugin.exception;
 
 import net.link.safeonline.osgi.plugin.Attribute;
 
+
 /**
  * <h2>{@link UnsupportedDataTypeException}<br>
  * <sub>Unsupported Data Type Exception.</sub></h2>
  * 
  * <p>
- * Exception thrown while trying to set an {@link Attribute} value with an
- * unknown data type.
+ * Exception thrown while trying to set an {@link Attribute} value with an unknown data type.
  * </p>
  * 
  * <p>
@@ -25,16 +25,19 @@ import net.link.safeonline.osgi.plugin.Attribute;
  */
 public class UnsupportedDataTypeException extends Exception {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private final String errorMessage;
+    private final String      errorMessage;
 
-	public UnsupportedDataTypeException(String errorMessage) {
-		this.errorMessage = errorMessage;
-	}
 
-	public String getErrorMessage() {
-		return this.errorMessage;
-	}
+    public UnsupportedDataTypeException(String errorMessage) {
+
+        this.errorMessage = errorMessage;
+    }
+
+    public String getErrorMessage() {
+
+        return this.errorMessage;
+    }
 
 }

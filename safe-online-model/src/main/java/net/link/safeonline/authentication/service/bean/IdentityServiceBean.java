@@ -126,9 +126,8 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     public void postConstructCallback() {
 
         /*
-         * By injecting the attribute DAO of this session bean in the attribute manager we are sure that the attribute
-         * manager (a lightweight bean) will live within the same transaction and security context as this identity
-         * service EJB3 session bean.
+         * By injecting the attribute DAO of this session bean in the attribute manager we are sure that the attribute manager (a
+         * lightweight bean) will live within the same transaction and security context as this identity service EJB3 session bean.
          */
         LOG.debug("postConstruct");
         this.attributeManager = new AttributeManagerLWBean(this.attributeDAO);
@@ -149,15 +148,14 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     }
 
     /**
-     * Gives back the attribute type for the given attribute name, but only if the user is allowed to edit attributes of
-     * the attribute type.
+     * Gives back the attribute type for the given attribute name, but only if the user is allowed to edit attributes of the attribute type.
      * 
      * @param attributeName
      * @throws PermissionDeniedException
      * @throws AttributeTypeNotFoundException
      */
-    private AttributeTypeEntity getUserEditableAttributeType(@NonEmptyString String attributeName)
-            throws PermissionDeniedException, AttributeTypeNotFoundException {
+    private AttributeTypeEntity getUserEditableAttributeType(@NonEmptyString String attributeName) throws PermissionDeniedException,
+                                                                                                  AttributeTypeNotFoundException {
 
         AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeName);
         if (false == attributeType.isUserEditable()) {
@@ -168,15 +166,15 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     }
 
     /**
-     * Gives back the attribute type for the given attribute name, but only if the user is allowed to remove attributes
-     * of the attribute type.
+     * Gives back the attribute type for the given attribute name, but only if the user is allowed to remove attributes of the attribute
+     * type.
      * 
      * @param attributeName
      * @throws PermissionDeniedException
      * @throws AttributeTypeNotFoundException
      */
-    private AttributeTypeEntity getUserRemovableAttributeType(@NonEmptyString String attributeName)
-            throws PermissionDeniedException, AttributeTypeNotFoundException {
+    private AttributeTypeEntity getUserRemovableAttributeType(@NonEmptyString String attributeName) throws PermissionDeniedException,
+                                                                                                   AttributeTypeNotFoundException {
 
         AttributeTypeEntity attributeType = this.attributeTypeDAO.findAttributeType(attributeName);
         if (null == attributeType) {
@@ -190,9 +188,8 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
             throw new PermissionDeniedException(msg);
         }
         /*
-         * We make an exception here for compounded member attributes here. Even if the member attribute type is marked
-         * as being non-user-editable the user is allowed to remove the entry if the compounded attribute type is
-         * editable.
+         * We make an exception here for compounded member attributes here. Even if the member attribute type is marked as being
+         * non-user-editable the user is allowed to remove the entry if the compounded attribute type is editable.
          */
         AttributeTypeEntity compoundedAttributeType = this.attributeTypeDAO.getParent(attributeType);
         if (true == compoundedAttributeType.isUserEditable())
@@ -203,8 +200,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public void saveAttribute(@NotNull AttributeDO attribute) throws PermissionDeniedException,
-            AttributeTypeNotFoundException {
+    public void saveAttribute(@NotNull AttributeDO attribute) throws PermissionDeniedException, AttributeTypeNotFoundException {
 
         SubjectEntity subject = this.subjectManager.getCallerSubject();
         String attributeName = attribute.getName();
@@ -215,35 +211,33 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
         if (attribute.isCompounded()) {
             LOG.debug("save compounded attribute");
             /*
-             * A compounded attribute record has a top-level attribute entry containing a UUID to uniquely identify the
-             * compounded attribute record.
+             * A compounded attribute record has a top-level attribute entry containing a UUID to uniquely identify the compounded attribute
+             * record.
              */
             AttributeTypeEntity compoundedAttributeType = getUserEditableAttributeType(attributeName);
-            AttributeEntity compoundedAttribute = this.attributeDAO.findAttribute(subject, compoundedAttributeType,
-                    index);
+            AttributeEntity compoundedAttribute = this.attributeDAO.findAttribute(subject, compoundedAttributeType, index);
             if (null == compoundedAttribute) {
                 /*
-                 * This situation is possible when filling in a compounded attribute record during the missing
-                 * attributes phase of the authentication process.
+                 * This situation is possible when filling in a compounded attribute record during the missing attributes phase of the
+                 * authentication process.
                  */
                 compoundedAttribute = this.attributeDAO.addAttribute(compoundedAttributeType, subject, index);
                 String compoundedAttributeId = UUID.randomUUID().toString();
-                LOG.debug("adding compounded attribute for " + subject.getUserId() + " of type " + attributeName
-                        + " with ID " + compoundedAttributeId);
+                LOG.debug("adding compounded attribute for " + subject.getUserId() + " of type " + attributeName + " with ID "
+                        + compoundedAttributeId);
                 compoundedAttribute.setStringValue(compoundedAttributeId);
             }
             /*
-             * Notice that, if there is already a compounded attribute for the given record index, then we don't
-             * overwrite it with a new ID. The idea behind the ID is that it remains constant during the lifecycle of
-             * the compounded attribute record.
+             * Notice that, if there is already a compounded attribute for the given record index, then we don't overwrite it with a new ID.
+             * The idea behind the ID is that it remains constant during the lifecycle of the compounded attribute record.
              */
             return;
         }
 
         if (false == attribute.isEditable()) {
             /*
-             * We allow the web application to pass in saveAttribute calls with attributes marked as non-editable, that
-             * way we have a transparent handling of attributes in the GUI.
+             * We allow the web application to pass in saveAttribute calls with attributes marked as non-editable, that way we have a
+             * transparent handling of attributes in the GUI.
              */
             LOG.debug("attribute marked as non-editable; skipping");
             return;
@@ -274,8 +268,8 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public List<AttributeDO> listAttributes(@NotNull SubjectEntity subject, Locale locale)
-            throws PermissionDeniedException, AttributeTypeNotFoundException {
+    public List<AttributeDO> listAttributes(@NotNull SubjectEntity subject, Locale locale) throws PermissionDeniedException,
+                                                                                          AttributeTypeNotFoundException {
 
         LOG.debug("get attributes for " + subject.getUserId());
 
@@ -284,8 +278,8 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public List<AttributeDO> listAttributes(Locale locale) throws AttributeTypeNotFoundException,
-            PermissionDeniedException, ApplicationIdentityNotFoundException {
+    public List<AttributeDO> listAttributes(Locale locale) throws AttributeTypeNotFoundException, PermissionDeniedException,
+                                                          ApplicationIdentityNotFoundException {
 
         SubjectEntity subject = this.subjectManager.getCallerSubject();
         LOG.debug("get attributes for " + subject.getUserId());
@@ -330,8 +324,8 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     /**
      * Returns list of attribute data objects given the subject and the list of attribute types.
      */
-    private List<AttributeDO> listAttributes(SubjectEntity subject, List<AttributeTypeEntity> attributeTypes,
-            Locale locale, boolean addTemplate) throws PermissionDeniedException, AttributeTypeNotFoundException {
+    private List<AttributeDO> listAttributes(SubjectEntity subject, List<AttributeTypeEntity> attributeTypes, Locale locale,
+                                             boolean addTemplate) throws PermissionDeniedException, AttributeTypeNotFoundException {
 
         List<AttributeDO> attributesView = new LinkedList<AttributeDO>();
         for (AttributeTypeEntity attributeType : attributeTypes) {
@@ -369,7 +363,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     }
 
     private void addTemplateToView(AttributeTypeEntity attributeType, List<AttributeDO> attributesView, Locale locale,
-            boolean missingAttribute, boolean unavailable) {
+                                   boolean missingAttribute, boolean unavailable) {
 
         LOG.debug("add template attribute " + attributeType.getName() + " to view");
         if (!attributeType.isMultivalued() && !attributeType.isCompounded()) {
@@ -380,15 +374,13 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
             attributesView.add(getAttributeView(attributeType, null, 0, locale, missingAttribute, unavailable)); // parent
             for (CompoundedAttributeTypeMemberEntity memberAttributeType : attributeType.getMembers()) {
                 LOG.debug("add compounded member attribute template: " + memberAttributeType.getMember().getName());
-                attributesView.add(getAttributeView(memberAttributeType.getMember(), null, 0, locale, missingAttribute,
-                        unavailable));
+                attributesView.add(getAttributeView(memberAttributeType.getMember(), null, 0, locale, missingAttribute, unavailable));
             }
         }
     }
 
     @SuppressWarnings("unchecked")
-    private void addValueToView(Object value, AttributeTypeEntity attributeType, List<AttributeDO> attributesView,
-            Locale locale) {
+    private void addValueToView(Object value, AttributeTypeEntity attributeType, List<AttributeDO> attributesView, Locale locale) {
 
         LOG.debug("add attribute " + attributeType.getName() + " to view");
         if (!attributeType.isMultivalued()) {
@@ -412,8 +404,9 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
                 attributesView.add(getAttributeView(attributeType, null, idx, locale, false, false));
                 for (CompoundedAttributeTypeMemberEntity memberAttributeType : attributeType.getMembers()) {
                     LOG.debug("add compounded member attribute: " + memberAttributeType.getMember().getName());
-                    attributesView.add(getAttributeView(memberAttributeType.getMember(), memberMap
-                            .get(memberAttributeType.getMember().getName()), idx, locale, false, false));
+                    attributesView.add(getAttributeView(memberAttributeType.getMember(), memberMap.get(memberAttributeType.getMember()
+                                                                                                                          .getName()), idx,
+                            locale, false, false));
                 }
                 idx++;
             }
@@ -421,13 +414,12 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     }
 
     /**
-     * Returns an attribute view for the given attribute. If value is specified, it must be a single attribute at this
-     * point, not a multi-valued or compounded attribute. The value can be null in case of a compounded parent
-     * attribute, or if a template view is wanted. missingAttribute is used to determine if compounded member attributes
-     * should be editable or not.
+     * Returns an attribute view for the given attribute. If value is specified, it must be a single attribute at this point, not a
+     * multi-valued or compounded attribute. The value can be null in case of a compounded parent attribute, or if a template view is
+     * wanted. missingAttribute is used to determine if compounded member attributes should be editable or not.
      */
-    private AttributeDO getAttributeView(AttributeTypeEntity attributeType, Object value, int idx, Locale locale,
-            boolean missingAttribute, boolean unavailable) {
+    private AttributeDO getAttributeView(AttributeTypeEntity attributeType, Object value, int idx, Locale locale, boolean missingAttribute,
+                                         boolean unavailable) {
 
         LOG.debug("get attribute view for type: " + attributeType.getName() + " with value: " + value);
         String humanReadableName = null;
@@ -437,17 +429,16 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
             humanReadableName = attributeTypeDescription.getName();
             description = attributeTypeDescription.getDescription();
         }
-        AttributeDO attributeView = new AttributeDO(attributeType.getName(), attributeType.getType(), attributeType
-                .isMultivalued(), idx, humanReadableName, description, attributeType.isUserEditable(), false, null,
-                null);
+        AttributeDO attributeView = new AttributeDO(attributeType.getName(), attributeType.getType(), attributeType.isMultivalued(), idx,
+                humanReadableName, description, attributeType.isUserEditable(), false, null, null);
 
         attributeView.setCompounded(attributeType.isCompounded());
         attributeView.setMember(attributeType.isCompoundMember());
         attributeView.setUnavailable(unavailable);
         /*
-         * We mark compounded attribute members as non-editable when queries via the listAttributes method to ease
-         * visualization. This is not the case if we are making a view for the missing attributes page, then the user
-         * editable'ness should be as set in the attribute type.
+         * We mark compounded attribute members as non-editable when queries via the listAttributes method to ease visualization. This is
+         * not the case if we are making a view for the missing attributes page, then the user editable'ness should be as set in the
+         * attribute type.
          */
         if (attributeType.isCompoundMember() && !missingAttribute) {
             attributeView.setEditable(false);
@@ -465,14 +456,15 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
             return null;
         String language = locale.getLanguage();
         LOG.debug("trying language: " + language);
-        AttributeTypeDescriptionEntity attributeTypeDescription = this.attributeTypeDAO
-                .findDescription(new AttributeTypeDescriptionPK(attributeType.getName(), language));
+        AttributeTypeDescriptionEntity attributeTypeDescription = this.attributeTypeDAO.findDescription(new AttributeTypeDescriptionPK(
+                attributeType.getName(), language));
         return attributeTypeDescription;
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
     public boolean isConfirmationRequired(@NonEmptyString String applicationName) throws ApplicationNotFoundException,
-            SubscriptionNotFoundException, ApplicationIdentityNotFoundException {
+                                                                                 SubscriptionNotFoundException,
+                                                                                 ApplicationIdentityNotFoundException {
 
         SubjectEntity subject = this.subjectManager.getCallerSubject();
         LOG.debug("is confirmation required for application " + applicationName + " by subject " + subject.getUserId());
@@ -503,8 +495,8 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public void confirmIdentity(@NonEmptyString String applicationName) throws ApplicationNotFoundException,
-            SubscriptionNotFoundException, ApplicationIdentityNotFoundException {
+    public void confirmIdentity(@NonEmptyString String applicationName) throws ApplicationNotFoundException, SubscriptionNotFoundException,
+                                                                       ApplicationIdentityNotFoundException {
 
         LOG.debug("confirm identity for application: " + applicationName);
 
@@ -523,7 +515,9 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
     public List<AttributeDO> listIdentityAttributesToConfirm(@NonEmptyString String applicationName, Locale locale)
-            throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, SubscriptionNotFoundException {
+                                                                                                                   throws ApplicationNotFoundException,
+                                                                                                                   ApplicationIdentityNotFoundException,
+                                                                                                                   SubscriptionNotFoundException {
 
         LOG.debug("get identity to confirm for application: " + applicationName);
         ApplicationEntity application = this.applicationDAO.getApplication(applicationName);
@@ -538,18 +532,17 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
 
         if (null == confirmedIdentityVersion) {
             /*
-             * If no identity version was confirmed previously, then the user needs to confirm the current application
-             * identity attributes.
+             * If no identity version was confirmed previously, then the user needs to confirm the current application identity attributes.
              */
             LOG.debug("currentIdentityAttributes: " + currentIdentityAttributes);
-            List<AttributeDO> resultAttributes = this.attributeTypeDescriptionDecorator
-                    .addDescriptionFromIdentityAttributes(currentIdentityAttributes, locale);
+            List<AttributeDO> resultAttributes = this.attributeTypeDescriptionDecorator.addDescriptionFromIdentityAttributes(
+                    currentIdentityAttributes, locale);
             return resultAttributes;
         }
 
         // fetch the attribute types that are already agreed upon
-        ApplicationIdentityEntity confirmedApplicationIdentity = this.applicationIdentityDAO.getApplicationIdentity(
-                application, confirmedIdentityVersion);
+        ApplicationIdentityEntity confirmedApplicationIdentity = this.applicationIdentityDAO.getApplicationIdentity(application,
+                confirmedIdentityVersion);
         Set<ApplicationIdentityAttributeEntity> confirmedAttributeTypes = confirmedApplicationIdentity.getAttributes();
 
         List<ApplicationIdentityAttributeEntity> toConfirmAttributes = new LinkedList<ApplicationIdentityAttributeEntity>();
@@ -566,14 +559,15 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
             }
         }
 
-        List<AttributeDO> resultAttributes = this.attributeTypeDescriptionDecorator
-                .addDescriptionFromIdentityAttributes(toConfirmAttributes, locale);
+        List<AttributeDO> resultAttributes = this.attributeTypeDescriptionDecorator.addDescriptionFromIdentityAttributes(
+                toConfirmAttributes, locale);
         return resultAttributes;
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
     public boolean hasMissingAttributes(@NonEmptyString String applicationName) throws ApplicationNotFoundException,
-            ApplicationIdentityNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException {
+                                                                               ApplicationIdentityNotFoundException,
+                                                                               PermissionDeniedException, AttributeTypeNotFoundException {
 
         LOG.debug("hasMissingAttributes for application: " + applicationName);
         List<AttributeDO> missingAttributes = listMissingAttributes(applicationName, null);
@@ -581,15 +575,16 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     }
 
     /**
-     * Gives back all the data attribute types for the given application, required or optional as specified. This method
-     * will also expand compounded attribute types.
+     * Gives back all the data attribute types for the given application, required or optional as specified. This method will also expand
+     * compounded attribute types.
      * 
      * @param applicationName
      * @throws ApplicationNotFoundException
      * @throws ApplicationIdentityNotFoundException
      */
     private List<AttributeTypeEntity> getDataAttributeTypes(@NonEmptyString String applicationName, boolean required)
-            throws ApplicationNotFoundException, ApplicationIdentityNotFoundException {
+                                                                                                                     throws ApplicationNotFoundException,
+                                                                                                                     ApplicationIdentityNotFoundException {
 
         ApplicationEntity application = this.applicationDAO.getApplication(applicationName);
         long currentApplicationIdentityVersion = application.getCurrentApplicationIdentity();
@@ -608,16 +603,15 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
                 continue;
             }
             if (required == false) {
-                attributeRequirements.put(attributeType, required == identityAttribute.isRequired()
-                        && attributeType.isUserEditable());
+                attributeRequirements.put(attributeType, required == identityAttribute.isRequired() && attributeType.isUserEditable());
             } else {
                 attributeRequirements.put(attributeType, required == identityAttribute.isRequired());
             }
         }
 
         /*
-         * Next we go over the compounded attribute types and add their members to the map, using the optionality of the
-         * member attribute entity.
+         * Next we go over the compounded attribute types and add their members to the map, using the optionality of the member attribute
+         * entity.
          */
         for (ApplicationIdentityAttributeEntity identityAttribute : identityAttributes) {
             LOG.debug("look at compounded: " + identityAttribute.getAttributeTypeName());
@@ -633,8 +627,8 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
                 AttributeTypeEntity memberAttributeType = member.getMember();
                 if (attributeRequirements.containsKey(memberAttributeType)) {
                     /*
-                     * If the attribute is already present it's because of a non-compounded attribute type which has
-                     * precedence over the member attribute types of a compounded attribute type.
+                     * If the attribute is already present it's because of a non-compounded attribute type which has precedence over the
+                     * member attribute types of a compounded attribute type.
                      */
                     continue;
                 }
@@ -647,8 +641,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
             }
         }
 
-        List<AttributeTypeEntity> result = FilterUtil
-                .filterToList(attributeRequirements, new AttributeMapEntryFilter());
+        List<AttributeTypeEntity> result = FilterUtil.filterToList(attributeRequirements, new AttributeMapEntryFilter());
         return result;
     }
 
@@ -665,8 +658,10 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
     public List<AttributeDO> listOptionalAttributes(@NonEmptyString String applicationName, Locale locale)
-            throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException,
-            AttributeTypeNotFoundException {
+                                                                                                          throws ApplicationNotFoundException,
+                                                                                                          ApplicationIdentityNotFoundException,
+                                                                                                          PermissionDeniedException,
+                                                                                                          AttributeTypeNotFoundException {
 
         LOG.debug("list optional missing attributes for application: " + applicationName);
         SubjectEntity subject = this.subjectManager.getCallerSubject();
@@ -678,8 +673,10 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
     public List<AttributeDO> listMissingAttributes(@NonEmptyString String applicationName, Locale locale)
-            throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException,
-            AttributeTypeNotFoundException {
+                                                                                                         throws ApplicationNotFoundException,
+                                                                                                         ApplicationIdentityNotFoundException,
+                                                                                                         PermissionDeniedException,
+                                                                                                         AttributeTypeNotFoundException {
 
         LOG.debug("list missing attributes for application: " + applicationName);
         SubjectEntity subject = this.subjectManager.getCallerSubject();
@@ -693,8 +690,9 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
      * Returns list of attribute data objects given the subject and the list of attribute types.
      * 
      */
-    private List<AttributeDO> listMissingAttributes(SubjectEntity subject, List<AttributeTypeEntity> attributeTypes,
-            Locale locale) throws PermissionDeniedException, AttributeTypeNotFoundException {
+    private List<AttributeDO> listMissingAttributes(SubjectEntity subject, List<AttributeTypeEntity> attributeTypes, Locale locale)
+                                                                                                                                   throws PermissionDeniedException,
+                                                                                                                                   AttributeTypeNotFoundException {
 
         List<AttributeDO> attributesView = new LinkedList<AttributeDO>();
         for (AttributeTypeEntity attributeType : attributeTypes) {
@@ -716,7 +714,9 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
     public List<AttributeDO> listConfirmedIdentity(@NonEmptyString String applicationName, Locale locale)
-            throws ApplicationNotFoundException, SubscriptionNotFoundException, ApplicationIdentityNotFoundException {
+                                                                                                         throws ApplicationNotFoundException,
+                                                                                                         SubscriptionNotFoundException,
+                                                                                                         ApplicationIdentityNotFoundException {
 
         ApplicationEntity application = this.applicationDAO.getApplication(applicationName);
         SubjectEntity subject = this.subjectManager.getCallerSubject();
@@ -727,14 +727,16 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
         ApplicationIdentityEntity confirmedIdentity = this.applicationIdentityDAO.getApplicationIdentity(application,
                 confirmedIdentityVersion);
         Set<ApplicationIdentityAttributeEntity> confirmedAttributeTypes = confirmedIdentity.getAttributes();
-        List<AttributeDO> confirmedAttributes = this.attributeTypeDescriptionDecorator
-                .addDescriptionFromIdentityAttributes(confirmedAttributeTypes, locale);
+        List<AttributeDO> confirmedAttributes = this.attributeTypeDescriptionDecorator.addDescriptionFromIdentityAttributes(
+                confirmedAttributeTypes, locale);
         return confirmedAttributes;
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public List<AttributeDO> listAttributes(@NotNull SubjectEntity subject, @NotNull AttributeTypeEntity attributeType,
-            Locale locale) throws PermissionDeniedException, AttributeTypeNotFoundException, SubjectNotFoundException {
+    public List<AttributeDO> listAttributes(@NotNull SubjectEntity subject, @NotNull AttributeTypeEntity attributeType, Locale locale)
+                                                                                                                                      throws PermissionDeniedException,
+                                                                                                                                      AttributeTypeNotFoundException,
+                                                                                                                                      SubjectNotFoundException {
 
         LOG.debug("list attributes of type " + attributeType.getName() + " for user: " + subject.getUserId());
         try {
@@ -752,8 +754,8 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public void removeAttribute(@NotNull AttributeDO attribute) throws PermissionDeniedException,
-            AttributeNotFoundException, AttributeTypeNotFoundException {
+    public void removeAttribute(@NotNull AttributeDO attribute) throws PermissionDeniedException, AttributeNotFoundException,
+                                                               AttributeTypeNotFoundException {
 
         SubjectEntity subject = this.subjectManager.getCallerSubject();
         String attributeName = attribute.getName();
@@ -770,7 +772,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
     public void addAttribute(@NotNull List<AttributeDO> newAttributeContext) throws PermissionDeniedException,
-            AttributeTypeNotFoundException {
+                                                                            AttributeTypeNotFoundException {
 
         AttributeDO headAttribute = newAttributeContext.get(0);
         String attributeName = headAttribute.getName();
@@ -808,8 +810,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
                     continue;
                 }
                 AttributeTypeEntity memberAttributeType = this.attributeTypeDAO.getAttributeType(attribute.getName());
-                AttributeEntity memberAttribute = this.attributeDAO.addAttribute(memberAttributeType, subject,
-                        attributeIndex);
+                AttributeEntity memberAttribute = this.attributeDAO.addAttribute(memberAttributeType, subject, attributeIndex);
                 LOG.debug("adding member: " + memberAttributeType.getName());
                 attribute.copyValueTo(memberAttributeType, memberAttribute);
             }
@@ -832,8 +833,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public List<AttributeDO> getAttributeEditContext(@NotNull AttributeDO selectedAttribute)
-            throws AttributeTypeNotFoundException {
+    public List<AttributeDO> getAttributeEditContext(@NotNull AttributeDO selectedAttribute) throws AttributeTypeNotFoundException {
 
         AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(selectedAttribute.getName());
         if (attributeType.isCompounded()) {
@@ -852,8 +852,8 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
                     continue;
                 }
                 AttributeEntity attribute = this.attributeDAO.findAttribute(subject, memberAttributeType, index);
-                AttributeDO memberView = new AttributeDO(memberAttributeType.getName(), memberAttributeType.getType(),
-                        true, index, null, null, memberAttributeType.isUserEditable(), false, null, null);
+                AttributeDO memberView = new AttributeDO(memberAttributeType.getName(), memberAttributeType.getType(), true, index, null,
+                        null, memberAttributeType.isUserEditable(), false, null, null);
                 memberView.setMember(true);
                 if (null != attribute) {
                     memberView.setValue(attribute);
@@ -867,8 +867,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
             throw new IllegalArgumentException("cannot handle members itself.");
         }
         /*
-         * Else we're dealing with simple- or multivalued attributes that do not participate in a compounded record
-         * somehow.
+         * Else we're dealing with simple- or multivalued attributes that do not participate in a compounded record somehow.
          */
         List<AttributeDO> attributeEditContext = new LinkedList<AttributeDO>();
         attributeEditContext.add(selectedAttribute);
@@ -876,8 +875,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public List<AttributeDO> getAttributeTemplate(@NotNull AttributeDO prototypeAttribute)
-            throws AttributeTypeNotFoundException {
+    public List<AttributeDO> getAttributeTemplate(@NotNull AttributeDO prototypeAttribute) throws AttributeTypeNotFoundException {
 
         String attributeName = prototypeAttribute.getName();
         LOG.debug("getAttributeTemplate: " + attributeName);
@@ -887,12 +885,11 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
             List<AttributeDO> attributeTemplate = new LinkedList<AttributeDO>();
 
             /*
-             * Notice that we mark the entry as single-valued here since we cannot yet pass a usefull attribute index to
-             * the GUI.
+             * Notice that we mark the entry as single-valued here since we cannot yet pass a usefull attribute index to the GUI.
              */
-            AttributeDO compoundedAttribute = new AttributeDO(attributeType.getName(), attributeType.getType(), false,
-                    -1, prototypeAttribute.getRawHumanReadableName(), prototypeAttribute.getDescription(),
-                    attributeType.isUserEditable(), false, null, null);
+            AttributeDO compoundedAttribute = new AttributeDO(attributeType.getName(), attributeType.getType(), false, -1,
+                    prototypeAttribute.getRawHumanReadableName(), prototypeAttribute.getDescription(), attributeType.isUserEditable(),
+                    false, null, null);
             compoundedAttribute.setCompounded(true);
             attributeTemplate.add(compoundedAttribute);
 
@@ -902,11 +899,10 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
                 AttributeTypeEntity memberAttributeType = member.getMember();
 
                 /*
-                 * Notice that we mark the entry as single-valued here since we cannot yet pass a usefull attribute
-                 * index to the GUI.
+                 * Notice that we mark the entry as single-valued here since we cannot yet pass a usefull attribute index to the GUI.
                  */
-                AttributeDO memberAttribute = new AttributeDO(memberAttributeType.getName(), memberAttributeType
-                        .getType(), false, -1, null, null, memberAttributeType.isUserEditable(), false, null, null);
+                AttributeDO memberAttribute = new AttributeDO(memberAttributeType.getName(), memberAttributeType.getType(), false, -1,
+                        null, null, memberAttributeType.isUserEditable(), false, null, null);
                 memberAttribute.setMember(true);
                 attributeTemplate.add(memberAttribute);
             }
@@ -919,12 +915,11 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
         }
 
         /*
-         * Notice that we mark the entry as single-valued here since we cannot yet pass a usefull attribute index to the
-         * GUI.
+         * Notice that we mark the entry as single-valued here since we cannot yet pass a usefull attribute index to the GUI.
          */
         AttributeDO attribute = new AttributeDO(attributeType.getName(), attributeType.getType(), false, -1,
-                prototypeAttribute.getRawHumanReadableName(), prototypeAttribute.getDescription(), attributeType
-                        .isUserEditable(), false, null, null);
+                prototypeAttribute.getRawHumanReadableName(), prototypeAttribute.getDescription(), attributeType.isUserEditable(), false,
+                null, null);
         List<AttributeDO> attributeTemplate = new LinkedList<AttributeDO>();
         attributeTemplate.add(attribute);
         return attributeTemplate;

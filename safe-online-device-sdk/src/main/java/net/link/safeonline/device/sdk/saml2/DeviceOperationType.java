@@ -9,5 +9,9 @@ package net.link.safeonline.device.sdk.saml2;
 
 public enum DeviceOperationType {
 
-    NEW_ACCOUNT_REGISTER, REGISTER, REMOVE, UPDATE, DISABLE;
+    NEW_ACCOUNT_REGISTER,
+    REGISTER,
+    REMOVE,
+    UPDATE,
+    DISABLE;
 }

@@ -20,8 +20,7 @@ import javax.persistence.NamedQuery;
 
 
 @Entity
-@NamedQueries( {
-        @NamedQuery(name = CinemaTicketEntity.getById, query = "SELECT t FROM CinemaTicketEntity t WHERE t.id = :id"),
+@NamedQueries( { @NamedQuery(name = CinemaTicketEntity.getById, query = "SELECT t FROM CinemaTicketEntity t WHERE t.id = :id"),
         @NamedQuery(name = CinemaTicketEntity.getByUser, query = "SELECT t FROM CinemaTicketEntity t WHERE t.owner = :user"),
         @NamedQuery(name = CinemaTicketEntity.getByNrn, query = "SELECT t FROM CinemaTicketEntity t WHERE t.owner.nrn = :nrn") })
 public class CinemaTicketEntity implements Serializable {
@@ -51,8 +50,7 @@ public class CinemaTicketEntity implements Serializable {
 
     }
 
-    public CinemaTicketEntity(CinemaUserEntity owner, CinemaFilmEntity film, long time,
-            CinemaSeatOccupationEntity occupation) {
+    public CinemaTicketEntity(CinemaUserEntity owner, CinemaFilmEntity film, long time, CinemaSeatOccupationEntity occupation) {
 
         this.owner = owner;
 
@@ -67,8 +65,8 @@ public class CinemaTicketEntity implements Serializable {
     @Override
     public String toString() {
 
-        return String.format("[%s]   Owner: %s, Price %s, Film: %s, Theatre: %s", new Date(getTime()), getOwner()
-                .getNrn(), getPrice(), getFilm().getName(), getOccupation().getSeat().getRoom().getTheatre().getName());
+        return String.format("[%s]   Owner: %s, Price %s, Film: %s, Theatre: %s", new Date(getTime()), getOwner().getNrn(), getPrice(),
+                getFilm().getName(), getOccupation().getSeat().getRoom().getTheatre().getName());
     }
 
     /**
@@ -96,8 +94,7 @@ public class CinemaTicketEntity implements Serializable {
     }
 
     /**
-     * @return The {@link Date} of the showing of the {@link CinemaFilmEntity} that this ticket grants the owner access
-     *         to.
+     * @return The {@link Date} of the showing of the {@link CinemaFilmEntity} that this ticket grants the owner access to.
      */
     public long getTime() {
 

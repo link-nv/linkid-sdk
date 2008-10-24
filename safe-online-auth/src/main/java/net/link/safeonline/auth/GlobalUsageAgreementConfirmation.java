@@ -16,9 +16,8 @@ public interface GlobalUsageAgreementConfirmation {
     /*
      * Actions.
      */
-    String confirm() throws ApplicationNotFoundException, SubscriptionNotFoundException,
-            ApplicationIdentityNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException,
-            AttributeUnavailableException;
+    String confirm() throws ApplicationNotFoundException, SubscriptionNotFoundException, ApplicationIdentityNotFoundException,
+                    PermissionDeniedException, AttributeTypeNotFoundException, AttributeUnavailableException;
 
     /*
      * Accessors

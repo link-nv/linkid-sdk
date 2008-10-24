@@ -21,9 +21,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Builder for compound attribute instances. A compound attribute instance in build using the compound annotations.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class CompoundBuilder {
 
@@ -39,10 +39,10 @@ public class CompoundBuilder {
 
 
     /**
-     * Main constructor. The compound class should be annotated with {@link Compound} and the member properties with
-     * {@link CompoundMember}. The compound class can also be a simple {@link Map}. In this case the result map will be
-     * filled with name value map entries for every member of the compounded attribute.
-     *
+     * Main constructor. The compound class should be annotated with {@link Compound} and the member properties with {@link CompoundMember}.
+     * The compound class can also be a simple {@link Map}. In this case the result map will be filled with name value map entries for every
+     * member of the compounded attribute.
+     * 
      * @param compoundClass
      */
     @SuppressWarnings("unchecked")
@@ -69,7 +69,7 @@ public class CompoundBuilder {
 
     /**
      * Gives back the resulting compound object.
-     *
+     * 
      */
     public Object getCompound() {
 
@@ -78,7 +78,7 @@ public class CompoundBuilder {
 
     /**
      * Sets a property (i.e. a member attribute) on the compounded object.
-     *
+     * 
      * @param memberName
      *            the name of the member attribute.
      * @param memberAttributeValue
@@ -117,7 +117,7 @@ public class CompoundBuilder {
 
     /**
      * Sets the compounded attribute Id. Every compounded attribute record has an identifier.
-     *
+     * 
      * @param attributeId
      */
     @SuppressWarnings("unchecked")

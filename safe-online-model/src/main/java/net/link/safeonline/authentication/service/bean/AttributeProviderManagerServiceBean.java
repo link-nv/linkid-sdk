@@ -40,8 +40,7 @@ import org.jboss.annotation.security.SecurityDomain;
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
-public class AttributeProviderManagerServiceBean implements AttributeProviderManagerService,
-        AttributeProviderManagerServiceRemote {
+public class AttributeProviderManagerServiceBean implements AttributeProviderManagerService, AttributeProviderManagerServiceRemote {
 
     private static final Log     LOG = LogFactory.getLog(AttributeProviderManagerServiceBean.class);
 
@@ -56,22 +55,19 @@ public class AttributeProviderManagerServiceBean implements AttributeProviderMan
 
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public List<AttributeProviderEntity> getAttributeProviders(String attributeName)
-            throws AttributeTypeNotFoundException {
+    public List<AttributeProviderEntity> getAttributeProviders(String attributeName) throws AttributeTypeNotFoundException {
 
         LOG.debug("get attribute providers for attribute " + attributeName);
         AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeName);
-        List<AttributeProviderEntity> attributeProviders = this.attributeProviderDAO
-                .listAttributeProviders(attributeType);
+        List<AttributeProviderEntity> attributeProviders = this.attributeProviderDAO.listAttributeProviders(attributeType);
         return attributeProviders;
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void removeAttributeProvider(AttributeProviderEntity attributeProvider)
-            throws AttributeProviderNotFoundException {
+    public void removeAttributeProvider(AttributeProviderEntity attributeProvider) throws AttributeProviderNotFoundException {
 
-        AttributeProviderEntity attachedEntity = this.attributeProviderDAO.findAttributeProvider(attributeProvider
-                .getApplication(), attributeProvider.getAttributeType());
+        AttributeProviderEntity attachedEntity = this.attributeProviderDAO.findAttributeProvider(attributeProvider.getApplication(),
+                attributeProvider.getAttributeType());
         if (null == attachedEntity)
             throw new AttributeProviderNotFoundException();
         this.attributeProviderDAO.removeAttributeProvider(attachedEntity);
@@ -79,15 +75,16 @@ public class AttributeProviderManagerServiceBean implements AttributeProviderMan
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public void addAttributeProvider(String applicationName, String attributeName) throws ApplicationNotFoundException,
-            AttributeTypeNotFoundException, ExistingAttributeProviderException, PermissionDeniedException {
+                                                                                  AttributeTypeNotFoundException,
+                                                                                  ExistingAttributeProviderException,
+                                                                                  PermissionDeniedException {
 
         ApplicationEntity application = this.applicationDAO.getApplication(applicationName);
         AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeName);
         if (!attributeType.isLocal()) {
             throw new PermissionDeniedException("Cannot set attribute provider on remote attribute");
         }
-        AttributeProviderEntity existingAttributeProvider = this.attributeProviderDAO.findAttributeProvider(
-                application, attributeType);
+        AttributeProviderEntity existingAttributeProvider = this.attributeProviderDAO.findAttributeProvider(application, attributeType);
         if (null != existingAttributeProvider)
             throw new ExistingAttributeProviderException();
         this.attributeProviderDAO.addAttributeProvider(application, attributeType);

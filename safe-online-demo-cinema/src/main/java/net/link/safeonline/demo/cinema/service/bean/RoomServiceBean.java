@@ -24,15 +24,15 @@ import org.jboss.annotation.ejb.LocalBinding;
 /**
  * <h2>{@link RoomServiceBean}<br>
  * <sub>Service bean for {@link RoomService}.</sub></h2>
- *
+ * 
  * <p>
  * [description / usage].
  * </p>
- *
+ * 
  * <p>
  * <i>Jun 12, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 @Stateless
@@ -50,7 +50,7 @@ public class RoomServiceBean extends AbstractCinemaServiceBean implements RoomSe
     public List<CinemaRoomEntity> getRoomsFor(CinemaTheatreEntity theatre, CinemaFilmEntity film) {
 
         return this.em.createNamedQuery(CinemaRoomEntity.getFor).setParameter("theatre", theatre).setParameter("film", film)
-                .getResultList();
+                      .getResultList();
     }
 
     /**

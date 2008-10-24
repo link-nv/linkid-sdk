@@ -16,15 +16,15 @@ import net.link.safeonline.service.PublicApplicationService;
 /**
  * <h2>{@link PublicApplication} - An {@link ApplicationEntity} stub containing only public information.</h2>
  * <p>
- * A stub that represents the publicly available information from an {@link ApplicationEntity}. This object can be used
- * for providing unauthenticated users access to public application data.
+ * A stub that represents the publicly available information from an {@link ApplicationEntity}. This object can be used for providing
+ * unauthenticated users access to public application data.
  * </p>
  * <p>
  * <i>Dec 7, 2007</i>
  * </p>
- *
+ * 
  * @see PublicApplicationService#findPublicApplication(String)
- *
+ * 
  * @author mbillemo
  */
 public class PublicApplication {

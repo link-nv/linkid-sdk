@@ -24,11 +24,11 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- * Servlet that receives the java version data from the JavaVersionApplet applet and processes it. Depending on target
- * session attributes being set this servlet will redirect to different locations.
- *
+ * Servlet that receives the java version data from the JavaVersionApplet applet and processes it. Depending on target session attributes
+ * being set this servlet will redirect to different locations.
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class JavaVersionServlet extends AbstractInjectionServlet {
 
@@ -51,7 +51,7 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 
     /**
      * Sets the target in case no PKCS#11 drivers were detected but Java 1.5 runtime is present.
-     *
+     * 
      * @param target
      * @param session
      */
@@ -62,7 +62,7 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 
     /**
      * Sets the target in case no PKCS#11 drivers were detected but Java 1.6 runtime is present.
-     *
+     * 
      * @param target
      * @param session
      */
@@ -73,7 +73,7 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 
     /**
      * Sets the target in case PKCS#11 drivers were detected.
-     *
+     * 
      * @param target
      * @param session
      */
@@ -125,11 +125,15 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 
 
     public static enum PLATFORM {
-        WINDOWS, LINUX, MAC, UNSUPPORTED
+        WINDOWS,
+        LINUX,
+        MAC,
+        UNSUPPORTED
     }
 
     public static enum JAVA_VERSION {
-        JAVA_1_5, JAVA_1_6
+        JAVA_1_5,
+        JAVA_1_6
     }
 
 
@@ -141,15 +145,13 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 
 
     @Override
-    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         invoke(request, response);
     }
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         invoke(request, response);
     }

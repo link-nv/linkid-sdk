@@ -14,13 +14,13 @@ import net.link.safeonline.osgi.plugin.exception.AttributeUnavailableException;
 import net.link.safeonline.osgi.plugin.exception.SubjectNotFoundException;
 import net.link.safeonline.osgi.plugin.exception.UnsupportedDataTypeException;
 
+
 /**
  * <h2>{@link PluginAttributeService}<br>
  * <sub>Plugin Attribute service API. </sub></h2>
  * 
  * <p>
- * Plugin Attribute service API. OSGi attribute plugins should implement this
- * interface.
+ * Plugin Attribute service API. OSGi attribute plugins should implement this interface.
  * </p>
  * 
  * <p>
@@ -31,24 +31,24 @@ import net.link.safeonline.osgi.plugin.exception.UnsupportedDataTypeException;
  */
 public interface PluginAttributeService {
 
-	/**
-	 * Returns the attribute view for the specified attribute name from the
-	 * specified user with the implementing OSGi attribute plugin given the
-	 * specified configuration.
-	 * 
-	 * @param userId
-	 * @param attributeName
-	 * @param configuration
-	 * @return attribute view
-	 * @throws UnsupportedDataTypeException
-	 * @throws AttributeNotFoundException
-	 * @throws AttributeTypeNotFoundException
-	 * @throws AttributeUnavailableException
-	 * @throws SubjectNotFoundException
-	 */
-	public List<Attribute> getAttribute(String userId, String attributeName,
-			String configuration) throws UnsupportedDataTypeException,
-			AttributeNotFoundException, AttributeTypeNotFoundException,
-			AttributeUnavailableException, SubjectNotFoundException;
+    /**
+     * Returns the attribute view for the specified attribute name from the specified user with the implementing OSGi attribute plugin given
+     * the specified configuration.
+     * 
+     * @param userId
+     * @param attributeName
+     * @param configuration
+     * @return attribute view
+     * @throws UnsupportedDataTypeException
+     * @throws AttributeNotFoundException
+     * @throws AttributeTypeNotFoundException
+     * @throws AttributeUnavailableException
+     * @throws SubjectNotFoundException
+     */
+    public List<Attribute> getAttribute(String userId, String attributeName, String configuration) throws UnsupportedDataTypeException,
+                                                                                                  AttributeNotFoundException,
+                                                                                                  AttributeTypeNotFoundException,
+                                                                                                  AttributeUnavailableException,
+                                                                                                  SubjectNotFoundException;
 
 }

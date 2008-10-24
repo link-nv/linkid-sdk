@@ -57,8 +57,7 @@ public class DomTestUtils {
         transformer.transform(source, streamResult);
     }
 
-    public static Document loadDocument(InputStream documentInputStream) throws ParserConfigurationException,
-            SAXException, IOException {
+    public static Document loadDocument(InputStream documentInputStream) throws ParserConfigurationException, SAXException, IOException {
 
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware(true);

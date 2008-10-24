@@ -24,16 +24,15 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Servlet that processes the data that comes from the client-side identification applet.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class IdentificationDataServlet extends AbstractInjectionServlet {
 
     private static final long   serialVersionUID                         = 1L;
 
-    private static final Log    LOG                                      = LogFactory
-                                                                                 .getLog(IdentificationDataServlet.class);
+    private static final Log    LOG                                      = LogFactory.getLog(IdentificationDataServlet.class);
 
     public static final String  NAME_SESSION_ATTRIBUTE                   = "id-name";
 
@@ -102,21 +101,18 @@ public class IdentificationDataServlet extends AbstractInjectionServlet {
 
 
     @Override
-    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         invoke(request, response);
     }
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         invoke(request, response);
     }
 
-    private void invoke(@SuppressWarnings("unused") HttpServletRequest request,
-            @SuppressWarnings("unused") HttpServletResponse response) {
+    private void invoke(@SuppressWarnings("unused") HttpServletRequest request, @SuppressWarnings("unused") HttpServletResponse response) {
 
         LOG.debug("name: " + this.name);
         LOG.debug("first name: " + this.firstName);

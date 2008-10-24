@@ -14,7 +14,7 @@ public interface SmartCardConfigFactory {
 
     /**
      * Gives back a list of smart card configurations.
-     *
+     * 
      */
     List<SmartCardConfig> getSmartCardConfigs();
 }

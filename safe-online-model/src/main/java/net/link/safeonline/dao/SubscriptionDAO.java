@@ -21,23 +21,21 @@ import net.link.safeonline.entity.SubscriptionOwnerType;
 
 /**
  * Subcription entity data access object interface definition.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Local
 public interface SubscriptionDAO {
 
     SubscriptionEntity findSubscription(SubjectEntity subject, ApplicationEntity application);
 
-    SubscriptionEntity getSubscription(SubjectEntity subject, ApplicationEntity application)
-            throws SubscriptionNotFoundException;
+    SubscriptionEntity getSubscription(SubjectEntity subject, ApplicationEntity application) throws SubscriptionNotFoundException;
 
-    void addSubscription(SubscriptionOwnerType subscriptionOwnerType, SubjectEntity subject,
-            ApplicationEntity application);
+    void addSubscription(SubscriptionOwnerType subscriptionOwnerType, SubjectEntity subject, ApplicationEntity application);
 
-    void addSubscription(SubscriptionOwnerType subscriptionOwnerType, SubjectEntity subject,
-            ApplicationEntity application, String subscriptionUserId);
+    void addSubscription(SubscriptionOwnerType subscriptionOwnerType, SubjectEntity subject, ApplicationEntity application,
+                         String subscriptionUserId);
 
     List<SubscriptionEntity> listSubsciptions(SubjectEntity subject);
 

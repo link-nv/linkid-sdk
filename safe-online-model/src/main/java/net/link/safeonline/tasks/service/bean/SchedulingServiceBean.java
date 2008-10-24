@@ -102,8 +102,7 @@ public class SchedulingServiceBean implements SchedulingService, SchedulingServi
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void addScheduling(SchedulingEntity scheduling) throws InvalidCronExpressionException,
-            ExistingSchedulingException {
+    public void addScheduling(SchedulingEntity scheduling) throws InvalidCronExpressionException, ExistingSchedulingException {
 
         SchedulingEntity existingScheduling = this.schedulingDAO.findSchedulingByName(scheduling.getName());
         if (null != existingScheduling)

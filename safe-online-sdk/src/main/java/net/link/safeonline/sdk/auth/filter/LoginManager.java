@@ -21,8 +21,8 @@ import org.apache.commons.logging.LogFactory;
  * Login manager for servlet container based web applications. The login status is saved on the HTTP session.
  * 
  * <p>
- * Notice that we explicitly disconnected the login manager from the authentication protocol manager. Both store their
- * data into the HTTP session.
+ * Notice that we explicitly disconnected the login manager from the authentication protocol manager. Both store their data into the HTTP
+ * session.
  * </p>
  * 
  * @author fcorneli
@@ -53,8 +53,8 @@ public class LoginManager {
     }
 
     /**
-     * Checks whether the user is logged in via the SafeOnline authentication web application or not. It uses the
-     * specified parameter in the session.
+     * Checks whether the user is logged in via the SafeOnline authentication web application or not. It uses the specified parameter in the
+     * session.
      * 
      * @param request
      * @param paramName
@@ -77,8 +77,8 @@ public class LoginManager {
     }
 
     /**
-     * Gives back the SafeOnline authenticated userId, or <code>null</code> if the user was not yet authenticated. It
-     * uses the specified parameter in the session.
+     * Gives back the SafeOnline authenticated userId, or <code>null</code> if the user was not yet authenticated. It uses the specified
+     * parameter in the session.
      * 
      * @param request
      * @param paramName
@@ -126,8 +126,8 @@ public class LoginManager {
     }
 
     /**
-     * Sets the userId. This method should only be invoked after the user has been properly authenticated via the
-     * SafeOnline authentication web application.
+     * Sets the userId. This method should only be invoked after the user has been properly authenticated via the SafeOnline authentication
+     * web application.
      * 
      * @param userId
      *            the userId of the SafeOnline authenticated principal.
@@ -139,8 +139,8 @@ public class LoginManager {
     }
 
     /**
-     * Sets the userId. This method should only be invoked after the user has been properly authenticated via the
-     * SafeOnline authentication web application.
+     * Sets the userId. This method should only be invoked after the user has been properly authenticated via the SafeOnline authentication
+     * web application.
      * 
      * @param userId
      *            the userId of the SafeOnline authenticated principal.
@@ -195,8 +195,8 @@ public class LoginManager {
     }
 
     /**
-     * Gives back the SafeOnline authenticated device, or <code>null</code> if the user was not yet authenticated. It
-     * uses the specified parameter in the session.
+     * Gives back the SafeOnline authenticated device, or <code>null</code> if the user was not yet authenticated. It uses the specified
+     * parameter in the session.
      * 
      * @param request
      * @param paramName
@@ -244,8 +244,8 @@ public class LoginManager {
     }
 
     /**
-     * Sets the authenticatedDevice. This method should only be invoked after the user has been properly authenticated
-     * via the SafeOnline authentication web application.
+     * Sets the authenticatedDevice. This method should only be invoked after the user has been properly authenticated via the SafeOnline
+     * authentication web application.
      * 
      * @param authenticatedDevice
      *            the device the SafeOnline authenticated principal used to authenticate with.
@@ -257,16 +257,15 @@ public class LoginManager {
     }
 
     /**
-     * Sets the userId. This method should only be invoked after the user has been properly authenticated via the
-     * SafeOnline authentication web application.
+     * Sets the userId. This method should only be invoked after the user has been properly authenticated via the SafeOnline authentication
+     * web application.
      * 
      * @param authenticatedDevice
      *            the device the SafeOnline authenticated principal used to authenticate with.
      * @param httpRequest
      * @param paramName
      */
-    public static void setAuthenticatedDevice(String authenticatedDevice, HttpServletRequest httpRequest,
-            String paramName) {
+    public static void setAuthenticatedDevice(String authenticatedDevice, HttpServletRequest httpRequest, String paramName) {
 
         LOG.debug("setting authenticatedDevice: " + authenticatedDevice);
         HttpSession session = httpRequest.getSession();
@@ -293,8 +292,7 @@ public class LoginManager {
      * 
      * @throws ServletException
      */
-    public static void removeAuthenticatedDevice(String paramName, HttpServletRequest httpRequest)
-            throws ServletException {
+    public static void removeAuthenticatedDevice(String paramName, HttpServletRequest httpRequest) throws ServletException {
 
         String authenticatedDevice = findAuthenticatedDevice(httpRequest, paramName);
         if (null == authenticatedDevice)
@@ -307,8 +305,8 @@ public class LoginManager {
     /**
      * Request this session be invalidated.<br>
      * <br>
-     * This method does not invalidate the session immediately. It sets a parameter on the session that will be used by
-     * the SDK's LogoutServlet to invalidate the session at the end of the logout cycle.
+     * This method does not invalidate the session immediately. It sets a parameter on the session that will be used by the SDK's
+     * LogoutServlet to invalidate the session at the end of the logout cycle.
      */
     public static void invalidateSession(HttpServletRequest request) {
 

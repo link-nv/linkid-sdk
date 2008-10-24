@@ -13,7 +13,6 @@ import javax.xml.namespace.QName;
 
 import oasis.names.tc.saml._2_0.protocol.SAMLAttributeService;
 
-
 public class SAMLAttributeServiceFactory {
 
     private SAMLAttributeServiceFactory() {
@@ -21,15 +20,18 @@ public class SAMLAttributeServiceFactory {
         // empty
     }
 
+
     public static SAMLAttributeService newInstance() {
 
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        ClassLoader classLoader = Thread.currentThread()
+                .getContextClassLoader();
         URL wsdlUrl = classLoader.getResource("saml-protocol-2.0.wsdl");
         if (null == wsdlUrl)
             throw new RuntimeException("SAML protocol WSDL not found");
 
-        SAMLAttributeService service = new SAMLAttributeService(wsdlUrl, new QName(
-                "urn:oasis:names:tc:SAML:2.0:protocol", "SAMLAttributeService"));
+        SAMLAttributeService service = new SAMLAttributeService(wsdlUrl,
+                new QName("urn:oasis:names:tc:SAML:2.0:protocol",
+                        "SAMLAttributeService"));
 
         return service;
     }

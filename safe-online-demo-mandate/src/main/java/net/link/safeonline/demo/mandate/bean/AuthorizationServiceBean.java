@@ -32,91 +32,83 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
 
+
 @Stateless
 @LocalBinding(jndiBinding = AuthorizationService.JNDI_BINDING)
 public class AuthorizationServiceBean implements AuthorizationService {
 
-	private final String WEBSERVICE_CONFIG = "ws_config";
+    private final String     WEBSERVICE_CONFIG = "ws_config";
 
-	private static final Log LOG = LogFactory
-			.getLog(AuthorizationServiceBean.class);
+    private static final Log LOG               = LogFactory.getLog(AuthorizationServiceBean.class);
 
-	@PersistenceContext(unitName = MandateConstants.ENTITY_MANAGER_NAME)
-	private EntityManager entityManager;
+    @PersistenceContext(unitName = MandateConstants.ENTITY_MANAGER_NAME)
+    private EntityManager    entityManager;
 
-	private String getUsername(String userId) {
 
-		String username;
-		AttributeClient attributeClient = getAttributeClient();
-		try {
-			username = attributeClient.getAttributeValue(userId,
-					DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, String.class);
-		} catch (WSClientTransportException e) {
-			LOG.debug("connection error: " + e.getMessage());
-			return null;
-		} catch (RequestDeniedException e) {
-			LOG.debug("request denied");
-			return null;
-		} catch (AttributeNotFoundException e) {
-			LOG.debug("login attribute not found");
-			return null;
-		} catch (AttributeUnavailableException e) {
-			LOG.debug("login attribute unavailable");
-			return null;
-		}
+    private String getUsername(String userId) {
 
-		LOG.debug("username = " + username);
-		return username;
+        String username;
+        AttributeClient attributeClient = getAttributeClient();
+        try {
+            username = attributeClient.getAttributeValue(userId, DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, String.class);
+        } catch (WSClientTransportException e) {
+            LOG.debug("connection error: " + e.getMessage());
+            return null;
+        } catch (RequestDeniedException e) {
+            LOG.debug("request denied");
+            return null;
+        } catch (AttributeNotFoundException e) {
+            LOG.debug("login attribute not found");
+            return null;
+        } catch (AttributeUnavailableException e) {
+            LOG.debug("login attribute unavailable");
+            return null;
+        }
 
-	}
+        LOG.debug("username = " + username);
+        return username;
 
-	private AttributeClient getAttributeClient() {
+    }
 
-		ResourceBundle config = ResourceBundle
-				.getBundle(this.WEBSERVICE_CONFIG);
-		String wsLocation = config.getString("WsLocation");
+    private AttributeClient getAttributeClient() {
 
-		LOG.debug("Webservice: " + wsLocation);
+        ResourceBundle config = ResourceBundle.getBundle(this.WEBSERVICE_CONFIG);
+        String wsLocation = config.getString("WsLocation");
 
-		PrivateKeyEntry privateKeyEntry = DemoMandateKeyStoreUtils
-				.getPrivateKeyEntry();
-		X509Certificate certificate = (X509Certificate) privateKeyEntry
-				.getCertificate();
-		PrivateKey privateKey = privateKeyEntry.getPrivateKey();
+        LOG.debug("Webservice: " + wsLocation);
 
-		AttributeClient attributeClient = new AttributeClientImpl(wsLocation,
-				certificate, privateKey);
-		return attributeClient;
-	}
+        PrivateKeyEntry privateKeyEntry = DemoMandateKeyStoreUtils.getPrivateKeyEntry();
+        X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
+        PrivateKey privateKey = privateKeyEntry.getPrivateKey();
 
-	public boolean isAdmin(String userId) {
+        AttributeClient attributeClient = new AttributeClientImpl(wsLocation, certificate, privateKey);
+        return attributeClient;
+    }
 
-		String username = getUsername(userId);
-		LOG.debug("isAdmin: " + username);
+    public boolean isAdmin(String userId) {
 
-		UserEntity user = this.entityManager.find(UserEntity.class, username);
-		if (null == user)
-			return false;
+        String username = getUsername(userId);
+        LOG.debug("isAdmin: " + username);
 
-		return user.isAdmin();
-	}
+        UserEntity user = this.entityManager.find(UserEntity.class, username);
+        if (null == user)
+            return false;
 
-	public void bootstrap() {
+        return user.isAdmin();
+    }
 
-		LOG.debug("bootstrapping...");
-		UserEntity defaultAdminUser = this.entityManager.find(UserEntity.class,
-				AuthorizationService.DEFAULT_ADMIN_USER);
-		if (null == defaultAdminUser) {
-			LOG.debug("adding default admin user: "
-					+ AuthorizationService.DEFAULT_ADMIN_USER);
-			defaultAdminUser = new UserEntity(
-					AuthorizationService.DEFAULT_ADMIN_USER);
-			this.entityManager.persist(defaultAdminUser);
-		}
-		if (false == defaultAdminUser.isAdmin()) {
-			LOG.debug("resetting default admin user to admin privilege: "
-					+ defaultAdminUser.getName());
-			defaultAdminUser.setAdmin(true);
-		}
-	}
+    public void bootstrap() {
+
+        LOG.debug("bootstrapping...");
+        UserEntity defaultAdminUser = this.entityManager.find(UserEntity.class, AuthorizationService.DEFAULT_ADMIN_USER);
+        if (null == defaultAdminUser) {
+            LOG.debug("adding default admin user: " + AuthorizationService.DEFAULT_ADMIN_USER);
+            defaultAdminUser = new UserEntity(AuthorizationService.DEFAULT_ADMIN_USER);
+            this.entityManager.persist(defaultAdminUser);
+        }
+        if (false == defaultAdminUser.isAdmin()) {
+            LOG.debug("resetting default admin user to admin privilege: " + defaultAdminUser.getName());
+            defaultAdminUser.setAdmin(true);
+        }
+    }
 }

@@ -21,15 +21,15 @@ import org.apache.wicket.markup.html.list.ListView;
 /**
  * <h2>{@link SeatSelectionPage}<br>
  * <sub>Wicket backend for seat selection page.</sub></h2>
- *
+ * 
  * <p>
  * [description / usage].
  * </p>
- *
+ * 
  * <p>
  * <i>Jun 24, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class SeatSelectionPage extends LayoutPage {
@@ -48,7 +48,7 @@ public class SeatSelectionPage extends LayoutPage {
 
         // If time or room are not yet set, go back.
         if (!CinemaSession.isTimeAndRoomSet())
-            throw new RestartResponseException( TimeRoomSelectionPage.class);
+            throw new RestartResponseException(TimeRoomSelectionPage.class);
 
         add(new Label("headerTitle", "Seat Selection"));
 
@@ -59,11 +59,11 @@ public class SeatSelectionPage extends LayoutPage {
     /**
      * <h2>{@link SeatsForm}<br>
      * <sub>A form that lets the user pick seats in the selected room.</sub></h2>
-     *
+     * 
      * <p>
      * <i>Jun 24, 2008</i>
      * </p>
-     *
+     * 
      * @author mbillemo
      */
     class SeatsForm extends Form<String> {
@@ -131,8 +131,7 @@ public class SeatSelectionPage extends LayoutPage {
 
                                     super.onComponentTag(tag);
 
-                                    if (SeatSelectionPage.this.seatService.isOccupied(seat, CinemaSession.get()
-                                            .getTime())) {
+                                    if (SeatSelectionPage.this.seatService.isOccupied(seat, CinemaSession.get().getTime())) {
                                         tag.put("class", "disabled");
                                     }
                                     if (CinemaSession.isOccupied(seat)) {

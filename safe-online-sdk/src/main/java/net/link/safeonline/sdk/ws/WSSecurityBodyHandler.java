@@ -30,12 +30,12 @@ import org.apache.ws.security.WSConstants;
 
 
 /**
- * JAX-WS SOAP Handler to verify the digestion of the SOAP Body element by the WS-Security signature. We have to
- * postpone this verification until after we know the calling application identity since we need to be able to determine
- * if we need to perform the check on an application basis.
- *
+ * JAX-WS SOAP Handler to verify the digestion of the SOAP Body element by the WS-Security signature. We have to postpone this verification
+ * until after we know the calling application identity since we need to be able to determine if we need to perform the check on an
+ * application basis.
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class WSSecurityBodyHandler implements SOAPHandler<SOAPMessageContext> {
 

@@ -30,9 +30,9 @@ import org.jboss.security.SimplePrincipal;
 
 
 /**
- * Servlet Container login filter. This filter provides perceived servlet container security. This means that the
- * servlet web application that is applying this filter will see meaningful values for the request.getUserPrincipal and
- * request.isUserInRole methods. This filter does not provide web resource protection itself.
+ * Servlet Container login filter. This filter provides perceived servlet container security. This means that the servlet web application
+ * that is applying this filter will see meaningful values for the request.getUserPrincipal and request.isUserInRole methods. This filter
+ * does not provide web resource protection itself.
  * 
  * @see <a href="http://securityfilter.sourceforge.net/test">SecurityFilter</a>
  * 
@@ -51,8 +51,7 @@ public class ServletLoginFilter implements Filter {
         LOG.debug("destroy");
     }
 
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-            ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         LOG.debug("doFilter");
 
@@ -69,8 +68,8 @@ public class ServletLoginFilter implements Filter {
         Set<String> roles = getAuthorizationService().getRoles(userId);
 
         Principal userPrincipal = new SimplePrincipal(userId);
-        LoginHttpServletRequestWrapper loginHttpServletRequestWrapper = new LoginHttpServletRequestWrapper(
-                httpServletRequest, userPrincipal, roles);
+        LoginHttpServletRequestWrapper loginHttpServletRequestWrapper = new LoginHttpServletRequestWrapper(httpServletRequest,
+                userPrincipal, roles);
 
         chain.doFilter(loginHttpServletRequestWrapper, response);
     }
@@ -82,8 +81,7 @@ public class ServletLoginFilter implements Filter {
 
         LOG.debug("init authorizationService");
         try {
-            return this.authorizationService = EjbUtils.getEJB("SafeOnline/AuthorizationServiceBean/local",
-                    AuthorizationService.class);
+            return this.authorizationService = EjbUtils.getEJB("SafeOnline/AuthorizationServiceBean/local", AuthorizationService.class);
         } catch (RuntimeException e) {
             LOG.error("authorization service lookup failure", e);
             throw e;

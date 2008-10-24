@@ -60,13 +60,12 @@ public class DataMiningTaskBean implements Task {
 
         for (ApplicationEntity application : this.applications.listApplications()) {
 
-            for (ApplicationIdentityAttributeEntity attribute : this.applications
-                    .getCurrentApplicationIdentity(application)) {
+            for (ApplicationIdentityAttributeEntity attribute : this.applications.getCurrentApplicationIdentity(application)) {
 
-                LOG.debug("findOrAddStatisticByNameDomainAndApplication: " + attribute.getAttributeTypeName() + ","
-                        + application.getName());
-                StatisticEntity statistic = this.statisticDAO.findOrAddStatisticByNameDomainAndApplication(attribute
-                        .getAttributeTypeName(), dataMiningDomain, application);
+                LOG
+                   .debug("findOrAddStatisticByNameDomainAndApplication: " + attribute.getAttributeTypeName() + "," + application.getName());
+                StatisticEntity statistic = this.statisticDAO.findOrAddStatisticByNameDomainAndApplication(
+                        attribute.getAttributeTypeName(), dataMiningDomain, application);
 
                 LOG.debug("categorize " + application.getName() + " - " + attribute.getAttributeTypeName());
                 Map<Object, Long> result = this.attributeTypeDAO.categorize(application, attribute.getAttributeType());
@@ -74,8 +73,7 @@ public class DataMiningTaskBean implements Task {
 
                 for (Object key : result.keySet()) {
                     LOG.debug("key.toString: " + key.toString());
-                    StatisticDataPointEntity datapoint = this.statisticDataPointDAO.findOrAddStatisticDataPoint(key
-                            .toString(), statistic);
+                    StatisticDataPointEntity datapoint = this.statisticDataPointDAO.findOrAddStatisticDataPoint(key.toString(), statistic);
                     datapoint.setX(result.get(key));
                 }
 

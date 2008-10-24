@@ -97,16 +97,15 @@ public class AuthnResponseFactory {
      * @param audienceName
      *            This can be or the application name authenticated for, or the device operation executed
      */
-    public static String createAuthResponse(String inResponseTo, String audienceName, String issuerName,
-            String subjectName, String samlName, KeyPair signerKeyPair, int validity, String target) {
+    public static String createAuthResponse(String inResponseTo, String audienceName, String issuerName, String subjectName,
+                                            String samlName, KeyPair signerKeyPair, int validity, String target) {
 
-        return createAuthResponse(inResponseTo, audienceName, issuerName, subjectName, samlName, signerKeyPair,
-                validity, target, new DateTime());
+        return createAuthResponse(inResponseTo, audienceName, issuerName, subjectName, samlName, signerKeyPair, validity, target,
+                new DateTime());
     }
 
-    public static String createAuthResponse(String inResponseTo, String audienceName, String issuerName,
-            String subjectName, String samlName, KeyPair signerKeyPair, int validity, String target,
-            DateTime authenticationDate) {
+    public static String createAuthResponse(String inResponseTo, String audienceName, String issuerName, String subjectName,
+                                            String samlName, KeyPair signerKeyPair, int validity, String target, DateTime authenticationDate) {
 
         if (null == signerKeyPair)
             throw new IllegalArgumentException("signer key pair should not be null");
@@ -144,8 +143,7 @@ public class AuthnResponseFactory {
         status.setStatusCode(statusCode);
         response.setStatus(status);
 
-        addAssertion(response, inResponseTo, audienceName, subjectName, issuerName, samlName, validity, target,
-                authenticationDate);
+        addAssertion(response, inResponseTo, audienceName, subjectName, issuerName, samlName, validity, target, authenticationDate);
 
         return signAuthnResponse(response, signerKeyPair);
     }
@@ -153,8 +151,7 @@ public class AuthnResponseFactory {
     /**
      * Creates a signed authentication response with status failed.
      */
-    public static String createAuthResponseFailed(String inResponseTo, String issuerName, KeyPair signerKeyPair,
-            String target) {
+    public static String createAuthResponseFailed(String inResponseTo, String issuerName, KeyPair signerKeyPair, String target) {
 
         if (null == signerKeyPair)
             throw new IllegalArgumentException("signer key pair should not be null");
@@ -194,8 +191,7 @@ public class AuthnResponseFactory {
     /**
      * Creates a signed authentication response with status unknown principal, indicating user requests a registration.
      */
-    public static String createAuthResponseRequestRegistration(String inResponseTo, String issuerName,
-            KeyPair signerKeyPair, String target) {
+    public static String createAuthResponseRequestRegistration(String inResponseTo, String issuerName, KeyPair signerKeyPair, String target) {
 
         if (null == signerKeyPair)
             throw new IllegalArgumentException("signer key pair should not be null");
@@ -240,8 +236,8 @@ public class AuthnResponseFactory {
      * @param audienceName
      *            This can be or the application name authenticated for, or the device operation executed
      */
-    private static void addAssertion(Response response, String inResponseTo, String audienceName, String subjectName,
-            String issuerName, String samlName, int validity, String target, DateTime authenticationDate) {
+    private static void addAssertion(Response response, String inResponseTo, String audienceName, String subjectName, String issuerName,
+                                     String samlName, int validity, String target, DateTime authenticationDate) {
 
         DateTime now = new DateTime();
         DateTime notAfter = now.plusSeconds(validity);
@@ -273,8 +269,7 @@ public class AuthnResponseFactory {
         conditions.setNotBefore(now);
         conditions.setNotOnOrAfter(notAfter);
         List<AudienceRestriction> audienceRestrictions = conditions.getAudienceRestrictions();
-        AudienceRestriction audienceRestriction = buildXMLObject(AudienceRestriction.class,
-                AudienceRestriction.DEFAULT_ELEMENT_NAME);
+        AudienceRestriction audienceRestriction = buildXMLObject(AudienceRestriction.class, AudienceRestriction.DEFAULT_ELEMENT_NAME);
         audienceRestrictions.add(audienceRestriction);
         List<Audience> audiences = audienceRestriction.getAudiences();
         Audience audience = buildXMLObject(Audience.class, Audience.DEFAULT_ELEMENT_NAME);
@@ -283,8 +278,7 @@ public class AuthnResponseFactory {
         assertion.setConditions(conditions);
 
         List<SubjectConfirmation> subjectConfirmations = subject.getSubjectConfirmations();
-        SubjectConfirmation subjectConfirmation = buildXMLObject(SubjectConfirmation.class,
-                SubjectConfirmation.DEFAULT_ELEMENT_NAME);
+        SubjectConfirmation subjectConfirmation = buildXMLObject(SubjectConfirmation.class, SubjectConfirmation.DEFAULT_ELEMENT_NAME);
         subjectConfirmation.setMethod("urn:oasis:names:tc:SAML:2.0:cm:bearer");
         SubjectConfirmationData subjectConfirmationData = buildXMLObject(SubjectConfirmationData.class,
                 SubjectConfirmationData.DEFAULT_ELEMENT_NAME);
@@ -301,8 +295,7 @@ public class AuthnResponseFactory {
         AuthnContext authnContext = buildXMLObject(AuthnContext.class, AuthnContext.DEFAULT_ELEMENT_NAME);
         authnStatement.setAuthnContext(authnContext);
 
-        AuthnContextClassRef authnContextClassRef = buildXMLObject(AuthnContextClassRef.class,
-                AuthnContextClassRef.DEFAULT_ELEMENT_NAME);
+        AuthnContextClassRef authnContextClassRef = buildXMLObject(AuthnContextClassRef.class, AuthnContextClassRef.DEFAULT_ELEMENT_NAME);
         authnContext.setAuthnContextClassRef(authnContextClassRef);
         authnContextClassRef.setAuthnContextClassRef(samlName);
     }
@@ -313,8 +306,7 @@ public class AuthnResponseFactory {
     private static String signAuthnResponse(Response response, KeyPair signerKeyPair) {
 
         XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
-        SignatureBuilder signatureBuilder = (SignatureBuilder) builderFactory
-                .getBuilder(Signature.DEFAULT_ELEMENT_NAME);
+        SignatureBuilder signatureBuilder = (SignatureBuilder) builderFactory.getBuilder(Signature.DEFAULT_ELEMENT_NAME);
         Signature signature = signatureBuilder.buildObject();
         signature.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
         String algorithm = signerKeyPair.getPrivate().getAlgorithm();
@@ -324,8 +316,7 @@ public class AuthnResponseFactory {
             signature.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_DSA);
         }
         response.setSignature(signature);
-        BasicCredential signingCredential = SecurityHelper.getSimpleCredential(signerKeyPair.getPublic(), signerKeyPair
-                .getPrivate());
+        BasicCredential signingCredential = SecurityHelper.getSimpleCredential(signerKeyPair.getPublic(), signerKeyPair.getPrivate());
         signature.setSigningCredential(signingCredential);
 
         // marshalling
@@ -362,8 +353,7 @@ public class AuthnResponseFactory {
         AuthnMethodBaseType authnMethod = objectFactory.createAuthnMethodBaseType();
         AuthenticatorBaseType authenticator = objectFactory.createAuthenticatorBaseType();
         authnMethod.setAuthenticator(authenticator);
-        AuthenticatorTransportProtocolType authenticatorTransportProtocol = objectFactory
-                .createAuthenticatorTransportProtocolType();
+        AuthenticatorTransportProtocolType authenticatorTransportProtocol = objectFactory.createAuthenticatorTransportProtocolType();
         ExtensionOnlyType ssl = objectFactory.createExtensionOnlyType();
         authenticatorTransportProtocol.setSSL(ssl);
         authnMethod.setAuthenticatorTransportProtocol(authenticatorTransportProtocol);
@@ -390,14 +380,12 @@ public class AuthnResponseFactory {
     }
 
     @SuppressWarnings("unchecked")
-    public static <Type extends SAMLObject> Type buildXMLObject(@SuppressWarnings("unused") Class<Type> clazz,
-            QName objectQName) {
+    public static <Type extends SAMLObject> Type buildXMLObject(@SuppressWarnings("unused") Class<Type> clazz, QName objectQName) {
 
         XMLObjectBuilder<Type> builder = Configuration.getBuilderFactory().getBuilder(objectQName);
         if (builder == null)
             throw new RuntimeException("Unable to retrieve builder for object QName " + objectQName);
-        Type object = builder.buildObject(objectQName.getNamespaceURI(), objectQName.getLocalPart(), objectQName
-                .getPrefix());
+        Type object = builder.buildObject(objectQName.getNamespaceURI(), objectQName.getLocalPart(), objectQName.getPrefix());
         return object;
     }
 }

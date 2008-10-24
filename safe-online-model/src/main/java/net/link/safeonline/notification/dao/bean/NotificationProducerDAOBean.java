@@ -27,8 +27,7 @@ import org.apache.commons.logging.LogFactory;
 @Stateless
 public class NotificationProducerDAOBean implements NotificationProducerDAO {
 
-    private static final Log                                      LOG = LogFactory
-                                                                              .getLog(NotificationProducerDAOBean.class);
+    private static final Log                                      LOG = LogFactory.getLog(NotificationProducerDAOBean.class);
 
     @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
     private EntityManager                                         entityManager;

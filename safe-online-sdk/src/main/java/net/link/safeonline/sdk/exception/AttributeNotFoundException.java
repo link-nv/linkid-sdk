@@ -9,9 +9,9 @@ package net.link.safeonline.sdk.exception;
 
 /**
  * Thrown in case the attribute was not found.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class AttributeNotFoundException extends Exception {
 

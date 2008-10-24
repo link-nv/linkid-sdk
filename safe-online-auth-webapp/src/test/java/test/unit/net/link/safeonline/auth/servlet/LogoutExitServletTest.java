@@ -98,13 +98,10 @@ public class LogoutExitServletTest {
         initParams.put("ServletEndpointUrl", this.servletEndpointUrl);
         initParams.put("ProtocolErrorUrl", this.protocolErrorUrl);
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
-        initialSessionAttributes.put(ProtocolHandlerManager.PROTOCOL_HANDLER_ID_ATTRIBUTE,
-                Saml2PostProtocolHandler.class.getName());
-        initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE,
-                this.mockAuthenticationService);
+        initialSessionAttributes.put(ProtocolHandlerManager.PROTOCOL_HANDLER_ID_ATTRIBUTE, Saml2PostProtocolHandler.class.getName());
+        initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE, this.mockAuthenticationService);
 
-        this.logoutExitServletTestManager.setUp(LogoutExitServlet.class, initParams, null, null,
-                initialSessionAttributes);
+        this.logoutExitServletTestManager.setUp(LogoutExitServlet.class, initParams, null, null, initialSessionAttributes);
 
         this.mockObjects = new Object[] { this.mockAuthenticationService };
     }
@@ -133,12 +130,12 @@ public class LogoutExitServletTest {
 
         String userId = UUID.randomUUID().toString();
 
-        String samlLogoutResponse = LogoutResponseFactory.createLogoutResponse(this.inResponseTo, applicationName,
-                applicationKeyPair, this.target);
+        String samlLogoutResponse = LogoutResponseFactory.createLogoutResponse(this.inResponseTo, applicationName, applicationKeyPair,
+                this.target);
         String encodedSamlLogoutResponse = Base64.encode(samlLogoutResponse.getBytes());
 
-        String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, application2Name,
-                applicationKeyPair, this.servletEndpointUrl, null);
+        String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, application2Name, applicationKeyPair,
+                this.servletEndpointUrl, null);
         String encodedSamlLogoutRequest = Base64.encode(samlLogoutRequest.getBytes());
 
         NameValuePair[] data = { new NameValuePair("SAMLResponse", encodedSamlLogoutResponse) };
@@ -146,8 +143,8 @@ public class LogoutExitServletTest {
 
         // expectations
         expect(this.mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.LOGGING_OUT);
-        expect(this.mockAuthenticationService.handleLogoutResponse((HttpServletRequest) EasyMock.anyObject()))
-                .andStubReturn(applicationName);
+        expect(this.mockAuthenticationService.handleLogoutResponse((HttpServletRequest) EasyMock.anyObject())).andStubReturn(
+                applicationName);
         expect(this.mockAuthenticationService.findSsoApplicationToLogout()).andStubReturn(application2);
         expect(this.mockAuthenticationService.getLogoutRequest(application2)).andStubReturn(encodedSamlLogoutRequest);
 
@@ -165,13 +162,11 @@ public class LogoutExitServletTest {
 
         Document responseDocument = DomTestUtils.parseDocument(responseBody);
         LOG.debug("document element name: " + responseDocument.getDocumentElement().getNodeName());
-        Node valueNode = XPathAPI.selectSingleNode(responseDocument,
-                "/:html/:body/:form/:div/:input[@name='SAMLRequest']/@value");
+        Node valueNode = XPathAPI.selectSingleNode(responseDocument, "/:html/:body/:form/:div/:input[@name='SAMLRequest']/@value");
         assertNotNull(valueNode);
         String samlRequestValue = valueNode.getTextContent();
         LOG.debug("SAMLRequest value: " + samlRequestValue);
-        String samlRequest = new String(org.apache.commons.codec.binary.Base64
-                .decodeBase64(samlRequestValue.getBytes()));
+        String samlRequest = new String(org.apache.commons.codec.binary.Base64.decodeBase64(samlRequestValue.getBytes()));
         LOG.debug("SAML Request: " + samlRequest);
         File tmpFile = File.createTempFile("saml-request-", ".xml");
         LOG.debug("tmp filename: " + tmpFile.getAbsolutePath());
@@ -185,10 +180,8 @@ public class LogoutExitServletTest {
 
         Document samlRequestDocument = DomTestUtils.parseDocument(samlRequest);
         Element nsElement = samlRequestDocument.createElement("nsElement");
-        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:saml",
-                "urn:oasis:names:tc:SAML:2.0:assertion");
-        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:samlp",
-                "urn:oasis:names:tc:SAML:2.0:protocol");
+        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:saml", "urn:oasis:names:tc:SAML:2.0:assertion");
+        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:samlp", "urn:oasis:names:tc:SAML:2.0:protocol");
         nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:ds", "http://www.w3.org/2000/09/xmldsig#");
         assertNotNull(XPathAPI.selectSingleNode(samlRequestDocument, "/samlp:LogoutRequest/ds:Signature", nsElement));
         assertNotNull(XPathAPI.selectSingleNode(samlRequestDocument, "/samlp:LogoutRequest/saml:NameID", nsElement));
@@ -210,8 +203,8 @@ public class LogoutExitServletTest {
 
         String userId = UUID.randomUUID().toString();
 
-        String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, applicationName,
-                applicationKeyPair, this.servletEndpointUrl, null);
+        String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, applicationName, applicationKeyPair,
+                this.servletEndpointUrl, null);
         String encodedSamlLogoutRequest = Base64.encode(samlLogoutRequest.getBytes());
 
         // expectations
@@ -233,13 +226,11 @@ public class LogoutExitServletTest {
 
         Document responseDocument = DomTestUtils.parseDocument(responseBody);
         LOG.debug("document element name: " + responseDocument.getDocumentElement().getNodeName());
-        Node valueNode = XPathAPI.selectSingleNode(responseDocument,
-                "/:html/:body/:form/:div/:input[@name='SAMLRequest']/@value");
+        Node valueNode = XPathAPI.selectSingleNode(responseDocument, "/:html/:body/:form/:div/:input[@name='SAMLRequest']/@value");
         assertNotNull(valueNode);
         String samlRequestValue = valueNode.getTextContent();
         LOG.debug("SAMLRequest value: " + samlRequestValue);
-        String samlRequest = new String(org.apache.commons.codec.binary.Base64
-                .decodeBase64(samlRequestValue.getBytes()));
+        String samlRequest = new String(org.apache.commons.codec.binary.Base64.decodeBase64(samlRequestValue.getBytes()));
         LOG.debug("SAML Request: " + samlRequest);
         File tmpFile = File.createTempFile("saml-request-", ".xml");
         LOG.debug("tmp filename: " + tmpFile.getAbsolutePath());
@@ -253,10 +244,8 @@ public class LogoutExitServletTest {
 
         Document samlRequestDocument = DomTestUtils.parseDocument(samlRequest);
         Element nsElement = samlRequestDocument.createElement("nsElement");
-        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:saml",
-                "urn:oasis:names:tc:SAML:2.0:assertion");
-        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:samlp",
-                "urn:oasis:names:tc:SAML:2.0:protocol");
+        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:saml", "urn:oasis:names:tc:SAML:2.0:assertion");
+        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:samlp", "urn:oasis:names:tc:SAML:2.0:protocol");
         nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:ds", "http://www.w3.org/2000/09/xmldsig#");
         assertNotNull(XPathAPI.selectSingleNode(samlRequestDocument, "/samlp:LogoutRequest/ds:Signature", nsElement));
         assertNotNull(XPathAPI.selectSingleNode(samlRequestDocument, "/samlp:LogoutRequest/saml:NameID", nsElement));

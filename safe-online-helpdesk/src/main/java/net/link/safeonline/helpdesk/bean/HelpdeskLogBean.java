@@ -285,7 +285,7 @@ public class HelpdeskLogBean implements HelpdeskLog {
     }
 
     /*
-     *
+     * 
      * Validators
      */
     @RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)

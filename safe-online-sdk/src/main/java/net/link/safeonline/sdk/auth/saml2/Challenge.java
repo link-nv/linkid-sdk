@@ -12,9 +12,9 @@ import java.io.Serializable;
 
 /**
  * Data container for the challenge used in the authentication protocol.
- *
+ * 
  * @author fcorneli
- *
+ * 
  * @param <T>
  */
 public class Challenge<T> implements Serializable {

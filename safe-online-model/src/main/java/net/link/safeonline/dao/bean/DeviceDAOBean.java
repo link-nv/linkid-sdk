@@ -50,19 +50,18 @@ public class DeviceDAOBean implements DeviceDAO {
     public void postConstructCallback() {
 
         this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, DeviceEntity.QueryInterface.class);
-        this.descriptionQueryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                DeviceDescriptionEntity.QueryInterface.class);
-        this.propertyQueryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                DevicePropertyEntity.QueryInterface.class);
+        this.descriptionQueryObject = QueryObjectFactory
+                                                        .createQueryObject(this.entityManager, DeviceDescriptionEntity.QueryInterface.class);
+        this.propertyQueryObject = QueryObjectFactory.createQueryObject(this.entityManager, DevicePropertyEntity.QueryInterface.class);
     }
 
-    public DeviceEntity addDevice(String name, DeviceClassEntity deviceClass, NodeEntity node,
-            String authenticationPath, String registrationPath, String removalPath, String updatePath,
-            String disablePath, X509Certificate certificate, AttributeTypeEntity attributeType,
-            AttributeTypeEntity userAttributeType, AttributeTypeEntity disableAttributeType) {
+    public DeviceEntity addDevice(String name, DeviceClassEntity deviceClass, NodeEntity node, String authenticationPath,
+                                  String registrationPath, String removalPath, String updatePath, String disablePath,
+                                  X509Certificate certificate, AttributeTypeEntity attributeType, AttributeTypeEntity userAttributeType,
+                                  AttributeTypeEntity disableAttributeType) {
 
-        DeviceEntity device = new DeviceEntity(name, deviceClass, node, authenticationPath, registrationPath,
-                removalPath, updatePath, disablePath, certificate);
+        DeviceEntity device = new DeviceEntity(name, deviceClass, node, authenticationPath, registrationPath, removalPath, updatePath,
+                disablePath, certificate);
         device.setAttributeType(attributeType);
         device.setUserAttributeType(userAttributeType);
         device.setDisableAttributeType(disableAttributeType);
@@ -143,8 +142,7 @@ public class DeviceDAOBean implements DeviceDAO {
         this.entityManager.merge(description);
     }
 
-    public DeviceDescriptionEntity getDescription(DeviceDescriptionPK descriptionPK)
-            throws DeviceDescriptionNotFoundException {
+    public DeviceDescriptionEntity getDescription(DeviceDescriptionPK descriptionPK) throws DeviceDescriptionNotFoundException {
 
         DeviceDescriptionEntity description = this.entityManager.find(DeviceDescriptionEntity.class, descriptionPK);
         if (null == description)
@@ -210,8 +208,7 @@ public class DeviceDAOBean implements DeviceDAO {
 
     public DeviceEntity getDevice(X509Certificate certificate) throws DeviceNotFoundException {
 
-        List<DeviceEntity> devices = this.queryObject.listDevicesWhereCertificateSubject(certificate
-                .getSubjectX500Principal().getName());
+        List<DeviceEntity> devices = this.queryObject.listDevicesWhereCertificateSubject(certificate.getSubjectX500Principal().getName());
         if (devices.isEmpty())
             throw new DeviceNotFoundException();
         DeviceEntity device = devices.get(0);
@@ -220,8 +217,7 @@ public class DeviceDAOBean implements DeviceDAO {
 
     public DeviceEntity findDevice(X509Certificate certificate) {
 
-        List<DeviceEntity> devices = this.queryObject.listDevicesWhereCertificateSubject(certificate
-                .getSubjectX500Principal().getName());
+        List<DeviceEntity> devices = this.queryObject.listDevicesWhereCertificateSubject(certificate.getSubjectX500Principal().getName());
         if (devices.isEmpty())
             return null;
         DeviceEntity device = devices.get(0);

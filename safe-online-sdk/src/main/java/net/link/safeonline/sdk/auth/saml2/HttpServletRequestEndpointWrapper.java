@@ -13,9 +13,9 @@ import javax.servlet.http.HttpServletRequestWrapper;
 
 /**
  * HttpServletRequest wrapper used to provide opensaml with the correct endpoint URI.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class HttpServletRequestEndpointWrapper extends HttpServletRequestWrapper {
 

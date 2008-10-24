@@ -15,9 +15,9 @@ import net.link.safeonline.sdk.ws.annotation.CompoundId;
 
 /**
  * Utility class for compounded attributes.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class CompoundUtil {
 
@@ -28,7 +28,7 @@ public class CompoundUtil {
 
     /**
      * Gives back <code>true</code> if the given value represents a compounded object.
-     *
+     * 
      * @param attributeValue
      */
     @SuppressWarnings("unchecked")
@@ -43,7 +43,7 @@ public class CompoundUtil {
 
     /**
      * Gives back the attribute Id of given the compounded object.
-     *
+     * 
      * @param attributeValue
      */
     public static String getAttributeId(Object attributeValue) {
@@ -70,7 +70,7 @@ public class CompoundUtil {
 
     /**
      * Gives back the setter method that corresponds with the given getter for a certain class.
-     *
+     * 
      * @param clazz
      * @param getMethod
      */

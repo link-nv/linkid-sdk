@@ -41,12 +41,11 @@ import org.opensaml.saml2.core.LogoutRequest;
 
 
 /**
- * Authentication service interface. This service allows the authentication web application to authenticate users. The
- * bean behind this interface is stateful. This means that a certain method invocation pattern must be respected. First
- * the method {@link #initialize(String, AuthnRequest)} must be invoked. Then the method
- * {@link #authenticate(HttpServletRequest)} must be invoked. After this the method {@link #commitAuthentication()} must
- * be invoked and finally {@link #finalizeAuthentication()}. In case the authentication process needs to be aborted one
- * should invoke {@link #abort()} .
+ * Authentication service interface. This service allows the authentication web application to authenticate users. The bean behind this
+ * interface is stateful. This means that a certain method invocation pattern must be respected. First the method
+ * {@link #initialize(String, AuthnRequest)} must be invoked. Then the method {@link #authenticate(HttpServletRequest)} must be invoked.
+ * After this the method {@link #commitAuthentication()} must be invoked and finally {@link #finalizeAuthentication()}. In case the
+ * authentication process needs to be aborted one should invoke {@link #abort()} .
  * 
  * @author fcorneli
  */
@@ -54,8 +53,8 @@ import org.opensaml.saml2.core.LogoutRequest;
 public interface AuthenticationService {
 
     /**
-     * Authenticates a user for a certain application. This method is used by the authentication web service. If
-     * <code>true</code> is returned the authentication process can proceed, else {@link #abort()} should be invoked.
+     * Authenticates a user for a certain application. This method is used by the authentication web service. If <code>true</code> is
+     * returned the authentication process can proceed, else {@link #abort()} should be invoked.
      * 
      * @param applicationName
      * @param loginName
@@ -67,7 +66,7 @@ public interface AuthenticationService {
      * @throws DeviceDisabledException
      */
     boolean authenticate(String loginName, String password) throws SubjectNotFoundException, DeviceNotFoundException,
-            DeviceDisabledException;
+                                                           DeviceDisabledException;
 
     /**
      * Commits the authentication.
@@ -88,14 +87,14 @@ public interface AuthenticationService {
      * @throws PermissionDeniedException
      * @throws AttributeUnavailableException
      */
-    void commitAuthentication() throws ApplicationNotFoundException, SubscriptionNotFoundException,
-            ApplicationIdentityNotFoundException, IdentityConfirmationRequiredException, MissingAttributeException,
-            EmptyDevicePolicyException, DevicePolicyException, UsageAgreementAcceptationRequiredException,
-            PermissionDeniedException, AttributeTypeNotFoundException, AttributeUnavailableException;
+    void commitAuthentication() throws ApplicationNotFoundException, SubscriptionNotFoundException, ApplicationIdentityNotFoundException,
+                               IdentityConfirmationRequiredException, MissingAttributeException, EmptyDevicePolicyException,
+                               DevicePolicyException, UsageAgreementAcceptationRequiredException, PermissionDeniedException,
+                               AttributeTypeNotFoundException, AttributeUnavailableException;
 
     /**
-     * Sets the password of a user. This method should be used in case the user did not yet had a password registered as
-     * authentication device.
+     * Sets the password of a user. This method should be used in case the user did not yet had a password registered as authentication
+     * device.
      * 
      * @param userId
      * @param password
@@ -109,23 +108,22 @@ public interface AuthenticationService {
     void abort();
 
     /**
-     * Gives back the user Id of the user that we're trying to authenticate. Calling this method in only valid after a
-     * call to {@link #authenticate(String, String)}.
+     * Gives back the user Id of the user that we're trying to authenticate. Calling this method in only valid after a call to
+     * {@link #authenticate(String, String)}.
      * 
      */
     String getUserId();
 
     /**
-     * Gives back the username of the user that we're trying to authenticate. Calling this method is only valid after a
-     * call to {@link #authenticate(String, String)}.
+     * Gives back the username of the user that we're trying to authenticate. Calling this method is only valid after a call to
+     * {@link #authenticate(String, String)}.
      * 
      */
     String getUsername();
 
     /**
-     * Authenticates a user for a certain application. The method is used by the device landing servlet. The actual
-     * device authentication is done by an external device provider in this case. We validate the return SAML response
-     * message.
+     * Authenticates a user for a certain application. The method is used by the device landing servlet. The actual device authentication is
+     * done by an external device provider in this case. We validate the return SAML response message.
      * 
      * Calling this method is only valid after a call to {@link #redirectAuthentication(String, String, String)}.
      * 
@@ -139,12 +137,12 @@ public interface AuthenticationService {
      * @throws {@link NodeNotFoundException}
      * @throws {@link SubjectNotFoundException}
      */
-    String authenticate(HttpServletRequest request) throws NodeNotFoundException, ServletException,
-            NodeMappingNotFoundException, DeviceNotFoundException, SubjectNotFoundException;
+    String authenticate(HttpServletRequest request) throws NodeNotFoundException, ServletException, NodeMappingNotFoundException,
+                                                   DeviceNotFoundException, SubjectNotFoundException;
 
     /**
-     * Initializes an authentication process. Validates the incoming authentication request and stores the application,
-     * device policy and assertion consumer service.
+     * Initializes an authentication process. Validates the incoming authentication request and stores the application, device policy and
+     * assertion consumer service.
      * 
      * @param language
      * @param samlAuthnRequest
@@ -152,8 +150,8 @@ public interface AuthenticationService {
      * @throws ApplicationNotFoundException
      * @throws TrustDomainNotFoundException
      */
-    ProtocolContext initialize(String language, AuthnRequest samlAuthnRequest)
-            throws AuthenticationInitializationException, ApplicationNotFoundException, TrustDomainNotFoundException;
+    ProtocolContext initialize(String language, AuthnRequest samlAuthnRequest) throws AuthenticationInitializationException,
+                                                                              ApplicationNotFoundException, TrustDomainNotFoundException;
 
     /**
      * Constructs a signed and encoded SAML authentication request for the requested external device issuer.
@@ -165,8 +163,7 @@ public interface AuthenticationService {
      * @param device
      * @throws NodeNotFoundException
      */
-    String redirectAuthentication(String authenticationServiceUrl, String targetUrl, String device)
-            throws NodeNotFoundException;
+    String redirectAuthentication(String authenticationServiceUrl, String targetUrl, String device) throws NodeNotFoundException;
 
     /**
      * Finalizes an authentication process by constructing an encoded SAML response to be sent to the application.
@@ -178,8 +175,7 @@ public interface AuthenticationService {
      * @throws SubscriptionNotFoundException
      * 
      */
-    String finalizeAuthentication() throws NodeNotFoundException, SubscriptionNotFoundException,
-            ApplicationNotFoundException;
+    String finalizeAuthentication() throws NodeNotFoundException, SubscriptionNotFoundException, ApplicationNotFoundException;
 
     /**
      * Gives back the current authentication state.
@@ -207,12 +203,11 @@ public interface AuthenticationService {
      * @throws DevicePolicyException
      * @throws EmptyDevicePolicyException
      */
-    boolean checkSsoCookie(Cookie ssoCookie) throws ApplicationNotFoundException, InvalidCookieException,
-            EmptyDevicePolicyException, DevicePolicyException;
+    boolean checkSsoCookie(Cookie ssoCookie) throws ApplicationNotFoundException, InvalidCookieException, EmptyDevicePolicyException,
+                                            DevicePolicyException;
 
     /**
-     * Returns whether the specified cookie is ok for logout. Meaning all applications specified in the cookie have to
-     * be logged out.
+     * Returns whether the specified cookie is ok for logout. Meaning all applications specified in the cookie have to be logged out.
      * 
      * @throws ApplicationNotFoundException
      * @throws InvalidCookieException
@@ -234,12 +229,13 @@ public interface AuthenticationService {
      * @throws SubjectNotFoundException
      */
     String redirectRegistration(String registrationServiceUrl, String targetUrl, String device, String userId)
-            throws NodeNotFoundException, SubjectNotFoundException, DeviceNotFoundException;
+                                                                                                              throws NodeNotFoundException,
+                                                                                                              SubjectNotFoundException,
+                                                                                                              DeviceNotFoundException;
 
     /**
-     * Finalizes a remote device registration for a user. The method is used by the device registration landing servlet.
-     * The device registration was done by an external device provider in this case. We validate the return SAML
-     * response message.
+     * Finalizes a remote device registration for a user. The method is used by the device registration landing servlet. The device
+     * registration was done by an external device provider in this case. We validate the return SAML response message.
      * 
      * Calling this method is only valid after a call to {@link #redirectRegistration(String, String, String, String)}.
      * 
@@ -250,8 +246,8 @@ public interface AuthenticationService {
      * @throws SubjectNotFoundException
      * 
      */
-    String register(HttpServletRequest request) throws NodeNotFoundException, ServletException,
-            NodeMappingNotFoundException, DeviceNotFoundException, SubjectNotFoundException;
+    String register(HttpServletRequest request) throws NodeNotFoundException, ServletException, NodeMappingNotFoundException,
+                                               DeviceNotFoundException, SubjectNotFoundException;
 
     /**
      * Initializes a logout process. Validates the incoming logout request and stores the application.
@@ -263,7 +259,8 @@ public interface AuthenticationService {
      * @throws SubjectNotFoundException
      */
     LogoutProtocolContext initialize(LogoutRequest samlLogoutRequest) throws AuthenticationInitializationException,
-            ApplicationNotFoundException, TrustDomainNotFoundException, SubjectNotFoundException;
+                                                                     ApplicationNotFoundException, TrustDomainNotFoundException,
+                                                                     SubjectNotFoundException;
 
     /**
      * Returns the next Application to logout. Returns <code>null</code> if none.
@@ -271,8 +268,7 @@ public interface AuthenticationService {
     ApplicationEntity findSsoApplicationToLogout();
 
     /**
-     * Initiate a logout process for the specified application by constructing an encoded SAML logout request to be sent
-     * to the application.
+     * Initiate a logout process for the specified application by constructing an encoded SAML logout request to be sent to the application.
      * 
      * 
      * Calling this method is only valid after a call to {@link #initialize(LogoutRequest)}.
@@ -282,12 +278,12 @@ public interface AuthenticationService {
      * @throws NodeNotFoundException
      * 
      */
-    String getLogoutRequest(ApplicationEntity application) throws SubscriptionNotFoundException,
-            ApplicationNotFoundException, NodeNotFoundException;
+    String getLogoutRequest(ApplicationEntity application) throws SubscriptionNotFoundException, ApplicationNotFoundException,
+                                                          NodeNotFoundException;
 
     /**
-     * Validates the returned SAML logout response message. Returns the application name if successful or
-     * <code>null</code> if the response did not have status successful.
+     * Validates the returned SAML logout response message. Returns the application name if successful or <code>null</code> if the response
+     * did not have status successful.
      * 
      * Calling this method is only valid after a call to {@link #getLogoutRequest(ApplicationEntity)}.
      * 

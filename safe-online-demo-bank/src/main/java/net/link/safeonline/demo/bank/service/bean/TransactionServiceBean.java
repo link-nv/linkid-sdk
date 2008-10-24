@@ -46,8 +46,7 @@ public class TransactionServiceBean extends AbstractBankServiceBean implements T
     /**
      * {@inheritDoc}
      */
-    public BankTransactionEntity createTransaction(String description, BankAccountEntity source, String targetCode,
-            double amount) {
+    public BankTransactionEntity createTransaction(String description, BankAccountEntity source, String targetCode, double amount) {
 
         // Only allow transfers from the source to the target (so only positive amounts).
         if (amount < 0)
@@ -67,8 +66,7 @@ public class TransactionServiceBean extends AbstractBankServiceBean implements T
         }
 
         // Record this transaction.
-        BankTransactionEntity transaction = new BankTransactionEntity(description, sourceEntity, targetCode,
-                new Date(), amount);
+        BankTransactionEntity transaction = new BankTransactionEntity(description, sourceEntity, targetCode, new Date(), amount);
         this.em.persist(transaction);
 
         return transaction;
@@ -80,7 +78,6 @@ public class TransactionServiceBean extends AbstractBankServiceBean implements T
     @SuppressWarnings("unchecked")
     public List<BankTransactionEntity> getAllTransactions(BankAccountEntity account) {
 
-        return this.em.createNamedQuery(BankTransactionEntity.getByCode)
-                .setParameter("code", attach(account).getCode()).getResultList();
+        return this.em.createNamedQuery(BankTransactionEntity.getByCode).setParameter("code", attach(account).getCode()).getResultList();
     }
 }

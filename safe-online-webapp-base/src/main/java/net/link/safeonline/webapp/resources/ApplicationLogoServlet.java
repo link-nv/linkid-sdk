@@ -36,7 +36,7 @@ import org.apache.commons.logging.LogFactory;
  * <p>
  * <i>Dec 6, 2007</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ApplicationLogoServlet extends AbstractInjectionServlet {
@@ -59,8 +59,7 @@ public class ApplicationLogoServlet extends AbstractInjectionServlet {
      * @{inheritDoc
      */
     @Override
-    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         boolean logoWritten = false;
         String applicationName = request.getParameter("applicationName");
@@ -89,8 +88,8 @@ public class ApplicationLogoServlet extends AbstractInjectionServlet {
             String noMime = request.getParameter("nomime");
             if (!mime.startsWith("image/"))
                 if (noMime == null) {
-                    throw new IllegalStateException("Application logo for " + applicationName
-                            + " is not an image (it is " + mime + "); refusing to show.");
+                    throw new IllegalStateException("Application logo for " + applicationName + " is not an image (it is " + mime
+                            + "); refusing to show.");
                 }
 
             response.setContentType(magic.getMimeType());

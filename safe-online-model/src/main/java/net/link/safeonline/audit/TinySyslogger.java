@@ -32,10 +32,9 @@ import org.apache.commons.logging.LogFactory;
 /**
  * <h2>{@link TinySyslogger} - Tiny logger that writes to Syslog.</h2>
  * <p>
- * This implementation requires syslog to be listening for UDP messages on either the default syslog port (514) or a
- * port provided in code.<br>
- * Messages will be redirected as configured by your syslog configuration, so make sure you know how your syslog daemon
- * is configured to treat messages from the UDP source.
+ * This implementation requires syslog to be listening for UDP messages on either the default syslog port (514) or a port provided in code.<br>
+ * Messages will be redirected as configured by your syslog configuration, so make sure you know how your syslog daemon is configured to
+ * treat messages from the UDP source.
  * </p>
  * <p>
  * <i>Dec 5, 2007</i>
@@ -45,12 +44,11 @@ import org.apache.commons.logging.LogFactory;
  */
 public class TinySyslogger {
 
-    private static final Log                                    LOG                 = LogFactory
-                                                                                            .getLog(TinySyslogger.class);
+    private static final Log                                    LOG                 = LogFactory.getLog(TinySyslogger.class);
     private static final String                                 DEFAULT_SYSLOG_HOST = "localhost";
     private static final int                                    DEFAULT_SYSLOG_PORT = 514;
     private static final Map<InetSocketAddress, DatagramSocket> sockets             = Collections
-                                                                                            .synchronizedMap(new HashMap<InetSocketAddress, DatagramSocket>());
+                                                                                                 .synchronizedMap(new HashMap<InetSocketAddress, DatagramSocket>());
 
     private InetSocketAddress                                   syslog;
     private Facility                                            facility;
@@ -60,8 +58,7 @@ public class TinySyslogger {
      * Sends events to the syslog daemon on localhost at port 514.
      * 
      * @param facility
-     *            The syslog facility to send messages to. This defaults to {@link Facility#USER} if <code>null</code>
-     *            is given.
+     *            The syslog facility to send messages to. This defaults to {@link Facility#USER} if <code>null</code> is given.
      */
     public TinySyslogger(Facility facility) {
 
@@ -72,8 +69,7 @@ public class TinySyslogger {
      * Sends events to the syslog daemon at port 514.
      * 
      * @param facility
-     *            The syslog facility to send messages to. This defaults to {@link Facility#USER} if <code>null</code>
-     *            is given.
+     *            The syslog facility to send messages to. This defaults to {@link Facility#USER} if <code>null</code> is given.
      * @param host
      *            The IP address or hostname of the syslog daemon.
      */
@@ -86,8 +82,7 @@ public class TinySyslogger {
      * Sends events to the given syslog daemon.
      * 
      * @param facility
-     *            The syslog facility to send messages to. This defaults to {@link Facility#USER} if <code>null</code>
-     *            is given.
+     *            The syslog facility to send messages to. This defaults to {@link Facility#USER} if <code>null</code> is given.
      * @param host
      *            The IP address or hostname of the syslog daemon.
      * @param port
@@ -101,8 +96,7 @@ public class TinySyslogger {
 
     /**
      * @param facility
-     *            The syslog facility to send messages to. This defaults to {@link Facility#USER} if <code>null</code>
-     *            is given.
+     *            The syslog facility to send messages to. This defaults to {@link Facility#USER} if <code>null</code> is given.
      */
     public void setFacility(Facility facility) {
 
@@ -121,10 +115,10 @@ public class TinySyslogger {
 
         try {
             close();
-            
+
             this.syslog = new InetSocketAddress(host, port);
             sockets.put(this.syslog, new DatagramSocket());
-            
+
             return true;
         }
 

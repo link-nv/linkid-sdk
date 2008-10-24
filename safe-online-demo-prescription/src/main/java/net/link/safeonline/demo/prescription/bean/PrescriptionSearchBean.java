@@ -80,8 +80,8 @@ public class PrescriptionSearchBean extends AbstractPrescriptionDataClientBean i
 
         DataClient dataClient = getDataClient();
         try {
-            Attribute<Boolean> adminAttribute = dataClient.getAttributeValue(userId,
-                    DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME, Boolean.class);
+            Attribute<Boolean> adminAttribute = dataClient.getAttributeValue(userId, DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME,
+                    Boolean.class);
             if (null != adminAttribute) {
                 Boolean value = adminAttribute.getValue();
                 if (null != value) {

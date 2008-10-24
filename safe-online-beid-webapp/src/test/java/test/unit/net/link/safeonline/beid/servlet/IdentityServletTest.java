@@ -72,8 +72,7 @@ public class IdentityServletTest {
 
         this.servletTestManager = new ServletTestManager();
         this.servletTestManager.setUp(IdentityServlet.class);
-        this.servletTestManager.setSessionAttribute(DeviceOperationManager.USERID_SESSION_ATTRIBUTE, UUID.randomUUID()
-                .toString());
+        this.servletTestManager.setSessionAttribute(DeviceOperationManager.USERID_SESSION_ATTRIBUTE, UUID.randomUUID().toString());
         this.servletTestManager.setSessionAttribute(DeviceOperationManager.DEVICE_OPERATION_SESSION_ATTRIBUTE,
                 DeviceOperationType.REGISTER.name());
         this.location = this.servletTestManager.getServletLocation();

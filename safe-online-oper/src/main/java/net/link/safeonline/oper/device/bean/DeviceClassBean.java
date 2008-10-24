@@ -105,8 +105,8 @@ public class DeviceClassBean implements DeviceClass {
             this.deviceService.addDeviceClass(this.name, this.authenticationContextClass);
         } catch (ExistingDeviceClassException e) {
             LOG.debug("device class already exists: " + this.name);
-            this.facesMessages.addToControlFromResourceBundle("name", FacesMessage.SEVERITY_ERROR,
-                    "errorDeviceClassAlreadyExists", this.name);
+            this.facesMessages.addToControlFromResourceBundle("name", FacesMessage.SEVERITY_ERROR, "errorDeviceClassAlreadyExists",
+                    this.name);
             return null;
         }
         return "success";
@@ -120,8 +120,7 @@ public class DeviceClassBean implements DeviceClass {
             this.deviceService.removeDeviceClass(this.selectedDeviceClass.getName());
         } catch (PermissionDeniedException e) {
             LOG.debug("permission denied: " + e.getMessage());
-            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), e
-                    .getResourceArgs());
+            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), e.getResourceArgs());
             return null;
         }
         deviceClassListFactory();

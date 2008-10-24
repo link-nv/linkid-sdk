@@ -75,30 +75,28 @@ public class ApplicationServiceBeanTest extends TestCase {
 
         final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
         final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate",
-                new MBeanActionHandler() {
+        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
 
-                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
+            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-                        return authCertificate;
-                    }
-                });
+                return authCertificate;
+            }
+        });
 
         jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
         final KeyPair keyPair = PkiTestUtils.generateKeyPair();
         final X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
-                new MBeanActionHandler() {
+        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
 
-                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
+            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-                        return certificate;
-                    }
-                });
+                return certificate;
+            }
+        });
 
-        Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager);
+        Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class, SafeOnlineTestContainer.sessionBeans,
+                entityManager);
         systemStartable.postStart();
         this.entityTestManager.refreshEntityManager();
     }
@@ -119,7 +117,7 @@ public class ApplicationServiceBeanTest extends TestCase {
         ApplicationService applicationService = EJBTestUtils.newInstance(ApplicationServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator", SafeOnlineRoles.OPERATOR_ROLE);
         Set<ApplicationIdentityAttributeEntity> result = applicationService
-                .getCurrentApplicationIdentity(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
+                                                                           .getCurrentApplicationIdentity(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
 
         // verify
         assertTrue(result.isEmpty());
@@ -128,10 +126,9 @@ public class ApplicationServiceBeanTest extends TestCase {
         IdentityAttributeTypeDO[] applicationIdentityAttributes = new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
                 SafeOnlineConstants.NAME_ATTRIBUTE, false, false) };
         LOG.debug("---------- UPDATING APPLICATION IDENTITY ----------");
-        applicationService.updateApplicationIdentity(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, Arrays
-                .asList(applicationIdentityAttributes));
-        result = applicationService
-                .getCurrentApplicationIdentity(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
+        applicationService.updateApplicationIdentity(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
+                Arrays.asList(applicationIdentityAttributes));
+        result = applicationService.getCurrentApplicationIdentity(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
 
         // verify
         assertEquals(1, result.size());
@@ -139,16 +136,15 @@ public class ApplicationServiceBeanTest extends TestCase {
         assertFalse(result.iterator().next().isRequired());
 
         // operate
-        applicationIdentityAttributes = new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
-                SafeOnlineConstants.NAME_ATTRIBUTE, true, false) };
+        applicationIdentityAttributes = new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(SafeOnlineConstants.NAME_ATTRIBUTE,
+                true, false) };
         entityManager.getTransaction().commit();
         entityManager.getTransaction().begin();
-        applicationService.updateApplicationIdentity(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, Arrays
-                .asList(applicationIdentityAttributes));
+        applicationService.updateApplicationIdentity(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
+                Arrays.asList(applicationIdentityAttributes));
         entityManager.getTransaction().commit();
         entityManager.getTransaction().begin();
-        result = applicationService
-                .getCurrentApplicationIdentity(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
+        result = applicationService.getCurrentApplicationIdentity(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
 
         // verify
         assertEquals(1, result.size());
@@ -179,8 +175,8 @@ public class ApplicationServiceBeanTest extends TestCase {
         List<IdentityAttributeTypeDO> initialIdentity = new LinkedList<IdentityAttributeTypeDO>();
         initialIdentity.add(new IdentityAttributeTypeDO(SafeOnlineConstants.NAME_ATTRIBUTE));
 
-        applicationService.addApplication(testApplicationName, testApplicationFriendlyName, testApplicationOwnerName,
-                null, false, IdScopeType.USER, null, null, null, null, initialIdentity, false, false, false, null);
+        applicationService.addApplication(testApplicationName, testApplicationFriendlyName, testApplicationOwnerName, null, false,
+                IdScopeType.USER, null, null, null, null, initialIdentity, false, false, false, null);
         ApplicationEntity application = applicationService.getApplication(testApplicationName);
 
         ApplicationOwnerDAO applicationOwnerDAO = EJBTestUtils.newInstance(ApplicationOwnerDAOBean.class,
@@ -219,8 +215,8 @@ public class ApplicationServiceBeanTest extends TestCase {
         List<IdentityAttributeTypeDO> initialIdentity = new LinkedList<IdentityAttributeTypeDO>();
         initialIdentity.add(new IdentityAttributeTypeDO(SafeOnlineConstants.NAME_ATTRIBUTE));
 
-        applicationService.addApplication(testApplicationName, null, testApplicationOwnerName, null, false,
-                IdScopeType.USER, null, null, null, null, initialIdentity, false, false, false, null);
+        applicationService.addApplication(testApplicationName, null, testApplicationOwnerName, null, false, IdScopeType.USER, null, null,
+                null, null, initialIdentity, false, false, false, null);
 
         EntityTransaction entityTransaction = entityManager.getTransaction();
         entityTransaction.commit();
@@ -265,8 +261,8 @@ public class ApplicationServiceBeanTest extends TestCase {
         List<IdentityAttributeTypeDO> initialIdentity = new LinkedList<IdentityAttributeTypeDO>();
         initialIdentity.add(new IdentityAttributeTypeDO(SafeOnlineConstants.NAME_ATTRIBUTE));
 
-        applicationService.addApplication(testApplicationName, null, testApplicationOwnerName, null, false,
-                IdScopeType.USER, null, null, null, null, initialIdentity, false, false, false, null);
+        applicationService.addApplication(testApplicationName, null, testApplicationOwnerName, null, false, IdScopeType.USER, null, null,
+                null, null, initialIdentity, false, false, false, null);
         ApplicationEntity application = applicationService.getApplication(testApplicationName);
 
         ApplicationOwnerDAO applicationOwnerDAO = EJBTestUtils.newInstance(ApplicationOwnerDAOBean.class,

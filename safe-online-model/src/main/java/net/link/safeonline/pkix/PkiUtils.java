@@ -20,9 +20,9 @@ import net.link.safeonline.pkix.exception.CertificateEncodingException;
 
 /**
  * PKIX utility methods.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class PkiUtils {
 
@@ -33,7 +33,7 @@ public class PkiUtils {
 
     /**
      * Decodes a given DER encoded X509 certificate.
-     *
+     * 
      * @param encodedCertificate
      * @throws CertificateEncodingException
      */

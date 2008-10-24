@@ -125,8 +125,8 @@ public class TrustPointPK implements Serializable {
         if (false == obj instanceof TrustPointPK)
             return false;
         TrustPointPK rhs = (TrustPointPK) obj;
-        return new EqualsBuilder().append(this.domain, rhs.domain).append(this.subjectName, rhs.subjectName).append(
-                this.keyId, rhs.keyId).isEquals();
+        return new EqualsBuilder().append(this.domain, rhs.domain).append(this.subjectName, rhs.subjectName).append(this.keyId, rhs.keyId)
+                                  .isEquals();
     }
 
     @Override
@@ -138,7 +138,7 @@ public class TrustPointPK implements Serializable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("domain", this.domain).append("subject name", this.subjectName).append(
-                "key id", this.keyId).toString();
+        return new ToStringBuilder(this).append("domain", this.domain).append("subject name", this.subjectName)
+                                        .append("key id", this.keyId).toString();
     }
 }

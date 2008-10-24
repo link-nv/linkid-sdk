@@ -40,9 +40,8 @@ import org.jboss.annotation.security.SecurityDomain;
 
 
 /**
- * Implementation of the authorization manager service. For the moment the authorization is granted via application
- * subscriptions. I.e. when assigning a role to a subject, the subject will actually be subscribed onto the
- * corresponding SafeOnline application.
+ * Implementation of the authorization manager service. For the moment the authorization is granted via application subscriptions. I.e. when
+ * assigning a role to a subject, the subject will actually be subscribed onto the corresponding SafeOnline application.
  * 
  * @author fcorneli
  * 
@@ -51,8 +50,7 @@ import org.jboss.annotation.security.SecurityDomain;
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
 public class AuthorizationManagerServiceBean implements AuthorizationManagerService {
 
-    private static final Log                 LOG                    = LogFactory
-                                                                            .getLog(AuthorizationManagerServiceBean.class);
+    private static final Log                 LOG                    = LogFactory.getLog(AuthorizationManagerServiceBean.class);
 
     @EJB
     private SubjectService                   subjectService;
@@ -67,10 +65,8 @@ public class AuthorizationManagerServiceBean implements AuthorizationManagerServ
 
     static {
         roleApplicationNameMap.put(SafeOnlineRoles.OWNER_ROLE, SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME);
-        roleApplicationNameMap.put(SafeOnlineRoles.OPERATOR_ROLE,
-                SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME);
-        roleApplicationNameMap.put(SafeOnlineRoles.HELPDESK_ROLE,
-                SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME);
+        roleApplicationNameMap.put(SafeOnlineRoles.OPERATOR_ROLE, SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME);
+        roleApplicationNameMap.put(SafeOnlineRoles.HELPDESK_ROLE, SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME);
     }
 
 
@@ -97,12 +93,9 @@ public class AuthorizationManagerServiceBean implements AuthorizationManagerServ
         SubjectEntity subject = this.subjectService.getSubjectFromUserName(login);
         Set<String> roles = new HashSet<String>();
 
-        addRoleIfSubscribed(SafeOnlineRoles.OWNER_ROLE, subject,
-                SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME, roles);
-        addRoleIfSubscribed(SafeOnlineRoles.OPERATOR_ROLE, subject,
-                SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME, roles);
-        addRoleIfSubscribed(SafeOnlineRoles.HELPDESK_ROLE, subject,
-                SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME, roles);
+        addRoleIfSubscribed(SafeOnlineRoles.OWNER_ROLE, subject, SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME, roles);
+        addRoleIfSubscribed(SafeOnlineRoles.OPERATOR_ROLE, subject, SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME, roles);
+        addRoleIfSubscribed(SafeOnlineRoles.HELPDESK_ROLE, subject, SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME, roles);
 
         return roles;
     }

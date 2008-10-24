@@ -102,8 +102,7 @@ public class SafeOnlineTrustManagerTest {
 
         // operate: no trusted server cert configured
         SafeOnlineTrustManager.setTrustedCertificate(null);
-        SSLSocket socketNoServerCert = (SSLSocket) HttpsURLConnection.getDefaultSSLSocketFactory().createSocket(
-                "localhost", port);
+        SSLSocket socketNoServerCert = (SSLSocket) HttpsURLConnection.getDefaultSSLSocketFactory().createSocket("localhost", port);
         socketNoServerCert.getOutputStream().write("hello world".getBytes());
         socketNoServerCert.close();
         SSLSession sessionNoServerCert = socketNoServerCert.getSession();
@@ -111,8 +110,7 @@ public class SafeOnlineTrustManagerTest {
 
         // operate: server cert configured
         SafeOnlineTrustManager.setTrustedCertificate(serverCert);
-        SSLSocket socketServerCert = (SSLSocket) HttpsURLConnection.getDefaultSSLSocketFactory().createSocket(
-                "localhost", port);
+        SSLSocket socketServerCert = (SSLSocket) HttpsURLConnection.getDefaultSSLSocketFactory().createSocket("localhost", port);
         socketServerCert.getOutputStream().write("hello world".getBytes());
         socketServerCert.setKeepAlive(false);
         socketServerCert.close();

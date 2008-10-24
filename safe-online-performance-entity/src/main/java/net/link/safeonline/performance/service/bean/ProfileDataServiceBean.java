@@ -28,11 +28,11 @@ import org.jboss.annotation.ejb.LocalBinding;
 /**
  * <h2>{@link ProfileDataServiceBean}<br>
  * <sub>Service bean for {@link ProfileDataEntity}.</sub></h2>
- *
+ * 
  * <p>
  * <i>Jan 11, 2008</i>
  * </p>
- *
+ * 
  * @see ProfileDataService
  * @author mbillemo
  */
@@ -62,16 +62,14 @@ public class ProfileDataServiceBean extends AbstractProfilingServiceBean impleme
     @SuppressWarnings("unchecked")
     public List<ProfileDataEntity> getAllProfileData(DriverProfileEntity profile) {
 
-        return this.em.createNamedQuery(ProfileDataEntity.getByProfile).setParameter("profile", profile)
-                .getResultList();
+        return this.em.createNamedQuery(ProfileDataEntity.getByProfile).setParameter("profile", profile).getResultList();
     }
 
     /**
      * {@inheritDoc}
      */
     @SuppressWarnings("unchecked")
-    public List<ProfileDataEntity> getProfileData(DriverProfileEntity profile,
-            LinkedList<ScenarioTimingEntity> scenarioTimings) {
+    public List<ProfileDataEntity> getProfileData(DriverProfileEntity profile, LinkedList<ScenarioTimingEntity> scenarioTimings) {
 
         List<ProfileDataEntity> pointData = new LinkedList<ProfileDataEntity>();
 
@@ -80,23 +78,22 @@ public class ProfileDataServiceBean extends AbstractProfilingServiceBean impleme
         int dataPoints = scenarioTimings.size();
         int period = (int) Math.ceil(dataDuration / (double) dataPoints);
         int point = 0;
-        
+
         for (ScenarioTimingEntity timing : scenarioTimings) {
             try {
-                ProfileDataEntity profileDataEntity = new ProfileDataEntity(
-                        profile, timing);
+                ProfileDataEntity profileDataEntity = new ProfileDataEntity(profile, timing);
                 pointData.add(profileDataEntity);
 
-                List<MeasurementEntity> measurements = this.em.createNamedQuery(ProfileDataEntity.createAverage)
-                        .setParameter("profile", profile).setParameter("start", dataStart + point * period)
-                        .setParameter("stop", dataStart + (point + 1) * period).getResultList();
+                List<MeasurementEntity> measurements = this.em.createNamedQuery(ProfileDataEntity.createAverage).setParameter("profile",
+                        profile).setParameter("start", dataStart + point * period).setParameter("stop", dataStart + (point + 1) * period)
+                                                              .getResultList();
                 for (MeasurementEntity measurement : measurements) {
                     measurement.setProfileData(profileDataEntity);
                     profileDataEntity.getMeasurements().add(measurement);
                 }
             } catch (NoResultException e) {
             }
-            
+
             ++point;
         }
 

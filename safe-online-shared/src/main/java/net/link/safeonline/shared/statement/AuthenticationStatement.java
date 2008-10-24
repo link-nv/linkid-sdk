@@ -12,11 +12,11 @@ import net.link.safeonline.shared.asn1.statement.DERAuthenticationStatement;
 
 
 /**
- * Component for constructing the authentication statement. The authentication statement links the session Id and
- * application Id with an PKIX-based authentication device.
- *
+ * Component for constructing the authentication statement. The authentication statement links the session Id and application Id with an
+ * PKIX-based authentication device.
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class AuthenticationStatement extends AbstractStatement {
 

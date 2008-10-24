@@ -84,12 +84,14 @@ public interface ApplicationService {
      * @throws CertificateEncodingException
      * @throws AttributeTypeNotFoundException
      */
-    void addApplication(String name, String friendlyName, String applicationOwnerName, String description,
-            boolean idMappingServiceAccess, IdScopeType idScope, URL applicationUrl, byte[] newApplicationLogo,
-            Color applicationColor, byte[] encodedCertificate,
-            List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes, boolean skipMessageIntegrityCheck,
-            boolean deviceRestriction, boolean ssoEnabled, URL ssoLogoutUrl) throws ExistingApplicationException,
-            ApplicationOwnerNotFoundException, CertificateEncodingException, AttributeTypeNotFoundException;
+    void addApplication(String name, String friendlyName, String applicationOwnerName, String description, boolean idMappingServiceAccess,
+                        IdScopeType idScope, URL applicationUrl, byte[] newApplicationLogo, Color applicationColor,
+                        byte[] encodedCertificate, List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes,
+                        boolean skipMessageIntegrityCheck, boolean deviceRestriction, boolean ssoEnabled, URL ssoLogoutUrl)
+                                                                                                                           throws ExistingApplicationException,
+                                                                                                                           ApplicationOwnerNotFoundException,
+                                                                                                                           CertificateEncodingException,
+                                                                                                                           AttributeTypeNotFoundException;
 
     /**
      * Removes an application an all its subscriptions.
@@ -107,8 +109,7 @@ public interface ApplicationService {
      * @throws ApplicationNotFoundException
      * @throws PermissionDeniedException
      */
-    void setApplicationDescription(String name, String description) throws ApplicationNotFoundException,
-            PermissionDeniedException;
+    void setApplicationDescription(String name, String description) throws ApplicationNotFoundException, PermissionDeniedException;
 
     /**
      * Registers an application owner.
@@ -121,8 +122,8 @@ public interface ApplicationService {
      * @throws ExistingApplicationOwnerException
      * @throws ExistingApplicationAdminException
      */
-    void registerApplicationOwner(String ownerName, String adminLogin) throws SubjectNotFoundException,
-            ExistingApplicationOwnerException, ExistingApplicationAdminException;
+    void registerApplicationOwner(String ownerName, String adminLogin) throws SubjectNotFoundException, ExistingApplicationOwnerException,
+                                                                      ExistingApplicationAdminException;
 
     /**
      * Removes an application owner.
@@ -136,8 +137,8 @@ public interface ApplicationService {
      * @throws SubjectNotFoundException
      * @throws SubscriptionNotFoundException
      */
-    void removeApplicationOwner(String ownerName, String adminLogin) throws SubscriptionNotFoundException,
-            SubjectNotFoundException, ApplicationOwnerNotFoundException, PermissionDeniedException;
+    void removeApplicationOwner(String ownerName, String adminLogin) throws SubscriptionNotFoundException, SubjectNotFoundException,
+                                                                    ApplicationOwnerNotFoundException, PermissionDeniedException;
 
     /**
      * Gives back a list of all application owners within the system.
@@ -153,13 +154,14 @@ public interface ApplicationService {
      * @throws ApplicationIdentityNotFoundException
      * @throws PermissionDeniedException
      */
-    Set<ApplicationIdentityAttributeEntity> getCurrentApplicationIdentity(String applicationName)
-            throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException;
+    Set<ApplicationIdentityAttributeEntity> getCurrentApplicationIdentity(String applicationName) throws ApplicationNotFoundException,
+                                                                                                 ApplicationIdentityNotFoundException,
+                                                                                                 PermissionDeniedException;
 
     /**
-     * Updates the application identity for the given application using the given set of attribute type names. The
-     * current application identity version will only be changed if the new set of attribute types is a superset of the
-     * current attribute type set that makes up the application identity.
+     * Updates the application identity for the given application using the given set of attribute type names. The current application
+     * identity version will only be changed if the new set of attribute types is a superset of the current attribute type set that makes up
+     * the application identity.
      * 
      * @param applicationId
      * @param applicationIdentityAttributes
@@ -168,7 +170,9 @@ public interface ApplicationService {
      * @throws AttributeTypeNotFoundException
      */
     void updateApplicationIdentity(String applicationId, List<IdentityAttributeTypeDO> applicationIdentityAttributes)
-            throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, AttributeTypeNotFoundException;
+                                                                                                                     throws ApplicationNotFoundException,
+                                                                                                                     ApplicationIdentityNotFoundException,
+                                                                                                                     AttributeTypeNotFoundException;
 
     /**
      * Updates the application URL for the given application.
@@ -205,8 +209,8 @@ public interface ApplicationService {
      * @throws CertificateEncodingException
      * @throws ApplicationNotFoundException
      */
-    void updateApplicationCertificate(String applicationName, byte[] certificateData)
-            throws CertificateEncodingException, ApplicationNotFoundException;
+    void updateApplicationCertificate(String applicationName, byte[] certificateData) throws CertificateEncodingException,
+                                                                                     ApplicationNotFoundException;
 
     /**
      * Sets the application description.
@@ -217,8 +221,8 @@ public interface ApplicationService {
      * @throws ApplicationNotFoundException
      * @throws PermissionDeniedException
      */
-    void setApplicationDeviceRestriction(String applicationName, boolean deviceRestriction)
-            throws ApplicationNotFoundException, PermissionDeniedException;
+    void setApplicationDeviceRestriction(String applicationName, boolean deviceRestriction) throws ApplicationNotFoundException,
+                                                                                           PermissionDeniedException;
 
     /**
      * Set the application's permission to use the id mapping ws.
@@ -244,8 +248,7 @@ public interface ApplicationService {
      * @param skipMessageIntegrityCheck
      * @throws ApplicationNotFoundException
      */
-    void setSkipMessageIntegrityCheck(String applicationName, boolean skipMessageIntegrityCheck)
-            throws ApplicationNotFoundException;
+    void setSkipMessageIntegrityCheck(String applicationName, boolean skipMessageIntegrityCheck) throws ApplicationNotFoundException;
 
     /**
      * Sets if the application is Single Sign-On enabled or not.

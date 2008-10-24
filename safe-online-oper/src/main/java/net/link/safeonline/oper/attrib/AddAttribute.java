@@ -86,7 +86,7 @@ public interface AddAttribute {
     String typeNext();
 
     String add() throws NodeNotFoundException, ExistingAttributeTypeException, AttributeTypeNotFoundException,
-            AttributeTypeDefinitionException;
+                AttributeTypeDefinitionException;
 
     String cancel();
 

@@ -30,8 +30,7 @@ public class CompoundedAttributeTypeMemberPK implements Serializable {
         // empty
     }
 
-    public CompoundedAttributeTypeMemberPK(AttributeTypeEntity parentAttributeType,
-            AttributeTypeEntity memberAttributeType) {
+    public CompoundedAttributeTypeMemberPK(AttributeTypeEntity parentAttributeType, AttributeTypeEntity memberAttributeType) {
 
         this.parent = parentAttributeType.getName();
         this.member = memberAttributeType.getName();

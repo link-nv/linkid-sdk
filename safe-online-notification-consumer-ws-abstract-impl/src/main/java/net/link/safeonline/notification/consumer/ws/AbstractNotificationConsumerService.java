@@ -12,9 +12,9 @@ import java.util.List;
 
 /**
  * Abstract WS-Notification consumer service interface to be used for specific implementations.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public interface AbstractNotificationConsumerService {
 

@@ -16,6 +16,7 @@ import net.link.safeonline.option.OptionConstants;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.seam.annotations.Name;
 
+
 @Stateful
 @Name("optionHelpdesk")
 @LocalBinding(jndiBinding = OptionConstants.JNDI_PREFIX + "HelpdeskBean/local")

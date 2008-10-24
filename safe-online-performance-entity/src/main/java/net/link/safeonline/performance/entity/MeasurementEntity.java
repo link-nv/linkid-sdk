@@ -16,11 +16,11 @@ import javax.persistence.ManyToOne;
 /**
  * <h2>{@link MeasurementEntity}<br>
  * <sub>Holds a description and duration for a single measurement.</sub></h2>
- *
+ * 
  * <p>
  * <i>Jan 14, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 @Entity

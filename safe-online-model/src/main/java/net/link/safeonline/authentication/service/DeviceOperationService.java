@@ -20,9 +20,9 @@ import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
 
 
 /**
- * Device operation service interface. This service allows the authentication web application and user web application
- * to register, remove or update devices for a user. The bean behind this interface is stateful. This means that a
- * certain method invocation pattern must be respected.
+ * Device operation service interface. This service allows the authentication web application and user web application to register, remove
+ * or update devices for a user. The bean behind this interface is stateful. This means that a certain method invocation pattern must be
+ * respected.
  * 
  * @author wvdhaute
  */
@@ -37,11 +37,9 @@ public interface DeviceOperationService {
 
     void abort();
 
-    String redirect(String serviceUrl, String targetUrl, DeviceOperationType deviceOperation, String device,
-            String authenticatedDevice, String userId, AttributeDO attribute) throws NodeNotFoundException,
-            SubjectNotFoundException,
-            DeviceNotFoundException;
+    String redirect(String serviceUrl, String targetUrl, DeviceOperationType deviceOperation, String device, String authenticatedDevice,
+                    String userId, AttributeDO attribute) throws NodeNotFoundException, SubjectNotFoundException, DeviceNotFoundException;
 
-    String finalize(HttpServletRequest request) throws NodeNotFoundException, ServletException,
-            NodeMappingNotFoundException, DeviceNotFoundException, SubjectNotFoundException;
+    String finalize(HttpServletRequest request) throws NodeNotFoundException, ServletException, NodeMappingNotFoundException,
+                                               DeviceNotFoundException, SubjectNotFoundException;
 }

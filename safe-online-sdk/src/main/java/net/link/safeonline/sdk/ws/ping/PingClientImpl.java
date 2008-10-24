@@ -27,7 +27,7 @@ public class PingClientImpl extends AbstractMessageAccessor implements PingClien
 
     /**
      * Main constructor.
-     *
+     * 
      * @param location
      */
     public PingClientImpl(String location) {
@@ -36,8 +36,7 @@ public class PingClientImpl extends AbstractMessageAccessor implements PingClien
         this.pingPort = pingService.getPingPort();
 
         BindingProvider bindingProvider = (BindingProvider) this.pingPort;
-        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                location + "/safe-online-ws/ping");
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location + "/safe-online-ws/ping");
     }
 
     public void ping() throws ConnectException {

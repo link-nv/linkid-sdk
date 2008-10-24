@@ -44,8 +44,7 @@ public class AttributeDAOBean implements AttributeDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                AttributeEntity.QueryInterface.class);
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, AttributeEntity.QueryInterface.class);
     }
 
     public AttributeEntity addAttribute(AttributeTypeEntity attributeType, SubjectEntity subject, String stringValue) {
@@ -67,33 +66,30 @@ public class AttributeDAOBean implements AttributeDAO {
     public AttributeEntity findAttribute(String attributeTypeName, SubjectEntity subject) {
 
         LOG.debug("find attribute for type  " + attributeTypeName + " and subject " + subject.getUserId());
-        AttributeEntity attribute = this.entityManager.find(AttributeEntity.class, new AttributePK(attributeTypeName,
-                subject.getUserId()));
+        AttributeEntity attribute = this.entityManager.find(AttributeEntity.class, new AttributePK(attributeTypeName, subject.getUserId()));
         return attribute;
     }
 
     public AttributeEntity findAttribute(String attributeTypeName, SubjectEntity subject, long index) {
 
-        LOG.debug("find attribute for type  " + attributeTypeName + " and subject " + subject.getUserId() + " index = "
-                + index);
-        AttributeEntity attribute = this.entityManager.find(AttributeEntity.class, new AttributePK(attributeTypeName,
-                subject.getUserId(), index));
+        LOG.debug("find attribute for type  " + attributeTypeName + " and subject " + subject.getUserId() + " index = " + index);
+        AttributeEntity attribute = this.entityManager.find(AttributeEntity.class, new AttributePK(attributeTypeName, subject.getUserId(),
+                index));
         return attribute;
     }
 
     public AttributeEntity findAttribute(SubjectEntity subject, AttributeTypeEntity attributeType, long index) {
 
         LOG.debug("find attribute for type  " + attributeType.getName() + " and subject " + subject.getUserId());
-        AttributeEntity attribute = this.entityManager.find(AttributeEntity.class, new AttributePK(attributeType,
-                subject, index));
+        AttributeEntity attribute = this.entityManager.find(AttributeEntity.class, new AttributePK(attributeType, subject, index));
         return attribute;
     }
 
     public AttributeEntity findAttribute(SubjectEntity subject, String attributeTypeName, long index) {
 
         LOG.debug("find attribute for type  " + attributeTypeName + " and subject " + subject.getUserId());
-        AttributeEntity attribute = this.entityManager.find(AttributeEntity.class, new AttributePK(attributeTypeName,
-                subject.getUserId(), index));
+        AttributeEntity attribute = this.entityManager.find(AttributeEntity.class, new AttributePK(attributeTypeName, subject.getUserId(),
+                index));
         return attribute;
     }
 
@@ -113,8 +109,7 @@ public class AttributeDAOBean implements AttributeDAO {
         return result;
     }
 
-    public void addOrUpdateAttribute(AttributeTypeEntity attributeType, SubjectEntity subject, long index,
-            String stringValue) {
+    public void addOrUpdateAttribute(AttributeTypeEntity attributeType, SubjectEntity subject, long index, String stringValue) {
 
         AttributeEntity attribute = findAttribute(subject, attributeType, index);
         if (null == attribute) {
@@ -123,8 +118,7 @@ public class AttributeDAOBean implements AttributeDAO {
         attribute.setStringValue(stringValue);
     }
 
-    public void addOrUpdateAttribute(AttributeTypeEntity attributeType, SubjectEntity subject, long index,
-            Boolean booleanValue) {
+    public void addOrUpdateAttribute(AttributeTypeEntity attributeType, SubjectEntity subject, long index, Boolean booleanValue) {
 
         AttributeEntity attribute = findAttribute(subject, attributeType, index);
         if (null == attribute) {
@@ -133,8 +127,7 @@ public class AttributeDAOBean implements AttributeDAO {
         attribute.setBooleanValue(booleanValue);
     }
 
-    public AttributeEntity getAttribute(String attributeTypeName, SubjectEntity subject)
-            throws AttributeNotFoundException {
+    public AttributeEntity getAttribute(String attributeTypeName, SubjectEntity subject) throws AttributeNotFoundException {
 
         AttributeEntity attribute = findAttribute(attributeTypeName, subject);
         if (null == attribute)
@@ -142,8 +135,7 @@ public class AttributeDAOBean implements AttributeDAO {
         return attribute;
     }
 
-    public AttributeEntity getAttribute(String attributeTypeName, SubjectEntity subject, long index)
-            throws AttributeNotFoundException {
+    public AttributeEntity getAttribute(String attributeTypeName, SubjectEntity subject, long index) throws AttributeNotFoundException {
 
         AttributeEntity attribute = findAttribute(attributeTypeName, subject, index);
         if (null == attribute)
@@ -153,16 +145,13 @@ public class AttributeDAOBean implements AttributeDAO {
 
     public AttributeEntity findAttribute(AttributeTypeEntity attributeType, SubjectEntity subject) {
 
-        AttributeEntity attribute = this.entityManager.find(AttributeEntity.class, new AttributePK(attributeType,
-                subject));
+        AttributeEntity attribute = this.entityManager.find(AttributeEntity.class, new AttributePK(attributeType, subject));
         return attribute;
     }
 
-    public AttributeEntity getAttribute(AttributeTypeEntity attributeType, SubjectEntity subject)
-            throws AttributeNotFoundException {
+    public AttributeEntity getAttribute(AttributeTypeEntity attributeType, SubjectEntity subject) throws AttributeNotFoundException {
 
-        AttributeEntity attribute = this.entityManager.find(AttributeEntity.class, new AttributePK(attributeType,
-                subject));
+        AttributeEntity attribute = this.entityManager.find(AttributeEntity.class, new AttributePK(attributeType, subject));
         if (null == attribute)
             throw new AttributeNotFoundException();
         return attribute;
@@ -175,7 +164,7 @@ public class AttributeDAOBean implements AttributeDAO {
     }
 
     public AttributeEntity getAttribute(AttributeTypeEntity attributeType, SubjectEntity subject, long index)
-            throws AttributeNotFoundException {
+                                                                                                             throws AttributeNotFoundException {
 
         AttributePK pk = new AttributePK(attributeType, subject, index);
         AttributeEntity attribute = this.entityManager.find(AttributeEntity.class, pk);

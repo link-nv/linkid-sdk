@@ -103,8 +103,7 @@ public class AuthenticationBean implements Authentication {
             return null;
         } catch (PermissionDeniedException e) {
             this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "digipassAuthenticationFailed");
-            HelpdeskLogger.add("Failed to contact OLAS to retrieve device mapping for " + this.loginName,
-                    LogLevelType.ERROR);
+            HelpdeskLogger.add("Failed to contact OLAS to retrieve device mapping for " + this.loginName, LogLevelType.ERROR);
             return null;
         } catch (DeviceNotFoundException e) {
             this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "digipassAuthenticationFailed");
@@ -125,8 +124,7 @@ public class AuthenticationBean implements Authentication {
         this.authenticationContext.setUserId(userId);
         this.authenticationContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());
         this.authenticationContext.setIssuer(net.link.safeonline.model.digipass.DigipassConstants.DIGIPASS_DEVICE_ID);
-        this.authenticationContext
-                .setUsedDevice(net.link.safeonline.model.digipass.DigipassConstants.DIGIPASS_DEVICE_ID);
+        this.authenticationContext.setUsedDevice(net.link.safeonline.model.digipass.DigipassConstants.DIGIPASS_DEVICE_ID);
 
         exit();
     }
@@ -164,8 +162,7 @@ public class AuthenticationBean implements Authentication {
 
     public String tryAnotherDevice() throws IOException {
 
-        this.authenticationContext
-                .setUsedDevice(net.link.safeonline.model.digipass.DigipassConstants.DIGIPASS_DEVICE_ID);
+        this.authenticationContext.setUsedDevice(net.link.safeonline.model.digipass.DigipassConstants.DIGIPASS_DEVICE_ID);
         exit();
         return null;
     }

@@ -12,9 +12,9 @@ import net.link.safeonline.entity.SubjectEntity;
 
 /**
  * Factory for domain model Subject objects.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class SubjectFactory {
 
@@ -25,7 +25,7 @@ public class SubjectFactory {
 
     /**
      * Gives back the subject object corresponding with the caller principal.
-     *
+     * 
      * @param subjectContext
      */
     public static Subject getCallerSubject(SubjectContext subjectContext) {

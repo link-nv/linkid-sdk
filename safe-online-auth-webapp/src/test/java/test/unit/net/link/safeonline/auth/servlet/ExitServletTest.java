@@ -105,24 +105,22 @@ public class ExitServletTest {
 
         final KeyPair keyPair = PkiTestUtils.generateKeyPair();
         this.publicKey = keyPair.getPublic();
-        this.jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getPrivateKey",
-                new MBeanActionHandler() {
+        this.jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getPrivateKey", new MBeanActionHandler() {
 
-                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
+            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-                        LOG.debug("returning private key");
-                        return keyPair.getPrivate();
-                    }
-                });
-        this.jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getPublicKey",
-                new MBeanActionHandler() {
+                LOG.debug("returning private key");
+                return keyPair.getPrivate();
+            }
+        });
+        this.jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getPublicKey", new MBeanActionHandler() {
 
-                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
+            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-                        LOG.debug("returning public key");
-                        return keyPair.getPublic();
-                    }
-                });
+                LOG.debug("returning public key");
+                return keyPair.getPublic();
+            }
+        });
 
         this.jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
 
@@ -142,8 +140,7 @@ public class ExitServletTest {
         int validity = 60 * 10;
 
         this.mockAuthenticationService = createMock(AuthenticationService.class);
-        expect(this.mockAuthenticationService.getAuthenticationState()).andStubReturn(
-                AuthenticationState.USER_AUTHENTICATED);
+        expect(this.mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.USER_AUTHENTICATED);
 
         this.mockObjects = new Object[] { this.mockAuthenticationService };
         this.jndiTestUtils.setUp();
@@ -155,23 +152,19 @@ public class ExitServletTest {
 
         DeviceClassEntity deviceClass = new DeviceClassEntity(SafeOnlineConstants.PKI_DEVICE_CLASS,
                 SafeOnlineConstants.PKI_DEVICE_AUTH_CONTEXT_CLASS);
-        this.device = new DeviceEntity(BeIdConstants.BEID_DEVICE_ID, deviceClass, null, null, null, null, null, null,
-                null);
+        this.device = new DeviceEntity(BeIdConstants.BEID_DEVICE_ID, deviceClass, null, null, null, null, null, null, null);
 
-        initialSessionAttributes.put(ProtocolHandlerManager.PROTOCOL_HANDLER_ID_ATTRIBUTE,
-                Saml2PostProtocolHandler.class.getName());
+        initialSessionAttributes.put(ProtocolHandlerManager.PROTOCOL_HANDLER_ID_ATTRIBUTE, Saml2PostProtocolHandler.class.getName());
         initialSessionAttributes.put(LoginManager.USERID_ATTRIBUTE, this.userid);
         initialSessionAttributes.put(LoginManager.TARGET_ATTRIBUTE, this.target);
         initialSessionAttributes.put(LoginManager.APPLICATION_ID_ATTRIBUTE, this.applicationId);
-        initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE,
-                this.mockAuthenticationService);
+        initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE, this.mockAuthenticationService);
         initialSessionAttributes.put(LoginManager.AUTHENTICATION_DEVICE_ATTRIBUTE, this.device);
 
         this.exitServletTestManager.setUp(ExitServlet.class, servletInitParams, null, null, initialSessionAttributes);
 
-        String samlResponseToken = AuthnResponseFactory.createAuthResponse(this.inResponseTo, this.applicationId,
-                this.applicationId, this.userid, this.device.getAuthenticationContextClass(), keyPair, validity,
-                this.target);
+        String samlResponseToken = AuthnResponseFactory.createAuthResponse(this.inResponseTo, this.applicationId, this.applicationId,
+                this.userid, this.device.getAuthenticationContextClass(), keyPair, validity, this.target);
         String encodedSamlResponseToken = org.apache.xml.security.utils.Base64.encode(samlResponseToken.getBytes());
         expect(this.mockAuthenticationService.finalizeAuthentication()).andStubReturn(encodedSamlResponseToken);
 
@@ -210,8 +203,7 @@ public class ExitServletTest {
 
         Document responseDocument = DomTestUtils.parseDocument(responseBody);
         LOG.debug("document element name: " + responseDocument.getDocumentElement().getNodeName());
-        Node valueNode = XPathAPI.selectSingleNode(responseDocument,
-                "/:html/:body/:form/:div/:input[@name='SAMLResponse']/@value");
+        Node valueNode = XPathAPI.selectSingleNode(responseDocument, "/:html/:body/:form/:div/:input[@name='SAMLResponse']/@value");
         assertNotNull(valueNode);
         String samlResponseValue = valueNode.getTextContent();
         LOG.debug("SAMLResponse value: " + samlResponseValue);
@@ -229,13 +221,10 @@ public class ExitServletTest {
 
         Document samlResponseDocument = DomTestUtils.parseDocument(samlResponse);
         Element nsElement = samlResponseDocument.createElement("nsElement");
-        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:saml",
-                "urn:oasis:names:tc:SAML:2.0:assertion");
-        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:samlp",
-                "urn:oasis:names:tc:SAML:2.0:protocol");
+        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:saml", "urn:oasis:names:tc:SAML:2.0:assertion");
+        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:samlp", "urn:oasis:names:tc:SAML:2.0:protocol");
         nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:ds", "http://www.w3.org/2000/09/xmldsig#");
         assertNotNull(XPathAPI.selectSingleNode(samlResponseDocument, "/samlp:Response/ds:Signature", nsElement));
-        assertNotNull(XPathAPI.selectSingleNode(samlResponseDocument,
-                "/samlp:Response/saml:Assertion/saml:Subject/saml:NameID", nsElement));
+        assertNotNull(XPathAPI.selectSingleNode(samlResponseDocument, "/samlp:Response/saml:Assertion/saml:Subject/saml:NameID", nsElement));
     }
 }

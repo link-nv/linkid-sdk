@@ -64,8 +64,8 @@ public class IdentityConfirmationBean extends AbstractExitBean implements Identi
 
 
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
-    public String agree() throws ApplicationNotFoundException, ApplicationIdentityNotFoundException,
-            PermissionDeniedException, AttributeTypeNotFoundException, SubscriptionNotFoundException {
+    public String agree() throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException,
+                         AttributeTypeNotFoundException, SubscriptionNotFoundException {
 
         LOG.debug("agree");
         this.identityService.confirmIdentity(this.application);
@@ -96,23 +96,22 @@ public class IdentityConfirmationBean extends AbstractExitBean implements Identi
 
     @Factory("identityConfirmationList")
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
-    public List<AttributeDO> identityConfirmationListFactory() throws SubscriptionNotFoundException,
-            ApplicationNotFoundException, ApplicationIdentityNotFoundException {
+    public List<AttributeDO> identityConfirmationListFactory() throws SubscriptionNotFoundException, ApplicationNotFoundException,
+                                                              ApplicationIdentityNotFoundException {
 
         LOG.debug("identityConfirmationList factory");
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();
 
-        List<AttributeDO> confirmationList = this.identityService.listIdentityAttributesToConfirm(this.application,
-                viewLocale);
+        List<AttributeDO> confirmationList = this.identityService.listIdentityAttributesToConfirm(this.application, viewLocale);
         LOG.debug("confirmation list: " + confirmationList);
         return confirmationList;
     }
 
     @Factory("identityUnavailableList")
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
-    public List<AttributeDO> identityUnavailableListFactory() throws PermissionDeniedException,
-            AttributeTypeNotFoundException, ApplicationNotFoundException, ApplicationIdentityNotFoundException {
+    public List<AttributeDO> identityUnavailableListFactory() throws PermissionDeniedException, AttributeTypeNotFoundException,
+                                                             ApplicationNotFoundException, ApplicationIdentityNotFoundException {
 
         LOG.debug("identityUnavailableList factory");
         List<AttributeDO> unavailableList = new LinkedList<AttributeDO>();

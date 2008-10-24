@@ -28,11 +28,9 @@ public interface EndpointReferenceDAO {
 
     EndpointReferenceEntity findEndpointReference(String address, NodeEntity node);
 
-    EndpointReferenceEntity getEndpointReference(String address, ApplicationEntity application)
-            throws EndpointReferenceNotFoundException;
+    EndpointReferenceEntity getEndpointReference(String address, ApplicationEntity application) throws EndpointReferenceNotFoundException;
 
-    EndpointReferenceEntity getEndpointReference(String address, NodeEntity node)
-            throws EndpointReferenceNotFoundException;
+    EndpointReferenceEntity getEndpointReference(String address, NodeEntity node) throws EndpointReferenceNotFoundException;
 
     List<EndpointReferenceEntity> listEndpoints();
 

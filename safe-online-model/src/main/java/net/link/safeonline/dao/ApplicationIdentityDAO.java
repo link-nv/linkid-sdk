@@ -24,20 +24,20 @@ public interface ApplicationIdentityDAO {
     ApplicationIdentityEntity addApplicationIdentity(ApplicationEntity application, long identityVersion);
 
     ApplicationIdentityEntity getApplicationIdentity(ApplicationEntity application, long identityVersion)
-            throws ApplicationIdentityNotFoundException;
+                                                                                                         throws ApplicationIdentityNotFoundException;
 
     List<ApplicationIdentityEntity> listApplicationIdentities(ApplicationEntity application);
 
     /**
-     * Removes an application identity. This will also remove the application identity attributes of this application
-     * identity.
-     *
+     * Removes an application identity. This will also remove the application identity attributes of this application identity.
+     * 
      * @param applicationIdentity
      */
     void removeApplicationIdentity(ApplicationIdentityEntity applicationIdentity);
 
     ApplicationIdentityAttributeEntity addApplicationIdentityAttribute(ApplicationIdentityEntity applicationIdentity,
-            AttributeTypeEntity attributeType, boolean required, boolean dataMining);
+                                                                       AttributeTypeEntity attributeType, boolean required,
+                                                                       boolean dataMining);
 
     void removeApplicationIdentityAttribute(ApplicationIdentityAttributeEntity applicationIdentityAttribute);
 

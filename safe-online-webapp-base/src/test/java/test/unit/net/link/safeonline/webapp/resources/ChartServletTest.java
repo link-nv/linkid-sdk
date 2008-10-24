@@ -93,12 +93,9 @@ public class ChartServletTest extends TestCase {
                 new NameValuePair("domain", testDomain), new NameValuePair("applicationname", testApplicationName) });
         StatisticEntity statistic = new StatisticEntity();
         statistic.setName("test-statistic-name");
+        statistic.getStatisticDataPoints().add(new StatisticDataPointEntity("test-data-point", statistic, new Date(), 1, 2, 3));
         statistic.getStatisticDataPoints().add(
-                new StatisticDataPointEntity("test-data-point", statistic, new Date(), 1, 2, 3));
-        statistic.getStatisticDataPoints()
-                .add(
-                        new StatisticDataPointEntity("test-data-point", statistic, new DateTime().plusDays(1).toDate(),
-                                4, 5, 6));
+                new StatisticDataPointEntity("test-data-point", statistic, new DateTime().plusDays(1).toDate(), 4, 5, 6));
 
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         JFreeChart chart = ChartFactory.createBarChart(statistic.getName(), // chart
@@ -110,7 +107,7 @@ public class ChartServletTest extends TestCase {
                 true, // include legend
                 true, // tooltips?
                 false // URLs?
-                );
+                                       );
 
         // stubs
 

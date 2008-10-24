@@ -14,15 +14,15 @@ import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 
 /**
  * WS Notification Producer Service Client interface.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public interface NotificationProducerClient extends MessageAccessor {
 
     /**
      * Subscribe the specified consumer address to the specified Topic.
-     *
+     * 
      * @param topic
      * @param address
      * @throws SubscriptionFailedException

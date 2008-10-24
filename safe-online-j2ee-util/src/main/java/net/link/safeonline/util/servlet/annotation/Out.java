@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
 
 /**
  * Specifies that a component should be outjected from the annotated field.
- *
+ * 
  * @author Gavin King
  */
 @Target( { FIELD })

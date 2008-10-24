@@ -27,6 +27,6 @@ public interface ProxyAttributeService {
      * @throws AttributeUnavailableException
      * @throws SubjectNotFoundException
      */
-    Object findAttributeValue(String userId, String attributeName) throws PermissionDeniedException,
-            AttributeTypeNotFoundException, AttributeUnavailableException, SubjectNotFoundException;
+    Object findAttributeValue(String userId, String attributeName) throws PermissionDeniedException, AttributeTypeNotFoundException,
+                                                                  AttributeUnavailableException, SubjectNotFoundException;
 }

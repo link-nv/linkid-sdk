@@ -36,11 +36,10 @@ public class SimpleMessageRenderer extends HtmlBasicRenderer {
     public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
 
         if (context == null)
-            throw new NullPointerException(MessageUtils.getExceptionMessageString(
-                    MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context"));
+            throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context"));
         if (component == null)
-            throw new NullPointerException(MessageUtils.getExceptionMessageString(
-                    MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "component"));
+            throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID,
+                    "component"));
         if (component instanceof UIOutput) {
             this.omRenderer.encodeBegin(context, component);
             return;
@@ -52,11 +51,10 @@ public class SimpleMessageRenderer extends HtmlBasicRenderer {
     public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
 
         if (context == null)
-            throw new NullPointerException(MessageUtils.getExceptionMessageString(
-                    MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context"));
+            throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context"));
         if (component == null)
-            throw new NullPointerException(MessageUtils.getExceptionMessageString(
-                    MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "component"));
+            throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID,
+                    "component"));
         if (component instanceof UIOutput) {
             this.omRenderer.encodeChildren(context, component);
             return;
@@ -73,11 +71,10 @@ public class SimpleMessageRenderer extends HtmlBasicRenderer {
         ResponseWriter writer = null;
 
         if (context == null)
-            throw new NullPointerException(MessageUtils.getExceptionMessageString(
-                    MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context"));
+            throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context"));
         if (component == null)
-            throw new NullPointerException(MessageUtils.getExceptionMessageString(
-                    MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "component"));
+            throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID,
+                    "component"));
 
         if (component instanceof UIOutput) {
             this.omRenderer.encodeEnd(context, component);
@@ -90,8 +87,7 @@ public class SimpleMessageRenderer extends HtmlBasicRenderer {
         // false.
         if (!component.isRendered()) {
             if (logger.isLoggable(Level.FINE)) {
-                logger.fine("End encoding component " + component.getId() + " since "
-                        + "rendered attribute is set to false ");
+                logger.fine("End encoding component " + component.getId() + " since " + "rendered attribute is set to false ");
             }
             return;
         }
@@ -117,8 +113,7 @@ public class SimpleMessageRenderer extends HtmlBasicRenderer {
         curMessage = (FacesMessage) messageIter.next();
 
         String summary = null, detail = null, severityStyle = null, severityStyleClass = null;
-        boolean showSummary = ((UIMessage) component).isShowSummary(), showDetail = ((UIMessage) component)
-                .isShowDetail();
+        boolean showSummary = ((UIMessage) component).isShowSummary(), showDetail = ((UIMessage) component).isShowDetail();
 
         // make sure we have a non-null value for summary and
         // detail.

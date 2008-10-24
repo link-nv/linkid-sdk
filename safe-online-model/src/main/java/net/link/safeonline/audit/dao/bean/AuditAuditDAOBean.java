@@ -36,8 +36,7 @@ public class AuditAuditDAOBean implements AuditAuditDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                AuditAuditEntity.QueryInterface.class);
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, AuditAuditEntity.QueryInterface.class);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -72,7 +71,7 @@ public class AuditAuditDAOBean implements AuditAuditDAO {
     public boolean hasRecords(long id) {
 
         long count = this.queryObject.countRecords(id);
-        
+
         return 0 != count;
     }
 

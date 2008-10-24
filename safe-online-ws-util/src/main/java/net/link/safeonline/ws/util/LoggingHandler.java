@@ -36,11 +36,11 @@ import org.w3c.dom.Node;
 
 
 /**
- * Log SOAP Handler. Will simply log the inbound and outbound SOAP messages. Can come in handy when debugging web
- * services that run over SSL.
- *
+ * Log SOAP Handler. Will simply log the inbound and outbound SOAP messages. Can come in handy when debugging web services that run over
+ * SSL.
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class LoggingHandler implements SOAPHandler<SOAPMessageContext> {
 
@@ -99,8 +99,8 @@ public class LoggingHandler implements SOAPHandler<SOAPMessageContext> {
         Result result = new StreamResult(stringWriter);
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         /*
-         * TransformerFactory nor Transformer are thread safe. Thus we cannot optimize via some @PostConstruct method to
-         * pre-create instances of these.
+         * TransformerFactory nor Transformer are thread safe. Thus we cannot optimize via some @PostConstruct method to pre-create
+         * instances of these.
          */
         try {
             Transformer transformer = transformerFactory.newTransformer();

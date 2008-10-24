@@ -39,8 +39,7 @@ public interface DeviceClassDAO {
 
     void saveDescription(DeviceClassDescriptionEntity description);
 
-    DeviceClassDescriptionEntity getDescription(DeviceClassDescriptionPK descriptionPK)
-            throws DeviceClassDescriptionNotFoundException;
+    DeviceClassDescriptionEntity getDescription(DeviceClassDescriptionPK descriptionPK) throws DeviceClassDescriptionNotFoundException;
 
     DeviceClassDescriptionEntity findDescription(DeviceClassDescriptionPK descriptionPK);
 

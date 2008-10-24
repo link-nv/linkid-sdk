@@ -175,8 +175,7 @@ public class DeviceBean implements Device {
     public List<SelectItem> attributeTypesFactory() {
 
         List<AttributeTypeEntity> attributeTypesList = this.attributeTypeService.listAttributeTypes();
-        List<SelectItem> attributeTypes = ConvertorUtil.convert(attributeTypesList,
-                new AttributeTypeSelectItemConvertor());
+        List<SelectItem> attributeTypes = ConvertorUtil.convert(attributeTypesList, new AttributeTypeSelectItemConvertor());
         return attributeTypes;
     }
 
@@ -185,8 +184,7 @@ public class DeviceBean implements Device {
     public List<SelectItem> userAttributeTypesFactory() {
 
         List<AttributeTypeEntity> attributeTypesList = this.attributeTypeService.listAttributeTypes();
-        List<SelectItem> attributeTypes = ConvertorUtil.convert(attributeTypesList,
-                new AttributeTypeSelectItemConvertor());
+        List<SelectItem> attributeTypes = ConvertorUtil.convert(attributeTypesList, new AttributeTypeSelectItemConvertor());
         attributeTypes.add(0, new SelectItem(null, ""));
         return attributeTypes;
 
@@ -196,10 +194,8 @@ public class DeviceBean implements Device {
     @Factory(OPER_DEVICE_DISABLE_ATTRIBUTE_TYPE_LIST_NAME)
     public List<SelectItem> disableAttributeTypesFactory() {
 
-        List<AttributeTypeEntity> attributeTypesList = this.attributeTypeService
-                .listAttributeTypes(DatatypeType.BOOLEAN);
-        List<SelectItem> attributeTypes = ConvertorUtil.convert(attributeTypesList,
-                new AttributeTypeSelectItemConvertor());
+        List<AttributeTypeEntity> attributeTypesList = this.attributeTypeService.listAttributeTypes(DatatypeType.BOOLEAN);
+        List<SelectItem> attributeTypes = ConvertorUtil.convert(attributeTypesList, new AttributeTypeSelectItemConvertor());
         attributeTypes.add(0, new SelectItem(null, ""));
         return attributeTypes;
 
@@ -248,11 +244,10 @@ public class DeviceBean implements Device {
      * Actions
      */
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    @ErrorHandling( {
-            @Error(exceptionClass = CertificateEncodingException.class, messageId = "errorX509Encoding", fieldId = "fileupload"),
+    @ErrorHandling( { @Error(exceptionClass = CertificateEncodingException.class, messageId = "errorX509Encoding", fieldId = "fileupload"),
             @Error(exceptionClass = IOException.class, messageId = "errorUploadCertificate") })
     public String add() throws ExistingDeviceException, CertificateEncodingException, DeviceClassNotFoundException,
-            AttributeTypeNotFoundException, NodeNotFoundException, IOException, PermissionDeniedException {
+                       AttributeTypeNotFoundException, NodeNotFoundException, IOException, PermissionDeniedException {
 
         LOG.debug("add device: " + this.name);
 
@@ -261,23 +256,21 @@ public class DeviceBean implements Device {
             encodedCertificate = getUpFileContent(this.certificate);
         }
 
-        this.deviceService.addDevice(this.name, this.deviceClass, this.node, this.authenticationPath,
-                this.registrationPath, this.removalPath, this.updatePath, this.disablePath, encodedCertificate,
-                this.attributeType, this.userAttributeType, this.disableAttributeType);
+        this.deviceService.addDevice(this.name, this.deviceClass, this.node, this.authenticationPath, this.registrationPath,
+                this.removalPath, this.updatePath, this.disablePath, encodedCertificate, this.attributeType, this.userAttributeType,
+                this.disableAttributeType);
         return "success";
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public String remove() throws DeviceNotFoundException, DeviceDescriptionNotFoundException,
-            DevicePropertyNotFoundException {
+    public String remove() throws DeviceNotFoundException, DeviceDescriptionNotFoundException, DevicePropertyNotFoundException {
 
         LOG.debug("remove device: " + this.selectedDevice.getName());
         try {
             this.deviceService.removeDevice(this.selectedDevice.getName());
         } catch (PermissionDeniedException e) {
             LOG.debug("permission denied: " + e.getMessage());
-            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), e
-                    .getResourceArgs());
+            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), e.getResourceArgs());
             return null;
         }
         deviceListFactory();
@@ -306,8 +299,8 @@ public class DeviceBean implements Device {
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public String save() throws DeviceNotFoundException, CertificateEncodingException, IOException,
-            AttributeTypeNotFoundException, PermissionDeniedException {
+    public String save() throws DeviceNotFoundException, CertificateEncodingException, IOException, AttributeTypeNotFoundException,
+                        PermissionDeniedException {
 
         LOG.debug("save device: " + this.selectedDevice.getName());
         String deviceName = this.selectedDevice.getName();

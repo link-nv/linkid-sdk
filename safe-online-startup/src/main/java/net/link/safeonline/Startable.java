@@ -9,9 +9,9 @@ package net.link.safeonline;
 
 /**
  * Components implementing this interface can be notified during application startup and shutdown.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public interface Startable {
 
@@ -23,9 +23,9 @@ public interface Startable {
 
 
     /**
-     * Gives back the boot priority of this startable component. Higher priority startable component will start before
-     * lower priority components. Reverse for stopping the components.
-     *
+     * Gives back the boot priority of this startable component. Higher priority startable component will start before lower priority
+     * components. Reverse for stopping the components.
+     * 
      * @return the priority.
      */
     int getPriority();

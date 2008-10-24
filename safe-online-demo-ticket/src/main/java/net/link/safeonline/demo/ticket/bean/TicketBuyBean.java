@@ -79,7 +79,9 @@ public class TicketBuyBean extends AbstractTicketDataClientBean implements Ticke
 
 
     public enum TicketPeriod {
-        DAY("one day", Period.days(1)), WEEK("one week", Period.weeks(1)), MONTH("one month", Period.months(1));
+        DAY("one day", Period.days(1)),
+        WEEK("one week", Period.weeks(1)),
+        MONTH("one month", Period.months(1));
 
         private final String name;
 
@@ -201,10 +203,9 @@ public class TicketBuyBean extends AbstractTicketDataClientBean implements Ticke
         this.juniorReduction = 0;
         String userId = getUserId();
         try {
-            this.nrn = getAttributeClient().getAttributeValue(userId,
-                    "urn:net:lin-k:safe-online:attribute:beid:nrn", String[].class)[0];
-            Boolean juniorValue = getAttributeClient().getAttributeValue(userId,
-                    DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, Boolean.class);
+            this.nrn = getAttributeClient().getAttributeValue(userId, "urn:net:lin-k:safe-online:attribute:beid:nrn", String[].class)[0];
+            Boolean juniorValue = getAttributeClient()
+                                                      .getAttributeValue(userId, DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, Boolean.class);
             if (juniorValue != null && juniorValue.booleanValue() == true) {
                 this.juniorReduction = 10;
             }
@@ -247,8 +248,7 @@ public class TicketBuyBean extends AbstractTicketDataClientBean implements Ticke
             this.entityManager.persist(user);
         }
         user.setNrn(this.nrn);
-        Ticket ticket = new Ticket(user, Site.valueOf(this.from), Site.valueOf(this.to), this.startDate, this.endDate,
-                this.returnTicket);
+        Ticket ticket = new Ticket(user, Site.valueOf(this.from), Site.valueOf(this.to), this.startDate, this.endDate, this.returnTicket);
         user.getTickets().add(ticket);
         this.entityManager.persist(ticket);
 
@@ -272,10 +272,9 @@ public class TicketBuyBean extends AbstractTicketDataClientBean implements Ticke
         String redirectUrl;
         try {
             redirectUrl = "http://" + this.demoHostName + ":" + this.demoHostPort + "/demo-payment/entry.seam?user="
-                    + URLEncoder.encode(user, "UTF-8") + "&recipient=" + URLEncoder.encode(recipient, "UTF-8")
-                    + "&amount=" + URLEncoder.encode(Double.toString(this.ticketPrice - this.juniorReduction), "UTF-8")
-                    + "&message=" + URLEncoder.encode(message, "UTF-8") + "&target="
-                    + URLEncoder.encode(target, "UTF-8");
+                    + URLEncoder.encode(user, "UTF-8") + "&recipient=" + URLEncoder.encode(recipient, "UTF-8") + "&amount="
+                    + URLEncoder.encode(Double.toString(this.ticketPrice - this.juniorReduction), "UTF-8") + "&message="
+                    + URLEncoder.encode(message, "UTF-8") + "&target=" + URLEncoder.encode(target, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             String msg = "URL encoding error";
             this.log.debug(msg);

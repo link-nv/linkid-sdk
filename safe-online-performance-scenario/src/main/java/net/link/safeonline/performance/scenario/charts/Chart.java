@@ -23,15 +23,15 @@ import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 /**
  * <h2>{@link Chart}<br>
  * <sub>[in short] (TODO).</sub></h2>
- *
+ * 
  * <p>
  * [description / usage].
  * </p>
- *
+ * 
  * <p>
  * <i>Feb 22, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public interface Chart {
@@ -57,8 +57,8 @@ public interface Chart {
     public void processTiming(ScenarioTimingEntity data);
 
     /**
-     * @return <code>true</code> if this chart module processes {@link ProfileDataEntity}s in #
-     *         {@link Chart#processData(ProfileDataEntity)}.
+     * @return <code>true</code> if this chart module processes {@link ProfileDataEntity}s in # {@link Chart#processData(ProfileDataEntity)}
+     *         .
      */
     public boolean isDataProcessed();
 
@@ -76,7 +76,7 @@ public interface Chart {
 
     /**
      * Render this chart to an image from the previously processed data.
-     *
+     * 
      * @param dataPoints
      *            The amount of pixels one chart image should be wide.
      */

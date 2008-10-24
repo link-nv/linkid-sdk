@@ -95,27 +95,23 @@ public class SignatureVerificationTestHandler implements SOAPHandler<SOAPMessage
         return true;
     }
 
-    private void verifySamlpSignature(Document document, X509Certificate certificate) throws TransformerException,
-            XMLSignatureException, XMLSecurityException {
+    private void verifySamlpSignature(Document document, X509Certificate certificate) throws TransformerException, XMLSignatureException,
+                                                                                     XMLSecurityException {
 
         Element nsElement = createNsElement(document);
-        Element samlpSignature = (Element) XPathAPI.selectSingleNode(document, "//samlp:Response/ds:Signature",
-                nsElement);
+        Element samlpSignature = (Element) XPathAPI.selectSingleNode(document, "//samlp:Response/ds:Signature", nsElement);
         if (null == samlpSignature) {
-            samlpSignature = (Element) XPathAPI.selectSingleNode(document, "//samlp:AuthnRequest/ds:Signature",
-                    nsElement);
+            samlpSignature = (Element) XPathAPI.selectSingleNode(document, "//samlp:AuthnRequest/ds:Signature", nsElement);
             if (null == samlpSignature) {
-                samlpSignature = (Element) XPathAPI.selectSingleNode(document, "//samlp:LogoutRequest/ds:Signature",
-                        nsElement);
+                samlpSignature = (Element) XPathAPI.selectSingleNode(document, "//samlp:LogoutRequest/ds:Signature", nsElement);
                 if (null == samlpSignature) {
-                    samlpSignature = (Element) XPathAPI.selectSingleNode(document,
-                            "//samlp:LogoutResponse/ds:Signature", nsElement);
+                    samlpSignature = (Element) XPathAPI.selectSingleNode(document, "//samlp:LogoutResponse/ds:Signature", nsElement);
                     if (null == samlpSignature) {
-                        samlpSignature = (Element) XPathAPI.selectSingleNode(document,
-                                "//samlp:DeviceOperationRequest/ds:Signature", nsElement);
+                        samlpSignature = (Element) XPathAPI.selectSingleNode(document, "//samlp:DeviceOperationRequest/ds:Signature",
+                                nsElement);
                         if (null == samlpSignature) {
-                            samlpSignature = (Element) XPathAPI.selectSingleNode(document,
-                                    "//samlp:DeviceOperationResponse/ds:Signature", nsElement);
+                            samlpSignature = (Element) XPathAPI.selectSingleNode(document, "//samlp:DeviceOperationResponse/ds:Signature",
+                                    nsElement);
                         }
                     }
                 }
@@ -129,11 +125,10 @@ public class SignatureVerificationTestHandler implements SOAPHandler<SOAPMessage
     }
 
     private void verifyWSSecuritySignature(Document document, X509Certificate certificate) throws TransformerException,
-            XMLSignatureException, XMLSecurityException {
+                                                                                          XMLSignatureException, XMLSecurityException {
 
         Element nsElement = createNsElement(document);
-        Element wsSecuritySignatureElement = (Element) XPathAPI.selectSingleNode(document,
-                "//wsse:Security/ds:Signature", nsElement);
+        Element wsSecuritySignatureElement = (Element) XPathAPI.selectSingleNode(document, "//wsse:Security/ds:Signature", nsElement);
         assertNotNull(wsSecuritySignatureElement);
         XMLSignature xmlSignature = new XMLSignature(wsSecuritySignatureElement, null);
         boolean signatureResult = xmlSignature.checkSignatureValue(certificate);
@@ -151,17 +146,14 @@ public class SignatureVerificationTestHandler implements SOAPHandler<SOAPMessage
         return nsElement;
     }
 
-    private X509Certificate extractWSSecurityCertificate(Document document) throws TransformerException,
-            CertificateException {
+    private X509Certificate extractWSSecurityCertificate(Document document) throws TransformerException, CertificateException {
 
         Element nsElement = createNsElement(document);
-        Element binarySecurityTokenElement = (Element) XPathAPI.selectSingleNode(document,
-                "//wsse:BinarySecurityToken", nsElement);
+        Element binarySecurityTokenElement = (Element) XPathAPI.selectSingleNode(document, "//wsse:BinarySecurityToken", nsElement);
         String encodedBinarySecurityToken = binarySecurityTokenElement.getTextContent();
         byte[] binarySecurityToken = Base64.decodeBase64(encodedBinarySecurityToken.getBytes());
         CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
-        X509Certificate cert = (X509Certificate) certificateFactory.generateCertificate(new ByteArrayInputStream(
-                binarySecurityToken));
+        X509Certificate cert = (X509Certificate) certificateFactory.generateCertificate(new ByteArrayInputStream(binarySecurityToken));
         LOG.debug("certificate: " + cert);
         return cert;
     }

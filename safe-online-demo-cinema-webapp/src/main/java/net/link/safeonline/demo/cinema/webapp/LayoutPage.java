@@ -87,8 +87,7 @@ public class LayoutPage extends WebPage {
                 @Override
                 protected void onComponentTagBody(MarkupStream markupStream, ComponentTag openTag) {
 
-                    replaceComponentTagBody(markupStream, openTag, UserInfo.this.junior.getObject()? "Junior Discount"
-                            : "No Discount");
+                    replaceComponentTagBody(markupStream, openTag, UserInfo.this.junior.getObject()? "Junior Discount": "No Discount");
                 }
             });
 
@@ -109,8 +108,8 @@ public class LayoutPage extends WebPage {
             super(id);
 
             setVisible(LoginManager.isAuthenticated(((WebRequest) getRequest()).getHttpServletRequest())
-                    && (CinemaSession.isFilmSet() || CinemaSession.isTheaterSet() || CinemaSession.isRoomSet()
-                            || CinemaSession.isSeatSet() || CinemaSession.isTimeSet() || CinemaSession.isTicketSet()));
+                    && (CinemaSession.isFilmSet() || CinemaSession.isTheaterSet() || CinemaSession.isRoomSet() || CinemaSession.isSeatSet()
+                            || CinemaSession.isTimeSet() || CinemaSession.isTicketSet()));
 
             add(new SelectedFilm("film"));
             add(new SelectedTheatre("theatre"));
@@ -270,13 +269,12 @@ public class LayoutPage extends WebPage {
 
             // Check to see if our ticket data is complete - if so, create a ticket.
             if (!CinemaSession.isTicketSet()) {
-                if (CinemaSession.isFilmAndTheaterSet() && CinemaSession.isTimeAndRoomSet()
-                        && CinemaSession.isSeatSet() && CinemaSession.isUserSet()) {
+                if (CinemaSession.isFilmAndTheaterSet() && CinemaSession.isTimeAndRoomSet() && CinemaSession.isSeatSet()
+                        && CinemaSession.isUserSet()) {
                     try {
                         CinemaSession.get().setTicket(
-                                LayoutPage.this.ticketService.createTicket(CinemaSession.get().getUser(), CinemaSession
-                                        .get().getFilm(), CinemaSession.get().getTime(), CinemaSession.get()
-                                        .getOccupation()));
+                                LayoutPage.this.ticketService.createTicket(CinemaSession.get().getUser(), CinemaSession.get().getFilm(),
+                                        CinemaSession.get().getTime(), CinemaSession.get().getOccupation()));
                     }
 
                     catch (IllegalStateException e) {
@@ -288,8 +286,8 @@ public class LayoutPage extends WebPage {
 
             // Put price in label or hide if ticket is not complete.
             if (CinemaSession.isTicketSet()) {
-                this.price.setObject(WicketUtil.format(CinemaSession.CURRENCY, LayoutPage.this.ticketService
-                        .calculatePrice(CinemaSession.get().getTicket())));
+                this.price.setObject(WicketUtil.format(CinemaSession.CURRENCY,
+                        LayoutPage.this.ticketService.calculatePrice(CinemaSession.get().getTicket())));
             } else {
                 setVisible(false);
             }
@@ -309,8 +307,8 @@ public class LayoutPage extends WebPage {
                     String paymentUsername = CinemaSession.get().getUser().getName();
                     CinemaTicketEntity ticket = CinemaSession.get().getTicket();
                     double paymentPrice = ticket.getPrice();
-                    String paymentMessage = String.format("Viewing of %s at %s in %s.", LayoutPage.this.ticketService
-                            .getFilmName(ticket), WicketUtil.format(getLocale(), new Date(ticket.getTime())),
+                    String paymentMessage = String.format("Viewing of %s at %s in %s.", LayoutPage.this.ticketService.getFilmName(ticket),
+                            WicketUtil.format(getLocale(), new Date(ticket.getTime())),
                             LayoutPage.this.ticketService.getTheatreName(ticket));
                     String paymentTargetUrl = RequestUtils.toAbsolutePath(RequestCycle.get().urlFor(
                             new BookmarkablePageRequestTarget(TicketPage.class)).toString());

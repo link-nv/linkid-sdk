@@ -32,14 +32,14 @@ import org.jfree.data.time.TimeSeriesCollection;
 /**
  * <h2>{@link ScenarioMemoryChart}<br>
  * <sub>TODO</sub></h2>
- *
+ * 
  * <p>
  * </p>
- *
+ * 
  * <p>
  * <i>Feb 22, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ScenarioMemoryChart extends AbstractChart {
@@ -101,10 +101,10 @@ public class ScenarioMemoryChart extends AbstractChart {
         olasSet = new TimeSeriesCollection(this.olasMemory);
         agentSet = new TimeSeriesCollection(this.agentMemory);
 
-        XYPlot olasPlot = new XYPlot(olasSet, domainAxis, new NumberAxis("Available Memory (bytes)"),
-                new XYLineAndShapeRenderer(true, false));
-        XYPlot agentPlot = new XYPlot(agentSet, domainAxis, new NumberAxis("Available Memory (bytes)"),
-                new XYLineAndShapeRenderer(true, false));
+        XYPlot olasPlot = new XYPlot(olasSet, domainAxis, new NumberAxis("Available Memory (bytes)"), new XYLineAndShapeRenderer(true,
+                false));
+        XYPlot agentPlot = new XYPlot(agentSet, domainAxis, new NumberAxis("Available Memory (bytes)"), new XYLineAndShapeRenderer(true,
+                false));
 
         CombinedDomainXYPlot memoryPlot = new CombinedDomainXYPlot(domainAxis);
         memoryPlot.add(olasPlot);

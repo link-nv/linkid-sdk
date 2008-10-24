@@ -81,20 +81,17 @@ public class AuthWsHandlersTest {
                 "SafeOnline/WSSecurityConfigurationBean/local");
 
         this.mockWSSecurityConfigurationService = createMock(WSSecurityConfiguration.class);
-        this.jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local",
-                this.mockWSSecurityConfigurationService);
+        this.jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local", this.mockWSSecurityConfigurationService);
 
         this.mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
-        this.jndiTestUtils.bindComponent("SafeOnline/ApplicationAuthenticationServiceBean/local",
-                this.mockApplicationAuthenticationService);
+        this.jndiTestUtils
+                          .bindComponent("SafeOnline/ApplicationAuthenticationServiceBean/local", this.mockApplicationAuthenticationService);
 
         this.mockDeviceAuthenticationService = createMock(DeviceAuthenticationService.class);
-        this.jndiTestUtils.bindComponent("SafeOnline/DeviceAuthenticationServiceBean/local",
-                this.mockDeviceAuthenticationService);
+        this.jndiTestUtils.bindComponent("SafeOnline/DeviceAuthenticationServiceBean/local", this.mockDeviceAuthenticationService);
 
         this.mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
-        this.jndiTestUtils.bindComponent("SafeOnline/NodeAuthenticationServiceBean/local",
-                this.mockNodeAuthenticationService);
+        this.jndiTestUtils.bindComponent("SafeOnline/NodeAuthenticationServiceBean/local", this.mockNodeAuthenticationService);
 
         this.mockPkiValidator = createMock(PkiValidator.class);
         this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local", this.mockPkiValidator);
@@ -188,8 +185,7 @@ public class AuthWsHandlersTest {
         // setup
         String location = this.webServiceTestUtils.getEndpointAddress();
 
-        TestEndpointService service = new TestEndpointService(new URL(location + "?wsdl"), new QName("urn:test",
-                "TestService"));
+        TestEndpointService service = new TestEndpointService(new URL(location + "?wsdl"), new QName("urn:test", "TestService"));
         TestEndpointInterface port = service.getPort();
         BindingProvider bindingProvider = (BindingProvider) port;
         bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location);
@@ -209,14 +205,12 @@ public class AuthWsHandlersTest {
             Document faultDocument = testHandler.getFaultDocument();
             LOG.debug("fault document: " + DomTestUtils.domToString(faultDocument));
             Element nsElement = faultDocument.createElement("nsElement");
-            nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:soap",
-                    "http://schemas.xmlsoap.org/soap/envelope/");
+            nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:soap", "http://schemas.xmlsoap.org/soap/envelope/");
             nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:jaxws", "http://jax-ws.dev.java.net/");
-            Node exceptionNode = XPathAPI.selectSingleNode(faultDocument,
-                    "soap:Envelope/soap:Body/soap:Fault/detail/jaxws:exception", nsElement);
+            Node exceptionNode = XPathAPI.selectSingleNode(faultDocument, "soap:Envelope/soap:Body/soap:Fault/detail/jaxws:exception",
+                    nsElement);
             assertNull(exceptionNode);
-            Node faultCodeNode = XPathAPI.selectSingleNode(faultDocument,
-                    "soap:Envelope/soap:Body/soap:Fault/faultcode", nsElement);
+            Node faultCodeNode = XPathAPI.selectSingleNode(faultDocument, "soap:Envelope/soap:Body/soap:Fault/faultcode", nsElement);
             assertNotNull(faultCodeNode);
             assertEquals("wsse:InvalidSecurity", faultCodeNode.getTextContent());
         }

@@ -33,9 +33,9 @@ import org.xml.sax.SAXException;
 
 /**
  * W3C DOM utility class.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class DomUtils {
 
@@ -46,7 +46,7 @@ public class DomUtils {
 
     /**
      * Parses the given string to a DOM object.
-     *
+     * 
      * @param documentString
      * @throws Exception
      */
@@ -62,7 +62,7 @@ public class DomUtils {
 
     /**
      * Saves a DOM document to the given output file.
-     *
+     * 
      * @param document
      * @param outputFile
      * @throws TransformerException
@@ -78,14 +78,13 @@ public class DomUtils {
 
     /**
      * Loads a DOM document from the given input stream.
-     *
+     * 
      * @param documentInputStream
      * @throws ParserConfigurationException
      * @throws SAXException
      * @throws IOException
      */
-    public static Document loadDocument(InputStream documentInputStream) throws ParserConfigurationException,
-            SAXException, IOException {
+    public static Document loadDocument(InputStream documentInputStream) throws ParserConfigurationException, SAXException, IOException {
 
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware(true);
@@ -97,7 +96,7 @@ public class DomUtils {
 
     /**
      * Transforms a DOM node (e.g. DOM element or DOM document) to a String.
-     *
+     * 
      * @param domNode
      * @throws TransformerException
      */

@@ -33,8 +33,7 @@ public interface DeviceOperationRequest extends RequestAbstractType {
     public static final String DEFAULT_ELEMENT_LOCAL_NAME       = "DeviceOperationRequest";
 
     /** Default element name. */
-    public static final QName  DEFAULT_ELEMENT_NAME             = new QName(SAMLConstants.SAML20P_NS,
-                                                                        DEFAULT_ELEMENT_LOCAL_NAME,
+    public static final QName  DEFAULT_ELEMENT_NAME             = new QName(SAMLConstants.SAML20P_NS, DEFAULT_ELEMENT_LOCAL_NAME,
                                                                         SAMLConstants.SAML20P_PREFIX);
 
     /** ProtocolBinding attribute name. */
@@ -147,8 +146,8 @@ public interface DeviceOperationRequest extends RequestAbstractType {
     public void setSubject(Subject subject);
 
     /**
-     * Gets the optional attribute of this request. This attribute represents the OLAS user attribute that can be used
-     * to specify a specific device registration.
+     * Gets the optional attribute of this request. This attribute represents the OLAS user attribute that can be used to specify a specific
+     * device registration.
      * 
      * @return the attribute of the request
      */
@@ -158,8 +157,8 @@ public interface DeviceOperationRequest extends RequestAbstractType {
      * Sets the optional attribute of the request
      * 
      * @param attribute
-     *            the new value of the optional attribute of the request. This attribute represents the OLAS user
-     *            attribute specifying a specific device registration.
+     *            the new value of the optional attribute of the request. This attribute represents the OLAS user attribute specifying a
+     *            specific device registration.
      */
     public void setAttribute(String attribute);
 }

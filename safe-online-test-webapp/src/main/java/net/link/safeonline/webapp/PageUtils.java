@@ -36,9 +36,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Utility class providing some standard webapp operations like login, register, ...
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class PageUtils {
 
@@ -49,8 +49,7 @@ public class PageUtils {
     private static final int PAUSE_TIMEOUT = 20;
 
 
-    public static void registerUserWithPassword(AcceptanceTestManager acceptanceTestManager, String login,
-            String password) {
+    public static void registerUserWithPassword(AcceptanceTestManager acceptanceTestManager, String login, String password) {
 
         UserMain userMain = new UserMain();
         userMain.open();
@@ -79,8 +78,7 @@ public class PageUtils {
         userOverview.logout();
     }
 
-    public static UserOverview loginUserWithPassword(AcceptanceTestManager acceptanceTestManager, String login,
-            String password) {
+    public static UserOverview loginUserWithPassword(AcceptanceTestManager acceptanceTestManager, String login, String password) {
 
         UserMain userMain = new UserMain();
         userMain.open();
@@ -92,8 +90,7 @@ public class PageUtils {
         return new UserOverview();
     }
 
-    public static UserOverview loginFirstTimeUserWithPassword(AcceptanceTestManager acceptanceTestManager,
-            String login, String password) {
+    public static UserOverview loginFirstTimeUserWithPassword(AcceptanceTestManager acceptanceTestManager, String login, String password) {
 
         UserMain userMain = new UserMain();
         userMain.open();
@@ -105,8 +102,7 @@ public class PageUtils {
         return new UserOverview();
     }
 
-    public static OperOverview loginOperWithPassword(AcceptanceTestManager acceptanceTestManager, String login,
-            String password) {
+    public static OperOverview loginOperWithPassword(AcceptanceTestManager acceptanceTestManager, String login, String password) {
 
         OperMain operMain = new OperMain();
         operMain.open();
@@ -118,8 +114,7 @@ public class PageUtils {
         return new OperOverview();
     }
 
-    public static OperOverview loginFirstTimeOperWithPassword(AcceptanceTestManager acceptanceTestManager,
-            String login, String password) {
+    public static OperOverview loginFirstTimeOperWithPassword(AcceptanceTestManager acceptanceTestManager, String login, String password) {
 
         OperMain operMain = new OperMain();
         operMain.open();
@@ -131,8 +126,7 @@ public class PageUtils {
         return new OperOverview();
     }
 
-    public static OwnerOverview loginOwnerWithPassword(AcceptanceTestManager acceptanceTestManager, String login,
-            String password) {
+    public static OwnerOverview loginOwnerWithPassword(AcceptanceTestManager acceptanceTestManager, String login, String password) {
 
         OwnerMain ownerMain = new OwnerMain();
         ownerMain.open();
@@ -144,8 +138,7 @@ public class PageUtils {
         return new OwnerOverview();
     }
 
-    public static HelpdeskOverview loginHelpdeskWithPassword(AcceptanceTestManager acceptanceTestManager, String login,
-            String password) {
+    public static HelpdeskOverview loginHelpdeskWithPassword(AcceptanceTestManager acceptanceTestManager, String login, String password) {
 
         HelpdeskMain helpdeskMain = new HelpdeskMain();
         helpdeskMain.open();
@@ -202,9 +195,8 @@ public class PageUtils {
     }
 
     /**
-     * Causes the thread to sleep and every now and then check if we have landed on the specified page yet. Timeouts
-     * after a while.
-     *
+     * Causes the thread to sleep and every now and then check if we have landed on the specified page yet. Timeouts after a while.
+     * 
      * @param redirectPage
      */
     public static void waitForRedirect(AcceptanceTestManager acceptanceTestManager, String redirectPage) {

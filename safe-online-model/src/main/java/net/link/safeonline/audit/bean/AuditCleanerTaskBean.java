@@ -24,9 +24,9 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 /**
  * Task for cleaning up audit contexts.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 @Stateless
 @Local(Task.class)

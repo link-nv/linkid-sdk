@@ -34,14 +34,14 @@ import org.jfree.data.time.TimeSeriesCollection;
 /**
  * <h2>{@link ScenarioExceptionsChart}<br>
  * <sub>TODO</sub></h2>
- *
+ * 
  * <p>
  * </p>
- *
+ * 
  * <p>
  * <i>Feb 22, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ScenarioExceptionsChart extends AbstractChart {
@@ -100,8 +100,7 @@ public class ScenarioExceptionsChart extends AbstractChart {
                 errorCollection.addSeries(errorSet);
             }
 
-            errorPlot.add(new XYPlot(errorCollection, null, new NumberAxis(driver.getKey() + " (errors)"),
-                    new XYBarRenderer()));
+            errorPlot.add(new XYPlot(errorCollection, null, new NumberAxis(driver.getKey() + " (errors)"), new XYBarRenderer()));
         }
 
         return errorPlot;

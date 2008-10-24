@@ -155,11 +155,13 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void addApplication(String name, String friendlyName, String applicationOwnerName, String description,
-            boolean idMappingServiceAccess, IdScopeType idScope, URL applicationUrl, byte[] applicationLogo,
-            Color applicationColor, byte[] encodedCertificate,
-            List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes, boolean skipMessageIntegrityCheck,
-            boolean deviceRestriction, boolean ssoEnabled, URL ssoLogoutUrl) throws ExistingApplicationException,
-            ApplicationOwnerNotFoundException, CertificateEncodingException, AttributeTypeNotFoundException {
+                               boolean idMappingServiceAccess, IdScopeType idScope, URL applicationUrl, byte[] applicationLogo,
+                               Color applicationColor, byte[] encodedCertificate,
+                               List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes, boolean skipMessageIntegrityCheck,
+                               boolean deviceRestriction, boolean ssoEnabled, URL ssoLogoutUrl) throws ExistingApplicationException,
+                                                                                               ApplicationOwnerNotFoundException,
+                                                                                               CertificateEncodingException,
+                                                                                               AttributeTypeNotFoundException {
 
         LOG.debug("add application: " + name);
         checkExistingApplication(name);
@@ -168,8 +170,8 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
 
         ApplicationOwnerEntity applicationOwner = this.applicationOwnerDAO.getApplicationOwner(applicationOwnerName);
 
-        ApplicationEntity application = this.applicationDAO.addApplication(name, friendlyName, applicationOwner,
-                description, applicationUrl, applicationLogo, applicationColor, certificate);
+        ApplicationEntity application = this.applicationDAO.addApplication(name, friendlyName, applicationOwner, description,
+                applicationUrl, applicationLogo, applicationColor, certificate);
 
         application.setIdentifierMappingAllowed(idMappingServiceAccess);
 
@@ -187,7 +189,7 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
     }
 
     private void setInitialApplicationIdentity(List<IdentityAttributeTypeDO> initialApplicationIdentityAttributeTypes,
-            ApplicationEntity application) throws AttributeTypeNotFoundException {
+                                               ApplicationEntity application) throws AttributeTypeNotFoundException {
 
         long initialIdentityVersion = ApplicationIdentityPK.INITIAL_IDENTITY_VERSION;
         ApplicationIdentityEntity applicationIdentity = this.applicationIdentityDAO.addApplicationIdentity(application,
@@ -198,14 +200,14 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
     }
 
     private void addIdentityAttributes(ApplicationIdentityEntity applicationIdentity,
-            List<IdentityAttributeTypeDO> applicationIdentityAttributes) throws AttributeTypeNotFoundException {
+                                       List<IdentityAttributeTypeDO> applicationIdentityAttributes) throws AttributeTypeNotFoundException {
 
         if (null == applicationIdentityAttributes)
             return;
         for (IdentityAttributeTypeDO identityAttribute : applicationIdentityAttributes) {
             AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(identityAttribute.getName());
-            this.applicationIdentityDAO.addApplicationIdentityAttribute(applicationIdentity, attributeType,
-                    identityAttribute.isRequired(), identityAttribute.isDataMining());
+            this.applicationIdentityDAO.addApplicationIdentityAttribute(applicationIdentity, attributeType, identityAttribute.isRequired(),
+                    identityAttribute.isDataMining());
         }
     }
 
@@ -231,8 +233,8 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
         List<SubscriptionEntity> subscriptions = this.subscriptionDAO.listSubscriptions(application);
 
         /*
-         * We don't rely on hibernate here to cascade remove the subscriptions and application identities for the
-         * moment. Postpone this until be understand better what data needs to be preserved.
+         * We don't rely on hibernate here to cascade remove the subscriptions and application identities for the moment. Postpone this
+         * until be understand better what data needs to be preserved.
          */
         for (SubscriptionEntity subscription : subscriptions) {
             this.subscriptionDAO.removeSubscription(subscription);
@@ -240,8 +242,7 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
 
         this.applicationScopeIdDAO.removeApplicationScopeIds(application);
 
-        List<ApplicationIdentityEntity> applicationIdentities = this.applicationIdentityDAO
-                .listApplicationIdentities(application);
+        List<ApplicationIdentityEntity> applicationIdentities = this.applicationIdentityDAO.listApplicationIdentities(application);
         for (ApplicationIdentityEntity applicationIdentity : applicationIdentities) {
             this.applicationIdentityDAO.removeApplicationIdentity(applicationIdentity);
         }
@@ -266,8 +267,8 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
     }
 
     /**
-     * Check write permission on the given application. Only the subject corresponding with the application owner of the
-     * application is allowed to write to the application entity.
+     * Check write permission on the given application. Only the subject corresponding with the application owner of the application is
+     * allowed to write to the application entity.
      * 
      * @param application
      * @throws PermissionDeniedException
@@ -285,8 +286,7 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
     }
 
     @RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
-    public void setApplicationDescription(String name, String description) throws ApplicationNotFoundException,
-            PermissionDeniedException {
+    public void setApplicationDescription(String name, String description) throws ApplicationNotFoundException, PermissionDeniedException {
 
         LOG.debug("set application description: " + name);
         ApplicationEntity application = this.applicationDAO.getApplication(name);
@@ -298,7 +298,8 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public void registerApplicationOwner(String ownerName, String adminLogin) throws SubjectNotFoundException,
-            ExistingApplicationOwnerException, ExistingApplicationAdminException {
+                                                                             ExistingApplicationOwnerException,
+                                                                             ExistingApplicationAdminException {
 
         LOG.debug("register application owner: " + ownerName + " with account " + adminLogin);
         checkExistingOwner(ownerName);
@@ -308,8 +309,7 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
 
         this.applicationOwnerDAO.addApplicationOwner(ownerName, adminSubject);
 
-        ApplicationEntity ownerApplication = this.applicationDAO
-                .findApplication(SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME);
+        ApplicationEntity ownerApplication = this.applicationDAO.findApplication(SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME);
         if (null == ownerApplication) {
             throw new EJBException("SafeOnline owner application not found");
         }
@@ -320,11 +320,10 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
         this.subscriptionDAO.addSubscription(SubscriptionOwnerType.APPLICATION, adminSubject, ownerApplication);
 
         /*
-         * We have to flush the credential cache for the login here. Else it's possible that the login cannot logon
-         * because JAAS is caching the old roles that did not include the 'owner' role yet.
+         * We have to flush the credential cache for the login here. Else it's possible that the login cannot logon because JAAS is caching
+         * the old roles that did not include the 'owner' role yet.
          */
-        SecurityManagerUtils.flushCredentialCache(adminSubject.getUserId(),
-                SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
+        SecurityManagerUtils.flushCredentialCache(adminSubject.getUserId(), SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
     }
 
     private void checkExistingAdmin(SubjectEntity adminSubject) throws ExistingApplicationAdminException {
@@ -344,8 +343,8 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void removeApplicationOwner(String ownerName, String adminLogin) throws SubscriptionNotFoundException,
-            SubjectNotFoundException, ApplicationOwnerNotFoundException, PermissionDeniedException {
+    public void removeApplicationOwner(String ownerName, String adminLogin) throws SubscriptionNotFoundException, SubjectNotFoundException,
+                                                                           ApplicationOwnerNotFoundException, PermissionDeniedException {
 
         LOG.debug("remove application owner: " + ownerName);
 
@@ -355,8 +354,7 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
 
         this.applicationOwnerDAO.removeApplicationOwner(ownerName);
 
-        ApplicationEntity ownerApplication = this.applicationDAO
-                .findApplication(SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME);
+        ApplicationEntity ownerApplication = this.applicationDAO.findApplication(SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME);
         if (null == ownerApplication) {
             throw new EJBException("SafeOnline owner application not found");
         }
@@ -369,19 +367,16 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
         /*
          * Flush the credential cache as the owner role is no longer for this login.
          */
-        SecurityManagerUtils.flushCredentialCache(adminSubject.getUserId(),
-                SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
+        SecurityManagerUtils.flushCredentialCache(adminSubject.getUserId(), SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
     }
 
-    private void checkOwnerApplications(String name) throws ApplicationOwnerNotFoundException,
-            PermissionDeniedException {
+    private void checkOwnerApplications(String name) throws ApplicationOwnerNotFoundException, PermissionDeniedException {
 
         ApplicationOwnerEntity owner = this.applicationOwnerDAO.getApplicationOwner(name);
         if (null == owner.getApplications())
             return;
         if (!owner.getApplications().isEmpty()) {
-            throw new PermissionDeniedException("application owner still owns " + owner.getApplications().size()
-                    + " applications");
+            throw new PermissionDeniedException("application owner still owns " + owner.getApplications().size() + " applications");
         }
     }
 
@@ -404,7 +399,9 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
 
     @RolesAllowed( { SafeOnlineRoles.OPERATOR_ROLE, SafeOnlineRoles.OWNER_ROLE })
     public Set<ApplicationIdentityAttributeEntity> getCurrentApplicationIdentity(String applicationName)
-            throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException {
+                                                                                                        throws ApplicationNotFoundException,
+                                                                                                        ApplicationIdentityNotFoundException,
+                                                                                                        PermissionDeniedException {
 
         ApplicationEntity application = this.applications.getApplication(applicationName);
 
@@ -426,9 +423,10 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void updateApplicationIdentity(String applicationId,
-            List<IdentityAttributeTypeDO> applicationIdentityAttributes) throws ApplicationNotFoundException,
-            ApplicationIdentityNotFoundException, AttributeTypeNotFoundException {
+    public void updateApplicationIdentity(String applicationId, List<IdentityAttributeTypeDO> applicationIdentityAttributes)
+                                                                                                                            throws ApplicationNotFoundException,
+                                                                                                                            ApplicationIdentityNotFoundException,
+                                                                                                                            AttributeTypeNotFoundException {
 
         this.applicationIdentityService.updateApplicationIdentity(applicationId, applicationIdentityAttributes);
     }
@@ -446,8 +444,7 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void updateApplicationColor(String applicationId, Color applicationColor)
-            throws ApplicationNotFoundException {
+    public void updateApplicationColor(String applicationId, Color applicationColor) throws ApplicationNotFoundException {
 
         getApplication(applicationId).setApplicationColor(applicationColor);
     }
@@ -459,8 +456,8 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void updateApplicationCertificate(String applicationName, byte[] certificateData)
-            throws CertificateEncodingException, ApplicationNotFoundException {
+    public void updateApplicationCertificate(String applicationName, byte[] certificateData) throws CertificateEncodingException,
+                                                                                            ApplicationNotFoundException {
 
         LOG.debug("updating application certificate for " + applicationName);
         X509Certificate certificate = PkiUtils.decodeCertificate(certificateData);
@@ -471,8 +468,8 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
     }
 
     @RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
-    public void setApplicationDeviceRestriction(String name, boolean deviceRestriction)
-            throws ApplicationNotFoundException, PermissionDeniedException {
+    public void setApplicationDeviceRestriction(String name, boolean deviceRestriction) throws ApplicationNotFoundException,
+                                                                                       PermissionDeniedException {
 
         LOG.debug("set application description: " + name);
         ApplicationEntity application = this.applicationDAO.getApplication(name);
@@ -483,8 +480,7 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void setIdentifierMappingServiceAccess(String applicationName, boolean access)
-            throws ApplicationNotFoundException {
+    public void setIdentifierMappingServiceAccess(String applicationName, boolean access) throws ApplicationNotFoundException {
 
         ApplicationEntity application = this.applicationDAO.getApplication(applicationName);
         application.setIdentifierMappingAllowed(access);
@@ -498,8 +494,7 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void setSkipMessageIntegrityCheck(String applicationName, boolean skipMessageIntegrityCheck)
-            throws ApplicationNotFoundException {
+    public void setSkipMessageIntegrityCheck(String applicationName, boolean skipMessageIntegrityCheck) throws ApplicationNotFoundException {
 
         ApplicationEntity application = this.applicationDAO.getApplication(applicationName);
         application.setSkipMessageIntegrityCheck(skipMessageIntegrityCheck);

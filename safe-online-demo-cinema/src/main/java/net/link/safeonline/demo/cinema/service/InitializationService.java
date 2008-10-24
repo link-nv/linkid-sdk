@@ -55,12 +55,10 @@ public interface InitializationService extends CinemaService {
 
                                                                   // Journey
             "On a quest to find out what happened to his missing brother, a scientist, "
-                    + "his nephew and their mountain guide discover a fantastic and "
-                    + "dangerous lost world in the center of the earth.",
+                    + "his nephew and their mountain guide discover a fantastic and " + "dangerous lost world in the center of the earth.",
 
             // Happening
-            "A paranoid thriller about a family on the run from a "
-                    + "natural crisis that presents a large-scale threat to humanity..",
+            "A paranoid thriller about a family on the run from a " + "natural crisis that presents a large-scale threat to humanity..",
 
             // Knight
             "Batman and James Gordon join forces with Gotham's new District Attorney, "

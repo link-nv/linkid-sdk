@@ -71,8 +71,7 @@ public class SubscriptionPK implements Serializable {
         if (false == obj instanceof SubscriptionPK)
             return false;
         SubscriptionPK rhs = (SubscriptionPK) obj;
-        return new EqualsBuilder().append(this.subject, rhs.subject).append(this.application, rhs.application)
-                .isEquals();
+        return new EqualsBuilder().append(this.subject, rhs.subject).append(this.application, rhs.application).isEquals();
     }
 
     @Override
@@ -84,7 +83,6 @@ public class SubscriptionPK implements Serializable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("subject", this.subject).append("application", this.application)
-                .toString();
+        return new ToStringBuilder(this).append("subject", this.subject).append("application", this.application).toString();
     }
 }

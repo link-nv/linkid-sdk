@@ -20,8 +20,8 @@ import org.apache.wicket.Session;
 
 /**
  * <h2>{@link OlasLoginLink}<br>
- * <sub>A link that uses the OLAS SDK to log a user out of this application and all other applications in its SSO pool
- * through the OLAS authentication services.</sub></h2>
+ * <sub>A link that uses the OLAS SDK to log a user out of this application and all other applications in its SSO pool through the OLAS
+ * authentication services.</sub></h2>
  * 
  * <p>
  * <i>Sep 22, 2008</i>

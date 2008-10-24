@@ -24,22 +24,21 @@ import net.link.safeonline.performance.scenario.bean.ScenarioControllerBean;
 /**
  * <h2>{@link ExecutionMetadata}<br>
  * <sub>Holds execution metadata for communication between the agent and the scenario.</sub></h2>
- *
+ * 
  * <p>
- * This object can be used by the agent for making a scenario execution request to the {@link ScenarioControllerBean}.
- * In this case, use {@link #createRequest(String, Integer, Integer, Date, Long, String, Boolean)} to obtain the object.
- * Only the fields required for making a request will be filled in, the others will remain <code>null</code>.<br>
+ * This object can be used by the agent for making a scenario execution request to the {@link ScenarioControllerBean}. In this case, use
+ * {@link #createRequest(String, Integer, Integer, Date, Long, String, Boolean)} to obtain the object. Only the fields required for making a
+ * request will be filled in, the others will remain <code>null</code>.<br>
  * <br>
- * This object can also be used by the scenario to describe a previously completed scenario execution on request of the
- * agent. In this case, use
- * {@link #createResponse(String, String, Integer, Integer, Date, Long, String, Boolean, Double)} . All available fields
- * can be set providing the agent with as much information about the result of the execution as available.
+ * This object can also be used by the scenario to describe a previously completed scenario execution on request of the agent. In this case,
+ * use {@link #createResponse(String, String, Integer, Integer, Date, Long, String, Boolean, Double)} . All available fields can be set
+ * providing the agent with as much information about the result of the execution as available.
  * </p>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ExecutionMetadata {
@@ -58,8 +57,8 @@ public class ExecutionMetadata {
     /**
      * Use this constructor to create an execution initiation request.
      */
-    public static ExecutionMetadata createRequest(String scenarioName, Integer agents, Integer workers, Date startTime,
-            Long duration, String hostname, Boolean useSsl) {
+    public static ExecutionMetadata createRequest(String scenarioName, Integer agents, Integer workers, Date startTime, Long duration,
+                                                  String hostname, Boolean useSsl) {
 
         return new ExecutionMetadata(scenarioName, null, agents, workers, startTime, duration, hostname, useSsl, null);
     }
@@ -67,18 +66,17 @@ public class ExecutionMetadata {
     /**
      * Use this constructor to create an execution result response.
      */
-    public static ExecutionMetadata createResponse(String scenarioName, String scenarioDescription, Integer agents,
-            Integer workers, Date startTime, Long duration, String hostname, Boolean useSsl, Double speed) {
+    public static ExecutionMetadata createResponse(String scenarioName, String scenarioDescription, Integer agents, Integer workers,
+                                                   Date startTime, Long duration, String hostname, Boolean useSsl, Double speed) {
 
-        return new ExecutionMetadata(scenarioName, scenarioDescription, agents, workers, startTime, duration, hostname,
-                useSsl, speed);
+        return new ExecutionMetadata(scenarioName, scenarioDescription, agents, workers, startTime, duration, hostname, useSsl, speed);
     }
 
     /**
      * Complete constructor.
      */
-    private ExecutionMetadata(String scenarioName, String scenarioDescription, Integer agents, Integer workers,
-            Date startTime, Long duration, String hostname, Boolean useSsl, Double speed) {
+    private ExecutionMetadata(String scenarioName, String scenarioDescription, Integer agents, Integer workers, Date startTime,
+                              Long duration, String hostname, Boolean useSsl, Double speed) {
 
         this.scenarioName = scenarioName;
         this.scenarioDescription = scenarioDescription;
@@ -152,10 +150,9 @@ public class ExecutionMetadata {
             formattedStartTime = new SimpleDateFormat("HH:mm").format(this.startTime);
         }
 
-        return String.format("%s: [%s] %sx%s (%s min): %s #/s", this.scenarioName == null? "N/A": this.scenarioName
-                .replaceFirst(".*\\.", ""), formattedStartTime == null? "N/A": formattedStartTime,
-                this.agents == null? "N/A": this.agents, this.workers == null? "N/A": this.workers,
-                this.duration == null? "N/A": this.duration / 60000, this.speed == null? "N/A": String.format("%.2f",
-                        this.speed));
+        return String.format("%s: [%s] %sx%s (%s min): %s #/s", this.scenarioName == null? "N/A": this.scenarioName.replaceFirst(".*\\.",
+                ""), formattedStartTime == null? "N/A": formattedStartTime, this.agents == null? "N/A": this.agents,
+                this.workers == null? "N/A": this.workers, this.duration == null? "N/A": this.duration / 60000, this.speed == null? "N/A"
+                        : String.format("%.2f", this.speed));
     }
 }

@@ -19,7 +19,6 @@ public class UsageAgreementNotFoundException extends SafeOnlineException {
 
     public UsageAgreementNotFoundException(Long usageAgreementVersion) {
 
-        super("Usage agreement (version:" + usageAgreementVersion + ") not found",
-                SharedConstants.USAGE_AGREEMENT_NOT_FOUND_ERROR);
+        super("Usage agreement (version:" + usageAgreementVersion + ") not found", SharedConstants.USAGE_AGREEMENT_NOT_FOUND_ERROR);
     }
 }

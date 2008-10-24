@@ -34,21 +34,21 @@ import com.jgoodies.looks.plastic.PlasticXPLookAndFeel;
 /**
  * <h2>{@link SwingConsole}<br>
  * <sub>The swing console's entry point and frame builder.</sub></h2>
- *
+ * 
  * <p>
  * A Swing UI that provides interaction with and visual reporting of the status of agents in the profiling group.<br>
  * <br>
  * This class takes care of the initialisation of the frame and its lay-out.
  * </p>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class SwingConsole {
-    
+
     public SwingConsole() {
 
         initLnF();
@@ -81,8 +81,7 @@ public class SwingConsole {
                 String stackTrace = writer.getBuffer().toString();
                 e.printStackTrace();
 
-                pane.add(new JLabel("An uncaught exception was thrown in thread " + t.toString() + ":"),
-                        BorderLayout.NORTH);
+                pane.add(new JLabel("An uncaught exception was thrown in thread " + t.toString() + ":"), BorderLayout.NORTH);
                 pane.add(new JTextArea(stackTrace));
 
                 dialog.setSize(800, 600);

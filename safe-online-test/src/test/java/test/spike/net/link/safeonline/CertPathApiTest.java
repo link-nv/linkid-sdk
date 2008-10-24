@@ -34,9 +34,9 @@ import org.junit.Test;
 
 /**
  * Spike to test out the usability of the Java CertPath API when using non-global-CA certificates.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class CertPathApiTest {
 
@@ -57,8 +57,7 @@ public class CertPathApiTest {
         LOG.debug("certificate factory provider: " + certificateFactory.getProvider().getName());
         LOG.debug("root CA cert type: " + rootCaCert.getClass().getName());
         /*
-         * rootCaCert = (X509Certificate) certificateFactory .generateCertificate(new ByteArrayInputStream(rootCaCert
-         * .getEncoded()));
+         * rootCaCert = (X509Certificate) certificateFactory .generateCertificate(new ByteArrayInputStream(rootCaCert .getEncoded()));
          */
         LOG.debug("root CA cert type: " + rootCaCert.getClass().getName());
 
@@ -71,8 +70,7 @@ public class CertPathApiTest {
         X509Certificate interCaCert = PkiTestUtils.generateCertificate(interCaKeyPair.getPublic(), "CN=InterCA",
                 rootCaKeyPair.getPrivate(), rootCaCert, notBefore, notAfter, null, true, false, null);
         /*
-         * interCaCert = (X509Certificate) certificateFactory .generateCertificate(new ByteArrayInputStream(interCaCert
-         * .getEncoded()));
+         * interCaCert = (X509Certificate) certificateFactory .generateCertificate(new ByteArrayInputStream(interCaCert .getEncoded()));
          */
         LOG.debug("inter CA cert type: " + interCaCert.getClass().getName());
 
@@ -80,10 +78,9 @@ public class CertPathApiTest {
          * Entity
          */
         KeyPair entityKeyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate entityCert = PkiTestUtils.generateCertificate(entityKeyPair.getPublic(), "CN=Entity",
-                interCaKeyPair.getPrivate(), interCaCert, notBefore, notAfter, null, false, false, null);
-        entityCert = (X509Certificate) certificateFactory.generateCertificate(new ByteArrayInputStream(entityCert
-                .getEncoded()));
+        X509Certificate entityCert = PkiTestUtils.generateCertificate(entityKeyPair.getPublic(), "CN=Entity", interCaKeyPair.getPrivate(),
+                interCaCert, notBefore, notAfter, null, false, false, null);
+        entityCert = (X509Certificate) certificateFactory.generateCertificate(new ByteArrayInputStream(entityCert.getEncoded()));
         LOG.debug("entity cert type: " + entityCert.getClass().getName());
 
         CertPathValidator certPathValidator = CertPathValidator.getInstance("PKIX");

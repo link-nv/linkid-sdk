@@ -205,8 +205,7 @@ public class SchedulingBean implements Scheduling {
         try {
             this.schedulingService.saveScheduling(this.selectedScheduling);
         } catch (InvalidCronExpressionException e) {
-            this.facesMessages.addToControlFromResourceBundle("cronExpression", FacesMessage.SEVERITY_ERROR,
-                    "errorCronExpressionInvalid");
+            this.facesMessages.addToControlFromResourceBundle("cronExpression", FacesMessage.SEVERITY_ERROR, "errorCronExpressionInvalid");
             return null;
         }
         return "successsavescheduling";
@@ -231,12 +230,11 @@ public class SchedulingBean implements Scheduling {
         try {
             this.schedulingService.addScheduling(this.newScheduling);
         } catch (InvalidCronExpressionException e) {
-            this.facesMessages.addToControlFromResourceBundle("cronExpression", FacesMessage.SEVERITY_ERROR,
-                    "errorCronExpressionInvalid");
+            this.facesMessages.addToControlFromResourceBundle("cronExpression", FacesMessage.SEVERITY_ERROR, "errorCronExpressionInvalid");
             return null;
         } catch (ExistingSchedulingException e) {
-            this.facesMessages.addToControlFromResourceBundle("cronExpression", FacesMessage.SEVERITY_ERROR,
-                    "errorSchedulingAlreadyExists");
+            this.facesMessages
+                              .addToControlFromResourceBundle("cronExpression", FacesMessage.SEVERITY_ERROR, "errorSchedulingAlreadyExists");
             return null;
         }
         return "successaddscheduling";

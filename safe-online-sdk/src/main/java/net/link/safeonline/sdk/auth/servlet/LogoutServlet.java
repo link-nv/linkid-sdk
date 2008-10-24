@@ -38,14 +38,13 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- * Logout Servlet. This servlet contains the landing page to finalize the logout process initiated by the web
- * application. This servlet also removes the <code>userId</code> attribute and redirects to the specified target when
- * the logout request was made.
+ * Logout Servlet. This servlet contains the landing page to finalize the logout process initiated by the web application. This servlet also
+ * removes the <code>userId</code> attribute and redirects to the specified target when the logout request was made.
  * 
- * This servlet also handles a logout request sent by the SafeOnline authentication web application due to a single
- * logout request sent by an OLAS application. After handling the request, it will redirect to <code>LogoutUrl</code>.
- * To finalize this, the web application should redirect back to this page using Http GET, which will trigger this
- * landing page to send back a logout response to the SafeOnline authentication web application.
+ * This servlet also handles a logout request sent by the SafeOnline authentication web application due to a single logout request sent by
+ * an OLAS application. After handling the request, it will redirect to <code>LogoutUrl</code>. To finalize this, the web application should
+ * redirect back to this page using Http GET, which will trigger this landing page to send back a logout response to the SafeOnline
+ * authentication web application.
  * 
  * @author wvdhaute
  * 
@@ -108,8 +107,7 @@ public class LogoutServlet extends AbstractInjectionServlet {
         if (null == this.authenticationProtocolString) {
             this.authenticationProtocol = DEFAULT_AUTHN_PROTOCOL;
         } else {
-            this.authenticationProtocol = AuthenticationProtocol
-                    .toAuthenticationProtocol(this.authenticationProtocolString);
+            this.authenticationProtocol = AuthenticationProtocol.toAuthenticationProtocol(this.authenticationProtocolString);
         }
         LOG.debug("authentication protocol: " + this.authenticationProtocol);
 
@@ -131,19 +129,17 @@ public class LogoutServlet extends AbstractInjectionServlet {
         if (null != keyStoreInputStream) {
             PrivateKeyEntry privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(this.keyStoreType, keyStoreInputStream,
                     this.keyStorePassword, this.keyStorePassword);
-            this.applicationKeyPair = new KeyPair(privateKeyEntry.getCertificate().getPublicKey(), privateKeyEntry
-                    .getPrivateKey());
+            this.applicationKeyPair = new KeyPair(privateKeyEntry.getCertificate().getPublicKey(), privateKeyEntry.getPrivateKey());
             this.applicationCertificate = (X509Certificate) privateKeyEntry.getCertificate();
         }
     }
 
     @Override
-    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         /**
-         * Wrap the request to use the servlet endpoint url if defined. To prevent failure when behind a reverse proxy
-         * or loadbalancer when opensaml is checking the destination field.
+         * Wrap the request to use the servlet endpoint url if defined. To prevent failure when behind a reverse proxy or loadbalancer when
+         * opensaml is checking the destination field.
          */
         HttpServletRequestEndpointWrapper requestWrapper;
         if (null != this.servletEndpointUrl) {
@@ -164,8 +160,7 @@ public class LogoutServlet extends AbstractInjectionServlet {
                 LOG.debug("target: " + target);
                 response.sendRedirect(target);
             } else {
-                AuthenticationProtocolHandler protocolHandler = AuthenticationProtocolManager
-                        .findAuthenticationProtocolHandler(request);
+                AuthenticationProtocolHandler protocolHandler = AuthenticationProtocolManager.findAuthenticationProtocolHandler(request);
                 if (null == protocolHandler) {
                     String msg = "no protocol handler active";
                     LOG.error(msg);
@@ -179,18 +174,17 @@ public class LogoutServlet extends AbstractInjectionServlet {
             }
         } finally {
             if (requestWrapper.getSession().getAttribute(INVALIDATE_SESSION) != null) {
-                 requestWrapper.getSession().invalidate();
+                requestWrapper.getSession().invalidate();
             }
         }
     }
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         /**
-         * Wrap the request to use the servlet endpoint url if defined. To prevent failure when behind a reverse proxy
-         * or loadbalancer when opensaml is checking the destination field.
+         * Wrap the request to use the servlet endpoint url if defined. To prevent failure when behind a reverse proxy or loadbalancer when
+         * opensaml is checking the destination field.
          */
         HttpServletRequestEndpointWrapper requestWrapper;
         if (null != this.servletEndpointUrl) {
@@ -199,22 +193,20 @@ public class LogoutServlet extends AbstractInjectionServlet {
             requestWrapper = new HttpServletRequestEndpointWrapper(request, request.getRequestURL().toString());
         }
 
-        AuthenticationProtocolHandler protocolHandler = AuthenticationProtocolManager
-                .findAuthenticationProtocolHandler(requestWrapper);
+        AuthenticationProtocolHandler protocolHandler = AuthenticationProtocolManager.findAuthenticationProtocolHandler(requestWrapper);
         if (null == protocolHandler) {
             /*
-             * The landing page is also used to handle logout requests sent out by the authentication webapp following a
-             * logout request from another application.
+             * The landing page is also used to handle logout requests sent out by the authentication webapp following a logout request from
+             * another application.
              */
             try {
-                protocolHandler = AuthenticationProtocolManager.createAuthenticationProtocolHandler(
-                        this.authenticationProtocol, this.logoutExitServiceUrl, this.applicationName,
-                        this.applicationFriendlyName, this.applicationKeyPair, this.applicationCertificate, true,
-                        this.configParams, requestWrapper);
+                protocolHandler = AuthenticationProtocolManager.createAuthenticationProtocolHandler(this.authenticationProtocol,
+                        this.logoutExitServiceUrl, this.applicationName, this.applicationFriendlyName, this.applicationKeyPair,
+                        this.applicationCertificate, true, this.configParams, requestWrapper);
                 LOG.debug("initialized protocol");
             } catch (ServletException e) {
-                throw new RuntimeException("could not init authentication protocol handler: "
-                        + this.authenticationProtocol + "; original message: " + e.getMessage(), e);
+                throw new RuntimeException("could not init authentication protocol handler: " + this.authenticationProtocol
+                        + "; original message: " + e.getMessage(), e);
             }
 
             String logoutUserId = protocolHandler.handleLogoutRequest(requestWrapper, response);

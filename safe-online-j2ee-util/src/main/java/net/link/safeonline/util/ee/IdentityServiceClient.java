@@ -22,8 +22,8 @@ import org.jboss.mx.util.MBeanServerLocator;
 
 
 /**
- * Client for SafeOnline Identity Service JMX bean. This service manages the key pair of the SafeOnline service itself.
- * See also: safe-online-service.
+ * Client for SafeOnline Identity Service JMX bean. This service manages the key pair of the SafeOnline service itself. See also:
+ * safe-online-service.
  * 
  * @author fcorneli
  * 
@@ -97,8 +97,7 @@ public class IdentityServiceClient {
         String[] signature = {};
         X509Certificate certificate;
         try {
-            certificate = (X509Certificate) this.server.invoke(this.identityServiceName, "getCertificate", params,
-                    signature);
+            certificate = (X509Certificate) this.server.invoke(this.identityServiceName, "getCertificate", params, signature);
         } catch (Exception e) {
             throw new RuntimeException("invoke error: " + e.getMessage(), e);
         }

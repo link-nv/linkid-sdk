@@ -56,15 +56,14 @@ import com.jgoodies.forms.layout.FormLayout;
 /**
  * <h2>{@link ExecutionInfo}<br>
  * <sub>Display available executions and information about them.</sub></h2>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
-public class ExecutionInfo extends JPanel implements ChangeListener, AgentSelectionListener, Scrollable,
-        AgentStatusListener {
+public class ExecutionInfo extends JPanel implements ChangeListener, AgentSelectionListener, Scrollable, AgentStatusListener {
 
     private static final long       serialVersionUID = 1L;
     static final SimpleDateFormat   labelTimeFormat  = new SimpleDateFormat("HH:mm");
@@ -190,13 +189,12 @@ public class ExecutionInfo extends JPanel implements ChangeListener, AgentSelect
             this.durationLabel.setText("Duration:");
         } else {
             this.executionSelection.setToolTipText(execution.toString());
-            this.scenarioName.setText(execution.getScenarioName() == null? "N/A": execution.getScenarioName()
-                    .replaceFirst(".*\\.", ""));
+            this.scenarioName.setText(execution.getScenarioName() == null? "N/A": execution.getScenarioName().replaceFirst(".*\\.", ""));
 
             Caret descriptionCaret = this.description.getCaret();
             descriptionCaret.deinstall(this.description);
-            this.description.setText(execution.getDuration() == null? "<pre>N/A</pre>": execution
-                    .getScenarioDescription().replaceAll("\n", "<br>"));
+            this.description.setText(execution.getDuration() == null? "<pre>N/A</pre>": execution.getScenarioDescription().replaceAll("\n",
+                    "<br>"));
             descriptionCaret.install(this.description);
 
             Double totalSpeed = null;
@@ -206,8 +204,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener, AgentSelect
 
                 for (ConsoleAgent agent : ConsoleData.getAgents().values()) {
                     for (ScenarioExecution agentExecution : agent.getExecutions())
-                        if (agentExecution.equalRequest(ConsoleData.getSelectedExecution())
-                                && agentExecution.getSpeed() != null) {
+                        if (agentExecution.equalRequest(ConsoleData.getSelectedExecution()) && agentExecution.getSpeed() != null) {
                             totalSpeedAgents++;
                             totalSpeed += agentExecution.getSpeed();
                         }
@@ -220,12 +217,9 @@ public class ExecutionInfo extends JPanel implements ChangeListener, AgentSelect
             }
 
             this.startTime.setText(DateFormat.getDateTimeInstance().format(execution.getStartTime()));
-            this.agents
-                    .setText(String.format("%s agent%s", execution.getAgents(), execution.getAgents() == 1? "": "s"));
-            this.workers.setText(String.format("%s worker%s", execution.getWorkers(), execution.getWorkers() == 1? ""
-                    : "s"));
-            this.speed.setText(totalSpeed == null? "N/A": String.format("%.2f scenario%s/s", totalSpeed,
-                    totalSpeed == 1? "": "s"));
+            this.agents.setText(String.format("%s agent%s", execution.getAgents(), execution.getAgents() == 1? "": "s"));
+            this.workers.setText(String.format("%s worker%s", execution.getWorkers(), execution.getWorkers() == 1? "": "s"));
+            this.speed.setText(totalSpeed == null? "N/A": String.format("%.2f scenario%s/s", totalSpeed, totalSpeed == 1? "": "s"));
             this.hostname.setText(execution.getHostname());
             this.transport.setText(execution.isSsl() == null? "N/A": execution.isSsl()? "HTTPS": "HTTP");
 
@@ -332,8 +326,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener, AgentSelect
     private boolean containsExecution(Set<ScenarioExecution> set, ScenarioExecution element) {
 
         for (ScenarioExecution entry : set)
-            if (entry.getStartTime() == null && element.getStartTime() == null
-                    || entry.getStartTime().equals(element.getStartTime()))
+            if (entry.getStartTime() == null && element.getStartTime() == null || entry.getStartTime().equals(element.getStartTime()))
                 return true;
 
         return false;
@@ -341,7 +334,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener, AgentSelect
 
     /**
      * Format a time of duration in a human readable manner.
-     *
+     * 
      * @param duration
      *            A duration in ms.
      */

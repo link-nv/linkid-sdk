@@ -18,9 +18,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
  * Primary key class for {@link AttributeEntity}.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Embeddable
 public class AttributePK implements Serializable {
@@ -82,9 +82,8 @@ public class AttributePK implements Serializable {
     }
 
     /**
-     * The attribute index is used for implementing the multi-valued attributes. For single-value attributes that
-     * attribute index is zero.
-     *
+     * The attribute index is used for implementing the multi-valued attributes. For single-value attributes that attribute index is zero.
+     * 
      */
     public long getAttributeIndex() {
 
@@ -104,21 +103,20 @@ public class AttributePK implements Serializable {
         if (false == obj instanceof AttributePK)
             return false;
         AttributePK rhs = (AttributePK) obj;
-        return new EqualsBuilder().append(this.subject, rhs.subject).append(this.attributeType, rhs.attributeType)
-                .append(this.attributeIndex, rhs.attributeIndex).isEquals();
+        return new EqualsBuilder().append(this.subject, rhs.subject).append(this.attributeType, rhs.attributeType).append(
+                this.attributeIndex, rhs.attributeIndex).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.subject).append(this.attributeType).append(this.attributeIndex)
-                .toHashCode();
+        return new HashCodeBuilder().append(this.subject).append(this.attributeType).append(this.attributeIndex).toHashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("subject", this.subject).append("attributeType", this.attributeType)
-                .append("index", this.attributeIndex).toString();
+        return new ToStringBuilder(this).append("subject", this.subject).append("attributeType", this.attributeType).append("index",
+                this.attributeIndex).toString();
     }
 }

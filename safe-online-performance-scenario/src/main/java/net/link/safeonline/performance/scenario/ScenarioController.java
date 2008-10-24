@@ -16,11 +16,11 @@ import net.link.safeonline.performance.scenario.bean.ScenarioControllerBean;
 /**
  * <h2>{@link ScenarioController}<br>
  * <sub>The POJO interface to the {@link ScenarioControllerBean}.</sub></h2>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public interface ScenarioController {
@@ -36,9 +36,8 @@ public interface ScenarioController {
     /**
      * This method is called before any iterations are executed.<br>
      * <br>
-     * These accessors need to be non-<code>null</code>: {@link ExecutionMetadata#getAgents()},
-     * {@link ExecutionMetadata#getWorkers()}, {@link ExecutionMetadata#getDuration()},
-     * {@link ExecutionMetadata#getHostname()}.
+     * These accessors need to be non-<code>null</code>: {@link ExecutionMetadata#getAgents()}, {@link ExecutionMetadata#getWorkers()},
+     * {@link ExecutionMetadata#getDuration()}, {@link ExecutionMetadata#getHostname()}.
      */
     public Date prepare(ExecutionMetadata metaData);
 
@@ -63,16 +62,15 @@ public interface ScenarioController {
     public String getDescription(String scenario);
 
     /**
-     * Retrieve an HTML formatted description string for the given execution (including the scenario and the drivers
-     * used by it).
+     * Retrieve an HTML formatted description string for the given execution (including the scenario and the drivers used by it).
      */
     public String getDescription(Date executionId);
 
     /**
      * Check what the progress is on the charts generation of the given execution.
-     *
-     * @return <code>null</code> when no execution is being charted at the moment. A value ranging between 0 and 1 when
-     *         charts are being generated, and 1 when charts are available.
+     * 
+     * @return <code>null</code> when no execution is being charted at the moment. A value ranging between 0 and 1 when charts are being
+     *         generated, and 1 when charts are available.
      */
     public Double getProgress(Date executionId);
 

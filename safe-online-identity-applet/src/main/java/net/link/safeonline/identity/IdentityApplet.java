@@ -18,11 +18,10 @@ import net.link.safeonline.shared.statement.IdentityProvider;
 
 
 /**
- * The identity applet creates an identity statement at the client-side within the browser and sends it over to a
- * server-side servlet.
- *
+ * The identity applet creates an identity statement at the client-side within the browser and sends it over to a server-side servlet.
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class IdentityApplet extends AppletBase {
 
@@ -53,8 +52,7 @@ public class IdentityApplet extends AppletBase {
         super.outputDetailMessage("Session ID: " + sessionId);
         super.outputDetailMessage("User: " + user);
         super.outputDetailMessage("Operation: " + operation);
-        byte[] identityStatement = IdentityStatementFactory.createIdentityStatement(sessionId, user, operation, signer,
-                identityProvider);
+        byte[] identityStatement = IdentityStatementFactory.createIdentityStatement(sessionId, user, operation, signer, identityProvider);
         return identityStatement;
     }
 }

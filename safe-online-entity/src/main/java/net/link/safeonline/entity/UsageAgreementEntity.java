@@ -39,11 +39,10 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 @Entity
 @NamedQueries( {
-        @NamedQuery(name = QUERY_WHERE_APPLICATION, query = "SELECT usageAgreement "
-                + "FROM UsageAgreementEntity AS usageAgreement " + "WHERE usageAgreement.application = :application "
-                + "ORDER BY usageAgreement.pk.usageAgreementVersion DESC"),
-        @NamedQuery(name = DELETE_WHERE_APPLICATION_AND_VERSION, query = "DELETE "
-                + "FROM UsageAgreementEntity AS usageAgreement " + "WHERE usageAgreement.application = :application "
+        @NamedQuery(name = QUERY_WHERE_APPLICATION, query = "SELECT usageAgreement " + "FROM UsageAgreementEntity AS usageAgreement "
+                + "WHERE usageAgreement.application = :application " + "ORDER BY usageAgreement.pk.usageAgreementVersion DESC"),
+        @NamedQuery(name = DELETE_WHERE_APPLICATION_AND_VERSION, query = "DELETE " + "FROM UsageAgreementEntity AS usageAgreement "
+                + "WHERE usageAgreement.application = :application "
                 + "AND usageAgreement.pk.usageAgreementVersion = :usageAgreementVersion") })
 @Table(name = "UsageAg")
 public class UsageAgreementEntity implements Serializable {
@@ -163,7 +162,7 @@ public class UsageAgreementEntity implements Serializable {
 
         @UpdateMethod(DELETE_WHERE_APPLICATION_AND_VERSION)
         void removeUsageAgreement(@QueryParam("application") ApplicationEntity application,
-                @QueryParam("usageAgreementVersion") Long usageAgreementVersion);
+                                  @QueryParam("usageAgreementVersion") Long usageAgreementVersion);
     }
 
 }

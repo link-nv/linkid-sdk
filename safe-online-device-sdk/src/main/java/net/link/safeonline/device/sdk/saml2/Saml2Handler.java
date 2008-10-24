@@ -34,11 +34,11 @@ import org.opensaml.xml.ConfigurationException;
 
 
 /**
- * SAML handler used by remote device issuers to handle an incoming SAML authentication request used for registration,
- * updating or removal and store the retrieved information on the session into {@link ProtocolContext}.
+ * SAML handler used by remote device issuers to handle an incoming SAML authentication request used for registration, updating or removal
+ * and store the retrieved information on the session into {@link ProtocolContext}.
  * 
- * After registrating, updating or removing it will post a SAML authentication response containing the necessary
- * assertions or a SAML authentication response telling the authentication has failed.
+ * After registrating, updating or removing it will post a SAML authentication response containing the necessary assertions or a SAML
+ * authentication response telling the authentication has failed.
  * 
  * @author wvdhaute
  * 
@@ -48,7 +48,7 @@ public class Saml2Handler implements Serializable {
     private static final long   serialVersionUID               = 1L;
 
     private static final Log    LOG                            = LogFactory.getLog(Saml2Handler.class);
-    
+
     private static final String SAML2_POST_BINDING_VM_RESOURCE = "/net/link/safeonline/device/sdk/saml2/binding/saml2-post-binding.vm";
 
     private String              stsWsLocation;
@@ -95,8 +95,8 @@ public class Saml2Handler implements Serializable {
         return instance;
     }
 
-    public void init(Map<String, String> configParams, X509Certificate newApplicationCertificate,
-            KeyPair newApplicationKeyPair) throws DeviceInitializationException {
+    public void init(Map<String, String> configParams, X509Certificate newApplicationCertificate, KeyPair newApplicationKeyPair)
+                                                                                                                                throws DeviceInitializationException {
 
         this.stsWsLocation = configParams.get("StsWsLocation");
         this.issuer = configParams.get("DeviceName");
@@ -110,8 +110,8 @@ public class Saml2Handler implements Serializable {
 
         DeviceOperationRequest deviceOperationRequest;
         try {
-            deviceOperationRequest = DeviceOperationRequestUtil.validateRequest(request, this.stsWsLocation,
-                    this.applicationCertificate, this.applicationKeyPair.getPrivate(), TrustDomainType.NODE);
+            deviceOperationRequest = DeviceOperationRequestUtil.validateRequest(request, this.stsWsLocation, this.applicationCertificate,
+                    this.applicationKeyPair.getPrivate(), TrustDomainType.NODE);
         } catch (ServletException e) {
             throw new DeviceInitializationException(e.getMessage());
         }
@@ -160,12 +160,11 @@ public class Saml2Handler implements Serializable {
         DeviceOperationManager.setOperation(deviceOperation.name(), request);
         DeviceOperationManager.setAuthenticatedDevice(authenticatedDevice, request);
         DeviceOperationManager.setAttribute(attribute, request);
-        
+
         return deviceOperation;
     }
 
-    public void abortDeviceOperation(HttpServletRequest request, HttpServletResponse response)
-            throws DeviceFinalizationException {
+    public void abortDeviceOperation(HttpServletRequest request, HttpServletResponse response) throws DeviceFinalizationException {
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(request.getSession());
         String inResponseTo = protocolContext.getInResponseTo();
@@ -174,16 +173,14 @@ public class Saml2Handler implements Serializable {
 
         String samlResponseToken = DeviceOperationResponseFactory.createDeviceOperationResponse(inResponseTo,
                 protocolContext.getDeviceOperation(), protocolContext.getIssuer(), protocolContext.getSubject(),
-                protocolContext.getDevice(), this.applicationKeyPair, protocolContext.getValidity(), protocolContext
-                        .getTargetUrl());
+                protocolContext.getDevice(), this.applicationKeyPair, protocolContext.getValidity(), protocolContext.getTargetUrl());
 
         String encodedSamlResponseToken = Base64.encode(samlResponseToken.getBytes());
 
         String templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
 
         try {
-            ResponseUtil.sendResponse(encodedSamlResponseToken, templateResourceName, protocolContext.getTargetUrl(),
-                    response);
+            ResponseUtil.sendResponse(encodedSamlResponseToken, templateResourceName, protocolContext.getTargetUrl(), response);
         } catch (ServletException e) {
             throw new DeviceFinalizationException(e.getMessage());
         } catch (IOException e) {
@@ -191,8 +188,7 @@ public class Saml2Handler implements Serializable {
         }
     }
 
-    public void finalizeDeviceOperation(HttpServletRequest request, HttpServletResponse response)
-            throws DeviceFinalizationException {
+    public void finalizeDeviceOperation(HttpServletRequest request, HttpServletResponse response) throws DeviceFinalizationException {
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(request.getSession());
         boolean deviceOperationSuccess = protocolContext.getSuccess();
@@ -207,16 +203,14 @@ public class Saml2Handler implements Serializable {
              */
             samlResponseToken = DeviceOperationResponseFactory.createDeviceOperationResponseFailed(inResponseTo,
                     protocolContext.getDeviceOperation(), protocolContext.getIssuer(), protocolContext.getSubject(),
-                    protocolContext.getDevice(), this.applicationKeyPair, protocolContext.getValidity(),
-                    protocolContext.getTargetUrl());
+                    protocolContext.getDevice(), this.applicationKeyPair, protocolContext.getValidity(), protocolContext.getTargetUrl());
         } else {
             /*
              * Device operation was successful
              */
             samlResponseToken = DeviceOperationResponseFactory.createDeviceOperationResponse(inResponseTo,
                     protocolContext.getDeviceOperation(), protocolContext.getIssuer(), protocolContext.getSubject(),
-                    protocolContext.getDevice(), this.applicationKeyPair, protocolContext.getValidity(),
-                    protocolContext.getTargetUrl());
+                    protocolContext.getDevice(), this.applicationKeyPair, protocolContext.getValidity(), protocolContext.getTargetUrl());
         }
 
         String encodedSamlResponseToken = Base64.encode(samlResponseToken.getBytes());
@@ -224,8 +218,7 @@ public class Saml2Handler implements Serializable {
         String templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
 
         try {
-            ResponseUtil.sendResponse(encodedSamlResponseToken, templateResourceName, protocolContext.getTargetUrl(),
-                    response);
+            ResponseUtil.sendResponse(encodedSamlResponseToken, templateResourceName, protocolContext.getTargetUrl(), response);
         } catch (ServletException e) {
             throw new DeviceFinalizationException(e.getMessage());
         } catch (IOException e) {

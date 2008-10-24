@@ -11,8 +11,7 @@ package net.link.safeonline.osgi.plugin.exception;
  * <sub>Unsupported Data Type Exception.</sub></h2>
  * 
  * <p>
- * Exception thrown by OLAS when an unexpected data type is found for a certain
- * attribute type.
+ * Exception thrown by OLAS when an unexpected data type is found for a certain attribute type.
  * </p>
  * 
  * <p>
@@ -23,16 +22,19 @@ package net.link.safeonline.osgi.plugin.exception;
  */
 public class InvalidDataException extends Exception {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private final String errorMessage;
+    private final String      errorMessage;
 
-	public InvalidDataException(String errorMessage) {
-		this.errorMessage = errorMessage;
-	}
 
-	public String getErrorMessage() {
-		return this.errorMessage;
-	}
+    public InvalidDataException(String errorMessage) {
+
+        this.errorMessage = errorMessage;
+    }
+
+    public String getErrorMessage() {
+
+        return this.errorMessage;
+    }
 
 }

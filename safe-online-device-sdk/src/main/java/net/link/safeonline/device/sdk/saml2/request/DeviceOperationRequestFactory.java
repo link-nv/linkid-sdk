@@ -69,9 +69,8 @@ public class DeviceOperationRequestFactory {
                 "org.apache.xerces.jaxp.validation.XMLSchemaFactory");
         try {
             DefaultBootstrap.bootstrap();
-            Configuration.registerObjectProvider(DeviceOperationRequest.DEFAULT_ELEMENT_NAME,
-                    new DeviceOperationRequestBuilder(), new DeviceOperationRequestMarshaller(),
-                    new DeviceOperationRequestUnmarshaller(), null);
+            Configuration.registerObjectProvider(DeviceOperationRequest.DEFAULT_ELEMENT_NAME, new DeviceOperationRequestBuilder(),
+                    new DeviceOperationRequestMarshaller(), new DeviceOperationRequestUnmarshaller(), null);
         } catch (ConfigurationException e) {
             throw new RuntimeException("could not bootstrap the OpenSAML2 library");
         }
@@ -79,18 +78,17 @@ public class DeviceOperationRequestFactory {
 
 
     /**
-     * Creates a SAML2 device operation request. This request will contain a Subject element, containing the OLAS user
-     * ID on the destination device node. It will also contain the device with which the user has authenticated before
-     * issuing this device operation request.
+     * Creates a SAML2 device operation request. This request will contain a Subject element, containing the OLAS user ID on the destination
+     * device node. It will also contain the device with which the user has authenticated before issuing this device operation request.
      * 
-     * The request can also optionally contain the device user attribute to specify the specific device registration for
-     * this device operation.
+     * The request can also optionally contain the device user attribute to specify the specific device registration for this device
+     * operation.
      * 
      * 
      * @param issuerName
      * @param subjectName
-     *            the subject name which wants to execute a device operation ( register/removal/update/disable ). This
-     *            is OLAS user ID on the destination device node.
+     *            the subject name which wants to execute a device operation ( register/removal/update/disable ). This is OLAS user ID on
+     *            the destination device node.
      * @param signerKeyPair
      * @param serviceURL
      *            the location of the service that will handle the response message.
@@ -103,9 +101,10 @@ public class DeviceOperationRequestFactory {
      * @param device
      * @param attribute
      */
-    public static String createDeviceOperationRequest(String issuerName, String subjectName, KeyPair signerKeyPair,
-            String serviceURL, String destinationURL, DeviceOperationType deviceOperation, Challenge<String> challenge,
-            String device, String authenticatedDevice, String attribute) {
+    public static String createDeviceOperationRequest(String issuerName, String subjectName, KeyPair signerKeyPair, String serviceURL,
+                                                      String destinationURL, DeviceOperationType deviceOperation,
+                                                      Challenge<String> challenge, String device, String authenticatedDevice,
+                                                      String attribute) {
 
         if (null == signerKeyPair)
             throw new IllegalArgumentException("signer key pair should not be null");
@@ -120,8 +119,7 @@ public class DeviceOperationRequestFactory {
         if (null == device)
             throw new IllegalArgumentException("device should not be null");
 
-        DeviceOperationRequest request = buildXMLObject(DeviceOperationRequest.class,
-                DeviceOperationRequest.DEFAULT_ELEMENT_NAME);
+        DeviceOperationRequest request = buildXMLObject(DeviceOperationRequest.class, DeviceOperationRequest.DEFAULT_ELEMENT_NAME);
 
         SecureRandomIdentifierGenerator idGenerator;
         try {
@@ -166,8 +164,7 @@ public class DeviceOperationRequestFactory {
     private static String signRequest(DeviceOperationRequest request, KeyPair signerKeyPair) {
 
         XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
-        SignatureBuilder signatureBuilder = (SignatureBuilder) builderFactory
-                .getBuilder(Signature.DEFAULT_ELEMENT_NAME);
+        SignatureBuilder signatureBuilder = (SignatureBuilder) builderFactory.getBuilder(Signature.DEFAULT_ELEMENT_NAME);
         Signature signature = signatureBuilder.buildObject();
         signature.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
         String algorithm = signerKeyPair.getPrivate().getAlgorithm();
@@ -177,8 +174,7 @@ public class DeviceOperationRequestFactory {
             signature.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_DSA);
         }
         request.setSignature(signature);
-        BasicCredential signingCredential = SecurityHelper.getSimpleCredential(signerKeyPair.getPublic(), signerKeyPair
-                .getPrivate());
+        BasicCredential signingCredential = SecurityHelper.getSimpleCredential(signerKeyPair.getPublic(), signerKeyPair.getPrivate());
         signature.setSigningCredential(signingCredential);
 
         // marshalling
@@ -209,14 +205,12 @@ public class DeviceOperationRequestFactory {
     }
 
     @SuppressWarnings("unchecked")
-    private static <Type extends SAMLObject> Type buildXMLObject(@SuppressWarnings("unused") Class<Type> clazz,
-            QName objectQName) {
+    private static <Type extends SAMLObject> Type buildXMLObject(@SuppressWarnings("unused") Class<Type> clazz, QName objectQName) {
 
         XMLObjectBuilder<Type> builder = Configuration.getBuilderFactory().getBuilder(objectQName);
         if (builder == null)
             throw new RuntimeException("Unable to retrieve builder for object QName " + objectQName);
-        Type object = builder.buildObject(objectQName.getNamespaceURI(), objectQName.getLocalPart(), objectQName
-                .getPrefix());
+        Type object = builder.buildObject(objectQName.getNamespaceURI(), objectQName.getLocalPart(), objectQName.getPrefix());
         return object;
     }
 }

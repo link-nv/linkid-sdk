@@ -31,16 +31,15 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Abstract Injection Filter.
- *
+ * 
  * <ul>
  * <li>Injects EJBs.
  * <li>Injects filter init parameters. If no defaultValue is specified, an {@link UnavailableException} will be thrown.
- * <li>Injects filter context parameters. If no defaultValue is specified, an {@link UnavailableException} will be
- * thrown.
+ * <li>Injects filter context parameters. If no defaultValue is specified, an {@link UnavailableException} will be thrown.
  * </ul>
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public abstract class AbstractInjectionFilter implements Filter {
 
@@ -171,8 +170,7 @@ public abstract class AbstractInjectionFilter implements Filter {
         }
     }
 
-    protected static void addCookie(String name, String value, String path, HttpServletRequest httpRequest,
-            HttpServletResponse httpResponse) {
+    protected static void addCookie(String name, String value, String path, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
 
         if (true == hasCookie(name, httpRequest))
             return;
@@ -190,8 +188,7 @@ public abstract class AbstractInjectionFilter implements Filter {
         httpResponse.addCookie(cookie);
     }
 
-    protected static void removeCookie(String name, String path, HttpServletRequest httpRequest,
-            HttpServletResponse httpResponse) {
+    protected static void removeCookie(String name, String path, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
 
         if (false == hasCookie(name, httpRequest))
             return;

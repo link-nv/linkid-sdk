@@ -22,22 +22,22 @@ import net.link.safeonline.entity.SubscriptionEntity;
 
 /**
  * Interface to service components that manages the application subscriptions of the caller principal.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Local
 public interface SubscriptionService {
 
     /**
      * Gives back a list of all application subscriptions of the caller user.
-     *
+     * 
      */
     List<SubscriptionEntity> listSubscriptions();
 
     /**
      * Gives back a list of all application subscriptions for the specified user.
-     *
+     * 
      * @param subject
      * @return list of application subscriptions.
      * @throws SubjectNotFoundException
@@ -46,40 +46,37 @@ public interface SubscriptionService {
 
     /**
      * Subscribe the caller user to the given application.
-     *
+     * 
      * @param applicationName
      * @throws ApplicationNotFoundException
      * @throws AlreadySubscribedException
      * @throws PermissionDeniedException
      */
-    void subscribe(String applicationName) throws ApplicationNotFoundException, AlreadySubscribedException,
-            PermissionDeniedException;
+    void subscribe(String applicationName) throws ApplicationNotFoundException, AlreadySubscribedException, PermissionDeniedException;
 
     /**
      * Unsubscribe the caller user from the given application.
-     *
+     * 
      * @param applicationName
      * @throws ApplicationNotFoundException
      * @throws SubscriptionNotFoundException
      * @throws PermissionDeniedException
      *             in case the user is not the owner of the subscription.
      */
-    void unsubscribe(String applicationName) throws ApplicationNotFoundException, SubscriptionNotFoundException,
-            PermissionDeniedException;
+    void unsubscribe(String applicationName) throws ApplicationNotFoundException, SubscriptionNotFoundException, PermissionDeniedException;
 
     /**
      * Gives back the number of subscriptions for a given application.
-     *
+     * 
      * @param applicationName
      * @throws ApplicationNotFoundException
      * @throws PermissionDeniedException
      */
-    long getNumberOfSubscriptions(String applicationName) throws ApplicationNotFoundException,
-            PermissionDeniedException;
+    long getNumberOfSubscriptions(String applicationName) throws ApplicationNotFoundException, PermissionDeniedException;
 
     /**
      * Returns <code>true</code> if the caller user has a subscription for the given application.
-     *
+     * 
      * @param applicationName
      * @throws ApplicationNotFoundException
      */

@@ -18,7 +18,7 @@ import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
 public interface HelpdeskManager {
 
     public Long persist(String location, List<HelpdeskEventEntity> helpdeskEventList);
-    
+
     public int getHelpdeskContextLimit();
 
 }

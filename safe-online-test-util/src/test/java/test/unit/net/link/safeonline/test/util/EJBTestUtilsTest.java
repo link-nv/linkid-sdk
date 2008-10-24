@@ -66,8 +66,8 @@ public class EJBTestUtilsTest extends TestCase {
         // setup
         TestClass origObject = new TestClass();
         TestInvocationHandler testInvocationHandler = new TestInvocationHandler(origObject);
-        TestIface testObject = (TestIface) Proxy.newProxyInstance(EJBTestUtilsTest.class.getClassLoader(),
-                TestClass.class.getInterfaces(), testInvocationHandler);
+        TestIface testObject = (TestIface) Proxy.newProxyInstance(EJBTestUtilsTest.class.getClassLoader(), TestClass.class.getInterfaces(),
+                testInvocationHandler);
 
         // operate
         testObject.func();
@@ -91,7 +91,7 @@ public class EJBTestUtilsTest extends TestCase {
         }
 
         public Object intercept(@SuppressWarnings("unused") Object obj, Method method, Object[] args,
-                @SuppressWarnings("unused") MethodProxy proxy) throws Throwable {
+                                @SuppressWarnings("unused") MethodProxy proxy) throws Throwable {
 
             interceptorLOG.debug("intercept");
             return method.invoke(this.object, args);

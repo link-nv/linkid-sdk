@@ -40,9 +40,8 @@ public class LogoutServletTest extends TestCase {
         super.setUp();
 
         this.servletTestManager = new ServletTestManager();
-        this.servletTestManager.setUp(LogoutServlet.class, Collections
-                .singletonMap("LogoutExitUrl", this.logoutExitUrl), null, null, Collections.singletonMap(
-                LoginManager.USERID_SESSION_ATTRIBUTE, (Object) UUID.randomUUID().toString()));
+        this.servletTestManager.setUp(LogoutServlet.class, Collections.singletonMap("LogoutExitUrl", this.logoutExitUrl), null, null,
+                Collections.singletonMap(LoginManager.USERID_SESSION_ATTRIBUTE, (Object) UUID.randomUUID().toString()));
         this.servletLocation = this.servletTestManager.getServletLocation();
     }
 
@@ -71,8 +70,7 @@ public class LogoutServletTest extends TestCase {
         LOG.debug("location: " + resultLocation);
         assertTrue(resultLocation.endsWith(this.logoutExitUrl));
 
-        String resultUserId = (String) this.servletTestManager
-                .getSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
+        String resultUserId = (String) this.servletTestManager.getSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
         assertNull(resultUserId);
     }
 }

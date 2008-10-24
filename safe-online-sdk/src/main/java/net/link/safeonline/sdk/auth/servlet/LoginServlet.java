@@ -27,8 +27,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- * Login Servlet. This servlet contains the landing page to finalize the authentication process initiated by the web
- * application.
+ * Login Servlet. This servlet contains the landing page to finalize the authentication process initiated by the web application.
  * 
  * @author fcorneli
  * 
@@ -47,25 +46,22 @@ public class LoginServlet extends AbstractInjectionServlet {
 
 
     @Override
-    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         handleLanding(request, response);
     }
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         handleLanding(request, response);
     }
 
-    private void handleLanding(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    private void handleLanding(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         /**
-         * Wrap the request to use the servlet endpoint url if defined. To prevent failure when behind a reverse proxy
-         * or loadbalancer when opensaml is checking the destination field.
+         * Wrap the request to use the servlet endpoint url if defined. To prevent failure when behind a reverse proxy or loadbalancer when
+         * opensaml is checking the destination field.
          */
         HttpServletRequestEndpointWrapper requestWrapper;
         if (null != this.servletEndpointUrl) {
@@ -74,12 +70,11 @@ public class LoginServlet extends AbstractInjectionServlet {
             requestWrapper = new HttpServletRequestEndpointWrapper(request, request.getRequestURL().toString());
         }
 
-        AuthenticationProtocolHandler protocolHandler = AuthenticationProtocolManager
-                .findAuthenticationProtocolHandler(requestWrapper);
+        AuthenticationProtocolHandler protocolHandler = AuthenticationProtocolManager.findAuthenticationProtocolHandler(requestWrapper);
         if (null == protocolHandler) {
             /*
-             * The landing page can only be used for finalizing an ongoing authentication process. If no protocol
-             * handler is active then something must be going wrong here.
+             * The landing page can only be used for finalizing an ongoing authentication process. If no protocol handler is active then
+             * something must be going wrong here.
              */
             String msg = "no protocol handler active";
             LOG.error(msg);
@@ -88,8 +83,7 @@ public class LoginServlet extends AbstractInjectionServlet {
             return;
         }
 
-        AuthenticationProtocolContext authenticationProtocolContext = protocolHandler.finalizeAuthentication(
-                requestWrapper, response);
+        AuthenticationProtocolContext authenticationProtocolContext = protocolHandler.finalizeAuthentication(requestWrapper, response);
         if (null == authenticationProtocolContext) {
             String msg = "protocol handler could not finalize";
             LOG.error(msg);

@@ -26,8 +26,8 @@ public interface WSSecurityConfigurationService {
     public long getMaximumWsSecurityTimestampOffset();
 
     /**
-     * Given the calling entity's certificate, skip or perform a verification of the digestion of the SOAP body element
-     * by the WS-Security signature.
+     * Given the calling entity's certificate, skip or perform a verification of the digestion of the SOAP body element by the WS-Security
+     * signature.
      * 
      * @param certificate
      */

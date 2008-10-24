@@ -71,8 +71,7 @@ public class DeviceLandingServletTest {
         initParams.put("DevicesPage", this.devicesPage);
         initParams.put("ServletEndpointUrl", this.servletEndpointUrl);
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
-        initialSessionAttributes.put(DeviceOperationService.DEVICE_OPERATION_SERVICE_ATTRIBUTE,
-                this.mockDeviceOperationService);
+        initialSessionAttributes.put(DeviceOperationService.DEVICE_OPERATION_SERVICE_ATTRIBUTE, this.mockDeviceOperationService);
 
         this.servletTestManager.setUp(DeviceLandingServlet.class, initParams, null, null, initialSessionAttributes);
         this.location = this.servletTestManager.getServletLocation();
@@ -134,8 +133,7 @@ public class DeviceLandingServletTest {
         PostMethod postMethod = new PostMethod(this.location);
 
         // expectations
-        expect(this.mockDeviceOperationService.finalize((HttpServletRequest) EasyMock.anyObject())).andStubReturn(
-                userId);
+        expect(this.mockDeviceOperationService.finalize((HttpServletRequest) EasyMock.anyObject())).andStubReturn(userId);
 
         // prepare
         replay(this.mockObjects);
@@ -152,7 +150,7 @@ public class DeviceLandingServletTest {
         LOG.debug("location: " + resultLocation);
         assertTrue(resultLocation.endsWith(this.devicesPage));
         DeviceOperationService deviceOperationService = (DeviceOperationService) this.servletTestManager
-                .getSessionAttribute(DeviceOperationService.DEVICE_OPERATION_SERVICE_ATTRIBUTE);
+                                                                                                        .getSessionAttribute(DeviceOperationService.DEVICE_OPERATION_SERVICE_ATTRIBUTE);
         assertNull(deviceOperationService);
     }
 }

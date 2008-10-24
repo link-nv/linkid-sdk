@@ -97,8 +97,7 @@ public class OSGIStartableBean implements OSGIStartable {
                 + "net.link.safeonline.osgi.plugin; version=1.0.0");
 
         // Autostart the fileinstall bundle, configured with the path to drop our plugin bundles into
-        configMap.put(AutoActivator.AUTO_START_PROP + ".1", "file://" + jbossHome
-                + "/osgi/autostart/org.apache.felix.fileinstall.jar");
+        configMap.put(AutoActivator.AUTO_START_PROP + ".1", "file://" + jbossHome + "/osgi/autostart/org.apache.felix.fileinstall.jar");
         configMap.put("felix.fileinstall.dir", jbossHome + "/osgi/plugins");
 
         // Explicitly specify the directory to use for caching bundles.
@@ -115,8 +114,7 @@ public class OSGIStartableBean implements OSGIStartable {
         try {
             EjbUtils.bindComponent(OSGIHostActivator.JNDI_PATH, hostActivator);
         } catch (NamingException e) {
-            throw new EJBException("Unable to bind OSGI Host activator to the JNDI tree: "
-                    + OSGIHostActivator.JNDI_PATH);
+            throw new EJBException("Unable to bind OSGI Host activator to the JNDI tree: " + OSGIHostActivator.JNDI_PATH);
         }
 
         // Now create an instance of the framework.
@@ -146,8 +144,7 @@ public class OSGIStartableBean implements OSGIStartable {
         try {
             hostActivator = (OSGIHostActivator) EjbUtils.getComponent(OSGIHostActivator.JNDI_PATH);
         } catch (NamingException e) {
-            throw new EJBException("Unable to find OSGI Host activator in the JNDI tree: "
-                    + OSGIHostActivator.JNDI_PATH);
+            throw new EJBException("Unable to find OSGI Host activator in the JNDI tree: " + OSGIHostActivator.JNDI_PATH);
         }
         return hostActivator.getPluginServices();
 
@@ -157,14 +154,12 @@ public class OSGIStartableBean implements OSGIStartable {
 
         Object[] services = getPluginServices();
         if (null == services)
-            throw new SafeOnlineResourceException(ResourceNameType.OSGI, ResourceLevelType.RESOURCE_UNAVAILABLE,
-                    serviceName);
+            throw new SafeOnlineResourceException(ResourceNameType.OSGI, ResourceLevelType.RESOURCE_UNAVAILABLE, serviceName);
 
         for (Object service : services) {
             if (service.getClass().getName().equals(serviceName))
                 return (PluginAttributeService) service;
         }
-        throw new SafeOnlineResourceException(ResourceNameType.OSGI, ResourceLevelType.RESOURCE_UNAVAILABLE,
-                serviceName);
+        throw new SafeOnlineResourceException(ResourceNameType.OSGI, ResourceLevelType.RESOURCE_UNAVAILABLE, serviceName);
     }
 }

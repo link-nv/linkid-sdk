@@ -42,14 +42,14 @@ public class DigipassStartableBean extends AbstractInitBean {
 
         configureNode();
 
-        AttributeTypeEntity digipassSNAttributeType = new AttributeTypeEntity(DigipassConstants.DIGIPASS_SN_ATTRIBUTE,
-                DatatypeType.STRING, true, false);
+        AttributeTypeEntity digipassSNAttributeType = new AttributeTypeEntity(DigipassConstants.DIGIPASS_SN_ATTRIBUTE, DatatypeType.STRING,
+                true, false);
         digipassSNAttributeType.setMultivalued(true);
         this.attributeTypes.add(digipassSNAttributeType);
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(digipassSNAttributeType, Locale.ENGLISH
-                .getLanguage(), "Digipass Serial number", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(digipassSNAttributeType, "nl",
-                "Digipass Serie nummer", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(digipassSNAttributeType, Locale.ENGLISH.getLanguage(),
+                "Digipass Serial number", null));
+        this.attributeTypeDescriptions
+                                      .add(new AttributeTypeDescriptionEntity(digipassSNAttributeType, "nl", "Digipass Serie nummer", null));
 
         AttributeTypeEntity digipassDeviceDisableAttributeType = new AttributeTypeEntity(
                 DigipassConstants.DIGIPASS_DEVICE_DISABLE_ATTRIBUTE, DatatypeType.BOOLEAN, false, false);
@@ -60,29 +60,27 @@ public class DigipassStartableBean extends AbstractInitBean {
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(digipassDeviceDisableAttributeType, "nl",
                 "Digipass Disable Attribuut", null));
 
-        AttributeTypeEntity digipassDeviceAttributeType = new AttributeTypeEntity(
-                DigipassConstants.DIGIPASS_DEVICE_ATTRIBUTE, DatatypeType.COMPOUNDED, true, false);
+        AttributeTypeEntity digipassDeviceAttributeType = new AttributeTypeEntity(DigipassConstants.DIGIPASS_DEVICE_ATTRIBUTE,
+                DatatypeType.COMPOUNDED, true, false);
         digipassDeviceAttributeType.setMultivalued(true);
         digipassDeviceAttributeType.addMember(digipassSNAttributeType, 0, true);
         digipassDeviceAttributeType.addMember(digipassDeviceDisableAttributeType, 1, true);
         this.attributeTypes.add(digipassDeviceAttributeType);
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(digipassDeviceAttributeType,
-                Locale.ENGLISH.getLanguage(), "Digipass", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(digipassDeviceAttributeType, "nl",
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(digipassDeviceAttributeType, Locale.ENGLISH.getLanguage(),
                 "Digipass", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(digipassDeviceAttributeType, "nl", "Digipass", null));
 
         X509Certificate certificate = (X509Certificate) DigipassKeyStoreUtils.getPrivateKeyEntry().getCertificate();
 
         ResourceBundle properties = ResourceBundle.getBundle("config");
         String nodeName = properties.getString("olas.node.name");
 
-        this.devices.add(new Device(DigipassConstants.DIGIPASS_DEVICE_ID, SafeOnlineConstants.DIGIPASS_DEVICE_CLASS,
-                nodeName, "/olas-digipass/auth", null, null, null, "/olas-digipass/device", certificate,
-                digipassDeviceAttributeType, digipassSNAttributeType, digipassDeviceDisableAttributeType));
-        this.deviceDescriptions
-                .add(new DeviceDescription(DigipassConstants.DIGIPASS_DEVICE_ID, "nl", "EBank Digipass"));
-        this.deviceDescriptions.add(new DeviceDescription(DigipassConstants.DIGIPASS_DEVICE_ID, Locale.ENGLISH
-                .getLanguage(), "EBank Digipass"));
+        this.devices.add(new Device(DigipassConstants.DIGIPASS_DEVICE_ID, SafeOnlineConstants.DIGIPASS_DEVICE_CLASS, nodeName,
+                "/olas-digipass/auth", null, null, null, "/olas-digipass/device", certificate, digipassDeviceAttributeType,
+                digipassSNAttributeType, digipassDeviceDisableAttributeType));
+        this.deviceDescriptions.add(new DeviceDescription(DigipassConstants.DIGIPASS_DEVICE_ID, "nl", "EBank Digipass"));
+        this.deviceDescriptions.add(new DeviceDescription(DigipassConstants.DIGIPASS_DEVICE_ID, Locale.ENGLISH.getLanguage(),
+                "EBank Digipass"));
         this.trustedCertificates.put(certificate, SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
     }
 
@@ -98,10 +96,9 @@ public class DigipassStartableBean extends AbstractInitBean {
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
         IdentityServiceClient identityServiceClient = new IdentityServiceClient();
 
-        this.node = new Node(nodeName, protocol, hostname, hostport, hostportssl, authIdentityServiceClient
-                .getCertificate(), identityServiceClient.getCertificate());
-        this.trustedCertificates.put(authIdentityServiceClient.getCertificate(),
-                SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
+        this.node = new Node(nodeName, protocol, hostname, hostport, hostportssl, authIdentityServiceClient.getCertificate(),
+                identityServiceClient.getCertificate());
+        this.trustedCertificates.put(authIdentityServiceClient.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
     }
 
     @Override

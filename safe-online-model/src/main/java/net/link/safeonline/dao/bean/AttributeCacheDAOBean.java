@@ -41,8 +41,7 @@ public class AttributeCacheDAOBean implements AttributeCacheDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                AttributeCacheEntity.QueryInterface.class);
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, AttributeCacheEntity.QueryInterface.class);
     }
 
     /**
@@ -59,10 +58,10 @@ public class AttributeCacheDAOBean implements AttributeCacheDAO {
      */
     public AttributeCacheEntity findAttribute(SubjectEntity subject, AttributeTypeEntity attributeType, long index) {
 
-        LOG.debug("find cached attribute for type  " + attributeType.getName() + " and subject " + subject.getUserId()
-                + " (index=" + index + ")");
-        AttributeCacheEntity attribute = this.entityManager.find(AttributeCacheEntity.class, new AttributePK(
-                attributeType, subject, index));
+        LOG.debug("find cached attribute for type  " + attributeType.getName() + " and subject " + subject.getUserId() + " (index=" + index
+                + ")");
+        AttributeCacheEntity attribute = this.entityManager
+                                                           .find(AttributeCacheEntity.class, new AttributePK(attributeType, subject, index));
         return attribute;
     }
 
@@ -76,8 +75,7 @@ public class AttributeCacheDAOBean implements AttributeCacheDAO {
             if (attributeType.isCompounded()) {
                 for (CompoundedAttributeTypeMemberEntity member : attributeType.getMembers()) {
                     AttributeTypeEntity memberAttributeType = member.getMember();
-                    AttributeCacheEntity memberAttribute = findAttribute(subject, memberAttributeType, attribute
-                            .getAttributeIndex());
+                    AttributeCacheEntity memberAttribute = findAttribute(subject, memberAttributeType, attribute.getAttributeIndex());
                     if (null != memberAttribute) {
                         this.entityManager.remove(memberAttribute);
                     }

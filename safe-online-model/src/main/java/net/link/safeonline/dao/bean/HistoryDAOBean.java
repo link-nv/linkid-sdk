@@ -47,13 +47,11 @@ public class HistoryDAOBean implements HistoryDAO {
     public void postConstructCallback() {
 
         this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, HistoryEntity.QueryInterface.class);
-        this.propertyQueryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                HistoryPropertyEntity.QueryInterface.class);
+        this.propertyQueryObject = QueryObjectFactory.createQueryObject(this.entityManager, HistoryPropertyEntity.QueryInterface.class);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public HistoryEntity addHistoryEntry(Date when, SubjectEntity subject, HistoryEventType event,
-            Map<String, String> properties) {
+    public HistoryEntity addHistoryEntry(Date when, SubjectEntity subject, HistoryEventType event, Map<String, String> properties) {
 
         LOG.debug("add history entry: " + when + "; subject: " + subject.getUserId() + "; event: " + event);
         HistoryEntity history = new HistoryEntity(when, subject, event);
@@ -61,8 +59,7 @@ public class HistoryDAOBean implements HistoryDAO {
         this.entityManager.refresh(history);
         if (null != properties) {
             for (Map.Entry<String, String> property : properties.entrySet()) {
-                HistoryPropertyEntity propertyEntity = new HistoryPropertyEntity(history, property.getKey(), property
-                        .getValue());
+                HistoryPropertyEntity propertyEntity = new HistoryPropertyEntity(history, property.getKey(), property.getValue());
                 /*
                  * Manage relationships
                  */
@@ -83,8 +80,7 @@ public class HistoryDAOBean implements HistoryDAO {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public HistoryEntity addHExceptionHistoryEntry(Date when, SubjectEntity subject, HistoryEventType event,
-            Map<String, String> properties) {
+    public HistoryEntity addHExceptionHistoryEntry(Date when, SubjectEntity subject, HistoryEventType event, Map<String, String> properties) {
 
         return addHistoryEntry(when, subject, event, properties);
     }

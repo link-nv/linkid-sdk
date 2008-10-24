@@ -27,7 +27,7 @@ import org.apache.commons.logging.LogFactory;
 @Configurable
 public class HelpdeskManagerBean implements HelpdeskManager {
 
-    private final static Log   LOG                   = LogFactory.getLog(HelpdeskManagerBean.class);
+    private final static Log   LOG                  = LogFactory.getLog(HelpdeskManagerBean.class);
 
     @Configurable(group = "Helpdesk", name = "Helpdesk event list size")
     private int                helpdeskContextLimit = 50;
@@ -52,7 +52,6 @@ public class HelpdeskManagerBean implements HelpdeskManager {
         this.helpdeskEventDAO.persist(helpdeskEventList);
         return context.getId();
     }
-
 
     /**
      * {@inheritDoc}

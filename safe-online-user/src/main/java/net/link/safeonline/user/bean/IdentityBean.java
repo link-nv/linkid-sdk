@@ -86,7 +86,7 @@ public class IdentityBean implements Identity {
     @Factory(ATTRIBUTE_LIST_NAME)
     @ErrorHandling( { @Error(exceptionClass = AttributeTypeNotFoundException.class, messageId = "errorAttributeTypeNotFoundSpecific") })
     public void attributeListFactory() throws AttributeTypeNotFoundException, PermissionDeniedException,
-            ApplicationIdentityNotFoundException {
+                                      ApplicationIdentityNotFoundException {
 
         LOG.debug("attributeListFactory");
         Locale viewLocale = getViewLocale();
@@ -115,8 +115,8 @@ public class IdentityBean implements Identity {
     }
 
     @RolesAllowed(UserConstants.USER_ROLE)
-    public String removeAttribute() throws AttributeTypeNotFoundException, PermissionDeniedException,
-            AttributeNotFoundException, ApplicationIdentityNotFoundException {
+    public String removeAttribute() throws AttributeTypeNotFoundException, PermissionDeniedException, AttributeNotFoundException,
+                                   ApplicationIdentityNotFoundException {
 
         LOG.debug("remove attribute: " + this.selectedAttribute);
         try {
@@ -124,8 +124,7 @@ public class IdentityBean implements Identity {
         } catch (PermissionDeniedException e) {
             String msg = "user not allowed to remove the attribute";
             LOG.error(msg);
-            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR,
-                    "errorUserNotAllowedToRemoveAttribute");
+            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorUserNotAllowedToRemoveAttribute");
             return null;
         }
         attributeListFactory();

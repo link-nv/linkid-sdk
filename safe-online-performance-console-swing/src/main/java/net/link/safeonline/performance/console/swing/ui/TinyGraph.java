@@ -32,15 +32,15 @@ import javax.swing.JPanel;
 /**
  * <h2>{@link TinyGraph}<br>
  * <sub>[in short] (TODO).</sub></h2>
- *
+ * 
  * <p>
  * [description / usage].
  * </p>
- *
+ * 
  * <p>
  * <i>Apr 2, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class TinyGraph extends JPanel {
@@ -108,8 +108,8 @@ public class TinyGraph extends JPanel {
             lastValue = value;
 
             g2.setPaint(new GradientPaint(0, 0, Color.decode("#FFF5F5"), 0, getHeight(), Color.decode("#F5FFF5")));
-            g2.fillPolygon(new int[] { lastX, lastX, currX, currX }, new int[] { getHeight(), getHeight() - lastY,
-                    getHeight() - currY, getHeight() }, 4);
+            g2.fillPolygon(new int[] { lastX, lastX, currX, currX }, new int[] { getHeight(), getHeight() - lastY, getHeight() - currY,
+                    getHeight() }, 4);
 
             g2.setPaint(getForeground());
             g2.drawLine(lastX, getHeight() - lastY, currX, getHeight() - currY);

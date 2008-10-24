@@ -92,11 +92,10 @@ public class AuthServletManager extends Observable {
 
         this.context.addFilter(AuthnResponseFilter.class, "/", Handler.DEFAULT);
 
-        FilterHolder authenticationFilterHoldder = this.context.addFilter(AuthnRequestFilter.class, "/",
-                Handler.DEFAULT);
+        FilterHolder authenticationFilterHoldder = this.context.addFilter(AuthnRequestFilter.class, "/", Handler.DEFAULT);
         Map<String, String> filterInitParameters = new HashMap<String, String>();
-        filterInitParameters.put("AuthenticationServiceUrl", "http://"
-                + ApplicationConsoleManager.getInstance().getLocation() + ":8080/olas-auth");
+        filterInitParameters.put("AuthenticationServiceUrl", "http://" + ApplicationConsoleManager.getInstance().getLocation()
+                + ":8080/olas-auth");
         filterInitParameters.put("ApplicationName", applicationName);
         filterInitParameters.put("AuthenticationProtocol", protocol);
         if (protocol.equals(AuthenticationProtocol.SAML2_BROWSER_POST.toString())) {

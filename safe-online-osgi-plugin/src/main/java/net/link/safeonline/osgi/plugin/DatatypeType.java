@@ -12,9 +12,8 @@ package net.link.safeonline.osgi.plugin;
  * <sub>Attibute Data types.</sub></h2>
  * 
  * <p>
- * Attribute Data types. Representing the available attribute data types. Used
- * by {@link Attribute}. The primitive property is to make a distinction
- * between a compound attribute and primitive attributes.
+ * Attribute Data types. Representing the available attribute data types. Used by {@link Attribute}. The primitive property is to make a
+ * distinction between a compound attribute and primitive attributes.
  * </p>
  * 
  * <p>
@@ -25,51 +24,56 @@ package net.link.safeonline.osgi.plugin;
  */
 public enum DatatypeType {
 
-	STRING("string", true), BOOLEAN("boolean", true), INTEGER("integer", true), DOUBLE(
-			"double", true), DATE("date", true), COMPOUNDED;
+    STRING("string", true),
+    BOOLEAN("boolean", true),
+    INTEGER("integer", true),
+    DOUBLE("double", true),
+    DATE("date", true),
+    COMPOUNDED;
 
-	private final String friendlyName;
+    private final String  friendlyName;
 
-	private final boolean primitive;
+    private final boolean primitive;
 
-	/**
-	 * Constructor
-	 */
-	private DatatypeType() {
 
-		this.friendlyName = this.name();
-		this.primitive = false;
-	}
+    /**
+     * Constructor
+     */
+    private DatatypeType() {
 
-	/**
-	 * Constructor
-	 * 
-	 * @param friendlyName
-	 * @param primitive
-	 */
-	private DatatypeType(String friendlyName, boolean primitive) {
+        this.friendlyName = this.name();
+        this.primitive = false;
+    }
 
-		this.friendlyName = friendlyName;
-		this.primitive = primitive;
-	}
+    /**
+     * Constructor
+     * 
+     * @param friendlyName
+     * @param primitive
+     */
+    private DatatypeType(String friendlyName, boolean primitive) {
 
-	/**
-	 * Returns the data type's friendly name.
-	 * 
-	 * @return friendly name
-	 */
-	public String getFriendlyName() {
+        this.friendlyName = friendlyName;
+        this.primitive = primitive;
+    }
 
-		return this.friendlyName;
-	}
+    /**
+     * Returns the data type's friendly name.
+     * 
+     * @return friendly name
+     */
+    public String getFriendlyName() {
 
-	/**
-	 * Returns whether this data type is primitive or compounded
-	 * 
-	 * @return true if primitive
-	 */
-	public boolean isPrimitive() {
+        return this.friendlyName;
+    }
 
-		return this.primitive;
-	}
+    /**
+     * Returns whether this data type is primitive or compounded
+     * 
+     * @return true if primitive
+     */
+    public boolean isPrimitive() {
+
+        return this.primitive;
+    }
 }

@@ -11,13 +11,13 @@ import junit.framework.TestCase;
 import net.lin_k.safe_online.notification.subscription.manager.NotificationSubscriptionManagerService;
 import net.link.safeonline.notification.subscription.manager.ws.NotificationSubscriptionManagerServiceFactory;
 
-
 public class NotificationSubscriptionManagerServiceFactoryTest extends TestCase {
 
     public void testNewInstance() throws Exception {
 
         // operate
-        NotificationSubscriptionManagerService result = NotificationSubscriptionManagerServiceFactory.newInstance();
+        NotificationSubscriptionManagerService result = NotificationSubscriptionManagerServiceFactory
+                .newInstance();
 
         // verify
         assertNotNull(result);

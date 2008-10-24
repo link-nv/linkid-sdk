@@ -33,7 +33,7 @@ public interface Registration {
      * Actions.
      */
     String register() throws PermissionDeniedException, SubjectNotFoundException, ArgumentIntegrityException,
-            AttributeTypeNotFoundException;
+                     AttributeTypeNotFoundException;
 
     /*
      * Factories

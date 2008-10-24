@@ -32,11 +32,10 @@ public interface Application {
 
     void newIdentityAttributesFactory();
 
-    void identityAttributesFactory() throws ApplicationNotFoundException, ApplicationIdentityNotFoundException,
-            PermissionDeniedException;
+    void identityAttributesFactory() throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException;
 
-    void applicationIdentityAttributesFactory() throws ApplicationNotFoundException,
-            ApplicationIdentityNotFoundException, PermissionDeniedException;
+    void applicationIdentityAttributesFactory() throws ApplicationNotFoundException, ApplicationIdentityNotFoundException,
+                                               PermissionDeniedException;
 
     List<SelectItem> availableApplicationOwnersFactory();
 
@@ -123,8 +122,8 @@ public interface Application {
 
     String removeApplication() throws ApplicationNotFoundException;
 
-    String save() throws CertificateEncodingException, ApplicationNotFoundException, IOException,
-            ApplicationIdentityNotFoundException, AttributeTypeNotFoundException, PermissionDeniedException;
+    String save() throws CertificateEncodingException, ApplicationNotFoundException, IOException, ApplicationIdentityNotFoundException,
+                 AttributeTypeNotFoundException, PermissionDeniedException;
 
     String view();
 

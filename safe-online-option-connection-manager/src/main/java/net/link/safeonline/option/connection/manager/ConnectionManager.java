@@ -33,12 +33,10 @@ public class ConnectionManager extends JFrame {
         this.setSize(380, 250);
         this.setLocation(50, 50);
         setVisible(true);
-        
+
         try {
-            String port = JOptionPane.showInputDialog(this,
-                    "The serial port of your Option device:",
-                    "Serial port for Option Device.", JOptionPane.QUESTION_MESSAGE, null, null,
-                    "/dev/tty.GTM HSDPA Control").toString();
+            String port = JOptionPane.showInputDialog(this, "The serial port of your Option device:", "Serial port for Option Device.",
+                    JOptionPane.QUESTION_MESSAGE, null, null, "/dev/tty.GTM HSDPA Control").toString();
             this.connectionManagerController = new ConnectionManagerController(port);
         } catch (Exception e) {
             this.add(new JLabel("Exception occurred"));

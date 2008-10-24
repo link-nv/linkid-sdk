@@ -9,9 +9,9 @@ package net.link.safeonline;
 
 /**
  * Components implementing this interface can be scheduled by the task scheduler
- *
+ * 
  * @author dhouthoo
- *
+ * 
  */
 public interface Task {
 
@@ -20,7 +20,7 @@ public interface Task {
 
     /**
      * Return a name by which the task can be identified
-     *
+     * 
      */
     String getName();
 

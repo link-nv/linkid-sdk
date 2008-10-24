@@ -53,8 +53,8 @@ public class DeviceOperationResponseFactoryTest {
 
         // operate
         long begin = System.currentTimeMillis();
-        String result = DeviceOperationResponseFactory.createDeviceOperationResponse(inResponseTo, deviceOperation,
-                issuerName, subjectName, device, signerKeyPair, validity, target);
+        String result = DeviceOperationResponseFactory.createDeviceOperationResponse(inResponseTo, deviceOperation, issuerName,
+                subjectName, device, signerKeyPair, validity, target);
         long end = System.currentTimeMillis();
 
         // verify
@@ -69,8 +69,8 @@ public class DeviceOperationResponseFactoryTest {
         Document resultDocument = DomTestUtils.parseDocument(result);
 
         Element nsElement = createNsElement(resultDocument);
-        Element deviceOperationResponseElement = (Element) XPathAPI.selectSingleNode(resultDocument, "/"
-                + SAMLConstants.SAML20P_PREFIX + ":" + DeviceOperationResponse.DEFAULT_ELEMENT_LOCAL_NAME, nsElement);
+        Element deviceOperationResponseElement = (Element) XPathAPI.selectSingleNode(resultDocument, "/" + SAMLConstants.SAML20P_PREFIX
+                + ":" + DeviceOperationResponse.DEFAULT_ELEMENT_LOCAL_NAME, nsElement);
         assertNotNull(deviceOperationResponseElement);
 
         Node inResponseToNode = XPathAPI.selectSingleNode(resultDocument, "/" + SAMLConstants.SAML20P_PREFIX + ":"
@@ -79,20 +79,18 @@ public class DeviceOperationResponseFactoryTest {
         assertEquals(inResponseTo, inResponseToNode.getTextContent());
 
         Node issuerNode = XPathAPI.selectSingleNode(resultDocument, "/" + SAMLConstants.SAML20P_PREFIX + ":"
-                + DeviceOperationResponse.DEFAULT_ELEMENT_LOCAL_NAME + "/" + SAMLConstants.SAML20_PREFIX + ":Issuer",
-                nsElement);
+                + DeviceOperationResponse.DEFAULT_ELEMENT_LOCAL_NAME + "/" + SAMLConstants.SAML20_PREFIX + ":Issuer", nsElement);
         assertNotNull(issuerNode);
         assertEquals(issuerName, issuerNode.getTextContent());
 
         Node deviceOperationNode = XPathAPI.selectSingleNode(resultDocument, "/" + SAMLConstants.SAML20P_PREFIX + ":"
-                + DeviceOperationResponse.DEFAULT_ELEMENT_LOCAL_NAME + "/@ "
-                + DeviceOperationResponse.DEVICE_OPERATION_ATTRIB_NAME, nsElement);
+                + DeviceOperationResponse.DEFAULT_ELEMENT_LOCAL_NAME + "/@ " + DeviceOperationResponse.DEVICE_OPERATION_ATTRIB_NAME,
+                nsElement);
         assertNotNull(deviceOperationNode);
         assertEquals(deviceOperation.name(), deviceOperationNode.getTextContent());
 
         Node deviceNode = XPathAPI.selectSingleNode(resultDocument, "/" + SAMLConstants.SAML20P_PREFIX + ":"
-                + DeviceOperationResponse.DEFAULT_ELEMENT_LOCAL_NAME + "/@ "
-                + DeviceOperationResponse.DEVICE_ATTRIB_NAME, nsElement);
+                + DeviceOperationResponse.DEFAULT_ELEMENT_LOCAL_NAME + "/@ " + DeviceOperationResponse.DEVICE_ATTRIB_NAME, nsElement);
         assertNotNull(deviceNode);
         assertEquals(device, deviceNode.getTextContent());
 
@@ -103,14 +101,11 @@ public class DeviceOperationResponseFactoryTest {
         assertEquals(StatusCode.SUCCESS_URI, statusNode.getTextContent());
 
         // verify signature
-        NodeList signatureNodeList = resultDocument.getElementsByTagNameNS(javax.xml.crypto.dsig.XMLSignature.XMLNS,
-                "Signature");
+        NodeList signatureNodeList = resultDocument.getElementsByTagNameNS(javax.xml.crypto.dsig.XMLSignature.XMLNS, "Signature");
         assertEquals(1, signatureNodeList.getLength());
 
-        DOMValidateContext validateContext = new DOMValidateContext(signerKeyPair.getPublic(), signatureNodeList
-                .item(0));
-        XMLSignatureFactory signatureFactory = XMLSignatureFactory.getInstance("DOM",
-                new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
+        DOMValidateContext validateContext = new DOMValidateContext(signerKeyPair.getPublic(), signatureNodeList.item(0));
+        XMLSignatureFactory signatureFactory = XMLSignatureFactory.getInstance("DOM", new org.jcp.xml.dsig.internal.dom.XMLDSigRI());
 
         XMLSignature signature = signatureFactory.unmarshalXMLSignature(validateContext);
         boolean resultValidity = signature.validate(validateContext);
@@ -126,10 +121,8 @@ public class DeviceOperationResponseFactoryTest {
     private Element createNsElement(Document document) {
 
         Element nsElement = document.createElement("nsElement");
-        nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:" + SAMLConstants.SAML20P_PREFIX,
-                SAMLConstants.SAML20P_NS);
-        nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:" + SAMLConstants.SAML20_PREFIX,
-                SAMLConstants.SAML20_NS);
+        nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:" + SAMLConstants.SAML20P_PREFIX, SAMLConstants.SAML20P_NS);
+        nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:" + SAMLConstants.SAML20_PREFIX, SAMLConstants.SAML20_NS);
         return nsElement;
     }
 

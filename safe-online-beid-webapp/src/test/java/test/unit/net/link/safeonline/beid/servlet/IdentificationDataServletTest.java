@@ -63,12 +63,10 @@ public class IdentificationDataServletTest {
         LOG.debug("status code: " + statusCode);
         assertEquals(HttpServletResponse.SC_OK, statusCode);
 
-        String sessionStreet = (String) this.servletTestManager
-                .getSessionAttribute(IdentificationDataServlet.STREET_SESSION_ATTRIBUTE);
+        String sessionStreet = (String) this.servletTestManager.getSessionAttribute(IdentificationDataServlet.STREET_SESSION_ATTRIBUTE);
         LOG.debug("session street: " + sessionStreet);
         assertEquals("test", sessionStreet);
-        String sessionHouseNr = (String) this.servletTestManager
-                .getSessionAttribute(IdentificationDataServlet.HOUSE_NR_SESSION_ATTRIBUTE);
+        String sessionHouseNr = (String) this.servletTestManager.getSessionAttribute(IdentificationDataServlet.HOUSE_NR_SESSION_ATTRIBUTE);
         assertEquals("1234 /1", sessionHouseNr);
     }
 }

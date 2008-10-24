@@ -23,9 +23,8 @@ public interface SubjectIdentifierDAO {
     SubjectEntity findSubject(String domain, String subjectIdentifier);
 
     /**
-     * Removes subject identifiers within the given domain for the given user that have a different identifier than the
-     * given identifier.
-     *
+     * Removes subject identifiers within the given domain for the given user that have a different identifier than the given identifier.
+     * 
      * @param domain
      * @param identifier
      * @param subject
@@ -34,14 +33,14 @@ public interface SubjectIdentifierDAO {
 
     /**
      * Removes all the subject identifiers for the given subject.
-     *
+     * 
      * @param subject
      */
     void removeSubjectIdentifiers(SubjectEntity subject);
 
     /**
      * Remove specified subject identifier.
-     *
+     * 
      * @param domain
      * @param identifier
      */
@@ -49,7 +48,7 @@ public interface SubjectIdentifierDAO {
 
     /**
      * Returns list of subject identifiers for the given subject.
-     *
+     * 
      * @param subject
      */
     List<SubjectIdentifierEntity> getSubjectIdentifiers(SubjectEntity subject);

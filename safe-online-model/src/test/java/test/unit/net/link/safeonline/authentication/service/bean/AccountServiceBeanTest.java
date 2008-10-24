@@ -52,30 +52,28 @@ public class AccountServiceBeanTest extends TestCase {
 
         final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
         final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate",
-                new MBeanActionHandler() {
+        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
 
-                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
+            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-                        return authCertificate;
-                    }
-                });
+                return authCertificate;
+            }
+        });
 
         jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
         final KeyPair keyPair = PkiTestUtils.generateKeyPair();
         final X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
-                new MBeanActionHandler() {
+        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
 
-                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
+            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-                        return certificate;
-                    }
-                });
+                return certificate;
+            }
+        });
 
-        SystemInitializationStartableBean systemInit = EJBTestUtils.newInstance(
-                SystemInitializationStartableBean.class, SafeOnlineTestContainer.sessionBeans, entityManager);
+        SystemInitializationStartableBean systemInit = EJBTestUtils.newInstance(SystemInitializationStartableBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager);
         systemInit.postStart();
         this.entityTestManager.refreshEntityManager();
     }
@@ -104,8 +102,8 @@ public class AccountServiceBeanTest extends TestCase {
         SubjectEntity resultSubject = userRegistrationService.registerUser(testLogin);
         passwordDeviceService.register(resultSubject, testPassword);
 
-        AccountService accountService = EJBTestUtils.newInstance(AccountServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, testLogin, SafeOnlineRoles.USER_ROLE);
+        AccountService accountService = EJBTestUtils.newInstance(AccountServiceBean.class, SafeOnlineTestContainer.sessionBeans,
+                entityManager, testLogin, SafeOnlineRoles.USER_ROLE);
         accountService.removeAccount(resultSubject.getUserId());
     }
 }

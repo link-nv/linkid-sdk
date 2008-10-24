@@ -37,11 +37,11 @@ import com.jgoodies.looks.Options;
 /**
  * <h2>{@link ChartWindow}<br>
  * <sub>A window that displays charts.</sub></h2>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ChartWindow extends WindowAdapter {
@@ -68,8 +68,8 @@ public class ChartWindow extends WindowAdapter {
 
     private void addTab(ConsoleAgent agent, ScenarioExecution scenarioExecution) {
 
-        String tabTitle = String.format("%s (%d worker%s)", agent.getAddress().toString(), scenarioExecution
-                .getWorkers(), scenarioExecution.getWorkers() > 1? "s": "");
+        String tabTitle = String.format("%s (%d worker%s)", agent.getAddress().toString(), scenarioExecution.getWorkers(),
+                scenarioExecution.getWorkers() > 1? "s": "");
 
         AgentCharts agentCharts = new AgentCharts(scenarioExecution);
         JScrollPane scrollPane = new JScrollPane(agentCharts);
@@ -129,16 +129,15 @@ public class ChartWindow extends WindowAdapter {
             builder.append(header);
             JLabel label;
 
-            header.add(label = new JLabel(String.format("[%s] %d worker%s x %d agent%s", execution.getHostname(),
-                    execution.getWorkers(), execution.getWorkers() > 1? "s": "", execution.getAgents(), execution
-                            .getAgents() > 1? "s": "")));
+            header.add(label = new JLabel(String.format("[%s] %d worker%s x %d agent%s", execution.getHostname(), execution.getWorkers(),
+                    execution.getWorkers() > 1? "s": "", execution.getAgents(), execution.getAgents() > 1? "s": "")));
             label.setFont(label.getFont().deriveFont(30f));
 
             header.add(label = new JLabel(String.format("Scenario: %s            ", execution.getScenarioName())));
             label.setFont(label.getFont().deriveFont(20f));
 
-            header.add(label = new JLabel(execution.getSpeed() == null? "N/A": String.format(
-                    "Average Speed: %.2f scenarios/s", execution.getSpeed())));
+            header.add(label = new JLabel(execution.getSpeed() == null? "N/A": String.format("Average Speed: %.2f scenarios/s",
+                    execution.getSpeed())));
             label.setFont(label.getFont().deriveFont(20f));
 
             header.add(label = new JLabel(String.format("Duration: %.2f minutes  ", execution.getDuration() / 60000f)));

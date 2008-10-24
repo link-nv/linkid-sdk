@@ -25,8 +25,7 @@ import org.jboss.security.SimplePrincipal;
 
 
 /**
- * Tomcat Login Valve. This valve will set the Tomcat servlet container user principal based on a HTTP session context
- * attribute.
+ * Tomcat Login Valve. This valve will set the Tomcat servlet container user principal based on a HTTP session context attribute.
  * 
  * @author fcorneli
  * 

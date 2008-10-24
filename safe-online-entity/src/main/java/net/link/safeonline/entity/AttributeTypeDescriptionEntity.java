@@ -59,8 +59,7 @@ public class AttributeTypeDescriptionEntity implements Serializable {
         // empty
     }
 
-    public AttributeTypeDescriptionEntity(AttributeTypeEntity attributeType, String language, String name,
-            String description) {
+    public AttributeTypeDescriptionEntity(AttributeTypeEntity attributeType, String language, String name, String description) {
 
         this.pk = new AttributeTypeDescriptionPK(attributeType.getName(), language);
         this.attributeType = attributeType;
@@ -76,8 +75,7 @@ public class AttributeTypeDescriptionEntity implements Serializable {
 
 
     @EmbeddedId
-    @AttributeOverrides( {
-            @AttributeOverride(name = "attributeType", column = @Column(name = ATTRIBUTE_TYPE_COLUMN_NAME)),
+    @AttributeOverrides( { @AttributeOverride(name = "attributeType", column = @Column(name = ATTRIBUTE_TYPE_COLUMN_NAME)),
             @AttributeOverride(name = "language", column = @Column(name = LANGUAGE_COLUMN_NAME)) })
     public AttributeTypeDescriptionPK getPk() {
 
@@ -161,15 +159,13 @@ public class AttributeTypeDescriptionEntity implements Serializable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("pk", this.pk).append("name", this.name).append("description",
-                this.description).toString();
+        return new ToStringBuilder(this).append("pk", this.pk).append("name", this.name).append("description", this.description).toString();
     }
 
 
     public interface QueryInterface {
 
         @QueryMethod(QUERY_WHERE_ATTRIBUTE_TYPE)
-        List<AttributeTypeDescriptionEntity> listDescriptions(
-                @QueryParam("attributeType") AttributeTypeEntity attributeType);
+        List<AttributeTypeDescriptionEntity> listDescriptions(@QueryParam("attributeType") AttributeTypeEntity attributeType);
     }
 }

@@ -17,26 +17,30 @@ import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
 /**
  * Validator for PKI.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Local
 public interface PkiValidator {
 
     public enum PkiResult {
-        REVOKED, SUSPENDED, EXPIRED, INVALID, VALID, NOT_YET_VALID
+        REVOKED,
+        SUSPENDED,
+        EXPIRED,
+        INVALID,
+        VALID,
+        NOT_YET_VALID
     }
 
 
     /**
      * Validates the given X509 certificate using the trust points (and policy) defined within a certain trust domain.
-     *
+     * 
      * @param trustDomainName
      * @param certificate
      */
     PkiResult validateCertificate(TrustDomainEntity trustDomain, X509Certificate certificate);
 
-    PkiResult validateCertificate(String trustDomainName, X509Certificate certificate)
-            throws TrustDomainNotFoundException;
+    PkiResult validateCertificate(String trustDomainName, X509Certificate certificate) throws TrustDomainNotFoundException;
 }

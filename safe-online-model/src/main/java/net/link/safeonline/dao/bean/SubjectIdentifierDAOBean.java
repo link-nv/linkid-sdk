@@ -39,15 +39,13 @@ public class SubjectIdentifierDAOBean implements SubjectIdentifierDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                SubjectIdentifierEntity.QueryInterface.class);
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, SubjectIdentifierEntity.QueryInterface.class);
     }
 
     public void addSubjectIdentifier(String domain, String subjectIdentifier, SubjectEntity subject) {
 
         LOG.debug("add subject identifier");
-        SubjectIdentifierEntity subjectIdentifierEntity = new SubjectIdentifierEntity(domain, subjectIdentifier,
-                subject);
+        SubjectIdentifierEntity subjectIdentifierEntity = new SubjectIdentifierEntity(domain, subjectIdentifier, subject);
         this.entityManager.persist(subjectIdentifierEntity);
     }
 

@@ -128,10 +128,9 @@ public class DemoStartableBean extends AbstractInitBean {
         PrivateKeyEntry demoPrivateKeyEntry = DemoKeyStoreUtil.getPrivateKeyEntry();
         X509Certificate demoCertificate = (X509Certificate) demoPrivateKeyEntry.getCertificate();
         try {
-            this.registeredApplications.add(new Application(DEMO_APPLICATION_NAME, "owner", null, new URL(
-                    this.protocol, this.hostname, this.hostport, "/" + this.demoAppWebappName), getLogo(), null, true,
-                    true, demoCertificate, false, IdScopeType.USER, true, new URL(this.sslProtocol, this.hostname,
-                            this.hostportssl, "/" + this.demoAppWebappName + "/logout")));
+            this.registeredApplications.add(new Application(DEMO_APPLICATION_NAME, "owner", null, new URL(this.protocol, this.hostname,
+                    this.hostport, "/" + this.demoAppWebappName), getLogo(), null, true, true, demoCertificate, false, IdScopeType.USER,
+                    true, new URL(this.sslProtocol, this.hostname, this.hostportssl, "/" + this.demoAppWebappName + "/logout")));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
         }
@@ -170,10 +169,10 @@ public class DemoStartableBean extends AbstractInitBean {
          */
         this.trustedCertificates.put(demoMandateCertificate, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
         try {
-            this.registeredApplications.add(new Application(DEMO_MANDATE_APPLICATION_NAME, "owner", null, new URL(
-                    this.protocol, this.hostname, this.hostport, "/" + this.demoMandateWebappName), getLogo(), null,
-                    true, true, demoMandateCertificate, true, IdScopeType.APPLICATION, true, new URL(this.sslProtocol,
-                            this.hostname, this.hostportssl, "/" + this.demoMandateWebappName + "/authlogout")));
+            this.registeredApplications.add(new Application(DEMO_MANDATE_APPLICATION_NAME, "owner", null, new URL(this.protocol,
+                    this.hostname, this.hostport, "/" + this.demoMandateWebappName), getLogo(), null, true, true, demoMandateCertificate,
+                    true, IdScopeType.APPLICATION, true, new URL(this.sslProtocol, this.hostname, this.hostportssl, "/"
+                            + this.demoMandateWebappName + "/authlogout")));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
         }
@@ -181,59 +180,49 @@ public class DemoStartableBean extends AbstractInitBean {
         /*
          * Subscribe the demo users to the mandate demo application.
          */
-        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "fcorneli",
-                DEMO_MANDATE_APPLICATION_NAME));
-        this.subscriptions
-                .add(new Subscription(SubscriptionOwnerType.SUBJECT, "dieter", DEMO_MANDATE_APPLICATION_NAME));
+        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "fcorneli", DEMO_MANDATE_APPLICATION_NAME));
+        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "dieter", DEMO_MANDATE_APPLICATION_NAME));
         this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "mario", DEMO_MANDATE_APPLICATION_NAME));
-        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "wvdhaute",
-                DEMO_MANDATE_APPLICATION_NAME));
-        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "mbillemo",
-                DEMO_MANDATE_APPLICATION_NAME));
+        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "wvdhaute", DEMO_MANDATE_APPLICATION_NAME));
+        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "mbillemo", DEMO_MANDATE_APPLICATION_NAME));
 
         /*
          * Register mandate attribute type
          */
-        AttributeTypeEntity mandateCompanyAttributeType = configDemoAttribute(
-                DemoConstants.MANDATE_COMPANY_ATTRIBUTE_NAME, DatatypeType.STRING, true, null, "Company", "Bedrijf",
-                true, false);
+        AttributeTypeEntity mandateCompanyAttributeType = configDemoAttribute(DemoConstants.MANDATE_COMPANY_ATTRIBUTE_NAME,
+                DatatypeType.STRING, true, null, "Company", "Bedrijf", true, false);
         AttributeTypeEntity mandateTitleAttributeType = configDemoAttribute(DemoConstants.MANDATE_TITLE_ATTRIBUTE_NAME,
                 DatatypeType.STRING, true, null, "Title", "Titel", true, false);
 
-        AttributeTypeEntity mandateAttributeType = new AttributeTypeEntity(DemoConstants.MANDATE_ATTRIBUTE_NAME,
-                DatatypeType.COMPOUNDED, true, false);
+        AttributeTypeEntity mandateAttributeType = new AttributeTypeEntity(DemoConstants.MANDATE_ATTRIBUTE_NAME, DatatypeType.COMPOUNDED,
+                true, false);
         mandateAttributeType.setMultivalued(true);
         mandateAttributeType.addMember(mandateCompanyAttributeType, 0, true);
         mandateAttributeType.addMember(mandateTitleAttributeType, 1, true);
         this.attributeTypes.add(mandateAttributeType);
 
         AttributeProviderEntity attributeProvider = new AttributeProviderEntity();
-        attributeProvider.setPk(new AttributeProviderPK(DEMO_MANDATE_APPLICATION_NAME,
-                DemoConstants.MANDATE_ATTRIBUTE_NAME));
+        attributeProvider.setPk(new AttributeProviderPK(DEMO_MANDATE_APPLICATION_NAME, DemoConstants.MANDATE_ATTRIBUTE_NAME));
         this.attributeProviders.add(attributeProvider);
 
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(mandateAttributeType, Locale.ENGLISH
-                .getLanguage(), "Mandate", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(mandateAttributeType, "nl", "Mandaat",
-                null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(mandateAttributeType, Locale.ENGLISH.getLanguage(),
+                "Mandate", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(mandateAttributeType, "nl", "Mandaat", null));
 
         /*
          * Application Identities
          */
-        this.identities.add(new Identity(DEMO_MANDATE_APPLICATION_NAME,
-                new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME,
-                        true, false) }));
+        this.identities.add(new Identity(DEMO_MANDATE_APPLICATION_NAME, new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
+                DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, true, false) }));
 
         /*
          * Application usage agreements
          */
         UsageAgreement usageAgreement = new UsageAgreement(DEMO_MANDATE_APPLICATION_NAME);
-        usageAgreement.addUsageAgreementText(new UsageAgreementText(Locale.ENGLISH.getLanguage(), "English" + "\n\n"
-                + "Lin-k NV" + "\n" + "Software License Agreement for " + DEMO_MANDATE_APPLICATION_NAME + "\n\n"
-                + LICENSE_AGREEMENT_CONFIRM_TEXT_EN));
+        usageAgreement.addUsageAgreementText(new UsageAgreementText(Locale.ENGLISH.getLanguage(), "English" + "\n\n" + "Lin-k NV" + "\n"
+                + "Software License Agreement for " + DEMO_MANDATE_APPLICATION_NAME + "\n\n" + LICENSE_AGREEMENT_CONFIRM_TEXT_EN));
         usageAgreement.addUsageAgreementText(new UsageAgreementText("nl", "Nederlands" + "\n\n" + "Lin-k NV" + "\n"
-                + "Software Gebruikers Overeenkomst voor " + DEMO_MANDATE_APPLICATION_NAME + "\n\n"
-                + LICENSE_AGREEMENT_CONFIRM_TEXT_NL));
+                + "Software Gebruikers Overeenkomst voor " + DEMO_MANDATE_APPLICATION_NAME + "\n\n" + LICENSE_AGREEMENT_CONFIRM_TEXT_NL));
         this.usageAgreements.add(usageAgreement);
 
         /*
@@ -242,8 +231,7 @@ public class DemoStartableBean extends AbstractInitBean {
         String mandateAdmin = "mandate-admin";
         this.authorizedUsers.put(mandateAdmin, new AuthenticationDevice("secret", null, null));
 
-        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, mandateAdmin,
-                DEMO_MANDATE_APPLICATION_NAME));
+        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, mandateAdmin, DEMO_MANDATE_APPLICATION_NAME));
         this.subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, mandateAdmin,
                 SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
 
@@ -261,11 +249,10 @@ public class DemoStartableBean extends AbstractInitBean {
 
         this.trustedCertificates.put(demoTicketCertificate, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
         try {
-            this.registeredApplications.add(new Application(DEMO_TICKET_APPLICATION_NAME, "owner", null, new URL(
-                    this.protocol, this.hostname, this.hostport, "/" + this.demoTicketWebappName),
-                    getLogo("/eticket-small.png"), null, true, true, demoTicketCertificate, false,
-                    IdScopeType.SUBSCRIPTION, true, new URL(this.sslProtocol, this.hostname, this.hostportssl, "/"
-                            + this.demoTicketWebappName + "/logout")));
+            this.registeredApplications.add(new Application(DEMO_TICKET_APPLICATION_NAME, "owner", null, new URL(this.protocol,
+                    this.hostname, this.hostport, "/" + this.demoTicketWebappName), getLogo("/eticket-small.png"), null, true, true,
+                    demoTicketCertificate, false, IdScopeType.SUBSCRIPTION, true, new URL(this.sslProtocol, this.hostname,
+                            this.hostportssl, "/" + this.demoTicketWebappName + "/logout")));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
         }
@@ -283,12 +270,10 @@ public class DemoStartableBean extends AbstractInitBean {
          * Application usage agreements
          */
         UsageAgreement usageAgreement = new UsageAgreement(DEMO_TICKET_APPLICATION_NAME);
-        usageAgreement.addUsageAgreementText(new UsageAgreementText(Locale.ENGLISH.getLanguage(), "English" + "\n\n"
-                + "Lin-k NV" + "\n" + "Software License Agreement for " + DEMO_TICKET_APPLICATION_NAME + "\n\n"
-                + LICENSE_AGREEMENT_CONFIRM_TEXT_EN));
+        usageAgreement.addUsageAgreementText(new UsageAgreementText(Locale.ENGLISH.getLanguage(), "English" + "\n\n" + "Lin-k NV" + "\n"
+                + "Software License Agreement for " + DEMO_TICKET_APPLICATION_NAME + "\n\n" + LICENSE_AGREEMENT_CONFIRM_TEXT_EN));
         usageAgreement.addUsageAgreementText(new UsageAgreementText("nl", "Nederlands" + "\n\n" + "Lin-k NV" + "\n"
-                + "Software Gebruikers Overeenkomst voor " + DEMO_TICKET_APPLICATION_NAME + "\n\n"
-                + LICENSE_AGREEMENT_CONFIRM_TEXT_NL));
+                + "Software Gebruikers Overeenkomst voor " + DEMO_TICKET_APPLICATION_NAME + "\n\n" + LICENSE_AGREEMENT_CONFIRM_TEXT_NL));
         this.usageAgreements.add(usageAgreement);
 
         /*
@@ -304,18 +289,16 @@ public class DemoStartableBean extends AbstractInitBean {
 
         this.trustedCertificates.put(demoBankCertificate, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
         try {
-            this.registeredApplications.add(new Application(DEMO_BANK_APPLICATION_NAME, "owner", null, new URL(
-                    this.protocol, this.hostname, this.hostport, "/" + this.demoBankWebappName),
-                    getLogo("/ebank-small.png"), null, true, true, demoBankCertificate, false,
-                    IdScopeType.SUBSCRIPTION, true, new URL(this.sslProtocol, this.hostname, this.hostportssl, "/"
-                            + this.demoBankWebappName + "/logout")));
+            this.registeredApplications.add(new Application(DEMO_BANK_APPLICATION_NAME, "owner", null, new URL(this.protocol,
+                    this.hostname, this.hostport, "/" + this.demoBankWebappName), getLogo("/ebank-small.png"), null, true, true,
+                    demoBankCertificate, false, IdScopeType.SUBSCRIPTION, true, new URL(this.sslProtocol, this.hostname, this.hostportssl,
+                            "/" + this.demoBankWebappName + "/logout")));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
         }
 
-        this.identities.add(new Identity(DEMO_BANK_APPLICATION_NAME,
-                new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME,
-                        true, false) }));
+        this.identities.add(new Identity(DEMO_BANK_APPLICATION_NAME, new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
+                DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, true, false) }));
 
         List<String> tempAllowedDevices = new LinkedList<String>();
         tempAllowedDevices.add(BeIdConstants.BEID_DEVICE_ID);
@@ -327,12 +310,10 @@ public class DemoStartableBean extends AbstractInitBean {
          * Application usage agreements
          */
         UsageAgreement usageAgreement = new UsageAgreement(DEMO_BANK_APPLICATION_NAME);
-        usageAgreement.addUsageAgreementText(new UsageAgreementText(Locale.ENGLISH.getLanguage(), "English" + "\n\n"
-                + "Lin-k NV" + "\n" + "Software License Agreement for " + DEMO_BANK_APPLICATION_NAME + "\n\n"
-                + LICENSE_AGREEMENT_CONFIRM_TEXT_EN));
+        usageAgreement.addUsageAgreementText(new UsageAgreementText(Locale.ENGLISH.getLanguage(), "English" + "\n\n" + "Lin-k NV" + "\n"
+                + "Software License Agreement for " + DEMO_BANK_APPLICATION_NAME + "\n\n" + LICENSE_AGREEMENT_CONFIRM_TEXT_EN));
         usageAgreement.addUsageAgreementText(new UsageAgreementText("nl", "Nederlands" + "\n\n" + "Lin-k NV" + "\n"
-                + "Software Gebruikers Overeenkomst voor " + DEMO_BANK_APPLICATION_NAME + "\n\n"
-                + LICENSE_AGREEMENT_CONFIRM_TEXT_NL));
+                + "Software Gebruikers Overeenkomst voor " + DEMO_BANK_APPLICATION_NAME + "\n\n" + LICENSE_AGREEMENT_CONFIRM_TEXT_NL));
         this.usageAgreements.add(usageAgreement);
 
         /*
@@ -348,11 +329,10 @@ public class DemoStartableBean extends AbstractInitBean {
 
         this.trustedCertificates.put(demoCinemaCertificate, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
         try {
-            this.registeredApplications.add(new Application(DEMO_CINEMA_APPLICATION_NAME, "owner", null, new URL(
-                    this.protocol, this.hostname, this.hostport, "/" + this.demoCinemaWebappName),
-                    getLogo("/cinema.png"), null, true, true, demoCinemaCertificate, false, IdScopeType.SUBSCRIPTION,
-                    true, new URL(this.sslProtocol, this.hostname, this.hostportssl, "/" + this.demoCinemaWebappName
-                            + "/logout")));
+            this.registeredApplications.add(new Application(DEMO_CINEMA_APPLICATION_NAME, "owner", null, new URL(this.protocol,
+                    this.hostname, this.hostport, "/" + this.demoCinemaWebappName), getLogo("/cinema.png"), null, true, true,
+                    demoCinemaCertificate, false, IdScopeType.SUBSCRIPTION, true, new URL(this.sslProtocol, this.hostname,
+                            this.hostportssl, "/" + this.demoCinemaWebappName + "/logout")));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
         }
@@ -373,12 +353,10 @@ public class DemoStartableBean extends AbstractInitBean {
          * Application usage agreements
          */
         UsageAgreement usageAgreement = new UsageAgreement(DEMO_CINEMA_APPLICATION_NAME);
-        usageAgreement.addUsageAgreementText(new UsageAgreementText(Locale.ENGLISH.getLanguage(), "English" + "\n\n"
-                + "Lin-k NV" + "\n" + "Software License Agreement for " + DEMO_CINEMA_APPLICATION_NAME + "\n\n"
-                + LICENSE_AGREEMENT_CONFIRM_TEXT_EN));
+        usageAgreement.addUsageAgreementText(new UsageAgreementText(Locale.ENGLISH.getLanguage(), "English" + "\n\n" + "Lin-k NV" + "\n"
+                + "Software License Agreement for " + DEMO_CINEMA_APPLICATION_NAME + "\n\n" + LICENSE_AGREEMENT_CONFIRM_TEXT_EN));
         usageAgreement.addUsageAgreementText(new UsageAgreementText("nl", "Nederlands" + "\n\n" + "Lin-k NV" + "\n"
-                + "Software Gebruikers Overeenkomst voor " + DEMO_CINEMA_APPLICATION_NAME + "\n\n"
-                + LICENSE_AGREEMENT_CONFIRM_TEXT_NL));
+                + "Software Gebruikers Overeenkomst voor " + DEMO_CINEMA_APPLICATION_NAME + "\n\n" + LICENSE_AGREEMENT_CONFIRM_TEXT_NL));
         this.usageAgreements.add(usageAgreement);
 
         /*
@@ -399,11 +377,10 @@ public class DemoStartableBean extends AbstractInitBean {
         X509Certificate demoPaymentCertificate = (X509Certificate) demoPaymentPrivateKeyEntry.getCertificate();
 
         try {
-            this.registeredApplications.add(new Application(DEMO_PAYMENT_APPLICATION_NAME, "owner", null, new URL(
-                    this.protocol, this.hostname, this.hostport, "/" + this.demoPaymentWebappName),
-                    getLogo("/ebank-small.png"), null, true, true, demoPaymentCertificate, true,
-                    IdScopeType.SUBSCRIPTION, true, new URL(this.sslProtocol, this.hostname, this.hostportssl, "/"
-                            + this.demoPaymentWebappName + "/authlogout")));
+            this.registeredApplications.add(new Application(DEMO_PAYMENT_APPLICATION_NAME, "owner", null, new URL(this.protocol,
+                    this.hostname, this.hostport, "/" + this.demoPaymentWebappName), getLogo("/ebank-small.png"), null, true, true,
+                    demoPaymentCertificate, true, IdScopeType.SUBSCRIPTION, true, new URL(this.sslProtocol, this.hostname,
+                            this.hostportssl, "/" + this.demoPaymentWebappName + "/authlogout")));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
         }
@@ -413,31 +390,26 @@ public class DemoStartableBean extends AbstractInitBean {
         /*
          * Subscribe the payment admin.
          */
-        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, paymentAdmin,
-                DEMO_PAYMENT_APPLICATION_NAME));
+        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, paymentAdmin, DEMO_PAYMENT_APPLICATION_NAME));
         this.subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, paymentAdmin,
                 SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
 
         /*
          * Subscribe the demo users to the payment demo application.
          */
-        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "fcorneli",
-                DEMO_PAYMENT_APPLICATION_NAME));
-        this.subscriptions
-                .add(new Subscription(SubscriptionOwnerType.SUBJECT, "dieter", DEMO_PAYMENT_APPLICATION_NAME));
+        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "fcorneli", DEMO_PAYMENT_APPLICATION_NAME));
+        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "dieter", DEMO_PAYMENT_APPLICATION_NAME));
         this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "mario", DEMO_PAYMENT_APPLICATION_NAME));
-        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "wvdhaute",
-                DEMO_PAYMENT_APPLICATION_NAME));
-        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "mbillemo",
-                DEMO_PAYMENT_APPLICATION_NAME));
+        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "wvdhaute", DEMO_PAYMENT_APPLICATION_NAME));
+        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "mbillemo", DEMO_PAYMENT_APPLICATION_NAME));
 
         /*
          * Attribute Types.
          */
-        configDemoAttribute(DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, DatatypeType.BOOLEAN, false,
-                DEMO_PAYMENT_APPLICATION_NAME, "Junior Account", "Jongerenrekening", true, false);
-        configDemoAttribute(DemoConstants.DEMO_VISA_ATTRIBUTE_NAME, DatatypeType.STRING, true, null, "VISA number",
-                "VISA nummer", true, true);
+        configDemoAttribute(DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, DatatypeType.BOOLEAN, false, DEMO_PAYMENT_APPLICATION_NAME,
+                "Junior Account", "Jongerenrekening", true, false);
+        configDemoAttribute(DemoConstants.DEMO_VISA_ATTRIBUTE_NAME, DatatypeType.STRING, true, null, "VISA number", "VISA nummer", true,
+                true);
 
         /*
          * Application Identities.
@@ -461,12 +433,10 @@ public class DemoStartableBean extends AbstractInitBean {
          * Application usage agreements
          */
         UsageAgreement usageAgreement = new UsageAgreement(DEMO_PAYMENT_APPLICATION_NAME);
-        usageAgreement.addUsageAgreementText(new UsageAgreementText(Locale.ENGLISH.getLanguage(), "English" + "\n\n"
-                + "Lin-k NV" + "\n" + "Software License Agreement for " + DEMO_PAYMENT_APPLICATION_NAME + "\n\n"
-                + LICENSE_AGREEMENT_CONFIRM_TEXT_EN));
+        usageAgreement.addUsageAgreementText(new UsageAgreementText(Locale.ENGLISH.getLanguage(), "English" + "\n\n" + "Lin-k NV" + "\n"
+                + "Software License Agreement for " + DEMO_PAYMENT_APPLICATION_NAME + "\n\n" + LICENSE_AGREEMENT_CONFIRM_TEXT_EN));
         usageAgreement.addUsageAgreementText(new UsageAgreementText("nl", "Nederlands" + "\n\n" + "Lin-k NV" + "\n"
-                + "Software Gebruikers Overeenkomst voor " + DEMO_PAYMENT_APPLICATION_NAME + "\n\n"
-                + LICENSE_AGREEMENT_CONFIRM_TEXT_NL));
+                + "Software Gebruikers Overeenkomst voor " + DEMO_PAYMENT_APPLICATION_NAME + "\n\n" + LICENSE_AGREEMENT_CONFIRM_TEXT_NL));
         this.usageAgreements.add(usageAgreement);
 
         /*
@@ -482,16 +452,13 @@ public class DemoStartableBean extends AbstractInitBean {
          * Register the prescription demo application within SafeOnline.
          */
         PrivateKeyEntry demoPrescriptionPrivateKeyEntry = DemoPrescriptionKeyStoreUtils.getPrivateKeyEntry();
-        X509Certificate demoPrescriptionCertificate = (X509Certificate) demoPrescriptionPrivateKeyEntry
-                .getCertificate();
-        this.trustedCertificates.put(demoPrescriptionCertificate,
-                SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
+        X509Certificate demoPrescriptionCertificate = (X509Certificate) demoPrescriptionPrivateKeyEntry.getCertificate();
+        this.trustedCertificates.put(demoPrescriptionCertificate, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
         try {
-            this.registeredApplications.add(new Application(DEMO_PRESCRIPTION_APPLICATION_NAME, "owner", null, new URL(
-                    this.protocol, this.hostname, this.hostport, "/" + this.demoPrescriptionWebappName), getLogo(),
-                    null, true, true, demoPrescriptionCertificate, true, IdScopeType.SUBSCRIPTION, true, new URL(
-                            this.sslProtocol, this.hostname, this.hostportssl, "/" + this.demoPrescriptionWebappName
-                                    + "/authlogout")));
+            this.registeredApplications.add(new Application(DEMO_PRESCRIPTION_APPLICATION_NAME, "owner", null, new URL(this.protocol,
+                    this.hostname, this.hostport, "/" + this.demoPrescriptionWebappName), getLogo(), null, true, true,
+                    demoPrescriptionCertificate, true, IdScopeType.SUBSCRIPTION, true, new URL(this.sslProtocol, this.hostname,
+                            this.hostportssl, "/" + this.demoPrescriptionWebappName + "/authlogout")));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
         }
@@ -501,24 +468,18 @@ public class DemoStartableBean extends AbstractInitBean {
          */
         String prescriptionAdmin = "prescription-admin";
         this.authorizedUsers.put(prescriptionAdmin, new AuthenticationDevice("secret", null, null));
-        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, prescriptionAdmin,
-                DEMO_PRESCRIPTION_APPLICATION_NAME));
+        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, prescriptionAdmin, DEMO_PRESCRIPTION_APPLICATION_NAME));
         this.subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, prescriptionAdmin,
                 SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
 
         /*
          * Subscribe the demo users to the prescription demo application.
          */
-        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "fcorneli",
-                DEMO_PRESCRIPTION_APPLICATION_NAME));
-        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "dieter",
-                DEMO_PRESCRIPTION_APPLICATION_NAME));
-        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "mario",
-                DEMO_PRESCRIPTION_APPLICATION_NAME));
-        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "wvdhaute",
-                DEMO_PRESCRIPTION_APPLICATION_NAME));
-        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "mbillemo",
-                DEMO_PRESCRIPTION_APPLICATION_NAME));
+        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "fcorneli", DEMO_PRESCRIPTION_APPLICATION_NAME));
+        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "dieter", DEMO_PRESCRIPTION_APPLICATION_NAME));
+        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "mario", DEMO_PRESCRIPTION_APPLICATION_NAME));
+        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "wvdhaute", DEMO_PRESCRIPTION_APPLICATION_NAME));
+        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "mbillemo", DEMO_PRESCRIPTION_APPLICATION_NAME));
 
         /*
          * Attribute Types.
@@ -543,8 +504,7 @@ public class DemoStartableBean extends AbstractInitBean {
          * Also make sure the admin is marked as such.
          */
         AttributeEntity prescriptionAdminAttribute = new AttributeEntity();
-        prescriptionAdminAttribute.setPk(new AttributePK(DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME,
-                prescriptionAdmin));
+        prescriptionAdminAttribute.setPk(new AttributePK(DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME, prescriptionAdmin));
         prescriptionAdminAttribute.setBooleanValue(true);
         this.attributes.add(prescriptionAdminAttribute);
 
@@ -552,9 +512,8 @@ public class DemoStartableBean extends AbstractInitBean {
          * Application usage agreements
          */
         UsageAgreement usageAgreement = new UsageAgreement(DEMO_PRESCRIPTION_APPLICATION_NAME);
-        usageAgreement.addUsageAgreementText(new UsageAgreementText(Locale.ENGLISH.getLanguage(), "English" + "\n\n"
-                + "Lin-k NV" + "\n" + "Software License Agreement for " + DEMO_PRESCRIPTION_APPLICATION_NAME + "\n\n"
-                + LICENSE_AGREEMENT_CONFIRM_TEXT_EN));
+        usageAgreement.addUsageAgreementText(new UsageAgreementText(Locale.ENGLISH.getLanguage(), "English" + "\n\n" + "Lin-k NV" + "\n"
+                + "Software License Agreement for " + DEMO_PRESCRIPTION_APPLICATION_NAME + "\n\n" + LICENSE_AGREEMENT_CONFIRM_TEXT_EN));
         usageAgreement.addUsageAgreementText(new UsageAgreementText("nl", "Nederlands" + "\n\n" + "Lin-k NV" + "\n"
                 + "Software Gebruikers Overeenkomst voor " + DEMO_PRESCRIPTION_APPLICATION_NAME + "\n\n"
                 + LICENSE_AGREEMENT_CONFIRM_TEXT_NL));
@@ -566,10 +525,10 @@ public class DemoStartableBean extends AbstractInitBean {
         PrivateKeyEntry demoLawyerPrivateKeyEntry = DemoLawyerKeyStoreUtils.getPrivateKeyEntry();
         X509Certificate demoLawyerCertificate = (X509Certificate) demoLawyerPrivateKeyEntry.getCertificate();
         try {
-            this.registeredApplications.add(new Application(DEMO_LAWYER_APPLICATION_NAME, "owner", null, new URL(
-                    this.protocol, this.hostname, this.hostport, "/" + this.demoLawyerWebappName), getLogo(), null,
-                    true, true, demoLawyerCertificate, true, IdScopeType.SUBSCRIPTION, true, new URL(this.sslProtocol,
-                            this.hostname, this.hostportssl, "/" + this.demoLawyerWebappName + "/authlogout")));
+            this.registeredApplications.add(new Application(DEMO_LAWYER_APPLICATION_NAME, "owner", null, new URL(this.protocol,
+                    this.hostname, this.hostport, "/" + this.demoLawyerWebappName), getLogo(), null, true, true, demoLawyerCertificate,
+                    true, IdScopeType.SUBSCRIPTION, true, new URL(this.sslProtocol, this.hostname, this.hostportssl, "/"
+                            + this.demoLawyerWebappName + "/authlogout")));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
         }
@@ -577,26 +536,21 @@ public class DemoStartableBean extends AbstractInitBean {
 
         this.authorizedUsers.put("baradmin", new AuthenticationDevice("secret", null, null));
 
-        this.subscriptions
-                .add(new Subscription(SubscriptionOwnerType.SUBJECT, "baradmin", DEMO_LAWYER_APPLICATION_NAME));
+        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "baradmin", DEMO_LAWYER_APPLICATION_NAME));
         this.subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, "baradmin",
                 SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
 
-        this.subscriptions
-                .add(new Subscription(SubscriptionOwnerType.SUBJECT, "fcorneli", DEMO_LAWYER_APPLICATION_NAME));
+        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "fcorneli", DEMO_LAWYER_APPLICATION_NAME));
         this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "dieter", DEMO_LAWYER_APPLICATION_NAME));
         this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "mario", DEMO_LAWYER_APPLICATION_NAME));
-        this.subscriptions
-                .add(new Subscription(SubscriptionOwnerType.SUBJECT, "wvdhaute", DEMO_LAWYER_APPLICATION_NAME));
-        this.subscriptions
-                .add(new Subscription(SubscriptionOwnerType.SUBJECT, "mbillemo", DEMO_LAWYER_APPLICATION_NAME));
+        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "wvdhaute", DEMO_LAWYER_APPLICATION_NAME));
+        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "mbillemo", DEMO_LAWYER_APPLICATION_NAME));
 
-        configLawyerDemoAttribute(DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME, DatatypeType.BOOLEAN,
-                "Bar administrator", "Baliebeheerder");
+        configLawyerDemoAttribute(DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME, DatatypeType.BOOLEAN, "Bar administrator",
+                "Baliebeheerder");
         configLawyerDemoAttribute(DemoConstants.LAWYER_ATTRIBUTE_NAME, DatatypeType.BOOLEAN, "Lawyer", "Advocaat");
         configLawyerDemoAttribute(DemoConstants.LAWYER_BAR_ATTRIBUTE_NAME, DatatypeType.STRING, "Bar", "Balie");
-        configLawyerDemoAttribute(DemoConstants.LAWYER_SUSPENDED_ATTRIBUTE_NAME, DatatypeType.BOOLEAN, "Suspended",
-                "Geschorst");
+        configLawyerDemoAttribute(DemoConstants.LAWYER_SUSPENDED_ATTRIBUTE_NAME, DatatypeType.BOOLEAN, "Suspended", "Geschorst");
 
         this.identities.add(new Identity(DEMO_LAWYER_APPLICATION_NAME, new IdentityAttributeTypeDO[] {
                 new IdentityAttributeTypeDO(DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME, false, false),
@@ -617,12 +571,10 @@ public class DemoStartableBean extends AbstractInitBean {
          * Application usage agreements
          */
         UsageAgreement usageAgreement = new UsageAgreement(DEMO_LAWYER_APPLICATION_NAME);
-        usageAgreement.addUsageAgreementText(new UsageAgreementText(Locale.ENGLISH.getLanguage(), "English" + "\n\n"
-                + "Lin-k NV" + "\n" + "Software License Agreement for " + DEMO_LAWYER_APPLICATION_NAME + "\n\n"
-                + LICENSE_AGREEMENT_CONFIRM_TEXT_EN));
+        usageAgreement.addUsageAgreementText(new UsageAgreementText(Locale.ENGLISH.getLanguage(), "English" + "\n\n" + "Lin-k NV" + "\n"
+                + "Software License Agreement for " + DEMO_LAWYER_APPLICATION_NAME + "\n\n" + LICENSE_AGREEMENT_CONFIRM_TEXT_EN));
         usageAgreement.addUsageAgreementText(new UsageAgreementText("nl", "Nederlands" + "\n\n" + "Lin-k NV" + "\n"
-                + "Software Gebruikers Overeenkomst voor " + DEMO_LAWYER_APPLICATION_NAME + "\n\n"
-                + LICENSE_AGREEMENT_CONFIRM_TEXT_NL));
+                + "Software Gebruikers Overeenkomst voor " + DEMO_LAWYER_APPLICATION_NAME + "\n\n" + LICENSE_AGREEMENT_CONFIRM_TEXT_NL));
         this.usageAgreements.add(usageAgreement);
     }
 
@@ -632,7 +584,8 @@ public class DemoStartableBean extends AbstractInitBean {
     }
 
     private AttributeTypeEntity configDemoAttribute(String attributeName, DatatypeType datatype, boolean multiValued,
-            String attributeProviderName, String enName, String nlName, boolean userVisible, boolean userEditable) {
+                                                    String attributeProviderName, String enName, String nlName, boolean userVisible,
+                                                    boolean userEditable) {
 
         AttributeTypeEntity attributeType = new AttributeTypeEntity(attributeName, datatype, userVisible, userEditable);
         attributeType.setMultivalued(multiValued);
@@ -645,8 +598,8 @@ public class DemoStartableBean extends AbstractInitBean {
         }
 
         if (null != enName) {
-            this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(attributeType, Locale.ENGLISH
-                    .getLanguage(), enName, null));
+            this.attributeTypeDescriptions
+                                          .add(new AttributeTypeDescriptionEntity(attributeType, Locale.ENGLISH.getLanguage(), enName, null));
         }
         if (null != nlName) {
             this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(attributeType, "nl", nlName, null));
@@ -663,17 +616,14 @@ public class DemoStartableBean extends AbstractInitBean {
         this.authorizedUsers.put("mbillemo", new AuthenticationDevice("secret", null, null));
 
         this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "fcorneli", DEMO_APPLICATION_NAME));
-        this.subscriptions
-                .add(new Subscription(SubscriptionOwnerType.SUBJECT, "fcorneli", DEMO_TICKET_APPLICATION_NAME));
-        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "fcorneli",
-                DEMO_PAYMENT_APPLICATION_NAME));
+        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "fcorneli", DEMO_TICKET_APPLICATION_NAME));
+        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "fcorneli", DEMO_PAYMENT_APPLICATION_NAME));
         this.subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, "fcorneli",
                 SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
 
         this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "dieter", DEMO_APPLICATION_NAME));
         this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "dieter", DEMO_TICKET_APPLICATION_NAME));
-        this.subscriptions
-                .add(new Subscription(SubscriptionOwnerType.SUBJECT, "dieter", DEMO_PAYMENT_APPLICATION_NAME));
+        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "dieter", DEMO_PAYMENT_APPLICATION_NAME));
         this.subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, "dieter",
                 SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
 
@@ -684,18 +634,14 @@ public class DemoStartableBean extends AbstractInitBean {
                 SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
 
         this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "wvdhaute", DEMO_APPLICATION_NAME));
-        this.subscriptions
-                .add(new Subscription(SubscriptionOwnerType.SUBJECT, "wvdhaute", DEMO_TICKET_APPLICATION_NAME));
-        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "wvdhaute",
-                DEMO_PAYMENT_APPLICATION_NAME));
+        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "wvdhaute", DEMO_TICKET_APPLICATION_NAME));
+        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "wvdhaute", DEMO_PAYMENT_APPLICATION_NAME));
         this.subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, "wvdhaute",
                 SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
 
         this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "mbillemo", DEMO_APPLICATION_NAME));
-        this.subscriptions
-                .add(new Subscription(SubscriptionOwnerType.SUBJECT, "mbillemo", DEMO_TICKET_APPLICATION_NAME));
-        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "mbillemo",
-                DEMO_PAYMENT_APPLICATION_NAME));
+        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "mbillemo", DEMO_TICKET_APPLICATION_NAME));
+        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "mbillemo", DEMO_PAYMENT_APPLICATION_NAME));
         this.subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, "mbillemo",
                 SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
 
@@ -720,8 +666,7 @@ public class DemoStartableBean extends AbstractInitBean {
 
         this.node = new Node(this.nodeName, this.sslProtocol, this.hostname, this.hostport, this.hostportssl,
                 authIdentityServiceClient.getCertificate(), identityServiceClient.getCertificate());
-        this.trustedCertificates.put(authIdentityServiceClient.getCertificate(),
-                SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
+        this.trustedCertificates.put(authIdentityServiceClient.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
     }
 
     @Override

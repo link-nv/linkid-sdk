@@ -95,8 +95,8 @@ public class EjbUtils {
                 LOG.debug(objectName + ":" + nameClassPair.getClassName());
                 Object object = context.lookup(objectName);
                 if (!type.isInstance(object)) {
-                    String message = "object \"" + jndiPrefix + "/" + objectName + "\" is not a "
-                            + type.getName() + "; it is " + (object == null? "null": "a " + object.getClass().getName());
+                    String message = "object \"" + jndiPrefix + "/" + objectName + "\" is not a " + type.getName() + "; it is "
+                            + (object == null? "null": "a " + object.getClass().getName());
                     LOG.error(message);
                     throw new IllegalStateException(message);
                 }
@@ -120,8 +120,7 @@ public class EjbUtils {
         return getComponents(initialContext, jndiPrefix, type);
     }
 
-    public static <Type> Map<String, Type> getComponentNames(InitialContext initialContext, String jndiPrefix,
-            Class<Type> type) {
+    public static <Type> Map<String, Type> getComponentNames(InitialContext initialContext, String jndiPrefix, Class<Type> type) {
 
         LOG.debug("get component names at " + jndiPrefix);
         HashMap<String, Type> names = new HashMap<String, Type>();
@@ -141,8 +140,8 @@ public class EjbUtils {
                 LOG.debug(objectName + ":" + nameClassPair.getClassName());
                 Object object = context.lookup(objectName);
                 if (!type.isInstance(object)) {
-                    String message = "object \"" + jndiPrefix + "/" + objectName + "\" is not a "
-                            + type.getName() + "; it is " + (object == null? "null": "a " + object.getClass().getName());
+                    String message = "object \"" + jndiPrefix + "/" + objectName + "\" is not a " + type.getName() + "; it is "
+                            + (object == null? "null": "a " + object.getClass().getName());
                     LOG.error(message);
                     throw new IllegalStateException(message);
                 }

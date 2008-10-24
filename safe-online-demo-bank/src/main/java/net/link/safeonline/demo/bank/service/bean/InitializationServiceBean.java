@@ -52,8 +52,7 @@ public class InitializationServiceBean extends AbstractBankServiceBean implement
         users.add(user);
 
         for (int i = 0; i < digipassUser_AccountNames.length; ++i) {
-            accounts.add(account = new BankAccountEntity(user, digipassUser_AccountNames[i],
-                    digipassUser_AccountCodes[i]));
+            accounts.add(account = new BankAccountEntity(user, digipassUser_AccountNames[i], digipassUser_AccountCodes[i]));
             account.setAmount(digipassUser_AccountAmounts[i]);
         }
 

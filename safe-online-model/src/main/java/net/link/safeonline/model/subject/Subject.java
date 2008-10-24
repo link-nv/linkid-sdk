@@ -20,9 +20,9 @@ import net.link.safeonline.model.application.Application;
 
 /**
  * Domain Model class for Subject.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class Subject {
 
@@ -33,7 +33,7 @@ public class Subject {
 
     /**
      * Main constructor.
-     *
+     * 
      * @param context
      * @param entity
      */
@@ -50,7 +50,7 @@ public class Subject {
 
     /**
      * Subscribes this subject on the given application.
-     *
+     * 
      * @param application
      * @throws PermissionDeniedException
      * @throws AlreadySubscribedException
@@ -60,8 +60,7 @@ public class Subject {
         application.checkUserSubscriptionPermission();
         checkAlreadySubscribed(application);
 
-        this.context.getSubscriptionDAO().addSubscription(SubscriptionOwnerType.SUBJECT, this.entity,
-                application.getEntity());
+        this.context.getSubscriptionDAO().addSubscription(SubscriptionOwnerType.SUBJECT, this.entity, application.getEntity());
     }
 
     private void checkAlreadySubscribed(Application application) throws AlreadySubscribedException {
@@ -72,7 +71,7 @@ public class Subject {
 
     /**
      * Unsubscribes this subject from the given application.
-     *
+     * 
      * @param application
      * @throws SubscriptionNotFoundException
      * @throws PermissionDeniedException
@@ -91,13 +90,12 @@ public class Subject {
 
     /**
      * Checks whether this subject is subscribed onto the given application.
-     *
+     * 
      * @param application
      */
     public boolean isSubscribed(Application application) {
 
-        SubscriptionEntity subscription = this.context.getSubscriptionDAO().findSubscription(this.entity,
-                application.getEntity());
+        SubscriptionEntity subscription = this.context.getSubscriptionDAO().findSubscription(this.entity, application.getEntity());
         return null != subscription;
     }
 }

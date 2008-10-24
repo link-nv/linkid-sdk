@@ -64,14 +64,12 @@ public class HistoryDAOBeanTest extends TestCase {
         Map<String, String> historyProperties = new HashMap<String, String>();
         historyProperties.put(SafeOnlineConstants.APPLICATION_PROPERTY, "test-application");
         historyProperties.put(SafeOnlineConstants.DEVICE_PROPERTY, "test-device");
-        HistoryEntity history = this.testedInstance.addHistoryEntry(subject, HistoryEventType.LOGIN_SUCCESS,
-                historyProperties);
+        HistoryEntity history = this.testedInstance.addHistoryEntry(subject, HistoryEventType.LOGIN_SUCCESS, historyProperties);
 
         this.entityTestManager.getEntityManager().getTransaction().commit();
         this.entityTestManager.getEntityManager().getTransaction().begin();
 
-        HistoryEntity resultHistory = this.entityTestManager.getEntityManager().find(HistoryEntity.class,
-                history.getId());
+        HistoryEntity resultHistory = this.entityTestManager.getEntityManager().find(HistoryEntity.class, history.getId());
         assertEquals(history, resultHistory);
 
         this.testedInstance.clearAllHistory(subject);

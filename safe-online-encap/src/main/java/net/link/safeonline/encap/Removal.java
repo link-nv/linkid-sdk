@@ -30,7 +30,7 @@ public interface Removal {
      * Actions.
      */
     String mobileRemove() throws SubjectNotFoundException, MobileException, MalformedURLException, IOException,
-            AttributeTypeNotFoundException;
+                         AttributeTypeNotFoundException;
 
     String mobileCancel() throws IOException;
 

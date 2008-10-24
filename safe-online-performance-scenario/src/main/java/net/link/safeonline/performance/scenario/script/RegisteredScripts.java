@@ -26,16 +26,16 @@ import org.jfree.util.Log;
 /**
  * <h2>{@link RegisteredScripts}<br>
  * <sub>This object maintains a list of known scenarios.</sub></h2>
- *
+ * 
  * <p>
- * Whenever you add a scenario to this project, you should register it with this object in the static block to make it
- * visible to the console.
+ * Whenever you add a scenario to this project, you should register it with this object in the static block to make it visible to the
+ * console.
  * </p>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class RegisteredScripts {

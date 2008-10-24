@@ -26,8 +26,8 @@ import org.apache.wicket.util.convert.IConverter;
  * <sub>[in short] (TODO).</sub></h2>
  * 
  * <p>
- * The converter creates a dummy {@link BankAccountEntity} from a string that describes a bank account. Attaching this
- * dummy should give us a valid entity.
+ * The converter creates a dummy {@link BankAccountEntity} from a string that describes a bank account. Attaching this dummy should give us
+ * a valid entity.
  * </p>
  * 
  * <p>
@@ -42,10 +42,10 @@ import org.apache.wicket.util.convert.IConverter;
  */
 public class BankAccountConverter implements IConverter<BankAccountEntity> {
 
-    private static final long   serialVersionUID = 1L;
-    private static final Log    LOG              = LogFactory.getLog(BankAccountEntity.class);
+    private static final long serialVersionUID = 1L;
+    private static final Log  LOG              = LogFactory.getLog(BankAccountEntity.class);
 
-    private final Pattern       parser           = Pattern.compile("([\\d-]*): (.*) \\[([^\\]]*)\\]");
+    private final Pattern     parser           = Pattern.compile("([\\d-]*): (.*) \\[([^\\]]*)\\]");
 
 
     /**
@@ -62,8 +62,7 @@ public class BankAccountConverter implements IConverter<BankAccountEntity> {
             try {
                 entity.setAmount((Double) NumberFormat.getCurrencyInstance(BankSession.CURRENCY).parse(amount));
             } catch (ParseException e) {
-                LOG.warn("Couldn't parse " + amount + " into a currency amount for bank account: " + code + " (" + name
-                        + ")");
+                LOG.warn("Couldn't parse " + amount + " into a currency amount for bank account: " + code + " (" + name + ")");
             }
 
             return entity;
@@ -77,7 +76,6 @@ public class BankAccountConverter implements IConverter<BankAccountEntity> {
      */
     public String convertToString(BankAccountEntity value, Locale locale) {
 
-        return String.format("%s: %s [%s]", value.getCode(), value.getName(), WicketUtil.format(BankSession.CURRENCY,
-                value.getAmount()));
+        return String.format("%s: %s [%s]", value.getCode(), value.getName(), WicketUtil.format(BankSession.CURRENCY, value.getAmount()));
     }
 }

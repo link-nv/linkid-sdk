@@ -62,9 +62,9 @@ import org.jboss.security.SimplePrincipal;
 
 /**
  * Util class for EJB3 unit testing.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public final class EJBTestUtils {
 
@@ -78,7 +78,7 @@ public final class EJBTestUtils {
 
     /**
      * Injects a value into a given object.
-     *
+     * 
      * @param fieldName
      *            the name of the field to set.
      * @param object
@@ -102,7 +102,7 @@ public final class EJBTestUtils {
 
     /**
      * Injects a resource value into an object.
-     *
+     * 
      * @param bean
      *            the bean object on which to inject a value.
      * @param resourceName
@@ -137,7 +137,7 @@ public final class EJBTestUtils {
 
     /**
      * Injects a value object into a given bean object.
-     *
+     * 
      * @param object
      *            the bean object in which to inject.
      * @param value
@@ -167,7 +167,7 @@ public final class EJBTestUtils {
 
     /**
      * Initializes a bean.
-     *
+     * 
      * @param bean
      *            the bean to initialize.
      * @throws IllegalArgumentException
@@ -175,15 +175,13 @@ public final class EJBTestUtils {
      * @throws InvocationTargetException
      */
     @SuppressWarnings("unchecked")
-    public static void init(Object bean) throws IllegalArgumentException, IllegalAccessException,
-            InvocationTargetException {
+    public static void init(Object bean) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 
         Class clazz = bean.getClass();
         init(clazz, bean);
     }
 
-    public static void init(Class<?> clazz, Object bean) throws IllegalArgumentException, IllegalAccessException,
-            InvocationTargetException {
+    public static void init(Class<?> clazz, Object bean) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 
         LOG.debug("Initializing: " + bean);
         Method[] methods = clazz.getDeclaredMethods();
@@ -213,23 +211,21 @@ public final class EJBTestUtils {
         return newInstance(clazz, container, entityManager, (String) null);
     }
 
-    public static <Type> Type newInstance(Class<Type> clazz, Class<?>[] container, EntityManager entityManager,
-            String callerPrincipalName, String... roles) {
+    public static <Type> Type newInstance(Class<Type> clazz, Class<?>[] container, EntityManager entityManager, String callerPrincipalName,
+                                          String... roles) {
 
         TestSessionContext testSessionContext = new TestSessionContext(callerPrincipalName, roles);
         return newInstance(clazz, container, entityManager, testSessionContext);
     }
 
-    public static <Type> Type newInstance(Class<Type> clazz, Class<?>[] container, EntityManager entityManager,
-            String callerPrincipalName) {
+    public static <Type> Type newInstance(Class<Type> clazz, Class<?>[] container, EntityManager entityManager, String callerPrincipalName) {
 
         TestSessionContext testSessionContext = new TestSessionContext(callerPrincipalName, (String[]) null);
         return newInstance(clazz, container, entityManager, testSessionContext);
     }
 
     @SuppressWarnings("unchecked")
-    public static <Type> Type newInstance(Class<Type> type, Class<?>[] container, EntityManager entityManager,
-            SessionContext sessionContext) {
+    public static <Type> Type newInstance(Class<Type> type, Class<?>[] container, EntityManager entityManager, SessionContext sessionContext) {
 
         Class<Type> beanType = type;
         if (type.isInterface()) {
@@ -238,12 +234,11 @@ public final class EJBTestUtils {
                     beanType = (Class<Type>) beanClass;
                     break;
                 }
-            
+
             if (beanType.isInterface())
-                throw new EJBException("cannot instantiate interface: " + beanType
-                        + " (no instantiatable type found in container)");
+                throw new EJBException("cannot instantiate interface: " + beanType + " (no instantiatable type found in container)");
         }
-        
+
         Type instance;
         try {
             instance = beanType.newInstance();
@@ -252,8 +247,8 @@ public final class EJBTestUtils {
         } catch (IllegalAccessException e) {
             throw new RuntimeException("illegal access error: " + beanType);
         }
-        TestContainerMethodInterceptor testContainerMethodInterceptor = new TestContainerMethodInterceptor(instance,
-                container, entityManager, sessionContext);
+        TestContainerMethodInterceptor testContainerMethodInterceptor = new TestContainerMethodInterceptor(instance, container,
+                entityManager, sessionContext);
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(beanType);
         enhancer.setCallback(testContainerMethodInterceptor);
@@ -269,9 +264,9 @@ public final class EJBTestUtils {
 
     /**
      * Test EJB3 Container method interceptor. Be careful here not to start writing an entire EJB3 container.
-     *
+     * 
      * @author fcorneli
-     *
+     * 
      */
     static class TestContainerMethodInterceptor implements MethodInterceptor {
 
@@ -287,7 +282,7 @@ public final class EJBTestUtils {
 
 
         public TestContainerMethodInterceptor(Object object, Class<?>[] container, EntityManager entityManager,
-                SessionContext sessionContext) {
+                                              SessionContext sessionContext) {
 
             this.object = object;
             this.container = container;
@@ -296,7 +291,7 @@ public final class EJBTestUtils {
         }
 
         public Object intercept(@SuppressWarnings("unused") Object obj, Method method, Object[] args,
-                @SuppressWarnings("unused") MethodProxy proxy) throws Throwable {
+                                @SuppressWarnings("unused") MethodProxy proxy) throws Throwable {
 
             checkSessionBean();
             Class<?> clazz = this.object.getClass();
@@ -400,8 +395,7 @@ public final class EJBTestUtils {
                 }
                 if (true == String.class.isAssignableFrom(fieldType)) {
                     /*
-                     * In this case we're probably dealing with an env-entry injection, which we can most of the time
-                     * safely skip.
+                     * In this case we're probably dealing with an env-entry injection, which we can most of the time safely skip.
                      */
                     continue;
                 }
@@ -451,8 +445,7 @@ public final class EJBTestUtils {
                 if (null != remoteAnnotation)
                     throw new EJBException("interface cannot have both @Local and @Remote annotation");
                 Class beanType = getBeanType(fieldType);
-                Object bean = EJBTestUtils.newInstance(beanType, this.container, this.entityManager,
-                        this.sessionContext);
+                Object bean = EJBTestUtils.newInstance(beanType, this.container, this.entityManager, this.sessionContext);
                 setField(field, bean);
             }
         }
@@ -694,15 +687,13 @@ public final class EJBTestUtils {
 
 
         @SuppressWarnings("unused")
-        public Timer createTimer(long arg0, Serializable arg1) throws IllegalArgumentException, IllegalStateException,
-                EJBException {
+        public Timer createTimer(long arg0, Serializable arg1) throws IllegalArgumentException, IllegalStateException, EJBException {
 
             return null;
         }
 
         @SuppressWarnings("unused")
-        public Timer createTimer(Date arg0, Serializable arg1) throws IllegalArgumentException, IllegalStateException,
-                EJBException {
+        public Timer createTimer(Date arg0, Serializable arg1) throws IllegalArgumentException, IllegalStateException, EJBException {
 
             serviceLOG.debug("createTimer");
             Timer testTimer = new TestTimer();
@@ -710,15 +701,15 @@ public final class EJBTestUtils {
         }
 
         @SuppressWarnings("unused")
-        public Timer createTimer(long arg0, long arg1, Serializable arg2) throws IllegalArgumentException,
-                IllegalStateException, EJBException {
+        public Timer createTimer(long arg0, long arg1, Serializable arg2) throws IllegalArgumentException, IllegalStateException,
+                                                                         EJBException {
 
             return null;
         }
 
         @SuppressWarnings("unused")
-        public Timer createTimer(Date arg0, long arg1, Serializable arg2) throws IllegalArgumentException,
-                IllegalStateException, EJBException {
+        public Timer createTimer(Date arg0, long arg1, Serializable arg2) throws IllegalArgumentException, IllegalStateException,
+                                                                         EJBException {
 
             return null;
         }

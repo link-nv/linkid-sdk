@@ -34,14 +34,13 @@ public interface Removal {
      */
     String getRegistrations() throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException;
 
-    String remove() throws SubjectNotFoundException, DigipassException, PermissionDeniedException,
-            DeviceNotFoundException, AttributeTypeNotFoundException;
+    String remove() throws SubjectNotFoundException, DigipassException, PermissionDeniedException, DeviceNotFoundException,
+                   AttributeTypeNotFoundException;
 
     /*
      * Factories
      */
-    List<AttributeDO> digipassAttributesFactory() throws SubjectNotFoundException, PermissionDeniedException,
-            DeviceNotFoundException;
+    List<AttributeDO> digipassAttributesFactory() throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException;
 
     /*
      * Lifecycle.

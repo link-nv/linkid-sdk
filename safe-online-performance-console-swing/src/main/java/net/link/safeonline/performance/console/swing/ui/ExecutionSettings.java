@@ -29,15 +29,15 @@ import net.link.safeonline.performance.console.swing.model.AgentSelectionListene
 /**
  * <h2>{@link ExecutionSettings}<br>
  * <sub>Manage execution preferences.</sub></h2>
- *
+ * 
  * <p>
  * This class keeps and listens to the components that contain the location of the OLAS service.
  * </p>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ExecutionSettings implements FocusListener, ItemListener, AgentSelectionListener, AgentStatusListener {
@@ -71,8 +71,7 @@ public class ExecutionSettings implements FocusListener, ItemListener, AgentSele
 
         this.hostname.setToolTipText("The IP address or DNS resolvable name of the host that is running OLAS.");
         this.port.setToolTipText("The port on which OLAS' Application Server is configured to serve SSL.");
-        this.workers
-                .setToolTipText("The amount of simultaneous threads the agents should use for firing scenarios at OLAS.");
+        this.workers.setToolTipText("The amount of simultaneous threads the agents should use for firing scenarios at OLAS.");
         this.duration.setToolTipText("The amount of time to run the tests for (in milliseconds).");
 
         ConsoleData.addAgentStatusListener(this);

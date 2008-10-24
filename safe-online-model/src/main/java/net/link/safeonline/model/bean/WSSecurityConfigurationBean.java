@@ -46,8 +46,7 @@ public class WSSecurityConfigurationBean implements WSSecurityConfiguration {
 
         PkiResult result;
         try {
-            result = this.pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-                    certificate);
+            result = this.pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate);
             if (PkiResult.VALID == result) {
                 String applicationId = this.applicationAuthenticationService.authenticate(certificate);
                 return this.applicationAuthenticationService.skipMessageIntegrityCheck(applicationId);
@@ -59,8 +58,7 @@ public class WSSecurityConfigurationBean implements WSSecurityConfiguration {
         }
         if (PkiResult.VALID != result) {
             try {
-                result = this.pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN,
-                        certificate);
+                result = this.pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN, certificate);
                 if (PkiResult.VALID == result)
                     return false;
             } catch (TrustDomainNotFoundException e) {
@@ -69,8 +67,7 @@ public class WSSecurityConfigurationBean implements WSSecurityConfiguration {
         }
         if (PkiResult.VALID != result) {
             try {
-                result = this.pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN,
-                        certificate);
+                result = this.pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN, certificate);
                 if (PkiResult.VALID == result)
                     return false;
             } catch (TrustDomainNotFoundException e) {

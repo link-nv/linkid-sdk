@@ -49,7 +49,7 @@ public class AuditContextManager {
 
         try {
             initAuditContext();
-        
+
             return context.proceed();
         }
 
@@ -70,7 +70,7 @@ public class AuditContextManager {
         try {
             Long auditContextId = AuditContextPolicyContextHandler.getAuditContextId();
             boolean isMainEntry = AuditContextPolicyContextHandler.unlockAuditContext();
-            
+
             if (isMainEntry) {
                 this.auditContextFinalizer.finalizeAuditContext(auditContextId);
             }
@@ -91,16 +91,15 @@ public class AuditContextManager {
         boolean hasAuditContext = AuditContextPolicyContextHandler.lockAuditContext();
         if (hasAuditContext)
             return;
-        
+
         /* No audit context is set yet; create a new one and assign it to the thread. */
         long newAuditContextId = createNewAuditContext();
         LOG.debug("Created new audit context; ID: " + newAuditContextId);
-        
+
         try {
             AuditContextPolicyContextHandler.setAndLockAuditContextId(newAuditContextId);
         } catch (ExistingAuditContextException e) {
-            this.auditAuditDAO.addAuditAudit("Couldn't set audit context on thread: already in use; ID: "
-                    + e.getAuditContextId());
+            this.auditAuditDAO.addAuditAudit("Couldn't set audit context on thread: already in use; ID: " + e.getAuditContextId());
         }
     }
 

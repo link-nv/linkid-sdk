@@ -79,18 +79,17 @@ public class ResponseUtil {
      * @throws IOException
      */
     public static void sendResponse(String encodedSamlResponseToken, String templateResourceName, String consumerUrl,
-            HttpServletResponse httpResponse) throws ServletException, IOException {
+                                    HttpServletResponse httpResponse) throws ServletException, IOException {
 
         /*
-         * We could use the opensaml2 HTTPPostEncoderBuilder here to construct the HTTP response. But this code is just
-         * too complex in usage. It's easier to do all these things ourselves.
+         * We could use the opensaml2 HTTPPostEncoderBuilder here to construct the HTTP response. But this code is just too complex in
+         * usage. It's easier to do all these things ourselves.
          */
         Properties velocityProperties = new Properties();
         velocityProperties.put("resource.loader", "class");
         velocityProperties.put(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, Log4JLogChute.class.getName());
         velocityProperties.put(Log4JLogChute.RUNTIME_LOG_LOG4J_LOGGER, ResponseUtil.class.getName());
-        velocityProperties.put("class.resource.loader.class",
-                "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+        velocityProperties.put("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
         VelocityEngine velocityEngine;
         try {
             velocityEngine = new VelocityEngine(velocityProperties);
@@ -134,8 +133,8 @@ public class ResponseUtil {
      * @throws ServletException
      */
     public static Response validateResponse(DateTime now, HttpServletRequest httpRequest, String expectedInResponseTo,
-            String expectedAudience, String stsWsLocation, X509Certificate applicationCertificate,
-            PrivateKey applicationPrivateKey, TrustDomainType trustDomain) throws ServletException {
+                                            String expectedAudience, String stsWsLocation, X509Certificate applicationCertificate,
+                                            PrivateKey applicationPrivateKey, TrustDomainType trustDomain) throws ServletException {
 
         if (false == "POST".equals(httpRequest.getMethod()))
             return null;
@@ -186,8 +185,8 @@ public class ResponseUtil {
             throw new ServletException("DOM parsing error");
         }
         Element samlElement = samlDocument.getDocumentElement();
-        SecurityTokenServiceClient stsClient = new SecurityTokenServiceClientImpl(stsWsLocation,
-                applicationCertificate, applicationPrivateKey);
+        SecurityTokenServiceClient stsClient = new SecurityTokenServiceClientImpl(stsWsLocation, applicationCertificate,
+                applicationPrivateKey);
         try {
             stsClient.validate(samlElement, trustDomain);
         } catch (RuntimeException e) {
@@ -266,9 +265,9 @@ public class ResponseUtil {
      * @param applicationPrivateKey
      * @throws ServletException
      */
-    public static LogoutResponse validateLogoutResponse(HttpServletRequest httpRequest, String expectedInResponseTo,
-            String stsWsLocation, X509Certificate applicationCertificate, PrivateKey applicationPrivateKey,
-            TrustDomainType trustDomain) throws ServletException {
+    public static LogoutResponse validateLogoutResponse(HttpServletRequest httpRequest, String expectedInResponseTo, String stsWsLocation,
+                                                        X509Certificate applicationCertificate, PrivateKey applicationPrivateKey,
+                                                        TrustDomainType trustDomain) throws ServletException {
 
         if (false == "POST".equals(httpRequest.getMethod()))
             return null;
@@ -319,8 +318,8 @@ public class ResponseUtil {
             throw new ServletException("DOM parsing error");
         }
         Element samlElement = samlDocument.getDocumentElement();
-        SecurityTokenServiceClient stsClient = new SecurityTokenServiceClientImpl(stsWsLocation,
-                applicationCertificate, applicationPrivateKey);
+        SecurityTokenServiceClient stsClient = new SecurityTokenServiceClientImpl(stsWsLocation, applicationCertificate,
+                applicationPrivateKey);
         try {
             stsClient.validate(samlElement, trustDomain);
         } catch (RuntimeException e) {

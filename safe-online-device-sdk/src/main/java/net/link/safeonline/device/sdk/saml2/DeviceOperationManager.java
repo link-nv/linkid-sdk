@@ -19,8 +19,7 @@ import org.apache.commons.logging.LogFactory;
  * <sub>Device Operation Manager for servlet container based web applications.</sub></h2>
  * 
  * <p>
- * Device Operation Manager for servlet container based web applications. The device operation request info is saved on
- * the HTTP session.
+ * Device Operation Manager for servlet container based web applications. The device operation request info is saved on the HTTP session.
  * </p>
  * 
  * <p>

@@ -13,14 +13,15 @@ import java.util.Map;
 
 /**
  * SAMLp version 2.0 Top Level Error Code.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public enum SamlpTopLevelErrorCode {
-    SUCCESS("urn:oasis:names:tc:SAML:2.0:status:Success"), REQUESTER("urn:oasis:names:tc:SAML:2.0:status:Requester"), RESPONDER(
-            "urn:oasis:names:tc:SAML:2.0:status:Responder"), VERSION_MISMATCH(
-            "urn:oasis:names:tc:SAML:2.0:status:VersionMismatch");
+    SUCCESS("urn:oasis:names:tc:SAML:2.0:status:Success"),
+    REQUESTER("urn:oasis:names:tc:SAML:2.0:status:Requester"),
+    RESPONDER("urn:oasis:names:tc:SAML:2.0:status:Responder"),
+    VERSION_MISMATCH("urn:oasis:names:tc:SAML:2.0:status:VersionMismatch");
 
     private final String                                     errorCode;
 

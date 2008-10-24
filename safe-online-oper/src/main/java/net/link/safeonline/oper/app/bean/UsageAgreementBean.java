@@ -49,8 +49,7 @@ import org.jboss.seam.faces.FacesMessages;
 @Interceptors(ErrorMessageInterceptor.class)
 public class UsageAgreementBean implements UsageAgreement {
 
-    private static final Log              LOG                              = LogFactory
-                                                                                   .getLog(UsageAgreementBean.class);
+    private static final Log              LOG                              = LogFactory.getLog(UsageAgreementBean.class);
 
     private static final String           draftUsageAgreementsTextsModel   = "operDraftUsageAgreementsTexts";
 
@@ -138,8 +137,7 @@ public class UsageAgreementBean implements UsageAgreement {
     public void draftUsageAgreementsTextsFactory() throws ApplicationNotFoundException, PermissionDeniedException {
 
         LOG.debug("get draft texts");
-        this.draftUsageAgreement = this.usageAgreementService
-                .getDraftUsageAgreement(this.selectedApplication.getName());
+        this.draftUsageAgreement = this.usageAgreementService.getDraftUsageAgreement(this.selectedApplication.getName());
         if (null == this.draftUsageAgreement)
             return;
         this.draftUsageAgreementsTexts = this.draftUsageAgreement.getUsageAgreementTexts();
@@ -150,8 +148,7 @@ public class UsageAgreementBean implements UsageAgreement {
     public void currentUsageAgreementsTextsFactory() throws PermissionDeniedException, ApplicationNotFoundException {
 
         LOG.debug("get current texts");
-        this.currentUsageAgreement = this.usageAgreementService.getCurrentUsageAgreement(this.selectedApplication
-                .getName());
+        this.currentUsageAgreement = this.usageAgreementService.getCurrentUsageAgreement(this.selectedApplication.getName());
         if (null == this.currentUsageAgreement)
             return;
         this.currentUsageAgreementsTexts = this.currentUsageAgreement.getUsageAgreementTexts();
@@ -161,19 +158,16 @@ public class UsageAgreementBean implements UsageAgreement {
      * Accessors
      */
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public UsageAgreementEntity getCurrentUsageAgreement() throws PermissionDeniedException,
-            ApplicationNotFoundException {
+    public UsageAgreementEntity getCurrentUsageAgreement() throws PermissionDeniedException, ApplicationNotFoundException {
 
-        this.currentUsageAgreement = this.usageAgreementService.getCurrentUsageAgreement(this.selectedApplication
-                .getName());
+        this.currentUsageAgreement = this.usageAgreementService.getCurrentUsageAgreement(this.selectedApplication.getName());
         return this.currentUsageAgreement;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public UsageAgreementEntity getDraftUsageAgreement() throws ApplicationNotFoundException, PermissionDeniedException {
 
-        this.draftUsageAgreement = this.usageAgreementService
-                .getDraftUsageAgreement(this.selectedApplication.getName());
+        this.draftUsageAgreement = this.usageAgreementService.getDraftUsageAgreement(this.selectedApplication.getName());
         return this.draftUsageAgreement;
     }
 
@@ -237,11 +231,11 @@ public class UsageAgreementBean implements UsageAgreement {
 
         LOG.debug("create draft usage agreement");
         if (null != this.currentUsageAgreement) {
-            this.draftUsageAgreement = this.usageAgreementService.createDraftUsageAgreement(this.selectedApplication
-                    .getName(), this.currentUsageAgreement.getUsageAgreementVersion());
+            this.draftUsageAgreement = this.usageAgreementService.createDraftUsageAgreement(this.selectedApplication.getName(),
+                    this.currentUsageAgreement.getUsageAgreementVersion());
         } else {
-            this.draftUsageAgreement = this.usageAgreementService.createDraftUsageAgreement(this.selectedApplication
-                    .getName(), this.selectedApplication.getCurrentApplicationUsageAgreement());
+            this.draftUsageAgreement = this.usageAgreementService.createDraftUsageAgreement(this.selectedApplication.getName(),
+                    this.selectedApplication.getCurrentApplicationUsageAgreement());
         }
         return "success";
     }
@@ -249,13 +243,10 @@ public class UsageAgreementBean implements UsageAgreement {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String editCurrentText() throws ApplicationNotFoundException, PermissionDeniedException {
 
-        LOG
-                .debug("edit current usage agreement text: language="
-                        + this.selectedCurrentUsageAgreementText.getLanguage());
-        UsageAgreementEntity usageAgreement = this.usageAgreementService.createDraftUsageAgreement(
-                this.selectedApplication.getName(), this.currentUsageAgreement.getUsageAgreementVersion());
-        this.selectedUsageAgreementText = usageAgreement.getUsageAgreementText(this.selectedCurrentUsageAgreementText
-                .getLanguage());
+        LOG.debug("edit current usage agreement text: language=" + this.selectedCurrentUsageAgreementText.getLanguage());
+        UsageAgreementEntity usageAgreement = this.usageAgreementService.createDraftUsageAgreement(this.selectedApplication.getName(),
+                this.currentUsageAgreement.getUsageAgreementVersion());
+        this.selectedUsageAgreementText = usageAgreement.getUsageAgreementText(this.selectedCurrentUsageAgreementText.getLanguage());
         return "edittext";
     }
 
@@ -281,8 +272,8 @@ public class UsageAgreementBean implements UsageAgreement {
     public String addText() throws ApplicationNotFoundException, PermissionDeniedException {
 
         LOG.debug("add draft text: language=" + this.language);
-        this.selectedUsageAgreementText = this.usageAgreementService.createDraftUsageAgreementText(
-                this.selectedApplication.getName(), this.language, "");
+        this.selectedUsageAgreementText = this.usageAgreementService.createDraftUsageAgreementText(this.selectedApplication.getName(),
+                this.language, "");
         this.draftUsageAgreementsTextsFactory();
         return "edittext";
     }

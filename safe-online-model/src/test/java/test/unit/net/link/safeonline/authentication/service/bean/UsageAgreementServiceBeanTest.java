@@ -56,30 +56,28 @@ public class UsageAgreementServiceBeanTest extends TestCase {
 
         final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
         final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate",
-                new MBeanActionHandler() {
+        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
 
-                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
+            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-                        return authCertificate;
-                    }
-                });
+                return authCertificate;
+            }
+        });
 
         jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
         final KeyPair keyPair = PkiTestUtils.generateKeyPair();
         final X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate",
-                new MBeanActionHandler() {
+        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
 
-                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
+            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-                        return certificate;
-                    }
-                });
+                return certificate;
+            }
+        });
 
-        Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager);
+        Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class, SafeOnlineTestContainer.sessionBeans,
+                entityManager);
         systemStartable.postStart();
         this.entityTestManager.refreshEntityManager();
     }
@@ -95,17 +93,16 @@ public class UsageAgreementServiceBeanTest extends TestCase {
 
         // setup
         EntityManager entityManager = this.entityTestManager.getEntityManager();
-        SubjectService subjectService = EJBTestUtils.newInstance(SubjectServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager);
+        SubjectService subjectService = EJBTestUtils.newInstance(SubjectServiceBean.class, SafeOnlineTestContainer.sessionBeans,
+                entityManager);
         String ownerId = subjectService.findSubjectFromUserName("owner").getUserId();
 
         UsageAgreementService usageAgreementService = EJBTestUtils.newInstance(UsageAgreementServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, ownerId, SafeOnlineRoles.OWNER_ROLE,
-                SafeOnlineRoles.OPERATOR_ROLE);
+                SafeOnlineTestContainer.sessionBeans, entityManager, ownerId, SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE);
 
         // operate
         UsageAgreementEntity usageAgreement = usageAgreementService
-                .getCurrentUsageAgreement(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
+                                                                   .getCurrentUsageAgreement(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
 
         // verify
         assertNull(usageAgreement);
@@ -120,20 +117,18 @@ public class UsageAgreementServiceBeanTest extends TestCase {
                 Locale.ENGLISH.getLanguage(), "test-usage-agreement");
         usageAgreementService.updateUsageAgreement(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
         entityManager.getTransaction().commit();
-        usageAgreement = usageAgreementService
-                .getCurrentUsageAgreement(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
+        usageAgreement = usageAgreementService.getCurrentUsageAgreement(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
 
         // verify
-        assertEquals(new Long(UsageAgreementPK.EMPTY_USAGE_AGREEMENT_VERSION + 1), usageAgreement
-                .getUsageAgreementVersion());
+        assertEquals(new Long(UsageAgreementPK.EMPTY_USAGE_AGREEMENT_VERSION + 1), usageAgreement.getUsageAgreementVersion());
     }
 
     public void testGlobalUsageAgreementUseCase() throws Exception {
 
         // setup
         EntityManager entityManager = this.entityTestManager.getEntityManager();
-        SubjectService subjectService = EJBTestUtils.newInstance(SubjectServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager);
+        SubjectService subjectService = EJBTestUtils.newInstance(SubjectServiceBean.class, SafeOnlineTestContainer.sessionBeans,
+                entityManager);
         String operId = subjectService.findSubjectFromUserName("admin").getUserId();
 
         UsageAgreementService usageAgreementService = EJBTestUtils.newInstance(UsageAgreementServiceBean.class,
@@ -158,8 +153,7 @@ public class UsageAgreementServiceBeanTest extends TestCase {
         usageAgreement = usageAgreementService.getCurrentGlobalUsageAgreement();
 
         // verify
-        assertEquals(GlobalUsageAgreementEntity.INITIAL_GLOBAL_USAGE_AGREEMENT_VERSION, usageAgreement
-                .getUsageAgreementVersion());
+        assertEquals(GlobalUsageAgreementEntity.INITIAL_GLOBAL_USAGE_AGREEMENT_VERSION, usageAgreement.getUsageAgreementVersion());
 
     }
 }

@@ -25,8 +25,7 @@ public class SafeOnlineResourceException extends SafeOnlineException {
     private final String            sourceComponent;
 
 
-    public SafeOnlineResourceException(ResourceNameType resourceName, ResourceLevelType resourceLevel,
-            String sourceComponent) {
+    public SafeOnlineResourceException(ResourceNameType resourceName, ResourceLevelType resourceLevel, String sourceComponent) {
 
         this.resourceName = resourceName;
         this.resourceLevel = resourceLevel;

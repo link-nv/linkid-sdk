@@ -30,13 +30,13 @@ import org.apache.commons.logging.LogFactory;
 @Stateless
 public class NodeMappingDAOBean implements NodeMappingDAO {
 
-    private static final Log                   LOG = LogFactory.getLog(NodeMappingDAOBean.class);
+    private static final Log                 LOG = LogFactory.getLog(NodeMappingDAOBean.class);
 
     @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
-    private EntityManager                      entityManager;
+    private EntityManager                    entityManager;
 
     @EJB
-    private IdGenerator                        idGenerator;
+    private IdGenerator                      idGenerator;
 
     private NodeMappingEntity.QueryInterface queryObject;
 
@@ -44,8 +44,7 @@ public class NodeMappingDAOBean implements NodeMappingDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                NodeMappingEntity.QueryInterface.class);
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, NodeMappingEntity.QueryInterface.class);
     }
 
     public NodeMappingEntity addNodeMapping(SubjectEntity subject, NodeEntity node) {

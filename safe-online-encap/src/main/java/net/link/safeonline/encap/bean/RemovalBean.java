@@ -108,8 +108,7 @@ public class RemovalBean implements Removal {
     }
 
     @ErrorHandling( { @Error(exceptionClass = MalformedURLException.class, messageId = "mobileCommunicationFailed") })
-    public String mobileRemove() throws SubjectNotFoundException, MobileException, IOException,
-            AttributeTypeNotFoundException {
+    public String mobileRemove() throws SubjectNotFoundException, MobileException, IOException, AttributeTypeNotFoundException {
 
         this.encapDeviceService.remove(this.protocolContext.getSubject(), this.selectedMobile.getStringValue());
         this.protocolContext.setSuccess(true);

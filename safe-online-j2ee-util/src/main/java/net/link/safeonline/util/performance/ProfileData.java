@@ -21,21 +21,21 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- *
- *
+ * 
+ * 
  * @author mbillemo
  */
 public class ProfileData {
 
     /**
-     * The measurement string for the amount of messages currently queued in the Audit JMS queue; waiting to be
-     * processed by the audit backend.
+     * The measurement string for the amount of messages currently queued in the Audit JMS queue; waiting to be processed by the audit
+     * backend.
      */
     public static final String  AUDIT_SIZE         = "AuditSize";
 
     /**
-     * The measurement string for the time the request took. This is the difference of time between the start and end of
-     * the request in milliseconds.
+     * The measurement string for the time the request took. This is the difference of time between the start and end of the request in
+     * milliseconds.
      */
     public static final String  REQUEST_DELTA_TIME = "RequestTime";
 
@@ -50,8 +50,8 @@ public class ProfileData {
     public static final String  REQUEST_START_TIME = "StartTime";
 
     /**
-     * The measurement string for the memory the request used. This is the difference of memory between the start and
-     * end of the request in bytes.
+     * The measurement string for the memory the request used. This is the difference of memory between the start and end of the request in
+     * bytes.
      */
     public static final String  REQUEST_END_FREE   = "EndFreeMemory";
 
@@ -67,8 +67,7 @@ public class ProfileData {
     private static final String METHODSIG_HEADER   = "X-Profiled-Method-";
 
     /**
-     * A list of measurement keys that have a special meaning in the request. (Meaning, they are not names of method
-     * signatures.)
+     * A list of measurement keys that have a special meaning in the request. (Meaning, they are not names of method signatures.)
      */
     private static List<String> requestKeys        = new ArrayList<String>();
 
@@ -178,8 +177,7 @@ public class ProfileData {
     }
 
     /**
-     * Create a map that links HTTP headers to data. You can use these headers to transport profile data over an HTTP
-     * connection.
+     * Create a map that links HTTP headers to data. You can use these headers to transport profile data over an HTTP connection.
      */
     public Map<String, String> getHeaders() {
 

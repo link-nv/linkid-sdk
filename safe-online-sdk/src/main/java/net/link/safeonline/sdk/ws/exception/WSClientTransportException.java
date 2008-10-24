@@ -9,9 +9,9 @@ package net.link.safeonline.sdk.ws.exception;
 
 /**
  * Thrown in case a webservice was not found.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class WSClientTransportException extends Exception {
 

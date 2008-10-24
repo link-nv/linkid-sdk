@@ -17,17 +17,17 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 
 /**
  * Interface for application authentication service.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Local
 public interface ApplicationAuthenticationService {
 
     /**
-     * Authenticates an application given an application certificate. At this point the application certificate already
-     * passed the PKI validation.
-     *
+     * Authenticates an application given an application certificate. At this point the application certificate already passed the PKI
+     * validation.
+     * 
      * @param certificate
      *            the trusted X509 application certificate.
      * @return the application Id of the authentication application.
@@ -37,7 +37,7 @@ public interface ApplicationAuthenticationService {
 
     /**
      * Gives back the application X509 certificates given the application Id.
-     *
+     * 
      * @param applicationId
      *            the application Id.
      * @return the X509 application certificates.
@@ -46,9 +46,9 @@ public interface ApplicationAuthenticationService {
     List<X509Certificate> getCertificates(String applicationId) throws ApplicationNotFoundException;
 
     /**
-     * Checks whether we have to skip the message integrity check. This means that the SOAP body should not be signed by
-     * the WS-Security signature.
-     *
+     * Checks whether we have to skip the message integrity check. This means that the SOAP body should not be signed by the WS-Security
+     * signature.
+     * 
      * @param applicationId
      *            the application Id.
      * @return <code>true</code> if we can skip the message integrity check.

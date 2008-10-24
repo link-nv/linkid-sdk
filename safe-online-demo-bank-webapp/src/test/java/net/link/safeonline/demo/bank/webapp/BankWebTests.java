@@ -211,7 +211,7 @@ public class BankWebTests extends AbstractWicketTests {
         List<String> sampleAccountNames = new LinkedList<String>();
         @SuppressWarnings("unchecked")
         ListView<BankAccountEntity> accountList = (ListView<BankAccountEntity>) this.wicket
-                .getComponentFromLastRenderedPage("accounts:accountList");
+                                                                                           .getComponentFromLastRenderedPage("accounts:accountList");
         for (BankAccountEntity account : accountList.getList()) {
             sampleAccountNames.add(account.getName());
         }
@@ -224,8 +224,8 @@ public class BankWebTests extends AbstractWicketTests {
     /**
      * Log in using digipass.<br>
      * <br>
-     * Create a new transaction from the last account (see {@link InitializationService#digipassUser_AccountCodes}) to
-     * the first with an amount of 1000 (EUR) with a description of "Test Transaction".<br>
+     * Create a new transaction from the last account (see {@link InitializationService#digipassUser_AccountCodes}) to the first with an
+     * amount of 1000 (EUR) with a description of "Test Transaction".<br>
      * <br>
      * We end up on the {@link AccountPage}.
      */
@@ -267,11 +267,10 @@ public class BankWebTests extends AbstractWicketTests {
         // - Find the account in the accounts list and the transaction in the account.
         @SuppressWarnings("unchecked")
         ListView<BankAccountEntity> accountList = (ListView<BankAccountEntity>) this.wicket
-                .getComponentFromLastRenderedPage("accounts:accountList");
+                                                                                           .getComponentFromLastRenderedPage("accounts:accountList");
         ListItem<BankAccountEntity> firstAccount = accountList.iterator().next();
         @SuppressWarnings("unchecked")
-        ListView<BankTransactionEntity> transactionList = (ListView<BankTransactionEntity>) firstAccount
-                .get("transactionList");
+        ListView<BankTransactionEntity> transactionList = (ListView<BankTransactionEntity>) firstAccount.get("transactionList");
         assertFalse(transactionList.getList().isEmpty());
 
         // - Collect sample data.
@@ -335,15 +334,14 @@ public class BankWebTests extends AbstractWicketTests {
         List<String> sampleAccountCodes = new LinkedList<String>();
         @SuppressWarnings("unchecked")
         ListView<BankAccountEntity> accountDigipassList = (ListView<BankAccountEntity>) this.wicket
-                .getComponentFromLastRenderedPage("accounts:accountList");
+                                                                                                   .getComponentFromLastRenderedPage("accounts:accountList");
         for (BankAccountEntity account : accountDigipassList.getList()) {
             sampleAccountCodes.add(account.getCode());
         }
 
         // - Test sample data against our original test data.
         assertTrue(String.format("accounts not found: test: %s - sample: %s", testAccountCodes, sampleAccountCodes), //
-                testAccountCodes.size() == sampleAccountCodes.size()
-                        && testAccountCodes.containsAll(sampleAccountCodes));
+                testAccountCodes.size() == sampleAccountCodes.size() && testAccountCodes.containsAll(sampleAccountCodes));
 
         // AccountPage: Click to log out.
         this.wicket.clickLink("user:logout");
@@ -363,15 +361,14 @@ public class BankWebTests extends AbstractWicketTests {
         sampleAccountCodes = new LinkedList<String>();
         @SuppressWarnings("unchecked")
         ListView<BankAccountEntity> accountOLASList = (ListView<BankAccountEntity>) this.wicket
-                .getComponentFromLastRenderedPage("accounts:accountList");
+                                                                                               .getComponentFromLastRenderedPage("accounts:accountList");
         for (BankAccountEntity account : accountOLASList.getList()) {
             sampleAccountCodes.add(account.getCode());
         }
 
         // - Test sample data against our original test data.
         assertTrue(String.format("accounts not found: test: %s - sample: %s", testAccountCodes, sampleAccountCodes), //
-                testAccountCodes.size() == sampleAccountCodes.size()
-                        && testAccountCodes.containsAll(sampleAccountCodes));
+                testAccountCodes.size() == sampleAccountCodes.size() && testAccountCodes.containsAll(sampleAccountCodes));
     }
 
     /**
@@ -398,8 +395,7 @@ public class BankWebTests extends AbstractWicketTests {
     @Override
     protected Class<?>[] getServiceBeans() {
 
-        return new Class[] { AccountServiceBean.class, InitializationServiceBean.class, TransactionServiceBean.class,
-                UserServiceBean.class };
+        return new Class[] { AccountServiceBean.class, InitializationServiceBean.class, TransactionServiceBean.class, UserServiceBean.class };
     }
 
     /**

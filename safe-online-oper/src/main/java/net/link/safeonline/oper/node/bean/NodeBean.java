@@ -142,12 +142,11 @@ public class NodeBean implements Node {
             } else {
                 encodedSigningCertificate = null;
             }
-            this.nodeService.addNode(this.name, this.protocol, this.hostname, this.port, this.sslPort,
-                    encodedAuthnCertificate, encodedSigningCertificate);
+            this.nodeService.addNode(this.name, this.protocol, this.hostname, this.port, this.sslPort, encodedAuthnCertificate,
+                    encodedSigningCertificate);
         } catch (ExistingNodeException e) {
             LOG.debug("node already exists: " + this.name);
-            this.facesMessages.addToControlFromResourceBundle("name", FacesMessage.SEVERITY_ERROR,
-                    "errorNodeAlreadyExists", this.name);
+            this.facesMessages.addToControlFromResourceBundle("name", FacesMessage.SEVERITY_ERROR, "errorNodeAlreadyExists", this.name);
             return null;
         }
         nodeListFactory();
@@ -237,8 +236,7 @@ public class NodeBean implements Node {
             this.nodeService.removeNode(nodeName);
         } catch (PermissionDeniedException e) {
             LOG.debug("permission denied to remove: " + nodeName);
-            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), e
-                    .getResourceArgs());
+            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), e.getResourceArgs());
             return null;
         }
         nodeListFactory();

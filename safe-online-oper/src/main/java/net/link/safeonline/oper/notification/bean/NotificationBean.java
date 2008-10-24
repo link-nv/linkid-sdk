@@ -55,8 +55,7 @@ import org.jboss.seam.faces.FacesMessages;
 @Interceptors(ErrorMessageInterceptor.class)
 public class NotificationBean implements Notification {
 
-    private static final Log                             LOG                         = LogFactory
-                                                                                             .getLog(NotificationBean.class);
+    private static final Log                             LOG                         = LogFactory.getLog(NotificationBean.class);
 
     private static final String                          OPER_TOPIC_LIST_NAME        = "operTopicList";
 
@@ -157,12 +156,10 @@ public class NotificationBean implements Notification {
 
         LOG.debug("add subscription for consumer " + this.consumer);
         try {
-            this.notificationSubscriptionService.addSubscription(this.selectedTopic.getTopic(), this.address,
-                    this.consumer);
+            this.notificationSubscriptionService.addSubscription(this.selectedTopic.getTopic(), this.address, this.consumer);
         } catch (PermissionDeniedException e) {
             LOG.debug("permission denied: " + e.getMessage());
-            this.facesMessages
-                    .addFromResourceBundle(FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), this.consumer);
+            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), this.consumer);
             return null;
         }
         subscriptionListFactory();
@@ -174,8 +171,7 @@ public class NotificationBean implements Notification {
 
         LOG.debug("remove subscription for topic " + this.selectedTopic.getTopic());
         try {
-            this.notificationSubscriptionService.removeSubscription(this.selectedTopic.getTopic(),
-                    this.selectedSubscription);
+            this.notificationSubscriptionService.removeSubscription(this.selectedTopic.getTopic(), this.selectedSubscription);
         } catch (EndpointReferenceNotFoundException e) {
             LOG.debug("endpoint not found: " + this.selectedSubscription.getName());
             this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorConsumerNotFound",

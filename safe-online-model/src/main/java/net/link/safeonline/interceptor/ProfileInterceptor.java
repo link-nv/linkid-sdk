@@ -19,7 +19,7 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * EJB3 Interceptor for profiling method invocations.
- *
+ * 
  * @author mbillemo
  */
 public class ProfileInterceptor {

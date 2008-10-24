@@ -16,9 +16,9 @@ import java.lang.annotation.Target;
 
 /**
  * Is used to specify a mapped compounded attribute identifier for a property or field.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Documented
 @Target( { ElementType.FIELD, ElementType.METHOD })

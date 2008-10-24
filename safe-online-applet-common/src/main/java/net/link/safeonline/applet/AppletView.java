@@ -11,17 +11,17 @@ import org.apache.commons.logging.Log;
 
 
 /**
- * Applet View interface. This interface represents the view (as in MVC) of the applet. This view interface is defined
- * independent from the used GUI technology.
- *
+ * Applet View interface. This interface represents the view (as in MVC) of the applet. This view interface is defined independent from the
+ * used GUI technology.
+ * 
  * @author fcorneli
- *
+ * 
  */
 public interface AppletView {
 
     /**
      * Outputs an information message via the view component.
-     *
+     * 
      * @param infoLevel
      * @param message
      */
@@ -31,7 +31,7 @@ public interface AppletView {
 
     /**
      * Gives back a logger. The logger can manage it's output via the view.
-     *
+     * 
      */
     Log getLog();
 }

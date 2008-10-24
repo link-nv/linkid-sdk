@@ -22,8 +22,7 @@ import net.link.safeonline.entity.NodeEntity;
 public interface NodeManager {
 
     /**
-     * Gives back the caller node. Calling this method only makes sense in the context of a node login (via a node web
-     * service).
+     * Gives back the caller node. Calling this method only makes sense in the context of a node login (via a node web service).
      * 
      */
     NodeEntity getCallerNode();

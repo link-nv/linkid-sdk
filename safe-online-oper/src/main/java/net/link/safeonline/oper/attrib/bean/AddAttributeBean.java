@@ -334,7 +334,7 @@ public class AddAttributeBean implements AddAttribute {
             @Error(exceptionClass = AttributeTypeNotFoundException.class, messageId = "errorAttributeTypeMemberNotFound", fieldId = "name"),
             @Error(exceptionClass = AttributeTypeDefinitionException.class, messageId = "errorAttributeTypeMemberIllegal", fieldId = "name") })
     public String add() throws NodeNotFoundException, ExistingAttributeTypeException, AttributeTypeNotFoundException,
-            AttributeTypeDefinitionException {
+                       AttributeTypeDefinitionException {
 
         this.log.debug("add");
 

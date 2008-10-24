@@ -49,8 +49,7 @@ import org.jboss.seam.faces.FacesMessages;
 @Interceptors(ErrorMessageInterceptor.class)
 public class AttributeDescriptionBean implements AttributeDescription {
 
-    private static final Log                     LOG                                  = LogFactory
-                                                                                              .getLog(AttributeDescriptionBean.class);
+    private static final Log                     LOG                                  = LogFactory.getLog(AttributeDescriptionBean.class);
 
     public static final String                   ATTRIBUTE_TYPE_DESCRIPTION_NAME      = "attributeTypeDescriptions";
 

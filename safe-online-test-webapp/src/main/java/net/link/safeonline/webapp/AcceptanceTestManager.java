@@ -21,15 +21,15 @@ import com.thoughtworks.selenium.SeleniumLogLevels;
 
 /**
  * Acceptance test manager based on the Selenium testing framework.
- *
+ * 
  * This component will launch the selenium server on port 4455.
- *
+ * 
  * Make sure that the SafeOnline web applications are up and running.
- *
+ * 
  * Note: JBoss AS already runs on the default selenium server port 4444.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class AcceptanceTestManager {
 
@@ -49,8 +49,7 @@ public class AcceptanceTestManager {
         this.seleniumServer = new SeleniumServer(SELENIUM_SERVER_PORT);
         this.seleniumServer.start();
         Properties properties = new Properties();
-        InputStream propConfigInputStream = AcceptanceTestManager.class
-                .getResourceAsStream("/test-accept-config.properties");
+        InputStream propConfigInputStream = AcceptanceTestManager.class.getResourceAsStream("/test-accept-config.properties");
         properties.load(propConfigInputStream);
         this.safeOnlineLocation = "http://" + properties.getProperty("safeonline.location");
         LOG.debug("SafeOnline location: " + this.safeOnlineLocation);

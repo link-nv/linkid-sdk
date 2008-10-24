@@ -66,7 +66,7 @@ public class OptionDeviceServiceBean implements OptionDeviceService, OptionDevic
 
     @EJB
     private AttributeTypeDAO     attributeTypeDAO;
-    
+
     @EJB
     private DeviceDAO            deviceDAO;
 
@@ -84,25 +84,23 @@ public class OptionDeviceServiceBean implements OptionDeviceService, OptionDevic
      * {@inheritDoc}
      */
     public String authenticate(String imei, String pin) throws SubjectNotFoundException, OptionAuthenticationException,
-            OptionRegistrationException, AttributeTypeNotFoundException, AttributeNotFoundException,
-            DeviceDisabledException {
+                                                       OptionRegistrationException, AttributeTypeNotFoundException,
+                                                       AttributeNotFoundException, DeviceDisabledException {
 
         SubjectEntity subject = this.subjectIdentifierDAO.findSubject(OptionConstants.OPTION_IDENTIFIER_DOMAIN, imei);
         if (null == subject)
             throw new SubjectNotFoundException();
 
         // check registration not disabled
-        AttributeTypeEntity deviceAttributeType = this.attributeTypeDAO
-                .getAttributeType(OptionConstants.OPTION_DEVICE_ATTRIBUTE);
-        AttributeTypeEntity imeiAttributeType = this.attributeTypeDAO
-                .getAttributeType(OptionConstants.IMEI_OPTION_ATTRIBUTE);
+        AttributeTypeEntity deviceAttributeType = this.attributeTypeDAO.getAttributeType(OptionConstants.OPTION_DEVICE_ATTRIBUTE);
+        AttributeTypeEntity imeiAttributeType = this.attributeTypeDAO.getAttributeType(OptionConstants.IMEI_OPTION_ATTRIBUTE);
         AttributeTypeEntity deviceDisableAttributeType = this.attributeTypeDAO
-                .getAttributeType(OptionConstants.OPTION_DEVICE_DISABLE_ATTRIBUTE);
+                                                                              .getAttributeType(OptionConstants.OPTION_DEVICE_DISABLE_ATTRIBUTE);
 
         List<AttributeEntity> deviceAttributes = this.attributeDAO.listAttributes(subject, deviceAttributeType);
         for (AttributeEntity deviceAttribute : deviceAttributes) {
-            AttributeEntity imeiAttribute = this.attributeDAO.findAttribute(subject, imeiAttributeType, deviceAttribute
-                    .getAttributeIndex());
+            AttributeEntity imeiAttribute = this.attributeDAO
+                                                             .findAttribute(subject, imeiAttributeType, deviceAttribute.getAttributeIndex());
             if (imeiAttribute.getStringValue().equals(imei)) {
                 AttributeEntity disableAttribute = this.attributeDAO.getAttribute(deviceDisableAttributeType, subject,
                         deviceAttribute.getAttributeIndex());
@@ -119,8 +117,8 @@ public class OptionDeviceServiceBean implements OptionDeviceService, OptionDevic
     /**
      * {@inheritDoc}
      */
-    public void register(String userId, String imei, String pin) throws OptionAuthenticationException,
-            OptionRegistrationException, AttributeTypeNotFoundException {
+    public void register(String userId, String imei, String pin) throws OptionAuthenticationException, OptionRegistrationException,
+                                                                AttributeTypeNotFoundException {
 
         SubjectEntity subject = this.subjectIdentifierDAO.findSubject(OptionConstants.OPTION_IDENTIFIER_DOMAIN, imei);
         if (null != subject) {
@@ -137,10 +135,9 @@ public class OptionDeviceServiceBean implements OptionDeviceService, OptionDevic
 
         AttributeTypeEntity imeiType = this.attributeTypeDAO.findAttributeType(OptionConstants.IMEI_OPTION_ATTRIBUTE);
         AttributeTypeEntity pinType = this.attributeTypeDAO.findAttributeType(OptionConstants.PIN_OPTION_ATTRIBUTE);
-        AttributeTypeEntity deviceAttributeType = this.attributeTypeDAO
-                .getAttributeType(OptionConstants.OPTION_DEVICE_ATTRIBUTE);
+        AttributeTypeEntity deviceAttributeType = this.attributeTypeDAO.getAttributeType(OptionConstants.OPTION_DEVICE_ATTRIBUTE);
         AttributeTypeEntity deviceDisableAttributeType = this.attributeTypeDAO
-                .getAttributeType(OptionConstants.OPTION_DEVICE_DISABLE_ATTRIBUTE);
+                                                                              .getAttributeType(OptionConstants.OPTION_DEVICE_DISABLE_ATTRIBUTE);
 
         int attributeIdx = this.attributeDAO.listAttributes(subject, deviceAttributeType).size();
 
@@ -156,8 +153,7 @@ public class OptionDeviceServiceBean implements OptionDeviceService, OptionDevic
         }
         pinAttribute.setStringValue(pin);
 
-        AttributeEntity deviceDisableAttribute = this.attributeDAO.addAttribute(deviceDisableAttributeType, subject,
-                attributeIdx);
+        AttributeEntity deviceDisableAttribute = this.attributeDAO.addAttribute(deviceDisableAttributeType, subject, attributeIdx);
         deviceDisableAttribute.setBooleanValue(false);
 
         AttributeEntity deviceAttribute = this.attributeDAO.addAttribute(deviceAttributeType, subject);
@@ -175,9 +171,9 @@ public class OptionDeviceServiceBean implements OptionDeviceService, OptionDevic
     /**
      * {@inheritDoc}
      */
-    public void remove(String userId, String imei, String pin) throws OptionAuthenticationException,
-            OptionRegistrationException, SubjectNotFoundException, AttributeTypeNotFoundException,
-            AttributeNotFoundException, DeviceDisabledException {
+    public void remove(String userId, String imei, String pin) throws OptionAuthenticationException, OptionRegistrationException,
+                                                              SubjectNotFoundException, AttributeTypeNotFoundException,
+                                                              AttributeNotFoundException, DeviceDisabledException {
 
         String assignedSubject = authenticate(imei, pin);
 
@@ -188,8 +184,8 @@ public class OptionDeviceServiceBean implements OptionDeviceService, OptionDevic
         removeRegistration(subject, imei);
     }
 
-    private void authenticate(SubjectEntity subject, String givenImei, String givenPin)
-            throws OptionRegistrationException, OptionAuthenticationException {
+    private void authenticate(SubjectEntity subject, String givenImei, String givenPin) throws OptionRegistrationException,
+                                                                                       OptionAuthenticationException {
 
         AttributeEntity storedImei = this.attributeDAO.findAttribute(OptionConstants.IMEI_OPTION_ATTRIBUTE, subject);
         AttributeEntity storedPin = this.attributeDAO.findAttribute(OptionConstants.PIN_OPTION_ATTRIBUTE, subject);
@@ -199,23 +195,20 @@ public class OptionDeviceServiceBean implements OptionDeviceService, OptionDevic
         if (!storedImei.getStringValue().equals(givenImei))
             throw new OptionRegistrationException();
         if (!storedPin.getStringValue().equals(givenPin)) {
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, subject.getUserId(),
-                    "incorrect PIN");
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, subject.getUserId(), "incorrect PIN");
             throw new OptionAuthenticationException();
         }
     }
 
     private void removeRegistration(SubjectEntity subject, String imei) throws AttributeTypeNotFoundException {
 
-        AttributeTypeEntity deviceAttributeType = this.attributeTypeDAO
-                .getAttributeType(OptionConstants.OPTION_DEVICE_ATTRIBUTE);
-        AttributeTypeEntity imeiAttributeType = this.attributeTypeDAO
-                .getAttributeType(OptionConstants.IMEI_OPTION_ATTRIBUTE);
+        AttributeTypeEntity deviceAttributeType = this.attributeTypeDAO.getAttributeType(OptionConstants.OPTION_DEVICE_ATTRIBUTE);
+        AttributeTypeEntity imeiAttributeType = this.attributeTypeDAO.getAttributeType(OptionConstants.IMEI_OPTION_ATTRIBUTE);
 
         List<AttributeEntity> deviceAttributes = this.attributeDAO.listAttributes(subject, deviceAttributeType);
         for (AttributeEntity deviceAttribute : deviceAttributes) {
-            AttributeEntity imeiAttribute = this.attributeDAO.findAttribute(subject, imeiAttributeType, deviceAttribute
-                    .getAttributeIndex());
+            AttributeEntity imeiAttribute = this.attributeDAO
+                                                             .findAttribute(subject, imeiAttributeType, deviceAttribute.getAttributeIndex());
             if (imeiAttribute.getStringValue().equals(imei)) {
                 List<CompoundedAttributeTypeMemberEntity> members = deviceAttributeType.getMembers();
                 for (CompoundedAttributeTypeMemberEntity member : members) {
@@ -237,18 +230,18 @@ public class OptionDeviceServiceBean implements OptionDeviceService, OptionDevic
      * {@inheritDoc}
      */
     public void disable(String userId, String imei) throws DeviceNotFoundException, SubjectNotFoundException,
-            DeviceRegistrationNotFoundException {
+                                                   DeviceRegistrationNotFoundException {
 
         DeviceEntity device = this.deviceDAO.getDevice(OptionConstants.OPTION_DEVICE_ID);
         SubjectEntity subject = this.subjectService.getSubject(userId);
 
         List<AttributeEntity> deviceAttributes = this.attributeDAO.listAttributes(subject, device.getAttributeType());
         for (AttributeEntity deviceAttribute : deviceAttributes) {
-            AttributeEntity imeiAttribute = this.attributeDAO.findAttribute(subject,
-                    OptionConstants.IMEI_OPTION_ATTRIBUTE, deviceAttribute.getAttributeIndex());
+            AttributeEntity imeiAttribute = this.attributeDAO.findAttribute(subject, OptionConstants.IMEI_OPTION_ATTRIBUTE,
+                    deviceAttribute.getAttributeIndex());
             if (imeiAttribute.getStringValue().equals(imei)) {
-                AttributeEntity disableAttribute = this.attributeDAO.findAttribute(subject, device
-                        .getDisableAttributeType(), deviceAttribute.getAttributeIndex());
+                AttributeEntity disableAttribute = this.attributeDAO.findAttribute(subject, device.getDisableAttributeType(),
+                        deviceAttribute.getAttributeIndex());
                 disableAttribute.setBooleanValue(!disableAttribute.getBooleanValue());
                 return;
             }

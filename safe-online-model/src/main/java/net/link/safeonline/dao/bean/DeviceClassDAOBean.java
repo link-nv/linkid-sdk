@@ -37,8 +37,7 @@ public class DeviceClassDAOBean implements DeviceClassDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                DeviceClassEntity.QueryInterface.class);
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, DeviceClassEntity.QueryInterface.class);
         this.descriptionQueryObject = QueryObjectFactory.createQueryObject(this.entityManager,
                 DeviceClassDescriptionEntity.QueryInterface.class);
     }
@@ -111,10 +110,9 @@ public class DeviceClassDAOBean implements DeviceClassDAO {
     }
 
     public DeviceClassDescriptionEntity getDescription(DeviceClassDescriptionPK descriptionPK)
-            throws DeviceClassDescriptionNotFoundException {
+                                                                                              throws DeviceClassDescriptionNotFoundException {
 
-        DeviceClassDescriptionEntity description = this.entityManager.find(DeviceClassDescriptionEntity.class,
-                descriptionPK);
+        DeviceClassDescriptionEntity description = this.entityManager.find(DeviceClassDescriptionEntity.class, descriptionPK);
         if (null == description)
             throw new DeviceClassDescriptionNotFoundException();
         return description;
@@ -122,8 +120,7 @@ public class DeviceClassDAOBean implements DeviceClassDAO {
 
     public DeviceClassDescriptionEntity findDescription(DeviceClassDescriptionPK descriptionPK) {
 
-        DeviceClassDescriptionEntity description = this.entityManager.find(DeviceClassDescriptionEntity.class,
-                descriptionPK);
+        DeviceClassDescriptionEntity description = this.entityManager.find(DeviceClassDescriptionEntity.class, descriptionPK);
         return description;
     }
 

@@ -23,9 +23,9 @@ import org.w3c.dom.Document;
 
 /**
  * JAX-WS SOAP handler to log the SOAP messages.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class MessageLoggerHandler implements SOAPHandler<SOAPMessageContext> {
 
@@ -45,7 +45,7 @@ public class MessageLoggerHandler implements SOAPHandler<SOAPMessageContext> {
 
     /**
      * Set to <code>true</code> if you want to log the inbound and outbound SOAP messages.
-     *
+     * 
      * @param captureMessages
      */
     public void setCaptureMessages(boolean captureMessages) {
@@ -54,9 +54,9 @@ public class MessageLoggerHandler implements SOAPHandler<SOAPMessageContext> {
     }
 
     /**
-     * Returns <code>true</code> if this handler will capture the inbound and outbound SOAP messages during following
-     * web service invocations.
-     *
+     * Returns <code>true</code> if this handler will capture the inbound and outbound SOAP messages during following web service
+     * invocations.
+     * 
      */
     public boolean isCaptureMessages() {
 

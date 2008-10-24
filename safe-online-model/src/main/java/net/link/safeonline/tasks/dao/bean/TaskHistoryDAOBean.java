@@ -41,13 +41,11 @@ public class TaskHistoryDAOBean implements TaskHistoryDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                TaskHistoryEntity.QueryInterface.class);
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, TaskHistoryEntity.QueryInterface.class);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public TaskHistoryEntity addTaskHistoryEntity(TaskEntity task, String message, boolean result, Date startDate,
-            Date endDate) {
+    public TaskHistoryEntity addTaskHistoryEntity(TaskEntity task, String message, boolean result, Date startDate, Date endDate) {
 
         TaskHistoryEntity taskHistoryEntity = new TaskHistoryEntity(task, message, result, startDate, endDate);
         task.addTaskHistoryEntity(taskHistoryEntity);

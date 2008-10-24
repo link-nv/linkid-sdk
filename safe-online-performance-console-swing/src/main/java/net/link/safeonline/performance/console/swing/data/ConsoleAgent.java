@@ -29,17 +29,16 @@ import org.jgroups.Address;
 /**
  * <h2>{@link ConsoleAgent}<br>
  * <sub>Proxy that maintains the status of the remote agent and provides access to its functionality.</sub></h2>
- *
+ * 
  * <p>
- * This is a proxy for the remote agent and provides access to all functionality offered and all state made available by
- * the agent. It takes care of keeping the status information synchronised by a daemon thread that checks the remote
- * status every two seconds.
+ * This is a proxy for the remote agent and provides access to all functionality offered and all state made available by the agent. It takes
+ * care of keeping the status information synchronised by a daemon thread that checks the remote status every two seconds.
  * </p>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ConsoleAgent implements Agent {
@@ -100,8 +99,8 @@ public class ConsoleAgent implements Agent {
 
     /**
      * @param autoUpdate
-     *            <code>true</code> to sync the stats with the remote agent at a certain interval. <code>false</code> to
-     *            suspend this updating (until set to <code>true</code> again).
+     *            <code>true</code> to sync the stats with the remote agent at a certain interval. <code>false</code> to suspend this
+     *            updating (until set to <code>true</code> again).
      */
     public void setAutoUpdate(boolean autoUpdate) {
 
@@ -176,7 +175,7 @@ public class ConsoleAgent implements Agent {
 
     /**
      * Will never be <code>null</code>.
-     *
+     * 
      * {@inheritDoc}
      */
     public AgentState getState() {
@@ -216,8 +215,8 @@ public class ConsoleAgent implements Agent {
     /**
      * <b>Temporarily</b> change the <b>local</b> transition state of the agent.<br>
      * <br>
-     * You should only use this to set the transition state just before making a request to the remote agent that will
-     * result in the same state transition if all goes well in order to have the state reflected in the UI sooner.
+     * You should only use this to set the transition state just before making a request to the remote agent that will result in the same
+     * state transition if all goes well in order to have the state reflected in the UI sooner.
      */
     public void setTransit(AgentState transit) {
 
@@ -227,8 +226,8 @@ public class ConsoleAgent implements Agent {
     /**
      * <b>Temporarily</b> change the <b>local</b> error of the agent.<br>
      * <br>
-     * You should only use this to set the transition state just before making a request to the remote agent that will
-     * result in the same state transition if all goes well in order to have the state reflected in the UI sooner.
+     * You should only use this to set the transition state just before making a request to the remote agent that will result in the same
+     * state transition if all goes well in order to have the state reflected in the UI sooner.
      */
     public void setError(Throwable error) {
 
@@ -286,12 +285,10 @@ public class ConsoleAgent implements Agent {
                 this.error = notifyOnChange(this.error, this.agentRemoting.getError(this.agentAddress));
             }
             synchronized (ConsoleData.lock) {
-                this.scenarios = notifyOnChange(this.scenarios, isDeployed? this.agentRemoting
-                        .getScenarios(this.agentAddress): null);
+                this.scenarios = notifyOnChange(this.scenarios, isDeployed? this.agentRemoting.getScenarios(this.agentAddress): null);
             }
             synchronized (ConsoleData.lock) {
-                this.executions = notifyOnChange(this.executions, isDeployed? this.agentRemoting
-                        .getExecutions(this.agentAddress): null);
+                this.executions = notifyOnChange(this.executions, isDeployed? this.agentRemoting.getExecutions(this.agentAddress): null);
             }
         }
 

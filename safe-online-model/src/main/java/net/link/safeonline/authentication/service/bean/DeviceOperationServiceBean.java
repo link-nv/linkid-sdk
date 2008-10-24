@@ -125,9 +125,9 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
     public String redirect(@NonEmptyString String serviceUrl, @NonEmptyString String targetUrl,
-            @NotNull DeviceOperationType deviceOperation, @NonEmptyString String deviceName,
-            String authenticatedDeviceName, @NonEmptyString String userId, AttributeDO attribute)
-            throws NodeNotFoundException, SubjectNotFoundException, DeviceNotFoundException {
+                           @NotNull DeviceOperationType deviceOperation, @NonEmptyString String deviceName, String authenticatedDeviceName,
+                           @NonEmptyString String userId, AttributeDO attribute) throws NodeNotFoundException, SubjectNotFoundException,
+                                                                                DeviceNotFoundException {
 
         IdentityServiceClient identityServiceClient = new IdentityServiceClient();
         PrivateKey privateKey = identityServiceClient.getPrivateKey();
@@ -143,8 +143,7 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
         if (localNode.equals(device.getLocation())) {
             nodeUserId = userId;
         } else {
-            NodeMappingEntity nodeMapping = this.nodeMappingService.getNodeMapping(userId, device.getLocation()
-                    .getName());
+            NodeMappingEntity nodeMapping = this.nodeMappingService.getNodeMapping(userId, device.getLocation().getName());
             nodeUserId = nodeMapping.getId();
         }
 
@@ -155,9 +154,8 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
 
         Challenge<String> challenge = new Challenge<String>();
 
-        String samlRequestToken = DeviceOperationRequestFactory.createDeviceOperationRequest(localNode.getName(),
-                nodeUserId, keyPair, serviceUrl, targetUrl, deviceOperation, challenge, deviceName,
-                authenticatedDeviceName, attributeValue);
+        String samlRequestToken = DeviceOperationRequestFactory.createDeviceOperationRequest(localNode.getName(), nodeUserId, keyPair,
+                serviceUrl, targetUrl, deviceOperation, challenge, deviceName, authenticatedDeviceName, attributeValue);
 
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
 
@@ -171,7 +169,8 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
     @Remove
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
     public String finalize(@NotNull HttpServletRequest request) throws NodeNotFoundException, ServletException,
-            NodeMappingNotFoundException, DeviceNotFoundException, SubjectNotFoundException {
+                                                               NodeMappingNotFoundException, DeviceNotFoundException,
+                                                               SubjectNotFoundException {
 
         LOG.debug("finalize");
         LOG.debug("expected challenge id: " + this.expectedChallengeId);
@@ -182,9 +181,9 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
         NodeEntity node = this.nodeAuthenticationService.getLocalNode();
 
-        DeviceOperationResponse response = DeviceOperationResponseUtil.validateResponse(now, request,
-                this.expectedChallengeId, this.expectedDeviceOperation, node.getLocation(), authIdentityServiceClient
-                        .getCertificate(), authIdentityServiceClient.getPrivateKey(), TrustDomainType.DEVICE);
+        DeviceOperationResponse response = DeviceOperationResponseUtil.validateResponse(now, request, this.expectedChallengeId,
+                this.expectedDeviceOperation, node.getLocation(), authIdentityServiceClient.getCertificate(),
+                authIdentityServiceClient.getPrivateKey(), TrustDomainType.DEVICE);
         if (null == response)
             return null;
 
@@ -208,8 +207,8 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
         DeviceEntity device = this.deviceDAO.getDevice(response.getDevice());
         if (!device.getName().equals(this.expectedDevice)) {
             this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, "Device " + device.getName()
-                    + " returned after device operation " + this.expectedDeviceOperation
-                    + " not matching expected device " + this.expectedDevice);
+                    + " returned after device operation " + this.expectedDeviceOperation + " not matching expected device "
+                    + this.expectedDevice);
             throw new DeviceNotFoundException();
         }
 
@@ -228,9 +227,9 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
             LOG.debug("used device: " + authenticatedDeviceName);
             DeviceEntity authenticatedDevice = this.deviceDAO.getDevice(authenticatedDeviceName);
             if (!authenticatedDevice.getName().equals(this.expectedDevice)) {
-                this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, "Device "
-                        + authenticatedDevice.getName() + " returned after device operation "
-                        + this.expectedDeviceOperation + " not matching expected device " + this.expectedDevice);
+                this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, "Device " + authenticatedDevice.getName()
+                        + " returned after device operation " + this.expectedDeviceOperation + " not matching expected device "
+                        + this.expectedDevice);
                 throw new DeviceNotFoundException();
             }
 
@@ -255,8 +254,8 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
         }
 
         if (this.expectedDeviceOperation.equals(DeviceOperationType.REGISTER)) {
-            this.historyDAO.addHistoryEntry(subjectEntity, HistoryEventType.DEVICE_REGISTRATION, Collections
-                    .singletonMap(SafeOnlineConstants.DEVICE_PROPERTY, device.getName()));
+            this.historyDAO.addHistoryEntry(subjectEntity, HistoryEventType.DEVICE_REGISTRATION, Collections.singletonMap(
+                    SafeOnlineConstants.DEVICE_PROPERTY, device.getName()));
         } else if (this.expectedDeviceOperation.equals(DeviceOperationType.UPDATE)) {
             this.historyDAO.addHistoryEntry(subjectEntity, HistoryEventType.DEVICE_UPDATE, Collections.singletonMap(
                     SafeOnlineConstants.DEVICE_PROPERTY, device.getName()));

@@ -13,9 +13,9 @@ import net.link.safeonline.webapp.AcceptanceTestManager;
 
 /**
  * Acceptance test for user web application.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class UserTest extends TestCase {
 

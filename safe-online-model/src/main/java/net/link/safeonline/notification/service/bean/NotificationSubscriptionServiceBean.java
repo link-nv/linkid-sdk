@@ -65,13 +65,13 @@ public class NotificationSubscriptionServiceBean implements NotificationSubscrip
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void removeSubscription(String topic, EndpointReferenceEntity subscription)
-            throws SubscriptionNotFoundException, EndpointReferenceNotFoundException, PermissionDeniedException {
+    public void removeSubscription(String topic, EndpointReferenceEntity subscription) throws SubscriptionNotFoundException,
+                                                                                      EndpointReferenceNotFoundException,
+                                                                                      PermissionDeniedException {
 
         LOG.debug("remove subscription " + subscription.getName() + " for topic " + topic);
         if (null != subscription.getApplication()) {
-            this.notificationProducerService.unsubscribe(topic, subscription.getAddress(), subscription
-                    .getApplication());
+            this.notificationProducerService.unsubscribe(topic, subscription.getAddress(), subscription.getApplication());
 
         } else {
             this.notificationProducerService.unsubscribe(topic, subscription.getAddress(), subscription.getNode());

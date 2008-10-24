@@ -20,9 +20,9 @@ public class DERUtils {
 
     /**
      * Write the length of the byte sequence.
-     *
+     * 
      * Source: org.bouncycastle.asn1.DEROutputStream.writeLength
-     *
+     * 
      * @param length
      * @param out
      * @throws IOException

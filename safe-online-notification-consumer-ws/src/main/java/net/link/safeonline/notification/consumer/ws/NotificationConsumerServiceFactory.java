@@ -13,7 +13,6 @@ import javax.xml.namespace.QName;
 
 import net.lin_k.safe_online.notification.consumer.NotificationConsumerService;
 
-
 public class NotificationConsumerServiceFactory {
 
     private NotificationConsumerServiceFactory() {
@@ -21,15 +20,19 @@ public class NotificationConsumerServiceFactory {
         // empty
     }
 
+
     public static NotificationConsumerService newInstance() {
 
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        ClassLoader classLoader = Thread.currentThread()
+                .getContextClassLoader();
         URL wsdlUrl = classLoader.getResource("notification-consumer.wsdl");
         if (null == wsdlUrl)
             throw new RuntimeException("Notification Consumer WSDL not found");
 
-        NotificationConsumerService service = new NotificationConsumerService(wsdlUrl, new QName(
-                "urn:net:lin-k:safe-online:notification:consumer", "NotificationConsumerService"));
+        NotificationConsumerService service = new NotificationConsumerService(
+                wsdlUrl, new QName(
+                        "urn:net:lin-k:safe-online:notification:consumer",
+                        "NotificationConsumerService"));
 
         return service;
     }

@@ -26,8 +26,7 @@ public interface Identity {
     /*
      * Factories.
      */
-    void attributeListFactory() throws AttributeTypeNotFoundException, PermissionDeniedException,
-            ApplicationIdentityNotFoundException;
+    void attributeListFactory() throws AttributeTypeNotFoundException, PermissionDeniedException, ApplicationIdentityNotFoundException;
 
     /*
      * Accessors
@@ -39,8 +38,8 @@ public interface Identity {
      */
     String edit();
 
-    String removeAttribute() throws AttributeTypeNotFoundException, PermissionDeniedException,
-            AttributeNotFoundException, ApplicationIdentityNotFoundException;
+    String removeAttribute() throws AttributeTypeNotFoundException, PermissionDeniedException, AttributeNotFoundException,
+                            ApplicationIdentityNotFoundException;
 
     String add();
 }

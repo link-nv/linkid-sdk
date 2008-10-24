@@ -34,13 +34,13 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * SOAP Handler for TargetIdentity SOAP Header handling.
- *
+ * 
  * <p>
  * Specifications: Liberty ID-WSF SOAP Binding Specification 2.0
  * </p>
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class TargetIdentityClientHandler implements SOAPHandler<SOAPMessageContext> {
 
@@ -57,7 +57,7 @@ public class TargetIdentityClientHandler implements SOAPHandler<SOAPMessageConte
 
     /**
      * Sets the target identity, i.e. the user Id.
-     *
+     * 
      * @param targetIdentity
      */
     public void setTargetIdentity(String targetIdentity) {
@@ -107,8 +107,7 @@ public class TargetIdentityClientHandler implements SOAPHandler<SOAPMessageConte
         return true;
     }
 
-    private void addTargetIdentityHeader(SOAPHeader soapHeader, SOAPMessageContext soapContext) throws SOAPException,
-            JAXBException {
+    private void addTargetIdentityHeader(SOAPHeader soapHeader, SOAPMessageContext soapContext) throws SOAPException, JAXBException {
 
         if (null == this.targetIdentity)
             throw new IllegalStateException("TargetIdentity is null");
@@ -122,8 +121,7 @@ public class TargetIdentityClientHandler implements SOAPHandler<SOAPMessageConte
         targetIdentityHeaderElement.setMustUnderstand(true);
 
         /*
-         * Make sure that the WS-Security JAX-WS handler will include the TargetIdentity SOAP header element in the
-         * signature digest.
+         * Make sure that the WS-Security JAX-WS handler will include the TargetIdentity SOAP header element in the signature digest.
          */
         String id = "id-" + UUID.randomUUID().toString();
         targetIdentityHeaderElement.setAttributeNS(XMLNS_NS, "xmlns:" + WSU_PREFIX, WSU_NS);

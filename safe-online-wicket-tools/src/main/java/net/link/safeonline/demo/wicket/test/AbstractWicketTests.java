@@ -38,15 +38,15 @@ import org.junit.BeforeClass;
 /**
  * <h2>{@link AbstractWicketTests}<br>
  * <sub>[in short] (TODO).</sub></h2>
- *
+ * 
  * <p>
  * [description / usage].
  * </p>
- *
+ * 
  * <p>
  * <i>Oct 7, 2008</i>
  * </p>
- *
+ * 
  * @author lhunath
  */
 public abstract class AbstractWicketTests {
@@ -96,8 +96,7 @@ public abstract class AbstractWicketTests {
         wicketContext.addInitParameter(SafeOnlineLoginUtils.TARGET_BASE_URL_INIT_PARAM, "");
         wicketContext.addInitParameter(SafeOnlineLoginUtils.AUTH_SERVICE_URL_INIT_PARAM, "");
         wicketContext.addInitParameter(SafeOnlineLoginUtils.APPLICATION_NAME_INIT_PARAM, getClass().toString());
-        wicketContext.addInitParameter(SafeOnlineLoginUtils.AUTHN_PROTOCOL_INIT_PARAM, AuthenticationProtocol.UNIT_TEST
-                .name());
+        wicketContext.addInitParameter(SafeOnlineLoginUtils.AUTHN_PROTOCOL_INIT_PARAM, AuthenticationProtocol.UNIT_TEST.name());
         this.wicket.processRequestCycle();
     }
 
@@ -108,8 +107,8 @@ public abstract class AbstractWicketTests {
     }
 
     /**
-     * @return The index at which the {@link FormComponent} with the given id in the form of the given
-     *         {@link FormTester} has a value that matches the given pattern.
+     * @return The index at which the {@link FormComponent} with the given id in the form of the given {@link FormTester} has a value that
+     *         matches the given pattern.
      */
     @SuppressWarnings("unchecked")
     protected int findSelectIndex(FormTester form, String id, String pattern) {
@@ -135,8 +134,8 @@ public abstract class AbstractWicketTests {
             }
         }
 
-        throw new IllegalArgumentException("Component " + id + " in form " + form.getForm().getPath()
-                + " has no element that matches " + pattern);
+        throw new IllegalArgumentException("Component " + id + " in form " + form.getForm().getPath() + " has no element that matches "
+                + pattern);
     }
 
     /**

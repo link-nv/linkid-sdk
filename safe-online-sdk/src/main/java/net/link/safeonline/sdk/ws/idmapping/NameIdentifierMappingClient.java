@@ -15,18 +15,18 @@ import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 
 /**
  * Identifier Mapping Service Client interface.
- *
- * The calling application must have explicit permission to use the name identifier mapping web service. This permission
- * can be granted by the operator.
- *
+ * 
+ * The calling application must have explicit permission to use the name identifier mapping web service. This permission can be granted by
+ * the operator.
+ * 
  * @author fcorneli
- *
+ * 
  */
 public interface NameIdentifierMappingClient extends MessageAccessor {
 
     /**
      * Gives back the user Id corresponding with the given username.
-     *
+     * 
      * @param username
      *            the user name.
      * @return the user Id corresponding with the user name.
@@ -37,6 +37,5 @@ public interface NameIdentifierMappingClient extends MessageAccessor {
      * @throws WSClientTransportException
      *             in case the name identifier mapping service could not be reached.
      */
-    String getUserId(String username) throws SubjectNotFoundException, RequestDeniedException,
-            WSClientTransportException;
+    String getUserId(String username) throws SubjectNotFoundException, RequestDeniedException, WSClientTransportException;
 }

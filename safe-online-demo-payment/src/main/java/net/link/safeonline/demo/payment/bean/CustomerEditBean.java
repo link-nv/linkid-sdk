@@ -49,8 +49,7 @@ public class CustomerEditBean extends AbstractPaymentDataClientBean implements C
         this.log.debug("---------------------------------------- save #0 -----------------------------", this.name);
 
         try {
-            createOrUpdateAttribute(DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, Boolean.valueOf(this.customerStatus
-                    .isJunior()));
+            createOrUpdateAttribute(DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, Boolean.valueOf(this.customerStatus.isJunior()));
         } catch (WSClientTransportException e) {
             this.facesMessages.add("connection error");
             return null;
@@ -67,13 +66,12 @@ public class CustomerEditBean extends AbstractPaymentDataClientBean implements C
         return "success";
     }
 
-    private void createOrUpdateAttribute(String attributeName, Object attributeValue)
-            throws WSClientTransportException, RequestDeniedException, SubjectNotFoundException,
-            AttributeNotFoundException {
+    private void createOrUpdateAttribute(String attributeName, Object attributeValue) throws WSClientTransportException,
+                                                                                     RequestDeniedException, SubjectNotFoundException,
+                                                                                     AttributeNotFoundException {
 
         DataClient dataClient = getDataClient();
-        if (null == dataClient.getAttributeValue(this.customerStatus.getUserId(), attributeName, attributeValue
-                .getClass())) {
+        if (null == dataClient.getAttributeValue(this.customerStatus.getUserId(), attributeName, attributeValue.getClass())) {
             this.log.debug("create attribute #0 for #1", attributeName, this.name);
             dataClient.createAttribute(this.customerStatus.getUserId(), attributeName, attributeValue);
         } else {

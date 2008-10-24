@@ -48,7 +48,8 @@ public class DevicePolicyServiceBean implements DevicePolicyService {
 
 
     public List<DeviceEntity> getDevicePolicy(String applicationId, Set<DeviceEntity> requiredDevicePolicy)
-            throws ApplicationNotFoundException, EmptyDevicePolicyException {
+                                                                                                           throws ApplicationNotFoundException,
+                                                                                                           EmptyDevicePolicyException {
 
         LOG.debug("get device policy for application: " + applicationId);
         ApplicationEntity application = this.applicationDAO.getApplication(applicationId);
@@ -83,8 +84,8 @@ public class DevicePolicyServiceBean implements DevicePolicyService {
 
         if (null == locale)
             return deviceName;
-        DeviceDescriptionEntity deviceDescription = this.deviceDAO.findDescription(new DeviceDescriptionPK(deviceName,
-                locale.getLanguage()));
+        DeviceDescriptionEntity deviceDescription = this.deviceDAO
+                                                                  .findDescription(new DeviceDescriptionPK(deviceName, locale.getLanguage()));
         if (null == deviceDescription)
             return deviceName;
         return deviceDescription.getDescription();

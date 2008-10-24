@@ -7,5 +7,8 @@
 package net.link.safeonline.entity.pkix;
 
 public enum CachedOcspResultType {
-    REVOKED, SUSPENDED, GOOD, UNKNOWN
+    REVOKED,
+    SUSPENDED,
+    GOOD,
+    UNKNOWN
 }

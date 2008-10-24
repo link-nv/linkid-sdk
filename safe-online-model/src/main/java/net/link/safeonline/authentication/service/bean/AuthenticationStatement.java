@@ -11,11 +11,11 @@ import net.link.safeonline.authentication.exception.DecodingException;
 
 
 /**
- * Authentication Statement object class. Holds the structure and parser for the client-side generated authentication
- * statement. Can also verify the signature on the statement.
- *
+ * Authentication Statement object class. Holds the structure and parser for the client-side generated authentication statement. Can also
+ * verify the signature on the statement.
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class AuthenticationStatement extends AbstractStatement<AuthenticationStatementStructure> {
 

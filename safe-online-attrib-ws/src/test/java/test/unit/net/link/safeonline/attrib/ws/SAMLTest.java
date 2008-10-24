@@ -44,7 +44,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-
 public class SAMLTest {
 
     private static final Log LOG = LogFactory.getLog(SAMLTest.class);
@@ -60,11 +59,14 @@ public class SAMLTest {
         ObjectFactory objectFactory = new ObjectFactory();
         AssertionType assertion = objectFactory.createAssertionType();
 
-        List<StatementAbstractType> statements = assertion.getStatementOrAuthnStatementOrAuthzDecisionStatement();
-        AttributeStatementType attributeStatement = objectFactory.createAttributeStatementType();
+        List<StatementAbstractType> statements = assertion
+                .getStatementOrAuthnStatementOrAuthzDecisionStatement();
+        AttributeStatementType attributeStatement = objectFactory
+                .createAttributeStatementType();
         statements.add(attributeStatement);
 
-        List<Object> attributes = attributeStatement.getAttributeOrEncryptedAttribute();
+        List<Object> attributes = attributeStatement
+                .getAttributeOrEncryptedAttribute();
         AttributeType attribute = objectFactory.createAttributeType();
         attributes.add(attribute);
 
@@ -84,8 +86,10 @@ public class SAMLTest {
 
         JAXBContext context = JAXBContext.newInstance(ObjectFactory.class);
         Marshaller marshaller = context.createMarshaller();
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory
+                .newInstance();
+        DocumentBuilder documentBuilder = documentBuilderFactory
+                .newDocumentBuilder();
         Document document = documentBuilder.newDocument();
 
         // operate
@@ -95,10 +99,10 @@ public class SAMLTest {
         LOG.debug("result document: " + domToString(document));
 
         Element nsElement = document.createElement("nsElement");
-        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:saml",
-                "urn:oasis:names:tc:SAML:2.0:assertion");
-        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI, "xmlns:xsi",
-                "http://www.w3.org/2001/XMLSchema-instance");
+        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI,
+                "xmlns:saml", "urn:oasis:names:tc:SAML:2.0:assertion");
+        nsElement.setAttributeNS(XMLConstants.XMLNS_ATTRIBUTE_NS_URI,
+                "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
         Node resultNode = XPathAPI
                 .selectSingleNode(
                         document,
@@ -107,19 +111,25 @@ public class SAMLTest {
         assertNotNull(resultNode);
 
         Unmarshaller unmarshaller = context.createUnmarshaller();
-        JAXBElement<AssertionType> assertionElement = (JAXBElement<AssertionType>) unmarshaller.unmarshal(document);
+        JAXBElement<AssertionType> assertionElement = (JAXBElement<AssertionType>) unmarshaller
+                .unmarshal(document);
 
-        assertEquals(AttributeType.class, ((AttributeType) ((AttributeStatementType) assertionElement.getValue()
-                .getStatementOrAuthnStatementOrAuthzDecisionStatement().get(0)).getAttributeOrEncryptedAttribute().get(
-                0)).getAttributeValue().get(0).getClass());
+        assertEquals(AttributeType.class,
+                ((AttributeType) ((AttributeStatementType) assertionElement
+                        .getValue()
+                        .getStatementOrAuthnStatementOrAuthzDecisionStatement()
+                        .get(0)).getAttributeOrEncryptedAttribute().get(0))
+                        .getAttributeValue().get(0).getClass());
     }
+
 
     public static String domToString(Node domNode) throws TransformerException {
 
         Source source = new DOMSource(domNode);
         StringWriter stringWriter = new StringWriter();
         Result result = new StreamResult(stringWriter);
-        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        TransformerFactory transformerFactory = TransformerFactory
+                .newInstance();
         Transformer transformer = transformerFactory.newTransformer();
         transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
         transformer.transform(source, result);

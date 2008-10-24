@@ -35,8 +35,7 @@ public interface DeviceOperationResponse extends StatusResponseType {
     public static final String DEFAULT_ELEMENT_LOCAL_NAME   = "DeviceOperationResponse";
 
     /** Default element name. */
-    public static final QName  DEFAULT_ELEMENT_NAME         = new QName(SAMLConstants.SAML20P_NS,
-                                                                    DEFAULT_ELEMENT_LOCAL_NAME,
+    public static final QName  DEFAULT_ELEMENT_NAME         = new QName(SAMLConstants.SAML20P_NS, DEFAULT_ELEMENT_LOCAL_NAME,
                                                                     SAMLConstants.SAML20P_PREFIX);
 
     /** Local name of the XSI type. */

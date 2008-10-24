@@ -66,9 +66,9 @@ import org.bouncycastle.ocsp.UnknownStatus;
 
 /**
  * OCSP Validator Bean. Specification available at: http://www.ietf.org/rfc/rfc2560.txt
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Stateless
 public class OcspValidatorBean implements OcspValidator {
@@ -133,8 +133,7 @@ public class OcspValidatorBean implements OcspValidator {
         }
         if (null == certs) {
             /*
-             * Although the sequence of certificates is optional according to RFC 2560 we require it for OCSP Response
-             * validation.
+             * Although the sequence of certificates is optional according to RFC 2560 we require it for OCSP Response validation.
              */
             LOG.debug("certs is null");
             return OcspResult.FAILED;
@@ -150,8 +149,7 @@ public class OcspValidatorBean implements OcspValidator {
          */
         LOG.debug("OCSP Responder Certificate: " + ocspResponderCertificate);
         try {
-            boolean verifyResult = basicOCSPResp.verify(ocspResponderCertificate.getPublicKey(),
-                    BouncyCastleProvider.PROVIDER_NAME);
+            boolean verifyResult = basicOCSPResp.verify(ocspResponderCertificate.getPublicKey(), BouncyCastleProvider.PROVIDER_NAME);
             LOG.debug("verify result: " + verifyResult);
             if (!verifyResult) {
                 LOG.debug("verify result was false");
@@ -172,10 +170,9 @@ public class OcspValidatorBean implements OcspValidator {
             return OcspResult.FAILED;
         }
         /*
-         * Verify the OCSP Responder certificate according to RFC 2560 - 2.6 OCSP Signature Authority Delegation. Here
-         * we assume that the OCSP Responder certificate is issued by the issuer CA. It's also possible that the issuer
-         * CA certificate itself did generate the OCSP Response signature. In that case we don't need to check the OCSP
-         * Responder certificate.
+         * Verify the OCSP Responder certificate according to RFC 2560 - 2.6 OCSP Signature Authority Delegation. Here we assume that the
+         * OCSP Responder certificate is issued by the issuer CA. It's also possible that the issuer CA certificate itself did generate the
+         * OCSP Response signature. In that case we don't need to check the OCSP Responder certificate.
          */
         try {
             if (false == issuerCertificate.equals(ocspResponderCertificate)) {
@@ -207,9 +204,8 @@ public class OcspValidatorBean implements OcspValidator {
         LOG.debug("this update: " + singleResp.getThisUpdate());
         LOG.debug("next update: " + singleResp.getNextUpdate());
         /*
-         * TODO: if nextUpdate is not null (see RFC 2560 - 2.4) we should use min(OCSP cache config expiration,
-         * nextUpdate) for OCSP cache timeout value. Of course we could allow the operator to override the OCSP hint to
-         * reduce the load on the OCSP responder.
+         * TODO: if nextUpdate is not null (see RFC 2560 - 2.4) we should use min(OCSP cache config expiration, nextUpdate) for OCSP cache
+         * timeout value. Of course we could allow the operator to override the OCSP hint to reduce the load on the OCSP responder.
          */
         LOG.debug("cert serial nr: " + singleResp.getCertID().getSerialNumber());
         if (!certificate.getSerialNumber().equals(singleResp.getCertID().getSerialNumber())) {
@@ -281,18 +277,18 @@ public class OcspValidatorBean implements OcspValidator {
             responseCode = connection.getResponseCode();
         } catch (ConnectException e) {
             LOG.debug("OCSP Responder is down");
-            this.resourceAuditLogger.addResourceAudit(ResourceNameType.OCSP, ResourceLevelType.RESOURCE_UNAVAILABLE,
-                    ocspUrl.getPath(), "OCSP Responder is down");
+            this.resourceAuditLogger.addResourceAudit(ResourceNameType.OCSP, ResourceLevelType.RESOURCE_UNAVAILABLE, ocspUrl.getPath(),
+                    "OCSP Responder is down");
             return null;
         } catch (UnknownHostException e) {
             LOG.debug("unknown OCSP responder: " + ocspUrl.getPath());
-            this.resourceAuditLogger.addResourceAudit(ResourceNameType.OCSP, ResourceLevelType.RESOURCE_UNKNOWN,
-                    ocspUrl.getPath(), "unknown OCSP Responder");
+            this.resourceAuditLogger.addResourceAudit(ResourceNameType.OCSP, ResourceLevelType.RESOURCE_UNKNOWN, ocspUrl.getPath(),
+                    "unknown OCSP Responder");
             return null;
         } catch (IOException e) {
             LOG.debug("IO exception type: " + e.getClass().getName());
-            this.resourceAuditLogger.addResourceAudit(ResourceNameType.OCSP, ResourceLevelType.RESOURCE_UNKNOWN,
-                    ocspUrl.getPath(), "IO exception type: " + e.getClass().getName());
+            this.resourceAuditLogger.addResourceAudit(ResourceNameType.OCSP, ResourceLevelType.RESOURCE_UNKNOWN, ocspUrl.getPath(),
+                    "IO exception type: " + e.getClass().getName());
             throw new RuntimeException("I/O error: " + e.getMessage(), e);
         }
 
@@ -339,15 +335,13 @@ public class OcspValidatorBean implements OcspValidator {
             return null;
         DEROctetString oct;
         try {
-            oct = (DEROctetString) new ASN1InputStream(new ByteArrayInputStream(authInfoAccessExtensionValue))
-                    .readObject();
+            oct = (DEROctetString) new ASN1InputStream(new ByteArrayInputStream(authInfoAccessExtensionValue)).readObject();
         } catch (IOException e) {
             throw new RuntimeException("IO error: " + e.getMessage(), e);
         }
         AuthorityInformationAccess authorityInformationAccess;
         try {
-            authorityInformationAccess = new AuthorityInformationAccess((ASN1Sequence) new ASN1InputStream(oct
-                    .getOctets()).readObject());
+            authorityInformationAccess = new AuthorityInformationAccess((ASN1Sequence) new ASN1InputStream(oct.getOctets()).readObject());
         } catch (IOException e) {
             throw new RuntimeException("IO error: " + e.getMessage(), e);
         }

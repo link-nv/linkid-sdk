@@ -63,8 +63,7 @@ public class SmartCardConfigFactoryImplTest extends TestCase {
     public void testGetSmartCardConfigs() throws Exception {
 
         // setup
-        URL testConfigResource = SmartCardConfigFactoryImpl.class
-                .getResource("/test-safe-online-pkcs11-sc-config.properties");
+        URL testConfigResource = SmartCardConfigFactoryImpl.class.getResource("/test-safe-online-pkcs11-sc-config.properties");
 
         this.testClassLoader.addResource("META-INF/safe-online-pkcs11-sc-config.properties", testConfigResource);
 

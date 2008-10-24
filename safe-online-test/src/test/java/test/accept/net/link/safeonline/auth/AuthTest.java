@@ -13,9 +13,9 @@ import net.link.safeonline.webapp.AcceptanceTestManager;
 
 /**
  * Acceptance test for auth web application.
- *
+ * 
  * @author mbillemo
- *
+ * 
  */
 public class AuthTest extends TestCase {
 

@@ -39,15 +39,13 @@ public class ApplicationPoolDAOBean implements ApplicationPoolDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                ApplicationPoolEntity.QueryInterface.class);
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, ApplicationPoolEntity.QueryInterface.class);
     }
 
     public ApplicationPoolEntity findApplicationPool(String applicationPoolName) {
 
         LOG.debug("find application pool: " + applicationPoolName);
-        ApplicationPoolEntity applicationPool = this.entityManager.find(ApplicationPoolEntity.class,
-                applicationPoolName);
+        ApplicationPoolEntity applicationPool = this.entityManager.find(ApplicationPoolEntity.class, applicationPoolName);
         return applicationPool;
     }
 
@@ -79,11 +77,9 @@ public class ApplicationPoolDAOBean implements ApplicationPoolDAO {
         this.entityManager.remove(applicationPool);
     }
 
-    public List<ApplicationPoolEntity> listCommonApplicationPools(ApplicationEntity application1,
-            ApplicationEntity application2) {
+    public List<ApplicationPoolEntity> listCommonApplicationPools(ApplicationEntity application1, ApplicationEntity application2) {
 
-        List<ApplicationPoolEntity> applicationPools = this.queryObject.listCommonApplicationPools(application1,
-                application2);
+        List<ApplicationPoolEntity> applicationPools = this.queryObject.listCommonApplicationPools(application1, application2);
         return applicationPools;
     }
 

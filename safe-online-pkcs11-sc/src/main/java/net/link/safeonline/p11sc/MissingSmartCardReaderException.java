@@ -12,9 +12,9 @@ import java.io.IOException;
 
 /**
  * Signals that no smart card reader is present on the system.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class MissingSmartCardReaderException extends IOException {
 

@@ -12,9 +12,9 @@ import java.util.Locale;
 
 /**
  * /dev/null implementation of the smart card interaction interface.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class NullSmartCardInteraction implements SmartCardInteraction {
 

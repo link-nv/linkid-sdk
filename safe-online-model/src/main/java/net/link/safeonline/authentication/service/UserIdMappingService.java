@@ -18,19 +18,18 @@ public interface UserIdMappingService {
 
     /**
      * Returns the application specific user id as specified in the application's id scope.
-     *
+     * 
      * @param applicationName
      * @param userId
      * @throws ApplicationNotFoundException
      * @throws SubscriptionNotFoundException
      */
-    String getApplicationUserId(String applicationName, String userId) throws ApplicationNotFoundException,
-            SubscriptionNotFoundException;
+    String getApplicationUserId(String applicationName, String userId) throws ApplicationNotFoundException, SubscriptionNotFoundException;
 
     /**
-     * Returns the SafeOnline global user id using the application's id scope settings and provided application id.
-     * Returns null if not found.
-     *
+     * Returns the SafeOnline global user id using the application's id scope settings and provided application id. Returns null if not
+     * found.
+     * 
      * @param applicationName
      * @param applicationUserId
      * @throws ApplicationNotFoundException

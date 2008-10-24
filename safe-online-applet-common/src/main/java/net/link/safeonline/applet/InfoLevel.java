@@ -9,9 +9,10 @@ package net.link.safeonline.applet;
 
 /**
  * The info level for output messages.
- *
+ * 
  * @author fcorneli
  */
 public enum InfoLevel {
-    NORMAL, ERROR
+    NORMAL,
+    ERROR
 }

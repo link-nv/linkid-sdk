@@ -60,7 +60,7 @@ import org.oasis_open.docs.wsn.b_2.TopicExpressionType;
 public class NotificationProducerPortImplTest {
 
     private static final Log                                                     LOG = LogFactory
-                                                                                             .getLog(NotificationProducerPortImplTest.class);
+                                                                                                 .getLog(NotificationProducerPortImplTest.class);
 
     private WebServiceTestUtils                                                  webServiceTestUtils;
 
@@ -107,28 +107,23 @@ public class NotificationProducerPortImplTest {
         this.mockPkiValidator = createMock(PkiValidator.class);
         this.mockNotificationProducerService = createMock(net.link.safeonline.notification.service.NotificationProducerService.class);
 
-        this.mockObjects = new Object[] { this.mockWSSecurityConfigurationService,
-                this.mockApplicationAuthenticationService, this.mockDeviceAuthenticationService,
-                this.mockNodeAuthenticationService, this.mockPkiValidator, this.mockNotificationProducerService };
+        this.mockObjects = new Object[] { this.mockWSSecurityConfigurationService, this.mockApplicationAuthenticationService,
+                this.mockDeviceAuthenticationService, this.mockNodeAuthenticationService, this.mockPkiValidator,
+                this.mockNotificationProducerService };
 
-        this.jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local",
-                this.mockWSSecurityConfigurationService);
-        this.jndiTestUtils.bindComponent("SafeOnline/ApplicationAuthenticationServiceBean/local",
-                this.mockApplicationAuthenticationService);
-        this.jndiTestUtils.bindComponent("SafeOnline/DeviceAuthenticationServiceBean/local",
-                this.mockDeviceAuthenticationService);
-        this.jndiTestUtils.bindComponent("SafeOnline/NodeAuthenticationServiceBean/local",
-                this.mockNodeAuthenticationService);
+        this.jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local", this.mockWSSecurityConfigurationService);
+        this.jndiTestUtils
+                          .bindComponent("SafeOnline/ApplicationAuthenticationServiceBean/local", this.mockApplicationAuthenticationService);
+        this.jndiTestUtils.bindComponent("SafeOnline/DeviceAuthenticationServiceBean/local", this.mockDeviceAuthenticationService);
+        this.jndiTestUtils.bindComponent("SafeOnline/NodeAuthenticationServiceBean/local", this.mockNodeAuthenticationService);
         this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local", this.mockPkiValidator);
-        this.jndiTestUtils.bindComponent("SafeOnline/NotificationProducerServiceBean/local",
-                this.mockNotificationProducerService);
+        this.jndiTestUtils.bindComponent("SafeOnline/NotificationProducerServiceBean/local", this.mockNotificationProducerService);
 
         // expectations
-        expect(
-                this.mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock
-                        .anyObject())).andStubReturn(PkiResult.VALID);
-        expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(
-                Long.MAX_VALUE);
+        expect(this.mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock.anyObject()))
+                                                                                                                                .andStubReturn(
+                                                                                                                                        PkiResult.VALID);
+        expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
 
         JaasTestUtils.initJaasLoginModule(DummyLoginModule.class);
         NotificationProducerPort wsPort = new NotificationProducerPortImpl();
@@ -152,8 +147,7 @@ public class NotificationProducerPortImplTest {
         BindingProvider bindingProvider = (BindingProvider) this.clientPort;
         Binding binding = bindingProvider.getBinding();
         List<Handler> handlerChain = binding.getHandlerChain();
-        Handler<SOAPMessageContext> wsSecurityHandler = new WSSecurityClientHandler(this.certificate, keyPair
-                .getPrivate());
+        Handler<SOAPMessageContext> wsSecurityHandler = new WSSecurityClientHandler(this.certificate, keyPair.getPrivate());
         handlerChain.add(wsSecurityHandler);
         binding.setHandlerChain(handlerChain);
 
@@ -187,14 +181,12 @@ public class NotificationProducerPortImplTest {
         request.setFilter(filter);
 
         // expectations
-        expect(this.mockApplicationAuthenticationService.authenticate(this.certificate)).andReturn(
-                "test-application-name");
+        expect(this.mockApplicationAuthenticationService.authenticate(this.certificate)).andReturn("test-application-name");
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
         expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
         expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
-        this.mockNotificationProducerService
-                .subscribe(SafeOnlineConstants.TOPIC_REMOVE_USER, address, this.certificate);
+        this.mockNotificationProducerService.subscribe(SafeOnlineConstants.TOPIC_REMOVE_USER, address, this.certificate);
 
         // prepare
         replay(this.mockObjects);

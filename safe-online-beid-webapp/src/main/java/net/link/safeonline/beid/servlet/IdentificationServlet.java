@@ -21,9 +21,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Entry-point for identification web application service.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class IdentificationServlet extends HttpServlet {
 
@@ -47,8 +47,7 @@ public class IdentificationServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         doGet(request, response);
     }

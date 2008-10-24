@@ -35,14 +35,14 @@ import org.jfree.data.xy.XYSeries;
 /**
  * <h2>{@link ScenarioDriverDurationsChart}<br>
  * <sub>A chart module that renders a detail of driver activity.</sub></h2>
- *
+ * 
  * <p>
  * </p>
- *
+ * 
  * <p>
  * <i>Mar 4, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ScenarioDriverDurationsChart extends AbstractChart {
@@ -155,8 +155,7 @@ public class ScenarioDriverDurationsChart extends AbstractChart {
 
         XYSeries measurementSet = driverMap.get(measurement.getMeasurement());
         if (measurementSet == null) {
-            driverMap.put(measurement.getMeasurement(), measurementSet = new XYSeries(measurement.getMeasurement(),
-                    true, false));
+            driverMap.put(measurement.getMeasurement(), measurementSet = new XYSeries(measurement.getMeasurement(), true, false));
         }
 
         return measurementSet;

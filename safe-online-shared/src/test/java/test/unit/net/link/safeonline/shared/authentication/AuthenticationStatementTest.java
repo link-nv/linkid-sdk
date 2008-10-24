@@ -32,8 +32,7 @@ public class AuthenticationStatementTest extends TestCase {
 
         // setup
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair,
-                "CN=AuthenticationCertificate");
+        X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=AuthenticationCertificate");
         String sessionId = UUID.randomUUID().toString();
         String applicationId = UUID.randomUUID().toString();
 

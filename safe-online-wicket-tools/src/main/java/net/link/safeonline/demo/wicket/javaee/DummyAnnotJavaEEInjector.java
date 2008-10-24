@@ -43,10 +43,9 @@ public class DummyAnnotJavaEEInjector extends AnnotJavaEEInjector {
             /**
              * {@inheritDoc}
              * 
-             * We override this to disable the internal cache of {@link JavaEEProxyFieldValueFactory}. Inside Unit
-             * tests, the entity manager is recreated very often. Caching beans means the old beans still use a closed
-             * and replaced entity manager. We should do a new (dummy) JNDI lookup each time (cheap anyway); the updated
-             * bean with correct entity manager will be available there.
+             * We override this to disable the internal cache of {@link JavaEEProxyFieldValueFactory}. Inside Unit tests, the entity manager
+             * is recreated very often. Caching beans means the old beans still use a closed and replaced entity manager. We should do a new
+             * (dummy) JNDI lookup each time (cheap anyway); the updated bean with correct entity manager will be available there.
              */
             @Override
             public Object getFieldValue(Field field, Object fieldOwner) {
@@ -58,16 +57,15 @@ public class DummyAnnotJavaEEInjector extends AnnotJavaEEInjector {
             /**
              * {@inheritDoc}
              * 
-             * We override this method to use our own bean lookup mechanisms. Since we're not using the real JNDI (we're
-             * not in a JavaEE context; there is no real JNDI available) but a {@link DummyJndi}, use the
-             * {@link DummyJavaEEBeanLocator} and consorts to do the lookups of our "beans".
+             * We override this method to use our own bean lookup mechanisms. Since we're not using the real JNDI (we're not in a JavaEE
+             * context; there is no real JNDI available) but a {@link DummyJndi}, use the {@link DummyJavaEEBeanLocator} and consorts to do
+             * the lookups of our "beans".
              */
             @Override
             protected IProxyTargetLocator getProxyTargetLocator(Field field) {
 
                 if (field.isAnnotationPresent(EJB.class))
-                    return new DummyJavaEEBeanLocator(field.getAnnotation(EJB.class).name(), field.getType(),
-                            this.namingStrategy);
+                    return new DummyJavaEEBeanLocator(field.getAnnotation(EJB.class).name(), field.getType(), this.namingStrategy);
 
                 if (field.isAnnotationPresent(PersistenceUnit.class))
                     return new EntityManagerFactoryLocator(field.getAnnotation(PersistenceUnit.class).unitName());

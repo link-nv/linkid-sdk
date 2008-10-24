@@ -92,13 +92,11 @@ public class PrescriptionCreateBean extends AbstractPrescriptionDataClientBean i
         String careProviderName = super.getUsername(careProvider);
         String patientName = super.getUsername(this.patient);
 
-        PrescriptionEntity prescription = new PrescriptionEntity(this.patient, patientName, careProvider,
-                careProviderName);
+        PrescriptionEntity prescription = new PrescriptionEntity(this.patient, patientName, careProvider, careProviderName);
         this.entityManager.persist(prescription);
         this.log.debug("prescription id: #0", prescription.getId());
         for (String selectedMedicine : this.selectedMedicines) {
-            PrescriptionMedicineEntity prescriptionMedicine = new PrescriptionMedicineEntity(prescription,
-                    selectedMedicine);
+            PrescriptionMedicineEntity prescriptionMedicine = new PrescriptionMedicineEntity(prescription, selectedMedicine);
             this.entityManager.persist(prescriptionMedicine);
         }
         return "created";

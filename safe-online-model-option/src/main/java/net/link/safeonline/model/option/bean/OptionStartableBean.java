@@ -50,24 +50,23 @@ public class OptionStartableBean extends AbstractInitBean {
 
         configureNode();
 
-        AttributeTypeEntity imeiAttributeType = new AttributeTypeEntity(OptionConstants.IMEI_OPTION_ATTRIBUTE,
-                DatatypeType.STRING, true, false);
+        AttributeTypeEntity imeiAttributeType = new AttributeTypeEntity(OptionConstants.IMEI_OPTION_ATTRIBUTE, DatatypeType.STRING, true,
+                false);
 
         this.attributeTypes.add(imeiAttributeType);
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(imeiAttributeType, Locale.ENGLISH
-                .getLanguage(), "Imei", null));
+        this.attributeTypeDescriptions
+                                      .add(new AttributeTypeDescriptionEntity(imeiAttributeType, Locale.ENGLISH.getLanguage(), "Imei", null));
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(imeiAttributeType, "nl", "Imei", null));
 
-        AttributeTypeEntity pinAttributeType = new AttributeTypeEntity(OptionConstants.PIN_OPTION_ATTRIBUTE,
-                DatatypeType.STRING, false, false);
+        AttributeTypeEntity pinAttributeType = new AttributeTypeEntity(OptionConstants.PIN_OPTION_ATTRIBUTE, DatatypeType.STRING, false,
+                false);
 
         this.attributeTypes.add(pinAttributeType);
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(pinAttributeType, Locale.ENGLISH
-                .getLanguage(), "PIN", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(pinAttributeType, Locale.ENGLISH.getLanguage(), "PIN", null));
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(pinAttributeType, "nl", "PIN", null));
 
-        AttributeTypeEntity optionDeviceDisableAttributeType = new AttributeTypeEntity(
-                OptionConstants.OPTION_DEVICE_DISABLE_ATTRIBUTE, DatatypeType.BOOLEAN, false, false);
+        AttributeTypeEntity optionDeviceDisableAttributeType = new AttributeTypeEntity(OptionConstants.OPTION_DEVICE_DISABLE_ATTRIBUTE,
+                DatatypeType.BOOLEAN, false, false);
         optionDeviceDisableAttributeType.setMultivalued(true);
         this.attributeTypes.add(optionDeviceDisableAttributeType);
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(optionDeviceDisableAttributeType,
@@ -75,30 +74,28 @@ public class OptionStartableBean extends AbstractInitBean {
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(optionDeviceDisableAttributeType, "nl",
                 "Option Disable Attribuut", null));
 
-        AttributeTypeEntity optionDeviceAttributeType = new AttributeTypeEntity(
-                OptionConstants.OPTION_DEVICE_ATTRIBUTE, DatatypeType.COMPOUNDED, true, false);
+        AttributeTypeEntity optionDeviceAttributeType = new AttributeTypeEntity(OptionConstants.OPTION_DEVICE_ATTRIBUTE,
+                DatatypeType.COMPOUNDED, true, false);
         optionDeviceAttributeType.setMultivalued(true);
         optionDeviceAttributeType.addMember(imeiAttributeType, 0, true);
         optionDeviceAttributeType.addMember(pinAttributeType, 1, true);
         optionDeviceAttributeType.addMember(optionDeviceDisableAttributeType, 2, true);
         this.attributeTypes.add(optionDeviceAttributeType);
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(optionDeviceAttributeType, Locale.ENGLISH
-                .getLanguage(), "Option", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(optionDeviceAttributeType, "nl",
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(optionDeviceAttributeType, Locale.ENGLISH.getLanguage(),
                 "Option", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(optionDeviceAttributeType, "nl", "Option", null));
 
         X509Certificate certificate = (X509Certificate) OptionKeyStoreUtils.getPrivateKeyEntry().getCertificate();
 
         ResourceBundle properties = ResourceBundle.getBundle("config");
         String nodeName = properties.getString("olas.node.name");
 
-        this.devices.add(new Device(OptionConstants.OPTION_DEVICE_ID, SafeOnlineConstants.MOBILE_DEVICE_CLASS,
-                nodeName, "/olas-option/auth", "/olas-option/device", "/olas-option/device", null,
-                "/olas-option/device", certificate, optionDeviceAttributeType, imeiAttributeType,
-                optionDeviceDisableAttributeType));
+        this.devices.add(new Device(OptionConstants.OPTION_DEVICE_ID, SafeOnlineConstants.MOBILE_DEVICE_CLASS, nodeName,
+                "/olas-option/auth", "/olas-option/device", "/olas-option/device", null, "/olas-option/device", certificate,
+                optionDeviceAttributeType, imeiAttributeType, optionDeviceDisableAttributeType));
         this.deviceDescriptions.add(new DeviceDescription(OptionConstants.OPTION_DEVICE_ID, "nl", "Option Datakaart"));
-        this.deviceDescriptions.add(new DeviceDescription(OptionConstants.OPTION_DEVICE_ID, Locale.ENGLISH
-                .getLanguage(), "Option Data Card"));
+        this.deviceDescriptions.add(new DeviceDescription(OptionConstants.OPTION_DEVICE_ID, Locale.ENGLISH.getLanguage(),
+                "Option Data Card"));
         this.trustedCertificates.put(certificate, SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
     }
 
@@ -114,10 +111,9 @@ public class OptionStartableBean extends AbstractInitBean {
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
         IdentityServiceClient identityServiceClient = new IdentityServiceClient();
 
-        this.node = new Node(nodeName, protocol, hostname, hostport, hostportssl, authIdentityServiceClient
-                .getCertificate(), identityServiceClient.getCertificate());
-        this.trustedCertificates.put(authIdentityServiceClient.getCertificate(),
-                SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
+        this.node = new Node(nodeName, protocol, hostname, hostport, hostportssl, authIdentityServiceClient.getCertificate(),
+                identityServiceClient.getCertificate());
+        this.trustedCertificates.put(authIdentityServiceClient.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
     }
 
     @Override

@@ -9,19 +9,19 @@ package net.link.safeonline.applet.exception;
 /**
  * <h2>{@link NoHelpdeskConfiguredException}<br>
  * <sub>[in short] (TODO).</sub></h2>
- *
+ * 
  * <p>
  * [description / usage].
  * </p>
- *
+ * 
  * <p>
  * <i>Sep 5, 2008</i>
  * </p>
- *
+ * 
  * @author dhouthoo
  */
 public class NoHelpdeskConfiguredException extends Exception {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
 }

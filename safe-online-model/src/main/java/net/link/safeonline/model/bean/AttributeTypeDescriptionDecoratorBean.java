@@ -32,8 +32,8 @@ public class AttributeTypeDescriptionDecoratorBean implements AttributeTypeDescr
     private AttributeTypeDAO attributeTypeDAO;
 
 
-    public List<AttributeDO> addDescriptionFromIdentityAttributes(
-            Collection<ApplicationIdentityAttributeEntity> identityAttributes, Locale locale) {
+    public List<AttributeDO> addDescriptionFromIdentityAttributes(Collection<ApplicationIdentityAttributeEntity> identityAttributes,
+                                                                  Locale locale) {
 
         List<AttributeDO> attributes = new LinkedList<AttributeDO>();
         String language = null;
@@ -48,7 +48,8 @@ public class AttributeTypeDescriptionDecoratorBean implements AttributeTypeDescr
             String description = null;
             if (null != language) {
                 AttributeTypeDescriptionEntity attributeTypeDescription = this.attributeTypeDAO
-                        .findDescription(new AttributeTypeDescriptionPK(name, language));
+                                                                                               .findDescription(new AttributeTypeDescriptionPK(
+                                                                                                       name, language));
                 if (null != attributeTypeDescription) {
                     humanReadableName = attributeTypeDescription.getName();
                     description = attributeTypeDescription.getDescription();

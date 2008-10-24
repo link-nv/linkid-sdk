@@ -35,11 +35,11 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 
 
 /**
- * Definition of the attribute provider entity. This entity manages the write and unconfirmed read access control of
- * applications towards attributes.
- *
+ * Definition of the attribute provider entity. This entity manages the write and unconfirmed read access control of applications towards
+ * attributes.
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Entity
 @Table(name = "attribute_provider")
@@ -84,8 +84,7 @@ public class AttributeProviderEntity implements Serializable {
     }
 
     @EmbeddedId
-    @AttributeOverrides( {
-            @AttributeOverride(name = "applicationName", column = @Column(name = APPLICATION_NAME_COLUMN_NAME)),
+    @AttributeOverrides( { @AttributeOverride(name = "applicationName", column = @Column(name = APPLICATION_NAME_COLUMN_NAME)),
             @AttributeOverride(name = "attributeTypeName", column = @Column(name = ATTRIBUTE_TYPE_NAME_COLUMN_NAME)) })
     public AttributeProviderPK getPk() {
 
@@ -156,8 +155,7 @@ public class AttributeProviderEntity implements Serializable {
     public interface QueryInterface {
 
         @QueryMethod(QUERY_WHERE_ATTRIBUTE_TYPE)
-        List<AttributeProviderEntity> listAttributeProviders(
-                @QueryParam("attributeType") AttributeTypeEntity attributeType);
+        List<AttributeProviderEntity> listAttributeProviders(@QueryParam("attributeType") AttributeTypeEntity attributeType);
 
         @UpdateMethod(DELETE_WHERE_APPLICATION)
         int removeAttributeProviders(@QueryParam("application") ApplicationEntity application);

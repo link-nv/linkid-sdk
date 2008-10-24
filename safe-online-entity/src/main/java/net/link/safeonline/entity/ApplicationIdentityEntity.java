@@ -42,10 +42,8 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 @Table(name = "application_identity")
 @NamedQueries( {
         @NamedQuery(name = QUERY_WHERE_APPLICATION, query = "SELECT applicationIdentity "
-                + "FROM ApplicationIdentityEntity AS applicationIdentity "
-                + "WHERE applicationIdentity.application = :application"),
-        @NamedQuery(name = QUERY_LIST_ALL, query = "SELECT applicationIdentity "
-                + "FROM ApplicationIdentityEntity AS applicationIdentity") })
+                + "FROM ApplicationIdentityEntity AS applicationIdentity " + "WHERE applicationIdentity.application = :application"),
+        @NamedQuery(name = QUERY_LIST_ALL, query = "SELECT applicationIdentity " + "FROM ApplicationIdentityEntity AS applicationIdentity") })
 public class ApplicationIdentityEntity implements Serializable {
 
     private static final long                       serialVersionUID        = 1L;
@@ -170,8 +168,7 @@ public class ApplicationIdentityEntity implements Serializable {
     public interface QueryInterface {
 
         @QueryMethod(QUERY_WHERE_APPLICATION)
-        List<ApplicationIdentityEntity> listApplicationIdentities(
-                @QueryParam("application") ApplicationEntity application);
+        List<ApplicationIdentityEntity> listApplicationIdentities(@QueryParam("application") ApplicationEntity application);
 
         @QueryMethod(QUERY_LIST_ALL)
         List<ApplicationIdentityEntity> listApplicationIdentities();

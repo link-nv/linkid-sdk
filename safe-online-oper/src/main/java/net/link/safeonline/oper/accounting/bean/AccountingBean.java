@@ -131,8 +131,8 @@ public class AccountingBean implements Accounting {
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public String viewStat() {
 
-        this.chartURL = "view.chart?chartname=" + this.selectedStat.getName() + "&domain="
-                + this.selectedStat.getDomain() + "&applicationname=" + this.selectedApplication.getName();
+        this.chartURL = "view.chart?chartname=" + this.selectedStat.getName() + "&domain=" + this.selectedStat.getDomain()
+                + "&applicationname=" + this.selectedApplication.getName();
         return "viewstat";
 
     }
@@ -158,11 +158,11 @@ public class AccountingBean implements Accounting {
 
         DateTime dt = new DateTime();
         DateTimeFormatter fmt = DateTimeFormat.forPattern("dd-MM-yyyy_HHmmss");
-        String filename = "accounting_" + this.selectedApplication.getName() + "_" + this.selectedStat.getName() + "_"
-                + dt.toString(fmt) + ".xls";
+        String filename = "accounting_" + this.selectedApplication.getName() + "_" + this.selectedStat.getName() + "_" + dt.toString(fmt)
+                + ".xls";
 
-        String exportURL = filename + "?chartname=" + this.selectedStat.getName() + "&domain="
-                + this.selectedStat.getDomain() + "&applicationname=" + this.selectedApplication.getName();
+        String exportURL = filename + "?chartname=" + this.selectedStat.getName() + "&domain=" + this.selectedStat.getDomain()
+                + "&applicationname=" + this.selectedApplication.getName();
 
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext externalContext = context.getExternalContext();

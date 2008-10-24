@@ -69,8 +69,8 @@ public class NoTablesRadioButtonRenderer extends Renderer {
         }
     }
 
-    protected void renderOption(FacesContext context, UIComponent component, SelectItem curItem, int itemNumber,
-            String styleClass) throws IOException {
+    protected void renderOption(FacesContext context, UIComponent component, SelectItem curItem, int itemNumber, String styleClass)
+                                                                                                                                   throws IOException {
 
         ResponseWriter writer = context.getResponseWriter();
         assert writer != null;
@@ -93,8 +93,7 @@ public class NoTablesRadioButtonRenderer extends Renderer {
         // component);
         Object newValue = context.getApplication().getExpressionFactory().coerceToType(itemValue, type);
 
-        String idString = component.getClientId(context) + NamingContainer.SEPARATOR_CHAR
-                + Integer.toString(itemNumber);
+        String idString = component.getClientId(context) + NamingContainer.SEPARATOR_CHAR + Integer.toString(itemNumber);
 
         writer.startElement("label", component);
         writer.writeAttribute("for", idString, "for");
@@ -140,8 +139,7 @@ public class NoTablesRadioButtonRenderer extends Renderer {
 
     }
 
-    public static Iterator<SelectItem> getSelectItems(@SuppressWarnings("unused") FacesContext context,
-            UIComponent component) {
+    public static Iterator<SelectItem> getSelectItems(@SuppressWarnings("unused") FacesContext context, UIComponent component) {
 
         ArrayList<SelectItem> list = new ArrayList<SelectItem>();
         for (UIComponent kid : component.getChildren())
@@ -150,8 +148,8 @@ public class NoTablesRadioButtonRenderer extends Renderer {
                 Object value = item.getValue();
 
                 if (value == null) {
-                    list.add(new SelectItem(item.getItemValue(), item.getItemLabel(), item.getItemDescription(), item
-                            .isItemDisabled(), item.isItemEscaped()));
+                    list.add(new SelectItem(item.getItemValue(), item.getItemLabel(), item.getItemDescription(), item.isItemDisabled(),
+                            item.isItemEscaped()));
                 } else if (value instanceof SelectItem) {
                     list.add((SelectItem) value);
                 } else {

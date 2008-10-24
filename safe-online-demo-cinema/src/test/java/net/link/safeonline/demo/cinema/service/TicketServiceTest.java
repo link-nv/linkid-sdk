@@ -150,8 +150,7 @@ public class TicketServiceTest extends AbstractCinemaServiceTest {
         sampleUser.setNrn(testUserNrn);
 
         // - Create the ticket and reserve it (pay for it)
-        CinemaTicketEntity sampleTicket = this.ticketService.createTicket(sampleUser, sampleFilm, testSeatTime,
-                sampleOccupation);
+        CinemaTicketEntity sampleTicket = this.ticketService.createTicket(sampleUser, sampleFilm, testSeatTime, sampleOccupation);
         double sampleTicketPrice = sampleTicket.getPrice();
         assertEquals(String.format("price mismatch: test: %s - sample: %s", testTicketPrice, sampleTicketPrice), //
                 testTicketPrice, sampleTicketPrice, 0);

@@ -53,8 +53,7 @@ import org.jboss.seam.faces.FacesMessages;
 @Interceptors(ErrorMessageInterceptor.class)
 public class ApplicationPoolBean implements ApplicationPool {
 
-    private static final Log               LOG                                         = LogFactory
-                                                                                               .getLog(ApplicationPoolBean.class);
+    private static final Log               LOG                                         = LogFactory.getLog(ApplicationPoolBean.class);
 
     private static final String            OPER_APPLICATION_POOL_LIST_NAME             = "operApplicationPoolList";
 
@@ -213,8 +212,7 @@ public class ApplicationPoolBean implements ApplicationPool {
             this.applicationPoolService.removeApplicationPool(applicationPoolName);
         } catch (PermissionDeniedException e) {
             LOG.debug("permission denied to remove: " + applicationPoolName);
-            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), e
-                    .getResourceArgs());
+            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), e.getResourceArgs());
             return null;
         }
         applicationPoolListFactory();
@@ -280,8 +278,8 @@ public class ApplicationPoolBean implements ApplicationPool {
 
         } catch (ExistingApplicationPoolException e) {
             LOG.debug("application pool already exists: " + this.name);
-            this.facesMessages.addToControlFromResourceBundle("name", FacesMessage.SEVERITY_ERROR,
-                    "errorApplicationPoolAlreadyExists", this.name);
+            this.facesMessages.addToControlFromResourceBundle("name", FacesMessage.SEVERITY_ERROR, "errorApplicationPoolAlreadyExists",
+                    this.name);
             return null;
         }
 

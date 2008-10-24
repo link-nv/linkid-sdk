@@ -46,8 +46,7 @@ public class DeviceOperationResponseUnmarshaller extends StatusResponseTypeUnmar
     }
 
     @Override
-    protected void processChildElement(XMLObject parentSAMLObject, XMLObject childSAMLObject)
-            throws UnmarshallingException {
+    protected void processChildElement(XMLObject parentSAMLObject, XMLObject childSAMLObject) throws UnmarshallingException {
 
         DeviceOperationResponse resp = (DeviceOperationResponse) parentSAMLObject;
 

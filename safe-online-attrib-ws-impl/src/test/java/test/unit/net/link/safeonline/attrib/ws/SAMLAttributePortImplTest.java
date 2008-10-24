@@ -148,38 +148,35 @@ public class SAMLAttributePortImplTest {
 
         this.mockObjects = new Object[] { this.mockWSSecurityConfigurationService, this.mockAttributeService,
                 this.mockNodeAttributeService, this.mockPkiValidator, this.mockApplicationAuthenticationService,
-                this.mockSamlAuthorityService, this.mockApplicationManager,
-                this.mockApplicationIdentifierMappingService };
+                this.mockSamlAuthorityService, this.mockApplicationManager, this.mockApplicationIdentifierMappingService };
 
-        this.jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local",
-                this.mockWSSecurityConfigurationService);
+        this.jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local", this.mockWSSecurityConfigurationService);
         this.jndiTestUtils.bindComponent("SafeOnline/AttributeServiceBean/local", this.mockAttributeService);
         this.jndiTestUtils.bindComponent("SafeOnline/NodeAttributeServiceBean/local", this.mockNodeAttributeService);
         this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local", this.mockPkiValidator);
-        this.jndiTestUtils.bindComponent("SafeOnline/ApplicationAuthenticationServiceBean/local",
-                this.mockApplicationAuthenticationService);
-        this.jndiTestUtils.bindComponent("SafeOnline/DeviceAuthenticationServiceBean/local",
-                this.mockDeviceAuthenticationService);
-        this.jndiTestUtils.bindComponent("SafeOnline/NodeAuthenticationServiceBean/local",
-                this.mockNodeAuthenticationService);
+        this.jndiTestUtils
+                          .bindComponent("SafeOnline/ApplicationAuthenticationServiceBean/local", this.mockApplicationAuthenticationService);
+        this.jndiTestUtils.bindComponent("SafeOnline/DeviceAuthenticationServiceBean/local", this.mockDeviceAuthenticationService);
+        this.jndiTestUtils.bindComponent("SafeOnline/NodeAuthenticationServiceBean/local", this.mockNodeAuthenticationService);
         this.jndiTestUtils.bindComponent("SafeOnline/SamlAuthorityServiceBean/local", this.mockSamlAuthorityService);
         this.jndiTestUtils.bindComponent("SafeOnline/ApplicationManagerBean/local", this.mockApplicationManager);
         this.jndiTestUtils.bindComponent("SafeOnline/ApplicationIdentifierMappingServiceBean/local",
                 this.mockApplicationIdentifierMappingService);
 
-        expect(
-                this.mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock
-                        .anyObject())).andStubReturn(PkiResult.VALID);
+        expect(this.mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock.anyObject()))
+                                                                                                                                .andStubReturn(
+                                                                                                                                        PkiResult.VALID);
 
-        expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(
-                Long.MAX_VALUE);
+        expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
 
-        expect(this.mockApplicationManager.getCallerApplication()).andStubReturn(
-                new ApplicationEntity(this.testApplicationId, null, new ApplicationOwnerEntity(), null, null, null,
-                        null, this.certificate));
+        expect(this.mockApplicationManager.getCallerApplication())
+                                                                  .andStubReturn(
+                                                                          new ApplicationEntity(this.testApplicationId, null,
+                                                                                  new ApplicationOwnerEntity(), null, null, null, null,
+                                                                                  this.certificate));
 
-        expect(this.mockApplicationIdentifierMappingService.findUserId(this.testApplicationId, this.testSubjectLogin))
-                .andStubReturn(this.testSubjectId);
+        expect(this.mockApplicationIdentifierMappingService.findUserId(this.testApplicationId, this.testSubjectLogin)).andStubReturn(
+                this.testSubjectId);
 
         JaasTestUtils.initJaasLoginModule(DummyLoginModule.class);
 
@@ -204,8 +201,7 @@ public class SAMLAttributePortImplTest {
         BindingProvider bindingProvider = (BindingProvider) this.clientPort;
         Binding binding = bindingProvider.getBinding();
         List<Handler> handlerChain = binding.getHandlerChain();
-        Handler<SOAPMessageContext> wsSecurityHandler = new WSSecurityClientHandler(this.certificate, keyPair
-                .getPrivate());
+        Handler<SOAPMessageContext> wsSecurityHandler = new WSSecurityClientHandler(this.certificate, keyPair.getPrivate());
         handlerChain.add(wsSecurityHandler);
         binding.setHandlerChain(handlerChain);
     }
@@ -244,10 +240,8 @@ public class SAMLAttributePortImplTest {
         expect(this.mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
 
         // expectations
-        expect(this.mockAttributeService.getConfirmedAttributeValue(this.testSubjectId, testAttributeName)).andReturn(
-                testAttributeValue);
-        expect(this.mockApplicationAuthenticationService.authenticate(this.certificate)).andReturn(
-                "test-application-name");
+        expect(this.mockAttributeService.getConfirmedAttributeValue(this.testSubjectId, testAttributeName)).andReturn(testAttributeValue);
+        expect(this.mockApplicationAuthenticationService.authenticate(this.certificate)).andReturn("test-application-name");
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
         expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
@@ -274,8 +268,7 @@ public class SAMLAttributePortImplTest {
         NameIDType resultSubjectName = (NameIDType) resultSubjectContent.get(0).getValue();
         assertEquals(this.testSubjectId, resultSubjectName.getValue());
 
-        List<StatementAbstractType> resultStatements = resultAssertion
-                .getStatementOrAuthnStatementOrAuthzDecisionStatement();
+        List<StatementAbstractType> resultStatements = resultAssertion.getStatementOrAuthnStatementOrAuthzDecisionStatement();
         assertEquals(1, resultStatements.size());
         AttributeStatementType resultAttributeStatement = (AttributeStatementType) resultStatements.get(0);
         List<Object> resultAttributes = resultAttributeStatement.getAttributeOrEncryptedAttribute();
@@ -326,10 +319,8 @@ public class SAMLAttributePortImplTest {
         expect(this.mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
 
         // expectations
-        expect(this.mockAttributeService.getConfirmedAttributeValue(this.testSubjectId, testAttributeName)).andReturn(
-                testAttributeValues);
-        expect(this.mockApplicationAuthenticationService.authenticate(this.certificate)).andReturn(
-                this.testApplicationId);
+        expect(this.mockAttributeService.getConfirmedAttributeValue(this.testSubjectId, testAttributeName)).andReturn(testAttributeValues);
+        expect(this.mockApplicationAuthenticationService.authenticate(this.certificate)).andReturn(this.testApplicationId);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
         expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
@@ -356,8 +347,7 @@ public class SAMLAttributePortImplTest {
         NameIDType resultSubjectName = (NameIDType) resultSubjectContent.get(0).getValue();
         assertEquals(this.testSubjectId, resultSubjectName.getValue());
 
-        List<StatementAbstractType> resultStatements = resultAssertion
-                .getStatementOrAuthnStatementOrAuthzDecisionStatement();
+        List<StatementAbstractType> resultStatements = resultAssertion.getStatementOrAuthnStatementOrAuthzDecisionStatement();
         assertEquals(1, resultStatements.size());
         AttributeStatementType resultAttributeStatement = (AttributeStatementType) resultStatements.get(0);
         List<Object> resultAttributes = resultAttributeStatement.getAttributeOrEncryptedAttribute();
@@ -365,8 +355,7 @@ public class SAMLAttributePortImplTest {
         LOG.debug("result attribute type: " + resultAttributes.get(0).getClass().getName());
         AttributeType resultAttribute = (AttributeType) resultAttributes.get(0);
         assertEquals(testAttributeName, resultAttribute.getName());
-        assertEquals(Boolean.TRUE.toString(), resultAttribute.getOtherAttributes().get(
-                WebServiceConstants.MULTIVALUED_ATTRIBUTE));
+        assertEquals(Boolean.TRUE.toString(), resultAttribute.getOtherAttributes().get(WebServiceConstants.MULTIVALUED_ATTRIBUTE));
         List<Object> resultAttributeValues = resultAttribute.getAttributeValue();
         assertEquals(2, resultAttributeValues.size());
         Object resultAttributeValueObject = resultAttributeValues.get(0);
@@ -421,10 +410,8 @@ public class SAMLAttributePortImplTest {
         expect(this.mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
 
         // expectations
-        expect(this.mockAttributeService.getConfirmedAttributeValue(this.testSubjectId, testAttributeName)).andReturn(
-                testAttributeValues);
-        expect(this.mockApplicationAuthenticationService.authenticate(this.certificate)).andReturn(
-                this.testApplicationId);
+        expect(this.mockAttributeService.getConfirmedAttributeValue(this.testSubjectId, testAttributeName)).andReturn(testAttributeValues);
+        expect(this.mockApplicationAuthenticationService.authenticate(this.certificate)).andReturn(this.testApplicationId);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
         expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
@@ -451,8 +438,7 @@ public class SAMLAttributePortImplTest {
         NameIDType resultSubjectName = (NameIDType) resultSubjectContent.get(0).getValue();
         assertEquals(this.testSubjectId, resultSubjectName.getValue());
 
-        List<StatementAbstractType> resultStatements = resultAssertion
-                .getStatementOrAuthnStatementOrAuthzDecisionStatement();
+        List<StatementAbstractType> resultStatements = resultAssertion.getStatementOrAuthnStatementOrAuthzDecisionStatement();
         assertEquals(1, resultStatements.size());
         AttributeStatementType resultAttributeStatement = (AttributeStatementType) resultStatements.get(0);
         List<Object> resultAttributes = resultAttributeStatement.getAttributeOrEncryptedAttribute();
@@ -460,8 +446,7 @@ public class SAMLAttributePortImplTest {
         LOG.debug("result attribute type: " + resultAttributes.get(0).getClass().getName());
         AttributeType resultAttribute = (AttributeType) resultAttributes.get(0);
         assertEquals(testAttributeName, resultAttribute.getName());
-        assertEquals(Boolean.TRUE.toString(), resultAttribute.getOtherAttributes().get(
-                WebServiceConstants.MULTIVALUED_ATTRIBUTE));
+        assertEquals(Boolean.TRUE.toString(), resultAttribute.getOtherAttributes().get(WebServiceConstants.MULTIVALUED_ATTRIBUTE));
         List<Object> resultAttributeValues = resultAttribute.getAttributeValue();
         assertEquals(2, resultAttributeValues.size());
 
@@ -499,10 +484,8 @@ public class SAMLAttributePortImplTest {
         expect(this.mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
 
         // expectations
-        expect(this.mockAttributeService.getConfirmedAttributeValue(this.testSubjectId, testAttributeName)).andReturn(
-                testAttributeValue);
-        expect(this.mockApplicationAuthenticationService.authenticate(this.certificate)).andReturn(
-                this.testApplicationId);
+        expect(this.mockAttributeService.getConfirmedAttributeValue(this.testSubjectId, testAttributeName)).andReturn(testAttributeValue);
+        expect(this.mockApplicationAuthenticationService.authenticate(this.certificate)).andReturn(this.testApplicationId);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
         expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
@@ -529,8 +512,7 @@ public class SAMLAttributePortImplTest {
         NameIDType resultSubjectName = (NameIDType) resultSubjectContent.get(0).getValue();
         assertEquals(this.testSubjectId, resultSubjectName.getValue());
 
-        List<StatementAbstractType> resultStatements = resultAssertion
-                .getStatementOrAuthnStatementOrAuthzDecisionStatement();
+        List<StatementAbstractType> resultStatements = resultAssertion.getStatementOrAuthnStatementOrAuthzDecisionStatement();
         assertEquals(1, resultStatements.size());
         AttributeStatementType resultAttributeStatement = (AttributeStatementType) resultStatements.get(0);
         List<Object> resultAttributes = resultAttributeStatement.getAttributeOrEncryptedAttribute();
@@ -568,8 +550,7 @@ public class SAMLAttributePortImplTest {
         // expectations
         expect(this.mockAttributeService.getConfirmedAttributeValue(this.testSubjectId, testAttributeName)).andThrow(
                 new AttributeTypeNotFoundException());
-        expect(this.mockApplicationAuthenticationService.authenticate(this.certificate)).andReturn(
-                this.testApplicationId);
+        expect(this.mockApplicationAuthenticationService.authenticate(this.certificate)).andReturn(this.testApplicationId);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
         expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);

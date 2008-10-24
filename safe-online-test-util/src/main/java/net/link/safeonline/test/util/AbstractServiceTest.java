@@ -18,21 +18,22 @@ import org.junit.Before;
 /**
  * <h2>{@link AbstractServiceTest}<br>
  * <sub>[in short] (TODO).</sub></h2>
- *
+ * 
  * <p>
  * [description / usage].
  * </p>
- *
+ * 
  * <p>
  * <i>Oct 16, 2008</i>
  * </p>
- *
+ * 
  * @author lhunath
  */
 public abstract class AbstractServiceTest {
 
     protected EntityManager   em;
     private EntityTestManager testEntityManager;
+
 
     @Before
     public void setup() throws Exception {

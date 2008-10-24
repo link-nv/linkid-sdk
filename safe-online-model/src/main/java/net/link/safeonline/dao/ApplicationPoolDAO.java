@@ -55,8 +55,7 @@ public interface ApplicationPoolDAO {
      * Gives back a list of all common application pools between the 2 specified applications.
      * 
      */
-    List<ApplicationPoolEntity> listCommonApplicationPools(ApplicationEntity application1,
-            ApplicationEntity application2);
+    List<ApplicationPoolEntity> listCommonApplicationPools(ApplicationEntity application1, ApplicationEntity application2);
 
     void removeApplicationPool(ApplicationPoolEntity applicationPool);
 

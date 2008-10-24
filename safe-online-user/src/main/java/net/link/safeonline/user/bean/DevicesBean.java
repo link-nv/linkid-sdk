@@ -150,8 +150,7 @@ public class DevicesBean implements Devices {
     @ErrorHandling( {
             @Error(exceptionClass = PermissionDeniedException.class, messageId = "errorOldPasswordNotCorrect", fieldId = "newpassword"),
             @Error(exceptionClass = DeviceNotFoundException.class, messageId = "errorOldPasswordNotFound", fieldId = "newpassword") })
-    public String registerPassword() throws SubjectNotFoundException, PermissionDeniedException,
-            DeviceNotFoundException {
+    public String registerPassword() throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException {
 
         this.credentialService.registerPassword(this.newPassword);
         this.credentialCacheFlushRequired = true;
@@ -190,16 +189,15 @@ public class DevicesBean implements Devices {
         LOG.debug("destroy callback");
         if (this.credentialCacheFlushRequired) {
             /*
-             * We will set a HTTP session attribute to communicate to the JAAS Login Filter that the credential cache
-             * for the caller principal needs to be flushed.
+             * We will set a HTTP session attribute to communicate to the JAAS Login Filter that the credential cache for the caller
+             * principal needs to be flushed.
              */
             try {
                 /*
-                 * The JACC spec is not really clear here whether we can retrieve the HttpServletRequest also from
-                 * within the EJB container, or only from within the Servlet container.
+                 * The JACC spec is not really clear here whether we can retrieve the HttpServletRequest also from within the EJB container,
+                 * or only from within the Servlet container.
                  */
-                HttpServletRequest httpServletRequest = (HttpServletRequest) PolicyContext
-                        .getContext(HttpServletRequest.class.getName());
+                HttpServletRequest httpServletRequest = (HttpServletRequest) PolicyContext.getContext(HttpServletRequest.class.getName());
                 if (null != httpServletRequest) {
                     HttpSession session = httpServletRequest.getSession();
                     String attributeName = "FlushJBossCredentialCache";
@@ -227,8 +225,8 @@ public class DevicesBean implements Devices {
 
     @RolesAllowed(UserConstants.USER_ROLE)
     @Factory(DEVICE_REGISTRATIONS_LIST_NAME)
-    public List<DeviceRegistrationDO> deviceRegistrationsFactory() throws SubjectNotFoundException,
-            DeviceNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException {
+    public List<DeviceRegistrationDO> deviceRegistrationsFactory() throws SubjectNotFoundException, DeviceNotFoundException,
+                                                                  PermissionDeniedException, AttributeTypeNotFoundException {
 
         Locale locale = getViewLocale();
         LOG.debug("device registrations factory");
@@ -268,8 +266,8 @@ public class DevicesBean implements Devices {
             externalContext.redirect(registrationURL);
             return null;
         }
-        DeviceOperationUtils.redirect(registrationURL, DeviceOperationType.REGISTER, this.selectedDevice.getDevice()
-                .getName(), this.authenticatedDevice, userId, null);
+        DeviceOperationUtils.redirect(registrationURL, DeviceOperationType.REGISTER, this.selectedDevice.getDevice().getName(),
+                this.authenticatedDevice, userId, null);
         return null;
     }
 
@@ -284,16 +282,14 @@ public class DevicesBean implements Devices {
         String userId = this.subjectManager.getCallerSubject().getUserId();
         String removalURL = this.selectedDeviceRegistration.getDevice().getRemovalURL();
 
-        if (this.selectedDeviceRegistration.getDevice().getName().equals(
-                SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
+        if (this.selectedDeviceRegistration.getDevice().getName().equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
             FacesContext context = FacesContext.getCurrentInstance();
             ExternalContext externalContext = context.getExternalContext();
             externalContext.redirect(removalURL);
             return null;
         }
-        DeviceOperationUtils.redirect(removalURL, DeviceOperationType.REMOVE, this.selectedDeviceRegistration
-                .getDevice().getName(), this.authenticatedDevice, userId, this.selectedDeviceRegistration
-                .getAttribute());
+        DeviceOperationUtils.redirect(removalURL, DeviceOperationType.REMOVE, this.selectedDeviceRegistration.getDevice().getName(),
+                this.authenticatedDevice, userId, this.selectedDeviceRegistration.getAttribute());
         return null;
     }
 
@@ -311,22 +307,20 @@ public class DevicesBean implements Devices {
         String userId = this.subjectManager.getCallerSubject().getUserId();
         String updateURL = this.selectedDeviceRegistration.getDevice().getUpdateURL();
 
-        if (this.selectedDeviceRegistration.getDevice().getName().equals(
-                SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
+        if (this.selectedDeviceRegistration.getDevice().getName().equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
             FacesContext context = FacesContext.getCurrentInstance();
             ExternalContext externalContext = context.getExternalContext();
             externalContext.redirect(updateURL);
             return null;
         }
-        DeviceOperationUtils.redirect(updateURL, DeviceOperationType.UPDATE, this.selectedDeviceRegistration
-                .getDevice().getName(), this.authenticatedDevice, userId, this.selectedDeviceRegistration
-                .getAttribute());
+        DeviceOperationUtils.redirect(updateURL, DeviceOperationType.UPDATE, this.selectedDeviceRegistration.getDevice().getName(),
+                this.authenticatedDevice, userId, this.selectedDeviceRegistration.getAttribute());
         return null;
     }
 
     @RolesAllowed(UserConstants.USER_ROLE)
-    public String disableDevice() throws DeviceNotFoundException, IOException, SubjectNotFoundException,
-            PermissionDeniedException, AttributeTypeNotFoundException {
+    public String disableDevice() throws DeviceNotFoundException, IOException, SubjectNotFoundException, PermissionDeniedException,
+                                 AttributeTypeNotFoundException {
 
         if (!deviceRemovalDisablingAllowed()) {
             this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
@@ -336,16 +330,15 @@ public class DevicesBean implements Devices {
         LOG.debug("disable device: " + this.selectedDeviceRegistration.getFriendlyName());
         String userId = this.subjectManager.getCallerSubject().getUserId();
 
-        if (this.selectedDeviceRegistration.getDevice().getName().equals(
-                SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
+        if (this.selectedDeviceRegistration.getDevice().getName().equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
             this.credentialService.disablePassword();
             deviceRegistrationsFactory();
             return "success";
         }
 
-        DeviceOperationUtils.redirect(this.selectedDeviceRegistration.getDevice().getDisableURL(),
-                DeviceOperationType.DISABLE, this.selectedDeviceRegistration.getDevice().getName(),
-                this.authenticatedDevice, userId, this.selectedDeviceRegistration.getAttribute());
+        DeviceOperationUtils.redirect(this.selectedDeviceRegistration.getDevice().getDisableURL(), DeviceOperationType.DISABLE,
+                this.selectedDeviceRegistration.getDevice().getName(), this.authenticatedDevice, userId,
+                this.selectedDeviceRegistration.getAttribute());
         return null;
     }
 

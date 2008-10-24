@@ -32,9 +32,9 @@ import org.apache.myfaces.renderkit.html.util.AddResourceFactory;
 
 /**
  * JSF input component for {@link AttributeDO}.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class AttributeInputComponent extends UIInput {
 
@@ -134,9 +134,9 @@ public class AttributeInputComponent extends UIInput {
 
     /**
      * This is the lightweight version of JSF Renderer interface.
-     *
+     * 
      * @author fcorneli
-     *
+     * 
      */
     private interface Renderer {
 
@@ -232,8 +232,7 @@ public class AttributeInputComponent extends UIInput {
             }
         }
 
-        public void encodeEnd(FacesContext context, @SuppressWarnings("unused") UIInput inputComponent)
-                throws IOException {
+        public void encodeEnd(FacesContext context, @SuppressWarnings("unused") UIInput inputComponent) throws IOException {
 
             ResponseWriter responseWriter = context.getResponseWriter();
 
@@ -294,8 +293,7 @@ public class AttributeInputComponent extends UIInput {
             }
         }
 
-        public void encodeEnd(FacesContext context, @SuppressWarnings("unused") UIInput inputComponent)
-                throws IOException {
+        public void encodeEnd(FacesContext context, @SuppressWarnings("unused") UIInput inputComponent) throws IOException {
 
             ResponseWriter responseWriter = context.getResponseWriter();
             responseWriter.endElement("input");
@@ -364,8 +362,7 @@ public class AttributeInputComponent extends UIInput {
             }
         }
 
-        public void encodeEnd(FacesContext context, @SuppressWarnings("unused") UIInput inputComponent)
-                throws IOException {
+        public void encodeEnd(FacesContext context, @SuppressWarnings("unused") UIInput inputComponent) throws IOException {
 
             ResponseWriter responseWriter = context.getResponseWriter();
             responseWriter.endElement("input");
@@ -484,8 +481,7 @@ public class AttributeInputComponent extends UIInput {
             return clientId + ".year";
         }
 
-        public void encodeEnd(FacesContext context, @SuppressWarnings("unused") UIInput inputComponent)
-                throws IOException {
+        public void encodeEnd(FacesContext context, @SuppressWarnings("unused") UIInput inputComponent) throws IOException {
 
             ResponseWriter responseWriter = context.getResponseWriter();
             responseWriter.endElement("span");
@@ -558,8 +554,8 @@ public class AttributeInputComponent extends UIInput {
                     responseWriter.writeAttribute("name", clientId, "id");
                     responseWriter.writeAttribute("value", "true", null);
                     responseWriter.writeAttribute("id", trueId, null);
-                    responseWriter.writeAttribute("onclick", "threeValuedCheckboxClicked(this.checked, this.form, '"
-                            + falseId + "')", null);
+                    responseWriter
+                                  .writeAttribute("onclick", "threeValuedCheckboxClicked(this.checked, this.form, '" + falseId + "')", null);
                     if (null != style) {
                         responseWriter.writeAttribute("class", style, "checkboxStyleClass");
                     }
@@ -587,8 +583,7 @@ public class AttributeInputComponent extends UIInput {
                     responseWriter.writeAttribute("name", clientId, "id");
                     responseWriter.writeAttribute("value", "false", null);
                     responseWriter.writeAttribute("id", falseId, null);
-                    responseWriter.writeAttribute("onclick", "threeValuedCheckboxClicked(this.checked, this.form, '"
-                            + trueId + "')", null);
+                    responseWriter.writeAttribute("onclick", "threeValuedCheckboxClicked(this.checked, this.form, '" + trueId + "')", null);
                     if (null != style) {
                         responseWriter.writeAttribute("class", style, "checkboxStyleClass");
                     }
@@ -634,16 +629,14 @@ public class AttributeInputComponent extends UIInput {
             Map<String, Object> requestMap = externalContext.getRequestMap();
             if (true == requestMap.containsKey(INLINE_SCRIPT_ADDED))
                 /*
-                 * The inline script was already added by a previous call to render a component instance of this
-                 * component type.
+                 * The inline script was already added by a previous call to render a component instance of this component type.
                  */
                 return false;
             requestMap.put(INLINE_SCRIPT_ADDED, Boolean.TRUE);
             return true;
         }
 
-        public void encodeEnd(FacesContext context, @SuppressWarnings("unused") UIInput inputComponent)
-                throws IOException {
+        public void encodeEnd(FacesContext context, @SuppressWarnings("unused") UIInput inputComponent) throws IOException {
 
             ResponseWriter responseWriter = context.getResponseWriter();
 

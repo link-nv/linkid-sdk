@@ -32,16 +32,14 @@ import com.sun.xml.ws.client.ClientTransportException;
 
 
 /**
- * Implementation of the WS-Notification consumer interface. This class is using JAX-WS, secured via WS-Security and
- * server-side SSL.
- *
+ * Implementation of the WS-Notification consumer interface. This class is using JAX-WS, secured via WS-Security and server-side SSL.
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class NotificationConsumerClientImpl extends AbstractMessageAccessor implements NotificationConsumerClient {
 
-    private static final Log               LOG                  = LogFactory
-                                                                        .getLog(NotificationConsumerClientImpl.class);
+    private static final Log               LOG                  = LogFactory.getLog(NotificationConsumerClientImpl.class);
 
     private static final String            TOPIC_DIALECT_SIMPLE = "http://docs.oasis-open.org/wsn/t-1/TopicExpression/Simple";
 
@@ -52,7 +50,7 @@ public class NotificationConsumerClientImpl extends AbstractMessageAccessor impl
 
     /**
      * Main constructor.
-     *
+     * 
      * @param location
      *            the location (full) of the notification web service.
      * @param clientCertificate
@@ -60,8 +58,7 @@ public class NotificationConsumerClientImpl extends AbstractMessageAccessor impl
      * @param clientPrivateKey
      *            the private key corresponding with the client certificate.
      */
-    public NotificationConsumerClientImpl(String location, X509Certificate clientCertificate,
-            PrivateKey clientPrivateKey) {
+    public NotificationConsumerClientImpl(String location, X509Certificate clientCertificate, PrivateKey clientPrivateKey) {
 
         NotificationConsumerService consumerService = NotificationConsumerServiceFactory.newInstance();
         this.port = consumerService.getNotificationConsumerPort();
@@ -79,11 +76,9 @@ public class NotificationConsumerClientImpl extends AbstractMessageAccessor impl
         bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location);
     }
 
-    public void sendNotification(String topic, String destination, List<String> message)
-            throws WSClientTransportException {
+    public void sendNotification(String topic, String destination, List<String> message) throws WSClientTransportException {
 
-        LOG.debug("send notification to " + this.location + " for topic: " + topic + " (destination=" + destination
-                + ")");
+        LOG.debug("send notification to " + this.location + " for topic: " + topic + " (destination=" + destination + ")");
 
         TopicExpressionType topicExpression = new TopicExpressionType();
         topicExpression.setDialect(TOPIC_DIALECT_SIMPLE);

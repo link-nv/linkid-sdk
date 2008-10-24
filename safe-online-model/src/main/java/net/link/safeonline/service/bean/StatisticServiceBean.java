@@ -69,7 +69,7 @@ public class StatisticServiceBean implements StatisticService, StatisticServiceR
 
     @RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
     public StatisticEntity getStatistic(String statisticName, String statisticDomain, String applicationName)
-            throws StatisticNotFoundException {
+                                                                                                             throws StatisticNotFoundException {
 
         ApplicationEntity application = null;
         if (applicationName != null) {
@@ -82,11 +82,10 @@ public class StatisticServiceBean implements StatisticService, StatisticServiceR
 
     @Interceptors(ApplicationOwnerAccessControlInterceptor.class)
     private StatisticEntity getStatistic(String statisticName, String statisticDomain, ApplicationEntity application)
-            throws StatisticNotFoundException {
+                                                                                                                     throws StatisticNotFoundException {
 
         LOG.debug("finding statistic");
-        StatisticEntity statistic = this.statisticDAO.findStatisticByNameDomainAndApplication(statisticName,
-                statisticDomain, application);
+        StatisticEntity statistic = this.statisticDAO.findStatisticByNameDomainAndApplication(statisticName, statisticDomain, application);
         if (statistic == null)
             throw new StatisticNotFoundException();
 
@@ -106,8 +105,7 @@ public class StatisticServiceBean implements StatisticService, StatisticServiceR
     }
 
     @RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
-    public JFreeChart getChart(String statisticName, String statisticDomain, String applicationName)
-            throws StatisticNotFoundException {
+    public JFreeChart getChart(String statisticName, String statisticDomain, String applicationName) throws StatisticNotFoundException {
 
         StatisticEntity statistic = this.getStatistic(statisticName, statisticDomain, applicationName);
 
@@ -144,7 +142,7 @@ public class StatisticServiceBean implements StatisticService, StatisticServiceR
                 true, // include legend
                 true, // tooltips?
                 false // URLs?
-                );
+                                       );
         return chart;
     }
 
@@ -167,8 +165,8 @@ public class StatisticServiceBean implements StatisticService, StatisticServiceR
         dataset.addSeries(numberOfActiveUsers);
         dataset.addSeries(numberOfLogins);
 
-        JFreeChart chart = ChartFactory.createXYLineChart(statistic.getName(), "Time", "Number", dataset,
-                PlotOrientation.VERTICAL, true, true, false);
+        JFreeChart chart = ChartFactory.createXYLineChart(statistic.getName(), "Time", "Number", dataset, PlotOrientation.VERTICAL, true,
+                true, false);
 
         chart.getXYPlot().setDomainAxis(new DateAxis());
         XYLineAndShapeRenderer renderer = new XYLineAndShapeRenderer();
@@ -194,8 +192,7 @@ public class StatisticServiceBean implements StatisticService, StatisticServiceR
     }
 
     @RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
-    public HSSFWorkbook exportStatistics(String applicationName) throws ApplicationNotFoundException,
-            StatisticNotFoundException {
+    public HSSFWorkbook exportStatistics(String applicationName) throws ApplicationNotFoundException, StatisticNotFoundException {
 
         ApplicationEntity application = this.applicationDAO.getApplication(applicationName);
 
@@ -209,7 +206,7 @@ public class StatisticServiceBean implements StatisticService, StatisticServiceR
 
     @RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
     public HSSFWorkbook exportStatistic(String statisticName, String statisticDomain, String applicationName)
-            throws StatisticNotFoundException {
+                                                                                                             throws StatisticNotFoundException {
 
         StatisticEntity statistic = this.getStatistic(statisticName, statisticDomain, applicationName);
 
@@ -269,8 +266,7 @@ public class StatisticServiceBean implements StatisticService, StatisticServiceR
         mainSheet.autoSizeColumn((short) 12);
         mainSheet.autoSizeColumn((short) 13);
 
-        JFreeChart chart = this.getChart(statistic.getName(), statistic.getDomain(), statistic.getApplication()
-                .getName());
+        JFreeChart chart = this.getChart(statistic.getName(), statistic.getDomain(), statistic.getApplication().getName());
 
         byte[] image = null;
 

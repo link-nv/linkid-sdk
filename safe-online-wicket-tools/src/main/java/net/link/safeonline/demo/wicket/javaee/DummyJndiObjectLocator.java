@@ -14,15 +14,15 @@ import org.wicketstuff.javaee.JndiObjectLocator;
 /**
  * <h2>{@link DummyJndiObjectLocator}<br>
  * <sub>[in short] (TODO).</sub></h2>
- *
+ * 
  * <p>
  * [description / usage].
  * </p>
- *
+ * 
  * <p>
  * <i>Oct 7, 2008</i>
  * </p>
- *
+ * 
  * @author lhunath
  */
 public class DummyJndiObjectLocator extends JndiObjectLocator {
@@ -35,7 +35,6 @@ public class DummyJndiObjectLocator extends JndiObjectLocator {
 
         super(name, type);
     }
-
 
     @Override
     @SuppressWarnings("unchecked")

@@ -21,9 +21,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Dummy MBean for unit testing purposes.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class DynamicTestMBean implements DynamicMBean {
 
@@ -34,7 +34,7 @@ public class DynamicTestMBean implements DynamicMBean {
 
     /**
      * Registers an action handler that this dynamic test MBean will be using when invoking actions.
-     *
+     * 
      * @param actionName
      * @param action
      */

@@ -78,8 +78,8 @@ public class AttributeTypeServiceBean implements AttributeTypeService, Attribute
     }
 
     @RolesAllowed(SafeOnlineRoles.GLOBAL_OPERATOR_ROLE)
-    public void add(AttributeTypeEntity attributeType) throws ExistingAttributeTypeException,
-            AttributeTypeNotFoundException, AttributeTypeDefinitionException {
+    public void add(AttributeTypeEntity attributeType) throws ExistingAttributeTypeException, AttributeTypeNotFoundException,
+                                                      AttributeTypeDefinitionException {
 
         LOG.debug("add: " + attributeType);
         String name = attributeType.getName();
@@ -102,7 +102,7 @@ public class AttributeTypeServiceBean implements AttributeTypeService, Attribute
     }
 
     private void checkCompoundedMembers(AttributeTypeEntity attributeType) throws AttributeTypeNotFoundException,
-            AttributeTypeDefinitionException {
+                                                                          AttributeTypeDefinitionException {
 
         for (CompoundedAttributeTypeMemberEntity member : attributeType.getMembers()) {
             String memberName = member.getMember().getName();
@@ -128,8 +128,7 @@ public class AttributeTypeServiceBean implements AttributeTypeService, Attribute
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public List<AttributeTypeDescriptionEntity> listDescriptions(String attributeTypeName)
-            throws AttributeTypeNotFoundException {
+    public List<AttributeTypeDescriptionEntity> listDescriptions(String attributeTypeName) throws AttributeTypeNotFoundException {
 
         AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeTypeName);
         List<AttributeTypeDescriptionEntity> descriptions = this.attributeTypeDAO.listDescriptions(attributeType);
@@ -137,8 +136,7 @@ public class AttributeTypeServiceBean implements AttributeTypeService, Attribute
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void addDescription(AttributeTypeDescriptionEntity newAttributeTypeDescription)
-            throws AttributeTypeNotFoundException {
+    public void addDescription(AttributeTypeDescriptionEntity newAttributeTypeDescription) throws AttributeTypeNotFoundException {
 
         String attributeTypeName = newAttributeTypeDescription.getAttributeTypeName();
         AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeTypeName);
@@ -146,11 +144,9 @@ public class AttributeTypeServiceBean implements AttributeTypeService, Attribute
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void removeDescription(AttributeTypeDescriptionEntity attributeTypeDescription)
-            throws AttributeTypeDescriptionNotFoundException {
+    public void removeDescription(AttributeTypeDescriptionEntity attributeTypeDescription) throws AttributeTypeDescriptionNotFoundException {
 
-        AttributeTypeDescriptionEntity attachedEntity = this.attributeTypeDAO.getDescription(attributeTypeDescription
-                .getPk());
+        AttributeTypeDescriptionEntity attachedEntity = this.attributeTypeDAO.getDescription(attributeTypeDescription.getPk());
         this.attributeTypeDAO.removeDescription(attachedEntity);
     }
 
@@ -186,8 +182,8 @@ public class AttributeTypeServiceBean implements AttributeTypeService, Attribute
 
 
     @RolesAllowed(SafeOnlineRoles.GLOBAL_OPERATOR_ROLE)
-    public void remove(AttributeTypeEntity attributeType) throws AttributeTypeDescriptionNotFoundException,
-            PermissionDeniedException, AttributeTypeNotFoundException {
+    public void remove(AttributeTypeEntity attributeType) throws AttributeTypeDescriptionNotFoundException, PermissionDeniedException,
+                                                         AttributeTypeNotFoundException {
 
         LOG.debug("remove attribute type: " + attributeType.getName());
 
@@ -234,8 +230,7 @@ public class AttributeTypeServiceBean implements AttributeTypeService, Attribute
     private void checkCompounded(AttributeTypeEntity attributeType) throws PermissionDeniedException {
 
         if (attributeType.isCompoundMember())
-            throw new PermissionDeniedException("Cannot remove a compound member attribute type",
-                    "errorPermissionCompoundMember");
+            throw new PermissionDeniedException("Cannot remove a compound member attribute type", "errorPermissionCompoundMember");
     }
 
     private void checkDevices(AttributeTypeEntity attributeType) throws PermissionDeniedException {
@@ -261,8 +256,7 @@ public class AttributeTypeServiceBean implements AttributeTypeService, Attribute
     }
 
     @RolesAllowed(SafeOnlineRoles.GLOBAL_OPERATOR_ROLE)
-    public void savePluginConfiguration(String attributeTypeName, String pluginConfiguration)
-            throws AttributeTypeNotFoundException {
+    public void savePluginConfiguration(String attributeTypeName, String pluginConfiguration) throws AttributeTypeNotFoundException {
 
         LOG.debug("set plugin configuration: " + pluginConfiguration + " for attribute type " + attributeTypeName);
         AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeTypeName);

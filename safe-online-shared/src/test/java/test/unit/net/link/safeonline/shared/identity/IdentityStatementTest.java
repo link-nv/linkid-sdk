@@ -33,8 +33,7 @@ public class IdentityStatementTest extends TestCase {
 
         // setup
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair,
-                "CN=AuthenticationCertificate");
+        X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=AuthenticationCertificate");
         String sessionId = UUID.randomUUID().toString();
         String user = "user";
         String operation = "operation";
@@ -55,8 +54,7 @@ public class IdentityStatementTest extends TestCase {
         };
 
         // operate
-        IdentityStatement identityStatement = new IdentityStatement(sessionId, user, operation, identityProvider,
-                signer);
+        IdentityStatement identityStatement = new IdentityStatement(sessionId, user, operation, identityProvider, signer);
         byte[] resultIdentityStatement = identityStatement.generateStatement();
 
         // verify

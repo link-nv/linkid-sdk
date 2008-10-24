@@ -45,9 +45,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Panel for creating p12 keystores.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class CreateP12 extends JPanel {
 
@@ -204,13 +204,12 @@ public class CreateP12 extends JPanel {
 
             // persist P12 to keystore in /tmp
             File pkcs12keyStore = File.createTempFile(keyStoreName, (String) this.keyStoreExt.getSelectedItem());
-            KeyStoreUtils.persistKey(pkcs12keyStore, keyPair.getPrivate(), certificate, keyStorePassword,
-                    keyEntryPassword);
+            KeyStoreUtils.persistKey(pkcs12keyStore, keyPair.getPrivate(), certificate, keyStorePassword, keyEntryPassword);
 
             // load generated identity
             InputStream keyStoreInputStream = new FileInputStream(pkcs12keyStore);
-            PrivateKeyEntry privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry("pkcs12", keyStoreInputStream,
-                    keyStorePassword, keyEntryPassword);
+            PrivateKeyEntry privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry("pkcs12", keyStoreInputStream, keyStorePassword,
+                    keyEntryPassword);
 
             String msg = "Successfully created P12 " + "\"" + pkcs12keyStore.getAbsolutePath() + "\"";
             LOG.info(msg);
@@ -221,8 +220,7 @@ public class CreateP12 extends JPanel {
 
         } catch (Exception ex) {
             LOG.error("Failed to generate a P12", ex);
-            JOptionPane.showMessageDialog(this, ERROR_CREATE_P12.getMessage(), ERROR_CREATE_P12.getMessage(),
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, ERROR_CREATE_P12.getMessage(), ERROR_CREATE_P12.getMessage(), JOptionPane.ERROR_MESSAGE);
         }
     }
 

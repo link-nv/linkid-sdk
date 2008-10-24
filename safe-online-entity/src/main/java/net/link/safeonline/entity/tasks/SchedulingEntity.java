@@ -39,8 +39,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @NamedQueries( {
         @NamedQuery(name = QUERY_WHERE_NAME, query = "SELECT scheduling " + "FROM SchedulingEntity AS scheduling "
                 + "WHERE scheduling.name = :name"),
-        @NamedQuery(name = QUERY_WHERE_TIMERHANDLE, query = "SELECT scheduling "
-                + "FROM SchedulingEntity AS scheduling " + "WHERE scheduling.timerHandle = :timerHandle"),
+        @NamedQuery(name = QUERY_WHERE_TIMERHANDLE, query = "SELECT scheduling " + "FROM SchedulingEntity AS scheduling "
+                + "WHERE scheduling.timerHandle = :timerHandle"),
         @NamedQuery(name = QUERY_LIST_ALL, query = "SELECT scheduling " + "FROM SchedulingEntity AS scheduling") })
 public class SchedulingEntity implements Serializable {
 
@@ -137,8 +137,7 @@ public class SchedulingEntity implements Serializable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("name", this.name).append("cronExpression", this.cronExpression)
-                .toString();
+        return new ToStringBuilder(this).append("name", this.name).append("cronExpression", this.cronExpression).toString();
     }
 
     @Override

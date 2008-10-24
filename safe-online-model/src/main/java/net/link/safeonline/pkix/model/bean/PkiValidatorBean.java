@@ -65,15 +65,14 @@ public class PkiValidatorBean implements PkiValidator {
     public PkiResult validateCertificate(TrustDomainEntity trustDomain, X509Certificate certificate) {
 
         /*
-         * We don't use the JDK certificate path builder API here, since it doesn't bring anything but unnecessary
-         * complexity. Keep It Simple, Stupid.
+         * We don't use the JDK certificate path builder API here, since it doesn't bring anything but unnecessary complexity. Keep It
+         * Simple, Stupid.
          */
 
         if (null == certificate)
             throw new IllegalArgumentException("certificate is null");
 
-        LOG.debug("validate certificate " + certificate.getSubjectX500Principal() + " in domain "
-                + trustDomain.getName());
+        LOG.debug("validate certificate " + certificate.getSubjectX500Principal() + " in domain " + trustDomain.getName());
 
         List<TrustPointEntity> trustPointPath = buildTrustPointPath(trustDomain, certificate);
 
@@ -96,7 +95,7 @@ public class PkiValidatorBean implements PkiValidator {
 
     /**
      * Build the trust point path for a given certificate.
-     *
+     * 
      * @param trustDomain
      * @param certificate
      * @return the path, or an empty list otherwise.
@@ -115,8 +114,7 @@ public class PkiValidatorBean implements PkiValidator {
 
         X509Certificate currentRootCertificate = certificate;
         while (true) {
-            byte[] authorityKeyIdentifierData = currentRootCertificate
-                    .getExtensionValue(X509Extensions.AuthorityKeyIdentifier.getId());
+            byte[] authorityKeyIdentifierData = currentRootCertificate.getExtensionValue(X509Extensions.AuthorityKeyIdentifier.getId());
             String keyId;
             if (null == authorityKeyIdentifierData) {
                 /*
@@ -166,8 +164,7 @@ public class PkiValidatorBean implements PkiValidator {
         return result;
     }
 
-    PkiResult verifyPath(TrustDomainEntity trustDomain, X509Certificate certificate,
-            List<TrustPointEntity> trustPointPath) {
+    PkiResult verifyPath(TrustDomainEntity trustDomain, X509Certificate certificate, List<TrustPointEntity> trustPointPath) {
 
         if (trustPointPath.isEmpty()) {
             LOG.debug("trust point path is empty");
@@ -203,8 +200,7 @@ public class PkiValidatorBean implements PkiValidator {
             return PkiResult.INVALID;
         if (true == performOcspCheck) {
             LOG.debug("performing OCSP check");
-            return convertOcspResult(this.cachedOcspValidator.performCachedOcspCheck(trustDomain, certificate,
-                    issuerCertificate));
+            return convertOcspResult(this.cachedOcspValidator.performCachedOcspCheck(trustDomain, certificate, issuerCertificate));
         }
 
         return PkiResult.VALID;
@@ -278,8 +274,7 @@ public class PkiValidatorBean implements PkiValidator {
         return true;
     }
 
-    public PkiResult validateCertificate(String trustDomainName, X509Certificate certificate)
-            throws TrustDomainNotFoundException {
+    public PkiResult validateCertificate(String trustDomainName, X509Certificate certificate) throws TrustDomainNotFoundException {
 
         TrustDomainEntity trustDomain = this.trustDomainDAO.getTrustDomain(trustDomainName);
         return validateCertificate(trustDomain, certificate);

@@ -90,8 +90,7 @@ public class CinemaTicketServletTest extends TestCase {
         GetMethod getMethod = new GetMethod(this.servletLocation);
         getMethod.setQueryString(new NameValuePair[] { new NameValuePair(CinemaTicketServlet.NRN, testNrn),
                 new NameValuePair(CinemaTicketServlet.TIME, Long.toString(testTime)),
-                new NameValuePair(CinemaTicketServlet.FILM, testFilm),
-                new NameValuePair(CinemaTicketServlet.THEATRE, testTheatre) });
+                new NameValuePair(CinemaTicketServlet.FILM, testFilm), new NameValuePair(CinemaTicketServlet.THEATRE, testTheatre) });
         int result = httpClient.executeMethod(getMethod);
 
         // Verify result.
@@ -122,8 +121,7 @@ public class CinemaTicketServletTest extends TestCase {
         GetMethod getMethod = new GetMethod(this.servletLocation);
         getMethod.setQueryString(new NameValuePair[] { new NameValuePair(CinemaTicketServlet.NRN, testNrn),
                 new NameValuePair(CinemaTicketServlet.TIME, Long.toString(testTime)),
-                new NameValuePair(CinemaTicketServlet.FILM, testFilm),
-                new NameValuePair(CinemaTicketServlet.THEATRE, testTheatre) });
+                new NameValuePair(CinemaTicketServlet.FILM, testFilm), new NameValuePair(CinemaTicketServlet.THEATRE, testTheatre) });
         int result = httpClient.executeMethod(getMethod);
 
         // Verify result.

@@ -28,8 +28,8 @@ import net.link.safeonline.service.SubjectService;
 
 
 /**
- * Implementation of user registration service interface. This component does not live within the SafeOnline core
- * security domain. This because a user that is about to register himself is not yet logged on into the system.
+ * Implementation of user registration service interface. This component does not live within the SafeOnline core security domain. This
+ * because a user that is about to register himself is not yet logged on into the system.
  * 
  * @author fcorneli
  * 
@@ -51,7 +51,7 @@ public class UserRegistrationServiceBean implements UserRegistrationService, Use
 
 
     public SubjectEntity registerUser(String login) throws ExistingUserException, AttributeTypeNotFoundException,
-            PermissionDeniedException, AttributeUnavailableException {
+                                                   PermissionDeniedException, AttributeUnavailableException {
 
         SubjectEntity subject = this.subjectService.findSubjectFromUserName(login);
         if (null == subject)
@@ -63,8 +63,7 @@ public class UserRegistrationServiceBean implements UserRegistrationService, Use
         for (DeviceEntity device : devices) {
             Object attribute;
             try {
-                attribute = this.proxyAttributeService.findAttributeValue(subject.getUserId(), device
-                        .getAttributeType().getName());
+                attribute = this.proxyAttributeService.findAttributeValue(subject.getUserId(), device.getAttributeType().getName());
             } catch (SubjectNotFoundException e) {
                 continue;
             }

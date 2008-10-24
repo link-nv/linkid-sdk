@@ -23,8 +23,8 @@ import org.apache.wicket.model.Model;
 
 public abstract class LayoutPage extends WebPage {
 
-    private static final long serialVersionUID = 1L;
-    Log                       LOG              = LogFactory.getLog(getClass());
+    private static final long  serialVersionUID = 1L;
+    Log                        LOG              = LogFactory.getLog(getClass());
 
     @EJB
     private UserService        userService;

@@ -39,9 +39,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * The identity servlet implementation. This servlet receives its data from the BeID via the IdentityApplet.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class IdentityServlet extends AbstractStatementServlet {
 
@@ -57,8 +57,8 @@ public class IdentityServlet extends AbstractStatementServlet {
 
 
     @Override
-    protected void processStatement(byte[] statementData, HttpSession session, HttpServletResponse response)
-            throws IOException, ServletException {
+    protected void processStatement(byte[] statementData, HttpSession session, HttpServletResponse response) throws IOException,
+                                                                                                            ServletException {
 
         String sessionId = session.getId();
         LOG.debug("session Id: " + sessionId);

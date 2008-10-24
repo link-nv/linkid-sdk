@@ -109,13 +109,10 @@ public class LandingServletTest {
                 "SafeOnline/WSSecurityConfigurationBean/local");
 
         this.mockWSSecurityConfigurationService = EasyMock.createMock(WSSecurityConfigurationService.class);
-        this.jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local",
-                this.mockWSSecurityConfigurationService);
-        expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(
-                Long.MAX_VALUE);
-        expect(
-                this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck((X509Certificate) EasyMock
-                        .anyObject())).andStubReturn(true);
+        this.jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local", this.mockWSSecurityConfigurationService);
+        expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
+        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck((X509Certificate) EasyMock.anyObject())).andStubReturn(
+                true);
         replay(this.mockWSSecurityConfigurationService);
 
         this.webServiceTestUtils = new WebServiceTestUtils();
@@ -186,10 +183,9 @@ public class LandingServletTest {
     public void testRegistration() throws Exception {
 
         // setup
-        String deviceOperationRequest = DeviceOperationRequestFactory.createDeviceOperationRequest(
-                this.applicationName, this.userId, this.keyPair, "http://test.authn.service", this.servletEndpointUrl,
-                DeviceOperationType.REGISTER, new Challenge<String>(), this.deviceName, this.authenticatedDeviceName,
-                null);
+        String deviceOperationRequest = DeviceOperationRequestFactory.createDeviceOperationRequest(this.applicationName, this.userId,
+                this.keyPair, "http://test.authn.service", this.servletEndpointUrl, DeviceOperationType.REGISTER, new Challenge<String>(),
+                this.deviceName, this.authenticatedDeviceName, null);
         String encodedSamlAuthnRequest = Base64.encode(deviceOperationRequest.getBytes());
         NameValuePair[] postData = { new NameValuePair("SAMLRequest", encodedSamlAuthnRequest) };
 
@@ -209,8 +205,7 @@ public class LandingServletTest {
         assertEquals(this.userId, resultUserId);
         String resultOperation = (String) this.servletTestManager.getSessionAttribute("operation");
         assertEquals(DeviceOperationType.REGISTER.name(), resultOperation);
-        ProtocolContext protocolContext = (ProtocolContext) this.servletTestManager
-                .getSessionAttribute(ProtocolContext.PROTOCOL_CONTEXT);
+        ProtocolContext protocolContext = (ProtocolContext) this.servletTestManager.getSessionAttribute(ProtocolContext.PROTOCOL_CONTEXT);
         assertNotNull(protocolContext);
         assertEquals(DeviceOperationType.REGISTER, protocolContext.getDeviceOperation());
         assertEquals(this.deviceName, protocolContext.getDevice());
@@ -222,10 +217,9 @@ public class LandingServletTest {
     public void testRemoval() throws Exception {
 
         // setup
-        String samlAuthnRequest = DeviceOperationRequestFactory.createDeviceOperationRequest(this.applicationName,
-                this.userId, this.keyPair, "http://test.authn.service", this.servletEndpointUrl,
-                DeviceOperationType.REMOVE, new Challenge<String>(), this.deviceName, this.authenticatedDeviceName,
-                this.deviceRegistrationAttribute);
+        String samlAuthnRequest = DeviceOperationRequestFactory.createDeviceOperationRequest(this.applicationName, this.userId,
+                this.keyPair, "http://test.authn.service", this.servletEndpointUrl, DeviceOperationType.REMOVE, new Challenge<String>(),
+                this.deviceName, this.authenticatedDeviceName, this.deviceRegistrationAttribute);
         String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest.getBytes());
         NameValuePair[] postData = { new NameValuePair("SAMLRequest", encodedSamlAuthnRequest) };
 
@@ -245,8 +239,7 @@ public class LandingServletTest {
         assertEquals(this.userId, resultUserId);
         String resultOperation = (String) this.servletTestManager.getSessionAttribute("operation");
         assertEquals(DeviceOperationType.REMOVE.name(), resultOperation);
-        ProtocolContext protocolContext = (ProtocolContext) this.servletTestManager
-                .getSessionAttribute(ProtocolContext.PROTOCOL_CONTEXT);
+        ProtocolContext protocolContext = (ProtocolContext) this.servletTestManager.getSessionAttribute(ProtocolContext.PROTOCOL_CONTEXT);
         assertNotNull(protocolContext);
         assertEquals(DeviceOperationType.REMOVE, protocolContext.getDeviceOperation());
         assertEquals(this.deviceName, protocolContext.getDevice());
@@ -259,10 +252,9 @@ public class LandingServletTest {
     public void testUpdate() throws Exception {
 
         // setup
-        String samlAuthnRequest = DeviceOperationRequestFactory.createDeviceOperationRequest(this.applicationName,
-                this.userId, this.keyPair, "http://test.authn.service", this.servletEndpointUrl,
-                DeviceOperationType.UPDATE, new Challenge<String>(), this.deviceName, this.authenticatedDeviceName,
-                this.deviceRegistrationAttribute);
+        String samlAuthnRequest = DeviceOperationRequestFactory.createDeviceOperationRequest(this.applicationName, this.userId,
+                this.keyPair, "http://test.authn.service", this.servletEndpointUrl, DeviceOperationType.UPDATE, new Challenge<String>(),
+                this.deviceName, this.authenticatedDeviceName, this.deviceRegistrationAttribute);
         String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest.getBytes());
         NameValuePair[] postData = { new NameValuePair("SAMLRequest", encodedSamlAuthnRequest) };
 
@@ -282,8 +274,7 @@ public class LandingServletTest {
         assertEquals(this.userId, resultUserId);
         String resultOperation = (String) this.servletTestManager.getSessionAttribute("operation");
         assertEquals(DeviceOperationType.UPDATE.name(), resultOperation);
-        ProtocolContext protocolContext = (ProtocolContext) this.servletTestManager
-                .getSessionAttribute(ProtocolContext.PROTOCOL_CONTEXT);
+        ProtocolContext protocolContext = (ProtocolContext) this.servletTestManager.getSessionAttribute(ProtocolContext.PROTOCOL_CONTEXT);
         assertNotNull(protocolContext);
         assertEquals(DeviceOperationType.UPDATE, protocolContext.getDeviceOperation());
         assertEquals(this.deviceName, protocolContext.getDevice());

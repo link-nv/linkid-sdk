@@ -16,9 +16,9 @@ import java.lang.annotation.Target;
 
 /**
  * Is used to specify a mapped application identity attribute for a property or field.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Documented
 @Target( { ElementType.FIELD, ElementType.METHOD })
@@ -27,7 +27,7 @@ public @interface IdentityAttribute {
 
     /**
      * The name of the identity attribute.
-     *
+     * 
      */
     String value();
 }

@@ -39,12 +39,9 @@ import net.link.safeonline.jpa.annotation.UpdateMethod;
 @Entity
 @Table(name = "statistic", uniqueConstraints = @UniqueConstraint(columnNames = { "name", "application" }))
 @NamedQueries( {
-        @NamedQuery(name = QUERY_WHERE_NAME_DOMAIN_AND_APPLICATION, query = "SELECT Statistic "
-                + "FROM StatisticEntity AS Statistic "
-                + "WHERE Statistic.name = :name AND Statistic.application = :application "
-                + "AND Statistic.domain = :domain"),
-        @NamedQuery(name = QUERY_WHERE_NAME_DOMAIN_AND_NULL, query = "SELECT Statistic "
-                + "FROM StatisticEntity AS Statistic "
+        @NamedQuery(name = QUERY_WHERE_NAME_DOMAIN_AND_APPLICATION, query = "SELECT Statistic " + "FROM StatisticEntity AS Statistic "
+                + "WHERE Statistic.name = :name AND Statistic.application = :application " + "AND Statistic.domain = :domain"),
+        @NamedQuery(name = QUERY_WHERE_NAME_DOMAIN_AND_NULL, query = "SELECT Statistic " + "FROM StatisticEntity AS Statistic "
                 + "WHERE Statistic.name = :name AND Statistic.application IS NULL " + "AND Statistic.domain = :domain"),
         @NamedQuery(name = QUERY_WHERE_APPLICATION, query = "SELECT Statistic " + "FROM StatisticEntity AS Statistic "
                 + "WHERE Statistic.application = :application"),
@@ -174,12 +171,11 @@ public class StatisticEntity implements Serializable {
         List<StatisticEntity> listStatistics(@QueryParam("application") ApplicationEntity application);
 
         @QueryMethod(QUERY_WHERE_NAME_DOMAIN_AND_APPLICATION)
-        StatisticEntity findStatisticWhereNameDomainAndApplication(@QueryParam("name") String name,
-                @QueryParam("domain") String domain, @QueryParam("application") ApplicationEntity application);
+        StatisticEntity findStatisticWhereNameDomainAndApplication(@QueryParam("name") String name, @QueryParam("domain") String domain,
+                                                                   @QueryParam("application") ApplicationEntity application);
 
         @QueryMethod(QUERY_WHERE_NAME_DOMAIN_AND_NULL)
-        StatisticEntity findStatisticWhereNameAndDomain(@QueryParam("name") String name,
-                @QueryParam("domain") String domain);
+        StatisticEntity findStatisticWhereNameAndDomain(@QueryParam("name") String name, @QueryParam("domain") String domain);
 
         @UpdateMethod(QUERY_DELETE_WHERE_DOMAIN)
         void deleteWhereDomain(@QueryParam("domain") String domain);

@@ -94,13 +94,12 @@ public class AccountRegistrationBean extends AbstractLoginBean implements Accoun
         this.login = login;
     }
 
-    @ErrorHandling( {
-            @Error(exceptionClass = ExistingUserException.class, messageId = "errorLoginTaken", fieldId = "login"),
+    @ErrorHandling( { @Error(exceptionClass = ExistingUserException.class, messageId = "errorLoginTaken", fieldId = "login"),
             @Error(exceptionClass = AttributeTypeNotFoundException.class, messageId = "errorLoginTaken", fieldId = "login"),
             @Error(exceptionClass = AttributeUnavailableException.class, messageId = "errorLoginTaken", fieldId = "login"),
             @Error(exceptionClass = PermissionDeniedException.class, messageId = "errorPermissionDenied", fieldId = "login") })
     public String loginNext() throws ExistingUserException, AttributeTypeNotFoundException, PermissionDeniedException,
-            AttributeUnavailableException {
+                             AttributeUnavailableException {
 
         this.log.debug("loginNext");
 
@@ -115,8 +114,7 @@ public class AccountRegistrationBean extends AbstractLoginBean implements Accoun
         }
 
         if (!this.validCaptcha.equals(this.givenCaptcha)) {
-            this.facesMessages.addToControlFromResourceBundle("captcha", FacesMessage.SEVERITY_ERROR,
-                    "errorInvalidCaptcha");
+            this.facesMessages.addToControlFromResourceBundle("captcha", FacesMessage.SEVERITY_ERROR, "errorInvalidCaptcha");
             this.givenCaptcha = null;
             return null;
         }

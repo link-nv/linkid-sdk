@@ -36,14 +36,12 @@ public class MobileManagerBean implements MobileManager {
 
 
     /*
-     * RemoteException are transformed to a MobileException, else they get wrapped by JBoss into
-     * EJBTransactionRolledbackException
+     * RemoteException are transformed to a MobileException, else they get wrapped by JBoss into EJBTransactionRolledbackException
      */
     public String requestOTP(String mobile) throws MalformedURLException, MobileException {
 
         try {
-            EncapAuthenticationClient encapAuthenticationClient = new EncapAuthenticationClientImpl(
-                    this.encapServerLocation);
+            EncapAuthenticationClient encapAuthenticationClient = new EncapAuthenticationClientImpl(this.encapServerLocation);
             return encapAuthenticationClient.challenge(mobile, this.encapOrganisationId);
         } catch (RemoteException e) {
             throw new MobileException(e.getMessage());
@@ -53,8 +51,7 @@ public class MobileManagerBean implements MobileManager {
     public boolean verifyOTP(String challengeId, String OTPValue) throws MalformedURLException, MobileException {
 
         try {
-            EncapAuthenticationClient encapAuthenticationClient = new EncapAuthenticationClientImpl(
-                    this.encapServerLocation);
+            EncapAuthenticationClient encapAuthenticationClient = new EncapAuthenticationClientImpl(this.encapServerLocation);
             return encapAuthenticationClient.verifyOTP(challengeId, OTPValue);
         } catch (RemoteException e) {
             throw new MobileException(e.getMessage());
@@ -74,8 +71,7 @@ public class MobileManagerBean implements MobileManager {
     public void remove(String mobile) throws MobileException, MalformedURLException {
 
         try {
-            EncapAdministrationClient encapAdministrationClient = new EncapAdministrationClientImpl(
-                    this.encapServerLocation);
+            EncapAdministrationClient encapAdministrationClient = new EncapAdministrationClientImpl(this.encapServerLocation);
             encapAdministrationClient.remove(mobile, this.encapOrganisationId);
         } catch (RemoteException e) {
             throw new MobileException(e.getMessage());

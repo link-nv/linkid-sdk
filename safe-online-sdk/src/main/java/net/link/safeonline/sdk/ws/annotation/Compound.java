@@ -16,9 +16,9 @@ import java.lang.annotation.Target;
 
 /**
  * Specifies that the class is a compounded attribute.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Documented
 @Target(ElementType.TYPE)
@@ -27,7 +27,7 @@ public @interface Compound {
 
     /**
      * The name of the compounded attribute.
-     *
+     * 
      */
     String value();
 }

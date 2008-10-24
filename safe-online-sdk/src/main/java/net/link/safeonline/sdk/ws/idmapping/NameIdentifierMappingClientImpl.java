@@ -38,11 +38,10 @@ import com.sun.xml.ws.client.ClientTransportException;
 
 
 /**
- * Implementation of the name identifier mapping interface. This class is using JAX-WS, secured via WS-Security and
- * server-side SSL.
- *
+ * Implementation of the name identifier mapping interface. This class is using JAX-WS, secured via WS-Security and server-side SSL.
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class NameIdentifierMappingClientImpl extends AbstractMessageAccessor implements NameIdentifierMappingClient {
 
@@ -55,7 +54,7 @@ public class NameIdentifierMappingClientImpl extends AbstractMessageAccessor imp
 
     /**
      * Main constructor.
-     *
+     * 
      * @param location
      *            the location (host:port) of the attribute web service.
      * @param clientCertificate
@@ -63,8 +62,7 @@ public class NameIdentifierMappingClientImpl extends AbstractMessageAccessor imp
      * @param clientPrivateKey
      *            the private key corresponding with the client certificate.
      */
-    public NameIdentifierMappingClientImpl(String location, X509Certificate clientCertificate,
-            PrivateKey clientPrivateKey) {
+    public NameIdentifierMappingClientImpl(String location, X509Certificate clientCertificate, PrivateKey clientPrivateKey) {
 
         NameIdentifierMappingService service = NameIdentifierMappingServiceFactory.newInstance();
         this.port = service.getNameIdentifierMappingPort();
@@ -82,8 +80,7 @@ public class NameIdentifierMappingClientImpl extends AbstractMessageAccessor imp
         bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location);
     }
 
-    public String getUserId(String username) throws SubjectNotFoundException, RequestDeniedException,
-            WSClientTransportException {
+    public String getUserId(String username) throws SubjectNotFoundException, RequestDeniedException, WSClientTransportException {
 
         LOG.debug("getUserId: " + username);
 
@@ -120,8 +117,7 @@ public class NameIdentifierMappingClientImpl extends AbstractMessageAccessor imp
             StatusCodeType secondStatusCode = statusCode.getStatusCode();
             if (null != secondStatusCode) {
                 String secondErrorCode = secondStatusCode.getValue();
-                SamlpSecondLevelErrorCode secondLevelErrorCode = SamlpSecondLevelErrorCode
-                        .getSamlpTopLevelErrorCode(secondErrorCode);
+                SamlpSecondLevelErrorCode secondLevelErrorCode = SamlpSecondLevelErrorCode.getSamlpTopLevelErrorCode(secondErrorCode);
                 if (SamlpSecondLevelErrorCode.UNKNOWN_PRINCIPAL == secondLevelErrorCode) {
                     throw new SubjectNotFoundException();
                 }

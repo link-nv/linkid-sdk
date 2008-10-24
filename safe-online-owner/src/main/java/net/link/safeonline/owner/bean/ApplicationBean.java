@@ -162,8 +162,7 @@ public class ApplicationBean implements Application {
         boolean defaultValue = false;
 
         for (DeviceEntity deviceEntity : deviceList) {
-            String deviceDescription = this.devicePolicyService
-                    .getDeviceDescription(deviceEntity.getName(), viewLocale);
+            String deviceDescription = this.devicePolicyService.getDeviceDescription(deviceEntity.getName(), viewLocale);
             this.allowedDevices.add(new DeviceEntry(deviceEntity, deviceDescription, defaultValue, 0));
         }
 
@@ -184,16 +183,14 @@ public class ApplicationBean implements Application {
         if (null == this.selectedApplication)
             return;
         LOG.debug("usage agreement list factory");
-        this.selectedApplicationUsageAgreements = this.usageAgreementService
-                .getUsageAgreements(this.selectedApplication.getName());
+        this.selectedApplicationUsageAgreements = this.usageAgreementService.getUsageAgreements(this.selectedApplication.getName());
     }
 
     /*
      * Actions
      */
     @RolesAllowed(OwnerConstants.OWNER_ROLE)
-    public String view() throws ApplicationNotFoundException, PermissionDeniedException,
-            ApplicationIdentityNotFoundException {
+    public String view() throws ApplicationNotFoundException, PermissionDeniedException, ApplicationIdentityNotFoundException {
 
         String applicationName = this.selectedApplication.getName();
         LOG.debug("view: " + applicationName);
@@ -251,10 +248,8 @@ public class ApplicationBean implements Application {
     public String editUsageAgreement() throws ApplicationNotFoundException, PermissionDeniedException {
 
         LOG.debug("edit usage agreement for application: " + this.selectedApplication.getName());
-        this.draftUsageAgreement = this.usageAgreementService
-                .getDraftUsageAgreement(this.selectedApplication.getName());
-        this.currentUsageAgreement = this.usageAgreementService.getCurrentUsageAgreement(this.selectedApplication
-                .getName());
+        this.draftUsageAgreement = this.usageAgreementService.getDraftUsageAgreement(this.selectedApplication.getName());
+        this.currentUsageAgreement = this.usageAgreementService.getCurrentUsageAgreement(this.selectedApplication.getName());
         return "edit-usage-agreement";
     }
 }

@@ -37,14 +37,14 @@ import net.link.safeonline.auth.pcsc.AuthenticationMessages.KEY;
 
 public class IdentificationController implements AppletController {
 
-    public static final byte[]     BEID_ATR_11  = new byte[] { 0x3b, (byte) 0x98, 0x13, 0x40, 0x0a, (byte) 0xa5, 0x03,
-            0x01, 0x01, 0x01, (byte) 0xad, 0x13, 0x11 };
+    public static final byte[]     BEID_ATR_11  = new byte[] { 0x3b, (byte) 0x98, 0x13, 0x40, 0x0a, (byte) 0xa5, 0x03, 0x01, 0x01, 0x01,
+            (byte) 0xad, 0x13, 0x11            };
 
-    public static final byte[]     BEID_ATR_10  = new byte[] { 0x3b, (byte) 0x98, (byte) 0x94, 0x40, 0x0a, (byte) 0xa5,
-            0x03, 0x01, 0x01, 0x01, (byte) 0xad, 0x13, 0x10 };
+    public static final byte[]     BEID_ATR_10  = new byte[] { 0x3b, (byte) 0x98, (byte) 0x94, 0x40, 0x0a, (byte) 0xa5, 0x03, 0x01, 0x01,
+            0x01, (byte) 0xad, 0x13, 0x10      };
 
-    public static final byte[]     BEID_ATR_100 = new byte[] { 0x3b, (byte) 98, (byte) 0x94, 0x40, (byte) 0xff,
-            (byte) 0xa5, 0x03, 0x01, 0x01, 0x01, (byte) 0xad, 0x13, 0x10 };
+    public static final byte[]     BEID_ATR_100 = new byte[] { 0x3b, (byte) 98, (byte) 0x94, 0x40, (byte) 0xff, (byte) 0xa5, 0x03, 0x01,
+            0x01, 0x01, (byte) 0xad, 0x13, 0x10 };
 
     private AppletView             appletView;
 
@@ -157,9 +157,8 @@ public class IdentificationController implements AppletController {
                 + URLEncoder.encode(identityFile.getNationality(), "UTF-8") + "&sex="
                 + URLEncoder.encode(identityFile.getSex().name(), "UTF-8") + "&street="
                 + URLEncoder.encode(addressFile.getStreetAndNumber(), "UTF-8") + "&city="
-                + URLEncoder.encode(addressFile.getMunicipality(), "UTF-8") + "&zip="
-                + URLEncoder.encode(addressFile.getZip(), "UTF-8") + "&nnr="
-                + URLEncoder.encode(identityFile.getNationalNumber(), "UTF-8");
+                + URLEncoder.encode(addressFile.getMunicipality(), "UTF-8") + "&zip=" + URLEncoder.encode(addressFile.getZip(), "UTF-8")
+                + "&nnr=" + URLEncoder.encode(identityFile.getNationalNumber(), "UTF-8");
         connection.setRequestProperty("Content-length", Integer.toString(content.getBytes().length));
         connection.setDoOutput(true);
         connection.setDoInput(true);

@@ -18,20 +18,19 @@ import net.link.safeonline.entity.SubjectEntity;
 
 /**
  * User registration service interface.
- *
- * The component implementing this interface will allow for registration of new users within the SafeOnline core. This
- * means creating a new Subject and subscribing the new Subject to the safe-online-user application.
- *
+ * 
+ * The component implementing this interface will allow for registration of new users within the SafeOnline core. This means creating a new
+ * Subject and subscribing the new Subject to the safe-online-user application.
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Local
 public interface UserRegistrationService {
 
     /**
-     * Checks whether the given login name already exists and has completed device registrations. In case there are
-     * existing device registrations it will poll those device issuers if the registration actually completed. If one
-     * them has completed, return null.
+     * Checks whether the given login name already exists and has completed device registrations. In case there are existing device
+     * registrations it will poll those device issuers if the registration actually completed. If one them has completed, return null.
      * 
      * If no such login exists, register and return the subject.
      * 
@@ -43,6 +42,6 @@ public interface UserRegistrationService {
      * @throws PermissionDeniedException
      * @throws AttributeUnavailableException
      */
-    SubjectEntity registerUser(String login) throws ExistingUserException, AttributeTypeNotFoundException,
-            PermissionDeniedException, AttributeUnavailableException;
+    SubjectEntity registerUser(String login) throws ExistingUserException, AttributeTypeNotFoundException, PermissionDeniedException,
+                                            AttributeUnavailableException;
 }

@@ -35,8 +35,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @Table(name = "application_owner")
 @NamedQueries( {
         @NamedQuery(name = QUERY_WHERE_ALL, query = "FROM ApplicationOwnerEntity"),
-        @NamedQuery(name = QUERY_WHERE_ADMIN, query = "SELECT applicationOwner "
-                + "FROM ApplicationOwnerEntity AS applicationOwner " + "WHERE applicationOwner.admin = :admin") })
+        @NamedQuery(name = QUERY_WHERE_ADMIN, query = "SELECT applicationOwner " + "FROM ApplicationOwnerEntity AS applicationOwner "
+                + "WHERE applicationOwner.admin = :admin") })
 public class ApplicationOwnerEntity implements Serializable {
 
     public static final String      QUERY_WHERE_ALL   = "owner.all";

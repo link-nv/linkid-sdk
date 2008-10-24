@@ -29,19 +29,17 @@ import net.link.safeonline.jpa.annotation.UpdateMethod;
 
 
 /**
- * Subject Identifier entity. This entity allows us to unambiguously map from an identifier within a certain domain to
- * its subject. For example, within the domain of Belgian eID, we will map from the SHA-1 of the encoded authentication
- * certificate to a subject.
- *
+ * Subject Identifier entity. This entity allows us to unambiguously map from an identifier within a certain domain to its subject. For
+ * example, within the domain of Belgian eID, we will map from the SHA-1 of the encoded authentication certificate to a subject.
+ * 
  * @author fcorneli
- *
+ * 
  */
 @Entity
 @Table(name = "subject_identifier")
 @NamedQueries( {
         @NamedQuery(name = DELETE_WHERE_OTHER_IDENTIFIERS, query = "DELETE FROM SubjectIdentifierEntity AS subjectIdentifier "
-                + "WHERE subjectIdentifier.pk.domain = :domain AND "
-                + "subjectIdentifier.subject = :subject AND "
+                + "WHERE subjectIdentifier.pk.domain = :domain AND " + "subjectIdentifier.subject = :subject AND "
                 + "subjectIdentifier.pk.identifier <> :identifier"),
         @NamedQuery(name = DELETE_WHERE_SUBJECT, query = "DELETE FROM SubjectIdentifierEntity AS subjectIdentifier "
                 + "WHERE subjectIdentifier.subject = :subject"),
@@ -108,14 +106,14 @@ public class SubjectIdentifierEntity implements Serializable {
         List<SubjectIdentifierEntity> getWhereSubject(@QueryParam("subject") SubjectEntity subject);
 
         @UpdateMethod(DELETE_WHERE_OTHER_IDENTIFIERS)
-        int deleteWhereOtherIdentifiers(@QueryParam("domain") String domain,
-                @QueryParam("identifier") String identifier, @QueryParam("subject") SubjectEntity subject);
+        int deleteWhereOtherIdentifiers(@QueryParam("domain") String domain, @QueryParam("identifier") String identifier,
+                                        @QueryParam("subject") SubjectEntity subject);
 
         @UpdateMethod(DELETE_WHERE_SUBJECT)
         void deleteWhereSubject(@QueryParam("subject") SubjectEntity subject);
 
         @UpdateMethod(DELETE_WHERE_IDENTIFIER)
         void deleteWhereIdentifier(@QueryParam("subject") SubjectEntity subject, @QueryParam("domain") String domain,
-                @QueryParam("identifier") String identifier);
+                                   @QueryParam("identifier") String identifier);
     }
 }

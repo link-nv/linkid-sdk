@@ -14,9 +14,9 @@ import java.security.cert.X509Certificate;
 
 /**
  * Interface for Authentication Identity Service JMX bean.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public interface AuthIdentityServiceMBean {
 

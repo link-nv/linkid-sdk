@@ -19,8 +19,8 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- * The login manager makes sure that both the 'userId' and the 'authenticationDevice' are set at the same time to have a
- * consistent login approach. For Seam login components you can use {@link AbstractLoginBean}.
+ * The login manager makes sure that both the 'userId' and the 'authenticationDevice' are set at the same time to have a consistent login
+ * approach. For Seam login components you can use {@link AbstractLoginBean}.
  * 
  * @author fcorneli
  * 
@@ -73,8 +73,7 @@ public class LoginManager {
         if (null == currentDevice) {
             LOG.debug("login for " + userId + " with device " + device.getName());
         } else {
-            LOG.debug("relogin for " + userId + " from device " + currentDevice.getName() + " to device "
-                    + device.getName());
+            LOG.debug("relogin for " + userId + " from device " + currentDevice.getName() + " to device " + device.getName());
         }
         setAuthenticationDevice(session, device);
     }

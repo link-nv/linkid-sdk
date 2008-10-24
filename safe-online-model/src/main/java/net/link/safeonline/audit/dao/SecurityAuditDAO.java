@@ -20,8 +20,7 @@ import net.link.safeonline.entity.audit.SecurityThreatType;
 @Local
 public interface SecurityAuditDAO {
 
-    void addSecurityAudit(AuditContextEntity auditContext, SecurityThreatType securityThreat, String targetPrincipal,
-            String message);
+    void addSecurityAudit(AuditContextEntity auditContext, SecurityThreatType securityThreat, String targetPrincipal, String message);
 
     void cleanup(Long id);
 

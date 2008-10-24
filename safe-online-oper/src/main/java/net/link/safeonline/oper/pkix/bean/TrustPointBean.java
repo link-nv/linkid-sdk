@@ -136,8 +136,7 @@ public class TrustPointBean implements TrustPoint {
             @Error(exceptionClass = CertificateEncodingException.class, messageId = "errorX509Encoding", fieldId = "fileupload"),
             @Error(exceptionClass = ExistingTrustPointException.class, messageId = "errorTrustPointAlreadyExists", fieldId = "fileupload"),
             @Error(exceptionClass = IOException.class, messageId = "errorIO", fieldId = "fileupload") })
-    public String add() throws IOException, TrustDomainNotFoundException, ExistingTrustPointException,
-            CertificateEncodingException {
+    public String add() throws IOException, TrustDomainNotFoundException, ExistingTrustPointException, CertificateEncodingException {
 
         String domainName = this.selectedTrustDomain.getName();
         LOG.debug("adding trust point to domain " + domainName);
@@ -161,12 +160,11 @@ public class TrustPointBean implements TrustPoint {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String view() {
 
-        TrustPointTreeNode selectedNode = (TrustPointTreeNode) FacesContext.getCurrentInstance().getExternalContext()
-                .getRequestMap().get("node");
+        TrustPointTreeNode selectedNode = (TrustPointTreeNode) FacesContext.getCurrentInstance().getExternalContext().getRequestMap().get(
+                "node");
         TrustPointEntity selectedTrustPoint = selectedNode.getTrustPoint();
         LOG.debug("view: " + selectedTrustPoint);
-        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("selectedTrustPoint",
-                selectedTrustPoint);
+        FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("selectedTrustPoint", selectedTrustPoint);
         return "view";
     }
 
@@ -199,8 +197,8 @@ public class TrustPointBean implements TrustPoint {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String removeTrustPoint() throws TrustPointNotFoundException {
 
-        TrustPointEntity selectedTrustPoint = (TrustPointEntity) FacesContext.getCurrentInstance().getExternalContext()
-                .getSessionMap().get("selectedTrustPoint");
+        TrustPointEntity selectedTrustPoint = (TrustPointEntity) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
+                                                                             .get("selectedTrustPoint");
         LOG.debug("remove trust point: " + selectedTrustPoint);
         this.pkiService.removeTrustPoint(selectedTrustPoint);
         return "removed";

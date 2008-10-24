@@ -39,9 +39,8 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- * The login servlet. A device (username-password or BeID) confirms successful login by setting the 'username' session
- * attribute. Then the device redirects to this login servlet. This login servlet will decide which is the next step in
- * the authentication process.
+ * The login servlet. A device (username-password or BeID) confirms successful login by setting the 'username' session attribute. Then the
+ * device redirects to this login servlet. This login servlet will decide which is the next step in the authentication process.
  * 
  * 
  * @author fcorneli
@@ -73,8 +72,7 @@ public class LoginServlet extends AbstractInjectionServlet {
 
 
     @Override
-    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         LOG.debug("doGet");
         HttpSession session = request.getSession();
@@ -170,8 +168,7 @@ public class LoginServlet extends AbstractInjectionServlet {
             subscriptionRequired = !this.subscriptionService.isSubscribed(this.applicationId);
             if (!subscriptionRequired) {
                 try {
-                    subscriptionRequired = this.usageAgreementService
-                            .requiresUsageAgreementAcceptation(this.applicationId);
+                    subscriptionRequired = this.usageAgreementService.requiresUsageAgreementAcceptation(this.applicationId);
                 } catch (SubscriptionNotFoundException e) {
                     LOG.debug("subscription not found: " + this.applicationId);
                     throw new ServletException("subscription not found");

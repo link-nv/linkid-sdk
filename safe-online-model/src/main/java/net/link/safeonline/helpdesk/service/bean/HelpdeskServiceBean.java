@@ -29,9 +29,9 @@ import org.jboss.annotation.security.SecurityDomain;
 
 /**
  * Implementation of helpdesk service interface.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)

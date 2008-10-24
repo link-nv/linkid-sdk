@@ -69,8 +69,7 @@ public class CompoundedAttributeTypeMemberEntity implements Serializable {
         // empty
     }
 
-    public CompoundedAttributeTypeMemberEntity(AttributeTypeEntity parent, AttributeTypeEntity member,
-            int memberSequence, boolean required) {
+    public CompoundedAttributeTypeMemberEntity(AttributeTypeEntity parent, AttributeTypeEntity member, int memberSequence, boolean required) {
 
         this.parent = parent;
         this.member = member;
@@ -142,7 +141,7 @@ public class CompoundedAttributeTypeMemberEntity implements Serializable {
 
     /**
      * Marks whether the member is a required part of the compounded attribute type.
-     *
+     * 
      */
     public boolean isRequired() {
 
@@ -180,8 +179,7 @@ public class CompoundedAttributeTypeMemberEntity implements Serializable {
         AttributeTypeEntity findParentAttribute(@QueryParam("member") AttributeTypeEntity memberAttributeType);
 
         @QueryMethod(QUERY_WHERE_MEMBER)
-        List<CompoundedAttributeTypeMemberEntity> listMemberEntries(
-                @QueryParam("member") AttributeTypeEntity memberAttributeType);
+        List<CompoundedAttributeTypeMemberEntity> listMemberEntries(@QueryParam("member") AttributeTypeEntity memberAttributeType);
 
         @UpdateMethod(DELETE_WHERE_PARENT)
         int deleteWhereParent(@QueryParam("parent") AttributeTypeEntity parent);

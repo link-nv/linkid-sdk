@@ -16,9 +16,9 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Cache Control Phase Listener.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class CacheControlPhaseListener implements PhaseListener {
 

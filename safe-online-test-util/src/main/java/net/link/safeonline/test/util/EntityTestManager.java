@@ -60,8 +60,7 @@ public class EntityTestManager {
         this.configuration.setProperty("hibernate.connection.username", username);
         this.configuration.setProperty("hibernate.connection.password", password);
         this.configuration.setProperty("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
-        this.configuration.setProperty("hibernate.connection.url", String.format("jdbc:mysql://%s:%d/%s", host, port,
-                database));
+        this.configuration.setProperty("hibernate.connection.url", String.format("jdbc:mysql://%s:%d/%s", host, port, database));
         // turn off batch processing, gives more informative errors that way
         this.configuration.setProperty("hibernate.jdbc.batch_size", "0");
     }
@@ -136,11 +135,11 @@ public class EntityTestManager {
     }
 
     /**
-     * Create a new instance of the given class that has the test transaction entity manager handler applied to it. The
-     * transaction semantics are:
-     *
+     * Create a new instance of the given class that has the test transaction entity manager handler applied to it. The transaction
+     * semantics are:
+     * 
      * <code>@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)</code>
-     *
+     * 
      * @param <Type>
      * @param clazz
      */
@@ -155,8 +154,7 @@ public class EntityTestManager {
         } catch (IllegalAccessException e) {
             throw new RuntimeException("illegal access error");
         }
-        TransactionMethodInterceptor transactionInvocationHandler = new TransactionMethodInterceptor(instance,
-                this.entityManagerFactory);
+        TransactionMethodInterceptor transactionInvocationHandler = new TransactionMethodInterceptor(instance, this.entityManagerFactory);
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(clazz);
         enhancer.setCallback(transactionInvocationHandler);
@@ -169,8 +167,7 @@ public class EntityTestManager {
         return object;
     }
 
-    public static void init(Class<?> clazz, Object bean) throws IllegalArgumentException, IllegalAccessException,
-            InvocationTargetException {
+    public static void init(Class<?> clazz, Object bean) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 
         LOG.debug("Initializing: " + bean);
         Method[] methods = clazz.getDeclaredMethods();
@@ -222,7 +219,7 @@ public class EntityTestManager {
 
 
         public Object intercept(@SuppressWarnings("unused") Object obj, Method method, Object[] args,
-                @SuppressWarnings("unused") MethodProxy proxy) throws Throwable {
+                                @SuppressWarnings("unused") MethodProxy proxy) throws Throwable {
 
             EntityManager entityManager = this.entityManagerFactory.createEntityManager();
             try {

@@ -36,9 +36,9 @@ import javax.swing.border.TitledBorder;
 
 /**
  * Confirm the application's certificate frame.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class ConfirmIdentity extends JFrame {
 
@@ -55,8 +55,7 @@ public class ConfirmIdentity extends JFrame {
     private Action                    cancelAction     = new CancelAction(CANCEL.getMessage());
 
 
-    public ConfirmIdentity(PrivateKeyEntry privateKeyEntry, String keyStorePath, String keyStoreType,
-            String keyStorePassword) {
+    public ConfirmIdentity(PrivateKeyEntry privateKeyEntry, String keyStorePath, String keyStoreType, String keyStorePassword) {
 
         super(CONFIRM_ID.getMessage());
 
@@ -95,10 +94,8 @@ public class ConfirmIdentity extends JFrame {
         certificatePanel.add(sigAlgoField);
         certificatePanel.setBorder(new TitledBorder(CERTIFICATE.getMessage()));
 
-        issuerDNField.setText(((X509Certificate) this.privateKeyEntry.getCertificate()).getIssuerX500Principal()
-                .getName());
-        subjectDNField.setText(((X509Certificate) this.privateKeyEntry.getCertificate()).getSubjectX500Principal()
-                .getName());
+        issuerDNField.setText(((X509Certificate) this.privateKeyEntry.getCertificate()).getIssuerX500Principal().getName());
+        subjectDNField.setText(((X509Certificate) this.privateKeyEntry.getCertificate()).getSubjectX500Principal().getName());
         sigAlgoField.setText(((X509Certificate) this.privateKeyEntry.getCertificate()).getSigAlgName());
 
         /*
@@ -141,8 +138,7 @@ public class ConfirmIdentity extends JFrame {
 
     void onConfirm() {
 
-        this.consoleManager.setIdentity(this.privateKeyEntry, this.keyStorePath, this.keyStoreType,
-                this.keyStorePassword);
+        this.consoleManager.setIdentity(this.privateKeyEntry, this.keyStorePath, this.keyStoreType, this.keyStorePassword);
         this.dispose();
     }
 

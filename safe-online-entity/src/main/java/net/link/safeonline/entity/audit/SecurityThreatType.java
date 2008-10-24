@@ -9,13 +9,16 @@ package net.link.safeonline.entity.audit;
 
 /**
  * Security Threat Types according to Shirey.
- *
+ * 
  * See also: RFC 2828
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public enum SecurityThreatType {
 
-    DISCLOSURE, DECEPTION, DISRUPTION, USURPATION
+    DISCLOSURE,
+    DECEPTION,
+    DISRUPTION,
+    USURPATION
 }

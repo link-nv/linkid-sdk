@@ -51,13 +51,12 @@ public class ApplicationIdentifierMappingServiceBean implements ApplicationIdent
 
     @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
     public String getApplicationUserId(String username) throws PermissionDeniedException, ApplicationNotFoundException,
-            SubscriptionNotFoundException, SubjectNotFoundException {
+                                                       SubscriptionNotFoundException, SubjectNotFoundException {
 
         LOG.debug("getUserId: " + username);
         checkPermission();
         ApplicationEntity application = this.applicationManager.getCallerApplication();
-        SubjectEntity subject = this.subjectIdentifierDAO.findSubject(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN,
-                username);
+        SubjectEntity subject = this.subjectIdentifierDAO.findSubject(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN, username);
         if (null == subject)
             throw new SubjectNotFoundException();
         String userId = this.userIdMappingService.getApplicationUserId(application.getName(), subject.getUserId());

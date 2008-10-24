@@ -42,13 +42,11 @@ public class AccessAuditDAOBean implements AccessAuditDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                AccessAuditEntity.QueryInterface.class);
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, AccessAuditEntity.QueryInterface.class);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void addAccessAudit(AuditContextEntity auditContext, String operation, OperationStateType operationState,
-            String principal) {
+    public void addAccessAudit(AuditContextEntity auditContext, String operation, OperationStateType operationState, String principal) {
 
         AccessAuditEntity accessAudit = new AccessAuditEntity(auditContext, operation, operationState, principal);
         this.entityManager.persist(accessAudit);
@@ -83,7 +81,7 @@ public class AccessAuditDAOBean implements AccessAuditDAO {
 
         long count = this.queryObject.countErrorRecords(id);
         LOG.debug("# error records: " + count);
-        
+
         return 0 != count;
     }
 }

@@ -105,8 +105,7 @@ public class ProxyAttributeServiceBeanTest {
         String pluginServiceName = "test-plugin-service";
 
         // define attribute type
-        AttributeTypeEntity attributeType = new AttributeTypeEntity(testStringAttributeName, DatatypeType.STRING, true,
-                true);
+        AttributeTypeEntity attributeType = new AttributeTypeEntity(testStringAttributeName, DatatypeType.STRING, true, true);
         attributeType.setPluginName(pluginServiceName);
         attributeType.setPluginConfiguration("test-plugin-configuration");
         attributeType.setAttributeCacheTimeoutMillis(5000);
@@ -118,8 +117,7 @@ public class ProxyAttributeServiceBeanTest {
         // expectations
         expect(this.mockAttributeTypeDAO.getAttributeType(testStringAttributeName)).andStubReturn(attributeType);
         expect(this.mockSubjectService.getSubject(userId)).andStubReturn(testSubject);
-        expect(this.mockAttributeCacheDAO.listAttributes(testSubject, attributeType)).andStubReturn(
-                Collections.singletonList(attribute));
+        expect(this.mockAttributeCacheDAO.listAttributes(testSubject, attributeType)).andStubReturn(Collections.singletonList(attribute));
 
         // prepare
         replay(this.mockObjects);
@@ -146,8 +144,7 @@ public class ProxyAttributeServiceBeanTest {
         PluginAttributeService testPluginService = new TestPluginService();
 
         // define attribute type
-        AttributeTypeEntity attributeType = new AttributeTypeEntity(testStringAttributeName, DatatypeType.STRING, true,
-                true);
+        AttributeTypeEntity attributeType = new AttributeTypeEntity(testStringAttributeName, DatatypeType.STRING, true, true);
         attributeType.setMultivalued(true);
         attributeType.setPluginName(pluginServiceName);
         attributeType.setPluginConfiguration("test-plugin-configuration");
@@ -160,8 +157,7 @@ public class ProxyAttributeServiceBeanTest {
         // expectations
         expect(this.mockAttributeTypeDAO.getAttributeType(testStringAttributeName)).andStubReturn(attributeType);
         expect(this.mockSubjectService.getSubject(userId)).andStubReturn(testSubject);
-        expect(this.mockAttributeCacheDAO.listAttributes(testSubject, attributeType)).andStubReturn(
-                Collections.singletonList(attribute));
+        expect(this.mockAttributeCacheDAO.listAttributes(testSubject, attributeType)).andStubReturn(Collections.singletonList(attribute));
         this.mockAttributeCacheDAO.removeAttributes(testSubject, attributeType);
         expect(this.mockOSGIStartable.getPluginService(pluginServiceName)).andStubReturn(testPluginService);
         expect(this.mockAttributeCacheDAO.addAttribute(attributeType, testSubject, 0)).andStubReturn(
@@ -196,38 +192,33 @@ public class ProxyAttributeServiceBeanTest {
         SubjectEntity testSubject = new SubjectEntity(userId);
 
         // define attribute type
-        AttributeTypeEntity stringAttributeType = new AttributeTypeEntity(testStringAttributeName, DatatypeType.STRING,
-                true, true);
+        AttributeTypeEntity stringAttributeType = new AttributeTypeEntity(testStringAttributeName, DatatypeType.STRING, true, true);
         stringAttributeType.setMultivalued(true);
         stringAttributeType.setPluginName(pluginServiceName);
         stringAttributeType.setAttributeCacheTimeoutMillis(3600000);
 
-        AttributeTypeEntity booleanAttributeType = new AttributeTypeEntity(testBooleanAttributeName,
-                DatatypeType.BOOLEAN, true, true);
+        AttributeTypeEntity booleanAttributeType = new AttributeTypeEntity(testBooleanAttributeName, DatatypeType.BOOLEAN, true, true);
         booleanAttributeType.setMultivalued(true);
         booleanAttributeType.setPluginName(pluginServiceName);
         booleanAttributeType.setAttributeCacheTimeoutMillis(3600000);
 
-        AttributeTypeEntity dateAttributeType = new AttributeTypeEntity(testDateAttributeName, DatatypeType.DATE, true,
-                true);
+        AttributeTypeEntity dateAttributeType = new AttributeTypeEntity(testDateAttributeName, DatatypeType.DATE, true, true);
         dateAttributeType.setMultivalued(true);
         dateAttributeType.setPluginName(pluginServiceName);
         dateAttributeType.setAttributeCacheTimeoutMillis(3600000);
 
-        AttributeTypeEntity doubleAttributeType = new AttributeTypeEntity(testDoubleAttributeName, DatatypeType.DOUBLE,
-                true, true);
+        AttributeTypeEntity doubleAttributeType = new AttributeTypeEntity(testDoubleAttributeName, DatatypeType.DOUBLE, true, true);
         doubleAttributeType.setMultivalued(true);
         doubleAttributeType.setPluginName(pluginServiceName);
         doubleAttributeType.setAttributeCacheTimeoutMillis(3600000);
 
-        AttributeTypeEntity integerAttributeType = new AttributeTypeEntity(testIntegerAttributeName,
-                DatatypeType.INTEGER, true, true);
+        AttributeTypeEntity integerAttributeType = new AttributeTypeEntity(testIntegerAttributeName, DatatypeType.INTEGER, true, true);
         integerAttributeType.setMultivalued(true);
         integerAttributeType.setPluginName(pluginServiceName);
         integerAttributeType.setAttributeCacheTimeoutMillis(3600000);
 
-        AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(testCompoundAttributeName,
-                DatatypeType.COMPOUNDED, true, true);
+        AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(testCompoundAttributeName, DatatypeType.COMPOUNDED, true,
+                true);
         compoundedAttributeType.setMultivalued(true);
         compoundedAttributeType.setPluginName(pluginServiceName);
         compoundedAttributeType.setPluginConfiguration("test-plugin-configuration");
@@ -266,21 +257,15 @@ public class ProxyAttributeServiceBeanTest {
         compoundedAttribute.setMembers(members);
 
         // expectations
-        expect(this.mockAttributeTypeDAO.getAttributeType(testCompoundAttributeName)).andStubReturn(
-                compoundedAttributeType);
+        expect(this.mockAttributeTypeDAO.getAttributeType(testCompoundAttributeName)).andStubReturn(compoundedAttributeType);
         expect(this.mockSubjectService.getSubject(userId)).andStubReturn(testSubject);
         expect(this.mockAttributeCacheDAO.listAttributes(testSubject, compoundedAttributeType)).andStubReturn(
                 Collections.singletonList(compoundedAttribute));
-        expect(this.mockAttributeCacheDAO.findAttribute(testSubject, stringAttributeType, 0)).andStubReturn(
-                stringAttribute);
-        expect(this.mockAttributeCacheDAO.findAttribute(testSubject, booleanAttributeType, 0)).andStubReturn(
-                booleanAttribute);
-        expect(this.mockAttributeCacheDAO.findAttribute(testSubject, dateAttributeType, 0))
-                .andStubReturn(dateAttribute);
-        expect(this.mockAttributeCacheDAO.findAttribute(testSubject, doubleAttributeType, 0)).andStubReturn(
-                doubleAttribute);
-        expect(this.mockAttributeCacheDAO.findAttribute(testSubject, integerAttributeType, 0)).andStubReturn(
-                integerAttribute);
+        expect(this.mockAttributeCacheDAO.findAttribute(testSubject, stringAttributeType, 0)).andStubReturn(stringAttribute);
+        expect(this.mockAttributeCacheDAO.findAttribute(testSubject, booleanAttributeType, 0)).andStubReturn(booleanAttribute);
+        expect(this.mockAttributeCacheDAO.findAttribute(testSubject, dateAttributeType, 0)).andStubReturn(dateAttribute);
+        expect(this.mockAttributeCacheDAO.findAttribute(testSubject, doubleAttributeType, 0)).andStubReturn(doubleAttribute);
+        expect(this.mockAttributeCacheDAO.findAttribute(testSubject, integerAttributeType, 0)).andStubReturn(integerAttribute);
 
         // prepare
         replay(this.mockObjects);
@@ -315,38 +300,33 @@ public class ProxyAttributeServiceBeanTest {
         PluginAttributeService testPluginService = new TestPluginService();
 
         // define attribute type
-        AttributeTypeEntity stringAttributeType = new AttributeTypeEntity(testStringAttributeName, DatatypeType.STRING,
-                true, true);
+        AttributeTypeEntity stringAttributeType = new AttributeTypeEntity(testStringAttributeName, DatatypeType.STRING, true, true);
         stringAttributeType.setMultivalued(true);
         stringAttributeType.setPluginName(pluginServiceName);
         stringAttributeType.setAttributeCacheTimeoutMillis(3600000);
 
-        AttributeTypeEntity booleanAttributeType = new AttributeTypeEntity(testBooleanAttributeName,
-                DatatypeType.BOOLEAN, true, true);
+        AttributeTypeEntity booleanAttributeType = new AttributeTypeEntity(testBooleanAttributeName, DatatypeType.BOOLEAN, true, true);
         booleanAttributeType.setMultivalued(true);
         booleanAttributeType.setPluginName(pluginServiceName);
         booleanAttributeType.setAttributeCacheTimeoutMillis(3600000);
 
-        AttributeTypeEntity dateAttributeType = new AttributeTypeEntity(testDateAttributeName, DatatypeType.DATE, true,
-                true);
+        AttributeTypeEntity dateAttributeType = new AttributeTypeEntity(testDateAttributeName, DatatypeType.DATE, true, true);
         dateAttributeType.setMultivalued(true);
         dateAttributeType.setPluginName(pluginServiceName);
         dateAttributeType.setAttributeCacheTimeoutMillis(3600000);
 
-        AttributeTypeEntity doubleAttributeType = new AttributeTypeEntity(testDoubleAttributeName, DatatypeType.DOUBLE,
-                true, true);
+        AttributeTypeEntity doubleAttributeType = new AttributeTypeEntity(testDoubleAttributeName, DatatypeType.DOUBLE, true, true);
         doubleAttributeType.setMultivalued(true);
         doubleAttributeType.setPluginName(pluginServiceName);
         doubleAttributeType.setAttributeCacheTimeoutMillis(3600000);
 
-        AttributeTypeEntity integerAttributeType = new AttributeTypeEntity(testIntegerAttributeName,
-                DatatypeType.INTEGER, true, true);
+        AttributeTypeEntity integerAttributeType = new AttributeTypeEntity(testIntegerAttributeName, DatatypeType.INTEGER, true, true);
         integerAttributeType.setMultivalued(true);
         integerAttributeType.setPluginName(pluginServiceName);
         integerAttributeType.setAttributeCacheTimeoutMillis(3600000);
 
-        AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(testCompoundAttributeName,
-                DatatypeType.COMPOUNDED, true, true);
+        AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(testCompoundAttributeName, DatatypeType.COMPOUNDED, true,
+                true);
         compoundedAttributeType.setMultivalued(true);
         compoundedAttributeType.setPluginName(pluginServiceName);
         compoundedAttributeType.setPluginConfiguration("test-plugin-configuration");
@@ -386,19 +366,15 @@ public class ProxyAttributeServiceBeanTest {
         compoundedAttribute.setMembers(members);
 
         // expectations
-        expect(this.mockAttributeTypeDAO.getAttributeType(testCompoundAttributeName)).andStubReturn(
-                compoundedAttributeType);
+        expect(this.mockAttributeTypeDAO.getAttributeType(testCompoundAttributeName)).andStubReturn(compoundedAttributeType);
         expect(this.mockSubjectService.getSubject(userId)).andStubReturn(testSubject);
 
         // lookup cache
         expect(this.mockAttributeCacheDAO.listAttributes(testSubject, compoundedAttributeType)).andStubReturn(
                 Collections.singletonList(compoundedAttribute));
-        expect(this.mockAttributeCacheDAO.findAttribute(testSubject, stringAttributeType, 0)).andStubReturn(
-                stringAttribute);
-        expect(this.mockAttributeCacheDAO.findAttribute(testSubject, booleanAttributeType, 0)).andStubReturn(
-                booleanAttribute);
-        expect(this.mockAttributeCacheDAO.findAttribute(testSubject, dateAttributeType, 0))
-                .andStubReturn(dateAttribute);
+        expect(this.mockAttributeCacheDAO.findAttribute(testSubject, stringAttributeType, 0)).andStubReturn(stringAttribute);
+        expect(this.mockAttributeCacheDAO.findAttribute(testSubject, booleanAttributeType, 0)).andStubReturn(booleanAttribute);
+        expect(this.mockAttributeCacheDAO.findAttribute(testSubject, dateAttributeType, 0)).andStubReturn(dateAttribute);
         this.mockAttributeCacheDAO.removeAttributes(testSubject, compoundedAttributeType);
 
         // find external
@@ -477,8 +453,7 @@ public class ProxyAttributeServiceBeanTest {
         PluginAttributeService testPluginService = new TestPluginService();
 
         // define attribute type
-        AttributeTypeEntity attributeType = new AttributeTypeEntity(testStringAttributeName, DatatypeType.STRING, true,
-                true);
+        AttributeTypeEntity attributeType = new AttributeTypeEntity(testStringAttributeName, DatatypeType.STRING, true, true);
         attributeType.setMultivalued(true);
         attributeType.setPluginName(pluginServiceName);
         attributeType.setPluginConfiguration("test-plugin-configuration");
@@ -522,33 +497,28 @@ public class ProxyAttributeServiceBeanTest {
         SubjectEntity testSubject = new SubjectEntity(userId);
 
         // define attribute type
-        AttributeTypeEntity stringAttributeType = new AttributeTypeEntity(testStringAttributeName, DatatypeType.STRING,
-                true, true);
+        AttributeTypeEntity stringAttributeType = new AttributeTypeEntity(testStringAttributeName, DatatypeType.STRING, true, true);
         stringAttributeType.setMultivalued(true);
         stringAttributeType.setPluginName(pluginServiceName);
 
-        AttributeTypeEntity booleanAttributeType = new AttributeTypeEntity(testBooleanAttributeName,
-                DatatypeType.BOOLEAN, true, true);
+        AttributeTypeEntity booleanAttributeType = new AttributeTypeEntity(testBooleanAttributeName, DatatypeType.BOOLEAN, true, true);
         booleanAttributeType.setMultivalued(true);
         booleanAttributeType.setPluginName(pluginServiceName);
 
-        AttributeTypeEntity dateAttributeType = new AttributeTypeEntity(testDateAttributeName, DatatypeType.DATE, true,
-                true);
+        AttributeTypeEntity dateAttributeType = new AttributeTypeEntity(testDateAttributeName, DatatypeType.DATE, true, true);
         dateAttributeType.setMultivalued(true);
         dateAttributeType.setPluginName(pluginServiceName);
 
-        AttributeTypeEntity doubleAttributeType = new AttributeTypeEntity(testDoubleAttributeName, DatatypeType.DOUBLE,
-                true, true);
+        AttributeTypeEntity doubleAttributeType = new AttributeTypeEntity(testDoubleAttributeName, DatatypeType.DOUBLE, true, true);
         doubleAttributeType.setMultivalued(true);
         doubleAttributeType.setPluginName(pluginServiceName);
 
-        AttributeTypeEntity integerAttributeType = new AttributeTypeEntity(testIntegerAttributeName,
-                DatatypeType.INTEGER, true, true);
+        AttributeTypeEntity integerAttributeType = new AttributeTypeEntity(testIntegerAttributeName, DatatypeType.INTEGER, true, true);
         integerAttributeType.setMultivalued(true);
         integerAttributeType.setPluginName(pluginServiceName);
 
-        AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(testCompoundAttributeName,
-                DatatypeType.COMPOUNDED, true, true);
+        AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(testCompoundAttributeName, DatatypeType.COMPOUNDED, true,
+                true);
         compoundedAttributeType.setMultivalued(true);
         compoundedAttributeType.setPluginName(pluginServiceName);
         compoundedAttributeType.setPluginConfiguration("test-plugin-configuration");
@@ -560,8 +530,7 @@ public class ProxyAttributeServiceBeanTest {
         compoundedAttributeType.setPluginName(pluginServiceName);
 
         // expectations
-        expect(this.mockAttributeTypeDAO.getAttributeType(testCompoundAttributeName)).andStubReturn(
-                compoundedAttributeType);
+        expect(this.mockAttributeTypeDAO.getAttributeType(testCompoundAttributeName)).andStubReturn(compoundedAttributeType);
         expect(this.mockSubjectService.getSubject(userId)).andStubReturn(testSubject);
         expect(this.mockAttributeCacheDAO.listAttributes(testSubject, compoundedAttributeType)).andStubReturn(null);
         expect(this.mockOSGIStartable.getPluginService(pluginServiceName)).andStubReturn(testPluginService);
@@ -598,8 +567,7 @@ public class ProxyAttributeServiceBeanTest {
         SubjectEntity testSubject = new SubjectEntity(userId);
 
         // define attribute type
-        AttributeTypeEntity attributeType = new AttributeTypeEntity(testStringAttributeName, DatatypeType.STRING, true,
-                true);
+        AttributeTypeEntity attributeType = new AttributeTypeEntity(testStringAttributeName, DatatypeType.STRING, true, true);
         attributeType.setMultivalued(true);
         attributeType.setPluginName(pluginServiceName);
         attributeType.setPluginConfiguration("test-plugin-configuration");
@@ -635,8 +603,7 @@ public class ProxyAttributeServiceBeanTest {
         SubjectEntity testSubject = new SubjectEntity(userId);
 
         // define attribute type
-        AttributeTypeEntity attributeType = new AttributeTypeEntity(testBooleanAttributeName, DatatypeType.BOOLEAN,
-                true, true);
+        AttributeTypeEntity attributeType = new AttributeTypeEntity(testBooleanAttributeName, DatatypeType.BOOLEAN, true, true);
         attributeType.setMultivalued(true);
         attributeType.setPluginName(pluginServiceName);
         attributeType.setPluginConfiguration("test-plugin-configuration");
@@ -672,8 +639,7 @@ public class ProxyAttributeServiceBeanTest {
         SubjectEntity testSubject = new SubjectEntity(userId);
 
         // define attribute type
-        AttributeTypeEntity attributeType = new AttributeTypeEntity(testDateAttributeName, DatatypeType.DATE, true,
-                true);
+        AttributeTypeEntity attributeType = new AttributeTypeEntity(testDateAttributeName, DatatypeType.DATE, true, true);
         attributeType.setMultivalued(true);
         attributeType.setPluginName(pluginServiceName);
         attributeType.setPluginConfiguration("test-plugin-configuration");
@@ -709,8 +675,7 @@ public class ProxyAttributeServiceBeanTest {
         SubjectEntity testSubject = new SubjectEntity(userId);
 
         // define attribute type
-        AttributeTypeEntity attributeType = new AttributeTypeEntity(testDoubleAttributeName, DatatypeType.DOUBLE, true,
-                true);
+        AttributeTypeEntity attributeType = new AttributeTypeEntity(testDoubleAttributeName, DatatypeType.DOUBLE, true, true);
         attributeType.setMultivalued(true);
         attributeType.setPluginName(pluginServiceName);
         attributeType.setPluginConfiguration("test-plugin-configuration");
@@ -746,8 +711,7 @@ public class ProxyAttributeServiceBeanTest {
         SubjectEntity testSubject = new SubjectEntity(userId);
 
         // define attribute type
-        AttributeTypeEntity attributeType = new AttributeTypeEntity(testIntegerAttributeName, DatatypeType.INTEGER,
-                true, true);
+        AttributeTypeEntity attributeType = new AttributeTypeEntity(testIntegerAttributeName, DatatypeType.INTEGER, true, true);
         attributeType.setMultivalued(true);
         attributeType.setPluginName(pluginServiceName);
         attributeType.setPluginConfiguration("test-plugin-configuration");
@@ -775,8 +739,9 @@ public class ProxyAttributeServiceBeanTest {
 
     static class TestPluginService implements PluginAttributeService {
 
-        public List<Attribute> getAttribute(String userId, String attributeName, String configuration)
-                throws UnsupportedDataTypeException, AttributeNotFoundException, AttributeTypeNotFoundException {
+        public List<Attribute> getAttribute(String userId, String attributeName, String configuration) throws UnsupportedDataTypeException,
+                                                                                                      AttributeNotFoundException,
+                                                                                                      AttributeTypeNotFoundException {
 
             List<Attribute> testAttribute = new LinkedList<Attribute>();
 
@@ -810,8 +775,7 @@ public class ProxyAttributeServiceBeanTest {
 
         private Attribute createStringAttribute(int index) {
 
-            Attribute stringAttribute = new Attribute(testStringAttributeName,
-                    net.link.safeonline.osgi.plugin.DatatypeType.STRING);
+            Attribute stringAttribute = new Attribute(testStringAttributeName, net.link.safeonline.osgi.plugin.DatatypeType.STRING);
             stringAttribute.setIndex(index);
             stringAttribute.setStringValue("string-value-" + index);
             return stringAttribute;
@@ -819,8 +783,7 @@ public class ProxyAttributeServiceBeanTest {
 
         private Attribute createBooleanAttribute(int index) {
 
-            Attribute booleanAttribute = new Attribute(testBooleanAttributeName,
-                    net.link.safeonline.osgi.plugin.DatatypeType.BOOLEAN);
+            Attribute booleanAttribute = new Attribute(testBooleanAttributeName, net.link.safeonline.osgi.plugin.DatatypeType.BOOLEAN);
             booleanAttribute.setIndex(index);
             booleanAttribute.setBooleanValue(true);
             return booleanAttribute;
@@ -828,8 +791,7 @@ public class ProxyAttributeServiceBeanTest {
 
         private Attribute createDateAttribute(int index) {
 
-            Attribute dateAttribute = new Attribute(testDateAttributeName,
-                    net.link.safeonline.osgi.plugin.DatatypeType.DATE);
+            Attribute dateAttribute = new Attribute(testDateAttributeName, net.link.safeonline.osgi.plugin.DatatypeType.DATE);
             dateAttribute.setIndex(index);
             dateAttribute.setDateValue(new Date());
             return dateAttribute;
@@ -837,8 +799,7 @@ public class ProxyAttributeServiceBeanTest {
 
         private Attribute createDoubleAttribute(int index) {
 
-            Attribute doubleAttribute = new Attribute(testDoubleAttributeName,
-                    net.link.safeonline.osgi.plugin.DatatypeType.DOUBLE);
+            Attribute doubleAttribute = new Attribute(testDoubleAttributeName, net.link.safeonline.osgi.plugin.DatatypeType.DOUBLE);
             doubleAttribute.setIndex(index);
             doubleAttribute.setDoubleValue(0.5 + index);
             return doubleAttribute;
@@ -846,8 +807,7 @@ public class ProxyAttributeServiceBeanTest {
 
         private Attribute createIntegerAttribute(int index) {
 
-            Attribute integerAttribute = new Attribute(testIntegerAttributeName,
-                    net.link.safeonline.osgi.plugin.DatatypeType.INTEGER);
+            Attribute integerAttribute = new Attribute(testIntegerAttributeName, net.link.safeonline.osgi.plugin.DatatypeType.INTEGER);
             integerAttribute.setIndex(index);
             integerAttribute.setIntegerValue(index);
             return integerAttribute;

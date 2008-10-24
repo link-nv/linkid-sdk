@@ -15,9 +15,9 @@ import java.util.Map;
 
 /**
  * Catalog for validators. Flyweight pattern.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class ValidatorCatalog {
 

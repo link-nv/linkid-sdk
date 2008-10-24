@@ -13,9 +13,9 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Wrapper class for 2 AttributeDO's which a user can choose from.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class ChoosableAttributeDO {
 

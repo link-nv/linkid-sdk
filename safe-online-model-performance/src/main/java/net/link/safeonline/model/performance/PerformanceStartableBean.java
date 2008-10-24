@@ -62,38 +62,34 @@ public class PerformanceStartableBean extends AbstractInitBean {
          * Register the application and the application certificate.
          */
         this.trustedCertificates.put(perfCertificate, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
-        this.registeredApplications.add(new Application(PERFORMANCE_APPLICATION_NAME, "owner", null, null, getLogo(),
-                null, true, false, perfCertificate, true, IdScopeType.USER, false, null));
+        this.registeredApplications.add(new Application(PERFORMANCE_APPLICATION_NAME, "owner", null, null, getLogo(), null, true, false,
+                perfCertificate, true, IdScopeType.USER, false, null));
 
         /*
          * Subscribe the performance user to the performance application.
          */
-        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "performance",
-                PERFORMANCE_APPLICATION_NAME));
+        this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "performance", PERFORMANCE_APPLICATION_NAME));
 
         /*
          * Attribute Types.
          */
-        AttributeTypeEntity attributeType = new AttributeTypeEntity(PERFORMANCE_ATTRIBUTE, DatatypeType.STRING, true,
-                true);
+        AttributeTypeEntity attributeType = new AttributeTypeEntity(PERFORMANCE_ATTRIBUTE, DatatypeType.STRING, true, true);
         this.attributeTypes.add(attributeType);
 
         /*
          * Application Identities
          */
-        this.identities.add(new Identity(PERFORMANCE_APPLICATION_NAME,
-                new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(PERFORMANCE_ATTRIBUTE, false, false) }));
+        this.identities.add(new Identity(PERFORMANCE_APPLICATION_NAME, new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
+                PERFORMANCE_ATTRIBUTE, false, false) }));
 
         /*
          * Application usage agreements
          */
         UsageAgreement usageAgreement = new UsageAgreement(PERFORMANCE_APPLICATION_NAME);
-        usageAgreement.addUsageAgreementText(new UsageAgreementText(Locale.ENGLISH.getLanguage(), "English" + "\n\n"
-                + "Lin-k NV" + "\n" + "Software License Agreement for " + PERFORMANCE_APPLICATION_NAME + "\n\n"
-                + LICENSE_AGREEMENT_CONFIRM_TEXT_EN));
+        usageAgreement.addUsageAgreementText(new UsageAgreementText(Locale.ENGLISH.getLanguage(), "English" + "\n\n" + "Lin-k NV" + "\n"
+                + "Software License Agreement for " + PERFORMANCE_APPLICATION_NAME + "\n\n" + LICENSE_AGREEMENT_CONFIRM_TEXT_EN));
         usageAgreement.addUsageAgreementText(new UsageAgreementText("nl", "Nederlands" + "\n\n" + "Lin-k NV" + "\n"
-                + "Software Gebruikers Overeenkomst voor " + PERFORMANCE_APPLICATION_NAME + "\n\n"
-                + LICENSE_AGREEMENT_CONFIRM_TEXT_NL));
+                + "Software Gebruikers Overeenkomst voor " + PERFORMANCE_APPLICATION_NAME + "\n\n" + LICENSE_AGREEMENT_CONFIRM_TEXT_NL));
         this.usageAgreements.add(usageAgreement);
     }
 
@@ -113,10 +109,9 @@ public class PerformanceStartableBean extends AbstractInitBean {
 
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
         IdentityServiceClient identityServiceClient = new IdentityServiceClient();
-        this.node = new Node(nodeName, protocol, hostname, hostport, hostportssl, authIdentityServiceClient
-                .getCertificate(), identityServiceClient.getCertificate());
-        this.trustedCertificates.put(authIdentityServiceClient.getCertificate(),
-                SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
+        this.node = new Node(nodeName, protocol, hostname, hostport, hostportssl, authIdentityServiceClient.getCertificate(),
+                identityServiceClient.getCertificate());
+        this.trustedCertificates.put(authIdentityServiceClient.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
     }
 
     @Override

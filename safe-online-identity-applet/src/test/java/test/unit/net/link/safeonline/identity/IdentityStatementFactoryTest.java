@@ -54,8 +54,7 @@ public class IdentityStatementFactoryTest extends TestCase {
         };
 
         // operate
-        byte[] result = IdentityStatementFactory.createIdentityStatement(sessionId, testUser, testOperation, signer,
-                identityProvider);
+        byte[] result = IdentityStatementFactory.createIdentityStatement(sessionId, testUser, testOperation, signer, identityProvider);
 
         // verify
         assertNotNull(result);

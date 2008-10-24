@@ -59,13 +59,13 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Implementation of data service using JAX-WS.
- *
+ * 
  * <p>
  * Specification: Liberty ID-WSF Data Service Template version 2.1
  * </p>
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 @WebService(endpointInterface = "liberty.dst._2006_08.ref.safe_online.DataServicePort")
 @HandlerChain(file = "data-ws-handlers.xml")
@@ -131,12 +131,10 @@ public class DataServicePortImpl implements DataServicePort {
         try {
             this.attributeProviderService.createAttribute(userId, attributeName, attributeValue);
         } catch (SubjectNotFoundException e) {
-            CreateResponseType failedResponse = createFailedCreateResponse(SecondLevelStatusCode.DOES_NOT_EXIST,
-                    "SubjectNotFound");
+            CreateResponseType failedResponse = createFailedCreateResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "SubjectNotFound");
             return failedResponse;
         } catch (AttributeTypeNotFoundException e) {
-            CreateResponseType failedResponse = createFailedCreateResponse(SecondLevelStatusCode.DOES_NOT_EXIST,
-                    "AttributeTypeNotFound");
+            CreateResponseType failedResponse = createFailedCreateResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "AttributeTypeNotFound");
             return failedResponse;
         } catch (PermissionDeniedException e) {
             CreateResponseType failedResponse = createFailedCreateResponse(SecondLevelStatusCode.NOT_AUTHORIZED);
@@ -198,19 +196,16 @@ public class DataServicePortImpl implements DataServicePort {
                 this.attributeProviderService.removeCompoundAttributeRecord(userId, attributeName, attributeId);
             }
         } catch (SubjectNotFoundException e) {
-            DeleteResponseType failedResponse = createFailedDeleteResponse(SecondLevelStatusCode.DOES_NOT_EXIST,
-                    "SubjectNotFound");
+            DeleteResponseType failedResponse = createFailedDeleteResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "SubjectNotFound");
             return failedResponse;
         } catch (AttributeTypeNotFoundException e) {
-            DeleteResponseType failedResponse = createFailedDeleteResponse(SecondLevelStatusCode.DOES_NOT_EXIST,
-                    "AttributeTypeNotFound");
+            DeleteResponseType failedResponse = createFailedDeleteResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "AttributeTypeNotFound");
             return failedResponse;
         } catch (PermissionDeniedException e) {
             DeleteResponseType failedResponse = createFailedDeleteResponse(SecondLevelStatusCode.NOT_AUTHORIZED);
             return failedResponse;
         } catch (AttributeNotFoundException e) {
-            DeleteResponseType failedResponse = createFailedDeleteResponse(SecondLevelStatusCode.DOES_NOT_EXIST,
-                    "AttributeNotFound");
+            DeleteResponseType failedResponse = createFailedDeleteResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "AttributeNotFound");
             return failedResponse;
         }
 
@@ -230,8 +225,7 @@ public class DataServicePortImpl implements DataServicePort {
             return failedResponse;
         }
         if (0 == modifyItems.size()) {
-            ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.EMPTY_REQUEST,
-                    "missing ModifyItem");
+            ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.EMPTY_REQUEST, "missing ModifyItem");
             return failedResponse;
         }
         ModifyItemType modifyItem = modifyItems.get(0);
@@ -273,30 +267,26 @@ public class DataServicePortImpl implements DataServicePort {
 
         if (false == DataServiceConstants.ATTRIBUTE_OBJECT_TYPE.equals(objectType)) {
             LOG.debug("unsupported object type: " + objectType);
-            ModifyResponseType failedResponse = createFailedModifyResponse(
-                    SecondLevelStatusCode.UNSUPPORTED_OBJECT_TYPE, objectType);
+            ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.UNSUPPORTED_OBJECT_TYPE, objectType);
             return failedResponse;
         }
 
         /*
-         * Different strategies are possible to go from the SAML attribute to the AttributeProviderService attribute
-         * data object. Here we have chosen not to multiplex the SAML attribute to a generic attribute data object when
-         * invoking the setAttribute. Let's just call a setAttribute method dedicated for compounded attribute records.
+         * Different strategies are possible to go from the SAML attribute to the AttributeProviderService attribute data object. Here we
+         * have chosen not to multiplex the SAML attribute to a generic attribute data object when invoking the setAttribute. Let's just
+         * call a setAttribute method dedicated for compounded attribute records.
          */
         if (isCompoundAttribute(attribute)) {
             String attributeId = findAttributeId(attribute);
             if (null == attributeId) {
-                ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.INVALID_DATA,
-                        "AttributeId required");
+                ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.INVALID_DATA, "AttributeId required");
                 return failedResponse;
             }
             Map<String, Object> memberValues = getCompoundMemberValues(attribute);
             try {
-                this.attributeProviderService.setCompoundAttributeRecord(userId, attributeName, attributeId,
-                        memberValues);
+                this.attributeProviderService.setCompoundAttributeRecord(userId, attributeName, attributeId, memberValues);
             } catch (SubjectNotFoundException e) {
-                ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.DOES_NOT_EXIST,
-                        "SubjectNotFound");
+                ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "SubjectNotFound");
                 return failedResponse;
             } catch (AttributeTypeNotFoundException e) {
                 ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.DOES_NOT_EXIST,
@@ -306,12 +296,10 @@ public class DataServicePortImpl implements DataServicePort {
                 ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.NOT_AUTHORIZED);
                 return failedResponse;
             } catch (DatatypeMismatchException e) {
-                ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.INVALID_DATA,
-                        "DatatypeMismatch");
+                ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.INVALID_DATA, "DatatypeMismatch");
                 return failedResponse;
             } catch (AttributeNotFoundException e) {
-                ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.DOES_NOT_EXIST,
-                        "AttributeNotFound");
+                ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "AttributeNotFound");
                 return failedResponse;
             }
         } else {
@@ -320,8 +308,7 @@ public class DataServicePortImpl implements DataServicePort {
             try {
                 this.attributeProviderService.setAttribute(userId, attributeName, attributeValue);
             } catch (SubjectNotFoundException e) {
-                ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.DOES_NOT_EXIST,
-                        "SubjectNotFound");
+                ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "SubjectNotFound");
                 return failedResponse;
             } catch (AttributeTypeNotFoundException e) {
                 ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.DOES_NOT_EXIST,
@@ -331,13 +318,11 @@ public class DataServicePortImpl implements DataServicePort {
                 ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.NOT_AUTHORIZED);
                 return failedResponse;
             } catch (AttributeNotFoundException e) {
-                ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.DOES_NOT_EXIST,
-                        "AttributeNotFound");
+                ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "AttributeNotFound");
                 return failedResponse;
             } catch (DatatypeMismatchException e) {
                 LOG.error("datatype mismatch. received data of type: " + attributeValue.getClass().getName());
-                ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.INVALID_DATA,
-                        "DatatypeMismatch");
+                ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.INVALID_DATA, "DatatypeMismatch");
                 return failedResponse;
             }
         }
@@ -398,8 +383,7 @@ public class DataServicePortImpl implements DataServicePort {
             return failedResponse;
         }
         if (0 == queryItems.size()) {
-            QueryResponseType failedResponse = createFailedQueryResponse(SecondLevelStatusCode.EMPTY_REQUEST,
-                    "No Query Items");
+            QueryResponseType failedResponse = createFailedQueryResponse(SecondLevelStatusCode.EMPTY_REQUEST, "No Query Items");
             return failedResponse;
         }
         QueryItemType queryItem = queryItems.get(0);
@@ -437,15 +421,13 @@ public class DataServicePortImpl implements DataServicePort {
         try {
             attributeList = this.attributeProviderService.getAttributes(userId, attributeName);
         } catch (AttributeTypeNotFoundException e) {
-            QueryResponseType failedResponse = createFailedQueryResponse(SecondLevelStatusCode.DOES_NOT_EXIST,
-                    "AttributeTypeNotFound");
+            QueryResponseType failedResponse = createFailedQueryResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "AttributeTypeNotFound");
             return failedResponse;
         } catch (PermissionDeniedException e) {
             QueryResponseType failedResponse = createFailedQueryResponse(SecondLevelStatusCode.NOT_AUTHORIZED);
             return failedResponse;
         } catch (SubjectNotFoundException e) {
-            QueryResponseType failedResponse = createFailedQueryResponse(SecondLevelStatusCode.DOES_NOT_EXIST,
-                    "SubjectNotFound");
+            QueryResponseType failedResponse = createFailedQueryResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "SubjectNotFound");
             return failedResponse;
         }
         QueryResponseType queryResponse = new QueryResponseType();
@@ -456,8 +438,8 @@ public class DataServicePortImpl implements DataServicePort {
         DataType data = new DataType();
         dataList.add(data);
         /*
-         * Notice that value can be null. In that case we send an empty Data element. No Data element means that the
-         * attribute provider still needs to create the attribute entity itself.
+         * Notice that value can be null. In that case we send an empty Data element. No Data element means that the attribute provider
+         * still needs to create the attribute entity itself.
          */
         if (false == attributeList.isEmpty()) {
             AttributeType attribute = new AttributeType();
@@ -585,8 +567,7 @@ public class DataServicePortImpl implements DataServicePort {
         List<Object> attributeValues = attribute.getAttributeValue();
         if (attributeValues.isEmpty())
             return null;
-        if (false == Boolean.TRUE.toString().equals(
-                attribute.getOtherAttributes().get(WebServiceConstants.MULTIVALUED_ATTRIBUTE))) {
+        if (false == Boolean.TRUE.toString().equals(attribute.getOtherAttributes().get(WebServiceConstants.MULTIVALUED_ATTRIBUTE))) {
             /*
              * Single-valued attribute;
              */
@@ -615,7 +596,7 @@ public class DataServicePortImpl implements DataServicePort {
 
     /**
      * Convertor to go from XML datatypes to Service datatypes. The Service layer doesn't eat XMLGregorianCalendars.
-     *
+     * 
      * @param value
      */
     private Object convertXMLDatatypeToServiceDatatype(Object value) {

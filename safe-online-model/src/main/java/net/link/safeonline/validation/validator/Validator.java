@@ -14,9 +14,9 @@ import java.lang.annotation.Annotation;
 
 /**
  * Interface for basic validators. Every validator has a corresponding annotation.
- *
+ * 
  * @author fcorneli
- *
+ * 
  * @param <T>
  */
 public interface Validator<T extends Annotation> {

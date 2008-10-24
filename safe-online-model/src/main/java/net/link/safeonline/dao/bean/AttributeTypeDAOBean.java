@@ -56,8 +56,7 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 
         this.descriptorQueryObject = QueryObjectFactory.createQueryObject(this.entityManager,
                 AttributeTypeDescriptionEntity.QueryInterface.class);
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                AttributeTypeEntity.QueryInterface.class);
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, AttributeTypeEntity.QueryInterface.class);
         this.compoundedQueryObject = QueryObjectFactory.createQueryObject(this.entityManager,
                 CompoundedAttributeTypeMemberEntity.QueryInterface.class);
     }
@@ -125,8 +124,7 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
         return descriptions;
     }
 
-    public void addAttributeTypeDescription(AttributeTypeEntity attributeType,
-            AttributeTypeDescriptionEntity newAttributeTypeDescription) {
+    public void addAttributeTypeDescription(AttributeTypeEntity attributeType, AttributeTypeDescriptionEntity newAttributeTypeDescription) {
 
         /*
          * Manage relationships.
@@ -158,10 +156,10 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
     }
 
     public AttributeTypeDescriptionEntity getDescription(AttributeTypeDescriptionPK attributeTypeDescriptionPK)
-            throws AttributeTypeDescriptionNotFoundException {
+                                                                                                               throws AttributeTypeDescriptionNotFoundException {
 
-        AttributeTypeDescriptionEntity attributeTypeDescription = this.entityManager.find(
-                AttributeTypeDescriptionEntity.class, attributeTypeDescriptionPK);
+        AttributeTypeDescriptionEntity attributeTypeDescription = this.entityManager.find(AttributeTypeDescriptionEntity.class,
+                attributeTypeDescriptionPK);
         if (null == attributeTypeDescription)
             throw new AttributeTypeDescriptionNotFoundException();
         return attributeTypeDescription;
@@ -170,8 +168,8 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public AttributeTypeDescriptionEntity findDescription(AttributeTypeDescriptionPK attributeTypeDescriptionPK) {
 
-        AttributeTypeDescriptionEntity attributeTypeDescription = this.entityManager.find(
-                AttributeTypeDescriptionEntity.class, attributeTypeDescriptionPK);
+        AttributeTypeDescriptionEntity attributeTypeDescription = this.entityManager.find(AttributeTypeDescriptionEntity.class,
+                attributeTypeDescriptionPK);
         return attributeTypeDescription;
     }
 
@@ -209,10 +207,9 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
     }
 
     public CompoundedAttributeTypeMemberEntity getMemberEntry(AttributeTypeEntity memberAttributeType)
-            throws AttributeTypeNotFoundException {
+                                                                                                      throws AttributeTypeNotFoundException {
 
-        List<CompoundedAttributeTypeMemberEntity> memberEntries = this.compoundedQueryObject
-                .listMemberEntries(memberAttributeType);
+        List<CompoundedAttributeTypeMemberEntity> memberEntries = this.compoundedQueryObject.listMemberEntries(memberAttributeType);
         if (memberEntries.isEmpty())
             throw new AttributeTypeNotFoundException();
         CompoundedAttributeTypeMemberEntity memberEntry = memberEntries.get(0);

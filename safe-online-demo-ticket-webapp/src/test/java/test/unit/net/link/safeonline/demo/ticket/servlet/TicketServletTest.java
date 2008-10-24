@@ -75,8 +75,8 @@ public class TicketServletTest extends TestCase {
         String testTo = Site.BRUSSEL.name();
         HttpClient httpClient = new HttpClient();
         GetMethod getMethod = new GetMethod(this.servletLocation);
-        getMethod.setQueryString(new NameValuePair[] { new NameValuePair("NRN", testNrn),
-                new NameValuePair("FROM", testFrom), new NameValuePair("TO", testTo) });
+        getMethod.setQueryString(new NameValuePair[] { new NameValuePair("NRN", testNrn), new NameValuePair("FROM", testFrom),
+                new NameValuePair("TO", testTo) });
 
         // setup
         expect(this.mockTicketService.hasValidPass(testNrn, testFrom, testTo)).andReturn(true);
@@ -101,8 +101,8 @@ public class TicketServletTest extends TestCase {
         String testTo = Site.BRUSSEL.name();
         HttpClient httpClient = new HttpClient();
         GetMethod getMethod = new GetMethod(this.servletLocation);
-        getMethod.setQueryString(new NameValuePair[] { new NameValuePair("NRN", testNrn),
-                new NameValuePair("FROM", testFrom), new NameValuePair("TO", testTo) });
+        getMethod.setQueryString(new NameValuePair[] { new NameValuePair("NRN", testNrn), new NameValuePair("FROM", testFrom),
+                new NameValuePair("TO", testTo) });
 
         // setup
         expect(this.mockTicketService.hasValidPass(testNrn, testFrom, testTo)).andReturn(false);

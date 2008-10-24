@@ -52,8 +52,7 @@ import org.jboss.seam.faces.FacesMessages;
 @Interceptors(ErrorMessageInterceptor.class)
 public class DeviceClassDescriptionBean implements DeviceClassDescription {
 
-    private static final Log                  LOG                               = LogFactory
-                                                                                        .getLog(DeviceClassDescriptionBean.class);
+    private static final Log                  LOG                               = LogFactory.getLog(DeviceClassDescriptionBean.class);
 
     public static final String                OPER_DEVICE_CLASS_DESCR_LIST_NAME = "deviceClassDescriptions";
 
@@ -96,8 +95,7 @@ public class DeviceClassDescriptionBean implements DeviceClassDescription {
     public void deviceClassDescriptionsListFactory() throws DeviceClassNotFoundException {
 
         LOG.debug("device class description list factory for device: " + this.selectedDeviceClass.getName());
-        this.deviceClassDescriptions = this.deviceService.listDeviceClassDescriptions(this.selectedDeviceClass
-                .getName());
+        this.deviceClassDescriptions = this.deviceService.listDeviceClassDescriptions(this.selectedDeviceClass.getName());
     }
 
     /*

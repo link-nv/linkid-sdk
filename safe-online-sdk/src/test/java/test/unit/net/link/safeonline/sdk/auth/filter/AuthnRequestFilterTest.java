@@ -98,8 +98,7 @@ public class AuthnRequestFilterTest {
         filterInitParameters.put("KeyStorePassword", "secret");
         filterInitParameters.put("WsLocation", "https://ws.location");
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
-        this.servletTestManager.setUp(TestServlet.class, AuthnRequestFilter.class, filterInitParameters,
-                initialSessionAttributes);
+        this.servletTestManager.setUp(TestServlet.class, AuthnRequestFilter.class, filterInitParameters, initialSessionAttributes);
 
         GetMethod getMethod = new GetMethod(this.servletTestManager.getServletLocation());
         HttpClient httpClient = new HttpClient();
@@ -136,8 +135,7 @@ public class AuthnRequestFilterTest {
         filterInitParameters.put("Saml2BrowserPostTemplate", "test-saml2-post-binding.vm");
         filterInitParameters.put("WsLocation", "https://ws.location");
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
-        this.servletTestManager.setUp(TestServlet.class, AuthnRequestFilter.class, filterInitParameters,
-                initialSessionAttributes);
+        this.servletTestManager.setUp(TestServlet.class, AuthnRequestFilter.class, filterInitParameters, initialSessionAttributes);
 
         GetMethod getMethod = new GetMethod(this.servletTestManager.getServletLocation());
         HttpClient httpClient = new HttpClient();

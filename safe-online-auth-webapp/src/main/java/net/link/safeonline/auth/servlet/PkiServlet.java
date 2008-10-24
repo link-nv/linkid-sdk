@@ -27,12 +27,11 @@ import org.bouncycastle.openssl.PEMWriter;
 
 
 /**
- * Servlet that exports the public key and certificate of the OLAS service that is being used to sign the generated SAML
- * tokens. This service can be useful to service providers that want to verify the correctness of the authentication
- * response tokens themselves.
- *
+ * Servlet that exports the public key and certificate of the OLAS service that is being used to sign the generated SAML tokens. This
+ * service can be useful to service providers that want to verify the correctness of the authentication response tokens themselves.
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class PkiServlet extends AbstractInjectionServlet {
 
@@ -52,8 +51,7 @@ public class PkiServlet extends AbstractInjectionServlet {
     }
 
     @Override
-    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-            IOException {
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         LOG.debug("doGet");
         X509Certificate certificate = this.client.getCertificate();

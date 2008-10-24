@@ -25,7 +25,8 @@ public interface NotificationSubscriptionService {
     List<NotificationProducerSubscriptionEntity> listTopics();
 
     void removeSubscription(String topic, EndpointReferenceEntity subscription) throws SubscriptionNotFoundException,
-            EndpointReferenceNotFoundException, PermissionDeniedException;
+                                                                               EndpointReferenceNotFoundException,
+                                                                               PermissionDeniedException;
 
     Set<EndpointReferenceEntity> listSubscriptions(String topic) throws SubscriptionNotFoundException;
 

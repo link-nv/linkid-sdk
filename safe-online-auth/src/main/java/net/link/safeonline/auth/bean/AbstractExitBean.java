@@ -37,9 +37,8 @@ public class AbstractExitBean {
 
     /**
      * 
-     * Returns the application's URL (if specified) we are authenticating for. Used to return to there if the
-     * authentication failed due to events like timeout, missing attributes ( unavailable due to missing plugin, bad
-     * configuration ), ...
+     * Returns the application's URL (if specified) we are authenticating for. Used to return to there if the authentication failed due to
+     * events like timeout, missing attributes ( unavailable due to missing plugin, bad configuration ), ...
      */
     protected String findApplicationUrl() {
 
@@ -47,8 +46,7 @@ public class AbstractExitBean {
         try {
             Cookie applicationCookie = (Cookie) facesContext.getExternalContext().getRequestCookieMap().get(
                     SafeOnlineCookies.APPLICATION_COOKIE);
-            PublicApplication application = this.publicApplicationService.findPublicApplication(applicationCookie
-                    .getValue());
+            PublicApplication application = this.publicApplicationService.findPublicApplication(applicationCookie.getValue());
             if (null != application) {
                 if (null != application.getUrl()) {
                     this.log.debug("found url: " + application.getUrl().toString());

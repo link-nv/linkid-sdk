@@ -12,9 +12,9 @@ import net.link.safeonline.auth.AuthenticationApplet;
 
 /**
  * Applet for quick identification of a user via the BeID card using the PC/SC interface.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class IdentificationApplet extends AuthenticationApplet {
 

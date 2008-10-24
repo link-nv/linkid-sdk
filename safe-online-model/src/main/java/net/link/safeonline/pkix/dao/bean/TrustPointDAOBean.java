@@ -41,14 +41,12 @@ public class TrustPointDAOBean implements TrustPointDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                TrustPointEntity.QueryInterface.class);
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, TrustPointEntity.QueryInterface.class);
     }
 
     public void addTrustPoint(TrustDomainEntity trustDomain, X509Certificate certificate) {
 
-        LOG.debug("add trust point to domain: " + trustDomain.getName() + " with subject "
-                + certificate.getSubjectX500Principal());
+        LOG.debug("add trust point to domain: " + trustDomain.getName() + " with subject " + certificate.getSubjectX500Principal());
         TrustPointEntity trustPoint = new TrustPointEntity(trustDomain, certificate);
         this.entityManager.persist(trustPoint);
     }

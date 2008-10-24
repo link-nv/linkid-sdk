@@ -24,16 +24,16 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * Exception filter that handles all GUI exceptions.
- *
+ * 
  * <p>
  * The init parameters for this filter are:
  * </p>
  * <ul>
  * <li><code>ErrorPage</code>: the path to the error page.</li>
  * </ul>
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class ExceptionFilter implements Filter {
 
@@ -46,8 +46,7 @@ public class ExceptionFilter implements Filter {
     private String              errorPage;
 
 
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-            ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         try {
             chain.doFilter(request, response);

@@ -24,11 +24,11 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- * Invocation handler for the query object factory. The query object factory is using the Proxy API to construct the
- * query object. The behaviour of the query object is provided via this invocation handler.
- *
+ * Invocation handler for the query object factory. The query object factory is using the Proxy API to construct the query object. The
+ * behaviour of the query object is provided via this invocation handler.
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class QueryObjectInvocationHandler implements InvocationHandler {
 
@@ -55,8 +55,7 @@ public class QueryObjectInvocationHandler implements InvocationHandler {
         if (null != updateMethodAnnotation)
             return update(updateMethodAnnotation, method, args);
 
-        throw new RuntimeException("@QueryMethod or @UpdateMethod annotation expected: "
-                + method.getDeclaringClass().getName());
+        throw new RuntimeException("@QueryMethod or @UpdateMethod annotation expected: " + method.getDeclaringClass().getName());
     }
 
     private Object update(UpdateMethod updateMethodAnnotation, Method method, Object[] args) {

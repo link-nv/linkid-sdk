@@ -28,34 +28,30 @@ import org.apache.commons.logging.LogFactory;
 /**
  * <h2>{@link ProfileDriver}<br>
  * <sub>Takes care of the internals that all drivers require.</sub></h2>
- *
+ * 
  * <p>
- * Abstract class of a service driver. This class manages the internals; such as persisting profile data and exceptions
- * for driver executions.<br>
+ * Abstract class of a service driver. This class manages the internals; such as persisting profile data and exceptions for driver
+ * executions.<br>
  * <br>
- * Implementing drivers need to declare methods specific to their functionality in which they should call
- * {@link #report(MessageAccessor)} once they have completed their task; or {@link #report(Throwable)} if an error
- * occurred during the work they were doing. <br>
+ * Implementing drivers need to declare methods specific to their functionality in which they should call {@link #report(MessageAccessor)}
+ * once they have completed their task; or {@link #report(Throwable)} if an error occurred during the work they were doing. <br>
  * <br>
  * The profiling data will be gathered by this class and can later be retrieved by using {@link #getProfile()}.<br>
  * </p>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public abstract class ProfileDriver {
 
     private final Log                    LOG                    = LogFactory.getLog(getClass());
 
-    private final DriverProfileService   driverProfileService   = getService(DriverProfileService.class,
-                                                                        DriverProfileService.BINDING);
-    private final ProfileDataService     profileDataService     = getService(ProfileDataService.class,
-                                                                        ProfileDataService.BINDING);
-    private final DriverExceptionService driverExceptionService = getService(DriverExceptionService.class,
-                                                                        DriverExceptionService.BINDING);
+    private final DriverProfileService   driverProfileService   = getService(DriverProfileService.class, DriverProfileService.BINDING);
+    private final ProfileDataService     profileDataService     = getService(ProfileDataService.class, ProfileDataService.BINDING);
+    private final DriverExceptionService driverExceptionService = getService(DriverExceptionService.class, DriverExceptionService.BINDING);
 
     private String                       title;
     private ExecutionEntity              execution;
@@ -126,8 +122,7 @@ public abstract class ProfileDriver {
             return service.cast(initialContext.lookup(binding));
         } catch (NoInitialContextException e) {
             try {
-                return service.cast(Class.forName(service.getName().replaceFirst("\\.([^\\.]*)$", ".bean.$1Bean"))
-                        .newInstance());
+                return service.cast(Class.forName(service.getName().replaceFirst("\\.([^\\.]*)$", ".bean.$1Bean")).newInstance());
             } catch (InstantiationException ee) {
                 this.LOG.error("Couldn't create service " + service + " at " + binding, ee);
                 throw new RuntimeException(ee);
@@ -135,8 +130,8 @@ public abstract class ProfileDriver {
                 this.LOG.error("Couldn't access service " + service + " at " + binding, ee);
                 throw new RuntimeException(ee);
             } catch (ClassNotFoundException ee) {
-                this.LOG.error("Couldn't find service "
-                        + service.getName().replaceFirst("\\.([^\\.]*)$", ".bean.$1Bean") + " at " + binding, ee);
+                this.LOG.error("Couldn't find service " + service.getName().replaceFirst("\\.([^\\.]*)$", ".bean.$1Bean") + " at "
+                        + binding, ee);
                 throw new RuntimeException(ee);
             }
         } catch (NamingException e) {

@@ -13,9 +13,9 @@ import java.io.IOException;
 
 /**
  * Signals that no smart card was found in the smart card reader.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class SmartCardNotFoundException extends IOException {
 

@@ -127,24 +127,22 @@ public class SecurityTokenServicePortImplTest {
         this.olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=OLAS");
         this.olasPrivateKey = olasKeyPair.getPrivate();
 
-        this.jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getPrivateKey",
-                new MBeanActionHandler() {
+        this.jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getPrivateKey", new MBeanActionHandler() {
 
-                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
+            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-                        LOG.debug("returning private key");
-                        return SecurityTokenServicePortImplTest.this.privateKey;
-                    }
-                });
-        this.jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getPublicKey",
-                new MBeanActionHandler() {
+                LOG.debug("returning private key");
+                return SecurityTokenServicePortImplTest.this.privateKey;
+            }
+        });
+        this.jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getPublicKey", new MBeanActionHandler() {
 
-                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
+            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-                        LOG.debug("returning public key");
-                        return SecurityTokenServicePortImplTest.this.publicKey;
-                    }
-                });
+                LOG.debug("returning public key");
+                return SecurityTokenServicePortImplTest.this.publicKey;
+            }
+        });
 
         this.jndiTestUtils = new JndiTestUtils();
         this.jndiTestUtils.setUp();
@@ -157,18 +155,14 @@ public class SecurityTokenServicePortImplTest {
         this.mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
         this.mockPkiValidator = createMock(PkiValidator.class);
 
-        this.mockObjects = new Object[] { this.mockWSSecurityConfigurationService,
-                this.mockApplicationAuthenticationService, this.mockDeviceAuthenticationService,
-                this.mockNodeAuthenticationService, this.mockPkiValidator };
+        this.mockObjects = new Object[] { this.mockWSSecurityConfigurationService, this.mockApplicationAuthenticationService,
+                this.mockDeviceAuthenticationService, this.mockNodeAuthenticationService, this.mockPkiValidator };
 
-        this.jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local",
-                this.mockWSSecurityConfigurationService);
-        this.jndiTestUtils.bindComponent("SafeOnline/ApplicationAuthenticationServiceBean/local",
-                this.mockApplicationAuthenticationService);
-        this.jndiTestUtils.bindComponent("SafeOnline/DeviceAuthenticationServiceBean/local",
-                this.mockDeviceAuthenticationService);
-        this.jndiTestUtils.bindComponent("SafeOnline/NodeAuthenticationServiceBean/local",
-                this.mockNodeAuthenticationService);
+        this.jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local", this.mockWSSecurityConfigurationService);
+        this.jndiTestUtils
+                          .bindComponent("SafeOnline/ApplicationAuthenticationServiceBean/local", this.mockApplicationAuthenticationService);
+        this.jndiTestUtils.bindComponent("SafeOnline/DeviceAuthenticationServiceBean/local", this.mockDeviceAuthenticationService);
+        this.jndiTestUtils.bindComponent("SafeOnline/NodeAuthenticationServiceBean/local", this.mockNodeAuthenticationService);
         this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local", this.mockPkiValidator);
 
         this.webServiceTestUtils = new WebServiceTestUtils();
@@ -177,17 +171,16 @@ public class SecurityTokenServicePortImplTest {
         this.webServiceTestUtils.setUp(port);
 
         String testNodeName = "test-node-name";
-        expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(
-                Long.MAX_VALUE);
-        expect(
-                this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-                        this.certificate)).andStubReturn(PkiResult.INVALID);
-        expect(
-                this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN,
-                        this.certificate)).andStubReturn(PkiResult.INVALID);
-        expect(
-                this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN,
-                        this.certificate)).andStubReturn(PkiResult.VALID);
+        expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
+        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, this.certificate))
+                                                                                                                                      .andStubReturn(
+                                                                                                                                              PkiResult.INVALID);
+        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN, this.certificate))
+                                                                                                                                 .andStubReturn(
+                                                                                                                                         PkiResult.INVALID);
+        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN, this.certificate))
+                                                                                                                              .andStubReturn(
+                                                                                                                                      PkiResult.VALID);
         expect(this.mockNodeAuthenticationService.authenticate(this.certificate)).andStubReturn(testNodeName);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
@@ -228,8 +221,7 @@ public class SecurityTokenServicePortImplTest {
         SecurityTokenService service = SecurityTokenServiceFactory.newInstance();
         SecurityTokenServicePort port = service.getSecurityTokenServicePort();
         BindingProvider bindingProvider = (BindingProvider) port;
-        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                this.webServiceTestUtils.getEndpointAddress());
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.webServiceTestUtils.getEndpointAddress());
         List<Handler> handlers = bindingProvider.getBinding().getHandlerChain();
         handlers.add(new WSSecurityClientHandler(this.certificate, this.privateKey));
         handlers.add(new LoggingHandler());
@@ -245,8 +237,8 @@ public class SecurityTokenServicePortImplTest {
 
         // operate
         ObjectFactory objectFactory = new ObjectFactory();
-        JAXBElement<String> requestType = objectFactory
-                .createRequestType("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate#" + TrustDomainType.NODE);
+        JAXBElement<String> requestType = objectFactory.createRequestType("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate#"
+                + TrustDomainType.NODE);
         RequestSecurityTokenType request = new RequestSecurityTokenType();
         request.getAny().add(requestType);
         JAXBElement<String> tokenType = objectFactory.createTokenType(SecurityTokenServiceConstants.TOKEN_TYPE_STATUS);
@@ -288,8 +280,7 @@ public class SecurityTokenServicePortImplTest {
         SecurityTokenService service = SecurityTokenServiceFactory.newInstance();
         SecurityTokenServicePort port = service.getSecurityTokenServicePort();
         BindingProvider bindingProvider = (BindingProvider) port;
-        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                this.webServiceTestUtils.getEndpointAddress());
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.webServiceTestUtils.getEndpointAddress());
         List<Handler> handlers = bindingProvider.getBinding().getHandlerChain();
         handlers.add(new WSSecurityClientHandler(this.certificate, this.privateKey));
         handlers.add(new LoggingHandler());
@@ -305,16 +296,15 @@ public class SecurityTokenServicePortImplTest {
 
         // operate
         ObjectFactory objectFactory = new ObjectFactory();
-        JAXBElement<String> requestType = objectFactory
-                .createRequestType("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate#" + TrustDomainType.NODE);
+        JAXBElement<String> requestType = objectFactory.createRequestType("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate#"
+                + TrustDomainType.NODE);
         RequestSecurityTokenType request = new RequestSecurityTokenType();
         request.getAny().add(requestType);
         JAXBElement<String> tokenType = objectFactory.createTokenType(SecurityTokenServiceConstants.TOKEN_TYPE_STATUS);
         request.getAny().add(tokenType);
         ValidateTargetType validateTarget = new ValidateTargetType();
 
-        Element responseToken = createAuthnResponse("test-in-response-to", testIssuer, "test-subject", 60,
-                "http://test.target/url");
+        Element responseToken = createAuthnResponse("test-in-response-to", testIssuer, "test-subject", 60, "http://test.target/url");
         validateTarget.setAny(responseToken);
         request.getAny().add(objectFactory.createValidateTarget(validateTarget));
 
@@ -348,8 +338,7 @@ public class SecurityTokenServicePortImplTest {
         SecurityTokenService service = SecurityTokenServiceFactory.newInstance();
         SecurityTokenServicePort port = service.getSecurityTokenServicePort();
         BindingProvider bindingProvider = (BindingProvider) port;
-        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                this.webServiceTestUtils.getEndpointAddress());
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.webServiceTestUtils.getEndpointAddress());
         List<Handler> handlers = bindingProvider.getBinding().getHandlerChain();
         handlers.add(new WSSecurityClientHandler(this.certificate, this.privateKey));
         handlers.add(new LoggingHandler());
@@ -365,8 +354,8 @@ public class SecurityTokenServicePortImplTest {
 
         // operate
         ObjectFactory objectFactory = new ObjectFactory();
-        JAXBElement<String> requestType = objectFactory
-                .createRequestType("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate#" + TrustDomainType.NODE);
+        JAXBElement<String> requestType = objectFactory.createRequestType("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate#"
+                + TrustDomainType.NODE);
         RequestSecurityTokenType request = new RequestSecurityTokenType();
         request.getAny().add(requestType);
         JAXBElement<String> tokenType = objectFactory.createTokenType(SecurityTokenServiceConstants.TOKEN_TYPE_STATUS);
@@ -407,8 +396,7 @@ public class SecurityTokenServicePortImplTest {
         SecurityTokenService service = SecurityTokenServiceFactory.newInstance();
         SecurityTokenServicePort port = service.getSecurityTokenServicePort();
         BindingProvider bindingProvider = (BindingProvider) port;
-        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                this.webServiceTestUtils.getEndpointAddress());
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.webServiceTestUtils.getEndpointAddress());
         List<Handler> handlers = bindingProvider.getBinding().getHandlerChain();
         handlers.add(new WSSecurityClientHandler(this.certificate, this.privateKey));
         handlers.add(new LoggingHandler());
@@ -424,8 +412,8 @@ public class SecurityTokenServicePortImplTest {
 
         // operate
         ObjectFactory objectFactory = new ObjectFactory();
-        JAXBElement<String> requestType = objectFactory
-                .createRequestType("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate#" + TrustDomainType.NODE);
+        JAXBElement<String> requestType = objectFactory.createRequestType("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate#"
+                + TrustDomainType.NODE);
         RequestSecurityTokenType request = new RequestSecurityTokenType();
         request.getAny().add(requestType);
         JAXBElement<String> tokenType = objectFactory.createTokenType(SecurityTokenServiceConstants.TOKEN_TYPE_STATUS);
@@ -466,8 +454,7 @@ public class SecurityTokenServicePortImplTest {
         SecurityTokenService service = SecurityTokenServiceFactory.newInstance();
         SecurityTokenServicePort port = service.getSecurityTokenServicePort();
         BindingProvider bindingProvider = (BindingProvider) port;
-        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                this.webServiceTestUtils.getEndpointAddress());
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.webServiceTestUtils.getEndpointAddress());
         List<Handler> handlers = bindingProvider.getBinding().getHandlerChain();
         handlers.add(new WSSecurityClientHandler(this.certificate, this.privateKey));
         handlers.add(new LoggingHandler());
@@ -483,16 +470,16 @@ public class SecurityTokenServicePortImplTest {
 
         // operate
         ObjectFactory objectFactory = new ObjectFactory();
-        JAXBElement<String> requestType = objectFactory
-                .createRequestType("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate#" + TrustDomainType.NODE);
+        JAXBElement<String> requestType = objectFactory.createRequestType("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate#"
+                + TrustDomainType.NODE);
         RequestSecurityTokenType request = new RequestSecurityTokenType();
         request.getAny().add(requestType);
         JAXBElement<String> tokenType = objectFactory.createTokenType(SecurityTokenServiceConstants.TOKEN_TYPE_STATUS);
         request.getAny().add(tokenType);
         ValidateTargetType validateTarget = new ValidateTargetType();
 
-        Element requestToken = createDeviceOperationRequest(testIssuer, UUID.randomUUID().toString(),
-                "http://test.consumer/url", "test-destination");
+        Element requestToken = createDeviceOperationRequest(testIssuer, UUID.randomUUID().toString(), "http://test.consumer/url",
+                "test-destination");
         validateTarget.setAny(requestToken);
         request.getAny().add(objectFactory.createValidateTarget(validateTarget));
 
@@ -526,8 +513,7 @@ public class SecurityTokenServicePortImplTest {
         SecurityTokenService service = SecurityTokenServiceFactory.newInstance();
         SecurityTokenServicePort port = service.getSecurityTokenServicePort();
         BindingProvider bindingProvider = (BindingProvider) port;
-        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
-                this.webServiceTestUtils.getEndpointAddress());
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.webServiceTestUtils.getEndpointAddress());
         List<Handler> handlers = bindingProvider.getBinding().getHandlerChain();
         handlers.add(new WSSecurityClientHandler(this.certificate, this.privateKey));
         handlers.add(new LoggingHandler());
@@ -543,16 +529,15 @@ public class SecurityTokenServicePortImplTest {
 
         // operate
         ObjectFactory objectFactory = new ObjectFactory();
-        JAXBElement<String> requestType = objectFactory
-                .createRequestType("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate#" + TrustDomainType.NODE);
+        JAXBElement<String> requestType = objectFactory.createRequestType("http://docs.oasis-open.org/ws-sx/ws-trust/200512/Validate#"
+                + TrustDomainType.NODE);
         RequestSecurityTokenType request = new RequestSecurityTokenType();
         request.getAny().add(requestType);
         JAXBElement<String> tokenType = objectFactory.createTokenType(SecurityTokenServiceConstants.TOKEN_TYPE_STATUS);
         request.getAny().add(tokenType);
         ValidateTargetType validateTarget = new ValidateTargetType();
 
-        Element responseToken = createDeviceOperationResponse("test-inresponse-to", testIssuer, "test-subject", 60,
-                "test-target");
+        Element responseToken = createDeviceOperationResponse("test-inresponse-to", testIssuer, "test-subject", 60, "test-target");
         validateTarget.setAny(responseToken);
         request.getAny().add(objectFactory.createValidateTarget(validateTarget));
 
@@ -577,22 +562,22 @@ public class SecurityTokenServicePortImplTest {
         assertEquals(SecurityTokenServiceConstants.STATUS_VALID, statusCode);
     }
 
-    private Element createAuthnRequest(String issuerName, String applicationName, String assertionConsumerServiceURL,
-            String destinationURL) throws Exception {
+    private Element createAuthnRequest(String issuerName, String applicationName, String assertionConsumerServiceURL, String destinationURL)
+                                                                                                                                            throws Exception {
 
         Challenge<String> challenge = new Challenge<String>();
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(issuerName, applicationName,
-                applicationName, this.keyPair, assertionConsumerServiceURL, destinationURL, challenge, Collections
-                        .singleton(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID), false);
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(issuerName, applicationName, applicationName, this.keyPair,
+                assertionConsumerServiceURL, destinationURL, challenge,
+                Collections.singleton(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID), false);
         Document doc = DomUtils.parseDocument(encodedAuthnRequest);
         return doc.getDocumentElement();
     }
 
-    private Element createAuthnResponse(String inResponseTo, String issuerName, String subjectName, int validity,
-            String target) throws Exception {
+    private Element createAuthnResponse(String inResponseTo, String issuerName, String subjectName, int validity, String target)
+                                                                                                                                throws Exception {
 
-        String encodedAuthnResponse = AuthnResponseFactory.createAuthResponse(inResponseTo, issuerName, issuerName,
-                subjectName, SafeOnlineConstants.PKI_DEVICE_AUTH_CONTEXT_CLASS, this.keyPair, validity, target);
+        String encodedAuthnResponse = AuthnResponseFactory.createAuthResponse(inResponseTo, issuerName, issuerName, subjectName,
+                SafeOnlineConstants.PKI_DEVICE_AUTH_CONTEXT_CLASS, this.keyPair, validity, target);
         Document doc = DomUtils.parseDocument(encodedAuthnResponse);
         return doc.getDocumentElement();
     }
@@ -600,39 +585,37 @@ public class SecurityTokenServicePortImplTest {
     private Element createLogoutRequest(String subjectName, String issuerName, String destinationURL) throws Exception {
 
         Challenge<String> challenge = new Challenge<String>();
-        String encodedLogoutRequest = LogoutRequestFactory.createLogoutRequest(subjectName, issuerName, this.keyPair,
-                destinationURL, challenge);
+        String encodedLogoutRequest = LogoutRequestFactory.createLogoutRequest(subjectName, issuerName, this.keyPair, destinationURL,
+                challenge);
         Document doc = DomUtils.parseDocument(encodedLogoutRequest);
         return doc.getDocumentElement();
     }
 
     private Element createLogoutResponse(String inResponseTo, String issuerName, String target) throws Exception {
 
-        String encodedLogoutResponse = LogoutResponseFactory.createLogoutResponse(inResponseTo, issuerName,
-                this.keyPair, target);
+        String encodedLogoutResponse = LogoutResponseFactory.createLogoutResponse(inResponseTo, issuerName, this.keyPair, target);
         Document doc = DomUtils.parseDocument(encodedLogoutResponse);
         return doc.getDocumentElement();
     }
 
-    private Element createDeviceOperationRequest(String issuerName, String subjectName, String serviceURL,
-            String destinationURL) throws Exception {
+    private Element createDeviceOperationRequest(String issuerName, String subjectName, String serviceURL, String destinationURL)
+                                                                                                                                 throws Exception {
 
         Challenge<String> challenge = new Challenge<String>();
         String device = "test-device";
         String authenticatedDevice = "test-authenticated-device";
-        String encodedRequest = DeviceOperationRequestFactory.createDeviceOperationRequest(issuerName, subjectName,
-                this.keyPair, serviceURL, destinationURL, DeviceOperationType.REGISTER, challenge, device,
-                authenticatedDevice, null);
+        String encodedRequest = DeviceOperationRequestFactory.createDeviceOperationRequest(issuerName, subjectName, this.keyPair,
+                serviceURL, destinationURL, DeviceOperationType.REGISTER, challenge, device, authenticatedDevice, null);
         Document doc = DomUtils.parseDocument(encodedRequest);
         return doc.getDocumentElement();
     }
 
-    private Element createDeviceOperationResponse(String inResponseTo, String issuerName, String subjectName,
-            int validity, String target) throws Exception {
+    private Element createDeviceOperationResponse(String inResponseTo, String issuerName, String subjectName, int validity, String target)
+                                                                                                                                          throws Exception {
 
         String device = "test-device";
-        String encodedResponse = DeviceOperationResponseFactory.createDeviceOperationResponse(inResponseTo,
-                DeviceOperationType.REGISTER, issuerName, subjectName, device, this.keyPair, validity, target);
+        String encodedResponse = DeviceOperationResponseFactory.createDeviceOperationResponse(inResponseTo, DeviceOperationType.REGISTER,
+                issuerName, subjectName, device, this.keyPair, validity, target);
         Document doc = DomUtils.parseDocument(encodedResponse);
         return doc.getDocumentElement();
     }

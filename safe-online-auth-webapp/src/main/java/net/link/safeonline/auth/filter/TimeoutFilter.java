@@ -30,10 +30,10 @@ import org.apache.commons.logging.LogFactory;
 /**
  * Servlet Filter that handles authentication browser timeout events.
  * 
- * This filter will set ( if not already ) a cookie containing the applicationId if the current session is valid. If the
- * session is invalid, it will check for such a cookie, fetch the {@link LoginManager#APPLICATION_ID_ATTRIBUTE} and
- * lookup the application URL. If such an url can be retrieved, it will display the timeout page as configured with the
- * <code>TimeoutPath</code> containing this URL. Else the URL will just be omitted.
+ * This filter will set ( if not already ) a cookie containing the applicationId if the current session is valid. If the session is invalid,
+ * it will check for such a cookie, fetch the {@link LoginManager#APPLICATION_ID_ATTRIBUTE} and lookup the application URL. If such an url
+ * can be retrieved, it will display the timeout page as configured with the <code>TimeoutPath</code> containing this URL. Else the URL will
+ * just be omitted.
  * 
  * <p>
  * The init parameters for this filter are:
@@ -61,8 +61,7 @@ public class TimeoutFilter extends AbstractInjectionFilter {
         LOG.debug("destroy");
     }
 
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
-            ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
 
         LOG.debug("auth.doFilter");
         HttpServletRequest httpRequest = (HttpServletRequest) request;
@@ -93,8 +92,7 @@ public class TimeoutFilter extends AbstractInjectionFilter {
                 setCookie(SafeOnlineCookies.APPLICATION_COOKIE, applicationId, this.cookiePath, httpResponse);
             }
             /*
-             * Remove the possible timeout cookie, add entry cookie to prevent timing out again on first entry after a
-             * previous timeout.
+             * Remove the possible timeout cookie, add entry cookie to prevent timing out again on first entry after a previous timeout.
              */
             removeCookie(SafeOnlineCookies.TIMEOUT_COOKIE, this.cookiePath, httpRequest, httpResponse);
             addCookie(SafeOnlineCookies.ENTRY_COOKIE, "", this.cookiePath, httpRequest, httpResponse);
@@ -111,9 +109,9 @@ public class TimeoutFilter extends AbstractInjectionFilter {
         }
 
         /*
-         * In this case no corresponding session context for the given requested session Id was found. This could be an
-         * indication that the browser caused a timeout on the web application. We should redirect to the timeout path,
-         * add the timeout cookie to not get in an infinite timeout redirect loop, and remove the entry cookie.
+         * In this case no corresponding session context for the given requested session Id was found. This could be an indication that the
+         * browser caused a timeout on the web application. We should redirect to the timeout path, add the timeout cookie to not get in an
+         * infinite timeout redirect loop, and remove the entry cookie.
          */
         if (hasCookie(SafeOnlineCookies.ENTRY_COOKIE, httpRequest)) {
             LOG.debug("forwarding to timeout path: " + this.timeoutPath);
@@ -124,8 +122,8 @@ public class TimeoutFilter extends AbstractInjectionFilter {
         }
 
         /*
-         * No entry cookie so user just landed here, after a previous timeout session, dont again redirect the poor user
-         * to the timeout page.
+         * No entry cookie so user just landed here, after a previous timeout session, dont again redirect the poor user to the timeout
+         * page.
          */
         LOG.debug("first entry after previous timeout");
         chain.doFilter(request, response);

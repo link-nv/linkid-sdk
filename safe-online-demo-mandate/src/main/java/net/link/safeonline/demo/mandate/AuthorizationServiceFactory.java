@@ -19,8 +19,7 @@ public class AuthorizationServiceFactory {
 
     public static AuthorizationService newInstance() {
 
-        AuthorizationService authorizationService = EjbUtils.getEJB(AuthorizationService.JNDI_BINDING,
-                AuthorizationService.class);
+        AuthorizationService authorizationService = EjbUtils.getEJB(AuthorizationService.JNDI_BINDING, AuthorizationService.class);
         return authorizationService;
     }
 }

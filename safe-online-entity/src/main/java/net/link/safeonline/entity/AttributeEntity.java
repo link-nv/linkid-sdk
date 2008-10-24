@@ -47,8 +47,8 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 
 /**
- * Attribute JPA Entity. Sits as many-to-many between {@link AttributeTypeEntity} and {@link SubjectEntity}.
- * Multi-valued attributes are implemented via {@link #getAttributeIndex()}.
+ * Attribute JPA Entity. Sits as many-to-many between {@link AttributeTypeEntity} and {@link SubjectEntity}. Multi-valued attributes are
+ * implemented via {@link #getAttributeIndex()}.
  * 
  * @author fcorneli
  * 
@@ -57,28 +57,20 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @Table(name = "attribute")
 @NamedQueries( {
         @NamedQuery(name = QUERY_WHERE_SUBJECT, query = "SELECT attribute FROM AttributeEntity AS attribute "
-                + "WHERE attribute.subject = :" + SUBJECT_PARAM
-                + " ORDER BY attribute.attributeType, attribute.attributeIndex"),
+                + "WHERE attribute.subject = :" + SUBJECT_PARAM + " ORDER BY attribute.attributeType, attribute.attributeIndex"),
         @NamedQuery(name = QUERY_WHERE_SUBJECT_AND_VISIBLE, query = "SELECT attribute FROM AttributeEntity AS attribute "
-                + "WHERE attribute.subject = :"
-                + SUBJECT_PARAM
-                + " AND attribute.attributeType.userVisible = TRUE "
+                + "WHERE attribute.subject = :" + SUBJECT_PARAM + " AND attribute.attributeType.userVisible = TRUE "
                 + "ORDER BY attribute.attributeType, attribute.attributeIndex"),
         @NamedQuery(name = QUERY_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE, query = "SELECT attribute FROM AttributeEntity AS attribute "
-                + "WHERE attribute.subject = :"
-                + SUBJECT_PARAM
-                + " AND attribute.attributeType = :"
-                + ATTRIBUTE_TYPE_PARAM + " ORDER BY attribute.attributeIndex"),
+                + "WHERE attribute.subject = :" + SUBJECT_PARAM + " AND attribute.attributeType = :" + ATTRIBUTE_TYPE_PARAM
+                + " ORDER BY attribute.attributeIndex"),
         @NamedQuery(name = QUERY_WHERE_PREFIX_AND_ATTRIBUTE_TYPE, query = "SELECT attribute FROM AttributeEntity AS attribute "
-                + "WHERE SUBSTRING(attribute.stringValue,1,LENGTH(:prefix)) = :prefix"
-                + " AND attribute.attributeType = :" + ATTRIBUTE_TYPE_PARAM + " ORDER BY attribute.stringValue"),
+                + "WHERE SUBSTRING(attribute.stringValue,1,LENGTH(:prefix)) = :prefix" + " AND attribute.attributeType = :"
+                + ATTRIBUTE_TYPE_PARAM + " ORDER BY attribute.stringValue"),
         @NamedQuery(name = MAX_ID_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE, query = "SELECT MAX(attribute.attributeIndex) FROM AttributeEntity AS attribute "
-                + "WHERE attribute.subject = :"
-                + SUBJECT_PARAM
-                + " AND attribute.attributeType = :"
-                + ATTRIBUTE_TYPE_PARAM),
-        @NamedQuery(name = DELETE_WHERE_SUBJECT, query = "DELETE FROM AttributeEntity AS attribute "
-                + "WHERE attribute.subject = :" + SUBJECT_PARAM),
+                + "WHERE attribute.subject = :" + SUBJECT_PARAM + " AND attribute.attributeType = :" + ATTRIBUTE_TYPE_PARAM),
+        @NamedQuery(name = DELETE_WHERE_SUBJECT, query = "DELETE FROM AttributeEntity AS attribute " + "WHERE attribute.subject = :"
+                + SUBJECT_PARAM),
         @NamedQuery(name = DELETE_WHERE_ATTRIBUTE_TYPE, query = "DELETE FROM AttributeEntity AS attribute "
                 + "WHERE attribute.attributeType = :" + ATTRIBUTE_TYPE_PARAM) })
 public class AttributeEntity implements Serializable {
@@ -148,8 +140,7 @@ public class AttributeEntity implements Serializable {
 
 
     @EmbeddedId
-    @AttributeOverrides( {
-            @AttributeOverride(name = "attributeType", column = @Column(name = ATTRIBUTE_TYPE_COLUMN_NAME)),
+    @AttributeOverrides( { @AttributeOverride(name = "attributeType", column = @Column(name = ATTRIBUTE_TYPE_COLUMN_NAME)),
             @AttributeOverride(name = "subject", column = @Column(name = SUBJECT_COLUMN_NAME)),
             @AttributeOverride(name = "attributeIndex", column = @Column(name = ATTRIBUTE_INDEX_COLUMN_NAME)) })
     public AttributePK getPk() {
@@ -195,8 +186,7 @@ public class AttributeEntity implements Serializable {
     }
 
     /**
-     * The attribute index is used for implementing the multi-valued attributes. For single-value attributes that
-     * attribute index is zero.
+     * The attribute index is used for implementing the multi-valued attributes. For single-value attributes that attribute index is zero.
      * 
      */
     @Column(name = ATTRIBUTE_INDEX_COLUMN_NAME, insertable = false, updatable = false)
@@ -266,8 +256,8 @@ public class AttributeEntity implements Serializable {
 
 
     /**
-     * We don't manage the member attributes of a compounded attribute directly via the database because the
-     * relationship is to complex to express. This field is filled in by the DAO layer upon request.
+     * We don't manage the member attributes of a compounded attribute directly via the database because the relationship is to complex to
+     * express. This field is filled in by the DAO layer upon request.
      * 
      */
     @Transient
@@ -402,15 +392,15 @@ public class AttributeEntity implements Serializable {
 
         @QueryMethod(QUERY_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE)
         List<AttributeEntity> listAttributes(@QueryParam(SUBJECT_PARAM) SubjectEntity subject,
-                @QueryParam(ATTRIBUTE_TYPE_PARAM) AttributeTypeEntity attributeType);
+                                             @QueryParam(ATTRIBUTE_TYPE_PARAM) AttributeTypeEntity attributeType);
 
         @QueryMethod(QUERY_WHERE_PREFIX_AND_ATTRIBUTE_TYPE)
         List<AttributeEntity> listAttributes(@QueryParam("prefix") String prefix,
-                @QueryParam(ATTRIBUTE_TYPE_PARAM) AttributeTypeEntity attributeType);
+                                             @QueryParam(ATTRIBUTE_TYPE_PARAM) AttributeTypeEntity attributeType);
 
         @QueryMethod(MAX_ID_WHERE_SUBJECT_AND_ATTRIBUTE_TYPE)
         List<Long> listMaxIdWhereSubjectAndAttributeType(@QueryParam(SUBJECT_PARAM) SubjectEntity subject,
-                @QueryParam(ATTRIBUTE_TYPE_PARAM) AttributeTypeEntity attributeType);
+                                                         @QueryParam(ATTRIBUTE_TYPE_PARAM) AttributeTypeEntity attributeType);
 
         @UpdateMethod(DELETE_WHERE_SUBJECT)
         void deleteAttributes(@QueryParam(SUBJECT_PARAM) SubjectEntity subject);

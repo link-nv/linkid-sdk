@@ -38,9 +38,9 @@ import net.link.safeonline.webapp.user.UserRemove;
 
 /**
  * Payment demo tests.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class DemoPaymentTest extends TestCase {
 
@@ -70,7 +70,7 @@ public class DemoPaymentTest extends TestCase {
      * <li>Log new user in demo payment, confirm updated identity</li>
      * <li>Remove attribute from demo payment</li>
      * <li>Remove new user</li> </ol
-     *
+     * 
      * @throws Exception
      */
     public void testDemoPaymentTicket() throws Exception {
@@ -110,8 +110,7 @@ public class DemoPaymentTest extends TestCase {
         demoPaymentOverview.logout();
 
         // add new attribute type
-        OperOverview operOverview = PageUtils.loginOperWithPassword(this.acceptanceTestManager,
-                WebappConstants.OPER_ADMIN, "admin");
+        OperOverview operOverview = PageUtils.loginOperWithPassword(this.acceptanceTestManager, WebappConstants.OPER_ADMIN, "admin");
         OperAttributes operAttributes = operOverview.gotoAttributes();
         OperAttributeAdd operAttributeAdd = operAttributes.add();
         operAttributeAdd.setName(testAttribute);

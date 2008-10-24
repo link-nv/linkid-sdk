@@ -27,15 +27,15 @@ import net.link.safeonline.performance.entity.ExecutionEntity;
 /**
  * <h2>{@link QuickTest}<br>
  * <sub>[in short] (TODO).</sub></h2>
- *
+ * 
  * <p>
  * [description / usage].
  * </p>
- *
+ * 
  * <p>
  * <i>Mar 12, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class QuickTest extends AbstractDataTest {
@@ -52,8 +52,7 @@ public class QuickTest extends AbstractDataTest {
         ExecutionEntity execution = this.executionService.getExecution(new Date(1204796106 * 1000l));
 
         Query query = this.em.createQuery("SELECT d.profile.driverName" + "    FROM ProfileDataEntity d"
-                + "        JOIN d.scenarioTiming t" + "    WHERE t.execution = :execution"
-                + "        AND t.startTime = :start");
+                + "        JOIN d.scenarioTiming t" + "    WHERE t.execution = :execution" + "        AND t.startTime = :start");
 
         query.setParameter("execution", execution);
         query.setParameter("start", 1204796453397l);

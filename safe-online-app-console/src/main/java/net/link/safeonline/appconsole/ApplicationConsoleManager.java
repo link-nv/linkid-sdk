@@ -21,9 +21,9 @@ import org.w3c.dom.Document;
 
 
 /**
- *
+ * 
  * Application console data class, observable for other registered observers
- *
+ * 
  * @author wvdhaute
  */
 public class ApplicationConsoleManager extends Observable {
