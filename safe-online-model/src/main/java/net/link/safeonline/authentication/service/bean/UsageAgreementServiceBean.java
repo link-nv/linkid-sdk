@@ -46,9 +46,9 @@ import org.jboss.annotation.security.SecurityDomain;
 
 /**
  * Implementation of usage agreement service interface.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
@@ -90,7 +90,7 @@ public class UsageAgreementServiceBean implements UsageAgreementService, UsageAg
     /**
      * Check write permission on the given application. Only the subject corresponding with the application owner of the
      * application is allowed to write to the application entity.
-     *
+     * 
      * @param application
      * @throws PermissionDeniedException
      */
@@ -235,8 +235,8 @@ public class UsageAgreementServiceBean implements UsageAgreementService, UsageAg
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public boolean requiresUsageAgreementAcceptation(String applicationName) throws ApplicationNotFoundException,
-            SubscriptionNotFoundException {
+    public boolean requiresUsageAgreementAcceptation(String applicationName, String language)
+            throws ApplicationNotFoundException, SubscriptionNotFoundException {
 
         SubjectEntity subject = this.subjectManager.getCallerSubject();
         LOG.debug("is confirmation required for application " + applicationName + " by subject " + subject.getUserId());
@@ -247,8 +247,12 @@ public class UsageAgreementServiceBean implements UsageAgreementService, UsageAg
 
         long confirmedUsageAgreementVersion = subscription.getConfirmedUsageAgreementVersion();
         if (confirmedUsageAgreementVersion != currentUsageAgreementVersion
-                && currentUsageAgreementVersion != GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION)
+                && currentUsageAgreementVersion != GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION) {
+            String text = getUsageAgreementText(applicationName, language);
+            if (text.equals(""))
+                return false;
             return true;
+        }
         return false;
     }
 
@@ -391,7 +395,7 @@ public class UsageAgreementServiceBean implements UsageAgreementService, UsageAg
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public boolean requiresGlobalUsageAgreementAcceptation() {
+    public boolean requiresGlobalUsageAgreementAcceptation(String language) {
 
         SubjectEntity subject = this.subjectManager.getCallerSubject();
         LOG.debug("is confirmation required by subject " + subject.getUserId());
@@ -404,8 +408,12 @@ public class UsageAgreementServiceBean implements UsageAgreementService, UsageAg
         long confirmedUsageAgreementVersion = subject.getConfirmedUsageAgreementVersion();
         if (confirmedUsageAgreementVersion != currentUsageAgreementVersion
                 && currentUsageAgreementVersion != GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION
-                        .longValue())
+                        .longValue()) {
+            String text = getGlobalUsageAgreementText(language);
+            if (text.equals(""))
+                return false;
             return true;
+        }
         return false;
     }
 

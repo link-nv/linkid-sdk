@@ -78,6 +78,7 @@ public class LoginServlet extends AbstractInjectionServlet {
 
         LOG.debug("doGet");
         HttpSession session = request.getSession();
+        String language = request.getLocale().getLanguage();
 
         boolean devicePolicyCheck = performDevicePolicyCheck(session);
         if (false == devicePolicyCheck) {
@@ -86,14 +87,14 @@ public class LoginServlet extends AbstractInjectionServlet {
         }
         HelpdeskLogger.add(session, "authn device OK", LogLevelType.INFO);
 
-        boolean globalConfirmationRequired = performGlobalUsageAgreementCheck();
+        boolean globalConfirmationRequired = performGlobalUsageAgreementCheck(language);
         if (true == globalConfirmationRequired) {
             redirectToGlobalConfirmation(response);
             return;
         }
         HelpdeskLogger.add(session, "global usage agreement confirmation found", LogLevelType.INFO);
 
-        boolean subscriptionRequired = performSubscriptionCheck();
+        boolean subscriptionRequired = performSubscriptionCheck(language);
         if (true == subscriptionRequired) {
             redirectToSubscription(response);
             return;
@@ -125,9 +126,9 @@ public class LoginServlet extends AbstractInjectionServlet {
         response.sendRedirect("./register-device.seam");
     }
 
-    private boolean performGlobalUsageAgreementCheck() {
+    private boolean performGlobalUsageAgreementCheck(String language) {
 
-        return this.usageAgreementService.requiresGlobalUsageAgreementAcceptation();
+        return this.usageAgreementService.requiresGlobalUsageAgreementAcceptation(language);
     }
 
     private boolean performMissingAttributesCheck() throws ServletException {
@@ -163,7 +164,7 @@ public class LoginServlet extends AbstractInjectionServlet {
         return confirmationRequired;
     }
 
-    private boolean performSubscriptionCheck() throws ServletException {
+    private boolean performSubscriptionCheck(String language) throws ServletException {
 
         boolean subscriptionRequired;
         try {
@@ -171,7 +172,8 @@ public class LoginServlet extends AbstractInjectionServlet {
             if (!subscriptionRequired) {
                 try {
                     subscriptionRequired = this.usageAgreementService
-                            .requiresUsageAgreementAcceptation(this.applicationId);
+                            .requiresUsageAgreementAcceptation(
+                            this.applicationId, language);
                 } catch (SubscriptionNotFoundException e) {
                     LOG.debug("subscription not found: " + this.applicationId);
                     throw new ServletException("subscription not found");

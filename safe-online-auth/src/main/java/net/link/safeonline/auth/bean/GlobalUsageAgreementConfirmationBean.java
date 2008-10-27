@@ -65,6 +65,9 @@ public class GlobalUsageAgreementConfirmationBean extends AbstractExitBean imple
             ApplicationIdentityNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException,
             AttributeUnavailableException {
 
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        Locale viewLocale = facesContext.getViewRoot().getLocale();
+
         this.log.debug("confirm global usage agreement");
         this.usageAgreementService.confirmGlobalUsageAgreementVersion();
         HelpdeskLogger.add("confirmed global usage agreement", LogLevelType.INFO);
@@ -74,7 +77,8 @@ public class GlobalUsageAgreementConfirmationBean extends AbstractExitBean imple
          */
         boolean subscriptionRequired = !this.subscriptionService.isSubscribed(this.applicationId);
         if (!subscriptionRequired) {
-            subscriptionRequired = this.usageAgreementService.requiresUsageAgreementAcceptation(this.applicationId);
+            subscriptionRequired = this.usageAgreementService.requiresUsageAgreementAcceptation(this.applicationId,
+                    viewLocale.getLanguage());
         }
         this.log.debug("subscription required: " + subscriptionRequired);
         if (true == subscriptionRequired)
