@@ -22,6 +22,7 @@ import javax.servlet.http.HttpSession;
 import net.link.safeonline.demo.lawyer.LawyerConstants;
 import net.link.safeonline.demo.lawyer.keystore.DemoLawyerKeyStoreUtils;
 import net.link.safeonline.model.demo.DemoConstants;
+import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.ws.data.Attribute;
@@ -83,12 +84,12 @@ public class LoginServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         HttpSession session = request.getSession();
-        String username = (String) session.getAttribute("username");
-        LOG.debug("username: " + username);
+        String userId = LoginManager.getUserId(request);
+        LOG.debug("userId: " + userId);
 
         Attribute<Boolean> barAdminAttribute;
         try {
-            barAdminAttribute = this.dataClient.getAttributeValue(username,
+            barAdminAttribute = this.dataClient.getAttributeValue(userId,
                     DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME, Boolean.class);
         } catch (RequestDeniedException e) {
             throw new ServletException("count not retrieve baradmin attribute");

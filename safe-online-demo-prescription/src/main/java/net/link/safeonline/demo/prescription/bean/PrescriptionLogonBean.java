@@ -12,6 +12,7 @@ import javax.faces.context.FacesContext;
 
 import net.link.safeonline.demo.prescription.PrescriptionConstants;
 import net.link.safeonline.demo.prescription.PrescriptionLogon;
+import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
 
 import org.jboss.annotation.ejb.LocalBinding;
@@ -44,14 +45,14 @@ public class PrescriptionLogonBean extends AbstractPrescriptionDataClientBean im
     public String logout() {
 
         this.log.debug("logout");
-        String userId = (String) this.sessionContext.get("username");
+        String userId = (String) this.sessionContext.get(LoginManager.USERID_SESSION_ATTRIBUTE);
         SafeOnlineLoginUtils.logout(userId, "main.seam");
         return "success";
     }
 
     public String getUsername() {
 
-        String userId = (String) this.sessionContext.get("username");
+        String userId = (String) this.sessionContext.get(LoginManager.USERID_SESSION_ATTRIBUTE);
         return getUsername(userId);
     }
 

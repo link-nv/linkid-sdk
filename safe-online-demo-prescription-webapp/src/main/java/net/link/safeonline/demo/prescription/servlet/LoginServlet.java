@@ -22,6 +22,7 @@ import javax.servlet.http.HttpSession;
 import net.link.safeonline.demo.prescription.PrescriptionConstants;
 import net.link.safeonline.demo.prescription.keystore.DemoPrescriptionKeyStoreUtils;
 import net.link.safeonline.model.demo.DemoConstants;
+import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.exception.SubjectNotFoundException;
 import net.link.safeonline.sdk.ws.data.Attribute;
@@ -84,15 +85,15 @@ public class LoginServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         HttpSession session = request.getSession();
-        String username = (String) session.getAttribute("username");
+        String userId = LoginManager.getUserId(request);
         /*
-         * The "username" attribute has been set by the SafeOnline login filter.
+         * The "userId" attribute has been set by the SafeOnline login filter.
          */
-        LOG.debug("username: " + username);
+        LOG.debug("userId: " + userId);
 
-        boolean admin = getBoolean(username, DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME);
-        boolean careProvider = getBoolean(username, DemoConstants.PRESCRIPTION_CARE_PROVIDER_ATTRIBUTE_NAME);
-        boolean pharmacist = getBoolean(username, DemoConstants.PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME);
+        boolean admin = getBoolean(userId, DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME);
+        boolean careProvider = getBoolean(userId, DemoConstants.PRESCRIPTION_CARE_PROVIDER_ATTRIBUTE_NAME);
+        boolean pharmacist = getBoolean(userId, DemoConstants.PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME);
 
         int rolesCount = 0;
         if (admin) {
