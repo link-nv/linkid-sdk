@@ -8,6 +8,7 @@
 package net.link.safeonline.notification.service;
 
 import java.security.cert.X509Certificate;
+import java.util.List;
 
 import javax.ejb.Local;
 
@@ -22,7 +23,7 @@ import net.link.safeonline.notification.exception.MessageHandlerNotFoundExceptio
 @Local
 public interface NotificationProducerService {
 
-    public void sendNotification(String topic, String subject, String content) throws 
+    public void sendNotification(String topic, List<String> message) throws SubscriptionNotFoundException,
             MessageHandlerNotFoundException;
 
     public void subscribe(String topic, String address, X509Certificate certificate) throws PermissionDeniedException;

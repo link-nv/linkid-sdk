@@ -7,7 +7,10 @@
 
 package net.link.safeonline.notification.message;
 
-import net.link.safeonline.entity.notification.EndpointReferenceEntity;
+import java.util.List;
+
+import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.NodeEntity;
 
 
 /**
@@ -20,7 +23,9 @@ public interface MessageHandler {
 
     void init();
 
-    void handleMessage(String destination, String subject, String content);
+    List<String> createApplicationMessage(List<String> message, ApplicationEntity application);
 
-    NotificationMessage createMessage(String topic, String subject, String content, EndpointReferenceEntity consumer);
+    List<String> createNodeMessage(List<String> message, NodeEntity node);
+
+    void handleMessage(String destination, List<String> message);
 }

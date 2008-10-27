@@ -7,6 +7,7 @@
 
 package net.link.safeonline.notification.consumer.ws;
 
+import java.util.List;
 
 
 /**
@@ -17,6 +18,6 @@ package net.link.safeonline.notification.consumer.ws;
  */
 public interface AbstractNotificationConsumerService {
 
-    void handleMessage(String topic, String destination, String subject, String content);
+    void handleMessage(String topic, String destination, List<String> message);
 
 }

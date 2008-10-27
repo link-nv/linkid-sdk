@@ -13,6 +13,7 @@ import static org.easymock.EasyMock.replay;
 
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -160,8 +161,7 @@ public class NotificationConsumerPortImplTest {
 
         // setup
         String destination = "test-destination";
-        String subject = UUID.randomUUID().toString();
-        String content = "test-content";
+        String user = UUID.randomUUID().toString();
 
         NotificationMessageHolderType notificationMessage = new NotificationMessageHolderType();
 
@@ -172,8 +172,9 @@ public class NotificationConsumerPortImplTest {
 
         Message message = new Message();
         message.setDestination(destination);
-        message.setSubject(subject);
-        message.setContent(content);
+        List<String> messageContent = new LinkedList<String>();
+        messageContent.add(user);
+        message.getContent().addAll(messageContent);
         notificationMessage.setMessage(message);
 
         Notify notification = new Notify();
@@ -183,8 +184,8 @@ public class NotificationConsumerPortImplTest {
         expect(this.mockApplicationAuthenticationService.authenticate(this.certificate)).andReturn(
                 "test-application-name");
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
-        this.mockNotificationConsumerService.handleMessage(SafeOnlineConstants.TOPIC_REMOVE_USER, destination, subject,
-                content);
+        this.mockNotificationConsumerService.handleMessage(SafeOnlineConstants.TOPIC_REMOVE_USER, destination,
+                messageContent);
 
         // prepare
         replay(this.mockObjects);

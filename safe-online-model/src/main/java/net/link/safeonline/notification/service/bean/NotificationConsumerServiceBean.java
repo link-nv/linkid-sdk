@@ -7,6 +7,8 @@
 
 package net.link.safeonline.notification.service.bean;
 
+import java.util.List;
+
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 
@@ -29,11 +31,11 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
 
 
     @RolesAllowed(SafeOnlineNodeRoles.NODE_ROLE)
-    public void handleMessage(String topic, String destination, String subject, String content) {
+    public void handleMessage(String topic, String destination, List<String> message) {
 
         LOG.debug("handle message for topic: " + topic);
         try {
-            MessageHandlerManager.handleMessage(topic, destination, subject, content);
+            MessageHandlerManager.handleMessage(topic, destination, message);
         } catch (MessageHandlerNotFoundException e) {
             LOG.debug("Exception: " + e.getMessage());
             return;
