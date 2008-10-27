@@ -7,9 +7,6 @@
 
 package net.link.safeonline.notification.message.handler;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
@@ -17,10 +14,10 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.authentication.service.NodeAccountService;
 import net.link.safeonline.authentication.service.UserIdMappingService;
-import net.link.safeonline.entity.ApplicationEntity;
-import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.entity.NodeMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.entity.notification.EndpointReferenceEntity;
+import net.link.safeonline.notification.message.NotificationMessage;
 import net.link.safeonline.notification.message.MessageHandler;
 import net.link.safeonline.service.NodeMappingService;
 import net.link.safeonline.service.SubjectService;
@@ -58,47 +55,40 @@ public class RemoveUserMessageHandler implements MessageHandler {
         this.subjectService = EjbUtils.getEJB("SafeOnline/SubjectServiceBean/local", SubjectService.class);
     }
 
-    public void handleMessage(String destination, List<String> message) {
+    public void handleMessage(String destination, String subject, String content) {
 
-        String userId = message.get(0);
-        LOG.debug("handle remove message for user: " + userId);
-        SubjectEntity subject = this.subjectService.findSubject(userId);
+        LOG.debug("handle remove message for user: " + subject);
+        SubjectEntity subjectEntity = this.subjectService.findSubject(subject);
         if (null != subject) {
-            LOG.debug("remove user: " + userId);
-            this.nodeAccountService.removeAccount(subject);
+            LOG.debug("remove user: " + subject);
+            this.nodeAccountService.removeAccount(subjectEntity);
         }
     }
 
-    public List<String> createApplicationMessage(List<String> message, ApplicationEntity application) {
+    public NotificationMessage createMessage(String topic, String subject, String content, EndpointReferenceEntity consumer) {
 
-        List<String> returnMessage = new LinkedList<String>();
-        String userId = message.get(0);
-        String applicationUserId;
-        try {
-            applicationUserId = this.userIdMappingService.getApplicationUserId(application.getName(), userId);
-        } catch (SubscriptionNotFoundException e) {
-            return null;
-        } catch (ApplicationNotFoundException e) {
-            return null;
+        if (null != consumer.getApplication()) {
+            try {
+                String applicationUserId = this.userIdMappingService.getApplicationUserId(consumer.getApplication()
+                        .getName(), subject);
+                return new NotificationMessage(consumer.getApplication().getName(), applicationUserId, content);
+            } catch (SubscriptionNotFoundException e) {
+                return null;
+            } catch (ApplicationNotFoundException e) {
+                return null;
+            }
         }
-        returnMessage.add(applicationUserId);
-        return returnMessage;
-    }
-
-    public List<String> createNodeMessage(List<String> message, NodeEntity node) {
-
-        List<String> returnMessage = new LinkedList<String>();
-        String userId = message.get(0);
-        NodeMappingEntity nodeMapping;
-        try {
-            nodeMapping = this.nodeMappingService.getNodeMapping(userId, node.getName());
-        } catch (SubjectNotFoundException e) {
-            return null;
-        } catch (NodeNotFoundException e) {
-            return null;
+        if (null != consumer.getNode()) {
+            try {
+                NodeMappingEntity nodeMapping = this.nodeMappingService.getNodeMapping(subject, consumer.getNode()
+                        .getName());
+                return new NotificationMessage(consumer.getNode().getName(), nodeMapping.getId(), content);
+            } catch (SubjectNotFoundException e) {
+                return null;
+            } catch (NodeNotFoundException e) {
+                return null;
+            }
         }
-        returnMessage.add(nodeMapping.getId());
-        return returnMessage;
+        return null;
     }
-
 }

@@ -8,7 +8,6 @@
 package net.link.safeonline.notification.service.bean;
 
 import java.security.cert.X509Certificate;
-import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -77,9 +76,8 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
             NodeEntity node = this.nodeDAO.findNodeFromAuthnCertificate(certificate);
             if (null != node) {
                 subscribe(topic, address, node);
-            } else {
+            } else
                 throw new PermissionDeniedException("application or node not found.");
-            }
         }
     }
 
@@ -125,9 +123,8 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
             NodeEntity node = this.nodeDAO.findNodeFromAuthnCertificate(certificate);
             if (null != node) {
                 unsubscribe(topic, address, node);
-            } else {
+            } else
                 throw new PermissionDeniedException("application or node not found.");
-            }
         }
     }
 
@@ -152,8 +149,7 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
         subscription.getConsumers().remove(endpointReference);
     }
 
-    public void sendNotification(String topic, List<String> message) throws SubscriptionNotFoundException,
-            MessageHandlerNotFoundException {
+    public void sendNotification(String topic, String subject, String content) throws MessageHandlerNotFoundException {
 
         LOG.debug("send notification for topic: " + topic);
         NotificationProducerSubscriptionEntity subscription = this.notificationProducerDAO.findSubscription(topic);
@@ -163,7 +159,7 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
         }
         for (EndpointReferenceEntity consumer : subscription.getConsumers()) {
             try {
-                MessageHandlerManager.sendMessage(topic, message, consumer);
+                MessageHandlerManager.sendMessage(topic, subject, content, consumer);
             } catch (WSClientTransportException e) {
                 LOG.debug("Failed to send messsage for topic " + topic + " to consumer: " + e.getLocation());
                 this.resourceAuditLogger.addResourceAudit(ResourceNameType.WS, ResourceLevelType.RESOURCE_UNAVAILABLE,

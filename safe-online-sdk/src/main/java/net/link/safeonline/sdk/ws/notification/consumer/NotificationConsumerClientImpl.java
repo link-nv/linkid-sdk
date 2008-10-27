@@ -9,7 +9,6 @@ package net.link.safeonline.sdk.ws.notification.consumer;
 
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
-import java.util.List;
 
 import javax.xml.ws.BindingProvider;
 
@@ -34,9 +33,9 @@ import com.sun.xml.ws.client.ClientTransportException;
 /**
  * Implementation of the WS-Notification consumer interface. This class is using JAX-WS, secured via WS-Security and
  * server-side SSL.
- *
+ * 
  * @author wvdhaute
- *
+ * 
  */
 public class NotificationConsumerClientImpl extends AbstractMessageAccessor implements NotificationConsumerClient {
 
@@ -52,7 +51,7 @@ public class NotificationConsumerClientImpl extends AbstractMessageAccessor impl
 
     /**
      * Main constructor.
-     *
+     * 
      * @param location
      *            the location (full) of the notification web service.
      * @param clientCertificate
@@ -79,11 +78,11 @@ public class NotificationConsumerClientImpl extends AbstractMessageAccessor impl
         bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location);
     }
 
-    public void sendNotification(String topic, String destination, List<String> message)
+    public void sendNotification(String topic, String destination, String subject, String content)
             throws WSClientTransportException {
 
-        LOG.debug("send notification to " + this.location + " for topic: " + topic + " (destination=" + destination
-                + ")");
+        LOG.debug("send notification to " + this.location + " for topic: " + topic + ", destination:" + destination
+                + ", subject:" + subject + ", content:" + content);
 
         TopicExpressionType topicExpression = new TopicExpressionType();
         topicExpression.setDialect(TOPIC_DIALECT_SIMPLE);
@@ -93,8 +92,9 @@ public class NotificationConsumerClientImpl extends AbstractMessageAccessor impl
         NotificationMessageHolderType notification = new NotificationMessageHolderType();
         notification.setTopic(topicExpression);
         Message notificationMessage = new Message();
-        notificationMessage.getContent().addAll(message);
         notificationMessage.setDestination(destination);
+        notificationMessage.setSubject(subject);
+        notificationMessage.setContent(content);
         notification.setMessage(notificationMessage);
         notifications.getNotificationMessage().add(notification);
 
