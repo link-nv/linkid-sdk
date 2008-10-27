@@ -194,7 +194,7 @@ public class ExitServletTest {
         getMethod.setFollowRedirects(false);
 
         // expectations
-        this.mockAuthenticationService.commitAuthentication("en");
+        this.mockAuthenticationService.commitAuthentication();
 
         // prepare
         replay(this.mockObjects);

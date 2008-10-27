@@ -74,16 +74,13 @@ public class AuthenticationSubscriptionBean extends AbstractExitBean implements 
             PermissionDeniedException, SubscriptionNotFoundException, ApplicationIdentityNotFoundException,
             AttributeTypeNotFoundException, AttributeUnavailableException {
 
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        Locale viewLocale = facesContext.getViewRoot().getLocale();
-
         if (!this.subscriptionService.isSubscribed(this.applicationId)) {
             this.log.debug("subscribe to application #0", this.applicationId);
             this.subscriptionService.subscribe(this.applicationId);
             HelpdeskLogger.add("subscribed to application: " + this.applicationId, LogLevelType.INFO);
         }
 
-        if (this.usageAgreementService.requiresUsageAgreementAcceptation(this.applicationId, viewLocale.getLanguage())) {
+        if (this.usageAgreementService.requiresUsageAgreementAcceptation(this.applicationId)) {
             this.log.debug("confirm usage agreement for application #0", this.applicationId);
             this.usageAgreementService.confirmUsageAgreementVersion(this.applicationId);
             HelpdeskLogger.add("confirmed usage agreement of application: " + this.applicationId, LogLevelType.INFO);

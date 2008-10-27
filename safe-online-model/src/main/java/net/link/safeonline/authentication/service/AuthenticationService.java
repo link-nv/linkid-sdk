@@ -44,9 +44,9 @@ import org.opensaml.saml2.core.LogoutRequest;
  * Authentication service interface. This service allows the authentication web application to authenticate users. The
  * bean behind this interface is stateful. This means that a certain method invocation pattern must be respected. First
  * the method {@link #initialize(String, AuthnRequest)} must be invoked. Then the method
- * {@link #authenticate(HttpServletRequest)} must be invoked. After this the method
- * {@link #commitAuthentication(String)} must be invoked and finally {@link #finalizeAuthentication()}. In case the
- * authentication process needs to be aborted one should invoke {@link #abort()} .
+ * {@link #authenticate(HttpServletRequest)} must be invoked. After this the method {@link #commitAuthentication()} must
+ * be invoked and finally {@link #finalizeAuthentication()}. In case the authentication process needs to be aborted one
+ * should invoke {@link #abort()} .
  * 
  * @author fcorneli
  */
@@ -74,8 +74,6 @@ public interface AuthenticationService {
      * 
      * Calling this method is only valid after a call to {@link #authenticate(HttpServletRequest)}.
      * 
-     * @param language
-     * 
      * @throws SubscriptionNotFoundException
      *             in case the subject is not subscribed to the application.
      * @throws ApplicationNotFoundException
@@ -90,7 +88,7 @@ public interface AuthenticationService {
      * @throws PermissionDeniedException
      * @throws AttributeUnavailableException
      */
-    void commitAuthentication(String language) throws ApplicationNotFoundException, SubscriptionNotFoundException,
+    void commitAuthentication() throws ApplicationNotFoundException, SubscriptionNotFoundException,
             ApplicationIdentityNotFoundException, IdentityConfirmationRequiredException, MissingAttributeException,
             EmptyDevicePolicyException, DevicePolicyException, UsageAgreementAcceptationRequiredException,
             PermissionDeniedException, AttributeTypeNotFoundException, AttributeUnavailableException;
@@ -173,7 +171,7 @@ public interface AuthenticationService {
     /**
      * Finalizes an authentication process by constructing an encoded SAML response to be sent to the application.
      * 
-     * Calling this method is only valid after a call to {@link #commitAuthentication(String)}.
+     * Calling this method is only valid after a call to {@link #commitAuthentication()}.
      * 
      * @throws NodeNotFoundException
      * @throws ApplicationNotFoundException
