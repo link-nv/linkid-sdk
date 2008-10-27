@@ -44,7 +44,6 @@ import net.link.safeonline.model.bean.AbstractInitBean;
 import net.link.safeonline.model.beid.BeIdConstants;
 import net.link.safeonline.model.digipass.DigipassConstants;
 import net.link.safeonline.model.encap.EncapConstants;
-import net.link.safeonline.model.option.OptionConstants;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.IdentityServiceClient;
 
@@ -320,7 +319,6 @@ public class DemoStartableBean extends AbstractInitBean {
         List<String> tempAllowedDevices = new LinkedList<String>();
         tempAllowedDevices.add(BeIdConstants.BEID_DEVICE_ID);
         tempAllowedDevices.add(EncapConstants.ENCAP_DEVICE_ID);
-        tempAllowedDevices.add(OptionConstants.OPTION_DEVICE_ID);
         this.allowedDevices.put(DEMO_BANK_APPLICATION_NAME, tempAllowedDevices);
 
         /*
@@ -366,7 +364,6 @@ public class DemoStartableBean extends AbstractInitBean {
         List<String> tempAllowedDevices = new LinkedList<String>();
         tempAllowedDevices.add(BeIdConstants.BEID_DEVICE_ID);
         tempAllowedDevices.add(EncapConstants.ENCAP_DEVICE_ID);
-        tempAllowedDevices.add(OptionConstants.OPTION_DEVICE_ID);
         this.allowedDevices.put(DEMO_CINEMA_APPLICATION_NAME, tempAllowedDevices);
 
         /*
@@ -454,7 +451,6 @@ public class DemoStartableBean extends AbstractInitBean {
         tempAllowedDevices.add(BeIdConstants.BEID_DEVICE_ID);
         tempAllowedDevices.add(DigipassConstants.DIGIPASS_DEVICE_ID);
         tempAllowedDevices.add(EncapConstants.ENCAP_DEVICE_ID);
-        tempAllowedDevices.add(OptionConstants.OPTION_DEVICE_ID);
         this.allowedDevices.put(DEMO_PAYMENT_APPLICATION_NAME, tempAllowedDevices);
 
         /*

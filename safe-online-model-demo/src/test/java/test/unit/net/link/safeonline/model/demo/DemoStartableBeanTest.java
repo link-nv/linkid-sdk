@@ -83,7 +83,6 @@ import net.link.safeonline.model.beid.bean.BeIdStartableBean;
 import net.link.safeonline.model.demo.DemoStartableBean;
 import net.link.safeonline.model.digipass.bean.DigipassStartableBean;
 import net.link.safeonline.model.encap.bean.EncapStartableBean;
-import net.link.safeonline.model.option.bean.OptionStartableBean;
 import net.link.safeonline.notification.dao.bean.EndpointReferenceDAOBean;
 import net.link.safeonline.notification.dao.bean.NotificationProducerDAOBean;
 import net.link.safeonline.notification.service.bean.NotificationProducerServiceBean;
@@ -197,8 +196,6 @@ public class DemoStartableBeanTest {
                 entityManager);
         EncapStartableBean encapStartableBean = EJBTestUtils.newInstance(EncapStartableBean.class, container,
                 entityManager);
-        OptionStartableBean optionStartableBean = EJBTestUtils.newInstance(OptionStartableBean.class, container,
-                entityManager);
         DemoStartableBean demoStartableBean = EJBTestUtils.newInstance(DemoStartableBean.class, container,
                 entityManager);
 
@@ -208,7 +205,6 @@ public class DemoStartableBeanTest {
         beIdStartableBean.postStart();
         digipassStartableBean.postStart();
         encapStartableBean.postStart();
-        optionStartableBean.postStart();
         demoStartableBean.postStart();
     }
 }
