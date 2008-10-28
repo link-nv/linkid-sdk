@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
+
+    <!-- (X)HTML -->
+    <public         publicId="-//W3C//DTD XHTML 1.0 Transitional//EN"
+                        uri="xhtml1-transitional.dtd"/>
+    <public         publicId="-//W3C//ENTITIES Latin 1" 
+                        uri="xhtml-lat1.ent"/>
+    <public         publicId="-//W3C//ENTITIES Symbols"
+                        uri="xhtml-symbol.ent"/>
+    <public         publicId="-//W3C//ENTITIES Special"
+                        uri="xhtml-special.ent"/>
+
+    <!-- XML Datatypes and Schema -->
+    <public         publicId="datatypes"
+                        uri="datatypes.dtd" />
+    <system         systemId="http://www.w3.org/2001/datatypes.dtd"
+                        uri="datatypes.dtd" />
+    <systemSuffix   systemIdSuffix="datatypes.dtd"
+                        uri="datatypes.dtd"/>
+
+    <public         publicId="-//W3C//DTD XMLSchema 200102//EN"
+                        uri="XMLSchema.dtd" />
+    <system         systemId="http://www.w3.org/2001/XMLSchema.dtd"
+                        uri="XMLSchema.dtd" />
+    <systemSuffix   systemIdSuffix="XMLSchema.dtd"
+                        uri="XMLSchema.dtd"/>
+
+    <systemSuffix   systemIdSuffix="xml.xsd"
+                        uri="xml.xsd"/>
+
+    <!-- Internal XML stuff -->
+    <systemSuffix   systemIdSuffix="xmldsig-core-schema.xsd"
+                        uri="xmldsig-core-schema.xsd"/>
+
+    <systemSuffix   systemIdSuffix="xenc-schema.xsd"
+                        uri="xenc-schema.xsd" />
+
+    <!-- SAML Schemas -->
+    <systemSuffix   systemIdSuffix="oasis-sstc-saml-schema-protocol-1.1.xsd"
+                        uri="oasis-sstc-saml-schema-protocol-1.1.xsd" />
+
+    <systemSuffix   systemIdSuffix="saml-schema-protocol-2.0.xsd"
+                        uri="saml-schema-protocol-2.0.xsd" />
+
+    <!-- WS-* Schemas -->
+     <system        systemId="http://www.w3.org/2005/08/addressing/ws-addr.xsd"
+                        uri="../resources/ws-addr.xsd" />
+     <system        systemId="http://docs.oasis-open.org/wsrf/bf-2.xsd"
+                        uri="../resources/bf-2.xsd" />
+     <system        systemId="http://docs.oasis-open.org/wsn/t-1.xsd"
+                        uri="../resources/t-1.xsd" />
+
+    <!-- JBoss -->
+    <public         publicId="-//JBoss//DTD JBOSS 5.0//EN"
+                        uri="jboss_4_0.dtd"/>
+
+</catalog>
