@@ -144,6 +144,18 @@
 			<param-name>LoginPath</param-name>
 			<param-value>${safe-online.host.basename}/${safe-online.oper.webapp.name}/main.seam</param-value>
 		</init-param>
+		<init-param>
+			<param-name>UnauthenticatedPath.1</param-name>
+			<param-value>${safe-online.host.basename}/${safe-online.oper.webapp.name}/language.seam</param-value>
+		</init-param>
+		<init-param>
+			<param-name>UnauthenticatedPath.2</param-name>
+			<param-value>${safe-online.host.basename}/${safe-online.oper.webapp.name}/protocol-error.seam</param-value>
+		</init-param>
+		<init-param>
+			<param-name>UnauthenticatedPath.3</param-name>
+			<param-value>${safe-online.host.basename}/${safe-online.oper.webapp.name}/error.seam</param-value>
+		</init-param>
 	</filter>
 	<filter>
 		<filter-name>MyFacesExtensionsFilter</filter-name>

@@ -9,6 +9,9 @@ package net.link.safeonline.sdk.auth.filter;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.Enumeration;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.management.InstanceNotFoundException;
 import javax.management.MBeanException;
@@ -61,6 +64,8 @@ public class JAASLoginFilter implements Filter {
 
     public static final String  LOGIN_PATH_PARAM                  = "LoginPath";
 
+    public static final String  UNAUTHENTICATED_PATH_PARAM        = "UnauthenticatedPath";
+
     /**
      * The default JAAS login context is 'client-login'. This is what JBoss AS expects of EJB clients to use for login.
      */
@@ -70,11 +75,16 @@ public class JAASLoginFilter implements Filter {
 
     private String              loginPath;
 
+    private List<String>        unauthenticatedPaths;
+
+
     public void init(FilterConfig config) {
 
         this.loginContextName = getInitParameter(config, LOGIN_CONTEXT_PARAM, DEFAULT_LOGIN_CONTEXT);
-        this.loginPath = getInitParameter(config, LOGIN_PATH_PARAM, null);
         LOG.debug("JAAS login context: " + this.loginContextName);
+        this.loginPath = getInitParameter(config, LOGIN_PATH_PARAM, null);
+        LOG.debug("LoginPath: " + this.loginPath);
+        this.unauthenticatedPaths = getUnauthenticatedPaths(config);
     }
 
     private String getInitParameter(FilterConfig config, String param, String defaultValue) {
@@ -84,6 +94,21 @@ public class JAASLoginFilter implements Filter {
             value = defaultValue;
         }
         return value;
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<String> getUnauthenticatedPaths(FilterConfig config) {
+
+        List<String> paths = new LinkedList<String>();
+        Enumeration<String> paramNames = config.getInitParameterNames();
+        while (paramNames.hasMoreElements()) {
+            String param = paramNames.nextElement();
+            if (param.startsWith(UNAUTHENTICATED_PATH_PARAM)) {
+                paths.add(config.getInitParameter(param));
+            }
+        }
+        return paths;
+
     }
 
     public void destroy() {
@@ -117,7 +142,8 @@ public class JAASLoginFilter implements Filter {
                 LOG.debug("already redirected");
                 return true;
             }
-            if (null != this.loginPath && !this.loginPath.equals(request.getRequestURL().toString())) {
+            if (null != this.loginPath && !this.loginPath.equals(request.getRequestURL().toString())
+                    && !this.unauthenticatedPaths.contains(request.getRequestURL().toString())) {
                 LOG.debug("redirect to " + this.loginPath);
                 session.setAttribute(REDIRECTED_SESSION_ATTRIBUTE, true);
                 response.sendRedirect(this.loginPath);
