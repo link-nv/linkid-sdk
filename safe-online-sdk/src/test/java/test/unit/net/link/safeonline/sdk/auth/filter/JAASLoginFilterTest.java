@@ -14,6 +14,8 @@ import static org.easymock.classextension.EasyMock.replay;
 import static org.easymock.classextension.EasyMock.verify;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.UUID;
 
@@ -146,6 +148,8 @@ public class JAASLoginFilterTest {
                 "client-login");
 
         expect(this.mockFilterConfig.getInitParameter(JAASLoginFilter.LOGIN_PATH_PARAM)).andStubReturn(null);
+        expect(this.mockFilterConfig.getInitParameterNames()).andStubReturn(
+                Collections.enumeration(new LinkedList<String>()));
 
         expect(this.mockHttpSession.getAttribute(LoginManager.USERID_SESSION_ATTRIBUTE)).andStubReturn(
                 UUID.randomUUID().toString());
