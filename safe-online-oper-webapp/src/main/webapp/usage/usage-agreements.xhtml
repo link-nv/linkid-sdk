@@ -23,7 +23,8 @@
 				label="#{msgs.version}: #{msgs.draft}"
 				rendered="#{!empty globalUsageAgreement.draftUsageAgreement}">
 
-				<a4j:form id="editDraftForm" reRender="usagePanel,actionForm"
+                <a4j:form id="editDraftForm" reRender="usagePanel,actionForm"
+                    rendered="#{globalDraftUsageAgreementsTexts.size > 0}"
 					ajaxSubmit="true">
 					<table class="inner">
 						<colgroup class="half" />
@@ -35,7 +36,7 @@
 							</tr>
 							<tr class="center">
 								<td><a4j:commandLink value="#{msgs.releaseaction}"
-									action="#{globalUsageAgreement.releaseDraft}" /></td>
+                                    action="#{globalUsageAgreement.releaseDraft}" /></td>
 								<td><a4j:commandLink value="#{msgs.removeaction}"
 									action="#{globalUsageAgreement.removeDraft}" /></td>
 							</tr>
