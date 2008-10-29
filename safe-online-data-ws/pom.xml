@@ -51,6 +51,7 @@
 								<xjc destdir="${project.build.directory}/generated-sources/xjc"
 									catalog="${basedir}/src/main/catalog/catalog.xml">
 									<schema dir="${basedir}/src/main/resources" includes="liberty-idwsf-soap-binding-v2.0.xsd" />
+									<arg value="-verbose" />
 									<arg value="-debug" />
 									<produces
 										dir="${project.build.directory}/generated-sources/xjc">

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system" xml:base="../catalog">
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefer="system">
 
     <!-- (X)HTML -->
     <public         publicId="-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -14,14 +14,10 @@
     <!-- XML Datatypes and Schema -->
     <public         publicId="datatypes"
                         uri="datatypes.dtd" />
-    <system         systemId="http://www.w3.org/2001/datatypes.dtd"
-                        uri="datatypes.dtd" />
     <systemSuffix   systemIdSuffix="datatypes.dtd"
                         uri="datatypes.dtd"/>
 
     <public         publicId="-//W3C//DTD XMLSchema 200102//EN"
-                        uri="XMLSchema.dtd" />
-    <system         systemId="http://www.w3.org/2001/XMLSchema.dtd"
                         uri="XMLSchema.dtd" />
     <systemSuffix   systemIdSuffix="XMLSchema.dtd"
                         uri="XMLSchema.dtd"/>
@@ -50,8 +46,6 @@
                         uri="saml-schema-authn-context-types-2.0.xsd" />
 
     <!-- WS-* Schemas -->
-    <system         systemId="http://www.w3.org/2005/08/addressing/ws-addr.xsd"
-                        uri="ws-addr.xsd" />
     <systemSuffix   systemIdSuffix="ws-addr.xsd"
                         uri="ws-addr.xsd" />
     <systemSuffix   systemIdSuffix="ws-addr-1.0.xsd"
@@ -63,12 +57,18 @@
     <systemSuffix   systemIdSuffix="ws-trust-1.3.xsd"
                         uri="ws-trust-1.3.xsd" />
 
-    <system         systemId="http://docs.oasis-open.org/wsn/t-1.xsd"
+    <systemSuffix   systemIdSuffix="t-1.xsd"
                         uri="t-1.xsd" />
-    <system         systemId="http://docs.oasis-open.org/wsrf/bf-2.xsd"
-                        uri="bf-2.xsd" />
     <systemSuffix   systemIdSuffix="b-2.xsd"
                         uri="b-2.xsd" />
+    <systemSuffix   systemIdSuffix="bf-2.xsd"
+                        uri="bf-2.xsd" />
+    <systemSuffix   systemIdSuffix="bw-2.xsd"
+                        uri="bw-2.xsd" />
+    <systemSuffix   systemIdSuffix="r-2.xsd"
+                        uri="r-2.xsd" />
+    <systemSuffix   systemIdSuffix="rw-2.wsdl"
+                        uri="rw-2.wsdl" />
 
     <systemSuffix   systemIdSuffix="liberty-idwsf-dst-ref-v2.1-safe-online.xsd"
                         uri="liberty-idwsf-dst-ref-v2.1-safe-online.xsd" />

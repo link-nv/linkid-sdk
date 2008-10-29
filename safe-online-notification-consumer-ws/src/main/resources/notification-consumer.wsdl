@@ -13,8 +13,8 @@
 		<schema xmlns="http://www.w3.org/2001/XMLSchema"
 			xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
 			targetNamespace="urn:net:lin-k:safe-online:notification:consumer">
-			<import namespace="http://docs.oasis-open.org/wsn/b-2"
-				schemaLocation="b-2.xsd" />
+            <import namespace="http://docs.oasis-open.org/wsn/b-2"
+                schemaLocation="../catalog/b-2.xsd" />
 
 			<xsd:complexType name="NotificationMessageHolderType">
 				<xsd:sequence>
