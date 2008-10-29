@@ -17,8 +17,8 @@ import net.link.safeonline.authentication.service.UserIdMappingService;
 import net.link.safeonline.entity.NodeMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.notification.EndpointReferenceEntity;
-import net.link.safeonline.notification.message.NotificationMessage;
 import net.link.safeonline.notification.message.MessageHandler;
+import net.link.safeonline.notification.message.NotificationMessage;
 import net.link.safeonline.service.NodeMappingService;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.util.ee.EjbUtils;
@@ -65,13 +65,15 @@ public class RemoveUserMessageHandler implements MessageHandler {
         }
     }
 
-    public NotificationMessage createMessage(String topic, String subject, String content, EndpointReferenceEntity consumer) {
+    public NotificationMessage createMessage(String topic, String subject, String content,
+            EndpointReferenceEntity consumer) {
 
         if (null != consumer.getApplication()) {
             try {
                 String applicationUserId = this.userIdMappingService.getApplicationUserId(consumer.getApplication()
                         .getName(), subject);
-                return new NotificationMessage(consumer.getApplication().getName(), applicationUserId, content);
+                return new NotificationMessage(topic, consumer.getApplication().getName(), applicationUserId, content,
+                        consumer.getId());
             } catch (SubscriptionNotFoundException e) {
                 return null;
             } catch (ApplicationNotFoundException e) {
@@ -82,7 +84,8 @@ public class RemoveUserMessageHandler implements MessageHandler {
             try {
                 NodeMappingEntity nodeMapping = this.nodeMappingService.getNodeMapping(subject, consumer.getNode()
                         .getName());
-                return new NotificationMessage(consumer.getNode().getName(), nodeMapping.getId(), content);
+                return new NotificationMessage(topic, consumer.getNode().getName(), nodeMapping.getId(), content,
+                        consumer.getId());
             } catch (SubjectNotFoundException e) {
                 return null;
             } catch (NodeNotFoundException e) {

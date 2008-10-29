@@ -31,31 +31,49 @@ public class NotificationMessage implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private String            topic;
+
     private String            destination;
 
     private String            subject;
 
     private String            content;
 
+    private long              consumerId;
 
-    public NotificationMessage(String destination, String subject, String content) {
 
+    public NotificationMessage(String topic, String destination, String subject, String content, long consumerId) {
+
+        this.topic = topic;
         this.destination = destination;
         this.subject = subject;
         this.content = content;
+        this.consumerId = consumerId;
     }
 
     public NotificationMessage(Message message) throws JMSException {
 
-        this.auditContextId = message.getLongProperty("auditContextId");
+        this.topic = message.getStringProperty("topic");
+        this.destination = message.getStringProperty("destination");
+        this.subject = message.getStringProperty("subject");
+        this.content = message.getStringProperty("content");
+        this.consumerId = message.getLongProperty("consumerId");
     }
 
     public Message getJMSMessage(Session session) throws JMSException {
 
         Message message = session.createMessage();
-        message.setLongProperty("auditContextId", this.auditContextId);
-
+        message.setStringProperty("topic", this.topic);
+        message.setStringProperty("destination", this.destination);
+        message.setStringProperty("subject", this.subject);
+        message.setStringProperty("content", this.content);
+        message.setLongProperty("consumerId", this.consumerId);
         return message;
+    }
+
+    public String getTopic() {
+
+        return this.topic;
     }
 
     public String getDestination() {
@@ -73,4 +91,8 @@ public class NotificationMessage implements Serializable {
         return this.content;
     }
 
+    public long getConsumerId() {
+
+        return this.consumerId;
+    }
 }

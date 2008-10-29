@@ -52,23 +52,30 @@ public class MessageHandlerManager {
         }
     }
 
-    public static void sendMessage(String topic, String subject, String content, EndpointReferenceEntity consumer)
-            throws MessageHandlerNotFoundException, WSClientTransportException {
+    public static NotificationMessage getMessage(String topic, String subject, String content,
+            EndpointReferenceEntity consumer) throws MessageHandlerNotFoundException {
 
         MessageHandler messageHandler = messageHandlerMap.get(topic);
         if (null == messageHandler)
             throw new MessageHandlerNotFoundException(topic);
         messageHandler.init();
 
+        return messageHandler.createMessage(topic, subject, content, consumer);
+    }
+
+    public static void sendMessage(NotificationMessage message, EndpointReferenceEntity consumer)
+            throws MessageHandlerNotFoundException, WSClientTransportException {
+
+        MessageHandler messageHandler = messageHandlerMap.get(message.getTopic());
+        if (null == messageHandler)
+            throw new MessageHandlerNotFoundException(message.getTopic());
+        messageHandler.init();
+
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
         NotificationConsumerClient consumerClient = new NotificationConsumerClientImpl(consumer.getAddress(),
                 authIdentityServiceClient.getCertificate(), authIdentityServiceClient.getPrivateKey());
-
-        NotificationMessage message = messageHandler.createMessage(topic, subject, content, consumer);
-        if (null != message) {
-            consumerClient
-                    .sendNotification(topic, message.getDestination(), message.getSubject(), message.getContent());
-        }
+        consumerClient.sendNotification(message.getTopic(), message.getDestination(), message.getSubject(), message
+                .getContent());
     }
 
     public static void handleMessage(String topic, String destination, String subject, String content)
