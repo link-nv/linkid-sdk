@@ -403,6 +403,7 @@ public class UsageAgreementServiceBean implements UsageAgreementService, UsageAg
         GlobalUsageAgreementEntity globalUsageAgreement = this.usageAgreementDAO.getGlobalUsageAgreement();
         if (null == globalUsageAgreement)
             return false;
+
         long currentUsageAgreementVersion = globalUsageAgreement.getUsageAgreementVersion();
 
         long confirmedUsageAgreementVersion = subject.getConfirmedUsageAgreementVersion();
@@ -410,10 +411,10 @@ public class UsageAgreementServiceBean implements UsageAgreementService, UsageAg
                 && currentUsageAgreementVersion != GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION
                         .longValue()) {
             String text = getGlobalUsageAgreementText(language);
-            if (text.equals(""))
-                return false;
-            return true;
+
+            return text != null && text.length() > 0;
         }
+
         return false;
     }
 
