@@ -375,7 +375,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         /*
          * Also allow redirected state in case the user manually goes back to olas-auth
          */
-        if (this.authenticationState != INITIALIZED && this.authenticationState != REDIRECTED)
+        if (this.authenticationState != INITIALIZED && this.authenticationState != REDIRECTED
+                && this.authenticationState != USER_AUTHENTICATED)
             throw new IllegalStateException("call initialize first");
 
         IdentityServiceClient identityServiceClient = new IdentityServiceClient();
