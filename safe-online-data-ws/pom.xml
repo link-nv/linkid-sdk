@@ -49,8 +49,9 @@
 								</taskdef>
 								<mkdir dir="${project.build.directory}/generated-sources/xjc" />
 								<xjc destdir="${project.build.directory}/generated-sources/xjc"
-									catalog="${basedir}/src/main/jaxb/catalog.xml">
+									catalog="${basedir}/src/main/catalog/catalog.xml">
 									<schema dir="${basedir}/src/main/resources" includes="liberty-idwsf-soap-binding-v2.0.xsd" />
+									<arg value="-verbose" />
 									<arg value="-debug" />
 									<produces
 										dir="${project.build.directory}/generated-sources/xjc">
@@ -63,7 +64,7 @@
 									verbose="true"
 									wsdl="${basedir}/src/main/resources/liberty-idwsf-dst-ref-v2.1-link.wsdl"
 									sourcedestdir="${project.build.directory}/generated-sources/xjc"
-									catalog="${basedir}/src/main/jaxb/catalog.xml">
+									catalog="${basedir}/src/main/catalog/catalog.xml">
 									<produces
 										dir="${project.build.directory}/generated-classes/jaxws">
                                         <include name="**/*.class" />

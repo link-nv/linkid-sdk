@@ -46,7 +46,7 @@
 						</table>
 
 						<h:selectManyCheckbox id="roles" layout="pageDirection"
-							styleClass="inner tinylabel" value="#{userManager.roles}">
+							styleClass="inner" value="#{userManager.roles}">
 							<f:selectItems value="#{availableRoles}" />
 						</h:selectManyCheckbox>
 
@@ -69,7 +69,7 @@
 
 						<h:column>
 							<f:facet name="header">#{msgs.value}</f:facet>
-							<so:outputAttribute value="#{item}" />
+							<so:outputAttribute styleClass="text" value="#{item}" />
 						</h:column>
 					</h:dataTable>
 

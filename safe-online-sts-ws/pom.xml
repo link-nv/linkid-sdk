@@ -54,7 +54,7 @@
 									verbose="true"
 									wsdl="${basedir}/src/main/resources/ws-trust-1.3.wsdl"
 									sourcedestdir="${project.build.directory}/generated-sources/main/java"
-									catalog="${basedir}/src/main/resources/wsdlcatalog.xml">
+									catalog="${basedir}/src/main/catalog/catalog.xml">
 									<produces
 										dir="${project.build.directory}/generated-sources/main/java">
 										<include name="**/*.java" />
