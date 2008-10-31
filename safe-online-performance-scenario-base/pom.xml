@@ -37,6 +37,12 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-performance-entity</artifactId>
 			<version>1.2-SNAPSHOT</version>
+            <type>ejb</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-common</artifactId>
+			<version>1.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>

@@ -70,6 +70,15 @@
 			</outputDirectory>
 			<destName>SafeOnline.ear</destName>
 		</file>
+		<file>
+			<source>
+				target/files/safe-online-performance-deploy-${pom.version}.ear
+			</source>
+			<outputDirectory>
+				jboss/server/default/deploy
+			</outputDirectory>
+			<destName>SafeOnlinePerformance.ear</destName>
+		</file>
 	</files>
 
 </assembly>

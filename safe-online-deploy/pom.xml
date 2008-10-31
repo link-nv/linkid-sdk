@@ -76,7 +76,6 @@
 					<artifactTypeMappings>
 						<artifactTypeMapping type="zip" mapping="jar" />
 					</artifactTypeMappings>
-					<earSourceExcludes>*.zip,lib/*.zip</earSourceExcludes>
 				</configuration>
 			</plugin>
 			<plugin>

@@ -29,6 +29,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.xml.transform.TransformerException;
 
+import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.performance.DriverException;
 import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.performance.entity.ScenarioTimingEntity;
@@ -104,8 +105,7 @@ public class AuthDriver extends ProfileDriver {
 
         Protocol.registerProtocol("https", new Protocol("https", new MySSLSocketFactory(), 443));
 
-        // MultiThreadedHttpConnectionManager manager = new
-        // MultiThreadedHttpConnectionManager();
+        // MultiThreadedHttpConnectionManager manager = new MultiThreadedHttpConnectionManager();
         this.client = new HttpClient();
     }
 
@@ -206,16 +206,18 @@ public class AuthDriver extends ProfileDriver {
 
             // Request the JSessionID cookie.
             PostMethod postMethod = new PostMethod(uri);
-            postMethod.setRequestHeader("Cookie", "deflowered=true");
+            postMethod.setRequestHeader("Cookie", SafeOnlineCookies.DEFLOWERED_COOKIE + "=true");
             postMethod.addParameter(new NameValuePair("SAMLRequest", encodedAuthnRequest));
 
             LOG.debug("Making initial request: " + applicationName + " @ " + uri);
             executeRequest(postMethod);
 
             try {
+                Node formNode;
+
                 // Receive devices list.
                 postMethod = redirectPostMethod(postMethod);
-                Node formNode = findForm(DEVICE, executeRequest(postMethod));
+                formNode = findForm(DEVICE, executeRequest(postMethod));
 
                 // Submit password device selection.
                 LOG.debug("Select Password Device:");
@@ -309,11 +311,17 @@ public class AuthDriver extends ProfileDriver {
         }
     }
 
+    /**
+     * Follow the given redirect response with a GET request.
+     */
     private GetMethod redirectGetMethod(HttpMethod postMethod) throws DriverException {
 
         return new GetMethod(redirectMethod(postMethod));
     }
 
+    /**
+     * Follow the given redirect response with a POST request.
+     */
     private PostMethod redirectPostMethod(HttpMethod postMethod) throws DriverException {
 
         return new PostMethod(redirectMethod(postMethod));
@@ -328,6 +336,11 @@ public class AuthDriver extends ProfileDriver {
         return locationHeader.getValue();
     }
 
+    /**
+     * If the ID is not yet know, we try to dig out out of the JSESSIONID cookie on our HttpClient.
+     * 
+     * @return The JSessionID.
+     */
     private String getJSessionId() {
 
         if (this.jsessionid == null) {
@@ -340,6 +353,9 @@ public class AuthDriver extends ProfileDriver {
         return this.jsessionid;
     }
 
+    /**
+     * Create a request that submits the given form, and optionally, sends the given input nodes along.
+     */
     private PostMethod submitFormMethod(Node formNode, Node... additionalInputNodes) throws TransformerException {
 
         NameValuePair[] additionalInputValues = new NameValuePair[additionalInputNodes.length];
@@ -355,6 +371,9 @@ public class AuthDriver extends ProfileDriver {
         return submitFormMethod(formNode, additionalInputValues);
     }
 
+    /**
+     * Create a request that submits the given form, and additionally, send the given parameters along.
+     */
     private PostMethod submitFormMethod(Node formNode, NameValuePair[] additionalInputValues) throws TransformerException {
 
         // Create the post method off of the form's action value.
@@ -389,6 +408,9 @@ public class AuthDriver extends ProfileDriver {
         return postMethod;
     }
 
+    /**
+     * Execute the given GET or POST request.
+     */
     private Document executeRequest(HttpMethodBase method) throws HttpException, IOException, TransformerException, DriverException {
 
         try {
@@ -439,6 +461,9 @@ public class AuthDriver extends ProfileDriver {
         }
     }
 
+    /**
+     * Search through the given document for a form with the given ID.
+     */
     private Node findForm(String formId, Document resultDocument) throws TransformerException {
 
         if (formId == null)

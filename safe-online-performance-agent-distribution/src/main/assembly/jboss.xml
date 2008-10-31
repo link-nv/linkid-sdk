@@ -44,7 +44,7 @@
 		<fileSet>
 			<directory>target/dependency</directory>
 			<excludes>
-				<exclude>safe-online*</exclude>
+				<exclude>safe-online-performance-agent-service*</exclude>
 			</excludes>
 			<outputDirectory>jboss/server/default/lib</outputDirectory>
 		</fileSet>

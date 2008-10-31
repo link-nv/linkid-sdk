@@ -18,7 +18,7 @@
     <groupId>net.lin-k.safe-online</groupId>
     <artifactId>safe-online-performance-entity</artifactId>
     <version>1.2-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>ejb</packaging>
 
     <build>
         <plugins>
