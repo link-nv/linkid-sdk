@@ -8,6 +8,7 @@
 package net.link.safeonline.servlet;
 
 import java.io.IOException;
+import java.util.Enumeration;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -43,6 +44,7 @@ public class HelpdeskServlet extends HttpServlet {
         processHelpdeskHeaders(request, response);
     }
 
+    @SuppressWarnings("unchecked")
     private boolean processHelpdeskHeaders(HttpServletRequest request, HttpServletResponse response) {
 
         if (null == request.getHeader(HelpdeskCodes.HELPDESK_START))
@@ -53,16 +55,23 @@ public class HelpdeskServlet extends HttpServlet {
             HelpdeskLogger.clear(request.getSession());
         }
 
-        if (null != request.getHeader(HelpdeskCodes.HELPDESK_ADD)) {
-            String message = request.getHeader(HelpdeskCodes.HELPDESK_ADD_MESSAGE);
-            String logLevelString = request.getHeader(HelpdeskCodes.HELPDESK_ADD_LEVEL);
-            if (null == message || null == logLevelString) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        Enumeration<String> headerNames = request.getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String headerName = headerNames.nextElement();
+            LOG.debug("header: " + headerName);
+            if (headerName.toLowerCase().startsWith(HelpdeskCodes.HELPDESK_ADD.toLowerCase())) {
+                LOG.debug("helpdesk add: " + headerName);
+                int idx = Integer.parseInt(request.getHeader(headerName));
+                String message = request.getHeader(HelpdeskCodes.HELPDESK_ADD_MESSAGE + idx);
+                String logLevelString = request.getHeader(HelpdeskCodes.HELPDESK_ADD_LEVEL + idx);
+                LOG.debug("helpdesk event: idx=" + idx + " message=" + message + " logLevel=" + logLevelString);
+                if (null == message || null == logLevelString) {
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                }
+                LogLevelType logLevel = LogLevelType.valueOf(logLevelString);
+
+                HelpdeskLogger.add(request.getSession(), message, logLevel);
             }
-
-            LogLevelType logLevel = LogLevelType.valueOf(logLevelString);
-
-            HelpdeskLogger.add(request.getSession(), message, logLevel);
         }
 
         if (null != request.getHeader(HelpdeskCodes.HELPDESK_PERSIST)) {

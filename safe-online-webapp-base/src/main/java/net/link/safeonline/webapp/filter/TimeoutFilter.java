@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.common.SafeOnlineCookies;
+import net.link.safeonline.sdk.auth.filter.JAASLoginFilter;
 import net.link.safeonline.util.servlet.AbstractInjectionFilter;
 import net.link.safeonline.util.servlet.annotation.Init;
 
@@ -32,7 +33,6 @@ import org.apache.commons.logging.LogFactory;
  * </p>
  * <ul>
  * <li><code>TimeoutPath</code>: the path to the timeout page.</li>
- * <li><code>LoginSessionAttribute</code>: the HTTP session attribute that indicated a logged in user.</li>
  * </ul>
  * 
  * @author fcorneli
@@ -81,12 +81,15 @@ public class TimeoutFilter extends AbstractInjectionFilter {
             return;
         }
         /*
-         * In this case no corresponding session context for the given requested session Id was found. This could be an indication that the
-         * browser caused a timeout on the web application. We detect this via the login cookie.
+         * In this case no corresponding session context for the given requested session Id was found. This could be an
+         * indication that the browser caused a timeout on the web application. We detect this via the login cookie.
+         * 
+         * We also signal the JAASLoginFilter that we redirected. Else it will redirect to the login page.
          */
         if (true == hasCookie(SafeOnlineCookies.LOGIN_COOKIE, httpRequest)) {
             LOG.debug("forwarding to timeout path: " + this.timeoutPath);
             removeCookie(SafeOnlineCookies.LOGIN_COOKIE, httpRequest.getContextPath(), httpRequest, httpResponse);
+            JAASLoginFilter.setRedirected(httpRequest.getSession());
             httpResponse.sendRedirect(this.timeoutPath);
             return;
         }

@@ -271,19 +271,25 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
      * {@inheritDoc}
      */
     public void disable(String userId, String mobile) throws SubjectNotFoundException, DeviceNotFoundException,
-                                                     DeviceRegistrationNotFoundException {
+            DeviceRegistrationNotFoundException, MalformedURLException, MobileException {
 
         DeviceEntity device = this.deviceDAO.getDevice(EncapConstants.ENCAP_DEVICE_ID);
         SubjectEntity subject = this.subjectService.getSubject(userId);
 
         List<AttributeEntity> deviceAttributes = this.attributeDAO.listAttributes(subject, device.getAttributeType());
         for (AttributeEntity deviceAttribute : deviceAttributes) {
-            AttributeEntity mobileAttribute = this.attributeDAO.findAttribute(subject, EncapConstants.ENCAP_MOBILE_ATTRIBUTE,
-                    deviceAttribute.getAttributeIndex());
+            AttributeEntity mobileAttribute = this.attributeDAO.findAttribute(subject,
+                    EncapConstants.ENCAP_MOBILE_ATTRIBUTE, deviceAttribute.getAttributeIndex());
             if (mobileAttribute.getStringValue().equals(mobile)) {
                 LOG.debug("disable mobile " + mobile);
-                AttributeEntity disableAttribute = this.attributeDAO.findAttribute(subject, device.getDisableAttributeType(),
-                        deviceAttribute.getAttributeIndex());
+                AttributeEntity disableAttribute = this.attributeDAO.findAttribute(subject, device
+                        .getDisableAttributeType(), deviceAttribute.getAttributeIndex());
+                if (disableAttribute.getBooleanValue()) {
+                    this.mobileManager.unLock(mobile);
+                } else {
+                    this.mobileManager.lock(mobile);
+                }
+
                 disableAttribute.setBooleanValue(!disableAttribute.getBooleanValue());
                 return;
             }

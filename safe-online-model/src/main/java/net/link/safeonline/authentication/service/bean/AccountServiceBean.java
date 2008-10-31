@@ -7,9 +7,6 @@
 
 package net.link.safeonline.authentication.service.bean;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -103,13 +100,12 @@ public class AccountServiceBean implements AccountService, AccountServiceRemote 
         removeSubject(subject);
     }
 
-    private void removeSubject(SubjectEntity subject) throws SubscriptionNotFoundException, MessageHandlerNotFoundException {
+    private void removeSubject(SubjectEntity subject) throws MessageHandlerNotFoundException {
 
         LOG.debug("remove account: " + subject.getUserId());
 
-        List<String> message = new LinkedList<String>();
-        message.add(subject.getUserId());
-        this.notificationProducerService.sendNotification(SafeOnlineConstants.TOPIC_REMOVE_USER, message);
+        this.notificationProducerService.sendNotification(SafeOnlineConstants.TOPIC_REMOVE_USER, subject.getUserId(),
+                null);
 
         this.historyDAO.clearAllHistory(subject);
         this.subscriptionDAO.removeAllSubscriptions(subject);

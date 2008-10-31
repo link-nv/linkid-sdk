@@ -120,7 +120,9 @@ public interface EncapDeviceService {
      * @throws SubjectNotFoundException
      * @throws DeviceNotFoundException
      * @throws DeviceRegistrationNotFoundException
+     * @throws MobileException
+     * @throws MalformedURLException
      */
     void disable(String userId, String mobile) throws SubjectNotFoundException, DeviceNotFoundException,
-                                              DeviceRegistrationNotFoundException;
+            DeviceRegistrationNotFoundException, MalformedURLException, MobileException;
 }

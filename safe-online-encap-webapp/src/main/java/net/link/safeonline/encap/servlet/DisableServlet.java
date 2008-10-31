@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
+import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.device.sdk.saml2.DeviceOperationManager;
@@ -79,6 +80,8 @@ public class DisableServlet extends AbstractInjectionServlet {
             LOG.debug("subject " + userId + " not found");
         } catch (DeviceRegistrationNotFoundException e) {
             LOG.debug("device registration not found");
+        } catch (MobileException e) {
+            LOG.debug("mobile exception: " + e.getMessage());
         }
 
         response.sendRedirect(this.deviceExitPath);

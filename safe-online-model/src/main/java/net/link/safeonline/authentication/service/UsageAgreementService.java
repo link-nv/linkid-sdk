@@ -120,14 +120,16 @@ public interface UsageAgreementService {
     void removeDraftUsageAgreement(String applicationName) throws ApplicationNotFoundException, PermissionDeniedException;
 
     /**
-     * Check whether the authenticating subject's subscription to the specified application conforms with the application's current usage
-     * agreement version.
+     * Check whether the authenticating subject's subscription to the specified application conforms with the
+     * application's current usage agreement version.
      * 
-     * @param applicationId
+     * @param applicationName
+     * @param language
      * @throws ApplicationNotFoundException
      * @throws SubscriptionNotFoundException
      */
-    boolean requiresUsageAgreementAcceptation(String applicationName) throws ApplicationNotFoundException, SubscriptionNotFoundException;
+    boolean requiresUsageAgreementAcceptation(String applicationName, String language)
+            throws ApplicationNotFoundException, SubscriptionNotFoundException;
 
     /**
      * Confirm current usage agreement for specified application.
@@ -212,8 +214,10 @@ public interface UsageAgreementService {
     /**
      * Check whether authenticating subject has accepted the global usage agreement.
      * 
+     * @param language
+     * 
      */
-    boolean requiresGlobalUsageAgreementAcceptation();
+    boolean requiresGlobalUsageAgreementAcceptation(String language);
 
     /**
      * Authenticating subject confirms to the global usage agreement

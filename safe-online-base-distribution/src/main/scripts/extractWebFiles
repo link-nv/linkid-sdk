@@ -218,7 +218,7 @@ if (( apply )); then
                     continue
 
                 elif [[ ! -e $ddest ]] || [[ $destHash != $backHash ]]; then
-                    adest=( "${repos[w]}/"*"/src/main/webapp/${file/*-1.2-SNAPSHOT-exp.war/}" )
+                    adest=( "${repos[w]}/"*"/src/main/webapp/${file/*-?.?*.war/}" )
 
                     (( debug )) && \
                         emit " - - Additional Candidates:"

@@ -63,7 +63,7 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
     private TicketService       demoCinemaTicketService;
 
 
-    public void handleMessage(String topic, String destination, List<String> message) {
+    public void handleMessage(String topic, String destination, String subject, String content) {
 
         try {
             InitialContext context = new InitialContext();
@@ -76,17 +76,16 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
             LOG.error("Naming exception thrown: " + e.getMessage(), e);
         }
 
-        String userId = message.get(0);
         try {
             if (topic.equals(SafeOnlineConstants.TOPIC_REMOVE_USER)) {
                 if (destination.equals(DEMO_BANK_APPLICATION_NAME)) {
-                    removeDemoBankUser(userId);
+                    removeDemoBankUser(subject);
                 } else if (destination.equals(DEMO_CINEMA_APPLICATION_NAME)) {
-                    removeDemoCinemaUser(userId);
+                    removeDemoCinemaUser(subject);
                 } else if (destination.equals(DEMO_TICKET_APPLICATION_NAME)) {
-                    removeDemoTicketUser(userId);
+                    removeDemoTicketUser(subject);
                 } else if (destination.equals(DEMO_PAYMENT_APPLICATION_NAME)) {
-                    removeDemoPaymentUser(userId);
+                    removeDemoPaymentUser(subject);
                 }
             }
         } catch (WSClientTransportException e) {

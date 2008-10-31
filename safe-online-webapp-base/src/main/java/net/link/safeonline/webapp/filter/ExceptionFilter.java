@@ -9,14 +9,14 @@ package net.link.safeonline.webapp.filter;
 
 import java.io.IOException;
 
-import javax.servlet.Filter;
 import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.UnavailableException;
 import javax.servlet.http.HttpServletResponse;
+
+import net.link.safeonline.util.servlet.AbstractInjectionFilter;
+import net.link.safeonline.util.servlet.annotation.Init;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,15 +35,14 @@ import org.apache.commons.logging.LogFactory;
  * @author wvdhaute
  * 
  */
-public class ExceptionFilter implements Filter {
+public class ExceptionFilter extends AbstractInjectionFilter {
 
-    private static final long   serialVersionUID      = 1L;
+    private static final long serialVersionUID = 1L;
 
-    private static final Log    LOG                   = LogFactory.getLog(ExceptionFilter.class);
+    private static final Log  LOG              = LogFactory.getLog(ExceptionFilter.class);
 
-    private static final String INIT_PARAM_ERROR_PAGE = "ErrorPage";
-
-    private String              errorPage;
+    @Init(name = "ErrorPage")
+    private String            errorPage;
 
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -53,21 +52,6 @@ public class ExceptionFilter implements Filter {
         } catch (Throwable e) {
             ((HttpServletResponse) response).sendRedirect(this.errorPage);
         }
-    }
-
-    public void init(FilterConfig config) throws ServletException {
-
-        LOG.debug("init");
-        this.errorPage = getInitParameter(config, INIT_PARAM_ERROR_PAGE);
-        LOG.debug("errorpage path: " + this.errorPage);
-    }
-
-    private String getInitParameter(FilterConfig config, String parameterName) throws UnavailableException {
-
-        String value = config.getInitParameter(parameterName);
-        if (null == value)
-            throw new UnavailableException("missing init parameter: " + parameterName);
-        return value;
     }
 
     public void destroy() {

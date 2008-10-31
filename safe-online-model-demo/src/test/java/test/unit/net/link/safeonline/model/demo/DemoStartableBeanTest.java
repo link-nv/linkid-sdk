@@ -4,6 +4,12 @@
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
+/*
+ * SafeOnline project.
+ *
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
 
 package test.unit.net.link.safeonline.model.demo;
 
@@ -83,8 +89,8 @@ import net.link.safeonline.model.beid.bean.BeIdStartableBean;
 import net.link.safeonline.model.demo.DemoStartableBean;
 import net.link.safeonline.model.digipass.bean.DigipassStartableBean;
 import net.link.safeonline.model.encap.bean.EncapStartableBean;
-import net.link.safeonline.model.option.bean.OptionStartableBean;
 import net.link.safeonline.notification.dao.bean.EndpointReferenceDAOBean;
+import net.link.safeonline.notification.dao.bean.NotificationMessageDAOBean;
 import net.link.safeonline.notification.dao.bean.NotificationProducerDAOBean;
 import net.link.safeonline.notification.service.bean.NotificationProducerServiceBean;
 import net.link.safeonline.pkix.dao.bean.TrustDomainDAOBean;
@@ -120,7 +126,7 @@ public class DemoStartableBeanTest {
             ResourceAuditLoggerBean.class, AuditAuditDAOBean.class, AuditContextDAOBean.class, AccessAuditDAOBean.class,
             SecurityAuditDAOBean.class, ResourceAuditDAOBean.class, DevicesBean.class, NotificationProducerServiceBean.class,
             NotificationProducerDAOBean.class, EndpointReferenceDAOBean.class, ApplicationScopeIdDAOBean.class,
-            AttributeCacheDAOBean.class, ApplicationPoolDAOBean.class };
+            AttributeCacheDAOBean.class, ApplicationPoolDAOBean.class, NotificationMessageDAOBean.class };
 
 
     @Before
@@ -185,11 +191,14 @@ public class DemoStartableBeanTest {
 
         // setup
         EntityManager entityManager = this.entityTestManager.getEntityManager();
-        BeIdStartableBean beIdStartableBean = EJBTestUtils.newInstance(BeIdStartableBean.class, container, entityManager);
-        DigipassStartableBean digipassStartableBean = EJBTestUtils.newInstance(DigipassStartableBean.class, container, entityManager);
-        EncapStartableBean encapStartableBean = EJBTestUtils.newInstance(EncapStartableBean.class, container, entityManager);
-        OptionStartableBean optionStartableBean = EJBTestUtils.newInstance(OptionStartableBean.class, container, entityManager);
-        DemoStartableBean demoStartableBean = EJBTestUtils.newInstance(DemoStartableBean.class, container, entityManager);
+        BeIdStartableBean beIdStartableBean = EJBTestUtils.newInstance(BeIdStartableBean.class, container,
+                entityManager);
+        DigipassStartableBean digipassStartableBean = EJBTestUtils.newInstance(DigipassStartableBean.class, container,
+                entityManager);
+        EncapStartableBean encapStartableBean = EJBTestUtils.newInstance(EncapStartableBean.class, container,
+                entityManager);
+        DemoStartableBean demoStartableBean = EJBTestUtils.newInstance(DemoStartableBean.class, container,
+                entityManager);
 
         EJBTestUtils.setJBossPrincipal("test-operator", "operator");
 
@@ -197,7 +206,6 @@ public class DemoStartableBeanTest {
         beIdStartableBean.postStart();
         digipassStartableBean.postStart();
         encapStartableBean.postStart();
-        optionStartableBean.postStart();
         demoStartableBean.postStart();
     }
 }

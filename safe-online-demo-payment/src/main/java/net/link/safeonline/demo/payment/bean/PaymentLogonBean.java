@@ -10,6 +10,7 @@ package net.link.safeonline.demo.payment.bean;
 import javax.ejb.Stateful;
 
 import net.link.safeonline.demo.payment.PaymentLogon;
+import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
 
 import org.jboss.annotation.ejb.LocalBinding;
@@ -49,14 +50,14 @@ public class PaymentLogonBean extends AbstractPaymentDataClientBean implements P
     public String logout() {
 
         this.log.debug("logout");
-        String userId = (String) this.sessionContext.get("userId");
+        String userId = (String) this.sessionContext.get(LoginManager.USERID_SESSION_ATTRIBUTE);
         SafeOnlineLoginUtils.logout(userId, "main.seam");
         return "success";
     }
 
     public String getUsername() {
 
-        String userId = (String) this.sessionContext.get("userId");
+        String userId = (String) this.sessionContext.get(LoginManager.USERID_SESSION_ATTRIBUTE);
         return getUsername(userId);
     }
 }

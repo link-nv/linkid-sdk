@@ -73,7 +73,7 @@ public class ActionsBean implements Actions {
         removeLoginCookie();
         this.sessionContext.set(LoginManager.USERID_SESSION_ATTRIBUTE, null);
         Session.instance().invalidate();
-        return "logout-success";
+        return "success";
     }
 
     private void removeLoginCookie() {

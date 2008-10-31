@@ -371,7 +371,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         /*
          * Also allow redirected state in case the user manually goes back to olas-auth
          */
-        if (this.authenticationState != INITIALIZED && this.authenticationState != REDIRECTED)
+        if (this.authenticationState != INITIALIZED && this.authenticationState != REDIRECTED
+                && this.authenticationState != USER_AUTHENTICATED)
             throw new IllegalStateException("call initialize first");
 
         IdentityServiceClient identityServiceClient = new IdentityServiceClient();
@@ -1098,26 +1099,27 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             throw new DevicePolicyException();
     }
 
-    private void checkRequiredUsageAgreement() throws ApplicationNotFoundException, UsageAgreementAcceptationRequiredException,
-                                              SubscriptionNotFoundException {
+    private void checkRequiredUsageAgreement(String language) throws ApplicationNotFoundException,
+            UsageAgreementAcceptationRequiredException, SubscriptionNotFoundException {
 
-        boolean requiresUsageAgreementAcceptation = this.usageAgreementService
-                                                                              .requiresUsageAgreementAcceptation(this.expectedApplicationId);
+        boolean requiresUsageAgreementAcceptation = this.usageAgreementService.requiresUsageAgreementAcceptation(
+                this.expectedApplicationId, language);
         if (true == requiresUsageAgreementAcceptation)
             throw new UsageAgreementAcceptationRequiredException();
     }
 
-    private void checkRequiredGlobalUsageAgreement() throws UsageAgreementAcceptationRequiredException {
+    private void checkRequiredGlobalUsageAgreement(String language) throws UsageAgreementAcceptationRequiredException {
 
-        boolean requiresGlobalUsageAgreementAcceptation = this.usageAgreementService.requiresGlobalUsageAgreementAcceptation();
+        boolean requiresGlobalUsageAgreementAcceptation = this.usageAgreementService
+                .requiresGlobalUsageAgreementAcceptation(language);
         if (true == requiresGlobalUsageAgreementAcceptation)
             throw new UsageAgreementAcceptationRequiredException();
     }
 
-    public void commitAuthentication() throws ApplicationNotFoundException, SubscriptionNotFoundException,
-                                      ApplicationIdentityNotFoundException, IdentityConfirmationRequiredException,
-                                      MissingAttributeException, EmptyDevicePolicyException, DevicePolicyException,
-                                      UsageAgreementAcceptationRequiredException, PermissionDeniedException, AttributeTypeNotFoundException {
+    public void commitAuthentication(String language) throws ApplicationNotFoundException,
+            SubscriptionNotFoundException, ApplicationIdentityNotFoundException, IdentityConfirmationRequiredException,
+            MissingAttributeException, EmptyDevicePolicyException, DevicePolicyException,
+            UsageAgreementAcceptationRequiredException, PermissionDeniedException, AttributeTypeNotFoundException {
 
         LOG.debug("commitAuthentication for application: " + this.expectedApplicationId);
 
@@ -1129,9 +1131,9 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         checkDevicePolicy(this.authenticationDevice.getName());
 
-        checkRequiredGlobalUsageAgreement();
+        checkRequiredGlobalUsageAgreement(language);
 
-        checkRequiredUsageAgreement();
+        checkRequiredUsageAgreement(language);
 
         ApplicationEntity application = this.applicationDAO.findApplication(this.expectedApplicationId);
         if (null == application) {

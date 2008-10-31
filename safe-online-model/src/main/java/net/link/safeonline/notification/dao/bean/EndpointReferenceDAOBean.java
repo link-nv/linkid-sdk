@@ -76,6 +76,12 @@ public class EndpointReferenceDAOBean implements EndpointReferenceDAO {
         LOG.debug("find endpoint ref: address=" + address + " node=" + node.getName());
         return this.queryObject.find(address, node);
     }
+    
+    public EndpointReferenceEntity findEndpointReference(long id) {
+
+        LOG.debug("find endpoint ref: id=" + id);
+        return this.entityManager.find(EndpointReferenceEntity.class, id);
+    }
 
     public EndpointReferenceEntity getEndpointReference(String address, ApplicationEntity application)
                                                                                                       throws EndpointReferenceNotFoundException {

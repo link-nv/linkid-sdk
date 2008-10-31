@@ -68,8 +68,7 @@ public class ScenarioChooser extends JPanel implements ActionListener, CaretList
 
     public ScenarioChooser() {
 
-        this.scenarioField = new JTextField(
-                "/Users/mbillemo/Documents/workspace/safe-online/safe-online-performance-scenario-deploy/target/safe-online-performance-scenario-deploy-1.2-SNAPSHOT.ear");
+        this.scenarioField = new JTextField("");
         this.browseButton = new JButton("Browse ...");
         this.uploadButton = new JButton("Upload this Scenario");
         this.deployButton = new JButton("Deploy this Scenario");

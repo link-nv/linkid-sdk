@@ -13,7 +13,7 @@ public interface HelpdeskCodes {
 
     public static final String HELPDESK_CLEAR             = "HELPDESK_CLEAR";
 
-    public static final String HELPDESK_ADD               = "HELPDESK_ADD";
+    public static final String HELPDESK_ADD               = "HELPDESK_ADD_START";
 
     public static final String HELPDESK_ADD_MESSAGE       = "HELPDESK_ADD_MESSAGE";
 

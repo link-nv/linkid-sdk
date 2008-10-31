@@ -19,6 +19,7 @@ import javax.servlet.http.HttpSession;
 import net.link.safeonline.demo.mandate.AuthorizationService;
 import net.link.safeonline.demo.mandate.AuthorizationServiceFactory;
 import net.link.safeonline.demo.mandate.MandateConstants;
+import net.link.safeonline.sdk.auth.filter.LoginManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -54,7 +55,7 @@ public class LoginServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         HttpSession session = request.getSession();
-        String userId = (String) session.getAttribute("username");
+        String userId = LoginManager.getUserId(request);
 
         LOG.debug("userId: " + userId);
         boolean admin = this.authorizationService.isAdmin(userId);

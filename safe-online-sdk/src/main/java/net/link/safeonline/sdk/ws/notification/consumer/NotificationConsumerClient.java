@@ -7,8 +7,6 @@
 
 package net.link.safeonline.sdk.ws.notification.consumer;
 
-import java.util.List;
-
 import net.link.safeonline.sdk.ws.MessageAccessor;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 
@@ -21,5 +19,6 @@ import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
  */
 public interface NotificationConsumerClient extends MessageAccessor {
 
-    void sendNotification(String topic, String destination, List<String> message) throws WSClientTransportException;
+    void sendNotification(String topic, String destination, String subject, String content)
+            throws WSClientTransportException;
 }

@@ -20,6 +20,8 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -77,10 +79,35 @@ public abstract class AppletBase extends JApplet implements ActionListener, Appl
 
     Thread                    thread;
 
+    List<HelpdeskEvent>       helpdeskEvents;
+
+
+    private class HelpdeskEvent {
+
+        private String       message;
+
+        private LogLevelType logLevel;
+
+
+        public HelpdeskEvent(String message, LogLevelType logLevel) {
+
+            this.message = message;
+            this.logLevel = logLevel;
+        }
+
+        public String getMessage() {
+
+            return this.message;
+        }
+
+        public LogLevelType getLogLevel() {
+
+            return this.logLevel;
+        }
+    }
 
     private static enum State {
-        HIDE,
-        SHOW
+        HIDE, SHOW
     }
 
 
@@ -119,6 +146,8 @@ public abstract class AppletBase extends JApplet implements ActionListener, Appl
             throw new RuntimeException("could not setup the GUI");
         }
         initAppletController();
+
+        this.helpdeskEvents = new LinkedList<HelpdeskEvent>();
     }
 
     void initAppletController() {
@@ -212,6 +241,17 @@ public abstract class AppletBase extends JApplet implements ActionListener, Appl
 
             public void actionPerformed(ActionEvent e) {
 
+                try {
+                    logHelpdesk();
+                } catch (IOException e1) {
+                    SwingUtilities.invokeLater(new Runnable() {
+
+                        public void run() {
+
+                            AppletBase.this.outputArea.append("Error sending helpdesk log\n");
+                        }
+                    });
+                }
                 redirectToHelp();
             }
         });
@@ -244,7 +284,8 @@ public abstract class AppletBase extends JApplet implements ActionListener, Appl
             e.printStackTrace();
         }
         /*
-         * We used to have invokeAndWait here, but this sometimes causes a deadlock between: RunnableQueue-0 and AWT-EventQueue-0.
+         * We used to have invokeAndWait here, but this sometimes causes a deadlock between: RunnableQueue-0 and
+         * AWT-EventQueue-0.
          */
         SwingUtilities.invokeLater(new Runnable() {
 
@@ -297,18 +338,30 @@ public abstract class AppletBase extends JApplet implements ActionListener, Appl
         });
     }
 
-    public boolean addHelpdeskEvent(String message, LogLevelType logLevel) throws IOException {
+    public void addHelpdeskEvent(String message, LogLevelType logLevel) throws IOException {
 
         LOG.debug("add helpdesk event: " + message);
+        this.helpdeskEvents.add(new HelpdeskEvent(message, logLevel));
+    }
+
+    public boolean logHelpdesk() throws IOException {
+
         HttpURLConnection httpURLConnection;
         try {
             httpURLConnection = prepareHelpdeskConnection();
         } catch (NoHelpdeskConfiguredException e) {
-            return true;
+            return false;
         }
-        httpURLConnection.setRequestProperty(HelpdeskCodes.HELPDESK_ADD, "");
-        httpURLConnection.setRequestProperty(HelpdeskCodes.HELPDESK_ADD_MESSAGE, message);
-        httpURLConnection.setRequestProperty(HelpdeskCodes.HELPDESK_ADD_LEVEL, logLevel.toString());
+
+        int idx = 0;
+        for (HelpdeskEvent event : this.helpdeskEvents) {
+            httpURLConnection.setRequestProperty(HelpdeskCodes.HELPDESK_ADD + idx, Integer.toString(idx));
+            httpURLConnection.setRequestProperty(HelpdeskCodes.HELPDESK_ADD_MESSAGE + idx, event.getMessage());
+            httpURLConnection
+                    .setRequestProperty(HelpdeskCodes.HELPDESK_ADD_LEVEL + idx, event.getLogLevel().toString());
+            idx++;
+        }
+
         return sendHelpdeskStatement(httpURLConnection);
     }
 

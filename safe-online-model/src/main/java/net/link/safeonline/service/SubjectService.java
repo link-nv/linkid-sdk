@@ -89,6 +89,13 @@ public interface SubjectService {
     String getExceptionSubjectLogin(String userId);
 
     /**
+     * Same as findSubject but this can be called from within exception handling code (meaning a transaction is created)
+     * 
+     * @param userId
+     */
+    SubjectEntity findExceptionSubject(String userId);
+
+    /**
      * Returns list of users' login names starting with the specified prefix.
      * 
      * @param prefix

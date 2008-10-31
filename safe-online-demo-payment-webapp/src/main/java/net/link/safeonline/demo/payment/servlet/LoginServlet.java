@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.demo.payment.PaymentConstants;
+import net.link.safeonline.sdk.auth.filter.LoginManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -48,8 +49,8 @@ public class LoginServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         HttpSession session = request.getSession();
-        String username = (String) session.getAttribute("userId");
-        LOG.debug("username: " + username);
+        String userId = LoginManager.getUserId(request);
+        LOG.debug("userId: " + userId);
 
         session.setAttribute("role", PaymentConstants.AUTHENTICATED_ROLE);
         response.sendRedirect("./overview.seam");

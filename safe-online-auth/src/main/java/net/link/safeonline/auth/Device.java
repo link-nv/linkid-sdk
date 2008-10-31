@@ -37,7 +37,7 @@ public interface Device {
      * Actions.
      */
     String next() throws IOException, DeviceNotFoundException;
-
+    
     /*
      * Factories.
      */

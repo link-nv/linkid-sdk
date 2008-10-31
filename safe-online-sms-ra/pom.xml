@@ -7,14 +7,14 @@
 	<parent>
 		<artifactId>safe-online</artifactId>
 		<groupId>net.lin-k</groupId>
-		<version>1.2-SNAPSHOT</version>
+		<version>1.3-SNAPSHOT</version>
 	</parent>
 
 	<name>SafeOnline SMS Connector</name>
 
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-sms-ra</artifactId>
-	<version>1.2-SNAPSHOT</version>
+	<version>1.3-SNAPSHOT</version>
 
 	<dependencies>
 
@@ -29,7 +29,7 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sms</artifactId>
-			<version>1.2-SNAPSHOT</version>
+			<version>1.3-SNAPSHOT</version>
 		</dependency>
 
         <!-- Test Dependencies -->

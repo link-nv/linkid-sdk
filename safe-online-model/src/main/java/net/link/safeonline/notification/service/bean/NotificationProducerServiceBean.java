@@ -5,17 +5,30 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
+/*
+ * SafeOnline project.
+ *
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
 package net.link.safeonline.notification.service.bean;
 
 import java.security.cert.X509Certificate;
-import java.util.List;
 
+import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
+import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.MessageProducer;
+import javax.jms.Queue;
+import javax.jms.Session;
 
 import net.link.safeonline.audit.AuditContextManager;
-import net.link.safeonline.audit.ResourceAuditLogger;
 import net.link.safeonline.authentication.exception.EndpointReferenceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
@@ -23,16 +36,17 @@ import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.dao.NodeDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.NodeEntity;
-import net.link.safeonline.entity.audit.ResourceLevelType;
-import net.link.safeonline.entity.audit.ResourceNameType;
 import net.link.safeonline.entity.notification.EndpointReferenceEntity;
+import net.link.safeonline.entity.notification.NotificationMessageEntity;
 import net.link.safeonline.entity.notification.NotificationProducerSubscriptionEntity;
 import net.link.safeonline.notification.dao.EndpointReferenceDAO;
+import net.link.safeonline.notification.dao.NotificationMessageDAO;
 import net.link.safeonline.notification.dao.NotificationProducerDAO;
 import net.link.safeonline.notification.exception.MessageHandlerNotFoundException;
 import net.link.safeonline.notification.message.MessageHandlerManager;
+import net.link.safeonline.notification.message.NotificationConstants;
+import net.link.safeonline.notification.message.NotificationMessage;
 import net.link.safeonline.notification.service.NotificationProducerService;
-import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -50,6 +64,12 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
 
     private static final Log        LOG = LogFactory.getLog(NotificationProducerServiceBean.class);
 
+    @Resource(mappedName = NotificationConstants.CONNECTION_FACTORY_NAME)
+    private ConnectionFactory       factory;
+
+    @Resource(mappedName = NotificationConstants.NOTIFICATIONS_QUEUE_NAME)
+    private Queue                   notificationsQueue;
+
     @EJB
     private NotificationProducerDAO notificationProducerDAO;
 
@@ -63,7 +83,7 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
     private EndpointReferenceDAO    endpointReferenceDAO;
 
     @EJB
-    private ResourceAuditLogger     resourceAuditLogger;
+    private NotificationMessageDAO  notificationMessageDAO;
 
 
     public void subscribe(String topic, String address, X509Certificate certificate) throws PermissionDeniedException {
@@ -77,9 +97,8 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
             NodeEntity node = this.nodeDAO.findNodeFromAuthnCertificate(certificate);
             if (null != node) {
                 subscribe(topic, address, node);
-            } else {
+            } else
                 throw new PermissionDeniedException("application or node not found.");
-            }
         }
     }
 
@@ -125,9 +144,8 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
             NodeEntity node = this.nodeDAO.findNodeFromAuthnCertificate(certificate);
             if (null != node) {
                 unsubscribe(topic, address, node);
-            } else {
+            } else
                 throw new PermissionDeniedException("application or node not found.");
-            }
         }
     }
 
@@ -151,7 +169,7 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
         subscription.getConsumers().remove(endpointReference);
     }
 
-    public void sendNotification(String topic, List<String> message) throws SubscriptionNotFoundException, MessageHandlerNotFoundException {
+    public void sendNotification(String topic, String subject, String content) throws MessageHandlerNotFoundException {
 
         LOG.debug("send notification for topic: " + topic);
         NotificationProducerSubscriptionEntity subscription = this.notificationProducerDAO.findSubscription(topic);
@@ -160,13 +178,57 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
             return;
         }
         for (EndpointReferenceEntity consumer : subscription.getConsumers()) {
-            try {
-                MessageHandlerManager.sendMessage(topic, message, consumer);
-            } catch (WSClientTransportException e) {
-                LOG.debug("Failed to send messsage for topic " + topic + " to consumer: " + e.getLocation());
-                this.resourceAuditLogger.addResourceAudit(ResourceNameType.WS, ResourceLevelType.RESOURCE_UNAVAILABLE, e.getLocation(),
-                        "Failed to send notification for topic " + topic);
+            NotificationMessage message = MessageHandlerManager.getMessage(topic, subject, content, consumer);
+            if (null != message) {
+                pushMessage(message, consumer);
             }
         }
     }
+
+    public void sendNotification(NotificationMessageEntity notification) throws MessageHandlerNotFoundException {
+
+        LOG.debug("send persisted notification for topic: " + notification.getTopic() + " subject: "
+                + notification.getSubject() + " content: " + notification.getContent() + " consumerId: "
+                + notification.getConsumer().getId());
+        NotificationMessage message = MessageHandlerManager.getMessage(notification.getTopic(), notification
+                .getSubject(), notification.getContent(), notification.getConsumer());
+        if (null != message) {
+            pushMessage(message, notification.getConsumer());
+        }
+
+    }
+
+    private void pushMessage(NotificationMessage notificationMessage, EndpointReferenceEntity consumer) {
+
+        LOG.debug("push notification message");
+        try {
+            Connection connection = this.factory.createConnection();
+            try {
+                Session session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
+                try {
+                    MessageProducer producer = session.createProducer(this.notificationsQueue);
+                    try {
+                        Message message = notificationMessage.getJMSMessage(session);
+                        producer.send(message);
+                    } finally {
+                        producer.close();
+                    }
+                } finally {
+                    session.close();
+                }
+            } finally {
+                connection.close();
+            }
+        } catch (JMSException e) {
+            LOG.debug("Failed to push notification message on JMS queue: " + e.getMessage());
+            NotificationMessageEntity notificationMessageEntity = this.notificationMessageDAO.findNotificationMessage(
+                    notificationMessage, consumer);
+            if (null == notificationMessageEntity) {
+                this.notificationMessageDAO.addNotificationMessage(notificationMessage, consumer);
+            } else {
+                notificationMessageEntity.addAttempt();
+            }
+        }
+    }
+
 }

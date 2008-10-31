@@ -78,6 +78,28 @@ public class MobileManagerBean implements MobileManager {
         }
     }
 
+    public void lock(String mobile) throws MobileException, MalformedURLException {
+
+        try {
+            EncapAdministrationClient encapAdministrationClient = new EncapAdministrationClientImpl(
+                    this.encapServerLocation);
+            encapAdministrationClient.lock(mobile, this.encapOrganisationId);
+        } catch (RemoteException e) {
+            throw new MobileException(e.getMessage());
+        }
+    }
+
+    public void unLock(String mobile) throws MobileException, MalformedURLException {
+
+        try {
+            EncapAdministrationClient encapAdministrationClient = new EncapAdministrationClientImpl(
+                    this.encapServerLocation);
+            encapAdministrationClient.unLock(mobile, this.encapOrganisationId);
+        } catch (RemoteException e) {
+            throw new MobileException(e.getMessage());
+        }
+    }
+
     public String getClientDownloadLink() {
 
         return this.encapClientDownloadLink;

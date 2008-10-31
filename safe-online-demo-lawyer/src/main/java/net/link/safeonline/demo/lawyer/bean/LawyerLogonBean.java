@@ -10,6 +10,7 @@ package net.link.safeonline.demo.lawyer.bean;
 import javax.ejb.Stateful;
 
 import net.link.safeonline.demo.lawyer.LawyerLogon;
+import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
 
 import org.jboss.annotation.ejb.LocalBinding;
@@ -42,14 +43,14 @@ public class LawyerLogonBean extends AbstractLawyerDataClientBean implements Law
     public String logout() {
 
         this.log.debug("logout");
-        String userId = (String) this.sessionContext.get("username");
+        String userId = (String) this.sessionContext.get(LoginManager.USERID_SESSION_ATTRIBUTE);
         SafeOnlineLoginUtils.logout(userId, "main.seam");
         return "success";
     }
 
     public String getUsername() {
 
-        String userId = (String) this.sessionContext.get("username");
+        String userId = (String) this.sessionContext.get(LoginManager.USERID_SESSION_ATTRIBUTE);
         String username = getUsername(userId);
         return username;
     }

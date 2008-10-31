@@ -71,10 +71,12 @@ public class ExitServlet extends AbstractInjectionServlet {
 
         LOG.debug("handleInvocation");
         HttpSession session = request.getSession();
+        String language = request.getLocale().getLanguage();
 
         try {
-            AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(session);
-            authenticationService.commitAuthentication();
+            AuthenticationService authenticationService = AuthenticationServiceManager
+                    .getAuthenticationService(session);
+            authenticationService.commitAuthentication(language);
         } catch (SafeOnlineException e) {
             throw new ServletException("error committing the authentication process");
         }
