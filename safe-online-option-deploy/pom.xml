@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
-		<version>1.2-SNAPSHOT</version>
+		<version>1.2</version>
 	</parent>
 
 	<name>SafeOnline Option Deploy</name>
@@ -15,7 +15,7 @@
 
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-option-deploy</artifactId>
-	<version>1.2-SNAPSHOT</version>
+	<version>1.2</version>
 	<packaging>ear</packaging>
 
 	<build>
@@ -68,13 +68,13 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-option-webapp</artifactId>
-			<version>1.2-SNAPSHOT</version>
+			<version>1.2</version>
 			<type>war</type>
 		</dependency>
             <dependency>
                 <groupId>net.lin-k.safe-online</groupId>
                 <artifactId>safe-online-option-webapp</artifactId>
-                <version>1.2-SNAPSHOT</version>
+                <version>1.2</version>
                 <type>zip</type>
             </dependency>
 
@@ -82,7 +82,7 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model-option</artifactId>
-            <version>1.2-SNAPSHOT</version>
+            <version>1.2</version>
 			<type>ejb</type>
 		</dependency>
 

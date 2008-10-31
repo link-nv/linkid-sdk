@@ -5,13 +5,13 @@
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
-		<version>1.2-SNAPSHOT</version>
+		<version>1.2</version>
 	</parent>
 	<name>SafeOnline Encap Startup</name>
 	<description> Provides startup of some encap components. </description>
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-encap-startup-runtime</artifactId>
-	<version>1.2-SNAPSHOT</version>
+	<version>1.2</version>
 	<packaging>war</packaging>
 	<build>
 		<plugins>
@@ -63,14 +63,14 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-startup-runtime</artifactId>
-			<version>1.2-SNAPSHOT</version>
+			<version>1.2</version>
 			<scope>provided</scope>
 			<type>war</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-startup-runtime</artifactId>
-			<version>1.2-SNAPSHOT</version>
+			<version>1.2</version>
 			<type>zip</type>
 		</dependency>
 	</dependencies>

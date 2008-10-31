@@ -23,7 +23,7 @@
 		</fileSet>
 		<fileSet>
 			<directory>
-                target/files/safe-online-base-distribution-1.2-SNAPSHOT/jboss 
+                target/files/safe-online-base-distribution-${safe-online.version}/jboss 
 			</directory>
 			<outputDirectory>jboss</outputDirectory>
 			<includes>
@@ -39,25 +39,25 @@
 			<destName>SafeOnline.ear</destName>
 		</file>
 		<file>
-            <source> target/files/safe-online-demo-deploy-1.2-SNAPSHOT.ear 
+            <source> target/files/safe-online-demo-deploy-${safe-online.version}.ear 
 			</source>
 			<outputDirectory> jboss/server/default/deploy </outputDirectory>
 			<destName>SafeOnlineZDemo.ear</destName>
 		</file>
 		<file>
-            <source> target/files/safe-online-beid-deploy-1.2-SNAPSHOT.ear 
+            <source> target/files/safe-online-beid-deploy-${safe-online.version}.ear 
 			</source>
 			<outputDirectory> jboss/server/default/deploy </outputDirectory>
 			<destName>SafeOnlineBeid.ear</destName>
 		</file>
 		<file>
-            <source> target/files/safe-online-digipass-deploy-1.2-SNAPSHOT.ear 
+            <source> target/files/safe-online-digipass-deploy-${safe-online.version}.ear 
 			</source>
 			<outputDirectory> jboss/server/default/deploy </outputDirectory>
 			<destName>SafeOnlineDigipass.ear</destName>
 		</file>
 		<file>
-            <source> target/files/safe-online-encap-deploy-1.2-SNAPSHOT.ear 
+            <source> target/files/safe-online-encap-deploy-${safe-online.version}.ear 
 			</source>
 			<outputDirectory> jboss/server/default/deploy </outputDirectory>
 			<destName>SafeOnlineEncap.ear</destName>

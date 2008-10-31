@@ -21,13 +21,13 @@
 		</fileSet>
 		<fileSet>
 			<directory>
-                target/files/safe-online-pilot-distribution-1.2-SNAPSHOT/jboss
+                target/files/safe-online-pilot-distribution-${safe-online.version}/jboss
 			</directory>
 			<outputDirectory>jboss</outputDirectory>
 		</fileSet>
 		<fileSet>
 			<directory>
-                target/files/safe-online-pilot-distribution-1.2-SNAPSHOT/jboss
+                target/files/safe-online-pilot-distribution-${safe-online.version}/jboss
 			</directory>
 			<outputDirectory>jboss</outputDirectory>
 			<includes>
@@ -37,7 +37,7 @@
 		</fileSet>
 		<fileSet>
 			<directory>
-                target/files/safe-online-pilot-distribution-1.2-SNAPSHOT/scripts 
+                target/files/safe-online-pilot-distribution-${safe-online.version}/scripts 
 			</directory>
 			<outputDirectory>scripts</outputDirectory>
 			<fileMode>0500</fileMode>

@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>safe-online</artifactId>
 		<groupId>net.lin-k</groupId>
-		<version>1.2-SNAPSHOT</version>
+		<version>1.2</version>
 	</parent>
 
 	<name>SafeOnline Connection Manager WS Interface</name>
@@ -13,7 +13,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-option-connection-manager-ws</artifactId>
-	<version>1.2-SNAPSHOT</version>
+	<version>1.2</version>
     <packaging>jar</packaging>
 
 	<build>

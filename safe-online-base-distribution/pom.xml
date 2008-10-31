@@ -5,12 +5,12 @@
 	<parent>
 		<artifactId>safe-online</artifactId>
 		<groupId>net.lin-k</groupId>
-		<version>1.2-SNAPSHOT</version>
+		<version>1.2</version>
 	</parent>
 	<name>SafeOnline Base Distribution</name>
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-base-distribution</artifactId>
-	<version>1.2-SNAPSHOT</version>
+	<version>1.2</version>
 	<packaging>pom</packaging>
 	<build>
 		<resources>
@@ -138,7 +138,7 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sql-ddl</artifactId>
-			<version>1.2-SNAPSHOT</version>
+			<version>1.2</version>
 			<scope>provided</scope>
 			<type>jar</type>
 		</dependency>
