@@ -5,14 +5,14 @@
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
-		<version>1.2</version>
+		<version>1.3-SNAPSHOT</version>
 	</parent>
 	<name>SafeOnline AS Container</name>
 	<description> Groups the dependencies provided by the application
 		container. </description>
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-container-as</artifactId>
-	<version>1.2</version>
+	<version>1.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<build>
 		<plugins>

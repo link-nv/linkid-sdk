@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
-		<version>1.2</version>
+		<version>1.3-SNAPSHOT</version>
 	</parent>
 
 	<name>SafeOnline Beid Device Web Application</name>
@@ -16,7 +16,7 @@
 
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-beid-webapp</artifactId>
-	<version>1.2</version>
+	<version>1.3-SNAPSHOT</version>
 	<packaging>war</packaging>
 
 	<build>
@@ -168,7 +168,7 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-beid</artifactId>
-			<version>1.2</version>
+			<version>1.3-SNAPSHOT</version>
 			<scope>runtime</scope>
 			<type>ejb</type>
 		</dependency>
@@ -183,7 +183,7 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-device-webapp-base</artifactId>
-			<version>1.2</version>
+			<version>1.3-SNAPSHOT</version>
 			<type>zip</type>
 		</dependency>
 
@@ -191,13 +191,13 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-beid</artifactId>
-			<version>1.2</version>
+			<version>1.3-SNAPSHOT</version>
 			<type>ejb-client</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-webapp-common</artifactId>
-			<version>1.2</version>
+			<version>1.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
@@ -207,32 +207,32 @@
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-auth-applet-package</artifactId>
-			<version>1.2</version>
+			<version>1.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-auth-pcsc-applet-package</artifactId>
-			<version>1.2</version>
+			<version>1.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-identity-applet-package</artifactId>
-			<version>1.2</version>
+			<version>1.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-java-version-applet-package</artifactId>
-			<version>1.2</version>
+			<version>1.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-device-sdk</artifactId>
-			<version>1.2</version>
+			<version>1.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-j2ee-util</artifactId>
-			<version>1.2</version>
+			<version>1.3-SNAPSHOT</version>
 		</dependency>
 
 		<!-- Test Dependencies -->
