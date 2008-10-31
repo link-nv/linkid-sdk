@@ -98,6 +98,7 @@ import net.link.safeonline.model.bean.SubjectManagerBean;
 import net.link.safeonline.model.bean.UsageAgreementManagerBean;
 import net.link.safeonline.model.bean.UserRegistrationManagerBean;
 import net.link.safeonline.notification.dao.bean.EndpointReferenceDAOBean;
+import net.link.safeonline.notification.dao.bean.NotificationMessageDAOBean;
 import net.link.safeonline.notification.dao.bean.NotificationProducerDAOBean;
 import net.link.safeonline.notification.service.bean.NotificationConsumerServiceBean;
 import net.link.safeonline.notification.service.bean.NotificationProducerServiceBean;
@@ -150,7 +151,8 @@ public class SafeOnlineTestContainer {
             ProxyAttributeServiceBean.class, StatisticDAOBean.class, StatisticDataPointDAOBean.class,
             NotificationProducerServiceBean.class, NotificationProducerDAOBean.class,
             NotificationConsumerServiceBean.class, EndpointReferenceDAOBean.class, ApplicationScopeIdDAOBean.class,
-            OSGIStartableBean.class, AttributeCacheDAOBean.class, ApplicationPoolDAOBean.class };
+            OSGIStartableBean.class, AttributeCacheDAOBean.class, ApplicationPoolDAOBean.class,
+            NotificationMessageDAOBean.class   };
 
     public static final Class<?>[] entities     = new Class[] { SubjectEntity.class, ApplicationEntity.class,
             ApplicationOwnerEntity.class, AttributeEntity.class, AttributeTypeEntity.class, SubscriptionEntity.class,
