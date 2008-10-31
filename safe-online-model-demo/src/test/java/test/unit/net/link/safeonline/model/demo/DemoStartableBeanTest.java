@@ -4,6 +4,12 @@
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
+/*
+ * SafeOnline project.
+ *
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
 
 package test.unit.net.link.safeonline.model.demo;
 
@@ -84,6 +90,7 @@ import net.link.safeonline.model.demo.DemoStartableBean;
 import net.link.safeonline.model.digipass.bean.DigipassStartableBean;
 import net.link.safeonline.model.encap.bean.EncapStartableBean;
 import net.link.safeonline.notification.dao.bean.EndpointReferenceDAOBean;
+import net.link.safeonline.notification.dao.bean.NotificationMessageDAOBean;
 import net.link.safeonline.notification.dao.bean.NotificationProducerDAOBean;
 import net.link.safeonline.notification.service.bean.NotificationProducerServiceBean;
 import net.link.safeonline.pkix.dao.bean.TrustDomainDAOBean;
@@ -121,7 +128,7 @@ public class DemoStartableBeanTest {
             AuditContextDAOBean.class, AccessAuditDAOBean.class, SecurityAuditDAOBean.class,
             ResourceAuditDAOBean.class, DevicesBean.class, NotificationProducerServiceBean.class,
             NotificationProducerDAOBean.class, EndpointReferenceDAOBean.class, ApplicationScopeIdDAOBean.class,
-            AttributeCacheDAOBean.class, ApplicationPoolDAOBean.class };
+            AttributeCacheDAOBean.class, ApplicationPoolDAOBean.class, NotificationMessageDAOBean.class };
 
 
     @Before

@@ -37,6 +37,8 @@ import javax.ejb.TimerHandle;
 import javax.ejb.TimerService;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.jms.ConnectionFactory;
+import javax.jms.Queue;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
@@ -403,6 +405,14 @@ public final class EJBTestUtils {
                      * In this case we're probably dealing with an env-entry injection, which we can most of the time
                      * safely skip.
                      */
+                    continue;
+                }
+                if (true == ConnectionFactory.class.isAssignableFrom(fieldType)) {
+                    // JMS ConnectionFactory, we can probably safely skip.
+                    continue;
+                }
+                if (true == Queue.class.isAssignableFrom(fieldType)) {
+                    // JMS ConnectionFactory, we can probably safely skip.
                     continue;
                 }
                 throw new EJBException("unsupported resource type: " + fieldType.getName());
