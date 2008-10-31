@@ -32,7 +32,6 @@ import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
@@ -173,16 +172,8 @@ public class EndpointReferenceEntity implements Serializable {
             return true;
         if (false == obj instanceof EndpointReferenceEntity)
             return false;
-        EndpointReferenceEntity rhs = (EndpointReferenceEntity) obj;
-        EqualsBuilder builder = new EqualsBuilder();
-        builder.append(this.address, rhs.address);
-        if (null != this.application) {
-            builder.append(this.application, rhs.application);
-        }
-        if (null != this.node) {
-            builder.append(this.node, rhs.node);
-        }
-        return builder.isEquals();
+        final EndpointReferenceEntity rhs = (EndpointReferenceEntity) obj;
+        return this.id == rhs.id;
     }
 
     @Override

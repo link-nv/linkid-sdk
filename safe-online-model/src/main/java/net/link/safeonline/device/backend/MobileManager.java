@@ -24,5 +24,9 @@ public interface MobileManager {
 
     void remove(String mobile) throws MalformedURLException, MobileException;
 
+    void lock(String mobile) throws MalformedURLException, MobileException;
+
+    void unLock(String mobile) throws MalformedURLException, MobileException;
+
     String getClientDownloadLink();
 }

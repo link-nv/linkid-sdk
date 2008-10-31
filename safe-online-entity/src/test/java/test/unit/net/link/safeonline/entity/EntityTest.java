@@ -66,6 +66,8 @@ import net.link.safeonline.entity.audit.OperationStateType;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
 import net.link.safeonline.entity.helpdesk.HelpdeskContextEntity;
+import net.link.safeonline.entity.notification.EndpointReferenceEntity;
+import net.link.safeonline.entity.notification.NotificationMessageEntity;
 import net.link.safeonline.entity.pkix.CachedOcspResponseEntity;
 import net.link.safeonline.entity.pkix.CachedOcspResultType;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
@@ -113,7 +115,8 @@ public class EntityTest {
                     AttributeProviderEntity.class, AuditContextEntity.class, AuditAuditEntity.class,
                     HelpdeskContextEntity.class, CompoundedAttributeTypeMemberEntity.class, AccessAuditEntity.class,
                     UsageAgreementEntity.class, UsageAgreementTextEntity.class, GlobalUsageAgreementEntity.class,
-                    NodeEntity.class, ApplicationPoolEntity.class);
+                    NodeEntity.class, ApplicationPoolEntity.class, EndpointReferenceEntity.class,
+                    NotificationMessageEntity.class);
         } catch (Exception e) {
             LOG.fatal("JPA annotations incorrect: " + e.getMessage(), e);
             throw new RuntimeException("JPA annotations incorrect: " + e.getMessage(), e);
@@ -1148,5 +1151,31 @@ public class EntityTest {
 
         count = queryObject.countErrorRecords(auditContext.getId());
         assertEquals(1, count);
+    }
+
+    @Test
+    public void testNotificationMessageQuery() throws Exception {
+
+        // setup
+        String topic = "test-topic";
+        String subject = UUID.randomUUID().toString();
+        String content = null;
+        NodeEntity node = new NodeEntity("test-node", "http", "test", 8080, 8443, null, null);
+        EndpointReferenceEntity consumer = new EndpointReferenceEntity("dummy.address", node);
+        NotificationMessageEntity message = new NotificationMessageEntity(topic, consumer, subject, content);
+
+        // operate
+        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        entityManager.persist(node);
+        entityManager.persist(consumer);
+        entityManager.persist(message);
+
+        NotificationMessageEntity.QueryInterface queryObject = QueryObjectFactory.createQueryObject(entityManager,
+                NotificationMessageEntity.QueryInterface.class);
+        NotificationMessageEntity resultMessage = queryObject.findNotificationMessageWhereSubject(topic, consumer,
+                subject);
+
+        // verify
+        assertNotNull(resultMessage);
     }
 }

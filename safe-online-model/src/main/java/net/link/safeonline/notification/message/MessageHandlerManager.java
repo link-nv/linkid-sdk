@@ -8,7 +8,6 @@
 package net.link.safeonline.notification.message;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import net.link.safeonline.SafeOnlineConstants;
@@ -20,9 +19,6 @@ import net.link.safeonline.sdk.ws.notification.consumer.NotificationConsumerClie
 import net.link.safeonline.sdk.ws.notification.consumer.NotificationConsumerClientImpl;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 
 /**
  * Manager class for registered WS-Notification message handlers.
@@ -31,9 +27,6 @@ import org.apache.commons.logging.LogFactory;
  * 
  */
 public class MessageHandlerManager {
-
-    private static final Log LOG = LogFactory.getLog(MessageHandlerManager.class);
-
 
     private MessageHandlerManager() {
 
@@ -59,34 +52,33 @@ public class MessageHandlerManager {
         }
     }
 
-    public static void sendMessage(String topic, List<String> message, EndpointReferenceEntity consumer)
-            throws MessageHandlerNotFoundException, WSClientTransportException {
+    public static NotificationMessage getMessage(String topic, String subject, String content,
+            EndpointReferenceEntity consumer) throws MessageHandlerNotFoundException {
 
         MessageHandler messageHandler = messageHandlerMap.get(topic);
         if (null == messageHandler)
             throw new MessageHandlerNotFoundException(topic);
         messageHandler.init();
 
+        return messageHandler.createMessage(topic, subject, content, consumer);
+    }
+
+    public static void sendMessage(NotificationMessage message, EndpointReferenceEntity consumer)
+            throws MessageHandlerNotFoundException, WSClientTransportException {
+
+        MessageHandler messageHandler = messageHandlerMap.get(message.getTopic());
+        if (null == messageHandler)
+            throw new MessageHandlerNotFoundException(message.getTopic());
+        messageHandler.init();
+
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
         NotificationConsumerClient consumerClient = new NotificationConsumerClientImpl(consumer.getAddress(),
                 authIdentityServiceClient.getCertificate(), authIdentityServiceClient.getPrivateKey());
-        String destination = "";
-        List<String> returnMessage = null;
-        if (null != consumer.getApplication()) {
-            LOG.debug("destination: " + consumer.getApplication().getName());
-            destination = consumer.getApplication().getName();
-            returnMessage = messageHandler.createApplicationMessage(message, consumer.getApplication());
-        } else if (null != consumer.getNode()) {
-            LOG.debug("destination: " + consumer.getNode().getName());
-            destination = consumer.getNode().getName();
-            returnMessage = messageHandler.createNodeMessage(message, consumer.getNode());
-        }
-        if (null != returnMessage) {
-            consumerClient.sendNotification(topic, destination, returnMessage);
-        }
+        consumerClient.sendNotification(message.getTopic(), message.getDestination(), message.getSubject(), message
+                .getContent());
     }
 
-    public static void handleMessage(String topic, String destination, List<String> message)
+    public static void handleMessage(String topic, String destination, String subject, String content)
             throws MessageHandlerNotFoundException {
 
         MessageHandler messageHandler = messageHandlerMap.get(topic);
@@ -94,7 +86,7 @@ public class MessageHandlerManager {
             throw new MessageHandlerNotFoundException(topic);
         messageHandler.init();
 
-        messageHandler.handleMessage(destination, message);
+        messageHandler.handleMessage(destination, subject, content);
     }
 
 }
