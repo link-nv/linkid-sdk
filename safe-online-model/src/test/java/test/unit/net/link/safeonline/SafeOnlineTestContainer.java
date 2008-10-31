@@ -98,6 +98,7 @@ import net.link.safeonline.model.bean.SubjectManagerBean;
 import net.link.safeonline.model.bean.UsageAgreementManagerBean;
 import net.link.safeonline.model.bean.UserRegistrationManagerBean;
 import net.link.safeonline.notification.dao.bean.EndpointReferenceDAOBean;
+import net.link.safeonline.notification.dao.bean.NotificationMessageDAOBean;
 import net.link.safeonline.notification.dao.bean.NotificationProducerDAOBean;
 import net.link.safeonline.notification.service.bean.NotificationConsumerServiceBean;
 import net.link.safeonline.notification.service.bean.NotificationProducerServiceBean;
