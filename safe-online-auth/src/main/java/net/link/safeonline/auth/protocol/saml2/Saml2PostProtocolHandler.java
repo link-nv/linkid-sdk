@@ -8,6 +8,7 @@
 package net.link.safeonline.auth.protocol.saml2;
 
 import java.io.IOException;
+import java.util.Locale;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -77,13 +78,13 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
         return NAME;
     }
 
-    public ProtocolContext handleRequest(HttpServletRequest authnRequest) throws ProtocolException {
+    public ProtocolContext handleRequest(HttpServletRequest authnRequest, Locale language, Integer color,
+            Boolean minimal) throws ProtocolException {
 
         LOG.debug("request method: " + authnRequest.getMethod());
         if (false == "POST".equals(authnRequest.getMethod()))
             return null;
         LOG.debug("POST request");
-        String language = authnRequest.getParameter("Language");
         LOG.debug("Language parameter: " + language);
 
         String encodedSamlRequest = authnRequest.getParameter("SAMLRequest");
@@ -111,15 +112,14 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
         }
 
         SAMLObject samlMessage = messageContext.getInboundSAMLMessage();
-        if (false == samlMessage instanceof AuthnRequest) {
+        if (false == samlMessage instanceof AuthnRequest)
             throw new ProtocolException("SAML message not an authentication request message");
-        }
         AuthnRequest samlAuthnRequest = (AuthnRequest) samlMessage;
 
         AuthenticationService authenticationService = AuthenticationServiceManager
                 .getAuthenticationService(authnRequest.getSession());
         try {
-            return authenticationService.initialize(language, samlAuthnRequest);
+            return authenticationService.initialize(language, color, minimal, samlAuthnRequest);
         } catch (TrustDomainNotFoundException e) {
             LOG.debug("trust domain not found: " + e.getMessage());
             throw new ProtocolException("Trust domain not found");
@@ -190,9 +190,8 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
         }
 
         SAMLObject samlMessage = messageContext.getInboundSAMLMessage();
-        if (false == samlMessage instanceof LogoutRequest) {
+        if (false == samlMessage instanceof LogoutRequest)
             throw new ProtocolException("SAML message not a logout request message");
-        }
         LogoutRequest samlLogoutRequest = (LogoutRequest) samlMessage;
 
         AuthenticationService authenticationService = AuthenticationServiceManager

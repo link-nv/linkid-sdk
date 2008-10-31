@@ -12,7 +12,6 @@ import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_CERT_SUBJ
 import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_OWNER;
 import static net.link.safeonline.entity.ApplicationEntity.QUERY_WHERE_USER_ALL;
 
-import java.awt.Color;
 import java.io.Serializable;
 import java.net.URL;
 import java.security.cert.X509Certificate;
@@ -79,8 +78,6 @@ public class ApplicationEntity implements Serializable {
 
     protected byte[]                    applicationLogo;
 
-    protected Color                     applicationColor;
-
     protected boolean                   allowUserSubscription;
 
     protected boolean                   removable;
@@ -124,26 +121,24 @@ public class ApplicationEntity implements Serializable {
     }
 
     public ApplicationEntity(String name, String friendlyName, ApplicationOwnerEntity applicationOwner,
-            String description, URL applicationUrl, byte[] applicationLogo, Color applicationColor,
-            X509Certificate certificate) {
+            String description, URL applicationUrl, byte[] applicationLogo, X509Certificate certificate) {
 
-        this(name, friendlyName, applicationOwner, description, applicationUrl, applicationLogo, applicationColor,
-                true, true, certificate, 0, 0);
+        this(name, friendlyName, applicationOwner, description, applicationUrl, applicationLogo, true, true,
+                certificate, 0, 0);
     }
 
     public ApplicationEntity(String name, String friendlyName, ApplicationOwnerEntity applicationOwner,
-            String description, URL applicationUrl, byte[] applicationLogo, Color applicationColor,
-            boolean allowUserSubscription, boolean removable, X509Certificate certificate, long identityVersion,
-            long usageAgreementVersion) {
+            String description, URL applicationUrl, byte[] applicationLogo, boolean allowUserSubscription,
+            boolean removable, X509Certificate certificate, long identityVersion, long usageAgreementVersion) {
 
-        this(name, friendlyName, applicationOwner, description, applicationUrl, applicationLogo, applicationColor,
-                allowUserSubscription, removable, certificate, identityVersion, usageAgreementVersion, false);
+        this(name, friendlyName, applicationOwner, description, applicationUrl, applicationLogo, allowUserSubscription,
+                removable, certificate, identityVersion, usageAgreementVersion, false);
     }
 
     public ApplicationEntity(String name, String friendlyName, ApplicationOwnerEntity applicationOwner,
-            String description, URL applicationUrl, byte[] applicationLogo, Color applicationColor,
-            boolean allowUserSubscription, boolean removable, X509Certificate certificate, long identityVersion,
-            long usageAgreementVersion, boolean deviceRestriction) {
+            String description, URL applicationUrl, byte[] applicationLogo, boolean allowUserSubscription,
+            boolean removable, X509Certificate certificate, long identityVersion, long usageAgreementVersion,
+            boolean deviceRestriction) {
 
         this.name = name;
         this.friendlyName = friendlyName;
@@ -151,7 +146,6 @@ public class ApplicationEntity implements Serializable {
         this.description = description;
         this.applicationUrl = applicationUrl;
         this.applicationLogo = applicationLogo;
-        this.applicationColor = applicationColor;
         this.allowUserSubscription = allowUserSubscription;
         this.removable = removable;
         this.deviceRestriction = deviceRestriction;
@@ -235,22 +229,6 @@ public class ApplicationEntity implements Serializable {
     public void setApplicationLogo(byte[] applicationLogo) {
 
         this.applicationLogo = applicationLogo;
-    }
-
-    /**
-     * Retrieve the base color of this application's theme.
-     */
-    public Color getApplicationColor() {
-
-        return this.applicationColor;
-    }
-
-    /**
-     * Set the base color of this application's theme.
-     */
-    public void setApplicationColor(Color applicationColor) {
-
-        this.applicationColor = applicationColor;
     }
 
     /**
@@ -397,8 +375,8 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * When set to <code>true</code> the WS-Security SOAP handlers will not check whether the SOAP body has been
-     * signed. This is required for compatability with .NET 3.0 WCF clients.
+     * When set to <code>true</code> the WS-Security SOAP handlers will not check whether the SOAP body has been signed.
+     * This is required for compatability with .NET 3.0 WCF clients.
      * 
      */
     public boolean isSkipMessageIntegrityCheck() {

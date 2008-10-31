@@ -189,15 +189,6 @@ public interface ApplicationService {
     void updateApplicationLogo(String applicationId, byte[] newApplicationLogo) throws ApplicationNotFoundException;
 
     /**
-     * Updates the application Color for the given application.
-     * 
-     * @param applicationId
-     * @param applicationColor
-     * @throws ApplicationNotFoundException
-     */
-    void updateApplicationColor(String applicationId, Color applicationColor) throws ApplicationNotFoundException;
-
-    /**
      * Updates the X509 certificate of the given application.
      * 
      * @param applicationName

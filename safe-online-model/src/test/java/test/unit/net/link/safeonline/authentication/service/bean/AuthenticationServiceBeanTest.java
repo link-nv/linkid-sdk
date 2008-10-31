@@ -224,7 +224,7 @@ public class AuthenticationServiceBeanTest {
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
         X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair,
                 "CN=TestApplication");
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, null,
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null,
                 applicationCert);
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
@@ -256,7 +256,7 @@ public class AuthenticationServiceBeanTest {
         replay(this.mockObjects);
 
         // operate
-        this.testedInstance.initialize(null, authnRequest);
+        this.testedInstance.initialize(null, null, null, authnRequest);
 
         boolean result = this.testedInstance.authenticate(login, password);
 
@@ -291,7 +291,7 @@ public class AuthenticationServiceBeanTest {
         replay(this.mockObjects);
 
         // operate
-        ProtocolContext protocolContext = this.testedInstance.initialize(null, authnRequest);
+        ProtocolContext protocolContext = this.testedInstance.initialize(null, null, null, authnRequest);
 
         // verify
         verify(this.mockObjects);
@@ -337,7 +337,7 @@ public class AuthenticationServiceBeanTest {
         replay(this.mockObjects);
 
         // operate
-        ProtocolContext protocolContext = this.testedInstance.initialize(null, authnRequest);
+        ProtocolContext protocolContext = this.testedInstance.initialize(null, null, null, authnRequest);
 
         // verify
         verify(this.mockObjects);
@@ -376,7 +376,7 @@ public class AuthenticationServiceBeanTest {
 
         // operate
         try {
-            this.testedInstance.initialize(null, authnRequest);
+            this.testedInstance.initialize(null, null, null, authnRequest);
         } catch (AuthenticationInitializationException e) {
             // expected
             return;
@@ -411,7 +411,7 @@ public class AuthenticationServiceBeanTest {
 
         // operate
         try {
-            this.testedInstance.initialize(null, authnRequest);
+            this.testedInstance.initialize(null, null, null, authnRequest);
         } catch (AuthenticationInitializationException e) {
             // expected
             return;
@@ -430,7 +430,7 @@ public class AuthenticationServiceBeanTest {
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, null,
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null,
                 applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
@@ -468,7 +468,7 @@ public class AuthenticationServiceBeanTest {
         replay(this.mockObjects);
 
         // operate
-        ProtocolContext protocolContext = this.testedInstance.initialize(null, authnRequest);
+        ProtocolContext protocolContext = this.testedInstance.initialize(null, null, null, authnRequest);
         boolean result = this.testedInstance.checkSsoCookie(ssoCookie);
 
         // verify
@@ -497,7 +497,7 @@ public class AuthenticationServiceBeanTest {
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, null,
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null,
                 applicationCert);
         application.setSsoEnabled(false);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
@@ -528,7 +528,7 @@ public class AuthenticationServiceBeanTest {
         replay(this.mockObjects);
 
         // operate
-        ProtocolContext protocolContext = this.testedInstance.initialize(null, authnRequest);
+        ProtocolContext protocolContext = this.testedInstance.initialize(null, null, null, authnRequest);
         boolean result = this.testedInstance.checkSsoCookie(ssoCookie);
 
         // verify
@@ -553,7 +553,7 @@ public class AuthenticationServiceBeanTest {
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, null,
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null,
                 applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
@@ -584,7 +584,7 @@ public class AuthenticationServiceBeanTest {
         replay(this.mockObjects);
 
         // operate
-        ProtocolContext protocolContext = this.testedInstance.initialize(null, authnRequest);
+        ProtocolContext protocolContext = this.testedInstance.initialize(null, null, null, authnRequest);
         boolean result = this.testedInstance.checkSsoCookie(ssoCookie);
 
         // verify
@@ -608,7 +608,7 @@ public class AuthenticationServiceBeanTest {
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, null,
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null,
                 applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
@@ -635,7 +635,7 @@ public class AuthenticationServiceBeanTest {
         replay(this.mockObjects);
 
         // operate
-        this.testedInstance.initialize(null, authnRequest);
+        this.testedInstance.initialize(null, null, null, authnRequest);
         try {
             this.testedInstance.checkSsoCookie(ssoCookie);
         } catch (InvalidCookieException e) {
@@ -657,7 +657,7 @@ public class AuthenticationServiceBeanTest {
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, null,
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null,
                 applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
@@ -691,7 +691,7 @@ public class AuthenticationServiceBeanTest {
         replay(this.mockObjects);
 
         // operate
-        this.testedInstance.initialize(null, authnRequest);
+        this.testedInstance.initialize(null, null, null, authnRequest);
         try {
             this.testedInstance.checkSsoCookie(ssoCookie);
         } catch (InvalidCookieException e) {
@@ -714,14 +714,14 @@ public class AuthenticationServiceBeanTest {
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, null,
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null,
                 applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
         applicationPool.setApplications(Collections.singletonList(application));
         application.setApplicationPools(Collections.singletonList(applicationPool));
 
-        ApplicationEntity invalidApplication = new ApplicationEntity(invalidApplicationName, null, null, null, null,
+        ApplicationEntity invalidApplication = new ApplicationEntity(invalidApplicationName, null, null, null,
                 null, null, applicationCert);
 
         String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null,
@@ -752,7 +752,7 @@ public class AuthenticationServiceBeanTest {
         replay(this.mockObjects);
 
         // operate
-        this.testedInstance.initialize(null, authnRequest);
+        this.testedInstance.initialize(null, null, null, authnRequest);
         try {
             this.testedInstance.checkSsoCookie(ssoCookie);
         } catch (InvalidCookieException e) {
@@ -775,13 +775,13 @@ public class AuthenticationServiceBeanTest {
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, null,
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null,
                 applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
         applicationPool.setApplications(Collections.singletonList(application));
         application.setApplicationPools(Collections.singletonList(applicationPool));
-        ApplicationEntity cookieApplication = new ApplicationEntity(cookieApplicationName, null, null, null, null,
+        ApplicationEntity cookieApplication = new ApplicationEntity(cookieApplicationName, null, null, null,
                 null, null, applicationCert);
 
         String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null,
@@ -813,7 +813,7 @@ public class AuthenticationServiceBeanTest {
         replay(this.mockObjects);
 
         // operate
-        ProtocolContext protocolContext = this.testedInstance.initialize(null, authnRequest);
+        ProtocolContext protocolContext = this.testedInstance.initialize(null, null, null, authnRequest);
         boolean result = this.testedInstance.checkSsoCookie(ssoCookie);
 
         // verify
@@ -850,13 +850,13 @@ public class AuthenticationServiceBeanTest {
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
 
-        ApplicationEntity application1 = new ApplicationEntity(application1Name, null, null, null, null, null, null,
+        ApplicationEntity application1 = new ApplicationEntity(application1Name, null, null, null, null, null,
                 applicationCert);
         application1.setSsoEnabled(true);
-        ApplicationEntity application2 = new ApplicationEntity(application2Name, null, null, null, null, null, null,
+        ApplicationEntity application2 = new ApplicationEntity(application2Name, null, null, null, null, null,
                 applicationCert);
         application2.setSsoEnabled(true);
-        ApplicationEntity application3 = new ApplicationEntity(application3Name, null, null, null, null, null, null,
+        ApplicationEntity application3 = new ApplicationEntity(application3Name, null, null, null, null, null,
                 applicationCert);
         application3.setSsoEnabled(true);
 
@@ -909,7 +909,7 @@ public class AuthenticationServiceBeanTest {
         replay(this.mockObjects);
 
         // operate
-        ProtocolContext protocolContext = this.testedInstance.initialize(null, authnRequest);
+        ProtocolContext protocolContext = this.testedInstance.initialize(null, null, null, authnRequest);
         boolean result = this.testedInstance.checkSsoCookie(ssoCookie);
 
         // verify
@@ -934,7 +934,7 @@ public class AuthenticationServiceBeanTest {
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, null,
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null,
                 applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
@@ -974,7 +974,7 @@ public class AuthenticationServiceBeanTest {
         replay(this.mockObjects);
 
         // operate
-        this.testedInstance.initialize(null, authnRequest);
+        this.testedInstance.initialize(null, null, null, authnRequest);
         try {
             this.testedInstance.checkSsoCookie(ssoCookie);
         } catch (InvalidCookieException e) {
@@ -996,7 +996,7 @@ public class AuthenticationServiceBeanTest {
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, null,
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null,
                 applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
@@ -1034,7 +1034,7 @@ public class AuthenticationServiceBeanTest {
         replay(this.mockObjects);
 
         // operate
-        ProtocolContext protocolContext = this.testedInstance.initialize(null, authnRequest);
+        ProtocolContext protocolContext = this.testedInstance.initialize(null, null, null, authnRequest);
         boolean result = this.testedInstance.checkSsoCookie(ssoCookie);
 
         // verify
@@ -1059,7 +1059,7 @@ public class AuthenticationServiceBeanTest {
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, null,
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null,
                 applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
@@ -1097,7 +1097,7 @@ public class AuthenticationServiceBeanTest {
         replay(this.mockObjects);
 
         // operate
-        this.testedInstance.initialize(null, authnRequest);
+        this.testedInstance.initialize(null, null, null, authnRequest);
         try {
             this.testedInstance.checkSsoCookie(ssoCookie);
         } catch (InvalidCookieException e) {
@@ -1184,7 +1184,7 @@ public class AuthenticationServiceBeanTest {
         X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair,
                 "CN=TestApplication");
         ApplicationEntity application = new ApplicationEntity(applicationName, null, new ApplicationOwnerEntity(),
-                null, null, null, null, applicationCert);
+                null, null, null, applicationCert);
         application.setSsoLogoutUrl(new URL("http", "test.host", "logout"));
 
         String applicationUserId = UUID.randomUUID().toString();

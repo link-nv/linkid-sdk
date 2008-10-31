@@ -7,6 +7,8 @@
 
 package net.link.safeonline.authentication.service;
 
+import java.util.Locale;
+
 import javax.ejb.Local;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -149,12 +151,14 @@ public interface AuthenticationService {
      * device policy and assertion consumer service.
      * 
      * @param language
+     * @param minimal
+     * @param color
      * @param samlAuthnRequest
      * @throws AuthenticationInitializationException
      * @throws ApplicationNotFoundException
      * @throws TrustDomainNotFoundException
      */
-    ProtocolContext initialize(String language, AuthnRequest samlAuthnRequest)
+    ProtocolContext initialize(Locale language, Integer color, Boolean minimal, AuthnRequest samlAuthnRequest)
             throws AuthenticationInitializationException, ApplicationNotFoundException, TrustDomainNotFoundException;
 
     /**

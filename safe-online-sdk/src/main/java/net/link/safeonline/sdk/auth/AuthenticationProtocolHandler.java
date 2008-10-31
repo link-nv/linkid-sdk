@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -53,15 +54,22 @@ public interface AuthenticationProtocolHandler extends Serializable {
     /**
      * Initiates the authentication request towards the SafeOnline authentication web application.
      * 
-     * @param request
-     * @param response
+     * @param httpRequest
+     * @param httpResponse
      * @param targetUrl
      *            the optional target URL. If omitted the request URL will be used as target URL.
+     * @param language
+     *            The locale that represents the language to use in OLAS.
+     * @param color
+     *            The 24-bit color to base the OLAS color theme on.
+     * @param minimal
+     *            <code>true</code>: OLAS will make its pages smaller by hiding header/footer images so it is more
+     *            suitable to be used in an IFrame, for example.
      * @throws IOException
      * @throws ServletException
      */
-    void initiateAuthentication(HttpServletRequest request, HttpServletResponse response, String targetUrl)
-            throws IOException, ServletException;
+    public void initiateAuthentication(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
+            String targetUrl, Locale language, Integer color, Boolean minimal) throws IOException, ServletException;
 
     /**
      * Finalize the active authentication process.

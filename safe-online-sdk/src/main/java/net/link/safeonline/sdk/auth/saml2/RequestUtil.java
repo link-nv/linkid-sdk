@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
+import java.util.Locale;
 import java.util.Properties;
 
 import javax.servlet.ServletException;
@@ -69,7 +70,7 @@ public class RequestUtil {
     public static void sendRequest(String targetUrl, String encodedSamlRequestToken, String templateResourceName,
             HttpServletResponse httpResponse) throws ServletException, IOException {
 
-        sendRequest(targetUrl, encodedSamlRequestToken, null, templateResourceName, httpResponse);
+        sendRequest(targetUrl, encodedSamlRequestToken, null, null, null, templateResourceName, httpResponse);
     }
 
     /**
@@ -79,13 +80,16 @@ public class RequestUtil {
      * @param targetUrl
      * @param encodedSamlRequestToken
      * @param language
+     * @param minimal
+     * @param color
      * @param templateResourceName
      * @param httpResponse
      * @throws ServletException
      * @throws IOException
      */
-    public static void sendRequest(String targetUrl, String encodedSamlRequestToken, String language,
-            String templateResourceName, HttpServletResponse httpResponse) throws ServletException, IOException {
+    public static void sendRequest(String targetUrl, String encodedSamlRequestToken, Locale language, Integer color,
+            Boolean minimal, String templateResourceName, HttpServletResponse httpResponse) throws ServletException,
+            IOException {
 
         /*
          * We could use the opensaml2 HTTPPostEncoderBuilder here to construct the HTTP response. But this code is just
@@ -108,7 +112,14 @@ public class RequestUtil {
         velocityContext.put("action", targetUrl);
         velocityContext.put("SAMLRequest", encodedSamlRequestToken);
         if (null != language) {
-            velocityContext.put("Language", language);
+            velocityContext.put("Language", language.getLanguage());
+        }
+        if (null != color) {
+            velocityContext.put("Color", String.format("#%02X%02X%02X", (color >> 16) % 0xFF, (color >> 8) % 0xFF,
+                    (color >> 0) % 0xFF));
+        }
+        if (null != minimal) {
+            velocityContext.put("Minimal", Boolean.toString(minimal));
         }
 
         Template template;
@@ -180,9 +191,8 @@ public class RequestUtil {
         }
 
         SAMLObject samlMessage = messageContext.getInboundSAMLMessage();
-        if (false == samlMessage instanceof AuthnRequest) {
+        if (false == samlMessage instanceof AuthnRequest)
             throw new ServletException("SAML message not an authentication request message");
-        }
         AuthnRequest samlAuthnRequest = (AuthnRequest) samlMessage;
         return samlAuthnRequest;
     }
@@ -244,9 +254,8 @@ public class RequestUtil {
         }
 
         SAMLObject samlMessage = messageContext.getInboundSAMLMessage();
-        if (false == samlMessage instanceof LogoutRequest) {
+        if (false == samlMessage instanceof LogoutRequest)
             throw new ServletException("SAML message not an authentication request message");
-        }
         LogoutRequest samlLogoutRequest = (LogoutRequest) samlMessage;
 
         if (null == samlLogoutRequest.getNameID() || null == samlLogoutRequest.getNameID().getValue())

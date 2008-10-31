@@ -15,6 +15,7 @@ import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.faces.context.ExternalContext;
@@ -65,6 +66,37 @@ public class SafeOnlineLoginUtils {
     private SafeOnlineLoginUtils() {
 
         // empty
+    }
+
+    /**
+     * Performs a SafeOnline login using the SafeOnline authentication web application.
+     * 
+     * @param target
+     *            The target to which to redirect to after successful authentication. Don't put the full URL in here,
+     *            the full URL is retrieved with the {@link #TARGET_BASE_URL_INIT_PARAM}.
+     * 
+     * @see #login(String, Locale, Integer, Boolean)
+     */
+    @SuppressWarnings("unchecked")
+    public static String login(String target) {
+
+        FacesContext context = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = context.getExternalContext();
+
+        try {
+            return login(target, null, null, null, externalContext.getInitParameterMap(),
+                    (HttpServletRequest) externalContext.getRequest(), (HttpServletResponse) externalContext
+                            .getResponse());
+        }
+
+        finally {
+            /*
+             * Signal the JavaServer Faces implementation that the HTTP response for this request has already been
+             * generated (such as an HTTP redirect), and that the request processing lifecycle should be terminated as
+             * soon as the current phase is completed.
+             */
+            context.responseComplete();
+        }
     }
 
     /**
@@ -122,17 +154,24 @@ public class SafeOnlineLoginUtils {
      * @param target
      *            The target to which to redirect to after successful authentication. Don't put the full URL in here,
      *            the full URL is retrieved with the {@link #TARGET_BASE_URL_INIT_PARAM}.
+     * @param language
+     *            the language to use in the OLAS application.
+     * @param color
+     *            the 24-bit color to use in the OLAS application theme.
+     * @param minimal
+     *            <code>true</code>: Use a minimal layout in OLAS suitable for rendering inside an IFrame, for example.
      * 
      */
     @SuppressWarnings("unchecked")
-    public static String login(String target) {
+    public static String login(String target, Locale language, Integer color, Boolean minimal) {
 
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext externalContext = context.getExternalContext();
 
         try {
-            return login(target, externalContext.getInitParameterMap(), (HttpServletRequest) externalContext
-                    .getRequest(), (HttpServletResponse) externalContext.getResponse());
+            return login(target, language, color, minimal, externalContext.getInitParameterMap(),
+                    (HttpServletRequest) externalContext.getRequest(), (HttpServletResponse) externalContext
+                            .getResponse());
         }
 
         finally {
@@ -152,6 +191,7 @@ public class SafeOnlineLoginUtils {
      * 
      * @see #login(String) For details about the init parameters that should be configured in the application's
      *      <code>web.xml</code>.
+     * @see #login(String, Locale, Integer, Boolean, HttpServletRequest, HttpServletResponse)
      * 
      * @param target
      *            The target url to redirect to after successful authentication.
@@ -163,6 +203,28 @@ public class SafeOnlineLoginUtils {
      */
     public static String login(String target, HttpServletRequest request, HttpServletResponse response) {
 
+        return login(target, null, null, null, request, response);
+    }
+
+    /**
+     * Performs a SafeOnline login using the SafeOnline authentication web application.
+     * 
+     * <b>Note: This is a general purpose method that should work for any web application framework.</b>
+     * 
+     * @see #login(String) For details about the init parameters that should be configured in the application's
+     *      <code>web.xml</code>.
+     * 
+     * @param target
+     *            The target url to redirect to after successful authentication.
+     * 
+     * @param request
+     *            The {@link HttpServletRequest} object from the servlet making the login request.
+     * @param response
+     *            The {@link HttpServletResponse} object from the servlet making the login request.
+     */
+    public static String login(String target, Locale language, Integer color, Boolean minimal,
+            HttpServletRequest request, HttpServletResponse response) {
+
         Map<String, String> config = new HashMap<String, String>();
         ServletContext context = request.getSession().getServletContext();
 
@@ -173,11 +235,11 @@ public class SafeOnlineLoginUtils {
             config.put(name, context.getInitParameter(name));
         }
 
-        return login(target, config, request, response);
+        return login(target, language, color, minimal, config, request, response);
     }
 
-    private static String login(String target, Map<String, String> config, HttpServletRequest httpRequest,
-            HttpServletResponse httpResponse) {
+    private static String login(String target, Locale language, Integer color, Boolean minimal,
+            Map<String, String> config, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
 
         /* Initialize parameters from web.xml */
         String authenticationServiceUrl = getInitParameter(config, AUTH_SERVICE_URL_INIT_PARAM);
@@ -240,7 +302,8 @@ public class SafeOnlineLoginUtils {
                     + "; original message: " + e.getMessage(), e);
         }
         try {
-            AuthenticationProtocolManager.initiateAuthentication(httpRequest, httpResponse, targetUrl);
+            AuthenticationProtocolManager.initiateAuthentication(httpRequest, httpResponse, targetUrl, language, color,
+                    minimal);
             LOG.debug("executed protocol");
         } catch (Exception e) {
             throw new RuntimeException("could not initiate authentication: " + e.getMessage(), e);

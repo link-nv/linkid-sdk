@@ -7,6 +7,7 @@
 
 package net.link.safeonline.authentication;
 
+import java.util.Locale;
 import java.util.Set;
 
 import net.link.safeonline.entity.DeviceEntity;
@@ -21,15 +22,14 @@ import net.link.safeonline.entity.DeviceEntity;
  */
 public class ProtocolContext {
 
-    private final String            applicationId;
-
-    private final String            applicationFriendlyName;
-
     private final String            target;
-
-    private final String            language;
-
+    private final String            applicationId;
+    private final String            applicationFriendlyName;
     private final Set<DeviceEntity> requiredDevices;
+
+    private final Locale            language;
+    private Integer                 color;
+    private Boolean                 minimal;
 
 
     /**
@@ -48,13 +48,15 @@ public class ProtocolContext {
      * @param requiredDevices
      *            the optional set of required devices for this authentication session.
      */
-    public ProtocolContext(String applicationId, String applicationFriendlyName, String target, String language,
-            Set<DeviceEntity> requiredDevices) {
+    public ProtocolContext(String applicationId, String applicationFriendlyName, String target, Locale language,
+            Integer color, Boolean minimal, Set<DeviceEntity> requiredDevices) {
 
         this.applicationId = applicationId;
         this.applicationFriendlyName = applicationFriendlyName;
         this.target = target;
         this.language = language;
+        this.color = color;
+        this.minimal = minimal;
         this.requiredDevices = requiredDevices;
     }
 
@@ -78,8 +80,18 @@ public class ProtocolContext {
         return this.requiredDevices;
     }
 
-    public String getLanguage() {
+    public Locale getLanguage() {
 
         return this.language;
+    }
+    
+    public Integer getColor() {
+
+        return this.color;
+    }
+
+    public Boolean getMinimal() {
+
+        return this.minimal;
     }
 }

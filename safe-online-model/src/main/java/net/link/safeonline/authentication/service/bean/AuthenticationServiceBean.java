@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -278,8 +279,9 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     private SecurityAuditLogger              securityAuditLogger;
 
 
-    public ProtocolContext initialize(String language, @NotNull AuthnRequest samlAuthnRequest)
-            throws AuthenticationInitializationException, ApplicationNotFoundException, TrustDomainNotFoundException {
+    public ProtocolContext initialize(Locale language, Integer color, Boolean minimal,
+            @NotNull AuthnRequest samlAuthnRequest) throws AuthenticationInitializationException,
+            ApplicationNotFoundException, TrustDomainNotFoundException {
 
         Issuer issuer = samlAuthnRequest.getIssuer();
         String issuerName = issuer.getValue();
@@ -346,7 +348,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         this.ssoEnabled = !forceAuthn;
 
         return new ProtocolContext(this.expectedApplicationId, this.expectedApplicationFriendlyName,
-                this.expectedTarget, language, this.requiredDevicePolicy);
+                this.expectedTarget, language, color, minimal, this.requiredDevicePolicy);
     }
 
     private boolean validateSignature(X509Certificate certificate, AuthnRequest samlAuthnRequest)

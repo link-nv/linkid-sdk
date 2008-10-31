@@ -6,19 +6,16 @@
  */
 package net.link.safeonline.webapp.resources;
 
-import java.awt.Color;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Properties;
 
-import javax.ejb.EJB;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.link.safeonline.model.application.PublicApplication;
-import net.link.safeonline.service.PublicApplicationService;
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 
 import org.apache.commons.logging.Log;
@@ -32,39 +29,37 @@ import org.apache.velocity.runtime.log.Log4JLogChute;
 /**
  * <h2>{@link ApplicationStyleServlet}<br>
  * <sub>This servlet generates CSS style for colouring web applications.</sub></h2>
- *
+ * 
  * <p>
  * CSS is generated as declared in <code>style.css.vm</code> in this project's resource folder. Color variables in there
  * are calculated in this servlet based off of the current application's configured base color.
  * </p>
- *
+ * 
  * <p>
  * <i>May 13, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ApplicationStyleServlet extends AbstractInjectionServlet {
 
     /* Velocity Context Variables */
-    private static final String      BRIGHTER         = "brighter";
-    private static final String      BRIGHT           = "bright";
-    private static final String      DARKER           = "darker";
+    private static final String BRIGHTER         = "brighter";
+    private static final String BRIGHT           = "bright";
+    private static final String DARKER           = "darker";
 
     /* To convert base into theme colors: */
-    private static final int         BRIGHTER_OFFSET  = 29;
-    private static final double      BRIGHTER_FACTOR  = 1.39;
-    private static final int         BRIGHT_OFFSET    = 0;
-    private static final double      BRIGHT_FACTOR    = 1.45;
-    private static final int         DARKER_OFFSET    = 17;
-    private static final double      DARKER_FACTOR    = 1.26;
+    private static final int    BRIGHTER_OFFSET  = 29;
+    private static final double BRIGHTER_FACTOR  = 1.39;
+    private static final int    BRIGHT_OFFSET    = 0;
+    private static final double BRIGHT_FACTOR    = 1.45;
+    private static final int    DARKER_OFFSET    = 17;
+    private static final double DARKER_FACTOR    = 1.26;
 
-    private static final long        serialVersionUID = 1L;
-    private static final Log         LOG              = LogFactory.getLog(ApplicationStyleServlet.class);
+    private static final long   serialVersionUID = 1L;
+    private static final Log    LOG              = LogFactory.getLog(ApplicationStyleServlet.class);
 
-    @EJB(mappedName = PublicApplicationService.JNDI_BINDING)
-    private PublicApplicationService publicApplicationService;
-    private VelocityEngine           velocity;
+    private VelocityEngine      velocity;
 
 
     /**
@@ -106,19 +101,17 @@ public class ApplicationStyleServlet extends AbstractInjectionServlet {
             throw new IllegalArgumentException("The application name must be provided.");
 
         // Figure out the base color for the style.
-        Color baseColor = Color.decode("#5a7500"); // Default: Green.
-        if (this.publicApplicationService != null) {
-            try {
-                PublicApplication application = this.publicApplicationService.findPublicApplication(applicationName);
-
-                if (application == null) {
-                    LOG.warn("There is no application named '" + applicationName + "', using default colors.");
-                } else if (application.getColor() != null) {
-                    baseColor = application.getColor();
-                }
-            } catch (Exception e) {
-                LOG.error("Couldn't retrieve application color for " + applicationName + ", reverting to defaults.", e);
-            }
+        Integer baseColor = null;
+        Object colorAttribute = request.getAttribute(SafeOnlineConstants.COLOR_ATTRIBUTE);
+        try {
+            baseColor = colorAttribute == null? null: Integer.decode(colorAttribute.toString());
+        } catch (NumberFormatException e) {
+            LOG.warn(String.format("Couldn't parse color attribute '%s' into a 24-bit color integer.", colorAttribute),
+                    e);
+        }
+        // Default to a green shade.
+        if (baseColor == null) {
+            baseColor = Integer.decode("#5A7500");
         }
 
         // Merge the velocity style template with the color attributes.
@@ -144,12 +137,12 @@ public class ApplicationStyleServlet extends AbstractInjectionServlet {
         }
     }
 
-    private String getThemedColor(Color base, double factor, int offset) {
+    private String getThemedColor(Integer base, double factor, int offset) {
 
-        int red = (int) (base.getRed() * factor + offset);
-        int green = (int) (base.getGreen() * factor + offset);
-        int blue = (int) (base.getBlue() * factor + offset);
+        int red = (int) ((base >> 16) % 0xFF * factor + offset);
+        int green = (int) ((base >> 8) % 0xFF * factor + offset);
+        int blue = (int) ((base >> 0) % 0xFF * factor + offset);
 
-        return String.format("#%02x%02x%02x", red, green, blue);
+        return String.format("#%02X%02X%02X", red, green, blue);
     }
 }

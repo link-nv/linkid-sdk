@@ -176,7 +176,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
                     .createAuthenticationProtocolHandler(AuthenticationProtocol.SAML2_BROWSER_POST,
                             "http://test.authn.service", "test-application", null, keyPair, null, false, configParams,
                             request);
-            authenticationProtocolHandler.initiateAuthentication(request, response, "http://target");
+            authenticationProtocolHandler.initiateAuthentication(request, response, "http://target", null, null, null);
         }
     }
 

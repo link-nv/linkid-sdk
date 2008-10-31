@@ -11,12 +11,12 @@ import java.io.IOException;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -165,7 +165,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
     }
 
     public void initiateAuthentication(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-            String targetUrl) throws IOException, ServletException {
+            String targetUrl, Locale language, Integer color, Boolean minimal) throws IOException, ServletException {
 
         LOG.debug("target url: " + targetUrl);
         Set<String> devices = getDevices(httpRequest);
@@ -182,25 +182,9 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
             templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
         }
 
-        String language = getLanguage(httpRequest);
-        if (null == language) {
-            language = httpRequest.getLocale().getLanguage();
-        }
-
-        RequestUtil.sendRequest(this.authnServiceUrl, encodedSamlRequestToken, language, templateResourceName,
-                httpResponse);
-    }
-
-    private String getLanguage(HttpServletRequest httpRequest) {
-
-        Cookie[] cookies = httpRequest.getCookies();
-        if (null == cookies)
-            return null;
-        for (Cookie cookie : cookies) {
-            if ("OLAS.language".equals(cookie.getName()))
-                return cookie.getValue();
-        }
-        return null;
+        Locale olasLanguage = language == null? httpRequest.getLocale(): language;
+        RequestUtil.sendRequest(this.authnServiceUrl, encodedSamlRequestToken, olasLanguage, color, minimal,
+                templateResourceName, httpResponse);
     }
 
     public AuthenticationProtocolContext finalizeAuthentication(HttpServletRequest httpRequest,
@@ -245,8 +229,8 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
             templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
         }
 
-        RequestUtil
-                .sendRequest(this.authnServiceUrl, encodedSamlRequestToken, null, templateResourceName, httpResponse);
+        RequestUtil.sendRequest(this.authnServiceUrl, encodedSamlRequestToken, null, null, null, templateResourceName,
+                httpResponse);
     }
 
     /**

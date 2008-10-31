@@ -6,11 +6,13 @@
 ## The extension VM stands for Velocity Macro.
 ##
 ## Velocity context may contain the following properties
-## action - String - the action URL for the form
-## RelayState - String - the relay state for the message
-## SAMLRequest - String - the Base64 encoded SAML Request
-## SAMLResponse - String - the Base64 encoded SAML Response
-## Language - String - the Language of the webapp
+## action - String - the action URL for the form.
+## RelayState - String - the relay state for the message.
+## SAMLRequest - String - the Base64 encoded SAML Request.
+## SAMLResponse - String - the Base64 encoded SAML Response.
+## Language - String(ISO-639) - the language to use in OLAS.
+## Color - String(#XXXXXX) - The color to base the OLAS theme on.
+## Minimal - String(true/*) - If true, use a minimal layout theme in OLAS.
 
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 
@@ -38,6 +40,14 @@
                 
                 #if($Language)
                 	<input type="hidden" name="Language" value="${Language}"/>
+                #end
+
+                #if($Color)
+                	<input type="hidden" name="Color" value="${Color}"/>
+                #end
+
+                #if($Minimal)
+                	<input type="hidden" name="Minimal" value="${Minimal}"/>
                 #end
 
             </div>

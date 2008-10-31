@@ -59,7 +59,7 @@ public class ApplicationDAOBean implements ApplicationDAO {
 
         LOG.debug("adding application: " + applicationName);
         ApplicationEntity application = new ApplicationEntity(applicationName, applicationFriendlyName,
-                applicationOwner, description, applicationUrl, applicationLogo, applicationColor, certificate);
+                applicationOwner, description, applicationUrl, applicationLogo, certificate);
         this.entityManager.persist(application);
         return application;
     }
@@ -79,9 +79,8 @@ public class ApplicationDAOBean implements ApplicationDAO {
     public ApplicationEntity getApplication(String applicationName) throws ApplicationNotFoundException {
 
         ApplicationEntity application = findApplication(applicationName);
-        if (null == application) {
+        if (null == application)
             throw new ApplicationNotFoundException();
-        }
         return application;
     }
 
@@ -92,8 +91,8 @@ public class ApplicationDAOBean implements ApplicationDAO {
 
         LOG.debug("adding application: " + applicationName);
         ApplicationEntity application = new ApplicationEntity(applicationName, applicationFriendlyName,
-                applicationOwner, description, applicationUrl, applicationLogo, applicationColor,
-                allowUserSubscription, removable, certificate, initialIdentityVersion, usageAgreementVersion);
+                applicationOwner, description, applicationUrl, applicationLogo, allowUserSubscription, removable,
+                certificate, initialIdentityVersion, usageAgreementVersion);
         this.entityManager.persist(application);
         return application;
     }
