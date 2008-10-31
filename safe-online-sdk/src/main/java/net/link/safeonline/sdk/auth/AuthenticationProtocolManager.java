@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -82,6 +83,12 @@ public class AuthenticationProtocolManager {
     /**
      * Initiates the authentication.
      * 
+     * <p>
+     * NOTE: This method uses the request URL as the target URL, doesn't set any language/color/minimal preferences, and
+     * continues with
+     * {@link #initiateAuthentication(HttpServletRequest, HttpServletResponse, String, Locale, Integer, Boolean)}.
+     * </p>
+     * 
      * @param request
      * @param response
      * @throws IOException
@@ -91,20 +98,17 @@ public class AuthenticationProtocolManager {
                                                                                                        ServletException {
 
         String target = request.getRequestURL().toString();
-        initiateAuthentication(request, response, target);
+        initiateAuthentication(request, response, target, null, null, null);
     }
 
     /**
      * Initiates the authentication.
      * 
-     * @param request
-     * @param response
-     * @param target
-     * @throws IOException
-     * @throws ServletException
+     * @see AuthenticationProtocolHandler#initiateAuthentication(HttpServletRequest, HttpServletResponse, String,
+     *      Locale, Integer, Boolean)
      */
-    public static void initiateAuthentication(HttpServletRequest request, HttpServletResponse response, String target) throws IOException,
-                                                                                                                      ServletException {
+    public static void initiateAuthentication(HttpServletRequest request, HttpServletResponse response, String target,
+            Locale language, Integer color, Boolean minimal) throws IOException, ServletException {
 
         AuthenticationProtocolHandler protocolHandler = findAuthenticationProtocolHandler(request);
         if (null == protocolHandler)
@@ -114,10 +118,10 @@ public class AuthenticationProtocolManager {
         if (null != landingPage) {
             LOG.debug("using landing page: " + landingPage);
             storeTarget(target, request);
-            protocolHandler.initiateAuthentication(request, response, landingPage);
+            protocolHandler.initiateAuthentication(request, response, landingPage, language, color, minimal);
         } else {
             clearTarget(request);
-            protocolHandler.initiateAuthentication(request, response, target);
+            protocolHandler.initiateAuthentication(request, response, target, language, color, minimal);
         }
     }
 

@@ -136,8 +136,6 @@ public class ApplicationBean implements Application {
 
     private byte[]                     applicationLogo;
 
-    private String                     applicationColor;
-
     private String                     applicationOwner;
 
     private UploadedFile               upFile;
@@ -196,7 +194,6 @@ public class ApplicationBean implements Application {
         this.description = null;
         this.applicationUrl = null;
         this.applicationLogo = null;
-        this.applicationColor = null;
         this.skipMessageIntegrityCheck = false;
         this.ssoLogoutUrl = null;
     }
@@ -272,9 +269,8 @@ public class ApplicationBean implements Application {
         if (null != this.applicationLogoFile) {
             try {
                 newApplicationLogo = getUpFileContent(this.applicationLogoFile);
-                if (!Magic.getMagicMatch(newApplicationLogo).getMimeType().startsWith("image/")) {
+                if (!Magic.getMagicMatch(newApplicationLogo).getMimeType().startsWith("image/"))
                     throw new MagicException("Application logo requires an image/* MIME type.");
-                }
             } catch (IOException e) {
                 LOG.debug("couldn't fetch uploaded data for application logo.");
                 this.facesMessages.addToControlFromResourceBundle("applicationLogo", FacesMessage.SEVERITY_ERROR, "errorUploadLogoFetch");
@@ -290,16 +286,6 @@ public class ApplicationBean implements Application {
             } catch (MagicException e) {
                 LOG.debug("uploaded logo is not an image.");
                 this.facesMessages.addToControlFromResourceBundle("applicationLogo", FacesMessage.SEVERITY_ERROR, "errorUploadLogoType");
-                return null;
-            }
-        }
-        if (null != this.applicationColor && this.applicationColor.length() != 0) {
-            try {
-                newApplicationColor = Color.decode(this.applicationColor);
-            } catch (NumberFormatException e) {
-                LOG.debug("illegal Color format: " + this.applicationColor);
-                this.facesMessages.addToControlFromResourceBundle("applicationColor", FacesMessage.SEVERITY_ERROR, "errorIllegalColor",
-                        this.applicationColor);
                 return null;
             }
         }
@@ -419,16 +405,6 @@ public class ApplicationBean implements Application {
     public UploadedFile getApplicationLogoFile() {
 
         return this.applicationLogoFile;
-    }
-
-    public String getApplicationColor() {
-
-        return this.applicationColor;
-    }
-
-    public void setApplicationColor(String applicationColor) {
-
-        this.applicationColor = applicationColor;
     }
 
     public String getName() {
@@ -621,7 +597,6 @@ public class ApplicationBean implements Application {
 
         URL newApplicationUrl = null;
         byte[] newApplicationLogo = null;
-        Color newApplicationColor = null;
         URL newSsoLogoutUrl = null;
         if (null != this.applicationUrl && this.applicationUrl.length() != 0) {
             try {
@@ -639,16 +614,6 @@ public class ApplicationBean implements Application {
             } catch (IOException e) {
                 LOG.debug("couldn't fetch uploaded data for application logo.");
                 this.facesMessages.addToControlFromResourceBundle("applicationLogo", FacesMessage.SEVERITY_ERROR, "errorUploadLogo");
-                return null;
-            }
-        }
-        if (null != this.applicationColor && this.applicationColor.length() != 0) {
-            try {
-                newApplicationColor = Color.decode(this.applicationColor);
-            } catch (NumberFormatException e) {
-                LOG.debug("illegal Color format: " + this.applicationColor);
-                this.facesMessages.addToControlFromResourceBundle("applicationColor", FacesMessage.SEVERITY_ERROR, "errorIllegalColor",
-                        this.applicationColor);
                 return null;
             }
         }
@@ -683,7 +648,6 @@ public class ApplicationBean implements Application {
         if (newApplicationLogo != null) {
             this.applicationService.updateApplicationLogo(applicationId, newApplicationLogo);
         }
-        this.applicationService.updateApplicationColor(applicationId, newApplicationColor);
         this.applicationService.setIdentifierMappingServiceAccess(applicationId, this.idmapping);
         if (null != this.applicationIdScope) {
             this.applicationService.setIdScope(applicationId, IdScopeType.valueOf(this.applicationIdScope));
@@ -738,10 +702,6 @@ public class ApplicationBean implements Application {
         }
         if (null != this.selectedApplication.getApplicationLogo()) {
             this.applicationLogo = this.selectedApplication.getApplicationLogo();
-        }
-        if (null != this.selectedApplication.getApplicationColor()) {
-            this.applicationColor = String.format("#%02x%02x%02x", this.selectedApplication.getApplicationColor().getRed(),
-                    this.selectedApplication.getApplicationColor().getGreen(), this.selectedApplication.getApplicationColor().getBlue());
         }
         this.idmapping = this.selectedApplication.isIdentifierMappingAllowed();
 

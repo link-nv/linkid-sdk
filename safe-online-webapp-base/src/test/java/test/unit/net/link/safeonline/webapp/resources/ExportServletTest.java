@@ -89,7 +89,7 @@ public class ExportServletTest extends TestCase {
         String testApplicationName = "test-application-name-" + getName();
         getMethod.setQueryString(new NameValuePair[] { new NameValuePair("chartname", testChartName),
                 new NameValuePair("domain", testDomain), new NameValuePair("applicationname", testApplicationName) });
-        ApplicationEntity application = new ApplicationEntity(testApplicationName, null, null, null, null, null, null, null);
+        ApplicationEntity application = new ApplicationEntity(testApplicationName, null, null, null, null, null, null);
         StatisticEntity statistic = new StatisticEntity();
         statistic.setName("test-statistic-name");
         statistic.setApplication(application);

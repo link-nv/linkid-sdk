@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.security.KeyPair;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -181,14 +182,12 @@ public class AuthnEntryServletTest {
         postMethod.setRequestBody(data);
 
         // expectations
-        expect(this.mockAuthenticationService.initialize((String) EasyMock.anyObject(), (AuthnRequest) EasyMock.anyObject()))
-                                                                                                                             .andStubReturn(
-                                                                                                                                     new ProtocolContext(
-                                                                                                                                             applicationName,
-                                                                                                                                             applicationName,
-                                                                                                                                             assertionConsumerService,
-                                                                                                                                             null,
-                                                                                                                                             null));
+        expect(
+                this.mockAuthenticationService.initialize((Locale) EasyMock.anyObject(),
+                        (Integer) EasyMock.anyObject(), (Boolean) EasyMock.anyObject(), (AuthnRequest) EasyMock
+                                .anyObject())).andStubReturn(
+                new ProtocolContext(applicationName, applicationName, assertionConsumerService, null, null,
+                                null, null));
         expect(this.mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.INITIALIZED);
 
         // prepare
@@ -240,14 +239,12 @@ public class AuthnEntryServletTest {
         postMethod.addRequestHeader("Cookie", SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX + "." + applicationName + "=value");
 
         // expectations
-        expect(this.mockAuthenticationService.initialize((String) EasyMock.anyObject(), (AuthnRequest) EasyMock.anyObject()))
-                                                                                                                             .andStubReturn(
-                                                                                                                                     new ProtocolContext(
-                                                                                                                                             applicationName,
-                                                                                                                                             applicationName,
-                                                                                                                                             assertionConsumerService,
-                                                                                                                                             null,
-                                                                                                                                             null));
+        expect(
+                this.mockAuthenticationService.initialize((Locale) EasyMock.anyObject(),
+                        (Integer) EasyMock.anyObject(), (Boolean) EasyMock.anyObject(), (AuthnRequest) EasyMock
+                                .anyObject())).andStubReturn(
+                new ProtocolContext(applicationName, applicationName, assertionConsumerService, null, null,
+                                null, null));
         expect(this.mockAuthenticationService.checkSsoCookie((Cookie) EasyMock.anyObject())).andStubReturn(true);
         expect(this.mockAuthenticationService.getSsoCookie()).andStubReturn(
                 new Cookie(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX + "." + applicationName, "value"));

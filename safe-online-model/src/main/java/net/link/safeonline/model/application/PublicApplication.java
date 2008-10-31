@@ -6,7 +6,6 @@
  */
 package net.link.safeonline.model.application;
 
-import java.awt.Color;
 import java.net.URL;
 
 import net.link.safeonline.entity.ApplicationEntity;
@@ -29,7 +28,6 @@ import net.link.safeonline.service.PublicApplicationService;
  */
 public class PublicApplication {
 
-    private Color  color;
     private byte[] logo;
     private URL    url;
     private String friendly;
@@ -42,16 +40,10 @@ public class PublicApplication {
         this.friendly = application.getFriendlyName();
         this.name = application.getName();
 
-        this.color = application.getApplicationColor();
         this.logo = application.getApplicationLogo();
 
         this.description = application.getDescription();
         this.url = application.getApplicationUrl();
-    }
-
-    public Color getColor() {
-
-        return this.color;
     }
 
     public byte[] getLogo() {

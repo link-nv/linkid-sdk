@@ -8,6 +8,7 @@
 package net.link.safeonline.auth.servlet;
 
 import java.io.IOException;
+import java.util.Locale;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
 import net.link.safeonline.auth.protocol.ProtocolException;
@@ -48,11 +50,12 @@ import org.apache.commons.logging.LogFactory;
  * The following servlet init parameters are required:
  * </p>
  * <ul>
- * <li><code>StartUrl</code>: points to the relative/absolute URL to which this servlet will redirect after successful authentication
- * protocol entry.</li>
- * <li><code>FirstTimeUrl</code>: points to the relative/absolute URL to which this servlet will redirect after first visit and successful
+ * <li><code>StartUrl</code>: points to the relative/absolute URL to which this servlet will redirect after successful
  * authentication protocol entry.</li>
- * <li><code>UnsupportedProtocolUrl</code>: will be used to redirect to when an unsupported authentication protocol is encountered.</li>
+ * <li><code>FirstTimeUrl</code>: points to the relative/absolute URL to which this servlet will redirect after first
+ * visit and successful authentication protocol entry.</li>
+ * <li><code>UnsupportedProtocolUrl</code>: will be used to redirect to when an unsupported authentication protocol is
+ * encountered.</li>
  * <li><code>ProtocolErrorUrl</code>: will be used to redirect to when an authentication protocol error is encountered.</li>
  * </ul>
  * 
@@ -128,17 +131,23 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
         /*
          * Set the language cookie if language was specified in the browser post
          */
-        if (null != protocolContext.getLanguage()) {
-            Cookie authLanguageCookie = new Cookie(SafeOnlineCookies.AUTH_LANGUAGE_COOKIE, protocolContext.getLanguage());
+        HttpSession session = request.getSession();
+        Locale language = protocolContext.getLanguage();
+        Integer color = protocolContext.getColor();
+        Boolean minimal = protocolContext.getMinimal();
+        
+        if (null != language) {
+            Cookie authLanguageCookie = new Cookie(SafeOnlineCookies.AUTH_LANGUAGE_COOKIE, language.getLanguage());
             authLanguageCookie.setPath(this.cookiePath);
             authLanguageCookie.setMaxAge(60 * 60 * 24 * 30 * 6);
             response.addCookie(authLanguageCookie);
         }
+        session.setAttribute(SafeOnlineConstants.COLOR_ATTRIBUTE, color);
+        session.setAttribute(SafeOnlineConstants.MINIMAL_ATTRIBUTE, minimal);
 
         /*
          * We save the result of the protocol handler into the HTTP session.
          */
-        HttpSession session = request.getSession();
         LoginManager.setApplication(session, protocolContext.getApplicationId());
         LoginManager.setApplicationFriendlyName(session, protocolContext.getApplicationFriendlyName());
         LoginManager.setTarget(session, protocolContext.getTarget());

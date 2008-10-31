@@ -7,6 +7,8 @@
 
 package net.link.safeonline.auth.protocol;
 
+import java.util.Locale;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -41,7 +43,8 @@ public interface ProtocolHandler {
      * @throws ProtocolException
      *             in case the authentication request violates the authentication protocol supported by this handler.
      */
-    ProtocolContext handleRequest(HttpServletRequest authnRequest) throws ProtocolException;
+    ProtocolContext handleRequest(HttpServletRequest authnRequest, Locale language, Integer color, Boolean minimal)
+            throws ProtocolException;
 
     /**
      * Performs the authentication response according to the protocol supported by the handler that implements this interface.

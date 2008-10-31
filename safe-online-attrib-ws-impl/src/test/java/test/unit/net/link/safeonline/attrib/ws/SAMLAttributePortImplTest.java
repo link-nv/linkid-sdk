@@ -169,11 +169,9 @@ public class SAMLAttributePortImplTest {
 
         expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
 
-        expect(this.mockApplicationManager.getCallerApplication())
-                                                                  .andStubReturn(
-                                                                          new ApplicationEntity(this.testApplicationId, null,
-                                                                                  new ApplicationOwnerEntity(), null, null, null, null,
-                                                                                  this.certificate));
+        expect(this.mockApplicationManager.getCallerApplication()).andStubReturn(
+                new ApplicationEntity(this.testApplicationId, null, new ApplicationOwnerEntity(), null, null, null,
+                        this.certificate));
 
         expect(this.mockApplicationIdentifierMappingService.findUserId(this.testApplicationId, this.testSubjectLogin)).andStubReturn(
                 this.testSubjectId);

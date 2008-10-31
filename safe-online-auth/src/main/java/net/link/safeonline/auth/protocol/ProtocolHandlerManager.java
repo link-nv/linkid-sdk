@@ -10,6 +10,7 @@ package net.link.safeonline.auth.protocol;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -86,11 +87,18 @@ public class ProtocolHandlerManager {
      */
     public static ProtocolContext handleRequest(HttpServletRequest request) throws ProtocolException {
 
+        String reqLang = request.getParameter("Language");
+        String reqCol = request.getParameter("Color");
+        String reqMin = request.getParameter("Minimal");
+        Locale language = reqLang == null || reqLang.length() == 0? null: new Locale(reqLang);
+        Integer color = reqCol == null || reqCol.length() == 0? null: Integer.decode(reqCol);
+        Boolean minimal = reqMin == null || reqMin.length() == 0? null: Boolean.parseBoolean(reqMin);
+
         for (ProtocolHandler protocolHandler : protocolHandlers) {
             LOG.debug("trying protocol handler: " + protocolHandler.getClass().getSimpleName());
             ProtocolContext protocolContext;
             try {
-                protocolContext = protocolHandler.handleRequest(request);
+                protocolContext = protocolHandler.handleRequest(request, language, color, minimal);
             } catch (ProtocolException e) {
                 String protocolName = protocolHandler.getName();
                 e.setProtocolName(protocolName);
@@ -190,13 +198,11 @@ public class ProtocolHandlerManager {
 
         HttpSession session = request.getSession();
         String protocolId = (String) session.getAttribute(PROTOCOL_HANDLER_ID_ATTRIBUTE);
-        if (null == protocolId) {
+        if (null == protocolId)
             throw new ProtocolException("incorrect request handling detected");
-        }
         ProtocolHandler protocolHandler = protocolHandlerMap.get(protocolId);
-        if (null == protocolHandler) {
+        if (null == protocolHandler)
             throw new ProtocolException("unsupported protocol for protocol Id: " + protocolId);
-        }
 
         try {
             return protocolHandler.handleLogoutResponse(request);

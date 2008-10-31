@@ -9,6 +9,7 @@ package net.link.safeonline.demo.wicket.test;
 import java.io.IOException;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -95,12 +96,12 @@ public class TestAuthenticationProtocolHandler implements AuthenticationProtocol
     /**
      * {@inheritDoc}
      */
-    public void initiateAuthentication(HttpServletRequest request, HttpServletResponse response, String targetUrl) throws IOException,
-                                                                                                                  ServletException {
+    public void initiateAuthentication(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
+            String targetUrl, Locale language, Integer color, Boolean minimal) throws IOException, ServletException {
 
         LOG.info("Initiated Authentication; invoking LoginServlet");
 
-        new LoginServlet().service(new MockHttpServletRequest(request, targetUrl, Method.POST), response);
+        new LoginServlet().service(new MockHttpServletRequest(httpRequest, targetUrl, Method.POST), httpResponse);
     }
 
     /**

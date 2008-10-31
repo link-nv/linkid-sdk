@@ -168,13 +168,10 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
 
             Map<String, String> configParams = Collections.singletonMap("WsLocation", this.wsLocation);
             AuthenticationProtocolHandler authenticationProtocolHandler = AuthenticationProtocolManager
-                                                                                                       .createAuthenticationProtocolHandler(
-                                                                                                               AuthenticationProtocol.SAML2_BROWSER_POST,
-                                                                                                               "http://test.authn.service",
-                                                                                                               "test-application", null,
-                                                                                                               keyPair, null, false,
-                                                                                                               configParams, request);
-            authenticationProtocolHandler.initiateAuthentication(request, response, "http://target");
+                    .createAuthenticationProtocolHandler(AuthenticationProtocol.SAML2_BROWSER_POST,
+                            "http://test.authn.service", "test-application", null, keyPair, null, false, configParams,
+                            request);
+            authenticationProtocolHandler.initiateAuthentication(request, response, "http://target", null, null, null);
         }
     }
 

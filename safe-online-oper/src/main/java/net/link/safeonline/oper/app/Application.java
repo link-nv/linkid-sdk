@@ -77,10 +77,6 @@ public interface Application {
 
     void setApplicationLogoFile(UploadedFile applicationLogoFile);
 
-    String getApplicationColor();
-
-    void setApplicationColor(String applicationColor);
-
     String getApplicationOwner();
 
     void setApplicationOwner(String applicationOwner);
