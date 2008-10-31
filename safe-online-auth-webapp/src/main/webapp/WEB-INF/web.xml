@@ -274,10 +274,6 @@
 		<servlet-class> net.link.safeonline.auth.servlet.DeviceLandingServlet 
 		</servlet-class>
 		<init-param>
-			<param-name>StartUrl</param-name>
-			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/main.seam</param-value>
-		</init-param>
-		<init-param>
 			<param-name>LoginUrl</param-name>
 			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/login</param-value>
 		</init-param>

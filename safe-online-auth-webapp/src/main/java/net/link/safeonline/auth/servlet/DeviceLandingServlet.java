@@ -13,6 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.link.safeonline.auth.AuthenticationUtils;
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
@@ -45,9 +46,6 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
 
     @Init(name = "LoginUrl")
     private String             loginUrl;
-
-    @Init(name = "StartUrl")
-    private String             startUrl;
 
     @Init(name = "TryAnotherDeviceUrl")
     private String             tryAnotherDeviceUrl;
@@ -108,7 +106,9 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
              * Authentication failed, redirect to start page
              */
             HelpdeskLogger.add(requestWrapper.getSession(), "authentication failed", LogLevelType.ERROR);
-            response.sendRedirect(this.startUrl);
+            String requestUrl = (String) requestWrapper.getSession().getAttribute(
+                    AuthenticationUtils.REQUEST_URL_INIT_PARAM);
+            response.sendRedirect(requestUrl);
         } else {
             /*
              * Authentication success, redirect to login servlet

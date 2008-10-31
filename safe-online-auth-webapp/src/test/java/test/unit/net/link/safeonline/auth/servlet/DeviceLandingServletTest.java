@@ -21,6 +21,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.link.safeonline.auth.AuthenticationUtils;
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
 import net.link.safeonline.auth.servlet.DeviceLandingServlet;
@@ -89,7 +90,6 @@ public class DeviceLandingServletTest {
 
         this.servletTestManager = new ServletTestManager();
         Map<String, String> initParams = new HashMap<String, String>();
-        initParams.put("StartUrl", this.startUrl);
         initParams.put("LoginUrl", this.loginUrl);
         initParams.put("TryAnotherDeviceUrl", this.tryAnotherDeviceUrl);
         initParams.put("DeviceErrorUrl", this.deviceErrorUrl);
@@ -97,6 +97,7 @@ public class DeviceLandingServletTest {
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
         initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE,
                 this.mockAuthenticationService);
+        initialSessionAttributes.put(AuthenticationUtils.REQUEST_URL_INIT_PARAM, this.startUrl);
 
         this.servletTestManager.setUp(DeviceLandingServlet.class, initParams, null, null, initialSessionAttributes);
         this.location = this.servletTestManager.getServletLocation();

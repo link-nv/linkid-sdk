@@ -20,6 +20,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.interceptor.Interceptors;
+import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.AuthenticationConstants;
@@ -96,11 +97,13 @@ public class DeviceBean implements Device {
         String authenticationPath = this.devicePolicyService.getAuthenticationURL(this.deviceSelection);
         this.log.debug("authenticationPath: " + authenticationPath);
 
-        if (!this.deviceSelection.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID))
-            return AuthenticationUtils.redirectAuthentication(authenticationPath, this.deviceSelection);
-
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext externalContext = context.getExternalContext();
+        String requestPath = ((HttpServletRequest) externalContext.getRequest()).getRequestURL().toString();
+
+        if (!this.deviceSelection.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID))
+            return AuthenticationUtils.redirectAuthentication(requestPath, authenticationPath, this.deviceSelection);
+
         externalContext.redirect(authenticationPath);
         return null;
     }
