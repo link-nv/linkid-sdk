@@ -49,9 +49,9 @@ public abstract class ProfileDriver {
 
     private final Log                    LOG                    = LogFactory.getLog(getClass());
 
-    private final DriverProfileService   driverProfileService   = getService(DriverProfileService.class, DriverProfileService.BINDING);
-    private final ProfileDataService     profileDataService     = getService(ProfileDataService.class, ProfileDataService.BINDING);
-    private final DriverExceptionService driverExceptionService = getService(DriverExceptionService.class, DriverExceptionService.BINDING);
+    private final DriverProfileService   driverProfileService   = getService(DriverProfileService.class, DriverProfileService.JNDI_BINDING);
+    private final ProfileDataService     profileDataService     = getService(ProfileDataService.class, ProfileDataService.JNDI_BINDING);
+    private final DriverExceptionService driverExceptionService = getService(DriverExceptionService.class, DriverExceptionService.JNDI_BINDING);
 
     private String                       title;
     private ExecutionEntity              execution;

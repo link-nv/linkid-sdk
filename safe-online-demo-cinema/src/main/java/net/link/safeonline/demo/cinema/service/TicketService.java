@@ -35,7 +35,7 @@ import net.link.safeonline.demo.cinema.entity.CinemaUserEntity;
 @Local
 public interface TicketService extends CinemaService {
 
-    public static final String BINDING = JNDI_PREFIX + "TicketServiceBean/local";
+    public static final String JNDI_BINDING = JNDI_PREFIX + "TicketServiceBean/local";
 
 
     /**

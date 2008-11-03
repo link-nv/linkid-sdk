@@ -31,7 +31,7 @@ import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 @Local
 public interface ScenarioTimingService {
 
-    public static final String BINDING = "SafeOnline/ScenarioTimingService";
+    public static final String JNDI_BINDING = "SafeOnline/ScenarioTimingService";
 
 
     public LinkedList<ScenarioTimingEntity> getExecutionTimings(ExecutionEntity execution, int dataPoints);

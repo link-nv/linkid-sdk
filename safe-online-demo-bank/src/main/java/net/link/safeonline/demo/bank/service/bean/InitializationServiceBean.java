@@ -33,7 +33,7 @@ import org.jboss.annotation.ejb.LocalBinding;
  * @author lhunath
  */
 @Stateless
-@LocalBinding(jndiBinding = InitializationService.BINDING)
+@LocalBinding(jndiBinding = InitializationService.JNDI_BINDING)
 public class InitializationServiceBean extends AbstractBankServiceBean implements InitializationService {
 
     /**

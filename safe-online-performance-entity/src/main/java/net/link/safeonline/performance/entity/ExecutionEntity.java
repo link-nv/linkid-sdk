@@ -233,7 +233,7 @@ public class ExecutionEntity {
 
         if (this.dirtySpeed || this.speed == null) {
             try {
-                ((ExecutionService) new InitialContext().lookup(ExecutionService.BINDING)).updateSpeed(this);
+                ((ExecutionService) new InitialContext().lookup(ExecutionService.JNDI_BINDING)).updateSpeed(this);
             } catch (NamingException e) {
             }
         }

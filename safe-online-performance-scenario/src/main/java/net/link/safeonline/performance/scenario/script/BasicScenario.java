@@ -84,7 +84,7 @@ public class BasicScenario implements Scenario {
 
         LOG.debug("retrieving performance keys..");
         try {
-            PerformanceService service = (PerformanceService) getInitialContext(execution.getHostname()).lookup(PerformanceService.BINDING);
+            PerformanceService service = (PerformanceService) getInitialContext(execution.getHostname()).lookup(PerformanceService.JNDI_BINDING);
             this.applicationKey = new KeyStore.PrivateKeyEntry(service.getPrivateKey(), new Certificate[] { service.getCertificate() });
         } catch (NamingException e) {
             LOG.error("OLAS couldn't provide performance keys.", e);

@@ -11,9 +11,7 @@
 
 		<!-- Exclude the HSQL stuff from Base-Distribution: we use MySQL. -->
 		<fileSet>
-			<directory>
-                target/files/safe-online-base-distribution-${safe-online.version}/jboss
-			</directory>
+			<directory>target/files/safe-online-base-distribution-${safe-online.version}/jboss</directory>
 			<outputDirectory>jboss</outputDirectory>
 			<excludes>
 				<exclude>server/default/deploy/jms/hsqldb-jdbc2-service.xml</exclude>
@@ -29,9 +27,7 @@
 
 		<!-- Runtime scripts                                -> /scripts -->
 		<fileSet>
-			<directory>
-                target/files/safe-online-base-distribution-${safe-online.version}/jboss
-			</directory>
+			<directory>target/files/safe-online-base-distribution-${safe-online.version}/scripts</directory>
 			<outputDirectory>scripts</outputDirectory>
 			<fileMode>0500</fileMode>
 		</fileSet>
@@ -42,12 +38,15 @@
 			<outputDirectory>jboss</outputDirectory>
 		</fileSet>
 
-		<!-- This artifact's dependencies                   -> /jboss/server/default/lib -->
+		<!-- This artifact's EAR dependencies               -> /jboss/server/default/lib -->
+		<fileSet>
+			<directory>target/deploy</directory>
+			<outputDirectory>jboss/server/default/deploy</outputDirectory>
+		</fileSet>
+
+        <!-- This artifact's non-EAR dependencies           -> jboss/server/default/lib -->
 		<fileSet>
 			<directory>target/dependency</directory>
-			<excludes>
-				<exclude>safe-online*</exclude>
-			</excludes>
 			<outputDirectory>jboss/server/default/lib</outputDirectory>
 		</fileSet>
 
@@ -58,26 +57,6 @@
 		<file>
 			<source>target/files/resources/mysql-safe-online-ds.xml</source>
 			<outputDirectory>jboss/server/default/deploy</outputDirectory>
-		</file>
-
-        <!-- The OLAS application                           -> /jboss/server/default/deploy -->
-		<file>
-			<source>
-				target/files/safe-online-deploy-${pom.version}.ear
-			</source>
-			<outputDirectory>
-				jboss/server/default/deploy
-			</outputDirectory>
-			<destName>SafeOnline.ear</destName>
-		</file>
-		<file>
-			<source>
-				target/files/safe-online-performance-deploy-${pom.version}.ear
-			</source>
-			<outputDirectory>
-				jboss/server/default/deploy
-			</outputDirectory>
-			<destName>SafeOnlinePerformance.ear</destName>
 		</file>
 	</files>
 

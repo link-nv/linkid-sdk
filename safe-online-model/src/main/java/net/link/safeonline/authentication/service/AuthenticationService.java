@@ -43,12 +43,11 @@ import org.opensaml.saml2.core.LogoutRequest;
 
 
 /**
- * Authentication service interface. This service allows the authentication web application to authenticate users. The
- * bean behind this interface is stateful. This means that a certain method invocation pattern must be respected. First
- * the method {@link #initialize(String, AuthnRequest)} must be invoked. Then the method
- * {@link #authenticate(HttpServletRequest)} must be invoked. After this the method
- * {@link #commitAuthentication(String)} must be invoked and finally {@link #finalizeAuthentication()}. In case the
- * authentication process needs to be aborted one should invoke {@link #abort()} .
+ * Authentication service interface. This service allows the authentication web application to authenticate users. The bean behind this
+ * interface is stateful. This means that a certain method invocation pattern must be respected. First the method
+ * {@link #initialize(Locale, Integer, Boolean, AuthnRequest)} must be invoked. Then the method {@link #authenticate(HttpServletRequest)}
+ * must be invoked. After this the method {@link #commitAuthentication(String)} must be invoked and finally
+ * {@link #finalizeAuthentication()}. In case the authentication process needs to be aborted one should invoke {@link #abort()} .
  * 
  * @author fcorneli
  */
@@ -93,9 +92,10 @@ public interface AuthenticationService {
      * @throws AttributeUnavailableException
      */
     void commitAuthentication(String language) throws ApplicationNotFoundException, SubscriptionNotFoundException,
-            ApplicationIdentityNotFoundException, IdentityConfirmationRequiredException, MissingAttributeException,
-            EmptyDevicePolicyException, DevicePolicyException, UsageAgreementAcceptationRequiredException,
-            PermissionDeniedException, AttributeTypeNotFoundException, AttributeUnavailableException;
+                                              ApplicationIdentityNotFoundException, IdentityConfirmationRequiredException,
+                                              MissingAttributeException, EmptyDevicePolicyException, DevicePolicyException,
+                                              UsageAgreementAcceptationRequiredException, PermissionDeniedException,
+                                              AttributeTypeNotFoundException, AttributeUnavailableException;
 
     /**
      * Sets the password of a user. This method should be used in case the user did not yet had a password registered as authentication
@@ -158,12 +158,14 @@ public interface AuthenticationService {
      * @throws TrustDomainNotFoundException
      */
     ProtocolContext initialize(Locale language, Integer color, Boolean minimal, AuthnRequest samlAuthnRequest)
-            throws AuthenticationInitializationException, ApplicationNotFoundException, TrustDomainNotFoundException;
+                                                                                                              throws AuthenticationInitializationException,
+                                                                                                              ApplicationNotFoundException,
+                                                                                                              TrustDomainNotFoundException;
 
     /**
      * Constructs a signed and encoded SAML authentication request for the requested external device issuer.
      * 
-     * Calling this method is only valid after a call to {@link #initialize(String, AuthnRequest)}.
+     * Calling this method is only valid after a call to {@link #initialize(Locale, Integer, Boolean, AuthnRequest)}.
      * 
      * @param authenticationServiceUrl
      * @param encodedLandingUrl
@@ -224,7 +226,7 @@ public interface AuthenticationService {
     /**
      * Constructs a signed and encoded SAML authentication request for the requested external device issuer.
      * 
-     * Calling this method is only valid after a call to {@link #initialize(String, AuthnRequest)}.
+     * Calling this method is only valid after a call to {@link #initialize(Locale, Integer, Boolean, AuthnRequest)}.
      * 
      * @param registrationServiceUrl
      * @param targetUrl

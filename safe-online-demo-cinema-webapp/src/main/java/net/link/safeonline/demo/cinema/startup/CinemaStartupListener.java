@@ -42,7 +42,7 @@ public class CinemaStartupListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
 
         try {
-            ((InitializationService) new InitialContext().lookup(InitializationService.BINDING)).buildEntities();
+            ((InitializationService) new InitialContext().lookup(InitializationService.JNDI_BINDING)).buildEntities();
         } catch (NamingException e) {
             LOG.error("Couldn't find the cinema initialization bean.", e);
         }

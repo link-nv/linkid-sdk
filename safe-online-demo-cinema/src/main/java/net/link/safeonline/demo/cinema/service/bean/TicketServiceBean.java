@@ -38,7 +38,7 @@ import org.jboss.annotation.ejb.LocalBinding;
  * @author mbillemo
  */
 @Stateless
-@LocalBinding(jndiBinding = TicketService.BINDING)
+@LocalBinding(jndiBinding = TicketService.JNDI_BINDING)
 public class TicketServiceBean extends AbstractCinemaServiceBean implements TicketService {
 
     @EJB

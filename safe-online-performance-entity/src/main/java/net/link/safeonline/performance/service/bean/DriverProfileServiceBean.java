@@ -32,7 +32,7 @@ import org.jboss.annotation.ejb.LocalBinding;
  * @author mbillemo
  */
 @Stateless
-@LocalBinding(jndiBinding = DriverProfileService.BINDING)
+@LocalBinding(jndiBinding = DriverProfileService.JNDI_BINDING)
 public class DriverProfileServiceBean extends AbstractProfilingServiceBean implements DriverProfileService {
 
     @Resource

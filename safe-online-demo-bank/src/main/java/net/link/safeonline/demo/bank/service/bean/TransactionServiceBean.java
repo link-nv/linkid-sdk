@@ -33,7 +33,7 @@ import org.jboss.annotation.ejb.LocalBinding;
  * @author mbillemo
  */
 @Stateless
-@LocalBinding(jndiBinding = TransactionService.BINDING)
+@LocalBinding(jndiBinding = TransactionService.JNDI_BINDING)
 public class TransactionServiceBean extends AbstractBankServiceBean implements TransactionService {
 
     @EJB

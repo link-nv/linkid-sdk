@@ -32,7 +32,7 @@ import net.link.safeonline.performance.service.bean.DriverExceptionServiceBean;
 @Local
 public interface DriverExceptionService {
 
-    public static final String BINDING = "SafeOnline/DriverExceptionService";
+    public static final String JNDI_BINDING = "SafeOnline/DriverExceptionService";
 
 
     /**

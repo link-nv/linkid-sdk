@@ -29,7 +29,7 @@ import org.jboss.annotation.ejb.LocalBinding;
  * @author mbillemo
  */
 @Stateless
-@LocalBinding(jndiBinding = TheatreService.BINDING)
+@LocalBinding(jndiBinding = TheatreService.JNDI_BINDING)
 public class TheatreServiceBean extends AbstractCinemaServiceBean implements TheatreService {
 
     /**

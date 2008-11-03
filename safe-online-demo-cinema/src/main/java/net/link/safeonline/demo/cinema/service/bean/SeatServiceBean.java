@@ -31,7 +31,7 @@ import org.jboss.annotation.ejb.LocalBinding;
  * @author mbillemo
  */
 @Stateless
-@LocalBinding(jndiBinding = SeatService.BINDING)
+@LocalBinding(jndiBinding = SeatService.JNDI_BINDING)
 public class SeatServiceBean extends AbstractCinemaServiceBean implements SeatService {
 
     /**

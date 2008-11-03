@@ -12,13 +12,17 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.entity.audit.AccessAuditEntity;
 import net.link.safeonline.entity.audit.AuditContextEntity;
 import net.link.safeonline.entity.audit.OperationStateType;
 
 
 @Local
-public interface AccessAuditDAO {
+public interface AccessAuditDAO extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AccessAuditDAOBean/local";
+
 
     void addAccessAudit(AuditContextEntity auditContext, String operation, OperationStateType operationState, String principal);
 

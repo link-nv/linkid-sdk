@@ -35,7 +35,7 @@ import net.link.safeonline.util.performance.ProfileData;
 @Local
 public interface ProfileDataService {
 
-    public static final String BINDING = "SafeOnline/ProfileDataService";
+    public static final String JNDI_BINDING = "SafeOnline/ProfileDataService";
 
 
     /**

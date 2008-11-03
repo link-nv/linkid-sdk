@@ -65,7 +65,7 @@ public class ScenarioExecutor extends Thread {
         try {
             // Find the scenario bean.
             final ScenarioController scenarioBean = (ScenarioController) new InitialContext()
-                    .lookup(ScenarioController.BINDING);
+                    .lookup(ScenarioController.JNDI_BINDING);
 
             // Setup the scenario.
             final Date execution = scenarioBean.prepare(this.request);

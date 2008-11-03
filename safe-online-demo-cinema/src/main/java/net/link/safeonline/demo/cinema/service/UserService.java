@@ -29,7 +29,7 @@ import net.link.safeonline.demo.cinema.entity.CinemaUserEntity;
 @Local
 public interface UserService extends CinemaService {
 
-    public static final String BINDING = JNDI_PREFIX + "UserServiceBean/local";
+    public static final String JNDI_BINDING = JNDI_PREFIX + "UserServiceBean/local";
 
 
     /**

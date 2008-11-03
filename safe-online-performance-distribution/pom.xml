@@ -25,6 +25,7 @@
             </resource>
         </resources>
 		<plugins>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
@@ -38,10 +39,14 @@
 					</execution>
 				</executions>
 			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
+                <executions>
+
+                    <!-- Unpack provided base-distribution and sql-ddl.
+                         maven-assembly-plugin needs their files to assemble the new distribution from. -->
 					<execution>
 						<id>unpack</id>
 						<phase>package</phase>
@@ -51,74 +56,35 @@
 						<configuration>
 							<artifactItems>
 								<artifactItem>
-									<groupId>
-										net.lin-k.safe-online
-									</groupId>
-									<artifactId>
-										safe-online-base-distribution
-									</artifactId>
+									<groupId>net.lin-k.safe-online</groupId>
+									<artifactId>safe-online-base-distribution</artifactId>
 									<type>zip</type>
 								</artifactItem>
 								<artifactItem>
-									<groupId>
-										net.lin-k.safe-online
-									</groupId>
-									<artifactId>
-										safe-online-sql-ddl
-									</artifactId>
+									<groupId>net.lin-k.safe-online</groupId>
+									<artifactId>safe-online-sql-ddl</artifactId>
 								</artifactItem>
 							</artifactItems>
-							<outputDirectory>
-								${project.build.directory}/files
-							</outputDirectory>
+							<outputDirectory>${project.build.directory}/files</outputDirectory>
 						</configuration>
-					</execution>
+                    </execution>
+
+                    <!-- Copy EAR dependencies into /deploy.
+                         maven-assembly-plugin will move them to /jboss/server/default/deploy. -->
 					<execution>
 						<id>copy</id>
 						<phase>package</phase>
 						<goals>
-							<goal>copy</goal>
+							<goal>copy-dependencies</goal>
 						</goals>
 						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>
-										net.lin-k.safe-online
-									</groupId>
-									<artifactId>
-										safe-online-deploy
-									</artifactId>
-									<type>ear</type>
-								</artifactItem>
-								<artifactItem>
-									<groupId>
-										net.lin-k.safe-online
-									</groupId>
-									<artifactId>
-										safe-online-performance-deploy
-									</artifactId>
-									<type>ear</type>
-								</artifactItem>
-								<artifactItem>
-									<groupId>
-										net.lin-k.safe-online
-									</groupId>
-									<artifactId>
-										safe-online-sql-ddl
-									</artifactId>
-								</artifactItem>
-								<artifactItem>
-									<groupId>mysql</groupId>
-									<artifactId>
-										mysql-connector-java
-									</artifactId>
-								</artifactItem>
-							</artifactItems>
-							<outputDirectory>
-								${project.build.directory}/files
-							</outputDirectory>
+                            <includeTypes>ear</includeTypes>
+							<outputDirectory>${project.build.directory}/deploy</outputDirectory>
 						</configuration>
 					</execution>
+
+                    <!-- Copy non-provided, non-EAR dependencies to /dependency dir.
+                         maven-assembly-plugin will move them to /jboss/server/default/lib. -->
 					<execution>
 						<id>copy-deps</id>
 						<phase>package</phase>
@@ -126,13 +92,15 @@
 							<goal>copy-dependencies</goal>
 						</goals>
 						<configuration>
-							<outputDirectory> ${project.build.directory}/dependency 
-							</outputDirectory>
-							<excludeScope> provided </excludeScope>
+							<excludeScope>provided</excludeScope>
+                            <excludeTypes>ear</excludeTypes>
+							<outputDirectory>${project.build.directory}/dependency</outputDirectory>
 						</configuration>
 					</execution>
+
 				</executions>
 			</plugin>
+
             <plugin>
                 <artifactId>maven-patch-plugin</artifactId>
                 <executions>
@@ -140,28 +108,25 @@
                     <id>patch</id>
                     <phase>package</phase>
                     <goals>
-                      <goal>apply</goal>
+                        <goal>apply</goal>
                     </goals>
-                    <configuration>
-                      <patches>
-                        <patch>make_headless.patch</patch>
-                        <patch>log4j.patch</patch>
-                      </patches>
-                      <targetDirectory>
-                          target/files/safe-online-base-distribution-${safe-online.version}
-                      </targetDirectory>
-                    </configuration>
-                  </execution>
+                        <configuration>
+                            <patches>
+                                <patch>make_headless.patch</patch>
+                                <patch>log4j.patch</patch>
+                            </patches>
+                            <targetDirectory>target/files/safe-online-base-distribution-${safe-online.version}</targetDirectory>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
 					<descriptors>
-						<descriptor>
-							src/main/assembly/jboss.xml
-						</descriptor>
+						<descriptor>src/main/assembly/jboss.xml</descriptor>
 					</descriptors>
 				</configuration>
 				<executions>
@@ -174,6 +139,7 @@
 					</execution>
 				</executions>
 			</plugin>
+
 		</plugins>
 	</build>
 

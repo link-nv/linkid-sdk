@@ -33,7 +33,7 @@ import net.link.safeonline.demo.cinema.entity.CinemaSeatOccupationEntity;
 @Local
 public interface SeatService extends CinemaService {
 
-    public static final String BINDING = JNDI_PREFIX + "SeatServiceBean/local";
+    public static final String JNDI_BINDING = JNDI_PREFIX + "SeatServiceBean/local";
 
 
     /**

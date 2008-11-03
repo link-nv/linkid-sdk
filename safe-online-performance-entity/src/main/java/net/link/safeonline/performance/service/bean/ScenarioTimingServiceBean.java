@@ -42,7 +42,7 @@ import org.jboss.annotation.ejb.LocalBinding;
  * @author mbillemo
  */
 @Stateless
-@LocalBinding(jndiBinding = ScenarioTimingService.BINDING)
+@LocalBinding(jndiBinding = ScenarioTimingService.JNDI_BINDING)
 public class ScenarioTimingServiceBean extends AbstractProfilingServiceBean implements ScenarioTimingService {
 
     /**

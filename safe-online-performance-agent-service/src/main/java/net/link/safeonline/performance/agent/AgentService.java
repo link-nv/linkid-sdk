@@ -314,6 +314,6 @@ public class AgentService implements AgentServiceMBean {
 
     private ScenarioController getScenarioController() throws NamingException {
 
-        return (ScenarioController) new InitialContext().lookup(ScenarioController.BINDING);
+        return (ScenarioController) new InitialContext().lookup(ScenarioController.JNDI_BINDING);
     }
 }

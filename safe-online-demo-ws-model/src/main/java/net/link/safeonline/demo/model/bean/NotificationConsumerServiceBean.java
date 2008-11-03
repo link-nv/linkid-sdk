@@ -71,7 +71,7 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
             this.demoCinemaEntityManager = (EntityManager) context.lookup("java:/DemoCinemaEntityManager");
             this.demoTicketEntityManager = (EntityManager) context.lookup("java:/DemoTicketEntityManager");
             this.demoPaymentEntityManager = (EntityManager) context.lookup("java:/DemoPaymentEntityManager");
-            this.demoCinemaTicketService = (TicketService) context.lookup(TicketService.BINDING);
+            this.demoCinemaTicketService = (TicketService) context.lookup(TicketService.JNDI_BINDING);
         } catch (NamingException e) {
             LOG.error("Naming exception thrown: " + e.getMessage(), e);
         }

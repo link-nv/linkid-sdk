@@ -33,7 +33,7 @@ import org.jboss.annotation.ejb.LocalBinding;
  * @author mbillemo
  */
 @Stateless
-@LocalBinding(jndiBinding = InitializationService.BINDING)
+@LocalBinding(jndiBinding = InitializationService.JNDI_BINDING)
 public class InitializationServiceBean extends AbstractCinemaServiceBean implements InitializationService {
 
     private List<List<CinemaRoomEntity>> theatreRoomEntities;

@@ -32,7 +32,7 @@ import net.link.safeonline.performance.service.bean.DriverProfileServiceBean;
 @Local
 public interface DriverProfileService {
 
-    public static final String BINDING = "SafeOnline/DriverProfileService";
+    public static final String JNDI_BINDING = "SafeOnline/DriverProfileService";
 
 
     /**

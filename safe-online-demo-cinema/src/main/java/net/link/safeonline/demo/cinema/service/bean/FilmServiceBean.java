@@ -28,7 +28,7 @@ import org.jboss.annotation.ejb.LocalBinding;
  * @author mbillemo
  */
 @Stateless
-@LocalBinding(jndiBinding = FilmService.BINDING)
+@LocalBinding(jndiBinding = FilmService.JNDI_BINDING)
 public class FilmServiceBean extends AbstractCinemaServiceBean implements FilmService {
 
     /**

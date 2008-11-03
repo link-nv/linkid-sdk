@@ -46,7 +46,7 @@ public class CinemaTicketServlet extends HttpServlet {
         LOG.debug("init");
         super.init(config);
 
-        this.ticketService = EjbUtils.getEJB(TicketService.BINDING, TicketService.class);
+        this.ticketService = EjbUtils.getEJB(TicketService.JNDI_BINDING, TicketService.class);
     }
 
     @Override

@@ -38,7 +38,7 @@ import org.jboss.annotation.ejb.LocalBinding;
  * @author mbillemo
  */
 @Stateless
-@LocalBinding(jndiBinding = UserService.BINDING)
+@LocalBinding(jndiBinding = UserService.JNDI_BINDING)
 public class UserServiceBean extends AbstractBankServiceBean implements UserService {
 
     /**

@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
+import javax.ejb.Local;
+
 import net.link.safeonline.performance.scenario.bean.ScenarioControllerBean;
 
 
@@ -23,9 +25,10 @@ import net.link.safeonline.performance.scenario.bean.ScenarioControllerBean;
  * 
  * @author mbillemo
  */
+@Local
 public interface ScenarioController {
 
-    public static final String BINDING = "SafeOnline/ScenarioControllerBean";
+    public static final String JNDI_BINDING = "SafeOnline/ScenarioControllerBean";
 
 
     /**

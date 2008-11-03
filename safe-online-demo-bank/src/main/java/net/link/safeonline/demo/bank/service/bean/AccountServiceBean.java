@@ -30,7 +30,7 @@ import org.jboss.annotation.ejb.LocalBinding;
  * @author mbillemo
  */
 @Stateless
-@LocalBinding(jndiBinding = AccountService.BINDING)
+@LocalBinding(jndiBinding = AccountService.JNDI_BINDING)
 public class AccountServiceBean extends AbstractBankServiceBean implements AccountService {
 
     private static final Random random = new Random();

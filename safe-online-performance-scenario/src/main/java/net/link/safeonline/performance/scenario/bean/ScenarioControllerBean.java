@@ -19,7 +19,6 @@ import java.util.TreeSet;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
-import javax.ejb.Local;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -69,8 +68,7 @@ import org.jboss.annotation.ejb.TransactionTimeout;
  * @author mbillemo
  */
 @Stateless
-@Local(ScenarioController.class)
-@LocalBinding(jndiBinding = ScenarioController.BINDING)
+@LocalBinding(jndiBinding = ScenarioController.JNDI_BINDING)
 public class ScenarioControllerBean implements ScenarioController {
 
     /*

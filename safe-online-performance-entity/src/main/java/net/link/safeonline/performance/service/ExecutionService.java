@@ -34,7 +34,7 @@ import net.link.safeonline.performance.service.bean.ExecutionServiceBean;
 @Local
 public interface ExecutionService {
 
-    public static final String BINDING = "SafeOnline/ExecutionService";
+    public static final String JNDI_BINDING = "SafeOnline/ExecutionService";
 
 
     /**

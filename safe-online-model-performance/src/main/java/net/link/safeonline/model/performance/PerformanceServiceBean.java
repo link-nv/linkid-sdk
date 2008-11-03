@@ -22,7 +22,7 @@ import org.jboss.annotation.ejb.RemoteBinding;
 
 
 @Stateless
-@RemoteBinding(jndiBinding = PerformanceService.BINDING)
+@RemoteBinding(jndiBinding = PerformanceService.JNDI_BINDING)
 public class PerformanceServiceBean implements PerformanceService {
 
     private static final Log LOG = LogFactory.getLog(PerformanceServiceBean.class);

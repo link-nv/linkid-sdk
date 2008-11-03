@@ -22,7 +22,7 @@ import javax.ejb.Remote;
 @Remote
 public interface PerformanceService {
 
-    public static final String BINDING = "SafeOnline/PerformanceServiceBean";
+    public static final String JNDI_BINDING = "SafeOnline/PerformanceServiceBean";
 
 
     PrivateKey getPrivateKey();

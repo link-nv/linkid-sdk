@@ -37,7 +37,7 @@ import org.jboss.annotation.ejb.LocalBinding;
  * @author mbillemo
  */
 @Stateless
-@LocalBinding(jndiBinding = ProfileDataService.BINDING)
+@LocalBinding(jndiBinding = ProfileDataService.JNDI_BINDING)
 public class ProfileDataServiceBean extends AbstractProfilingServiceBean implements ProfileDataService {
 
     /**

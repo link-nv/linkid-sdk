@@ -69,7 +69,7 @@ public class PerformanceDriverTest {
         environment.put(Context.INITIAL_CONTEXT_FACTORY, "org.jnp.interfaces.NamingContextFactory");
         environment.put(Context.PROVIDER_URL, "jnp://" + OLAS_HOSTNAME + ":1099");
         try {
-            PerformanceService service = (PerformanceService) new InitialContext(environment).lookup(PerformanceService.BINDING);
+            PerformanceService service = (PerformanceService) new InitialContext(environment).lookup(PerformanceService.JNDI_BINDING);
             testApplicationKey = new KeyStore.PrivateKeyEntry(service.getPrivateKey(), new Certificate[] { service.getCertificate() });
         } catch (Exception e) {
             LOG.error("application keys unavailable; will try local keystore.", e);

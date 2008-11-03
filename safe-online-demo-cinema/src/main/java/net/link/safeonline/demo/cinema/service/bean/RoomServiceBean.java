@@ -36,7 +36,7 @@ import org.jboss.annotation.ejb.LocalBinding;
  * @author mbillemo
  */
 @Stateless
-@LocalBinding(jndiBinding = RoomService.BINDING)
+@LocalBinding(jndiBinding = RoomService.JNDI_BINDING)
 public class RoomServiceBean extends AbstractCinemaServiceBean implements RoomService {
 
     @EJB

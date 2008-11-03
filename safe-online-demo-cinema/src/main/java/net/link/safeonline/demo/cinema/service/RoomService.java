@@ -32,7 +32,7 @@ import net.link.safeonline.demo.cinema.entity.CinemaTheatreEntity;
 @Local
 public interface RoomService extends CinemaService {
 
-    public static final String BINDING = JNDI_PREFIX + "RoomServiceBean/local";
+    public static final String JNDI_BINDING = JNDI_PREFIX + "RoomServiceBean/local";
 
 
     /**

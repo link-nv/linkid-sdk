@@ -32,7 +32,7 @@ import net.link.safeonline.demo.bank.entity.BankUserEntity;
 @Local
 public interface UserService extends BankService {
 
-    public static final String BINDING = JNDI_PREFIX + "UserServiceBean/local";
+    public static final String JNDI_BINDING = JNDI_PREFIX + "UserServiceBean/local";
 
 
     /**

@@ -28,7 +28,7 @@ import net.link.safeonline.demo.cinema.entity.CinemaShowTimeEntity;
 @Local
 public interface InitializationService extends CinemaService {
 
-    public static final String                   BINDING          = JNDI_PREFIX + "InitializationServiceBean/local";
+    public static final String                   JNDI_BINDING          = JNDI_PREFIX + "InitializationServiceBean/local";
 
     static final int                             H                = 3600, M = 60;
 

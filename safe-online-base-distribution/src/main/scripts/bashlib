@@ -514,6 +514,7 @@ ask() {
     local default=
     local silent=
     local valid=
+    local muteChar=
 
     # Parse the options.
     if [[ $1 = +* ]]; then
@@ -522,13 +523,15 @@ ask() {
 
         shift
     else
-        for arg in $(getArgs "$(printf "%s" {a..z} {A..Z})!#" "$@"); do
+        for arg in $(getArgs "$(printf "%s" {a..z} {A..Z})!#%" "$@"); do
             [[ $arg = [[:upper:]] ]] \
                 && default=$arg
             [[ $arg = ! ]] \
                 && { valid=${options: -1}; continue; }
             [[ $arg = '#' ]] \
-                && { silent=1; arg=; }
+                && { silent=1 arg=; }
+            [[ $arg = '%' ]] \
+                && { silent=1 muteChar='*' arg=; }
 
             options+=$arg
         done
@@ -542,7 +545,18 @@ ask() {
 
     # Ask the question.
     emit -yn "$*${option:+ [$option]}${options:+ [$options]} "
-    read ${options:+-n1} ${silent:+-s}
+
+    # Read the reply.
+    if [[ $muteChar ]]; then
+        local reply
+        while read -s -n1 && [[ $REPLY ]]; do
+            reply+=$REPLY
+            printf "%s" "$muteChar"
+        done
+        REPLY=$reply
+    else
+        read ${options:+-n1} ${silent:+-s}
+    fi
     [[ $options && $REPLY ]] || (( silent )) && printf "\n"         >&$fd
 
     # Evaluate the reply.
