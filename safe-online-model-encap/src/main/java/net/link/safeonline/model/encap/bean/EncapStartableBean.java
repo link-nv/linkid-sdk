@@ -31,7 +31,6 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
-@Local(Startable.class)
 @LocalBinding(jndiBinding = EncapConstants.ENCAP_STARTABLE_JNDI_PREFIX + "EncapStartableBean")
 public class EncapStartableBean extends AbstractInitBean {
 

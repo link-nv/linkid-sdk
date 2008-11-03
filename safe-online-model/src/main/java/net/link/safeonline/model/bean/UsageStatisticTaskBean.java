@@ -32,7 +32,6 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
-@Local(Task.class)
 @LocalBinding(jndiBinding = Task.JNDI_PREFIX + "/" + "UsageStatisticTaskBean")
 @Configurable(group = "User Statistic Generation")
 @Interceptors(ConfigurationInterceptor.class)

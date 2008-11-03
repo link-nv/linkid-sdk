@@ -26,7 +26,6 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
-@Local(Task.class)
 @LocalBinding(jndiBinding = Task.JNDI_PREFIX + "/" + "DemoStatTaskBean")
 public class DemoStatTaskBean implements Task {
 

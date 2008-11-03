@@ -42,7 +42,6 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
-@Local(Startable.class)
 @LocalBinding(jndiBinding = BeIdConstants.BEID_STARTABLE_JNDI_PREFIX + "BeIdStartableBean")
 public class BeIdStartableBean extends AbstractInitBean {
 

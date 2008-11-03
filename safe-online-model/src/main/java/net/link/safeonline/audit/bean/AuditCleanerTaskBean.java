@@ -29,7 +29,6 @@ import org.jboss.annotation.ejb.LocalBinding;
  * 
  */
 @Stateless
-@Local(Task.class)
 @LocalBinding(jndiBinding = Task.JNDI_PREFIX + "/" + "AuditCleanerTaskBean")
 @Interceptors(ConfigurationInterceptor.class)
 @Configurable

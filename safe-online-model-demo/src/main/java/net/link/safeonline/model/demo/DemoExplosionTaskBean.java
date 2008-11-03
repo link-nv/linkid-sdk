@@ -22,9 +22,8 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
-@Local(Task.class)
 @LocalBinding(jndiBinding = Task.JNDI_PREFIX + "/" + "DemoExplosionTaskBean")
-public class DemoExplosionTaskBean {
+public class DemoExplosionTaskBean implements Task {
 
     private static final Log LOG = LogFactory.getLog(DemoExplosionTaskBean.class);
 

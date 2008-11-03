@@ -31,7 +31,6 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
-@Local(Startable.class)
 @LocalBinding(jndiBinding = PerformanceConstants.PERFORMANCE_STARTABLE_JNDI_PREFIX + "PerformanceStartableBean")
 public class PerformanceStartableBean extends AbstractInitBean {
 

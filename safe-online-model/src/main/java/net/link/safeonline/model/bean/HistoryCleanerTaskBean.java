@@ -25,7 +25,6 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
-@Local(Task.class)
 @LocalBinding(jndiBinding = Task.JNDI_PREFIX + "/" + "HistoryCleanerTaskBean")
 @Interceptors(ConfigurationInterceptor.class)
 @Configurable

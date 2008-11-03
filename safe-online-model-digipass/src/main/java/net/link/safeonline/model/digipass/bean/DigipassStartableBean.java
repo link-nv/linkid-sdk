@@ -31,7 +31,6 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
-@Local(Startable.class)
 @LocalBinding(jndiBinding = DigipassConstants.DIGIPASS_STARTABLE_JNDI_PREFIX + "DigipassStartableBean")
 public class DigipassStartableBean extends AbstractInitBean {
 
