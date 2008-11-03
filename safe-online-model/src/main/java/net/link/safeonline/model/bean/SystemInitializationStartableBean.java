@@ -45,8 +45,10 @@ import org.jboss.annotation.ejb.LocalBinding;
  * 
  */
 @Stateless
-@LocalBinding(jndiBinding = Startable.JNDI_PREFIX + "SystemInitializationStartableBean")
+@LocalBinding(jndiBinding = SystemInitializationStartableBean.JNDI_BINDING)
 public class SystemInitializationStartableBean extends AbstractInitBean {
+
+    public static final String JNDI_BINDING           = Startable.JNDI_PREFIX + "SystemInitializationStartableBean";
 
     public SystemInitializationStartableBean() {
 

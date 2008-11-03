@@ -22,10 +22,12 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
-@LocalBinding(jndiBinding = Task.JNDI_PREFIX + "/" + "DemoExplosionTaskBean")
+@LocalBinding(jndiBinding = DemoExplosionTaskBean.JNDI_BINDING)
 public class DemoExplosionTaskBean implements Task {
 
     private static final Log LOG = LogFactory.getLog(DemoExplosionTaskBean.class);
+
+    public static final String JNDI_BINDING = Task.JNDI_PREFIX + "/DemoExplosionTaskBean/local";
 
 
     public String getName() {

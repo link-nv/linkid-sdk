@@ -29,10 +29,12 @@ import org.jboss.annotation.ejb.LocalBinding;
  * 
  */
 @Stateless
-@LocalBinding(jndiBinding = Task.JNDI_PREFIX + "/" + "AuditCleanerTaskBean")
+@LocalBinding(jndiBinding = AuditCleanerTaskBean.JNDI_BINDING)
 @Interceptors(ConfigurationInterceptor.class)
 @Configurable
 public class AuditCleanerTaskBean implements Task {
+
+    public static final String JNDI_BINDING = Task.JNDI_PREFIX + "/AuditCleanerTaskBean/local";
 
     private static final String name               = "Audit cleaner";
 

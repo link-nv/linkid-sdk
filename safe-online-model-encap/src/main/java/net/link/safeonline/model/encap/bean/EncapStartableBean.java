@@ -31,8 +31,10 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
-@LocalBinding(jndiBinding = EncapConstants.ENCAP_STARTABLE_JNDI_PREFIX + "EncapStartableBean")
+@LocalBinding(jndiBinding = EncapStartableBean.JNDI_BINDING)
 public class EncapStartableBean extends AbstractInitBean {
+
+    public static final String JNDI_BINDING           = EncapConstants.ENCAP_STARTABLE_JNDI_PREFIX + "EncapStartableBean";
 
     private static final Log LOG = LogFactory.getLog(EncapStartableBean.class);
 

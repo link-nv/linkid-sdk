@@ -50,8 +50,10 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
-@LocalBinding(jndiBinding = DemoConstants.DEMO_STARTABLE_JNDI_PREFIX + "DemoStartableBean")
+@LocalBinding(jndiBinding = DemoStartableBean.JNDI_BINDING)
 public class DemoStartableBean extends AbstractInitBean {
+
+    public static final String JNDI_BINDING           = DemoConstants.DEMO_STARTABLE_JNDI_PREFIX + "DemoStartableBean";
 
     public static final String  DEMO_APPLICATION_NAME              = "demo-application";
 

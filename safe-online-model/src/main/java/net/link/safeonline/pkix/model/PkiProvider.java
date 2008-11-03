@@ -35,7 +35,7 @@ public interface PkiProvider extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/PkiProviderBean/local";
 
-    public static String PKI_PROVIDER_JNDI = "SafeOnline/pkix";
+    public static String JNDI_PREFIX = "SafeOnline/pkix";
 
 
     /**

@@ -42,8 +42,10 @@ import org.jboss.annotation.ejb.LocalBinding;
  * @author dhouthoo
  */
 @Stateless
-@LocalBinding(jndiBinding = OptionConstants.OPTION_STARTABLE_JNDI_PREFIX + "OptionStartableBean")
+@LocalBinding(jndiBinding = OptionStartableBean.JNDI_BINDING)
 public class OptionStartableBean extends AbstractInitBean {
+
+    public static final String JNDI_BINDING           = OptionConstants.OPTION_STARTABLE_JNDI_PREFIX + "OptionStartableBean";
 
     public OptionStartableBean() {
 

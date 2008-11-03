@@ -48,8 +48,10 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
-@LocalBinding(jndiBinding = PkiProvider.PKI_PROVIDER_JNDI + "/beid")
+@LocalBinding(jndiBinding = BeIdPkiProviderBean.JNDI_BINDING)
 public class BeIdPkiProviderBean implements PkiProvider {
+
+    public static final String JNDI_BINDING           = PkiProvider.JNDI_PREFIX + "/beid";
 
     public static final String TRUST_DOMAIN_NAME      = "beid";
 

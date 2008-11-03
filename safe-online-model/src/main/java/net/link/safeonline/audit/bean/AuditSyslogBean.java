@@ -36,9 +36,11 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
-@LocalBinding(jndiBinding = AuditBackend.JNDI_PREFIX + "AuditSyslogBean")
+@LocalBinding(jndiBinding = AuditSyslogBean.JNDI_BINDING)
 @Interceptors(ConfigurationInterceptor.class)
 public class AuditSyslogBean implements AuditBackend {
+
+    public static final String JNDI_BINDING           = AuditBackend.JNDI_PREFIX + "AuditSyslogBean";
 
     private static final long   serialVersionUID = 1L;
 

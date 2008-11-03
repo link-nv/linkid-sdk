@@ -25,10 +25,12 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
-@LocalBinding(jndiBinding = Task.JNDI_PREFIX + "/" + "HistoryCleanerTaskBean")
+@LocalBinding(jndiBinding = HistoryCleanerTaskBean.JNDI_BINDING)
 @Interceptors(ConfigurationInterceptor.class)
 @Configurable
 public class HistoryCleanerTaskBean implements Task {
+
+    public static final String JNDI_BINDING = Task.JNDI_PREFIX + "/HistoryCleanerTaskBean/local";
 
     private static final String name              = "Subject history cleaner";
 

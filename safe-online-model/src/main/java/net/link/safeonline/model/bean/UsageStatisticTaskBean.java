@@ -32,10 +32,12 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
-@LocalBinding(jndiBinding = Task.JNDI_PREFIX + "/" + "UsageStatisticTaskBean")
+@LocalBinding(jndiBinding = UsageStatisticTaskBean.JNDI_BINDING)
 @Configurable(group = "User Statistic Generation")
 @Interceptors(ConfigurationInterceptor.class)
 public class UsageStatisticTaskBean implements Task {
+
+    public static final String JNDI_BINDING = Task.JNDI_PREFIX + "/UsageStatisticTaskBean/local";
 
     public static final String    name                = "Usage statistic task";
 

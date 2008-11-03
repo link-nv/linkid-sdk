@@ -42,12 +42,14 @@ import org.jboss.annotation.ejb.LocalBinding;
  * 
  */
 @Stateless
-@LocalBinding(jndiBinding = Task.JNDI_PREFIX + "/" + "ClockDriftDetectorTaskBean")
+@LocalBinding(jndiBinding = ClockDriftDetectorTaskBean.JNDI_BINDING)
 @Configurable
 @Interceptors( { AuditContextManager.class, ConfigurationInterceptor.class })
 public class ClockDriftDetectorTaskBean implements Task {
 
     private static final Log    LOG                     = LogFactory.getLog(ClockDriftDetectorTaskBean.class);
+
+    public static final String JNDI_BINDING = Task.JNDI_PREFIX + "/ClockDriftDetectorTaskBean/local";
 
     @EJB
     private SecurityAuditLogger securityAuditLogger;

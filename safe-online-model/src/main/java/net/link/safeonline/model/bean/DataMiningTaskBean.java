@@ -24,10 +24,12 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
-@LocalBinding(jndiBinding = Task.JNDI_PREFIX + "/" + "DataMiningTaskBean")
+@LocalBinding(jndiBinding = DataMiningTaskBean.JNDI_BINDING)
 public class DataMiningTaskBean implements Task {
 
     public final static Log       LOG              = LogFactory.getLog(DataMiningTaskBean.class);
+
+    public static final String JNDI_BINDING = Task.JNDI_PREFIX + "/DataMiningTaskBean/local";
 
     public static final String    name             = "Data mining task";
 

@@ -23,10 +23,12 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
-@LocalBinding(jndiBinding = Task.JNDI_PREFIX + "/" + "AttributeCacheCleanerTaskBean")
+@LocalBinding(jndiBinding = AttributeCacheCleanerTaskBean.JNDI_BINDING)
 public class AttributeCacheCleanerTaskBean implements Task {
 
     private static final String name = "Attribute cache cleaner";
+
+    public static final String JNDI_BINDING = Task.JNDI_PREFIX + "/AttributeCacheCleanerTaskBean/local";
 
     @EJB
     private AttributeCacheDAO   attributeCacheDAO;
