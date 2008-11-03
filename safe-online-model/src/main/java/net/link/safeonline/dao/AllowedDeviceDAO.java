@@ -11,13 +11,16 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.entity.AllowedDeviceEntity;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.DeviceEntity;
 
 
 @Local
-public interface AllowedDeviceDAO {
+public interface AllowedDeviceDAO extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AllowedDeviceDAOBean/local";
 
     AllowedDeviceEntity addAllowedDevice(ApplicationEntity application, DeviceEntity device, int weight);
 

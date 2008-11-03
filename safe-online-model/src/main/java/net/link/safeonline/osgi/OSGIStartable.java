@@ -8,6 +8,7 @@ package net.link.safeonline.osgi;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.Startable;
 import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
 import net.link.safeonline.osgi.plugin.PluginAttributeService;
@@ -28,7 +29,7 @@ import net.link.safeonline.osgi.plugin.PluginAttributeService;
  * @author wvdhaute
  */
 @Local
-public interface OSGIStartable extends Startable {
+public interface OSGIStartable extends SafeOnlineService, Startable {
 
     Object[] getPluginServices();
 

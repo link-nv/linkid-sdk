@@ -13,6 +13,7 @@ import java.util.Map;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.entity.HistoryEventType;
 import net.link.safeonline.entity.SubjectEntity;
@@ -25,7 +26,9 @@ import net.link.safeonline.entity.SubjectEntity;
  * 
  */
 @Local
-public interface HistoryDAO {
+public interface HistoryDAO extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/HistoryDAOBean/local";
 
     HistoryEntity addHistoryEntry(Date when, SubjectEntity subject, HistoryEventType event, Map<String, String> properties);
 

@@ -12,6 +12,7 @@ import java.util.Map;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
@@ -27,7 +28,9 @@ import net.link.safeonline.entity.SubjectEntity;
  * 
  */
 @Local
-public interface AttributeDAO {
+public interface AttributeDAO extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AttributeDAOBean/local";
 
     AttributeEntity addAttribute(AttributeTypeEntity attributeType, SubjectEntity subject, String stringValue);
 

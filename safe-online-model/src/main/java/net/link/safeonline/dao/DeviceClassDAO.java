@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.DeviceClassDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceClassNotFoundException;
 import net.link.safeonline.entity.DeviceClassDescriptionEntity;
@@ -19,7 +20,9 @@ import net.link.safeonline.entity.DeviceClassEntity;
 
 
 @Local
-public interface DeviceClassDAO {
+public interface DeviceClassDAO extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/DeviceClassDAOBean/local";
 
     DeviceClassEntity addDeviceClass(String name, String authenticationContextClass);
 

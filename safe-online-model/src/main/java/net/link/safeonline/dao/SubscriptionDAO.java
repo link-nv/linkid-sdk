@@ -12,6 +12,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -26,7 +27,9 @@ import net.link.safeonline.entity.SubscriptionOwnerType;
  * 
  */
 @Local
-public interface SubscriptionDAO {
+public interface SubscriptionDAO extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/SubscriptionDAOBean/local";
 
     SubscriptionEntity findSubscription(SubjectEntity subject, ApplicationEntity application);
 

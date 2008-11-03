@@ -12,6 +12,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.DeviceDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePropertyNotFoundException;
@@ -26,7 +27,9 @@ import net.link.safeonline.entity.NodeEntity;
 
 
 @Local
-public interface DeviceDAO {
+public interface DeviceDAO extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/DeviceDAOBean/local";
 
     DeviceEntity addDevice(String name, DeviceClassEntity deviceClass, NodeEntity node, String authenticationPath, String registrationPath,
                            String removalPath, String updatePath, String disablePath, X509Certificate certificate,

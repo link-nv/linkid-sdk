@@ -12,6 +12,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.entity.audit.AuditContextEntity;
 import net.link.safeonline.entity.audit.ResourceAuditEntity;
 import net.link.safeonline.entity.audit.ResourceLevelType;
@@ -19,7 +20,9 @@ import net.link.safeonline.entity.audit.ResourceNameType;
 
 
 @Local
-public interface ResourceAuditDAO {
+public interface ResourceAuditDAO extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ResourceAuditDAOBean/local";
 
     void addResourceAudit(AuditContextEntity auditContext, ResourceNameType resourceName, ResourceLevelType resourceLevel,
                           String sourceComponent, String message);

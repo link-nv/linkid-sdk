@@ -11,11 +11,14 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 
 
 @Local
-public interface ConfigGroupDAO {
+public interface ConfigGroupDAO extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ConfigGroupDAOBean/local";
 
     ConfigGroupEntity addConfigGroup(String name);
 

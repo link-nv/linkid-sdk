@@ -10,13 +10,16 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.entity.AllowedDeviceEntity;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.DeviceEntity;
 
 
 @Local
-public interface Devices {
+public interface Devices extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/DevicesBean/local";
 
     List<AllowedDeviceEntity> listAllowedDevices(ApplicationEntity application);
 

@@ -12,12 +12,15 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.entity.tasks.TaskEntity;
 import net.link.safeonline.entity.tasks.TaskHistoryEntity;
 
 
 @Local
-public interface TaskHistoryDAO {
+public interface TaskHistoryDAO extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/TaskHistoryDAOBean/local";
 
     TaskHistoryEntity addTaskHistoryEntity(TaskEntity task, String message, boolean result, Date startDate, Date endDate);
 

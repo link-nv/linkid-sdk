@@ -12,6 +12,8 @@ import java.util.Set;
 import javax.ejb.Local;
 
 
+import net.link.safeonline.SafeOnlineService;
+
 /**
  * Authorization service interface. This component is used by the SafeOnline core JAAS login module to assign roles to an authenticated
  * user.
@@ -20,7 +22,9 @@ import javax.ejb.Local;
  * 
  */
 @Local
-public interface AuthorizationService {
+public interface AuthorizationService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AuthorizationServiceBean/local";
 
     /**
      * Gives back a set of roles for a given login. The assignment of these roles to a certain principal depends on the security measures

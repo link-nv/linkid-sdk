@@ -5,6 +5,7 @@ import java.util.Locale;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceClassDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceClassNotFoundException;
@@ -32,7 +33,9 @@ import net.link.safeonline.pkix.exception.CertificateEncodingException;
 
 
 @Local
-public interface DeviceService {
+public interface DeviceService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/DeviceServiceBean/local";
 
     List<DeviceEntity> listDevices();
 

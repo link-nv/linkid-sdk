@@ -5,8 +5,12 @@ import java.io.IOException;
 import javax.ejb.Local;
 
 
+import net.link.safeonline.SafeOnlineService;
+
 @Local
-public interface Authentication {
+public interface Authentication extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AuthenticationBean/local";
 
     /*
      * Accessors.

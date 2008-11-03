@@ -9,6 +9,7 @@ package net.link.safeonline.authentication.service;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.ExistingUserException;
@@ -26,7 +27,9 @@ import net.link.safeonline.entity.SubjectEntity;
  * 
  */
 @Local
-public interface UserRegistrationService {
+public interface UserRegistrationService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/UserRegistrationServiceBean/local";
 
     /**
      * Checks whether the given login name already exists and has completed device registrations. In case there are existing device

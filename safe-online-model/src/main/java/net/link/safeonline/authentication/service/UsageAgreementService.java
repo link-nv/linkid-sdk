@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
@@ -26,7 +27,9 @@ import net.link.safeonline.entity.UsageAgreementTextEntity;
  * 
  */
 @Local
-public interface UsageAgreementService {
+public interface UsageAgreementService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/UsageAgreementServiceBean/local";
 
     /**
      * Create draft usage agreement from the specified version.

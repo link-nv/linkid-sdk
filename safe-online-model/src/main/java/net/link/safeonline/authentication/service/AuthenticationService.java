@@ -14,6 +14,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.LogoutProtocolContext;
 import net.link.safeonline.authentication.ProtocolContext;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
@@ -52,7 +53,9 @@ import org.opensaml.saml2.core.LogoutRequest;
  * @author fcorneli
  */
 @Local
-public interface AuthenticationService {
+public interface AuthenticationService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AuthenticationServiceBean/local";
 
     /**
      * Authenticates a user for a certain application. This method is used by the authentication web service. If <code>true</code> is

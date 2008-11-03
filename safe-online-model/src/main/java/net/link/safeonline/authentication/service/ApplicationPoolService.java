@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationPoolNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingApplicationPoolException;
@@ -25,7 +26,9 @@ import net.link.safeonline.entity.ApplicationPoolEntity;
  * 
  */
 @Local
-public interface ApplicationPoolService {
+public interface ApplicationPoolService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationPoolServiceBean/local";
 
     /**
      * Gives back all available applications pools.

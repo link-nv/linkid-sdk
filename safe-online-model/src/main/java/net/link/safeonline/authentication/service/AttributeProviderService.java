@@ -12,6 +12,7 @@ import java.util.Map;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DatatypeMismatchException;
@@ -28,7 +29,9 @@ import net.link.safeonline.entity.AttributeEntity;
  * 
  */
 @Local
-public interface AttributeProviderService {
+public interface AttributeProviderService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AttributeProviderServiceBean/local";
 
     /**
      * Gives back the values of an attribute of a certain subject. This application must be an attribute provider of the attribute in order

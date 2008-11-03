@@ -12,11 +12,14 @@ import java.util.List;
 import javax.ejb.Local;
 import javax.ejb.TimerHandle;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.entity.tasks.SchedulingEntity;
 
 
 @Local
-public interface SchedulingDAO {
+public interface SchedulingDAO extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/SchedulingDAOBean/local";
 
     SchedulingEntity findSchedulingByTimerHandle(TimerHandle timerHandle);
 

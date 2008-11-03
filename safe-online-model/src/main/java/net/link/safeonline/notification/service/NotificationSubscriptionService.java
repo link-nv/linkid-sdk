@@ -12,6 +12,7 @@ import java.util.Set;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.EndpointReferenceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
@@ -20,7 +21,9 @@ import net.link.safeonline.entity.notification.NotificationProducerSubscriptionE
 
 
 @Local
-public interface NotificationSubscriptionService {
+public interface NotificationSubscriptionService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/NotificationSubscriptionServiceBean/local";
 
     List<NotificationProducerSubscriptionEntity> listTopics();
 

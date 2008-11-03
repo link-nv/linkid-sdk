@@ -10,8 +10,10 @@ package net.link.safeonline.demo.ticket;
 import javax.ejb.Local;
 
 
+import net.link.safeonline.SafeOnlineService;
+
 @Local
-public interface TicketOverview extends AbstractTicketDataClient {
+public interface TicketOverview extends SafeOnlineService, AbstractTicketDataClient {
 
     void ticketListFactory();
 }

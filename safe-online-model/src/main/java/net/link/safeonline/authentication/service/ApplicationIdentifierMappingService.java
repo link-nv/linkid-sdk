@@ -9,6 +9,7 @@ package net.link.safeonline.authentication.service;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -22,7 +23,9 @@ import net.link.safeonline.authentication.exception.SubscriptionNotFoundExceptio
  * 
  */
 @Local
-public interface ApplicationIdentifierMappingService {
+public interface ApplicationIdentifierMappingService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationIdentifierMappingServiceBean/local";
 
     /**
      * Returns the subject's user id using the application's id scope.

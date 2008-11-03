@@ -14,6 +14,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
@@ -26,7 +27,9 @@ import net.link.safeonline.entity.ApplicationOwnerEntity;
  * 
  */
 @Local
-public interface ApplicationDAO {
+public interface ApplicationDAO extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationDAOBean/local";
 
     /**
      * Find the application for a given application name.

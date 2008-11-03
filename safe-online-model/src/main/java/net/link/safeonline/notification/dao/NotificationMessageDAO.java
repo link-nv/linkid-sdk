@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.NotificationMessageNotFoundException;
 import net.link.safeonline.entity.notification.EndpointReferenceEntity;
 import net.link.safeonline.entity.notification.NotificationMessageEntity;
@@ -18,7 +19,9 @@ import net.link.safeonline.notification.message.NotificationMessage;
 
 
 @Local
-public interface NotificationMessageDAO {
+public interface NotificationMessageDAO extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/NotificationMessageDAOBean/local";
 
     NotificationMessageEntity addNotificationMessage(NotificationMessage notificationMessage,
             EndpointReferenceEntity consumer);

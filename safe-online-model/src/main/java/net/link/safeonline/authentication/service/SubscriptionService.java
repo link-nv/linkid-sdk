@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.AlreadySubscribedException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -27,7 +28,9 @@ import net.link.safeonline.entity.SubscriptionEntity;
  * 
  */
 @Local
-public interface SubscriptionService {
+public interface SubscriptionService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/SubscriptionServiceBean/local";
 
     /**
      * Gives back a list of all application subscriptions of the caller user.

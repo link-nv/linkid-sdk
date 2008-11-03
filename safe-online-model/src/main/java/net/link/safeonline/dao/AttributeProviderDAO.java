@@ -11,13 +11,16 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.AttributeProviderEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 
 
 @Local
-public interface AttributeProviderDAO {
+public interface AttributeProviderDAO extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AttributeProviderDAOBean/local";
 
     AttributeProviderEntity findAttributeProvider(ApplicationEntity application, AttributeTypeEntity attributeType);
 

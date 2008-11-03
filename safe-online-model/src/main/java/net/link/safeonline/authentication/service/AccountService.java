@@ -9,6 +9,7 @@ package net.link.safeonline.authentication.service;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.entity.SubjectEntity;
@@ -16,7 +17,9 @@ import net.link.safeonline.notification.exception.MessageHandlerNotFoundExceptio
 
 
 @Local
-public interface AccountService {
+public interface AccountService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AccountServiceBean/local";
 
     void removeAccount() throws SubscriptionNotFoundException, MessageHandlerNotFoundException;
 

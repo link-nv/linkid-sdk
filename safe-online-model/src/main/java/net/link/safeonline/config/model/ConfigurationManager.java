@@ -9,6 +9,7 @@ package net.link.safeonline.config.model;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.entity.config.ConfigItemEntity;
 
@@ -21,7 +22,9 @@ import net.link.safeonline.entity.config.ConfigItemEntity;
  * 
  */
 @Local
-public interface ConfigurationManager {
+public interface ConfigurationManager extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ConfigurationManagerBean/local";
 
     ConfigItemEntity findConfigItem(String name);
 

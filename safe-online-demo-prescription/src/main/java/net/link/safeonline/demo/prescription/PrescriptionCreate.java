@@ -13,8 +13,10 @@ import javax.ejb.Local;
 import javax.faces.model.SelectItem;
 
 
+import net.link.safeonline.SafeOnlineService;
+
 @Local
-public interface PrescriptionCreate extends AbstractPrescriptionDataClient {
+public interface PrescriptionCreate extends SafeOnlineService, AbstractPrescriptionDataClient {
 
     /*
      * Factory.

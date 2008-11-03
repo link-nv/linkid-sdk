@@ -10,8 +10,10 @@ package net.link.safeonline.demo.mandate;
 import javax.ejb.Local;
 
 
+import net.link.safeonline.SafeOnlineService;
+
 @Local
-public interface MandateSearch extends AbstractMandateDataClient {
+public interface MandateSearch extends SafeOnlineService, AbstractMandateDataClient {
 
     /*
      * Accessors.

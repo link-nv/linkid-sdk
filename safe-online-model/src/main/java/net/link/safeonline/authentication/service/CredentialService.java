@@ -9,6 +9,7 @@ package net.link.safeonline.authentication.service;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -21,7 +22,9 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
  * 
  */
 @Local
-public interface CredentialService {
+public interface CredentialService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/CredentialServiceBean/local";
 
     /**
      * Changes the password of the current user. Of course for that to happen the oldPassword must match.

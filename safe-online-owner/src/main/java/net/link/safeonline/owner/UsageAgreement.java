@@ -10,13 +10,16 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.entity.UsageAgreementEntity;
 
 
 @Local
-public interface UsageAgreement {
+public interface UsageAgreement extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/UsageAgreementBean/local";
 
     /*
      * Factories

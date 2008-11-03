@@ -11,6 +11,7 @@ import javax.ejb.Local;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.NodeMappingNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
@@ -27,7 +28,9 @@ import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
  * @author wvdhaute
  */
 @Local
-public interface DeviceOperationService {
+public interface DeviceOperationService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/DeviceOperationServiceBean/local";
 
     /**
      * Used to store this stateful bean on the session

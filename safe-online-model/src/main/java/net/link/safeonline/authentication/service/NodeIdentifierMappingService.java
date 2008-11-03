@@ -9,6 +9,7 @@ package net.link.safeonline.authentication.service;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 
@@ -20,7 +21,9 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
  * 
  */
 @Local
-public interface NodeIdentifierMappingService {
+public interface NodeIdentifierMappingService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/NodeIdentifierMappingServiceBean/local";
 
     /**
      * Returns the node mapping id for the specified user and authenticating remote node.

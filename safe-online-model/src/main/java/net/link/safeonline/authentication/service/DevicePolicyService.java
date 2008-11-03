@@ -13,6 +13,7 @@ import java.util.Set;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
@@ -25,7 +26,9 @@ import net.link.safeonline.entity.DeviceEntity;
  * @author fcorneli
  */
 @Local
-public interface DevicePolicyService {
+public interface DevicePolicyService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/DevicePolicyServiceBean/local";
 
     /**
      * Gives back the device policy for the given application. The device policy is a set of device entities which the application accepts

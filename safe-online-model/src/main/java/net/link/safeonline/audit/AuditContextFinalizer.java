@@ -10,8 +10,12 @@ package net.link.safeonline.audit;
 import javax.ejb.Local;
 
 
+import net.link.safeonline.SafeOnlineService;
+
 @Local
-public interface AuditContextFinalizer {
+public interface AuditContextFinalizer extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AuditContextFinalizerBean/local";
 
     void finalizeAuditContext(Long auditContextId);
 }

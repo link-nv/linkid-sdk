@@ -11,12 +11,15 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.entity.notification.NotificationProducerSubscriptionEntity;
 
 
 @Local
-public interface NotificationProducerDAO {
+public interface NotificationProducerDAO extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/NotificationProducerDAOBean/local";
 
     NotificationProducerSubscriptionEntity addSubscription(String topic);
 

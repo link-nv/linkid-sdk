@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.NodeMappingNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -32,7 +33,9 @@ import net.link.safeonline.entity.SubjectEntity;
  * @author wvdhaute
  */
 @Local
-public interface NodeMappingService {
+public interface NodeMappingService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/NodeMappingServiceBean/local";
 
     /**
      * Get or create if not existing a node mapping for the specified user and node. This node mapping will be used to communicate with the

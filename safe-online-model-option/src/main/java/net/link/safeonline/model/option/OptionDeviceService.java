@@ -8,6 +8,7 @@ package net.link.safeonline.model.option;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
@@ -33,7 +34,9 @@ import net.link.safeonline.model.option.exception.OptionRegistrationException;
  * @author dhouthoo
  */
 @Local
-public interface OptionDeviceService {
+public interface OptionDeviceService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/OptionDeviceServiceBean/local";
 
     String authenticate(String imei, String pin) throws SubjectNotFoundException, OptionAuthenticationException,
                                                 OptionRegistrationException, AttributeTypeNotFoundException, AttributeNotFoundException,

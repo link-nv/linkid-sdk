@@ -12,6 +12,8 @@ import java.security.cert.X509Certificate;
 import javax.ejb.Local;
 
 
+import net.link.safeonline.SafeOnlineService;
+
 /**
  * Interface for component that manages the different PKI providers.
  * 
@@ -19,7 +21,9 @@ import javax.ejb.Local;
  * 
  */
 @Local
-public interface PkiProviderManager {
+public interface PkiProviderManager extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/PkiProviderManagerBean/local";
 
     /**
      * Finds the PKI provider that could possibly help in validate the given certificate. If there exists no PKI provider within the system

@@ -12,6 +12,7 @@ import java.util.Map;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.AttributeTypeDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.entity.ApplicationEntity;
@@ -30,7 +31,9 @@ import net.link.safeonline.entity.NodeEntity;
  * 
  */
 @Local
-public interface AttributeTypeDAO {
+public interface AttributeTypeDAO extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AttributeTypeDAOBean/local";
 
     void addAttributeType(AttributeTypeEntity attributeType);
 

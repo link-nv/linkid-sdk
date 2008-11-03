@@ -11,11 +11,14 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.ctrl.HistoryMessage;
 
 
 @Local
-public interface History {
+public interface History extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/HistoryBean/local";
 
     List<HistoryMessage> getList();
 }

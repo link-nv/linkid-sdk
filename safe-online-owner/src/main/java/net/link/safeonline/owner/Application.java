@@ -9,6 +9,7 @@ package net.link.safeonline.owner;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationOwnerNotFoundException;
@@ -16,7 +17,9 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 
 
 @Local
-public interface Application {
+public interface Application extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationBean/local";
 
     /*
      * Accessors

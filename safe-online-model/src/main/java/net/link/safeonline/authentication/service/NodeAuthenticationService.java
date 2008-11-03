@@ -12,6 +12,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.entity.NodeEntity;
 
@@ -23,7 +24,9 @@ import net.link.safeonline.entity.NodeEntity;
  * 
  */
 @Local
-public interface NodeAuthenticationService {
+public interface NodeAuthenticationService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/NodeAuthenticationServiceBean/local";
 
     /**
      * Authenticates an olas node given a node's certificate. At this point the node's certificate already passed the PKI validation.

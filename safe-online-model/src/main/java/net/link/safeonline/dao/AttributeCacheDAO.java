@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.entity.AttributeCacheEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -23,7 +24,9 @@ import net.link.safeonline.entity.SubjectEntity;
  * 
  */
 @Local
-public interface AttributeCacheDAO {
+public interface AttributeCacheDAO extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AttributeCacheDAOBean/local";
 
     /**
      * TODO

@@ -9,6 +9,7 @@ package net.link.safeonline.device.backend;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.AlreadyRegisteredException;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
@@ -27,7 +28,9 @@ import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
 
 @Local
-public interface CredentialManager {
+public interface CredentialManager extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/CredentialManagerBean/local";
 
     String authenticate(String sessionId, String applicationId, AuthenticationStatement authenticationStatement)
                                                                                                                 throws ArgumentIntegrityException,

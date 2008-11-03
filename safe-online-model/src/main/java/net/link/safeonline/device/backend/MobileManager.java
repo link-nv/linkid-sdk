@@ -10,11 +10,14 @@ import java.net.MalformedURLException;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.MobileException;
 
 
 @Local
-public interface MobileManager {
+public interface MobileManager extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/MobileManagerBean/local";
 
     String requestOTP(String mobile) throws MalformedURLException, MobileException;
 

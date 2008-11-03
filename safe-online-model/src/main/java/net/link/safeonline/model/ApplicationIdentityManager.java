@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
@@ -24,7 +25,9 @@ import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
  * 
  */
 @Local
-public interface ApplicationIdentityManager {
+public interface ApplicationIdentityManager extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationIdentityManagerBean/local";
 
     /**
      * Updates the identity of an application. This COULD cause the application to receive a new identity version. In case of a new identity

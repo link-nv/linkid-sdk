@@ -10,6 +10,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.UsageAgreementNotFoundException;
 import net.link.safeonline.authentication.exception.UsageAgreementTextNotFoundException;
 import net.link.safeonline.entity.ApplicationEntity;
@@ -19,7 +20,9 @@ import net.link.safeonline.entity.UsageAgreementTextEntity;
 
 
 @Local
-public interface UsageAgreementDAO {
+public interface UsageAgreementDAO extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/UsageAgreementDAOBean/local";
 
     UsageAgreementEntity addUsageAgreement(ApplicationEntity application, Long usageAgreementVersion);
 

@@ -9,6 +9,7 @@ package net.link.safeonline.model;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.entity.ApplicationEntity;
 
 
@@ -19,7 +20,9 @@ import net.link.safeonline.entity.ApplicationEntity;
  * 
  */
 @Local
-public interface ApplicationManager {
+public interface ApplicationManager extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationManagerBean/local";
 
     /**
      * Gives back the caller application. Calling this method only makes sense in the context of an application login (via an application

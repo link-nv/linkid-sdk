@@ -9,11 +9,14 @@ package net.link.safeonline.authentication.service;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.entity.SubjectEntity;
 
 
 @Local
-public interface NodeAccountService {
+public interface NodeAccountService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/NodeAccountServiceBean/local";
 
     void removeAccount(SubjectEntity subject);
 }

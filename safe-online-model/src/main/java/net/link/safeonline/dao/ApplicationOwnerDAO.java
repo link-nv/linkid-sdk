@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.ApplicationOwnerNotFoundException;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
@@ -18,7 +19,9 @@ import net.link.safeonline.entity.SubjectEntity;
 
 
 @Local
-public interface ApplicationOwnerDAO {
+public interface ApplicationOwnerDAO extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationOwnerDAOBean/local";
 
     ApplicationOwnerEntity findApplicationOwner(String name);
 

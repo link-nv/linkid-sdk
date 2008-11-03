@@ -11,6 +11,7 @@ import java.util.Map;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -29,7 +30,9 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
  * 
  */
 @Local
-public interface AttributeService {
+public interface AttributeService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AttributeServiceBean/local";
 
     /**
      * Gives back the value of an attribute of a certain subject. The subject must have confirmed attribute usage before the application is

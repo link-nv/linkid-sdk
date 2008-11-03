@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.entity.helpdesk.HelpdeskContextEntity;
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
 import net.link.safeonline.helpdesk.exception.HelpdeskContextNotFoundException;
@@ -23,7 +24,9 @@ import net.link.safeonline.helpdesk.exception.HelpdeskContextNotFoundException;
  * 
  */
 @Local
-public interface HelpdeskService {
+public interface HelpdeskService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/HelpdeskServiceBean/local";
 
     /**
      * Gives back all available helpdesk log contexts.

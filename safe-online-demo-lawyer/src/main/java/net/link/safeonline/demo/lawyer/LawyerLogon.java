@@ -10,8 +10,10 @@ package net.link.safeonline.demo.lawyer;
 import javax.ejb.Local;
 
 
+import net.link.safeonline.SafeOnlineService;
+
 @Local
-public interface LawyerLogon extends AbstractLawyerDataClient {
+public interface LawyerLogon extends SafeOnlineService, AbstractLawyerDataClient {
 
     /*
      * Actions.

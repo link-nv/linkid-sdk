@@ -10,8 +10,10 @@ package net.link.safeonline.demo.lawyer;
 import javax.ejb.Local;
 
 
+import net.link.safeonline.SafeOnlineService;
+
 @Local
-public interface LawyerEdit extends AbstractLawyerDataClient {
+public interface LawyerEdit extends SafeOnlineService, AbstractLawyerDataClient {
 
     String persist();
 }

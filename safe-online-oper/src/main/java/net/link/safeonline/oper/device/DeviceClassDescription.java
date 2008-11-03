@@ -9,13 +9,16 @@ package net.link.safeonline.oper.device;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.DeviceClassDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceClassNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingDeviceClassDescriptionException;
 
 
 @Local
-public interface DeviceClassDescription {
+public interface DeviceClassDescription extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/DeviceClassDescriptionBean/local";
 
     /*
      * Lifecycle.

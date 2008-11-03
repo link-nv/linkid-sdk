@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.ExistingNodeException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -25,7 +26,9 @@ import net.link.safeonline.pkix.exception.CertificateEncodingException;
  * 
  */
 @Local
-public interface NodeService {
+public interface NodeService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/NodeServiceBean/local";
 
     /**
      * Gives back all known olas nodes

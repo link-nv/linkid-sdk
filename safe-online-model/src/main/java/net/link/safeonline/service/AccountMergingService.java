@@ -11,6 +11,7 @@ import java.util.Set;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
@@ -23,7 +24,9 @@ import net.link.safeonline.notification.exception.MessageHandlerNotFoundExceptio
 
 
 @Local
-public interface AccountMergingService {
+public interface AccountMergingService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AccountMergingServiceBean/local";
 
     /**
      * Figure out what will be removed, kept or imported from the source account.

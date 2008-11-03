@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.EndpointReferenceNotFoundException;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.NodeEntity;
@@ -18,7 +19,9 @@ import net.link.safeonline.entity.notification.EndpointReferenceEntity;
 
 
 @Local
-public interface EndpointReferenceDAO {
+public interface EndpointReferenceDAO extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/EndpointReferenceDAOBean/local";
 
     EndpointReferenceEntity addEndpointReference(String address, ApplicationEntity application);
 

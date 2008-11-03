@@ -9,6 +9,7 @@ package net.link.safeonline.dao;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationScopeIdEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -21,7 +22,9 @@ import net.link.safeonline.entity.SubjectEntity;
  * 
  */
 @Local
-public interface ApplicationScopeIdDAO {
+public interface ApplicationScopeIdDAO extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationScopeIdDAOBean/local";
 
     ApplicationScopeIdEntity findApplicationScopeId(SubjectEntity subject, ApplicationEntity application);
 

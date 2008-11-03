@@ -12,6 +12,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 
 
@@ -22,7 +23,9 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
  * 
  */
 @Local
-public interface ApplicationAuthenticationService {
+public interface ApplicationAuthenticationService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationAuthenticationServiceBean/local";
 
     /**
      * Authenticates an application given an application certificate. At this point the application certificate already passed the PKI

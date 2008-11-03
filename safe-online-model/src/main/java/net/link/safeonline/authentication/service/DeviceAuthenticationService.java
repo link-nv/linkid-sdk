@@ -12,6 +12,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.entity.pkix.TrustPointEntity;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
@@ -24,7 +25,9 @@ import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
  * 
  */
 @Local
-public interface DeviceAuthenticationService {
+public interface DeviceAuthenticationService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/DeviceAuthenticationServiceBean/local";
 
     /**
      * Authenticates a device given a device certificate. At this point the device certificate already passed the PKI validation.

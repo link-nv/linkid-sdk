@@ -10,8 +10,12 @@ package net.link.safeonline.oper.audit;
 import javax.ejb.Local;
 
 
+import net.link.safeonline.SafeOnlineService;
+
 @Local
-public interface AuditPrincipal {
+public interface AuditPrincipal extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AuditPrincipalBean/local";
 
     /*
      * Accessors

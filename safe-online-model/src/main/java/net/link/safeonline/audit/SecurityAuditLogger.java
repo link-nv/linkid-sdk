@@ -9,11 +9,14 @@ package net.link.safeonline.audit;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.entity.audit.SecurityThreatType;
 
 
 @Local
-public interface SecurityAuditLogger {
+public interface SecurityAuditLogger extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/SecurityAuditLoggerBean/local";
 
     void addSecurityAudit(SecurityThreatType securityThreat, String message);
 

@@ -10,8 +10,12 @@ package net.link.safeonline.demo.prescription;
 import javax.ejb.Local;
 
 
+import net.link.safeonline.SafeOnlineService;
+
 @Local
-public interface PrescriptionPatient {
+public interface PrescriptionPatient extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/PrescriptionPatientBean/local";
 
     /*
      * Lifecycle.

@@ -11,12 +11,15 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
 
 
 @Local
-public interface ConfigurationService {
+public interface ConfigurationService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ConfigurationServiceBean/local";
 
     List<ConfigGroupEntity> listConfigGroups();
 

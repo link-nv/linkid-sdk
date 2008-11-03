@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.AttributeTypeDefinitionException;
 import net.link.safeonline.authentication.exception.AttributeTypeDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
@@ -22,7 +23,9 @@ import net.link.safeonline.entity.DatatypeType;
 
 
 @Local
-public interface AttributeTypeService {
+public interface AttributeTypeService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AttributeTypeServiceBean/local";
 
     /**
      * Lists all attributes types within the system. This includes primitive attribute types, multi-valued attribute types and compounded

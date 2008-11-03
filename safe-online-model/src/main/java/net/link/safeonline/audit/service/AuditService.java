@@ -13,6 +13,7 @@ import java.util.Set;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.audit.exception.AuditContextNotFoundException;
 import net.link.safeonline.entity.audit.AccessAuditEntity;
 import net.link.safeonline.entity.audit.AuditAuditEntity;
@@ -22,7 +23,9 @@ import net.link.safeonline.entity.audit.SecurityAuditEntity;
 
 
 @Local
-public interface AuditService {
+public interface AuditService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AuditServiceBean/local";
 
     Set<String> listUsers();
 

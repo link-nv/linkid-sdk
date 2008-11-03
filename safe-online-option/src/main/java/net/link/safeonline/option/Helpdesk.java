@@ -9,9 +9,10 @@ package net.link.safeonline.option;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.helpdesk.HelpdeskBase;
 
 
 @Local
-public interface Helpdesk extends HelpdeskBase {
+public interface Helpdesk extends SafeOnlineService, HelpdeskBase {
 }

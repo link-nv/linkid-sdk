@@ -9,12 +9,15 @@ package net.link.safeonline.authentication.service;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 
 
 @Local
-public interface UserIdMappingService {
+public interface UserIdMappingService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/UserIdMappingServiceBean/local";
 
     /**
      * Returns the application specific user id as specified in the application's id scope.

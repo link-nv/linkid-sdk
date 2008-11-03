@@ -9,13 +9,16 @@ package net.link.safeonline.pkix.dao;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.entity.pkix.CachedOcspResponseEntity;
 import net.link.safeonline.entity.pkix.CachedOcspResultType;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 
 
 @Local
-public interface CachedOcspResponseDAO {
+public interface CachedOcspResponseDAO extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/CachedOcspResponseDAOBean/local";
 
     CachedOcspResponseEntity findCachedOcspResponse(String key);
 

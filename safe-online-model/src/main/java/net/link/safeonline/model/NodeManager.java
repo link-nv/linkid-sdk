@@ -9,6 +9,7 @@ package net.link.safeonline.model;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.entity.NodeEntity;
 
 
@@ -19,7 +20,9 @@ import net.link.safeonline.entity.NodeEntity;
  * 
  */
 @Local
-public interface NodeManager {
+public interface NodeManager extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/NodeManagerBean/local";
 
     /**
      * Gives back the caller node. Calling this method only makes sense in the context of a node login (via a node web service).

@@ -9,11 +9,14 @@ package net.link.safeonline.user;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 
 
 @Local
-public interface AttributeEdit {
+public interface AttributeEdit extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AttributeEditBean/local";
 
     /*
      * Lifecycle.

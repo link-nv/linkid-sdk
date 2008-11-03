@@ -10,8 +10,10 @@ package net.link.safeonline.demo.payment;
 import javax.ejb.Local;
 
 
+import net.link.safeonline.SafeOnlineService;
+
 @Local
-public interface PaymentServiceProcess extends AbstractPaymentDataClient {
+public interface PaymentServiceProcess extends SafeOnlineService, AbstractPaymentDataClient {
 
     /*
      * Actions.

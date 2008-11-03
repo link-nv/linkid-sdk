@@ -9,6 +9,7 @@ package net.link.safeonline.model;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.entity.SubjectEntity;
 
 
@@ -19,7 +20,9 @@ import net.link.safeonline.entity.SubjectEntity;
  * 
  */
 @Local
-public interface SubjectManager {
+public interface SubjectManager extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/SubjectManagerBean/local";
 
     /**
      * Gives back the subject entity corresponding with the SafeOnline core security domain caller principal.

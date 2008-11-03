@@ -11,12 +11,15 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.audit.exception.AuditContextNotFoundException;
 import net.link.safeonline.entity.audit.AuditContextEntity;
 
 
 @Local
-public interface AuditContextDAO {
+public interface AuditContextDAO extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AuditContextDAOBean/local";
 
     AuditContextEntity createAuditContext();
 

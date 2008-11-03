@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
@@ -19,7 +20,9 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 
 
 @Local
-public interface ApplicationIdentityDAO {
+public interface ApplicationIdentityDAO extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationIdentityDAOBean/local";
 
     ApplicationIdentityEntity addApplicationIdentity(ApplicationEntity application, long identityVersion);
 

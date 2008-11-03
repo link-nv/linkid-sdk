@@ -12,6 +12,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
@@ -30,7 +31,9 @@ import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
  * 
  */
 @Local
-public interface PkiProvider {
+public interface PkiProvider extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/PkiProviderBean/local";
 
     public static String PKI_PROVIDER_JNDI = "SafeOnline/pkix";
 

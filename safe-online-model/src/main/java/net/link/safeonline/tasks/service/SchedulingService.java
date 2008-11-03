@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.ExistingSchedulingException;
 import net.link.safeonline.authentication.exception.InvalidCronExpressionException;
 import net.link.safeonline.entity.tasks.SchedulingEntity;
@@ -19,7 +20,9 @@ import net.link.safeonline.entity.tasks.TaskHistoryEntity;
 
 
 @Local
-public interface SchedulingService {
+public interface SchedulingService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/SchedulingServiceBean/local";
 
     List<TaskEntity> listTaskList();
 

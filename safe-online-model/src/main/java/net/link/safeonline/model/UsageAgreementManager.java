@@ -9,12 +9,15 @@ package net.link.safeonline.model;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.UsageAgreementNotFoundException;
 import net.link.safeonline.entity.ApplicationEntity;
 
 
 @Local
-public interface UsageAgreementManager {
+public interface UsageAgreementManager extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/UsageAgreementManagerBean/local";
 
     /**
      * This commits the current draft usage agreement for the specified application to a new usage agreement version. And updates the

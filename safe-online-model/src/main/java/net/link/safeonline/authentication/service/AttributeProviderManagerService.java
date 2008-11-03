@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeProviderNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
@@ -20,7 +21,9 @@ import net.link.safeonline.entity.AttributeProviderEntity;
 
 
 @Local
-public interface AttributeProviderManagerService {
+public interface AttributeProviderManagerService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AttributeProviderManagerServiceBean/local";
 
     List<AttributeProviderEntity> getAttributeProviders(String attributeName) throws AttributeTypeNotFoundException;
 

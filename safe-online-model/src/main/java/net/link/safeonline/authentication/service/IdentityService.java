@@ -12,6 +12,7 @@ import java.util.Locale;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
@@ -32,7 +33,9 @@ import net.link.safeonline.entity.SubjectEntity;
  * 
  */
 @Local
-public interface IdentityService {
+public interface IdentityService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/IdentityServiceBean/local";
 
     /**
      * Gives back the authentication history of the user linked to the caller principal.

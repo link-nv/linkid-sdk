@@ -14,6 +14,7 @@ import java.util.Set;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationOwnerNotFoundException;
@@ -38,7 +39,9 @@ import net.link.safeonline.pkix.exception.CertificateEncodingException;
  * 
  */
 @Local
-public interface ApplicationService {
+public interface ApplicationService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationServiceBean/local";
 
     /**
      * Gives back all available applications.

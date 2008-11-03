@@ -11,6 +11,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.entity.SubjectEntity;
 
@@ -22,7 +23,9 @@ import net.link.safeonline.entity.SubjectEntity;
  * 
  */
 @Local
-public interface SubjectDAO {
+public interface SubjectDAO extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/SubjectDAOBean/local";
 
     /**
      * Finds the subject for a given user ID. Returns <code>null</code> if the entity could not be found.

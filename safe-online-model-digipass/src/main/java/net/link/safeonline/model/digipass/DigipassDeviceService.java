@@ -11,6 +11,7 @@ import java.util.Locale;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
@@ -22,7 +23,9 @@ import net.link.safeonline.data.AttributeDO;
 
 
 @Local
-public interface DigipassDeviceService {
+public interface DigipassDeviceService extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/DigipassDeviceServiceBean/local";
 
     String authenticate(String loginName, String token) throws SubjectNotFoundException, PermissionDeniedException,
                                                        DeviceNotFoundException, DeviceDisabledException;

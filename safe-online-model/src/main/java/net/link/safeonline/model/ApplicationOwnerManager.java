@@ -9,12 +9,15 @@ package net.link.safeonline.model;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.ApplicationOwnerNotFoundException;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 
 
 @Local
-public interface ApplicationOwnerManager {
+public interface ApplicationOwnerManager extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationOwnerManagerBean/local";
 
     ApplicationOwnerEntity getCallerApplicationOwner() throws ApplicationOwnerNotFoundException;
 }

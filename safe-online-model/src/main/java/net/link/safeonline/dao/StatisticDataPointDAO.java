@@ -12,12 +12,15 @@ import java.util.List;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
 
 
 @Local
-public interface StatisticDataPointDAO {
+public interface StatisticDataPointDAO extends SafeOnlineService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/StatisticDataPointDAOBean/local";
 
     StatisticDataPointEntity addStatisticDataPoint(String name, StatisticEntity statistic, long x, long y, long z);
 
