@@ -2486,10 +2486,10 @@
 						WSS4J uses discontinued OpenSAML 1.1
 					-->
 					<!-- FIXME: See SOS-274 -->
-                    <exclusion>
+                    <!-->exclusion>
                         <groupId>opensaml</groupId>
                         <artifactId>opensaml</artifactId>
-                    </exclusion>
+                    </exclusion-->
 				</exclusions>
 			</dependency>
 			<dependency>
