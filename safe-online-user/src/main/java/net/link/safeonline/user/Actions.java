@@ -9,15 +9,15 @@ package net.link.safeonline.user;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.SafeOnlineService;
+import net.link.safeonline.user.UserConstants;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.notification.exception.MessageHandlerNotFoundException;
 
 
 @Local
-public interface Actions extends SafeOnlineService {
+public interface Actions {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ActionsBean/local";
+    public static final String JNDI_BINDING = UserConstants.JNDI_PREFIX + "ActionsBean/local";
 
     /*
      * Actions.

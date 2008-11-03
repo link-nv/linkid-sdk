@@ -47,7 +47,7 @@ import org.jboss.seam.faces.FacesMessages;
 
 @Stateful
 @Name("missingAttributes")
-@LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX + "MissingAttributesBean/local")
+@LocalBinding(jndiBinding = MissingAttributes.JNDI_BINDING)
 @SecurityDomain(AuthenticationConstants.SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class MissingAttributesBean implements MissingAttributes {

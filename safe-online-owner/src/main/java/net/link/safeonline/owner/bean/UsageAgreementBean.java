@@ -44,7 +44,7 @@ import org.jboss.seam.faces.FacesMessages;
 
 @Stateful
 @Name("ownerUsageAgreement")
-@LocalBinding(jndiBinding = OwnerConstants.JNDI_PREFIX + "UsageAgreementBean/local")
+@LocalBinding(jndiBinding = UsageAgreement.JNDI_BINDING)
 @SecurityDomain(OwnerConstants.SAFE_ONLINE_OWNER_SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class UsageAgreementBean implements UsageAgreement {

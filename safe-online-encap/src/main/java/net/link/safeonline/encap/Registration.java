@@ -12,7 +12,7 @@ import java.net.MalformedURLException;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.SafeOnlineService;
+import net.link.safeonline.encap.EncapConstants;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
@@ -20,9 +20,9 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 
 
 @Local
-public interface Registration extends SafeOnlineService {
+public interface Registration {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/RegistrationBean/local";
+    public static final String JNDI_BINDING = EncapConstants.JNDI_PREFIX + "RegistrationBean/local";
 
     /*
      * Accessors.

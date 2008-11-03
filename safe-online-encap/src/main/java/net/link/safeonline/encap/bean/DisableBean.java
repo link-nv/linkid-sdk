@@ -52,7 +52,7 @@ import org.jboss.seam.log.Log;
 
 @Stateful
 @Name("encapDisable")
-@LocalBinding(jndiBinding = EncapConstants.JNDI_PREFIX + "DisableBean/local")
+@LocalBinding(jndiBinding = Disable.JNDI_BINDING)
 @Interceptors(ErrorMessageInterceptor.class)
 public class DisableBean implements Disable {
 

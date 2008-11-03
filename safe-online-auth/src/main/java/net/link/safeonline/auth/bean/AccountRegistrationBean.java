@@ -54,7 +54,7 @@ import org.jboss.seam.log.Log;
 
 @Stateful
 @Name("accountRegistration")
-@LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX + "AccountRegistrationBean/local")
+@LocalBinding(jndiBinding = AccountRegistration.JNDI_BINDING)
 @Interceptors(ErrorMessageInterceptor.class)
 public class AccountRegistrationBean extends AbstractLoginBean implements AccountRegistration {
 

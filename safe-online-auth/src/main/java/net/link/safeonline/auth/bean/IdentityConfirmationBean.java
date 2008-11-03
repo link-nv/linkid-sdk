@@ -46,7 +46,7 @@ import org.jboss.seam.faces.FacesMessages;
 
 @Stateful
 @Name("identityConfirmation")
-@LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX + "IdentityConfirmationBean/local")
+@LocalBinding(jndiBinding = IdentityConfirmation.JNDI_BINDING)
 @SecurityDomain(AuthenticationConstants.SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class IdentityConfirmationBean extends AbstractExitBean implements IdentityConfirmation {

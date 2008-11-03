@@ -50,7 +50,7 @@ import org.jboss.seam.log.Log;
 
 @Stateful
 @Name("device")
-@LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX + "DeviceBean/local")
+@LocalBinding(jndiBinding = Device.JNDI_BINDING)
 @Interceptors(ErrorMessageInterceptor.class)
 public class DeviceBean implements Device {
 

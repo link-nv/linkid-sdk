@@ -28,7 +28,7 @@ import org.jboss.seam.log.Log;
 @Name("ticketLogon")
 @Scope(ScopeType.SESSION)
 @CacheConfig(idleTimeoutSeconds = (5 + 1) * 60)
-@LocalBinding(jndiBinding = "SafeOnlineTicketDemo/TicketLogonBean/local")
+@LocalBinding(jndiBinding = TicketLogon.JNDI_BINDING)
 public class TicketLogonBean extends AbstractTicketDataClientBean implements TicketLogon {
 
     public static final String APPLICATION_NAME = "safe-online-demo-ticket";

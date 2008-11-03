@@ -10,12 +10,12 @@ package net.link.safeonline.oper;
 import javax.ejb.Local;
 
 
-import net.link.safeonline.SafeOnlineService;
+import net.link.safeonline.oper.OperatorConstants;
 
 @Local
-public interface Configuration extends SafeOnlineService {
+public interface Configuration {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ConfigurationBean/local";
+    public static final String JNDI_BINDING = OperatorConstants.JNDI_PREFIX + "ConfigurationBean/local";
 
     /*
      * Factories.

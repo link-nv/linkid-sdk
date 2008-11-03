@@ -13,7 +13,7 @@ import java.util.List;
 import javax.ejb.Local;
 import javax.faces.model.SelectItem;
 
-import net.link.safeonline.SafeOnlineService;
+import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
 
@@ -21,9 +21,9 @@ import org.apache.myfaces.custom.fileupload.UploadedFile;
 
 
 @Local
-public interface Node extends SafeOnlineService {
+public interface Node {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/NodeBean/local";
+    public static final String JNDI_BINDING = OperatorConstants.JNDI_PREFIX + "NodeBean/local";
 
     /*
      * Factory

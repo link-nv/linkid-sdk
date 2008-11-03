@@ -37,6 +37,6 @@ import org.jboss.seam.annotations.Scope;
 @Name("ownerLogin")
 @Scope(ScopeType.SESSION)
 @CacheConfig(idleTimeoutSeconds = (5 + 1) * 60)
-@LocalBinding(jndiBinding = OwnerConstants.JNDI_PREFIX + "LoginBean/local")
+@LocalBinding(jndiBinding = Login.JNDI_BINDING)
 public class LoginBean extends LoginBaseBean implements Login {
 }

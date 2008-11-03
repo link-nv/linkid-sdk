@@ -5,7 +5,7 @@ import java.net.MalformedURLException;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.SafeOnlineService;
+import net.link.safeonline.encap.EncapConstants;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.MobileAuthenticationException;
@@ -13,9 +13,9 @@ import net.link.safeonline.authentication.exception.MobileException;
 
 
 @Local
-public interface Authentication extends SafeOnlineService {
+public interface Authentication {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AuthenticationBean/local";
+    public static final String JNDI_BINDING = EncapConstants.JNDI_PREFIX + "AuthenticationBean/local";
 
     /*
      * Accessors.

@@ -22,7 +22,7 @@ import org.jboss.seam.annotations.Name;
 
 @Stateful
 @Name("timeout")
-@LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX + "TimeoutBean/local")
+@LocalBinding(jndiBinding = Timeout.JNDI_BINDING)
 @Interceptors(ErrorMessageInterceptor.class)
 public class TimeoutBean extends AbstractExitBean implements Timeout {
 

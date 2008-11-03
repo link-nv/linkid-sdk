@@ -12,7 +12,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.SafeOnlineService;
+import net.link.safeonline.digipass.DigipassConstants;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -20,9 +20,9 @@ import net.link.safeonline.data.DeviceRegistrationDO;
 
 
 @Local
-public interface Disable extends SafeOnlineService {
+public interface Disable {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/DisableBean/local";
+    public static final String JNDI_BINDING = DigipassConstants.JNDI_PREFIX + "DisableBean/local";
 
     /*
      * Accessors.

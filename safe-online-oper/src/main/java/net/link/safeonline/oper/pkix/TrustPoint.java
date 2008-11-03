@@ -11,7 +11,7 @@ import java.io.IOException;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.SafeOnlineService;
+import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
 import net.link.safeonline.pkix.exception.ExistingTrustPointException;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
@@ -22,9 +22,9 @@ import org.apache.myfaces.custom.tree2.TreeModel;
 
 
 @Local
-public interface TrustPoint extends SafeOnlineService {
+public interface TrustPoint {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/TrustPointBean/local";
+    public static final String JNDI_BINDING = OperatorConstants.JNDI_PREFIX + "TrustPointBean/local";
 
     /*
      * Lifecycle.

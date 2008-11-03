@@ -23,7 +23,7 @@ import org.jboss.seam.log.Log;
 
 @Stateful
 @Name("customerSearch")
-@LocalBinding(jndiBinding = "SafeOnlinePaymentDemo/CustomerSearchBean/local")
+@LocalBinding(jndiBinding = CustomerSearch.JNDI_BINDING)
 public class CustomerSearchBean extends AbstractPaymentDataClientBean implements CustomerSearch {
 
     @Logger

@@ -45,7 +45,7 @@ import org.jboss.seam.log.Log;
 
 @Stateless
 @Name("authSubscription")
-@LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX + "AuthenticationSubscriptionBean/local")
+@LocalBinding(jndiBinding = AuthenticationSubscription.JNDI_BINDING)
 @SecurityDomain(AuthenticationConstants.SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class AuthenticationSubscriptionBean extends AbstractExitBean implements AuthenticationSubscription {

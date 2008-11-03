@@ -9,16 +9,16 @@ package net.link.safeonline.oper.pkix;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.SafeOnlineService;
+import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.pkix.exception.ExistingTrustDomainException;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
 
 @Local
-public interface TrustDomain extends SafeOnlineService {
+public interface TrustDomain {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/TrustDomainBean/local";
+    public static final String JNDI_BINDING = OperatorConstants.JNDI_PREFIX + "TrustDomainBean/local";
 
     /*
      * Factories.

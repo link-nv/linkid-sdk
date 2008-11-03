@@ -14,12 +14,12 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
 
-import net.link.safeonline.SafeOnlineService;
+import net.link.safeonline.helpdesk.HelpdeskConstants;
 
 @Local
-public interface HelpdeskLog extends SafeOnlineService {
+public interface HelpdeskLog {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/HelpdeskLogBean/local";
+    public static final String JNDI_BINDING = HelpdeskConstants.JNDI_PREFIX + "HelpdeskLogBean/local";
 
     /*
      * Factories.

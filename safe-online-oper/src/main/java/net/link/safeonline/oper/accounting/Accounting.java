@@ -11,14 +11,14 @@ import java.io.IOException;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.SafeOnlineService;
+import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 
 
 @Local
-public interface Accounting extends SafeOnlineService {
+public interface Accounting {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AccountingBean/local";
+    public static final String JNDI_BINDING = OperatorConstants.JNDI_PREFIX + "AccountingBean/local";
 
     /*
      * Accessors.

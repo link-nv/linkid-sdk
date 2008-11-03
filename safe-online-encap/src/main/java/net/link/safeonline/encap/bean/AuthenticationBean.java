@@ -48,7 +48,7 @@ import org.jboss.seam.faces.FacesMessages;
 
 @Stateful
 @Name("authentication")
-@LocalBinding(jndiBinding = EncapConstants.JNDI_PREFIX + "AuthenticationBean/local")
+@LocalBinding(jndiBinding = Authentication.JNDI_BINDING)
 @Interceptors(ErrorMessageInterceptor.class)
 public class AuthenticationBean implements Authentication {
 

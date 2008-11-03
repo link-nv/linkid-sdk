@@ -56,7 +56,7 @@ import org.osgi.framework.Constants;
  * @author wvdhaute
  */
 @Stateless
-@LocalBinding(jndiBinding = Startable.JNDI_PREFIX + "OSGIStartableBean")
+@LocalBinding(jndiBinding = OSGIStartable.JNDI_BINDING)
 @Interceptors( { AuditContextManager.class, ResourceAuditLoggerInterceptor.class })
 public class OSGIStartableBean implements OSGIStartable {
 

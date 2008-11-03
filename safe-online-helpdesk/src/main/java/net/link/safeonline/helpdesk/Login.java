@@ -9,10 +9,11 @@ package net.link.safeonline.helpdesk;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.SafeOnlineService;
+import net.link.safeonline.helpdesk.HelpdeskConstants;
 import net.link.safeonline.ctrl.LoginBase;
 
 
 @Local
-public interface Login extends SafeOnlineService, LoginBase {
+public interface Login extends LoginBase {
+    public static final String JNDI_BINDING = HelpdeskConstants.JNDI_PREFIX + "LoginBean/local";
 }

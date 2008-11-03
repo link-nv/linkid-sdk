@@ -49,7 +49,7 @@ import org.jboss.seam.log.Log;
 
 @Stateful
 @Name("deviceRegistration")
-@LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX + "DeviceRegistrationBean/local")
+@LocalBinding(jndiBinding = DeviceRegistration.JNDI_BINDING)
 @SecurityDomain(AuthenticationConstants.SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class DeviceRegistrationBean extends AbstractLoginBean implements DeviceRegistration {

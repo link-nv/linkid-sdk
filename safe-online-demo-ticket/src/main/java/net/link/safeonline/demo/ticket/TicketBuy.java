@@ -13,12 +13,12 @@ import javax.ejb.Local;
 import javax.faces.model.SelectItem;
 
 
-import net.link.safeonline.SafeOnlineService;
+
 
 @Local
-public interface TicketBuy extends SafeOnlineService {
+public interface TicketBuy {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/TicketBuyBean/local";
+    public static final String JNDI_BINDING = "SafeOnlineTicketDemo/TicketBuyBean/local";
 
     /*
      * Field accessors.

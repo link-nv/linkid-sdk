@@ -30,7 +30,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
-@LocalBinding(jndiBinding = Startable.JNDI_PREFIX + "ConfigStartableBean")
+@LocalBinding(jndiBinding = ConfigStartable.JNDI_BINDING)
 public class ConfigStartableBean implements ConfigStartable {
 
     private static final Log LOG = LogFactory.getLog(ConfigStartableBean.class);

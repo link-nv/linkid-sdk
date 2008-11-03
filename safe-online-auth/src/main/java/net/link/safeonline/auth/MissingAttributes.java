@@ -9,7 +9,7 @@ package net.link.safeonline.auth;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.SafeOnlineService;
+import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
@@ -18,9 +18,9 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 
 
 @Local
-public interface MissingAttributes extends SafeOnlineService {
+public interface MissingAttributes {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/MissingAttributesBean/local";
+    public static final String JNDI_BINDING = AuthenticationConstants.JNDI_PREFIX + "MissingAttributesBean/local";
 
     /*
      * Factories.

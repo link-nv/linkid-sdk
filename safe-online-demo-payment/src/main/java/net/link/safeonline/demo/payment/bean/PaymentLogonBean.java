@@ -28,7 +28,7 @@ import org.jboss.seam.log.Log;
 @Name("paymentLogon")
 @Scope(ScopeType.SESSION)
 @CacheConfig(idleTimeoutSeconds = (5 + 1) * 60)
-@LocalBinding(jndiBinding = "SafeOnlinePaymentDemo/PaymentLogonBean/local")
+@LocalBinding(jndiBinding = PaymentLogon.JNDI_BINDING)
 public class PaymentLogonBean extends AbstractPaymentDataClientBean implements PaymentLogon {
 
     public static final String APPLICATION_NAME = "safe-online-demo-payment";

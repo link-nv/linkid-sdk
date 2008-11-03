@@ -35,7 +35,7 @@ import org.jboss.seam.web.Session;
 
 @Stateful
 @Name("paymentServiceProcess")
-@LocalBinding(jndiBinding = "SafeOnlinePaymentDemo/PaymentServiceProcessBean/local")
+@LocalBinding(jndiBinding = PaymentServiceProcess.JNDI_BINDING)
 public class PaymentServiceProcessBean extends AbstractPaymentDataClientBean implements PaymentServiceProcess {
 
     @Logger

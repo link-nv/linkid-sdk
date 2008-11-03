@@ -25,7 +25,7 @@ import org.jboss.seam.log.Log;
 
 @Stateful
 @Name("prescriptionLogon")
-@LocalBinding(jndiBinding = "SafeOnlinePrescriptionDemo/PrescriptionLogonBean/local")
+@LocalBinding(jndiBinding = PrescriptionLogon.JNDI_BINDING)
 public class PrescriptionLogonBean extends AbstractPrescriptionDataClientBean implements PrescriptionLogon {
 
     @Logger

@@ -49,7 +49,7 @@ import org.jboss.seam.faces.FacesMessages;
 
 @Stateful
 @Name("identityBean")
-@LocalBinding(jndiBinding = UserConstants.JNDI_PREFIX + "IdentityBean/local")
+@LocalBinding(jndiBinding = Identity.JNDI_BINDING)
 @SecurityDomain(UserConstants.SAFE_ONLINE_USER_SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class IdentityBean implements Identity {

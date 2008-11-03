@@ -12,7 +12,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.SafeOnlineService;
+import net.link.safeonline.user.UserConstants;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -21,9 +21,9 @@ import net.link.safeonline.data.DeviceRegistrationDO;
 
 
 @Local
-public interface Devices extends SafeOnlineService {
+public interface Devices {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/DevicesBean/local";
+    public static final String JNDI_BINDING = UserConstants.JNDI_PREFIX + "DevicesBean/local";
 
     /*
      * Accessors.

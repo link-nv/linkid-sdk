@@ -28,7 +28,7 @@ import org.jboss.seam.log.Log;
 
 @Stateful
 @Name("customerEdit")
-@LocalBinding(jndiBinding = "SafeOnlinePaymentDemo/CustomerEditBean/local")
+@LocalBinding(jndiBinding = CustomerEdit.JNDI_BINDING)
 public class CustomerEditBean extends AbstractPaymentDataClientBean implements CustomerEdit {
 
     @Logger

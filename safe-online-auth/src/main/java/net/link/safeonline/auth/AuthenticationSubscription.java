@@ -9,7 +9,7 @@ package net.link.safeonline.auth;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.SafeOnlineService;
+import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.authentication.exception.AlreadySubscribedException;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
@@ -20,9 +20,9 @@ import net.link.safeonline.authentication.exception.SubscriptionNotFoundExceptio
 
 
 @Local
-public interface AuthenticationSubscription extends SafeOnlineService {
+public interface AuthenticationSubscription {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AuthenticationSubscriptionBean/local";
+    public static final String JNDI_BINDING = AuthenticationConstants.JNDI_PREFIX + "AuthenticationSubscriptionBean/local";
 
     /*
      * Actions.

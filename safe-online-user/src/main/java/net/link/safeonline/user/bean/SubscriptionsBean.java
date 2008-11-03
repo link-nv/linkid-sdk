@@ -50,7 +50,7 @@ import org.jboss.seam.faces.FacesMessages;
 
 @Stateful
 @Name("subscriptions")
-@LocalBinding(jndiBinding = UserConstants.JNDI_PREFIX + "SubscriptionsBean/local")
+@LocalBinding(jndiBinding = Subscriptions.JNDI_BINDING)
 @SecurityDomain(UserConstants.SAFE_ONLINE_USER_SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class SubscriptionsBean implements Subscriptions {

@@ -11,14 +11,14 @@ import java.io.IOException;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.SafeOnlineService;
+import net.link.safeonline.owner.OwnerConstants;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 
 
 @Local
-public interface Charts extends SafeOnlineService {
+public interface Charts {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ChartsBean/local";
+    public static final String JNDI_BINDING = OwnerConstants.JNDI_PREFIX + "ChartsBean/local";
 
     /*
      * Factories

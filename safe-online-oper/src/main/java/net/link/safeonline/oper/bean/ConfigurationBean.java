@@ -31,7 +31,7 @@ import org.jboss.seam.faces.FacesMessages;
 
 @Stateful
 @Name("configuration")
-@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX + "ConfigurationBean/local")
+@LocalBinding(jndiBinding = Configuration.JNDI_BINDING)
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 public class ConfigurationBean implements Configuration {
 

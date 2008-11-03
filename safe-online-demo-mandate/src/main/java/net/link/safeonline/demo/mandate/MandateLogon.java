@@ -10,10 +10,11 @@ package net.link.safeonline.demo.mandate;
 import javax.ejb.Local;
 
 
-import net.link.safeonline.SafeOnlineService;
+
 
 @Local
-public interface MandateLogon extends SafeOnlineService, AbstractMandateDataClient {
+public interface MandateLogon extends AbstractMandateDataClient {
+    public static final String JNDI_BINDING = "SafeOnlineMandateDemo/MandateLogonBean/local";
 
     /*
      * Actions.

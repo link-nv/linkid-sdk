@@ -50,7 +50,7 @@ import org.jboss.seam.faces.FacesMessages;
 
 @Name("operNotification")
 @Stateful
-@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX + "NotificationBean/local")
+@LocalBinding(jndiBinding = Notification.JNDI_BINDING)
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class NotificationBean implements Notification {

@@ -12,7 +12,7 @@ import java.util.List;
 import javax.ejb.Local;
 import javax.faces.model.SelectItem;
 
-import net.link.safeonline.SafeOnlineService;
+import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.authentication.exception.AttributeTypeDefinitionException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingAttributeTypeException;
@@ -21,9 +21,9 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 
 
 @Local
-public interface AddAttribute extends SafeOnlineService {
+public interface AddAttribute {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AddAttributeBean/local";
+    public static final String JNDI_BINDING = OperatorConstants.JNDI_PREFIX + "AddAttributeBean/local";
 
     /*
      * Lifecycle.

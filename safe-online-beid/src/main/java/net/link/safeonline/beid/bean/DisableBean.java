@@ -53,7 +53,7 @@ import org.jboss.seam.log.Log;
 
 @Stateful
 @Name("beidDisable")
-@LocalBinding(jndiBinding = BeidConstants.JNDI_PREFIX + "DisableBean/local")
+@LocalBinding(jndiBinding = Disable.JNDI_BINDING)
 @Interceptors(ErrorMessageInterceptor.class)
 public class DisableBean implements Disable {
 

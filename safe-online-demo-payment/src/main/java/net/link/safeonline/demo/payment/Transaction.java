@@ -12,12 +12,13 @@ import java.util.List;
 import javax.ejb.Local;
 import javax.faces.model.SelectItem;
 
-import net.link.safeonline.SafeOnlineService;
+
 import net.link.safeonline.demo.payment.entity.PaymentEntity;
 
 
 @Local
-public interface Transaction extends SafeOnlineService, AbstractPaymentDataClient {
+public interface Transaction extends AbstractPaymentDataClient {
+    public static final String JNDI_BINDING = "SafeOnlinePaymentDemo/TransactionBean/local";
 
     /*
      * Factories.

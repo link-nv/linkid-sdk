@@ -11,14 +11,14 @@ import javax.ejb.Local;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 
-import net.link.safeonline.SafeOnlineService;
+import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.audit.exception.AuditContextNotFoundException;
 
 
 @Local
-public interface AuditSearch extends SafeOnlineService {
+public interface AuditSearch {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AuditSearchBean/local";
+    public static final String JNDI_BINDING = OperatorConstants.JNDI_PREFIX + "AuditSearchBean/local";
 
     /*
      * Accessors

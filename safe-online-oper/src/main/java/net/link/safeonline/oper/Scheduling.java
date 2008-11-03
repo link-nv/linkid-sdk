@@ -13,12 +13,12 @@ import javax.ejb.Local;
 import javax.faces.model.SelectItem;
 
 
-import net.link.safeonline.SafeOnlineService;
+import net.link.safeonline.oper.OperatorConstants;
 
 @Local
-public interface Scheduling extends SafeOnlineService {
+public interface Scheduling {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/SchedulingBean/local";
+    public static final String JNDI_BINDING = OperatorConstants.JNDI_PREFIX + "SchedulingBean/local";
 
     /*
      * Factories.

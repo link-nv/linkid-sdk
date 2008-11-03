@@ -10,10 +10,11 @@ package net.link.safeonline.demo.lawyer;
 import javax.ejb.Local;
 
 
-import net.link.safeonline.SafeOnlineService;
+
 
 @Local
-public interface LawyerSearch extends SafeOnlineService, AbstractLawyerDataClient {
+public interface LawyerSearch extends AbstractLawyerDataClient {
+    public static final String JNDI_BINDING = "SafeOnlineLawyerDemo/LawyerSearchBean/local";
 
     /*
      * Actions.

@@ -35,7 +35,7 @@ import org.jboss.seam.log.Log;
 
 @Stateful
 @Name("mandateSearch")
-@LocalBinding(jndiBinding = "SafeOnlineMandateDemo/MandateSearchBean/local")
+@LocalBinding(jndiBinding = MandateSearch.JNDI_BINDING)
 @SecurityDomain(MandateConstants.SECURITY_DOMAIN)
 public class MandateSearchBean extends AbstractMandateDataClientBean implements MandateSearch {
 

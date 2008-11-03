@@ -44,7 +44,7 @@ import org.jboss.seam.log.Log;
 @Stateful
 @Name("transactionBean")
 @Scope(ScopeType.CONVERSATION)
-@LocalBinding(jndiBinding = "SafeOnlinePaymentDemo/TransactionBean/local")
+@LocalBinding(jndiBinding = Transaction.JNDI_BINDING)
 @SecurityDomain("demo-payment")
 public class TransactionBean extends AbstractPaymentDataClientBean implements Transaction {
 

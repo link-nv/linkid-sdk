@@ -36,7 +36,7 @@ import org.jboss.seam.log.Log;
 
 @Stateless
 @Name("globalAgreementConfirmation")
-@LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX + "GlobalUsageAgreementConfirmationBean/local")
+@LocalBinding(jndiBinding = GlobalUsageAgreementConfirmation.JNDI_BINDING)
 @SecurityDomain(AuthenticationConstants.SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class GlobalUsageAgreementConfirmationBean extends AbstractExitBean implements GlobalUsageAgreementConfirmation {

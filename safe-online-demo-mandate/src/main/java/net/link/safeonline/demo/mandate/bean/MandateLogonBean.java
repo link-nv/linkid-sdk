@@ -23,7 +23,7 @@ import org.jboss.seam.log.Log;
 
 @Stateful
 @Name("mandateLogon")
-@LocalBinding(jndiBinding = "SafeOnlineMandateDemo/MandateLogonBean/local")
+@LocalBinding(jndiBinding = MandateLogon.JNDI_BINDING)
 public class MandateLogonBean extends AbstractMandateDataClientBean implements MandateLogon {
 
     @Logger

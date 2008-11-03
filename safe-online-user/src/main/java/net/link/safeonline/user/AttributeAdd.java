@@ -9,14 +9,14 @@ package net.link.safeonline.user;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.SafeOnlineService;
+import net.link.safeonline.user.UserConstants;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 
 
 @Local
-public interface AttributeAdd extends SafeOnlineService {
+public interface AttributeAdd {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AttributeAddBean/local";
+    public static final String JNDI_BINDING = UserConstants.JNDI_PREFIX + "AttributeAddBean/local";
 
     /*
      * Lifecycle.

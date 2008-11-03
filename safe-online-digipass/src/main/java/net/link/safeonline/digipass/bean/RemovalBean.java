@@ -45,7 +45,7 @@ import org.jboss.seam.log.Log;
 
 @Stateful
 @Name("digipassRemoval")
-@LocalBinding(jndiBinding = DigipassConstants.JNDI_PREFIX + "RemovalBean/local")
+@LocalBinding(jndiBinding = Removal.JNDI_BINDING)
 @Interceptors(ErrorMessageInterceptor.class)
 public class RemovalBean implements Removal {
 

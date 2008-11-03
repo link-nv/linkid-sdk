@@ -67,7 +67,7 @@ import org.jboss.seam.log.Log;
 
 @Stateful
 @Name("userManager")
-@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX + "UserManagementBean/local")
+@LocalBinding(jndiBinding = UserManagement.JNDI_BINDING)
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 @Scope(ScopeType.CONVERSATION)
 @Interceptors(ErrorMessageInterceptor.class)

@@ -40,7 +40,7 @@ import org.jboss.seam.faces.FacesMessages;
 
 @Stateful
 @Name("trustDomain")
-@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX + "TrustDomainBean/local")
+@LocalBinding(jndiBinding = TrustDomain.JNDI_BINDING)
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 public class TrustDomainBean implements TrustDomain {
 

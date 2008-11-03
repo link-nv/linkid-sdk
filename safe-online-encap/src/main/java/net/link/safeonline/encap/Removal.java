@@ -13,7 +13,7 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.SafeOnlineService;
+import net.link.safeonline.encap.EncapConstants;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.MobileException;
@@ -22,9 +22,9 @@ import net.link.safeonline.data.AttributeDO;
 
 
 @Local
-public interface Removal extends SafeOnlineService {
+public interface Removal {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/RemovalBean/local";
+    public static final String JNDI_BINDING = EncapConstants.JNDI_PREFIX + "RemovalBean/local";
 
     /*
      * Accessors.

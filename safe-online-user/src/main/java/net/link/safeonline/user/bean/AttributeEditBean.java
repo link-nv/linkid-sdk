@@ -38,7 +38,7 @@ import org.jboss.seam.faces.FacesMessages;
 
 @Stateful
 @Name("attributeEdit")
-@LocalBinding(jndiBinding = UserConstants.JNDI_PREFIX + "AttributeEditBean/local")
+@LocalBinding(jndiBinding = AttributeEdit.JNDI_BINDING)
 @SecurityDomain(UserConstants.SAFE_ONLINE_USER_SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class AttributeEditBean implements AttributeEdit {

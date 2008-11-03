@@ -44,7 +44,7 @@ import org.jboss.seam.faces.FacesMessages;
 
 @Stateful
 @Name("attributeDesc")
-@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX + "AttributeDescriptionBean/local")
+@LocalBinding(jndiBinding = AttributeDescription.JNDI_BINDING)
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class AttributeDescriptionBean implements AttributeDescription {

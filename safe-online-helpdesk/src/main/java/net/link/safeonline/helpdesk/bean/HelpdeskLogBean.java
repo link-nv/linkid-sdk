@@ -43,7 +43,7 @@ import org.jboss.seam.faces.FacesMessages;
 
 @Stateful
 @Name("helpdeskLog")
-@LocalBinding(jndiBinding = HelpdeskConstants.JNDI_PREFIX + "HelpdeskLogBean/local")
+@LocalBinding(jndiBinding = HelpdeskLog.JNDI_BINDING)
 @SecurityDomain(HelpdeskConstants.SAFE_ONLINE_HELPDESK_SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class HelpdeskLogBean implements HelpdeskLog {

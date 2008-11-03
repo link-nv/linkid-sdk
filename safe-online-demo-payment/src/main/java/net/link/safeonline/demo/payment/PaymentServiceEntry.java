@@ -10,12 +10,12 @@ package net.link.safeonline.demo.payment;
 import javax.ejb.Local;
 
 
-import net.link.safeonline.SafeOnlineService;
+
 
 @Local
-public interface PaymentServiceEntry extends SafeOnlineService {
+public interface PaymentServiceEntry {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/PaymentServiceEntryBean/local";
+    public static final String JNDI_BINDING = "SafeOnlinePaymentDemo/PaymentServiceEntryBean/local";
 
     /*
      * Actions.

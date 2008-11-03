@@ -64,7 +64,7 @@ import org.jboss.seam.faces.FacesMessages;
 
 @Stateful
 @Name("operDevice")
-@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX + "DeviceBean/local")
+@LocalBinding(jndiBinding = Device.JNDI_BINDING)
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class DeviceBean implements Device {

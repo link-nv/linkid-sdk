@@ -2,7 +2,7 @@ package net.link.safeonline.auth;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.SafeOnlineService;
+import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
@@ -12,9 +12,9 @@ import net.link.safeonline.authentication.exception.SubscriptionNotFoundExceptio
 
 
 @Local
-public interface GlobalUsageAgreementConfirmation extends SafeOnlineService {
+public interface GlobalUsageAgreementConfirmation {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/GlobalUsageAgreementConfirmationBean/local";
+    public static final String JNDI_BINDING = AuthenticationConstants.JNDI_PREFIX + "GlobalUsageAgreementConfirmationBean/local";
 
     /*
      * Actions.

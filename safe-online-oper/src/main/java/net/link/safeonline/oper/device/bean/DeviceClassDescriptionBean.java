@@ -47,7 +47,7 @@ import org.jboss.seam.faces.FacesMessages;
 
 @Stateful
 @Name("deviceClassDesc")
-@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX + "DeviceClassDescriptionBean/local")
+@LocalBinding(jndiBinding = DeviceClassDescription.JNDI_BINDING)
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class DeviceClassDescriptionBean implements DeviceClassDescription {

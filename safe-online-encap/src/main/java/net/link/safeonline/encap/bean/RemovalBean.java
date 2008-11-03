@@ -46,7 +46,7 @@ import org.jboss.seam.log.Log;
 
 @Stateful
 @Name("removal")
-@LocalBinding(jndiBinding = EncapConstants.JNDI_PREFIX + "RemovalBean/local")
+@LocalBinding(jndiBinding = Removal.JNDI_BINDING)
 @Interceptors(ErrorMessageInterceptor.class)
 public class RemovalBean implements Removal {
 

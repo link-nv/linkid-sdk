@@ -33,7 +33,7 @@ import org.jboss.seam.log.Log;
 
 @Stateful
 @Name("paymentOverview")
-@LocalBinding(jndiBinding = "SafeOnlinePaymentDemo/PaymentOverviewBean/local")
+@LocalBinding(jndiBinding = PaymentOverview.JNDI_BINDING)
 @SecurityDomain("demo-payment")
 public class PaymentOverviewBean extends AbstractPaymentDataClientBean implements PaymentOverview {
 

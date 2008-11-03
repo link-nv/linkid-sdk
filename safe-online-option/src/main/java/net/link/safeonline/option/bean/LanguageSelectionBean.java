@@ -12,7 +12,7 @@ import org.jboss.seam.annotations.Name;
 
 @Stateless
 @Name("optionLanguage")
-@LocalBinding(jndiBinding = OptionConstants.JNDI_PREFIX + "LanguageSelectionBean/local")
+@LocalBinding(jndiBinding = LanguageSelection.JNDI_BINDING)
 public class LanguageSelectionBean extends LanguageSelectionBaseBean implements LanguageSelection {
 
 }

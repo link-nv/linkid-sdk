@@ -39,7 +39,7 @@ import org.jboss.seam.log.Log;
 
 @Stateful
 @Name("attributeProvider")
-@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX + "AttributeProviderBean/local")
+@LocalBinding(jndiBinding = AttributeProvider.JNDI_BINDING)
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class AttributeProviderBean implements AttributeProvider {

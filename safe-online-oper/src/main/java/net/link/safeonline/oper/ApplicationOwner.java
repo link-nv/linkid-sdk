@@ -9,7 +9,7 @@ package net.link.safeonline.oper;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.SafeOnlineService;
+import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.authentication.exception.ApplicationOwnerNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingApplicationAdminException;
 import net.link.safeonline.authentication.exception.ExistingApplicationOwnerException;
@@ -19,9 +19,9 @@ import net.link.safeonline.authentication.exception.SubscriptionNotFoundExceptio
 
 
 @Local
-public interface ApplicationOwner extends SafeOnlineService {
+public interface ApplicationOwner {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationOwnerBean/local";
+    public static final String JNDI_BINDING = OperatorConstants.JNDI_PREFIX + "ApplicationOwnerBean/local";
 
     /*
      * Factory.

@@ -46,7 +46,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 @Stateful
 @Name("chart")
-@LocalBinding(jndiBinding = OwnerConstants.JNDI_PREFIX + "ChartsBean/local")
+@LocalBinding(jndiBinding = Charts.JNDI_BINDING)
 @SecurityDomain(OwnerConstants.SAFE_ONLINE_OWNER_SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class ChartsBean implements Charts {

@@ -13,10 +13,11 @@ import javax.ejb.Local;
 import javax.faces.model.SelectItem;
 
 
-import net.link.safeonline.SafeOnlineService;
+
 
 @Local
-public interface PrescriptionCreate extends SafeOnlineService, AbstractPrescriptionDataClient {
+public interface PrescriptionCreate extends AbstractPrescriptionDataClient {
+    public static final String JNDI_BINDING = "SafeOnlinePrescriptionDemo/PrescriptionCreateBean/local";
 
     /*
      * Factory.

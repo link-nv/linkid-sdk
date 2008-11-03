@@ -10,12 +10,12 @@ package net.link.safeonline.auth;
 import javax.ejb.Local;
 
 
-import net.link.safeonline.SafeOnlineService;
+import net.link.safeonline.auth.AuthenticationConstants;
 
 @Local
-public interface Timeout extends SafeOnlineService {
+public interface Timeout {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/TimeoutBean/local";
+    public static final String JNDI_BINDING = AuthenticationConstants.JNDI_PREFIX + "TimeoutBean/local";
 
     /*
      * Accessors.

@@ -39,7 +39,7 @@ import org.jboss.seam.web.Session;
 
 @Stateful
 @Name("actions")
-@LocalBinding(jndiBinding = UserConstants.JNDI_PREFIX + "ActionsBean/local")
+@LocalBinding(jndiBinding = Actions.JNDI_BINDING)
 @SecurityDomain(UserConstants.SAFE_ONLINE_USER_SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class ActionsBean implements Actions {

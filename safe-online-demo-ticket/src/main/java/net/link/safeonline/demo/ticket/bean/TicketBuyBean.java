@@ -52,7 +52,7 @@ import org.joda.time.Period;
 @Stateful
 @Name("ticketBuy")
 @Scope(ScopeType.CONVERSATION)
-@LocalBinding(jndiBinding = "SafeOnlineTicketDemo/TicketBuyBean/local")
+@LocalBinding(jndiBinding = TicketBuy.JNDI_BINDING)
 @SecurityDomain("demo-ticket")
 public class TicketBuyBean extends AbstractTicketDataClientBean implements TicketBuy {
 

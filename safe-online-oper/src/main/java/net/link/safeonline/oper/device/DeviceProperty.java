@@ -9,16 +9,16 @@ package net.link.safeonline.oper.device;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.SafeOnlineService;
+import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePropertyNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingDevicePropertyException;
 
 
 @Local
-public interface DeviceProperty extends SafeOnlineService {
+public interface DeviceProperty {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/DevicePropertyBean/local";
+    public static final String JNDI_BINDING = OperatorConstants.JNDI_PREFIX + "DevicePropertyBean/local";
 
     /*
      * Lifecycle.

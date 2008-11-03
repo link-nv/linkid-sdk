@@ -9,16 +9,16 @@ package net.link.safeonline.oper.attrib;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.SafeOnlineService;
+import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.authentication.exception.AttributeTypeDescriptionNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 
 
 @Local
-public interface Attributes extends SafeOnlineService {
+public interface Attributes {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AttributesBean/local";
+    public static final String JNDI_BINDING = OperatorConstants.JNDI_PREFIX + "AttributesBean/local";
 
     /*
      * Accessors

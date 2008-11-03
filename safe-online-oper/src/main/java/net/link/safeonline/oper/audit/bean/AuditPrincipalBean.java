@@ -32,7 +32,7 @@ import org.jboss.seam.faces.FacesMessages;
 @Stateful
 @Name("audit_principal")
 @Scope(ScopeType.CONVERSATION)
-@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX + "AuditPrincipalBean/local")
+@LocalBinding(jndiBinding = AuditPrincipal.JNDI_BINDING)
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 public class AuditPrincipalBean implements AuditPrincipal {
 

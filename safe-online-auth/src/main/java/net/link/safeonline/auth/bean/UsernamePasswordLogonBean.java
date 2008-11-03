@@ -32,7 +32,7 @@ import org.jboss.seam.annotations.Name;
 
 @Stateful
 @Name("usernamePasswordLogon")
-@LocalBinding(jndiBinding = AuthenticationConstants.JNDI_PREFIX + "UsernamePasswordLogonBean/local")
+@LocalBinding(jndiBinding = UsernamePasswordLogon.JNDI_BINDING)
 public class UsernamePasswordLogonBean extends AbstractLoginBean implements UsernamePasswordLogon {
 
     private static final Log      LOG = LogFactory.getLog(UsernamePasswordLogonBean.class);

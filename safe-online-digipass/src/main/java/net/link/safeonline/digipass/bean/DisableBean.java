@@ -52,7 +52,7 @@ import org.jboss.seam.log.Log;
 
 @Stateful
 @Name("digipassDisable")
-@LocalBinding(jndiBinding = DigipassConstants.JNDI_PREFIX + "DisableBean/local")
+@LocalBinding(jndiBinding = Disable.JNDI_BINDING)
 @Interceptors(ErrorMessageInterceptor.class)
 public class DisableBean implements Disable {
 

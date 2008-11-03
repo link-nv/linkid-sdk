@@ -10,10 +10,11 @@ package net.link.safeonline.demo.payment;
 import javax.ejb.Local;
 
 
-import net.link.safeonline.SafeOnlineService;
+
 
 @Local
-public interface PaymentOverview extends SafeOnlineService, AbstractPaymentDataClient {
+public interface PaymentOverview extends AbstractPaymentDataClient {
+    public static final String JNDI_BINDING = "SafeOnlinePaymentDemo/PaymentOverviewBean/local";
 
     void paymentListFactory();
 }

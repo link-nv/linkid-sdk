@@ -31,7 +31,7 @@ import org.jboss.seam.log.Log;
 
 @Stateful
 @Name("lawyerEdit")
-@LocalBinding(jndiBinding = "SafeOnlineLawyerDemo/LawyerEditBean/local")
+@LocalBinding(jndiBinding = LawyerEdit.JNDI_BINDING)
 @SecurityDomain(LawyerConstants.SECURITY_DOMAIN)
 public class LawyerEditBean extends AbstractLawyerDataClientBean implements LawyerEdit {
 

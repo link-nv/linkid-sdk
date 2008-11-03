@@ -9,14 +9,14 @@ package net.link.safeonline.oper.pkix;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.SafeOnlineService;
+import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
 
 @Local
-public interface EditTrustDomain extends SafeOnlineService {
+public interface EditTrustDomain {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/EditTrustDomainBean/local";
+    public static final String JNDI_BINDING = OperatorConstants.JNDI_PREFIX + "EditTrustDomainBean/local";
 
     /*
      * Lifecycle.

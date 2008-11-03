@@ -23,7 +23,7 @@ import org.jboss.seam.log.Log;
 
 @Stateful
 @Name("lawyerLogon")
-@LocalBinding(jndiBinding = "SafeOnlineLawyerDemo/LawyerLogonBean/local")
+@LocalBinding(jndiBinding = LawyerLogon.JNDI_BINDING)
 public class LawyerLogonBean extends AbstractLawyerDataClientBean implements LawyerLogon {
 
     @Logger

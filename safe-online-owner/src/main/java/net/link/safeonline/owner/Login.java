@@ -9,10 +9,11 @@ package net.link.safeonline.owner;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.SafeOnlineService;
+import net.link.safeonline.owner.OwnerConstants;
 import net.link.safeonline.ctrl.LoginBase;
 
 
 @Local
-public interface Login extends SafeOnlineService, LoginBase {
+public interface Login extends LoginBase {
+    public static final String JNDI_BINDING = OwnerConstants.JNDI_PREFIX + "LoginBean/local";
 }

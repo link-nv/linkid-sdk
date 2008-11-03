@@ -30,7 +30,7 @@ import org.jboss.seam.log.Log;
 
 @Stateful
 @Name("lawyerSearch")
-@LocalBinding(jndiBinding = "SafeOnlineLawyerDemo/LawyerSearchBean/local")
+@LocalBinding(jndiBinding = LawyerSearch.JNDI_BINDING)
 @SecurityDomain(LawyerConstants.SECURITY_DOMAIN)
 public class LawyerSearchBean extends AbstractLawyerDataClientBean implements LawyerSearch {
 

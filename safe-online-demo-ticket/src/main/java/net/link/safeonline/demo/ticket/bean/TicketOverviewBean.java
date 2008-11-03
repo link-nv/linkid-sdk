@@ -34,7 +34,7 @@ import org.jboss.seam.log.Log;
 
 @Stateful
 @Name("ticketOverview")
-@LocalBinding(jndiBinding = "SafeOnlineTicketDemo/TicketOverviewBean/local")
+@LocalBinding(jndiBinding = TicketOverview.JNDI_BINDING)
 @SecurityDomain("demo-ticket")
 public class TicketOverviewBean extends AbstractTicketDataClientBean implements TicketOverview {
 

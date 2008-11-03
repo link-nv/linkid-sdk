@@ -41,7 +41,7 @@ import org.jboss.seam.faces.FacesMessages;
 
 @Stateful
 @Name("digipassAuthentication")
-@LocalBinding(jndiBinding = DigipassConstants.JNDI_PREFIX + "AuthenticationBean/local")
+@LocalBinding(jndiBinding = Authentication.JNDI_BINDING)
 @Interceptors(ErrorMessageInterceptor.class)
 public class AuthenticationBean implements Authentication {
 

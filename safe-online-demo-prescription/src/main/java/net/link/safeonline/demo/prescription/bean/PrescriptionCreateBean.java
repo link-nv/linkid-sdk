@@ -35,7 +35,7 @@ import org.jboss.seam.log.Log;
 
 @Stateful
 @Name("prescriptionCreate")
-@LocalBinding(jndiBinding = "SafeOnlinePrescriptionDemo/PrescriptionCreateBean/local")
+@LocalBinding(jndiBinding = PrescriptionCreate.JNDI_BINDING)
 @SecurityDomain(PrescriptionConstants.SECURITY_DOMAIN)
 public class PrescriptionCreateBean extends AbstractPrescriptionDataClientBean implements PrescriptionCreate {
 

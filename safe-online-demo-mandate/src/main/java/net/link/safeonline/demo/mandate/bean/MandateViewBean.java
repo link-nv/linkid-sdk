@@ -37,7 +37,7 @@ import org.jboss.seam.log.Log;
 
 @Stateful
 @Name("mandateView")
-@LocalBinding(jndiBinding = "SafeOnlineMandateDemo/MandateViewBean/local")
+@LocalBinding(jndiBinding = MandateView.JNDI_BINDING)
 @SecurityDomain(MandateConstants.SECURITY_DOMAIN)
 public class MandateViewBean extends AbstractMandateDataClientBean implements MandateView {
 

@@ -11,14 +11,14 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.SafeOnlineService;
+import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.entity.GlobalUsageAgreementEntity;
 
 
 @Local
-public interface GlobalUsageAgreement extends SafeOnlineService {
+public interface GlobalUsageAgreement {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/GlobalUsageAgreementBean/local";
+    public static final String JNDI_BINDING = OperatorConstants.JNDI_PREFIX + "GlobalUsageAgreementBean/local";
 
     /*
      * Accessors

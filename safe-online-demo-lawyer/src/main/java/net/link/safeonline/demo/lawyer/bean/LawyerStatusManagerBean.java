@@ -26,7 +26,7 @@ import org.jboss.seam.log.Log;
 
 @Stateful
 @Name("lawyerStatusManager")
-@LocalBinding(jndiBinding = "SafeOnlineLawyerDemo/LawyerStatusManagerBean/local")
+@LocalBinding(jndiBinding = LawyerStatusManager.JNDI_BINDING)
 @SecurityDomain(LawyerConstants.SECURITY_DOMAIN)
 public class LawyerStatusManagerBean extends AbstractLawyerDataClientBean implements LawyerStatusManager {
 

@@ -28,7 +28,7 @@ import org.jboss.seam.log.Log;
 
 @Stateful
 @Name("paymentServiceEntry")
-@LocalBinding(jndiBinding = "SafeOnlinePaymentDemo/PaymentServiceEntryBean/local")
+@LocalBinding(jndiBinding = PaymentServiceEntry.JNDI_BINDING)
 public class PaymentServiceEntryBean implements PaymentServiceEntry {
 
     @Logger

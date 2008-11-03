@@ -13,7 +13,7 @@ import java.util.List;
 import javax.ejb.Local;
 import javax.faces.model.SelectItem;
 
-import net.link.safeonline.SafeOnlineService;
+import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeUnavailableException;
@@ -24,9 +24,9 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 
 
 @Local
-public interface AccountRegistration extends SafeOnlineService {
+public interface AccountRegistration {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AccountRegistrationBean/local";
+    public static final String JNDI_BINDING = AuthenticationConstants.JNDI_PREFIX + "AccountRegistrationBean/local";
 
     static final String REQUESTED_USERNAME_ATTRIBUTE = "requestedUsername";
 

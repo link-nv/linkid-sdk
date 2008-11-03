@@ -13,7 +13,7 @@ import java.util.List;
 import javax.ejb.Local;
 import javax.faces.model.SelectItem;
 
-import net.link.safeonline.SafeOnlineService;
+import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
@@ -22,9 +22,9 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 
 
 @Local
-public interface DeviceRegistration extends SafeOnlineService {
+public interface DeviceRegistration {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/DeviceRegistrationBean/local";
+    public static final String JNDI_BINDING = AuthenticationConstants.JNDI_PREFIX + "DeviceRegistrationBean/local";
 
     /*
      * Accessors.

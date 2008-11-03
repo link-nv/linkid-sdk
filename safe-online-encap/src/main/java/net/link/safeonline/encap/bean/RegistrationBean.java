@@ -46,7 +46,7 @@ import org.jboss.seam.log.Log;
 
 @Stateful
 @Name("registration")
-@LocalBinding(jndiBinding = EncapConstants.JNDI_PREFIX + "RegistrationBean/local")
+@LocalBinding(jndiBinding = Registration.JNDI_BINDING)
 @Interceptors(ErrorMessageInterceptor.class)
 public class RegistrationBean implements Registration {
 

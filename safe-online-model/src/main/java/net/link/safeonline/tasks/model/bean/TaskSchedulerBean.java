@@ -42,7 +42,7 @@ import org.quartz.CronTrigger;
 
 
 @Stateless
-@LocalBinding(jndiBinding = Startable.JNDI_PREFIX + "TaskSchedulerBean")
+@LocalBinding(jndiBinding = TaskScheduler.JNDI_BINDING)
 public class TaskSchedulerBean implements TaskScheduler {
 
     private static final Log LOG                   = LogFactory.getLog(TaskSchedulerBean.class);

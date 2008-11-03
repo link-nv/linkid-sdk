@@ -9,7 +9,7 @@ package net.link.safeonline.user;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.SafeOnlineService;
+import net.link.safeonline.user.UserConstants;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
@@ -17,9 +17,9 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 
 
 @Local
-public interface Identity extends SafeOnlineService {
+public interface Identity {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/IdentityBean/local";
+    public static final String JNDI_BINDING = UserConstants.JNDI_PREFIX + "IdentityBean/local";
 
     /*
      * Lifecycle.

@@ -19,6 +19,6 @@ import org.jboss.seam.annotations.Name;
 
 @Stateful
 @Name("beidHelpdesk")
-@LocalBinding(jndiBinding = BeidConstants.JNDI_PREFIX + "HelpdeskBean/local")
+@LocalBinding(jndiBinding = Helpdesk.JNDI_BINDING)
 public class HelpdeskBean extends HelpdeskBaseBean implements Helpdesk {
 }

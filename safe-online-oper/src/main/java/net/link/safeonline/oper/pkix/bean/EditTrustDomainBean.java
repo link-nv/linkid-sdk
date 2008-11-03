@@ -32,7 +32,7 @@ import org.jboss.seam.faces.FacesMessages;
 
 @Stateful
 @Name("editTrustDomain")
-@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX + "EditTrustDomainBean/local")
+@LocalBinding(jndiBinding = EditTrustDomain.JNDI_BINDING)
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 public class EditTrustDomainBean implements EditTrustDomain {
 

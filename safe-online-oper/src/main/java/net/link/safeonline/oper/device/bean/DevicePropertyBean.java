@@ -47,7 +47,7 @@ import org.jboss.seam.faces.FacesMessages;
 
 @Stateful
 @Name("deviceProp")
-@LocalBinding(jndiBinding = OperatorConstants.JNDI_PREFIX + "DevicePropertyBean/local")
+@LocalBinding(jndiBinding = DeviceProperty.JNDI_BINDING)
 @SecurityDomain(OperatorConstants.SAFE_ONLINE_OPER_SECURITY_DOMAIN)
 @Interceptors(ErrorMessageInterceptor.class)
 public class DevicePropertyBean implements DeviceProperty {

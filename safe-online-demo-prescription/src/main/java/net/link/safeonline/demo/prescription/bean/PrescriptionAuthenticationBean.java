@@ -20,7 +20,7 @@ import org.jboss.seam.log.Log;
 
 @Stateless
 @Name("prescriptionAuthentication")
-@LocalBinding(jndiBinding = "SafeOnlinePrescriptionDemo/PrescriptionAuthenticationBean/local")
+@LocalBinding(jndiBinding = PrescriptionAuthentication.JNDI_BINDING)
 public class PrescriptionAuthenticationBean implements PrescriptionAuthentication {
 
     @Logger
