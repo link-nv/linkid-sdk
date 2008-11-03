@@ -11,7 +11,7 @@ import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 
 import junit.framework.TestCase;
-import net.link.safeonline.model.beid.BeIdPkiProvider;
+import net.link.safeonline.model.beid.bean.BeIdPkiProviderBean;
 import net.link.safeonline.test.util.PkiTestUtils;
 
 import org.apache.commons.logging.Log;
@@ -22,7 +22,7 @@ public class BeIdPkiProviderTest extends TestCase {
 
     private static final Log LOG = LogFactory.getLog(BeIdPkiProviderTest.class);
 
-    private BeIdPkiProvider  testedInstance;
+    private BeIdPkiProviderBean  testedInstance;
 
 
     @Override
@@ -30,7 +30,7 @@ public class BeIdPkiProviderTest extends TestCase {
 
         super.setUp();
 
-        this.testedInstance = new BeIdPkiProvider();
+        this.testedInstance = new BeIdPkiProviderBean();
     }
 
     public void testAcceptBeIDCertificate() throws Exception {

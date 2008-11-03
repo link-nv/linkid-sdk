@@ -86,7 +86,7 @@ import net.link.safeonline.model.bean.IdGeneratorBean;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
 import net.link.safeonline.model.bean.UsageAgreementManagerBean;
 import net.link.safeonline.model.beid.bean.BeIdStartableBean;
-import net.link.safeonline.model.demo.DemoStartableBean;
+import net.link.safeonline.model.demo.bean.DemoStartableBean;
 import net.link.safeonline.model.digipass.bean.DigipassStartableBean;
 import net.link.safeonline.model.encap.bean.EncapStartableBean;
 import net.link.safeonline.notification.dao.bean.EndpointReferenceDAOBean;

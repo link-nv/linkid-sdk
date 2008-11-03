@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.model.demo;
+package net.link.safeonline.model.demo.bean;
 
 import java.util.Date;
 
@@ -22,21 +22,22 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
-@LocalBinding(jndiBinding = Task.JNDI_PREFIX + "/" + "DemoTaskBean")
-public class DemoTaskBean implements Task {
+@LocalBinding(jndiBinding = Task.JNDI_PREFIX + "/" + "DemoExplosionTaskBean")
+public class DemoExplosionTaskBean implements Task {
 
-    private static final Log LOG = LogFactory.getLog(DemoTaskBean.class);
+    private static final Log LOG = LogFactory.getLog(DemoExplosionTaskBean.class);
 
 
     public String getName() {
 
-        return "Human readable demo task";
+        return "Explosion demo task";
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void perform() {
 
         Date now = new Date();
-        LOG.debug("Demo task perform: " + now);
+        LOG.debug("Demo explosion task perform: " + now);
+        throw new RuntimeException("explosion");
     }
 }

@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.model.demo;
+package net.link.safeonline.model.demo.bean;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -17,11 +17,9 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.ejb.EJBException;
-import javax.ejb.Local;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
-import net.link.safeonline.Startable;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.demo.bank.keystore.DemoBankKeyStoreUtils;
 import net.link.safeonline.demo.cinema.keystore.DemoCinemaKeyStoreUtils;
@@ -42,6 +40,7 @@ import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.model.bean.AbstractInitBean;
 import net.link.safeonline.model.beid.BeIdConstants;
+import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.model.digipass.DigipassConstants;
 import net.link.safeonline.model.encap.EncapConstants;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;

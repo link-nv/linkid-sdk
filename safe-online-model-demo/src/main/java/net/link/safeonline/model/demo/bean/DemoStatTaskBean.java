@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.model.demo;
+package net.link.safeonline.model.demo.bean;
 
 import java.util.Random;
 

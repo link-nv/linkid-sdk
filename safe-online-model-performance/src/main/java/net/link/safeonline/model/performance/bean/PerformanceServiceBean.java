@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.model.performance;
+package net.link.safeonline.model.performance.bean;
 
 import java.security.PrivateKey;
 import java.security.KeyStore.PrivateKeyEntry;
@@ -14,6 +14,7 @@ import java.security.cert.X509Certificate;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 
+import net.link.safeonline.model.performance.PerformanceService;
 import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
 
 import org.apache.commons.logging.Log;

@@ -29,7 +29,6 @@ import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.model.bean.AbstractInitBean;
 import net.link.safeonline.model.beid.BeIdConstants;
-import net.link.safeonline.model.beid.BeIdPkiProvider;
 import net.link.safeonline.pkix.dao.TrustDomainDAO;
 import net.link.safeonline.pkix.dao.TrustPointDAO;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
@@ -138,11 +137,11 @@ public class BeIdStartableBean extends AbstractInitBean {
     @SuppressWarnings("unchecked")
     public void initTrustDomain() {
 
-        TrustDomainEntity beidTrustDomain = this.trustDomainDAO.findTrustDomain(BeIdPkiProvider.TRUST_DOMAIN_NAME);
+        TrustDomainEntity beidTrustDomain = this.trustDomainDAO.findTrustDomain(BeIdPkiProviderBean.TRUST_DOMAIN_NAME);
         if (null != beidTrustDomain)
             return;
 
-        beidTrustDomain = this.trustDomainDAO.addTrustDomain(BeIdPkiProvider.TRUST_DOMAIN_NAME, true);
+        beidTrustDomain = this.trustDomainDAO.addTrustDomain(BeIdPkiProviderBean.TRUST_DOMAIN_NAME, true);
 
         CertificateFactory certificateFactory;
         try {

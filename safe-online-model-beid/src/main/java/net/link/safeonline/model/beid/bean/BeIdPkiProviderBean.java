@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.model.beid;
+package net.link.safeonline.model.beid.bean;
 
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
@@ -35,6 +35,7 @@ import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
+import net.link.safeonline.model.beid.BeIdConstants;
 import net.link.safeonline.pkix.dao.TrustDomainDAO;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.model.PkiProvider;
@@ -48,13 +49,13 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 @Stateless
 @LocalBinding(jndiBinding = PkiProvider.PKI_PROVIDER_JNDI + "/beid")
-public class BeIdPkiProvider implements PkiProvider {
+public class BeIdPkiProviderBean implements PkiProvider {
 
     public static final String TRUST_DOMAIN_NAME      = "beid";
 
     public static final String IDENTIFIER_DOMAIN_NAME = "beid";
 
-    private static final Log   LOG                    = LogFactory.getLog(BeIdPkiProvider.class);
+    private static final Log   LOG                    = LogFactory.getLog(BeIdPkiProviderBean.class);
 
     @Resource
     private SessionContext     context;

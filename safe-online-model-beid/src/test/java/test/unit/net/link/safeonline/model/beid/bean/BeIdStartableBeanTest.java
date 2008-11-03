@@ -18,7 +18,7 @@ import java.security.cert.X509Certificate;
 
 import junit.framework.TestCase;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
-import net.link.safeonline.model.beid.BeIdPkiProvider;
+import net.link.safeonline.model.beid.bean.BeIdPkiProviderBean;
 import net.link.safeonline.model.beid.bean.BeIdStartableBean;
 import net.link.safeonline.pkix.dao.TrustDomainDAO;
 import net.link.safeonline.pkix.dao.TrustPointDAO;
@@ -89,13 +89,13 @@ public class BeIdStartableBeanTest extends TestCase {
     public void testInitTrustDomain() throws Exception {
 
         // setup
-        TrustDomainEntity trustDomain = new TrustDomainEntity(BeIdPkiProvider.TRUST_DOMAIN_NAME, true);
+        TrustDomainEntity trustDomain = new TrustDomainEntity(BeIdPkiProviderBean.TRUST_DOMAIN_NAME, true);
 
         // stubs
-        expect(this.mockTrustDomainDAO.findTrustDomain(BeIdPkiProvider.TRUST_DOMAIN_NAME)).andStubReturn(null);
+        expect(this.mockTrustDomainDAO.findTrustDomain(BeIdPkiProviderBean.TRUST_DOMAIN_NAME)).andStubReturn(null);
 
         // expectations
-        expect(this.mockTrustDomainDAO.addTrustDomain(BeIdPkiProvider.TRUST_DOMAIN_NAME, true)).andReturn(trustDomain);
+        expect(this.mockTrustDomainDAO.addTrustDomain(BeIdPkiProviderBean.TRUST_DOMAIN_NAME, true)).andReturn(trustDomain);
         this.mockTrustPointDAO.addTrustPoint(EasyMock.eq(trustDomain), (X509Certificate) EasyMock.anyObject());
         expectLastCall().times(1 + 2 + 1 + 15 + 20 + 1 + 1 + 1 + 1 + 1);
 
