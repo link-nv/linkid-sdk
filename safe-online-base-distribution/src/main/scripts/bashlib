@@ -551,7 +551,7 @@ ask() {
         local reply
         while read -s -n1 && [[ $REPLY ]]; do
             reply+=$REPLY
-            printf "%s" "$muteChar"
+            printf "%s" "$muteChar"                                 >&$fd
         done
         REPLY=$reply
     else

@@ -7,12 +7,16 @@
 
 package net.link.safeonline;
 
+import javax.ejb.Local;
+
+
 /**
  * Components implementing this interface can be notified during application startup and shutdown.
  * 
  * @author fcorneli
  * 
  */
+@Local
 public interface Startable {
 
     public static final String JNDI_PREFIX        = "SafeOnline/startup/";
