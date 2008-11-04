@@ -82,7 +82,8 @@ public class WSSecurityServerHandlerTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.jndiTestUtils = new JndiTestUtils();
         this.jndiTestUtils.setUp();
@@ -99,13 +100,15 @@ public class WSSecurityServerHandlerTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.jndiTestUtils.tearDown();
     }
 
     @Test
-    public void testHandleMessageAddsCertificateToContext() throws Exception {
+    public void testHandleMessageAddsCertificateToContext()
+            throws Exception {
 
         // setup
         MessageFactory messageFactory = MessageFactory.newInstance(SOAPConstants.SOAP_1_1_PROTOCOL);
@@ -134,7 +137,8 @@ public class WSSecurityServerHandlerTest {
     }
 
     @Test
-    public void testOutboundMessageHasTimestamp() throws Exception {
+    public void testOutboundMessageHasTimestamp()
+            throws Exception {
 
         // setup
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
@@ -176,7 +180,8 @@ public class WSSecurityServerHandlerTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void testOutboundMessageSigned() throws Exception {
+    public void testOutboundMessageSigned()
+            throws Exception {
 
         // setup
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
@@ -225,7 +230,8 @@ public class WSSecurityServerHandlerTest {
     }
 
     @Test
-    public void testHandleMessageInvalidSoapBody() throws Exception {
+    public void testHandleMessageInvalidSoapBody()
+            throws Exception {
 
         // setup
         MessageFactory messageFactory = MessageFactory.newInstance(SOAPConstants.SOAP_1_1_PROTOCOL);
@@ -257,7 +263,8 @@ public class WSSecurityServerHandlerTest {
 
 
     @Test
-    public void signatureCheckingFailsWhenTimestampNotSigned() throws Exception {
+    public void signatureCheckingFailsWhenTimestampNotSigned()
+            throws Exception {
 
         // setup
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
@@ -339,7 +346,8 @@ public class WSSecurityServerHandlerTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void wss4j() throws Exception {
+    public void wss4j()
+            throws Exception {
 
         // setup
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
@@ -412,7 +420,8 @@ public class WSSecurityServerHandlerTest {
     }
 
     @Test
-    public void maxMillis() throws Exception {
+    public void maxMillis()
+            throws Exception {
 
         DateTime dateTime = new DateTime("2007-02-26T15:06:11.824Z");
         LOG.debug("date time: " + dateTime);

@@ -21,15 +21,18 @@ public interface AuditContextDAO extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AuditContextDAOBean/local";
 
+
     AuditContextEntity createAuditContext();
 
-    AuditContextEntity getAuditContext(long auditContextId) throws AuditContextNotFoundException;
+    AuditContextEntity getAuditContext(long auditContextId)
+            throws AuditContextNotFoundException;
 
     void cleanup(long ageInMinutes);
 
     List<AuditContextEntity> listContexts();
 
-    boolean removeAuditContext(Long id) throws AuditContextNotFoundException;
+    boolean removeAuditContext(Long id)
+            throws AuditContextNotFoundException;
 
     List<AuditContextEntity> listLastContexts();
 }

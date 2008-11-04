@@ -95,8 +95,8 @@ public class SubscriptionsBean implements Subscriptions {
     }
 
     @RolesAllowed(UserConstants.USER_ROLE)
-    public String viewSubscription() throws SubscriptionNotFoundException, ApplicationNotFoundException,
-                                    ApplicationIdentityNotFoundException {
+    public String viewSubscription()
+            throws SubscriptionNotFoundException, ApplicationNotFoundException, ApplicationIdentityNotFoundException {
 
         String applicationName = this.selectedSubscription.getApplication().getName();
         LOG.debug("view subscription: " + applicationName);
@@ -107,7 +107,8 @@ public class SubscriptionsBean implements Subscriptions {
     }
 
     @RolesAllowed(UserConstants.USER_ROLE)
-    public String unsubscribe() throws SubscriptionNotFoundException, ApplicationNotFoundException {
+    public String unsubscribe()
+            throws SubscriptionNotFoundException, ApplicationNotFoundException {
 
         LOG.debug("unsubscribe from: " + this.selectedSubscription.getApplication().getName());
         String applicationName = this.selectedSubscription.getApplication().getName();
@@ -128,7 +129,8 @@ public class SubscriptionsBean implements Subscriptions {
     }
 
     @RolesAllowed(UserConstants.USER_ROLE)
-    public String getUsageAgreement() throws ApplicationNotFoundException {
+    public String getUsageAgreement()
+            throws ApplicationNotFoundException {
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();

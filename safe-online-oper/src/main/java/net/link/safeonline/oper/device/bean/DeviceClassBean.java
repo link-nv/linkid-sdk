@@ -143,7 +143,8 @@ public class DeviceClassBean implements DeviceClass {
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public String save() throws DeviceClassNotFoundException {
+    public String save()
+            throws DeviceClassNotFoundException {
 
         LOG.debug("save device class: " + this.selectedDeviceClass.getName());
         String deviceClassName = this.selectedDeviceClass.getName();

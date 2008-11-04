@@ -36,7 +36,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 @Interceptors(ConfigurationInterceptor.class)
 public class UsageStatisticTaskBean implements Task {
 
-    public static final String JNDI_BINDING = Task.JNDI_PREFIX + "/UsageStatisticTaskBean/local";
+    public static final String    JNDI_BINDING        = Task.JNDI_PREFIX + "/UsageStatisticTaskBean/local";
 
     public static final String    name                = "Usage statistic task";
 
@@ -71,7 +71,8 @@ public class UsageStatisticTaskBean implements Task {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void perform() throws Exception {
+    public void perform()
+            throws Exception {
 
         List<ApplicationEntity> applicationList = this.applicationDAO.listApplications();
         Date activeLimit = new Date(System.currentTimeMillis() - this.activeLimitInMillis);

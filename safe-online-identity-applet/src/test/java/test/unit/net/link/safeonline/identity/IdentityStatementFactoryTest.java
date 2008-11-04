@@ -30,7 +30,8 @@ public class IdentityStatementFactoryTest extends TestCase {
     private static final Log LOG = LogFactory.getLog(IdentityStatementFactoryTest.class);
 
 
-    public void testCreateIdentityStatement() throws Exception {
+    public void testCreateIdentityStatement()
+            throws Exception {
 
         // setup
         String sessionId = UUID.randomUUID().toString();

@@ -84,7 +84,8 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements DeviceR
     }
 
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
-    public String deviceNext() throws IOException, DeviceNotFoundException {
+    public String deviceNext()
+            throws IOException, DeviceNotFoundException {
 
         this.log.debug("deviceNext: " + this.device);
 
@@ -118,7 +119,8 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements DeviceR
     }
 
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
-    public String passwordNext() throws SubjectNotFoundException, DeviceNotFoundException, DeviceDisabledException {
+    public String passwordNext()
+            throws SubjectNotFoundException, DeviceNotFoundException, DeviceDisabledException {
 
         this.log.debug("passwordNext");
         this.authenticationService.setPassword(this.userId, this.password);
@@ -141,7 +143,8 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements DeviceR
 
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
     @Factory("applicationDevicesDeviceRegistration")
-    public List<SelectItem> applicationDevicesFactory() throws ApplicationNotFoundException, EmptyDevicePolicyException {
+    public List<SelectItem> applicationDevicesFactory()
+            throws ApplicationNotFoundException, EmptyDevicePolicyException {
 
         this.log.debug("application devices factory");
         FacesContext facesContext = FacesContext.getCurrentInstance();

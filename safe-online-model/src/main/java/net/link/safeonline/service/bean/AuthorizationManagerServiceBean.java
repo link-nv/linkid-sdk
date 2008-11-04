@@ -89,7 +89,8 @@ public class AuthorizationManagerServiceBean implements AuthorizationManagerServ
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public Set<String> getRoles(String login) throws SubjectNotFoundException {
+    public Set<String> getRoles(String login)
+            throws SubjectNotFoundException {
 
         LOG.debug("getRoles for subject: " + login);
         SubjectEntity subject = this.subjectService.getSubjectFromUserName(login);
@@ -103,7 +104,8 @@ public class AuthorizationManagerServiceBean implements AuthorizationManagerServ
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void setRoles(String login, Set<String> roles) throws SubjectNotFoundException, RoleNotFoundException {
+    public void setRoles(String login, Set<String> roles)
+            throws SubjectNotFoundException, RoleNotFoundException {
 
         LOG.debug("set roles for subject: " + login);
         SubjectEntity subject = this.subjectService.getSubjectFromUserName(login);
@@ -120,7 +122,8 @@ public class AuthorizationManagerServiceBean implements AuthorizationManagerServ
         SecurityManagerUtils.flushCredentialCache(login, SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
     }
 
-    private void setRole(SubjectEntity subject, String role) throws RoleNotFoundException {
+    private void setRole(SubjectEntity subject, String role)
+            throws RoleNotFoundException {
 
         ApplicationEntity application = getApplication(role);
         SubscriptionEntity subscription = this.subscriptionDAO.findSubscription(subject, application);
@@ -130,7 +133,8 @@ public class AuthorizationManagerServiceBean implements AuthorizationManagerServ
         this.subscriptionDAO.addSubscription(SubscriptionOwnerType.APPLICATION, subject, application);
     }
 
-    private ApplicationEntity getApplication(String role) throws RoleNotFoundException {
+    private ApplicationEntity getApplication(String role)
+            throws RoleNotFoundException {
 
         String applicationName = roleApplicationNameMap.get(role);
         if (null == applicationName)
@@ -143,7 +147,8 @@ public class AuthorizationManagerServiceBean implements AuthorizationManagerServ
         return application;
     }
 
-    private void unsetRole(SubjectEntity subject, String role) throws RoleNotFoundException {
+    private void unsetRole(SubjectEntity subject, String role)
+            throws RoleNotFoundException {
 
         ApplicationEntity application = getApplication(role);
         SubscriptionEntity subscription = this.subscriptionDAO.findSubscription(subject, application);
@@ -171,7 +176,8 @@ public class AuthorizationManagerServiceBean implements AuthorizationManagerServ
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public List<String> getUsers(String prefix) throws AttributeTypeNotFoundException {
+    public List<String> getUsers(String prefix)
+            throws AttributeTypeNotFoundException {
 
         return this.subjectService.listUsers(prefix);
     }

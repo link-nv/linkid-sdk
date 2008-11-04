@@ -78,7 +78,8 @@ public class SecurityTokenServiceClientImpl extends AbstractMessageAccessor impl
         bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location);
     }
 
-    public void validate(Element token, TrustDomainType trustDomain) throws WSClientTransportException {
+    public void validate(Element token, TrustDomainType trustDomain)
+            throws WSClientTransportException {
 
         LOG.debug("invoke");
         RequestSecurityTokenType request = new RequestSecurityTokenType();

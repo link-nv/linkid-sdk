@@ -89,7 +89,8 @@ public class LandingServletTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.originalContextClassLoader = Thread.currentThread().getContextClassLoader();
         this.testClassLoader = new TestClassLoader();
@@ -135,7 +136,8 @@ public class LandingServletTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.servletTestManager.tearDown();
         Thread.currentThread().setContextClassLoader(this.originalContextClassLoader);
@@ -170,7 +172,8 @@ public class LandingServletTest {
 
 
     @Test
-    public void testLanding() throws Exception {
+    public void testLanding()
+            throws Exception {
 
         // setup
         this.wantedDevices = Collections.singleton(this.deviceName);

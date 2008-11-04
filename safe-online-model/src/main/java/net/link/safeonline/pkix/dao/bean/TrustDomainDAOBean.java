@@ -79,7 +79,8 @@ public class TrustDomainDAOBean implements TrustDomainDAO {
         this.entityManager.remove(trustDomain);
     }
 
-    public TrustDomainEntity getTrustDomain(String name) throws TrustDomainNotFoundException {
+    public TrustDomainEntity getTrustDomain(String name)
+            throws TrustDomainNotFoundException {
 
         LOG.debug("get trust domain: " + name);
         TrustDomainEntity trustDomain = findTrustDomain(name);

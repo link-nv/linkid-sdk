@@ -51,7 +51,8 @@ public class ServletLoginFilter implements Filter {
         LOG.debug("destroy");
     }
 
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
 
         LOG.debug("doFilter");
 
@@ -91,7 +92,8 @@ public class ServletLoginFilter implements Filter {
     /**
      * {@inheritDoc}
      */
-    public void init(FilterConfig filterConfig) throws ServletException {
+    public void init(FilterConfig filterConfig)
+            throws ServletException {
 
     }
 }

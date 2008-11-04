@@ -30,7 +30,8 @@ import org.w3c.dom.Attr;
 public class DeviceOperationResponseUnmarshaller extends StatusResponseTypeUnmarshaller {
 
     @Override
-    protected void processAttribute(XMLObject samlObject, Attr attribute) throws UnmarshallingException {
+    protected void processAttribute(XMLObject samlObject, Attr attribute)
+            throws UnmarshallingException {
 
         DeviceOperationResponse response = (DeviceOperationResponse) samlObject;
 
@@ -46,7 +47,8 @@ public class DeviceOperationResponseUnmarshaller extends StatusResponseTypeUnmar
     }
 
     @Override
-    protected void processChildElement(XMLObject parentSAMLObject, XMLObject childSAMLObject) throws UnmarshallingException {
+    protected void processChildElement(XMLObject parentSAMLObject, XMLObject childSAMLObject)
+            throws UnmarshallingException {
 
         DeviceOperationResponse resp = (DeviceOperationResponse) parentSAMLObject;
 

@@ -20,6 +20,7 @@ public interface AuditSearch {
 
     public static final String JNDI_BINDING = OperatorConstants.JNDI_PREFIX + "AuditSearchBean/local";
 
+
     /*
      * Accessors
      */
@@ -67,7 +68,8 @@ public interface AuditSearch {
 
     String viewAuditRecords();
 
-    String removeContext() throws AuditContextNotFoundException;
+    String removeContext()
+            throws AuditContextNotFoundException;
 
     String search();
 

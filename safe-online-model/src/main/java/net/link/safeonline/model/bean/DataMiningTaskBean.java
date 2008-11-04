@@ -28,7 +28,7 @@ public class DataMiningTaskBean implements Task {
 
     public final static Log       LOG              = LogFactory.getLog(DataMiningTaskBean.class);
 
-    public static final String JNDI_BINDING = Task.JNDI_PREFIX + "/DataMiningTaskBean/local";
+    public static final String    JNDI_BINDING     = Task.JNDI_PREFIX + "/DataMiningTaskBean/local";
 
     public static final String    name             = "Data mining task";
 
@@ -53,7 +53,8 @@ public class DataMiningTaskBean implements Task {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void perform() throws Exception {
+    public void perform()
+            throws Exception {
 
         LOG.debug("cleanDomain: " + dataMiningDomain);
         this.statisticDAO.cleanDomain(dataMiningDomain);

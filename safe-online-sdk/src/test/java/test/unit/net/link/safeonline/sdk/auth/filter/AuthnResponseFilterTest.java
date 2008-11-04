@@ -49,7 +49,8 @@ public class AuthnResponseFilterTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.servletTestManager = new ServletTestManager();
 
@@ -76,13 +77,15 @@ public class AuthnResponseFilterTest {
 
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.servletTestManager.tearDown();
     }
 
     @Test
-    public void normalRequestPasses() throws Exception {
+    public void normalRequestPasses()
+            throws Exception {
 
         // setup
         HttpClient httpClient = new HttpClient();
@@ -106,7 +109,8 @@ public class AuthnResponseFilterTest {
     }
 
     @Test
-    public void canLogin() throws Exception {
+    public void canLogin()
+            throws Exception {
 
         // setup
         HttpClient httpClient = new HttpClient();

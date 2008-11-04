@@ -104,8 +104,8 @@ public class AttributesBean implements Attributes {
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public String removeConfirm() throws AttributeTypeDescriptionNotFoundException, PermissionDeniedException,
-                                 AttributeTypeNotFoundException {
+    public String removeConfirm()
+            throws AttributeTypeDescriptionNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException {
 
         LOG.debug("confirm remove: " + this.selectedAttributeType.getName());
         this.attributeTypeService.remove(this.selectedAttributeType);
@@ -125,7 +125,8 @@ public class AttributesBean implements Attributes {
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public String savePlugin() throws AttributeTypeNotFoundException {
+    public String savePlugin()
+            throws AttributeTypeNotFoundException {
 
         this.attributeTypeService.savePluginConfiguration(this.selectedAttributeType.getName(), this.pluginConfiguration);
         this.attributeTypeService.saveCacheTimeout(this.selectedAttributeType.getName(), this.cacheTimeout);
@@ -133,7 +134,8 @@ public class AttributesBean implements Attributes {
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public String saveOlas() throws AttributeTypeNotFoundException {
+    public String saveOlas()
+            throws AttributeTypeNotFoundException {
 
         this.attributeTypeService.saveCacheTimeout(this.selectedAttributeType.getName(), this.cacheTimeout);
         return null;

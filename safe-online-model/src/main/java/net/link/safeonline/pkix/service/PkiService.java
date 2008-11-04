@@ -32,6 +32,7 @@ public interface PkiService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/PkiServiceBean/local";
 
+
     /**
      * Gives back a list of all trust domains.
      * 
@@ -47,7 +48,8 @@ public interface PkiService extends SafeOnlineService {
      *            available within a certificate.
      * @throws ExistingTrustDomainException
      */
-    void addTrustDomain(String name, boolean performOcspCheck) throws ExistingTrustDomainException;
+    void addTrustDomain(String name, boolean performOcspCheck)
+            throws ExistingTrustDomainException;
 
     /**
      * Adds a trust domain with the given name.
@@ -60,7 +62,8 @@ public interface PkiService extends SafeOnlineService {
      *            available within a certificate.
      * @throws ExistingTrustDomainException
      */
-    void addTrustDomain(String name, boolean performOcspCheck, long ocspCacheTimeOutMillis) throws ExistingTrustDomainException;
+    void addTrustDomain(String name, boolean performOcspCheck, long ocspCacheTimeOutMillis)
+            throws ExistingTrustDomainException;
 
     /**
      * Removes a trust domain with the given name.
@@ -68,7 +71,8 @@ public interface PkiService extends SafeOnlineService {
      * @param name
      * @throws TrustDomainNotFoundException
      */
-    void removeTrustDomain(String name) throws TrustDomainNotFoundException;
+    void removeTrustDomain(String name)
+            throws TrustDomainNotFoundException;
 
     /**
      * Adds a trust point to a certain trust domain.
@@ -79,8 +83,8 @@ public interface PkiService extends SafeOnlineService {
      * @throws CertificateEncodingException
      * @throws ExistingTrustPointException
      */
-    void addTrustPoint(String domainName, byte[] encodedCertificate) throws TrustDomainNotFoundException, CertificateEncodingException,
-                                                                    ExistingTrustPointException;
+    void addTrustPoint(String domainName, byte[] encodedCertificate)
+            throws TrustDomainNotFoundException, CertificateEncodingException, ExistingTrustPointException;
 
     /**
      * Gives back all trust points within a given domain.
@@ -88,7 +92,8 @@ public interface PkiService extends SafeOnlineService {
      * @param domainName
      * @throws TrustDomainNotFoundException
      */
-    List<TrustPointEntity> listTrustPoints(String domainName) throws TrustDomainNotFoundException;
+    List<TrustPointEntity> listTrustPoints(String domainName)
+            throws TrustDomainNotFoundException;
 
     /**
      * Removes a trust point from a trust domain.
@@ -96,7 +101,8 @@ public interface PkiService extends SafeOnlineService {
      * @param trustPoint
      * @throws TrustPointNotFoundException
      */
-    void removeTrustPoint(TrustPointEntity trustPoint) throws TrustPointNotFoundException;
+    void removeTrustPoint(TrustPointEntity trustPoint)
+            throws TrustPointNotFoundException;
 
     /**
      * Gives back a trust domain for a given trust domain name.
@@ -104,9 +110,11 @@ public interface PkiService extends SafeOnlineService {
      * @param trustDomainName
      * @throws TrustDomainNotFoundException
      */
-    TrustDomainEntity getTrustDomain(String trustDomainName) throws TrustDomainNotFoundException;
+    TrustDomainEntity getTrustDomain(String trustDomainName)
+            throws TrustDomainNotFoundException;
 
-    void saveTrustDomain(TrustDomainEntity trustDomain) throws TrustDomainNotFoundException;
+    void saveTrustDomain(TrustDomainEntity trustDomain)
+            throws TrustDomainNotFoundException;
 
     void clearOcspCache();
 

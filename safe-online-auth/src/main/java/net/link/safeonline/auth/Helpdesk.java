@@ -15,5 +15,6 @@ import net.link.safeonline.helpdesk.HelpdeskBase;
 
 @Local
 public interface Helpdesk extends HelpdeskBase {
+
     public static final String JNDI_BINDING = AuthenticationConstants.JNDI_PREFIX + "HelpdeskBean/local";
 }

@@ -17,6 +17,7 @@ public interface Authentication {
 
     public static final String JNDI_BINDING = EncapConstants.JNDI_PREFIX + "AuthenticationBean/local";
 
+
     /*
      * Accessors.
      */
@@ -35,15 +36,20 @@ public interface Authentication {
     /*
      * Actions.
      */
-    String login() throws MobileAuthenticationException, IOException;
+    String login()
+            throws MobileAuthenticationException, IOException;
 
-    String requestOTP() throws MalformedURLException, MobileException, AttributeTypeNotFoundException, AttributeNotFoundException;
+    String requestOTP()
+            throws MalformedURLException, MobileException, AttributeTypeNotFoundException, AttributeNotFoundException;
 
-    String requestNewOTP() throws MalformedURLException, MobileException;
+    String requestNewOTP()
+            throws MalformedURLException, MobileException;
 
-    String cancel() throws IOException;
+    String cancel()
+            throws IOException;
 
-    String tryAnotherDevice() throws IOException;
+    String tryAnotherDevice()
+            throws IOException;
 
     /*
      * Lifecycle.

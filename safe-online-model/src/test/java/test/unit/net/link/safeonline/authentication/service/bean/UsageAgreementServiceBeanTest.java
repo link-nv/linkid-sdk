@@ -41,7 +41,8 @@ public class UsageAgreementServiceBeanTest extends TestCase {
 
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp()
+            throws Exception {
 
         super.setUp();
 
@@ -83,13 +84,15 @@ public class UsageAgreementServiceBeanTest extends TestCase {
     }
 
     @Override
-    protected void tearDown() throws Exception {
+    protected void tearDown()
+            throws Exception {
 
         this.entityTestManager.tearDown();
         super.tearDown();
     }
 
-    public void testUsageAgreementUseCase() throws Exception {
+    public void testUsageAgreementUseCase()
+            throws Exception {
 
         // setup
         EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -123,7 +126,8 @@ public class UsageAgreementServiceBeanTest extends TestCase {
         assertEquals(new Long(UsageAgreementPK.EMPTY_USAGE_AGREEMENT_VERSION + 1), usageAgreement.getUsageAgreementVersion());
     }
 
-    public void testGlobalUsageAgreementUseCase() throws Exception {
+    public void testGlobalUsageAgreementUseCase()
+            throws Exception {
 
         // setup
         EntityManager entityManager = this.entityTestManager.getEntityManager();

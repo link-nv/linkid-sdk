@@ -51,9 +51,8 @@ public class NodeAttributeServiceBean implements NodeAttributeService, NodeAttri
 
 
     @RolesAllowed(SafeOnlineNodeRoles.NODE_ROLE)
-    public Object getAttributeValue(String subjectId, String attributeName) throws PermissionDeniedException,
-                                                                           AttributeTypeNotFoundException, SubjectNotFoundException,
-                                                                           AttributeUnavailableException {
+    public Object getAttributeValue(String subjectId, String attributeName)
+            throws PermissionDeniedException, AttributeTypeNotFoundException, SubjectNotFoundException, AttributeUnavailableException {
 
         LOG.debug("get attribute " + attributeName + " for login " + subjectId);
         return this.proxyAttributeService.findAttributeValue(subjectId, attributeName);

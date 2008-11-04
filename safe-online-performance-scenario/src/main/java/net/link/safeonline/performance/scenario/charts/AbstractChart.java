@@ -259,7 +259,8 @@ public abstract class AbstractChart implements Chart {
         this.linked = true;
     }
 
-    protected Long getMeasurement(Set<MeasurementEntity> measurements, String type) throws NoSuchElementException {
+    protected Long getMeasurement(Set<MeasurementEntity> measurements, String type)
+            throws NoSuchElementException {
 
         for (MeasurementEntity e : measurements)
             if (type.equals(e.getMeasurement()))

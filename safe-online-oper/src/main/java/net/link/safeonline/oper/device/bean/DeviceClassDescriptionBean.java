@@ -92,7 +92,8 @@ public class DeviceClassDescriptionBean implements DeviceClassDescription {
      */
     @Factory(OPER_DEVICE_CLASS_DESCR_LIST_NAME)
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public void deviceClassDescriptionsListFactory() throws DeviceClassNotFoundException {
+    public void deviceClassDescriptionsListFactory()
+            throws DeviceClassNotFoundException {
 
         LOG.debug("device class description list factory for device: " + this.selectedDeviceClass.getName());
         this.deviceClassDescriptions = this.deviceService.listDeviceClassDescriptions(this.selectedDeviceClass.getName());
@@ -103,7 +104,8 @@ public class DeviceClassDescriptionBean implements DeviceClassDescription {
      */
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     @ErrorHandling( { @Error(exceptionClass = ExistingDeviceClassDescriptionException.class, messageId = "errorDeviceClassDescriptionAlreadyExists", fieldId = "language") })
-    public String add() throws ExistingDeviceClassDescriptionException, DeviceClassNotFoundException {
+    public String add()
+            throws ExistingDeviceClassDescriptionException, DeviceClassNotFoundException {
 
         LOG.debug("add: " + this.language);
 
@@ -125,7 +127,8 @@ public class DeviceClassDescriptionBean implements DeviceClassDescription {
 
     @End
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public String remove() throws DeviceClassDescriptionNotFoundException, DeviceClassNotFoundException {
+    public String remove()
+            throws DeviceClassDescriptionNotFoundException, DeviceClassNotFoundException {
 
         LOG.debug("remove: " + this.selectedDeviceClassDescription);
         this.deviceService.removeDeviceClassDescription(this.selectedDeviceClassDescription);

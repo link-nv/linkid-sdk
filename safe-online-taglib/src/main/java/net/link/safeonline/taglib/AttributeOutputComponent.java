@@ -37,7 +37,8 @@ public class AttributeOutputComponent extends UIOutput {
 
 
     @Override
-    public void encodeBegin(FacesContext context) throws IOException {
+    public void encodeBegin(FacesContext context)
+            throws IOException {
 
         ResponseWriter response = context.getResponseWriter();
         response.startElement("span", this);
@@ -51,7 +52,8 @@ public class AttributeOutputComponent extends UIOutput {
     }
 
     @Override
-    public void encodeEnd(FacesContext context) throws IOException {
+    public void encodeEnd(FacesContext context)
+            throws IOException {
 
         ResponseWriter response = context.getResponseWriter();
         response.endElement("span");
@@ -60,13 +62,15 @@ public class AttributeOutputComponent extends UIOutput {
 
     private interface AttributeValueEncoder {
 
-        void encode(AttributeDO attribute, ResponseWriter response, FacesContext context) throws IOException;
+        void encode(AttributeDO attribute, ResponseWriter response, FacesContext context)
+                throws IOException;
     }
 
     @SupportedType(DatatypeType.STRING)
     public static class StringAttributeValueEncoder implements AttributeValueEncoder {
 
-        public void encode(AttributeDO attribute, ResponseWriter response, FacesContext context) throws IOException {
+        public void encode(AttributeDO attribute, ResponseWriter response, FacesContext context)
+                throws IOException {
 
             String value = attribute.getStringValue();
             if (null == value && attribute.isUnavailable()) {
@@ -85,7 +89,8 @@ public class AttributeOutputComponent extends UIOutput {
     @SupportedType(DatatypeType.BOOLEAN)
     public static class BooleanAttributeValueEncoder implements AttributeValueEncoder {
 
-        public void encode(AttributeDO attribute, ResponseWriter response, FacesContext context) throws IOException {
+        public void encode(AttributeDO attribute, ResponseWriter response, FacesContext context)
+                throws IOException {
 
             Boolean value = attribute.getBooleanValue();
             if (null == value && attribute.isUnavailable()) {
@@ -106,7 +111,8 @@ public class AttributeOutputComponent extends UIOutput {
     @SupportedType(DatatypeType.INTEGER)
     public static class IntegerAttributeValueEncoder implements AttributeValueEncoder {
 
-        public void encode(AttributeDO attribute, ResponseWriter response, FacesContext context) throws IOException {
+        public void encode(AttributeDO attribute, ResponseWriter response, FacesContext context)
+                throws IOException {
 
             Integer value = attribute.getIntegerValue();
             if (null == value && attribute.isUnavailable()) {
@@ -128,7 +134,8 @@ public class AttributeOutputComponent extends UIOutput {
     @SupportedType(DatatypeType.DOUBLE)
     public static class DoubleAttributeValueEncoder implements AttributeValueEncoder {
 
-        public void encode(AttributeDO attribute, ResponseWriter response, FacesContext context) throws IOException {
+        public void encode(AttributeDO attribute, ResponseWriter response, FacesContext context)
+                throws IOException {
 
             Double value = attribute.getDoubleValue();
             if (null == value && attribute.isUnavailable()) {
@@ -149,7 +156,8 @@ public class AttributeOutputComponent extends UIOutput {
     @SupportedType(DatatypeType.DATE)
     public static class DateAttributeValueEncoder implements AttributeValueEncoder {
 
-        public void encode(AttributeDO attribute, ResponseWriter response, FacesContext context) throws IOException {
+        public void encode(AttributeDO attribute, ResponseWriter response, FacesContext context)
+                throws IOException {
 
             Date value = attribute.getDateValue();
             if (null == value && attribute.isUnavailable()) {

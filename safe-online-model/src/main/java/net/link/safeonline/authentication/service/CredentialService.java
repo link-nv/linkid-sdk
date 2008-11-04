@@ -26,6 +26,7 @@ public interface CredentialService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/CredentialServiceBean/local";
 
+
     /**
      * Changes the password of the current user. Of course for that to happen the oldPassword must match.
      * 
@@ -34,8 +35,8 @@ public interface CredentialService extends SafeOnlineService {
      * @throws PermissionDeniedException
      * @throws SubjectNotFoundException
      */
-    void changePassword(String oldPassword, String newPassword) throws PermissionDeniedException, DeviceNotFoundException,
-                                                               SubjectNotFoundException;
+    void changePassword(String oldPassword, String newPassword)
+            throws PermissionDeniedException, DeviceNotFoundException, SubjectNotFoundException;
 
     /**
      * Register password for the current user.
@@ -44,7 +45,8 @@ public interface CredentialService extends SafeOnlineService {
      * @throws PermissionDeniedException
      * @throws SubjectNotFoundException
      */
-    void registerPassword(String password) throws PermissionDeniedException, DeviceNotFoundException, SubjectNotFoundException;
+    void registerPassword(String password)
+            throws PermissionDeniedException, DeviceNotFoundException, SubjectNotFoundException;
 
     /**
      * Removes the password of the current user. For this to happen the password must match.
@@ -54,7 +56,8 @@ public interface CredentialService extends SafeOnlineService {
      * @throws PermissionDeniedException
      * @throws SubjectNotFoundException
      */
-    void removePassword(String password) throws DeviceNotFoundException, PermissionDeniedException, SubjectNotFoundException;
+    void removePassword(String password)
+            throws DeviceNotFoundException, PermissionDeniedException, SubjectNotFoundException;
 
     /**
      * Gives back <code>true</code> if the user already has a password configured.
@@ -63,12 +66,14 @@ public interface CredentialService extends SafeOnlineService {
      * @throws SubjectNotFoundException
      * 
      */
-    boolean isPasswordConfigured() throws SubjectNotFoundException, DeviceNotFoundException;
+    boolean isPasswordConfigured()
+            throws SubjectNotFoundException, DeviceNotFoundException;
 
     /**
      * Disables/enables the password registration of the current user.
      * 
      * @throws DeviceNotFoundException
      */
-    void disablePassword() throws DeviceNotFoundException;
+    void disablePassword()
+            throws DeviceNotFoundException;
 }

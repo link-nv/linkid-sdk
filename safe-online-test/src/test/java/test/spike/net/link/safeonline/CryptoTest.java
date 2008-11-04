@@ -36,7 +36,8 @@ public class CryptoTest extends TestCase {
     private static final Log LOG = LogFactory.getLog(CryptoTest.class);
 
 
-    public void testSignAndVerify() throws Exception {
+    public void testSignAndVerify()
+            throws Exception {
 
         // setup
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
@@ -67,7 +68,8 @@ public class CryptoTest extends TestCase {
         assertFalse(fakeSignatureValueResult);
     }
 
-    public void testAsn1Der() throws Exception {
+    public void testAsn1Der()
+            throws Exception {
 
         int testInt = 1234;
         DERInteger integer = new DERInteger(testInt);
@@ -89,11 +91,13 @@ public class CryptoTest extends TestCase {
         LOG.debug("result object type: " + resultObject.getClass().getName());
     }
 
-    public void testCustomSecurityProvider() throws Exception {
+    public void testCustomSecurityProvider()
+            throws Exception {
 
     }
 
-    public void testEncryptDecrypt() throws Exception {
+    public void testEncryptDecrypt()
+            throws Exception {
 
         BouncyCastleProvider bcp = (BouncyCastleProvider) Security.getProvider(BouncyCastleProvider.PROVIDER_NAME);
         KeyGenerator keyGen = KeyGenerator.getInstance("AES", bcp);

@@ -38,18 +38,21 @@ public class NoPkcs11Servlet extends AbstractInjectionServlet {
 
 
     @Override
-    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         invoke(request, response);
     }
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         invoke(request, response);
     }
 
-    private void invoke(@SuppressWarnings("unused") HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void invoke(@SuppressWarnings("unused") HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
 
         LOG.debug("java version: " + this.javaVersion);
         if (this.javaVersion == JAVA_VERSION.JAVA_1_5) {

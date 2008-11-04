@@ -63,7 +63,8 @@ public class FujiDataCard implements OptionDevice {
         initialize();
     }
 
-    public void initialize() throws OptionDeviceException {
+    public void initialize()
+            throws OptionDeviceException {
 
         synchronized (this.serial) {
             try {
@@ -96,7 +97,8 @@ public class FujiDataCard implements OptionDevice {
         }
     }
 
-    public void authenticate(String pin) throws OptionDeviceException {
+    public void authenticate(String pin)
+            throws OptionDeviceException {
 
         logger.debug("Authenticating with PIN code");
         synchronized (this.serial) {
@@ -126,7 +128,8 @@ public class FujiDataCard implements OptionDevice {
         }
     }
 
-    public void connect(String apn, String username, String password) throws OptionDeviceException {
+    public void connect(String apn, String username, String password)
+            throws OptionDeviceException {
 
         logger.debug("Connecting");
 
@@ -142,12 +145,14 @@ public class FujiDataCard implements OptionDevice {
         owandata();
     }
 
-    public void disconnect() throws OptionDeviceException {
+    public void disconnect()
+            throws OptionDeviceException {
 
         owancallDown();
     }
 
-    public String getIMEI() throws OptionDeviceException {
+    public String getIMEI()
+            throws OptionDeviceException {
 
         logger.debug("fetching IMEI");
         synchronized (this.serial) {
@@ -183,7 +188,8 @@ public class FujiDataCard implements OptionDevice {
         }
     }
 
-    private void cgdcont(String apn) throws OptionDeviceException {
+    private void cgdcont(String apn)
+            throws OptionDeviceException {
 
         logger.debug("Setting APN");
         synchronized (this.serial) {
@@ -213,7 +219,8 @@ public class FujiDataCard implements OptionDevice {
         }
     }
 
-    private void creg() throws OptionDeviceException {
+    private void creg()
+            throws OptionDeviceException {
 
         logger.debug("Checking CS network registration");
         synchronized (this.serial) {
@@ -247,7 +254,8 @@ public class FujiDataCard implements OptionDevice {
         }
     }
 
-    private void cgreg() throws OptionDeviceException {
+    private void cgreg()
+            throws OptionDeviceException {
 
         logger.debug("Checking PS network registration");
         synchronized (this.serial) {
@@ -281,7 +289,8 @@ public class FujiDataCard implements OptionDevice {
         }
     }
 
-    private void cgact() throws OptionDeviceException {
+    private void cgact()
+            throws OptionDeviceException {
 
         logger.debug("Checking PS network registration");
         synchronized (this.serial) {
@@ -315,7 +324,8 @@ public class FujiDataCard implements OptionDevice {
         }
     }
 
-    private void owancallUp() throws OptionDeviceException {
+    private void owancallUp()
+            throws OptionDeviceException {
 
         logger.debug("Connecting NDIS style");
         synchronized (this.serial) {
@@ -345,7 +355,8 @@ public class FujiDataCard implements OptionDevice {
         }
     }
 
-    private void owancallDown() throws OptionDeviceException {
+    private void owancallDown()
+            throws OptionDeviceException {
 
         logger.debug("Disconnecting NDIS style");
         synchronized (this.serial) {
@@ -371,7 +382,8 @@ public class FujiDataCard implements OptionDevice {
         }
     }
 
-    private void owandata() throws OptionDeviceException {
+    private void owandata()
+            throws OptionDeviceException {
 
         logger.debug("Reading network configuration");
         synchronized (this.serial) {

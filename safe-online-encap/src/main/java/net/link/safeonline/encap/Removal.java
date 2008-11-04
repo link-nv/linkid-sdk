@@ -26,21 +26,24 @@ public interface Removal {
 
     public static final String JNDI_BINDING = EncapConstants.JNDI_PREFIX + "RemovalBean/local";
 
+
     /*
      * Accessors.
      */
     /*
      * Actions.
      */
-    String mobileRemove() throws SubjectNotFoundException, MobileException, MalformedURLException, IOException,
-                         AttributeTypeNotFoundException;
+    String mobileRemove()
+            throws SubjectNotFoundException, MobileException, MalformedURLException, IOException, AttributeTypeNotFoundException;
 
-    String mobileCancel() throws IOException;
+    String mobileCancel()
+            throws IOException;
 
     /*
      * Factories
      */
-    List<AttributeDO> mobileAttributesFactory() throws SubjectNotFoundException, DeviceNotFoundException;
+    List<AttributeDO> mobileAttributesFactory()
+            throws SubjectNotFoundException, DeviceNotFoundException;
 
     /*
      * Lifecycle.

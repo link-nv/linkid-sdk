@@ -42,7 +42,8 @@ public class SubjectServiceBeanTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.entityTestManager = new EntityTestManager();
         this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
@@ -58,13 +59,15 @@ public class SubjectServiceBeanTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.entityTestManager.tearDown();
     }
 
     @Test
-    public void testFindNonExistingSubjectReturnsNull() throws Exception {
+    public void testFindNonExistingSubjectReturnsNull()
+            throws Exception {
 
         // setup
         String nonExistingSubjectLogin = UUID.randomUUID().toString();
@@ -77,7 +80,8 @@ public class SubjectServiceBeanTest {
     }
 
     @Test
-    public void testAddSubjectAndGet() throws Exception {
+    public void testAddSubjectAndGet()
+            throws Exception {
 
         // setup
         String subjectLogin = UUID.randomUUID().toString();

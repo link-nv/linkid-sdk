@@ -29,7 +29,8 @@ public class SmartCardConfigFactoryImplTest extends TestCase {
 
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp()
+            throws Exception {
 
         super.setUp();
 
@@ -42,7 +43,8 @@ public class SmartCardConfigFactoryImplTest extends TestCase {
     }
 
     @Override
-    protected void tearDown() throws Exception {
+    protected void tearDown()
+            throws Exception {
 
         Thread currentThread = Thread.currentThread();
         currentThread.setContextClassLoader(this.originalClassLoader);
@@ -50,7 +52,8 @@ public class SmartCardConfigFactoryImplTest extends TestCase {
         super.tearDown();
     }
 
-    public void testDefaultGetSmartCardConfigsIsEmpty() throws Exception {
+    public void testDefaultGetSmartCardConfigsIsEmpty()
+            throws Exception {
 
         // operate
         List<SmartCardConfig> results = this.testedInstance.getSmartCardConfigs();
@@ -60,7 +63,8 @@ public class SmartCardConfigFactoryImplTest extends TestCase {
         assertTrue(results.isEmpty());
     }
 
-    public void testGetSmartCardConfigs() throws Exception {
+    public void testGetSmartCardConfigs()
+            throws Exception {
 
         // setup
         URL testConfigResource = SmartCardConfigFactoryImpl.class.getResource("/test-safe-online-pkcs11-sc-config.properties");

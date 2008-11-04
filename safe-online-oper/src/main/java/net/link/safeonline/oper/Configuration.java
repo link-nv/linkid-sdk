@@ -9,13 +9,14 @@ package net.link.safeonline.oper;
 
 import javax.ejb.Local;
 
-
 import net.link.safeonline.oper.OperatorConstants;
+
 
 @Local
 public interface Configuration {
 
     public static final String JNDI_BINDING = OperatorConstants.JNDI_PREFIX + "ConfigurationBean/local";
+
 
     /*
      * Factories.

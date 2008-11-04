@@ -55,7 +55,8 @@ public class SeatServiceBean extends AbstractCinemaServiceBean implements SeatSe
     /**
      * {@inheritDoc}
      */
-    public CinemaSeatOccupationEntity validate(CinemaSeatOccupationEntity occupation) throws IllegalStateException {
+    public CinemaSeatOccupationEntity validate(CinemaSeatOccupationEntity occupation)
+            throws IllegalStateException {
 
         return validate(occupation.getSeat(), occupation.getStart());
     }
@@ -63,7 +64,8 @@ public class SeatServiceBean extends AbstractCinemaServiceBean implements SeatSe
     /**
      * {@inheritDoc}
      */
-    public CinemaSeatOccupationEntity validate(CinemaSeatEntity seat, Date start) throws IllegalStateException {
+    public CinemaSeatOccupationEntity validate(CinemaSeatEntity seat, Date start)
+            throws IllegalStateException {
 
         CinemaSeatEntity seatEntity = attach(seat);
 

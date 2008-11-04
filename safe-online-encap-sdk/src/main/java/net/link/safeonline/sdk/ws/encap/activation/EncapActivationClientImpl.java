@@ -37,7 +37,8 @@ public class EncapActivationClientImpl implements EncapActivationClient {
         this.activationStub = new MSecBankIdActivationSoapBindingStub(endpointURL, new Service());
     }
 
-    public String activate(String mobile, String orgId, String userId) throws RemoteException {
+    public String activate(String mobile, String orgId, String userId)
+            throws RemoteException {
 
         LOG.debug("activate: " + mobile + ", " + orgId + ", " + userId);
 
@@ -56,7 +57,8 @@ public class EncapActivationClientImpl implements EncapActivationClient {
         return null;
     }
 
-    public boolean cancelSession(String sessionId) throws RemoteException {
+    public boolean cancelSession(String sessionId)
+            throws RemoteException {
 
         LOG.debug("cancel session: " + sessionId);
         MSecResponse response = this.activationStub.cancelSession(sessionId);

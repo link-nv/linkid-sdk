@@ -91,10 +91,8 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
         WSSecurityClientHandler.addNewHandler(this.port, clientCertificate, clientPrivateKey);
     }
 
-    public <T> T getAttributeValue(String userId, String attributeName, Class<T> valueClass) throws AttributeNotFoundException,
-                                                                                            RequestDeniedException,
-                                                                                            WSClientTransportException,
-                                                                                            AttributeUnavailableException {
+    public <T> T getAttributeValue(String userId, String attributeName, Class<T> valueClass)
+            throws AttributeNotFoundException, RequestDeniedException, WSClientTransportException, AttributeUnavailableException {
 
         LOG.debug("get attribute value for subject " + userId + " attribute name " + attributeName);
 
@@ -180,7 +178,8 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
 
     }
 
-    private ResponseType getResponse(AttributeQueryType request) throws WSClientTransportException {
+    private ResponseType getResponse(AttributeQueryType request)
+            throws WSClientTransportException {
 
         try {
             return this.port.attributeQuery(request);
@@ -193,8 +192,8 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
         }
     }
 
-    private void checkStatus(ResponseType response) throws AttributeNotFoundException, RequestDeniedException,
-                                                   AttributeUnavailableException {
+    private void checkStatus(ResponseType response)
+            throws AttributeNotFoundException, RequestDeniedException, AttributeUnavailableException {
 
         StatusType status = response.getStatus();
         StatusCodeType statusCode = status.getStatusCode();
@@ -260,9 +259,8 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
         return attributeQuery;
     }
 
-    public void getAttributeValues(String userId, Map<String, Object> attributes) throws AttributeNotFoundException,
-                                                                                 RequestDeniedException, WSClientTransportException,
-                                                                                 AttributeUnavailableException {
+    public void getAttributeValues(String userId, Map<String, Object> attributes)
+            throws AttributeNotFoundException, RequestDeniedException, WSClientTransportException, AttributeUnavailableException {
 
         AttributeQueryType request = getAttributeQuery(userId, attributes);
         SafeOnlineTrustManager.configureSsl();
@@ -313,8 +311,8 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
         }
     }
 
-    public Map<String, Object> getAttributeValues(String userId) throws RequestDeniedException, WSClientTransportException,
-                                                                AttributeNotFoundException, AttributeUnavailableException {
+    public Map<String, Object> getAttributeValues(String userId)
+            throws RequestDeniedException, WSClientTransportException, AttributeNotFoundException, AttributeUnavailableException {
 
         Map<String, Object> attributes = new HashMap<String, Object>();
         AttributeQueryType request = getAttributeQuery(userId, attributes);
@@ -325,8 +323,8 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
         return attributes;
     }
 
-    public <T> T getIdentity(String userId, Class<T> identityCardClass) throws AttributeNotFoundException, RequestDeniedException,
-                                                                       WSClientTransportException, AttributeUnavailableException {
+    public <T> T getIdentity(String userId, Class<T> identityCardClass)
+            throws AttributeNotFoundException, RequestDeniedException, WSClientTransportException, AttributeUnavailableException {
 
         if (!identityCardClass.isAnnotationPresent(IdentityCard.class))
             throw new IllegalArgumentException("identity card class should be annotated with @IdentityCard");

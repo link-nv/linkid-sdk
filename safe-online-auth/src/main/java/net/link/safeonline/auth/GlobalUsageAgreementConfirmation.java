@@ -16,11 +16,13 @@ public interface GlobalUsageAgreementConfirmation {
 
     public static final String JNDI_BINDING = AuthenticationConstants.JNDI_PREFIX + "GlobalUsageAgreementConfirmationBean/local";
 
+
     /*
      * Actions.
      */
-    String confirm() throws ApplicationNotFoundException, SubscriptionNotFoundException, ApplicationIdentityNotFoundException,
-                    PermissionDeniedException, AttributeTypeNotFoundException, AttributeUnavailableException;
+    String confirm()
+            throws ApplicationNotFoundException, SubscriptionNotFoundException, ApplicationIdentityNotFoundException,
+            PermissionDeniedException, AttributeTypeNotFoundException, AttributeUnavailableException;
 
     /*
      * Accessors

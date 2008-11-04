@@ -24,20 +24,24 @@ public interface Disable {
 
     public static final String JNDI_BINDING = EncapConstants.JNDI_PREFIX + "DisableBean/local";
 
+
     /*
      * Accessors.
      */
     /*
      * Actions.
      */
-    String save() throws IOException, SubjectNotFoundException, AttributeNotFoundException;
+    String save()
+            throws IOException, SubjectNotFoundException, AttributeNotFoundException;
 
-    String cancel() throws IOException;
+    String cancel()
+            throws IOException;
 
     /*
      * Factories
      */
-    List<DeviceRegistrationDO> registrationsFactory() throws SubjectNotFoundException, DeviceNotFoundException;
+    List<DeviceRegistrationDO> registrationsFactory()
+            throws SubjectNotFoundException, DeviceNotFoundException;
 
     /*
      * Lifecycle.

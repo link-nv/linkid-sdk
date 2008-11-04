@@ -20,6 +20,7 @@ public interface HelpdeskManager extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/HelpdeskManagerBean/local";
 
+
     public Long persist(String location, List<HelpdeskEventEntity> helpdeskEventList);
 
     public int getHelpdeskContextLimit();

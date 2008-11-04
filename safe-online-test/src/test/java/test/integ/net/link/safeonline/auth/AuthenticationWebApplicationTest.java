@@ -65,7 +65,8 @@ public class AuthenticationWebApplicationTest {
 
 
     @Test
-    public void testLogin() throws Exception {
+    public void testLogin()
+            throws Exception {
 
         PrivateKeyEntry privateKeyEntry = PerformanceKeyStoreUtils.getPrivateKeyEntry();
         PrivateKey privateKey = privateKeyEntry.getPrivateKey();
@@ -131,7 +132,8 @@ public class AuthenticationWebApplicationTest {
         LOG.debug("result document: " + DomTestUtils.domToString(resultDocument));
     }
 
-    private PostMethod createFormPostMethod(Node formNode, String jsessionId) throws TransformerException {
+    private PostMethod createFormPostMethod(Node formNode, String jsessionId)
+            throws TransformerException {
 
         NodeIterator hiddenInputNodeIterator = XPathAPI.selectNodeIterator(formNode, "//input[@type='hidden']");
         Node hiddenInputNode;
@@ -180,22 +182,22 @@ public class AuthenticationWebApplicationTest {
             }
         }
 
-        public Socket createSocket(String host, int port) throws IOException, UnknownHostException {
+        public Socket createSocket(String host, int port)
+                throws IOException, UnknownHostException {
 
             LOG.debug("createSocket: " + host + ":" + port);
             return null;
         }
 
-        public Socket createSocket(String host, int port, InetAddress localAddress, int localPort) throws IOException, UnknownHostException {
+        public Socket createSocket(String host, int port, InetAddress localAddress, int localPort)
+                throws IOException, UnknownHostException {
 
             LOG.debug("createSocket: " + host + ":" + port + ", local: " + localAddress + ":" + localPort);
             return null;
         }
 
         public Socket createSocket(String host, int port, InetAddress localAddress, int localPort, HttpConnectionParams params)
-                                                                                                                               throws IOException,
-                                                                                                                               UnknownHostException,
-                                                                                                                               ConnectTimeoutException {
+                throws IOException, UnknownHostException, ConnectTimeoutException {
 
             LOG.debug("createSocket: " + host + ":" + port + ", local: " + localAddress + ":" + localPort + ", params: " + params);
 
@@ -206,12 +208,14 @@ public class AuthenticationWebApplicationTest {
 
     static class MyTrustManager implements X509TrustManager {
 
-        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+        public void checkClientTrusted(X509Certificate[] chain, String authType)
+                throws CertificateException {
 
             throw new CertificateException("cannot verify client certificates");
         }
 
-        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+        public void checkServerTrusted(X509Certificate[] chain, String authType)
+                throws CertificateException {
 
             if (null == chain) {
                 throw new CertificateException("null certificate chain");

@@ -113,7 +113,8 @@ public class SecurityTokenServicePortImplTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.jmxTestUtils = new JmxTestUtils();
         this.jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
@@ -191,14 +192,16 @@ public class SecurityTokenServicePortImplTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.webServiceTestUtils.tearDown();
         this.jndiTestUtils.tearDown();
     }
 
     @BeforeClass
-    public static void classSetUp() throws Exception {
+    public static void classSetUp()
+            throws Exception {
 
         /*
          * Next is because Sun loves to endorse crippled versions of Xerces.
@@ -214,7 +217,8 @@ public class SecurityTokenServicePortImplTest {
 
     @SuppressWarnings( { "unchecked", "null" })
     @Test
-    public void testWSAuthnRequest() throws Exception {
+    public void testWSAuthnRequest()
+            throws Exception {
 
         // setup
         String testIssuer = "test-issuer";
@@ -273,7 +277,8 @@ public class SecurityTokenServicePortImplTest {
 
     @SuppressWarnings( { "unchecked", "null" })
     @Test
-    public void testWSAuthnResponse() throws Exception {
+    public void testWSAuthnResponse()
+            throws Exception {
 
         // setup
         String testIssuer = "test-issuer";
@@ -331,7 +336,8 @@ public class SecurityTokenServicePortImplTest {
 
     @SuppressWarnings( { "unchecked", "null" })
     @Test
-    public void testWSLogoutRequest() throws Exception {
+    public void testWSLogoutRequest()
+            throws Exception {
 
         // setup
         String testIssuer = "test-issuer";
@@ -389,7 +395,8 @@ public class SecurityTokenServicePortImplTest {
 
     @SuppressWarnings( { "unchecked", "null" })
     @Test
-    public void testWSLogoutResponse() throws Exception {
+    public void testWSLogoutResponse()
+            throws Exception {
 
         // setup
         String testIssuer = "test-issuer";
@@ -447,7 +454,8 @@ public class SecurityTokenServicePortImplTest {
 
     @SuppressWarnings( { "unchecked", "null" })
     @Test
-    public void testWSDeviceOperationRequest() throws Exception {
+    public void testWSDeviceOperationRequest()
+            throws Exception {
 
         // setup
         String testIssuer = "test-issuer";
@@ -506,7 +514,8 @@ public class SecurityTokenServicePortImplTest {
 
     @SuppressWarnings( { "unchecked", "null" })
     @Test
-    public void testWSDeviceOperationResponse() throws Exception {
+    public void testWSDeviceOperationResponse()
+            throws Exception {
 
         // setup
         String testIssuer = "test-issuer";
@@ -563,7 +572,7 @@ public class SecurityTokenServicePortImplTest {
     }
 
     private Element createAuthnRequest(String issuerName, String applicationName, String assertionConsumerServiceURL, String destinationURL)
-                                                                                                                                            throws Exception {
+            throws Exception {
 
         Challenge<String> challenge = new Challenge<String>();
         String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(issuerName, applicationName, applicationName, this.keyPair,
@@ -574,7 +583,7 @@ public class SecurityTokenServicePortImplTest {
     }
 
     private Element createAuthnResponse(String inResponseTo, String issuerName, String subjectName, int validity, String target)
-                                                                                                                                throws Exception {
+            throws Exception {
 
         String encodedAuthnResponse = AuthnResponseFactory.createAuthResponse(inResponseTo, issuerName, issuerName, subjectName,
                 SafeOnlineConstants.PKI_DEVICE_AUTH_CONTEXT_CLASS, this.keyPair, validity, target);
@@ -582,7 +591,8 @@ public class SecurityTokenServicePortImplTest {
         return doc.getDocumentElement();
     }
 
-    private Element createLogoutRequest(String subjectName, String issuerName, String destinationURL) throws Exception {
+    private Element createLogoutRequest(String subjectName, String issuerName, String destinationURL)
+            throws Exception {
 
         Challenge<String> challenge = new Challenge<String>();
         String encodedLogoutRequest = LogoutRequestFactory.createLogoutRequest(subjectName, issuerName, this.keyPair, destinationURL,
@@ -591,7 +601,8 @@ public class SecurityTokenServicePortImplTest {
         return doc.getDocumentElement();
     }
 
-    private Element createLogoutResponse(String inResponseTo, String issuerName, String target) throws Exception {
+    private Element createLogoutResponse(String inResponseTo, String issuerName, String target)
+            throws Exception {
 
         String encodedLogoutResponse = LogoutResponseFactory.createLogoutResponse(inResponseTo, issuerName, this.keyPair, target);
         Document doc = DomUtils.parseDocument(encodedLogoutResponse);
@@ -599,7 +610,7 @@ public class SecurityTokenServicePortImplTest {
     }
 
     private Element createDeviceOperationRequest(String issuerName, String subjectName, String serviceURL, String destinationURL)
-                                                                                                                                 throws Exception {
+            throws Exception {
 
         Challenge<String> challenge = new Challenge<String>();
         String device = "test-device";
@@ -611,7 +622,7 @@ public class SecurityTokenServicePortImplTest {
     }
 
     private Element createDeviceOperationResponse(String inResponseTo, String issuerName, String subjectName, int validity, String target)
-                                                                                                                                          throws Exception {
+            throws Exception {
 
         String device = "test-device";
         String encodedResponse = DeviceOperationResponseFactory.createDeviceOperationResponse(inResponseTo, DeviceOperationType.REGISTER,

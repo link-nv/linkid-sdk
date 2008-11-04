@@ -203,7 +203,8 @@ public class AuthUser extends JPanel implements Observer {
         SwingWorker<Boolean, Object> worker = new SwingWorker<Boolean, Object>() {
 
             @Override
-            protected Boolean doInBackground() throws Exception {
+            protected Boolean doInBackground()
+                    throws Exception {
 
                 AuthServletManager.getInstance().authenticate(AuthUser.this.applicationField.getText().trim(),
                         AuthUser.this.selectedProtocol);

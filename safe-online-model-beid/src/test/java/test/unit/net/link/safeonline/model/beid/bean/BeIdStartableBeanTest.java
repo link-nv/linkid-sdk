@@ -44,7 +44,8 @@ public class BeIdStartableBeanTest extends TestCase {
 
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp()
+            throws Exception {
 
         super.setUp();
 
@@ -86,7 +87,8 @@ public class BeIdStartableBeanTest extends TestCase {
         this.mockObjects = new Object[] { this.mockTrustDomainDAO, this.mockTrustPointDAO };
     }
 
-    public void testInitTrustDomain() throws Exception {
+    public void testInitTrustDomain()
+            throws Exception {
 
         // setup
         TrustDomainEntity trustDomain = new TrustDomainEntity(BeIdPkiProviderBean.TRUST_DOMAIN_NAME, true);

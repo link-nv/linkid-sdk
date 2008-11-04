@@ -101,7 +101,8 @@ public abstract class AbstractWicketTests {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.entityTestManager.tearDown();
     }

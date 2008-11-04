@@ -18,6 +18,7 @@ public interface EditTrustDomain {
 
     public static final String JNDI_BINDING = OperatorConstants.JNDI_PREFIX + "EditTrustDomainBean/local";
 
+
     /*
      * Lifecycle.
      */
@@ -28,7 +29,8 @@ public interface EditTrustDomain {
      */
     String edit();
 
-    String save() throws TrustDomainNotFoundException;
+    String save()
+            throws TrustDomainNotFoundException;
 
     String cancel();
 

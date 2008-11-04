@@ -92,7 +92,8 @@ public class DevicePropertyBean implements DeviceProperty {
      */
     @Factory(OPER_DEVICE_PROP_LIST_NAME)
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public void devicePropertiesListFactory() throws DeviceNotFoundException {
+    public void devicePropertiesListFactory()
+            throws DeviceNotFoundException {
 
         LOG.debug("device properties list factory for device: " + this.selectedDevice.getName());
         this.deviceProperties = this.deviceService.listDeviceProperties(this.selectedDevice.getName());
@@ -103,7 +104,8 @@ public class DevicePropertyBean implements DeviceProperty {
      */
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     @ErrorHandling( { @Error(exceptionClass = ExistingDevicePropertyException.class, messageId = "errorDevicePropertyAlreadyExists", fieldId = "name") })
-    public String add() throws ExistingDevicePropertyException, DeviceNotFoundException {
+    public String add()
+            throws ExistingDevicePropertyException, DeviceNotFoundException {
 
         LOG.debug("add: " + this.name);
 
@@ -127,7 +129,8 @@ public class DevicePropertyBean implements DeviceProperty {
 
     @End
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public String remove() throws DevicePropertyNotFoundException, DeviceNotFoundException {
+    public String remove()
+            throws DevicePropertyNotFoundException, DeviceNotFoundException {
 
         LOG.debug("remove: " + this.selectedDeviceProperty);
         this.deviceService.removeDeviceProperty(this.selectedDeviceProperty);

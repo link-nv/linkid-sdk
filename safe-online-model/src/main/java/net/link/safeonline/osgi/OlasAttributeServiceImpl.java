@@ -37,9 +37,9 @@ public class OlasAttributeServiceImpl implements OlasAttributeService {
     /**
      * {@inheritDoc}
      */
-    public List<Attribute> getAttribute(String userId, String attributeName) throws AttributeTypeNotFoundException,
-                                                                            AttributeNotFoundException, UnsupportedDataTypeException,
-                                                                            AttributeUnavailableException, SubjectNotFoundException {
+    public List<Attribute> getAttribute(String userId, String attributeName)
+            throws AttributeTypeNotFoundException, AttributeNotFoundException, UnsupportedDataTypeException, AttributeUnavailableException,
+            SubjectNotFoundException {
 
         OSGIAttributeService attributeService = EjbUtils.getEJB(OSGIAttributeService.JNDI_BINDING, OSGIAttributeService.class);
         try {

@@ -180,7 +180,8 @@ public class TinySyslogger {
      * {@inheritDoc}
      */
     @Override
-    protected void finalize() throws Throwable {
+    protected void finalize()
+            throws Throwable {
 
         close();
     }

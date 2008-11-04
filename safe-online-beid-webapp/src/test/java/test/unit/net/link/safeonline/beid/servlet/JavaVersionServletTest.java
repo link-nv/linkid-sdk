@@ -37,7 +37,8 @@ public class JavaVersionServletTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.servletTestManager = new ServletTestManager();
         this.servletTestManager.setUp(JavaVersionServlet.class);
@@ -45,13 +46,15 @@ public class JavaVersionServletTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.servletTestManager.tearDown();
     }
 
     @Test
-    public void testLinux() throws Exception {
+    public void testLinux()
+            throws Exception {
 
         // setup
         HttpClient httpClient = new HttpClient();
@@ -71,7 +74,8 @@ public class JavaVersionServletTest {
     }
 
     @Test
-    public void testWindows() throws Exception {
+    public void testWindows()
+            throws Exception {
 
         // setup
         HttpClient httpClient = new HttpClient();
@@ -91,7 +95,8 @@ public class JavaVersionServletTest {
     }
 
     @Test
-    public void testMacIntel() throws Exception {
+    public void testMacIntel()
+            throws Exception {
 
         // setup
         HttpClient httpClient = new HttpClient();
@@ -111,7 +116,8 @@ public class JavaVersionServletTest {
     }
 
     @Test
-    public void testUnsupportedPlatform() throws Exception {
+    public void testUnsupportedPlatform()
+            throws Exception {
 
         // setup
         HttpClient httpClient = new HttpClient();
@@ -131,7 +137,8 @@ public class JavaVersionServletTest {
     }
 
     @Test
-    public void testWindowsJavaDisabled() throws Exception {
+    public void testWindowsJavaDisabled()
+            throws Exception {
 
         // setup
         HttpClient httpClient = new HttpClient();
@@ -151,7 +158,8 @@ public class JavaVersionServletTest {
     }
 
     @Test
-    public void testWindowsJava1_4() throws Exception {
+    public void testWindowsJava1_4()
+            throws Exception {
 
         // setup
         HttpClient httpClient = new HttpClient();
@@ -171,7 +179,8 @@ public class JavaVersionServletTest {
     }
 
     @Test
-    public void testRegExpression() throws Exception {
+    public void testRegExpression()
+            throws Exception {
 
         assertTrue(Pattern.matches(JavaVersionServlet.JAVA_VERSION_REG_EXPR, "1.6.0_04"));
         assertTrue(Pattern.matches(JavaVersionServlet.JAVA_VERSION_REG_EXPR, "1.5.0_12"));

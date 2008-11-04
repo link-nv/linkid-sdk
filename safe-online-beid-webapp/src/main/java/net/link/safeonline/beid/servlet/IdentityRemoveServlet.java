@@ -45,8 +45,8 @@ public class IdentityRemoveServlet extends AbstractStatementServlet {
 
 
     @Override
-    protected void processStatement(byte[] statementData, HttpSession session, HttpServletResponse response) throws ServletException,
-                                                                                                            IOException {
+    protected void processStatement(byte[] statementData, HttpSession session, HttpServletResponse response)
+            throws ServletException, IOException {
 
         String sessionId = session.getId();
         LOG.debug("session Id: " + sessionId);

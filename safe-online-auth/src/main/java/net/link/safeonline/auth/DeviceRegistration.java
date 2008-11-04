@@ -26,6 +26,7 @@ public interface DeviceRegistration {
 
     public static final String JNDI_BINDING = AuthenticationConstants.JNDI_PREFIX + "DeviceRegistrationBean/local";
 
+
     /*
      * Accessors.
      */
@@ -42,14 +43,17 @@ public interface DeviceRegistration {
     /*
      * Actions.
      */
-    String deviceNext() throws IOException, DeviceNotFoundException;
+    String deviceNext()
+            throws IOException, DeviceNotFoundException;
 
-    String passwordNext() throws SubjectNotFoundException, DeviceNotFoundException, DeviceDisabledException;
+    String passwordNext()
+            throws SubjectNotFoundException, DeviceNotFoundException, DeviceDisabledException;
 
     /*
      * Factories
      */
-    List<SelectItem> applicationDevicesFactory() throws ApplicationNotFoundException, EmptyDevicePolicyException;
+    List<SelectItem> applicationDevicesFactory()
+            throws ApplicationNotFoundException, EmptyDevicePolicyException;
 
     /*
      * Lifecycle.

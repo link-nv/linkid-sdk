@@ -18,7 +18,8 @@ public class EqualValidator implements Validator {
     private static final Log LOG = LogFactory.getLog(EqualValidator.class);
 
 
-    public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
+    public void validate(FacesContext context, UIComponent component, Object value)
+            throws ValidatorException {
 
         String confirm = (String) value;
 

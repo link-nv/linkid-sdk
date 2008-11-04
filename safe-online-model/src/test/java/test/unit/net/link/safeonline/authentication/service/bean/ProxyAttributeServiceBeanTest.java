@@ -67,7 +67,8 @@ public class ProxyAttributeServiceBeanTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.testedInstance = new ProxyAttributeServiceBean();
 
@@ -91,12 +92,14 @@ public class ProxyAttributeServiceBeanTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
     }
 
     @Test
-    public void findCachedStringAttribute() throws Exception {
+    public void findCachedStringAttribute()
+            throws Exception {
 
         // setup
         String userId = UUID.randomUUID().toString();
@@ -134,7 +137,8 @@ public class ProxyAttributeServiceBeanTest {
     }
 
     @Test
-    public void findExpiredCachedExternalStringAttribute() throws Exception {
+    public void findExpiredCachedExternalStringAttribute()
+            throws Exception {
 
         // setup
         String userId = UUID.randomUUID().toString();
@@ -183,7 +187,8 @@ public class ProxyAttributeServiceBeanTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void findCachedCompoundAttribute() throws Exception {
+    public void findCachedCompoundAttribute()
+            throws Exception {
 
         // setup
         String userId = UUID.randomUUID().toString();
@@ -290,7 +295,8 @@ public class ProxyAttributeServiceBeanTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void findCachedCompoundAttributeButMemberExpired() throws Exception {
+    public void findCachedCompoundAttributeButMemberExpired()
+            throws Exception {
 
         // setup
         String userId = UUID.randomUUID().toString();
@@ -443,7 +449,8 @@ public class ProxyAttributeServiceBeanTest {
     }
 
     @Test
-    public void findExternalStringAttributeAndCache() throws Exception {
+    public void findExternalStringAttributeAndCache()
+            throws Exception {
 
         // setup
         String userId = UUID.randomUUID().toString();
@@ -487,7 +494,8 @@ public class ProxyAttributeServiceBeanTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void findExternalCompoundAttribute() throws Exception {
+    public void findExternalCompoundAttribute()
+            throws Exception {
 
         // setup
         String userId = UUID.randomUUID().toString();
@@ -557,7 +565,8 @@ public class ProxyAttributeServiceBeanTest {
     }
 
     @Test
-    public void findExternalStringAttribute() throws Exception {
+    public void findExternalStringAttribute()
+            throws Exception {
 
         // setup
         String userId = UUID.randomUUID().toString();
@@ -593,7 +602,8 @@ public class ProxyAttributeServiceBeanTest {
     }
 
     @Test
-    public void findExternalBooleanAttribute() throws Exception {
+    public void findExternalBooleanAttribute()
+            throws Exception {
 
         // setup
         String userId = UUID.randomUUID().toString();
@@ -629,7 +639,8 @@ public class ProxyAttributeServiceBeanTest {
     }
 
     @Test
-    public void findExternalDateAttribute() throws Exception {
+    public void findExternalDateAttribute()
+            throws Exception {
 
         // setup
         String userId = UUID.randomUUID().toString();
@@ -665,7 +676,8 @@ public class ProxyAttributeServiceBeanTest {
     }
 
     @Test
-    public void findExternalDoubleAttribute() throws Exception {
+    public void findExternalDoubleAttribute()
+            throws Exception {
 
         // setup
         String userId = UUID.randomUUID().toString();
@@ -701,7 +713,8 @@ public class ProxyAttributeServiceBeanTest {
     }
 
     @Test
-    public void findExternalIntegerAttribute() throws Exception {
+    public void findExternalIntegerAttribute()
+            throws Exception {
 
         // setup
         String userId = UUID.randomUUID().toString();
@@ -739,9 +752,8 @@ public class ProxyAttributeServiceBeanTest {
 
     static class TestPluginService implements PluginAttributeService {
 
-        public List<Attribute> getAttribute(String userId, String attributeName, String configuration) throws UnsupportedDataTypeException,
-                                                                                                      AttributeNotFoundException,
-                                                                                                      AttributeTypeNotFoundException {
+        public List<Attribute> getAttribute(String userId, String attributeName, String configuration)
+                throws UnsupportedDataTypeException, AttributeNotFoundException, AttributeTypeNotFoundException {
 
             List<Attribute> testAttribute = new LinkedList<Attribute>();
 

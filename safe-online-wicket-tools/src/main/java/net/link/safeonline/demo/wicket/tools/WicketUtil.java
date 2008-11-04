@@ -150,7 +150,8 @@ public abstract class WicketUtil {
      * @throws ServletException
      *             If the user has not yet authenticated.
      */
-    public static String getUserId(Request request) throws ServletException {
+    public static String getUserId(Request request)
+            throws ServletException {
 
         return LoginManager.getUserId(toServletRequest(request));
     }

@@ -20,5 +20,7 @@ public interface UserRegistrationManager extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/UserRegistrationManagerBean/local";
 
-    SubjectEntity registerUser(String username) throws ExistingUserException, AttributeTypeNotFoundException;
+
+    SubjectEntity registerUser(String username)
+            throws ExistingUserException, AttributeTypeNotFoundException;
 }

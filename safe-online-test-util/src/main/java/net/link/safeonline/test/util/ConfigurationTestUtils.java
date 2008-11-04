@@ -20,7 +20,8 @@ public class ConfigurationTestUtils {
     private static final Log LOG = LogFactory.getLog(ConfigurationTestUtils.class);
 
 
-    public static void configure(Object target, String name, Object value) throws Exception {
+    public static void configure(Object target, String name, Object value)
+            throws Exception {
 
         Field[] fields = target.getClass().getDeclaredFields();
 

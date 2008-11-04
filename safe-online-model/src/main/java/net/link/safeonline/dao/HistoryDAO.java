@@ -30,6 +30,7 @@ public interface HistoryDAO extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/HistoryDAOBean/local";
 
+
     HistoryEntity addHistoryEntry(Date when, SubjectEntity subject, HistoryEventType event, Map<String, String> properties);
 
     HistoryEntity addHistoryEntry(SubjectEntity subject, HistoryEventType event, Map<String, String> properties);

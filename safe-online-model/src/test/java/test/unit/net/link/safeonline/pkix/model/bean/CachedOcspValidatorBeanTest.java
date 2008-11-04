@@ -39,7 +39,8 @@ public class CachedOcspValidatorBeanTest extends TestCase {
 
 
     @Override
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         super.setUp();
 
@@ -54,12 +55,14 @@ public class CachedOcspValidatorBeanTest extends TestCase {
     }
 
     @Override
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         super.tearDown();
     }
 
-    public void testValid() throws Exception {
+    public void testValid()
+            throws Exception {
 
         // setup
         URI ocspUri = new URI("http://test.ocsp.responder/");
@@ -96,7 +99,8 @@ public class CachedOcspValidatorBeanTest extends TestCase {
         assertEquals(OcspResult.GOOD, secondLookup);
     }
 
-    public void testRevoked() throws Exception {
+    public void testRevoked()
+            throws Exception {
 
         // setup
         URI ocspUri = new URI("http://test.ocsp.responder/");
@@ -133,7 +137,8 @@ public class CachedOcspValidatorBeanTest extends TestCase {
         assertEquals(OcspResult.REVOKED, secondLookup);
     }
 
-    public void testFailed() throws Exception {
+    public void testFailed()
+            throws Exception {
 
         // setup
         URI ocspUri = new URI("http://test.ocsp.responder/");
@@ -164,7 +169,8 @@ public class CachedOcspValidatorBeanTest extends TestCase {
         assertEquals(OcspResult.FAILED, secondLookup);
     }
 
-    public void testExpiredValid() throws Exception {
+    public void testExpiredValid()
+            throws Exception {
 
         // setup
         URI ocspUri = new URI("http://test.ocsp.responder/");
@@ -203,7 +209,8 @@ public class CachedOcspValidatorBeanTest extends TestCase {
         assertEquals(OcspResult.GOOD, secondLookup);
     }
 
-    public void testExpiredRevoked() throws Exception {
+    public void testExpiredRevoked()
+            throws Exception {
 
         // setup
         URI ocspUri = new URI("http://test.ocsp.responder/");

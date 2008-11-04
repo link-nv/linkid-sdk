@@ -63,7 +63,8 @@ public class DeviceClassDAOBean implements DeviceClassDAO {
         return this.entityManager.find(DeviceClassEntity.class, deviceClassName);
     }
 
-    public DeviceClassEntity getDeviceClass(String deviceClassName) throws DeviceClassNotFoundException {
+    public DeviceClassEntity getDeviceClass(String deviceClassName)
+            throws DeviceClassNotFoundException {
 
         DeviceClassEntity deviceClass = this.entityManager.find(DeviceClassEntity.class, deviceClassName);
         if (null == deviceClass)
@@ -113,7 +114,7 @@ public class DeviceClassDAOBean implements DeviceClassDAO {
     }
 
     public DeviceClassDescriptionEntity getDescription(DeviceClassDescriptionPK descriptionPK)
-                                                                                              throws DeviceClassDescriptionNotFoundException {
+            throws DeviceClassDescriptionNotFoundException {
 
         DeviceClassDescriptionEntity description = this.entityManager.find(DeviceClassDescriptionEntity.class, descriptionPK);
         if (null == description)

@@ -36,7 +36,8 @@ public abstract class AbstractServiceTest {
 
 
     @Before
-    public void setup() throws Exception {
+    public void setup()
+            throws Exception {
 
         this.testEntityManager = new EntityTestManager();
         this.testEntityManager.setUp(getEntities());
@@ -50,7 +51,8 @@ public abstract class AbstractServiceTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.testEntityManager.tearDown();
     }

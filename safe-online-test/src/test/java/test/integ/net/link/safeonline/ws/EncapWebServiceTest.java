@@ -24,7 +24,8 @@ public class EncapWebServiceTest {
 
 
     @Test
-    public void testActivationWebService() throws Exception {
+    public void testActivationWebService()
+            throws Exception {
 
         String mobile = "+32494575697";
         String orgId = "test1";

@@ -21,6 +21,7 @@ public interface SchedulingDAO extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/SchedulingDAOBean/local";
 
+
     SchedulingEntity findSchedulingByTimerHandle(TimerHandle timerHandle);
 
     SchedulingEntity findSchedulingByName(String name);

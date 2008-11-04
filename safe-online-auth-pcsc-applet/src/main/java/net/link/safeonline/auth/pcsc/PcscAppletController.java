@@ -137,7 +137,8 @@ public class PcscAppletController implements AppletController, PcscSignerLogger 
         this.runtimeContext.showDocument(url);
     }
 
-    private boolean sendStatement(byte[] statement) throws IOException {
+    private boolean sendStatement(byte[] statement)
+            throws IOException {
 
         this.appletView.outputInfoMessage(InfoLevel.NORMAL, this.messages.getString(KEY.SENDING));
         this.appletView.outputDetailMessage("Sending statement...");
@@ -213,7 +214,8 @@ public class PcscAppletController implements AppletController, PcscSignerLogger 
         }
     }
 
-    private Card openCard() throws NoReaderException {
+    private Card openCard()
+            throws NoReaderException {
 
         TerminalFactory factory = TerminalFactory.getDefault();
         this.appletView.outputDetailMessage("terminal factory type: " + factory.getType());

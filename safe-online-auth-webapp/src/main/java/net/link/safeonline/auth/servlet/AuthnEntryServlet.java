@@ -50,12 +50,11 @@ import org.apache.commons.logging.LogFactory;
  * The following servlet init parameters are required:
  * </p>
  * <ul>
- * <li><code>StartUrl</code>: points to the relative/absolute URL to which this servlet will redirect after successful
+ * <li><code>StartUrl</code>: points to the relative/absolute URL to which this servlet will redirect after successful authentication
+ * protocol entry.</li>
+ * <li><code>FirstTimeUrl</code>: points to the relative/absolute URL to which this servlet will redirect after first visit and successful
  * authentication protocol entry.</li>
- * <li><code>FirstTimeUrl</code>: points to the relative/absolute URL to which this servlet will redirect after first
- * visit and successful authentication protocol entry.</li>
- * <li><code>UnsupportedProtocolUrl</code>: will be used to redirect to when an unsupported authentication protocol is
- * encountered.</li>
+ * <li><code>UnsupportedProtocolUrl</code>: will be used to redirect to when an unsupported authentication protocol is encountered.</li>
  * <li><code>ProtocolErrorUrl</code>: will be used to redirect to when an authentication protocol error is encountered.</li>
  * </ul>
  * 
@@ -95,18 +94,21 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
 
 
     @Override
-    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         handleLanding(request, response);
     }
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         handleLanding(request, response);
     }
 
-    private void handleLanding(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void handleLanding(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
 
         /**
          * Wrap the request to use the servlet endpoint url. To prevent failure when behind a reverse proxy or loadbalancer when opensaml is
@@ -135,7 +137,7 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
         Locale language = protocolContext.getLanguage();
         Integer color = protocolContext.getColor();
         Boolean minimal = protocolContext.getMinimal();
-        
+
         if (null != language) {
             Cookie authLanguageCookie = new Cookie(SafeOnlineCookies.AUTH_LANGUAGE_COOKIE, language.getLanguage());
             authLanguageCookie.setPath(this.cookiePath);

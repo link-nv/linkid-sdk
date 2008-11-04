@@ -50,8 +50,8 @@ public class PasswordManagerBean implements PasswordManager {
     private AttributeTypeDAO    attributeTypeDAO;
 
 
-    public void changePassword(SubjectEntity subject, String oldPassword, String newPassword) throws PermissionDeniedException,
-                                                                                             DeviceNotFoundException {
+    public void changePassword(SubjectEntity subject, String oldPassword, String newPassword)
+            throws PermissionDeniedException, DeviceNotFoundException {
 
         if (isPasswordConfigured(subject)) {
             if (!validatePassword(subject, oldPassword))
@@ -61,7 +61,8 @@ public class PasswordManagerBean implements PasswordManager {
         setPasswordWithForce(subject, newPassword);
     }
 
-    public void setPassword(SubjectEntity subject, String password) throws PermissionDeniedException {
+    public void setPassword(SubjectEntity subject, String password)
+            throws PermissionDeniedException {
 
         if (isPasswordConfigured(subject))
             throw new PermissionDeniedException("password already configured");
@@ -117,13 +118,15 @@ public class PasswordManagerBean implements PasswordManager {
         }
     }
 
-    public boolean isDisabled(SubjectEntity subject) throws DeviceNotFoundException {
+    public boolean isDisabled(SubjectEntity subject)
+            throws DeviceNotFoundException {
 
         Password password = getPasswordAttribute(subject);
         return password.disabled.getBooleanValue();
     }
 
-    public boolean validatePassword(SubjectEntity subject, String password) throws DeviceNotFoundException {
+    public boolean validatePassword(SubjectEntity subject, String password)
+            throws DeviceNotFoundException {
 
         // get current password
         Password expectedPassword = getPasswordAttribute(subject);
@@ -150,7 +153,8 @@ public class PasswordManagerBean implements PasswordManager {
         return false;
     }
 
-    private Password getPasswordAttribute(SubjectEntity subject) throws DeviceNotFoundException {
+    private Password getPasswordAttribute(SubjectEntity subject)
+            throws DeviceNotFoundException {
 
         AttributeEntity passwordHashAttribute = this.attributeDAO.findAttribute(SafeOnlineConstants.PASSWORD_HASH_ATTRIBUTE, subject);
         AttributeEntity passwordSeedAttribute = this.attributeDAO.findAttribute(SafeOnlineConstants.PASSWORD_SEED_ATTRIBUTE, subject);
@@ -182,7 +186,8 @@ public class PasswordManagerBean implements PasswordManager {
         return true;
     }
 
-    public void removePassword(SubjectEntity subject, String password) throws DeviceNotFoundException, PermissionDeniedException {
+    public void removePassword(SubjectEntity subject, String password)
+            throws DeviceNotFoundException, PermissionDeniedException {
 
         if (!validatePassword(subject, password))
             throw new PermissionDeniedException("password mismatch");
@@ -198,7 +203,8 @@ public class PasswordManagerBean implements PasswordManager {
      * {@inheritDoc}
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void disablePassword(SubjectEntity subject, boolean disable) throws DeviceNotFoundException {
+    public void disablePassword(SubjectEntity subject, boolean disable)
+            throws DeviceNotFoundException {
 
         Password password = getPasswordAttribute(subject);
         password.disabled.setBooleanValue(disable);
@@ -227,7 +233,8 @@ public class PasswordManagerBean implements PasswordManager {
     }
 
 
-    private static String hash(String input, String seed, String algorithm) throws NoSuchAlgorithmException {
+    private static String hash(String input, String seed, String algorithm)
+            throws NoSuchAlgorithmException {
 
         String toHash = input + seed;
         byte[] plainText = null;

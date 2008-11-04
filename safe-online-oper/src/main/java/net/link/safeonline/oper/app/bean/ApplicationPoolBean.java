@@ -204,7 +204,8 @@ public class ApplicationPoolBean implements ApplicationPool {
      * {@inheritDoc}
      */
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public String remove() throws ApplicationPoolNotFoundException {
+    public String remove()
+            throws ApplicationPoolNotFoundException {
 
         String applicationPoolName = this.selectedApplicationPool.getName();
         LOG.debug("remove application pool: " + applicationPoolName);
@@ -224,7 +225,8 @@ public class ApplicationPoolBean implements ApplicationPool {
      * {@inheritDoc}
      */
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public String save() throws ApplicationPoolNotFoundException, ApplicationNotFoundException {
+    public String save()
+            throws ApplicationPoolNotFoundException, ApplicationNotFoundException {
 
         String applicationPoolName = this.selectedApplicationPool.getName();
         LOG.debug("save application pool: " + applicationPoolName);
@@ -262,7 +264,8 @@ public class ApplicationPoolBean implements ApplicationPool {
      * {@inheritDoc}
      */
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public String add() throws ApplicationPoolNotFoundException, ApplicationNotFoundException {
+    public String add()
+            throws ApplicationPoolNotFoundException, ApplicationNotFoundException {
 
         LOG.debug("add application pool: " + this.name);
 

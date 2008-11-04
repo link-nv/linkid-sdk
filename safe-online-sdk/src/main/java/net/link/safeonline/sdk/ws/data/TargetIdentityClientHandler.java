@@ -107,7 +107,8 @@ public class TargetIdentityClientHandler implements SOAPHandler<SOAPMessageConte
         return true;
     }
 
-    private void addTargetIdentityHeader(SOAPHeader soapHeader, SOAPMessageContext soapContext) throws SOAPException, JAXBException {
+    private void addTargetIdentityHeader(SOAPHeader soapHeader, SOAPMessageContext soapContext)
+            throws SOAPException, JAXBException {
 
         if (null == this.targetIdentity)
             throw new IllegalStateException("TargetIdentity is null");

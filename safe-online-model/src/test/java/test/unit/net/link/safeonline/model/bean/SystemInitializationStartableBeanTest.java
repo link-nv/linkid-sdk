@@ -27,7 +27,8 @@ import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
 public class SystemInitializationStartableBeanTest extends TestCase {
 
-    public void testPostStart() throws Exception {
+    public void testPostStart()
+            throws Exception {
 
         // setup
         EntityTestManager entityTestManager = new EntityTestManager();

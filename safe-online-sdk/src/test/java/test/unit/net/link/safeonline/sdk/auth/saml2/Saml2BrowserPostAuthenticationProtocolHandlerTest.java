@@ -80,7 +80,8 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.jndiTestUtils = new JndiTestUtils();
         this.jndiTestUtils.setUp();
@@ -108,7 +109,8 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.jndiTestUtils.tearDown();
         this.webServiceTestUtils.tearDown();
@@ -157,7 +159,8 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
         }
 
         @Override
-        protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        protected void doGet(HttpServletRequest request, HttpServletResponse response)
+                throws ServletException, IOException {
 
             KeyPair keyPair;
             try {
@@ -168,9 +171,12 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
 
             Map<String, String> configParams = Collections.singletonMap("WsLocation", this.wsLocation);
             AuthenticationProtocolHandler authenticationProtocolHandler = AuthenticationProtocolManager
-                    .createAuthenticationProtocolHandler(AuthenticationProtocol.SAML2_BROWSER_POST,
-                            "http://test.authn.service", "test-application", null, keyPair, null, false, configParams,
-                            request);
+                                                                                                       .createAuthenticationProtocolHandler(
+                                                                                                               AuthenticationProtocol.SAML2_BROWSER_POST,
+                                                                                                               "http://test.authn.service",
+                                                                                                               "test-application", null,
+                                                                                                               keyPair, null, false,
+                                                                                                               configParams, request);
             authenticationProtocolHandler.initiateAuthentication(request, response, "http://target", null, null, null);
         }
     }
@@ -192,7 +198,8 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
 
         @SuppressWarnings("unchecked")
         @Override
-        protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        protected void doPost(HttpServletRequest request, HttpServletResponse response)
+                throws ServletException, IOException {
 
             srtLOG.debug("doPost");
             KeyPair keyPair;
@@ -238,7 +245,8 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
 
 
     @Test
-    public void doGet() throws Exception {
+    public void doGet()
+            throws Exception {
 
         // setup
         LOG.debug("test doGet");
@@ -259,7 +267,8 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
     }
 
     @Test
-    public void defaultVelocityMacroResource() throws Exception {
+    public void defaultVelocityMacroResource()
+            throws Exception {
 
         // operate
         URL result = Saml2BrowserPostAuthenticationProtocolHandler.class
@@ -270,7 +279,8 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
     }
 
     @Test
-    public void testResponseHandling() throws Exception {
+    public void testResponseHandling()
+            throws Exception {
 
         // setup
         HttpClient httpClient = new HttpClient();

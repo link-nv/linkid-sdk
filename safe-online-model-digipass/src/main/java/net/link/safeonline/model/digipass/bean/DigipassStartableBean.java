@@ -32,9 +32,9 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = DigipassStartableBean.JNDI_BINDING)
 public class DigipassStartableBean extends AbstractInitBean {
 
-    public static final String JNDI_BINDING           = DigipassConstants.DIGIPASS_STARTABLE_JNDI_PREFIX + "DigipassStartableBean";
+    public static final String JNDI_BINDING = DigipassConstants.DIGIPASS_STARTABLE_JNDI_PREFIX + "DigipassStartableBean";
 
-    private static final Log LOG = LogFactory.getLog(DigipassStartableBean.class);
+    private static final Log   LOG          = LogFactory.getLog(DigipassStartableBean.class);
 
 
     public DigipassStartableBean() {

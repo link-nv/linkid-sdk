@@ -33,7 +33,8 @@ public class SimpleMessageRenderer extends HtmlBasicRenderer {
     // ---------------------------------------------------------- Public Methods
 
     @Override
-    public void encodeBegin(FacesContext context, UIComponent component) throws IOException {
+    public void encodeBegin(FacesContext context, UIComponent component)
+            throws IOException {
 
         if (context == null)
             throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context"));
@@ -48,7 +49,8 @@ public class SimpleMessageRenderer extends HtmlBasicRenderer {
     }
 
     @Override
-    public void encodeChildren(FacesContext context, UIComponent component) throws IOException {
+    public void encodeChildren(FacesContext context, UIComponent component)
+            throws IOException {
 
         if (context == null)
             throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID, "context"));
@@ -64,7 +66,8 @@ public class SimpleMessageRenderer extends HtmlBasicRenderer {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
+    public void encodeEnd(FacesContext context, UIComponent component)
+            throws IOException {
 
         Iterator messageIter = null;
         FacesMessage curMessage = null;

@@ -38,7 +38,8 @@ public class JndiTestUtils {
         this.components = new HashMap<String, Object>();
     }
 
-    public void bindComponent(String jndiName, Object component) throws NamingException {
+    public void bindComponent(String jndiName, Object component)
+            throws NamingException {
 
         LOG.debug("bind component: " + jndiName);
         this.components.put(jndiName, component);
@@ -77,7 +78,8 @@ public class JndiTestUtils {
      * 
      * @throws NamingException
      */
-    public void tearDown() throws NamingException {
+    public void tearDown()
+            throws NamingException {
 
         InitialContext initialContext = new InitialContext();
         for (String name : this.components.keySet()) {

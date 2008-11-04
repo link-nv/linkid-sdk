@@ -18,6 +18,7 @@ public interface DeviceClass {
 
     public static final String JNDI_BINDING = OperatorConstants.JNDI_PREFIX + "DeviceClassBean/local";
 
+
     /*
      * Actions
      */
@@ -27,7 +28,8 @@ public interface DeviceClass {
 
     String edit();
 
-    String save() throws DeviceClassNotFoundException;
+    String save()
+            throws DeviceClassNotFoundException;
 
     String remove();
 

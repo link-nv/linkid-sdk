@@ -50,7 +50,8 @@ public class LogoutRequestFactoryTest {
 
 
     @Test
-    public void createLogoutRequest() throws Exception {
+    public void createLogoutRequest()
+            throws Exception {
 
         // setup
         String subjectName = UUID.randomUUID().toString();

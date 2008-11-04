@@ -20,6 +20,7 @@ public interface ProxyAttributeService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ProxyAttributeServiceBean/local";
 
+
     /**
      * Fetches an attribute from the specified subject ID.
      * 
@@ -30,6 +31,6 @@ public interface ProxyAttributeService extends SafeOnlineService {
      * @throws AttributeUnavailableException
      * @throws SubjectNotFoundException
      */
-    Object findAttributeValue(String userId, String attributeName) throws PermissionDeniedException, AttributeTypeNotFoundException,
-                                                                  AttributeUnavailableException, SubjectNotFoundException;
+    Object findAttributeValue(String userId, String attributeName)
+            throws PermissionDeniedException, AttributeTypeNotFoundException, AttributeUnavailableException, SubjectNotFoundException;
 }

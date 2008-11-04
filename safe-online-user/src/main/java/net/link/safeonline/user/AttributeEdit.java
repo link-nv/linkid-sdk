@@ -18,6 +18,7 @@ public interface AttributeEdit {
 
     public static final String JNDI_BINDING = UserConstants.JNDI_PREFIX + "AttributeEditBean/local";
 
+
     /*
      * Lifecycle.
      */
@@ -26,10 +27,12 @@ public interface AttributeEdit {
     /*
      * Actions.
      */
-    String save() throws AttributeTypeNotFoundException;
+    String save()
+            throws AttributeTypeNotFoundException;
 
     /*
      * Factories.
      */
-    void attributeEditContextFactory() throws AttributeTypeNotFoundException;
+    void attributeEditContextFactory()
+            throws AttributeTypeNotFoundException;
 }

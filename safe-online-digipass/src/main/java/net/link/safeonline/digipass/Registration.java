@@ -21,6 +21,7 @@ public interface Registration {
 
     public static final String JNDI_BINDING = DigipassConstants.JNDI_PREFIX + "RegistrationBean/local";
 
+
     /*
      * Accessors.
      */
@@ -35,8 +36,8 @@ public interface Registration {
     /*
      * Actions.
      */
-    String register() throws PermissionDeniedException, SubjectNotFoundException, ArgumentIntegrityException,
-                     AttributeTypeNotFoundException;
+    String register()
+            throws PermissionDeniedException, SubjectNotFoundException, ArgumentIntegrityException, AttributeTypeNotFoundException;
 
     /*
      * Factories

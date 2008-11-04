@@ -81,7 +81,8 @@ public class AttributeDescriptionBean implements AttributeDescription {
 
     @Factory(ATTRIBUTE_TYPE_DESCRIPTION_NAME)
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public void attributeTypeDescriptionsFactory() throws AttributeTypeNotFoundException {
+    public void attributeTypeDescriptionsFactory()
+            throws AttributeTypeNotFoundException {
 
         String attributeTypeName = this.selectedAttributeType.getName();
         LOG.debug("attrib type descr factory: " + attributeTypeName);
@@ -111,7 +112,8 @@ public class AttributeDescriptionBean implements AttributeDescription {
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public String add() throws AttributeTypeNotFoundException {
+    public String add()
+            throws AttributeTypeNotFoundException {
 
         LOG.debug("add: " + this.newAttributeTypeDescription);
         String attributeTypeName = this.selectedAttributeType.getName();
@@ -124,7 +126,8 @@ public class AttributeDescriptionBean implements AttributeDescription {
 
     @End
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public String removeDescription() throws AttributeTypeDescriptionNotFoundException, AttributeTypeNotFoundException {
+    public String removeDescription()
+            throws AttributeTypeDescriptionNotFoundException, AttributeTypeNotFoundException {
 
         LOG.debug("remove: " + this.selectedAttributeTypeDescription);
         this.attributeTypeService.removeDescription(this.selectedAttributeTypeDescription);

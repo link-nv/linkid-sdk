@@ -36,14 +36,16 @@ public class BufferedServletOutputStream extends ServletOutputStream {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close()
+            throws IOException {
 
         this.buffer.close();
         super.close();
     }
 
     @Override
-    public void flush() throws IOException {
+    public void flush()
+            throws IOException {
 
         this.buffer.flush();
     }
@@ -55,7 +57,8 @@ public class BufferedServletOutputStream extends ServletOutputStream {
     }
 
     @Override
-    public void write(byte[] b) throws IOException {
+    public void write(byte[] b)
+            throws IOException {
 
         this.buffer.write(b);
     }

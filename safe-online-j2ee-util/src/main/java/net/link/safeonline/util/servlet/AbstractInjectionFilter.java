@@ -50,7 +50,8 @@ public abstract class AbstractInjectionFilter implements Filter {
     protected Map<String, String> configParams;
 
 
-    public void init(FilterConfig config) throws ServletException {
+    public void init(FilterConfig config)
+            throws ServletException {
 
         initInitParameters(config);
         initContextParameters(config);
@@ -58,7 +59,8 @@ public abstract class AbstractInjectionFilter implements Filter {
     }
 
     @SuppressWarnings("unchecked")
-    private void injectEjbs() throws ServletException {
+    private void injectEjbs()
+            throws ServletException {
 
         Field[] fields = this.getClass().getDeclaredFields();
         for (Field field : fields) {
@@ -88,7 +90,8 @@ public abstract class AbstractInjectionFilter implements Filter {
     }
 
     @SuppressWarnings("unchecked")
-    private void initInitParameters(FilterConfig config) throws ServletException {
+    private void initInitParameters(FilterConfig config)
+            throws ServletException {
 
         Field[] fields = this.getClass().getDeclaredFields();
         for (Field field : fields) {
@@ -133,7 +136,8 @@ public abstract class AbstractInjectionFilter implements Filter {
         }
     }
 
-    private void initContextParameters(FilterConfig config) throws ServletException {
+    private void initContextParameters(FilterConfig config)
+            throws ServletException {
 
         Field[] fields = this.getClass().getDeclaredFields();
         for (Field field : fields) {

@@ -129,7 +129,8 @@ public class AttributeDAOBean implements AttributeDAO {
         attribute.setBooleanValue(booleanValue);
     }
 
-    public AttributeEntity getAttribute(String attributeTypeName, SubjectEntity subject) throws AttributeNotFoundException {
+    public AttributeEntity getAttribute(String attributeTypeName, SubjectEntity subject)
+            throws AttributeNotFoundException {
 
         AttributeEntity attribute = findAttribute(attributeTypeName, subject);
         if (null == attribute)
@@ -137,7 +138,8 @@ public class AttributeDAOBean implements AttributeDAO {
         return attribute;
     }
 
-    public AttributeEntity getAttribute(String attributeTypeName, SubjectEntity subject, long index) throws AttributeNotFoundException {
+    public AttributeEntity getAttribute(String attributeTypeName, SubjectEntity subject, long index)
+            throws AttributeNotFoundException {
 
         AttributeEntity attribute = findAttribute(attributeTypeName, subject, index);
         if (null == attribute)
@@ -151,7 +153,8 @@ public class AttributeDAOBean implements AttributeDAO {
         return attribute;
     }
 
-    public AttributeEntity getAttribute(AttributeTypeEntity attributeType, SubjectEntity subject) throws AttributeNotFoundException {
+    public AttributeEntity getAttribute(AttributeTypeEntity attributeType, SubjectEntity subject)
+            throws AttributeNotFoundException {
 
         AttributeEntity attribute = this.entityManager.find(AttributeEntity.class, new AttributePK(attributeType, subject));
         if (null == attribute)
@@ -166,7 +169,7 @@ public class AttributeDAOBean implements AttributeDAO {
     }
 
     public AttributeEntity getAttribute(AttributeTypeEntity attributeType, SubjectEntity subject, long index)
-                                                                                                             throws AttributeNotFoundException {
+            throws AttributeNotFoundException {
 
         AttributePK pk = new AttributePK(attributeType, subject, index);
         AttributeEntity attribute = this.entityManager.find(AttributeEntity.class, pk);

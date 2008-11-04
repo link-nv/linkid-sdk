@@ -61,7 +61,8 @@ public class DeviceLandingServletTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.mockDeviceOperationService = createMock(DeviceOperationService.class);
 
@@ -81,13 +82,15 @@ public class DeviceLandingServletTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.servletTestManager.tearDown();
     }
 
     @Test
-    public void getNotAllowed() throws Exception {
+    public void getNotAllowed()
+            throws Exception {
 
         // setup
         GetMethod getMethod = new GetMethod(this.location);
@@ -101,7 +104,8 @@ public class DeviceLandingServletTest {
     }
 
     @Test
-    public void deviceOperationFailed() throws Exception {
+    public void deviceOperationFailed()
+            throws Exception {
 
         // setup
         PostMethod postMethod = new PostMethod(this.location);
@@ -126,7 +130,8 @@ public class DeviceLandingServletTest {
     }
 
     @Test
-    public void authenticationSuccess() throws Exception {
+    public void authenticationSuccess()
+            throws Exception {
 
         // setup
         String userId = UUID.randomUUID().toString();

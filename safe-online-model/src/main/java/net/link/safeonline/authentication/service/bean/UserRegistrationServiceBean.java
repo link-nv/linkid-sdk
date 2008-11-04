@@ -55,8 +55,8 @@ public class UserRegistrationServiceBean implements UserRegistrationService, Use
     private ProxyAttributeService   proxyAttributeService;
 
 
-    public SubjectEntity registerUser(String login) throws ExistingUserException, AttributeTypeNotFoundException,
-                                                   PermissionDeniedException, AttributeUnavailableException {
+    public SubjectEntity registerUser(String login)
+            throws ExistingUserException, AttributeTypeNotFoundException, PermissionDeniedException, AttributeUnavailableException {
 
         SubjectEntity subject = this.subjectService.findSubjectFromUserName(login);
         if (null == subject)

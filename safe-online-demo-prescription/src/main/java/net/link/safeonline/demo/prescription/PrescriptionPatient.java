@@ -10,12 +10,11 @@ package net.link.safeonline.demo.prescription;
 import javax.ejb.Local;
 
 
-
-
 @Local
 public interface PrescriptionPatient {
 
     public static final String JNDI_BINDING = "SafeOnlinePrescriptionDemo/PrescriptionPatientBean/local";
+
 
     /*
      * Lifecycle.

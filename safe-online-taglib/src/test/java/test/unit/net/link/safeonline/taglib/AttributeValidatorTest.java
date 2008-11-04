@@ -15,7 +15,8 @@ import org.junit.Test;
 public class AttributeValidatorTest {
 
     @Test
-    public void instance() throws Exception {
+    public void instance()
+            throws Exception {
 
         new AttributeValidator();
     }

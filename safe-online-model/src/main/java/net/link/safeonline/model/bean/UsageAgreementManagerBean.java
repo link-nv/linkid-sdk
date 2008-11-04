@@ -34,7 +34,8 @@ public class UsageAgreementManagerBean implements UsageAgreementManager {
     private UsageAgreementDAO usageAgreementDAO;
 
 
-    public void setUsageAgreement(ApplicationEntity application, Long usageAgreementVersion) throws UsageAgreementNotFoundException {
+    public void setUsageAgreement(ApplicationEntity application, Long usageAgreementVersion)
+            throws UsageAgreementNotFoundException {
 
         LOG.debug("set usage agreement for application: " + application.getName() + " to version: " + usageAgreementVersion);
         this.usageAgreementDAO.findUsageAgreement(application, usageAgreementVersion);

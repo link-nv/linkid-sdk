@@ -32,7 +32,8 @@ public class StatisticDataPointDAOBeanTest extends TestCase {
 
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp()
+            throws Exception {
 
         super.setUp();
         this.entityTestManager = new EntityTestManager();
@@ -53,7 +54,8 @@ public class StatisticDataPointDAOBeanTest extends TestCase {
     }
 
     @Override
-    protected void tearDown() throws Exception {
+    protected void tearDown()
+            throws Exception {
 
         this.entityTestManager.tearDown();
         super.tearDown();

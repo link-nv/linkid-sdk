@@ -48,7 +48,8 @@ public class AuthnRequestFilterTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.originalContextClassLoader = Thread.currentThread().getContextClassLoader();
         this.testClassLoader = new TestClassLoader();
@@ -57,7 +58,8 @@ public class AuthnRequestFilterTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.servletTestManager.tearDown();
         Thread.currentThread().setContextClassLoader(this.originalContextClassLoader);
@@ -70,7 +72,8 @@ public class AuthnRequestFilterTest {
 
 
         @Override
-        protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+        protected void doGet(HttpServletRequest request, HttpServletResponse response)
+                throws ServletException {
 
             throw new ServletException("should never get called");
         }
@@ -78,7 +81,8 @@ public class AuthnRequestFilterTest {
 
 
     @Test
-    public void performSaml2AuthnRequest() throws Exception {
+    public void performSaml2AuthnRequest()
+            throws Exception {
 
         // setup
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
@@ -114,7 +118,8 @@ public class AuthnRequestFilterTest {
     }
 
     @Test
-    public void performSaml2AuthnRequestWithCustomTemplate() throws Exception {
+    public void performSaml2AuthnRequestWithCustomTemplate()
+            throws Exception {
 
         // setup
         KeyPair keyPair = PkiTestUtils.generateKeyPair();

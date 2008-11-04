@@ -116,7 +116,8 @@ public class ApplicationOwnerBean implements ApplicationOwner {
             @Error(exceptionClass = SubjectNotFoundException.class, messageId = "errorSubjectNotFound", fieldId = "login"),
             @Error(exceptionClass = ExistingApplicationOwnerException.class, messageId = "errorApplicationOwnerAlreadyExists", fieldId = "name"),
             @Error(exceptionClass = ExistingApplicationAdminException.class, messageId = "errorApplicationAdminAlreadyExists", fieldId = "login") })
-    public String add() throws SubjectNotFoundException, ExistingApplicationOwnerException, ExistingApplicationAdminException {
+    public String add()
+            throws SubjectNotFoundException, ExistingApplicationOwnerException, ExistingApplicationAdminException {
 
         LOG.debug("add");
         this.applicationService.registerApplicationOwner(this.name, this.login);
@@ -124,8 +125,8 @@ public class ApplicationOwnerBean implements ApplicationOwner {
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public String remove() throws SubscriptionNotFoundException, SubjectNotFoundException, ApplicationOwnerNotFoundException,
-                          PermissionDeniedException {
+    public String remove()
+            throws SubscriptionNotFoundException, SubjectNotFoundException, ApplicationOwnerNotFoundException, PermissionDeniedException {
 
         LOG.debug("remove");
         this.applicationService.removeApplicationOwner(this.selectedApplicationOwner.getEntity().getName(),

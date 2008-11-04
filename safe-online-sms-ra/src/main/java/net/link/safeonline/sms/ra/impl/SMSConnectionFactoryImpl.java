@@ -35,7 +35,8 @@ public class SMSConnectionFactoryImpl implements SMSConnectionFactory {
         this.smsManagedConnectionFactory = smsManagedConnectionFactory;
     }
 
-    public SMSConnection getConnection() throws NamingException {
+    public SMSConnection getConnection()
+            throws NamingException {
 
         LOG.debug("Getting connection");
         SMSConnection smsConnection = null;

@@ -26,6 +26,7 @@ public interface IdentityConfirmation {
 
     public static final String JNDI_BINDING = AuthenticationConstants.JNDI_PREFIX + "IdentityConfirmationBean/local";
 
+
     /*
      * Accessors
      */
@@ -34,8 +35,9 @@ public interface IdentityConfirmation {
     /*
      * Actions.
      */
-    String agree() throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException,
-                  AttributeTypeNotFoundException, SubscriptionNotFoundException, AttributeUnavailableException;
+    String agree()
+            throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException,
+            AttributeTypeNotFoundException, SubscriptionNotFoundException, AttributeUnavailableException;
 
     /*
      * Lifecycle.
@@ -45,9 +47,10 @@ public interface IdentityConfirmation {
     /*
      * Factory.
      */
-    List<AttributeDO> identityConfirmationListFactory() throws SubscriptionNotFoundException, ApplicationNotFoundException,
-                                                       ApplicationIdentityNotFoundException;
+    List<AttributeDO> identityConfirmationListFactory()
+            throws SubscriptionNotFoundException, ApplicationNotFoundException, ApplicationIdentityNotFoundException;
 
-    List<AttributeDO> identityUnavailableListFactory() throws PermissionDeniedException, AttributeTypeNotFoundException,
-                                                      ApplicationNotFoundException, ApplicationIdentityNotFoundException;
+    List<AttributeDO> identityUnavailableListFactory()
+            throws PermissionDeniedException, AttributeTypeNotFoundException, ApplicationNotFoundException,
+            ApplicationIdentityNotFoundException;
 }

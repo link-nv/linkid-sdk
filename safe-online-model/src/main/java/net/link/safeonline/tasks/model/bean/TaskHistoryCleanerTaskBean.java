@@ -27,7 +27,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 @Configurable
 public class TaskHistoryCleanerTaskBean implements Task {
 
-    public static final String JNDI_BINDING = Task.JNDI_PREFIX + "/TaskHistoryCleanerTaskBean/local";
+    public static final String  JNDI_BINDING      = Task.JNDI_PREFIX + "/TaskHistoryCleanerTaskBean/local";
 
     private static final String name              = "Task history cleaner";
 
@@ -49,7 +49,8 @@ public class TaskHistoryCleanerTaskBean implements Task {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void perform() throws Exception {
+    public void perform()
+            throws Exception {
 
         long ageInMillis = this.configAgeInMillis;
 

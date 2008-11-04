@@ -52,7 +52,8 @@ public class SMSManagedConnectionFactoryImpl implements SMSManagedConnectionFact
     }
 
     public ManagedConnection createManagedConnection(@SuppressWarnings("unused") Subject arg0,
-                                                     @SuppressWarnings("unused") ConnectionRequestInfo arg1) throws ResourceException {
+                                                     @SuppressWarnings("unused") ConnectionRequestInfo arg1)
+            throws ResourceException {
 
         LOG.debug("Creating a managed connection");
         if (this.serialPorts.size() == 0) {

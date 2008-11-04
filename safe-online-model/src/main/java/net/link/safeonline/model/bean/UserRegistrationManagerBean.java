@@ -43,7 +43,8 @@ public class UserRegistrationManagerBean implements UserRegistrationManager {
     private SubscriptionDAO  subscriptionDAO;
 
 
-    public SubjectEntity registerUser(String login) throws ExistingUserException, AttributeTypeNotFoundException {
+    public SubjectEntity registerUser(String login)
+            throws ExistingUserException, AttributeTypeNotFoundException {
 
         LOG.debug("register user: " + login);
         checkExistingUser(login);
@@ -56,7 +57,8 @@ public class UserRegistrationManagerBean implements UserRegistrationManager {
         return newSubject;
     }
 
-    private void checkExistingUser(String login) throws ExistingUserException {
+    private void checkExistingUser(String login)
+            throws ExistingUserException {
 
         SubjectEntity existingSubject = this.subjectService.findSubjectFromUserName(login);
         if (null != existingSubject)

@@ -21,7 +21,8 @@ public class ConnectionManagerTest {
 
 
     @Test
-    public void testConnectionManagerWebService() throws Exception {
+    public void testConnectionManagerWebService()
+            throws Exception {
 
         Endpoint.publish(URL, new ConnectionManagerImpl());
 

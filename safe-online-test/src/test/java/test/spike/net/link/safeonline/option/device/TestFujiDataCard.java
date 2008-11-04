@@ -36,13 +36,15 @@ public class TestFujiDataCard {
 
 
     @BeforeClass
-    public static void setUp() throws Exception {
+    public static void setUp()
+            throws Exception {
 
         card = new FujiDataCard("/dev/tty.GTM HSDPA Control");
     }
 
     @Test
-    public void testIMEI() throws Exception {
+    public void testIMEI()
+            throws Exception {
 
         // test twice in a row
         // lagging output can ruin the second call
@@ -52,7 +54,8 @@ public class TestFujiDataCard {
     }
 
     @Test
-    public void testConnection() throws Exception {
+    public void testConnection()
+            throws Exception {
 
         card.authenticate("3316");
         card.authenticate("3316");

@@ -20,7 +20,8 @@ import org.bouncycastle.asn1.ASN1Object;
 
 public class DERSequenceTest extends TestCase {
 
-    public void testDERSequence() throws Exception {
+    public void testDERSequence()
+            throws Exception {
 
         // setup
         List<DEREncodable> sequenceList = new LinkedList<DEREncodable>();

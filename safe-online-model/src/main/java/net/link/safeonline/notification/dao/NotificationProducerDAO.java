@@ -21,11 +21,13 @@ public interface NotificationProducerDAO extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/NotificationProducerDAOBean/local";
 
+
     NotificationProducerSubscriptionEntity addSubscription(String topic);
 
     NotificationProducerSubscriptionEntity findSubscription(String topic);
 
-    NotificationProducerSubscriptionEntity getSubscription(String topic) throws SubscriptionNotFoundException;
+    NotificationProducerSubscriptionEntity getSubscription(String topic)
+            throws SubscriptionNotFoundException;
 
     List<NotificationProducerSubscriptionEntity> listTopics();
 }

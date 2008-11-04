@@ -53,8 +53,7 @@ public class NotificationConsumerPortImpl implements NotificationConsumerPort {
 
     private void loadDependencies() {
 
-        this.notificationConsumerService = EjbUtils.getEJB(NotificationConsumerService.JNDI_BINDING,
-                NotificationConsumerService.class);
+        this.notificationConsumerService = EjbUtils.getEJB(NotificationConsumerService.JNDI_BINDING, NotificationConsumerService.class);
     }
 
 }

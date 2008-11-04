@@ -53,8 +53,9 @@ public class JmxTestUtils {
      * @throws MBeanRegistrationException
      * @throws NotCompliantMBeanException
      */
-    public void setUp(String mbeanName) throws MalformedObjectNameException, NullPointerException, InstanceAlreadyExistsException,
-                                       MBeanRegistrationException, NotCompliantMBeanException {
+    public void setUp(String mbeanName)
+            throws MalformedObjectNameException, NullPointerException, InstanceAlreadyExistsException, MBeanRegistrationException,
+            NotCompliantMBeanException {
 
         if (null == this.mbeanServer) {
             this.mbeanServer = getMBeanServer();
@@ -66,7 +67,8 @@ public class JmxTestUtils {
         this.mbeanNames.add(mbeanObjectName);
     }
 
-    public void tearDown() throws InstanceNotFoundException, MBeanRegistrationException {
+    public void tearDown()
+            throws InstanceNotFoundException, MBeanRegistrationException {
 
         for (ObjectName mbeanName : this.mbeanNames) {
             this.mbeanServer.unregisterMBean(mbeanName);

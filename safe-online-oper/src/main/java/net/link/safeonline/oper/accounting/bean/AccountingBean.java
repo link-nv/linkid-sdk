@@ -115,7 +115,8 @@ public class AccountingBean implements Accounting {
 
     @Factory(ACCOUNTING_STAT_LIST_NAME)
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void statListFactory() throws PermissionDeniedException {
+    public void statListFactory()
+            throws PermissionDeniedException {
 
         this.log.debug("selectedApplication: " + this.selectedApplication);
         this.statList = this.statisticService.getStatistics(this.selectedApplication);
@@ -138,7 +139,8 @@ public class AccountingBean implements Accounting {
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public String export() throws IOException {
+    public String export()
+            throws IOException {
 
         DateTime dt = new DateTime();
         DateTimeFormatter fmt = DateTimeFormat.forPattern("dd-MM-yyyy_HHmmss");
@@ -154,7 +156,8 @@ public class AccountingBean implements Accounting {
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public String exportStat() throws IOException {
+    public String exportStat()
+            throws IOException {
 
         DateTime dt = new DateTime();
         DateTimeFormatter fmt = DateTimeFormat.forPattern("dd-MM-yyyy_HHmmss");

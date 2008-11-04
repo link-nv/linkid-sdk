@@ -69,7 +69,8 @@ public class PerformanceDriverTest {
         environment.put(Context.INITIAL_CONTEXT_FACTORY, "org.jnp.interfaces.NamingContextFactory");
         environment.put(Context.PROVIDER_URL, "jnp://" + OLAS_HOSTNAME + ":1099");
         try {
-            PerformanceServiceRemote service = (PerformanceServiceRemote) new InitialContext(environment).lookup(PerformanceServiceRemote.JNDI_BINDING);
+            PerformanceServiceRemote service = (PerformanceServiceRemote) new InitialContext(environment)
+                                                                                                         .lookup(PerformanceServiceRemote.JNDI_BINDING);
             testApplicationKey = new KeyStore.PrivateKeyEntry(service.getPrivateKey(), new Certificate[] { service.getCertificate() });
         } catch (Exception e) {
             LOG.error("application keys unavailable; will try local keystore.", e);
@@ -121,7 +122,8 @@ public class PerformanceDriverTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         if (this.entityTestManager.getEntityManager() != null) {
             this.entityTestManager.tearDown();
@@ -129,13 +131,15 @@ public class PerformanceDriverTest {
     }
 
     @Test
-    public void annotationCorrectness() throws Exception {
+    public void annotationCorrectness()
+            throws Exception {
 
         assertNotNull("JPA annotations incorrect?", this.entityTestManager.getEntityManager());
     }
 
     @Test
-    public void testAttrib() throws Exception {
+    public void testAttrib()
+            throws Exception {
 
         // User needs to authenticate before we can get to the attributes.
         String uuid = this.authDriver.login(testApplicationKey, testApplicationName, testUsername, testPassword);
@@ -144,18 +148,21 @@ public class PerformanceDriverTest {
     }
 
     @Test
-    public void testLogin() throws Exception {
+    public void testLogin()
+            throws Exception {
 
         login(testApplicationKey, testApplicationName, testUsername, testPassword);
     }
 
     @Test
-    public void testMapping() throws Exception {
+    public void testMapping()
+            throws Exception {
 
         getUserId(testApplicationKey, testUsername);
     }
 
-    private Map<String, Object> getAttributes(PrivateKeyEntry application, String uuid) throws Exception {
+    private Map<String, Object> getAttributes(PrivateKeyEntry application, String uuid)
+            throws Exception {
 
         // Get attributes for given UUID.
         Map<String, Object> attributes = this.attribDriver.getAttributes(application, uuid);
@@ -171,7 +178,8 @@ public class PerformanceDriverTest {
     /**
      * Get the UUID of the given username for the given application.
      */
-    private String getUserId(PrivateKeyEntry application, String username) throws Exception {
+    private String getUserId(PrivateKeyEntry application, String username)
+            throws Exception {
 
         String uuid = this.idDriver.getUserId(application, username);
 
@@ -188,7 +196,8 @@ public class PerformanceDriverTest {
      * @param testPass2
      * @param applicationKey2
      */
-    private String login(PrivateKeyEntry applicationKey, String applicationName, String username, String password) throws Exception {
+    private String login(PrivateKeyEntry applicationKey, String applicationName, String username, String password)
+            throws Exception {
 
         // Authenticate User.
         String uuid = this.authDriver.login(applicationKey, applicationName, username, password);

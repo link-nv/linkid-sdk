@@ -20,6 +20,7 @@ public interface Attributes {
 
     public static final String JNDI_BINDING = OperatorConstants.JNDI_PREFIX + "AttributesBean/local";
 
+
     /*
      * Accessors
      */
@@ -43,11 +44,14 @@ public interface Attributes {
 
     String remove();
 
-    String removeConfirm() throws AttributeTypeDescriptionNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException;
+    String removeConfirm()
+            throws AttributeTypeDescriptionNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException;
 
-    String savePlugin() throws AttributeTypeNotFoundException;
+    String savePlugin()
+            throws AttributeTypeNotFoundException;
 
-    String saveOlas() throws AttributeTypeNotFoundException;
+    String saveOlas()
+            throws AttributeTypeNotFoundException;
 
     /*
      * Lifecycle.

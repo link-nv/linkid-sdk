@@ -73,7 +73,8 @@ public class SafeOnlineApplicationLoginModule implements LoginModule {
         return true;
     }
 
-    public boolean commit() throws LoginException {
+    public boolean commit()
+            throws LoginException {
 
         LOG.debug("commit: " + this);
 
@@ -132,7 +133,8 @@ public class SafeOnlineApplicationLoginModule implements LoginModule {
         return group;
     }
 
-    public boolean login() throws LoginException {
+    public boolean login()
+            throws LoginException {
 
         LOG.debug("login: " + this);
         // retrieve the certificate credential
@@ -180,7 +182,8 @@ public class SafeOnlineApplicationLoginModule implements LoginModule {
         return true;
     }
 
-    private ApplicationAuthenticationService getApplicationAuthenticationService() throws LoginException {
+    private ApplicationAuthenticationService getApplicationAuthenticationService()
+            throws LoginException {
 
         try {
             ApplicationAuthenticationService applicationAuthenticationService = EjbUtils.getEJB(this.authenticationServiceJndiName,
@@ -191,7 +194,8 @@ public class SafeOnlineApplicationLoginModule implements LoginModule {
         }
     }
 
-    public boolean logout() throws LoginException {
+    public boolean logout()
+            throws LoginException {
 
         LOG.debug("logout: " + this);
         Set<Principal> principals = this.subject.getPrincipals();
@@ -212,7 +216,8 @@ public class SafeOnlineApplicationLoginModule implements LoginModule {
         return true;
     }
 
-    private static X509Certificate toX509Certificate(char[] password) throws DecoderException, CertificateException {
+    private static X509Certificate toX509Certificate(char[] password)
+            throws DecoderException, CertificateException {
 
         byte[] encodedCertificate = Hex.decodeHex(password);
         CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");

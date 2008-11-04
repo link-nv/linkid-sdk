@@ -51,14 +51,16 @@ public class DeviceAuthenticationServiceBean implements DeviceAuthenticationServ
     private TrustPointDAO    trustPointDAO;
 
 
-    public String authenticate(X509Certificate certificate) throws DeviceNotFoundException {
+    public String authenticate(X509Certificate certificate)
+            throws DeviceNotFoundException {
 
         DeviceEntity device = this.deviceDAO.getDevice(certificate);
         LOG.debug("authenticated device: " + device.getName());
         return device.getName();
     }
 
-    public List<X509Certificate> getCertificates(String deviceName) throws DeviceNotFoundException {
+    public List<X509Certificate> getCertificates(String deviceName)
+            throws DeviceNotFoundException {
 
         LOG.debug("get certificates for device: " + deviceName);
         DeviceEntity device = this.deviceDAO.getDevice(deviceName);
@@ -71,7 +73,8 @@ public class DeviceAuthenticationServiceBean implements DeviceAuthenticationServ
         return certificates;
     }
 
-    public TrustPointEntity findTrustPoint(String domainName, X509Certificate certificate) throws TrustDomainNotFoundException {
+    public TrustPointEntity findTrustPoint(String domainName, X509Certificate certificate)
+            throws TrustDomainNotFoundException {
 
         LOG.debug("find trust point: domain=" + domainName + " cert=" + certificate);
         TrustDomainEntity trustDomain = this.trustDomainDAO.getTrustDomain(domainName);

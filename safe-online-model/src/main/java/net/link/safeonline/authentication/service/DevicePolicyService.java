@@ -30,6 +30,7 @@ public interface DevicePolicyService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/DevicePolicyServiceBean/local";
 
+
     /**
      * Gives back the device policy for the given application. The device policy is a set of device entities which the application accepts
      * as authentication devices. The method signature has been optimized for ease of use in the authentication web application.
@@ -40,8 +41,8 @@ public interface DevicePolicyService extends SafeOnlineService {
      * @throws ApplicationNotFoundException
      * @throws EmptyDevicePolicyException
      */
-    List<DeviceEntity> getDevicePolicy(String applicationId, Set<DeviceEntity> requiredDevicePolicy) throws ApplicationNotFoundException,
-                                                                                                    EmptyDevicePolicyException;
+    List<DeviceEntity> getDevicePolicy(String applicationId, Set<DeviceEntity> requiredDevicePolicy)
+            throws ApplicationNotFoundException, EmptyDevicePolicyException;
 
     /**
      * Returns all devices
@@ -63,7 +64,8 @@ public interface DevicePolicyService extends SafeOnlineService {
      * @param deviceName
      * @throws DeviceNotFoundException
      */
-    String getAuthenticationURL(String deviceName) throws DeviceNotFoundException;
+    String getAuthenticationURL(String deviceName)
+            throws DeviceNotFoundException;
 
     /**
      * Returns the registration URL for the specified device.
@@ -71,7 +73,8 @@ public interface DevicePolicyService extends SafeOnlineService {
      * @param deviceName
      * @throws DeviceNotFoundException
      */
-    String getRegistrationURL(String deviceName) throws DeviceNotFoundException;
+    String getRegistrationURL(String deviceName)
+            throws DeviceNotFoundException;
 
     /**
      * Returns the removal URL for the specified device.
@@ -79,7 +82,8 @@ public interface DevicePolicyService extends SafeOnlineService {
      * @param deviceName
      * @throws DeviceNotFoundException
      */
-    String getRemovalURL(String deviceName) throws DeviceNotFoundException;
+    String getRemovalURL(String deviceName)
+            throws DeviceNotFoundException;
 
     /**
      * Returns the update URL for the specified device.
@@ -87,7 +91,8 @@ public interface DevicePolicyService extends SafeOnlineService {
      * @param deviceName
      * @throws DeviceNotFoundException
      */
-    String getUpdateURL(String deviceName) throws DeviceNotFoundException;
+    String getUpdateURL(String deviceName)
+            throws DeviceNotFoundException;
 
     /**
      * Returns the disable URL for the specified device.
@@ -95,7 +100,8 @@ public interface DevicePolicyService extends SafeOnlineService {
      * @param deviceName
      * @throws DeviceNotFoundException
      */
-    String getDisableURL(String deviceName) throws DeviceNotFoundException;
+    String getDisableURL(String deviceName)
+            throws DeviceNotFoundException;
 
     /**
      * Returns list of devices matching the specified authentication context class.
@@ -108,6 +114,7 @@ public interface DevicePolicyService extends SafeOnlineService {
      * @param deviceName
      * @throws DeviceNotFoundException
      */
-    DeviceEntity getDevice(String deviceName) throws DeviceNotFoundException;
+    DeviceEntity getDevice(String deviceName)
+            throws DeviceNotFoundException;
 
 }

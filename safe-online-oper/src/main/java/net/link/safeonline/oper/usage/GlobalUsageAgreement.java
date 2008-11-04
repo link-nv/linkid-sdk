@@ -20,6 +20,7 @@ public interface GlobalUsageAgreement {
 
     public static final String JNDI_BINDING = OperatorConstants.JNDI_PREFIX + "GlobalUsageAgreementBean/local";
 
+
     /*
      * Accessors
      */

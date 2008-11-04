@@ -89,7 +89,8 @@ public final class EJBTestUtils {
      *            the value to inject.
      * @throws Exception
      */
-    public static void inject(String fieldName, Object object, Object value) throws Exception {
+    public static void inject(String fieldName, Object object, Object value)
+            throws Exception {
 
         if (null == fieldName)
             throw new IllegalArgumentException("field name should not be null");
@@ -112,7 +113,8 @@ public final class EJBTestUtils {
      * @param value
      *            the value to inject.
      */
-    public static void injectResource(Object bean, String resourceName, Object value) throws Exception {
+    public static void injectResource(Object bean, String resourceName, Object value)
+            throws Exception {
 
         if (null == bean)
             throw new IllegalArgumentException("the bean object should not be null");
@@ -146,7 +148,8 @@ public final class EJBTestUtils {
      *            the value object to inject.
      * @throws Exception
      */
-    public static void inject(Object object, Object value) throws Exception {
+    public static void inject(Object object, Object value)
+            throws Exception {
 
         if (null == value)
             throw new IllegalArgumentException("the value should not be null");
@@ -177,13 +180,15 @@ public final class EJBTestUtils {
      * @throws InvocationTargetException
      */
     @SuppressWarnings("unchecked")
-    public static void init(Object bean) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+    public static void init(Object bean)
+            throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 
         Class clazz = bean.getClass();
         init(clazz, bean);
     }
 
-    public static void init(Class<?> clazz, Object bean) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+    public static void init(Class<?> clazz, Object bean)
+            throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 
         LOG.debug("Initializing: " + bean);
         Method[] methods = clazz.getDeclaredMethods();
@@ -293,7 +298,8 @@ public final class EJBTestUtils {
         }
 
         public Object intercept(@SuppressWarnings("unused") Object obj, Method method, Object[] args,
-                                @SuppressWarnings("unused") MethodProxy proxy) throws Throwable {
+                                @SuppressWarnings("unused") MethodProxy proxy)
+                throws Throwable {
 
             checkSessionBean();
             Class<?> clazz = this.object.getClass();
@@ -569,22 +575,26 @@ public final class EJBTestUtils {
             }
         }
 
-        public EJBLocalObject getEJBLocalObject() throws IllegalStateException {
+        public EJBLocalObject getEJBLocalObject()
+                throws IllegalStateException {
 
             return null;
         }
 
-        public EJBObject getEJBObject() throws IllegalStateException {
+        public EJBObject getEJBObject()
+                throws IllegalStateException {
 
             return null;
         }
 
-        public Class<?> getInvokedBusinessInterface() throws IllegalStateException {
+        public Class<?> getInvokedBusinessInterface()
+                throws IllegalStateException {
 
             return null;
         }
 
-        public MessageContext getMessageContext() throws IllegalStateException {
+        public MessageContext getMessageContext()
+                throws IllegalStateException {
 
             return null;
         }
@@ -617,17 +627,20 @@ public final class EJBTestUtils {
             return null;
         }
 
-        public boolean getRollbackOnly() throws IllegalStateException {
+        public boolean getRollbackOnly()
+                throws IllegalStateException {
 
             return false;
         }
 
-        public TimerService getTimerService() throws IllegalStateException {
+        public TimerService getTimerService()
+                throws IllegalStateException {
 
             return null;
         }
 
-        public UserTransaction getUserTransaction() throws IllegalStateException {
+        public UserTransaction getUserTransaction()
+                throws IllegalStateException {
 
             return null;
         }
@@ -654,11 +667,13 @@ public final class EJBTestUtils {
             return null;
         }
 
-        public void setRollbackOnly() throws IllegalStateException {
+        public void setRollbackOnly()
+                throws IllegalStateException {
 
         }
 
-        public <T> T getBusinessObject(@SuppressWarnings("unused") Class<T> arg0) throws IllegalStateException {
+        public <T> T getBusinessObject(@SuppressWarnings("unused") Class<T> arg0)
+                throws IllegalStateException {
 
             return null;
         }
@@ -666,26 +681,31 @@ public final class EJBTestUtils {
 
     static class TestTimer implements Timer {
 
-        public void cancel() throws IllegalStateException, NoSuchObjectLocalException, EJBException {
+        public void cancel()
+                throws IllegalStateException, NoSuchObjectLocalException, EJBException {
 
         }
 
-        public TimerHandle getHandle() throws IllegalStateException, NoSuchObjectLocalException, EJBException {
+        public TimerHandle getHandle()
+                throws IllegalStateException, NoSuchObjectLocalException, EJBException {
 
             return null;
         }
 
-        public Serializable getInfo() throws IllegalStateException, NoSuchObjectLocalException, EJBException {
+        public Serializable getInfo()
+                throws IllegalStateException, NoSuchObjectLocalException, EJBException {
 
             return null;
         }
 
-        public Date getNextTimeout() throws IllegalStateException, NoSuchObjectLocalException, EJBException {
+        public Date getNextTimeout()
+                throws IllegalStateException, NoSuchObjectLocalException, EJBException {
 
             return null;
         }
 
-        public long getTimeRemaining() throws IllegalStateException, NoSuchObjectLocalException, EJBException {
+        public long getTimeRemaining()
+                throws IllegalStateException, NoSuchObjectLocalException, EJBException {
 
             return 0;
         }
@@ -697,13 +717,15 @@ public final class EJBTestUtils {
 
 
         @SuppressWarnings("unused")
-        public Timer createTimer(long arg0, Serializable arg1) throws IllegalArgumentException, IllegalStateException, EJBException {
+        public Timer createTimer(long arg0, Serializable arg1)
+                throws IllegalArgumentException, IllegalStateException, EJBException {
 
             return null;
         }
 
         @SuppressWarnings("unused")
-        public Timer createTimer(Date arg0, Serializable arg1) throws IllegalArgumentException, IllegalStateException, EJBException {
+        public Timer createTimer(Date arg0, Serializable arg1)
+                throws IllegalArgumentException, IllegalStateException, EJBException {
 
             serviceLOG.debug("createTimer");
             Timer testTimer = new TestTimer();
@@ -711,20 +733,21 @@ public final class EJBTestUtils {
         }
 
         @SuppressWarnings("unused")
-        public Timer createTimer(long arg0, long arg1, Serializable arg2) throws IllegalArgumentException, IllegalStateException,
-                                                                         EJBException {
+        public Timer createTimer(long arg0, long arg1, Serializable arg2)
+                throws IllegalArgumentException, IllegalStateException, EJBException {
 
             return null;
         }
 
         @SuppressWarnings("unused")
-        public Timer createTimer(Date arg0, long arg1, Serializable arg2) throws IllegalArgumentException, IllegalStateException,
-                                                                         EJBException {
+        public Timer createTimer(Date arg0, long arg1, Serializable arg2)
+                throws IllegalArgumentException, IllegalStateException, EJBException {
 
             return null;
         }
 
-        public Collection<?> getTimers() throws IllegalStateException, EJBException {
+        public Collection<?> getTimers()
+                throws IllegalStateException, EJBException {
 
             return null;
         }

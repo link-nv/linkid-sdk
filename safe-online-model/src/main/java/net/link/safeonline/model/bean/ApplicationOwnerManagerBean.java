@@ -37,7 +37,8 @@ public class ApplicationOwnerManagerBean implements ApplicationOwnerManager {
 
 
     @RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
-    public ApplicationOwnerEntity getCallerApplicationOwner() throws ApplicationOwnerNotFoundException {
+    public ApplicationOwnerEntity getCallerApplicationOwner()
+            throws ApplicationOwnerNotFoundException {
 
         SubjectEntity subject = this.subjectManager.getCallerSubject();
         ApplicationOwnerEntity applicationOwner = this.applicationOwnerDAO.getApplicationOwner(subject);

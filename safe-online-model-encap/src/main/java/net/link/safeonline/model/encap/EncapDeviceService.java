@@ -30,6 +30,7 @@ public interface EncapDeviceService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/EncapDeviceServiceBean/local";
 
+
     /**
      * Verifies if this mobile is registered with OLAS.
      * 
@@ -39,8 +40,8 @@ public interface EncapDeviceService extends SafeOnlineService {
      * @throws AttributeNotFoundException
      * @throws DeviceDisabledException
      */
-    void checkMobile(String mobile) throws SubjectNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException,
-                                   DeviceDisabledException;
+    void checkMobile(String mobile)
+            throws SubjectNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException, DeviceDisabledException;
 
     /**
      * Authenticate against the encap server and verifies with OLAS.
@@ -54,8 +55,8 @@ public interface EncapDeviceService extends SafeOnlineService {
      * @throws MobileAuthenticationException
      * @throws MobileException
      */
-    String authenticate(String mobile, String challengeId, String mobileOTP) throws MalformedURLException, SubjectNotFoundException,
-                                                                            MobileAuthenticationException, MobileException;
+    String authenticate(String mobile, String challengeId, String mobileOTP)
+            throws MalformedURLException, SubjectNotFoundException, MobileAuthenticationException, MobileException;
 
     /**
      * Authenticates against the encap server.
@@ -66,7 +67,8 @@ public interface EncapDeviceService extends SafeOnlineService {
      * @throws MalformedURLException
      * @throws MobileException
      */
-    boolean authenicateEncap(String challengeId, String mobileOTP) throws MalformedURLException, MobileException;
+    boolean authenicateEncap(String challengeId, String mobileOTP)
+            throws MalformedURLException, MobileException;
 
     /**
      * Activates the specified mobile at the encap server.
@@ -78,7 +80,8 @@ public interface EncapDeviceService extends SafeOnlineService {
      * @throws MobileException
      * @throws MobileRegistrationException
      */
-    String register(String mobile, String sessionId) throws MalformedURLException, MobileException, MobileRegistrationException;
+    String register(String mobile, String sessionId)
+            throws MalformedURLException, MobileException, MobileRegistrationException;
 
     /**
      * Commits the encap registration for OLAS, creates a device subject if necessary, creates a new device registration for this mobile and
@@ -89,12 +92,14 @@ public interface EncapDeviceService extends SafeOnlineService {
      * @throws SubjectNotFoundException
      * @throws AttributeTypeNotFoundException
      */
-    void commitRegistration(String userId, String mobile) throws SubjectNotFoundException, AttributeTypeNotFoundException;
+    void commitRegistration(String userId, String mobile)
+            throws SubjectNotFoundException, AttributeTypeNotFoundException;
 
-    void removeEncapMobile(String mobile) throws MalformedURLException, MobileException;
+    void removeEncapMobile(String mobile)
+            throws MalformedURLException, MobileException;
 
-    void remove(String userId, String mobile) throws MobileException, MalformedURLException, SubjectNotFoundException,
-                                             AttributeTypeNotFoundException;
+    void remove(String userId, String mobile)
+            throws MobileException, MalformedURLException, SubjectNotFoundException, AttributeTypeNotFoundException;
 
     /**
      * Requests the encap server to send an OTP to the specified mobile.
@@ -103,7 +108,8 @@ public interface EncapDeviceService extends SafeOnlineService {
      * @throws MalformedURLException
      * @throws MobileException
      */
-    String requestOTP(String mobile) throws MalformedURLException, MobileException;
+    String requestOTP(String mobile)
+            throws MalformedURLException, MobileException;
 
     /**
      * Returns list of mobiles registered with this user.
@@ -113,7 +119,8 @@ public interface EncapDeviceService extends SafeOnlineService {
      * @throws SubjectNotFoundException
      * @throws DeviceNotFoundException
      */
-    List<AttributeDO> getMobiles(String userId, Locale locale) throws SubjectNotFoundException, DeviceNotFoundException;
+    List<AttributeDO> getMobiles(String userId, Locale locale)
+            throws SubjectNotFoundException, DeviceNotFoundException;
 
     /**
      * Disables the encap device registration.
@@ -126,6 +133,7 @@ public interface EncapDeviceService extends SafeOnlineService {
      * @throws MobileException
      * @throws MalformedURLException
      */
-    void disable(String userId, String mobile) throws SubjectNotFoundException, DeviceNotFoundException,
-            DeviceRegistrationNotFoundException, MalformedURLException, MobileException;
+    void disable(String userId, String mobile)
+            throws SubjectNotFoundException, DeviceNotFoundException, DeviceRegistrationNotFoundException, MalformedURLException,
+            MobileException;
 }

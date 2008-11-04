@@ -43,7 +43,8 @@ public class WebServiceTestUtils {
     private String           context = "/test";
 
 
-    public void setUp(Object webServicePort) throws Exception {
+    public void setUp(Object webServicePort)
+            throws Exception {
 
         this.endpoint = Endpoint.create(webServicePort);
 
@@ -59,7 +60,8 @@ public class WebServiceTestUtils {
         this.endpoint.publish(httpContext);
     }
 
-    public void setUp(Object webServicePort, String context) throws Exception {
+    public void setUp(Object webServicePort, String context)
+            throws Exception {
 
         this.endpoint = Endpoint.create(webServicePort);
 
@@ -86,7 +88,8 @@ public class WebServiceTestUtils {
         return "http://localhost:" + this.port;
     }
 
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.endpoint.stop();
         this.httpServer.stop(1);
@@ -100,7 +103,8 @@ public class WebServiceTestUtils {
         bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointAddress);
     }
 
-    public static int getFreePort() throws Exception {
+    public static int getFreePort()
+            throws Exception {
 
         ServerSocket serverSocket = new ServerSocket(0);
         int port = serverSocket.getLocalPort();

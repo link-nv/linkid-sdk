@@ -28,7 +28,8 @@ public class ApplicationOwnerAccessControlInterceptor {
 
 
     @AroundInvoke
-    public Object applicationAccessControl(InvocationContext invocation) throws Exception {
+    public Object applicationAccessControl(InvocationContext invocation)
+            throws Exception {
 
         ApplicationEntity application = null;
 

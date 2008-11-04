@@ -31,6 +31,7 @@ public interface UserRegistrationService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/UserRegistrationServiceBean/local";
 
+
     /**
      * Checks whether the given login name already exists and has completed device registrations. In case there are existing device
      * registrations it will poll those device issuers if the registration actually completed. If one them has completed, return null.
@@ -45,6 +46,6 @@ public interface UserRegistrationService extends SafeOnlineService {
      * @throws PermissionDeniedException
      * @throws AttributeUnavailableException
      */
-    SubjectEntity registerUser(String login) throws ExistingUserException, AttributeTypeNotFoundException, PermissionDeniedException,
-                                            AttributeUnavailableException;
+    SubjectEntity registerUser(String login)
+            throws ExistingUserException, AttributeTypeNotFoundException, PermissionDeniedException, AttributeUnavailableException;
 }

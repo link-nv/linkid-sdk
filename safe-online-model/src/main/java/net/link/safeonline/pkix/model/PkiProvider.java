@@ -35,7 +35,7 @@ public interface PkiProvider extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/PkiProviderBean/local";
 
-    public static String JNDI_PREFIX = "SafeOnline/pkix";
+    public static String       JNDI_PREFIX  = "SafeOnline/pkix";
 
 
     /**
@@ -50,7 +50,8 @@ public interface PkiProvider extends SafeOnlineService {
      * Gives back the trust domain that this PKI provider requires for certificate validation.
      * 
      */
-    TrustDomainEntity getTrustDomain() throws TrustDomainNotFoundException;
+    TrustDomainEntity getTrustDomain()
+            throws TrustDomainNotFoundException;
 
     /**
      * Gives back a reference to this EJB session object.
@@ -84,7 +85,8 @@ public interface PkiProvider extends SafeOnlineService {
      * @throws DeviceNotFoundException
      * @throws AttributeNotFoundException
      */
-    void storeDeviceAttribute(SubjectEntity subject, long index) throws DeviceNotFoundException, AttributeNotFoundException;
+    void storeDeviceAttribute(SubjectEntity subject, long index)
+            throws DeviceNotFoundException, AttributeNotFoundException;
 
     /**
      * Gives back the identifier domain name.
@@ -106,7 +108,8 @@ public interface PkiProvider extends SafeOnlineService {
      * @param certificate
      * @throws DeviceNotFoundException
      */
-    void removeDeviceAttribute(SubjectEntity subject, X509Certificate certificate) throws DeviceNotFoundException;
+    void removeDeviceAttribute(SubjectEntity subject, X509Certificate certificate)
+            throws DeviceNotFoundException;
 
     /**
      * Checks whether this device registration is disabled or not.
@@ -115,7 +118,8 @@ public interface PkiProvider extends SafeOnlineService {
      * @param certificate
      * @throws DeviceNotFoundException
      */
-    boolean isDisabled(SubjectEntity subject, X509Certificate certificate) throws DeviceNotFoundException;
+    boolean isDisabled(SubjectEntity subject, X509Certificate certificate)
+            throws DeviceNotFoundException;
 
     /**
      * Disables the device registration associated with the specified user attribute.
@@ -125,8 +129,8 @@ public interface PkiProvider extends SafeOnlineService {
      * @throws SubjectNotFoundException
      * @throws DeviceRegistrationNotFoundException
      */
-    void disable(String userId, String attribute) throws DeviceNotFoundException, SubjectNotFoundException,
-                                                 DeviceRegistrationNotFoundException;
+    void disable(String userId, String attribute)
+            throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException;
 
     /**
      * Returns the list of device attributes attached to the specified subjects.
@@ -134,5 +138,6 @@ public interface PkiProvider extends SafeOnlineService {
      * @param subject
      * @throws DeviceNotFoundException
      */
-    List<AttributeEntity> listDeviceAttributes(SubjectEntity subject) throws DeviceNotFoundException;
+    List<AttributeEntity> listDeviceAttributes(SubjectEntity subject)
+            throws DeviceNotFoundException;
 }

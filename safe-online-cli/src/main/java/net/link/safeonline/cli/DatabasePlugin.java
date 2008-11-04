@@ -18,7 +18,8 @@ public interface DatabasePlugin {
 
     String getName();
 
-    Connection getConnection(String connectionUrl, String user, String password) throws SQLException;
+    Connection getConnection(String connectionUrl, String user, String password)
+            throws SQLException;
 
     List<String> getInitList();
 }

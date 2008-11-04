@@ -29,7 +29,8 @@ public class IdentityStatementTest extends TestCase {
     private static final Log LOG = LogFactory.getLog(IdentityStatementTest.class);
 
 
-    public void testCreateIdentityStatement() throws Exception {
+    public void testCreateIdentityStatement()
+            throws Exception {
 
         // setup
         KeyPair keyPair = PkiTestUtils.generateKeyPair();

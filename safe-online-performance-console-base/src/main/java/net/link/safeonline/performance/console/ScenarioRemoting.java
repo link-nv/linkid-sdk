@@ -70,7 +70,8 @@ public class ScenarioRemoting {
     /**
      * Retrieve an {@link InitialContext} for the JNDI of the given agent.
      */
-    public static InitialContext getInitialContext(Address agent) throws NamingException {
+    public static InitialContext getInitialContext(Address agent)
+            throws NamingException {
 
         Hashtable<String, String> environment = new Hashtable<String, String>();
 
@@ -92,8 +93,8 @@ public class ScenarioRemoting {
      * @throws IllegalStateException
      *             When the RMI adaptor is not available on the given agent.
      */
-    private Object invokeFor(Address agent, String methodName, Object[] arguments, String[] argumentTypes) throws MBeanException,
-                                                                                                          IllegalStateException {
+    private Object invokeFor(Address agent, String methodName, Object[] arguments, String[] argumentTypes)
+            throws MBeanException, IllegalStateException {
 
         try {
             InitialContext context = getInitialContext(agent);
@@ -238,7 +239,8 @@ public class ScenarioRemoting {
      * @see Agent#getExecutions()
      */
     @SuppressWarnings("unchecked")
-    public Set<ScenarioExecution> getExecutions(Address agent) throws NamingException {
+    public Set<ScenarioExecution> getExecutions(Address agent)
+            throws NamingException {
 
         try {
             return (Set<ScenarioExecution>) invokeFor(agent, "getExecutions", new Object[] {}, new String[] {});

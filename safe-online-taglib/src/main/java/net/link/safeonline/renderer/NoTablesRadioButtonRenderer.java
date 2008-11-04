@@ -48,7 +48,8 @@ public class NoTablesRadioButtonRenderer extends Renderer {
     }
 
     @Override
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
+    public void encodeEnd(FacesContext context, UIComponent component)
+            throws IOException {
 
         if (false == component.isRendered())
             return;
@@ -70,7 +71,7 @@ public class NoTablesRadioButtonRenderer extends Renderer {
     }
 
     protected void renderOption(FacesContext context, UIComponent component, SelectItem curItem, int itemNumber, String styleClass)
-                                                                                                                                   throws IOException {
+            throws IOException {
 
         ResponseWriter writer = context.getResponseWriter();
         assert writer != null;

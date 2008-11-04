@@ -152,7 +152,8 @@ public class CertificateValidatorHandler implements SOAPHandler<SOAPMessageConte
      * @param context
      * @throws CertificateDomainException
      */
-    public static CertificateDomain getCertificateDomain(WebServiceContext context) throws CertificateDomainException {
+    public static CertificateDomain getCertificateDomain(WebServiceContext context)
+            throws CertificateDomainException {
 
         MessageContext messageContext = context.getMessageContext();
         CertificateDomain certificateDomain = (CertificateDomain) messageContext.get(CERTIFICATE_DOMAIN_PROPERTY);

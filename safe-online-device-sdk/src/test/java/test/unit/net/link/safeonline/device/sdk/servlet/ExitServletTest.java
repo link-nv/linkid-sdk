@@ -46,7 +46,8 @@ public class ExitServletTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.servletTestManager = new ServletTestManager();
         this.servletTestManager.setUp(ExitServlet.class);
@@ -55,13 +56,15 @@ public class ExitServletTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.servletTestManager.tearDown();
     }
 
     @Test
-    public void testNoProtocolHandler() throws Exception {
+    public void testNoProtocolHandler()
+            throws Exception {
 
         // setup
 

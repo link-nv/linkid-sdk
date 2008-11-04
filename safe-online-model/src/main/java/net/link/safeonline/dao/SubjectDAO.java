@@ -27,6 +27,7 @@ public interface SubjectDAO extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/SubjectDAOBean/local";
 
+
     /**
      * Finds the subject for a given user ID. Returns <code>null</code> if the entity could not be found.
      * 
@@ -45,7 +46,8 @@ public interface SubjectDAO extends SafeOnlineService {
      * @return the subject.
      * @exception SubjectNotFoundException
      */
-    SubjectEntity getSubject(String userId) throws SubjectNotFoundException;
+    SubjectEntity getSubject(String userId)
+            throws SubjectNotFoundException;
 
     /**
      * Removes the given attached subject from the database.

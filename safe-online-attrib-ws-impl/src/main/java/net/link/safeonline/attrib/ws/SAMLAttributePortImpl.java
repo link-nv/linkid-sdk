@@ -143,7 +143,8 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
         return null;
     }
 
-    private String findUserId(String applicationUserId) throws ApplicationNotFoundException {
+    private String findUserId(String applicationUserId)
+            throws ApplicationNotFoundException {
 
         ApplicationManager applicationManager = EjbUtils.getEJB(ApplicationManager.JNDI_BINDING, ApplicationManager.class);
         ApplicationEntity application = applicationManager.getCallerApplication();
@@ -224,9 +225,8 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
         return response;
     }
 
-    private Object getAttributeValue(String subjectLogin, String attributeName) throws SubjectNotFoundException, PermissionDeniedException,
-                                                                               AttributeTypeNotFoundException,
-                                                                               AttributeUnavailableException {
+    private Object getAttributeValue(String subjectLogin, String attributeName)
+            throws SubjectNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException, AttributeUnavailableException {
 
         if (this.certificateDomain.equals(CertificateDomain.APPLICATION))
             return this.attributeService.getConfirmedAttributeValue(subjectLogin, attributeName);
@@ -235,8 +235,8 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
         return null;
     }
 
-    private Map<String, Object> getAttributeValues(String subjectLogin) throws SubjectNotFoundException, PermissionDeniedException,
-                                                                       AttributeTypeNotFoundException, AttributeUnavailableException {
+    private Map<String, Object> getAttributeValues(String subjectLogin)
+            throws SubjectNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException, AttributeUnavailableException {
 
         if (this.certificateDomain.equals(CertificateDomain.APPLICATION))
             return this.attributeService.getConfirmedAttributeValues(subjectLogin);

@@ -20,5 +20,6 @@ import net.link.safeonline.sdk.ws.MessageAccessor;
  */
 public interface PingClient extends MessageAccessor {
 
-    void ping() throws ConnectException;
+    void ping()
+            throws ConnectException;
 }

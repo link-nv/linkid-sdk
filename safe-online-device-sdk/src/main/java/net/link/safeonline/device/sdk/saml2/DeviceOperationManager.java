@@ -66,7 +66,8 @@ public class DeviceOperationManager {
      * @param session
      * @throws ServletException
      */
-    public static String getUserId(HttpSession session) throws ServletException {
+    public static String getUserId(HttpSession session)
+            throws ServletException {
 
         String userId = (String) session.getAttribute(USERID_SESSION_ATTRIBUTE);
         if (null == userId)
@@ -96,7 +97,8 @@ public class DeviceOperationManager {
      * @param session
      * @throws ServletException
      */
-    public static String getAuthenticatedDevice(HttpSession session) throws ServletException {
+    public static String getAuthenticatedDevice(HttpSession session)
+            throws ServletException {
 
         String authenticatedDevice = (String) session.getAttribute(AUTHENTICATED_DEVICE_SESSION_ATTRIBUTE);
         if (null == authenticatedDevice)
@@ -126,7 +128,8 @@ public class DeviceOperationManager {
      * @param session
      * @throws ServletException
      */
-    public static String getOperation(HttpSession session) throws ServletException {
+    public static String getOperation(HttpSession session)
+            throws ServletException {
 
         String operation = (String) session.getAttribute(DEVICE_OPERATION_SESSION_ATTRIBUTE);
         if (null == operation)
@@ -156,7 +159,8 @@ public class DeviceOperationManager {
      * @param session
      * @throws ServletException
      */
-    public static String getAttribute(HttpSession session) throws ServletException {
+    public static String getAttribute(HttpSession session)
+            throws ServletException {
 
         String attribute = findAttribute(session);
         if (null == attribute)

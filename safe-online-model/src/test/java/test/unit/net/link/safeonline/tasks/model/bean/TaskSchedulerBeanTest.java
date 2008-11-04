@@ -67,7 +67,8 @@ public class TaskSchedulerBeanTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.mockTimerService = createMock(TimerService.class);
         this.mockTimer = createMock(Timer.class);
@@ -116,14 +117,16 @@ public class TaskSchedulerBeanTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.entityTestManager.tearDown();
         this.jndiTestUtils.tearDown();
     }
 
     @Test
-    public void testSetTimer() throws Exception {
+    public void testSetTimer()
+            throws Exception {
 
         // setup
         SchedulingEntity scheduling = new SchedulingEntity("test", "0 0/5 * * * ?", null);
@@ -144,7 +147,8 @@ public class TaskSchedulerBeanTest {
     }
 
     @Test
-    public void testPostStart() throws Exception {
+    public void testPostStart()
+            throws Exception {
 
         // setup
         EntityManager entityManager = this.entityTestManager.getEntityManager();

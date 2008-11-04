@@ -25,7 +25,8 @@ import org.bouncycastle.asn1.DERVisibleString;
 
 public class DERAuthenticationStatementTest extends TestCase {
 
-    public void testEncoding() throws Exception {
+    public void testEncoding()
+            throws Exception {
 
         // setup
         KeyPair authKeyPair = PkiTestUtils.generateKeyPair();

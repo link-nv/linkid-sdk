@@ -25,6 +25,7 @@ public interface Removal {
 
     public static final String JNDI_BINDING = DigipassConstants.JNDI_PREFIX + "RemovalBean/local";
 
+
     /*
      * Accessors
      */
@@ -35,15 +36,18 @@ public interface Removal {
     /*
      * Actions.
      */
-    String getRegistrations() throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException;
+    String getRegistrations()
+            throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException;
 
-    String remove() throws SubjectNotFoundException, DigipassException, PermissionDeniedException, DeviceNotFoundException,
-                   AttributeTypeNotFoundException;
+    String remove()
+            throws SubjectNotFoundException, DigipassException, PermissionDeniedException, DeviceNotFoundException,
+            AttributeTypeNotFoundException;
 
     /*
      * Factories
      */
-    List<AttributeDO> digipassAttributesFactory() throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException;
+    List<AttributeDO> digipassAttributesFactory()
+            throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException;
 
     /*
      * Lifecycle.

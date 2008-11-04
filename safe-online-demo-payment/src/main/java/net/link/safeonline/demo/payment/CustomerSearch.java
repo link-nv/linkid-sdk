@@ -10,11 +10,11 @@ package net.link.safeonline.demo.payment;
 import javax.ejb.Local;
 
 
-
-
 @Local
 public interface CustomerSearch extends AbstractPaymentDataClient {
+
     public static final String JNDI_BINDING = "SafeOnlinePaymentDemo/CustomerSearchBean/local";
+
 
     String search();
 

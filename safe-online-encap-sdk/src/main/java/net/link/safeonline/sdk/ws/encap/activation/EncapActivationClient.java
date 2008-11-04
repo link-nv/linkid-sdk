@@ -12,8 +12,10 @@ import java.rmi.RemoteException;
 
 public interface EncapActivationClient {
 
-    String activate(String mobile, String orgId, String userId) throws RemoteException;
+    String activate(String mobile, String orgId, String userId)
+            throws RemoteException;
 
-    boolean cancelSession(String sessionId) throws RemoteException;
+    boolean cancelSession(String sessionId)
+            throws RemoteException;
 
 }

@@ -29,7 +29,8 @@ import org.w3c.dom.Element;
 public class DeviceOperationResponseMarshaller extends StatusResponseTypeMarshaller {
 
     @Override
-    protected void marshallAttributes(XMLObject samlObject, Element domElement) throws MarshallingException {
+    protected void marshallAttributes(XMLObject samlObject, Element domElement)
+            throws MarshallingException {
 
         DeviceOperationResponse response = (DeviceOperationResponse) samlObject;
 

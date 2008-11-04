@@ -29,6 +29,7 @@ public interface ApplicationIdentityManager extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationIdentityManagerBean/local";
 
+
     /**
      * Updates the identity of an application. This COULD cause the application to receive a new identity version. In case of a new identity
      * version each application user will have to reconfirm the usafe of application identity attributes.
@@ -40,8 +41,6 @@ public interface ApplicationIdentityManager extends SafeOnlineService {
      * @throws AttributeTypeNotFoundException
      */
     void updateApplicationIdentity(String applicationId, List<IdentityAttributeTypeDO> applicationIdentityAttributes)
-                                                                                                                     throws ApplicationNotFoundException,
-                                                                                                                     ApplicationIdentityNotFoundException,
-                                                                                                                     AttributeTypeNotFoundException;
+            throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, AttributeTypeNotFoundException;
 
 }

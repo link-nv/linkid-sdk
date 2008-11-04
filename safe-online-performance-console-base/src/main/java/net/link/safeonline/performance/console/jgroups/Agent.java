@@ -53,12 +53,14 @@ public interface Agent {
     /**
      * The executionIds for which metadata is available.
      */
-    public Set<ScenarioExecution> getExecutions() throws NamingException;
+    public Set<ScenarioExecution> getExecutions()
+            throws NamingException;
 
     /**
      * Retrieve all scenarios registered for use.
      */
-    public Set<String> getScenarios() throws NamingException;
+    public Set<String> getScenarios()
+            throws NamingException;
 
     /**
      * Reset the transition state, abort the action.

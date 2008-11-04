@@ -89,7 +89,8 @@ public class DeviceDAOBean implements DeviceDAO {
         return this.entityManager.find(DeviceEntity.class, deviceName);
     }
 
-    public DeviceEntity getDevice(String name) throws DeviceNotFoundException {
+    public DeviceEntity getDevice(String name)
+            throws DeviceNotFoundException {
 
         DeviceEntity device = this.entityManager.find(DeviceEntity.class, name);
         if (null == device)
@@ -145,7 +146,8 @@ public class DeviceDAOBean implements DeviceDAO {
         this.entityManager.merge(description);
     }
 
-    public DeviceDescriptionEntity getDescription(DeviceDescriptionPK descriptionPK) throws DeviceDescriptionNotFoundException {
+    public DeviceDescriptionEntity getDescription(DeviceDescriptionPK descriptionPK)
+            throws DeviceDescriptionNotFoundException {
 
         DeviceDescriptionEntity description = this.entityManager.find(DeviceDescriptionEntity.class, descriptionPK);
         if (null == description)
@@ -190,7 +192,8 @@ public class DeviceDAOBean implements DeviceDAO {
         this.entityManager.merge(property);
     }
 
-    public DevicePropertyEntity getProperty(DevicePropertyPK propertyPK) throws DevicePropertyNotFoundException {
+    public DevicePropertyEntity getProperty(DevicePropertyPK propertyPK)
+            throws DevicePropertyNotFoundException {
 
         DevicePropertyEntity property = this.entityManager.find(DevicePropertyEntity.class, propertyPK);
         if (null == property)
@@ -209,7 +212,8 @@ public class DeviceDAOBean implements DeviceDAO {
         return this.queryObject.listDevices(authenticationContextClass);
     }
 
-    public DeviceEntity getDevice(X509Certificate certificate) throws DeviceNotFoundException {
+    public DeviceEntity getDevice(X509Certificate certificate)
+            throws DeviceNotFoundException {
 
         List<DeviceEntity> devices = this.queryObject.listDevicesWhereCertificateSubject(certificate.getSubjectX500Principal().getName());
         if (devices.isEmpty())

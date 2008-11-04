@@ -54,7 +54,8 @@ public class LoginServlet extends HttpServlet {
 
 
     @Override
-    public void init(ServletConfig config) throws ServletException {
+    public void init(ServletConfig config)
+            throws ServletException {
 
         super.init(config);
 
@@ -71,7 +72,8 @@ public class LoginServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         /*
          * Since the SAML protocol can enter the application via an HTTP POST we also need to implement the doPost method.
@@ -80,7 +82,8 @@ public class LoginServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         HttpSession session = request.getSession();
         String userId = LoginManager.getUserId(request);
@@ -134,7 +137,8 @@ public class LoginServlet extends HttpServlet {
         }
     }
 
-    private boolean getBoolean(String username, String attributeName) throws ServletException {
+    private boolean getBoolean(String username, String attributeName)
+            throws ServletException {
 
         Attribute<Boolean> attribute;
         try {
@@ -157,33 +161,39 @@ public class LoginServlet extends HttpServlet {
         return attribute.getValue();
     }
 
-    private void redirectToPage(String page, String role, HttpSession session, HttpServletResponse response) throws IOException {
+    private void redirectToPage(String page, String role, HttpSession session, HttpServletResponse response)
+            throws IOException {
 
         session.setAttribute("role", role);
         response.sendRedirect(page);
     }
 
-    private void redirectToCareProviderPage(HttpSession session, HttpServletResponse response) throws IOException {
+    private void redirectToCareProviderPage(HttpSession session, HttpServletResponse response)
+            throws IOException {
 
         redirectToPage("./care-provider.seam", PrescriptionConstants.CARE_PROVIDER_ROLE, session, response);
     }
 
-    private void redirectToPharmacistPage(HttpSession session, HttpServletResponse response) throws IOException {
+    private void redirectToPharmacistPage(HttpSession session, HttpServletResponse response)
+            throws IOException {
 
         redirectToPage("./pharmacist.seam", PrescriptionConstants.PHARMACIST_ROLE, session, response);
     }
 
-    private void redirectToPatientPage(HttpSession session, HttpServletResponse response) throws IOException {
+    private void redirectToPatientPage(HttpSession session, HttpServletResponse response)
+            throws IOException {
 
         redirectToPage("./patient.seam", PrescriptionConstants.PATIENT_ROLE, session, response);
     }
 
-    private void redirectToRolesPage(@SuppressWarnings("unused") HttpSession session, HttpServletResponse response) throws IOException {
+    private void redirectToRolesPage(@SuppressWarnings("unused") HttpSession session, HttpServletResponse response)
+            throws IOException {
 
         response.sendRedirect("./roles.seam");
     }
 
-    private void redirectToAdminPage(HttpSession session, HttpServletResponse response) throws IOException {
+    private void redirectToAdminPage(HttpSession session, HttpServletResponse response)
+            throws IOException {
 
         redirectToPage("./admin.seam", PrescriptionConstants.ADMIN_ROLE, session, response);
     }

@@ -97,12 +97,14 @@ public class SafeOnlineTrustManager implements X509TrustManager {
         return null;
     }
 
-    public void checkClientTrusted(X509Certificate[] certs, String authType) throws CertificateException {
+    public void checkClientTrusted(X509Certificate[] certs, String authType)
+            throws CertificateException {
 
         throw new CertificateException("this trust manager cannot be used as server-side trust manager");
     }
 
-    public void checkServerTrusted(X509Certificate[] certs, String authType) throws CertificateException {
+    public void checkServerTrusted(X509Certificate[] certs, String authType)
+            throws CertificateException {
 
         X509Certificate serverCertificate = certs[0];
         LOG.debug("server X509 subject: " + serverCertificate.getSubjectX500Principal().toString());

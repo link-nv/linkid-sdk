@@ -51,7 +51,8 @@ public class AuthnRequestFactoryTest {
 
 
     @Test
-    public void createAuthnRequest() throws Exception {
+    public void createAuthnRequest()
+            throws Exception {
 
         // setup
         String applicationName = "test-application-id";
@@ -129,7 +130,8 @@ public class AuthnRequestFactoryTest {
     }
 
     @Test
-    public void createAuthnRequestDSAKey() throws Exception {
+    public void createAuthnRequestDSAKey()
+            throws Exception {
 
         // setup
         String applicationName = "test-application-id";

@@ -22,6 +22,7 @@ public interface ApplicationPool {
 
     public static final String JNDI_BINDING = OperatorConstants.JNDI_PREFIX + "ApplicationPoolBean/local";
 
+
     /*
      * Factory
      */
@@ -52,11 +53,14 @@ public interface ApplicationPool {
     /*
      * Actions.
      */
-    String add() throws ApplicationPoolNotFoundException, ApplicationNotFoundException;
+    String add()
+            throws ApplicationPoolNotFoundException, ApplicationNotFoundException;
 
-    String remove() throws ApplicationPoolNotFoundException;
+    String remove()
+            throws ApplicationPoolNotFoundException;
 
-    String save() throws ApplicationPoolNotFoundException, ApplicationNotFoundException;
+    String save()
+            throws ApplicationPoolNotFoundException, ApplicationNotFoundException;
 
     String view();
 

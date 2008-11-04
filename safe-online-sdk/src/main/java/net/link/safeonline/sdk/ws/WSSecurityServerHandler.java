@@ -204,7 +204,8 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
         }
     }
 
-    private String domToString(Node domNode) throws TransformerException {
+    private String domToString(Node domNode)
+            throws TransformerException {
 
         Source source = new DOMSource(domNode);
         StringWriter stringWriter = new StringWriter();

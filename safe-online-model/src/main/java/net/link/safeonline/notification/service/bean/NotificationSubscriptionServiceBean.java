@@ -67,9 +67,8 @@ public class NotificationSubscriptionServiceBean implements NotificationSubscrip
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void removeSubscription(String topic, EndpointReferenceEntity subscription) throws SubscriptionNotFoundException,
-                                                                                      EndpointReferenceNotFoundException,
-                                                                                      PermissionDeniedException {
+    public void removeSubscription(String topic, EndpointReferenceEntity subscription)
+            throws SubscriptionNotFoundException, EndpointReferenceNotFoundException, PermissionDeniedException {
 
         LOG.debug("remove subscription " + subscription.getName() + " for topic " + topic);
         if (null != subscription.getApplication()) {
@@ -81,7 +80,8 @@ public class NotificationSubscriptionServiceBean implements NotificationSubscrip
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public Set<EndpointReferenceEntity> listSubscriptions(String topic) throws SubscriptionNotFoundException {
+    public Set<EndpointReferenceEntity> listSubscriptions(String topic)
+            throws SubscriptionNotFoundException {
 
         LOG.debug("list subscriptions for topic: " + topic);
         NotificationProducerSubscriptionEntity topicEntity = this.notificationProducerDAO.getSubscription(topic);
@@ -89,7 +89,8 @@ public class NotificationSubscriptionServiceBean implements NotificationSubscrip
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void addSubscription(String topic, String address, String consumer) throws PermissionDeniedException {
+    public void addSubscription(String topic, String address, String consumer)
+            throws PermissionDeniedException {
 
         LOG.debug("add subscription for topic " + topic + " address=" + address + " consumer=" + consumer);
         ApplicationEntity application = this.applicationDAO.findApplication(consumer);

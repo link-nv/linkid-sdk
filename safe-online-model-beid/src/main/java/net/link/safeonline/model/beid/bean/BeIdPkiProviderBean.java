@@ -92,7 +92,8 @@ public class BeIdPkiProviderBean implements PkiProvider {
         return true;
     }
 
-    public TrustDomainEntity getTrustDomain() throws TrustDomainNotFoundException {
+    public TrustDomainEntity getTrustDomain()
+            throws TrustDomainNotFoundException {
 
         TrustDomainEntity trustDomain = this.trustDomainDAO.getTrustDomain(TRUST_DOMAIN_NAME);
         return trustDomain;
@@ -180,7 +181,8 @@ public class BeIdPkiProviderBean implements PkiProvider {
         return attributeValue;
     }
 
-    public void storeDeviceAttribute(SubjectEntity subject, long index) throws DeviceNotFoundException, AttributeNotFoundException {
+    public void storeDeviceAttribute(SubjectEntity subject, long index)
+            throws DeviceNotFoundException, AttributeNotFoundException {
 
         DeviceEntity device = this.deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
         AttributeTypeEntity deviceAttributeType = device.getAttributeType();
@@ -215,7 +217,8 @@ public class BeIdPkiProviderBean implements PkiProvider {
         }
     }
 
-    public void removeDeviceAttribute(SubjectEntity subject, X509Certificate certificate) throws DeviceNotFoundException {
+    public void removeDeviceAttribute(SubjectEntity subject, X509Certificate certificate)
+            throws DeviceNotFoundException {
 
         DeviceEntity device = this.deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
         String subjectName = getSubjectName(certificate);
@@ -242,7 +245,8 @@ public class BeIdPkiProviderBean implements PkiProvider {
         }
     }
 
-    public boolean isDisabled(SubjectEntity subject, X509Certificate certificate) throws DeviceNotFoundException {
+    public boolean isDisabled(SubjectEntity subject, X509Certificate certificate)
+            throws DeviceNotFoundException {
 
         DeviceEntity device = this.deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
         String subjectName = getSubjectName(certificate);
@@ -262,7 +266,8 @@ public class BeIdPkiProviderBean implements PkiProvider {
         return false;
     }
 
-    public List<AttributeEntity> listDeviceAttributes(SubjectEntity subject) throws DeviceNotFoundException {
+    public List<AttributeEntity> listDeviceAttributes(SubjectEntity subject)
+            throws DeviceNotFoundException {
 
         DeviceEntity device = this.deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
         return this.attributeDAO.listAttributes(subject, device.getAttributeType());
@@ -271,8 +276,8 @@ public class BeIdPkiProviderBean implements PkiProvider {
     /**
      * {@inheritDoc}
      */
-    public void disable(String userId, String attribute) throws DeviceNotFoundException, SubjectNotFoundException,
-                                                        DeviceRegistrationNotFoundException {
+    public void disable(String userId, String attribute)
+            throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException {
 
         DeviceEntity device = this.deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
         SubjectEntity subject = this.subjectService.getSubject(userId);

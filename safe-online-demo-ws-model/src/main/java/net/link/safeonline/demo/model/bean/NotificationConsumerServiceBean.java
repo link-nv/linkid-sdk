@@ -145,8 +145,8 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
         }
     }
 
-    private void removeDemoTicketUser(String userId) throws WSClientTransportException, AttributeNotFoundException, RequestDeniedException,
-                                                    AttributeUnavailableException {
+    private void removeDemoTicketUser(String userId)
+            throws WSClientTransportException, AttributeNotFoundException, RequestDeniedException, AttributeUnavailableException {
 
         LOG.debug("remove demo ticket user id: " + userId);
 
@@ -168,8 +168,8 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
 
     }
 
-    private void removeDemoPaymentUser(String userId) throws WSClientTransportException, AttributeNotFoundException,
-                                                     RequestDeniedException, AttributeUnavailableException {
+    private void removeDemoPaymentUser(String userId)
+            throws WSClientTransportException, AttributeNotFoundException, RequestDeniedException, AttributeUnavailableException {
 
         LOG.debug("remove demo payment user id: " + userId);
 

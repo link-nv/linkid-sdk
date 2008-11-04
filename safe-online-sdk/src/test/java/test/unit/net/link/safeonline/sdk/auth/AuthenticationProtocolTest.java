@@ -21,7 +21,8 @@ public class AuthenticationProtocolTest {
 
 
     @Test
-    public void literals() throws Exception {
+    public void literals()
+            throws Exception {
 
         LOG.debug(AuthenticationProtocol.SAML2_BROWSER_POST);
 

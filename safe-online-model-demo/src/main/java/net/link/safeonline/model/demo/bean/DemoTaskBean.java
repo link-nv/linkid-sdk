@@ -26,7 +26,7 @@ public class DemoTaskBean implements Task {
 
     public static final String JNDI_BINDING = Task.JNDI_PREFIX + "/DemoTaskBean/local";
 
-    private static final Log LOG = LogFactory.getLog(DemoTaskBean.class);
+    private static final Log   LOG          = LogFactory.getLog(DemoTaskBean.class);
 
 
     public String getName() {

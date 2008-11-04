@@ -75,7 +75,8 @@ public class HelpdeskContextDAOBean implements HelpdeskContextDAO {
         }
     }
 
-    public void removeContext(Long logId) throws HelpdeskContextNotFoundException {
+    public void removeContext(Long logId)
+            throws HelpdeskContextNotFoundException {
 
         HelpdeskContextEntity context = this.entityManager.find(HelpdeskContextEntity.class, logId);
         if (null == context)

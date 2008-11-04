@@ -47,7 +47,8 @@ public class UserServiceTest extends AbstractCinemaServiceTest {
      * {@inheritDoc}
      */
     @Override
-    public void setup() throws Exception {
+    public void setup()
+            throws Exception {
 
         super.setup();
 

@@ -36,7 +36,8 @@ public class QueryObjectFactoryTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.entityTestManager = new EntityTestManager();
         this.entityTestManager.setUp(MyTestEntity.class);
@@ -44,13 +45,15 @@ public class QueryObjectFactoryTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.entityTestManager.tearDown();
     }
 
     @Test
-    public void createQueryObject() throws Exception {
+    public void createQueryObject()
+            throws Exception {
 
         // operate
         MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
@@ -61,7 +64,8 @@ public class QueryObjectFactoryTest {
     }
 
     @Test
-    public void simpleQueryWithEmptyResult() throws Exception {
+    public void simpleQueryWithEmptyResult()
+            throws Exception {
 
         // setup
         MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
@@ -76,7 +80,8 @@ public class QueryObjectFactoryTest {
     }
 
     @Test
-    public void simpleQuery() throws Exception {
+    public void simpleQuery()
+            throws Exception {
 
         // setup
         String testName = UUID.randomUUID().toString();
@@ -96,7 +101,8 @@ public class QueryObjectFactoryTest {
     }
 
     @Test
-    public void queryWithParam() throws Exception {
+    public void queryWithParam()
+            throws Exception {
 
         // setup
         String testName = UUID.randomUUID().toString();
@@ -123,7 +129,8 @@ public class QueryObjectFactoryTest {
     }
 
     @Test
-    public void singleResultQueryWithParam() throws Exception {
+    public void singleResultQueryWithParam()
+            throws Exception {
 
         // setup
         String testName = UUID.randomUUID().toString();
@@ -150,7 +157,8 @@ public class QueryObjectFactoryTest {
     }
 
     @Test
-    public void nullableSingleResultQueryWithParam() throws Exception {
+    public void nullableSingleResultQueryWithParam()
+            throws Exception {
 
         // setup
         String testName = UUID.randomUUID().toString();
@@ -175,7 +183,8 @@ public class QueryObjectFactoryTest {
     }
 
     @Test
-    public void updateMethod() throws Exception {
+    public void updateMethod()
+            throws Exception {
 
         // setup
         String testName = UUID.randomUUID().toString();
@@ -198,7 +207,8 @@ public class QueryObjectFactoryTest {
     }
 
     @Test
-    public void queryQueryMethod() throws Exception {
+    public void queryQueryMethod()
+            throws Exception {
 
         // setup
         MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
@@ -212,7 +222,8 @@ public class QueryObjectFactoryTest {
     }
 
     @Test
-    public void countQuery() throws Exception {
+    public void countQuery()
+            throws Exception {
 
         // setup
         MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory.createQueryObject(this.entityManager,

@@ -27,5 +27,6 @@ public interface SecurityTokenServiceClient extends MessageAccessor {
      * @param trustDomain
      * @throws WSClientTransportException
      */
-    void validate(Element token, TrustDomainType trustDomain) throws WSClientTransportException;
+    void validate(Element token, TrustDomainType trustDomain)
+            throws WSClientTransportException;
 }

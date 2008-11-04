@@ -25,20 +25,24 @@ public interface AttributeProvider {
 
     public static final String JNDI_BINDING = OperatorConstants.JNDI_PREFIX + "AttributeProviderBean/local";
 
+
     /*
      * factories
      */
-    void attributeProvidersFactory() throws AttributeTypeNotFoundException;
+    void attributeProvidersFactory()
+            throws AttributeTypeNotFoundException;
 
     List<SelectItem> getApplicationList();
 
     /*
      * actions
      */
-    String removeProvider() throws AttributeTypeNotFoundException, AttributeProviderNotFoundException;
+    String removeProvider()
+            throws AttributeTypeNotFoundException, AttributeProviderNotFoundException;
 
-    String add() throws ExistingAttributeProviderException, ApplicationNotFoundException, AttributeTypeNotFoundException,
-                PermissionDeniedException;
+    String add()
+            throws ExistingAttributeProviderException, ApplicationNotFoundException, AttributeTypeNotFoundException,
+            PermissionDeniedException;
 
     /*
      * accessors

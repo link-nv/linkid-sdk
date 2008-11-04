@@ -78,8 +78,8 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
         return NAME;
     }
 
-    public ProtocolContext handleRequest(HttpServletRequest authnRequest, Locale language, Integer color,
-            Boolean minimal) throws ProtocolException {
+    public ProtocolContext handleRequest(HttpServletRequest authnRequest, Locale language, Integer color, Boolean minimal)
+            throws ProtocolException {
 
         LOG.debug("request method: " + authnRequest.getMethod());
         if (false == "POST".equals(authnRequest.getMethod()))
@@ -131,7 +131,8 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
         }
     }
 
-    public void authnResponse(HttpSession session, HttpServletResponse authnResponse) throws ProtocolException {
+    public void authnResponse(HttpSession session, HttpServletResponse authnResponse)
+            throws ProtocolException {
 
         String target = LoginManager.getTarget(session);
 
@@ -157,7 +158,8 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
         }
     }
 
-    public LogoutProtocolContext handleLogoutRequest(HttpServletRequest logoutRequest) throws ProtocolException {
+    public LogoutProtocolContext handleLogoutRequest(HttpServletRequest logoutRequest)
+            throws ProtocolException {
 
         LOG.debug("request method: " + logoutRequest.getMethod());
         if (false == "POST".equals(logoutRequest.getMethod()))
@@ -215,7 +217,8 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
     /**
      * {@inheritDoc}
      */
-    public String handleLogoutResponse(HttpServletRequest httpRequest) throws ProtocolException {
+    public String handleLogoutResponse(HttpServletRequest httpRequest)
+            throws ProtocolException {
 
         AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(httpRequest.getSession());
         String applicationName;
@@ -233,7 +236,8 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
     /**
      * {@inheritDoc}
      */
-    public void logoutRequest(ApplicationEntity application, HttpSession session, HttpServletResponse response) throws ProtocolException {
+    public void logoutRequest(ApplicationEntity application, HttpSession session, HttpServletResponse response)
+            throws ProtocolException {
 
         String target = application.getSsoLogoutUrl().toString();
 
@@ -265,7 +269,7 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
      * {@inheritDoc}
      */
     public void logoutResponse(boolean partialLogout, String target, HttpSession session, HttpServletResponse logoutResponse)
-                                                                                                                             throws ProtocolException {
+            throws ProtocolException {
 
         String encodedSamlLogoutResponseToken;
         try {

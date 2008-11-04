@@ -69,13 +69,15 @@ public class PkiTestUtils {
     }
 
 
-    public static KeyPair generateKeyPair() throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+    public static KeyPair generateKeyPair()
+            throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
 
         KeyPair keyPair = generateKeyPair("RSA");
         return keyPair;
     }
 
-    public static KeyPair generateKeyPair(String algorithm) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+    public static KeyPair generateKeyPair(String algorithm)
+            throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
 
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(algorithm);
         SecureRandom random = new SecureRandom();
@@ -91,22 +93,17 @@ public class PkiTestUtils {
 
     public static X509Certificate generateSelfSignedCertificate(KeyPair keyPair, String dn, DateTime notBefore, DateTime notAfter,
                                                                 String signatureAlgorithm, boolean caCert, boolean timeStampingPurpose)
-                                                                                                                                       throws InvalidKeyException,
-                                                                                                                                       IllegalStateException,
-                                                                                                                                       NoSuchAlgorithmException,
-                                                                                                                                       SignatureException,
-                                                                                                                                       IOException,
-                                                                                                                                       CertificateException {
+            throws InvalidKeyException, IllegalStateException, NoSuchAlgorithmException, SignatureException, IOException,
+            CertificateException {
 
         X509Certificate certificate = generateCertificate(keyPair.getPublic(), dn, keyPair.getPrivate(), null, notBefore, notAfter,
                 signatureAlgorithm, caCert, timeStampingPurpose, null);
         return certificate;
     }
 
-    public static X509Certificate generateSelfSignedCertificate(KeyPair keyPair, String dn) throws InvalidKeyException,
-                                                                                           IllegalStateException, NoSuchAlgorithmException,
-                                                                                           SignatureException, IOException,
-                                                                                           CertificateException {
+    public static X509Certificate generateSelfSignedCertificate(KeyPair keyPair, String dn)
+            throws InvalidKeyException, IllegalStateException, NoSuchAlgorithmException, SignatureException, IOException,
+            CertificateException {
 
         DateTime now = new DateTime();
         DateTime future = now.plusYears(10);
@@ -117,12 +114,8 @@ public class PkiTestUtils {
     public static X509Certificate generateCertificate(PublicKey subjectPublicKey, String subjectDn, PrivateKey issuerPrivateKey,
                                                       X509Certificate issuerCert, DateTime notBefore, DateTime notAfter,
                                                       String signatureAlgorithm, boolean caCert, boolean timeStampingPurpose, URI ocspUri)
-                                                                                                                                          throws IOException,
-                                                                                                                                          InvalidKeyException,
-                                                                                                                                          IllegalStateException,
-                                                                                                                                          NoSuchAlgorithmException,
-                                                                                                                                          SignatureException,
-                                                                                                                                          CertificateException {
+            throws IOException, InvalidKeyException, IllegalStateException, NoSuchAlgorithmException, SignatureException,
+            CertificateException {
 
         String finalSignatureAlgorithm = signatureAlgorithm;
         if (null == signatureAlgorithm) {
@@ -178,7 +171,8 @@ public class PkiTestUtils {
         return certificate;
     }
 
-    public static X509Certificate generateTestSelfSignedCert(URI ocspUri) throws Exception {
+    public static X509Certificate generateTestSelfSignedCert(URI ocspUri)
+            throws Exception {
 
         KeyPair keyPair = generateKeyPair();
         DateTime now = new DateTime();
@@ -189,14 +183,16 @@ public class PkiTestUtils {
         return certificate;
     }
 
-    public static X509Certificate loadCertificate(InputStream inputStream) throws CertificateException {
+    public static X509Certificate loadCertificate(InputStream inputStream)
+            throws CertificateException {
 
         CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
         X509Certificate certificate = (X509Certificate) certificateFactory.generateCertificate(inputStream);
         return certificate;
     }
 
-    public static X509Certificate loadCertificateFromResource(String resourceName) throws CertificateException {
+    public static X509Certificate loadCertificateFromResource(String resourceName)
+            throws CertificateException {
 
         InputStream inputStream = PkiTestUtils.class.getResourceAsStream(resourceName);
         try {
@@ -226,8 +222,8 @@ public class PkiTestUtils {
      * @throws IOException
      */
     public static void persistKey(File pkcs12keyStore, PrivateKey privateKey, X509Certificate certificate, String keyStorePassword,
-                                  String keyEntryPassword) throws KeyStoreException, NoSuchAlgorithmException, CertificateException,
-                                                          IOException {
+                                  String keyEntryPassword)
+            throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
 
         KeyStore keyStore;
         keyStore = KeyStore.getInstance("pkcs12");
@@ -239,14 +235,16 @@ public class PkiTestUtils {
         keyStoreOut.close();
     }
 
-    private static SubjectKeyIdentifier createSubjectKeyId(PublicKey publicKey) throws IOException {
+    private static SubjectKeyIdentifier createSubjectKeyId(PublicKey publicKey)
+            throws IOException {
 
         ByteArrayInputStream bais = new ByteArrayInputStream(publicKey.getEncoded());
         SubjectPublicKeyInfo info = new SubjectPublicKeyInfo((ASN1Sequence) new ASN1InputStream(bais).readObject());
         return new SubjectKeyIdentifier(info);
     }
 
-    private static AuthorityKeyIdentifier createAuthorityKeyId(PublicKey publicKey) throws IOException {
+    private static AuthorityKeyIdentifier createAuthorityKeyId(PublicKey publicKey)
+            throws IOException {
 
         ByteArrayInputStream bais = new ByteArrayInputStream(publicKey.getEncoded());
         SubjectPublicKeyInfo info = new SubjectPublicKeyInfo((ASN1Sequence) new ASN1InputStream(bais).readObject());

@@ -85,7 +85,8 @@ public class LandingServlet extends AbstractInjectionServlet {
 
 
     @Override
-    public void init(ServletConfig config) throws ServletException {
+    public void init(ServletConfig config)
+            throws ServletException {
 
         super.init(config);
         InputStream keyStoreInputStream = null;
@@ -111,7 +112,8 @@ public class LandingServlet extends AbstractInjectionServlet {
     }
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         LOG.debug("doPost");
 

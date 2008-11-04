@@ -44,7 +44,8 @@ public class CertPathApiTest {
 
 
     @Test
-    public void validating() throws Exception {
+    public void validating()
+            throws Exception {
 
         // Security.addProvider(new BouncyCastleProvider());
 

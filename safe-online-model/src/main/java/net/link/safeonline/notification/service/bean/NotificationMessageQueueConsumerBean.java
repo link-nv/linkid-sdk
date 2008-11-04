@@ -46,8 +46,7 @@ import org.apache.commons.logging.LogFactory;
  * 
  * @author wvdhaute
  */
-@MessageDriven(activationConfig = {
-        @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
+@MessageDriven(activationConfig = { @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
         @ActivationConfigProperty(propertyName = "destination", propertyValue = NotificationConstants.NOTIFICATIONS_QUEUE_NAME),
         @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge"),
         @ActivationConfigProperty(propertyName = "maxSession", propertyValue = "2") })
@@ -78,28 +77,24 @@ public class NotificationMessageQueueConsumerBean implements MessageListener {
             notificationMessage = new NotificationMessage(message);
         } catch (JMSException e) {
             LOG.debug("received bogus JMS message, rejecting ...");
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION,
-                    "bogus notification message on notifications queue");
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, "bogus notification message on notifications queue");
             return;
         }
 
-        EndpointReferenceEntity consumer = this.endpointReferenceDAO.findEndpointReference(notificationMessage
-                .getConsumerId());
+        EndpointReferenceEntity consumer = this.endpointReferenceDAO.findEndpointReference(notificationMessage.getConsumerId());
         try {
             MessageHandlerManager.sendMessage(notificationMessage, consumer);
         } catch (WSClientTransportException e) {
-            String msg = "Failed to send messsage for topic " + notificationMessage.getTopic() + " to consumer: "
-                    + e.getLocation();
+            String msg = "Failed to send messsage for topic " + notificationMessage.getTopic() + " to consumer: " + e.getLocation();
             LOG.debug(msg);
-            this.resourceAuditLogger.addResourceAudit(ResourceNameType.WS, ResourceLevelType.RESOURCE_UNAVAILABLE, e
-                    .getLocation(), msg);
+            this.resourceAuditLogger.addResourceAudit(ResourceNameType.WS, ResourceLevelType.RESOURCE_UNAVAILABLE, e.getLocation(), msg);
             this.notificationMessageDAO.addNotificationAttempt(notificationMessage, consumer);
             /*
-             * NotificationMessageEntity notificationMessageEntity =
-             * this.notificationMessageDAO.findNotificationMessage( notificationMessage, consumer); if (null ==
-             * notificationMessageEntity) { this.notificationMessageDAO.addNotificationMessage(notificationMessage,
-             * consumer); } else { LOG.debug("attempts: " + notificationMessageEntity.getAttempts());
-             * notificationMessageEntity.setAttempts(notificationMessageEntity.getAttempts() + 1); }
+             * NotificationMessageEntity notificationMessageEntity = this.notificationMessageDAO.findNotificationMessage(
+             * notificationMessage, consumer); if (null == notificationMessageEntity) {
+             * this.notificationMessageDAO.addNotificationMessage(notificationMessage, consumer); } else { LOG.debug("attempts: " +
+             * notificationMessageEntity.getAttempts()); notificationMessageEntity.setAttempts(notificationMessageEntity.getAttempts() + 1);
+             * }
              */
             return;
         } catch (MessageHandlerNotFoundException e) {
@@ -113,8 +108,8 @@ public class NotificationMessageQueueConsumerBean implements MessageListener {
         /*
          * If persisted, remove so we do not send it again
          */
-        NotificationMessageEntity notificationMessageEntity = this.notificationMessageDAO.findNotificationMessage(
-                notificationMessage, consumer);
+        NotificationMessageEntity notificationMessageEntity = this.notificationMessageDAO.findNotificationMessage(notificationMessage,
+                consumer);
         if (null != notificationMessageEntity) {
             this.notificationMessageDAO.removeNotificationMessage(notificationMessageEntity);
         }

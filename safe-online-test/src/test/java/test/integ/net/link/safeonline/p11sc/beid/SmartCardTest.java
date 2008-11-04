@@ -75,7 +75,8 @@ public class SmartCardTest {
 
 
     @Test
-    public void testGetCertificatePath() throws Exception {
+    public void testGetCertificatePath()
+            throws Exception {
 
         // setup
         SmartCard smartCard = SmartCardFactory.newInstance();
@@ -104,7 +105,8 @@ public class SmartCardTest {
     }
 
     @Test
-    public void testGetCertificatesAndPrivateKeys() throws Exception {
+    public void testGetCertificatesAndPrivateKeys()
+            throws Exception {
 
         // setup
         SmartCard smartCard = SmartCardFactory.newInstance();
@@ -153,7 +155,8 @@ public class SmartCardTest {
     }
 
     @Test
-    public void testAvailabilityOfBeIDConfiguration() throws Exception {
+    public void testAvailabilityOfBeIDConfiguration()
+            throws Exception {
 
         URL url = SmartCardTest.class.getResource("/META-INF/safe-online-pkcs11-sc-config.properties");
         LOG.debug("URL: " + url);
@@ -167,7 +170,8 @@ public class SmartCardTest {
     }
 
     @Test
-    public void testIteratePKCS11Slots() throws Exception {
+    public void testIteratePKCS11Slots()
+            throws Exception {
 
         // setup
         SmartCardConfigFactory configFactory = new SmartCardConfigFactoryImpl();
@@ -206,7 +210,8 @@ public class SmartCardTest {
     }
 
     @Test
-    public void testIdentityStatement() throws Exception {
+    public void testIdentityStatement()
+            throws Exception {
 
         SmartCard smartCard = SmartCardFactory.newInstance();
 
@@ -231,7 +236,8 @@ public class SmartCardTest {
     }
 
     @Test
-    public void testCardRemoval() throws Exception {
+    public void testCardRemoval()
+            throws Exception {
 
         SmartCard smartCard = SmartCardFactory.newInstance();
 
@@ -289,7 +295,8 @@ public class SmartCardTest {
     }
 
     @Test
-    public void testSmartCardConfigForWindowsXP() throws Exception {
+    public void testSmartCardConfigForWindowsXP()
+            throws Exception {
 
         SmartCardConfigFactory smartCardConfigFactory = new SmartCardConfigFactoryImpl();
         List<SmartCardConfig> smartCardConfigs = smartCardConfigFactory.getSmartCardConfigs();
@@ -308,7 +315,8 @@ public class SmartCardTest {
     }
 
     @Test
-    public void testJniBeIdLib() throws Exception {
+    public void testJniBeIdLib()
+            throws Exception {
 
         Runtime runtime = Runtime.getRuntime();
         runtime.load("/usr/local/lib/libbeidlibjni.so");
@@ -346,7 +354,8 @@ public class SmartCardTest {
 
 
     @Test
-    public void testNoBeIDCard() throws Exception {
+    public void testNoBeIDCard()
+            throws Exception {
 
         JOptionPane.showMessageDialog(null, "Reader driver active, card removed.");
         String pkcs11Library = "/usr/local/lib/libbeidpkcs11.so";
@@ -369,7 +378,8 @@ public class SmartCardTest {
     }
 
     @Test
-    public void testOpenscPkcs11Driver() throws Exception {
+    public void testOpenscPkcs11Driver()
+            throws Exception {
 
         File tmpConfigFile = File.createTempFile("pkcs11", "conf");
         tmpConfigFile.deleteOnExit();
@@ -466,8 +476,8 @@ public class SmartCardTest {
     }
 
     @SuppressWarnings("unchecked")
-    private void resetPKCS11Driver() throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException,
-                                    PKCS11Exception {
+    private void resetPKCS11Driver()
+            throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException, PKCS11Exception {
 
         Field moduleMapField = PKCS11.class.getDeclaredField("moduleMap");
         moduleMapField.setAccessible(true);
@@ -495,7 +505,8 @@ public class SmartCardTest {
         private static final Log HandlerLOG = LogFactory.getLog(TestCallbackHandler.class);
 
 
-        public void handle(Callback[] callbacks) throws UnsupportedCallbackException {
+        public void handle(Callback[] callbacks)
+                throws UnsupportedCallbackException {
 
             for (Callback callback : callbacks) {
                 HandlerLOG.debug("callback type: " + callback.getClass().getName());

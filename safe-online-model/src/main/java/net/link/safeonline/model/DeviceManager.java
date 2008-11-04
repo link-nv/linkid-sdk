@@ -24,6 +24,7 @@ public interface DeviceManager extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/DeviceManagerBean/local";
 
+
     /**
      * Gives back the caller device. Calling this method only makes sense in the context of a device login (via a device web service).
      * 

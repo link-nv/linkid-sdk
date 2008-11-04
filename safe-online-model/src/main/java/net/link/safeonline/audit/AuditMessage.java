@@ -41,7 +41,8 @@ public class AuditMessage implements Serializable {
         this.auditContextId = message.getLongProperty("auditContextId");
     }
 
-    public Message getJMSMessage(Session session) throws JMSException {
+    public Message getJMSMessage(Session session)
+            throws JMSException {
 
         Message message = session.createMessage();
         message.setLongProperty("auditContextId", this.auditContextId);

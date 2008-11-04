@@ -50,7 +50,8 @@ public class ServletLoginFilterTest extends TestCase {
 
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp()
+            throws Exception {
 
         super.setUp();
 
@@ -70,7 +71,8 @@ public class ServletLoginFilterTest extends TestCase {
     }
 
     @Override
-    protected void tearDown() throws Exception {
+    protected void tearDown()
+            throws Exception {
 
         this.servletTestManager.tearDown();
         this.jndiTestUtils.tearDown();
@@ -78,7 +80,8 @@ public class ServletLoginFilterTest extends TestCase {
         super.tearDown();
     }
 
-    public void testServletContainerLogin() throws Exception {
+    public void testServletContainerLogin()
+            throws Exception {
 
         // setup
         String testExpectedRole = "test-role-" + getName();

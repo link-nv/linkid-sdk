@@ -116,7 +116,8 @@ public class JAASLoginFilter implements Filter {
         LOG.debug("destroy");
     }
 
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
@@ -130,7 +131,8 @@ public class JAASLoginFilter implements Filter {
         }
     }
 
-    private boolean login(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private boolean login(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
 
         LOG.debug("login");
         String userId = LoginManager.findUserId(request);
@@ -179,12 +181,12 @@ public class JAASLoginFilter implements Filter {
     public static final String FLUSH_JBOSS_CREDENTIAL_CACHE_ATTRIBUTE_NAME = "FlushJBossCredentialCache";
 
 
-    private void processFlushJBossCredentialCache(HttpServletRequest request) throws ServletException {
+    private void processFlushJBossCredentialCache(HttpServletRequest request)
+            throws ServletException {
 
         HttpSession session = request.getSession(false);
         /*
-         * We could trigger here an java.lang.IllegalStateException: Cannot create a session after the response has been
-         * committed.
+         * We could trigger here an java.lang.IllegalStateException: Cannot create a session after the response has been committed.
          * 
          * So be careful when retrieving the session.
          */

@@ -24,11 +24,13 @@ public interface TrustPointDAO extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/TrustPointDAOBean/local";
 
+
     void addTrustPoint(TrustDomainEntity trustDomain, X509Certificate certificate);
 
     List<TrustPointEntity> listTrustPoints(TrustDomainEntity trustDomain);
 
-    TrustPointEntity getTrustPoint(TrustPointPK pk) throws TrustPointNotFoundException;
+    TrustPointEntity getTrustPoint(TrustPointPK pk)
+            throws TrustPointNotFoundException;
 
     TrustPointEntity findTrustPoint(TrustDomainEntity trustDomain, X509Certificate certificate);
 

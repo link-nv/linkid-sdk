@@ -42,7 +42,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = BeIdStartableBean.JNDI_BINDING)
 public class BeIdStartableBean extends AbstractInitBean {
 
-    public static final String JNDI_BINDING           = BeIdConstants.BEID_STARTABLE_JNDI_PREFIX + "BeIdStartableBean";
+    public static final String JNDI_BINDING   = BeIdConstants.BEID_STARTABLE_JNDI_PREFIX + "BeIdStartableBean";
 
     private static final Log   LOG            = LogFactory.getLog(BeIdStartableBean.class);
 

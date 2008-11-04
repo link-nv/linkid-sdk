@@ -34,6 +34,7 @@ public interface AttributeService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AttributeServiceBean/local";
 
+
     /**
      * Gives back the value of an attribute of a certain subject. The subject must have confirmed attribute usage before the application is
      * allowed to access the attribute value. The attribute should not be marked as data-mining attribute type.
@@ -51,9 +52,8 @@ public interface AttributeService extends SafeOnlineService {
      * @throws SubjectNotFoundException
      * @throws AttributeUnavailableException
      */
-    Object getConfirmedAttributeValue(String subjectLogin, String attributeName) throws PermissionDeniedException,
-                                                                                AttributeTypeNotFoundException, SubjectNotFoundException,
-                                                                                AttributeUnavailableException;
+    Object getConfirmedAttributeValue(String subjectLogin, String attributeName)
+            throws PermissionDeniedException, AttributeTypeNotFoundException, SubjectNotFoundException, AttributeUnavailableException;
 
     /**
      * Returns a map of attributes with values of the given subject. Of course the subject needs to be subscribed onto the current caller
@@ -75,6 +75,6 @@ public interface AttributeService extends SafeOnlineService {
      * @throws SubjectNotFoundException
      * @throws AttributeUnavailableException
      */
-    Map<String, Object> getConfirmedAttributeValues(String subjectLogin) throws PermissionDeniedException, AttributeTypeNotFoundException,
-                                                                        SubjectNotFoundException, AttributeUnavailableException;
+    Map<String, Object> getConfirmedAttributeValues(String subjectLogin)
+            throws PermissionDeniedException, AttributeTypeNotFoundException, SubjectNotFoundException, AttributeUnavailableException;
 }

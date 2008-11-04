@@ -56,7 +56,8 @@ public class ConfigurationManagerBean implements ConfigurationManager {
         return this.maxWsSecurityTimestampOffset;
     }
 
-    public boolean skipMessageIntegrityCheck(String applicationName) throws ApplicationNotFoundException {
+    public boolean skipMessageIntegrityCheck(String applicationName)
+            throws ApplicationNotFoundException {
 
         ApplicationEntity application = this.applicationDAO.getApplication(applicationName);
         boolean skipMessageIntegrityCheck = application.isSkipMessageIntegrityCheck();

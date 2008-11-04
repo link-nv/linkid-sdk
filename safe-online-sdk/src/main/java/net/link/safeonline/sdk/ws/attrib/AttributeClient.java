@@ -48,9 +48,8 @@ public interface AttributeClient extends MessageAccessor {
      *             in case the service could not be contacted. Can happen if the SSL was not setup correctly.
      * @throws AttributeUnavailableException
      */
-    <T> T getAttributeValue(String userId, String attributeName, Class<T> valueClass) throws AttributeNotFoundException,
-                                                                                     RequestDeniedException, WSClientTransportException,
-                                                                                     AttributeUnavailableException;
+    <T> T getAttributeValue(String userId, String attributeName, Class<T> valueClass)
+            throws AttributeNotFoundException, RequestDeniedException, WSClientTransportException, AttributeUnavailableException;
 
     /**
      * Gives back attribute values via the map of attributes. The map should hold the requested attribute names as keys. The method will
@@ -63,8 +62,8 @@ public interface AttributeClient extends MessageAccessor {
      * @throws WSClientTransportException
      * @throws AttributeUnavailableException
      */
-    void getAttributeValues(String userId, Map<String, Object> attributes) throws AttributeNotFoundException, RequestDeniedException,
-                                                                          WSClientTransportException, AttributeUnavailableException;
+    void getAttributeValues(String userId, Map<String, Object> attributes)
+            throws AttributeNotFoundException, RequestDeniedException, WSClientTransportException, AttributeUnavailableException;
 
     /**
      * Gives back a map of attributes for the given subject that this application is allowed to read.
@@ -75,8 +74,8 @@ public interface AttributeClient extends MessageAccessor {
      * @throws AttributeNotFoundException
      * @throws AttributeUnavailableException
      */
-    Map<String, Object> getAttributeValues(String userId) throws RequestDeniedException, WSClientTransportException,
-                                                         AttributeNotFoundException, AttributeUnavailableException;
+    Map<String, Object> getAttributeValues(String userId)
+            throws RequestDeniedException, WSClientTransportException, AttributeNotFoundException, AttributeUnavailableException;
 
     /**
      * Gives back the application identity for the given subject.
@@ -91,6 +90,6 @@ public interface AttributeClient extends MessageAccessor {
      * @throws WSClientTransportException
      * @throws AttributeUnavailableException
      */
-    <T> T getIdentity(String userId, Class<T> identityCardClass) throws AttributeNotFoundException, RequestDeniedException,
-                                                                WSClientTransportException, AttributeUnavailableException;
+    <T> T getIdentity(String userId, Class<T> identityCardClass)
+            throws AttributeNotFoundException, RequestDeniedException, WSClientTransportException, AttributeUnavailableException;
 }

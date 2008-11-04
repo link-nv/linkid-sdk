@@ -43,7 +43,8 @@ public class PkiServlet extends AbstractInjectionServlet {
 
 
     @Override
-    public void init(ServletConfig config) throws ServletException {
+    public void init(ServletConfig config)
+            throws ServletException {
 
         super.init(config);
         LOG.debug("init");
@@ -51,7 +52,8 @@ public class PkiServlet extends AbstractInjectionServlet {
     }
 
     @Override
-    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         LOG.debug("doGet");
         X509Certificate certificate = this.client.getCertificate();

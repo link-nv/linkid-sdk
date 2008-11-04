@@ -20,13 +20,17 @@ public interface Subscriptions {
 
     public static final String JNDI_BINDING = UserConstants.JNDI_PREFIX + "SubscriptionsBean/local";
 
+
     void subscriptionListFactory();
 
-    String viewSubscription() throws SubscriptionNotFoundException, ApplicationNotFoundException, ApplicationIdentityNotFoundException;
+    String viewSubscription()
+            throws SubscriptionNotFoundException, ApplicationNotFoundException, ApplicationIdentityNotFoundException;
 
-    String unsubscribe() throws SubscriptionNotFoundException, ApplicationNotFoundException;
+    String unsubscribe()
+            throws SubscriptionNotFoundException, ApplicationNotFoundException;
 
-    String getUsageAgreement() throws ApplicationNotFoundException;
+    String getUsageAgreement()
+            throws ApplicationNotFoundException;
 
     String getGlobalUsageAgreement();
 

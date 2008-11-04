@@ -97,7 +97,8 @@ public class IdentityAppletTest extends TestCase {
     }
 
 
-    public void testLayout() throws Exception {
+    public void testLayout()
+            throws Exception {
 
         final IdentityApplet identityApplet = new IdentityApplet();
 

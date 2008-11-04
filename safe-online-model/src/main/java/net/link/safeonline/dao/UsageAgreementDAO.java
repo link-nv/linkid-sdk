@@ -24,12 +24,13 @@ public interface UsageAgreementDAO extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/UsageAgreementDAOBean/local";
 
+
     UsageAgreementEntity addUsageAgreement(ApplicationEntity application, Long usageAgreementVersion);
 
     UsageAgreementEntity getUsageAgreement(ApplicationEntity application, Long usageAgreementVersion);
 
     UsageAgreementEntity findUsageAgreement(ApplicationEntity application, Long usageAgreementVersion)
-                                                                                                      throws UsageAgreementNotFoundException;
+            throws UsageAgreementNotFoundException;
 
     List<UsageAgreementEntity> listUsageAgreements(ApplicationEntity application);
 
@@ -51,7 +52,7 @@ public interface UsageAgreementDAO extends SafeOnlineService {
     UsageAgreementTextEntity getUsageAgreementText(UsageAgreementEntity usageAgreement, String language);
 
     UsageAgreementTextEntity findUsageAgreementText(UsageAgreementEntity usageAgreement, String language)
-                                                                                                         throws UsageAgreementTextNotFoundException;
+            throws UsageAgreementTextNotFoundException;
 
     GlobalUsageAgreementEntity addGlobalUsageAgreement(Long draftGlobalUsageAgreementVersion);
 

@@ -22,6 +22,7 @@ public interface TaskHistoryDAO extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/TaskHistoryDAOBean/local";
 
+
     TaskHistoryEntity addTaskHistoryEntity(TaskEntity task, String message, boolean result, Date startDate, Date endDate);
 
     List<TaskHistoryEntity> listTaskHistory(TaskEntity task);

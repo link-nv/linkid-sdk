@@ -28,5 +28,6 @@ public interface NotificationProducerClient extends MessageAccessor {
      * @throws SubscriptionFailedException
      * @throws WSClientTransportException
      */
-    void subscribe(String topic, String address) throws SubscriptionFailedException, WSClientTransportException;
+    void subscribe(String topic, String address)
+            throws SubscriptionFailedException, WSClientTransportException;
 }

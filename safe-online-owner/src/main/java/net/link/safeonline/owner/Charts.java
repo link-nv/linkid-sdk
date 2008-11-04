@@ -20,19 +20,23 @@ public interface Charts {
 
     public static final String JNDI_BINDING = OwnerConstants.JNDI_PREFIX + "ChartsBean/local";
 
+
     /*
      * Factories
      */
-    void statListFactory() throws PermissionDeniedException;
+    void statListFactory()
+            throws PermissionDeniedException;
 
     /*
      * Actions.
      */
     String viewStat();
 
-    String export() throws IOException;
+    String export()
+            throws IOException;
 
-    String exportStat() throws IOException;
+    String exportStat()
+            throws IOException;
 
     /*
      * Lifecycle.

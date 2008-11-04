@@ -19,7 +19,8 @@ public class SmartCardConfigImplTest extends TestCase {
 
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp()
+            throws Exception {
 
         super.setUp();
 
@@ -28,7 +29,8 @@ public class SmartCardConfigImplTest extends TestCase {
         this.testedInstance = new SmartCardConfigImpl(this.testAlias);
     }
 
-    public void testGetAlias() throws Exception {
+    public void testGetAlias()
+            throws Exception {
 
         // operate
         String result = this.testedInstance.getCardAlias();
@@ -37,7 +39,8 @@ public class SmartCardConfigImplTest extends TestCase {
         assertEquals(this.testAlias, result);
     }
 
-    public void testSetAuthAndSignKeyAliases() throws Exception {
+    public void testSetAuthAndSignKeyAliases()
+            throws Exception {
 
         // setup
         String authKeyAlias = "test-auth-alias";

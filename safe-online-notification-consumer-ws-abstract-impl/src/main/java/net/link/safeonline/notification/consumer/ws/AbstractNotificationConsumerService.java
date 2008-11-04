@@ -7,8 +7,6 @@
 
 package net.link.safeonline.notification.consumer.ws;
 
-
-
 /**
  * Abstract WS-Notification consumer service interface to be used for specific implementations.
  * 

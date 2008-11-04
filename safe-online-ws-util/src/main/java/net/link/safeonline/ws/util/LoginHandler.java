@@ -110,7 +110,8 @@ public class LoginHandler implements SOAPHandler<SOAPMessageContext> {
         }
     }
 
-    private char[] toPassword(X509Certificate certificate) throws CertificateEncodingException {
+    private char[] toPassword(X509Certificate certificate)
+            throws CertificateEncodingException {
 
         byte[] encodedCertificate = certificate.getEncoded();
         char[] password = Hex.encodeHex(encodedCertificate);

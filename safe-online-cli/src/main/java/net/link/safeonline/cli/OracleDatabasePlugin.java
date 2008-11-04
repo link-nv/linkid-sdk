@@ -49,7 +49,8 @@ public class OracleDatabasePlugin implements DatabasePlugin {
         return "Oracle";
     }
 
-    public Connection getConnection(String connectionUrl, String user, String password) throws SQLException {
+    public Connection getConnection(String connectionUrl, String user, String password)
+            throws SQLException {
 
         if (null == this.driver)
             throw new SQLException("need to initialize the database plugin first");

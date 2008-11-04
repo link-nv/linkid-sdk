@@ -88,8 +88,8 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
 
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Object findAttributeValue(String userId, String attributeName) throws PermissionDeniedException, AttributeTypeNotFoundException,
-                                                                         AttributeUnavailableException, SubjectNotFoundException {
+    public Object findAttributeValue(String userId, String attributeName)
+            throws PermissionDeniedException, AttributeTypeNotFoundException, AttributeUnavailableException, SubjectNotFoundException {
 
         LOG.debug("find attribute " + attributeName + " for " + userId);
 
@@ -219,10 +219,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
      * @throws SubjectNotFoundException
      */
     private Object findExternalAttributeValue(SubjectEntity subject, AttributeTypeEntity attributeType)
-                                                                                                       throws AttributeUnavailableException,
-                                                                                                       AttributeTypeNotFoundException,
-                                                                                                       PermissionDeniedException,
-                                                                                                       SubjectNotFoundException {
+            throws AttributeUnavailableException, AttributeTypeNotFoundException, PermissionDeniedException, SubjectNotFoundException {
 
         LOG.debug("find external attribute " + attributeType.getName() + " for " + subject.getUserId());
         try {
@@ -345,10 +342,8 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
      * @throws SubjectNotFoundException
      * @throws SafeOnlineResourceException
      */
-    private Object findRemoteAttribute(SubjectEntity subject, AttributeTypeEntity attributeType) throws PermissionDeniedException,
-                                                                                                AttributeUnavailableException,
-                                                                                                SubjectNotFoundException,
-                                                                                                NodeNotFoundException {
+    private Object findRemoteAttribute(SubjectEntity subject, AttributeTypeEntity attributeType)
+            throws PermissionDeniedException, AttributeUnavailableException, SubjectNotFoundException, NodeNotFoundException {
 
         LOG.debug("find remote attribute " + attributeType.getName() + " for " + subject.getUserId());
 
@@ -596,8 +591,8 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
      * @throws UnsupportedDataTypeException
      */
     @SuppressWarnings("unchecked")
-    private Object getValueFromPlugin(List<Attribute> attributeView, AttributeTypeEntity attributeType) throws InvalidDataException,
-                                                                                                       UnsupportedDataTypeException {
+    private Object getValueFromPlugin(List<Attribute> attributeView, AttributeTypeEntity attributeType)
+            throws InvalidDataException, UnsupportedDataTypeException {
 
         if (null == attributeView || attributeView.isEmpty())
             return null;

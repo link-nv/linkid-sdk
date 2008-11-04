@@ -10,11 +10,11 @@ package net.link.safeonline.demo.mandate;
 import javax.ejb.Local;
 
 
-
-
 @Local
 public interface MandateSearch extends AbstractMandateDataClient {
+
     public static final String JNDI_BINDING = "SafeOnlineMandateDemo/MandateSearchBean/local";
+
 
     /*
      * Accessors.

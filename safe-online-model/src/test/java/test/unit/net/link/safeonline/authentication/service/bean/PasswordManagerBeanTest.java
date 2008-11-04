@@ -43,7 +43,8 @@ public class PasswordManagerBeanTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.entityTestManager = new EntityTestManager();
         /*
@@ -80,13 +81,15 @@ public class PasswordManagerBeanTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.entityTestManager.tearDown();
     }
 
     @Test
-    public void testSetPassword() throws Exception {
+    public void testSetPassword()
+            throws Exception {
 
         // prepare
         UUID subjectUUID = UUID.randomUUID();
@@ -110,7 +113,8 @@ public class PasswordManagerBeanTest {
     }
 
     @Test
-    public void testChangePassword() throws Exception {
+    public void testChangePassword()
+            throws Exception {
 
         // prepare
         UUID subjectUUID = UUID.randomUUID();
@@ -131,7 +135,8 @@ public class PasswordManagerBeanTest {
     }
 
     @Test
-    public void validatePassword() throws Exception {
+    public void validatePassword()
+            throws Exception {
 
         // prepare
         UUID subjectUUID = UUID.randomUUID();
@@ -147,7 +152,8 @@ public class PasswordManagerBeanTest {
     }
 
     @Test
-    public void testIsPasswordConfigured() throws Exception {
+    public void testIsPasswordConfigured()
+            throws Exception {
 
         // prepare
         UUID subjectUUID = UUID.randomUUID();

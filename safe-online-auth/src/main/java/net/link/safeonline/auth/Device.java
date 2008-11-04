@@ -24,6 +24,7 @@ public interface Device {
 
     public static final String JNDI_BINDING = AuthenticationConstants.JNDI_PREFIX + "DeviceBean/local";
 
+
     /*
      * Accessors.
      */
@@ -39,12 +40,14 @@ public interface Device {
     /*
      * Actions.
      */
-    String next() throws IOException, DeviceNotFoundException;
-    
+    String next()
+            throws IOException, DeviceNotFoundException;
+
     /*
      * Factories.
      */
-    List<SelectItem> applicationDevicesFactory() throws ApplicationNotFoundException, EmptyDevicePolicyException;
+    List<SelectItem> applicationDevicesFactory()
+            throws ApplicationNotFoundException, EmptyDevicePolicyException;
 
     List<SelectItem> allDevicesFactory();
 }

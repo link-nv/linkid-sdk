@@ -61,7 +61,8 @@ abstract public class AbstractStatementStructure {
         this.signature = derSignature.getBytes();
     }
 
-    protected abstract void decode(ASN1Sequence tbsSequence) throws DecodingException;
+    protected abstract void decode(ASN1Sequence tbsSequence)
+            throws DecodingException;
 
     protected abstract X509Certificate getCertificate();
 
@@ -75,7 +76,8 @@ abstract public class AbstractStatementStructure {
         return this.toBeSignedData;
     }
 
-    protected X509Certificate decodeCertificate(byte[] certificate) throws DecodingException {
+    protected X509Certificate decodeCertificate(byte[] certificate)
+            throws DecodingException {
 
         try {
             CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");

@@ -57,7 +57,8 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
 
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         LOG.debug("doPost");
 

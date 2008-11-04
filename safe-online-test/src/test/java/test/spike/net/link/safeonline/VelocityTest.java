@@ -36,7 +36,8 @@ import org.junit.Test;
 public class VelocityTest {
 
     @Test
-    public void volicityTest() throws Exception {
+    public void volicityTest()
+            throws Exception {
 
         Properties velocityProperties = new Properties();
         velocityProperties.put("resource.loader", "class");

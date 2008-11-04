@@ -61,10 +61,8 @@ public class DummyAttributeClient implements AttributeClient {
     /**
      * {@inheritDoc}
      */
-    public <T> T getAttributeValue(String userId, String attributeName, Class<T> valueClass) throws AttributeNotFoundException,
-                                                                                            RequestDeniedException,
-                                                                                            WSClientTransportException,
-                                                                                            AttributeUnavailableException {
+    public <T> T getAttributeValue(String userId, String attributeName, Class<T> valueClass)
+            throws AttributeNotFoundException, RequestDeniedException, WSClientTransportException, AttributeUnavailableException {
 
         Object attributeValue = DummyAttributeClient.usersAttributes.get(userId).get(attributeName);
         if (attributeValue == null || valueClass.isAssignableFrom(attributeValue.getClass()))
@@ -77,9 +75,8 @@ public class DummyAttributeClient implements AttributeClient {
     /**
      * {@inheritDoc}
      */
-    public void getAttributeValues(String userId, Map<String, Object> attributes) throws AttributeNotFoundException,
-                                                                                 RequestDeniedException, WSClientTransportException,
-                                                                                 AttributeUnavailableException {
+    public void getAttributeValues(String userId, Map<String, Object> attributes)
+            throws AttributeNotFoundException, RequestDeniedException, WSClientTransportException, AttributeUnavailableException {
 
         attributes.clear();
         attributes.putAll(getAttributeValues(userId));
@@ -88,8 +85,8 @@ public class DummyAttributeClient implements AttributeClient {
     /**
      * {@inheritDoc}
      */
-    public Map<String, Object> getAttributeValues(String userId) throws RequestDeniedException, WSClientTransportException,
-                                                                AttributeNotFoundException, AttributeUnavailableException {
+    public Map<String, Object> getAttributeValues(String userId)
+            throws RequestDeniedException, WSClientTransportException, AttributeNotFoundException, AttributeUnavailableException {
 
         return DummyAttributeClient.usersAttributes.get(userId);
     }
@@ -97,8 +94,8 @@ public class DummyAttributeClient implements AttributeClient {
     /**
      * {@inheritDoc}
      */
-    public <T> T getIdentity(String userId, Class<T> identityCardClass) throws AttributeNotFoundException, RequestDeniedException,
-                                                                       WSClientTransportException, AttributeUnavailableException {
+    public <T> T getIdentity(String userId, Class<T> identityCardClass)
+            throws AttributeNotFoundException, RequestDeniedException, WSClientTransportException, AttributeUnavailableException {
 
         if (!identityCardClass.isAnnotationPresent(IdentityCard.class))
             throw new IllegalArgumentException("identity card class should be annotated with @IdentityCard");

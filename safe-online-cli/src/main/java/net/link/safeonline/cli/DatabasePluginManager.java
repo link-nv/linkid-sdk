@@ -45,7 +45,8 @@ public class DatabasePluginManager {
         return initializedDatabasePlugins;
     }
 
-    public static Connection connect(DatabasePlugin databasePlugin, String connectionUrl, String user, String password) throws SQLException {
+    public static Connection connect(DatabasePlugin databasePlugin, String connectionUrl, String user, String password)
+            throws SQLException {
 
         if (null != activeConnection)
             throw new IllegalStateException("already an active connection");

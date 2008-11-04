@@ -24,6 +24,7 @@ public interface SchedulingService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/SchedulingServiceBean/local";
 
+
     List<TaskEntity> listTaskList();
 
     List<SchedulingEntity> getSchedulingList();
@@ -38,9 +39,11 @@ public interface SchedulingService extends SafeOnlineService {
 
     void clearAllTasksHistory();
 
-    void saveScheduling(SchedulingEntity scheduling) throws InvalidCronExpressionException;
+    void saveScheduling(SchedulingEntity scheduling)
+            throws InvalidCronExpressionException;
 
-    void addScheduling(SchedulingEntity scheduling) throws InvalidCronExpressionException, ExistingSchedulingException;
+    void addScheduling(SchedulingEntity scheduling)
+            throws InvalidCronExpressionException, ExistingSchedulingException;
 
     void saveTask(TaskEntity task);
 

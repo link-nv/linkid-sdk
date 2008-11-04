@@ -46,7 +46,8 @@ public class NodeAuthenticationServiceBean implements NodeAuthenticationService 
     private TrustPointDAO    trustPointDAO;
 
 
-    public String authenticate(X509Certificate authnCertificate) throws NodeNotFoundException {
+    public String authenticate(X509Certificate authnCertificate)
+            throws NodeNotFoundException {
 
         NodeEntity node = this.olasDAO.getNodeFromAuthnCertificate(authnCertificate);
         String nodeName = node.getName();
@@ -54,7 +55,8 @@ public class NodeAuthenticationServiceBean implements NodeAuthenticationService 
         return nodeName;
     }
 
-    public List<X509Certificate> getSigningCertificates(String nodeName) throws NodeNotFoundException {
+    public List<X509Certificate> getSigningCertificates(String nodeName)
+            throws NodeNotFoundException {
 
         LOG.debug("get signing certificate for node: " + nodeName);
         NodeEntity node = this.olasDAO.getNode(nodeName);
@@ -67,12 +69,14 @@ public class NodeAuthenticationServiceBean implements NodeAuthenticationService 
         return certificates;
     }
 
-    public NodeEntity getNode(String nodeName) throws NodeNotFoundException {
+    public NodeEntity getNode(String nodeName)
+            throws NodeNotFoundException {
 
         return this.olasDAO.getNode(nodeName);
     }
 
-    public NodeEntity getLocalNode() throws NodeNotFoundException {
+    public NodeEntity getLocalNode()
+            throws NodeNotFoundException {
 
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
         return getNode(authenticate(authIdentityServiceClient.getCertificate()));

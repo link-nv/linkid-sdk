@@ -28,17 +28,20 @@ public interface Application {
 
     public static final String JNDI_BINDING = OperatorConstants.JNDI_PREFIX + "ApplicationBean/local";
 
+
     /*
      * Factory
      */
-    void applicationListFactory() throws ApplicationNotFoundException;
+    void applicationListFactory()
+            throws ApplicationNotFoundException;
 
     void newIdentityAttributesFactory();
 
-    void identityAttributesFactory() throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException;
+    void identityAttributesFactory()
+            throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException;
 
-    void applicationIdentityAttributesFactory() throws ApplicationNotFoundException, ApplicationIdentityNotFoundException,
-                                               PermissionDeniedException;
+    void applicationIdentityAttributesFactory()
+            throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException;
 
     List<SelectItem> availableApplicationOwnersFactory();
 
@@ -46,7 +49,8 @@ public interface Application {
 
     void allowedDevices();
 
-    void usageAgreementListFactory() throws ApplicationNotFoundException, PermissionDeniedException;
+    void usageAgreementListFactory()
+            throws ApplicationNotFoundException, PermissionDeniedException;
 
     /*
      * Lifecycle.
@@ -92,7 +96,8 @@ public interface Application {
 
     void setIdmapping(boolean idmapping);
 
-    String getUsageAgreement() throws ApplicationNotFoundException;
+    String getUsageAgreement()
+            throws ApplicationNotFoundException;
 
     void setApplicationIdScope(String applicationIdScope);
 
@@ -117,12 +122,15 @@ public interface Application {
     /*
      * Actions.
      */
-    String add() throws AttributeTypeNotFoundException, IOException, ApplicationNotFoundException;
+    String add()
+            throws AttributeTypeNotFoundException, IOException, ApplicationNotFoundException;
 
-    String removeApplication() throws ApplicationNotFoundException;
+    String removeApplication()
+            throws ApplicationNotFoundException;
 
-    String save() throws CertificateEncodingException, ApplicationNotFoundException, IOException, ApplicationIdentityNotFoundException,
-                 AttributeTypeNotFoundException, PermissionDeniedException;
+    String save()
+            throws CertificateEncodingException, ApplicationNotFoundException, IOException, ApplicationIdentityNotFoundException,
+            AttributeTypeNotFoundException, PermissionDeniedException;
 
     String view();
 
@@ -130,5 +138,6 @@ public interface Application {
 
     String viewUsageAgreement();
 
-    String editUsageAgreement() throws ApplicationNotFoundException, PermissionDeniedException;
+    String editUsageAgreement()
+            throws ApplicationNotFoundException, PermissionDeniedException;
 }

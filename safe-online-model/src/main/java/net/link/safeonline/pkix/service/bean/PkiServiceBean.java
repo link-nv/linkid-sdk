@@ -63,7 +63,8 @@ public class PkiServiceBean implements PkiService, PkiServiceRemote {
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void addTrustDomain(String name, boolean performOcspCheck) throws ExistingTrustDomainException {
+    public void addTrustDomain(String name, boolean performOcspCheck)
+            throws ExistingTrustDomainException {
 
         TrustDomainEntity existingTrustDomain = this.trustDomainDAO.findTrustDomain(name);
         if (null != existingTrustDomain)
@@ -72,7 +73,8 @@ public class PkiServiceBean implements PkiService, PkiServiceRemote {
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void addTrustDomain(String name, boolean performOcspCheck, long ocspCacheTimeOutMillis) throws ExistingTrustDomainException {
+    public void addTrustDomain(String name, boolean performOcspCheck, long ocspCacheTimeOutMillis)
+            throws ExistingTrustDomainException {
 
         TrustDomainEntity existingTrustDomain = this.trustDomainDAO.findTrustDomain(name);
         if (null != existingTrustDomain)
@@ -81,7 +83,8 @@ public class PkiServiceBean implements PkiService, PkiServiceRemote {
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void removeTrustDomain(String name) throws TrustDomainNotFoundException {
+    public void removeTrustDomain(String name)
+            throws TrustDomainNotFoundException {
 
         TrustDomainEntity trustDomain = this.trustDomainDAO.getTrustDomain(name);
         List<TrustPointEntity> trustPoints = this.trustPointDAO.listTrustPoints(trustDomain);
@@ -92,8 +95,8 @@ public class PkiServiceBean implements PkiService, PkiServiceRemote {
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void addTrustPoint(String domainName, byte[] encodedCertificate) throws TrustDomainNotFoundException,
-                                                                           CertificateEncodingException, ExistingTrustPointException {
+    public void addTrustPoint(String domainName, byte[] encodedCertificate)
+            throws TrustDomainNotFoundException, CertificateEncodingException, ExistingTrustPointException {
 
         TrustDomainEntity trustDomain = this.trustDomainDAO.getTrustDomain(domainName);
         X509Certificate certificate = PkiUtils.decodeCertificate(encodedCertificate);
@@ -106,7 +109,8 @@ public class PkiServiceBean implements PkiService, PkiServiceRemote {
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public List<TrustPointEntity> listTrustPoints(String domainName) throws TrustDomainNotFoundException {
+    public List<TrustPointEntity> listTrustPoints(String domainName)
+            throws TrustDomainNotFoundException {
 
         TrustDomainEntity trustDomain = this.trustDomainDAO.getTrustDomain(domainName);
         List<TrustPointEntity> trustPoints = this.trustPointDAO.listTrustPoints(trustDomain);
@@ -114,14 +118,16 @@ public class PkiServiceBean implements PkiService, PkiServiceRemote {
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void removeTrustPoint(TrustPointEntity trustPoint) throws TrustPointNotFoundException {
+    public void removeTrustPoint(TrustPointEntity trustPoint)
+            throws TrustPointNotFoundException {
 
         TrustPointEntity attachedTrustPoint = this.trustPointDAO.getTrustPoint(trustPoint.getPk());
         this.trustPointDAO.removeTrustPoint(attachedTrustPoint);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public TrustDomainEntity getTrustDomain(String trustDomainName) throws TrustDomainNotFoundException {
+    public TrustDomainEntity getTrustDomain(String trustDomainName)
+            throws TrustDomainNotFoundException {
 
         LOG.debug("get trust domain: " + trustDomainName);
         TrustDomainEntity trustDomain = this.trustDomainDAO.getTrustDomain(trustDomainName);
@@ -129,7 +135,8 @@ public class PkiServiceBean implements PkiService, PkiServiceRemote {
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void saveTrustDomain(TrustDomainEntity trustDomain) throws TrustDomainNotFoundException {
+    public void saveTrustDomain(TrustDomainEntity trustDomain)
+            throws TrustDomainNotFoundException {
 
         LOG.debug("save trust domain: " + trustDomain);
         // TODO: use EntityManager.merge instead

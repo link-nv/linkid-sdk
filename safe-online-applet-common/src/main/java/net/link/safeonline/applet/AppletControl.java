@@ -212,7 +212,8 @@ public class AppletControl implements AppletController, SmartCardPinCallback, Sm
         this.runtimeContext.showDocument(url);
     }
 
-    private boolean sendStatement(byte[] statement) throws IOException {
+    private boolean sendStatement(byte[] statement)
+            throws IOException {
 
         this.appletView.outputInfoMessage(InfoLevel.NORMAL, this.messages.getString("sending"));
         this.appletView.outputDetailMessage("Sending statement...");

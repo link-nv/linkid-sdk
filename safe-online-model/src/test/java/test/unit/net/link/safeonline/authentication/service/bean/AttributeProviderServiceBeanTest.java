@@ -62,7 +62,8 @@ public class AttributeProviderServiceBeanTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         JmxTestUtils jmxTestUtils = new JmxTestUtils();
         jmxTestUtils.setUp("jboss.security:service=JaasSecurityManager");
@@ -102,13 +103,15 @@ public class AttributeProviderServiceBeanTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.entityTestManager.tearDown();
     }
 
     @Test
-    public void testCreateAttributeRequiresAttributeProvider() throws Exception {
+    public void testCreateAttributeRequiresAttributeProvider()
+            throws Exception {
 
         // setup
         EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -149,7 +152,8 @@ public class AttributeProviderServiceBeanTest {
     }
 
     @Test
-    public void testMultivaluedAttribute() throws Exception {
+    public void testMultivaluedAttribute()
+            throws Exception {
 
         // setup
         EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -237,7 +241,8 @@ public class AttributeProviderServiceBeanTest {
     }
 
     @Test
-    public void testCreateSingleValuedAttributes() throws Exception {
+    public void testCreateSingleValuedAttributes()
+            throws Exception {
 
         // setup
         EntityManager entityManager = this.entityTestManager.getEntityManager();

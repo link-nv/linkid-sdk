@@ -55,7 +55,8 @@ public class Subject {
      * @throws PermissionDeniedException
      * @throws AlreadySubscribedException
      */
-    public void subscribe(Application application) throws PermissionDeniedException, AlreadySubscribedException {
+    public void subscribe(Application application)
+            throws PermissionDeniedException, AlreadySubscribedException {
 
         application.checkUserSubscriptionPermission();
         checkAlreadySubscribed(application);
@@ -63,7 +64,8 @@ public class Subject {
         this.context.getSubscriptionDAO().addSubscription(SubscriptionOwnerType.SUBJECT, this.entity, application.getEntity());
     }
 
-    private void checkAlreadySubscribed(Application application) throws AlreadySubscribedException {
+    private void checkAlreadySubscribed(Application application)
+            throws AlreadySubscribedException {
 
         if (isSubscribed(application))
             throw new AlreadySubscribedException();
@@ -76,7 +78,8 @@ public class Subject {
      * @throws SubscriptionNotFoundException
      * @throws PermissionDeniedException
      */
-    public void unsubscribe(Application application) throws SubscriptionNotFoundException, PermissionDeniedException {
+    public void unsubscribe(Application application)
+            throws SubscriptionNotFoundException, PermissionDeniedException {
 
         SubscriptionDAO subscriptionDAO = this.context.getSubscriptionDAO();
         ApplicationEntity applicationEntity = application.getEntity();

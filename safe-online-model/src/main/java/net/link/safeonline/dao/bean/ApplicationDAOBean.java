@@ -77,7 +77,8 @@ public class ApplicationDAOBean implements ApplicationDAO {
         return applications;
     }
 
-    public ApplicationEntity getApplication(String applicationName) throws ApplicationNotFoundException {
+    public ApplicationEntity getApplication(String applicationName)
+            throws ApplicationNotFoundException {
 
         ApplicationEntity application = findApplication(applicationName);
         if (null == application)
@@ -111,7 +112,8 @@ public class ApplicationDAOBean implements ApplicationDAO {
         return applications;
     }
 
-    public ApplicationEntity getApplication(X509Certificate certificate) throws ApplicationNotFoundException {
+    public ApplicationEntity getApplication(X509Certificate certificate)
+            throws ApplicationNotFoundException {
 
         List<ApplicationEntity> applications = this.queryObject
                                                                .listApplicationsWhereCertificateSubject(certificate

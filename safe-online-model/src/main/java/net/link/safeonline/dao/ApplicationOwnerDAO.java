@@ -23,9 +23,11 @@ public interface ApplicationOwnerDAO extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationOwnerDAOBean/local";
 
+
     ApplicationOwnerEntity findApplicationOwner(String name);
 
-    ApplicationOwnerEntity getApplicationOwner(String name) throws ApplicationOwnerNotFoundException;
+    ApplicationOwnerEntity getApplicationOwner(String name)
+            throws ApplicationOwnerNotFoundException;
 
     ApplicationOwnerEntity addApplicationOwner(String name, SubjectEntity admin);
 
@@ -33,7 +35,8 @@ public interface ApplicationOwnerDAO extends SafeOnlineService {
 
     List<ApplicationOwnerEntity> listApplicationOwners();
 
-    ApplicationOwnerEntity getApplicationOwner(SubjectEntity adminSubject) throws ApplicationOwnerNotFoundException;
+    ApplicationOwnerEntity getApplicationOwner(SubjectEntity adminSubject)
+            throws ApplicationOwnerNotFoundException;
 
     ApplicationOwnerEntity findApplicationOwner(SubjectEntity adminSubject);
 

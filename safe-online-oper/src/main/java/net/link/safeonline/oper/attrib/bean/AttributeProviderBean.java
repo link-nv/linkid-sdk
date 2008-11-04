@@ -73,7 +73,8 @@ public class AttributeProviderBean implements AttributeProvider {
 
     @Factory(ATTRIBUTE_PROVIDERS_NAME)
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public void attributeProvidersFactory() throws AttributeTypeNotFoundException {
+    public void attributeProvidersFactory()
+            throws AttributeTypeNotFoundException {
 
         String attributeName = this.selectedAttributeType.getName();
         this.attributeProviders = this.attributeProviderManagerService.getAttributeProviders(attributeName);
@@ -87,7 +88,8 @@ public class AttributeProviderBean implements AttributeProvider {
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public String removeProvider() throws AttributeTypeNotFoundException, AttributeProviderNotFoundException {
+    public String removeProvider()
+            throws AttributeTypeNotFoundException, AttributeProviderNotFoundException {
 
         this.log.debug("removing attribute provider #0", this.selectedAttributeProvider);
         this.attributeProviderManagerService.removeAttributeProvider(this.selectedAttributeProvider);
@@ -96,8 +98,9 @@ public class AttributeProviderBean implements AttributeProvider {
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public String add() throws ExistingAttributeProviderException, ApplicationNotFoundException, AttributeTypeNotFoundException,
-                       PermissionDeniedException {
+    public String add()
+            throws ExistingAttributeProviderException, ApplicationNotFoundException, AttributeTypeNotFoundException,
+            PermissionDeniedException {
 
         this.log.debug("add application provider: " + this.application);
         this.attributeProviderManagerService.addAttributeProvider(this.application, this.selectedAttributeType.getName());

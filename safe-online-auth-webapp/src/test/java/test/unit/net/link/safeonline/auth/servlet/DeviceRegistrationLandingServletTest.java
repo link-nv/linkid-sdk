@@ -78,7 +78,8 @@ public class DeviceRegistrationLandingServletTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.jndiTestUtils = new JndiTestUtils();
         this.jndiTestUtils.setUp();
@@ -110,13 +111,15 @@ public class DeviceRegistrationLandingServletTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.servletTestManager.tearDown();
     }
 
     @Test
-    public void getNotAllowed() throws Exception {
+    public void getNotAllowed()
+            throws Exception {
 
         // setup
         GetMethod getMethod = new GetMethod(this.location);
@@ -130,7 +133,8 @@ public class DeviceRegistrationLandingServletTest {
     }
 
     @Test
-    public void registrationFailedNewUser() throws Exception {
+    public void registrationFailedNewUser()
+            throws Exception {
 
         // setup
         PostMethod postMethod = new PostMethod(this.location);
@@ -156,7 +160,8 @@ public class DeviceRegistrationLandingServletTest {
     }
 
     @Test
-    public void registrationFailedAuthedUser() throws Exception {
+    public void registrationFailedAuthedUser()
+            throws Exception {
 
         // setup
         PostMethod postMethod = new PostMethod(this.location);
@@ -182,7 +187,8 @@ public class DeviceRegistrationLandingServletTest {
     }
 
     @Test
-    public void registrationSuccess() throws Exception {
+    public void registrationSuccess()
+            throws Exception {
 
         // setup
         DeviceEntity device = new DeviceEntity();

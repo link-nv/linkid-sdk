@@ -95,8 +95,8 @@ public class AccountMergingServiceBean implements AccountMergingService {
      * 
      */
     @DenyAll
-    public AccountMergingDO getAccountMergingDO(String sourceAccountName) throws SubjectNotFoundException, AttributeTypeNotFoundException,
-                                                                         ApplicationNotFoundException, EmptyDevicePolicyException {
+    public AccountMergingDO getAccountMergingDO(String sourceAccountName)
+            throws SubjectNotFoundException, AttributeTypeNotFoundException, ApplicationNotFoundException, EmptyDevicePolicyException {
 
         LOG.debug("merge account: " + sourceAccountName);
         SubjectEntity targetSubject = this.subjectManager.getCallerSubject();
@@ -124,11 +124,9 @@ public class AccountMergingServiceBean implements AccountMergingService {
      * @throws MessageHandlerNotFoundException
      */
     @DenyAll
-    public void mergeAccount(AccountMergingDO accountMergingDO, Set<DeviceEntity> neededDevices) throws AttributeTypeNotFoundException,
-                                                                                                SubjectNotFoundException,
-                                                                                                PermissionDeniedException,
-                                                                                                SubscriptionNotFoundException,
-                                                                                                MessageHandlerNotFoundException {
+    public void mergeAccount(AccountMergingDO accountMergingDO, Set<DeviceEntity> neededDevices)
+            throws AttributeTypeNotFoundException, SubjectNotFoundException, PermissionDeniedException, SubscriptionNotFoundException,
+            MessageHandlerNotFoundException {
 
         LOG.debug("commit merge with account " + accountMergingDO.getSourceSubject().getUserId());
         if (null != neededDevices && neededDevices.size() != 0)
@@ -188,7 +186,8 @@ public class AccountMergingServiceBean implements AccountMergingService {
      * @param attributes
      * @throws AttributeTypeNotFoundException
      */
-    private void commitMerge(List<AttributeDO> attributes) throws AttributeTypeNotFoundException {
+    private void commitMerge(List<AttributeDO> attributes)
+            throws AttributeTypeNotFoundException {
 
         SubjectEntity subject = this.subjectManager.getCallerSubject();
         Iterator<AttributeDO> iterator = attributes.listIterator();
@@ -219,8 +218,8 @@ public class AccountMergingServiceBean implements AccountMergingService {
      * @throws ApplicationNotFoundException
      */
     private void mergeSubscriptions(AccountMergingDO accountMergingDO, List<SubscriptionEntity> targetSubscriptions,
-                                    List<SubscriptionEntity> sourceSubscriptions) throws ApplicationNotFoundException,
-                                                                                 EmptyDevicePolicyException {
+                                    List<SubscriptionEntity> sourceSubscriptions)
+            throws ApplicationNotFoundException, EmptyDevicePolicyException {
 
         accountMergingDO.setPreservedSubscriptions(targetSubscriptions);
         for (SubscriptionEntity sourceSubscription : sourceSubscriptions) {
@@ -244,8 +243,8 @@ public class AccountMergingServiceBean implements AccountMergingService {
         return null;
     }
 
-    private SubscriptionDO getSubscriptionDO(SubscriptionEntity subscription) throws ApplicationNotFoundException,
-                                                                             EmptyDevicePolicyException {
+    private SubscriptionDO getSubscriptionDO(SubscriptionEntity subscription)
+            throws ApplicationNotFoundException, EmptyDevicePolicyException {
 
         List<DeviceEntity> allowedDevices = null;
         if (subscription.getApplication().isDeviceRestriction()) {

@@ -23,6 +23,7 @@ public interface SecurityAuditDAO extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/SecurityAuditDAOBean/local";
 
+
     void addSecurityAudit(AuditContextEntity auditContext, SecurityThreatType securityThreat, String targetPrincipal, String message);
 
     void cleanup(Long id);

@@ -73,7 +73,8 @@ public class NodeMappingDAOBean implements NodeMappingDAO {
         return this.entityManager.find(NodeMappingEntity.class, id);
     }
 
-    public NodeMappingEntity getNodeMapping(String id) throws NodeMappingNotFoundException {
+    public NodeMappingEntity getNodeMapping(String id)
+            throws NodeMappingNotFoundException {
 
         NodeMappingEntity nodeMapping = this.findNodeMapping(id);
         if (null == nodeMapping)

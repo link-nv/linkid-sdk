@@ -35,7 +35,8 @@ public class CompoundedAttributeTest {
 
 
     @Test
-    public void instance() throws Exception {
+    public void instance()
+            throws Exception {
 
         new MyTestCompoundedAttribute();
     }

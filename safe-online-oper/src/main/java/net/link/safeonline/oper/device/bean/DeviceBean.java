@@ -232,7 +232,8 @@ public class DeviceBean implements Device {
     }
 
 
-    private byte[] getUpFileContent(UploadedFile file) throws IOException {
+    private byte[] getUpFileContent(UploadedFile file)
+            throws IOException {
 
         InputStream inputStream = file.getInputStream();
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -246,8 +247,9 @@ public class DeviceBean implements Device {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     @ErrorHandling( { @Error(exceptionClass = CertificateEncodingException.class, messageId = "errorX509Encoding", fieldId = "fileupload"),
             @Error(exceptionClass = IOException.class, messageId = "errorUploadCertificate") })
-    public String add() throws ExistingDeviceException, CertificateEncodingException, DeviceClassNotFoundException,
-                       AttributeTypeNotFoundException, NodeNotFoundException, IOException, PermissionDeniedException {
+    public String add()
+            throws ExistingDeviceException, CertificateEncodingException, DeviceClassNotFoundException, AttributeTypeNotFoundException,
+            NodeNotFoundException, IOException, PermissionDeniedException {
 
         LOG.debug("add device: " + this.name);
 
@@ -263,7 +265,8 @@ public class DeviceBean implements Device {
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public String remove() throws DeviceNotFoundException, DeviceDescriptionNotFoundException, DevicePropertyNotFoundException {
+    public String remove()
+            throws DeviceNotFoundException, DeviceDescriptionNotFoundException, DevicePropertyNotFoundException {
 
         LOG.debug("remove device: " + this.selectedDevice.getName());
         try {
@@ -299,8 +302,9 @@ public class DeviceBean implements Device {
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public String save() throws DeviceNotFoundException, CertificateEncodingException, IOException, AttributeTypeNotFoundException,
-                        PermissionDeniedException {
+    public String save()
+            throws DeviceNotFoundException, CertificateEncodingException, IOException, AttributeTypeNotFoundException,
+            PermissionDeniedException {
 
         LOG.debug("save device: " + this.selectedDevice.getName());
         String deviceName = this.selectedDevice.getName();

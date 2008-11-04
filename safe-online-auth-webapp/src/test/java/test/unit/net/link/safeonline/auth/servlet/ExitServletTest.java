@@ -97,7 +97,8 @@ public class ExitServletTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.jmxTestUtils = new JmxTestUtils();
 
@@ -171,7 +172,8 @@ public class ExitServletTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.exitServletTestManager.tearDown();
         this.jndiTestUtils.tearDown();
@@ -179,7 +181,8 @@ public class ExitServletTest {
     }
 
     @Test
-    public void saml2Response() throws Exception {
+    public void saml2Response()
+            throws Exception {
 
         // setup
         HttpClient httpClient = new HttpClient();

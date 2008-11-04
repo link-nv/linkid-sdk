@@ -139,7 +139,8 @@ public class ApplicationBean implements Application {
      */
     @RolesAllowed(OwnerConstants.OWNER_ROLE)
     @Factory("ownerApplicationList")
-    public void applicationListFactory() throws ApplicationOwnerNotFoundException {
+    public void applicationListFactory()
+            throws ApplicationOwnerNotFoundException {
 
         LOG.debug("application list factory");
         this.ownerApplicationList = this.applicationService.getOwnedApplications();
@@ -178,7 +179,8 @@ public class ApplicationBean implements Application {
 
     @RolesAllowed(OwnerConstants.OWNER_ROLE)
     @Factory(selectedApplicationUsageAgreementsModel)
-    public void usageAgreementListFactory() throws ApplicationNotFoundException, PermissionDeniedException {
+    public void usageAgreementListFactory()
+            throws ApplicationNotFoundException, PermissionDeniedException {
 
         if (null == this.selectedApplication)
             return;
@@ -190,7 +192,8 @@ public class ApplicationBean implements Application {
      * Actions
      */
     @RolesAllowed(OwnerConstants.OWNER_ROLE)
-    public String view() throws ApplicationNotFoundException, PermissionDeniedException, ApplicationIdentityNotFoundException {
+    public String view()
+            throws ApplicationNotFoundException, PermissionDeniedException, ApplicationIdentityNotFoundException {
 
         String applicationName = this.selectedApplication.getName();
         LOG.debug("view: " + applicationName);
@@ -207,7 +210,8 @@ public class ApplicationBean implements Application {
     }
 
     @RolesAllowed(OwnerConstants.OWNER_ROLE)
-    public String save() throws ApplicationNotFoundException, PermissionDeniedException {
+    public String save()
+            throws ApplicationNotFoundException, PermissionDeniedException {
 
         String applicationName = this.selectedApplication.getName();
         String applicationDescription = this.selectedApplication.getDescription();
@@ -245,7 +249,8 @@ public class ApplicationBean implements Application {
     }
 
     @RolesAllowed(OwnerConstants.OWNER_ROLE)
-    public String editUsageAgreement() throws ApplicationNotFoundException, PermissionDeniedException {
+    public String editUsageAgreement()
+            throws ApplicationNotFoundException, PermissionDeniedException {
 
         LOG.debug("edit usage agreement for application: " + this.selectedApplication.getName());
         this.draftUsageAgreement = this.usageAgreementService.getDraftUsageAgreement(this.selectedApplication.getName());

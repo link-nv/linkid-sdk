@@ -10,11 +10,11 @@ package net.link.safeonline.demo.mandate;
 import javax.ejb.Local;
 
 
-
-
 @Local
 public interface MandateView extends AbstractMandateDataClient {
+
     public static final String JNDI_BINDING = "SafeOnlineMandateDemo/MandateViewBean/local";
+
 
     /*
      * Factory.

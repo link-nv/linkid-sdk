@@ -37,7 +37,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 @Configurable
 public class NotificationMessageQueueTaskBean implements Task {
 
-    public static final String JNDI_BINDING = Task.JNDI_PREFIX + "/NotificationMessageQueueTaskBean/local";
+    public static final String          JNDI_BINDING   = Task.JNDI_PREFIX + "/NotificationMessageQueueTaskBean/local";
 
     private static final String         name           = "Failed Notifications Handler";
 
@@ -57,7 +57,8 @@ public class NotificationMessageQueueTaskBean implements Task {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void perform() throws Exception {
+    public void perform()
+            throws Exception {
 
         List<NotificationMessageEntity> notifications = this.notificationMessageDAO.listNotificationMessages();
         for (NotificationMessageEntity notification : notifications) {

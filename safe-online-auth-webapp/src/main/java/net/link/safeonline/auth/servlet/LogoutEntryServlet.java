@@ -80,18 +80,21 @@ public class LogoutEntryServlet extends AbstractInjectionServlet {
 
 
     @Override
-    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         handleLanding(request, response);
     }
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         handleLanding(request, response);
     }
 
-    private void handleLanding(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void handleLanding(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
 
         /**
          * Wrap the request to use the servlet endpoint url. To prevent failure when behind a reverse proxy or loadbalancer when opensaml is

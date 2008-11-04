@@ -29,6 +29,7 @@ public interface DeviceAuthenticationService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/DeviceAuthenticationServiceBean/local";
 
+
     /**
      * Authenticates a device given a device certificate. At this point the device certificate already passed the PKI validation.
      * 
@@ -37,9 +38,11 @@ public interface DeviceAuthenticationService extends SafeOnlineService {
      * @return the device name of the authentication device.
      * @throws DeviceNotFoundException
      */
-    String authenticate(X509Certificate certificate) throws DeviceNotFoundException;
+    String authenticate(X509Certificate certificate)
+            throws DeviceNotFoundException;
 
-    TrustPointEntity findTrustPoint(String domainName, X509Certificate certificate) throws TrustDomainNotFoundException;
+    TrustPointEntity findTrustPoint(String domainName, X509Certificate certificate)
+            throws TrustDomainNotFoundException;
 
     /**
      * Gives back the device X509 certificates given the device name.
@@ -49,6 +52,7 @@ public interface DeviceAuthenticationService extends SafeOnlineService {
      * @return the X509 device certificates.
      * @throws DeviceNotFoundException
      */
-    List<X509Certificate> getCertificates(String deviceName) throws DeviceNotFoundException;
+    List<X509Certificate> getCertificates(String deviceName)
+            throws DeviceNotFoundException;
 
 }

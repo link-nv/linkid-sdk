@@ -20,6 +20,7 @@ public interface DeviceProperty {
 
     public static final String JNDI_BINDING = OperatorConstants.JNDI_PREFIX + "DevicePropertyBean/local";
 
+
     /*
      * Lifecycle.
      */
@@ -28,18 +29,21 @@ public interface DeviceProperty {
     /*
      * Factories
      */
-    void devicePropertiesListFactory() throws DeviceNotFoundException;
+    void devicePropertiesListFactory()
+            throws DeviceNotFoundException;
 
     /*
      * Actions.
      */
-    String add() throws ExistingDevicePropertyException, DeviceNotFoundException;
+    String add()
+            throws ExistingDevicePropertyException, DeviceNotFoundException;
 
     String edit();
 
     String save();
 
-    String remove() throws DevicePropertyNotFoundException, DeviceNotFoundException;
+    String remove()
+            throws DevicePropertyNotFoundException, DeviceNotFoundException;
 
     String cancelEdit();
 

@@ -57,6 +57,7 @@ public interface AuthenticationService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AuthenticationServiceBean/local";
 
+
     /**
      * Authenticates a user for a certain application. This method is used by the authentication web service. If <code>true</code> is
      * returned the authentication process can proceed, else {@link #abort()} should be invoked.
@@ -70,8 +71,8 @@ public interface AuthenticationService extends SafeOnlineService {
      *             in case the user did not configure the password device.
      * @throws DeviceDisabledException
      */
-    boolean authenticate(String loginName, String password) throws SubjectNotFoundException, DeviceNotFoundException,
-                                                           DeviceDisabledException;
+    boolean authenticate(String loginName, String password)
+            throws SubjectNotFoundException, DeviceNotFoundException, DeviceDisabledException;
 
     /**
      * Commits the authentication.
@@ -94,11 +95,11 @@ public interface AuthenticationService extends SafeOnlineService {
      * @throws PermissionDeniedException
      * @throws AttributeUnavailableException
      */
-    void commitAuthentication(String language) throws ApplicationNotFoundException, SubscriptionNotFoundException,
-                                              ApplicationIdentityNotFoundException, IdentityConfirmationRequiredException,
-                                              MissingAttributeException, EmptyDevicePolicyException, DevicePolicyException,
-                                              UsageAgreementAcceptationRequiredException, PermissionDeniedException,
-                                              AttributeTypeNotFoundException, AttributeUnavailableException;
+    void commitAuthentication(String language)
+            throws ApplicationNotFoundException, SubscriptionNotFoundException, ApplicationIdentityNotFoundException,
+            IdentityConfirmationRequiredException, MissingAttributeException, EmptyDevicePolicyException, DevicePolicyException,
+            UsageAgreementAcceptationRequiredException, PermissionDeniedException, AttributeTypeNotFoundException,
+            AttributeUnavailableException;
 
     /**
      * Sets the password of a user. This method should be used in case the user did not yet had a password registered as authentication
@@ -108,7 +109,8 @@ public interface AuthenticationService extends SafeOnlineService {
      * @param password
      * @throws DeviceNotFoundException
      */
-    void setPassword(String userId, String password) throws SubjectNotFoundException, DeviceNotFoundException;
+    void setPassword(String userId, String password)
+            throws SubjectNotFoundException, DeviceNotFoundException;
 
     /**
      * Aborts the current authentication procedure.
@@ -145,8 +147,8 @@ public interface AuthenticationService extends SafeOnlineService {
      * @throws {@link NodeNotFoundException}
      * @throws {@link SubjectNotFoundException}
      */
-    String authenticate(HttpServletRequest request) throws NodeNotFoundException, ServletException, NodeMappingNotFoundException,
-                                                   DeviceNotFoundException, SubjectNotFoundException;
+    String authenticate(HttpServletRequest request)
+            throws NodeNotFoundException, ServletException, NodeMappingNotFoundException, DeviceNotFoundException, SubjectNotFoundException;
 
     /**
      * Initializes an authentication process. Validates the incoming authentication request and stores the application, device policy and
@@ -161,9 +163,7 @@ public interface AuthenticationService extends SafeOnlineService {
      * @throws TrustDomainNotFoundException
      */
     ProtocolContext initialize(Locale language, Integer color, Boolean minimal, AuthnRequest samlAuthnRequest)
-                                                                                                              throws AuthenticationInitializationException,
-                                                                                                              ApplicationNotFoundException,
-                                                                                                              TrustDomainNotFoundException;
+            throws AuthenticationInitializationException, ApplicationNotFoundException, TrustDomainNotFoundException;
 
     /**
      * Constructs a signed and encoded SAML authentication request for the requested external device issuer.
@@ -175,7 +175,8 @@ public interface AuthenticationService extends SafeOnlineService {
      * @param device
      * @throws NodeNotFoundException
      */
-    String redirectAuthentication(String authenticationServiceUrl, String targetUrl, String device) throws NodeNotFoundException;
+    String redirectAuthentication(String authenticationServiceUrl, String targetUrl, String device)
+            throws NodeNotFoundException;
 
     /**
      * Finalizes an authentication process by constructing an encoded SAML response to be sent to the application.
@@ -187,7 +188,8 @@ public interface AuthenticationService extends SafeOnlineService {
      * @throws SubscriptionNotFoundException
      * 
      */
-    String finalizeAuthentication() throws NodeNotFoundException, SubscriptionNotFoundException, ApplicationNotFoundException;
+    String finalizeAuthentication()
+            throws NodeNotFoundException, SubscriptionNotFoundException, ApplicationNotFoundException;
 
     /**
      * Gives back the current authentication state.
@@ -215,8 +217,8 @@ public interface AuthenticationService extends SafeOnlineService {
      * @throws DevicePolicyException
      * @throws EmptyDevicePolicyException
      */
-    boolean checkSsoCookie(Cookie ssoCookie) throws ApplicationNotFoundException, InvalidCookieException, EmptyDevicePolicyException,
-                                            DevicePolicyException;
+    boolean checkSsoCookie(Cookie ssoCookie)
+            throws ApplicationNotFoundException, InvalidCookieException, EmptyDevicePolicyException, DevicePolicyException;
 
     /**
      * Returns whether the specified cookie is ok for logout. Meaning all applications specified in the cookie have to be logged out.
@@ -224,7 +226,8 @@ public interface AuthenticationService extends SafeOnlineService {
      * @throws ApplicationNotFoundException
      * @throws InvalidCookieException
      */
-    boolean checkSsoCookieForLogout(Cookie ssoCookie) throws ApplicationNotFoundException, InvalidCookieException;
+    boolean checkSsoCookieForLogout(Cookie ssoCookie)
+            throws ApplicationNotFoundException, InvalidCookieException;
 
     /**
      * Constructs a signed and encoded SAML authentication request for the requested external device issuer.
@@ -241,9 +244,7 @@ public interface AuthenticationService extends SafeOnlineService {
      * @throws SubjectNotFoundException
      */
     String redirectRegistration(String registrationServiceUrl, String targetUrl, String device, String userId)
-                                                                                                              throws NodeNotFoundException,
-                                                                                                              SubjectNotFoundException,
-                                                                                                              DeviceNotFoundException;
+            throws NodeNotFoundException, SubjectNotFoundException, DeviceNotFoundException;
 
     /**
      * Finalizes a remote device registration for a user. The method is used by the device registration landing servlet. The device
@@ -258,8 +259,8 @@ public interface AuthenticationService extends SafeOnlineService {
      * @throws SubjectNotFoundException
      * 
      */
-    String register(HttpServletRequest request) throws NodeNotFoundException, ServletException, NodeMappingNotFoundException,
-                                               DeviceNotFoundException, SubjectNotFoundException;
+    String register(HttpServletRequest request)
+            throws NodeNotFoundException, ServletException, NodeMappingNotFoundException, DeviceNotFoundException, SubjectNotFoundException;
 
     /**
      * Initializes a logout process. Validates the incoming logout request and stores the application.
@@ -270,9 +271,9 @@ public interface AuthenticationService extends SafeOnlineService {
      * @throws AuthenticationInitializationException
      * @throws SubjectNotFoundException
      */
-    LogoutProtocolContext initialize(LogoutRequest samlLogoutRequest) throws AuthenticationInitializationException,
-                                                                     ApplicationNotFoundException, TrustDomainNotFoundException,
-                                                                     SubjectNotFoundException;
+    LogoutProtocolContext initialize(LogoutRequest samlLogoutRequest)
+            throws AuthenticationInitializationException, ApplicationNotFoundException, TrustDomainNotFoundException,
+            SubjectNotFoundException;
 
     /**
      * Returns the next Application to logout. Returns <code>null</code> if none.
@@ -290,8 +291,8 @@ public interface AuthenticationService extends SafeOnlineService {
      * @throws NodeNotFoundException
      * 
      */
-    String getLogoutRequest(ApplicationEntity application) throws SubscriptionNotFoundException, ApplicationNotFoundException,
-                                                          NodeNotFoundException;
+    String getLogoutRequest(ApplicationEntity application)
+            throws SubscriptionNotFoundException, ApplicationNotFoundException, NodeNotFoundException;
 
     /**
      * Validates the returned SAML logout response message. Returns the application name if successful or <code>null</code> if the response
@@ -302,7 +303,8 @@ public interface AuthenticationService extends SafeOnlineService {
      * @throws ServletException
      * @throws NodeNotFoundException
      */
-    String handleLogoutResponse(HttpServletRequest httpRequest) throws ServletException, NodeNotFoundException;
+    String handleLogoutResponse(HttpServletRequest httpRequest)
+            throws ServletException, NodeNotFoundException;
 
     /**
      * Finalizes a logout process by constructing an encoded SAML logout response to be sent to the application.
@@ -313,5 +315,6 @@ public interface AuthenticationService extends SafeOnlineService {
      * 
      * @throws NodeNotFoundException
      */
-    String finalizeLogout(boolean partialLogout) throws NodeNotFoundException;
+    String finalizeLogout(boolean partialLogout)
+            throws NodeNotFoundException;
 }

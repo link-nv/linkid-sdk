@@ -88,9 +88,9 @@ public class OptionDeviceServiceBean implements OptionDeviceService, OptionDevic
     /**
      * {@inheritDoc}
      */
-    public String authenticate(String imei, String pin) throws SubjectNotFoundException, OptionAuthenticationException,
-                                                       OptionRegistrationException, AttributeTypeNotFoundException,
-                                                       AttributeNotFoundException, DeviceDisabledException {
+    public String authenticate(String imei, String pin)
+            throws SubjectNotFoundException, OptionAuthenticationException, OptionRegistrationException, AttributeTypeNotFoundException,
+            AttributeNotFoundException, DeviceDisabledException {
 
         SubjectEntity subject = this.subjectIdentifierDAO.findSubject(OptionConstants.OPTION_IDENTIFIER_DOMAIN, imei);
         if (null == subject)
@@ -122,8 +122,8 @@ public class OptionDeviceServiceBean implements OptionDeviceService, OptionDevic
     /**
      * {@inheritDoc}
      */
-    public void register(String userId, String imei, String pin) throws OptionAuthenticationException, OptionRegistrationException,
-                                                                AttributeTypeNotFoundException {
+    public void register(String userId, String imei, String pin)
+            throws OptionAuthenticationException, OptionRegistrationException, AttributeTypeNotFoundException {
 
         SubjectEntity subject = this.subjectIdentifierDAO.findSubject(OptionConstants.OPTION_IDENTIFIER_DOMAIN, imei);
         if (null != subject) {
@@ -176,9 +176,9 @@ public class OptionDeviceServiceBean implements OptionDeviceService, OptionDevic
     /**
      * {@inheritDoc}
      */
-    public void remove(String userId, String imei, String pin) throws OptionAuthenticationException, OptionRegistrationException,
-                                                              SubjectNotFoundException, AttributeTypeNotFoundException,
-                                                              AttributeNotFoundException, DeviceDisabledException {
+    public void remove(String userId, String imei, String pin)
+            throws OptionAuthenticationException, OptionRegistrationException, SubjectNotFoundException, AttributeTypeNotFoundException,
+            AttributeNotFoundException, DeviceDisabledException {
 
         String assignedSubject = authenticate(imei, pin);
 
@@ -189,8 +189,8 @@ public class OptionDeviceServiceBean implements OptionDeviceService, OptionDevic
         removeRegistration(subject, imei);
     }
 
-    private void authenticate(SubjectEntity subject, String givenImei, String givenPin) throws OptionRegistrationException,
-                                                                                       OptionAuthenticationException {
+    private void authenticate(SubjectEntity subject, String givenImei, String givenPin)
+            throws OptionRegistrationException, OptionAuthenticationException {
 
         AttributeEntity storedImei = this.attributeDAO.findAttribute(OptionConstants.IMEI_OPTION_ATTRIBUTE, subject);
         AttributeEntity storedPin = this.attributeDAO.findAttribute(OptionConstants.PIN_OPTION_ATTRIBUTE, subject);
@@ -205,7 +205,8 @@ public class OptionDeviceServiceBean implements OptionDeviceService, OptionDevic
         }
     }
 
-    private void removeRegistration(SubjectEntity subject, String imei) throws AttributeTypeNotFoundException {
+    private void removeRegistration(SubjectEntity subject, String imei)
+            throws AttributeTypeNotFoundException {
 
         AttributeTypeEntity deviceAttributeType = this.attributeTypeDAO.getAttributeType(OptionConstants.OPTION_DEVICE_ATTRIBUTE);
         AttributeTypeEntity imeiAttributeType = this.attributeTypeDAO.getAttributeType(OptionConstants.IMEI_OPTION_ATTRIBUTE);
@@ -234,8 +235,8 @@ public class OptionDeviceServiceBean implements OptionDeviceService, OptionDevic
     /**
      * {@inheritDoc}
      */
-    public void disable(String userId, String imei) throws DeviceNotFoundException, SubjectNotFoundException,
-                                                   DeviceRegistrationNotFoundException {
+    public void disable(String userId, String imei)
+            throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException {
 
         DeviceEntity device = this.deviceDAO.getDevice(OptionConstants.OPTION_DEVICE_ID);
         SubjectEntity subject = this.subjectService.getSubject(userId);

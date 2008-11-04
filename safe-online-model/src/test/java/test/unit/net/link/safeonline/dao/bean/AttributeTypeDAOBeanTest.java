@@ -57,7 +57,8 @@ public class AttributeTypeDAOBeanTest extends TestCase {
 
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp()
+            throws Exception {
 
         super.setUp();
         this.entityTestManager = new EntityTestManager();
@@ -97,13 +98,15 @@ public class AttributeTypeDAOBeanTest extends TestCase {
     }
 
     @Override
-    protected void tearDown() throws Exception {
+    protected void tearDown()
+            throws Exception {
 
         this.entityTestManager.tearDown();
         super.tearDown();
     }
 
-    public void testDataMining() throws Exception {
+    public void testDataMining()
+            throws Exception {
 
         // setup users
         String user1name = UUID.randomUUID().toString();

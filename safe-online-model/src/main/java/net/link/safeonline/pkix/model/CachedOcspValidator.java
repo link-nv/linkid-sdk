@@ -21,6 +21,7 @@ public interface CachedOcspValidator extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/CachedOcspValidatorBean/local";
 
+
     /**
      * Given an X509 certificate and its issuerCertificate, validates the certificate using OCSP
      * 

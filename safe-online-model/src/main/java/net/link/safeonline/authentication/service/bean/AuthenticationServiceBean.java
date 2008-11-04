@@ -280,9 +280,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
 
     public ProtocolContext initialize(Locale language, Integer color, Boolean minimal, @NotNull AuthnRequest samlAuthnRequest)
-                                                                                                                              throws AuthenticationInitializationException,
-                                                                                                                              ApplicationNotFoundException,
-                                                                                                                              TrustDomainNotFoundException {
+            throws AuthenticationInitializationException, ApplicationNotFoundException, TrustDomainNotFoundException {
 
         Issuer issuer = samlAuthnRequest.getIssuer();
         String issuerName = issuer.getValue();
@@ -351,7 +349,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
                 minimal, this.requiredDevicePolicy);
     }
 
-    private boolean validateSignature(X509Certificate certificate, AuthnRequest samlAuthnRequest) throws TrustDomainNotFoundException {
+    private boolean validateSignature(X509Certificate certificate, AuthnRequest samlAuthnRequest)
+            throws TrustDomainNotFoundException {
 
         PkiResult certificateValid = this.pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
                 certificate);
@@ -371,7 +370,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     }
 
     public String redirectAuthentication(@NonEmptyString String authenticationServiceUrl, @NonEmptyString String targetUrl,
-                                         @NonEmptyString String device) throws NodeNotFoundException {
+                                         @NonEmptyString String device)
+            throws NodeNotFoundException {
 
         /*
          * Also allow redirected state in case the user manually goes back to olas-auth
@@ -406,9 +406,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     }
 
     public String redirectRegistration(@NonEmptyString String registrationServiceUrl, @NonEmptyString String targetUrl,
-                                       @NonEmptyString String deviceName, @NonEmptyString String userId) throws NodeNotFoundException,
-                                                                                                        SubjectNotFoundException,
-                                                                                                        DeviceNotFoundException {
+                                       @NonEmptyString String deviceName, @NonEmptyString String userId)
+            throws NodeNotFoundException, SubjectNotFoundException, DeviceNotFoundException {
 
         /*
          * Also allow redirected state in case the user manually goes back to olas-auth
@@ -458,9 +457,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         return encodedSamlRequestToken;
     }
 
-    public String authenticate(@NotNull HttpServletRequest request) throws NodeNotFoundException, ServletException,
-                                                                   NodeMappingNotFoundException, DeviceNotFoundException,
-                                                                   SubjectNotFoundException {
+    public String authenticate(@NotNull HttpServletRequest request)
+            throws NodeNotFoundException, ServletException, NodeMappingNotFoundException, DeviceNotFoundException, SubjectNotFoundException {
 
         LOG.debug("authenticate");
         if (this.authenticationState != REDIRECTED)
@@ -593,8 +591,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public boolean checkSsoCookie(@NotNull Cookie cookie) throws ApplicationNotFoundException, InvalidCookieException,
-                                                         EmptyDevicePolicyException {
+    public boolean checkSsoCookie(@NotNull Cookie cookie)
+            throws ApplicationNotFoundException, InvalidCookieException, EmptyDevicePolicyException {
 
         LOG.debug("check single sign on cookie: " + cookie.getName());
 
@@ -662,7 +660,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
      * {@inheritDoc}
      */
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public boolean checkSsoCookieForLogout(@NotNull Cookie cookie) throws ApplicationNotFoundException, InvalidCookieException {
+    public boolean checkSsoCookieForLogout(@NotNull Cookie cookie)
+            throws ApplicationNotFoundException, InvalidCookieException {
 
         LOG.debug("check single sign on cookie for logout: " + cookie.getName());
 
@@ -751,7 +750,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     }
 
 
-    private SingleSignOn parseCookie(Cookie cookie) throws InvalidCookieException {
+    private SingleSignOn parseCookie(Cookie cookie)
+            throws InvalidCookieException {
 
         IdentityServiceClient identityServiceClient = new IdentityServiceClient();
         SecretKey ssoKey = identityServiceClient.getSsoKey();
@@ -881,9 +881,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         return sso;
     }
 
-    public boolean authenticate(@NonEmptyString String loginName, @NonEmptyString String password) throws SubjectNotFoundException,
-                                                                                                  DeviceNotFoundException,
-                                                                                                  DeviceDisabledException {
+    public boolean authenticate(@NonEmptyString String loginName, @NonEmptyString String password)
+            throws SubjectNotFoundException, DeviceNotFoundException, DeviceDisabledException {
 
         SubjectEntity subject = this.passwordDeviceService.authenticate(loginName, password);
         if (null == subject)
@@ -910,9 +909,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         return true;
     }
 
-    public String register(@NotNull HttpServletRequest request) throws NodeNotFoundException, ServletException,
-                                                               NodeMappingNotFoundException, DeviceNotFoundException,
-                                                               SubjectNotFoundException {
+    public String register(@NotNull HttpServletRequest request)
+            throws NodeNotFoundException, ServletException, NodeMappingNotFoundException, DeviceNotFoundException, SubjectNotFoundException {
 
         LOG.debug("register");
         if (this.authenticationState != REDIRECTED)
@@ -1005,7 +1003,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     }
 
     @Remove
-    public String finalizeAuthentication() throws NodeNotFoundException, SubscriptionNotFoundException, ApplicationNotFoundException {
+    public String finalizeAuthentication()
+            throws NodeNotFoundException, SubscriptionNotFoundException, ApplicationNotFoundException {
 
         LOG.debug("finalize authentication");
         if (this.authenticationState != COMMITTED)
@@ -1071,24 +1070,26 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             throw new IllegalStateException("bean is not in the correct state");
     }
 
-    private void checkRequiredIdentity() throws SubscriptionNotFoundException, ApplicationNotFoundException,
-                                        ApplicationIdentityNotFoundException, IdentityConfirmationRequiredException {
+    private void checkRequiredIdentity()
+            throws SubscriptionNotFoundException, ApplicationNotFoundException, ApplicationIdentityNotFoundException,
+            IdentityConfirmationRequiredException {
 
         boolean confirmationRequired = this.identityService.isConfirmationRequired(this.expectedApplicationId);
         if (true == confirmationRequired)
             throw new IdentityConfirmationRequiredException();
     }
 
-    private void checkRequiredMissingAttributes() throws ApplicationNotFoundException, ApplicationIdentityNotFoundException,
-                                                 MissingAttributeException, PermissionDeniedException, AttributeTypeNotFoundException {
+    private void checkRequiredMissingAttributes()
+            throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, MissingAttributeException,
+            PermissionDeniedException, AttributeTypeNotFoundException {
 
         boolean hasMissingAttributes = this.identityService.hasMissingAttributes(this.expectedApplicationId);
         if (true == hasMissingAttributes)
             throw new MissingAttributeException();
     }
 
-    private void checkDevicePolicy(String deviceName) throws ApplicationNotFoundException, EmptyDevicePolicyException,
-                                                     DevicePolicyException {
+    private void checkDevicePolicy(String deviceName)
+            throws ApplicationNotFoundException, EmptyDevicePolicyException, DevicePolicyException {
 
         LOG.debug("check device policy for device: " + deviceName);
         List<DeviceEntity> devicePolicy = this.devicePolicyService.getDevicePolicy(this.expectedApplicationId, this.requiredDevicePolicy);
@@ -1104,8 +1105,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             throw new DevicePolicyException();
     }
 
-    private void checkRequiredUsageAgreement(String language) throws ApplicationNotFoundException,
-                                                             UsageAgreementAcceptationRequiredException, SubscriptionNotFoundException {
+    private void checkRequiredUsageAgreement(String language)
+            throws ApplicationNotFoundException, UsageAgreementAcceptationRequiredException, SubscriptionNotFoundException {
 
         boolean requiresUsageAgreementAcceptation = this.usageAgreementService.requiresUsageAgreementAcceptation(
                 this.expectedApplicationId, language);
@@ -1113,18 +1114,18 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             throw new UsageAgreementAcceptationRequiredException();
     }
 
-    private void checkRequiredGlobalUsageAgreement(String language) throws UsageAgreementAcceptationRequiredException {
+    private void checkRequiredGlobalUsageAgreement(String language)
+            throws UsageAgreementAcceptationRequiredException {
 
         boolean requiresGlobalUsageAgreementAcceptation = this.usageAgreementService.requiresGlobalUsageAgreementAcceptation(language);
         if (true == requiresGlobalUsageAgreementAcceptation)
             throw new UsageAgreementAcceptationRequiredException();
     }
 
-    public void commitAuthentication(String language) throws ApplicationNotFoundException, SubscriptionNotFoundException,
-                                                     ApplicationIdentityNotFoundException, IdentityConfirmationRequiredException,
-                                                     MissingAttributeException, EmptyDevicePolicyException, DevicePolicyException,
-                                                     UsageAgreementAcceptationRequiredException, PermissionDeniedException,
-                                                     AttributeTypeNotFoundException {
+    public void commitAuthentication(String language)
+            throws ApplicationNotFoundException, SubscriptionNotFoundException, ApplicationIdentityNotFoundException,
+            IdentityConfirmationRequiredException, MissingAttributeException, EmptyDevicePolicyException, DevicePolicyException,
+            UsageAgreementAcceptationRequiredException, PermissionDeniedException, AttributeTypeNotFoundException {
 
         LOG.debug("commitAuthentication for application: " + this.expectedApplicationId);
 
@@ -1181,7 +1182,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         return this.subjectService.getSubjectLogin(userId);
     }
 
-    public void setPassword(String userId, String password) throws SubjectNotFoundException, DeviceNotFoundException {
+    public void setPassword(String userId, String password)
+            throws SubjectNotFoundException, DeviceNotFoundException {
 
         LOG.debug("set password");
         this.passwordDeviceService.register(userId, password);
@@ -1209,9 +1211,9 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
      * {@inheritDoc}
      * 
      */
-    public LogoutProtocolContext initialize(@NotNull LogoutRequest samlLogoutRequest) throws AuthenticationInitializationException,
-                                                                                     ApplicationNotFoundException,
-                                                                                     TrustDomainNotFoundException, SubjectNotFoundException {
+    public LogoutProtocolContext initialize(@NotNull LogoutRequest samlLogoutRequest)
+            throws AuthenticationInitializationException, ApplicationNotFoundException, TrustDomainNotFoundException,
+            SubjectNotFoundException {
 
         Issuer issuer = samlLogoutRequest.getIssuer();
         String issuerName = issuer.getValue();
@@ -1253,7 +1255,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
     }
 
-    private boolean validateSignature(X509Certificate certificate, LogoutRequest samlLogoutRequest) throws TrustDomainNotFoundException {
+    private boolean validateSignature(X509Certificate certificate, LogoutRequest samlLogoutRequest)
+            throws TrustDomainNotFoundException {
 
         PkiResult certificateValid = this.pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
                 certificate);
@@ -1275,8 +1278,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     /**
      * {@inheritDoc}
      */
-    public String getLogoutRequest(ApplicationEntity application) throws SubscriptionNotFoundException, ApplicationNotFoundException,
-                                                                 NodeNotFoundException {
+    public String getLogoutRequest(ApplicationEntity application)
+            throws SubscriptionNotFoundException, ApplicationNotFoundException, NodeNotFoundException {
 
         LOG.debug("get logout request for " + application.getName());
         if (this.authenticationState != INITIALIZED)
@@ -1309,7 +1312,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     /**
      * {@inheritDoc}
      */
-    public String handleLogoutResponse(@NotNull HttpServletRequest httpRequest) throws ServletException, NodeNotFoundException {
+    public String handleLogoutResponse(@NotNull HttpServletRequest httpRequest)
+            throws ServletException, NodeNotFoundException {
 
         LOG.debug("handle logout response");
         if (this.authenticationState != LOGGING_OUT)
@@ -1345,7 +1349,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     }
 
     @Remove
-    public String finalizeLogout(boolean partialLogout) throws NodeNotFoundException {
+    public String finalizeLogout(boolean partialLogout)
+            throws NodeNotFoundException {
 
         LOG.debug("finalize logout");
         if (this.authenticationState != INITIALIZED)

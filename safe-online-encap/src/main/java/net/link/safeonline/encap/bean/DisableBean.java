@@ -89,14 +89,16 @@ public class DisableBean implements Disable {
         this.log.debug("destroy");
     }
 
-    public String cancel() throws IOException {
+    public String cancel()
+            throws IOException {
 
         this.protocolContext.setSuccess(false);
         exit();
         return null;
     }
 
-    public String save() throws IOException, SubjectNotFoundException, AttributeNotFoundException {
+    public String save()
+            throws IOException, SubjectNotFoundException, AttributeNotFoundException {
 
         SubjectEntity subject = this.subjectService.getSubject(this.protocolContext.getSubject());
 
@@ -111,7 +113,8 @@ public class DisableBean implements Disable {
         return null;
     }
 
-    private void exit() throws IOException {
+    private void exit()
+            throws IOException {
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ExternalContext externalContext = facesContext.getExternalContext();
@@ -126,15 +129,16 @@ public class DisableBean implements Disable {
     }
 
     @Factory(REGISTRATIONS_LIST_NAME)
-    public List<DeviceRegistrationDO> registrationsFactory() throws SubjectNotFoundException, DeviceNotFoundException {
+    public List<DeviceRegistrationDO> registrationsFactory()
+            throws SubjectNotFoundException, DeviceNotFoundException {
 
         Locale locale = getViewLocale();
         this.registrations = listRegistrations(net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID, locale);
         return this.registrations;
     }
 
-    private List<DeviceRegistrationDO> listRegistrations(String deviceId, Locale locale) throws DeviceNotFoundException,
-                                                                                        SubjectNotFoundException {
+    private List<DeviceRegistrationDO> listRegistrations(String deviceId, Locale locale)
+            throws DeviceNotFoundException, SubjectNotFoundException {
 
         this.log.debug("list registrations for device: " + deviceId);
         DeviceEntity device = this.deviceDAO.getDevice(deviceId);

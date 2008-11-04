@@ -148,7 +148,8 @@ public class OptionController implements AppletController {
         showDocument("TargetPath");
     }
 
-    private PostResult postData(String IMEI, String pin) throws IOException {
+    private PostResult postData(String IMEI, String pin)
+            throws IOException {
 
         URL documentBase = this.runtimeContext.getDocumentBase();
         String servletPath = this.runtimeContext.getParameter("ServletPath");

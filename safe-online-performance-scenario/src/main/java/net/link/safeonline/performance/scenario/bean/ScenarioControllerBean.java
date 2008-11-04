@@ -110,7 +110,8 @@ public class ScenarioControllerBean implements ScenarioController {
      * {@inheritDoc}
      */
     @TransactionTimeout(SCENARIO_EXECUTION_TIMEOUT)
-    public void execute(Date startTime) throws Exception {
+    public void execute(Date startTime)
+            throws Exception {
 
         ExecutionEntity execution = this.executionService.getExecution(startTime);
         ScenarioTimingEntity agentTime = this.executionService.start(execution);
@@ -152,7 +153,8 @@ public class ScenarioControllerBean implements ScenarioController {
      * Load a class with the given class name. TODO: Describe method.
      */
     @SuppressWarnings("unchecked")
-    private <C> Class<C> loadClass(@SuppressWarnings("unused") Class<C> clazz, String className) throws ClassNotFoundException {
+    private <C> Class<C> loadClass(@SuppressWarnings("unused") Class<C> clazz, String className)
+            throws ClassNotFoundException {
 
         return (Class<C>) Thread.currentThread().getContextClassLoader().loadClass(className);
     }
@@ -410,7 +412,8 @@ public class ScenarioControllerBean implements ScenarioController {
         return -1;
     }
 
-    private static InitialContext getInitialContext() throws NamingException {
+    private static InitialContext getInitialContext()
+            throws NamingException {
 
         Hashtable<String, String> environment = new Hashtable<String, String>();
 

@@ -21,6 +21,7 @@ public interface TrustDomainDAO extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/TrustDomainDAOBean/local";
 
+
     List<TrustDomainEntity> listTrustDomains();
 
     TrustDomainEntity addTrustDomain(String name, boolean performOcspCheck);
@@ -29,7 +30,8 @@ public interface TrustDomainDAO extends SafeOnlineService {
 
     TrustDomainEntity findTrustDomain(String name);
 
-    TrustDomainEntity getTrustDomain(String name) throws TrustDomainNotFoundException;
+    TrustDomainEntity getTrustDomain(String name)
+            throws TrustDomainNotFoundException;
 
     void removeTrustDomain(TrustDomainEntity trustDomain);
 }

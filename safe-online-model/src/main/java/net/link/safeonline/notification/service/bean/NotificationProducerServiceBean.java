@@ -88,7 +88,8 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
     private NotificationMessageDAO  notificationMessageDAO;
 
 
-    public void subscribe(String topic, String address, X509Certificate certificate) throws PermissionDeniedException {
+    public void subscribe(String topic, String address, X509Certificate certificate)
+            throws PermissionDeniedException {
 
         LOG.debug("subscribe");
 
@@ -134,9 +135,8 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
         subscription.getConsumers().add(endpointReference);
     }
 
-    public void unsubscribe(String topic, String address, X509Certificate certificate) throws SubscriptionNotFoundException,
-                                                                                      PermissionDeniedException,
-                                                                                      EndpointReferenceNotFoundException {
+    public void unsubscribe(String topic, String address, X509Certificate certificate)
+            throws SubscriptionNotFoundException, PermissionDeniedException, EndpointReferenceNotFoundException {
 
         LOG.debug("unsubscribe");
         ApplicationEntity application = this.applicationDAO.findApplication(certificate);
@@ -151,8 +151,8 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
         }
     }
 
-    public void unsubscribe(String topic, String address, NodeEntity node) throws SubscriptionNotFoundException,
-                                                                          EndpointReferenceNotFoundException {
+    public void unsubscribe(String topic, String address, NodeEntity node)
+            throws SubscriptionNotFoundException, EndpointReferenceNotFoundException {
 
         LOG.debug("unsubscribe node " + node.getName() + " from topic " + topic);
         NotificationProducerSubscriptionEntity subscription = this.notificationProducerDAO.getSubscription(topic);
@@ -161,8 +161,8 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
         subscription.getConsumers().remove(endpointReference);
     }
 
-    public void unsubscribe(String topic, String address, ApplicationEntity application) throws SubscriptionNotFoundException,
-                                                                                        EndpointReferenceNotFoundException {
+    public void unsubscribe(String topic, String address, ApplicationEntity application)
+            throws SubscriptionNotFoundException, EndpointReferenceNotFoundException {
 
         LOG.debug("unsubscribe application " + application.getName() + " from topic " + topic);
         NotificationProducerSubscriptionEntity subscription = this.notificationProducerDAO.getSubscription(topic);
@@ -171,7 +171,8 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
         subscription.getConsumers().remove(endpointReference);
     }
 
-    public void sendNotification(String topic, String subject, String content) throws MessageHandlerNotFoundException {
+    public void sendNotification(String topic, String subject, String content)
+            throws MessageHandlerNotFoundException {
 
         LOG.debug("send notification for topic: " + topic);
         NotificationProducerSubscriptionEntity subscription = this.notificationProducerDAO.findSubscription(topic);
@@ -187,7 +188,8 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
         }
     }
 
-    public void sendNotification(NotificationMessageEntity notification) throws MessageHandlerNotFoundException {
+    public void sendNotification(NotificationMessageEntity notification)
+            throws MessageHandlerNotFoundException {
 
         LOG.debug("send persisted notification for topic: " + notification.getTopic() + " subject: " + notification.getSubject()
                 + " content: " + notification.getContent() + " consumerId: " + notification.getConsumer().getId());

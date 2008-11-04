@@ -81,7 +81,8 @@ public class AccountMergingServiceBeanTest {
 
 
     @Before
-    public void setup() throws Exception {
+    public void setup()
+            throws Exception {
 
         this.entityTestManager = new EntityTestManager();
         this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
@@ -124,7 +125,8 @@ public class AccountMergingServiceBeanTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.entityTestManager.tearDown();
     }
@@ -135,7 +137,8 @@ public class AccountMergingServiceBeanTest {
         // TODO: update account merging for remote attributes ...
     }
 
-    public void testAccountMergingService() throws Exception {
+    public void testAccountMergingService()
+            throws Exception {
 
         // setup
         String testTargetSubjectLogin = "test-target-subject-" + UUID.randomUUID().toString();
@@ -259,7 +262,8 @@ public class AccountMergingServiceBeanTest {
             this.subject = subjectService.findSubjectFromUserName(subjectLogin);
         }
 
-        public void addSubscription(Application application) throws Exception {
+        public void addSubscription(Application application)
+                throws Exception {
 
             SubscriptionService subscriptionService = EJBTestUtils.newInstance(SubscriptionServiceBean.class,
                     SafeOnlineTestContainer.sessionBeans, this.entityManager, this.subject.getUserId(), "user");
@@ -275,7 +279,8 @@ public class AccountMergingServiceBeanTest {
 
         }
 
-        private void addAttributeValue(AttributeTypeEntity attributeType, IdentityService identityService) throws Exception {
+        private void addAttributeValue(AttributeTypeEntity attributeType, IdentityService identityService)
+                throws Exception {
 
             LOG.debug("adding attribute value for: " + attributeType.getName() + "(" + attributeType.getType() + ")");
             AttributeDO attribute = new AttributeDO(attributeType.getName(), attributeType.getType(), attributeType.isMultivalued(), 0,
@@ -334,7 +339,7 @@ public class AccountMergingServiceBeanTest {
 
 
     private AttributeTypeEntity addAttributeType(String attributeName, DatatypeType datatypeType, boolean userEditable, boolean multivalued)
-                                                                                                                                            throws Exception {
+            throws Exception {
 
         AttributeTypeEntity attributeTypeEntity = new AttributeTypeEntity(attributeName, datatypeType, true, userEditable);
         attributeTypeEntity.setMultivalued(multivalued);

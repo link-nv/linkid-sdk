@@ -68,7 +68,8 @@ public class RequestUtil {
      * @throws IOException
      */
     public static void sendRequest(String targetUrl, String encodedSamlRequestToken, String templateResourceName,
-                                   HttpServletResponse httpResponse) throws ServletException, IOException {
+                                   HttpServletResponse httpResponse)
+            throws ServletException, IOException {
 
         sendRequest(targetUrl, encodedSamlRequestToken, null, null, null, templateResourceName, httpResponse);
     }
@@ -87,9 +88,9 @@ public class RequestUtil {
      * @throws ServletException
      * @throws IOException
      */
-    public static void sendRequest(String targetUrl, String encodedSamlRequestToken, Locale language, Integer color,
-            Boolean minimal, String templateResourceName, HttpServletResponse httpResponse) throws ServletException,
-            IOException {
+    public static void sendRequest(String targetUrl, String encodedSamlRequestToken, Locale language, Integer color, Boolean minimal,
+                                   String templateResourceName, HttpServletResponse httpResponse)
+            throws ServletException, IOException {
 
         /*
          * We could use the opensaml2 HTTPPostEncoderBuilder here to construct the HTTP response. But this code is just too complex in
@@ -114,8 +115,7 @@ public class RequestUtil {
             velocityContext.put("Language", language.getLanguage());
         }
         if (null != color) {
-            velocityContext.put("Color", String.format("#%02X%02X%02X", (color >> 16) % 0xFF, (color >> 8) % 0xFF,
-                    (color >> 0) % 0xFF));
+            velocityContext.put("Color", String.format("#%02X%02X%02X", (color >> 16) % 0xFF, (color >> 8) % 0xFF, (color >> 0) % 0xFF));
         }
         if (null != minimal) {
             velocityContext.put("Minimal", Boolean.toString(minimal));
@@ -144,7 +144,8 @@ public class RequestUtil {
      */
     public static AuthnRequest validateAuthnRequest(HttpServletRequest request, String stsWsLocation,
                                                     X509Certificate applicationCertificate, PrivateKey applicationPrivateKey,
-                                                    TrustDomainType trustDomain) throws ServletException {
+                                                    TrustDomainType trustDomain)
+            throws ServletException {
 
         String encodedSamlRequest = request.getParameter("SAMLRequest");
         if (null == encodedSamlRequest)
@@ -207,7 +208,8 @@ public class RequestUtil {
      */
     public static LogoutRequest validateLogoutRequest(HttpServletRequest request, String stsWsLocation,
                                                       X509Certificate applicationCertificate, PrivateKey applicationPrivateKey,
-                                                      TrustDomainType trustDomain) throws ServletException {
+                                                      TrustDomainType trustDomain)
+            throws ServletException {
 
         String encodedSamlRequest = request.getParameter("SAMLRequest");
         if (null == encodedSamlRequest)

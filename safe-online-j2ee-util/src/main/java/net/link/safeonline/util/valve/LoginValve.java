@@ -41,7 +41,8 @@ public class LoginValve extends ValveBase {
     }
 
     @Override
-    public void invoke(Request request, Response response) throws IOException, ServletException {
+    public void invoke(Request request, Response response)
+            throws IOException, ServletException {
 
         LOG.debug("login valve invoked");
 

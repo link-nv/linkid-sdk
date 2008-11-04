@@ -62,13 +62,14 @@ public interface AuthenticationProtocolHandler extends Serializable {
      * @param color
      *            The 24-bit color to base the OLAS color theme on.
      * @param minimal
-     *            <code>true</code>: OLAS will make its pages smaller by hiding header/footer images so it is more
-     *            suitable to be used in an IFrame, for example.
+     *            <code>true</code>: OLAS will make its pages smaller by hiding header/footer images so it is more suitable to be used in an
+     *            IFrame, for example.
      * @throws IOException
      * @throws ServletException
      */
-    public void initiateAuthentication(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-            String targetUrl, Locale language, Integer color, Boolean minimal) throws IOException, ServletException;
+    public void initiateAuthentication(HttpServletRequest httpRequest, HttpServletResponse httpResponse, String targetUrl, Locale language,
+                                       Integer color, Boolean minimal)
+            throws IOException, ServletException;
 
     /**
      * Finalize the active authentication process.
@@ -79,7 +80,7 @@ public interface AuthenticationProtocolHandler extends Serializable {
      * @throws ServletException
      */
     AuthenticationProtocolContext finalizeAuthentication(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
-                                                                                                                          throws ServletException;
+            throws ServletException;
 
     /**
      * Initiates the logout request towards the SafeOnline authentication web application.
@@ -94,8 +95,8 @@ public interface AuthenticationProtocolHandler extends Serializable {
      * @throws IOException
      * @throws ServletException
      */
-    void initiateLogout(HttpServletRequest request, HttpServletResponse response, String targetUrl, String subjectName) throws IOException,
-                                                                                                                       ServletException;
+    void initiateLogout(HttpServletRequest request, HttpServletResponse response, String targetUrl, String subjectName)
+            throws IOException, ServletException;
 
     /**
      * Finalize the logout process.
@@ -103,7 +104,8 @@ public interface AuthenticationProtocolHandler extends Serializable {
      * @return true if all all applications to need to be logged out due to the request were logged out.
      * 
      */
-    boolean finalizeLogout(HttpServletRequest request, HttpServletResponse response) throws ServletException;
+    boolean finalizeLogout(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException;
 
     /**
      * Handle an incoming logout request, sent from the authentication webapp due to a logout request from another application.
@@ -111,7 +113,8 @@ public interface AuthenticationProtocolHandler extends Serializable {
      * @return userId
      * @throws ServletException
      */
-    String handleLogoutRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException;
+    String handleLogoutRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException;
 
     /**
      * Sends back a logout response towards the SafeOnline authentication web application.
@@ -124,5 +127,6 @@ public interface AuthenticationProtocolHandler extends Serializable {
      * @throws IOException
      * @throws ServletException
      */
-    void sendLogoutResponse(boolean success, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException;
+    void sendLogoutResponse(boolean success, HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException;
 }

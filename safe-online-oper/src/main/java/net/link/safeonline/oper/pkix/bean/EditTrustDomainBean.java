@@ -54,7 +54,8 @@ public class EditTrustDomainBean implements EditTrustDomain {
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     @End
-    public String save() throws TrustDomainNotFoundException {
+    public String save()
+            throws TrustDomainNotFoundException {
 
         LOG.debug("saving " + this.selectedTrustDomain);
         this.selectedTrustDomain.setPerformOcspCheck(this.performOcspCheck);

@@ -18,6 +18,7 @@ public interface AttributeAdd {
 
     public static final String JNDI_BINDING = UserConstants.JNDI_PREFIX + "AttributeAddBean/local";
 
+
     /*
      * Lifecycle.
      */
@@ -26,10 +27,12 @@ public interface AttributeAdd {
     /*
      * Actions.
      */
-    String commit() throws AttributeTypeNotFoundException;
+    String commit()
+            throws AttributeTypeNotFoundException;
 
     /*
      * Factories.
      */
-    void attributeEditContextFactory() throws AttributeTypeNotFoundException;
+    void attributeEditContextFactory()
+            throws AttributeTypeNotFoundException;
 }

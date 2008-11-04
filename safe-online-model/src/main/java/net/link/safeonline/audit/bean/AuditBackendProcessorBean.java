@@ -137,7 +137,8 @@ public class AuditBackendProcessorBean implements MessageListener {
         }
     }
 
-    public List<AuditBackend> getAuditBackends() throws NamingException {
+    public List<AuditBackend> getAuditBackends()
+            throws NamingException {
 
         List<AuditBackend> auditBackends = new LinkedList<AuditBackend>();
 

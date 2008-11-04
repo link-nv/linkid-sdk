@@ -45,10 +45,8 @@ public interface PluginAttributeService {
      * @throws AttributeUnavailableException
      * @throws SubjectNotFoundException
      */
-    public List<Attribute> getAttribute(String userId, String attributeName, String configuration) throws UnsupportedDataTypeException,
-                                                                                                  AttributeNotFoundException,
-                                                                                                  AttributeTypeNotFoundException,
-                                                                                                  AttributeUnavailableException,
-                                                                                                  SubjectNotFoundException;
+    public List<Attribute> getAttribute(String userId, String attributeName, String configuration)
+            throws UnsupportedDataTypeException, AttributeNotFoundException, AttributeTypeNotFoundException, AttributeUnavailableException,
+            SubjectNotFoundException;
 
 }

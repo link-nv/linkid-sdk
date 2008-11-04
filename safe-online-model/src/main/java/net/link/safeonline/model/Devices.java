@@ -21,6 +21,7 @@ public interface Devices extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/DevicesBean/local";
 
+
     List<AllowedDeviceEntity> listAllowedDevices(ApplicationEntity application);
 
     List<DeviceEntity> listDevices();

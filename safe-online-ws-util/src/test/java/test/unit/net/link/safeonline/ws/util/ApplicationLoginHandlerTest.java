@@ -43,7 +43,8 @@ public class ApplicationLoginHandlerTest extends TestCase {
 
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp()
+            throws Exception {
 
         super.setUp();
 
@@ -51,12 +52,14 @@ public class ApplicationLoginHandlerTest extends TestCase {
     }
 
     @Override
-    protected void tearDown() throws Exception {
+    protected void tearDown()
+            throws Exception {
 
         super.tearDown();
     }
 
-    public void testHandleMessagePerformsJAASLoginLogout() throws Exception {
+    public void testHandleMessagePerformsJAASLoginLogout()
+            throws Exception {
 
         // setup
         SOAPMessageContext context = new TestSOAPMessageContext(null, false);
@@ -112,7 +115,8 @@ public class ApplicationLoginHandlerTest extends TestCase {
             this.callbackHandler = newCallbackHandler;
         }
 
-        public boolean login() throws LoginException {
+        public boolean login()
+                throws LoginException {
 
             LOG.debug("login");
             PasswordCallback passwordCallback = new PasswordCallback("X509", false);
@@ -128,7 +132,8 @@ public class ApplicationLoginHandlerTest extends TestCase {
             return true;
         }
 
-        public boolean logout() throws LoginException {
+        public boolean logout()
+                throws LoginException {
 
             LOG.debug("logout");
             if (null == this.authenticatedPrincipal)

@@ -39,7 +39,8 @@ public class IntegrationTestUtils {
      * @throws Exception
      */
     @SuppressWarnings("unchecked")
-    public static InitialContext getInitialContext() throws Exception {
+    public static InitialContext getInitialContext()
+            throws Exception {
 
         Hashtable environment = new Hashtable();
         environment.put(Context.INITIAL_CONTEXT_FACTORY, "org.jnp.interfaces.NamingContextFactory");
@@ -58,7 +59,8 @@ public class IntegrationTestUtils {
      * @return the client-side subject.
      * @throws Exception
      */
-    public static Subject login(String userId, String password) throws Exception {
+    public static Subject login(String userId, String password)
+            throws Exception {
 
         LoginContext loginContext = new LoginContext("client-login", new UsernamePasswordHandler(userId, password));
         loginContext.login();
@@ -72,7 +74,8 @@ public class IntegrationTestUtils {
      * 
      * @throws Exception
      */
-    public static void setupLoginConfig() throws Exception {
+    public static void setupLoginConfig()
+            throws Exception {
 
         File tmpConfigFile = File.createTempFile("jaas-", ".conf");
         tmpConfigFile.deleteOnExit();

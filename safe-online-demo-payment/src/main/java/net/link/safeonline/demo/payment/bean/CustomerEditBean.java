@@ -66,9 +66,8 @@ public class CustomerEditBean extends AbstractPaymentDataClientBean implements C
         return "success";
     }
 
-    private void createOrUpdateAttribute(String attributeName, Object attributeValue) throws WSClientTransportException,
-                                                                                     RequestDeniedException, SubjectNotFoundException,
-                                                                                     AttributeNotFoundException {
+    private void createOrUpdateAttribute(String attributeName, Object attributeValue)
+            throws WSClientTransportException, RequestDeniedException, SubjectNotFoundException, AttributeNotFoundException {
 
         DataClient dataClient = getDataClient();
         if (null == dataClient.getAttributeValue(this.customerStatus.getUserId(), attributeName, attributeValue.getClass())) {

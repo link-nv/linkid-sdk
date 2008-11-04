@@ -20,6 +20,7 @@ public interface Accounting {
 
     public static final String JNDI_BINDING = OperatorConstants.JNDI_PREFIX + "AccountingBean/local";
 
+
     /*
      * Accessors.
      */
@@ -31,9 +32,11 @@ public interface Accounting {
 
     String viewStat();
 
-    String export() throws IOException;
+    String export()
+            throws IOException;
 
-    String exportStat() throws IOException;
+    String exportStat()
+            throws IOException;
 
     /*
      * Lifecycle.
@@ -47,5 +50,6 @@ public interface Accounting {
      */
     void applicationListFactory();
 
-    void statListFactory() throws PermissionDeniedException;
+    void statListFactory()
+            throws PermissionDeniedException;
 }

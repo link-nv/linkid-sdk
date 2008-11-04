@@ -35,7 +35,8 @@ public class LogoutServletTest extends TestCase {
 
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp()
+            throws Exception {
 
         super.setUp();
 
@@ -46,14 +47,16 @@ public class LogoutServletTest extends TestCase {
     }
 
     @Override
-    protected void tearDown() throws Exception {
+    protected void tearDown()
+            throws Exception {
 
         this.servletTestManager.tearDown();
 
         super.tearDown();
     }
 
-    public void testDoGet() throws Exception {
+    public void testDoGet()
+            throws Exception {
 
         // setup
         HttpClient httpClient = new HttpClient();

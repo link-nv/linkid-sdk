@@ -13,12 +13,11 @@ import javax.ejb.Local;
 import javax.faces.model.SelectItem;
 
 
-
-
 @Local
 public interface TicketBuy {
 
     public static final String JNDI_BINDING = "SafeOnlineTicketDemo/TicketBuyBean/local";
+
 
     /*
      * Field accessors.

@@ -33,6 +33,7 @@ public interface AttributeProviderService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AttributeProviderServiceBean/local";
 
+
     /**
      * Gives back the values of an attribute of a certain subject. This application must be an attribute provider of the attribute in order
      * to read the attribute's values.
@@ -53,8 +54,8 @@ public interface AttributeProviderService extends SafeOnlineService {
      *             if the caller application is not an attribute provider for the given attribute.
      * @throws SubjectNotFoundException
      */
-    List<AttributeEntity> getAttributes(String subjectLogin, String attributeName) throws AttributeTypeNotFoundException,
-                                                                                  PermissionDeniedException, SubjectNotFoundException;
+    List<AttributeEntity> getAttributes(String subjectLogin, String attributeName)
+            throws AttributeTypeNotFoundException, PermissionDeniedException, SubjectNotFoundException;
 
     /**
      * Create a new attribute for the given user.
@@ -73,10 +74,8 @@ public interface AttributeProviderService extends SafeOnlineService {
      * @throws SubjectNotFoundException
      * @throws DatatypeMismatchException
      */
-    void createAttribute(String subjectLogin, String attributeName, Object attributeValue) throws AttributeTypeNotFoundException,
-                                                                                          PermissionDeniedException,
-                                                                                          SubjectNotFoundException,
-                                                                                          DatatypeMismatchException;
+    void createAttribute(String subjectLogin, String attributeName, Object attributeValue)
+            throws AttributeTypeNotFoundException, PermissionDeniedException, SubjectNotFoundException, DatatypeMismatchException;
 
     /**
      * Sets an attribute for the given user. For attribute value we accept {@link String} and {@link Boolean}. A <code>null</code> attribute
@@ -91,10 +90,9 @@ public interface AttributeProviderService extends SafeOnlineService {
      * @throws AttributeNotFoundException
      * @throws DatatypeMismatchException
      */
-    void setAttribute(String subjectLogin, String attributeName, Object attributeValue) throws AttributeTypeNotFoundException,
-                                                                                       PermissionDeniedException, SubjectNotFoundException,
-                                                                                       AttributeNotFoundException,
-                                                                                       DatatypeMismatchException;
+    void setAttribute(String subjectLogin, String attributeName, Object attributeValue)
+            throws AttributeTypeNotFoundException, PermissionDeniedException, SubjectNotFoundException, AttributeNotFoundException,
+            DatatypeMismatchException;
 
     /**
      * Sets the member values of a compound attribute record. Editing a compound multivalued attribute is somehow different from editing a
@@ -112,11 +110,8 @@ public interface AttributeProviderService extends SafeOnlineService {
      * @throws AttributeNotFoundException
      */
     void setCompoundAttributeRecord(String subjectLogin, String attributeName, String attributeId, Map<String, Object> memberValues)
-                                                                                                                                    throws AttributeTypeNotFoundException,
-                                                                                                                                    PermissionDeniedException,
-                                                                                                                                    SubjectNotFoundException,
-                                                                                                                                    DatatypeMismatchException,
-                                                                                                                                    AttributeNotFoundException;
+            throws AttributeTypeNotFoundException, PermissionDeniedException, SubjectNotFoundException, DatatypeMismatchException,
+            AttributeNotFoundException;
 
     /**
      * Removes the attribute for the given subject.
@@ -130,8 +125,8 @@ public interface AttributeProviderService extends SafeOnlineService {
      * @throws SubjectNotFoundException
      * @throws AttributeNotFoundException
      */
-    void removeAttribute(String subjectLogin, String attributeName) throws AttributeTypeNotFoundException, PermissionDeniedException,
-                                                                   SubjectNotFoundException, AttributeNotFoundException;
+    void removeAttribute(String subjectLogin, String attributeName)
+            throws AttributeTypeNotFoundException, PermissionDeniedException, SubjectNotFoundException, AttributeNotFoundException;
 
     /**
      * Removes a record of a compounded attribute. The record is identified via the attribute Id.
@@ -145,8 +140,5 @@ public interface AttributeProviderService extends SafeOnlineService {
      * @throws AttributeNotFoundException
      */
     void removeCompoundAttributeRecord(String subjectLogin, String attributeName, String attributeId)
-                                                                                                     throws AttributeTypeNotFoundException,
-                                                                                                     PermissionDeniedException,
-                                                                                                     SubjectNotFoundException,
-                                                                                                     AttributeNotFoundException;
+            throws AttributeTypeNotFoundException, PermissionDeniedException, SubjectNotFoundException, AttributeNotFoundException;
 }

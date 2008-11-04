@@ -28,6 +28,7 @@ public interface NodeAuthenticationService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/NodeAuthenticationServiceBean/local";
 
+
     /**
      * Authenticates an olas node given a node's certificate. At this point the node's certificate already passed the PKI validation.
      * 
@@ -36,7 +37,8 @@ public interface NodeAuthenticationService extends SafeOnlineService {
      * @return the node name.
      * @throws NodeNotFoundException
      */
-    String authenticate(X509Certificate authnCertificate) throws NodeNotFoundException;
+    String authenticate(X509Certificate authnCertificate)
+            throws NodeNotFoundException;
 
     /**
      * Gives back the node's signing certificates given the node name.
@@ -46,7 +48,8 @@ public interface NodeAuthenticationService extends SafeOnlineService {
      * @return the signing X509 node certificates.
      * @throws NodeNotFoundException
      */
-    List<X509Certificate> getSigningCertificates(String nodeName) throws NodeNotFoundException;
+    List<X509Certificate> getSigningCertificates(String nodeName)
+            throws NodeNotFoundException;
 
     /**
      * Gives back the node entity given the node name.
@@ -55,7 +58,8 @@ public interface NodeAuthenticationService extends SafeOnlineService {
      * @return the OLAS node entity
      * @throws NodeNotFoundException
      */
-    NodeEntity getNode(String nodeName) throws NodeNotFoundException;
+    NodeEntity getNode(String nodeName)
+            throws NodeNotFoundException;
 
     /**
      * Gives back the node entity at this location.
@@ -63,5 +67,6 @@ public interface NodeAuthenticationService extends SafeOnlineService {
      * @return
      * @throws NodeNotFoundException
      */
-    NodeEntity getLocalNode() throws NodeNotFoundException;
+    NodeEntity getLocalNode()
+            throws NodeNotFoundException;
 }

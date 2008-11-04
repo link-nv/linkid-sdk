@@ -37,6 +37,7 @@ public interface IdentityService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/IdentityServiceBean/local";
 
+
     /**
      * Gives back the authentication history of the user linked to the caller principal.
      * 
@@ -59,7 +60,8 @@ public interface IdentityService extends SafeOnlineService {
      *             if the user is not allowed to edit the attribute.
      * @throws AttributeTypeNotFoundException
      */
-    void saveAttribute(AttributeDO attribute) throws PermissionDeniedException, AttributeTypeNotFoundException;
+    void saveAttribute(AttributeDO attribute)
+            throws PermissionDeniedException, AttributeTypeNotFoundException;
 
     /**
      * Gives back a list of attributes for the current user. Only the attributes that are user visible will be returned.
@@ -71,8 +73,8 @@ public interface IdentityService extends SafeOnlineService {
      * @throws PermissionDeniedException
      * @throws ApplicationIdentityNotFoundException
      */
-    List<AttributeDO> listAttributes(Locale locale) throws AttributeTypeNotFoundException, PermissionDeniedException,
-                                                   ApplicationIdentityNotFoundException;
+    List<AttributeDO> listAttributes(Locale locale)
+            throws AttributeTypeNotFoundException, PermissionDeniedException, ApplicationIdentityNotFoundException;
 
     /**
      * Gives back a list of all attribute for the specified user. Also attributes marked as not visible will be returned.
@@ -84,7 +86,8 @@ public interface IdentityService extends SafeOnlineService {
      * @throws PermissionDeniedException
      * @throws AttributeTypeNotFoundException
      */
-    List<AttributeDO> listAttributes(SubjectEntity subject, Locale locale) throws PermissionDeniedException, AttributeTypeNotFoundException;
+    List<AttributeDO> listAttributes(SubjectEntity subject, Locale locale)
+            throws PermissionDeniedException, AttributeTypeNotFoundException;
 
     /**
      * Gives back a list of all attributes of the specified type for the specified user.
@@ -100,9 +103,7 @@ public interface IdentityService extends SafeOnlineService {
      * 
      */
     List<AttributeDO> listAttributes(SubjectEntity subject, AttributeTypeEntity attributeType, Locale locale)
-                                                                                                             throws PermissionDeniedException,
-                                                                                                             AttributeTypeNotFoundException,
-                                                                                                             SubjectNotFoundException;
+            throws PermissionDeniedException, AttributeTypeNotFoundException, SubjectNotFoundException;
 
     /**
      * Checks whether confirmation is required over the usage of the identity attributes use by the given application.
@@ -112,8 +113,8 @@ public interface IdentityService extends SafeOnlineService {
      * @throws SubscriptionNotFoundException
      * @throws ApplicationIdentityNotFoundException
      */
-    boolean isConfirmationRequired(String applicationName) throws ApplicationNotFoundException, SubscriptionNotFoundException,
-                                                          ApplicationIdentityNotFoundException;
+    boolean isConfirmationRequired(String applicationName)
+            throws ApplicationNotFoundException, SubscriptionNotFoundException, ApplicationIdentityNotFoundException;
 
     /**
      * Confirm the current identity for the given application.
@@ -129,8 +130,8 @@ public interface IdentityService extends SafeOnlineService {
      * @throws SubscriptionNotFoundException
      * @throws ApplicationIdentityNotFoundException
      */
-    void confirmIdentity(String applicationName) throws ApplicationNotFoundException, SubscriptionNotFoundException,
-                                                ApplicationIdentityNotFoundException;
+    void confirmIdentity(String applicationName)
+            throws ApplicationNotFoundException, SubscriptionNotFoundException, ApplicationIdentityNotFoundException;
 
     /**
      * Lists the attributes for which the user has confirmed an identity on the given application.
@@ -142,9 +143,8 @@ public interface IdentityService extends SafeOnlineService {
      * @throws SubscriptionNotFoundException
      * @throws ApplicationIdentityNotFoundException
      */
-    List<AttributeDO> listConfirmedIdentity(String applicationName, Locale locale) throws ApplicationNotFoundException,
-                                                                                  SubscriptionNotFoundException,
-                                                                                  ApplicationIdentityNotFoundException;
+    List<AttributeDO> listConfirmedIdentity(String applicationName, Locale locale)
+            throws ApplicationNotFoundException, SubscriptionNotFoundException, ApplicationIdentityNotFoundException;
 
     /**
      * Gives back a list of identity attributes that need to be confirmed by this user in order to be in-line with the latest identity
@@ -157,9 +157,8 @@ public interface IdentityService extends SafeOnlineService {
      * @throws ApplicationIdentityNotFoundException
      * @throws SubscriptionNotFoundException
      */
-    List<AttributeDO> listIdentityAttributesToConfirm(String applicationName, Locale locale) throws ApplicationNotFoundException,
-                                                                                            ApplicationIdentityNotFoundException,
-                                                                                            SubscriptionNotFoundException;
+    List<AttributeDO> listIdentityAttributesToConfirm(String applicationName, Locale locale)
+            throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, SubscriptionNotFoundException;
 
     /**
      * Checks whether the current user still needs to fill in some attribute values for being able to use the given application.
@@ -171,8 +170,9 @@ public interface IdentityService extends SafeOnlineService {
      * @throws AttributeTypeNotFoundException
      * @throws PermissionDeniedException
      */
-    boolean hasMissingAttributes(String applicationName) throws ApplicationNotFoundException, ApplicationIdentityNotFoundException,
-                                                        PermissionDeniedException, AttributeTypeNotFoundException;
+    boolean hasMissingAttributes(String applicationName)
+            throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException,
+            AttributeTypeNotFoundException;
 
     /**
      * Gives back a list of the user's missing attributes for the given application. This method also returns a list of {@link AttributeDO}
@@ -187,9 +187,9 @@ public interface IdentityService extends SafeOnlineService {
      * @throws AttributeTypeNotFoundException
      * @throws PermissionDeniedException
      */
-    List<AttributeDO> listMissingAttributes(String applicationName, Locale locale) throws ApplicationNotFoundException,
-                                                                                  ApplicationIdentityNotFoundException,
-                                                                                  PermissionDeniedException, AttributeTypeNotFoundException;
+    List<AttributeDO> listMissingAttributes(String applicationName, Locale locale)
+            throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException,
+            AttributeTypeNotFoundException;
 
     /**
      * Gives back a list of the user's optional attributes for the given application.This method also returns a list of {@link AttributeDO}
@@ -204,9 +204,9 @@ public interface IdentityService extends SafeOnlineService {
      * @throws ApplicationIdentityNotFoundException
      * @throws ApplicationNotFoundException
      */
-    List<AttributeDO> listOptionalAttributes(String application, Locale local) throws ApplicationNotFoundException,
-                                                                              ApplicationIdentityNotFoundException,
-                                                                              PermissionDeniedException, AttributeTypeNotFoundException;
+    List<AttributeDO> listOptionalAttributes(String application, Locale local)
+            throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException,
+            AttributeTypeNotFoundException;
 
     /**
      * Removes an attribute. A user can only remove editable attributes. In case this attribute is part of a multivalued attribute set we
@@ -218,8 +218,8 @@ public interface IdentityService extends SafeOnlineService {
      * @throws AttributeNotFoundException
      * @throws AttributeTypeNotFoundException
      */
-    void removeAttribute(AttributeDO attribute) throws PermissionDeniedException, AttributeNotFoundException,
-                                               AttributeTypeNotFoundException;
+    void removeAttribute(AttributeDO attribute)
+            throws PermissionDeniedException, AttributeNotFoundException, AttributeTypeNotFoundException;
 
     /**
      * Adds an attribute.
@@ -240,7 +240,8 @@ public interface IdentityService extends SafeOnlineService {
      * @throws PermissionDeniedException
      * @throws AttributeTypeNotFoundException
      */
-    void addAttribute(List<AttributeDO> newAttributeContext) throws PermissionDeniedException, AttributeTypeNotFoundException;
+    void addAttribute(List<AttributeDO> newAttributeContext)
+            throws PermissionDeniedException, AttributeTypeNotFoundException;
 
     /**
      * This method simply returns a set of attributes that the user can edit when he previously selected the selectedAttribute for editing.
@@ -250,7 +251,8 @@ public interface IdentityService extends SafeOnlineService {
      * @param selectedAttribute
      * @throws AttributeTypeNotFoundException
      */
-    List<AttributeDO> getAttributeEditContext(AttributeDO selectedAttribute) throws AttributeTypeNotFoundException;
+    List<AttributeDO> getAttributeEditContext(AttributeDO selectedAttribute)
+            throws AttributeTypeNotFoundException;
 
     /**
      * Creates a template that can be used to create a new attribute according to the attribute type of the given prototype attribute.
@@ -258,5 +260,6 @@ public interface IdentityService extends SafeOnlineService {
      * @param prototypeAttribute
      * @throws AttributeTypeNotFoundException
      */
-    List<AttributeDO> getAttributeTemplate(AttributeDO prototypeAttribute) throws AttributeTypeNotFoundException;
+    List<AttributeDO> getAttributeTemplate(AttributeDO prototypeAttribute)
+            throws AttributeTypeNotFoundException;
 }

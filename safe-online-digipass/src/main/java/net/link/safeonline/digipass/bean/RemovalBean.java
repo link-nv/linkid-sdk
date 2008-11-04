@@ -86,8 +86,8 @@ public class RemovalBean implements Removal {
 
     @Factory(DIGIPASS_ATTRIBUTE_LIST_NAME)
     @ErrorHandling( { @Error(exceptionClass = SubjectNotFoundException.class, messageId = "errorSubjectNotFound", fieldId = "login") })
-    public List<AttributeDO> digipassAttributesFactory() throws SubjectNotFoundException, PermissionDeniedException,
-                                                        DeviceNotFoundException {
+    public List<AttributeDO> digipassAttributesFactory()
+            throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException {
 
         Locale locale = getViewLocale();
         this.digipassAttributes = this.digipassDeviceService.getDigipasses(this.loginName, locale);
@@ -95,15 +95,17 @@ public class RemovalBean implements Removal {
     }
 
     @ErrorHandling( { @Error(exceptionClass = DigipassException.class, messageId = "errorDeviceRegistrationNotFound") })
-    public String remove() throws SubjectNotFoundException, DigipassException, PermissionDeniedException, DeviceNotFoundException,
-                          AttributeTypeNotFoundException {
+    public String remove()
+            throws SubjectNotFoundException, DigipassException, PermissionDeniedException, DeviceNotFoundException,
+            AttributeTypeNotFoundException {
 
         this.log.debug("remove digipass: " + this.selectedDigipass.getStringValue() + " for user " + this.loginName);
         this.digipassDeviceService.remove(this.loginName, this.selectedDigipass.getStringValue());
         return "success";
     }
 
-    public String getRegistrations() throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException {
+    public String getRegistrations()
+            throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException {
 
         this.log.debug("get digipasses for: " + this.loginName);
         digipassAttributesFactory();

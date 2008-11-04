@@ -110,12 +110,11 @@ public class EntityTest {
                     TrustDomainEntity.class, TrustPointEntity.class, SubjectIdentifierEntity.class, CachedOcspResponseEntity.class,
                     TaskEntity.class, SchedulingEntity.class, TaskHistoryEntity.class, ConfigItemEntity.class, ConfigGroupEntity.class,
                     StatisticEntity.class, StatisticDataPointEntity.class, ApplicationIdentityEntity.class,
-                    ApplicationIdentityAttributeEntity.class, AttributeTypeDescriptionEntity.class,
-                    AttributeProviderEntity.class, AuditContextEntity.class, AuditAuditEntity.class,
-                    HelpdeskContextEntity.class, CompoundedAttributeTypeMemberEntity.class, AccessAuditEntity.class,
-                    UsageAgreementEntity.class, UsageAgreementTextEntity.class, GlobalUsageAgreementEntity.class,
-                    NodeEntity.class, ApplicationPoolEntity.class, EndpointReferenceEntity.class,
-                    NotificationMessageEntity.class);
+                    ApplicationIdentityAttributeEntity.class, AttributeTypeDescriptionEntity.class, AttributeProviderEntity.class,
+                    AuditContextEntity.class, AuditAuditEntity.class, HelpdeskContextEntity.class,
+                    CompoundedAttributeTypeMemberEntity.class, AccessAuditEntity.class, UsageAgreementEntity.class,
+                    UsageAgreementTextEntity.class, GlobalUsageAgreementEntity.class, NodeEntity.class, ApplicationPoolEntity.class,
+                    EndpointReferenceEntity.class, NotificationMessageEntity.class);
         } catch (Exception e) {
             LOG.fatal("JPA annotations incorrect: " + e.getMessage(), e);
             throw new RuntimeException("JPA annotations incorrect: " + e.getMessage(), e);
@@ -123,20 +122,23 @@ public class EntityTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.entityTestManager.tearDown();
     }
 
     @Test
-    public void annotationCorrectness() throws Exception {
+    public void annotationCorrectness()
+            throws Exception {
 
         LOG.debug("annotation correctness test");
         assertNotNull("JPA annotations incorrect?", this.entityTestManager.getEntityManager());
     }
 
     @Test
-    public void addRemoveSubject() throws Exception {
+    public void addRemoveSubject()
+            throws Exception {
 
         // setup
         SubjectEntity subject = new SubjectEntity("test-login");
@@ -160,13 +162,13 @@ public class EntityTest {
     }
 
     @Test
-    public void testAddRemoveApplication() throws Exception {
+    public void testAddRemoveApplication()
+            throws Exception {
 
         // setup
         SubjectEntity admin = new SubjectEntity("test-admin");
         ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity("owner", admin);
-        ApplicationEntity application = new ApplicationEntity("test-application", null, applicationOwner, null, null,
-                null, null);
+        ApplicationEntity application = new ApplicationEntity("test-application", null, applicationOwner, null, null, null, null);
 
         // operate: add application
         EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -189,7 +191,8 @@ public class EntityTest {
     }
 
     @Test
-    public void testAddSubscriptionRequiresEntityAndApplication() throws Exception {
+    public void testAddSubscriptionRequiresEntityAndApplication()
+            throws Exception {
 
         // setup
         SubscriptionEntity subscription = new SubscriptionEntity();
@@ -212,15 +215,14 @@ public class EntityTest {
     }
 
     @Test
-    public void testAddSubscriptionRequiresExistingEntityAndApplication() throws Exception {
+    public void testAddSubscriptionRequiresExistingEntityAndApplication()
+            throws Exception {
 
         // setup
         SubjectEntity subject = new SubjectEntity("test-login");
         ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity("owner", subject);
-        ApplicationEntity application = new ApplicationEntity("test-application", null, applicationOwner, null, null,
-                null, null);
-        SubscriptionEntity subscription = new SubscriptionEntity(SubscriptionOwnerType.SUBJECT, subject, "0",
-                application);
+        ApplicationEntity application = new ApplicationEntity("test-application", null, applicationOwner, null, null, null, null);
+        SubscriptionEntity subscription = new SubscriptionEntity(SubscriptionOwnerType.SUBJECT, subject, "0", application);
 
         // operate & verify
         EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -234,16 +236,15 @@ public class EntityTest {
     }
 
     @Test
-    public void testAddSubscription() throws Exception {
+    public void testAddSubscription()
+            throws Exception {
 
         // setup
         String userApplicationId = UUID.randomUUID().toString();
         SubjectEntity subject = new SubjectEntity("test-login");
         ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity("owner", subject);
-        ApplicationEntity application = new ApplicationEntity("test-application", null, applicationOwner, null, null,
-                null, null);
-        SubscriptionEntity subscription = new SubscriptionEntity(SubscriptionOwnerType.SUBJECT, subject,
-                userApplicationId, application);
+        ApplicationEntity application = new ApplicationEntity("test-application", null, applicationOwner, null, null, null, null);
+        SubscriptionEntity subscription = new SubscriptionEntity(SubscriptionOwnerType.SUBJECT, subject, userApplicationId, application);
 
         // operate: add subscription
         EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -279,7 +280,8 @@ public class EntityTest {
     }
 
     @Test
-    public void testAddGlobalUsageAgreement() throws Exception {
+    public void testAddGlobalUsageAgreement()
+            throws Exception {
 
         // setup
         GlobalUsageAgreementEntity globalUsageAgreementv1 = new GlobalUsageAgreementEntity(1L);
@@ -315,13 +317,13 @@ public class EntityTest {
     }
 
     @Test
-    public void testAddUsageAgreement() throws Exception {
+    public void testAddUsageAgreement()
+            throws Exception {
 
         // setup
         SubjectEntity subject = new SubjectEntity("test-login");
         ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity("owner", subject);
-        ApplicationEntity application = new ApplicationEntity("test-application", null, applicationOwner, null, null,
-                null, null);
+        ApplicationEntity application = new ApplicationEntity("test-application", null, applicationOwner, null, null, null, null);
         UsageAgreementEntity usageAgreementv1 = new UsageAgreementEntity(application, 1L);
         UsageAgreementEntity usageAgreementv2 = new UsageAgreementEntity(application, 2L);
         UsageAgreementTextEntity usageAgreementTextv1En = new UsageAgreementTextEntity(usageAgreementv1, "This is a usage agreement.",
@@ -358,7 +360,8 @@ public class EntityTest {
     }
 
     @Test
-    public void testAddHistory() throws Exception {
+    public void testAddHistory()
+            throws Exception {
 
         // setup
         SubjectEntity subject = new SubjectEntity("test-login");
@@ -394,7 +397,8 @@ public class EntityTest {
     }
 
     @Test
-    public void testAddAttribute() throws Exception {
+    public void testAddAttribute()
+            throws Exception {
 
         // setup
         SubjectEntity subject = new SubjectEntity("test-login");
@@ -417,7 +421,8 @@ public class EntityTest {
     }
 
     @Test
-    public void testMultiValuedAttribute() throws Exception {
+    public void testMultiValuedAttribute()
+            throws Exception {
 
         // setup
         String login = "test-login";
@@ -465,7 +470,8 @@ public class EntityTest {
     }
 
     @Test
-    public void testTrustDomain() throws Exception {
+    public void testTrustDomain()
+            throws Exception {
 
         // setup
         String trustDomainName = "test-trust-domain-" + UUID.randomUUID().toString();
@@ -497,7 +503,8 @@ public class EntityTest {
     }
 
     @Test
-    public void testTrustPoint() throws Exception {
+    public void testTrustPoint()
+            throws Exception {
 
         // setup
         String trustDomainName = "test-trust-domain-" + UUID.randomUUID().toString();
@@ -533,7 +540,8 @@ public class EntityTest {
     }
 
     @Test
-    public void testTrustPointCertificateSubjectQuery() throws Exception {
+    public void testTrustPointCertificateSubjectQuery()
+            throws Exception {
 
         // setup
         String trustDomainName = "test-trust-domain-" + UUID.randomUUID().toString();
@@ -569,7 +577,8 @@ public class EntityTest {
     }
 
     @Test
-    public void testTrustPointWithEmptyKeyId() throws Exception {
+    public void testTrustPointWithEmptyKeyId()
+            throws Exception {
 
         // setup
         String trustDomainName = "test-trust-domain-" + UUID.randomUUID().toString();
@@ -605,7 +614,8 @@ public class EntityTest {
     }
 
     @Test
-    public void testSubjectIdentifier() throws Exception {
+    public void testSubjectIdentifier()
+            throws Exception {
 
         // setup
         SubjectEntity subject = new SubjectEntity("test-subject");
@@ -650,7 +660,8 @@ public class EntityTest {
     }
 
     @Test
-    public void testTrustPointEntityHashCode() throws Exception {
+    public void testTrustPointEntityHashCode()
+            throws Exception {
 
         // setup
         TrustDomainEntity trustDomain = new TrustDomainEntity("trust-domain-name", true);
@@ -666,7 +677,8 @@ public class EntityTest {
     }
 
     @Test
-    public void testCachedOcspResponse() throws Exception {
+    public void testCachedOcspResponse()
+            throws Exception {
 
         // setup
         String trustDomainName = "test-trust-domain-" + UUID.randomUUID().toString();
@@ -830,17 +842,15 @@ public class EntityTest {
     }
 
     @Test
-    public void testAddApplicationIdentity() throws Exception {
+    public void testAddApplicationIdentity()
+            throws Exception {
 
         // setup
         SubjectEntity admin = new SubjectEntity("test-admin");
         ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity("owner", admin);
-        ApplicationEntity application = new ApplicationEntity("test-application", null, applicationOwner, null, null,
-                null, null);
-        AttributeTypeEntity attributeType1 = new AttributeTypeEntity("test-attribute-type-1", DatatypeType.STRING,
-                true, true);
-        AttributeTypeEntity attributeType2 = new AttributeTypeEntity("test-attribute-type-2", DatatypeType.STRING,
-                true, true);
+        ApplicationEntity application = new ApplicationEntity("test-application", null, applicationOwner, null, null, null, null);
+        AttributeTypeEntity attributeType1 = new AttributeTypeEntity("test-attribute-type-1", DatatypeType.STRING, true, true);
+        AttributeTypeEntity attributeType2 = new AttributeTypeEntity("test-attribute-type-2", DatatypeType.STRING, true, true);
         long identityVersion = 10;
         ApplicationIdentityEntity applicationIdentity = new ApplicationIdentityEntity(application, identityVersion);
         ApplicationIdentityAttributeEntity applicationIdentityAttribute1 = new ApplicationIdentityAttributeEntity(applicationIdentity,
@@ -885,14 +895,13 @@ public class EntityTest {
     }
 
     @Test
-    public void testMultipleApplicationIdentities() throws Exception {
+    public void testMultipleApplicationIdentities()
+            throws Exception {
 
         SubjectEntity admin = new SubjectEntity("test-admin");
         ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity("owner", admin);
-        ApplicationEntity application = new ApplicationEntity("test-application", null, applicationOwner, null, null,
-                null, null);
-        AttributeTypeEntity attributeType = new AttributeTypeEntity("test-attribute-type", DatatypeType.STRING, true,
-                true);
+        ApplicationEntity application = new ApplicationEntity("test-application", null, applicationOwner, null, null, null, null);
+        AttributeTypeEntity attributeType = new AttributeTypeEntity("test-attribute-type", DatatypeType.STRING, true, true);
         ApplicationIdentityEntity applicationIdentity1 = new ApplicationIdentityEntity(application, 1);
         ApplicationIdentityEntity applicationIdentity2 = new ApplicationIdentityEntity(application, 2);
 
@@ -942,15 +951,14 @@ public class EntityTest {
     }
 
     @Test
-    public void testAddRemoveAttributeProvider() throws Exception {
+    public void testAddRemoveAttributeProvider()
+            throws Exception {
 
         // setup
         SubjectEntity admin = new SubjectEntity("test-admin");
         ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity("owner", admin);
-        ApplicationEntity application = new ApplicationEntity("test-application", null, applicationOwner, null, null,
-                null, null);
-        AttributeTypeEntity attributeType = new AttributeTypeEntity("test-attribute-type", DatatypeType.STRING, false,
-                false);
+        ApplicationEntity application = new ApplicationEntity("test-application", null, applicationOwner, null, null, null, null);
+        AttributeTypeEntity attributeType = new AttributeTypeEntity("test-attribute-type", DatatypeType.STRING, false, false);
         AttributeProviderEntity attributeProvider = new AttributeProviderEntity(application, attributeType);
 
         // operate
@@ -970,7 +978,8 @@ public class EntityTest {
     }
 
     @Test
-    public void testCreateAuditContext() throws Exception {
+    public void testCreateAuditContext()
+            throws Exception {
 
         // setup
         AuditContextEntity contextEntity = new AuditContextEntity();
@@ -986,7 +995,8 @@ public class EntityTest {
     }
 
     @Test
-    public void testAuditAudit() throws Exception {
+    public void testAuditAudit()
+            throws Exception {
 
         // setup
         AuditContextEntity auditContext = new AuditContextEntity();
@@ -1004,7 +1014,8 @@ public class EntityTest {
     }
 
     @Test
-    public void testCreateHelpdeskContext() throws Exception {
+    public void testCreateHelpdeskContext()
+            throws Exception {
 
         // setup
         HelpdeskContextEntity contextEntity = new HelpdeskContextEntity();
@@ -1020,7 +1031,8 @@ public class EntityTest {
     }
 
     @Test
-    public void compoundedAttributeType() throws Exception {
+    public void compoundedAttributeType()
+            throws Exception {
 
         // setup
         String testParentName = "parent-attribute-type-" + UUID.randomUUID().toString();
@@ -1048,7 +1060,8 @@ public class EntityTest {
     }
 
     @Test
-    public void compoundedAttributeTypePersistCascading() throws Exception {
+    public void compoundedAttributeTypePersistCascading()
+            throws Exception {
 
         // setup
         String testParentName = "parent-attribute-type-" + UUID.randomUUID().toString();
@@ -1075,7 +1088,8 @@ public class EntityTest {
     }
 
     @Test
-    public void compoundedAttributeTypeEagerLoading() throws Exception {
+    public void compoundedAttributeTypeEagerLoading()
+            throws Exception {
 
         // setup
         String testParentName = "parent-attribute-type-" + UUID.randomUUID().toString();
@@ -1105,7 +1119,8 @@ public class EntityTest {
     }
 
     @Test
-    public void testAccessAuditErrorQuery() throws Exception {
+    public void testAccessAuditErrorQuery()
+            throws Exception {
 
         // setup
         AuditContextEntity auditContext = new AuditContextEntity();
@@ -1135,7 +1150,8 @@ public class EntityTest {
     }
 
     @Test
-    public void testNotificationMessageQuery() throws Exception {
+    public void testNotificationMessageQuery()
+            throws Exception {
 
         // setup
         String topic = "test-topic";
@@ -1153,8 +1169,7 @@ public class EntityTest {
 
         NotificationMessageEntity.QueryInterface queryObject = QueryObjectFactory.createQueryObject(entityManager,
                 NotificationMessageEntity.QueryInterface.class);
-        NotificationMessageEntity resultMessage = queryObject.findNotificationMessageWhereSubject(topic, consumer,
-                subject);
+        NotificationMessageEntity resultMessage = queryObject.findNotificationMessageWhereSubject(topic, consumer, subject);
 
         // verify
         assertNotNull(resultMessage);

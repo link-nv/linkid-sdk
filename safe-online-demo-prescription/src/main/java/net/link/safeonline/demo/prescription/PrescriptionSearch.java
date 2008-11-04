@@ -10,11 +10,11 @@ package net.link.safeonline.demo.prescription;
 import javax.ejb.Local;
 
 
-
-
 @Local
 public interface PrescriptionSearch extends AbstractPrescriptionDataClient {
+
     public static final String JNDI_BINDING = "SafeOnlinePrescriptionDemo/PrescriptionSearchBean/local";
+
 
     /*
      * Actions.

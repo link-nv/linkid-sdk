@@ -37,7 +37,8 @@ public class Application {
      * 
      * @throws PermissionDeniedException
      */
-    public void checkUserSubscriptionPermission() throws PermissionDeniedException {
+    public void checkUserSubscriptionPermission()
+            throws PermissionDeniedException {
 
         if (false == this.entity.isAllowUserSubscription())
             throw new PermissionDeniedException("user not allowed to subscribe");

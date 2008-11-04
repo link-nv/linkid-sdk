@@ -39,7 +39,8 @@ public class PkiServiceBeanTest extends TestCase {
 
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp()
+            throws Exception {
 
         super.setUp();
 
@@ -79,13 +80,15 @@ public class PkiServiceBeanTest extends TestCase {
     }
 
     @Override
-    protected void tearDown() throws Exception {
+    protected void tearDown()
+            throws Exception {
 
         this.entityTestManager.tearDown();
         super.tearDown();
     }
 
-    public void testAddRemoveTrustDomain() throws Exception {
+    public void testAddRemoveTrustDomain()
+            throws Exception {
 
         EntityManager entityManager = this.entityTestManager.getEntityManager();
         PkiService pkiService = EJBTestUtils.newInstance(PkiServiceBean.class, SafeOnlineTestContainer.sessionBeans, entityManager,
@@ -103,7 +106,8 @@ public class PkiServiceBeanTest extends TestCase {
         }
     }
 
-    public void testAddTrustPointWithFakeCertificateThrowsException() throws Exception {
+    public void testAddTrustPointWithFakeCertificateThrowsException()
+            throws Exception {
 
         EntityManager entityManager = this.entityTestManager.getEntityManager();
         PkiService pkiService = EJBTestUtils.newInstance(PkiServiceBean.class, SafeOnlineTestContainer.sessionBeans, entityManager,
@@ -118,7 +122,8 @@ public class PkiServiceBeanTest extends TestCase {
         }
     }
 
-    public void testAddRemoveTrustPoint() throws Exception {
+    public void testAddRemoveTrustPoint()
+            throws Exception {
 
         // setup
         EntityManager entityManager = this.entityTestManager.getEntityManager();

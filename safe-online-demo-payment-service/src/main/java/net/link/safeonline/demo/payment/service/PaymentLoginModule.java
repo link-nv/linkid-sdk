@@ -60,7 +60,8 @@ public class PaymentLoginModule implements LoginModule {
         this.callbackHandler = inCallbackHandler;
     }
 
-    public boolean login() throws LoginException {
+    public boolean login()
+            throws LoginException {
 
         HttpServletRequest httpServletRequest;
         try {
@@ -100,7 +101,8 @@ public class PaymentLoginModule implements LoginModule {
         return true;
     }
 
-    public boolean commit() throws LoginException {
+    public boolean commit()
+            throws LoginException {
 
         Set<Principal> principals = this.subject.getPrincipals();
         principals.add(this.authenticatedPrincipal);
@@ -135,14 +137,16 @@ public class PaymentLoginModule implements LoginModule {
         return group;
     }
 
-    public boolean abort() throws LoginException {
+    public boolean abort()
+            throws LoginException {
 
         this.authenticatedPrincipal = null;
         this.role = null;
         return true;
     }
 
-    public boolean logout() throws LoginException {
+    public boolean logout()
+            throws LoginException {
 
         this.subject.getPrincipals().clear();
         this.subject.getPublicCredentials().clear();

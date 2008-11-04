@@ -150,7 +150,8 @@ public class OSGIStartableBean implements OSGIStartable {
 
     }
 
-    public PluginAttributeService getPluginService(String serviceName) throws SafeOnlineResourceException {
+    public PluginAttributeService getPluginService(String serviceName)
+            throws SafeOnlineResourceException {
 
         Object[] services = getPluginServices();
         if (null == services)

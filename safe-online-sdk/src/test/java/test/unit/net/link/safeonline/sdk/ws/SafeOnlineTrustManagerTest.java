@@ -40,7 +40,8 @@ public class SafeOnlineTrustManagerTest {
 
 
     @Test
-    public void trustAllSSLConnection() throws Exception {
+    public void trustAllSSLConnection()
+            throws Exception {
 
         LOG.debug("trust all ssl connection");
 
@@ -179,7 +180,8 @@ public class SafeOnlineTrustManagerTest {
     }
 
 
-    private static int getFreePort() throws Exception {
+    private static int getFreePort()
+            throws Exception {
 
         ServerSocket serverSocket = new ServerSocket(0);
         int port = serverSocket.getLocalPort();

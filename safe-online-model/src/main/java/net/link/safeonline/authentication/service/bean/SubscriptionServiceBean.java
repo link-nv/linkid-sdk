@@ -90,14 +90,15 @@ public class SubscriptionServiceBean implements SubscriptionService, Subscriptio
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public List<SubscriptionEntity> listSubscriptions(SubjectEntity subject) throws SubjectNotFoundException {
+    public List<SubscriptionEntity> listSubscriptions(SubjectEntity subject)
+            throws SubjectNotFoundException {
 
         return this.subscriptionDAO.listSubsciptions(subject);
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public void subscribe(String applicationName) throws ApplicationNotFoundException, AlreadySubscribedException,
-                                                 PermissionDeniedException {
+    public void subscribe(String applicationName)
+            throws ApplicationNotFoundException, AlreadySubscribedException, PermissionDeniedException {
 
         Subject subject = SubjectFactory.getCallerSubject(this);
         Application application = ApplicationFactory.getApplication(this, applicationName);
@@ -114,8 +115,8 @@ public class SubscriptionServiceBean implements SubscriptionService, Subscriptio
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public void unsubscribe(String applicationName) throws ApplicationNotFoundException, SubscriptionNotFoundException,
-                                                   PermissionDeniedException {
+    public void unsubscribe(String applicationName)
+            throws ApplicationNotFoundException, SubscriptionNotFoundException, PermissionDeniedException {
 
         Subject subject = SubjectFactory.getCallerSubject(this);
         Application application = ApplicationFactory.getApplication(this, applicationName);
@@ -126,7 +127,8 @@ public class SubscriptionServiceBean implements SubscriptionService, Subscriptio
     }
 
     @RolesAllowed( { SafeOnlineRoles.OPERATOR_ROLE, SafeOnlineRoles.OWNER_ROLE })
-    public long getNumberOfSubscriptions(String applicationName) throws ApplicationNotFoundException, PermissionDeniedException {
+    public long getNumberOfSubscriptions(String applicationName)
+            throws ApplicationNotFoundException, PermissionDeniedException {
 
         LOG.debug("get number of subscriptions for application: " + applicationName);
         ApplicationEntity application = this.applicationDAO.getApplication(applicationName);
@@ -137,7 +139,8 @@ public class SubscriptionServiceBean implements SubscriptionService, Subscriptio
         return count;
     }
 
-    private void checkReadPermission(ApplicationEntity application) throws PermissionDeniedException {
+    private void checkReadPermission(ApplicationEntity application)
+            throws PermissionDeniedException {
 
         if (this.sessionContext.isCallerInRole(SafeOnlineRoles.OPERATOR_ROLE))
             return;
@@ -149,7 +152,8 @@ public class SubscriptionServiceBean implements SubscriptionService, Subscriptio
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public boolean isSubscribed(String applicationName) throws ApplicationNotFoundException {
+    public boolean isSubscribed(String applicationName)
+            throws ApplicationNotFoundException {
 
         LOG.debug("is subscribed: " + applicationName);
         Subject subject = SubjectFactory.getCallerSubject(this);

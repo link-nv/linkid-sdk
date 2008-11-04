@@ -58,7 +58,8 @@ public class NotificationProducerDAOBean implements NotificationProducerDAO {
         return this.entityManager.find(NotificationProducerSubscriptionEntity.class, topic);
     }
 
-    public NotificationProducerSubscriptionEntity getSubscription(String topic) throws SubscriptionNotFoundException {
+    public NotificationProducerSubscriptionEntity getSubscription(String topic)
+            throws SubscriptionNotFoundException {
 
         LOG.debug("get subscription: " + topic);
         NotificationProducerSubscriptionEntity subscription = findSubscription(topic);

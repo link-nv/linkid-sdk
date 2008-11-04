@@ -35,13 +35,15 @@ public interface AttributeTypeDAO extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AttributeTypeDAOBean/local";
 
+
     void addAttributeType(AttributeTypeEntity attributeType);
 
     void removeAttributeType(String name);
 
     AttributeTypeEntity findAttributeType(String name);
 
-    AttributeTypeEntity getAttributeType(String name) throws AttributeTypeNotFoundException;
+    AttributeTypeEntity getAttributeType(String name)
+            throws AttributeTypeNotFoundException;
 
     List<AttributeTypeEntity> listAttributeTypes();
 
@@ -80,7 +82,7 @@ public interface AttributeTypeDAO extends SafeOnlineService {
     void saveDescription(AttributeTypeDescriptionEntity attributeTypeDescription);
 
     AttributeTypeDescriptionEntity getDescription(AttributeTypeDescriptionPK attributeTypeDescriptionPK)
-                                                                                                        throws AttributeTypeDescriptionNotFoundException;
+            throws AttributeTypeDescriptionNotFoundException;
 
     AttributeTypeDescriptionEntity findDescription(AttributeTypeDescriptionPK attributeTypeDescriptionPK);
 
@@ -97,9 +99,11 @@ public interface AttributeTypeDAO extends SafeOnlineService {
      * @param memberAttributeType
      * @throws AttributeTypeNotFoundException
      */
-    AttributeTypeEntity getParent(AttributeTypeEntity memberAttributeType) throws AttributeTypeNotFoundException;
+    AttributeTypeEntity getParent(AttributeTypeEntity memberAttributeType)
+            throws AttributeTypeNotFoundException;
 
-    CompoundedAttributeTypeMemberEntity getMemberEntry(AttributeTypeEntity memberAttributeType) throws AttributeTypeNotFoundException;
+    CompoundedAttributeTypeMemberEntity getMemberEntry(AttributeTypeEntity memberAttributeType)
+            throws AttributeTypeNotFoundException;
 
     /**
      * Removes the compounded member attribute type entities ( not the actual member attribute type ) of the given parent.

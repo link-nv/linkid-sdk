@@ -83,28 +83,31 @@ public class AccountServiceBean implements AccountService, AccountServiceRemote 
 
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public void removeAccount() throws SubscriptionNotFoundException, MessageHandlerNotFoundException {
+    public void removeAccount()
+            throws SubscriptionNotFoundException, MessageHandlerNotFoundException {
 
         SubjectEntity subject = this.subjectManager.getCallerSubject();
         removeSubject(subject);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void removeAccount(SubjectEntity subject) throws SubscriptionNotFoundException, MessageHandlerNotFoundException {
+    public void removeAccount(SubjectEntity subject)
+            throws SubscriptionNotFoundException, MessageHandlerNotFoundException {
 
         removeSubject(subject);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public void removeAccount(String userId) throws SubjectNotFoundException, SubscriptionNotFoundException,
-                                            MessageHandlerNotFoundException {
+    public void removeAccount(String userId)
+            throws SubjectNotFoundException, SubscriptionNotFoundException, MessageHandlerNotFoundException {
 
         SubjectEntity subject = this.subjectService.getSubject(userId);
         removeSubject(subject);
     }
 
-    private void removeSubject(SubjectEntity subject) throws MessageHandlerNotFoundException {
+    private void removeSubject(SubjectEntity subject)
+            throws MessageHandlerNotFoundException {
 
         LOG.debug("remove account: " + subject.getUserId());
 

@@ -100,7 +100,8 @@ public class LogoutServlet extends AbstractInjectionServlet {
 
 
     @Override
-    public void init(ServletConfig config) throws ServletException {
+    public void init(ServletConfig config)
+            throws ServletException {
 
         super.init(config);
         LOG.debug("init");
@@ -135,7 +136,8 @@ public class LogoutServlet extends AbstractInjectionServlet {
     }
 
     @Override
-    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         /**
          * Wrap the request to use the servlet endpoint url if defined. To prevent failure when behind a reverse proxy or loadbalancer when
@@ -180,7 +182,8 @@ public class LogoutServlet extends AbstractInjectionServlet {
     }
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         /**
          * Wrap the request to use the servlet endpoint url if defined. To prevent failure when behind a reverse proxy or loadbalancer when

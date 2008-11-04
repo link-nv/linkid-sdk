@@ -20,5 +20,6 @@ public interface History {
 
     public static final String JNDI_BINDING = UserConstants.JNDI_PREFIX + "HistoryBean/local";
 
+
     List<HistoryMessage> getList();
 }

@@ -14,6 +14,7 @@ import net.link.safeonline.Startable;
 
 @Local
 public interface ConfigStartable extends Startable {
+
     public static final String JNDI_BINDING = Startable.JNDI_PREFIX + "ConfigStartableBean";
 
 }

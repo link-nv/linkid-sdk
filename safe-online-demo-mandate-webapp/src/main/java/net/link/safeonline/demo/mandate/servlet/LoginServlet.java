@@ -35,7 +35,8 @@ public class LoginServlet extends HttpServlet {
 
 
     @Override
-    public void init(ServletConfig config) throws ServletException {
+    public void init(ServletConfig config)
+            throws ServletException {
 
         super.init(config);
         LOG.debug("init");
@@ -43,7 +44,8 @@ public class LoginServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         /*
          * Since the SAML protocol can enter the application via an HTTP POST we also need to implement the doPost method.
@@ -52,7 +54,8 @@ public class LoginServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         HttpSession session = request.getSession();
         String userId = LoginManager.getUserId(request);
@@ -67,7 +70,8 @@ public class LoginServlet extends HttpServlet {
         }
     }
 
-    private void redirectToOverviewPage(HttpSession session, HttpServletResponse response) throws IOException {
+    private void redirectToOverviewPage(HttpSession session, HttpServletResponse response)
+            throws IOException {
 
         session.setAttribute("role", MandateConstants.USER_ROLE);
         /*
@@ -76,7 +80,8 @@ public class LoginServlet extends HttpServlet {
         response.sendRedirect("./overview.seam");
     }
 
-    private void redirectToAdminPage(HttpSession session, HttpServletResponse response) throws IOException {
+    private void redirectToAdminPage(HttpSession session, HttpServletResponse response)
+            throws IOException {
 
         session.setAttribute("role", MandateConstants.ADMIN_ROLE);
         response.sendRedirect("./admin/search.seam");

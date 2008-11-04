@@ -27,16 +27,19 @@ public interface StatisticService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/StatisticServiceBean/local";
 
+
     public StatisticEntity getStatistic(String statisticName, String statisticDomain, String applicationName)
-                                                                                                             throws StatisticNotFoundException,
-                                                                                                             PermissionDeniedException;
+            throws StatisticNotFoundException, PermissionDeniedException;
 
-    public List<StatisticEntity> getStatistics(ApplicationEntity application) throws PermissionDeniedException;
+    public List<StatisticEntity> getStatistics(ApplicationEntity application)
+            throws PermissionDeniedException;
 
-    public JFreeChart getChart(String statisticName, String statisticDomain, String applicationName) throws StatisticNotFoundException;
+    public JFreeChart getChart(String statisticName, String statisticDomain, String applicationName)
+            throws StatisticNotFoundException;
 
     public HSSFWorkbook exportStatistic(String statisticName, String statisticDomain, String applicationName)
-                                                                                                             throws StatisticNotFoundException;
+            throws StatisticNotFoundException;
 
-    public HSSFWorkbook exportStatistics(String applicationName) throws ApplicationNotFoundException, StatisticNotFoundException;
+    public HSSFWorkbook exportStatistics(String applicationName)
+            throws ApplicationNotFoundException, StatisticNotFoundException;
 }

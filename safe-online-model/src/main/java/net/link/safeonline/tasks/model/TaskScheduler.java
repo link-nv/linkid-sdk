@@ -18,7 +18,9 @@ import net.link.safeonline.entity.tasks.TaskEntity;
 
 @Local
 public interface TaskScheduler extends Startable {
+
     public static final String JNDI_BINDING = Startable.JNDI_PREFIX + "TaskSchedulerBean";
+
 
     /**
      * Performs the task related to the timer
@@ -31,6 +33,7 @@ public interface TaskScheduler extends Startable {
 
     void performScheduling(SchedulingEntity scheduling);
 
-    void setTimer(SchedulingEntity scheduling) throws InvalidCronExpressionException;
+    void setTimer(SchedulingEntity scheduling)
+            throws InvalidCronExpressionException;
 
 }

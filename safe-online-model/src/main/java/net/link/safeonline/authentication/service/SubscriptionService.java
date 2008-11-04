@@ -32,6 +32,7 @@ public interface SubscriptionService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/SubscriptionServiceBean/local";
 
+
     /**
      * Gives back a list of all application subscriptions of the caller user.
      * 
@@ -45,7 +46,8 @@ public interface SubscriptionService extends SafeOnlineService {
      * @return list of application subscriptions.
      * @throws SubjectNotFoundException
      */
-    List<SubscriptionEntity> listSubscriptions(SubjectEntity subject) throws SubjectNotFoundException;
+    List<SubscriptionEntity> listSubscriptions(SubjectEntity subject)
+            throws SubjectNotFoundException;
 
     /**
      * Subscribe the caller user to the given application.
@@ -55,7 +57,8 @@ public interface SubscriptionService extends SafeOnlineService {
      * @throws AlreadySubscribedException
      * @throws PermissionDeniedException
      */
-    void subscribe(String applicationName) throws ApplicationNotFoundException, AlreadySubscribedException, PermissionDeniedException;
+    void subscribe(String applicationName)
+            throws ApplicationNotFoundException, AlreadySubscribedException, PermissionDeniedException;
 
     /**
      * Unsubscribe the caller user from the given application.
@@ -66,7 +69,8 @@ public interface SubscriptionService extends SafeOnlineService {
      * @throws PermissionDeniedException
      *             in case the user is not the owner of the subscription.
      */
-    void unsubscribe(String applicationName) throws ApplicationNotFoundException, SubscriptionNotFoundException, PermissionDeniedException;
+    void unsubscribe(String applicationName)
+            throws ApplicationNotFoundException, SubscriptionNotFoundException, PermissionDeniedException;
 
     /**
      * Gives back the number of subscriptions for a given application.
@@ -75,7 +79,8 @@ public interface SubscriptionService extends SafeOnlineService {
      * @throws ApplicationNotFoundException
      * @throws PermissionDeniedException
      */
-    long getNumberOfSubscriptions(String applicationName) throws ApplicationNotFoundException, PermissionDeniedException;
+    long getNumberOfSubscriptions(String applicationName)
+            throws ApplicationNotFoundException, PermissionDeniedException;
 
     /**
      * Returns <code>true</code> if the caller user has a subscription for the given application.
@@ -83,5 +88,6 @@ public interface SubscriptionService extends SafeOnlineService {
      * @param applicationName
      * @throws ApplicationNotFoundException
      */
-    boolean isSubscribed(String applicationName) throws ApplicationNotFoundException;
+    boolean isSubscribed(String applicationName)
+            throws ApplicationNotFoundException;
 }

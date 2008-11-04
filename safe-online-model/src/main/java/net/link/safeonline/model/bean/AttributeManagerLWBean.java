@@ -65,7 +65,8 @@ public class AttributeManagerLWBean {
      * @param subject
      * @throws AttributeNotFoundException
      */
-    public void removeAttribute(AttributeTypeEntity attributeType, SubjectEntity subject) throws AttributeNotFoundException {
+    public void removeAttribute(AttributeTypeEntity attributeType, SubjectEntity subject)
+            throws AttributeNotFoundException {
 
         boolean multivalued = attributeType.isMultivalued();
         if (false == multivalued) {
@@ -108,9 +109,7 @@ public class AttributeManagerLWBean {
      * @throws AttributeTypeNotFoundException
      */
     public void removeAttribute(AttributeTypeEntity attributeType, long attributeIndex, SubjectEntity subject)
-                                                                                                              throws PermissionDeniedException,
-                                                                                                              AttributeNotFoundException,
-                                                                                                              AttributeTypeNotFoundException {
+            throws PermissionDeniedException, AttributeNotFoundException, AttributeTypeNotFoundException {
 
         LOG.debug("remove attribute " + attributeType.getName() + " for entity with login " + subject);
 
@@ -199,7 +198,7 @@ public class AttributeManagerLWBean {
      * @throws AttributeNotFoundException
      */
     public void removeCompoundAttribute(AttributeTypeEntity attributeType, SubjectEntity subject, String attributeId)
-                                                                                                                     throws AttributeNotFoundException {
+            throws AttributeNotFoundException {
 
         AttributeEntity compoundAttribute = getCompoundAttribute(attributeType, subject, attributeId);
         long attributeIdx = compoundAttribute.getAttributeIndex();
@@ -220,7 +219,7 @@ public class AttributeManagerLWBean {
     }
 
     private AttributeEntity getCompoundAttribute(AttributeTypeEntity attributeType, SubjectEntity subject, String attributeId)
-                                                                                                                              throws AttributeNotFoundException {
+            throws AttributeNotFoundException {
 
         if (false == attributeType.isCompounded())
             throw new EJBException("not a compounded attribute type");

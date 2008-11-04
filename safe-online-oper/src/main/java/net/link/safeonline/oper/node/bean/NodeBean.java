@@ -125,7 +125,8 @@ public class NodeBean implements Node {
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     @ErrorHandling( { @Error(exceptionClass = CertificateEncodingException.class, messageId = "errorX509Encoding", fieldId = "fileupload") })
-    public String add() throws CertificateEncodingException, IOException {
+    public String add()
+            throws CertificateEncodingException, IOException {
 
         LOG.debug("add olas node: " + this.name);
 
@@ -228,7 +229,8 @@ public class NodeBean implements Node {
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public String remove() throws NodeNotFoundException {
+    public String remove()
+            throws NodeNotFoundException {
 
         String nodeName = this.selectedNode.getName();
         LOG.debug("remove node: " + nodeName);
@@ -243,7 +245,8 @@ public class NodeBean implements Node {
         return "success";
     }
 
-    private byte[] getUpFileContent(UploadedFile file) throws IOException {
+    private byte[] getUpFileContent(UploadedFile file)
+            throws IOException {
 
         InputStream inputStream = file.getInputStream();
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -252,7 +255,8 @@ public class NodeBean implements Node {
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public String save() throws CertificateEncodingException, NodeNotFoundException, IOException, GenericJDBCException {
+    public String save()
+            throws CertificateEncodingException, NodeNotFoundException, IOException, GenericJDBCException {
 
         String nodeName = this.selectedNode.getName();
         LOG.debug("save node: " + nodeName);

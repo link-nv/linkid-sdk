@@ -55,14 +55,16 @@ public class LogoutExitServlet extends AbstractInjectionServlet {
 
 
     @Override
-    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         logoutNextSsoApplication(request, response);
 
     }
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         /**
          * Wrap the request to use the servlet endpoint url. To prevent failure when behind a reverse proxy or loadbalancer when opensaml is
@@ -92,7 +94,8 @@ public class LogoutExitServlet extends AbstractInjectionServlet {
      * 
      * @throws IOException
      */
-    private void logoutNextSsoApplication(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void logoutNextSsoApplication(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
 
         AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(request.getSession());
         ApplicationEntity application = authenticationService.findSsoApplicationToLogout();

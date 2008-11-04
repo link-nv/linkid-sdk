@@ -21,6 +21,7 @@ public interface TaskDAO extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/TaskDAOBean/local";
 
+
     TaskEntity findTaskEntity(String jndiName);
 
     List<TaskEntity> listTaskEntities();

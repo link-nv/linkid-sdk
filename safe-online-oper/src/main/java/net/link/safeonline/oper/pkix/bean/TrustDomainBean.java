@@ -75,7 +75,8 @@ public class TrustDomainBean implements TrustDomain {
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     @ErrorHandling( { @Error(exceptionClass = ExistingTrustDomainException.class, messageId = "errorTrustDomainAlreadyExists", fieldId = "name") })
-    public String add() throws ExistingTrustDomainException {
+    public String add()
+            throws ExistingTrustDomainException {
 
         LOG.debug("add trust domain");
         /*
@@ -103,7 +104,8 @@ public class TrustDomainBean implements TrustDomain {
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public String removeTrustDomain() throws TrustDomainNotFoundException {
+    public String removeTrustDomain()
+            throws TrustDomainNotFoundException {
 
         LOG.debug("remove trust domain: " + this.selectedTrustDomain);
         this.pkiService.removeTrustDomain(this.selectedTrustDomain.getName());

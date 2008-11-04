@@ -73,7 +73,7 @@ public class StatisticServiceBean implements StatisticService, StatisticServiceR
 
     @RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
     public StatisticEntity getStatistic(String statisticName, String statisticDomain, String applicationName)
-                                                                                                             throws StatisticNotFoundException {
+            throws StatisticNotFoundException {
 
         ApplicationEntity application = null;
         if (applicationName != null) {
@@ -86,7 +86,7 @@ public class StatisticServiceBean implements StatisticService, StatisticServiceR
 
     @Interceptors(ApplicationOwnerAccessControlInterceptor.class)
     private StatisticEntity getStatistic(String statisticName, String statisticDomain, ApplicationEntity application)
-                                                                                                                     throws StatisticNotFoundException {
+            throws StatisticNotFoundException {
 
         LOG.debug("finding statistic");
         StatisticEntity statistic = this.statisticDAO.findStatisticByNameDomainAndApplication(statisticName, statisticDomain, application);
@@ -109,7 +109,8 @@ public class StatisticServiceBean implements StatisticService, StatisticServiceR
     }
 
     @RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
-    public JFreeChart getChart(String statisticName, String statisticDomain, String applicationName) throws StatisticNotFoundException {
+    public JFreeChart getChart(String statisticName, String statisticDomain, String applicationName)
+            throws StatisticNotFoundException {
 
         StatisticEntity statistic = this.getStatistic(statisticName, statisticDomain, applicationName);
 
@@ -196,7 +197,8 @@ public class StatisticServiceBean implements StatisticService, StatisticServiceR
     }
 
     @RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
-    public HSSFWorkbook exportStatistics(String applicationName) throws ApplicationNotFoundException, StatisticNotFoundException {
+    public HSSFWorkbook exportStatistics(String applicationName)
+            throws ApplicationNotFoundException, StatisticNotFoundException {
 
         ApplicationEntity application = this.applicationDAO.getApplication(applicationName);
 
@@ -210,7 +212,7 @@ public class StatisticServiceBean implements StatisticService, StatisticServiceR
 
     @RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
     public HSSFWorkbook exportStatistic(String statisticName, String statisticDomain, String applicationName)
-                                                                                                             throws StatisticNotFoundException {
+            throws StatisticNotFoundException {
 
         StatisticEntity statistic = this.getStatistic(statisticName, statisticDomain, applicationName);
 
@@ -220,7 +222,8 @@ public class StatisticServiceBean implements StatisticService, StatisticServiceR
 
     }
 
-    private void exportStatistic(StatisticEntity statistic, HSSFWorkbook workbook) throws StatisticNotFoundException {
+    private void exportStatistic(StatisticEntity statistic, HSSFWorkbook workbook)
+            throws StatisticNotFoundException {
 
         HSSFSheet mainSheet = workbook.createSheet();
 

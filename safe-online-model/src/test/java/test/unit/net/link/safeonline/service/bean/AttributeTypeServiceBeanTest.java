@@ -42,7 +42,8 @@ public class AttributeTypeServiceBeanTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.entityTestManager = new EntityTestManager();
         this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
@@ -52,13 +53,15 @@ public class AttributeTypeServiceBeanTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.entityTestManager.tearDown();
     }
 
     @Test
-    public void addAndList() throws Exception {
+    public void addAndList()
+            throws Exception {
 
         // setup
         String attributeName = "test-attribute-type-name-" + UUID.randomUUID().toString();
@@ -76,7 +79,8 @@ public class AttributeTypeServiceBeanTest {
     }
 
     @Test
-    public void addCompoundedAndListAvailableMembers() throws Exception {
+    public void addCompoundedAndListAvailableMembers()
+            throws Exception {
 
         // setup
         String memberAttributeName = "test-attribute-type-name-" + UUID.randomUUID().toString();
@@ -120,7 +124,8 @@ public class AttributeTypeServiceBeanTest {
     }
 
     @Test
-    public void compoundedOfCompoundedNotAllowed() throws Exception {
+    public void compoundedOfCompoundedNotAllowed()
+            throws Exception {
 
         // setup
         String memberAttributeName = "test-attribute-type-name-" + UUID.randomUUID().toString();
@@ -155,7 +160,8 @@ public class AttributeTypeServiceBeanTest {
     }
 
     @Test
-    public void compoundedOfExistingCompoundMemberNotAllowed() throws Exception {
+    public void compoundedOfExistingCompoundMemberNotAllowed()
+            throws Exception {
 
         // setup
         String memberAttributeName = "test-member-attribute-type-name-" + UUID.randomUUID().toString();

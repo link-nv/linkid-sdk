@@ -47,8 +47,8 @@ public class ProtocolContext {
      * @param requiredDevices
      *            the optional set of required devices for this authentication session.
      */
-    public ProtocolContext(String applicationId, String applicationFriendlyName, String target, Locale language,
-            Integer color, Boolean minimal, Set<DeviceEntity> requiredDevices) {
+    public ProtocolContext(String applicationId, String applicationFriendlyName, String target, Locale language, Integer color,
+                           Boolean minimal, Set<DeviceEntity> requiredDevices) {
 
         this.applicationId = applicationId;
         this.applicationFriendlyName = applicationFriendlyName;
@@ -83,7 +83,7 @@ public class ProtocolContext {
 
         return this.language;
     }
-    
+
     public Integer getColor() {
 
         return this.color;

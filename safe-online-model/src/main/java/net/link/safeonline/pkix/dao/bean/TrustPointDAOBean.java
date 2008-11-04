@@ -73,7 +73,8 @@ public class TrustPointDAOBean implements TrustPointDAO {
         return trustPoint;
     }
 
-    public TrustPointEntity getTrustPoint(TrustPointPK pk) throws TrustPointNotFoundException {
+    public TrustPointEntity getTrustPoint(TrustPointPK pk)
+            throws TrustPointNotFoundException {
 
         TrustPointEntity trustPoint = this.entityManager.find(TrustPointEntity.class, pk);
         if (null == trustPoint)

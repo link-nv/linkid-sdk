@@ -140,7 +140,8 @@ public class DataServicePortImplTest {
 
     @SuppressWarnings("unchecked")
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.targetIdentity = "test-target-identity-" + UUID.randomUUID().toString();
         this.applicationName = "application-" + UUID.randomUUID().toString();
@@ -213,14 +214,16 @@ public class DataServicePortImplTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.webServiceTestUtils.tearDown();
         this.jndiTestUtils.tearDown();
     }
 
     @Test
-    public void queryInvalidCertificate() throws Exception {
+    public void queryInvalidCertificate()
+            throws Exception {
 
         // setup
         QueryType query = new QueryType();
@@ -251,7 +254,8 @@ public class DataServicePortImplTest {
     }
 
     @Test
-    public void queryUnknownApplication() throws Exception {
+    public void queryUnknownApplication()
+            throws Exception {
 
         // setup
         QueryType query = new QueryType();
@@ -279,7 +283,8 @@ public class DataServicePortImplTest {
     }
 
     @Test
-    public void queryUnsupportedObjectType() throws Exception {
+    public void queryUnsupportedObjectType()
+            throws Exception {
 
         // setup
         QueryType query = new QueryType();
@@ -312,7 +317,8 @@ public class DataServicePortImplTest {
     }
 
     @Test
-    public void queryMissingSelect() throws Exception {
+    public void queryMissingSelect()
+            throws Exception {
 
         // setup
         QueryType query = new QueryType();
@@ -345,7 +351,8 @@ public class DataServicePortImplTest {
     }
 
     @Test
-    public void queryMissingTargetIdentity() throws Exception {
+    public void queryMissingTargetIdentity()
+            throws Exception {
 
         // setup
         QueryType query = new QueryType();
@@ -382,7 +389,8 @@ public class DataServicePortImplTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void queryTargetIdentityNotSigned() throws Exception {
+    public void queryTargetIdentityNotSigned()
+            throws Exception {
 
         // setup
         QueryType query = new QueryType();
@@ -431,7 +439,8 @@ public class DataServicePortImplTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void queryMultivaluedAttribute() throws Exception {
+    public void queryMultivaluedAttribute()
+            throws Exception {
 
         // setup
         QueryType query = new QueryType();
@@ -527,7 +536,8 @@ public class DataServicePortImplTest {
     }
 
     @Test
-    public void modifyMissingModifyItem() throws Exception {
+    public void modifyMissingModifyItem()
+            throws Exception {
 
         // setup
         ModifyType request = new ModifyType();
@@ -557,7 +567,8 @@ public class DataServicePortImplTest {
     }
 
     @Test
-    public void modifyMissingObjectType() throws Exception {
+    public void modifyMissingObjectType()
+            throws Exception {
 
         // setup
         ModifyType request = new ModifyType();
@@ -589,7 +600,8 @@ public class DataServicePortImplTest {
     }
 
     @Test
-    public void modifyMissingSelect() throws Exception {
+    public void modifyMissingSelect()
+            throws Exception {
 
         // setup
         ModifyType request = new ModifyType();
@@ -623,7 +635,8 @@ public class DataServicePortImplTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void modifyMissingNewData() throws Exception {
+    public void modifyMissingNewData()
+            throws Exception {
 
         // setup
         String attributeName = "test-attribute-name";
@@ -673,7 +686,8 @@ public class DataServicePortImplTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void modifyAttributeNameMismatch() throws Exception {
+    public void modifyAttributeNameMismatch()
+            throws Exception {
 
         // setup
         String attributeName = "test-attribute-name";
@@ -727,7 +741,8 @@ public class DataServicePortImplTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void modifySingleValuesAttribute() throws Exception {
+    public void modifySingleValuesAttribute()
+            throws Exception {
 
         // setup
         String attributeName = "test-attribute-name";
@@ -785,7 +800,8 @@ public class DataServicePortImplTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void modifyNullAttributeValue() throws Exception {
+    public void modifyNullAttributeValue()
+            throws Exception {
 
         // setup
         String attributeName = "test-attribute-name";
@@ -842,7 +858,8 @@ public class DataServicePortImplTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void modifyMultivaluedAttribute() throws Exception {
+    public void modifyMultivaluedAttribute()
+            throws Exception {
 
         // setup
         String attributeName = "test-attribute-name";
@@ -905,7 +922,8 @@ public class DataServicePortImplTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void createMultivaluedAttribute() throws Exception {
+    public void createMultivaluedAttribute()
+            throws Exception {
 
         // setup
         String attributeName = "test-attribute-name";
@@ -964,7 +982,8 @@ public class DataServicePortImplTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void delete() throws Exception {
+    public void delete()
+            throws Exception {
 
         // setup
         DeleteType delete = new DeleteType();

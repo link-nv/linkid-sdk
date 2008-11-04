@@ -66,7 +66,8 @@ public class ApplicationStyleServlet extends AbstractInjectionServlet {
      * @{inheritDoc
      */
     @Override
-    public void init(ServletConfig config) throws ServletException {
+    public void init(ServletConfig config)
+            throws ServletException {
 
         try {
             super.init(config);
@@ -92,7 +93,8 @@ public class ApplicationStyleServlet extends AbstractInjectionServlet {
      * @{inheritDoc
      */
     @Override
-    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         String applicationName = request.getParameter("applicationName");
         if (null == applicationName)
@@ -104,8 +106,7 @@ public class ApplicationStyleServlet extends AbstractInjectionServlet {
         try {
             baseColor = colorAttribute == null? null: Integer.decode(colorAttribute.toString());
         } catch (NumberFormatException e) {
-            LOG.warn(String.format("Couldn't parse color attribute '%s' into a 24-bit color integer.", colorAttribute),
-                    e);
+            LOG.warn(String.format("Couldn't parse color attribute '%s' into a 24-bit color integer.", colorAttribute), e);
         }
         // Default to a green shade.
         if (baseColor == null) {

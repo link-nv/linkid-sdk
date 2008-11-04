@@ -38,14 +38,16 @@ public class EmailBeanTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.testedInstance = new EmailBean();
 
     }
 
     @Test
-    public void testEmail() throws Exception {
+    public void testEmail()
+            throws Exception {
 
         LOG.debug("starting test SMTP server...");
         int freePort = WebServiceTestUtils.getFreePort();

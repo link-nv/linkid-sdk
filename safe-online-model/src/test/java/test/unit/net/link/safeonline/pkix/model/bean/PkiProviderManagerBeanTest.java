@@ -33,7 +33,8 @@ public class PkiProviderManagerBeanTest extends TestCase {
 
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp()
+            throws Exception {
 
         super.setUp();
 
@@ -50,7 +51,8 @@ public class PkiProviderManagerBeanTest extends TestCase {
         EJBTestUtils.init(this.testedInstance);
     }
 
-    public void testFindTrustDomain() throws Exception {
+    public void testFindTrustDomain()
+            throws Exception {
 
         // setup
         KeyPair keyPair = PkiTestUtils.generateKeyPair();

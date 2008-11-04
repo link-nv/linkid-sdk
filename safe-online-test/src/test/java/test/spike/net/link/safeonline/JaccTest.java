@@ -26,7 +26,8 @@ public class JaccTest extends TestCase {
 
 
     @SuppressWarnings("unchecked")
-    public void testPolicyContext() throws Exception {
+    public void testPolicyContext()
+            throws Exception {
 
         String contextId = PolicyContext.getContextID();
         LOG.debug("context Id: " + contextId);
@@ -50,7 +51,8 @@ public class JaccTest extends TestCase {
         assertEquals(subject, result);
     }
 
-    public void testRetrieveNonExistingPolicyContext() throws Exception {
+    public void testRetrieveNonExistingPolicyContext()
+            throws Exception {
 
         String contextId = "context-id-" + UUID.randomUUID().toString();
         try {

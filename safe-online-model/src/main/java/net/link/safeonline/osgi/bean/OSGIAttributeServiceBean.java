@@ -66,9 +66,9 @@ public class OSGIAttributeServiceBean implements OSGIAttributeService {
      * {@inheritDoc}
      * 
      */
-    public List<Attribute> getAttribute(String userId, String attributeName) throws AttributeTypeNotFoundException,
-                                                                            AttributeNotFoundException, UnsupportedDataTypeException,
-                                                                            AttributeUnavailableException, SubjectNotFoundException {
+    public List<Attribute> getAttribute(String userId, String attributeName)
+            throws AttributeTypeNotFoundException, AttributeNotFoundException, UnsupportedDataTypeException, AttributeUnavailableException,
+            SubjectNotFoundException {
 
         LOG.debug("get attribute " + attributeName + " for user " + userId);
         List<Attribute> attributeView = new LinkedList<Attribute>();
@@ -92,7 +92,7 @@ public class OSGIAttributeServiceBean implements OSGIAttributeService {
 
     @SuppressWarnings("unchecked")
     private void addValueToView(Object value, AttributeTypeEntity attributeType, List<Attribute> attributesView)
-                                                                                                                throws UnsupportedDataTypeException {
+            throws UnsupportedDataTypeException {
 
         LOG.debug("add attribute " + attributeType.getName() + " to view");
         if (!attributeType.isMultivalued()) {
@@ -130,7 +130,8 @@ public class OSGIAttributeServiceBean implements OSGIAttributeService {
      * 
      * @throws UnsupportedDataTypeException
      */
-    private Attribute getAttributeView(AttributeTypeEntity attributeType, Object value, int idx) throws UnsupportedDataTypeException {
+    private Attribute getAttributeView(AttributeTypeEntity attributeType, Object value, int idx)
+            throws UnsupportedDataTypeException {
 
         LOG.debug("get attribute view for type: " + attributeType.getName() + " with value: " + value);
         Attribute attributeView = new Attribute(attributeType.getName(), convertDataType(attributeType.getType()), idx);
@@ -140,7 +141,8 @@ public class OSGIAttributeServiceBean implements OSGIAttributeService {
         return attributeView;
     }
 
-    private DatatypeType convertDataType(net.link.safeonline.entity.DatatypeType dataType) throws UnsupportedDataTypeException {
+    private DatatypeType convertDataType(net.link.safeonline.entity.DatatypeType dataType)
+            throws UnsupportedDataTypeException {
 
         if (dataType.equals(net.link.safeonline.entity.DatatypeType.BOOLEAN))
             return DatatypeType.BOOLEAN;

@@ -126,7 +126,8 @@ public class AuthnRequestFilter extends AbstractInjectionFilter {
 
 
     @Override
-    public void init(FilterConfig config) throws ServletException {
+    public void init(FilterConfig config)
+            throws ServletException {
 
         super.init(config);
         LOG.debug("init");
@@ -167,7 +168,8 @@ public class AuthnRequestFilter extends AbstractInjectionFilter {
         }
     }
 
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
 
         LOG.debug("doFilter");
         HttpServletRequest httpRequest = (HttpServletRequest) request;
@@ -180,8 +182,8 @@ public class AuthnRequestFilter extends AbstractInjectionFilter {
         }
     }
 
-    private void initiateAuthentication(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws IOException,
-                                                                                                         ServletException {
+    private void initiateAuthentication(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
+            throws IOException, ServletException {
 
         AuthenticationProtocolManager.createAuthenticationProtocolHandler(this.authenticationProtocol, this.authenticationServiceUrl,
                 this.applicationName, this.applicationFriendlyName, this.applicationKeyPair, this.applicationCertificate, this.ssoEnabled,

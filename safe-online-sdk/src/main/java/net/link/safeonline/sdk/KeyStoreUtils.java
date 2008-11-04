@@ -137,13 +137,15 @@ public class KeyStoreUtils {
         }
     }
 
-    public static KeyPair generateKeyPair() throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+    public static KeyPair generateKeyPair()
+            throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
 
         KeyPair keyPair = generateKeyPair("RSA");
         return keyPair;
     }
 
-    public static KeyPair generateKeyPair(String algorithm) throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+    public static KeyPair generateKeyPair(String algorithm)
+            throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
 
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(algorithm);
         SecureRandom random = new SecureRandom();
@@ -157,10 +159,9 @@ public class KeyStoreUtils {
         return keyPair;
     }
 
-    public static X509Certificate generateSelfSignedCertificate(KeyPair keyPair, String dn) throws InvalidKeyException,
-                                                                                           IllegalStateException, NoSuchAlgorithmException,
-                                                                                           SignatureException, IOException,
-                                                                                           CertificateException {
+    public static X509Certificate generateSelfSignedCertificate(KeyPair keyPair, String dn)
+            throws InvalidKeyException, IllegalStateException, NoSuchAlgorithmException, SignatureException, IOException,
+            CertificateException {
 
         DateTime now = new DateTime();
         DateTime future = now.plusYears(10);
@@ -170,12 +171,8 @@ public class KeyStoreUtils {
 
     public static X509Certificate generateSelfSignedCertificate(KeyPair keyPair, String dn, DateTime notBefore, DateTime notAfter,
                                                                 String signatureAlgorithm, boolean caCert, boolean timeStampingPurpose)
-                                                                                                                                       throws InvalidKeyException,
-                                                                                                                                       IllegalStateException,
-                                                                                                                                       NoSuchAlgorithmException,
-                                                                                                                                       SignatureException,
-                                                                                                                                       IOException,
-                                                                                                                                       CertificateException {
+            throws InvalidKeyException, IllegalStateException, NoSuchAlgorithmException, SignatureException, IOException,
+            CertificateException {
 
         X509Certificate certificate = generateCertificate(keyPair.getPublic(), dn, keyPair.getPrivate(), null, notBefore, notAfter,
                 signatureAlgorithm, caCert, timeStampingPurpose, null);
@@ -185,12 +182,8 @@ public class KeyStoreUtils {
     public static X509Certificate generateCertificate(PublicKey subjectPublicKey, String subjectDn, PrivateKey issuerPrivateKey,
                                                       X509Certificate issuerCert, DateTime notBefore, DateTime notAfter,
                                                       String inSignatureAlgorithm, boolean caCert, boolean timeStampingPurpose, URI ocspUri)
-                                                                                                                                            throws IOException,
-                                                                                                                                            InvalidKeyException,
-                                                                                                                                            IllegalStateException,
-                                                                                                                                            NoSuchAlgorithmException,
-                                                                                                                                            SignatureException,
-                                                                                                                                            CertificateException {
+            throws IOException, InvalidKeyException, IllegalStateException, NoSuchAlgorithmException, SignatureException,
+            CertificateException {
 
         String signatureAlgorithm = inSignatureAlgorithm;
         if (null == signatureAlgorithm) {
@@ -246,14 +239,16 @@ public class KeyStoreUtils {
         return certificate;
     }
 
-    private static SubjectKeyIdentifier createSubjectKeyId(PublicKey publicKey) throws IOException {
+    private static SubjectKeyIdentifier createSubjectKeyId(PublicKey publicKey)
+            throws IOException {
 
         ByteArrayInputStream bais = new ByteArrayInputStream(publicKey.getEncoded());
         SubjectPublicKeyInfo info = new SubjectPublicKeyInfo((ASN1Sequence) new ASN1InputStream(bais).readObject());
         return new SubjectKeyIdentifier(info);
     }
 
-    private static AuthorityKeyIdentifier createAuthorityKeyId(PublicKey publicKey) throws IOException {
+    private static AuthorityKeyIdentifier createAuthorityKeyId(PublicKey publicKey)
+            throws IOException {
 
         ByteArrayInputStream bais = new ByteArrayInputStream(publicKey.getEncoded());
         SubjectPublicKeyInfo info = new SubjectPublicKeyInfo((ASN1Sequence) new ASN1InputStream(bais).readObject());
@@ -280,8 +275,8 @@ public class KeyStoreUtils {
      * @throws IOException
      */
     public static void persistKey(File pkcs12keyStore, PrivateKey privateKey, X509Certificate certificate, char[] keyStorePassword,
-                                  char[] keyEntryPassword) throws KeyStoreException, NoSuchAlgorithmException, CertificateException,
-                                                          IOException {
+                                  char[] keyEntryPassword)
+            throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
 
         KeyStore keyStore;
         keyStore = KeyStore.getInstance("pkcs12");

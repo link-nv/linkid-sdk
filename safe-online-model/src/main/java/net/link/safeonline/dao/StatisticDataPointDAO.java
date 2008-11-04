@@ -22,6 +22,7 @@ public interface StatisticDataPointDAO extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/StatisticDataPointDAOBean/local";
 
+
     StatisticDataPointEntity addStatisticDataPoint(String name, StatisticEntity statistic, long x, long y, long z);
 
     List<StatisticDataPointEntity> listStatisticDataPoints(String name, StatisticEntity statistic);

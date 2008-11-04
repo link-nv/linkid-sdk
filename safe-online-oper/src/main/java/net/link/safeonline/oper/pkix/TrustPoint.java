@@ -26,6 +26,7 @@ public interface TrustPoint {
 
     public static final String JNDI_BINDING = OperatorConstants.JNDI_PREFIX + "TrustPointBean/local";
 
+
     /*
      * Lifecycle.
      */
@@ -43,9 +44,11 @@ public interface TrustPoint {
     /*
      * Actions.
      */
-    String add() throws IOException, TrustDomainNotFoundException, ExistingTrustPointException, CertificateEncodingException;
+    String add()
+            throws IOException, TrustDomainNotFoundException, ExistingTrustPointException, CertificateEncodingException;
 
     String view();
 
-    String removeTrustPoint() throws TrustPointNotFoundException;
+    String removeTrustPoint()
+            throws TrustPointNotFoundException;
 }

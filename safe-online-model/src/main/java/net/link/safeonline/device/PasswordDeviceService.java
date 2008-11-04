@@ -21,20 +21,26 @@ public interface PasswordDeviceService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/PasswordDeviceServiceBean/local";
 
-    SubjectEntity authenticate(String loginName, String password) throws DeviceNotFoundException, SubjectNotFoundException,
-                                                                 DeviceDisabledException;
 
-    void register(String userId, String password) throws SubjectNotFoundException, DeviceNotFoundException;
+    SubjectEntity authenticate(String loginName, String password)
+            throws DeviceNotFoundException, SubjectNotFoundException, DeviceDisabledException;
 
-    void register(SubjectEntity subject, String password) throws SubjectNotFoundException, DeviceNotFoundException;
+    void register(String userId, String password)
+            throws SubjectNotFoundException, DeviceNotFoundException;
 
-    void update(SubjectEntity subject, String oldPassword, String newPassword) throws PermissionDeniedException, DeviceNotFoundException,
-                                                                              SubjectNotFoundException;
+    void register(SubjectEntity subject, String password)
+            throws SubjectNotFoundException, DeviceNotFoundException;
 
-    void remove(SubjectEntity subject, String password) throws DeviceNotFoundException, PermissionDeniedException, SubjectNotFoundException;
+    void update(SubjectEntity subject, String oldPassword, String newPassword)
+            throws PermissionDeniedException, DeviceNotFoundException, SubjectNotFoundException;
 
-    boolean isPasswordConfigured(SubjectEntity subject) throws SubjectNotFoundException, DeviceNotFoundException;
+    void remove(SubjectEntity subject, String password)
+            throws DeviceNotFoundException, PermissionDeniedException, SubjectNotFoundException;
 
-    void disable(SubjectEntity subject) throws DeviceNotFoundException;
+    boolean isPasswordConfigured(SubjectEntity subject)
+            throws SubjectNotFoundException, DeviceNotFoundException;
+
+    void disable(SubjectEntity subject)
+            throws DeviceNotFoundException;
 
 }

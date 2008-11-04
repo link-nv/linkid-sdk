@@ -19,5 +19,7 @@ public interface ApplicationOwnerManager extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationOwnerManagerBean/local";
 
-    ApplicationOwnerEntity getCallerApplicationOwner() throws ApplicationOwnerNotFoundException;
+
+    ApplicationOwnerEntity getCallerApplicationOwner()
+            throws ApplicationOwnerNotFoundException;
 }

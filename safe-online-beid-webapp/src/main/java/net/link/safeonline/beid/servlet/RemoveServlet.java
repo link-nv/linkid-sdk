@@ -33,12 +33,14 @@ public class RemoveServlet extends HttpServlet {
 
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
 
         prepareJavaVersionCheck(req, resp);
     }
 
-    private void prepareJavaVersionCheck(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    private void prepareJavaVersionCheck(HttpServletRequest req, HttpServletResponse resp)
+            throws IOException {
 
         LOG.debug("prepareJavaVersionCheck");
         HttpSession session = req.getSession();
@@ -50,7 +52,8 @@ public class RemoveServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
 
         prepareJavaVersionCheck(req, resp);
     }

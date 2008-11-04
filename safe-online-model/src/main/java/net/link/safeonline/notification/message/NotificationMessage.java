@@ -60,7 +60,8 @@ public class NotificationMessage implements Serializable {
         this.consumerId = message.getLongProperty("consumerId");
     }
 
-    public Message getJMSMessage(Session session) throws JMSException {
+    public Message getJMSMessage(Session session)
+            throws JMSException {
 
         Message message = session.createMessage();
         message.setStringProperty("topic", this.topic);

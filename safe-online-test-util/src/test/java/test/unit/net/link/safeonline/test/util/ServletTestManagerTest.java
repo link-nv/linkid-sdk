@@ -82,7 +82,8 @@ public class ServletTestManagerTest {
 
         @SuppressWarnings("unchecked")
         @Override
-        public void init(ServletConfig config) throws ServletException {
+        public void init(ServletConfig config)
+                throws ServletException {
 
             super.init(config);
             Enumeration<String> initParamNamesEnum = config.getInitParameterNames();
@@ -95,7 +96,8 @@ public class ServletTestManagerTest {
 
         @SuppressWarnings("unchecked")
         @Override
-        protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        protected void doGet(HttpServletRequest request, HttpServletResponse response)
+                throws ServletException, IOException {
 
             LOG.debug("doGet");
             called = true;
@@ -132,7 +134,8 @@ public class ServletTestManagerTest {
 
 
     @Test
-    public void testSimpleServlet() throws Exception {
+    public void testSimpleServlet()
+            throws Exception {
 
         ServletTestManager servletTestManager = new ServletTestManager();
         servletTestManager.setUp(TestServlet.class);
@@ -152,7 +155,8 @@ public class ServletTestManagerTest {
     }
 
     @Test
-    public void testInitParams() throws Exception {
+    public void testInitParams()
+            throws Exception {
 
         ServletTestManager servletTestManager = new ServletTestManager();
         Map<String, String> initParams = new HashMap<String, String>();
@@ -204,14 +208,16 @@ public class ServletTestManagerTest {
 
         }
 
-        public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+        public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+                throws IOException, ServletException {
 
             called = true;
             chain.doFilter(request, response);
         }
 
         @SuppressWarnings("unchecked")
-        public void init(FilterConfig config) throws ServletException {
+        public void init(FilterConfig config)
+                throws ServletException {
 
             Enumeration<String> initParamNames = config.getInitParameterNames();
             while (initParamNames.hasMoreElements()) {
@@ -225,7 +231,8 @@ public class ServletTestManagerTest {
 
 
     @Test
-    public void testFilter() throws Exception {
+    public void testFilter()
+            throws Exception {
 
         ServletTestManager servletTestManager = new ServletTestManager();
         TestServlet.reset();
@@ -247,7 +254,8 @@ public class ServletTestManagerTest {
     }
 
     @Test
-    public void testFilterInitParams() throws Exception {
+    public void testFilterInitParams()
+            throws Exception {
 
         ServletTestManager servletTestManager = new ServletTestManager();
         Map<String, String> filterInitParams = new HashMap<String, String>();
@@ -274,7 +282,8 @@ public class ServletTestManagerTest {
     }
 
     @Test
-    public void testGetSessionAttribute() throws Exception {
+    public void testGetSessionAttribute()
+            throws Exception {
 
         ServletTestManager servletTestManager = new ServletTestManager();
         TestServlet.reset();
@@ -296,7 +305,8 @@ public class ServletTestManagerTest {
     }
 
     @Test
-    public void testSetSessionAttribute() throws Exception {
+    public void testSetSessionAttribute()
+            throws Exception {
 
         ServletTestManager servletTestManager = new ServletTestManager();
         TestServlet.reset();

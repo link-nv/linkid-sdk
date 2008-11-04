@@ -14,7 +14,8 @@ import java.util.GregorianCalendar;
 
 public class ValidityDateConvertor implements Convertor<Date> {
 
-    public Date convert(byte[] value) throws ConvertorException {
+    public Date convert(byte[] value)
+            throws ConvertorException {
 
         int day = Integer.parseInt(new String(Arrays.copyOfRange(value, 0, 2)));
         int month = Integer.parseInt(new String(Arrays.copyOfRange(value, 3, 5)));

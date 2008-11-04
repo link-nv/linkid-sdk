@@ -37,7 +37,8 @@ public class PkiUtils {
      * @param encodedCertificate
      * @throws CertificateEncodingException
      */
-    public static X509Certificate decodeCertificate(byte[] encodedCertificate) throws CertificateEncodingException {
+    public static X509Certificate decodeCertificate(byte[] encodedCertificate)
+            throws CertificateEncodingException {
 
         if (null == encodedCertificate)
             return null;

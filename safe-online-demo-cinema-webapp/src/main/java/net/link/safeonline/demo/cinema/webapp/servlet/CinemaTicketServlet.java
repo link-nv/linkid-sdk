@@ -41,7 +41,8 @@ public class CinemaTicketServlet extends HttpServlet {
 
 
     @Override
-    public void init(ServletConfig config) throws ServletException {
+    public void init(ServletConfig config)
+            throws ServletException {
 
         LOG.debug("init");
         super.init(config);
@@ -50,7 +51,8 @@ public class CinemaTicketServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         LOG.debug("do get");
 

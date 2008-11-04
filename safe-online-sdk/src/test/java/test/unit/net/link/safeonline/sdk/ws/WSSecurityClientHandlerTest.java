@@ -44,7 +44,8 @@ public class WSSecurityClientHandlerTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
         X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
@@ -53,7 +54,8 @@ public class WSSecurityClientHandlerTest {
     }
 
     @Test
-    public void handleMessageAddsWsSecuritySoapHeader() throws Exception {
+    public void handleMessageAddsWsSecuritySoapHeader()
+            throws Exception {
 
         // setup
         MessageFactory messageFactory = MessageFactory.newInstance(SOAPConstants.SOAP_1_1_PROTOCOL);
@@ -93,7 +95,8 @@ public class WSSecurityClientHandlerTest {
     }
 
     @Test
-    public void unsignedSoapBody() throws Exception {
+    public void unsignedSoapBody()
+            throws Exception {
 
         // setup
         MessageFactory messageFactory = MessageFactory.newInstance(SOAPConstants.SOAP_1_1_PROTOCOL);

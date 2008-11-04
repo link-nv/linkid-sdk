@@ -69,7 +69,8 @@ public class OcspValidatorBeanTest extends TestCase {
 
 
     @Override
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         super.setUp();
 
@@ -99,14 +100,16 @@ public class OcspValidatorBeanTest extends TestCase {
     }
 
     @Override
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.servletTestManager.tearDown();
 
         super.tearDown();
     }
 
-    public void testGetOcspUri() throws Exception {
+    public void testGetOcspUri()
+            throws Exception {
 
         // setup
         URI testOcspUri = new URI("http://test.ocsp.location/");
@@ -119,7 +122,8 @@ public class OcspValidatorBeanTest extends TestCase {
         assertEquals(testOcspUri, resultOcspUri);
     }
 
-    public void testGetOcspUriGivesNullOnMissingOcspAccessLocation() throws Exception {
+    public void testGetOcspUriGivesNullOnMissingOcspAccessLocation()
+            throws Exception {
 
         // setup
         X509Certificate certificate = PkiTestUtils.generateTestSelfSignedCert(null);
@@ -131,7 +135,8 @@ public class OcspValidatorBeanTest extends TestCase {
         assertNull(resultOcspUri);
     }
 
-    public void testPerformOcspCheckFailsIfOcspResponderIsDown() throws Exception {
+    public void testPerformOcspCheckFailsIfOcspResponderIsDown()
+            throws Exception {
 
         // setup
         URI testOcspUri = new URI("http://localhost:1/");
@@ -152,7 +157,8 @@ public class OcspValidatorBeanTest extends TestCase {
         assertFalse(result);
     }
 
-    public void testPerformOcspCheckFailsIfOcspResponderDoesNotExist() throws Exception {
+    public void testPerformOcspCheckFailsIfOcspResponderDoesNotExist()
+            throws Exception {
 
         // setup
         URI testOcspUri = new URI("http://foobar.ocsp.responder/");
@@ -165,7 +171,8 @@ public class OcspValidatorBeanTest extends TestCase {
         assertFalse(result);
     }
 
-    public void testPerformOcspCheck() throws Exception {
+    public void testPerformOcspCheck()
+            throws Exception {
 
         // setup
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
@@ -208,7 +215,8 @@ public class OcspValidatorBeanTest extends TestCase {
         }
 
         @Override
-        protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        protected void doPost(HttpServletRequest request, HttpServletResponse response)
+                throws ServletException, IOException {
 
             LOG.debug("doPost");
             String contentType = request.getContentType();
@@ -267,7 +275,8 @@ public class OcspValidatorBeanTest extends TestCase {
         }
 
         @Override
-        public void init() throws ServletException {
+        public void init()
+                throws ServletException {
 
             super.init();
             LOG.debug("init");

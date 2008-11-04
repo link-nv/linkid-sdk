@@ -828,7 +828,8 @@ public abstract class AbstractInitBean implements Startable {
         }
     }
 
-    private void initSubjects() throws AttributeTypeNotFoundException {
+    private void initSubjects()
+            throws AttributeTypeNotFoundException {
 
         for (Map.Entry<String, AuthenticationDevice> authorizedUser : this.authorizedUsers.entrySet()) {
             String login = authorizedUser.getKey();
@@ -909,7 +910,8 @@ public abstract class AbstractInitBean implements Startable {
         }
     }
 
-    private void initDevices() throws DeviceClassNotFoundException, NodeNotFoundException {
+    private void initDevices()
+            throws DeviceClassNotFoundException, NodeNotFoundException {
 
         for (Device device : this.devices) {
             DeviceEntity deviceEntity = this.deviceDAO.findDevice(device.deviceName);
@@ -971,7 +973,8 @@ public abstract class AbstractInitBean implements Startable {
     private AllowedDeviceDAO allowedDeviceDAO;
 
 
-    private void initAllowedDevices() throws ApplicationNotFoundException, DeviceNotFoundException {
+    private void initAllowedDevices()
+            throws ApplicationNotFoundException, DeviceNotFoundException {
 
         for (String applicationName : this.allowedDevices.keySet()) {
             ApplicationEntity application = this.applicationDAO.getApplication(applicationName);
@@ -1006,7 +1009,8 @@ public abstract class AbstractInitBean implements Startable {
     private NotificationProducerService notificationProducerService;
 
 
-    private void initNotifications() throws PermissionDeniedException {
+    private void initNotifications()
+            throws PermissionDeniedException {
 
         for (NotificationSubscription subscription : this.notificationSubcriptions) {
             this.notificationProducerService.subscribe(subscription.topic, subscription.address, subscription.certificate);

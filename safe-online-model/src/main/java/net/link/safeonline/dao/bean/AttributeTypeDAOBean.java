@@ -111,7 +111,8 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
         return attributeTypes;
     }
 
-    public AttributeTypeEntity getAttributeType(String name) throws AttributeTypeNotFoundException {
+    public AttributeTypeEntity getAttributeType(String name)
+            throws AttributeTypeNotFoundException {
 
         LOG.debug("get attribute type: " + name);
         AttributeTypeEntity attributeType = findAttributeType(name);
@@ -158,7 +159,7 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
     }
 
     public AttributeTypeDescriptionEntity getDescription(AttributeTypeDescriptionPK attributeTypeDescriptionPK)
-                                                                                                               throws AttributeTypeDescriptionNotFoundException {
+            throws AttributeTypeDescriptionNotFoundException {
 
         AttributeTypeDescriptionEntity attributeTypeDescription = this.entityManager.find(AttributeTypeDescriptionEntity.class,
                 attributeTypeDescriptionPK);
@@ -200,7 +201,8 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
         return result;
     }
 
-    public AttributeTypeEntity getParent(AttributeTypeEntity memberAttributeType) throws AttributeTypeNotFoundException {
+    public AttributeTypeEntity getParent(AttributeTypeEntity memberAttributeType)
+            throws AttributeTypeNotFoundException {
 
         AttributeTypeEntity parent = this.compoundedQueryObject.findParentAttribute(memberAttributeType);
         if (null == parent)
@@ -209,7 +211,7 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
     }
 
     public CompoundedAttributeTypeMemberEntity getMemberEntry(AttributeTypeEntity memberAttributeType)
-                                                                                                      throws AttributeTypeNotFoundException {
+            throws AttributeTypeNotFoundException {
 
         List<CompoundedAttributeTypeMemberEntity> memberEntries = this.compoundedQueryObject.listMemberEntries(memberAttributeType);
         if (memberEntries.isEmpty())

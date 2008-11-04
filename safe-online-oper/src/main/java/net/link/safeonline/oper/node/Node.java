@@ -25,6 +25,7 @@ public interface Node {
 
     public static final String JNDI_BINDING = OperatorConstants.JNDI_PREFIX + "NodeBean/local";
 
+
     /*
      * Factory
      */
@@ -71,11 +72,14 @@ public interface Node {
     /*
      * Actions.
      */
-    String add() throws CertificateEncodingException, IOException;
+    String add()
+            throws CertificateEncodingException, IOException;
 
-    String remove() throws NodeNotFoundException;
+    String remove()
+            throws NodeNotFoundException;
 
-    String save() throws CertificateEncodingException, NodeNotFoundException, IOException;
+    String save()
+            throws CertificateEncodingException, NodeNotFoundException, IOException;
 
     String view();
 

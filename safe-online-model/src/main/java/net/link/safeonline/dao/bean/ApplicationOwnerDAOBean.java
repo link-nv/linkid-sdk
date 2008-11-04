@@ -62,7 +62,8 @@ public class ApplicationOwnerDAOBean implements ApplicationOwnerDAO {
         return applicationOwner;
     }
 
-    public ApplicationOwnerEntity getApplicationOwner(String name) throws ApplicationOwnerNotFoundException {
+    public ApplicationOwnerEntity getApplicationOwner(String name)
+            throws ApplicationOwnerNotFoundException {
 
         LOG.debug("get app owner: " + name);
         ApplicationOwnerEntity applicationOwner = findApplicationOwner(name);
@@ -77,7 +78,8 @@ public class ApplicationOwnerDAOBean implements ApplicationOwnerDAO {
         return applicationOwners;
     }
 
-    public ApplicationOwnerEntity getApplicationOwner(SubjectEntity adminSubject) throws ApplicationOwnerNotFoundException {
+    public ApplicationOwnerEntity getApplicationOwner(SubjectEntity adminSubject)
+            throws ApplicationOwnerNotFoundException {
 
         ApplicationOwnerEntity applicationOwner = findApplicationOwner(adminSubject);
         if (null == applicationOwner)

@@ -111,7 +111,8 @@ public class ErrorMessageInterceptor {
 
 
     @AroundInvoke
-    public Object invoke(InvocationContext invocationContext) throws Exception {
+    public Object invoke(InvocationContext invocationContext)
+            throws Exception {
 
         try {
             return invocationContext.proceed();

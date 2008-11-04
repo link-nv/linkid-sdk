@@ -43,7 +43,8 @@ public class ContainerLoginFilter implements Filter {
         // empty
     }
 
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         boolean loggedIn = LoginManager.isAuthenticated(httpServletRequest);

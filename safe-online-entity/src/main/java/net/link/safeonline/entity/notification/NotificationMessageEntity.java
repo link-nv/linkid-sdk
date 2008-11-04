@@ -162,20 +162,22 @@ public class NotificationMessageEntity implements Serializable {
 
         @QueryMethod(value = QUERY_WHERE_TOPIC, nullable = true)
         NotificationMessageEntity findNotificationMessage(@QueryParam("topic") String topic,
-                @QueryParam("consumer") EndpointReferenceEntity consumer);
+                                                          @QueryParam("consumer") EndpointReferenceEntity consumer);
 
         @QueryMethod(value = QUERY_WHERE_SUBJECT, nullable = true)
         NotificationMessageEntity findNotificationMessageWhereSubject(@QueryParam("topic") String topic,
-                @QueryParam("consumer") EndpointReferenceEntity consumer, @QueryParam("subject") String subject);
+                                                                      @QueryParam("consumer") EndpointReferenceEntity consumer,
+                                                                      @QueryParam("subject") String subject);
 
         @QueryMethod(value = QUERY_WHERE_CONTENT, nullable = true)
         NotificationMessageEntity findNotificationMessageWhereContent(@QueryParam("topic") String topic,
-                @QueryParam("consumer") EndpointReferenceEntity consumer, @QueryParam("content") String content);
+                                                                      @QueryParam("consumer") EndpointReferenceEntity consumer,
+                                                                      @QueryParam("content") String content);
 
         @QueryMethod(value = QUERY_WHERE_SUBJECT_AND_CONTENT, nullable = true)
         NotificationMessageEntity findNotificationMessage(@QueryParam("topic") String topic,
-                @QueryParam("consumer") EndpointReferenceEntity consumer, @QueryParam("subject") String subject,
-                @QueryParam("content") String content);
+                                                          @QueryParam("consumer") EndpointReferenceEntity consumer,
+                                                          @QueryParam("subject") String subject, @QueryParam("content") String content);
 
         @QueryMethod(value = QUERY_LIST_ALL)
         List<NotificationMessageEntity> listNotificationMessages();

@@ -37,6 +37,7 @@ public interface NodeMappingService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/NodeMappingServiceBean/local";
 
+
     /**
      * Get or create if not existing a node mapping for the specified user and node. This node mapping will be used to communicate with the
      * remote nodes
@@ -47,9 +48,11 @@ public interface NodeMappingService extends SafeOnlineService {
      * @throws SubjectNotFoundException
      * @throws NodeNotFoundException
      */
-    public NodeMappingEntity getNodeMapping(String userId, String nodeName) throws SubjectNotFoundException, NodeNotFoundException;
+    public NodeMappingEntity getNodeMapping(String userId, String nodeName)
+            throws SubjectNotFoundException, NodeNotFoundException;
 
-    public NodeMappingEntity getNodeMapping(String id) throws NodeMappingNotFoundException;
+    public NodeMappingEntity getNodeMapping(String id)
+            throws NodeMappingNotFoundException;
 
     public List<NodeMappingEntity> listNodeMappings(SubjectEntity subject);
 }

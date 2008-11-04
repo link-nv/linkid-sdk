@@ -321,7 +321,8 @@ public class AuditSearchBean implements AuditSearch {
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public String removeContext() throws AuditContextNotFoundException {
+    public String removeContext()
+            throws AuditContextNotFoundException {
 
         LOG.debug("Remove context " + this.auditContext.getId());
         this.auditService.removeAuditContext(this.auditContext.getId());

@@ -153,8 +153,8 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
                     throw createSOAPFaultException("unknown token issuer: " + issuerName, "InvalidSecurityToken");
                 }
             } else if (trustDomain == TrustDomainType.DEVICE) {
-                DeviceAuthenticationService deviceAuthenticationService = EjbUtils.getEJB(
-                        DeviceAuthenticationService.JNDI_BINDING, DeviceAuthenticationService.class);
+                DeviceAuthenticationService deviceAuthenticationService = EjbUtils.getEJB(DeviceAuthenticationService.JNDI_BINDING,
+                        DeviceAuthenticationService.class);
                 try {
                     List<X509Certificate> deviceCertificates = deviceAuthenticationService.getCertificates(issuerName);
                     result = false;
@@ -332,7 +332,8 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
         }
     }
 
-    private String domToString(Node domNode) throws TransformerException {
+    private String domToString(Node domNode)
+            throws TransformerException {
 
         Source source = new DOMSource(domNode);
         StringWriter stringWriter = new StringWriter();

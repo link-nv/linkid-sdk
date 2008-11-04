@@ -28,7 +28,8 @@ public class ProfileInterceptor {
 
 
     @AroundInvoke
-    public Object aroundInvoke(InvocationContext context) throws Exception {
+    public Object aroundInvoke(InvocationContext context)
+            throws Exception {
 
         ProfileData profileData = ProfilingPolicyContextHandler.getProfileData();
 

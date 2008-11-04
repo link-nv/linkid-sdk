@@ -87,7 +87,8 @@ public class NotificationProducerClientImpl extends AbstractMessageAccessor impl
         return builder.build();
     }
 
-    public void subscribe(String topic, String address) throws SubscriptionFailedException, WSClientTransportException {
+    public void subscribe(String topic, String address)
+            throws SubscriptionFailedException, WSClientTransportException {
 
         LOG.debug("subscribe " + address + " to " + topic);
         SubscribeRequest request = new SubscribeRequest();
@@ -114,7 +115,8 @@ public class NotificationProducerClientImpl extends AbstractMessageAccessor impl
         checkStatus(response);
     }
 
-    private void checkStatus(SubscribeResponse response) throws SubscriptionFailedException {
+    private void checkStatus(SubscribeResponse response)
+            throws SubscriptionFailedException {
 
         for (Object errorObject : response.getAny()) {
             if (errorObject instanceof SubscribeCreationFailedFaultType) {

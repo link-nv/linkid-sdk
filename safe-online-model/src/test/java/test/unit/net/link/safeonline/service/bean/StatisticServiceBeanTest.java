@@ -57,7 +57,8 @@ public class StatisticServiceBeanTest extends TestCase {
 
 
     @Override
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         super.setUp();
 
@@ -99,13 +100,15 @@ public class StatisticServiceBeanTest extends TestCase {
     }
 
     @Override
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.entityTestManager.tearDown();
         super.tearDown();
     }
 
-    public void testChartGeneration() throws Exception {
+    public void testChartGeneration()
+            throws Exception {
 
         // setup
         EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -158,7 +161,8 @@ public class StatisticServiceBeanTest extends TestCase {
         out.write(ChartUtilities.encodeAsPNG(chart.createBufferedImage(800, 600)));
     }
 
-    public void testExport() throws Exception {
+    public void testExport()
+            throws Exception {
 
         // setup
         EntityManager entityManager = this.entityTestManager.getEntityManager();

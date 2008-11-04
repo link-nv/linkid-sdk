@@ -18,7 +18,8 @@ public class SimpleMessagesRenderer extends MessagesRenderer {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void encodeEnd(FacesContext context, UIComponent component) throws IOException {
+    public void encodeEnd(FacesContext context, UIComponent component)
+            throws IOException {
 
         Iterator messageIter = null;
         FacesMessage curMessage = null;

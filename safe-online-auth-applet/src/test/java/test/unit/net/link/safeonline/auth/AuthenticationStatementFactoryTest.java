@@ -28,7 +28,8 @@ public class AuthenticationStatementFactoryTest extends TestCase {
     private static final Log LOG = LogFactory.getLog(AuthenticationStatementFactoryTest.class);
 
 
-    public void testCreateAuthenticationStatement() throws Exception {
+    public void testCreateAuthenticationStatement()
+            throws Exception {
 
         // setup
         KeyPair keyPair = PkiTestUtils.generateKeyPair();

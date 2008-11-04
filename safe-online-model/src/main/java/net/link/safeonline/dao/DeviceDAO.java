@@ -31,6 +31,7 @@ public interface DeviceDAO extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/DeviceDAOBean/local";
 
+
     DeviceEntity addDevice(String name, DeviceClassEntity deviceClass, NodeEntity node, String authenticationPath, String registrationPath,
                            String removalPath, String updatePath, String disablePath, X509Certificate certificate,
                            AttributeTypeEntity attributeType, AttributeTypeEntity userAttributeType,
@@ -42,7 +43,8 @@ public interface DeviceDAO extends SafeOnlineService {
 
     DeviceEntity findDevice(String name);
 
-    DeviceEntity getDevice(String name) throws DeviceNotFoundException;
+    DeviceEntity getDevice(String name)
+            throws DeviceNotFoundException;
 
     void removeDevice(String name);
 
@@ -56,7 +58,8 @@ public interface DeviceDAO extends SafeOnlineService {
 
     void saveDescription(DeviceDescriptionEntity description);
 
-    DeviceDescriptionEntity getDescription(DeviceDescriptionPK descriptionPK) throws DeviceDescriptionNotFoundException;
+    DeviceDescriptionEntity getDescription(DeviceDescriptionPK descriptionPK)
+            throws DeviceDescriptionNotFoundException;
 
     DeviceDescriptionEntity findDescription(DeviceDescriptionPK descriptionPK);
 
@@ -66,13 +69,15 @@ public interface DeviceDAO extends SafeOnlineService {
 
     void saveProperty(DevicePropertyEntity property);
 
-    DevicePropertyEntity getProperty(DevicePropertyPK propertyPK) throws DevicePropertyNotFoundException;
+    DevicePropertyEntity getProperty(DevicePropertyPK propertyPK)
+            throws DevicePropertyNotFoundException;
 
     DevicePropertyEntity findProperty(DevicePropertyPK propertyPK);
 
     List<DeviceEntity> listDevices(String authenticationContextClass);
 
-    DeviceEntity getDevice(X509Certificate certificate) throws DeviceNotFoundException;
+    DeviceEntity getDevice(X509Certificate certificate)
+            throws DeviceNotFoundException;
 
     DeviceEntity findDevice(X509Certificate certificate);
 }

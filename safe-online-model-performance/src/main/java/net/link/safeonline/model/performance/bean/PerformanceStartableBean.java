@@ -34,7 +34,8 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = PerformanceStartableBean.JNDI_BINDING)
 public class PerformanceStartableBean extends AbstractInitBean {
 
-    public static final String JNDI_BINDING           = PerformanceConstants.PERFORMANCE_STARTABLE_JNDI_PREFIX + "PerformanceStartableBean";
+    public static final String  JNDI_BINDING                      = PerformanceConstants.PERFORMANCE_STARTABLE_JNDI_PREFIX
+                                                                          + "PerformanceStartableBean";
 
     private static final String PERFORMANCE_ATTRIBUTE             = "urn:net:lin-k:safe-online:attribute:test";
     public static final String  PERFORMANCE_APPLICATION_NAME      = "performance-application";

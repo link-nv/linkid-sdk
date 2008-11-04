@@ -57,7 +57,8 @@ public class DeviceOperationRequestUtil {
      */
     public static DeviceOperationRequest validateRequest(HttpServletRequest request, String stsWsLocation,
                                                          X509Certificate applicationCertificate, PrivateKey applicationPrivateKey,
-                                                         TrustDomainType trustDomain) throws ServletException {
+                                                         TrustDomainType trustDomain)
+            throws ServletException {
 
         String encodedSamlRequest = request.getParameter("SAMLRequest");
         if (null == encodedSamlRequest)

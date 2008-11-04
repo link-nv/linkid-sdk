@@ -21,6 +21,7 @@ public interface StatisticDAO extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/StatisticDAOBean/local";
 
+
     StatisticEntity addStatistic(String name, String domain, ApplicationEntity application);
 
     StatisticEntity findStatisticById(long statisticId);

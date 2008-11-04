@@ -20,7 +20,8 @@ public class OperTest extends TestCase {
 
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp()
+            throws Exception {
 
         super.setUp();
         this.acceptanceTestManager = new AcceptanceTestManager();
@@ -28,13 +29,15 @@ public class OperTest extends TestCase {
     }
 
     @Override
-    protected void tearDown() throws Exception {
+    protected void tearDown()
+            throws Exception {
 
         this.acceptanceTestManager.tearDown();
         super.tearDown();
     }
 
-    public void testAdminLogonLogout() throws Exception {
+    public void testAdminLogonLogout()
+            throws Exception {
 
         this.acceptanceTestManager.setContext("Testing operator webapp admin login logout.");
 
@@ -42,7 +45,8 @@ public class OperTest extends TestCase {
         operOverview.logout();
     }
 
-    public void testAddApplication() throws Exception {
+    public void testAddApplication()
+            throws Exception {
 
         this.acceptanceTestManager.setContext("Testing operator webapp add application.");
 

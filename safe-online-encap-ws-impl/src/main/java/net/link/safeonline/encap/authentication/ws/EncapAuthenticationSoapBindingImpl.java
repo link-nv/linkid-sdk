@@ -38,7 +38,8 @@ public class EncapAuthenticationSoapBindingImpl implements BankIdAuthentication 
     private final static int ENCAP_FAILURE         = 3;
 
 
-    public MSecResponse cancelSession(String sessionId) throws RemoteException {
+    public MSecResponse cancelSession(String sessionId)
+            throws RemoteException {
 
         LOG.debug("session canceled: " + sessionId);
         MSecResponse response = new MSecResponse();
@@ -47,7 +48,8 @@ public class EncapAuthenticationSoapBindingImpl implements BankIdAuthentication 
         return response;
     }
 
-    public ChallengeResponse challenge(String msisdn, String orgId) throws RemoteException {
+    public ChallengeResponse challenge(String msisdn, String orgId)
+            throws RemoteException {
 
         LOG.debug("challenge: msisdn=" + msisdn + " orgId=" + orgId);
         ChallengeResponse response = new ChallengeResponse();
@@ -59,7 +61,8 @@ public class EncapAuthenticationSoapBindingImpl implements BankIdAuthentication 
         return response;
     }
 
-    public VerifyResponse verifyOTP(String challengeId, String OTPValue) throws RemoteException {
+    public VerifyResponse verifyOTP(String challengeId, String OTPValue)
+            throws RemoteException {
 
         LOG.debug("verifyOTP: challengeId=" + challengeId + " OTPValue=" + OTPValue);
         VerifyResponse response = new VerifyResponse();

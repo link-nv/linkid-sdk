@@ -18,6 +18,7 @@ public interface SecurityAuditLogger extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/SecurityAuditLoggerBean/local";
 
+
     void addSecurityAudit(SecurityThreatType securityThreat, String message);
 
     void addSecurityAudit(SecurityThreatType securityThreat, String targetPrincipal, String message);

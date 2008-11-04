@@ -45,7 +45,8 @@ public class AuditContextManager {
      * Create audit contexts for our calls.
      */
     @AroundInvoke
-    public Object interceptor(InvocationContext context) throws Exception {
+    public Object interceptor(InvocationContext context)
+            throws Exception {
 
         try {
             initAuditContext();

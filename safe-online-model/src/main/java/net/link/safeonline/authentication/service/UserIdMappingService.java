@@ -19,6 +19,7 @@ public interface UserIdMappingService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/UserIdMappingServiceBean/local";
 
+
     /**
      * Returns the application specific user id as specified in the application's id scope.
      * 
@@ -27,7 +28,8 @@ public interface UserIdMappingService extends SafeOnlineService {
      * @throws ApplicationNotFoundException
      * @throws SubscriptionNotFoundException
      */
-    String getApplicationUserId(String applicationName, String userId) throws ApplicationNotFoundException, SubscriptionNotFoundException;
+    String getApplicationUserId(String applicationName, String userId)
+            throws ApplicationNotFoundException, SubscriptionNotFoundException;
 
     /**
      * Returns the SafeOnline global user id using the application's id scope settings and provided application id. Returns null if not
@@ -37,5 +39,6 @@ public interface UserIdMappingService extends SafeOnlineService {
      * @param applicationUserId
      * @throws ApplicationNotFoundException
      */
-    String findUserId(String applicationName, String applicationUserId) throws ApplicationNotFoundException;
+    String findUserId(String applicationName, String applicationUserId)
+            throws ApplicationNotFoundException;
 }

@@ -13,11 +13,11 @@ import javax.ejb.Local;
 import javax.faces.model.SelectItem;
 
 
-
-
 @Local
 public interface PrescriptionCreate extends AbstractPrescriptionDataClient {
+
     public static final String JNDI_BINDING = "SafeOnlinePrescriptionDemo/PrescriptionCreateBean/local";
+
 
     /*
      * Factory.

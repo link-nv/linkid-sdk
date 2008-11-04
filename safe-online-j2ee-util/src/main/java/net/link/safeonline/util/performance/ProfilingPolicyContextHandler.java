@@ -11,20 +11,23 @@ public class ProfilingPolicyContextHandler implements PolicyContextHandler {
     private static ThreadLocal<ProfileData> profileData           = new ThreadLocal<ProfileData>();
 
 
-    public Object getContext(String key, Object data) throws PolicyContextException {
+    public Object getContext(String key, Object data)
+            throws PolicyContextException {
 
         if (false == key.equalsIgnoreCase(PROFILING_CONTEXT_KEY))
             return null;
         return profileData.get();
     }
 
-    public String[] getKeys() throws PolicyContextException {
+    public String[] getKeys()
+            throws PolicyContextException {
 
         String[] keys = { PROFILING_CONTEXT_KEY };
         return keys;
     }
 
-    public boolean supports(String key) throws PolicyContextException {
+    public boolean supports(String key)
+            throws PolicyContextException {
 
         return key.equalsIgnoreCase(PROFILING_CONTEXT_KEY);
     }

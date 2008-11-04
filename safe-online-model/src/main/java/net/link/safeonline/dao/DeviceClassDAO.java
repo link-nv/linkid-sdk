@@ -24,11 +24,13 @@ public interface DeviceClassDAO extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/DeviceClassDAOBean/local";
 
+
     DeviceClassEntity addDeviceClass(String name, String authenticationContextClass);
 
     DeviceClassEntity findDeviceClass(String deviceClassName);
 
-    DeviceClassEntity getDeviceClass(String deviceClassName) throws DeviceClassNotFoundException;
+    DeviceClassEntity getDeviceClass(String deviceClassName)
+            throws DeviceClassNotFoundException;
 
     void removeDeviceClass(String name);
 
@@ -42,7 +44,8 @@ public interface DeviceClassDAO extends SafeOnlineService {
 
     void saveDescription(DeviceClassDescriptionEntity description);
 
-    DeviceClassDescriptionEntity getDescription(DeviceClassDescriptionPK descriptionPK) throws DeviceClassDescriptionNotFoundException;
+    DeviceClassDescriptionEntity getDescription(DeviceClassDescriptionPK descriptionPK)
+            throws DeviceClassDescriptionNotFoundException;
 
     DeviceClassDescriptionEntity findDescription(DeviceClassDescriptionPK descriptionPK);
 

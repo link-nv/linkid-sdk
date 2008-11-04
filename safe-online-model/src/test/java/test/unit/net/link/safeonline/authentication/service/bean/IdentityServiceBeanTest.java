@@ -86,7 +86,8 @@ public class IdentityServiceBeanTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.entityTestManager = new EntityTestManager();
         this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
@@ -125,13 +126,15 @@ public class IdentityServiceBeanTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.entityTestManager.tearDown();
     }
 
     @Test
-    public void confirmation() throws Exception {
+    public void confirmation()
+            throws Exception {
 
         // setup
         String login = "test-login";
@@ -215,7 +218,8 @@ public class IdentityServiceBeanTest {
     }
 
     @Test
-    public void compoundedConfirmation() throws Exception {
+    public void compoundedConfirmation()
+            throws Exception {
 
         // setup
         String login = "test-login";
@@ -277,7 +281,8 @@ public class IdentityServiceBeanTest {
     }
 
     @Test
-    public void isConfirmationRequiredOnEmptyIdentityGivesFalse() throws Exception {
+    public void isConfirmationRequiredOnEmptyIdentityGivesFalse()
+            throws Exception {
 
         // setup
         String login = "test-login";
@@ -313,7 +318,8 @@ public class IdentityServiceBeanTest {
     }
 
     @Test
-    public void removeMultivaluedAttribute() throws Exception {
+    public void removeMultivaluedAttribute()
+            throws Exception {
 
         // setup
         String login = "test-login";
@@ -377,7 +383,8 @@ public class IdentityServiceBeanTest {
     }
 
     @Test
-    public void removeMultivaluedCompoundedAttribute() throws Exception {
+    public void removeMultivaluedCompoundedAttribute()
+            throws Exception {
 
         // setup
         String login = "test-login";
@@ -503,7 +510,8 @@ public class IdentityServiceBeanTest {
      * @throws Exception
      */
     @Test
-    public void removeAllowMemberCompoundAttributesToBeEmpty() throws Exception {
+    public void removeAllowMemberCompoundAttributesToBeEmpty()
+            throws Exception {
 
         // setup
         String login = "test-login";
@@ -680,7 +688,8 @@ public class IdentityServiceBeanTest {
 
 
     @Test
-    public void optionalCompoundedMissingAttribute() throws Exception {
+    public void optionalCompoundedMissingAttribute()
+            throws Exception {
 
         OptionalCompoundedMissingAttributesScenario scenario = new OptionalCompoundedMissingAttributesScenario();
         MissingAttributesScenarioRunner runner = new MissingAttributesScenarioRunner();
@@ -688,7 +697,8 @@ public class IdentityServiceBeanTest {
     }
 
     @Test
-    public void requiredCompoundedMissingAttribute() throws Exception {
+    public void requiredCompoundedMissingAttribute()
+            throws Exception {
 
         RequiredCompoundedMissingAttributesScenario scenario = new RequiredCompoundedMissingAttributesScenario();
         MissingAttributesScenarioRunner runner = new MissingAttributesScenarioRunner();
@@ -696,7 +706,8 @@ public class IdentityServiceBeanTest {
     }
 
     @Test
-    public void requiredEmptyMissingAttribute() throws Exception {
+    public void requiredEmptyMissingAttribute()
+            throws Exception {
 
         RequiredEmptyMissingAttributesScenario scenario = new RequiredEmptyMissingAttributesScenario();
         MissingAttributesScenarioRunner runner = new MissingAttributesScenarioRunner();
@@ -760,7 +771,8 @@ public class IdentityServiceBeanTest {
 
 
     @Test
-    public void requiredFilledMissingAttribute() throws Exception {
+    public void requiredFilledMissingAttribute()
+            throws Exception {
 
         RequiredFilledMissingAttributesScenario scenario = new RequiredFilledMissingAttributesScenario();
         MissingAttributesScenarioRunner runner = new MissingAttributesScenarioRunner();
@@ -791,7 +803,8 @@ public class IdentityServiceBeanTest {
 
 
     @Test
-    public void optionalMissingAttribute() throws Exception {
+    public void optionalMissingAttribute()
+            throws Exception {
 
         OptionalMissingAttributesScenario scenario = new OptionalMissingAttributesScenario();
         MissingAttributesScenarioRunner runner = new MissingAttributesScenarioRunner();
@@ -801,7 +814,8 @@ public class IdentityServiceBeanTest {
 
     class MissingAttributesScenarioRunner {
 
-        public void run(MissingAttributesScenario scenario) throws Exception {
+        public void run(MissingAttributesScenario scenario)
+                throws Exception {
 
             // setup
             EntityManager entityManager = IdentityServiceBeanTest.this.entityTestManager.getEntityManager();
@@ -848,7 +862,8 @@ public class IdentityServiceBeanTest {
 
 
     @Test
-    public void listAttributes() throws Exception {
+    public void listAttributes()
+            throws Exception {
 
         // setup
         EntityManager entityManager = IdentityServiceBeanTest.this.entityTestManager.getEntityManager();
@@ -909,7 +924,8 @@ public class IdentityServiceBeanTest {
     }
 
     @Test
-    public void listCompoundedAttributes() throws Exception {
+    public void listCompoundedAttributes()
+            throws Exception {
 
         // setup
         EntityManager entityManager = IdentityServiceBeanTest.this.entityTestManager.getEntityManager();
@@ -1010,7 +1026,8 @@ public class IdentityServiceBeanTest {
     }
 
     @Test
-    public void getAttributeEditContext() throws Exception {
+    public void getAttributeEditContext()
+            throws Exception {
 
         // setup
         String login = "test-login";
@@ -1086,7 +1103,8 @@ public class IdentityServiceBeanTest {
     }
 
     @Test
-    public void getAttributeEditContextWithNonVisibleMember() throws Exception {
+    public void getAttributeEditContextWithNonVisibleMember()
+            throws Exception {
 
         // setup
         String login = "test-login";
@@ -1161,7 +1179,8 @@ public class IdentityServiceBeanTest {
     }
 
     @Test
-    public void compoundedAttributeScenario() throws Exception {
+    public void compoundedAttributeScenario()
+            throws Exception {
 
         // setup
         String login = "test-login";

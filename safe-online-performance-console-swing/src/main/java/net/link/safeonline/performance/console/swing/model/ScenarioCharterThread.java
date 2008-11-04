@@ -57,7 +57,8 @@ public class ScenarioCharterThread extends ScenarioThread {
      * @{inheritDoc
      */
     @Override
-    void process(ConsoleAgent agent) throws Exception {
+    void process(ConsoleAgent agent)
+            throws Exception {
 
         this.agentCharts.put(agent, agent.getCharts(ConsoleData.getSelectedExecution().getStartTime()));
     }

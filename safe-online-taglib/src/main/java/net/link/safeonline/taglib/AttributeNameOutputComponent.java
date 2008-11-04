@@ -44,7 +44,8 @@ public class AttributeNameOutputComponent extends UIOutput {
 
 
     @Override
-    public void encodeBegin(FacesContext context) throws IOException {
+    public void encodeBegin(FacesContext context)
+            throws IOException {
 
         ResponseWriter response = context.getResponseWriter();
         response.startElement("span", this);
@@ -74,7 +75,8 @@ public class AttributeNameOutputComponent extends UIOutput {
     }
 
     @Override
-    public void encodeEnd(FacesContext context) throws IOException {
+    public void encodeEnd(FacesContext context)
+            throws IOException {
 
         ResponseWriter response = context.getResponseWriter();
         response.endElement("span");

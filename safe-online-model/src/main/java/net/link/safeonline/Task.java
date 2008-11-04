@@ -27,5 +27,6 @@ public interface Task {
     /**
      * Perform the task
      */
-    void perform() throws Exception;
+    void perform()
+            throws Exception;
 }

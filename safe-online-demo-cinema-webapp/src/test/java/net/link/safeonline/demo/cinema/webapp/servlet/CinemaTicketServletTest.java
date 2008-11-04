@@ -45,7 +45,8 @@ public class CinemaTicketServletTest extends TestCase {
 
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp()
+            throws Exception {
 
         super.setUp();
 
@@ -61,14 +62,16 @@ public class CinemaTicketServletTest extends TestCase {
     }
 
     @Override
-    protected void tearDown() throws Exception {
+    protected void tearDown()
+            throws Exception {
 
         this.servletTestManager.tearDown();
         this.jndiTestUtils.tearDown();
         super.tearDown();
     }
 
-    public void testDoGetWithValidPass() throws Exception {
+    public void testDoGetWithValidPass()
+            throws Exception {
 
         // Setup
         String testNrn = UUID.randomUUID().toString(); // User's NRN.
@@ -99,7 +102,8 @@ public class CinemaTicketServletTest extends TestCase {
         assertEquals(HttpServletResponse.SC_OK, result);
     }
 
-    public void testDoGetWithInvalidPass() throws Exception {
+    public void testDoGetWithInvalidPass()
+            throws Exception {
 
         // Setup
         String testNrn = UUID.randomUUID().toString(); // User's NRN.
@@ -130,7 +134,8 @@ public class CinemaTicketServletTest extends TestCase {
         assertEquals(HttpServletResponse.SC_UNAUTHORIZED, result);
     }
 
-    public void testDoGetWithoutValidParams() throws Exception {
+    public void testDoGetWithoutValidParams()
+            throws Exception {
 
         // Setup Mock.
         replay(this.mockTicketService);

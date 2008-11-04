@@ -100,7 +100,8 @@ public abstract class ScenarioThread extends Thread {
     /**
      * Perform the action that needs to be performed on each selected agent.
      */
-    abstract void process(ConsoleAgent agent) throws Exception;
+    abstract void process(ConsoleAgent agent)
+            throws Exception;
 
 
     class Worker implements Runnable {

@@ -64,7 +64,8 @@ public class ActionsBean implements Actions {
     }
 
     @RolesAllowed(UserConstants.USER_ROLE)
-    public String removeAccount() throws SubscriptionNotFoundException, MessageHandlerNotFoundException {
+    public String removeAccount()
+            throws SubscriptionNotFoundException, MessageHandlerNotFoundException {
 
         this.log.debug("remove account");
 

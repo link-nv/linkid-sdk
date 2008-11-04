@@ -48,7 +48,8 @@ public class LogoutServlet extends AbstractInjectionServlet {
 
 
     @Override
-    public void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void invokeGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         LOG.debug("invoke get");
 

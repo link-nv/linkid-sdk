@@ -31,20 +31,23 @@ public class IdentificationDataServletTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.servletTestManager = new ServletTestManager();
         this.servletTestManager.setUp(IdentificationDataServlet.class);
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.servletTestManager.tearDown();
     }
 
     @Test
-    public void testInvocation() throws Exception {
+    public void testInvocation()
+            throws Exception {
 
         HttpClient httpClient = new HttpClient();
         PostMethod postMethod = new PostMethod(this.servletTestManager.getServletLocation());

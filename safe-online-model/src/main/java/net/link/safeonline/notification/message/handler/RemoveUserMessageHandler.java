@@ -64,15 +64,12 @@ public class RemoveUserMessageHandler implements MessageHandler {
         }
     }
 
-    public NotificationMessage createMessage(String topic, String subject, String content,
-            EndpointReferenceEntity consumer) {
+    public NotificationMessage createMessage(String topic, String subject, String content, EndpointReferenceEntity consumer) {
 
         if (null != consumer.getApplication()) {
             try {
-                String applicationUserId = this.userIdMappingService.getApplicationUserId(consumer.getApplication()
-                        .getName(), subject);
-                return new NotificationMessage(topic, consumer.getApplication().getName(), applicationUserId, content,
-                        consumer.getId());
+                String applicationUserId = this.userIdMappingService.getApplicationUserId(consumer.getApplication().getName(), subject);
+                return new NotificationMessage(topic, consumer.getApplication().getName(), applicationUserId, content, consumer.getId());
             } catch (SubscriptionNotFoundException e) {
                 return null;
             } catch (ApplicationNotFoundException e) {
@@ -81,10 +78,8 @@ public class RemoveUserMessageHandler implements MessageHandler {
         }
         if (null != consumer.getNode()) {
             try {
-                NodeMappingEntity nodeMapping = this.nodeMappingService.getNodeMapping(subject, consumer.getNode()
-                        .getName());
-                return new NotificationMessage(topic, consumer.getNode().getName(), nodeMapping.getId(), content,
-                        consumer.getId());
+                NodeMappingEntity nodeMapping = this.nodeMappingService.getNodeMapping(subject, consumer.getNode().getName());
+                return new NotificationMessage(topic, consumer.getNode().getName(), nodeMapping.getId(), content, consumer.getId());
             } catch (SubjectNotFoundException e) {
                 return null;
             } catch (NodeNotFoundException e) {

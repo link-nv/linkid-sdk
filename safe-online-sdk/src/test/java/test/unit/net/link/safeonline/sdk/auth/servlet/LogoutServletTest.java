@@ -92,7 +92,8 @@ public class LogoutServletTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.originalContextClassLoader = Thread.currentThread().getContextClassLoader();
         this.testClassLoader = new TestClassLoader();
@@ -140,7 +141,8 @@ public class LogoutServletTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.servletTestManager.tearDown();
         Thread.currentThread().setContextClassLoader(this.originalContextClassLoader);
@@ -175,7 +177,8 @@ public class LogoutServletTest {
 
 
     @Test
-    public void testGetTargetSet() throws Exception {
+    public void testGetTargetSet()
+            throws Exception {
 
         // setup
         AuthenticationProtocolHandler mockAuthenticationProtocolHandler = createMock(AuthenticationProtocolHandler.class);
@@ -200,7 +203,8 @@ public class LogoutServletTest {
     }
 
     @Test
-    public void testGetFinalizeLocalLogout() throws Exception {
+    public void testGetFinalizeLocalLogout()
+            throws Exception {
 
         // setup
         AuthenticationProtocolHandler mockAuthenticationProtocolHandler = createMock(AuthenticationProtocolHandler.class);
@@ -226,7 +230,8 @@ public class LogoutServletTest {
     }
 
     @Test
-    public void testPostFinalizeSingleLogout() throws Exception {
+    public void testPostFinalizeSingleLogout()
+            throws Exception {
 
         // setup
         AuthenticationProtocolHandler mockAuthenticationProtocolHandler = createMock(AuthenticationProtocolHandler.class);
@@ -254,7 +259,8 @@ public class LogoutServletTest {
     }
 
     @Test
-    public void testPostHandleSaml2LogoutRequest() throws Exception {
+    public void testPostHandleSaml2LogoutRequest()
+            throws Exception {
 
         // setup
         String userId = UUID.randomUUID().toString();
@@ -280,7 +286,8 @@ public class LogoutServletTest {
     }
 
     @Test
-    public void testPostHandleSaml2LogoutRequestWrongUser() throws Exception {
+    public void testPostHandleSaml2LogoutRequestWrongUser()
+            throws Exception {
 
         // setup
         String userId = UUID.randomUUID().toString();

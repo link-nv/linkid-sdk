@@ -23,18 +23,17 @@ public interface NotificationMessageDAO extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/NotificationMessageDAOBean/local";
 
-    NotificationMessageEntity addNotificationMessage(NotificationMessage notificationMessage,
-            EndpointReferenceEntity consumer);
 
-    NotificationMessageEntity findNotificationMessage(NotificationMessage notificationMessage,
-            EndpointReferenceEntity consumer);
+    NotificationMessageEntity addNotificationMessage(NotificationMessage notificationMessage, EndpointReferenceEntity consumer);
 
-    NotificationMessageEntity getNotificationMessage(NotificationMessage notificationMessage,
-            EndpointReferenceEntity consumer) throws NotificationMessageNotFoundException;
+    NotificationMessageEntity findNotificationMessage(NotificationMessage notificationMessage, EndpointReferenceEntity consumer);
+
+    NotificationMessageEntity getNotificationMessage(NotificationMessage notificationMessage, EndpointReferenceEntity consumer)
+            throws NotificationMessageNotFoundException;
 
     void removeNotificationMessage(NotificationMessageEntity notificationMessageEntity);
 
     List<NotificationMessageEntity> listNotificationMessages();
-    
+
     void addNotificationAttempt(NotificationMessage message, EndpointReferenceEntity consumer);
 }

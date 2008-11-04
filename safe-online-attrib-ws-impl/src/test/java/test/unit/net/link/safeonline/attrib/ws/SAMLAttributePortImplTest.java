@@ -123,7 +123,8 @@ public class SAMLAttributePortImplTest {
 
     @SuppressWarnings("unchecked")
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         LOG.debug("setup");
 
@@ -170,8 +171,7 @@ public class SAMLAttributePortImplTest {
         expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
 
         expect(this.mockApplicationManager.getCallerApplication()).andStubReturn(
-                new ApplicationEntity(this.testApplicationId, null, new ApplicationOwnerEntity(), null, null, null,
-                        this.certificate));
+                new ApplicationEntity(this.testApplicationId, null, new ApplicationOwnerEntity(), null, null, null, this.certificate));
 
         expect(this.mockApplicationIdentifierMappingService.findUserId(this.testApplicationId, this.testSubjectLogin)).andStubReturn(
                 this.testSubjectId);
@@ -205,7 +205,8 @@ public class SAMLAttributePortImplTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         LOG.debug("tearDown");
         this.webServiceTestUtils.tearDown();
@@ -213,7 +214,8 @@ public class SAMLAttributePortImplTest {
     }
 
     @Test
-    public void testAttributeQuery() throws Exception {
+    public void testAttributeQuery()
+            throws Exception {
 
         // setup
         oasis.names.tc.saml._2_0.assertion.ObjectFactory samlObjectFactory = new oasis.names.tc.saml._2_0.assertion.ObjectFactory();
@@ -290,7 +292,8 @@ public class SAMLAttributePortImplTest {
     }
 
     @Test
-    public void testQueryMultivaluedAttribute() throws Exception {
+    public void testQueryMultivaluedAttribute()
+            throws Exception {
 
         // setup
         oasis.names.tc.saml._2_0.assertion.ObjectFactory samlObjectFactory = new oasis.names.tc.saml._2_0.assertion.ObjectFactory();
@@ -374,7 +377,8 @@ public class SAMLAttributePortImplTest {
     }
 
     @Test
-    public void testQueryCompoundedAttribute() throws Exception {
+    public void testQueryCompoundedAttribute()
+            throws Exception {
 
         // setup
         oasis.names.tc.saml._2_0.assertion.ObjectFactory samlObjectFactory = new oasis.names.tc.saml._2_0.assertion.ObjectFactory();
@@ -457,7 +461,8 @@ public class SAMLAttributePortImplTest {
     }
 
     @Test
-    public void testAttributeQueryWithBooleanValue() throws Exception {
+    public void testAttributeQueryWithBooleanValue()
+            throws Exception {
 
         // setup
         oasis.names.tc.saml._2_0.assertion.ObjectFactory samlObjectFactory = new oasis.names.tc.saml._2_0.assertion.ObjectFactory();
@@ -527,7 +532,8 @@ public class SAMLAttributePortImplTest {
     }
 
     @Test
-    public void testAttributeQueryForNonExistingAttribute() throws Exception {
+    public void testAttributeQueryForNonExistingAttribute()
+            throws Exception {
 
         // setup
         oasis.names.tc.saml._2_0.assertion.ObjectFactory samlObjectFactory = new oasis.names.tc.saml._2_0.assertion.ObjectFactory();

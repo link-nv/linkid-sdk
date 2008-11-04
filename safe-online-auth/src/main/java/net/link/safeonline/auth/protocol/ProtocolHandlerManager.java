@@ -85,7 +85,8 @@ public class ProtocolHandlerManager {
      * @throws ProtocolException
      *             in case of a protocol error.
      */
-    public static ProtocolContext handleRequest(HttpServletRequest request) throws ProtocolException {
+    public static ProtocolContext handleRequest(HttpServletRequest request)
+            throws ProtocolException {
 
         String reqLang = request.getParameter("Language");
         String reqCol = request.getParameter("Color");
@@ -102,8 +103,7 @@ public class ProtocolHandlerManager {
             } catch (ProtocolException e) {
                 String protocolName = protocolHandler.getName();
                 e.setProtocolName(protocolName);
-                SecurityAuditLogger securityAuditLogger = EjbUtils.getEJB(SecurityAuditLogger.JNDI_BINDING,
-                        SecurityAuditLogger.class);
+                SecurityAuditLogger securityAuditLogger = EjbUtils.getEJB(SecurityAuditLogger.JNDI_BINDING, SecurityAuditLogger.class);
                 securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, "Protocol: " + protocolName + " : " + e.getMessage());
                 throw e;
             }
@@ -125,7 +125,8 @@ public class ProtocolHandlerManager {
      * @param response
      * @throws ProtocolException
      */
-    public static void authnResponse(HttpSession session, HttpServletResponse response) throws ProtocolException {
+    public static void authnResponse(HttpSession session, HttpServletResponse response)
+            throws ProtocolException {
 
         String protocolId = (String) session.getAttribute(PROTOCOL_HANDLER_ID_ATTRIBUTE);
         if (null == protocolId)
@@ -160,7 +161,8 @@ public class ProtocolHandlerManager {
      * @throws ProtocolException
      *             in case of a protocol error.
      */
-    public static LogoutProtocolContext handleLogoutRequest(HttpServletRequest request) throws ProtocolException {
+    public static LogoutProtocolContext handleLogoutRequest(HttpServletRequest request)
+            throws ProtocolException {
 
         for (ProtocolHandler protocolHandler : protocolHandlers) {
             LOG.debug("trying protocol handler: " + protocolHandler.getClass().getSimpleName());
@@ -170,8 +172,7 @@ public class ProtocolHandlerManager {
             } catch (ProtocolException e) {
                 String protocolName = protocolHandler.getName();
                 e.setProtocolName(protocolName);
-                SecurityAuditLogger securityAuditLogger = EjbUtils.getEJB(SecurityAuditLogger.JNDI_BINDING,
-                        SecurityAuditLogger.class);
+                SecurityAuditLogger securityAuditLogger = EjbUtils.getEJB(SecurityAuditLogger.JNDI_BINDING, SecurityAuditLogger.class);
                 securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, "Protocol: " + protocolName + " : " + e.getMessage());
                 throw e;
             }
@@ -194,7 +195,8 @@ public class ProtocolHandlerManager {
      * @throws ProtocolException
      *             in case of a protocol error.
      */
-    public static String handleLogoutResponse(HttpServletRequest request) throws ProtocolException {
+    public static String handleLogoutResponse(HttpServletRequest request)
+            throws ProtocolException {
 
         HttpSession session = request.getSession();
         String protocolId = (String) session.getAttribute(PROTOCOL_HANDLER_ID_ATTRIBUTE);
@@ -222,7 +224,7 @@ public class ProtocolHandlerManager {
      * @throws ProtocolException
      */
     public static void logoutRequest(ApplicationEntity application, HttpSession session, HttpServletResponse response)
-                                                                                                                      throws ProtocolException {
+            throws ProtocolException {
 
         String protocolId = (String) session.getAttribute(PROTOCOL_HANDLER_ID_ATTRIBUTE);
         if (null == protocolId)
@@ -250,7 +252,7 @@ public class ProtocolHandlerManager {
      * @throws ProtocolException
      */
     public static void logoutResponse(boolean partialLogout, String target, HttpSession session, HttpServletResponse response)
-                                                                                                                              throws ProtocolException {
+            throws ProtocolException {
 
         String protocolId = (String) session.getAttribute(PROTOCOL_HANDLER_ID_ATTRIBUTE);
         if (null == protocolId)

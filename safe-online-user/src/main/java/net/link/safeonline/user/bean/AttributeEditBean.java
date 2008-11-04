@@ -69,7 +69,8 @@ public class AttributeEditBean implements AttributeEdit {
 
 
     @RolesAllowed(UserConstants.USER_ROLE)
-    public String save() throws AttributeTypeNotFoundException {
+    public String save()
+            throws AttributeTypeNotFoundException {
 
         LOG.debug("save");
         try {
@@ -87,7 +88,8 @@ public class AttributeEditBean implements AttributeEdit {
 
     @Factory(ATTRIBUTE_EDIT_CONTEXT)
     @RolesAllowed(UserConstants.USER_ROLE)
-    public void attributeEditContextFactory() throws AttributeTypeNotFoundException {
+    public void attributeEditContextFactory()
+            throws AttributeTypeNotFoundException {
 
         this.attributeEditContext = this.identityService.getAttributeEditContext(this.selectedAttribute);
     }

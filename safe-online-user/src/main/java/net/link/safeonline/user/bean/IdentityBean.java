@@ -85,8 +85,8 @@ public class IdentityBean implements Identity {
     @RolesAllowed(UserConstants.USER_ROLE)
     @Factory(ATTRIBUTE_LIST_NAME)
     @ErrorHandling( { @Error(exceptionClass = AttributeTypeNotFoundException.class, messageId = "errorAttributeTypeNotFoundSpecific") })
-    public void attributeListFactory() throws AttributeTypeNotFoundException, PermissionDeniedException,
-                                      ApplicationIdentityNotFoundException {
+    public void attributeListFactory()
+            throws AttributeTypeNotFoundException, PermissionDeniedException, ApplicationIdentityNotFoundException {
 
         LOG.debug("attributeListFactory");
         Locale viewLocale = getViewLocale();
@@ -115,8 +115,9 @@ public class IdentityBean implements Identity {
     }
 
     @RolesAllowed(UserConstants.USER_ROLE)
-    public String removeAttribute() throws AttributeTypeNotFoundException, PermissionDeniedException, AttributeNotFoundException,
-                                   ApplicationIdentityNotFoundException {
+    public String removeAttribute()
+            throws AttributeTypeNotFoundException, PermissionDeniedException, AttributeNotFoundException,
+            ApplicationIdentityNotFoundException {
 
         LOG.debug("remove attribute: " + this.selectedAttribute);
         try {

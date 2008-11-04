@@ -30,7 +30,7 @@ import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
 @Local
 public interface DeviceOperationService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/DeviceOperationServiceBean/local";
+    public static final String JNDI_BINDING                       = SafeOnlineService.JNDI_PREFIX + "/DeviceOperationServiceBean/local";
 
     /**
      * Used to store this stateful bean on the session
@@ -41,8 +41,9 @@ public interface DeviceOperationService extends SafeOnlineService {
     void abort();
 
     String redirect(String serviceUrl, String targetUrl, DeviceOperationType deviceOperation, String device, String authenticatedDevice,
-                    String userId, AttributeDO attribute) throws NodeNotFoundException, SubjectNotFoundException, DeviceNotFoundException;
+                    String userId, AttributeDO attribute)
+            throws NodeNotFoundException, SubjectNotFoundException, DeviceNotFoundException;
 
-    String finalize(HttpServletRequest request) throws NodeNotFoundException, ServletException, NodeMappingNotFoundException,
-                                               DeviceNotFoundException, SubjectNotFoundException;
+    String finalize(HttpServletRequest request)
+            throws NodeNotFoundException, ServletException, NodeMappingNotFoundException, DeviceNotFoundException, SubjectNotFoundException;
 }

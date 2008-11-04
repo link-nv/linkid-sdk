@@ -19,18 +19,23 @@ public interface PasswordManager extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/PasswordManagerBean/local";
 
-    void setPassword(SubjectEntity subject, String password) throws PermissionDeniedException;
 
-    void changePassword(SubjectEntity subject, String oldPassword, String newPassword) throws PermissionDeniedException,
-                                                                                      DeviceNotFoundException;
+    void setPassword(SubjectEntity subject, String password)
+            throws PermissionDeniedException;
 
-    boolean validatePassword(SubjectEntity subject, String password) throws DeviceNotFoundException;
+    void changePassword(SubjectEntity subject, String oldPassword, String newPassword)
+            throws PermissionDeniedException, DeviceNotFoundException;
+
+    boolean validatePassword(SubjectEntity subject, String password)
+            throws DeviceNotFoundException;
 
     boolean isPasswordConfigured(SubjectEntity subject);
 
-    void removePassword(SubjectEntity subject, String password) throws DeviceNotFoundException, PermissionDeniedException;
+    void removePassword(SubjectEntity subject, String password)
+            throws DeviceNotFoundException, PermissionDeniedException;
 
-    boolean isDisabled(SubjectEntity subject) throws DeviceNotFoundException;
+    boolean isDisabled(SubjectEntity subject)
+            throws DeviceNotFoundException;
 
     /**
      * @param subject
@@ -38,6 +43,7 @@ public interface PasswordManager extends SafeOnlineService {
      * 
      * @throws DeviceNotFoundException
      */
-    void disablePassword(SubjectEntity subject, boolean disable) throws DeviceNotFoundException;
+    void disablePassword(SubjectEntity subject, boolean disable)
+            throws DeviceNotFoundException;
 
 }

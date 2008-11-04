@@ -51,9 +51,7 @@ public class ApplicationIdentityManagerBean implements ApplicationIdentityManage
 
 
     public void updateApplicationIdentity(String applicationId, List<IdentityAttributeTypeDO> newApplicationIdentityAttributes)
-                                                                                                                               throws ApplicationNotFoundException,
-                                                                                                                               ApplicationIdentityNotFoundException,
-                                                                                                                               AttributeTypeNotFoundException {
+            throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, AttributeTypeNotFoundException {
 
         LOG.debug("update application identity for application: " + applicationId);
 

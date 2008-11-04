@@ -155,12 +155,14 @@ public class ProfileData {
             }
     }
 
-    public void addMeasurement(Method method, Long value) throws ProfileDataLockedException {
+    public void addMeasurement(Method method, Long value)
+            throws ProfileDataLockedException {
 
         this.addMeasurement(compressSignature(method.getName()), value);
     }
 
-    public synchronized void addMeasurement(String method, Long value) throws ProfileDataLockedException {
+    public synchronized void addMeasurement(String method, Long value)
+            throws ProfileDataLockedException {
 
         if (this.locked) {
             throw new ProfileDataLockedException();
@@ -168,7 +170,8 @@ public class ProfileData {
         this.measurements.put(method, value);
     }
 
-    public void clear() throws ProfileDataLockedException {
+    public void clear()
+            throws ProfileDataLockedException {
 
         if (this.locked) {
             throw new ProfileDataLockedException();
@@ -210,7 +213,8 @@ public class ProfileData {
         return this.locked;
     }
 
-    public void lock() throws ProfileDataLockedException {
+    public void lock()
+            throws ProfileDataLockedException {
 
         if (this.locked) {
             throw new ProfileDataLockedException();

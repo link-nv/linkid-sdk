@@ -219,7 +219,8 @@ public class ApplicationBean implements Application {
 
     @Factory(OPER_APPLICATION_LIST_NAME)
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public void applicationListFactory() throws ApplicationNotFoundException {
+    public void applicationListFactory()
+            throws ApplicationNotFoundException {
 
         LOG.debug("application list factory");
         this.operApplicationList = this.applicationService.listApplications();
@@ -227,8 +228,8 @@ public class ApplicationBean implements Application {
 
     @Factory(APPLICATION_IDENTITY_ATTRIBUTES_NAME)
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public void applicationIdentityAttributesFactory() throws ApplicationNotFoundException, ApplicationIdentityNotFoundException,
-                                                      PermissionDeniedException {
+    public void applicationIdentityAttributesFactory()
+            throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException {
 
         LOG.debug("application identity attributes factory");
         String applicationName = this.selectedApplication.getName();
@@ -239,7 +240,8 @@ public class ApplicationBean implements Application {
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public String add() throws AttributeTypeNotFoundException, IOException, ApplicationNotFoundException {
+    public String add()
+            throws AttributeTypeNotFoundException, IOException, ApplicationNotFoundException {
 
         LOG.debug("add application: " + this.name);
         if (null != this.friendlyName) {
@@ -498,7 +500,8 @@ public class ApplicationBean implements Application {
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public String removeApplication() throws ApplicationNotFoundException {
+    public String removeApplication()
+            throws ApplicationNotFoundException {
 
         /*
          * http://jira.jboss.com/jira/browse/EJBTHREE-786
@@ -530,8 +533,8 @@ public class ApplicationBean implements Application {
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     @Factory(IDENTITY_ATTRIBUTES_NAME)
-    public void identityAttributesFactory() throws ApplicationNotFoundException, ApplicationIdentityNotFoundException,
-                                           PermissionDeniedException {
+    public void identityAttributesFactory()
+            throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException {
 
         Set<ApplicationIdentityAttributeEntity> currentIdentityAttributes = this.applicationService
                                                                                                    .getCurrentApplicationIdentity(this.selectedApplication
@@ -569,7 +572,8 @@ public class ApplicationBean implements Application {
         }
     }
 
-    private byte[] getUpFileContent(UploadedFile file) throws IOException {
+    private byte[] getUpFileContent(UploadedFile file)
+            throws IOException {
 
         InputStream inputStream = file.getInputStream();
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -589,8 +593,9 @@ public class ApplicationBean implements Application {
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public String save() throws CertificateEncodingException, ApplicationNotFoundException, IOException,
-                        ApplicationIdentityNotFoundException, AttributeTypeNotFoundException, PermissionDeniedException {
+    public String save()
+            throws CertificateEncodingException, ApplicationNotFoundException, IOException, ApplicationIdentityNotFoundException,
+            AttributeTypeNotFoundException, PermissionDeniedException {
 
         String applicationId = this.selectedApplication.getName();
         LOG.debug("save application: " + applicationId);
@@ -743,7 +748,8 @@ public class ApplicationBean implements Application {
 
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public String getUsageAgreement() throws ApplicationNotFoundException {
+    public String getUsageAgreement()
+            throws ApplicationNotFoundException {
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();
@@ -787,7 +793,8 @@ public class ApplicationBean implements Application {
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     @Factory(SELECTED_APPLICATION_USAGE_AGREEMENTS_MODEL)
-    public void usageAgreementListFactory() throws ApplicationNotFoundException, PermissionDeniedException {
+    public void usageAgreementListFactory()
+            throws ApplicationNotFoundException, PermissionDeniedException {
 
         if (null == this.selectedApplication)
             return;
@@ -804,7 +811,8 @@ public class ApplicationBean implements Application {
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public String editUsageAgreement() throws ApplicationNotFoundException, PermissionDeniedException {
+    public String editUsageAgreement()
+            throws ApplicationNotFoundException, PermissionDeniedException {
 
         LOG.debug("edit usage agreement for application: " + this.selectedApplication.getName());
         this.draftUsageAgreement = this.usageAgreementService.getDraftUsageAgreement(this.selectedApplication.getName());

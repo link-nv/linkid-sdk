@@ -21,6 +21,7 @@ public interface Application {
 
     public static final String JNDI_BINDING = OwnerConstants.JNDI_PREFIX + "ApplicationBean/local";
 
+
     /*
      * Accessors
      */
@@ -28,18 +29,22 @@ public interface Application {
     /*
      * Factories
      */
-    void applicationListFactory() throws ApplicationOwnerNotFoundException;
+    void applicationListFactory()
+            throws ApplicationOwnerNotFoundException;
 
-    void usageAgreementListFactory() throws ApplicationNotFoundException, PermissionDeniedException;
+    void usageAgreementListFactory()
+            throws ApplicationNotFoundException, PermissionDeniedException;
 
     /*
      * Actions
      */
-    String view() throws ApplicationNotFoundException, PermissionDeniedException, ApplicationIdentityNotFoundException;
+    String view()
+            throws ApplicationNotFoundException, PermissionDeniedException, ApplicationIdentityNotFoundException;
 
     String edit();
 
-    String save() throws ApplicationNotFoundException, PermissionDeniedException;
+    String save()
+            throws ApplicationNotFoundException, PermissionDeniedException;
 
     String viewStats();
 
@@ -47,7 +52,8 @@ public interface Application {
 
     String viewUsageAgreement();
 
-    String editUsageAgreement() throws ApplicationNotFoundException, PermissionDeniedException;
+    String editUsageAgreement()
+            throws ApplicationNotFoundException, PermissionDeniedException;
 
     /*
      * Lifecycle

@@ -80,7 +80,8 @@ public class CinemaSeatOccupationEntity implements Serializable {
      * @throws IllegalStateException
      *             If the seat occupation has already been reserved.
      */
-    public void reserve() throws IllegalStateException {
+    public void reserve()
+            throws IllegalStateException {
 
         if (this.reserved)
             throw new IllegalStateException("Seat " + this.seat + " is already reserved!");

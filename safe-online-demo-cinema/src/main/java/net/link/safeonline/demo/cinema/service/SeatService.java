@@ -53,7 +53,8 @@ public interface SeatService extends CinemaService {
      * @throws IllegalStateException
      *             When at least one of the given seats is not available.
      */
-    public CinemaSeatOccupationEntity validate(CinemaSeatOccupationEntity occupation) throws IllegalStateException;
+    public CinemaSeatOccupationEntity validate(CinemaSeatOccupationEntity occupation)
+            throws IllegalStateException;
 
     /**
      * Verify that the given seat is not already occupied on the given time. If it is not, occupy it (but do not yet reserve it).
@@ -62,5 +63,6 @@ public interface SeatService extends CinemaService {
      * @throws IllegalStateException
      *             When at least one of the given seats is not available.
      */
-    public CinemaSeatOccupationEntity validate(CinemaSeatEntity seat, Date start) throws IllegalStateException;
+    public CinemaSeatOccupationEntity validate(CinemaSeatEntity seat, Date start)
+            throws IllegalStateException;
 }

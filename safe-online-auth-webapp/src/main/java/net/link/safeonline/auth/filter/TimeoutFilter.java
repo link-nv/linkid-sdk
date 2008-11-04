@@ -61,7 +61,8 @@ public class TimeoutFilter extends AbstractInjectionFilter {
         LOG.debug("destroy");
     }
 
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
 
         LOG.debug("auth.doFilter");
         HttpServletRequest httpRequest = (HttpServletRequest) request;

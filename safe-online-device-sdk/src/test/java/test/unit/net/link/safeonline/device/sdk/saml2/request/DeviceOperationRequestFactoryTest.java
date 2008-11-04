@@ -54,7 +54,8 @@ public class DeviceOperationRequestFactoryTest {
 
 
     @Test
-    public void createDeviceOperationAuthnRequest() throws Exception {
+    public void createDeviceOperationAuthnRequest()
+            throws Exception {
 
         // setup
         String nodeName = "test-node-name";

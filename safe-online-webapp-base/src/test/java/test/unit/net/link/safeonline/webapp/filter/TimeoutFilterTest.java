@@ -44,7 +44,8 @@ public class TimeoutFilterTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.servletTestManager = new ServletTestManager();
         Map<String, String> filterInitParameters = new HashMap<String, String>();
@@ -56,7 +57,8 @@ public class TimeoutFilterTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.servletTestManager.tearDown();
     }
@@ -70,7 +72,8 @@ public class TimeoutFilterTest {
 
 
         @Override
-        protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        protected void doGet(HttpServletRequest request, HttpServletResponse response)
+                throws IOException {
 
             testServletLOG.debug("writing to print writer");
 
@@ -85,7 +88,8 @@ public class TimeoutFilterTest {
 
 
     @Test
-    public void testGet() throws Exception {
+    public void testGet()
+            throws Exception {
 
         // setup
         HttpClient httpClient = new HttpClient();

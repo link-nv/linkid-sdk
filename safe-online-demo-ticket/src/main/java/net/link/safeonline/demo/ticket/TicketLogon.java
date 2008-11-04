@@ -10,11 +10,11 @@ package net.link.safeonline.demo.ticket;
 import javax.ejb.Local;
 
 
-
-
 @Local
 public interface TicketLogon extends AbstractTicketDataClient {
+
     public static final String JNDI_BINDING = "SafeOnlineTicketDemo/TicketLogonBean/local";
+
 
     String login();
 

@@ -28,7 +28,8 @@ public class GSMModem implements SMSC {
         this.serialComm = new SerialCommunication(serialPortName);
     }
 
-    public void open() throws SMSException {
+    public void open()
+            throws SMSException {
 
         try {
             this.serialComm.open();
@@ -42,7 +43,8 @@ public class GSMModem implements SMSC {
         this.serialComm.close();
     }
 
-    public void sendSMS(SMS sms) throws SMSException {
+    public void sendSMS(SMS sms)
+            throws SMSException {
 
         try {
             this.serialComm.write("ATE1 V1\r\n");

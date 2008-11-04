@@ -32,7 +32,7 @@ public class ApplicationFactory {
      * @throws ApplicationNotFoundException
      */
     public static Application getApplication(ApplicationContext applicationContext, String applicationName)
-                                                                                                           throws ApplicationNotFoundException {
+            throws ApplicationNotFoundException {
 
         ApplicationEntity applicationEntity = applicationContext.getApplicationDAO().getApplication(applicationName);
         Application application = new Application(applicationEntity);

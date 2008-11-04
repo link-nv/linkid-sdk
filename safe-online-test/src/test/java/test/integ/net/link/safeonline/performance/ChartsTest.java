@@ -98,8 +98,8 @@ public class ChartsTest extends AbstractDataTest {
     /**
      * Instantiate a scenario object of the class used in the given execution.
      */
-    private Scenario createScenario(ExecutionEntity execution) throws InstantiationException, IllegalAccessException,
-                                                              ClassNotFoundException {
+    private Scenario createScenario(ExecutionEntity execution)
+            throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 
         String scenarioName = execution.getScenarioName();
         return (Scenario) Thread.currentThread().getContextClassLoader().loadClass(scenarioName).newInstance();
@@ -109,7 +109,8 @@ public class ChartsTest extends AbstractDataTest {
      * Render all charts registered with the scenario used in the given execution.
      */
     @SuppressWarnings("unused")
-    private Map<String, byte[][]> getAllCharts(ExecutionEntity execution) throws Exception {
+    private Map<String, byte[][]> getAllCharts(ExecutionEntity execution)
+            throws Exception {
 
         List<? extends Chart> charts = createScenario(execution).getCharts();
         return getCharts(execution, charts.toArray(new Chart[charts.size()]));
@@ -118,7 +119,8 @@ public class ChartsTest extends AbstractDataTest {
     /**
      * Render given charts with data from the given execution.
      */
-    private Map<String, byte[][]> getCharts(ExecutionEntity execution, Chart... charts) throws Exception {
+    private Map<String, byte[][]> getCharts(ExecutionEntity execution, Chart... charts)
+            throws Exception {
 
         // Divide the charts over three lists depending on data they chart.
         List<Chart> dataCharts, errorCharts, timingCharts;
@@ -295,7 +297,8 @@ public class ChartsTest extends AbstractDataTest {
         dialog.setVisible(true);
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args)
+            throws Exception {
 
         new ChartsTest();
     }

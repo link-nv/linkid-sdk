@@ -69,7 +69,8 @@ public class AttributeAddBean implements AttributeAdd {
 
 
     @RolesAllowed(UserConstants.USER_ROLE)
-    public String commit() throws AttributeTypeNotFoundException {
+    public String commit()
+            throws AttributeTypeNotFoundException {
 
         LOG.debug("commit");
         try {
@@ -85,7 +86,8 @@ public class AttributeAddBean implements AttributeAdd {
 
     @Factory(ATTRIBUTE_ADD_CONTEXT)
     @RolesAllowed(UserConstants.USER_ROLE)
-    public void attributeEditContextFactory() throws AttributeTypeNotFoundException {
+    public void attributeEditContextFactory()
+            throws AttributeTypeNotFoundException {
 
         this.attributeAddContext = this.identityService.getAttributeTemplate(this.selectedAttribute);
     }

@@ -40,7 +40,8 @@ public class PingPortImplTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.webServiceTestUtils = new WebServiceTestUtils();
         PingPortImpl port = new PingPortImpl();
@@ -48,13 +49,15 @@ public class PingPortImplTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.webServiceTestUtils.tearDown();
     }
 
     @Test
-    public void testInvocation() throws Exception {
+    public void testInvocation()
+            throws Exception {
 
         // setup
         PingService service = PingServiceFactory.newInstance();

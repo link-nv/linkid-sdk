@@ -29,6 +29,7 @@ public interface SubjectService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/SubjectServiceBean/local";
 
+
     /**
      * Finds the subject for a given user ID. Returns <code>null</code> if the entity could not be found.
      * 
@@ -51,7 +52,8 @@ public interface SubjectService extends SafeOnlineService {
      * @param login
      * @throws AttributeTypeNotFoundException
      */
-    SubjectEntity addSubject(String login) throws AttributeTypeNotFoundException;
+    SubjectEntity addSubject(String login)
+            throws AttributeTypeNotFoundException;
 
     /**
      * Adds a subject with the specified user ID. Does NOT add a login attribute and SubjectIdentifier. This method is used when the subject
@@ -67,7 +69,8 @@ public interface SubjectService extends SafeOnlineService {
      * @return the subject.
      * @exception SubjectNotFoundException
      */
-    SubjectEntity getSubject(String userId) throws SubjectNotFoundException;
+    SubjectEntity getSubject(String userId)
+            throws SubjectNotFoundException;
 
     /**
      * Gives back the subject for the given user login name
@@ -75,7 +78,8 @@ public interface SubjectService extends SafeOnlineService {
      * @param login
      * @throws SubjectNotFoundException
      */
-    SubjectEntity getSubjectFromUserName(String login) throws SubjectNotFoundException;
+    SubjectEntity getSubjectFromUserName(String login)
+            throws SubjectNotFoundException;
 
     /**
      * Returns the value of the login attribute associated with the given user ID. Returns <code>null</code> if not found.
@@ -105,5 +109,6 @@ public interface SubjectService extends SafeOnlineService {
      * @throws AttributeTypeNotFoundException
      * 
      */
-    List<String> listUsers(String prefix) throws AttributeTypeNotFoundException;
+    List<String> listUsers(String prefix)
+            throws AttributeTypeNotFoundException;
 }

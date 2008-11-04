@@ -29,9 +29,12 @@ import net.link.safeonline.osgi.plugin.PluginAttributeService;
  */
 @Local
 public interface OSGIStartable extends Startable {
+
     public static final String JNDI_BINDING = Startable.JNDI_PREFIX + "OSGIStartableBean";
+
 
     Object[] getPluginServices();
 
-    PluginAttributeService getPluginService(String serviceName) throws SafeOnlineResourceException;
+    PluginAttributeService getPluginService(String serviceName)
+            throws SafeOnlineResourceException;
 }

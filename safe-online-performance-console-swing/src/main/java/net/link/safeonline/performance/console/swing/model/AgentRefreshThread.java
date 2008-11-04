@@ -40,7 +40,8 @@ public class AgentRefreshThread extends ScenarioThread {
      * {@inheritDoc}
      */
     @Override
-    void process(ConsoleAgent agent) throws Exception {
+    void process(ConsoleAgent agent)
+            throws Exception {
 
         if (this.reset) {
             agent.resetTransit();

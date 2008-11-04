@@ -44,7 +44,8 @@ public class SerialCommunication {
     }
 
     @SuppressWarnings("unchecked")
-    public void open() throws SerialCommunicationsException {
+    public void open()
+            throws SerialCommunicationsException {
 
         boolean portFound = false;
 
@@ -102,7 +103,8 @@ public class SerialCommunication {
         this.serialPort.close();
     }
 
-    public void write(String message) throws SerialCommunicationsException {
+    public void write(String message)
+            throws SerialCommunicationsException {
 
         try {
             this.write(message.getBytes("US-ASCII"));
@@ -113,7 +115,8 @@ public class SerialCommunication {
 
     }
 
-    public void write(byte[] message) throws SerialCommunicationsException {
+    public void write(byte[] message)
+            throws SerialCommunicationsException {
 
         LOG.trace(">> " + new String(message));
         try {
@@ -124,7 +127,8 @@ public class SerialCommunication {
         }
     }
 
-    public String read() throws SerialCommunicationsException {
+    public String read()
+            throws SerialCommunicationsException {
 
         String result = null;
         try {

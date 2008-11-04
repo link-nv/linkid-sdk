@@ -27,6 +27,7 @@ public interface NodeAttributeService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/NodeAttributeServiceBean/local";
 
+
     /**
      * Gives back the value of an attribute of a certain subject.
      * 
@@ -43,6 +44,6 @@ public interface NodeAttributeService extends SafeOnlineService {
      * @throws AttributeTypeNotFoundException
      * @throws AttributeUnavailableException
      */
-    Object getAttributeValue(String subjectId, String attributeName) throws PermissionDeniedException, SubjectNotFoundException,
-                                                                    AttributeTypeNotFoundException, AttributeUnavailableException;
+    Object getAttributeValue(String subjectId, String attributeName)
+            throws PermissionDeniedException, SubjectNotFoundException, AttributeTypeNotFoundException, AttributeUnavailableException;
 }

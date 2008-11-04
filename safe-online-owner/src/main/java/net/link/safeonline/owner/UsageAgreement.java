@@ -21,14 +21,17 @@ public interface UsageAgreement {
 
     public static final String JNDI_BINDING = OwnerConstants.JNDI_PREFIX + "UsageAgreementBean/local";
 
+
     /*
      * Factories
      */
     void usageAgreementTextListFactory();
 
-    void draftUsageAgreementsTextsFactory() throws ApplicationNotFoundException, PermissionDeniedException;
+    void draftUsageAgreementsTextsFactory()
+            throws ApplicationNotFoundException, PermissionDeniedException;
 
-    void currentUsageAgreementsTextsFactory() throws PermissionDeniedException, ApplicationNotFoundException;
+    void currentUsageAgreementsTextsFactory()
+            throws PermissionDeniedException, ApplicationNotFoundException;
 
     /*
      * Actions
@@ -39,28 +42,37 @@ public interface UsageAgreement {
 
     String viewDraftText();
 
-    String saveText() throws ApplicationNotFoundException, PermissionDeniedException;
+    String saveText()
+            throws ApplicationNotFoundException, PermissionDeniedException;
 
-    String createUsageAgreement() throws ApplicationNotFoundException, PermissionDeniedException;
+    String createUsageAgreement()
+            throws ApplicationNotFoundException, PermissionDeniedException;
 
     String editDraftText();
 
-    String removeDraftText() throws ApplicationNotFoundException, PermissionDeniedException;
+    String removeDraftText()
+            throws ApplicationNotFoundException, PermissionDeniedException;
 
-    String editCurrentText() throws ApplicationNotFoundException, PermissionDeniedException;
+    String editCurrentText()
+            throws ApplicationNotFoundException, PermissionDeniedException;
 
-    String addText() throws ApplicationNotFoundException, PermissionDeniedException;
+    String addText()
+            throws ApplicationNotFoundException, PermissionDeniedException;
 
-    String releaseDraft() throws ApplicationNotFoundException, PermissionDeniedException;
+    String releaseDraft()
+            throws ApplicationNotFoundException, PermissionDeniedException;
 
-    String removeDraft() throws ApplicationNotFoundException, PermissionDeniedException;
+    String removeDraft()
+            throws ApplicationNotFoundException, PermissionDeniedException;
 
     /*
      * Accessors
      */
-    UsageAgreementEntity getDraftUsageAgreement() throws ApplicationNotFoundException, PermissionDeniedException;
+    UsageAgreementEntity getDraftUsageAgreement()
+            throws ApplicationNotFoundException, PermissionDeniedException;
 
-    UsageAgreementEntity getCurrentUsageAgreement() throws PermissionDeniedException, ApplicationNotFoundException;
+    UsageAgreementEntity getCurrentUsageAgreement()
+            throws PermissionDeniedException, ApplicationNotFoundException;
 
     void setLanguage(String language);
 

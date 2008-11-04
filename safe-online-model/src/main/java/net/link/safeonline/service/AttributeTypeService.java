@@ -27,6 +27,7 @@ public interface AttributeTypeService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AttributeTypeServiceBean/local";
 
+
     /**
      * Lists all attributes types within the system. This includes primitive attribute types, multi-valued attribute types and compounded
      * attribute types.
@@ -63,8 +64,8 @@ public interface AttributeTypeService extends SafeOnlineService {
      * @throws AttributeTypeNotFoundException
      *             in case the member attribute was not found when defining a new compounded attribute type.
      */
-    void add(AttributeTypeEntity attributeType) throws ExistingAttributeTypeException, AttributeTypeNotFoundException,
-                                               AttributeTypeDefinitionException;
+    void add(AttributeTypeEntity attributeType)
+            throws ExistingAttributeTypeException, AttributeTypeNotFoundException, AttributeTypeDefinitionException;
 
     /**
      * Removes an attribute type using the given attribute type prototype. No existing application identities should be using this type.
@@ -74,10 +75,11 @@ public interface AttributeTypeService extends SafeOnlineService {
      * @throws PermissionDeniedException
      * @throws AttributeTypeNotFoundException
      */
-    void remove(AttributeTypeEntity attributeType) throws AttributeTypeDescriptionNotFoundException, PermissionDeniedException,
-                                                  AttributeTypeNotFoundException;
+    void remove(AttributeTypeEntity attributeType)
+            throws AttributeTypeDescriptionNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException;
 
-    List<AttributeTypeDescriptionEntity> listDescriptions(String attributeTypeName) throws AttributeTypeNotFoundException;
+    List<AttributeTypeDescriptionEntity> listDescriptions(String attributeTypeName)
+            throws AttributeTypeNotFoundException;
 
     /**
      * Adds a new attribute type description. The entity parameter is used as data object between the operator control beans and the model
@@ -86,13 +88,17 @@ public interface AttributeTypeService extends SafeOnlineService {
      * @param newAttributeTypeDescription
      * @throws AttributeTypeNotFoundException
      */
-    void addDescription(AttributeTypeDescriptionEntity newAttributeTypeDescription) throws AttributeTypeNotFoundException;
+    void addDescription(AttributeTypeDescriptionEntity newAttributeTypeDescription)
+            throws AttributeTypeNotFoundException;
 
-    void removeDescription(AttributeTypeDescriptionEntity attributeTypeDescription) throws AttributeTypeDescriptionNotFoundException;
+    void removeDescription(AttributeTypeDescriptionEntity attributeTypeDescription)
+            throws AttributeTypeDescriptionNotFoundException;
 
     void saveDescription(AttributeTypeDescriptionEntity attributeTypeDescription);
 
-    void savePluginConfiguration(String attributeTypeName, String pluginConfiguration) throws AttributeTypeNotFoundException;
+    void savePluginConfiguration(String attributeTypeName, String pluginConfiguration)
+            throws AttributeTypeNotFoundException;
 
-    void saveCacheTimeout(String attributeTypeName, Long cacheTimeout) throws AttributeTypeNotFoundException;
+    void saveCacheTimeout(String attributeTypeName, Long cacheTimeout)
+            throws AttributeTypeNotFoundException;
 }

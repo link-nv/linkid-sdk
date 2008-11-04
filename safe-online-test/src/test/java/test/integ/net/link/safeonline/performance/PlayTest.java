@@ -148,7 +148,8 @@ public class PlayTest extends AbstractDataTest {
         // }
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args)
+            throws Exception {
 
         new PlayTest();
     }

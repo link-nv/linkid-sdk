@@ -86,7 +86,8 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
         return subscriptions;
     }
 
-    public void removeSubscription(SubjectEntity subject, ApplicationEntity application) throws SubscriptionNotFoundException {
+    public void removeSubscription(SubjectEntity subject, ApplicationEntity application)
+            throws SubscriptionNotFoundException {
 
         SubscriptionEntity subscription = findSubscription(subject, application);
         if (null == subscription)
@@ -113,7 +114,8 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
         this.entityManager.remove(subscriptionEntity);
     }
 
-    public SubscriptionEntity getSubscription(SubjectEntity subject, ApplicationEntity application) throws SubscriptionNotFoundException {
+    public SubscriptionEntity getSubscription(SubjectEntity subject, ApplicationEntity application)
+            throws SubscriptionNotFoundException {
 
         SubscriptionEntity subscription = findSubscription(subject, application);
         if (null == subscription)

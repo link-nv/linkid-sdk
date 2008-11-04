@@ -51,7 +51,8 @@ public class NodeIdentifierMappingServiceBean implements NodeIdentifierMappingSe
 
 
     @RolesAllowed(SafeOnlineNodeRoles.NODE_ROLE)
-    public String getNodeMappingId(String username) throws NodeNotFoundException, SubjectNotFoundException {
+    public String getNodeMappingId(String username)
+            throws NodeNotFoundException, SubjectNotFoundException {
 
         LOG.debug("get device mapping id: " + username);
         NodeEntity node = this.nodeManager.getCallerNode();

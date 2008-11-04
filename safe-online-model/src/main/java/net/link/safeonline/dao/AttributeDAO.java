@@ -32,6 +32,7 @@ public interface AttributeDAO extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AttributeDAOBean/local";
 
+
     AttributeEntity addAttribute(AttributeTypeEntity attributeType, SubjectEntity subject, String stringValue);
 
     /**
@@ -79,13 +80,17 @@ public interface AttributeDAO extends SafeOnlineService {
      * @param index
      * @throws AttributeNotFoundException
      */
-    AttributeEntity getAttribute(AttributeTypeEntity attributeType, SubjectEntity subject, long index) throws AttributeNotFoundException;
+    AttributeEntity getAttribute(AttributeTypeEntity attributeType, SubjectEntity subject, long index)
+            throws AttributeNotFoundException;
 
-    AttributeEntity getAttribute(AttributeTypeEntity attributeType, SubjectEntity subject) throws AttributeNotFoundException;
+    AttributeEntity getAttribute(AttributeTypeEntity attributeType, SubjectEntity subject)
+            throws AttributeNotFoundException;
 
-    AttributeEntity getAttribute(String attributeTypeName, SubjectEntity subject) throws AttributeNotFoundException;
+    AttributeEntity getAttribute(String attributeTypeName, SubjectEntity subject)
+            throws AttributeNotFoundException;
 
-    AttributeEntity getAttribute(String attributeTypeName, SubjectEntity subject, long index) throws AttributeNotFoundException;
+    AttributeEntity getAttribute(String attributeTypeName, SubjectEntity subject, long index)
+            throws AttributeNotFoundException;
 
     AttributeEntity findAttribute(SubjectEntity subject, AttributeTypeEntity attributeType, long index);
 

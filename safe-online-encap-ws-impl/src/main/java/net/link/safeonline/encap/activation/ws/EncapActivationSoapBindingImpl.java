@@ -35,7 +35,8 @@ public class EncapActivationSoapBindingImpl implements BankIdActivation {
     private final static int ENCAP_FAILURE = 3;
 
 
-    public ActivationInitResponse activate(String msisdn, String orgId, Object secureObject) throws RemoteException {
+    public ActivationInitResponse activate(String msisdn, String orgId, Object secureObject)
+            throws RemoteException {
 
         LOG.debug("activate: msisdn=" + msisdn + " orgId=" + orgId);
         ActivationInitResponse response = new ActivationInitResponse();
@@ -52,7 +53,8 @@ public class EncapActivationSoapBindingImpl implements BankIdActivation {
         return response;
     }
 
-    public MSecResponse cancelSession(String sessionId) throws RemoteException {
+    public MSecResponse cancelSession(String sessionId)
+            throws RemoteException {
 
         LOG.debug("session canceled: " + sessionId);
         MSecResponse response = new MSecResponse();

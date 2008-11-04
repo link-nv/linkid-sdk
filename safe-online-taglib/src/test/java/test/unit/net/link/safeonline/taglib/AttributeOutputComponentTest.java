@@ -22,7 +22,8 @@ public class AttributeOutputComponentTest extends TestCase {
     private static final Log LOG = LogFactory.getLog(AttributeOutputComponentTest.class);
 
 
-    public void testGetAttributeValueEncoder() throws Exception {
+    public void testGetAttributeValueEncoder()
+            throws Exception {
 
         // setup
         Class<AttributeOutputComponent> clazz = AttributeOutputComponent.class;

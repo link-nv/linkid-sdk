@@ -22,7 +22,8 @@ import net.link.safeonline.test.util.JndiTestUtils;
  */
 public class JndiTestUtilsTest extends TestCase {
 
-    public void testBindComponent() throws Exception {
+    public void testBindComponent()
+            throws Exception {
 
         // setup
         Object testComponent = new Object();
@@ -48,7 +49,8 @@ public class JndiTestUtilsTest extends TestCase {
         }
     }
 
-    public void testBindComponentWithSimpleName() throws Exception {
+    public void testBindComponentWithSimpleName()
+            throws Exception {
 
         // setup
         Object testComponent = new Object();

@@ -52,8 +52,8 @@ public class ApplicationIdentifierMappingServiceBean implements ApplicationIdent
 
 
     @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
-    public String getApplicationUserId(String username) throws PermissionDeniedException, ApplicationNotFoundException,
-                                                       SubscriptionNotFoundException, SubjectNotFoundException {
+    public String getApplicationUserId(String username)
+            throws PermissionDeniedException, ApplicationNotFoundException, SubscriptionNotFoundException, SubjectNotFoundException {
 
         LOG.debug("getUserId: " + username);
         checkPermission();
@@ -66,7 +66,8 @@ public class ApplicationIdentifierMappingServiceBean implements ApplicationIdent
         return userId;
     }
 
-    private void checkPermission() throws PermissionDeniedException {
+    private void checkPermission()
+            throws PermissionDeniedException {
 
         ApplicationEntity application = this.applicationManager.getCallerApplication();
         boolean allowed = application.isIdentifierMappingAllowed();
@@ -75,7 +76,8 @@ public class ApplicationIdentifierMappingServiceBean implements ApplicationIdent
     }
 
     @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
-    public String findUserId(String applicationName, String applicationUserId) throws ApplicationNotFoundException {
+    public String findUserId(String applicationName, String applicationUserId)
+            throws ApplicationNotFoundException {
 
         LOG.debug("getUserId: " + applicationName + ", " + applicationUserId);
         return this.userIdMappingService.findUserId(applicationName, applicationUserId);

@@ -39,7 +39,8 @@ public class DeviceOperationResponseFactoryTest {
 
 
     @Test
-    public void createDeviceOperationResponse() throws Exception {
+    public void createDeviceOperationResponse()
+            throws Exception {
 
         // setup
         String inResponseTo = "id-in-response-to-test-id";

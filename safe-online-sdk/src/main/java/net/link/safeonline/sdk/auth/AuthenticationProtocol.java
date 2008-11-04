@@ -21,7 +21,8 @@ public enum AuthenticationProtocol {
     SAML2_BROWSER_POST,
     UNIT_TEST;
 
-    public static AuthenticationProtocol toAuthenticationProtocol(String value) throws UnavailableException {
+    public static AuthenticationProtocol toAuthenticationProtocol(String value)
+            throws UnavailableException {
 
         try {
             AuthenticationProtocol authenticationProtocol = AuthenticationProtocol.valueOf(value);

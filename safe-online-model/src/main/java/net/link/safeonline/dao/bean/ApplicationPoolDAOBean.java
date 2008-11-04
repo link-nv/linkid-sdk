@@ -65,7 +65,8 @@ public class ApplicationPoolDAOBean implements ApplicationPoolDAO {
         return applicationPools;
     }
 
-    public ApplicationPoolEntity getApplicationPool(String applicationPoolName) throws ApplicationPoolNotFoundException {
+    public ApplicationPoolEntity getApplicationPool(String applicationPoolName)
+            throws ApplicationPoolNotFoundException {
 
         ApplicationPoolEntity applicationPool = findApplicationPool(applicationPoolName);
         if (null == applicationPool)

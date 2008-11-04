@@ -25,6 +25,7 @@ public interface AddAttribute {
 
     public static final String JNDI_BINDING = OperatorConstants.JNDI_PREFIX + "AddAttributeBean/local";
 
+
     /*
      * Lifecycle.
      */
@@ -88,8 +89,8 @@ public interface AddAttribute {
 
     String typeNext();
 
-    String add() throws NodeNotFoundException, ExistingAttributeTypeException, AttributeTypeNotFoundException,
-                AttributeTypeDefinitionException;
+    String add()
+            throws NodeNotFoundException, ExistingAttributeTypeException, AttributeTypeNotFoundException, AttributeTypeDefinitionException;
 
     String cancel();
 

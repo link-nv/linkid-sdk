@@ -53,7 +53,8 @@ public class EJBTestUtilsTest extends TestCase {
             this.object = object;
         }
 
-        public Object invoke(@SuppressWarnings("unused") Object proxy, Method method, Object[] args) throws Throwable {
+        public Object invoke(@SuppressWarnings("unused") Object proxy, Method method, Object[] args)
+                throws Throwable {
 
             handlerLOG.debug("invoke");
             return method.invoke(this.object, args);
@@ -61,7 +62,8 @@ public class EJBTestUtilsTest extends TestCase {
     }
 
 
-    public void testProxy() throws Exception {
+    public void testProxy()
+            throws Exception {
 
         // setup
         TestClass origObject = new TestClass();
@@ -91,7 +93,8 @@ public class EJBTestUtilsTest extends TestCase {
         }
 
         public Object intercept(@SuppressWarnings("unused") Object obj, Method method, Object[] args,
-                                @SuppressWarnings("unused") MethodProxy proxy) throws Throwable {
+                                @SuppressWarnings("unused") MethodProxy proxy)
+                throws Throwable {
 
             interceptorLOG.debug("intercept");
             return method.invoke(this.object, args);
@@ -99,7 +102,8 @@ public class EJBTestUtilsTest extends TestCase {
     }
 
 
-    public void testCgLib() throws Exception {
+    public void testCgLib()
+            throws Exception {
 
         // setup
         TestClass origObject = new TestClass();

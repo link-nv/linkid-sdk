@@ -38,7 +38,8 @@ public class EncapAuthenticationClientImpl implements EncapAuthenticationClient 
         this.authStub = new MSecBankIdSoapBindingStub(endpointURL, new Service());
     }
 
-    public boolean cancelSession(String sessionId) throws RemoteException {
+    public boolean cancelSession(String sessionId)
+            throws RemoteException {
 
         LOG.debug("cancel session: " + sessionId);
         MSecResponse response = this.authStub.cancelSession(sessionId);
@@ -47,7 +48,8 @@ public class EncapAuthenticationClientImpl implements EncapAuthenticationClient 
         return false;
     }
 
-    public String challenge(String mobile, String orgId) throws RemoteException {
+    public String challenge(String mobile, String orgId)
+            throws RemoteException {
 
         LOG.debug("challenge mobile=" + mobile + " orgId=" + orgId);
         ChallengeResponse response = this.authStub.challenge(mobile, orgId);
@@ -59,7 +61,8 @@ public class EncapAuthenticationClientImpl implements EncapAuthenticationClient 
         return response.getChallengeId();
     }
 
-    public boolean verifyOTP(String challengeId, String OTPValue) throws RemoteException {
+    public boolean verifyOTP(String challengeId, String OTPValue)
+            throws RemoteException {
 
         LOG.debug("verify OTP: challengeId=" + challengeId + " OTPValue=" + OTPValue);
         VerifyResponse response = this.authStub.verifyOTP(challengeId, OTPValue);

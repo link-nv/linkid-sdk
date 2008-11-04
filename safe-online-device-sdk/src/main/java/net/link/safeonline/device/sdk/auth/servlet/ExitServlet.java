@@ -29,18 +29,21 @@ public class ExitServlet extends AbstractInjectionServlet {
 
 
     @Override
-    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         handleExit(request, response);
     }
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         handleExit(request, response);
     }
 
-    protected void handleExit(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void handleExit(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
 
         Saml2Handler handler = Saml2Handler.findSaml2Handler(request);
         if (null == handler) {

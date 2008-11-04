@@ -163,8 +163,9 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
         throw new RuntimeException("WTF");
     }
 
-    public void initiateAuthentication(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-            String targetUrl, Locale language, Integer color, Boolean minimal) throws IOException, ServletException {
+    public void initiateAuthentication(HttpServletRequest httpRequest, HttpServletResponse httpResponse, String targetUrl, Locale language,
+                                       Integer color, Boolean minimal)
+            throws IOException, ServletException {
 
         LOG.debug("target url: " + targetUrl);
         Set<String> devices = getDevices(httpRequest);
@@ -182,12 +183,12 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
         }
 
         Locale olasLanguage = language == null? httpRequest.getLocale(): language;
-        RequestUtil.sendRequest(this.authnServiceUrl, encodedSamlRequestToken, olasLanguage, color, minimal,
-                templateResourceName, httpResponse);
+        RequestUtil.sendRequest(this.authnServiceUrl, encodedSamlRequestToken, olasLanguage, color, minimal, templateResourceName,
+                httpResponse);
     }
 
     public AuthenticationProtocolContext finalizeAuthentication(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
-                                                                                                                                 throws ServletException {
+            throws ServletException {
 
         DateTime now = new DateTime();
 
@@ -212,8 +213,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
      * {@inheritDoc}
      */
     public void initiateLogout(HttpServletRequest httpRequest, HttpServletResponse httpResponse, String targetUrl, String subjectName)
-                                                                                                                                      throws IOException,
-                                                                                                                                      ServletException {
+            throws IOException, ServletException {
 
         LOG.debug("target url: " + targetUrl);
         String samlRequestToken = LogoutRequestFactory.createLogoutRequest(subjectName, this.applicationName, this.applicationKeyPair,
@@ -228,14 +228,14 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
             templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
         }
 
-        RequestUtil.sendRequest(this.authnServiceUrl, encodedSamlRequestToken, null, null, null, templateResourceName,
-                httpResponse);
+        RequestUtil.sendRequest(this.authnServiceUrl, encodedSamlRequestToken, null, null, null, templateResourceName, httpResponse);
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean finalizeLogout(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws ServletException {
+    public boolean finalizeLogout(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
+            throws ServletException {
 
         LogoutResponse samlLogoutResponse = ResponseUtil.validateLogoutResponse(httpRequest, this.challenge.getValue(), this.wsLocation,
                 this.applicationCertificate, this.applicationKeyPair.getPrivate(), TrustDomainType.NODE);
@@ -252,7 +252,8 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
     /**
      * {@inheritDoc}
      */
-    public String handleLogoutRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+    public String handleLogoutRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException {
 
         LogoutRequest samlLogoutRequest = RequestUtil.validateLogoutRequest(request, this.wsLocation, this.applicationCertificate,
                 this.applicationKeyPair.getPrivate(), TrustDomainType.NODE);
@@ -267,8 +268,8 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
     /**
      * {@inheritDoc}
      */
-    public void sendLogoutResponse(boolean success, HttpServletRequest request, HttpServletResponse response) throws ServletException,
-                                                                                                             IOException {
+    public void sendLogoutResponse(boolean success, HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         String samlResponseToken = LogoutResponseFactory.createLogoutResponse(this.challenge.getValue(), this.applicationName,
                 this.applicationKeyPair, this.authnServiceUrl);

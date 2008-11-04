@@ -129,7 +129,8 @@ public class SMS {
      * @param message
      * @throws Exception
      */
-    public static byte[] msgToBytes(String message) throws Exception {
+    public static byte[] msgToBytes(String message)
+            throws Exception {
 
         // convert the characters to their ASCII value
         byte[] orig = message.getBytes("US-ASCII");

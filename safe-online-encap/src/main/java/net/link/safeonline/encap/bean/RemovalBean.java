@@ -77,14 +77,16 @@ public class RemovalBean implements Removal {
         this.log.debug("destroy");
     }
 
-    public String mobileCancel() throws IOException {
+    public String mobileCancel()
+            throws IOException {
 
         this.protocolContext.setSuccess(false);
         exit();
         return null;
     }
 
-    private void exit() throws IOException {
+    private void exit()
+            throws IOException {
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ExternalContext externalContext = facesContext.getExternalContext();
@@ -99,7 +101,8 @@ public class RemovalBean implements Removal {
     }
 
     @Factory(MOBILE_ATTRIBUTE_LIST_NAME)
-    public List<AttributeDO> mobileAttributesFactory() throws SubjectNotFoundException, DeviceNotFoundException {
+    public List<AttributeDO> mobileAttributesFactory()
+            throws SubjectNotFoundException, DeviceNotFoundException {
 
         Locale locale = getViewLocale();
         this.mobileAttributes = this.encapDeviceService.getMobiles(this.protocolContext.getSubject(), locale);
@@ -107,7 +110,8 @@ public class RemovalBean implements Removal {
     }
 
     @ErrorHandling( { @Error(exceptionClass = MalformedURLException.class, messageId = "mobileCommunicationFailed") })
-    public String mobileRemove() throws SubjectNotFoundException, MobileException, IOException, AttributeTypeNotFoundException {
+    public String mobileRemove()
+            throws SubjectNotFoundException, MobileException, IOException, AttributeTypeNotFoundException {
 
         this.encapDeviceService.remove(this.protocolContext.getSubject(), this.selectedMobile.getStringValue());
         this.protocolContext.setSuccess(true);

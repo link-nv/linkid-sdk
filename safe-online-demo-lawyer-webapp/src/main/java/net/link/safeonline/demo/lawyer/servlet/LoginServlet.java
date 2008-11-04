@@ -51,7 +51,8 @@ public class LoginServlet extends HttpServlet {
 
 
     @Override
-    public void init(ServletConfig config) throws ServletException {
+    public void init(ServletConfig config)
+            throws ServletException {
 
         super.init(config);
 
@@ -70,7 +71,8 @@ public class LoginServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         /*
          * Since the SAML protocol can enter the application via an HTTP POST we also need to implement the doPost method.
@@ -79,7 +81,8 @@ public class LoginServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         HttpSession session = request.getSession();
         String userId = LoginManager.getUserId(request);
@@ -87,8 +90,7 @@ public class LoginServlet extends HttpServlet {
 
         Attribute<Boolean> barAdminAttribute;
         try {
-            barAdminAttribute = this.dataClient.getAttributeValue(userId,
-                    DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME, Boolean.class);
+            barAdminAttribute = this.dataClient.getAttributeValue(userId, DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME, Boolean.class);
         } catch (RequestDeniedException e) {
             throw new ServletException("count not retrieve baradmin attribute");
         } catch (SubjectNotFoundException e) {
@@ -116,7 +118,8 @@ public class LoginServlet extends HttpServlet {
         redirectToOverviewPage(session, response);
     }
 
-    private void redirectToStatusPage(HttpSession session, HttpServletResponse response) throws IOException {
+    private void redirectToStatusPage(HttpSession session, HttpServletResponse response)
+            throws IOException {
 
         session.setAttribute("role", LawyerConstants.USER_ROLE);
         /*
@@ -125,7 +128,8 @@ public class LoginServlet extends HttpServlet {
         response.sendRedirect("./status.seam");
     }
 
-    private void redirectToOverviewPage(HttpSession session, HttpServletResponse response) throws IOException {
+    private void redirectToOverviewPage(HttpSession session, HttpServletResponse response)
+            throws IOException {
 
         session.setAttribute("role", LawyerConstants.ADMIN_ROLE);
         response.sendRedirect("./overview.seam");

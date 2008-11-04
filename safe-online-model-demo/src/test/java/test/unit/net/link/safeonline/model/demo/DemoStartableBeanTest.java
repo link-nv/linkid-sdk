@@ -130,7 +130,8 @@ public class DemoStartableBeanTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.entityTestManager = new EntityTestManager();
         this.entityTestManager.setUp(SubjectEntity.class, ApplicationEntity.class, ApplicationOwnerEntity.class, AttributeEntity.class,
@@ -181,24 +182,22 @@ public class DemoStartableBeanTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.entityTestManager.tearDown();
     }
 
     @Test
-    public void postStart() throws Exception {
+    public void postStart()
+            throws Exception {
 
         // setup
         EntityManager entityManager = this.entityTestManager.getEntityManager();
-        BeIdStartableBean beIdStartableBean = EJBTestUtils.newInstance(BeIdStartableBean.class, container,
-                entityManager);
-        DigipassStartableBean digipassStartableBean = EJBTestUtils.newInstance(DigipassStartableBean.class, container,
-                entityManager);
-        EncapStartableBean encapStartableBean = EJBTestUtils.newInstance(EncapStartableBean.class, container,
-                entityManager);
-        DemoStartableBean demoStartableBean = EJBTestUtils.newInstance(DemoStartableBean.class, container,
-                entityManager);
+        BeIdStartableBean beIdStartableBean = EJBTestUtils.newInstance(BeIdStartableBean.class, container, entityManager);
+        DigipassStartableBean digipassStartableBean = EJBTestUtils.newInstance(DigipassStartableBean.class, container, entityManager);
+        EncapStartableBean encapStartableBean = EJBTestUtils.newInstance(EncapStartableBean.class, container, entityManager);
+        DemoStartableBean demoStartableBean = EJBTestUtils.newInstance(DemoStartableBean.class, container, entityManager);
 
         EJBTestUtils.setJBossPrincipal("test-operator", "operator");
 

@@ -72,7 +72,8 @@ public class LoginServlet extends AbstractInjectionServlet {
 
 
     @Override
-    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         LOG.debug("doGet");
         HttpSession session = request.getSession();
@@ -119,7 +120,8 @@ public class LoginServlet extends AbstractInjectionServlet {
         response.sendRedirect("./exit");
     }
 
-    private void redirectToRegisterDevice(HttpServletResponse response) throws IOException {
+    private void redirectToRegisterDevice(HttpServletResponse response)
+            throws IOException {
 
         response.sendRedirect("./register-device.seam");
     }
@@ -129,7 +131,8 @@ public class LoginServlet extends AbstractInjectionServlet {
         return this.usageAgreementService.requiresGlobalUsageAgreementAcceptation(language);
     }
 
-    private boolean performMissingAttributesCheck() throws ServletException {
+    private boolean performMissingAttributesCheck()
+            throws ServletException {
 
         boolean hasMissingAttributes;
         try {
@@ -146,7 +149,8 @@ public class LoginServlet extends AbstractInjectionServlet {
         return hasMissingAttributes;
     }
 
-    private boolean performConfirmationCheck() throws ServletException {
+    private boolean performConfirmationCheck()
+            throws ServletException {
 
         boolean confirmationRequired;
         try {
@@ -162,16 +166,15 @@ public class LoginServlet extends AbstractInjectionServlet {
         return confirmationRequired;
     }
 
-    private boolean performSubscriptionCheck(String language) throws ServletException {
+    private boolean performSubscriptionCheck(String language)
+            throws ServletException {
 
         boolean subscriptionRequired;
         try {
             subscriptionRequired = !this.subscriptionService.isSubscribed(this.applicationId);
             if (!subscriptionRequired) {
                 try {
-                    subscriptionRequired = this.usageAgreementService
-                            .requiresUsageAgreementAcceptation(
-                            this.applicationId, language);
+                    subscriptionRequired = this.usageAgreementService.requiresUsageAgreementAcceptation(this.applicationId, language);
                 } catch (SubscriptionNotFoundException e) {
                     LOG.debug("subscription not found: " + this.applicationId);
                     throw new ServletException("subscription not found");
@@ -192,7 +195,8 @@ public class LoginServlet extends AbstractInjectionServlet {
      * @param device
      * @throws ServletException
      */
-    private boolean performDevicePolicyCheck(HttpSession session) throws ServletException {
+    private boolean performDevicePolicyCheck(HttpSession session)
+            throws ServletException {
 
         Set<DeviceEntity> requiredDevicePolicy = LoginManager.getRequiredDevices(session);
         List<DeviceEntity> devicePolicy;
@@ -208,13 +212,15 @@ public class LoginServlet extends AbstractInjectionServlet {
         return false;
     }
 
-    private void redirectToMissingAttributes(HttpServletResponse response) throws IOException {
+    private void redirectToMissingAttributes(HttpServletResponse response)
+            throws IOException {
 
         String redirectUrl = "./missing-attributes.seam";
         response.sendRedirect(redirectUrl);
     }
 
-    private void redirectToIdentityConfirmation(HttpServletResponse response) throws IOException {
+    private void redirectToIdentityConfirmation(HttpServletResponse response)
+            throws IOException {
 
         String redirectUrl = "./identity-confirmation.seam";
 
@@ -222,13 +228,15 @@ public class LoginServlet extends AbstractInjectionServlet {
         response.sendRedirect(redirectUrl);
     }
 
-    private void redirectToSubscription(HttpServletResponse response) throws IOException {
+    private void redirectToSubscription(HttpServletResponse response)
+            throws IOException {
 
         String redirectUrl = "./subscription.seam";
         response.sendRedirect(redirectUrl);
     }
 
-    private void redirectToGlobalConfirmation(HttpServletResponse response) throws IOException {
+    private void redirectToGlobalConfirmation(HttpServletResponse response)
+            throws IOException {
 
         String redirectUrl = "./global-confirmation.seam";
         response.sendRedirect(redirectUrl);

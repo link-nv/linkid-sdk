@@ -130,8 +130,8 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
     public String redirect(@NonEmptyString String serviceUrl, @NonEmptyString String targetUrl,
                            @NotNull DeviceOperationType deviceOperation, @NonEmptyString String deviceName, String authenticatedDeviceName,
-                           @NonEmptyString String userId, AttributeDO attribute) throws NodeNotFoundException, SubjectNotFoundException,
-                                                                                DeviceNotFoundException {
+                           @NonEmptyString String userId, AttributeDO attribute)
+            throws NodeNotFoundException, SubjectNotFoundException, DeviceNotFoundException {
 
         IdentityServiceClient identityServiceClient = new IdentityServiceClient();
         PrivateKey privateKey = identityServiceClient.getPrivateKey();
@@ -172,9 +172,8 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
 
     @Remove
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public String finalize(@NotNull HttpServletRequest request) throws NodeNotFoundException, ServletException,
-                                                               NodeMappingNotFoundException, DeviceNotFoundException,
-                                                               SubjectNotFoundException {
+    public String finalize(@NotNull HttpServletRequest request)
+            throws NodeNotFoundException, ServletException, NodeMappingNotFoundException, DeviceNotFoundException, SubjectNotFoundException {
 
         LOG.debug("finalize");
         LOG.debug("expected challenge id: " + this.expectedChallengeId);

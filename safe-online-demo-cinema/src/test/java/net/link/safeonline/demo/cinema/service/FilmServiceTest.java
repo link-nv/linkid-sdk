@@ -50,7 +50,8 @@ public class FilmServiceTest extends AbstractCinemaServiceTest {
      * {@inheritDoc}
      */
     @Override
-    public void setup() throws Exception {
+    public void setup()
+            throws Exception {
 
         super.setup();
 

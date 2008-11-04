@@ -20,7 +20,8 @@ public class OwnerTest extends TestCase {
 
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp()
+            throws Exception {
 
         super.setUp();
         this.acceptanceTestManager = new AcceptanceTestManager();
@@ -28,13 +29,15 @@ public class OwnerTest extends TestCase {
     }
 
     @Override
-    protected void tearDown() throws Exception {
+    protected void tearDown()
+            throws Exception {
 
         this.acceptanceTestManager.tearDown();
         super.tearDown();
     }
 
-    public void testOwnerLogonLogout() throws Exception {
+    public void testOwnerLogonLogout()
+            throws Exception {
 
         this.acceptanceTestManager.setContext("Testing owner webapp admin login logout");
 

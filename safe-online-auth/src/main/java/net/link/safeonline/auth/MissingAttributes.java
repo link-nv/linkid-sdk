@@ -22,14 +22,17 @@ public interface MissingAttributes {
 
     public static final String JNDI_BINDING = AuthenticationConstants.JNDI_PREFIX + "MissingAttributesBean/local";
 
+
     /*
      * Factories.
      */
-    void missingAttributeListFactory() throws ApplicationNotFoundException, ApplicationIdentityNotFoundException,
-                                      PermissionDeniedException, AttributeTypeNotFoundException, AttributeUnavailableException;
+    void missingAttributeListFactory()
+            throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException,
+            AttributeTypeNotFoundException, AttributeUnavailableException;
 
-    void optionalAttributeListFactory() throws ApplicationNotFoundException, ApplicationIdentityNotFoundException,
-                                       PermissionDeniedException, AttributeTypeNotFoundException, AttributeUnavailableException;
+    void optionalAttributeListFactory()
+            throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException,
+            AttributeTypeNotFoundException, AttributeUnavailableException;
 
     /*
      * Actions.

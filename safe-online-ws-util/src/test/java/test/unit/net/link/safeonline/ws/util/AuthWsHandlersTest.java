@@ -73,7 +73,8 @@ public class AuthWsHandlersTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.jndiTestUtils = new JndiTestUtils();
         this.jndiTestUtils.setUp();
@@ -102,7 +103,8 @@ public class AuthWsHandlersTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.webServiceTestUtils.tearDown();
 
@@ -180,7 +182,8 @@ public class AuthWsHandlersTest {
 
 
     @Test
-    public void testMissingWsSecuritySignature() throws Exception {
+    public void testMissingWsSecuritySignature()
+            throws Exception {
 
         // setup
         String location = this.webServiceTestUtils.getEndpointAddress();

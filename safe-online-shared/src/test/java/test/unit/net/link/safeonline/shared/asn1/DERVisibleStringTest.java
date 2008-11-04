@@ -15,7 +15,8 @@ import org.bouncycastle.asn1.ASN1Object;
 
 public class DERVisibleStringTest extends TestCase {
 
-    public void testDERVisible() throws Exception {
+    public void testDERVisible()
+            throws Exception {
 
         // setup
         String value = "hello world";

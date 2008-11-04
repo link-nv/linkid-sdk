@@ -40,7 +40,8 @@ public class DummyEncapWebServiceTest {
 
 
     @Test
-    public void testEncapActivate() throws MalformedURLException, RemoteException {
+    public void testEncapActivate()
+            throws MalformedURLException, RemoteException {
 
         // setup
         String endpoint = ENCAP_LOCATION + "/mSecBankIdActivation";
@@ -53,7 +54,8 @@ public class DummyEncapWebServiceTest {
     }
 
     @Test
-    public void testEncapLock() throws MalformedURLException, RemoteException {
+    public void testEncapLock()
+            throws MalformedURLException, RemoteException {
 
         // setup
         String endpoint = ENCAP_LOCATION + "/mSecBankIdAdministration";
@@ -72,7 +74,8 @@ public class DummyEncapWebServiceTest {
     }
 
     @Test
-    public void testEncapUnLock() throws MalformedURLException, RemoteException {
+    public void testEncapUnLock()
+            throws MalformedURLException, RemoteException {
 
         // setup
         String endpoint = ENCAP_LOCATION + "/mSecBankIdAdministration";
@@ -91,7 +94,8 @@ public class DummyEncapWebServiceTest {
     }
 
     @Test
-    public void testEncapRemove() throws MalformedURLException, RemoteException {
+    public void testEncapRemove()
+            throws MalformedURLException, RemoteException {
 
         // setup
         String endpoint = ENCAP_LOCATION + "/mSecBankIdAdministration";
@@ -110,7 +114,8 @@ public class DummyEncapWebServiceTest {
     }
 
     @Test
-    public void testEncapShowStatus() throws MalformedURLException, RemoteException {
+    public void testEncapShowStatus()
+            throws MalformedURLException, RemoteException {
 
         // setup
         String endpoint = ENCAP_LOCATION + "/mSecBankIdAdministration";
@@ -129,7 +134,8 @@ public class DummyEncapWebServiceTest {
     }
 
     @Test
-    public void testEncapChallenge() throws MalformedURLException, RemoteException {
+    public void testEncapChallenge()
+            throws MalformedURLException, RemoteException {
 
         // setup
         String endpoint = ENCAP_LOCATION + "/mSecBankId";

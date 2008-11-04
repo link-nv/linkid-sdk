@@ -41,7 +41,8 @@ public class MobileManagerBean implements MobileManager {
     /*
      * RemoteException are transformed to a MobileException, else they get wrapped by JBoss into EJBTransactionRolledbackException
      */
-    public String requestOTP(String mobile) throws MalformedURLException, MobileException {
+    public String requestOTP(String mobile)
+            throws MalformedURLException, MobileException {
 
         try {
             EncapAuthenticationClient encapAuthenticationClient = new EncapAuthenticationClientImpl(this.encapServerLocation);
@@ -51,7 +52,8 @@ public class MobileManagerBean implements MobileManager {
         }
     }
 
-    public boolean verifyOTP(String challengeId, String OTPValue) throws MalformedURLException, MobileException {
+    public boolean verifyOTP(String challengeId, String OTPValue)
+            throws MalformedURLException, MobileException {
 
         try {
             EncapAuthenticationClient encapAuthenticationClient = new EncapAuthenticationClientImpl(this.encapServerLocation);
@@ -61,7 +63,8 @@ public class MobileManagerBean implements MobileManager {
         }
     }
 
-    public String activate(String mobile, String sessionInfo) throws MobileException, MalformedURLException {
+    public String activate(String mobile, String sessionInfo)
+            throws MobileException, MalformedURLException {
 
         try {
             EncapActivationClient encapActivationClient = new EncapActivationClientImpl(this.encapServerLocation);
@@ -71,7 +74,8 @@ public class MobileManagerBean implements MobileManager {
         }
     }
 
-    public void remove(String mobile) throws MobileException, MalformedURLException {
+    public void remove(String mobile)
+            throws MobileException, MalformedURLException {
 
         try {
             EncapAdministrationClient encapAdministrationClient = new EncapAdministrationClientImpl(this.encapServerLocation);
@@ -81,7 +85,8 @@ public class MobileManagerBean implements MobileManager {
         }
     }
 
-    public void lock(String mobile) throws MobileException, MalformedURLException {
+    public void lock(String mobile)
+            throws MobileException, MalformedURLException {
 
         try {
             EncapAdministrationClient encapAdministrationClient = new EncapAdministrationClientImpl(this.encapServerLocation);
@@ -91,7 +96,8 @@ public class MobileManagerBean implements MobileManager {
         }
     }
 
-    public void unLock(String mobile) throws MobileException, MalformedURLException {
+    public void unLock(String mobile)
+            throws MobileException, MalformedURLException {
 
         try {
             EncapAdministrationClient encapAdministrationClient = new EncapAdministrationClientImpl(this.encapServerLocation);

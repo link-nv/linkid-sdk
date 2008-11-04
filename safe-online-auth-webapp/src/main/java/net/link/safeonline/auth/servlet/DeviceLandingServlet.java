@@ -58,7 +58,8 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
 
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         /**
          * Wrap the request to use the servlet endpoint url. To prevent failure when behind a reverse proxy or loadbalancer when opensaml is
@@ -102,8 +103,7 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
              * Authentication failed, redirect to start page
              */
             HelpdeskLogger.add(requestWrapper.getSession(), "authentication failed", LogLevelType.ERROR);
-            String requestUrl = (String) requestWrapper.getSession().getAttribute(
-                    AuthenticationUtils.REQUEST_URL_INIT_PARAM);
+            String requestUrl = (String) requestWrapper.getSession().getAttribute(AuthenticationUtils.REQUEST_URL_INIT_PARAM);
             response.sendRedirect(requestUrl);
         } else {
             /*

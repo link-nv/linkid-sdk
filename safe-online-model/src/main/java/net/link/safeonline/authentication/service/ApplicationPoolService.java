@@ -30,6 +30,7 @@ public interface ApplicationPoolService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationPoolServiceBean/local";
 
+
     /**
      * Gives back all available applications pools.
      * 
@@ -42,7 +43,8 @@ public interface ApplicationPoolService extends SafeOnlineService {
      * @param applicationPoolName
      * @throws ApplicationPoolNotFoundException
      */
-    ApplicationPoolEntity getApplicationPool(String applicationPoolName) throws ApplicationPoolNotFoundException;
+    ApplicationPoolEntity getApplicationPool(String applicationPoolName)
+            throws ApplicationPoolNotFoundException;
 
     /**
      * /**
@@ -57,8 +59,7 @@ public interface ApplicationPoolService extends SafeOnlineService {
      * 
      */
     ApplicationPoolEntity addApplicationPool(String name, Long ssoTimeout, List<String> applicationList)
-                                                                                                        throws ExistingApplicationPoolException,
-                                                                                                        ApplicationNotFoundException;
+            throws ExistingApplicationPoolException, ApplicationNotFoundException;
 
     /**
      * Removes an application pool.
@@ -66,14 +67,16 @@ public interface ApplicationPoolService extends SafeOnlineService {
      * @param name
      * @throws ApplicationPoolNotFoundException
      */
-    void removeApplicationPool(String name) throws ApplicationPoolNotFoundException, PermissionDeniedException;
+    void removeApplicationPool(String name)
+            throws ApplicationPoolNotFoundException, PermissionDeniedException;
 
     /**
      * Sets the Single Sign-On timeout for this application pool.
      * 
      * @throws ApplicationPoolNotFoundException
      */
-    void setSsoTimeout(String applicationPoolName, Long ssoTimeout) throws ApplicationPoolNotFoundException;
+    void setSsoTimeout(String applicationPoolName, Long ssoTimeout)
+            throws ApplicationPoolNotFoundException;
 
     /**
      * Sets the application list of this pool.
@@ -81,7 +84,7 @@ public interface ApplicationPoolService extends SafeOnlineService {
      * @throws ApplicationPoolNotFoundException
      * @throws ApplicationNotFoundException
      */
-    void updateApplicationList(String applicationPoolName, List<String> applicationNameList) throws ApplicationPoolNotFoundException,
-                                                                                            ApplicationNotFoundException;
+    void updateApplicationList(String applicationPoolName, List<String> applicationNameList)
+            throws ApplicationPoolNotFoundException, ApplicationNotFoundException;
 
 }

@@ -91,7 +91,8 @@ public class NotificationProducerPortImplTest {
 
     @SuppressWarnings("unchecked")
     @Before
-    public void setup() throws Exception {
+    public void setup()
+            throws Exception {
 
         LOG.debug("setup");
 
@@ -154,7 +155,8 @@ public class NotificationProducerPortImplTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         LOG.debug("tearDown");
         this.webServiceTestUtils.tearDown();
@@ -162,7 +164,8 @@ public class NotificationProducerPortImplTest {
     }
 
     @Test
-    public void testSubscribe() throws Exception {
+    public void testSubscribe()
+            throws Exception {
 
         // setup
         String address = "test-consumer";

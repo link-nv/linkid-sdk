@@ -27,7 +27,8 @@ public class SecurityAuditLoggerInterceptor {
 
 
     @AroundInvoke
-    public Object interceptor(InvocationContext context) throws Exception {
+    public Object interceptor(InvocationContext context)
+            throws Exception {
 
         try {
             return context.proceed();

@@ -37,7 +37,8 @@ public class ScenarioUploaderThread extends ScenarioThread {
      * {@inheritDoc}
      */
     @Override
-    void process(ConsoleAgent agent) throws Exception {
+    void process(ConsoleAgent agent)
+            throws Exception {
 
         try {
             agent.setAutoUpdate(false);

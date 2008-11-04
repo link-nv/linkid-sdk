@@ -26,7 +26,8 @@ public class LdapTest extends TestCase {
     private static final Log LOG = LogFactory.getLog(LdapTest.class);
 
 
-    public void testLdapServerConnection() throws Exception {
+    public void testLdapServerConnection()
+            throws Exception {
 
         Hashtable<String, String> environment = new Hashtable<String, String>();
         environment.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");

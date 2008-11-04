@@ -13,7 +13,8 @@ import org.junit.Test;
 public class HashingTest {
 
     @Test
-    public void testMac() throws Exception {
+    public void testMac()
+            throws Exception {
 
         Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
         String inputString = "www.java2s.com";
@@ -34,7 +35,8 @@ public class HashingTest {
     }
 
     @Test
-    public void testMessageDigest() throws Exception {
+    public void testMessageDigest()
+            throws Exception {
 
         String text = "testmessage";
 

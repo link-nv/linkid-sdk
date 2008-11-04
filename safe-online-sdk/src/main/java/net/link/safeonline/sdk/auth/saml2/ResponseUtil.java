@@ -79,7 +79,8 @@ public class ResponseUtil {
      * @throws IOException
      */
     public static void sendResponse(String encodedSamlResponseToken, String templateResourceName, String consumerUrl,
-                                    HttpServletResponse httpResponse) throws ServletException, IOException {
+                                    HttpServletResponse httpResponse)
+            throws ServletException, IOException {
 
         /*
          * We could use the opensaml2 HTTPPostEncoderBuilder here to construct the HTTP response. But this code is just too complex in
@@ -134,7 +135,8 @@ public class ResponseUtil {
      */
     public static Response validateResponse(DateTime now, HttpServletRequest httpRequest, String expectedInResponseTo,
                                             String expectedAudience, String stsWsLocation, X509Certificate applicationCertificate,
-                                            PrivateKey applicationPrivateKey, TrustDomainType trustDomain) throws ServletException {
+                                            PrivateKey applicationPrivateKey, TrustDomainType trustDomain)
+            throws ServletException {
 
         if (false == "POST".equals(httpRequest.getMethod()))
             return null;
@@ -267,7 +269,8 @@ public class ResponseUtil {
      */
     public static LogoutResponse validateLogoutResponse(HttpServletRequest httpRequest, String expectedInResponseTo, String stsWsLocation,
                                                         X509Certificate applicationCertificate, PrivateKey applicationPrivateKey,
-                                                        TrustDomainType trustDomain) throws ServletException {
+                                                        TrustDomainType trustDomain)
+            throws ServletException {
 
         if (false == "POST".equals(httpRequest.getMethod()))
             return null;

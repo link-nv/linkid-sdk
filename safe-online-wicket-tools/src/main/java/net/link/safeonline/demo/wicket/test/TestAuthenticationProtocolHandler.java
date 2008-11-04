@@ -96,8 +96,9 @@ public class TestAuthenticationProtocolHandler implements AuthenticationProtocol
     /**
      * {@inheritDoc}
      */
-    public void initiateAuthentication(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-            String targetUrl, Locale language, Integer color, Boolean minimal) throws IOException, ServletException {
+    public void initiateAuthentication(HttpServletRequest httpRequest, HttpServletResponse httpResponse, String targetUrl, Locale language,
+                                       Integer color, Boolean minimal)
+            throws IOException, ServletException {
 
         LOG.info("Initiated Authentication; invoking LoginServlet");
 
@@ -108,7 +109,7 @@ public class TestAuthenticationProtocolHandler implements AuthenticationProtocol
      * {@inheritDoc}
      */
     public AuthenticationProtocolContext finalizeAuthentication(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
-                                                                                                                                 throws ServletException {
+            throws ServletException {
 
         LOG.info("Finalizing Authentication for userId: " + authenticatedUserId);
 
@@ -119,8 +120,7 @@ public class TestAuthenticationProtocolHandler implements AuthenticationProtocol
      * {@inheritDoc}
      */
     public void initiateLogout(HttpServletRequest request, HttpServletResponse response, String targetUrl, String subjectName)
-                                                                                                                              throws IOException,
-                                                                                                                              ServletException {
+            throws IOException, ServletException {
 
         LOG.info("Initiated Logout; invoking LogoutServlet");
 
@@ -131,8 +131,8 @@ public class TestAuthenticationProtocolHandler implements AuthenticationProtocol
 
 
             @Override
-            protected void invokePost(HttpServletRequest sdkLogoutRequest, HttpServletResponse sdkLogoutResponse) throws ServletException,
-                                                                                                                 IOException {
+            protected void invokePost(HttpServletRequest sdkLogoutRequest, HttpServletResponse sdkLogoutResponse)
+                    throws ServletException, IOException {
 
                 // SDK logout servlet.
                 super.invokePost(sdkLogoutRequest, sdkLogoutResponse);
@@ -150,8 +150,7 @@ public class TestAuthenticationProtocolHandler implements AuthenticationProtocol
 
                         @Override
                         protected void invokeGet(HttpServletRequest sdkLogoutExitRequest, HttpServletResponse sdkLogoutExitResponse)
-                                                                                                                                    throws ServletException,
-                                                                                                                                    IOException {
+                                throws ServletException, IOException {
 
                             // This invalidates the HTTP session if requested by the app logout servlet.
                             // But Wicket's Mock servlet container doesn't properly clean up the session in this case.
@@ -186,7 +185,8 @@ public class TestAuthenticationProtocolHandler implements AuthenticationProtocol
     /**
      * {@inheritDoc}
      */
-    public boolean finalizeLogout(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+    public boolean finalizeLogout(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException {
 
         LOG.info("Finalizing Logout as successful");
 
@@ -196,7 +196,8 @@ public class TestAuthenticationProtocolHandler implements AuthenticationProtocol
     /**
      * {@inheritDoc}
      */
-    public String handleLogoutRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+    public String handleLogoutRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException {
 
         throw new IllegalStateException("Unsupported by this authentication handler!");
     }
@@ -204,8 +205,8 @@ public class TestAuthenticationProtocolHandler implements AuthenticationProtocol
     /**
      * {@inheritDoc}
      */
-    public void sendLogoutResponse(boolean success, HttpServletRequest request, HttpServletResponse response) throws ServletException,
-                                                                                                             IOException {
+    public void sendLogoutResponse(boolean success, HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         throw new IllegalStateException("Unsupported by this authentication handler!");
     }

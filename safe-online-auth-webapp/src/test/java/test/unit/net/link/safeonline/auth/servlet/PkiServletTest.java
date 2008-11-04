@@ -45,7 +45,8 @@ public class PkiServletTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.jmxTestUtils = new JmxTestUtils();
         this.jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
@@ -61,7 +62,8 @@ public class PkiServletTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.servletTestManager.tearDown();
         this.jmxTestUtils.tearDown();
@@ -86,7 +88,8 @@ public class PkiServletTest {
 
 
     @Test
-    public void testGetCertificate() throws Exception {
+    public void testGetCertificate()
+            throws Exception {
 
         HttpClient httpClient = new HttpClient();
         GetMethod getMethod = new GetMethod(this.servletTestManager.getServletLocation());

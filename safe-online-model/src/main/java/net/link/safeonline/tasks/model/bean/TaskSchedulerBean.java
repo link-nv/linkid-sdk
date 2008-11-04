@@ -194,7 +194,8 @@ public class TaskSchedulerBean implements TaskScheduler {
         // empty
     }
 
-    public void setTimer(SchedulingEntity scheduling) throws InvalidCronExpressionException {
+    public void setTimer(SchedulingEntity scheduling)
+            throws InvalidCronExpressionException {
 
         CronTrigger cronTrigger = null;
         try {

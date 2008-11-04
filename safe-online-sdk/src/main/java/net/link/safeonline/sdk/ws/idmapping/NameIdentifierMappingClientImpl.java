@@ -80,7 +80,8 @@ public class NameIdentifierMappingClientImpl extends AbstractMessageAccessor imp
         bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location);
     }
 
-    public String getUserId(String username) throws SubjectNotFoundException, RequestDeniedException, WSClientTransportException {
+    public String getUserId(String username)
+            throws SubjectNotFoundException, RequestDeniedException, WSClientTransportException {
 
         LOG.debug("getUserId: " + username);
 

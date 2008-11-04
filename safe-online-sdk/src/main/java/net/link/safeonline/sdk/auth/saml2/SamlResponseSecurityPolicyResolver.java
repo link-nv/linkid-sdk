@@ -21,12 +21,14 @@ import org.opensaml.xml.security.SecurityException;
 
 public class SamlResponseSecurityPolicyResolver implements SecurityPolicyResolver {
 
-    public Iterable<SecurityPolicy> resolve(MessageContext messageContext) throws SecurityException {
+    public Iterable<SecurityPolicy> resolve(MessageContext messageContext)
+            throws SecurityException {
 
         return null;
     }
 
-    public SecurityPolicy resolveSingle(MessageContext messageContext) throws SecurityException {
+    public SecurityPolicy resolveSingle(MessageContext messageContext)
+            throws SecurityException {
 
         SecurityPolicy securityPolicy = new BasicSecurityPolicy();
         List<SecurityPolicyRule> securityPolicyRules = securityPolicy.getPolicyRules();

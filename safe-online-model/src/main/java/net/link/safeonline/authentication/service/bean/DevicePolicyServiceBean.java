@@ -50,8 +50,7 @@ public class DevicePolicyServiceBean implements DevicePolicyService {
 
 
     public List<DeviceEntity> getDevicePolicy(String applicationId, Set<DeviceEntity> requiredDevicePolicy)
-                                                                                                           throws ApplicationNotFoundException,
-                                                                                                           EmptyDevicePolicyException {
+            throws ApplicationNotFoundException, EmptyDevicePolicyException {
 
         LOG.debug("get device policy for application: " + applicationId);
         ApplicationEntity application = this.applicationDAO.getApplication(applicationId);
@@ -93,31 +92,36 @@ public class DevicePolicyServiceBean implements DevicePolicyService {
         return deviceDescription.getDescription();
     }
 
-    public String getAuthenticationURL(String deviceName) throws DeviceNotFoundException {
+    public String getAuthenticationURL(String deviceName)
+            throws DeviceNotFoundException {
 
         DeviceEntity device = this.deviceDAO.getDevice(deviceName);
         return device.getAuthenticationURL();
     }
 
-    public String getRegistrationURL(String deviceName) throws DeviceNotFoundException {
+    public String getRegistrationURL(String deviceName)
+            throws DeviceNotFoundException {
 
         DeviceEntity device = this.deviceDAO.getDevice(deviceName);
         return device.getRegistrationURL();
     }
 
-    public String getRemovalURL(String deviceName) throws DeviceNotFoundException {
+    public String getRemovalURL(String deviceName)
+            throws DeviceNotFoundException {
 
         DeviceEntity device = this.deviceDAO.getDevice(deviceName);
         return device.getRemovalURL();
     }
 
-    public String getUpdateURL(String deviceName) throws DeviceNotFoundException {
+    public String getUpdateURL(String deviceName)
+            throws DeviceNotFoundException {
 
         DeviceEntity device = this.deviceDAO.getDevice(deviceName);
         return device.getUpdateURL();
     }
 
-    public String getDisableURL(String deviceName) throws DeviceNotFoundException {
+    public String getDisableURL(String deviceName)
+            throws DeviceNotFoundException {
 
         DeviceEntity device = this.deviceDAO.getDevice(deviceName);
         return device.getDisableURL();
@@ -140,7 +144,8 @@ public class DevicePolicyServiceBean implements DevicePolicyService {
         return this.deviceDAO.listDevices(authenticationContextClass);
     }
 
-    public DeviceEntity getDevice(String deviceName) throws DeviceNotFoundException {
+    public DeviceEntity getDevice(String deviceName)
+            throws DeviceNotFoundException {
 
         return this.deviceDAO.getDevice(deviceName);
     }

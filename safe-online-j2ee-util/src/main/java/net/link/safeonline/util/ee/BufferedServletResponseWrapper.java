@@ -53,7 +53,8 @@ public class BufferedServletResponseWrapper extends HttpServletResponseWrapper {
      * 
      * @throws IOException
      */
-    public void commit() throws IOException {
+    public void commit()
+            throws IOException {
 
         if (null != this.writer) {
             /*
@@ -74,7 +75,8 @@ public class BufferedServletResponseWrapper extends HttpServletResponseWrapper {
     }
 
     @Override
-    public PrintWriter getWriter() throws IOException {
+    public PrintWriter getWriter()
+            throws IOException {
 
         LOG.debug("get writer");
         if (null == this.writer) {

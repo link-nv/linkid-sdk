@@ -76,7 +76,7 @@ public class UsageAgreementDAOBean implements UsageAgreementDAO {
     }
 
     public UsageAgreementEntity findUsageAgreement(ApplicationEntity application, Long usageAgreementVersion)
-                                                                                                             throws UsageAgreementNotFoundException {
+            throws UsageAgreementNotFoundException {
 
         UsageAgreementEntity usageAgreement = getUsageAgreement(application, usageAgreementVersion);
         if (null == usageAgreement)
@@ -136,7 +136,7 @@ public class UsageAgreementDAOBean implements UsageAgreementDAO {
     }
 
     public UsageAgreementTextEntity findUsageAgreementText(UsageAgreementEntity usageAgreement, String language)
-                                                                                                                throws UsageAgreementTextNotFoundException {
+            throws UsageAgreementTextNotFoundException {
 
         UsageAgreementTextEntity usageAgreementText = getUsageAgreementText(usageAgreement, language);
         if (null == usageAgreementText)

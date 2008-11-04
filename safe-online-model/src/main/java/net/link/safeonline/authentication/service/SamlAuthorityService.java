@@ -9,8 +9,8 @@ package net.link.safeonline.authentication.service;
 
 import javax.ejb.Local;
 
-
 import net.link.safeonline.SafeOnlineService;
+
 
 /**
  * Interface for SAML authority service.
@@ -22,6 +22,7 @@ import net.link.safeonline.SafeOnlineService;
 public interface SamlAuthorityService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/SamlAuthorityServiceBean/local";
+
 
     /**
      * Gives back the name of the SAML assertion issuer.

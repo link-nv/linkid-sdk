@@ -21,6 +21,7 @@ public interface ConfigurationService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ConfigurationServiceBean/local";
 
+
     List<ConfigGroupEntity> listConfigGroups();
 
     void saveConfiguration(List<ConfigGroupEntity> configGroupList);

@@ -27,18 +27,20 @@ public interface DigipassDeviceService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/DigipassDeviceServiceBean/local";
 
-    String authenticate(String loginName, String token) throws SubjectNotFoundException, PermissionDeniedException,
-                                                       DeviceNotFoundException, DeviceDisabledException;
 
-    String register(String loginName, String serialNumber) throws ArgumentIntegrityException, SubjectNotFoundException,
-                                                          PermissionDeniedException, AttributeTypeNotFoundException;
+    String authenticate(String loginName, String token)
+            throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException, DeviceDisabledException;
 
-    void remove(String loginName, String serialNumber) throws SubjectNotFoundException, DigipassException, PermissionDeniedException,
-                                                      DeviceNotFoundException, AttributeTypeNotFoundException;
+    String register(String loginName, String serialNumber)
+            throws ArgumentIntegrityException, SubjectNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException;
 
-    List<AttributeDO> getDigipasses(String loginName, Locale locale) throws SubjectNotFoundException, PermissionDeniedException,
-                                                                    DeviceNotFoundException;
+    void remove(String loginName, String serialNumber)
+            throws SubjectNotFoundException, DigipassException, PermissionDeniedException, DeviceNotFoundException,
+            AttributeTypeNotFoundException;
 
-    void disable(String userId, String serialNumber) throws SubjectNotFoundException, DeviceNotFoundException,
-                                                    DeviceRegistrationNotFoundException;
+    List<AttributeDO> getDigipasses(String loginName, Locale locale)
+            throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException;
+
+    void disable(String userId, String serialNumber)
+            throws SubjectNotFoundException, DeviceNotFoundException, DeviceRegistrationNotFoundException;
 }

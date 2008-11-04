@@ -91,16 +91,9 @@ public class CredentialManagerBean implements CredentialManager {
 
 
     public String authenticate(String sessionId, String applicationId, AuthenticationStatement authenticationStatement)
-                                                                                                                       throws ArgumentIntegrityException,
-                                                                                                                       TrustDomainNotFoundException,
-                                                                                                                       SubjectNotFoundException,
-                                                                                                                       PkiRevokedException,
-                                                                                                                       PkiSuspendedException,
-                                                                                                                       PkiExpiredException,
-                                                                                                                       PkiNotYetValidException,
-                                                                                                                       PkiInvalidException,
-                                                                                                                       DeviceNotFoundException,
-                                                                                                                       DeviceDisabledException {
+            throws ArgumentIntegrityException, TrustDomainNotFoundException, SubjectNotFoundException, PkiRevokedException,
+            PkiSuspendedException, PkiExpiredException, PkiNotYetValidException, PkiInvalidException, DeviceNotFoundException,
+            DeviceDisabledException {
 
         X509Certificate certificate = authenticationStatement.verifyIntegrity();
         if (null == certificate)
@@ -148,18 +141,9 @@ public class CredentialManagerBean implements CredentialManager {
     }
 
     public void mergeIdentityStatement(String sessionId, String userId, String operation, byte[] identityStatementData)
-                                                                                                                       throws TrustDomainNotFoundException,
-                                                                                                                       PermissionDeniedException,
-                                                                                                                       ArgumentIntegrityException,
-                                                                                                                       AttributeTypeNotFoundException,
-                                                                                                                       DeviceNotFoundException,
-                                                                                                                       AttributeNotFoundException,
-                                                                                                                       AlreadyRegisteredException,
-                                                                                                                       PkiRevokedException,
-                                                                                                                       PkiSuspendedException,
-                                                                                                                       PkiExpiredException,
-                                                                                                                       PkiNotYetValidException,
-                                                                                                                       PkiInvalidException {
+            throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException, AttributeTypeNotFoundException,
+            DeviceNotFoundException, AttributeNotFoundException, AlreadyRegisteredException, PkiRevokedException, PkiSuspendedException,
+            PkiExpiredException, PkiNotYetValidException, PkiInvalidException {
 
         /*
          * First check integrity of the received identity statement.
@@ -261,7 +245,8 @@ public class CredentialManagerBean implements CredentialManager {
     }
 
     private void setOrUpdateAttribute(IdentityStatementAttributes identityStatementAttribute, SubjectEntity subject, String value,
-                                      PkiProvider pkiProvider, long index) throws AttributeTypeNotFoundException {
+                                      PkiProvider pkiProvider, long index)
+            throws AttributeTypeNotFoundException {
 
         String attributeName = pkiProvider.mapAttribute(identityStatementAttribute);
         AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeName);
@@ -269,17 +254,9 @@ public class CredentialManagerBean implements CredentialManager {
     }
 
     public void removeIdentity(String sessionId, String userId, String operation, byte[] identityStatementData)
-                                                                                                               throws TrustDomainNotFoundException,
-                                                                                                               PermissionDeniedException,
-                                                                                                               ArgumentIntegrityException,
-                                                                                                               AttributeTypeNotFoundException,
-                                                                                                               SubjectNotFoundException,
-                                                                                                               DeviceNotFoundException,
-                                                                                                               PkiRevokedException,
-                                                                                                               PkiSuspendedException,
-                                                                                                               PkiExpiredException,
-                                                                                                               PkiNotYetValidException,
-                                                                                                               PkiInvalidException {
+            throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException, AttributeTypeNotFoundException,
+            SubjectNotFoundException, DeviceNotFoundException, PkiRevokedException, PkiSuspendedException, PkiExpiredException,
+            PkiNotYetValidException, PkiInvalidException {
 
         /*
          * First check integrity of the received identity statement.

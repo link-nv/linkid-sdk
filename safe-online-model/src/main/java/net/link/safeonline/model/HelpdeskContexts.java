@@ -14,6 +14,7 @@ public interface HelpdeskContexts extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/HelpdeskContextsBean/local";
 
+
     List<HelpdeskContextEntity> listContexts();
 
     List<HelpdeskEventEntity> listEvents(Long logId);

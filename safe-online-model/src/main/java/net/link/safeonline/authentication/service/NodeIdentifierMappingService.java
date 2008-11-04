@@ -25,6 +25,7 @@ public interface NodeIdentifierMappingService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/NodeIdentifierMappingServiceBean/local";
 
+
     /**
      * Returns the node mapping id for the specified user and authenticating remote node.
      * 
@@ -32,5 +33,6 @@ public interface NodeIdentifierMappingService extends SafeOnlineService {
      * @throws NodeNotFoundException
      * @throws SubjectNotFoundException
      */
-    String getNodeMappingId(String username) throws NodeNotFoundException, SubjectNotFoundException;
+    String getNodeMappingId(String username)
+            throws NodeNotFoundException, SubjectNotFoundException;
 }

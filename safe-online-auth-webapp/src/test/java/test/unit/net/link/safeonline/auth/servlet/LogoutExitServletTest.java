@@ -83,7 +83,8 @@ public class LogoutExitServletTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.jndiTestUtils = new JndiTestUtils();
         this.jndiTestUtils.setUp();
@@ -107,14 +108,16 @@ public class LogoutExitServletTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.logoutExitServletTestManager.tearDown();
         this.jndiTestUtils.tearDown();
     }
 
     @Test
-    public void handleLogoutResponseSendLogoutRequest() throws Exception {
+    public void handleLogoutResponseSendLogoutRequest()
+            throws Exception {
 
         // setup
         HttpClient httpClient = new HttpClient();
@@ -188,7 +191,8 @@ public class LogoutExitServletTest {
     }
 
     @Test
-    public void sendLogoutRequest() throws Exception {
+    public void sendLogoutRequest()
+            throws Exception {
 
         // setup
         HttpClient httpClient = new HttpClient();

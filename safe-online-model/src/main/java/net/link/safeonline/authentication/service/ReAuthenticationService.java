@@ -32,6 +32,7 @@ public interface ReAuthenticationService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ReAuthenticationServiceBean/local";
 
+
     /**
      * Returns the set of devices the user has authenticated successfully with.
      * 
@@ -45,7 +46,8 @@ public interface ReAuthenticationService extends SafeOnlineService {
      * @throws SubjectMismatchException
      * @throws PermissionDeniedException
      */
-    void setAuthenticatedSubject(SubjectEntity subject) throws SubjectMismatchException, PermissionDeniedException;
+    void setAuthenticatedSubject(SubjectEntity subject)
+            throws SubjectMismatchException, PermissionDeniedException;
 
     /**
      * Authenticates using a username-password device.
@@ -58,8 +60,9 @@ public interface ReAuthenticationService extends SafeOnlineService {
      * @throws PermissionDeniedException
      * @throws DeviceDisabledException
      */
-    boolean authenticate(String login, String password) throws SubjectNotFoundException, DeviceNotFoundException, SubjectMismatchException,
-                                                       PermissionDeniedException, DeviceDisabledException;
+    boolean authenticate(String login, String password)
+            throws SubjectNotFoundException, DeviceNotFoundException, SubjectMismatchException, PermissionDeniedException,
+            DeviceDisabledException;
 
     /**
      * Aborts the current authentication procedure.

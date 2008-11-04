@@ -98,7 +98,8 @@ public class ClientCrypto implements Crypto {
         return null;
     }
 
-    public PrivateKey getPrivateKey(String alias, String password) throws Exception {
+    public PrivateKey getPrivateKey(String alias, String password)
+            throws Exception {
 
         LOG.debug("getPrivateKey for alias: " + alias);
         return this.privateKey;

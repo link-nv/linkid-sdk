@@ -20,20 +20,22 @@ import org.apache.commons.logging.LogFactory;
 
 public class BeIdPkiProviderTest extends TestCase {
 
-    private static final Log LOG = LogFactory.getLog(BeIdPkiProviderTest.class);
+    private static final Log    LOG = LogFactory.getLog(BeIdPkiProviderTest.class);
 
-    private BeIdPkiProviderBean  testedInstance;
+    private BeIdPkiProviderBean testedInstance;
 
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp()
+            throws Exception {
 
         super.setUp();
 
         this.testedInstance = new BeIdPkiProviderBean();
     }
 
-    public void testAcceptBeIDCertificate() throws Exception {
+    public void testAcceptBeIDCertificate()
+            throws Exception {
 
         // setup
         X509Certificate certificate = PkiTestUtils.loadCertificateFromResource("/fcorneli-auth.crt");
@@ -47,7 +49,8 @@ public class BeIdPkiProviderTest extends TestCase {
         assertTrue(result);
     }
 
-    public void testDoNotAcceptAnotherCertificate() throws Exception {
+    public void testDoNotAcceptAnotherCertificate()
+            throws Exception {
 
         // setup
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
@@ -60,7 +63,8 @@ public class BeIdPkiProviderTest extends TestCase {
         assertFalse(result);
     }
 
-    public void testSubjectIdentifier() throws Exception {
+    public void testSubjectIdentifier()
+            throws Exception {
 
         // setup
         KeyPair keyPair = PkiTestUtils.generateKeyPair();

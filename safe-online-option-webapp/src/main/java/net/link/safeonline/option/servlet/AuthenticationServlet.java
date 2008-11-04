@@ -51,7 +51,8 @@ public class AuthenticationServlet extends AbstractInjectionServlet {
 
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
 
         try {
             AuthenticationContext authenticationContext = AuthenticationContext.getAuthenticationContext(request.getSession());

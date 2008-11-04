@@ -64,7 +64,8 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
 
 
     @Override
-    public void init(ServletConfig config) throws ServletException {
+    public void init(ServletConfig config)
+            throws ServletException {
 
         super.init(config);
 
@@ -74,18 +75,21 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
     }
 
     @Override
-    protected final void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected final void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         doGetInvocation(request, response);
     }
 
     @Override
-    protected final void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected final void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         doPostInvocation(request, response);
     }
 
-    private void doGetInvocation(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void doGetInvocation(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         HttpSession session = request.getSession();
         injectRequestParameters(request);
@@ -96,7 +100,8 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
         responseWrapper.commit();
     }
 
-    private void doPostInvocation(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void doPostInvocation(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         HttpSession session = request.getSession();
         injectRequestParameters(request);
@@ -125,14 +130,16 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
         }
 
         @Override
-        public void sendRedirect(String location) throws IOException {
+        public void sendRedirect(String location)
+                throws IOException {
 
             if (null != this.redirectLocation)
                 throw new IllegalStateException("cannot send redirect twice");
             this.redirectLocation = location;
         }
 
-        public void commit() throws IOException {
+        public void commit()
+                throws IOException {
 
             if (null != this.redirectLocation) {
                 super.sendRedirect(this.redirectLocation);
@@ -141,17 +148,20 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
     }
 
 
-    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         super.doGet(request, response);
     }
 
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         super.doPost(request, response);
     }
 
-    private void injectRequestParameters(HttpServletRequest request) throws ServletException {
+    private void injectRequestParameters(HttpServletRequest request)
+            throws ServletException {
 
         Field[] fields = this.getClass().getDeclaredFields();
         for (Field field : fields) {
@@ -175,7 +185,8 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
         }
     }
 
-    private void injectSessionAttributes(HttpSession session) throws ServletException {
+    private void injectSessionAttributes(HttpSession session)
+            throws ServletException {
 
         Field[] fields = this.getClass().getDeclaredFields();
         for (Field field : fields) {
@@ -201,7 +212,8 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
     }
 
     @SuppressWarnings("unchecked")
-    private void injectEjbs() throws ServletException {
+    private void injectEjbs()
+            throws ServletException {
 
         Field[] fields = this.getClass().getDeclaredFields();
         for (Field field : fields) {
@@ -228,7 +240,8 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
         }
     }
 
-    private void initInitParameters(ServletConfig config) throws ServletException {
+    private void initInitParameters(ServletConfig config)
+            throws ServletException {
 
         Field[] fields = this.getClass().getDeclaredFields();
         for (Field field : fields) {
@@ -264,7 +277,8 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
     }
 
     @SuppressWarnings("unchecked")
-    private void initContextParameters(ServletConfig config) throws ServletException {
+    private void initContextParameters(ServletConfig config)
+            throws ServletException {
 
         Field[] fields = this.getClass().getDeclaredFields();
         for (Field field : fields) {
@@ -306,7 +320,8 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
         }
     }
 
-    private void outjectSessionAttributes(HttpSession session) throws ServletException {
+    private void outjectSessionAttributes(HttpSession session)
+            throws ServletException {
 
         Field[] fields = this.getClass().getDeclaredFields();
         for (Field field : fields) {
@@ -345,7 +360,8 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
      * @throws IOException
      */
     public void redirectToErrorPage(HttpServletRequest request, HttpServletResponse response, String errorPage, String resourceBundleName,
-                                    ErrorMessage... errorMessages) throws IOException {
+                                    ErrorMessage... errorMessages)
+            throws IOException {
 
         HttpSession session = request.getSession();
         ResourceBundle resourceBundle = null;
@@ -379,7 +395,8 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
         }
     }
 
-    private void writeBasicErrorPage(HttpServletResponse response, ErrorMessage... errorMessages) throws IOException {
+    private void writeBasicErrorPage(HttpServletResponse response, ErrorMessage... errorMessages)
+            throws IOException {
 
         response.setContentType("text/html");
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

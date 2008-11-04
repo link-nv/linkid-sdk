@@ -145,7 +145,8 @@ public class IdentificationController implements AppletController {
         }
     }
 
-    private void postData(IdentityFile identityFile, AddressFile addressFile) throws IOException {
+    private void postData(IdentityFile identityFile, AddressFile addressFile)
+            throws IOException {
 
         HttpURLConnection connection = openDataConnection();
         connection.setRequestMethod("POST");
@@ -171,7 +172,8 @@ public class IdentificationController implements AppletController {
         connection.getResponseCode();
     }
 
-    private HttpURLConnection openDataConnection() throws IOException {
+    private HttpURLConnection openDataConnection()
+            throws IOException {
 
         URL documentBase = this.runtimeContext.getDocumentBase();
         String servletPath = this.runtimeContext.getParameter("ServletPath");

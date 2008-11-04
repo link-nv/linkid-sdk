@@ -74,12 +74,14 @@ public class ServletTestManager {
     }
 
 
-    public void setUp(Class<?> servletClass) throws Exception {
+    public void setUp(Class<?> servletClass)
+            throws Exception {
 
         setUp(servletClass, null, null, null);
     }
 
-    public void setUp(Class<?> servletClass, Map<String, String> servletInitParameters) throws Exception {
+    public void setUp(Class<?> servletClass, Map<String, String> servletInitParameters)
+            throws Exception {
 
         setUp(servletClass, servletInitParameters, null, null, null);
     }
@@ -88,30 +90,35 @@ public class ServletTestManager {
     TestHashSessionManager sessionManager;
 
 
-    public void setUp(Class<?> servletClass, Class<?> filterClass) throws Exception {
+    public void setUp(Class<?> servletClass, Class<?> filterClass)
+            throws Exception {
 
         setUp(servletClass, null, filterClass, null, null);
     }
 
-    public void setUp(Class<?> servletClass, Class<?> filterClass, Map<String, String> filterInitParameters) throws Exception {
+    public void setUp(Class<?> servletClass, Class<?> filterClass, Map<String, String> filterInitParameters)
+            throws Exception {
 
         setUp(servletClass, null, filterClass, filterInitParameters, null);
     }
 
     public void setUp(Class<?> servletClass, Class<?> filterClass, Map<String, String> filterInitParameters,
-                      Map<String, Object> initialSessionAttributes) throws Exception {
+                      Map<String, Object> initialSessionAttributes)
+            throws Exception {
 
         setUp(servletClass, null, filterClass, filterInitParameters, initialSessionAttributes);
     }
 
     public void setUp(Class<?> servletClass, Map<String, String> servletInitParameters, Class<?> filterClass,
-                      Map<String, String> filterInitParameters, Map<String, Object> initialSessionAttributes) throws Exception {
+                      Map<String, String> filterInitParameters, Map<String, Object> initialSessionAttributes)
+            throws Exception {
 
         setUp(servletClass, "/", servletInitParameters, filterClass, filterInitParameters, initialSessionAttributes);
     }
 
     public void setUp(Class<?> servletClass, String contextPath, Map<String, String> servletInitParameters, Class<?> filterClass,
-                      Map<String, String> filterInitParameters, Map<String, Object> initialSessionAttributes) throws Exception {
+                      Map<String, String> filterInitParameters, Map<String, Object> initialSessionAttributes)
+            throws Exception {
 
         this.server = new Server();
         this.contextPath = contextPath;
@@ -158,7 +165,8 @@ public class ServletTestManager {
         }
     }
 
-    private String createSocketConnector() throws Exception {
+    private String createSocketConnector()
+            throws Exception {
 
         SocketConnector connector = new SocketConnector();
         connector.setHost("127.0.0.1");
@@ -172,12 +180,14 @@ public class ServletTestManager {
         return "http://127.0.0.1:" + connector.getLocalPort();
     }
 
-    public String getServletLocation() throws Exception {
+    public String getServletLocation()
+            throws Exception {
 
         return createSocketConnector() + this.contextPath;
     }
 
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.server.stop();
     }

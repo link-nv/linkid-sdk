@@ -115,7 +115,8 @@ public class NotificationBean implements Notification {
 
     @Factory(OPER_SUBSCRIPTION_LIST_NAME)
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public void subscriptionListFactory() throws SubscriptionNotFoundException {
+    public void subscriptionListFactory()
+            throws SubscriptionNotFoundException {
 
         LOG.debug("subscription list factory for topic: " + this.selectedTopic);
         this.subscriptionList = this.notificationSubscriptionService.listSubscriptions(this.selectedTopic.getTopic());
@@ -152,7 +153,8 @@ public class NotificationBean implements Notification {
         return "add";
     }
 
-    public String addSubscription() throws SubscriptionNotFoundException {
+    public String addSubscription()
+            throws SubscriptionNotFoundException {
 
         LOG.debug("add subscription for consumer " + this.consumer);
         try {
@@ -167,7 +169,8 @@ public class NotificationBean implements Notification {
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public String remove() throws SubscriptionNotFoundException {
+    public String remove()
+            throws SubscriptionNotFoundException {
 
         LOG.debug("remove subscription for topic " + this.selectedTopic.getTopic());
         try {

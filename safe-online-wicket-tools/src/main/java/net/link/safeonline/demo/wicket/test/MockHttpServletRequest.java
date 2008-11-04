@@ -298,7 +298,8 @@ public class MockHttpServletRequest implements HttpServletRequest {
     /**
      * {@inheritDoc}
      */
-    public ServletInputStream getInputStream() throws IOException {
+    public ServletInputStream getInputStream()
+            throws IOException {
 
         throw new IOException();
     }
@@ -389,7 +390,8 @@ public class MockHttpServletRequest implements HttpServletRequest {
     /**
      * {@inheritDoc}
      */
-    public BufferedReader getReader() throws IOException {
+    public BufferedReader getReader()
+            throws IOException {
 
         throw new IOException();
     }
@@ -477,7 +479,8 @@ public class MockHttpServletRequest implements HttpServletRequest {
     /**
      * {@inheritDoc}
      */
-    public void setCharacterEncoding(String encoding) throws UnsupportedEncodingException {
+    public void setCharacterEncoding(String encoding)
+            throws UnsupportedEncodingException {
 
         this.base.setCharacterEncoding(encoding);
     }

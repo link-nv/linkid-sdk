@@ -70,10 +70,7 @@ public class PrescriptionEditBean extends AbstractPrescriptionDataClientBean imp
     }
 
     private void createOrUpdateAttribute(String attributeName, Object attributeValue, Class<?> expectedClass)
-                                                                                                             throws WSClientTransportException,
-                                                                                                             RequestDeniedException,
-                                                                                                             SubjectNotFoundException,
-                                                                                                             AttributeNotFoundException {
+            throws WSClientTransportException, RequestDeniedException, SubjectNotFoundException, AttributeNotFoundException {
 
         DataClient dataClient = getDataClient();
         String userId = this.userStatus.getUserId();

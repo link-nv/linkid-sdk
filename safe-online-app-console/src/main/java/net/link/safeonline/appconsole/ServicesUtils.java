@@ -75,7 +75,8 @@ public class ServicesUtils extends Observable {
         return this.nameClient;
     }
 
-    public String getUserId(String username) throws SubjectNotFoundException, RequestDeniedException, WSClientTransportException {
+    public String getUserId(String username)
+            throws SubjectNotFoundException, RequestDeniedException, WSClientTransportException {
 
         return getNameIdentifierMappingClient().getUserId(username);
     }
@@ -100,7 +101,8 @@ public class ServicesUtils extends Observable {
         SwingWorker<Map<String, Object>, Object> worker = new SwingWorker<Map<String, Object>, Object>() {
 
             @Override
-            protected Map<String, Object> doInBackground() throws Exception {
+            protected Map<String, Object> doInBackground()
+                    throws Exception {
 
                 Map<String, Object> attributes = null;
                 attributes = getAttributeClient().getAttributeValues(getUserId(user));
@@ -153,7 +155,8 @@ public class ServicesUtils extends Observable {
         SwingWorker<Boolean, Object> worker = new SwingWorker<Boolean, Object>() {
 
             @Override
-            protected Boolean doInBackground() throws Exception {
+            protected Boolean doInBackground()
+                    throws Exception {
 
                 getDataClient().setAttributeValue(getUserId(userName), attributeName, attributeValue);
                 return Boolean.TRUE;
@@ -189,7 +192,8 @@ public class ServicesUtils extends Observable {
         SwingWorker<Boolean, Object> worker = new SwingWorker<Boolean, Object>() {
 
             @Override
-            protected Boolean doInBackground() throws Exception {
+            protected Boolean doInBackground()
+                    throws Exception {
 
                 getDataClient().removeAttribute(getUserId(userName), attributeName, attributeId);
                 return Boolean.TRUE;
@@ -226,7 +230,8 @@ public class ServicesUtils extends Observable {
         SwingWorker<Boolean, Object> worker = new SwingWorker<Boolean, Object>() {
 
             @Override
-            protected Boolean doInBackground() throws Exception {
+            protected Boolean doInBackground()
+                    throws Exception {
 
                 getDataClient().createAttribute(getUserId(userName), attributeName, attributeValue);
                 return Boolean.TRUE;

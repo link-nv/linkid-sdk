@@ -17,7 +17,8 @@ import org.junit.Test;
 public class KeyStoreResourceTest {
 
     @Test
-    public void keystoreAvailability() throws Exception {
+    public void keystoreAvailability()
+            throws Exception {
 
         // setup
         Thread currenThread = Thread.currentThread();

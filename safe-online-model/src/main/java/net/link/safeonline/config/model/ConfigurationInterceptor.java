@@ -33,13 +33,15 @@ public class ConfigurationInterceptor {
 
 
     @AroundInvoke
-    public Object invoke(InvocationContext invocationContext) throws Exception {
+    public Object invoke(InvocationContext invocationContext)
+            throws Exception {
 
         return configure(invocationContext);
     }
 
     @PostConstruct
-    public void initializeConfiguration(InvocationContext invocationContext) throws Exception {
+    public void initializeConfiguration(InvocationContext invocationContext)
+            throws Exception {
 
         LOG.debug("@PostConstruct configuration");
         configure(invocationContext);
@@ -53,7 +55,8 @@ public class ConfigurationInterceptor {
         return method.getName();
     }
 
-    private Object configure(InvocationContext invocationContext) throws Exception {
+    private Object configure(InvocationContext invocationContext)
+            throws Exception {
 
         Object target = invocationContext.getTarget();
         LOG.debug("Configuring: " + target.getClass().getName() + " (method: " + getMethodName(invocationContext) + ")");
@@ -85,7 +88,8 @@ public class ConfigurationInterceptor {
         return invocationContext.proceed();
     }
 
-    private void setValue(ConfigItemEntity configItem, Field field, Object target) throws IllegalArgumentException, IllegalAccessException {
+    private void setValue(ConfigItemEntity configItem, Field field, Object target)
+            throws IllegalArgumentException, IllegalAccessException {
 
         Class<?> fieldType = field.getType();
         Object value;

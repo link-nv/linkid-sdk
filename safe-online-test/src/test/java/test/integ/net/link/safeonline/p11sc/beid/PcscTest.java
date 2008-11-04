@@ -25,7 +25,8 @@ public class PcscTest {
 
 
     @Test
-    public void testReadIdentityFile() throws Exception {
+    public void testReadIdentityFile()
+            throws Exception {
 
         TerminalFactory terminalFactory = TerminalFactory.getDefault();
         CardTerminals cardTerminals = terminalFactory.terminals();
@@ -39,7 +40,8 @@ public class PcscTest {
     }
 
     @Test
-    public void testSisCard() throws Exception {
+    public void testSisCard()
+            throws Exception {
 
         TerminalFactory terminalFactory = TerminalFactory.getDefault();
         CardTerminals cardTerminals = terminalFactory.terminals();
@@ -49,7 +51,8 @@ public class PcscTest {
     }
 
     @Test
-    public void testSign() throws Exception {
+    public void testSign()
+            throws Exception {
 
         TerminalFactory terminalFactory = TerminalFactory.getDefault();
         CardTerminals cardTerminals = terminalFactory.terminals();

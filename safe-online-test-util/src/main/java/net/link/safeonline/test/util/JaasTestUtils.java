@@ -30,7 +30,8 @@ public class JaasTestUtils {
         // empty
     }
 
-    public static void initJaasLoginModule(Class<?> clazz) throws IOException {
+    public static void initJaasLoginModule(Class<?> clazz)
+            throws IOException {
 
         if (false == LoginModule.class.isAssignableFrom(clazz))
             throw new IllegalArgumentException("given class is not a subclass of LoginModule");

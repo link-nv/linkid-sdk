@@ -55,7 +55,8 @@ public class NodeMappingServiceBean implements NodeMappingService {
     /**
      * {@inheritDoc}
      */
-    public NodeMappingEntity getNodeMapping(String userId, String nodeName) throws SubjectNotFoundException, NodeNotFoundException {
+    public NodeMappingEntity getNodeMapping(String userId, String nodeName)
+            throws SubjectNotFoundException, NodeNotFoundException {
 
         SubjectEntity subject = this.subjectService.getSubject(userId);
         NodeEntity node = this.nodeDAO.getNode(nodeName);
@@ -71,7 +72,8 @@ public class NodeMappingServiceBean implements NodeMappingService {
      * {@inheritDoc}
      * 
      */
-    public NodeMappingEntity getNodeMapping(String id) throws NodeMappingNotFoundException {
+    public NodeMappingEntity getNodeMapping(String id)
+            throws NodeMappingNotFoundException {
 
         LOG.debug("get node mapping: " + id);
         return this.nodeMappingDAO.getNodeMapping(id);

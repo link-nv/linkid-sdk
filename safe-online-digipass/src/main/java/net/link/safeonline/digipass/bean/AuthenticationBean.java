@@ -83,7 +83,8 @@ public class AuthenticationBean implements Authentication {
         this.token = token;
     }
 
-    public String login() throws IOException {
+    public String login()
+            throws IOException {
 
         LOG.debug("login: " + this.loginName);
         HelpdeskLogger.add("login: " + this.loginName, LogLevelType.INFO);
@@ -118,7 +119,8 @@ public class AuthenticationBean implements Authentication {
         return null;
     }
 
-    private void login(String userId) throws IOException {
+    private void login(String userId)
+            throws IOException {
 
         this.authenticationContext.setUserId(userId);
         this.authenticationContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());
@@ -128,13 +130,15 @@ public class AuthenticationBean implements Authentication {
         exit();
     }
 
-    public String cancel() throws IOException {
+    public String cancel()
+            throws IOException {
 
         exit();
         return null;
     }
 
-    private void exit() throws IOException {
+    private void exit()
+            throws IOException {
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ExternalContext externalContext = facesContext.getExternalContext();
@@ -159,7 +163,8 @@ public class AuthenticationBean implements Authentication {
         this.token = null;
     }
 
-    public String tryAnotherDevice() throws IOException {
+    public String tryAnotherDevice()
+            throws IOException {
 
         this.authenticationContext.setUsedDevice(net.link.safeonline.model.digipass.DigipassConstants.DIGIPASS_DEVICE_ID);
         exit();

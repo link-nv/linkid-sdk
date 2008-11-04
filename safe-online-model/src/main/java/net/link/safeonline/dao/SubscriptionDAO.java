@@ -31,9 +31,11 @@ public interface SubscriptionDAO extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/SubscriptionDAOBean/local";
 
+
     SubscriptionEntity findSubscription(SubjectEntity subject, ApplicationEntity application);
 
-    SubscriptionEntity getSubscription(SubjectEntity subject, ApplicationEntity application) throws SubscriptionNotFoundException;
+    SubscriptionEntity getSubscription(SubjectEntity subject, ApplicationEntity application)
+            throws SubscriptionNotFoundException;
 
     void addSubscription(SubscriptionOwnerType subscriptionOwnerType, SubjectEntity subject, ApplicationEntity application);
 
@@ -44,7 +46,8 @@ public interface SubscriptionDAO extends SafeOnlineService {
 
     List<SubscriptionEntity> listSubscriptions(ApplicationEntity application);
 
-    void removeSubscription(SubjectEntity subject, ApplicationEntity application) throws SubscriptionNotFoundException;
+    void removeSubscription(SubjectEntity subject, ApplicationEntity application)
+            throws SubscriptionNotFoundException;
 
     void removeSubscription(SubscriptionEntity subscriptionEntity);
 

@@ -21,6 +21,7 @@ public interface SubjectIdentifierDAO extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/SubjectIdentifierDAOBean/local";
 
+
     void addSubjectIdentifier(String domain, String subjectIdentifier, SubjectEntity subject);
 
     SubjectEntity findSubject(String domain, String subjectIdentifier);

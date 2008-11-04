@@ -92,7 +92,8 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
      * @throws PermissionDeniedException
      */
     @DenyAll
-    public void setAuthenticatedSubject(SubjectEntity subject) throws SubjectMismatchException, PermissionDeniedException {
+    public void setAuthenticatedSubject(SubjectEntity subject)
+            throws SubjectMismatchException, PermissionDeniedException {
 
         LOG.debug("set re-auth subject: " + subject.getUserId());
         SubjectEntity targetSubject = this.subjectManager.getCallerSubject();
@@ -107,11 +108,9 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
     }
 
     @DenyAll
-    public boolean authenticate(@NonEmptyString String login, @NonEmptyString String password) throws SubjectNotFoundException,
-                                                                                              DeviceNotFoundException,
-                                                                                              SubjectMismatchException,
-                                                                                              PermissionDeniedException,
-                                                                                              DeviceDisabledException {
+    public boolean authenticate(@NonEmptyString String login, @NonEmptyString String password)
+            throws SubjectNotFoundException, DeviceNotFoundException, SubjectMismatchException, PermissionDeniedException,
+            DeviceDisabledException {
 
         SubjectEntity subject = this.passwordDeviceService.authenticate(login, password);
         if (null == subject)

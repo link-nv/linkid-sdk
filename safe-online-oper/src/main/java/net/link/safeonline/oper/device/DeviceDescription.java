@@ -20,6 +20,7 @@ public interface DeviceDescription {
 
     public static final String JNDI_BINDING = OperatorConstants.JNDI_PREFIX + "DeviceDescriptionBean/local";
 
+
     /*
      * Lifecycle.
      */
@@ -28,11 +29,13 @@ public interface DeviceDescription {
     /*
      * Actions.
      */
-    String add() throws ExistingDeviceDescriptionException, DeviceNotFoundException;
+    String add()
+            throws ExistingDeviceDescriptionException, DeviceNotFoundException;
 
     String edit();
 
-    String remove() throws DeviceNotFoundException, DeviceDescriptionNotFoundException;
+    String remove()
+            throws DeviceNotFoundException, DeviceDescriptionNotFoundException;
 
     String save();
 
@@ -41,7 +44,8 @@ public interface DeviceDescription {
     /*
      * Factories
      */
-    void deviceDescriptionsListFactory() throws DeviceNotFoundException;
+    void deviceDescriptionsListFactory()
+            throws DeviceNotFoundException;
 
     /*
      * Acccessors

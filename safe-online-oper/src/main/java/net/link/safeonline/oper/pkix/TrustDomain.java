@@ -20,6 +20,7 @@ public interface TrustDomain {
 
     public static final String JNDI_BINDING = OperatorConstants.JNDI_PREFIX + "TrustDomainBean/local";
 
+
     /*
      * Factories.
      */
@@ -37,9 +38,11 @@ public interface TrustDomain {
      */
     String view();
 
-    String add() throws ExistingTrustDomainException;
+    String add()
+            throws ExistingTrustDomainException;
 
-    String removeTrustDomain() throws TrustDomainNotFoundException;
+    String removeTrustDomain()
+            throws TrustDomainNotFoundException;
 
     String clearOcspCache();
 

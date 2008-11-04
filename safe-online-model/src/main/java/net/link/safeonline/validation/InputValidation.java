@@ -36,7 +36,8 @@ public class InputValidation {
 
     @SuppressWarnings("unchecked")
     @AroundInvoke
-    public Object inputValidationInterceptor(InvocationContext context) throws Exception {
+    public Object inputValidationInterceptor(InvocationContext context)
+            throws Exception {
 
         Method method = context.getMethod();
         LOG.debug("input validation on " + method.getName());

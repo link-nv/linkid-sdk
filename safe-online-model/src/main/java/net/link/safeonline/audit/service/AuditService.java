@@ -27,6 +27,7 @@ public interface AuditService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AuditServiceBean/local";
 
+
     Set<String> listUsers();
 
     List<AccessAuditEntity> listAccessAuditRecords(String principal);
@@ -37,7 +38,8 @@ public interface AuditService extends SafeOnlineService {
 
     List<AccessAuditEntity> listAccessAuditRecords(Long id);
 
-    boolean removeAuditContext(Long id) throws AuditContextNotFoundException;
+    boolean removeAuditContext(Long id)
+            throws AuditContextNotFoundException;
 
     List<SecurityAuditEntity> listSecurityAuditRecords(Long id);
 
@@ -53,7 +55,8 @@ public interface AuditService extends SafeOnlineService {
 
     List<AuditAuditEntity> listAuditAuditRecordsSince(Date ageLimit);
 
-    AuditContextEntity getAuditContext(Long id) throws AuditContextNotFoundException;
+    AuditContextEntity getAuditContext(Long id)
+            throws AuditContextNotFoundException;
 
     List<SecurityAuditEntity> listSecurityAuditRecords();
 

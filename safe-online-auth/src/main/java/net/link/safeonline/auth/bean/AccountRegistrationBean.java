@@ -97,8 +97,8 @@ public class AccountRegistrationBean extends AbstractLoginBean implements Accoun
             @Error(exceptionClass = AttributeTypeNotFoundException.class, messageId = "errorLoginTaken", fieldId = "login"),
             @Error(exceptionClass = AttributeUnavailableException.class, messageId = "errorLoginTaken", fieldId = "login"),
             @Error(exceptionClass = PermissionDeniedException.class, messageId = "errorPermissionDenied", fieldId = "login") })
-    public String loginNext() throws ExistingUserException, AttributeTypeNotFoundException, PermissionDeniedException,
-                             AttributeUnavailableException {
+    public String loginNext()
+            throws ExistingUserException, AttributeTypeNotFoundException, PermissionDeniedException, AttributeUnavailableException {
 
         this.log.debug("loginNext");
 
@@ -124,7 +124,8 @@ public class AccountRegistrationBean extends AbstractLoginBean implements Accoun
         return "next";
     }
 
-    public String deviceNext() throws DeviceNotFoundException, IOException {
+    public String deviceNext()
+            throws DeviceNotFoundException, IOException {
 
         this.log.debug("deviceNext: " + this.device);
 
@@ -173,7 +174,8 @@ public class AccountRegistrationBean extends AbstractLoginBean implements Accoun
     }
 
     @Factory("allDevicesAccountRegistration")
-    public List<SelectItem> allDevicesFactory() throws ApplicationNotFoundException, EmptyDevicePolicyException {
+    public List<SelectItem> allDevicesFactory()
+            throws ApplicationNotFoundException, EmptyDevicePolicyException {
 
         this.log.debug("all devices factory");
         FacesContext facesContext = FacesContext.getCurrentInstance();

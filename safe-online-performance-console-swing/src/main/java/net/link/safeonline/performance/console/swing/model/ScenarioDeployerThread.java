@@ -31,7 +31,8 @@ public class ScenarioDeployerThread extends ScenarioThread {
      * {@inheritDoc}
      */
     @Override
-    void process(ConsoleAgent agent) throws Exception {
+    void process(ConsoleAgent agent)
+            throws Exception {
 
         this.scenarioDeployer.deploy(agent.getAddress());
     }

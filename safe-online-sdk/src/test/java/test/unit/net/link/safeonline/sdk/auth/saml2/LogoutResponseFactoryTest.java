@@ -36,7 +36,8 @@ public class LogoutResponseFactoryTest {
 
 
     @Test
-    public void createLogoutResponse() throws Exception {
+    public void createLogoutResponse()
+            throws Exception {
 
         // setup
         String inResponseTo = "id-in-response-to-test-id";

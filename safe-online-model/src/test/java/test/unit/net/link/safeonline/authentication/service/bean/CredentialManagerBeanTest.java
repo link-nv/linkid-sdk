@@ -87,7 +87,8 @@ public class CredentialManagerBeanTest extends TestCase {
 
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp()
+            throws Exception {
 
         super.setUp();
 
@@ -145,7 +146,8 @@ public class CredentialManagerBeanTest extends TestCase {
         };
     }
 
-    public void testAuthenticateViaAuthenticationStatement() throws Exception {
+    public void testAuthenticateViaAuthenticationStatement()
+            throws Exception {
 
         // setup
         String sessionId = UUID.randomUUID().toString();
@@ -182,7 +184,8 @@ public class CredentialManagerBeanTest extends TestCase {
         assertEquals(userId, resultUserId);
     }
 
-    public void testUnparsableIdentityStatement() throws Exception {
+    public void testUnparsableIdentityStatement()
+            throws Exception {
 
         // setup
         byte[] identityStatement = "foobar-identity-statemennt".getBytes();
@@ -206,7 +209,8 @@ public class CredentialManagerBeanTest extends TestCase {
         verify(this.mockObjects);
     }
 
-    public void testMergeIdentityStatement() throws Exception {
+    public void testMergeIdentityStatement()
+            throws Exception {
 
         // setup
         String sessionId = UUID.randomUUID().toString();
@@ -264,7 +268,8 @@ public class CredentialManagerBeanTest extends TestCase {
         verify(this.mockObjects);
     }
 
-    public void testMergeIdentityStatementFailsIfAnotherSubjectAlreadyRegisteredTheCert() throws Exception {
+    public void testMergeIdentityStatementFailsIfAnotherSubjectAlreadyRegisteredTheCert()
+            throws Exception {
 
         // setup
         String sessionId = UUID.randomUUID().toString();
@@ -307,7 +312,8 @@ public class CredentialManagerBeanTest extends TestCase {
         }
     }
 
-    public void testMergeIdentityStatementFailsIfLoginAndUserDoNotCorrespond() throws Exception {
+    public void testMergeIdentityStatementFailsIfLoginAndUserDoNotCorrespond()
+            throws Exception {
 
         // setup
         String sessionId = UUID.randomUUID().toString();
@@ -335,7 +341,8 @@ public class CredentialManagerBeanTest extends TestCase {
         }
     }
 
-    public void testMergeIdentityStatementFailsIfSessionIdIsInvalid() throws Exception {
+    public void testMergeIdentityStatementFailsIfSessionIdIsInvalid()
+            throws Exception {
 
         // setup
         String sessionId = UUID.randomUUID().toString();
@@ -365,7 +372,8 @@ public class CredentialManagerBeanTest extends TestCase {
         }
     }
 
-    public void testMergeIdentityStatementFailsIfOperationIdIsInvalid() throws Exception {
+    public void testMergeIdentityStatementFailsIfOperationIdIsInvalid()
+            throws Exception {
 
         // setup
         String sessionId = UUID.randomUUID().toString();
@@ -395,7 +403,8 @@ public class CredentialManagerBeanTest extends TestCase {
         }
     }
 
-    public void testMergeIdentityStatementFailsIfNotSignedByClaimedAuthCert() throws Exception {
+    public void testMergeIdentityStatementFailsIfNotSignedByClaimedAuthCert()
+            throws Exception {
 
         // setup
         String sessionId = UUID.randomUUID().toString();
@@ -426,7 +435,8 @@ public class CredentialManagerBeanTest extends TestCase {
         }
     }
 
-    public void testMergeIdentityStatementFailsIfCertNotTrusted() throws Exception {
+    public void testMergeIdentityStatementFailsIfCertNotTrusted()
+            throws Exception {
 
         // setup
         String sessionId = UUID.randomUUID().toString();

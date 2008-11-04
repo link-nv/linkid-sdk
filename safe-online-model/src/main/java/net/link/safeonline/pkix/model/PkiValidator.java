@@ -27,6 +27,7 @@ public interface PkiValidator extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/PkiValidatorBean/local";
 
+
     public enum PkiResult {
         REVOKED,
         SUSPENDED,
@@ -45,5 +46,6 @@ public interface PkiValidator extends SafeOnlineService {
      */
     PkiResult validateCertificate(TrustDomainEntity trustDomain, X509Certificate certificate);
 
-    PkiResult validateCertificate(String trustDomainName, X509Certificate certificate) throws TrustDomainNotFoundException;
+    PkiResult validateCertificate(String trustDomainName, X509Certificate certificate)
+            throws TrustDomainNotFoundException;
 }

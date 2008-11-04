@@ -56,7 +56,8 @@ public class PagingTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         if (this.entityTestManager.getEntityManager() != null) {
             this.entityTestManager.tearDown();
@@ -64,13 +65,15 @@ public class PagingTest {
     }
 
     @Test
-    public void annotationCorrectness() throws Exception {
+    public void annotationCorrectness()
+            throws Exception {
 
         assertNotNull("JPA annotations incorrect?", this.entityTestManager.getEntityManager());
     }
 
     @Test
-    public void testPaging() throws Exception {
+    public void testPaging()
+            throws Exception {
 
         EntityManager em = this.entityTestManager.getEntityManager();
 
@@ -106,7 +109,8 @@ public class PagingTest {
     }
 
     @SuppressWarnings("unchecked")
-    public Set<ProfileDataEntity> testPagingOne(DriverProfileEntity profile, int dataPoints) throws Exception {
+    public Set<ProfileDataEntity> testPagingOne(DriverProfileEntity profile, int dataPoints)
+            throws Exception {
 
         EntityManager em = this.entityTestManager.getEntityManager();
 
@@ -159,7 +163,8 @@ public class PagingTest {
     }
 
     @SuppressWarnings("unchecked")
-    public Set<ProfileDataEntity> testPagingTwo(DriverProfileEntity profile, int dataPoints) throws Exception {
+    public Set<ProfileDataEntity> testPagingTwo(DriverProfileEntity profile, int dataPoints)
+            throws Exception {
 
         EntityManager em = this.entityTestManager.getEntityManager();
 

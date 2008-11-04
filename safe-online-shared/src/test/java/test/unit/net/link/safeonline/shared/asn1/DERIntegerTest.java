@@ -15,7 +15,8 @@ import org.bouncycastle.asn1.ASN1Object;
 
 public class DERIntegerTest extends TestCase {
 
-    public void testDERInteger() throws Exception {
+    public void testDERInteger()
+            throws Exception {
 
         // setup
         int value = 12345678;

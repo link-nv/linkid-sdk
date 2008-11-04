@@ -56,7 +56,7 @@ public class ApplicationIdentityDAOBean implements ApplicationIdentityDAO {
     }
 
     public ApplicationIdentityEntity getApplicationIdentity(ApplicationEntity application, long identityVersion)
-                                                                                                                throws ApplicationIdentityNotFoundException {
+            throws ApplicationIdentityNotFoundException {
 
         ApplicationIdentityPK applicationIdentityPK = new ApplicationIdentityPK(application.getName(), identityVersion);
         ApplicationIdentityEntity applicationIdentity = this.entityManager.find(ApplicationIdentityEntity.class, applicationIdentityPK);

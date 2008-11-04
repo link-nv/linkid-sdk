@@ -57,8 +57,7 @@ public class CertificateMapperHandler implements SOAPHandler<SOAPMessageContext>
         System.setProperty("com.sun.xml.ws.fault.SOAPFaultBuilder.disableCaptureStackTrace", "true");
         this.applicationAuthenticationService = EjbUtils.getEJB(ApplicationAuthenticationService.JNDI_BINDING,
                 ApplicationAuthenticationService.class);
-        this.deviceAuthenticationService = EjbUtils.getEJB(DeviceAuthenticationService.JNDI_BINDING,
-                DeviceAuthenticationService.class);
+        this.deviceAuthenticationService = EjbUtils.getEJB(DeviceAuthenticationService.JNDI_BINDING, DeviceAuthenticationService.class);
         this.nodeAuthenticationService = EjbUtils.getEJB(NodeAuthenticationService.JNDI_BINDING, NodeAuthenticationService.class);
     }
 

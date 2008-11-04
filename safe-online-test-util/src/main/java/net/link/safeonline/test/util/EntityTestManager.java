@@ -66,7 +66,8 @@ public class EntityTestManager {
     }
 
     @SuppressWarnings("deprecation")
-    public void setUp(Class<?>... serializableClasses) throws Exception {
+    public void setUp(Class<?>... serializableClasses)
+            throws Exception {
 
         if (this.configuration == null) {
             configureHSql();
@@ -85,7 +86,8 @@ public class EntityTestManager {
         this.entityManager.getTransaction().begin();
     }
 
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         if (null == this.entityManager)
             throw new IllegalStateException("invoke setUp first");
@@ -167,7 +169,8 @@ public class EntityTestManager {
         return object;
     }
 
-    public static void init(Class<?> clazz, Object bean) throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+    public static void init(Class<?> clazz, Object bean)
+            throws IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 
         LOG.debug("Initializing: " + bean);
         Method[] methods = clazz.getDeclaredMethods();
@@ -219,7 +222,8 @@ public class EntityTestManager {
 
 
         public Object intercept(@SuppressWarnings("unused") Object obj, Method method, Object[] args,
-                                @SuppressWarnings("unused") MethodProxy proxy) throws Throwable {
+                                @SuppressWarnings("unused") MethodProxy proxy)
+                throws Throwable {
 
             EntityManager entityManager = this.entityManagerFactory.createEntityManager();
             try {

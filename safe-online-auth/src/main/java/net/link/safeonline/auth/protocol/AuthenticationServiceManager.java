@@ -41,8 +41,7 @@ public class AuthenticationServiceManager implements HttpSessionListener {
         /*
          * When the HTTP session starts we assign it an authentication service instance.
          */
-        AuthenticationService authenticationService = EjbUtils.getEJB(AuthenticationService.JNDI_BINDING,
-                AuthenticationService.class);
+        AuthenticationService authenticationService = EjbUtils.getEJB(AuthenticationService.JNDI_BINDING, AuthenticationService.class);
 
         HttpSession session = event.getSession();
 
@@ -112,8 +111,8 @@ public class AuthenticationServiceManager implements HttpSessionListener {
      * @throws ApplicationNotFoundException
      * @throws SubscriptionNotFoundException
      */
-    public static String finalizeAuthentication(HttpSession session) throws NodeNotFoundException, SubscriptionNotFoundException,
-                                                                    ApplicationNotFoundException {
+    public static String finalizeAuthentication(HttpSession session)
+            throws NodeNotFoundException, SubscriptionNotFoundException, ApplicationNotFoundException {
 
         AuthenticationService authenticationService = (AuthenticationService) session.getAttribute(AUTH_SERVICE_ATTRIBUTE);
         if (null == authenticationService) {
@@ -140,7 +139,8 @@ public class AuthenticationServiceManager implements HttpSessionListener {
      * @param session
      * @throws NodeNotFoundException
      */
-    public static String finalizeLogout(boolean partialLogout, HttpSession session) throws NodeNotFoundException {
+    public static String finalizeLogout(boolean partialLogout, HttpSession session)
+            throws NodeNotFoundException {
 
         AuthenticationService authenticationService = (AuthenticationService) session.getAttribute(AUTH_SERVICE_ATTRIBUTE);
         if (null == authenticationService) {

@@ -59,7 +59,8 @@ public class IdentityServletTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.jndiTestUtils = new JndiTestUtils();
         this.jndiTestUtils.setUp();
@@ -81,14 +82,16 @@ public class IdentityServletTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.servletTestManager.tearDown();
         this.jndiTestUtils.tearDown();
     }
 
     @Test
-    public void testWrongContentTypeGivesBadRequestResult() throws Exception {
+    public void testWrongContentTypeGivesBadRequestResult()
+            throws Exception {
 
         // setup
         PostMethod postMethod = new PostMethod(this.location);
@@ -102,7 +105,8 @@ public class IdentityServletTest {
     }
 
     @Test
-    public void testGetNotAllowed() throws Exception {
+    public void testGetNotAllowed()
+            throws Exception {
 
         // setup
         GetMethod getMethod = new GetMethod(this.location);
@@ -116,7 +120,8 @@ public class IdentityServletTest {
     }
 
     @Test
-    public void testDoPost() throws Exception {
+    public void testDoPost()
+            throws Exception {
 
         // setup
         PostMethod postMethod = new PostMethod(this.location);
@@ -140,7 +145,8 @@ public class IdentityServletTest {
     }
 
     @Test
-    public void testJREOnlyClient() throws Exception {
+    public void testJREOnlyClient()
+            throws Exception {
 
         // setup
         URL url = new URL(this.location);

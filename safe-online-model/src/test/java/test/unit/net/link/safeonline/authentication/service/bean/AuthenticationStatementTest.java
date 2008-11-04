@@ -20,7 +20,8 @@ import net.link.safeonline.test.util.PkiTestUtils;
 
 public class AuthenticationStatementTest extends TestCase {
 
-    public void testVerify() throws Exception {
+    public void testVerify()
+            throws Exception {
 
         // setup
         KeyPair keyPair = PkiTestUtils.generateKeyPair();

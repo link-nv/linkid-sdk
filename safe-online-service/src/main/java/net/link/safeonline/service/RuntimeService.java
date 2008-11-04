@@ -36,7 +36,8 @@ public class RuntimeService extends ServiceMBeanSupport implements RuntimeServic
 
 
     @Override
-    protected void startService() throws Exception {
+    protected void startService()
+            throws Exception {
 
         super.startService();
         LOG.debug("start");
@@ -46,7 +47,8 @@ public class RuntimeService extends ServiceMBeanSupport implements RuntimeServic
     }
 
     @Override
-    protected void stopService() throws Exception {
+    protected void stopService()
+            throws Exception {
 
         LOG.debug("stop");
         unregisterBouncyCastle();
@@ -72,7 +74,8 @@ public class RuntimeService extends ServiceMBeanSupport implements RuntimeServic
     }
 
     @SuppressWarnings("unchecked")
-    private void registerAuditContextPolicyContextHandler() throws PolicyContextException {
+    private void registerAuditContextPolicyContextHandler()
+            throws PolicyContextException {
 
         Set<String> handlerKeys = PolicyContext.getHandlerKeys();
         if (false == handlerKeys.contains(AuditContextPolicyContextHandler.AUDIT_CONTEXT_KEY)) {
@@ -82,7 +85,8 @@ public class RuntimeService extends ServiceMBeanSupport implements RuntimeServic
         }
     }
 
-    private void registerProfilingPolicyContextHandler() throws PolicyContextException {
+    private void registerProfilingPolicyContextHandler()
+            throws PolicyContextException {
 
         @SuppressWarnings("unchecked")
         Set<String> handlerKeys = PolicyContext.getHandlerKeys();

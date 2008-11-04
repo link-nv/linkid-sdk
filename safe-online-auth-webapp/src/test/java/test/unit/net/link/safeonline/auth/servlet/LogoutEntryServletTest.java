@@ -73,7 +73,8 @@ public class LogoutEntryServletTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.jndiTestUtils = new JndiTestUtils();
         this.jndiTestUtils.setUp();
@@ -99,14 +100,16 @@ public class LogoutEntryServletTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.logoutEntryServletTestManager.tearDown();
         this.jndiTestUtils.tearDown();
     }
 
     @Test
-    public void unsupportedAuthenticationProtocol() throws Exception {
+    public void unsupportedAuthenticationProtocol()
+            throws Exception {
 
         // setup
         HttpClient httpClient = new HttpClient();
@@ -128,7 +131,8 @@ public class LogoutEntryServletTest {
     }
 
     @Test
-    public void saml2LogoutProtocol() throws Exception {
+    public void saml2LogoutProtocol()
+            throws Exception {
 
         // setup
         HttpClient httpClient = new HttpClient();

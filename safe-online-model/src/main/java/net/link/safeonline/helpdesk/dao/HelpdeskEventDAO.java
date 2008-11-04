@@ -22,6 +22,7 @@ public interface HelpdeskEventDAO extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/HelpdeskEventDAOBean/local";
 
+
     void persist(List<HelpdeskEventEntity> helpdeskEvents);
 
     List<HelpdeskEventEntity> listEvents(Long logId);

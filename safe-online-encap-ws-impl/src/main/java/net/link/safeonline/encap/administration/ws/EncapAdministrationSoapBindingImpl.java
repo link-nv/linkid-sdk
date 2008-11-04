@@ -40,7 +40,8 @@ public class EncapAdministrationSoapBindingImpl implements BankIdAdministration 
      * @return MSecResponse
      * 
      */
-    public MSecResponse lock(String msisdn, String orgId) throws RemoteException {
+    public MSecResponse lock(String msisdn, String orgId)
+            throws RemoteException {
 
         LOG.debug("lock: msisdn=" + msisdn + " orgId=" + orgId);
         MSecResponse response = new MSecResponse();
@@ -55,7 +56,8 @@ public class EncapAdministrationSoapBindingImpl implements BankIdAdministration 
 
     }
 
-    public MSecResponse remove(String msisdn, String orgId) throws RemoteException {
+    public MSecResponse remove(String msisdn, String orgId)
+            throws RemoteException {
 
         LOG.debug("remove: msisdn=" + msisdn + " orgId=" + orgId);
         MSecResponse response = new MSecResponse();
@@ -69,7 +71,8 @@ public class EncapAdministrationSoapBindingImpl implements BankIdAdministration 
         return response;
     }
 
-    public MSecResponse showStatus(String msisdn, String orgId) throws RemoteException {
+    public MSecResponse showStatus(String msisdn, String orgId)
+            throws RemoteException {
 
         LOG.debug("showStatus: msisdn=" + msisdn + " orgId=" + orgId);
         MSecResponse response = new MSecResponse();
@@ -84,7 +87,8 @@ public class EncapAdministrationSoapBindingImpl implements BankIdAdministration 
 
     }
 
-    public MSecResponse unLock(String msisdn, String orgId) throws RemoteException {
+    public MSecResponse unLock(String msisdn, String orgId)
+            throws RemoteException {
 
         LOG.debug("unLock: msisdn=" + msisdn + " orgId=" + orgId);
         MSecResponse response = new MSecResponse();

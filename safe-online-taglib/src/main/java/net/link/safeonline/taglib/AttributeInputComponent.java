@@ -77,7 +77,8 @@ public class AttributeInputComponent extends UIInput {
     }
 
     @Override
-    public void encodeBegin(FacesContext context) throws IOException {
+    public void encodeBegin(FacesContext context)
+            throws IOException {
 
         LOG.debug("encodeBegin");
         if (false == isRendered())
@@ -101,7 +102,8 @@ public class AttributeInputComponent extends UIInput {
     }
 
     @Override
-    public void encodeEnd(FacesContext context) throws IOException {
+    public void encodeEnd(FacesContext context)
+            throws IOException {
 
         LOG.debug("encodeEnd");
         if (false == isRendered())
@@ -140,9 +142,11 @@ public class AttributeInputComponent extends UIInput {
      */
     private interface Renderer {
 
-        void encodeBegin(FacesContext context, UIInput inputComponent) throws IOException;
+        void encodeBegin(FacesContext context, UIInput inputComponent)
+                throws IOException;
 
-        void encodeEnd(FacesContext context, UIInput inputComponent) throws IOException;
+        void encodeEnd(FacesContext context, UIInput inputComponent)
+                throws IOException;
 
         void decode(FacesContext context, UIInput inputComponent);
     }
@@ -204,7 +208,8 @@ public class AttributeInputComponent extends UIInput {
     @SupportedType(DatatypeType.STRING)
     public static class StringRenderer implements Renderer {
 
-        public void encodeBegin(FacesContext context, UIInput inputComponent) throws IOException {
+        public void encodeBegin(FacesContext context, UIInput inputComponent)
+                throws IOException {
 
             String clientId = inputComponent.getClientId(context);
             ResponseWriter responseWriter = context.getResponseWriter();
@@ -232,7 +237,8 @@ public class AttributeInputComponent extends UIInput {
             }
         }
 
-        public void encodeEnd(FacesContext context, @SuppressWarnings("unused") UIInput inputComponent) throws IOException {
+        public void encodeEnd(FacesContext context, @SuppressWarnings("unused") UIInput inputComponent)
+                throws IOException {
 
             ResponseWriter responseWriter = context.getResponseWriter();
 
@@ -260,7 +266,8 @@ public class AttributeInputComponent extends UIInput {
     @SupportedType(DatatypeType.INTEGER)
     public static class IntegerRenderer implements Renderer {
 
-        public void encodeBegin(FacesContext context, UIInput inputComponent) throws IOException {
+        public void encodeBegin(FacesContext context, UIInput inputComponent)
+                throws IOException {
 
             String clientId = inputComponent.getClientId(context);
             ResponseWriter responseWriter = context.getResponseWriter();
@@ -293,7 +300,8 @@ public class AttributeInputComponent extends UIInput {
             }
         }
 
-        public void encodeEnd(FacesContext context, @SuppressWarnings("unused") UIInput inputComponent) throws IOException {
+        public void encodeEnd(FacesContext context, @SuppressWarnings("unused") UIInput inputComponent)
+                throws IOException {
 
             ResponseWriter responseWriter = context.getResponseWriter();
             responseWriter.endElement("input");
@@ -329,7 +337,8 @@ public class AttributeInputComponent extends UIInput {
     @SupportedType(DatatypeType.DOUBLE)
     public static class DoubleRenderer implements Renderer {
 
-        public void encodeBegin(FacesContext context, UIInput inputComponent) throws IOException {
+        public void encodeBegin(FacesContext context, UIInput inputComponent)
+                throws IOException {
 
             String clientId = inputComponent.getClientId(context);
             ResponseWriter responseWriter = context.getResponseWriter();
@@ -362,7 +371,8 @@ public class AttributeInputComponent extends UIInput {
             }
         }
 
-        public void encodeEnd(FacesContext context, @SuppressWarnings("unused") UIInput inputComponent) throws IOException {
+        public void encodeEnd(FacesContext context, @SuppressWarnings("unused") UIInput inputComponent)
+                throws IOException {
 
             ResponseWriter responseWriter = context.getResponseWriter();
             responseWriter.endElement("input");
@@ -398,7 +408,8 @@ public class AttributeInputComponent extends UIInput {
     @SupportedType(DatatypeType.DATE)
     public static class DateRenderer implements Renderer {
 
-        public void encodeBegin(FacesContext context, UIInput inputComponent) throws IOException {
+        public void encodeBegin(FacesContext context, UIInput inputComponent)
+                throws IOException {
 
             String clientId = inputComponent.getClientId(context);
             ResponseWriter responseWriter = context.getResponseWriter();
@@ -481,7 +492,8 @@ public class AttributeInputComponent extends UIInput {
             return clientId + ".year";
         }
 
-        public void encodeEnd(FacesContext context, @SuppressWarnings("unused") UIInput inputComponent) throws IOException {
+        public void encodeEnd(FacesContext context, @SuppressWarnings("unused") UIInput inputComponent)
+                throws IOException {
 
             ResponseWriter responseWriter = context.getResponseWriter();
             responseWriter.endElement("span");
@@ -522,7 +534,8 @@ public class AttributeInputComponent extends UIInput {
         private static final String INLINE_SCRIPT_ADDED = BooleanRenderer.class + ".inline_script_added";
 
 
-        public void encodeBegin(FacesContext context, UIInput inputComponent) throws IOException {
+        public void encodeBegin(FacesContext context, UIInput inputComponent)
+                throws IOException {
 
             String clientId = inputComponent.getClientId(context);
             ResponseWriter responseWriter = context.getResponseWriter();
@@ -636,7 +649,8 @@ public class AttributeInputComponent extends UIInput {
             return true;
         }
 
-        public void encodeEnd(FacesContext context, @SuppressWarnings("unused") UIInput inputComponent) throws IOException {
+        public void encodeEnd(FacesContext context, @SuppressWarnings("unused") UIInput inputComponent)
+                throws IOException {
 
             ResponseWriter responseWriter = context.getResponseWriter();
 

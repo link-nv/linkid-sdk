@@ -93,7 +93,8 @@ public class AuditContextPolicyContextHandler implements PolicyContextHandler {
      *            The ID of the audit context to assign to this thread.
      * @throws ExistingAuditContextException
      */
-    public static synchronized void setAndLockAuditContextId(long auditContextId) throws ExistingAuditContextException {
+    public static synchronized void setAndLockAuditContextId(long auditContextId)
+            throws ExistingAuditContextException {
 
         AuditContextInfo previousAuditContextInfo = auditContextInfos.get();
         if (null != previousAuditContextInfo) {
@@ -113,7 +114,8 @@ public class AuditContextPolicyContextHandler implements PolicyContextHandler {
      * @return auditContextId The ID of the audit context to assign to this thread.
      * @throws MissingAuditContextException
      */
-    public static synchronized Long getAuditContextId() throws MissingAuditContextException {
+    public static synchronized Long getAuditContextId()
+            throws MissingAuditContextException {
 
         AuditContextInfo auditContextInfo = auditContextInfos.get();
         if (null == auditContextInfo) {
@@ -147,7 +149,8 @@ public class AuditContextPolicyContextHandler implements PolicyContextHandler {
      * @return <code>true</code>: The entire audit stack was unlocked (last entry was unlocked).
      * @throws MissingAuditContextException
      */
-    public static synchronized boolean unlockAuditContext() throws MissingAuditContextException {
+    public static synchronized boolean unlockAuditContext()
+            throws MissingAuditContextException {
 
         AuditContextInfo auditContextInfo = auditContextInfos.get();
         if (null == auditContextInfo) {

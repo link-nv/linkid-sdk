@@ -26,7 +26,7 @@ import javax.ejb.Local;
 @Local
 public interface InitializationService extends BankService {
 
-    public static final String JNDI_BINDING                     = JNDI_PREFIX + "InitializationServiceBean/local";
+    public static final String JNDI_BINDING                = JNDI_PREFIX + "InitializationServiceBean/local";
 
     public String              digipassUser_BankId         = "pol";
     public String              digipassUser_Name           = "Pol Van Acker";

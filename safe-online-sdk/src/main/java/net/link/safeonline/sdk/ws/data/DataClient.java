@@ -36,8 +36,8 @@ public interface DataClient extends MessageAccessor {
      *             in case the attribute entity did not exist.
      * @see #createAttribute(String, String, Object)
      */
-    void setAttributeValue(String userId, String attributeName, Object attributeValue) throws WSClientTransportException,
-                                                                                      AttributeNotFoundException;
+    void setAttributeValue(String userId, String attributeName, Object attributeValue)
+            throws WSClientTransportException, AttributeNotFoundException;
 
     /**
      * Gives back the attribute value of an attribute. We return an {@link Attribute} object to be able to make a distinction between a
@@ -55,9 +55,7 @@ public interface DataClient extends MessageAccessor {
      * @throws SubjectNotFoundException
      */
     <Type> Attribute<Type> getAttributeValue(String userId, String attributeName, Class<Type> valueClass)
-                                                                                                         throws WSClientTransportException,
-                                                                                                         RequestDeniedException,
-                                                                                                         SubjectNotFoundException;
+            throws WSClientTransportException, RequestDeniedException, SubjectNotFoundException;
 
     /**
      * Creates a new (empty) attribute for the given subject.
@@ -67,7 +65,8 @@ public interface DataClient extends MessageAccessor {
      * @throws WSClientTransportException
      *             in case the service could not be contacted. Can happen if the SSL was not setup correctly.
      */
-    void createAttribute(String userId, String attributeName, Object objectValue) throws WSClientTransportException;
+    void createAttribute(String userId, String attributeName, Object objectValue)
+            throws WSClientTransportException;
 
     /**
      * Removes an attribute for the given subject.
@@ -81,7 +80,8 @@ public interface DataClient extends MessageAccessor {
      * @throws WSClientTransportException
      *             in case the service could not be contacted. Can happen if the SSL was not setup correctly.
      */
-    void removeAttribute(String userId, String attributeName, String attributeId) throws WSClientTransportException;
+    void removeAttribute(String userId, String attributeName, String attributeId)
+            throws WSClientTransportException;
 
     /**
      * Removes an attribute.
@@ -91,5 +91,6 @@ public interface DataClient extends MessageAccessor {
      * @param attribute
      * @throws WSClientTransportException
      */
-    <Type> void removeAttribute(String userId, Attribute<Type> attribute) throws WSClientTransportException;
+    <Type> void removeAttribute(String userId, Attribute<Type> attribute)
+            throws WSClientTransportException;
 }

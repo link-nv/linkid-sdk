@@ -158,8 +158,8 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
      * @throws PermissionDeniedException
      * @throws AttributeTypeNotFoundException
      */
-    private AttributeTypeEntity getUserEditableAttributeType(@NonEmptyString String attributeName) throws PermissionDeniedException,
-                                                                                                  AttributeTypeNotFoundException {
+    private AttributeTypeEntity getUserEditableAttributeType(@NonEmptyString String attributeName)
+            throws PermissionDeniedException, AttributeTypeNotFoundException {
 
         AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeName);
         if (false == attributeType.isUserEditable()) {
@@ -177,8 +177,8 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
      * @throws PermissionDeniedException
      * @throws AttributeTypeNotFoundException
      */
-    private AttributeTypeEntity getUserRemovableAttributeType(@NonEmptyString String attributeName) throws PermissionDeniedException,
-                                                                                                   AttributeTypeNotFoundException {
+    private AttributeTypeEntity getUserRemovableAttributeType(@NonEmptyString String attributeName)
+            throws PermissionDeniedException, AttributeTypeNotFoundException {
 
         AttributeTypeEntity attributeType = this.attributeTypeDAO.findAttributeType(attributeName);
         if (null == attributeType)
@@ -203,7 +203,8 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public void saveAttribute(@NotNull AttributeDO attribute) throws PermissionDeniedException, AttributeTypeNotFoundException {
+    public void saveAttribute(@NotNull AttributeDO attribute)
+            throws PermissionDeniedException, AttributeTypeNotFoundException {
 
         SubjectEntity subject = this.subjectManager.getCallerSubject();
         String attributeName = attribute.getName();
@@ -269,8 +270,8 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public List<AttributeDO> listAttributes(@NotNull SubjectEntity subject, Locale locale) throws PermissionDeniedException,
-                                                                                          AttributeTypeNotFoundException {
+    public List<AttributeDO> listAttributes(@NotNull SubjectEntity subject, Locale locale)
+            throws PermissionDeniedException, AttributeTypeNotFoundException {
 
         LOG.debug("get attributes for " + subject.getUserId());
 
@@ -279,8 +280,8 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public List<AttributeDO> listAttributes(Locale locale) throws AttributeTypeNotFoundException, PermissionDeniedException,
-                                                          ApplicationIdentityNotFoundException {
+    public List<AttributeDO> listAttributes(Locale locale)
+            throws AttributeTypeNotFoundException, PermissionDeniedException, ApplicationIdentityNotFoundException {
 
         SubjectEntity subject = this.subjectManager.getCallerSubject();
         LOG.debug("get attributes for " + subject.getUserId());
@@ -326,7 +327,8 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
      * Returns list of attribute data objects given the subject and the list of attribute types.
      */
     private List<AttributeDO> listAttributes(SubjectEntity subject, List<AttributeTypeEntity> attributeTypes, Locale locale,
-                                             boolean addTemplate) throws PermissionDeniedException, AttributeTypeNotFoundException {
+                                             boolean addTemplate)
+            throws PermissionDeniedException, AttributeTypeNotFoundException {
 
         List<AttributeDO> attributesView = new LinkedList<AttributeDO>();
         for (AttributeTypeEntity attributeType : attributeTypes) {
@@ -463,9 +465,8 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public boolean isConfirmationRequired(@NonEmptyString String applicationName) throws ApplicationNotFoundException,
-                                                                                 SubscriptionNotFoundException,
-                                                                                 ApplicationIdentityNotFoundException {
+    public boolean isConfirmationRequired(@NonEmptyString String applicationName)
+            throws ApplicationNotFoundException, SubscriptionNotFoundException, ApplicationIdentityNotFoundException {
 
         SubjectEntity subject = this.subjectManager.getCallerSubject();
         LOG.debug("is confirmation required for application " + applicationName + " by subject " + subject.getUserId());
@@ -496,8 +497,8 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public void confirmIdentity(@NonEmptyString String applicationName) throws ApplicationNotFoundException, SubscriptionNotFoundException,
-                                                                       ApplicationIdentityNotFoundException {
+    public void confirmIdentity(@NonEmptyString String applicationName)
+            throws ApplicationNotFoundException, SubscriptionNotFoundException, ApplicationIdentityNotFoundException {
 
         LOG.debug("confirm identity for application: " + applicationName);
 
@@ -516,9 +517,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
     public List<AttributeDO> listIdentityAttributesToConfirm(@NonEmptyString String applicationName, Locale locale)
-                                                                                                                   throws ApplicationNotFoundException,
-                                                                                                                   ApplicationIdentityNotFoundException,
-                                                                                                                   SubscriptionNotFoundException {
+            throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, SubscriptionNotFoundException {
 
         LOG.debug("get identity to confirm for application: " + applicationName);
         ApplicationEntity application = this.applicationDAO.getApplication(applicationName);
@@ -566,9 +565,9 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public boolean hasMissingAttributes(@NonEmptyString String applicationName) throws ApplicationNotFoundException,
-                                                                               ApplicationIdentityNotFoundException,
-                                                                               PermissionDeniedException, AttributeTypeNotFoundException {
+    public boolean hasMissingAttributes(@NonEmptyString String applicationName)
+            throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException,
+            AttributeTypeNotFoundException {
 
         LOG.debug("hasMissingAttributes for application: " + applicationName);
         List<AttributeDO> missingAttributes = listMissingAttributes(applicationName, null);
@@ -584,8 +583,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
      * @throws ApplicationIdentityNotFoundException
      */
     private List<AttributeTypeEntity> getDataAttributeTypes(@NonEmptyString String applicationName, boolean required)
-                                                                                                                     throws ApplicationNotFoundException,
-                                                                                                                     ApplicationIdentityNotFoundException {
+            throws ApplicationNotFoundException, ApplicationIdentityNotFoundException {
 
         ApplicationEntity application = this.applicationDAO.getApplication(applicationName);
         long currentApplicationIdentityVersion = application.getCurrentApplicationIdentity();
@@ -659,10 +657,8 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
     public List<AttributeDO> listOptionalAttributes(@NonEmptyString String applicationName, Locale locale)
-                                                                                                          throws ApplicationNotFoundException,
-                                                                                                          ApplicationIdentityNotFoundException,
-                                                                                                          PermissionDeniedException,
-                                                                                                          AttributeTypeNotFoundException {
+            throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException,
+            AttributeTypeNotFoundException {
 
         LOG.debug("list optional missing attributes for application: " + applicationName);
         SubjectEntity subject = this.subjectManager.getCallerSubject();
@@ -674,10 +670,8 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
     public List<AttributeDO> listMissingAttributes(@NonEmptyString String applicationName, Locale locale)
-                                                                                                         throws ApplicationNotFoundException,
-                                                                                                         ApplicationIdentityNotFoundException,
-                                                                                                         PermissionDeniedException,
-                                                                                                         AttributeTypeNotFoundException {
+            throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException,
+            AttributeTypeNotFoundException {
 
         LOG.debug("list missing attributes for application: " + applicationName);
         SubjectEntity subject = this.subjectManager.getCallerSubject();
@@ -692,8 +686,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
      * 
      */
     private List<AttributeDO> listMissingAttributes(SubjectEntity subject, List<AttributeTypeEntity> attributeTypes, Locale locale)
-                                                                                                                                   throws PermissionDeniedException,
-                                                                                                                                   AttributeTypeNotFoundException {
+            throws PermissionDeniedException, AttributeTypeNotFoundException {
 
         List<AttributeDO> attributesView = new LinkedList<AttributeDO>();
         for (AttributeTypeEntity attributeType : attributeTypes) {
@@ -715,9 +708,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
     public List<AttributeDO> listConfirmedIdentity(@NonEmptyString String applicationName, Locale locale)
-                                                                                                         throws ApplicationNotFoundException,
-                                                                                                         SubscriptionNotFoundException,
-                                                                                                         ApplicationIdentityNotFoundException {
+            throws ApplicationNotFoundException, SubscriptionNotFoundException, ApplicationIdentityNotFoundException {
 
         ApplicationEntity application = this.applicationDAO.getApplication(applicationName);
         SubjectEntity subject = this.subjectManager.getCallerSubject();
@@ -735,9 +726,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
     public List<AttributeDO> listAttributes(@NotNull SubjectEntity subject, @NotNull AttributeTypeEntity attributeType, Locale locale)
-                                                                                                                                      throws PermissionDeniedException,
-                                                                                                                                      AttributeTypeNotFoundException,
-                                                                                                                                      SubjectNotFoundException {
+            throws PermissionDeniedException, AttributeTypeNotFoundException, SubjectNotFoundException {
 
         LOG.debug("list attributes of type " + attributeType.getName() + " for user: " + subject.getUserId());
         try {
@@ -755,8 +744,8 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public void removeAttribute(@NotNull AttributeDO attribute) throws PermissionDeniedException, AttributeNotFoundException,
-                                                               AttributeTypeNotFoundException {
+    public void removeAttribute(@NotNull AttributeDO attribute)
+            throws PermissionDeniedException, AttributeNotFoundException, AttributeTypeNotFoundException {
 
         SubjectEntity subject = this.subjectManager.getCallerSubject();
         String attributeName = attribute.getName();
@@ -772,8 +761,8 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public void addAttribute(@NotNull List<AttributeDO> newAttributeContext) throws PermissionDeniedException,
-                                                                            AttributeTypeNotFoundException {
+    public void addAttribute(@NotNull List<AttributeDO> newAttributeContext)
+            throws PermissionDeniedException, AttributeTypeNotFoundException {
 
         AttributeDO headAttribute = newAttributeContext.get(0);
         String attributeName = headAttribute.getName();
@@ -832,7 +821,8 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public List<AttributeDO> getAttributeEditContext(@NotNull AttributeDO selectedAttribute) throws AttributeTypeNotFoundException {
+    public List<AttributeDO> getAttributeEditContext(@NotNull AttributeDO selectedAttribute)
+            throws AttributeTypeNotFoundException {
 
         AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(selectedAttribute.getName());
         if (attributeType.isCompounded()) {
@@ -873,7 +863,8 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public List<AttributeDO> getAttributeTemplate(@NotNull AttributeDO prototypeAttribute) throws AttributeTypeNotFoundException {
+    public List<AttributeDO> getAttributeTemplate(@NotNull AttributeDO prototypeAttribute)
+            throws AttributeTypeNotFoundException {
 
         String attributeName = prototypeAttribute.getName();
         LOG.debug("getAttributeTemplate: " + attributeName);

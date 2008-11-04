@@ -91,7 +91,8 @@ public class NameIdentifierMappingPortImplTest {
 
     @SuppressWarnings("unchecked")
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.jndiTestUtils = new JndiTestUtils();
         this.jndiTestUtils.setUp();
@@ -159,7 +160,8 @@ public class NameIdentifierMappingPortImplTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.webServiceTestUtils.tearDown();
 
@@ -167,7 +169,8 @@ public class NameIdentifierMappingPortImplTest {
     }
 
     @Test
-    public void invocation() throws Exception {
+    public void invocation()
+            throws Exception {
 
         // setup
         String username = "test-username";

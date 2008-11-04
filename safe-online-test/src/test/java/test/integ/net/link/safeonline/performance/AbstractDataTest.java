@@ -96,7 +96,8 @@ public abstract class AbstractDataTest {
      * {@inheritDoc}
      */
     @Override
-    protected void finalize() throws Throwable {
+    protected void finalize()
+            throws Throwable {
 
         if (this.entityTestManager.getEntityManager() != null) {
             this.entityTestManager.tearDown();

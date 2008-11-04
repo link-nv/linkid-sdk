@@ -46,18 +46,21 @@ public class LoginServlet extends AbstractInjectionServlet {
 
 
     @Override
-    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         handleLanding(request, response);
     }
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         handleLanding(request, response);
     }
 
-    private void handleLanding(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void handleLanding(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         /**
          * Wrap the request to use the servlet endpoint url if defined. To prevent failure when behind a reverse proxy or loadbalancer when

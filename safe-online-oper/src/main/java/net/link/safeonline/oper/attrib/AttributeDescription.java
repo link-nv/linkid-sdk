@@ -20,10 +20,12 @@ public interface AttributeDescription {
 
     public static final String JNDI_BINDING = OperatorConstants.JNDI_PREFIX + "AttributeDescriptionBean/local";
 
+
     /*
      * Factories.
      */
-    void attributeTypeDescriptionsFactory() throws AttributeTypeNotFoundException;
+    void attributeTypeDescriptionsFactory()
+            throws AttributeTypeNotFoundException;
 
     AttributeTypeDescriptionEntity newAttributeTypeDescriptionFactory();
 
@@ -37,11 +39,13 @@ public interface AttributeDescription {
      */
     String edit();
 
-    String add() throws AttributeTypeNotFoundException;
+    String add()
+            throws AttributeTypeNotFoundException;
 
     String save();
 
-    String removeDescription() throws AttributeTypeDescriptionNotFoundException, AttributeTypeNotFoundException;
+    String removeDescription()
+            throws AttributeTypeDescriptionNotFoundException, AttributeTypeNotFoundException;
 
     String cancelEdit();
 }

@@ -9,7 +9,8 @@ package net.link.safeonline.auth.pcsc;
 
 public class SexConvertor implements Convertor<Sex> {
 
-    public Sex convert(byte[] value) throws ConvertorException {
+    public Sex convert(byte[] value)
+            throws ConvertorException {
 
         String strValue = new String(value);
         if ("M".equals(strValue))

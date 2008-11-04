@@ -61,8 +61,9 @@ public class GlobalUsageAgreementConfirmationBean extends AbstractExitBean imple
 
 
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
-    public String confirm() throws ApplicationNotFoundException, SubscriptionNotFoundException, ApplicationIdentityNotFoundException,
-                           PermissionDeniedException, AttributeTypeNotFoundException, AttributeUnavailableException {
+    public String confirm()
+            throws ApplicationNotFoundException, SubscriptionNotFoundException, ApplicationIdentityNotFoundException,
+            PermissionDeniedException, AttributeTypeNotFoundException, AttributeUnavailableException {
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();

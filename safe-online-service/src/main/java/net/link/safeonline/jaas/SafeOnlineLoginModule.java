@@ -65,7 +65,8 @@ public class SafeOnlineLoginModule implements LoginModule {
         return true;
     }
 
-    public boolean commit() throws LoginException {
+    public boolean commit()
+            throws LoginException {
 
         LOG.debug("commit");
 
@@ -137,7 +138,8 @@ public class SafeOnlineLoginModule implements LoginModule {
         return group;
     }
 
-    public boolean login() throws LoginException {
+    public boolean login()
+            throws LoginException {
 
         LOG.debug("login");
         // retrieve credentials
@@ -177,7 +179,8 @@ public class SafeOnlineLoginModule implements LoginModule {
         return true;
     }
 
-    private AuthorizationService getAuthorizationService() throws LoginException {
+    private AuthorizationService getAuthorizationService()
+            throws LoginException {
 
         try {
             AuthorizationService authorizationService = EjbUtils.getEJB(this.authorizationServiceJndiName, AuthorizationService.class);
@@ -187,7 +190,8 @@ public class SafeOnlineLoginModule implements LoginModule {
         }
     }
 
-    public boolean logout() throws LoginException {
+    public boolean logout()
+            throws LoginException {
 
         LOG.debug("logout");
         Set<Principal> principals = this.subject.getPrincipals();

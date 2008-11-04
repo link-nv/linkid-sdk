@@ -53,8 +53,8 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
     private HistoryDAO          historyDAO;
 
 
-    public SubjectEntity authenticate(String loginName, String password) throws DeviceNotFoundException, SubjectNotFoundException,
-                                                                        DeviceDisabledException {
+    public SubjectEntity authenticate(String loginName, String password)
+            throws DeviceNotFoundException, SubjectNotFoundException, DeviceDisabledException {
 
         LOG.debug("authenticate \"" + loginName + "\"");
 
@@ -78,13 +78,15 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
         return subject;
     }
 
-    public void register(String userId, String password) throws SubjectNotFoundException, DeviceNotFoundException {
+    public void register(String userId, String password)
+            throws SubjectNotFoundException, DeviceNotFoundException {
 
         SubjectEntity subject = this.subjectService.getSubject(userId);
         register(subject, password);
     }
 
-    public void register(SubjectEntity subject, String password) throws SubjectNotFoundException, DeviceNotFoundException {
+    public void register(SubjectEntity subject, String password)
+            throws SubjectNotFoundException, DeviceNotFoundException {
 
         LOG.debug("register \"" + subject.getUserId() + "\"");
         try {
@@ -98,8 +100,8 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
 
     }
 
-    public void remove(SubjectEntity subject, String password) throws DeviceNotFoundException, PermissionDeniedException,
-                                                              SubjectNotFoundException {
+    public void remove(SubjectEntity subject, String password)
+            throws DeviceNotFoundException, PermissionDeniedException, SubjectNotFoundException {
 
         LOG.debug("remove " + subject.getUserId());
 
@@ -110,8 +112,8 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
 
     }
 
-    public void update(SubjectEntity subject, String oldPassword, String newPassword) throws PermissionDeniedException,
-                                                                                     DeviceNotFoundException, SubjectNotFoundException {
+    public void update(SubjectEntity subject, String oldPassword, String newPassword)
+            throws PermissionDeniedException, DeviceNotFoundException, SubjectNotFoundException {
 
         LOG.debug("update \"" + subject.getUserId() + "\"");
 
@@ -122,7 +124,8 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
 
     }
 
-    public boolean isPasswordConfigured(SubjectEntity subject) throws SubjectNotFoundException, DeviceNotFoundException {
+    public boolean isPasswordConfigured(SubjectEntity subject)
+            throws SubjectNotFoundException, DeviceNotFoundException {
 
         return this.passwordManager.isPasswordConfigured(subject);
     }
@@ -130,7 +133,8 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
     /**
      * {@inheritDoc}
      */
-    public void disable(SubjectEntity subject) throws DeviceNotFoundException {
+    public void disable(SubjectEntity subject)
+            throws DeviceNotFoundException {
 
         boolean disable = !this.passwordManager.isDisabled(subject);
 

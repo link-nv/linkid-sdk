@@ -90,7 +90,8 @@ public class ServerCrypto implements Crypto {
     }
 
     @SuppressWarnings("unused")
-    public PrivateKey getPrivateKey(String alias, String password) throws Exception {
+    public PrivateKey getPrivateKey(String alias, String password)
+            throws Exception {
 
         return null;
     }

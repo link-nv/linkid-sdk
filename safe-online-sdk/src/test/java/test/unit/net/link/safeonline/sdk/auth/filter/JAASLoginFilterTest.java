@@ -65,7 +65,8 @@ public class JAASLoginFilterTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.testedInstance = new JAASLoginFilter();
 
@@ -137,7 +138,8 @@ public class JAASLoginFilterTest {
 
 
     @Test
-    public void doFilter() throws Exception {
+    public void doFilter()
+            throws Exception {
 
         // setup
         String testPasswordAttributeName = "test-password";
@@ -146,11 +148,9 @@ public class JAASLoginFilterTest {
         expect(this.mockFilterConfig.getInitParameter(JAASLoginFilter.LOGIN_CONTEXT_PARAM)).andStubReturn("client-login");
 
         expect(this.mockFilterConfig.getInitParameter(JAASLoginFilter.LOGIN_PATH_PARAM)).andStubReturn(null);
-        expect(this.mockFilterConfig.getInitParameterNames()).andStubReturn(
-                Collections.enumeration(new LinkedList<String>()));
+        expect(this.mockFilterConfig.getInitParameterNames()).andStubReturn(Collections.enumeration(new LinkedList<String>()));
 
-        expect(this.mockHttpSession.getAttribute(LoginManager.USERID_SESSION_ATTRIBUTE)).andStubReturn(
-                UUID.randomUUID().toString());
+        expect(this.mockHttpSession.getAttribute(LoginManager.USERID_SESSION_ATTRIBUTE)).andStubReturn(UUID.randomUUID().toString());
         expect(this.mockHttpSession.getAttribute(testPasswordAttributeName)).andStubReturn("test-password");
 
         expect(this.mockHttpServletRequest.getRequestURL()).andStubReturn(new StringBuffer("test-url"));
@@ -169,8 +169,7 @@ public class JAASLoginFilterTest {
         this.mockFilterChain.doFilter(this.mockHttpServletRequest, this.mockHttpServletResponse);
 
         // prepare
-        replay(this.mockHttpServletRequest, this.mockHttpServletResponse, this.mockFilterChain, this.mockHttpSession,
-                this.mockFilterConfig);
+        replay(this.mockHttpServletRequest, this.mockHttpServletResponse, this.mockFilterChain, this.mockHttpSession, this.mockFilterConfig);
         replay(mockLoginContext);
 
         // operate
@@ -179,8 +178,7 @@ public class JAASLoginFilterTest {
         this.testedInstance.destroy();
 
         // verify
-        verify(this.mockHttpServletRequest, this.mockHttpServletResponse, this.mockFilterChain, this.mockHttpSession,
-                this.mockFilterConfig);
+        verify(this.mockHttpServletRequest, this.mockHttpServletResponse, this.mockFilterChain, this.mockHttpSession, this.mockFilterConfig);
         verify(mockLoginContext);
     }
 }

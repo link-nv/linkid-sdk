@@ -38,11 +38,11 @@ public abstract class AbstractStatementServlet extends AbstractInjectionServlet 
 
 
     protected abstract void processStatement(byte[] statementData, HttpSession session, HttpServletResponse response)
-                                                                                                                     throws ServletException,
-                                                                                                                     IOException;
+            throws ServletException, IOException;
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
 
         LOG.debug("doPost");
         String contentType = request.getContentType();
@@ -64,7 +64,8 @@ public abstract class AbstractStatementServlet extends AbstractInjectionServlet 
         processStatement(statementData, session, response);
     }
 
-    private byte[] extractStatement(HttpServletRequest request) throws IOException {
+    private byte[] extractStatement(HttpServletRequest request)
+            throws IOException {
 
         int size = request.getContentLength();
         if (0 == size) {

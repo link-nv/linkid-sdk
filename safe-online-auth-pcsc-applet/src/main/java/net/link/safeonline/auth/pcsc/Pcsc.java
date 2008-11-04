@@ -127,13 +127,15 @@ public class Pcsc {
         }
     }
 
-    public ResponseAPDU transmit(CommandAPDU commandApdu) throws CardException {
+    public ResponseAPDU transmit(CommandAPDU commandApdu)
+            throws CardException {
 
         ResponseAPDU responseApdu = this.cardChannel.transmit(commandApdu);
         return responseApdu;
     }
 
-    public byte[] readFile(byte[] fullAid) throws CardException {
+    public byte[] readFile(byte[] fullAid)
+            throws CardException {
 
         CommandAPDU selectFileApdu = new CommandAPDU(0x00, 0xA4, 0x08, 0x0C, fullAid);
         ResponseAPDU responseApdu = this.cardChannel.transmit(selectFileApdu);
@@ -158,21 +160,24 @@ public class Pcsc {
         return buffer.toByteArray();
     }
 
-    public IdentityFile getIdentityFile() throws CardException {
+    public IdentityFile getIdentityFile()
+            throws CardException {
 
         byte[] data = readFile(EF_ID_RN);
         IdentityFile identifyFile = parseTagLengthValueData(data, IdentityFile.class);
         return identifyFile;
     }
 
-    public AddressFile getAddressFile() throws CardException {
+    public AddressFile getAddressFile()
+            throws CardException {
 
         byte[] data = readFile(EF_ID_ADDRESS);
         AddressFile addressFile = parseTagLengthValueData(data, AddressFile.class);
         return addressFile;
     }
 
-    public X509Certificate getAuthenticationCertificate() throws CardException, CertificateException {
+    public X509Certificate getAuthenticationCertificate()
+            throws CardException, CertificateException {
 
         if (null == this.authenticationCertificate) {
             this.authenticationCertificate = getCertificate(EF_CERT_2);
@@ -180,7 +185,8 @@ public class Pcsc {
         return this.authenticationCertificate;
     }
 
-    public X509Certificate getSigningCertificate() throws CardException, CertificateException {
+    public X509Certificate getSigningCertificate()
+            throws CardException, CertificateException {
 
         if (null == this.signingCertificate) {
             this.signingCertificate = getCertificate(EF_CERT_3);
@@ -188,7 +194,8 @@ public class Pcsc {
         return this.signingCertificate;
     }
 
-    public X509Certificate getCACertificate() throws CardException, CertificateException {
+    public X509Certificate getCACertificate()
+            throws CardException, CertificateException {
 
         if (null == this.caCertificate) {
             this.caCertificate = getCertificate(EF_CERT_4);
@@ -196,7 +203,8 @@ public class Pcsc {
         return this.caCertificate;
     }
 
-    public X509Certificate getRootCertificate() throws CardException, CertificateException {
+    public X509Certificate getRootCertificate()
+            throws CardException, CertificateException {
 
         if (null == this.rootCertificate) {
             this.rootCertificate = getCertificate(EF_CERT_6);
@@ -204,7 +212,8 @@ public class Pcsc {
         return this.rootCertificate;
     }
 
-    public X509Certificate getNationalRegisterCertificate() throws CardException, CertificateException {
+    public X509Certificate getNationalRegisterCertificate()
+            throws CardException, CertificateException {
 
         if (null == this.nationalRegisterCertificate) {
             this.nationalRegisterCertificate = getCertificate(EF_CERT_8);
@@ -212,7 +221,8 @@ public class Pcsc {
         return this.nationalRegisterCertificate;
     }
 
-    public BufferedImage getPhoto() throws CardException, IOException {
+    public BufferedImage getPhoto()
+            throws CardException, IOException {
 
         if (null == this.photo) {
             byte[] data = readFile(EF_ID_PHOTO);
@@ -221,7 +231,8 @@ public class Pcsc {
         return this.photo;
     }
 
-    public boolean verifyRnSignature() throws CardException, CertificateException, InvalidKeyException, SignatureException {
+    public boolean verifyRnSignature()
+            throws CardException, CertificateException, InvalidKeyException, SignatureException {
 
         byte[] signatureData = readFile(EF_SGN_RN);
         LOG.debug("RN signature size: " + signatureData.length);
@@ -252,7 +263,8 @@ public class Pcsc {
         return result;
     }
 
-    public boolean verifyAddressSignature() throws CardException, CertificateException, InvalidKeyException, SignatureException {
+    public boolean verifyAddressSignature()
+            throws CardException, CertificateException, InvalidKeyException, SignatureException {
 
         byte[] signatureData = readFile(EF_SGN_ADDRESS);
         Signature signature;
@@ -271,7 +283,8 @@ public class Pcsc {
         return result;
     }
 
-    public byte[] sign(byte[] data, String pin) throws CardException, IOException {
+    public byte[] sign(byte[] data, String pin)
+            throws CardException, IOException {
 
         MessageDigest hash;
         try {
@@ -320,7 +333,8 @@ public class Pcsc {
         return signature;
     }
 
-    private X509Certificate getCertificate(byte[] fullAid) throws CardException, CertificateException {
+    private X509Certificate getCertificate(byte[] fullAid)
+            throws CardException, CertificateException {
 
         byte[] data = readFile(fullAid);
         X509Certificate certificate = (X509Certificate) this.certificateFactory.generateCertificate(new ByteArrayInputStream(data));

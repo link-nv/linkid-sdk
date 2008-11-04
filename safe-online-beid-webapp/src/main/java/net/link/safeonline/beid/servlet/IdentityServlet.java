@@ -57,8 +57,8 @@ public class IdentityServlet extends AbstractStatementServlet {
 
 
     @Override
-    protected void processStatement(byte[] statementData, HttpSession session, HttpServletResponse response) throws IOException,
-                                                                                                            ServletException {
+    protected void processStatement(byte[] statementData, HttpSession session, HttpServletResponse response)
+            throws IOException, ServletException {
 
         String sessionId = session.getId();
         LOG.debug("session Id: " + sessionId);

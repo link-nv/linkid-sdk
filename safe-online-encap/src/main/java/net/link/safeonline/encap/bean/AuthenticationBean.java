@@ -103,7 +103,8 @@ public class AuthenticationBean implements Authentication {
     }
 
     @End
-    public String login() throws MobileAuthenticationException, IOException {
+    public String login()
+            throws MobileAuthenticationException, IOException {
 
         LOG.debug("login: " + this.mobile);
         HelpdeskLogger.add("login: " + this.mobile, LogLevelType.INFO);
@@ -133,7 +134,8 @@ public class AuthenticationBean implements Authentication {
         return null;
     }
 
-    private void login(String userId) throws IOException {
+    private void login(String userId)
+            throws IOException {
 
         this.authenticationContext.setUserId(userId);
         this.authenticationContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());
@@ -146,7 +148,8 @@ public class AuthenticationBean implements Authentication {
     @Begin
     @ErrorHandling( { @Error(exceptionClass = MalformedURLException.class, messageId = "mobileCommunicationFailed"),
             @Error(exceptionClass = MobileException.class, messageId = "mobileCommunicationFailed") })
-    public String requestOTP() throws MalformedURLException, MobileException, AttributeTypeNotFoundException, AttributeNotFoundException {
+    public String requestOTP()
+            throws MalformedURLException, MobileException, AttributeTypeNotFoundException, AttributeNotFoundException {
 
         LOG.debug("check mobile: " + this.mobile);
         try {
@@ -169,7 +172,8 @@ public class AuthenticationBean implements Authentication {
 
     @ErrorHandling( { @Error(exceptionClass = MalformedURLException.class, messageId = "mobileCommunicationFailed"),
             @Error(exceptionClass = MobileException.class, messageId = "mobileCommunicationFailed") })
-    public String requestNewOTP() throws MalformedURLException, MobileException {
+    public String requestNewOTP()
+            throws MalformedURLException, MobileException {
 
         LOG.debug("request new OTP: mobile=" + this.mobile);
         this.challengeId = this.encapDeviceService.requestOTP(this.mobile);
@@ -178,20 +182,23 @@ public class AuthenticationBean implements Authentication {
 
     }
 
-    public String cancel() throws IOException {
+    public String cancel()
+            throws IOException {
 
         exit();
         return null;
     }
 
-    public String tryAnotherDevice() throws IOException {
+    public String tryAnotherDevice()
+            throws IOException {
 
         this.authenticationContext.setUsedDevice(net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID);
         exit();
         return null;
     }
 
-    private void exit() throws IOException {
+    private void exit()
+            throws IOException {
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ExternalContext externalContext = facesContext.getExternalContext();

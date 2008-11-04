@@ -25,6 +25,7 @@ public interface Devices {
 
     public static final String JNDI_BINDING = UserConstants.JNDI_PREFIX + "DevicesBean/local";
 
+
     /*
      * Accessors.
      */
@@ -36,25 +37,33 @@ public interface Devices {
 
     void setOldPassword(String oldPassword);
 
-    boolean isPasswordConfigured() throws SubjectNotFoundException, DeviceNotFoundException;
+    boolean isPasswordConfigured()
+            throws SubjectNotFoundException, DeviceNotFoundException;
 
     /*
      * Actions.
      */
-    String register() throws DeviceNotFoundException, IOException;
+    String register()
+            throws DeviceNotFoundException, IOException;
 
-    String removeDevice() throws DeviceNotFoundException, IOException;
+    String removeDevice()
+            throws DeviceNotFoundException, IOException;
 
-    String updateDevice() throws DeviceNotFoundException, IOException;
+    String updateDevice()
+            throws DeviceNotFoundException, IOException;
 
-    String disableDevice() throws DeviceNotFoundException, IOException, SubjectNotFoundException, PermissionDeniedException,
-                          AttributeTypeNotFoundException;
+    String disableDevice()
+            throws DeviceNotFoundException, IOException, SubjectNotFoundException, PermissionDeniedException,
+            AttributeTypeNotFoundException;
 
-    String changePassword() throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException;
+    String changePassword()
+            throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException;
 
-    String registerPassword() throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException;
+    String registerPassword()
+            throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException;
 
-    String removePassword() throws SubjectNotFoundException, DeviceNotFoundException, PermissionDeniedException;
+    String removePassword()
+            throws SubjectNotFoundException, DeviceNotFoundException, PermissionDeniedException;
 
     /*
      * Lifecycle.
@@ -64,8 +73,9 @@ public interface Devices {
     /*
      * Factory.
      */
-    List<DeviceEntry> devicesFactory() throws SubjectNotFoundException, DeviceNotFoundException;
+    List<DeviceEntry> devicesFactory()
+            throws SubjectNotFoundException, DeviceNotFoundException;
 
-    List<DeviceRegistrationDO> deviceRegistrationsFactory() throws SubjectNotFoundException, DeviceNotFoundException,
-                                                           PermissionDeniedException, AttributeTypeNotFoundException;
+    List<DeviceRegistrationDO> deviceRegistrationsFactory()
+            throws SubjectNotFoundException, DeviceNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException;
 }

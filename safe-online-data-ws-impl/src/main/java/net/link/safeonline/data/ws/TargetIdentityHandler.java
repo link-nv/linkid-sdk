@@ -134,7 +134,8 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
         return true;
     }
 
-    private void processHeaders(SOAPHeader soapHeader, SOAPMessageContext soapContext) throws JAXBException {
+    private void processHeaders(SOAPHeader soapHeader, SOAPMessageContext soapContext)
+            throws JAXBException {
 
         LOG.debug("processing headers");
         Iterator<?> iterator = soapHeader.examineAllHeaderElements();
@@ -148,7 +149,7 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
     }
 
     private void processTargetIdentityHeader(SOAPHeaderElement targetIdentityHeaderElement, SOAPMessageContext soapContext)
-                                                                                                                           throws JAXBException {
+            throws JAXBException {
 
         LOG.debug("processing TargetIdentity header");
 
@@ -214,7 +215,8 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
         return null;
     }
 
-    private String findUserId(String applicationName, String applicationUserId) throws ApplicationNotFoundException {
+    private String findUserId(String applicationName, String applicationUserId)
+            throws ApplicationNotFoundException {
 
         ApplicationIdentifierMappingService applicationIdentifierMappingService = EjbUtils.getEJB(
                 ApplicationIdentifierMappingService.JNDI_BINDING, ApplicationIdentifierMappingService.class);
@@ -228,7 +230,8 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
      * @throws TargetIdentityException
      *             in case of a missing TargetIdentity SOAP header.
      */
-    public static String getTargetIdentity(WebServiceContext context) throws TargetIdentityException {
+    public static String getTargetIdentity(WebServiceContext context)
+            throws TargetIdentityException {
 
         MessageContext messageContext = context.getMessageContext();
         String targetIdentity = (String) messageContext.get(TargetIdentityHandler.TARGET_IDENTITY_CONTEXT_VAR);

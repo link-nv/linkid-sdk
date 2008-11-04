@@ -97,7 +97,8 @@ public class LandingServletTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.originalContextClassLoader = Thread.currentThread().getContextClassLoader();
         this.testClassLoader = new TestClassLoader();
@@ -145,7 +146,8 @@ public class LandingServletTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.servletTestManager.tearDown();
         Thread.currentThread().setContextClassLoader(this.originalContextClassLoader);
@@ -180,7 +182,8 @@ public class LandingServletTest {
 
 
     @Test
-    public void testRegistration() throws Exception {
+    public void testRegistration()
+            throws Exception {
 
         // setup
         String deviceOperationRequest = DeviceOperationRequestFactory.createDeviceOperationRequest(this.applicationName, this.userId,
@@ -214,7 +217,8 @@ public class LandingServletTest {
     }
 
     @Test
-    public void testRemoval() throws Exception {
+    public void testRemoval()
+            throws Exception {
 
         // setup
         String samlAuthnRequest = DeviceOperationRequestFactory.createDeviceOperationRequest(this.applicationName, this.userId,
@@ -249,7 +253,8 @@ public class LandingServletTest {
     }
 
     @Test
-    public void testUpdate() throws Exception {
+    public void testUpdate()
+            throws Exception {
 
         // setup
         String samlAuthnRequest = DeviceOperationRequestFactory.createDeviceOperationRequest(this.applicationName, this.userId,

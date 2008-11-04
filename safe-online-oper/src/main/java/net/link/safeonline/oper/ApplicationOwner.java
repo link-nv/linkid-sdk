@@ -23,6 +23,7 @@ public interface ApplicationOwner {
 
     public static final String JNDI_BINDING = OperatorConstants.JNDI_PREFIX + "ApplicationOwnerBean/local";
 
+
     /*
      * Factory.
      */
@@ -44,10 +45,11 @@ public interface ApplicationOwner {
     /*
      * Actions.
      */
-    String add() throws SubjectNotFoundException, ExistingApplicationOwnerException, ExistingApplicationAdminException;
+    String add()
+            throws SubjectNotFoundException, ExistingApplicationOwnerException, ExistingApplicationAdminException;
 
-    String remove() throws SubscriptionNotFoundException, SubjectNotFoundException, ApplicationOwnerNotFoundException,
-                   PermissionDeniedException;
+    String remove()
+            throws SubscriptionNotFoundException, SubjectNotFoundException, ApplicationOwnerNotFoundException, PermissionDeniedException;
 
     String view();
 

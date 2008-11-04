@@ -33,7 +33,8 @@ public class EndUserMessage implements Serializable {
         this.message = JMSMessage.getStringProperty("messagetext");
     }
 
-    public TextMessage getJMSMessage(Session session) throws JMSException {
+    public TextMessage getJMSMessage(Session session)
+            throws JMSException {
 
         TextMessage JMSMessage = session.createTextMessage();
         JMSMessage.setStringProperty("destination", this.destination);

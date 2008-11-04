@@ -28,7 +28,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = DemoStatTaskBean.JNDI_BINDING)
 public class DemoStatTaskBean implements Task {
 
-    public static final String JNDI_BINDING = Task.JNDI_PREFIX + "/DemoStatTaskBean/local";
+    public static final String    JNDI_BINDING = Task.JNDI_PREFIX + "/DemoStatTaskBean/local";
 
     @EJB
     private StatisticDAO          statisticDAO;
@@ -39,9 +39,9 @@ public class DemoStatTaskBean implements Task {
     @EJB
     private ApplicationDAO        applicationDAO;
 
-    private final static String   STAT_NAME   = "demo stat";
+    private final static String   STAT_NAME    = "demo stat";
 
-    private final static String   STAT_DOMAIN = "demo stat domain";
+    private final static String   STAT_DOMAIN  = "demo stat domain";
 
 
     public String getName() {

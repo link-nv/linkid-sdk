@@ -84,8 +84,7 @@ public class AuthenticationProtocolManager {
      * Initiates the authentication.
      * 
      * <p>
-     * NOTE: This method uses the request URL as the target URL, doesn't set any language/color/minimal preferences, and
-     * continues with
+     * NOTE: This method uses the request URL as the target URL, doesn't set any language/color/minimal preferences, and continues with
      * {@link #initiateAuthentication(HttpServletRequest, HttpServletResponse, String, Locale, Integer, Boolean)}.
      * </p>
      * 
@@ -94,8 +93,8 @@ public class AuthenticationProtocolManager {
      * @throws IOException
      * @throws ServletException
      */
-    public static void initiateAuthentication(HttpServletRequest request, HttpServletResponse response) throws IOException,
-                                                                                                       ServletException {
+    public static void initiateAuthentication(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
 
         String target = request.getRequestURL().toString();
         initiateAuthentication(request, response, target, null, null, null);
@@ -104,11 +103,11 @@ public class AuthenticationProtocolManager {
     /**
      * Initiates the authentication.
      * 
-     * @see AuthenticationProtocolHandler#initiateAuthentication(HttpServletRequest, HttpServletResponse, String,
-     *      Locale, Integer, Boolean)
+     * @see AuthenticationProtocolHandler#initiateAuthentication(HttpServletRequest, HttpServletResponse, String, Locale, Integer, Boolean)
      */
-    public static void initiateAuthentication(HttpServletRequest request, HttpServletResponse response, String target,
-            Locale language, Integer color, Boolean minimal) throws IOException, ServletException {
+    public static void initiateAuthentication(HttpServletRequest request, HttpServletResponse response, String target, Locale language,
+                                              Integer color, Boolean minimal)
+            throws IOException, ServletException {
 
         AuthenticationProtocolHandler protocolHandler = findAuthenticationProtocolHandler(request);
         if (null == protocolHandler)
@@ -179,8 +178,7 @@ public class AuthenticationProtocolManager {
      * @throws ServletException
      */
     public static void initiateLogout(HttpServletRequest request, HttpServletResponse response, String target, String subjectName)
-                                                                                                                                  throws IOException,
-                                                                                                                                  ServletException {
+            throws IOException, ServletException {
 
         AuthenticationProtocolHandler protocolHandler = findAuthenticationProtocolHandler(request);
         if (null == protocolHandler)
@@ -217,7 +215,8 @@ public class AuthenticationProtocolManager {
                                                                                     KeyPair applicationKeyPair,
                                                                                     X509Certificate applicationCertificate,
                                                                                     boolean ssoEnabled, Map<String, String> inConfigParams,
-                                                                                    HttpServletRequest httpRequest) throws ServletException {
+                                                                                    HttpServletRequest httpRequest)
+            throws ServletException {
 
         HttpSession session = httpRequest.getSession();
         if (null != session.getAttribute(PROTOCOL_HANDLER_ATTRIBUTE)) {
@@ -275,7 +274,8 @@ public class AuthenticationProtocolManager {
      * @param httpRequest
      * @throws ServletException
      */
-    public static void cleanupAuthenticationHandler(HttpServletRequest httpRequest) throws ServletException {
+    public static void cleanupAuthenticationHandler(HttpServletRequest httpRequest)
+            throws ServletException {
 
         HttpSession session = httpRequest.getSession();
         AuthenticationProtocolHandler protocolHandler = (AuthenticationProtocolHandler) session.getAttribute(PROTOCOL_HANDLER_ATTRIBUTE);

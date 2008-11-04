@@ -28,6 +28,7 @@ public interface ApplicationPoolDAO extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationPoolDAOBean/local";
 
+
     /**
      * Find the application pool for a given application pool name.
      * 
@@ -44,7 +45,8 @@ public interface ApplicationPoolDAO extends SafeOnlineService {
      * @throws ApplicationPoolNotFoundException
      *             in case the application pool was not found.
      */
-    ApplicationPoolEntity getApplicationPool(String applicationPoolName) throws ApplicationPoolNotFoundException;
+    ApplicationPoolEntity getApplicationPool(String applicationPoolName)
+            throws ApplicationPoolNotFoundException;
 
     ApplicationPoolEntity addApplicationPool(String applicationPoolName, long ssoTimeout);
 

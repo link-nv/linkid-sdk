@@ -31,7 +31,7 @@ public class HelpdeskCleanerTaskBean implements Task {
 
     private static final String name                    = "Helpdesk event history cleaner";
 
-    public static final String JNDI_BINDING = Task.JNDI_PREFIX + "/HelpdeskCleanerTaskBean/local";
+    public static final String  JNDI_BINDING            = Task.JNDI_PREFIX + "/HelpdeskCleanerTaskBean/local";
 
     @EJB
     private HelpdeskEventDAO    helpdeskEventDAO;
@@ -57,7 +57,8 @@ public class HelpdeskCleanerTaskBean implements Task {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void perform() throws Exception {
+    public void perform()
+            throws Exception {
 
         long infoAgeInMinutes = this.configInfoAgeInMinutes;
         long errorAgeInMinutes = this.configErrorAgeInMinutes;

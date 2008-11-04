@@ -20,6 +20,7 @@ public interface ConfigGroupDAO extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ConfigGroupDAOBean/local";
 
+
     ConfigGroupEntity addConfigGroup(String name);
 
     void removeConfigGroup(ConfigGroupEntity configGroup);

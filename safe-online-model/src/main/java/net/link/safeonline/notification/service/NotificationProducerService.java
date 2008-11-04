@@ -26,24 +26,27 @@ public interface NotificationProducerService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/NotificationProducerServiceBean/local";
 
-    public void sendNotification(String topic, String subject, String content) throws MessageHandlerNotFoundException;
 
-    public void sendNotification(NotificationMessageEntity notification) throws MessageHandlerNotFoundException;
+    public void sendNotification(String topic, String subject, String content)
+            throws MessageHandlerNotFoundException;
 
-    public void subscribe(String topic, String address, X509Certificate certificate) throws PermissionDeniedException;
+    public void sendNotification(NotificationMessageEntity notification)
+            throws MessageHandlerNotFoundException;
 
-    public void unsubscribe(String topic, String address, X509Certificate certificate) throws SubscriptionNotFoundException,
-                                                                                      PermissionDeniedException,
-                                                                                      EndpointReferenceNotFoundException;
+    public void subscribe(String topic, String address, X509Certificate certificate)
+            throws PermissionDeniedException;
+
+    public void unsubscribe(String topic, String address, X509Certificate certificate)
+            throws SubscriptionNotFoundException, PermissionDeniedException, EndpointReferenceNotFoundException;
 
     public void subscribe(String topic, String address, NodeEntity node);
 
     public void subscribe(String topic, String address, ApplicationEntity application);
 
-    public void unsubscribe(String topic, String address, NodeEntity node) throws SubscriptionNotFoundException,
-                                                                          EndpointReferenceNotFoundException;
+    public void unsubscribe(String topic, String address, NodeEntity node)
+            throws SubscriptionNotFoundException, EndpointReferenceNotFoundException;
 
-    public void unsubscribe(String topic, String address, ApplicationEntity application) throws SubscriptionNotFoundException,
-                                                                                        EndpointReferenceNotFoundException;
+    public void unsubscribe(String topic, String address, ApplicationEntity application)
+            throws SubscriptionNotFoundException, EndpointReferenceNotFoundException;
 
 }

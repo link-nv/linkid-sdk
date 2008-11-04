@@ -30,7 +30,8 @@ public class TicketServiceBeanTest extends TestCase {
 
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp()
+            throws Exception {
 
         super.setUp();
 
@@ -39,13 +40,15 @@ public class TicketServiceBeanTest extends TestCase {
     }
 
     @Override
-    protected void tearDown() throws Exception {
+    protected void tearDown()
+            throws Exception {
 
         this.entityTestManager.tearDown();
         super.tearDown();
     }
 
-    public void testValidPass() throws Exception {
+    public void testValidPass()
+            throws Exception {
 
         // setup
         String testNrn = UUID.randomUUID().toString();
@@ -70,7 +73,8 @@ public class TicketServiceBeanTest extends TestCase {
         assertTrue(result);
     }
 
-    public void testExpiredPass() throws Exception {
+    public void testExpiredPass()
+            throws Exception {
 
         // setup
         String testNrn = UUID.randomUUID().toString();
@@ -96,7 +100,8 @@ public class TicketServiceBeanTest extends TestCase {
         assertFalse(result);
     }
 
-    public void testBidirectionalPass() throws Exception {
+    public void testBidirectionalPass()
+            throws Exception {
 
         // setup
         String testNrn = UUID.randomUUID().toString();
@@ -121,7 +126,8 @@ public class TicketServiceBeanTest extends TestCase {
         assertTrue(result);
     }
 
-    public void testInvalidFrom() throws Exception {
+    public void testInvalidFrom()
+            throws Exception {
 
         // setup
         String testNrn = UUID.randomUUID().toString();

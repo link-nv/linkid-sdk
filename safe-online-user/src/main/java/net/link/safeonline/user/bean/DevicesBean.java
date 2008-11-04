@@ -150,7 +150,8 @@ public class DevicesBean implements Devices {
     @ErrorHandling( {
             @Error(exceptionClass = PermissionDeniedException.class, messageId = "errorOldPasswordNotCorrect", fieldId = "newpassword"),
             @Error(exceptionClass = DeviceNotFoundException.class, messageId = "errorOldPasswordNotFound", fieldId = "newpassword") })
-    public String registerPassword() throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException {
+    public String registerPassword()
+            throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException {
 
         this.credentialService.registerPassword(this.newPassword);
         this.credentialCacheFlushRequired = true;
@@ -163,7 +164,8 @@ public class DevicesBean implements Devices {
     @ErrorHandling( {
             @Error(exceptionClass = PermissionDeniedException.class, messageId = "errorOldPasswordNotCorrect", fieldId = "oldpassword"),
             @Error(exceptionClass = DeviceNotFoundException.class, messageId = "errorOldPasswordNotFound", fieldId = "oldpassword") })
-    public String changePassword() throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException {
+    public String changePassword()
+            throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException {
 
         this.credentialService.changePassword(this.oldPassword, this.newPassword);
         this.credentialCacheFlushRequired = true;
@@ -175,7 +177,8 @@ public class DevicesBean implements Devices {
     @ErrorHandling( {
             @Error(exceptionClass = PermissionDeniedException.class, messageId = "errorOldPasswordNotCorrect", fieldId = "oldpassword"),
             @Error(exceptionClass = DeviceNotFoundException.class, messageId = "errorOldPasswordNotFound", fieldId = "oldpassword") })
-    public String removePassword() throws SubjectNotFoundException, DeviceNotFoundException, PermissionDeniedException {
+    public String removePassword()
+            throws SubjectNotFoundException, DeviceNotFoundException, PermissionDeniedException {
 
         this.credentialService.removePassword(this.oldPassword);
         this.credentialCacheFlushRequired = true;
@@ -225,8 +228,8 @@ public class DevicesBean implements Devices {
 
     @RolesAllowed(UserConstants.USER_ROLE)
     @Factory(DEVICE_REGISTRATIONS_LIST_NAME)
-    public List<DeviceRegistrationDO> deviceRegistrationsFactory() throws SubjectNotFoundException, DeviceNotFoundException,
-                                                                  PermissionDeniedException, AttributeTypeNotFoundException {
+    public List<DeviceRegistrationDO> deviceRegistrationsFactory()
+            throws SubjectNotFoundException, DeviceNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException {
 
         Locale locale = getViewLocale();
         LOG.debug("device registrations factory");
@@ -237,7 +240,8 @@ public class DevicesBean implements Devices {
 
     @RolesAllowed(UserConstants.USER_ROLE)
     @Factory(DEVICES_LIST_NAME)
-    public List<DeviceEntry> devicesFactory() throws SubjectNotFoundException, DeviceNotFoundException {
+    public List<DeviceEntry> devicesFactory()
+            throws SubjectNotFoundException, DeviceNotFoundException {
 
         Locale locale = getViewLocale();
         this.devices = new LinkedList<DeviceEntry>();
@@ -254,7 +258,8 @@ public class DevicesBean implements Devices {
     }
 
     @RolesAllowed(UserConstants.USER_ROLE)
-    public String register() throws DeviceNotFoundException, IOException {
+    public String register()
+            throws DeviceNotFoundException, IOException {
 
         LOG.debug("register device: " + this.selectedDevice.getFriendlyName());
         String userId = this.subjectManager.getCallerSubject().getUserId();
@@ -272,7 +277,8 @@ public class DevicesBean implements Devices {
     }
 
     @RolesAllowed(UserConstants.USER_ROLE)
-    public String removeDevice() throws DeviceNotFoundException, IOException {
+    public String removeDevice()
+            throws DeviceNotFoundException, IOException {
 
         if (!deviceRemovalDisablingAllowed()) {
             this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
@@ -301,7 +307,8 @@ public class DevicesBean implements Devices {
     }
 
     @RolesAllowed(UserConstants.USER_ROLE)
-    public String updateDevice() throws DeviceNotFoundException, IOException {
+    public String updateDevice()
+            throws DeviceNotFoundException, IOException {
 
         LOG.debug("update device: " + this.selectedDeviceRegistration.getFriendlyName());
         String userId = this.subjectManager.getCallerSubject().getUserId();
@@ -319,8 +326,9 @@ public class DevicesBean implements Devices {
     }
 
     @RolesAllowed(UserConstants.USER_ROLE)
-    public String disableDevice() throws DeviceNotFoundException, IOException, SubjectNotFoundException, PermissionDeniedException,
-                                 AttributeTypeNotFoundException {
+    public String disableDevice()
+            throws DeviceNotFoundException, IOException, SubjectNotFoundException, PermissionDeniedException,
+            AttributeTypeNotFoundException {
 
         if (!deviceRemovalDisablingAllowed()) {
             this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
@@ -343,7 +351,8 @@ public class DevicesBean implements Devices {
     }
 
     @RolesAllowed(UserConstants.USER_ROLE)
-    public boolean isPasswordConfigured() throws SubjectNotFoundException, DeviceNotFoundException {
+    public boolean isPasswordConfigured()
+            throws SubjectNotFoundException, DeviceNotFoundException {
 
         return this.credentialService.isPasswordConfigured();
     }

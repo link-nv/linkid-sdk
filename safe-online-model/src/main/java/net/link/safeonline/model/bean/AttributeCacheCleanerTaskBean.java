@@ -25,9 +25,9 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = AttributeCacheCleanerTaskBean.JNDI_BINDING)
 public class AttributeCacheCleanerTaskBean implements Task {
 
-    private static final String name = "Attribute cache cleaner";
+    private static final String name         = "Attribute cache cleaner";
 
-    public static final String JNDI_BINDING = Task.JNDI_PREFIX + "/AttributeCacheCleanerTaskBean/local";
+    public static final String  JNDI_BINDING = Task.JNDI_PREFIX + "/AttributeCacheCleanerTaskBean/local";
 
     @EJB
     private AttributeCacheDAO   attributeCacheDAO;
@@ -44,7 +44,8 @@ public class AttributeCacheCleanerTaskBean implements Task {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void perform() throws Exception {
+    public void perform()
+            throws Exception {
 
         long currentTime = System.currentTimeMillis();
         List<AttributeCacheEntity> attributes = this.attributeCacheDAO.listAttributes();

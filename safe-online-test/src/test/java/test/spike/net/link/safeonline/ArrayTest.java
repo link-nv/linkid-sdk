@@ -14,7 +14,8 @@ import junit.framework.TestCase;
 
 public class ArrayTest extends TestCase {
 
-    public void testArrayType() throws Exception {
+    public void testArrayType()
+            throws Exception {
 
         assertFalse(Object[].class.equals(String[].class));
 
@@ -23,7 +24,8 @@ public class ArrayTest extends TestCase {
         assertFalse(String[].class.isAssignableFrom(Object[].class));
     }
 
-    public void testNewInstance() throws Exception {
+    public void testNewInstance()
+            throws Exception {
 
         Class<String[]> clazz = String[].class;
 

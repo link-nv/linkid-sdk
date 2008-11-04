@@ -74,7 +74,8 @@ public class AuthServletManager extends Observable {
 
     }
 
-    public void authenticate(String applicationName, String protocol) throws Exception {
+    public void authenticate(String applicationName, String protocol)
+            throws Exception {
 
         this.server = new Server();
         this.connector = new SelectChannelConnector();
@@ -145,7 +146,8 @@ public class AuthServletManager extends Observable {
 
 
         @Override
-        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+                throws IOException {
 
             LOG.debug("doGet");
             HttpSession session = req.getSession();
@@ -159,7 +161,8 @@ public class AuthServletManager extends Observable {
         }
 
         @Override
-        protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        protected void doPost(HttpServletRequest request, HttpServletResponse response)
+                throws IOException {
 
             doGet(request, response);
         }

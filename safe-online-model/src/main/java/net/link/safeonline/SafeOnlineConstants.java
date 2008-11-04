@@ -127,6 +127,7 @@ public class SafeOnlineConstants {
     public static final String COLOR_ATTRIBUTE                         = "OLAS-AUTH.color";
     public static final String MINIMAL_ATTRIBUTE                       = "OLAS-AUTH.minimal";
 
+
     private SafeOnlineConstants() {
 
         // empty

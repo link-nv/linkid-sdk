@@ -4,13 +4,14 @@ import java.io.IOException;
 
 import javax.ejb.Local;
 
-
 import net.link.safeonline.digipass.DigipassConstants;
+
 
 @Local
 public interface Authentication {
 
     public static final String JNDI_BINDING = DigipassConstants.JNDI_PREFIX + "AuthenticationBean/local";
+
 
     /*
      * Accessors.
@@ -26,11 +27,14 @@ public interface Authentication {
     /*
      * Actions.
      */
-    String login() throws IOException;
+    String login()
+            throws IOException;
 
-    String cancel() throws IOException;
+    String cancel()
+            throws IOException;
 
-    String tryAnotherDevice() throws IOException;
+    String tryAnotherDevice()
+            throws IOException;
 
     /*
      * Lifecycle.

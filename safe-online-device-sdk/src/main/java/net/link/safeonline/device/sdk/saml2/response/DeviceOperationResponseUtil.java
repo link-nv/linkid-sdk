@@ -82,7 +82,7 @@ public class DeviceOperationResponseUtil {
     public static DeviceOperationResponse validateResponse(DateTime now, HttpServletRequest httpRequest, String expectedInResponseTo,
                                                            DeviceOperationType expectedDeviceOperation, String stsWsLocation,
                                                            X509Certificate certificate, PrivateKey privateKey, TrustDomainType trustDomain)
-                                                                                                                                           throws ServletException {
+            throws ServletException {
 
         if (false == "POST".equals(httpRequest.getMethod()))
             return null;

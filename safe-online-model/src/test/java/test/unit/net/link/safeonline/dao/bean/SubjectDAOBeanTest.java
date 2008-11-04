@@ -31,7 +31,8 @@ public class SubjectDAOBeanTest extends TestCase {
 
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp()
+            throws Exception {
 
         super.setUp();
 
@@ -42,13 +43,15 @@ public class SubjectDAOBeanTest extends TestCase {
     }
 
     @Override
-    protected void tearDown() throws Exception {
+    protected void tearDown()
+            throws Exception {
 
         this.entityTestManager.tearDown();
         super.tearDown();
     }
 
-    public void testFindNonExistingSubjectReturnsNull() throws Exception {
+    public void testFindNonExistingSubjectReturnsNull()
+            throws Exception {
 
         // setup
         String nonExistingSubjectLogin = UUID.randomUUID().toString();
@@ -60,7 +63,8 @@ public class SubjectDAOBeanTest extends TestCase {
         assertNull(result);
     }
 
-    public void testAddSubjectAndGet() throws Exception {
+    public void testAddSubjectAndGet()
+            throws Exception {
 
         // setup
         String subjectLogin = UUID.randomUUID().toString();
@@ -73,7 +77,8 @@ public class SubjectDAOBeanTest extends TestCase {
         assertEquals(subjectLogin, resultSubject.getUserId());
     }
 
-    public void testAddingTwiceFails() throws Exception {
+    public void testAddingTwiceFails()
+            throws Exception {
 
         // setup
         String subjectLogin = UUID.randomUUID().toString();

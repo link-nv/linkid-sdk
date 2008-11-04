@@ -16,7 +16,8 @@ import org.junit.Test;
 public class PingWebServiceTest {
 
     @Test
-    public void testInvocation() throws Exception {
+    public void testInvocation()
+            throws Exception {
 
         // setup
         PingClient client = new PingClientImpl("http://localhost:8080");

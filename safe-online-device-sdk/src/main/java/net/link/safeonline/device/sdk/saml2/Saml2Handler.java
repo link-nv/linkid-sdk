@@ -96,7 +96,7 @@ public class Saml2Handler implements Serializable {
     }
 
     public void init(Map<String, String> configParams, X509Certificate newApplicationCertificate, KeyPair newApplicationKeyPair)
-                                                                                                                                throws DeviceInitializationException {
+            throws DeviceInitializationException {
 
         this.stsWsLocation = configParams.get("StsWsLocation");
         this.issuer = configParams.get("DeviceName");
@@ -106,7 +106,8 @@ public class Saml2Handler implements Serializable {
             throw new DeviceInitializationException("Missing STS WS Location ( \"StsWsLocation\" )");
     }
 
-    public DeviceOperationType initDeviceOperation(HttpServletRequest request) throws DeviceInitializationException {
+    public DeviceOperationType initDeviceOperation(HttpServletRequest request)
+            throws DeviceInitializationException {
 
         DeviceOperationRequest deviceOperationRequest;
         try {
@@ -164,7 +165,8 @@ public class Saml2Handler implements Serializable {
         return deviceOperation;
     }
 
-    public void abortDeviceOperation(HttpServletRequest request, HttpServletResponse response) throws DeviceFinalizationException {
+    public void abortDeviceOperation(HttpServletRequest request, HttpServletResponse response)
+            throws DeviceFinalizationException {
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(request.getSession());
         String inResponseTo = protocolContext.getInResponseTo();
@@ -188,7 +190,8 @@ public class Saml2Handler implements Serializable {
         }
     }
 
-    public void finalizeDeviceOperation(HttpServletRequest request, HttpServletResponse response) throws DeviceFinalizationException {
+    public void finalizeDeviceOperation(HttpServletRequest request, HttpServletResponse response)
+            throws DeviceFinalizationException {
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(request.getSession());
         boolean deviceOperationSuccess = protocolContext.getSuccess();

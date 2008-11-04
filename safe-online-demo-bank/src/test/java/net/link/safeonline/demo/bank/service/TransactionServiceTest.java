@@ -48,7 +48,8 @@ public class TransactionServiceTest extends AbstractBankServiceTest {
      * {@inheritDoc}
      */
     @Override
-    public void setup() throws Exception {
+    public void setup()
+            throws Exception {
 
         super.setup();
 

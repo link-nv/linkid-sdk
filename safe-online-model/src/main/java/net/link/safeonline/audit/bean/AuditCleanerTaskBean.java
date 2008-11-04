@@ -33,7 +33,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 @Configurable
 public class AuditCleanerTaskBean implements Task {
 
-    public static final String JNDI_BINDING = Task.JNDI_PREFIX + "/AuditCleanerTaskBean/local";
+    public static final String  JNDI_BINDING       = Task.JNDI_PREFIX + "/AuditCleanerTaskBean/local";
 
     private static final String name               = "Audit cleaner";
 
@@ -50,7 +50,8 @@ public class AuditCleanerTaskBean implements Task {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void perform() throws Exception {
+    public void perform()
+            throws Exception {
 
         this.auditContextDAO.cleanup(this.configAgeInMinutes);
     }

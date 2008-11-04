@@ -125,8 +125,8 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
         bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location);
     }
 
-    public void setAttributeValue(String subjectLogin, String attributeName, Object attributeValue) throws WSClientTransportException,
-                                                                                                   AttributeNotFoundException {
+    public void setAttributeValue(String subjectLogin, String attributeName, Object attributeValue)
+            throws WSClientTransportException, AttributeNotFoundException {
 
         this.targetIdentityHandler.setTargetIdentity(subjectLogin);
 
@@ -184,9 +184,7 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
 
     @SuppressWarnings("unchecked")
     public <Type> Attribute<Type> getAttributeValue(String userId, String attributeName, Class<Type> expectedValueClass)
-                                                                                                                        throws WSClientTransportException,
-                                                                                                                        RequestDeniedException,
-                                                                                                                        SubjectNotFoundException {
+            throws WSClientTransportException, RequestDeniedException, SubjectNotFoundException {
 
         this.targetIdentityHandler.setTargetIdentity(userId);
 
@@ -334,7 +332,8 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
         return result;
     }
 
-    public void createAttribute(String userId, String attributeName, Object attributeValue) throws WSClientTransportException {
+    public void createAttribute(String userId, String attributeName, Object attributeValue)
+            throws WSClientTransportException {
 
         this.targetIdentityHandler.setTargetIdentity(userId);
 
@@ -448,7 +447,8 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
         return compoundAttribute;
     }
 
-    public void removeAttribute(String userIdn, String attributeName, String attributeId) throws WSClientTransportException {
+    public void removeAttribute(String userIdn, String attributeName, String attributeId)
+            throws WSClientTransportException {
 
         LOG.debug("remove attribute " + attributeName + " for subject " + userIdn);
         this.targetIdentityHandler.setTargetIdentity(userIdn);
@@ -488,7 +488,8 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
         }
     }
 
-    public <Type> void removeAttribute(String userId, Attribute<Type> attribute) throws WSClientTransportException {
+    public <Type> void removeAttribute(String userId, Attribute<Type> attribute)
+            throws WSClientTransportException {
 
         String attributeName = attribute.getName();
 

@@ -114,8 +114,7 @@ public class HelpdeskLogger {
 
         String userId = (String) session.getAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
         if (null != userId) {
-            SubjectService subjectService = EjbUtils
-                    .getEJB(SubjectService.JNDI_BINDING, SubjectService.class);
+            SubjectService subjectService = EjbUtils.getEJB(SubjectService.JNDI_BINDING, SubjectService.class);
             return subjectService.findExceptionSubject(userId);
         }
         return null;
@@ -128,8 +127,7 @@ public class HelpdeskLogger {
 
         List<HelpdeskEventEntity> helpdeskContext = getCurrent(session);
         if (helpdeskContext.size() >= helpdeskContextLimit) {
-            SecurityAuditLogger securityAuditLogger = EjbUtils
-                                                              .getEJB(SecurityAuditLogger.JNDI_BINDING, SecurityAuditLogger.class);
+            SecurityAuditLogger securityAuditLogger = EjbUtils.getEJB(SecurityAuditLogger.JNDI_BINDING, SecurityAuditLogger.class);
             securityAuditLogger.addSecurityAudit(SecurityThreatType.DISRUPTION, principal, message);
             LOG.debug("helpdesk context max size exceeded !");
             return;
@@ -159,8 +157,8 @@ public class HelpdeskLogger {
 
         if (!principal.equals(UNKNOWN_USER)) {
             SubjectEntity subject = findSubject(session);
-            historyDAO.addHistoryEntry(subject, HistoryEventType.HELPDESK_ID, Collections.singletonMap(
-                    SafeOnlineConstants.INFO_PROPERTY, id.toString()));
+            historyDAO.addHistoryEntry(subject, HistoryEventType.HELPDESK_ID, Collections.singletonMap(SafeOnlineConstants.INFO_PROPERTY,
+                    id.toString()));
         }
 
         /*

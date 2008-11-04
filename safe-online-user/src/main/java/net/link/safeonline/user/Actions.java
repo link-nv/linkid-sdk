@@ -19,10 +19,12 @@ public interface Actions {
 
     public static final String JNDI_BINDING = UserConstants.JNDI_PREFIX + "ActionsBean/local";
 
+
     /*
      * Actions.
      */
-    String removeAccount() throws SubscriptionNotFoundException, MessageHandlerNotFoundException;
+    String removeAccount()
+            throws SubscriptionNotFoundException, MessageHandlerNotFoundException;
 
     /*
      * Lifecycle.

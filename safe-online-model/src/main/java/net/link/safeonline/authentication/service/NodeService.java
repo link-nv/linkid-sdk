@@ -30,6 +30,7 @@ public interface NodeService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/NodeServiceBean/local";
 
+
     /**
      * Gives back all known olas nodes
      * 
@@ -42,7 +43,8 @@ public interface NodeService extends SafeOnlineService {
      * @param nodeName
      * @throws NodeNotFoundException
      */
-    NodeEntity getNode(String nodeName) throws NodeNotFoundException;
+    NodeEntity getNode(String nodeName)
+            throws NodeNotFoundException;
 
     /**
      * @param name
@@ -53,14 +55,16 @@ public interface NodeService extends SafeOnlineService {
      * @throws CertificateEncodingException
      */
     void addNode(String name, String protocol, String hostname, int port, int sslPort, byte[] encodedAuthnCertificate,
-                 byte[] encodedSigningCertificate) throws ExistingNodeException, CertificateEncodingException;
+                 byte[] encodedSigningCertificate)
+            throws ExistingNodeException, CertificateEncodingException;
 
     /**
      * Removes an olas node.
      * 
      * @param name
      */
-    void removeNode(String name) throws NodeNotFoundException, PermissionDeniedException;
+    void removeNode(String name)
+            throws NodeNotFoundException, PermissionDeniedException;
 
     /**
      * Updates the Olas node's hostname.
@@ -71,7 +75,8 @@ public interface NodeService extends SafeOnlineService {
      * @param sslPort
      * @throws NodeNotFoundException
      */
-    void updateLocation(String nodeName, String protocol, String hostname, int port, int sslPort) throws NodeNotFoundException;
+    void updateLocation(String nodeName, String protocol, String hostname, int port, int sslPort)
+            throws NodeNotFoundException;
 
     /**
      * Updates the OLAS node's authn certificate.
@@ -81,7 +86,8 @@ public interface NodeService extends SafeOnlineService {
      * @throws CertificateEncodingException
      * @throws NodeNotFoundException
      */
-    void updateAuthnCertificate(String nodeName, byte[] certificateData) throws CertificateEncodingException, NodeNotFoundException;
+    void updateAuthnCertificate(String nodeName, byte[] certificateData)
+            throws CertificateEncodingException, NodeNotFoundException;
 
     /**
      * Updates the OLAS node's signing certificate.
@@ -91,5 +97,6 @@ public interface NodeService extends SafeOnlineService {
      * @throws CertificateEncodingException
      * @throws NodeNotFoundException
      */
-    void updateSigningCertificate(String nodeName, byte[] certificateData) throws CertificateEncodingException, NodeNotFoundException;
+    void updateSigningCertificate(String nodeName, byte[] certificateData)
+            throws CertificateEncodingException, NodeNotFoundException;
 }

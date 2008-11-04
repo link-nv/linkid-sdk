@@ -93,7 +93,8 @@ public class NotificationSubscriptionManagerPortImplTest {
 
     @SuppressWarnings("unchecked")
     @Before
-    public void setup() throws Exception {
+    public void setup()
+            throws Exception {
 
         LOG.debug("setup");
 
@@ -156,7 +157,8 @@ public class NotificationSubscriptionManagerPortImplTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         LOG.debug("tearDown");
         this.webServiceTestUtils.tearDown();
@@ -164,7 +166,8 @@ public class NotificationSubscriptionManagerPortImplTest {
     }
 
     @Test
-    public void testUnsubscribe() throws Exception {
+    public void testUnsubscribe()
+            throws Exception {
 
         // setup
         String address = "test-consumer-address";

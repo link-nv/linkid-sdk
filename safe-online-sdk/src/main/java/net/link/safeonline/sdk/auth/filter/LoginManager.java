@@ -101,7 +101,8 @@ public class LoginManager {
      * @throws ServletException
      *             if the user was not yet authenticated via SafeOnline.
      */
-    public static String getUserId(HttpServletRequest request) throws ServletException {
+    public static String getUserId(HttpServletRequest request)
+            throws ServletException {
 
         return getUserId(request, USERID_SESSION_ATTRIBUTE);
     }
@@ -116,7 +117,8 @@ public class LoginManager {
      * @throws ServletException
      *             if the user was not yet authenticated via SafeOnline.
      */
-    public static String getUserId(HttpServletRequest request, String paramName) throws ServletException {
+    public static String getUserId(HttpServletRequest request, String paramName)
+            throws ServletException {
 
         String userId = findUserId(request, paramName);
         if (null == userId)
@@ -161,7 +163,8 @@ public class LoginManager {
      * 
      * @throws ServletException
      */
-    public static void removeUserId(HttpServletRequest httpRequest) throws ServletException {
+    public static void removeUserId(HttpServletRequest httpRequest)
+            throws ServletException {
 
         removeUserId(USERID_SESSION_ATTRIBUTE, httpRequest);
     }
@@ -174,7 +177,8 @@ public class LoginManager {
      * 
      * @throws ServletException
      */
-    public static void removeUserId(String paramName, HttpServletRequest httpRequest) throws ServletException {
+    public static void removeUserId(String paramName, HttpServletRequest httpRequest)
+            throws ServletException {
 
         String userId = findUserId(httpRequest, paramName);
         if (null == userId)
@@ -219,7 +223,8 @@ public class LoginManager {
      * @throws ServletException
      *             if the user was not yet authenticated via SafeOnline.
      */
-    public static String getAuthenticatedDevice(HttpServletRequest request) throws ServletException {
+    public static String getAuthenticatedDevice(HttpServletRequest request)
+            throws ServletException {
 
         return getAuthenticatedDevice(request, AUTHENTICATED_DEVICE_SESSION_ATTRIBUTE);
     }
@@ -234,7 +239,8 @@ public class LoginManager {
      * @throws ServletException
      *             if the user was not yet authenticated via SafeOnline.
      */
-    public static String getAuthenticatedDevice(HttpServletRequest request, String paramName) throws ServletException {
+    public static String getAuthenticatedDevice(HttpServletRequest request, String paramName)
+            throws ServletException {
 
         String userId = findAuthenticatedDevice(request, paramName);
         if (null == userId)
@@ -279,7 +285,8 @@ public class LoginManager {
      * 
      * @throws ServletException
      */
-    public static void removeAuthenticatedDevice(HttpServletRequest httpRequest) throws ServletException {
+    public static void removeAuthenticatedDevice(HttpServletRequest httpRequest)
+            throws ServletException {
 
         removeAuthenticatedDevice(AUTHENTICATED_DEVICE_SESSION_ATTRIBUTE, httpRequest);
     }
@@ -292,7 +299,8 @@ public class LoginManager {
      * 
      * @throws ServletException
      */
-    public static void removeAuthenticatedDevice(String paramName, HttpServletRequest httpRequest) throws ServletException {
+    public static void removeAuthenticatedDevice(String paramName, HttpServletRequest httpRequest)
+            throws ServletException {
 
         String authenticatedDevice = findAuthenticatedDevice(httpRequest, paramName);
         if (null == authenticatedDevice)

@@ -24,10 +24,11 @@ public interface ApplicationIdentityDAO extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationIdentityDAOBean/local";
 
+
     ApplicationIdentityEntity addApplicationIdentity(ApplicationEntity application, long identityVersion);
 
     ApplicationIdentityEntity getApplicationIdentity(ApplicationEntity application, long identityVersion)
-                                                                                                         throws ApplicationIdentityNotFoundException;
+            throws ApplicationIdentityNotFoundException;
 
     List<ApplicationIdentityEntity> listApplicationIdentities(ApplicationEntity application);
 

@@ -23,6 +23,7 @@ public interface AuthorizationManagerService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AuthorizationManagerServiceBean/local";
 
+
     /**
      * Gives back a set of roles for a given login. The assignment of these roles to a certain principal depends on the security measures
      * against attacks of the SafeOnline core.
@@ -30,7 +31,8 @@ public interface AuthorizationManagerService extends SafeOnlineService {
      * @param login
      * @throws SubjectNotFoundException
      */
-    Set<String> getRoles(String login) throws SubjectNotFoundException;
+    Set<String> getRoles(String login)
+            throws SubjectNotFoundException;
 
     /**
      * Gives back all available roles supported by the system.
@@ -45,7 +47,8 @@ public interface AuthorizationManagerService extends SafeOnlineService {
      * @param roles
      * @throws RoleNotFoundException
      */
-    void setRoles(String login, Set<String> roles) throws SubjectNotFoundException, RoleNotFoundException;
+    void setRoles(String login, Set<String> roles)
+            throws SubjectNotFoundException, RoleNotFoundException;
 
     /**
      * Gives back a list of available user logins starting with a specified prefix.
@@ -53,5 +56,6 @@ public interface AuthorizationManagerService extends SafeOnlineService {
      * @param prefix
      * @throws AttributeTypeNotFoundException
      */
-    List<String> getUsers(String prefix) throws AttributeTypeNotFoundException;
+    List<String> getUsers(String prefix)
+            throws AttributeTypeNotFoundException;
 }

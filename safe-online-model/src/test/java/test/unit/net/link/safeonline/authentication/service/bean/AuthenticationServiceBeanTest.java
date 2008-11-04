@@ -126,7 +126,8 @@ public class AuthenticationServiceBeanTest {
 
 
     @BeforeClass
-    public static void oneTimeSetup() throws Exception {
+    public static void oneTimeSetup()
+            throws Exception {
 
         if (null == Security.getProvider(BouncyCastleProvider.PROVIDER_NAME)) {
             Security.addProvider(new BouncyCastleProvider());
@@ -152,7 +153,8 @@ public class AuthenticationServiceBeanTest {
     }
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.testedInstance = new AuthenticationServiceBean();
 
@@ -207,12 +209,14 @@ public class AuthenticationServiceBeanTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
     }
 
     @Test
-    public void authenticate() throws Exception {
+    public void authenticate()
+            throws Exception {
 
         // setup
         String applicationName = "test-application";
@@ -220,10 +224,8 @@ public class AuthenticationServiceBeanTest {
         String password = "test-password";
 
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair,
-                "CN=TestApplication");
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null,
-                applicationCert);
+        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair, "CN=TestApplication");
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, applicationCert);
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
 
@@ -264,7 +266,8 @@ public class AuthenticationServiceBeanTest {
     }
 
     @Test
-    public void initialize() throws Exception {
+    public void initialize()
+            throws Exception {
 
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
@@ -298,7 +301,8 @@ public class AuthenticationServiceBeanTest {
     }
 
     @Test
-    public void initializeSaml2RequestedAuthnContextSetsRequiredDevices() throws Exception {
+    public void initializeSaml2RequestedAuthnContextSetsRequiredDevices()
+            throws Exception {
 
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
@@ -343,7 +347,8 @@ public class AuthenticationServiceBeanTest {
     }
 
     @Test
-    public void initializeSaml2AuthenticationProtocolWrongSignatureKey() throws Exception {
+    public void initializeSaml2AuthenticationProtocolWrongSignatureKey()
+            throws Exception {
 
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
@@ -377,7 +382,8 @@ public class AuthenticationServiceBeanTest {
     }
 
     @Test
-    public void intializeSaml2AuthenticationProtocolNotTrustedApplication() throws Exception {
+    public void intializeSaml2AuthenticationProtocolNotTrustedApplication()
+            throws Exception {
 
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
@@ -411,7 +417,8 @@ public class AuthenticationServiceBeanTest {
     }
 
     @Test
-    public void checkSingleSignOnCookieSuccess() throws Exception {
+    public void checkSingleSignOnCookieSuccess()
+            throws Exception {
 
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
@@ -420,8 +427,7 @@ public class AuthenticationServiceBeanTest {
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null,
-                applicationCert);
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
         applicationPool.setApplications(Collections.singletonList(application));
@@ -476,7 +482,8 @@ public class AuthenticationServiceBeanTest {
     }
 
     @Test
-    public void checkSingleSignOnCookieApplicationSsoDisabled() throws Exception {
+    public void checkSingleSignOnCookieApplicationSsoDisabled()
+            throws Exception {
 
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
@@ -485,8 +492,7 @@ public class AuthenticationServiceBeanTest {
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null,
-                applicationCert);
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, applicationCert);
         application.setSsoEnabled(false);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
         applicationPool.setApplications(Collections.singletonList(application));
@@ -531,7 +537,8 @@ public class AuthenticationServiceBeanTest {
     }
 
     @Test
-    public void checkSingleSignOnCookieRequestSsoDisabled() throws Exception {
+    public void checkSingleSignOnCookieRequestSsoDisabled()
+            throws Exception {
 
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
@@ -540,8 +547,7 @@ public class AuthenticationServiceBeanTest {
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null,
-                applicationCert);
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
         applicationPool.setApplications(Collections.singletonList(application));
@@ -585,7 +591,8 @@ public class AuthenticationServiceBeanTest {
     }
 
     @Test
-    public void checkSingleSignOnCookieInvalidCookie() throws Exception {
+    public void checkSingleSignOnCookieInvalidCookie()
+            throws Exception {
 
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
@@ -594,8 +601,7 @@ public class AuthenticationServiceBeanTest {
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null,
-                applicationCert);
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
         applicationPool.setApplications(Collections.singletonList(application));
@@ -633,7 +639,8 @@ public class AuthenticationServiceBeanTest {
     }
 
     @Test
-    public void checkSingleSignOnCookieInvalidSubject() throws Exception {
+    public void checkSingleSignOnCookieInvalidSubject()
+            throws Exception {
 
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
@@ -642,8 +649,7 @@ public class AuthenticationServiceBeanTest {
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null,
-                applicationCert);
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
         applicationPool.setApplications(Collections.singletonList(application));
@@ -688,7 +694,8 @@ public class AuthenticationServiceBeanTest {
     }
 
     @Test
-    public void checkSingleSignOnCookieInvalidApplication() throws Exception {
+    public void checkSingleSignOnCookieInvalidApplication()
+            throws Exception {
 
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
@@ -698,15 +705,13 @@ public class AuthenticationServiceBeanTest {
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null,
-                applicationCert);
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
         applicationPool.setApplications(Collections.singletonList(application));
         application.setApplicationPools(Collections.singletonList(applicationPool));
 
-        ApplicationEntity invalidApplication = new ApplicationEntity(invalidApplicationName, null, null, null,
-                null, null, applicationCert);
+        ApplicationEntity invalidApplication = new ApplicationEntity(invalidApplicationName, null, null, null, null, null, applicationCert);
 
         String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
                 assertionConsumerService, destinationUrl, null, null, true);
@@ -748,7 +753,8 @@ public class AuthenticationServiceBeanTest {
     }
 
     @Test
-    public void checkSingleSignOnCookieNoCommonPool() throws Exception {
+    public void checkSingleSignOnCookieNoCommonPool()
+            throws Exception {
 
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
@@ -758,14 +764,12 @@ public class AuthenticationServiceBeanTest {
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null,
-                applicationCert);
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
         applicationPool.setApplications(Collections.singletonList(application));
         application.setApplicationPools(Collections.singletonList(applicationPool));
-        ApplicationEntity cookieApplication = new ApplicationEntity(cookieApplicationName, null, null, null,
-                null, null, applicationCert);
+        ApplicationEntity cookieApplication = new ApplicationEntity(cookieApplicationName, null, null, null, null, null, applicationCert);
 
         String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
                 assertionConsumerService, destinationUrl, null, null, true);
@@ -819,7 +823,8 @@ public class AuthenticationServiceBeanTest {
      * Test that we cannot sso into the second application pool if we want to login for application 3.
      */
     @Test
-    public void checkSingleSignOnCookie2CommonApplicationPools() throws Exception {
+    public void checkSingleSignOnCookie2CommonApplicationPools()
+            throws Exception {
 
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
@@ -832,14 +837,11 @@ public class AuthenticationServiceBeanTest {
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
 
-        ApplicationEntity application1 = new ApplicationEntity(application1Name, null, null, null, null, null,
-                applicationCert);
+        ApplicationEntity application1 = new ApplicationEntity(application1Name, null, null, null, null, null, applicationCert);
         application1.setSsoEnabled(true);
-        ApplicationEntity application2 = new ApplicationEntity(application2Name, null, null, null, null, null,
-                applicationCert);
+        ApplicationEntity application2 = new ApplicationEntity(application2Name, null, null, null, null, null, applicationCert);
         application2.setSsoEnabled(true);
-        ApplicationEntity application3 = new ApplicationEntity(application3Name, null, null, null, null, null,
-                applicationCert);
+        ApplicationEntity application3 = new ApplicationEntity(application3Name, null, null, null, null, null, applicationCert);
         application3.setSsoEnabled(true);
 
         List<ApplicationEntity> applicationPool1List = new LinkedList<ApplicationEntity>();
@@ -906,7 +908,8 @@ public class AuthenticationServiceBeanTest {
     }
 
     @Test
-    public void checkSingleSignOnCookieInvalidDevice() throws Exception {
+    public void checkSingleSignOnCookieInvalidDevice()
+            throws Exception {
 
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
@@ -915,8 +918,7 @@ public class AuthenticationServiceBeanTest {
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null,
-                applicationCert);
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
         applicationPool.setApplications(Collections.singletonList(application));
@@ -966,7 +968,8 @@ public class AuthenticationServiceBeanTest {
     }
 
     @Test
-    public void checkSingleSignOnCookieInvalidDevicePolicy() throws Exception {
+    public void checkSingleSignOnCookieInvalidDevicePolicy()
+            throws Exception {
 
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
@@ -975,8 +978,7 @@ public class AuthenticationServiceBeanTest {
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null,
-                applicationCert);
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
         applicationPool.setApplications(Collections.singletonList(application));
@@ -1027,7 +1029,8 @@ public class AuthenticationServiceBeanTest {
     }
 
     @Test
-    public void checkSingleSignOnCookieExpired() throws Exception {
+    public void checkSingleSignOnCookieExpired()
+            throws Exception {
 
         // setup
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
@@ -1036,8 +1039,7 @@ public class AuthenticationServiceBeanTest {
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null,
-                applicationCert);
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
         applicationPool.setApplications(Collections.singletonList(application));
@@ -1084,7 +1086,8 @@ public class AuthenticationServiceBeanTest {
         fail();
     }
 
-    private AuthnRequest getAuthnRequest(String encodedAuthnRequest) throws Exception {
+    private AuthnRequest getAuthnRequest(String encodedAuthnRequest)
+            throws Exception {
 
         Document doc = DomUtils.parseDocument(encodedAuthnRequest);
         UnmarshallerFactory unmarshallerFactory = Configuration.getUnmarshallerFactory();
@@ -1094,7 +1097,8 @@ public class AuthenticationServiceBeanTest {
     }
 
     private Cookie getSsoCookie(SubjectEntity subject, ApplicationEntity application, DeviceEntity device,
-                                List<ApplicationEntity> ssoApplications) throws Exception {
+                                List<ApplicationEntity> ssoApplications)
+            throws Exception {
 
         DateTime now = new DateTime();
         SingleSignOn sso = new SingleSignOn(subject, application, device, now);
@@ -1114,7 +1118,8 @@ public class AuthenticationServiceBeanTest {
         return ssoCookie;
     }
 
-    private Cookie getExpiredSsoCookie(SubjectEntity subject, ApplicationEntity application, DeviceEntity device) throws Exception {
+    private Cookie getExpiredSsoCookie(SubjectEntity subject, ApplicationEntity application, DeviceEntity device)
+            throws Exception {
 
         DateTime now = new DateTime();
         DateTime authTime = now.minusDays(7);
@@ -1132,7 +1137,8 @@ public class AuthenticationServiceBeanTest {
         return ssoCookie;
     }
 
-    private Cookie getInvalidSsoCookie(String applicationId) throws Exception {
+    private Cookie getInvalidSsoCookie(String applicationId)
+            throws Exception {
 
         String value = "foobar";
 
@@ -1148,15 +1154,15 @@ public class AuthenticationServiceBeanTest {
     }
 
     @Test
-    public void initializeLogout() throws Exception {
+    public void initializeLogout()
+            throws Exception {
 
         // setup
         String applicationName = "test-application-id";
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair,
-                "CN=TestApplication");
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, new ApplicationOwnerEntity(),
-                null, null, null, applicationCert);
+        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair, "CN=TestApplication");
+        ApplicationEntity application = new ApplicationEntity(applicationName, null, new ApplicationOwnerEntity(), null, null, null,
+                applicationCert);
         application.setSsoLogoutUrl(new URL("http", "test.host", "logout"));
 
         String applicationUserId = UUID.randomUUID().toString();
@@ -1192,7 +1198,8 @@ public class AuthenticationServiceBeanTest {
         assertEquals(application.getSsoLogoutUrl().toString(), logoutProtocolContext.getTarget());
     }
 
-    private LogoutRequest getLogoutRequest(String encodedLogoutRequest) throws Exception {
+    private LogoutRequest getLogoutRequest(String encodedLogoutRequest)
+            throws Exception {
 
         Document doc = DomUtils.parseDocument(encodedLogoutRequest);
         UnmarshallerFactory unmarshallerFactory = Configuration.getUnmarshallerFactory();

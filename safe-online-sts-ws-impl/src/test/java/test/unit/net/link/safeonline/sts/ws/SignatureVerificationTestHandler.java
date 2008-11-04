@@ -95,8 +95,8 @@ public class SignatureVerificationTestHandler implements SOAPHandler<SOAPMessage
         return true;
     }
 
-    private void verifySamlpSignature(Document document, X509Certificate certificate) throws TransformerException, XMLSignatureException,
-                                                                                     XMLSecurityException {
+    private void verifySamlpSignature(Document document, X509Certificate certificate)
+            throws TransformerException, XMLSignatureException, XMLSecurityException {
 
         Element nsElement = createNsElement(document);
         Element samlpSignature = (Element) XPathAPI.selectSingleNode(document, "//samlp:Response/ds:Signature", nsElement);
@@ -124,8 +124,8 @@ public class SignatureVerificationTestHandler implements SOAPHandler<SOAPMessage
         LOG.debug("SAMLp signature valid");
     }
 
-    private void verifyWSSecuritySignature(Document document, X509Certificate certificate) throws TransformerException,
-                                                                                          XMLSignatureException, XMLSecurityException {
+    private void verifyWSSecuritySignature(Document document, X509Certificate certificate)
+            throws TransformerException, XMLSignatureException, XMLSecurityException {
 
         Element nsElement = createNsElement(document);
         Element wsSecuritySignatureElement = (Element) XPathAPI.selectSingleNode(document, "//wsse:Security/ds:Signature", nsElement);
@@ -146,7 +146,8 @@ public class SignatureVerificationTestHandler implements SOAPHandler<SOAPMessage
         return nsElement;
     }
 
-    private X509Certificate extractWSSecurityCertificate(Document document) throws TransformerException, CertificateException {
+    private X509Certificate extractWSSecurityCertificate(Document document)
+            throws TransformerException, CertificateException {
 
         Element nsElement = createNsElement(document);
         Element binarySecurityTokenElement = (Element) XPathAPI.selectSingleNode(document, "//wsse:BinarySecurityToken", nsElement);

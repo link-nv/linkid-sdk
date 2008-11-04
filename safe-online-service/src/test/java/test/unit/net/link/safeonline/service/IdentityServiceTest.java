@@ -32,7 +32,8 @@ public class IdentityServiceTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         Thread currentThread = Thread.currentThread();
         this.origClassLoader = currentThread.getContextClassLoader();
@@ -42,14 +43,16 @@ public class IdentityServiceTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         Thread currentThread = Thread.currentThread();
         currentThread.setContextClassLoader(this.origClassLoader);
     }
 
     @Test
-    public void testGetPrivateKeyFromResource() throws Exception {
+    public void testGetPrivateKeyFromResource()
+            throws Exception {
 
         // setup
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
@@ -75,7 +78,8 @@ public class IdentityServiceTest {
     }
 
     @Test
-    public void testGetPrivateKeyFromFile() throws Exception {
+    public void testGetPrivateKeyFromFile()
+            throws Exception {
 
         // setup
         KeyPair keyPair = PkiTestUtils.generateKeyPair();

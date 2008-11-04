@@ -29,7 +29,8 @@ public class StartupServletContextListenerTest extends TestCase {
 
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp()
+            throws Exception {
 
         super.setUp();
 
@@ -40,14 +41,16 @@ public class StartupServletContextListenerTest extends TestCase {
     }
 
     @Override
-    protected void tearDown() throws Exception {
+    protected void tearDown()
+            throws Exception {
 
         this.jndiTestUtils.tearDown();
 
         super.tearDown();
     }
 
-    public void testPostStartAccordingToPriorities() throws Exception {
+    public void testPostStartAccordingToPriorities()
+            throws Exception {
 
         // setup
         IMocksControl mocksControl = createStrictControl();

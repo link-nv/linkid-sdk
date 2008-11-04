@@ -21,6 +21,7 @@ public interface Identity {
 
     public static final String JNDI_BINDING = UserConstants.JNDI_PREFIX + "IdentityBean/local";
 
+
     /*
      * Lifecycle.
      */
@@ -29,7 +30,8 @@ public interface Identity {
     /*
      * Factories.
      */
-    void attributeListFactory() throws AttributeTypeNotFoundException, PermissionDeniedException, ApplicationIdentityNotFoundException;
+    void attributeListFactory()
+            throws AttributeTypeNotFoundException, PermissionDeniedException, ApplicationIdentityNotFoundException;
 
     /*
      * Accessors
@@ -41,8 +43,9 @@ public interface Identity {
      */
     String edit();
 
-    String removeAttribute() throws AttributeTypeNotFoundException, PermissionDeniedException, AttributeNotFoundException,
-                            ApplicationIdentityNotFoundException;
+    String removeAttribute()
+            throws AttributeTypeNotFoundException, PermissionDeniedException, AttributeNotFoundException,
+            ApplicationIdentityNotFoundException;
 
     String add();
 }

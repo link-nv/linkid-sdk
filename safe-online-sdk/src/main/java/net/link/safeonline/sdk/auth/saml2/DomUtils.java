@@ -50,7 +50,8 @@ public class DomUtils {
      * @param documentString
      * @throws Exception
      */
-    public static Document parseDocument(String documentString) throws Exception {
+    public static Document parseDocument(String documentString)
+            throws Exception {
 
         DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
         domFactory.setNamespaceAware(true);
@@ -67,7 +68,8 @@ public class DomUtils {
      * @param outputFile
      * @throws TransformerException
      */
-    public static void saveDocument(Document document, File outputFile) throws TransformerException {
+    public static void saveDocument(Document document, File outputFile)
+            throws TransformerException {
 
         Source source = new DOMSource(document);
         Result streamResult = new StreamResult(outputFile);
@@ -84,7 +86,8 @@ public class DomUtils {
      * @throws SAXException
      * @throws IOException
      */
-    public static Document loadDocument(InputStream documentInputStream) throws ParserConfigurationException, SAXException, IOException {
+    public static Document loadDocument(InputStream documentInputStream)
+            throws ParserConfigurationException, SAXException, IOException {
 
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         documentBuilderFactory.setNamespaceAware(true);
@@ -100,7 +103,8 @@ public class DomUtils {
      * @param domNode
      * @throws TransformerException
      */
-    public static String domToString(Node domNode) throws TransformerException {
+    public static String domToString(Node domNode)
+            throws TransformerException {
 
         Source source = new DOMSource(domNode);
         StringWriter stringWriter = new StringWriter();

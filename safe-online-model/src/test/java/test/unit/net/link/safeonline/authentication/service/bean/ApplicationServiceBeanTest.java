@@ -60,7 +60,8 @@ public class ApplicationServiceBeanTest extends TestCase {
 
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp()
+            throws Exception {
 
         super.setUp();
 
@@ -102,13 +103,15 @@ public class ApplicationServiceBeanTest extends TestCase {
     }
 
     @Override
-    protected void tearDown() throws Exception {
+    protected void tearDown()
+            throws Exception {
 
         this.entityTestManager.tearDown();
         super.tearDown();
     }
 
-    public void testApplicationIdentityUseCase() throws Exception {
+    public void testApplicationIdentityUseCase()
+            throws Exception {
 
         // setup
         EntityManager entityManager = this.entityTestManager.getEntityManager();
@@ -152,7 +155,8 @@ public class ApplicationServiceBeanTest extends TestCase {
         assertTrue(result.iterator().next().isRequired());
     }
 
-    public void testRemoveApplication() throws Exception {
+    public void testRemoveApplication()
+            throws Exception {
 
         EntityManager entityManager = this.entityTestManager.getEntityManager();
         ApplicationService applicationService = EJBTestUtils.newInstance(ApplicationServiceBean.class,
@@ -195,7 +199,8 @@ public class ApplicationServiceBeanTest extends TestCase {
         entityManager.getTransaction().commit();
     }
 
-    public void testRemoveApplicationOwnerFails() throws Exception {
+    public void testRemoveApplicationOwnerFails()
+            throws Exception {
 
         EntityManager entityManager = this.entityTestManager.getEntityManager();
         ApplicationService applicationService = EJBTestUtils.newInstance(ApplicationServiceBean.class,
@@ -241,7 +246,8 @@ public class ApplicationServiceBeanTest extends TestCase {
         fail();
     }
 
-    public void testRemoveApplicationOwner() throws Exception {
+    public void testRemoveApplicationOwner()
+            throws Exception {
 
         EntityManager entityManager = this.entityTestManager.getEntityManager();
         ApplicationService applicationService = EJBTestUtils.newInstance(ApplicationServiceBean.class,

@@ -43,18 +43,21 @@ public class RemoveServlet extends AbstractInjectionServlet {
 
 
     @Override
-    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         handleLanding(request, response);
     }
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         handleLanding(request, response);
     }
 
-    private void handleLanding(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    private void handleLanding(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
 
         String attribute = DeviceOperationManager.findAttribute(request.getSession());
         if (null == attribute) {

@@ -31,6 +31,7 @@ public interface UsageAgreementService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/UsageAgreementServiceBean/local";
 
+
     /**
      * Create draft usage agreement from the specified version.
      * 
@@ -38,8 +39,8 @@ public interface UsageAgreementService extends SafeOnlineService {
      * @throws PermissionDeniedException
      * @throws ApplicationNotFoundException
      */
-    UsageAgreementEntity createDraftUsageAgreement(String applicationName, Long usageAgreementVersion) throws ApplicationNotFoundException,
-                                                                                                      PermissionDeniedException;
+    UsageAgreementEntity createDraftUsageAgreement(String applicationName, Long usageAgreementVersion)
+            throws ApplicationNotFoundException, PermissionDeniedException;
 
     /**
      * Commits the draft usage agreement to a new version.
@@ -48,7 +49,8 @@ public interface UsageAgreementService extends SafeOnlineService {
      * @throws ApplicationNotFoundException
      * @throws PermissionDeniedException
      */
-    void updateUsageAgreement(String applicationName) throws ApplicationNotFoundException, PermissionDeniedException;
+    void updateUsageAgreement(String applicationName)
+            throws ApplicationNotFoundException, PermissionDeniedException;
 
     /**
      * Returns currently associated usage agreement with the specified application.
@@ -57,7 +59,8 @@ public interface UsageAgreementService extends SafeOnlineService {
      * @throws PermissionDeniedException
      * @throws ApplicationNotFoundException
      */
-    UsageAgreementEntity getCurrentUsageAgreement(String applicationName) throws PermissionDeniedException, ApplicationNotFoundException;
+    UsageAgreementEntity getCurrentUsageAgreement(String applicationName)
+            throws PermissionDeniedException, ApplicationNotFoundException;
 
     /**
      * Returns current draft usage agreement with the specified application. Returns null if no draft is present.
@@ -66,7 +69,8 @@ public interface UsageAgreementService extends SafeOnlineService {
      * @throws ApplicationNotFoundException
      * @throws PermissionDeniedException
      */
-    UsageAgreementEntity getDraftUsageAgreement(String applicationName) throws ApplicationNotFoundException, PermissionDeniedException;
+    UsageAgreementEntity getDraftUsageAgreement(String applicationName)
+            throws ApplicationNotFoundException, PermissionDeniedException;
 
     /**
      * Get all usage agreements of the specified application.
@@ -75,7 +79,8 @@ public interface UsageAgreementService extends SafeOnlineService {
      * @throws ApplicationNotFoundException
      * @throws PermissionDeniedException
      */
-    List<UsageAgreementEntity> getUsageAgreements(String applicationName) throws ApplicationNotFoundException, PermissionDeniedException;
+    List<UsageAgreementEntity> getUsageAgreements(String applicationName)
+            throws ApplicationNotFoundException, PermissionDeniedException;
 
     /**
      * Create ( if not already created ) new draft usage agreement text for the specified language.
@@ -87,8 +92,7 @@ public interface UsageAgreementService extends SafeOnlineService {
      * @throws PermissionDeniedException
      */
     UsageAgreementTextEntity createDraftUsageAgreementText(String applicationName, String language, String text)
-                                                                                                                throws ApplicationNotFoundException,
-                                                                                                                PermissionDeniedException;
+            throws ApplicationNotFoundException, PermissionDeniedException;
 
     /**
      * Set draft usage agreement text for the specified application and language.
@@ -99,8 +103,8 @@ public interface UsageAgreementService extends SafeOnlineService {
      * @throws ApplicationNotFoundException
      * @throws PermissionDeniedException
      */
-    void setDraftUsageAgreementText(String applicatioName, String language, String text) throws ApplicationNotFoundException,
-                                                                                        PermissionDeniedException;
+    void setDraftUsageAgreementText(String applicatioName, String language, String text)
+            throws ApplicationNotFoundException, PermissionDeniedException;
 
     /**
      * Remove draft usage agreement text for the specified application and language.
@@ -110,8 +114,8 @@ public interface UsageAgreementService extends SafeOnlineService {
      * @throws ApplicationNotFoundException
      * @throws PermissionDeniedException
      */
-    void removeDraftUsageAgreementText(String applicationName, String language) throws ApplicationNotFoundException,
-                                                                               PermissionDeniedException;
+    void removeDraftUsageAgreementText(String applicationName, String language)
+            throws ApplicationNotFoundException, PermissionDeniedException;
 
     /**
      * Remove draft usage agreement for the specified application.
@@ -120,11 +124,12 @@ public interface UsageAgreementService extends SafeOnlineService {
      * @throws ApplicationNotFoundException
      * @throws PermissionDeniedException
      */
-    void removeDraftUsageAgreement(String applicationName) throws ApplicationNotFoundException, PermissionDeniedException;
+    void removeDraftUsageAgreement(String applicationName)
+            throws ApplicationNotFoundException, PermissionDeniedException;
 
     /**
-     * Check whether the authenticating subject's subscription to the specified application conforms with the
-     * application's current usage agreement version.
+     * Check whether the authenticating subject's subscription to the specified application conforms with the application's current usage
+     * agreement version.
      * 
      * @param applicationName
      * @param language
@@ -143,14 +148,16 @@ public interface UsageAgreementService extends SafeOnlineService {
      * @throws ApplicationNotFoundException
      * @throws SubscriptionNotFoundException
      */
-    void confirmUsageAgreementVersion(String applicationName) throws ApplicationNotFoundException, SubscriptionNotFoundException;
+    void confirmUsageAgreementVersion(String applicationName)
+            throws ApplicationNotFoundException, SubscriptionNotFoundException;
 
     /**
      * Get application's usage agreement text for specified language
      * 
      * @throws ApplicationNotFoundException
      */
-    String getUsageAgreementText(String applicationName, String language) throws ApplicationNotFoundException;
+    String getUsageAgreementText(String applicationName, String language)
+            throws ApplicationNotFoundException;
 
     /**
      * Get version of application's usage agreement texts for specified language.
@@ -160,7 +167,8 @@ public interface UsageAgreementService extends SafeOnlineService {
      * @param usageAgreementVersion
      * @throws ApplicationNotFoundException
      */
-    String getUsageAgreementText(String applicationName, String language, Long usageAgreementVersion) throws ApplicationNotFoundException;
+    String getUsageAgreementText(String applicationName, String language, Long usageAgreementVersion)
+            throws ApplicationNotFoundException;
 
     /**
      * Commit the draft global usage agreement to a new version.

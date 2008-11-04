@@ -165,7 +165,8 @@ public class EjbUtils {
         return getComponentNames(initialContext, jndiPrefix, type);
     }
 
-    public static void bindComponent(String jndiName, Object component) throws NamingException {
+    public static void bindComponent(String jndiName, Object component)
+            throws NamingException {
 
         LOG.debug("bind component: " + jndiName);
         InitialContext initialContext = new InitialContext();
@@ -193,7 +194,8 @@ public class EjbUtils {
         context.rebind(name, component);
     }
 
-    public static Object getComponent(String jndiName) throws NamingException {
+    public static Object getComponent(String jndiName)
+            throws NamingException {
 
         InitialContext initialContext = new InitialContext();
         return initialContext.lookup(jndiName);

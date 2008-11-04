@@ -9,13 +9,14 @@ package net.link.safeonline.auth;
 
 import javax.ejb.Local;
 
-
 import net.link.safeonline.auth.AuthenticationConstants;
+
 
 @Local
 public interface UsernamePasswordLogon {
 
     public static final String JNDI_BINDING = AuthenticationConstants.JNDI_PREFIX + "UsernamePasswordLogonBean/local";
+
 
     /*
      * Accessors.

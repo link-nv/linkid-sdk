@@ -93,7 +93,8 @@ public class AuthnEntryServletTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.jndiTestUtils = new JndiTestUtils();
         this.jndiTestUtils.setUp();
@@ -135,14 +136,16 @@ public class AuthnEntryServletTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.authnEntryServletTestManager.tearDown();
         this.jndiTestUtils.tearDown();
     }
 
     @Test
-    public void unsupportedAuthenticationProtocol() throws Exception {
+    public void unsupportedAuthenticationProtocol()
+            throws Exception {
 
         // setup
         HttpClient httpClient = new HttpClient();
@@ -164,7 +167,8 @@ public class AuthnEntryServletTest {
     }
 
     @Test
-    public void saml2AuthenticationProtocol() throws Exception {
+    public void saml2AuthenticationProtocol()
+            throws Exception {
 
         // setup
         HttpClient httpClient = new HttpClient();
@@ -183,11 +187,9 @@ public class AuthnEntryServletTest {
 
         // expectations
         expect(
-                this.mockAuthenticationService.initialize((Locale) EasyMock.anyObject(),
-                        (Integer) EasyMock.anyObject(), (Boolean) EasyMock.anyObject(), (AuthnRequest) EasyMock
-                                .anyObject())).andStubReturn(
-                new ProtocolContext(applicationName, applicationName, assertionConsumerService, null, null,
-                                null, null));
+                this.mockAuthenticationService.initialize((Locale) EasyMock.anyObject(), (Integer) EasyMock.anyObject(),
+                        (Boolean) EasyMock.anyObject(), (AuthnRequest) EasyMock.anyObject())).andStubReturn(
+                new ProtocolContext(applicationName, applicationName, assertionConsumerService, null, null, null, null));
         expect(this.mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.INITIALIZED);
 
         // prepare
@@ -214,7 +216,8 @@ public class AuthnEntryServletTest {
     }
 
     @Test
-    public void saml2AuthenticationProtocolSingleSignOn() throws Exception {
+    public void saml2AuthenticationProtocolSingleSignOn()
+            throws Exception {
 
         // setup
         HttpClient httpClient = new HttpClient();
@@ -240,11 +243,9 @@ public class AuthnEntryServletTest {
 
         // expectations
         expect(
-                this.mockAuthenticationService.initialize((Locale) EasyMock.anyObject(),
-                        (Integer) EasyMock.anyObject(), (Boolean) EasyMock.anyObject(), (AuthnRequest) EasyMock
-                                .anyObject())).andStubReturn(
-                new ProtocolContext(applicationName, applicationName, assertionConsumerService, null, null,
-                                null, null));
+                this.mockAuthenticationService.initialize((Locale) EasyMock.anyObject(), (Integer) EasyMock.anyObject(),
+                        (Boolean) EasyMock.anyObject(), (AuthnRequest) EasyMock.anyObject())).andStubReturn(
+                new ProtocolContext(applicationName, applicationName, assertionConsumerService, null, null, null, null));
         expect(this.mockAuthenticationService.checkSsoCookie((Cookie) EasyMock.anyObject())).andStubReturn(true);
         expect(this.mockAuthenticationService.getSsoCookie()).andStubReturn(
                 new Cookie(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX + "." + applicationName, "value"));

@@ -15,5 +15,6 @@ import net.link.safeonline.ctrl.LoginBase;
 
 @Local
 public interface Login extends LoginBase {
+
     public static final String JNDI_BINDING = UserConstants.JNDI_PREFIX + "LoginBean/local";
 }

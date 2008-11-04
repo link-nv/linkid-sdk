@@ -24,6 +24,7 @@ public interface ResourceAuditDAO extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ResourceAuditDAOBean/local";
 
+
     void addResourceAudit(AuditContextEntity auditContext, ResourceNameType resourceName, ResourceLevelType resourceLevel,
                           String sourceComponent, String message);
 

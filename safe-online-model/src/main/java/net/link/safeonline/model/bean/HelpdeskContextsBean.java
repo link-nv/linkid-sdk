@@ -36,7 +36,8 @@ public class HelpdeskContextsBean implements HelpdeskContexts {
         return this.helpdeskEventDAO.listEvents(contextId);
     }
 
-    public void removeLog(Long logId) throws HelpdeskContextNotFoundException {
+    public void removeLog(Long logId)
+            throws HelpdeskContextNotFoundException {
 
         this.helpdeskEventDAO.removeEvents(logId);
         this.helpdeskContextDAO.removeContext(logId);

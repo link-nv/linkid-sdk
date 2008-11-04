@@ -17,13 +17,15 @@ public interface Applications extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationsBean/local";
 
-    public ApplicationEntity getApplication(String applicationName) throws ApplicationNotFoundException;
+
+    public ApplicationEntity getApplication(String applicationName)
+            throws ApplicationNotFoundException;
 
     public List<ApplicationEntity> listApplications();
 
     public List<ApplicationEntity> listUserApplications();
 
     public Set<ApplicationIdentityAttributeEntity> getCurrentApplicationIdentity(ApplicationEntity application)
-                                                                                                               throws ApplicationIdentityNotFoundException;
+            throws ApplicationIdentityNotFoundException;
 
 }

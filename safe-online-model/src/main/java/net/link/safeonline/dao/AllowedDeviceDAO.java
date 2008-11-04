@@ -22,6 +22,7 @@ public interface AllowedDeviceDAO extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AllowedDeviceDAOBean/local";
 
+
     AllowedDeviceEntity addAllowedDevice(ApplicationEntity application, DeviceEntity device, int weight);
 
     AllowedDeviceEntity findAllowedDevice(ApplicationEntity application, DeviceEntity device);

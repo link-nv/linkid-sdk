@@ -25,13 +25,15 @@ public interface NotificationSubscriptionService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/NotificationSubscriptionServiceBean/local";
 
+
     List<NotificationProducerSubscriptionEntity> listTopics();
 
-    void removeSubscription(String topic, EndpointReferenceEntity subscription) throws SubscriptionNotFoundException,
-                                                                               EndpointReferenceNotFoundException,
-                                                                               PermissionDeniedException;
+    void removeSubscription(String topic, EndpointReferenceEntity subscription)
+            throws SubscriptionNotFoundException, EndpointReferenceNotFoundException, PermissionDeniedException;
 
-    Set<EndpointReferenceEntity> listSubscriptions(String topic) throws SubscriptionNotFoundException;
+    Set<EndpointReferenceEntity> listSubscriptions(String topic)
+            throws SubscriptionNotFoundException;
 
-    void addSubscription(String topic, String address, String consumer) throws PermissionDeniedException;
+    void addSubscription(String topic, String address, String consumer)
+            throws PermissionDeniedException;
 }

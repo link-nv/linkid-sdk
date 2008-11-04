@@ -48,7 +48,8 @@ public class ProfileFilter implements Filter {
     }
 
 
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
 
         // Only attempt to profile HTTP requests.
         if (!(response instanceof HttpServletResponse)) {
@@ -142,7 +143,8 @@ public class ProfileFilter implements Filter {
         return -1;
     }
 
-    private static InitialContext getInitialContext() throws NamingException {
+    private static InitialContext getInitialContext()
+            throws NamingException {
 
         Hashtable<String, String> environment = new Hashtable<String, String>();
 

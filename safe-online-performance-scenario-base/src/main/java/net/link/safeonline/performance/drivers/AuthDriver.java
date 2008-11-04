@@ -131,22 +131,22 @@ public class AuthDriver extends ProfileDriver {
             }
         }
 
-        public Socket createSocket(String host, int port) throws IOException, UnknownHostException {
+        public Socket createSocket(String host, int port)
+                throws IOException, UnknownHostException {
 
             LOG.debug("createSocket: " + host + ":" + port);
             return this.sslSocketFactory.createSocket(host, port);
         }
 
-        public Socket createSocket(String host, int port, InetAddress localAddress, int localPort) throws IOException, UnknownHostException {
+        public Socket createSocket(String host, int port, InetAddress localAddress, int localPort)
+                throws IOException, UnknownHostException {
 
             LOG.debug("createSocket: " + host + ":" + port + ", local: " + localAddress + ":" + localPort);
             return this.sslSocketFactory.createSocket(host, port, localAddress, localPort);
         }
 
         public Socket createSocket(String host, int port, InetAddress localAddress, int localPort, HttpConnectionParams params)
-                                                                                                                               throws IOException,
-                                                                                                                               UnknownHostException,
-                                                                                                                               ConnectTimeoutException {
+                throws IOException, UnknownHostException, ConnectTimeoutException {
 
             LOG.debug("createSocket: " + host + ":" + port + ", local: " + localAddress + ":" + localPort + ", params: " + params);
 
@@ -159,12 +159,14 @@ public class AuthDriver extends ProfileDriver {
 
     static class MyTrustManager implements X509TrustManager {
 
-        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+        public void checkClientTrusted(X509Certificate[] chain, String authType)
+                throws CertificateException {
 
             throw new CertificateException("cannot verify client certificates");
         }
 
-        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+        public void checkServerTrusted(X509Certificate[] chain, String authType)
+                throws CertificateException {
 
             if (null == chain)
                 throw new CertificateException("null certificate chain");
@@ -314,7 +316,8 @@ public class AuthDriver extends ProfileDriver {
     /**
      * Follow the given redirect response with a GET request.
      */
-    private GetMethod redirectGetMethod(HttpMethod postMethod) throws DriverException {
+    private GetMethod redirectGetMethod(HttpMethod postMethod)
+            throws DriverException {
 
         return new GetMethod(redirectMethod(postMethod));
     }
@@ -322,12 +325,14 @@ public class AuthDriver extends ProfileDriver {
     /**
      * Follow the given redirect response with a POST request.
      */
-    private PostMethod redirectPostMethod(HttpMethod postMethod) throws DriverException {
+    private PostMethod redirectPostMethod(HttpMethod postMethod)
+            throws DriverException {
 
         return new PostMethod(redirectMethod(postMethod));
     }
 
-    private String redirectMethod(HttpMethod postMethod) throws DriverException {
+    private String redirectMethod(HttpMethod postMethod)
+            throws DriverException {
 
         Header locationHeader = postMethod.getResponseHeader("Location");
         if (null == locationHeader)
@@ -356,7 +361,8 @@ public class AuthDriver extends ProfileDriver {
     /**
      * Create a request that submits the given form, and optionally, sends the given input nodes along.
      */
-    private PostMethod submitFormMethod(Node formNode, Node... additionalInputNodes) throws TransformerException {
+    private PostMethod submitFormMethod(Node formNode, Node... additionalInputNodes)
+            throws TransformerException {
 
         NameValuePair[] additionalInputValues = new NameValuePair[additionalInputNodes.length];
         for (int i = 0; i < additionalInputNodes.length; ++i) {
@@ -374,7 +380,8 @@ public class AuthDriver extends ProfileDriver {
     /**
      * Create a request that submits the given form, and additionally, send the given parameters along.
      */
-    private PostMethod submitFormMethod(Node formNode, NameValuePair[] additionalInputValues) throws TransformerException {
+    private PostMethod submitFormMethod(Node formNode, NameValuePair[] additionalInputValues)
+            throws TransformerException {
 
         // Create the post method off of the form's action value.
         String uri = formNode.getAttributes().getNamedItem("action").getNodeValue();
@@ -411,7 +418,8 @@ public class AuthDriver extends ProfileDriver {
     /**
      * Execute the given GET or POST request.
      */
-    private Document executeRequest(HttpMethodBase method) throws HttpException, IOException, TransformerException, DriverException {
+    private Document executeRequest(HttpMethodBase method)
+            throws HttpException, IOException, TransformerException, DriverException {
 
         try {
             // Optionally add JSessionID cookie and execute method.
@@ -464,7 +472,8 @@ public class AuthDriver extends ProfileDriver {
     /**
      * Search through the given document for a form with the given ID.
      */
-    private Node findForm(String formId, Document resultDocument) throws TransformerException {
+    private Node findForm(String formId, Document resultDocument)
+            throws TransformerException {
 
         if (formId == null)
             return XPathAPI.selectSingleNode(resultDocument, "//form");

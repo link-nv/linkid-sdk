@@ -31,7 +31,8 @@ public class PasswordDeviceServiceBeanTest extends TestCase {
 
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp()
+            throws Exception {
 
         super.setUp();
 
@@ -55,7 +56,8 @@ public class PasswordDeviceServiceBeanTest extends TestCase {
                 this.mockSecurityAuditLogger };
     }
 
-    public void testAuthenticate() throws Exception {
+    public void testAuthenticate()
+            throws Exception {
 
         // setup
         String login = "test-login";
@@ -79,7 +81,8 @@ public class PasswordDeviceServiceBeanTest extends TestCase {
     }
 
     @SuppressWarnings("unchecked")
-    public void testAuthenticateWithWrongPasswordFails() throws Exception {
+    public void testAuthenticateWithWrongPasswordFails()
+            throws Exception {
 
         // setup
         String login = "test-login";

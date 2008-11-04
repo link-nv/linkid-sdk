@@ -84,7 +84,8 @@ public class BasicScenario implements Scenario {
 
         LOG.debug("retrieving performance keys..");
         try {
-            PerformanceServiceRemote service = (PerformanceServiceRemote) getInitialContext(execution.getHostname()).lookup(PerformanceServiceRemote.JNDI_BINDING);
+            PerformanceServiceRemote service = (PerformanceServiceRemote) getInitialContext(execution.getHostname()).lookup(
+                    PerformanceServiceRemote.JNDI_BINDING);
             this.applicationKey = new KeyStore.PrivateKeyEntry(service.getPrivateKey(), new Certificate[] { service.getCertificate() });
         } catch (NamingException e) {
             LOG.error("OLAS couldn't provide performance keys.", e);
@@ -145,7 +146,8 @@ public class BasicScenario implements Scenario {
     /**
      * Retrieve an {@link InitialContext} for the JNDI of the AS on the given host.
      */
-    private static InitialContext getInitialContext(String hostname) throws NamingException {
+    private static InitialContext getInitialContext(String hostname)
+            throws NamingException {
 
         Hashtable<String, String> environment = new Hashtable<String, String>();
 

@@ -276,7 +276,8 @@ public class PkiValidatorBean implements PkiValidator {
         return true;
     }
 
-    public PkiResult validateCertificate(String trustDomainName, X509Certificate certificate) throws TrustDomainNotFoundException {
+    public PkiResult validateCertificate(String trustDomainName, X509Certificate certificate)
+            throws TrustDomainNotFoundException {
 
         TrustDomainEntity trustDomain = this.trustDomainDAO.getTrustDomain(trustDomainName);
         return validateCertificate(trustDomain, certificate);

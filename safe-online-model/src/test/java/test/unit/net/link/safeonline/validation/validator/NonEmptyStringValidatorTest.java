@@ -36,7 +36,8 @@ public class NonEmptyStringValidatorTest extends TestCase {
     }
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp()
+            throws Exception {
 
         super.setUp();
 
@@ -48,7 +49,8 @@ public class NonEmptyStringValidatorTest extends TestCase {
                 String.class).getParameterAnnotations()[0][0];
     }
 
-    public void testNullStringIsInvalid() throws Exception {
+    public void testNullStringIsInvalid()
+            throws Exception {
 
         // setup
         String sampleString = null;
@@ -66,7 +68,8 @@ public class NonEmptyStringValidatorTest extends TestCase {
         verify(this.mockValidatorResult);
     }
 
-    public void testEmptyStringIsInvalid() throws Exception {
+    public void testEmptyStringIsInvalid()
+            throws Exception {
 
         // setup
         String sampleString = "";

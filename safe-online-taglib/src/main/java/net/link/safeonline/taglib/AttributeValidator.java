@@ -39,7 +39,8 @@ public class AttributeValidator implements Validator {
     public static final String VALIDATOR_ID = "net.link.validator.attribute";
 
 
-    public void validate(FacesContext context, UIComponent component, Object value) throws ValidatorException {
+    public void validate(FacesContext context, UIComponent component, Object value)
+            throws ValidatorException {
 
         UIInput inputComponent = (UIInput) component;
         boolean required = inputComponent.isRequired();
@@ -65,13 +66,15 @@ public class AttributeValidator implements Validator {
 
     private interface TypeValidator {
 
-        void validate(FacesContext context, AttributeDO attribute) throws ValidatorException;
+        void validate(FacesContext context, AttributeDO attribute)
+                throws ValidatorException;
     }
 
     @SupportedType(DatatypeType.STRING)
     public static class StringTypeValidator implements TypeValidator {
 
-        public void validate(FacesContext context, AttributeDO attribute) throws ValidatorException {
+        public void validate(FacesContext context, AttributeDO attribute)
+                throws ValidatorException {
 
             String value = attribute.getStringValue();
             if (null == value) {
@@ -89,7 +92,8 @@ public class AttributeValidator implements Validator {
     @SupportedType(DatatypeType.BOOLEAN)
     public static class BooleanTypeValidator implements TypeValidator {
 
-        public void validate(FacesContext context, AttributeDO attribute) throws ValidatorException {
+        public void validate(FacesContext context, AttributeDO attribute)
+                throws ValidatorException {
 
             Boolean value = attribute.getBooleanValue();
             if (null == value) {
@@ -103,7 +107,8 @@ public class AttributeValidator implements Validator {
     @SupportedType(DatatypeType.INTEGER)
     public static class IntegerTypeValidator implements TypeValidator {
 
-        public void validate(FacesContext context, AttributeDO attribute) throws ValidatorException {
+        public void validate(FacesContext context, AttributeDO attribute)
+                throws ValidatorException {
 
             LOG.debug("Integer validator");
             Integer value = attribute.getIntegerValue();
@@ -119,7 +124,8 @@ public class AttributeValidator implements Validator {
     @SupportedType(DatatypeType.DOUBLE)
     public static class DoubleTypeValidator implements TypeValidator {
 
-        public void validate(FacesContext context, AttributeDO attribute) throws ValidatorException {
+        public void validate(FacesContext context, AttributeDO attribute)
+                throws ValidatorException {
 
             Double value = attribute.getDoubleValue();
             if (null == value) {
@@ -133,7 +139,8 @@ public class AttributeValidator implements Validator {
     @SupportedType(DatatypeType.DATE)
     public static class DateTypeValidator implements TypeValidator {
 
-        public void validate(FacesContext context, AttributeDO attribute) throws ValidatorException {
+        public void validate(FacesContext context, AttributeDO attribute)
+                throws ValidatorException {
 
             Date value = attribute.getDateValue();
             if (null == value) {

@@ -21,6 +21,7 @@ public interface ConfigItemDAO extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ConfigItemDAOBean/local";
 
+
     ConfigItemEntity addConfigItem(String name, String value, String valueType, ConfigGroupEntity configGroup);
 
     void removeConfigItem(ConfigItemEntity configItem);

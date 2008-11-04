@@ -31,8 +31,7 @@ import com.sun.xml.ws.client.ClientTransportException;
 
 
 /**
- * Implementation of the WS-Notification consumer interface. This class is using JAX-WS, secured via WS-Security and
- * server-side SSL.
+ * Implementation of the WS-Notification consumer interface. This class is using JAX-WS, secured via WS-Security and server-side SSL.
  * 
  * @author wvdhaute
  * 
@@ -79,8 +78,8 @@ public class NotificationConsumerClientImpl extends AbstractMessageAccessor impl
     public void sendNotification(String topic, String destination, String subject, String content)
             throws WSClientTransportException {
 
-        LOG.debug("send notification to " + this.location + " for topic: " + topic + ", destination:" + destination
-                + ", subject:" + subject + ", content:" + content);
+        LOG.debug("send notification to " + this.location + " for topic: " + topic + ", destination:" + destination + ", subject:"
+                + subject + ", content:" + content);
 
         TopicExpressionType topicExpression = new TopicExpressionType();
         topicExpression.setDialect(TOPIC_DIALECT_SIMPLE);

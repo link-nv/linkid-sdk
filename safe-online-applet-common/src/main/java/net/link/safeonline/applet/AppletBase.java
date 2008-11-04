@@ -107,7 +107,8 @@ public abstract class AppletBase extends JApplet implements ActionListener, Appl
     }
 
     private static enum State {
-        HIDE, SHOW
+        HIDE,
+        SHOW
     }
 
 
@@ -284,8 +285,7 @@ public abstract class AppletBase extends JApplet implements ActionListener, Appl
             e.printStackTrace();
         }
         /*
-         * We used to have invokeAndWait here, but this sometimes causes a deadlock between: RunnableQueue-0 and
-         * AWT-EventQueue-0.
+         * We used to have invokeAndWait here, but this sometimes causes a deadlock between: RunnableQueue-0 and AWT-EventQueue-0.
          */
         SwingUtilities.invokeLater(new Runnable() {
 
@@ -338,13 +338,15 @@ public abstract class AppletBase extends JApplet implements ActionListener, Appl
         });
     }
 
-    public void addHelpdeskEvent(String message, LogLevelType logLevel) throws IOException {
+    public void addHelpdeskEvent(String message, LogLevelType logLevel)
+            throws IOException {
 
         LOG.debug("add helpdesk event: " + message);
         this.helpdeskEvents.add(new HelpdeskEvent(message, logLevel));
     }
 
-    public boolean logHelpdesk() throws IOException {
+    public boolean logHelpdesk()
+            throws IOException {
 
         HttpURLConnection httpURLConnection;
         try {
@@ -357,15 +359,15 @@ public abstract class AppletBase extends JApplet implements ActionListener, Appl
         for (HelpdeskEvent event : this.helpdeskEvents) {
             httpURLConnection.setRequestProperty(HelpdeskCodes.HELPDESK_ADD + idx, Integer.toString(idx));
             httpURLConnection.setRequestProperty(HelpdeskCodes.HELPDESK_ADD_MESSAGE + idx, event.getMessage());
-            httpURLConnection
-                    .setRequestProperty(HelpdeskCodes.HELPDESK_ADD_LEVEL + idx, event.getLogLevel().toString());
+            httpURLConnection.setRequestProperty(HelpdeskCodes.HELPDESK_ADD_LEVEL + idx, event.getLogLevel().toString());
             idx++;
         }
 
         return sendHelpdeskStatement(httpURLConnection);
     }
 
-    public boolean clearHelpdesk() throws IOException {
+    public boolean clearHelpdesk()
+            throws IOException {
 
         HttpURLConnection httpURLConnection;
         try {
@@ -377,7 +379,8 @@ public abstract class AppletBase extends JApplet implements ActionListener, Appl
         return sendHelpdeskStatement(httpURLConnection);
     }
 
-    public Long persistHelpdesk() throws IOException {
+    public Long persistHelpdesk()
+            throws IOException {
 
         HttpURLConnection httpURLConnection;
         try {
@@ -397,7 +400,8 @@ public abstract class AppletBase extends JApplet implements ActionListener, Appl
         return Long.parseLong(helpdeskPersistId);
     }
 
-    private HttpURLConnection prepareHelpdeskConnection() throws IOException, NoHelpdeskConfiguredException {
+    private HttpURLConnection prepareHelpdeskConnection()
+            throws IOException, NoHelpdeskConfiguredException {
 
         URL documentBase = getDocumentBase();
         String servletPath = getParameter("HelpdeskEventPath");
@@ -409,7 +413,8 @@ public abstract class AppletBase extends JApplet implements ActionListener, Appl
         return httpURLConnection;
     }
 
-    private boolean sendHelpdeskStatement(HttpURLConnection httpURLConnection) throws IOException {
+    private boolean sendHelpdeskStatement(HttpURLConnection httpURLConnection)
+            throws IOException {
 
         httpURLConnection.setRequestMethod("POST");
         httpURLConnection.setAllowUserInteraction(false);

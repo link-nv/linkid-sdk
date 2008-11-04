@@ -85,7 +85,8 @@ public class ChartsBean implements Charts {
 
     @Factory(STAT_LIST_NAME)
     @RolesAllowed(OwnerConstants.OWNER_ROLE)
-    public void statListFactory() throws PermissionDeniedException {
+    public void statListFactory()
+            throws PermissionDeniedException {
 
         LOG.debug("selectedApplication: " + this.selectedApplication);
         this.statList = this.statisticService.getStatistics(this.selectedApplication);
@@ -100,7 +101,8 @@ public class ChartsBean implements Charts {
     }
 
     @RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
-    public String export() throws IOException {
+    public String export()
+            throws IOException {
 
         DateTime dt = new DateTime();
         DateTimeFormatter fmt = DateTimeFormat.forPattern("dd-MM-yyyy_HHmmss");
@@ -115,7 +117,8 @@ public class ChartsBean implements Charts {
     }
 
     @RolesAllowed(SafeOnlineRoles.OWNER_ROLE)
-    public String exportStat() throws IOException {
+    public String exportStat()
+            throws IOException {
 
         DateTime dt = new DateTime();
         DateTimeFormatter fmt = DateTimeFormat.forPattern("dd-MM-yyyy_HHmmss");

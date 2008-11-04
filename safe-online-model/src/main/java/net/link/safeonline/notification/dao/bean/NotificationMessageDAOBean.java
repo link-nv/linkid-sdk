@@ -85,7 +85,7 @@ public class NotificationMessageDAOBean implements NotificationMessageDAO {
     }
 
     public NotificationMessageEntity getNotificationMessage(NotificationMessage notificationMessage, EndpointReferenceEntity consumer)
-                                                                                                                                      throws NotificationMessageNotFoundException {
+            throws NotificationMessageNotFoundException {
 
         LOG.debug("get notification message");
         NotificationMessageEntity notificationMessageEntity = findNotificationMessage(notificationMessage, consumer);

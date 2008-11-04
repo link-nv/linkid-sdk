@@ -31,6 +31,7 @@ public interface ApplicationDAO extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationDAOBean/local";
 
+
     /**
      * Find the application for a given application name.
      * 
@@ -47,7 +48,8 @@ public interface ApplicationDAO extends SafeOnlineService {
      * @throws ApplicationNotFoundException
      *             in case the application was not found.
      */
-    ApplicationEntity getApplication(String applicationName) throws ApplicationNotFoundException;
+    ApplicationEntity getApplication(String applicationName)
+            throws ApplicationNotFoundException;
 
     ApplicationEntity addApplication(String applicationName, String applicationFriendlyName, ApplicationOwnerEntity applicationOwner,
                                      String description, URL applicationUrl, byte[] applicationLogo, Color applicationColor,
@@ -86,7 +88,8 @@ public interface ApplicationDAO extends SafeOnlineService {
      *            the application certificate.
      * @throws ApplicationNotFoundException
      */
-    ApplicationEntity getApplication(X509Certificate certificate) throws ApplicationNotFoundException;
+    ApplicationEntity getApplication(X509Certificate certificate)
+            throws ApplicationNotFoundException;
 
     /**
      * Gives back an application entity.

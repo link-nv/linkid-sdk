@@ -37,5 +37,6 @@ public interface NameIdentifierMappingClient extends MessageAccessor {
      * @throws WSClientTransportException
      *             in case the name identifier mapping service could not be reached.
      */
-    String getUserId(String username) throws SubjectNotFoundException, RequestDeniedException, WSClientTransportException;
+    String getUserId(String username)
+            throws SubjectNotFoundException, RequestDeniedException, WSClientTransportException;
 }

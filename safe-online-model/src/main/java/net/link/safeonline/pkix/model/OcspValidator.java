@@ -12,8 +12,8 @@ import java.security.cert.X509Certificate;
 
 import javax.ejb.Local;
 
-
 import net.link.safeonline.SafeOnlineService;
+
 
 /**
  * Validator for certificates through OCSP
@@ -25,6 +25,7 @@ import net.link.safeonline.SafeOnlineService;
 public interface OcspValidator extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/OcspValidatorBean/local";
+
 
     public enum OcspResult {
         FAILED,

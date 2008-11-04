@@ -106,7 +106,8 @@ public class AuditServiceBean implements AuditService {
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public boolean removeAuditContext(Long id) throws AuditContextNotFoundException {
+    public boolean removeAuditContext(Long id)
+            throws AuditContextNotFoundException {
 
         /*
          * We're not using the cascading of hibernate here.
@@ -173,7 +174,8 @@ public class AuditServiceBean implements AuditService {
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public AuditContextEntity getAuditContext(Long id) throws AuditContextNotFoundException {
+    public AuditContextEntity getAuditContext(Long id)
+            throws AuditContextNotFoundException {
 
         return this.auditContextDAO.getAuditContext(id);
     }

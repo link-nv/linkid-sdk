@@ -27,7 +27,8 @@ public class CachedOcspResponseDAOBeanTest extends TestCase {
 
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp()
+            throws Exception {
 
         super.setUp();
         this.entityTestManager = new EntityTestManager();
@@ -41,13 +42,15 @@ public class CachedOcspResponseDAOBeanTest extends TestCase {
     }
 
     @Override
-    protected void tearDown() throws Exception {
+    protected void tearDown()
+            throws Exception {
 
         this.entityTestManager.tearDown();
         super.tearDown();
     }
 
-    public void testAddRemoveCachedOcspResponse() throws Exception {
+    public void testAddRemoveCachedOcspResponse()
+            throws Exception {
 
         String key = "1234";
         CachedOcspResultType result = CachedOcspResultType.GOOD;

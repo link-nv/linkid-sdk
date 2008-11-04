@@ -21,7 +21,8 @@ public class EjbUtilsTest extends TestCase {
 
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp()
+            throws Exception {
 
         super.setUp();
 
@@ -30,13 +31,15 @@ public class EjbUtilsTest extends TestCase {
     }
 
     @Override
-    protected void tearDown() throws Exception {
+    protected void tearDown()
+            throws Exception {
 
         this.jndiTestUtils.tearDown();
         super.tearDown();
     }
 
-    public void testGetComponentNamesReturnsEmptyMap() throws Exception {
+    public void testGetComponentNamesReturnsEmptyMap()
+            throws Exception {
 
         // setup
         String jndiPrefix = "test/prefix/" + getName();
@@ -49,7 +52,8 @@ public class EjbUtilsTest extends TestCase {
         assertTrue(result.isEmpty());
     }
 
-    public void testGetComponentNamesReturnsObject() throws Exception {
+    public void testGetComponentNamesReturnsObject()
+            throws Exception {
 
         // setup
         String jndiPrefix = "test/prefix/" + getName();
@@ -65,7 +69,8 @@ public class EjbUtilsTest extends TestCase {
         assertEquals(testObject, result.get(objectName));
     }
 
-    public void testGetComponentsIsEmpty() throws Exception {
+    public void testGetComponentsIsEmpty()
+            throws Exception {
 
         // setup
         String jndiPrefix = "test/prefix/" + getName();
@@ -78,7 +83,8 @@ public class EjbUtilsTest extends TestCase {
         assertTrue(result.isEmpty());
     }
 
-    public void testGetComponentsReturnsObject() throws Exception {
+    public void testGetComponentsReturnsObject()
+            throws Exception {
 
         // setup
         String jndiPrefix = "test/prefix/" + getName();

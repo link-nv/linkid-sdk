@@ -37,7 +37,8 @@ public class AuthnResponseFactoryTest {
 
 
     @Test
-    public void createAuthnResponse() throws Exception {
+    public void createAuthnResponse()
+            throws Exception {
 
         // setup
         String inResponseTo = "id-in-response-to-test-id";
@@ -92,7 +93,8 @@ public class AuthnResponseFactoryTest {
     }
 
     @Test
-    public void createAuthnResponseFailed() throws Exception {
+    public void createAuthnResponseFailed()
+            throws Exception {
 
         // setup
         String inResponseTo = "id-in-response-to-test-id";

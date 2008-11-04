@@ -49,14 +49,16 @@ public class DemoPaymentTest extends TestCase {
 
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp()
+            throws Exception {
 
         this.acceptanceTestManager = new AcceptanceTestManager();
         this.acceptanceTestManager.setUp();
     }
 
     @Override
-    protected void tearDown() throws Exception {
+    protected void tearDown()
+            throws Exception {
 
         this.acceptanceTestManager.tearDown();
     }
@@ -73,7 +75,8 @@ public class DemoPaymentTest extends TestCase {
      * 
      * @throws Exception
      */
-    public void testDemoPaymentTicket() throws Exception {
+    public void testDemoPaymentTicket()
+            throws Exception {
 
         // setup
         this.acceptanceTestManager.setContext("Testing the demo payment.");

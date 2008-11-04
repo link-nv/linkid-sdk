@@ -30,7 +30,8 @@ public class BeIdentityExtractorTest extends TestCase {
 
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp()
+            throws Exception {
 
         super.setUp();
 
@@ -82,7 +83,8 @@ public class BeIdentityExtractorTest extends TestCase {
     }
 
 
-    public void testPostPkcs11() throws Exception {
+    public void testPostPkcs11()
+            throws Exception {
 
         // setup
         X509Certificate authCert2006 = PkiTestUtils.loadCertificateFromResource("/fcorneli-auth.crt");

@@ -24,14 +24,16 @@ public class SamlRequestSecurityPolicyResolver implements SecurityPolicyResolver
 
     // private final static Logger LOGGER = LoggerFactory.getLogger(SamlRequestSecurityPolicyResolver.class);
 
-    public Iterable<SecurityPolicy> resolve(MessageContext messageContext) throws SecurityException {
+    public Iterable<SecurityPolicy> resolve(MessageContext messageContext)
+            throws SecurityException {
 
         SecurityPolicy securityPolicy = resolveSingle(messageContext);
         List<SecurityPolicy> securityPolicyList = Collections.singletonList(securityPolicy);
         return securityPolicyList;
     }
 
-    public SecurityPolicy resolveSingle(MessageContext messageContext) throws SecurityException {
+    public SecurityPolicy resolveSingle(MessageContext messageContext)
+            throws SecurityException {
 
         // LOGGER.debug("resolveSingle via slf4j");
         SecurityPolicy securityPolicy = new BasicSecurityPolicy();

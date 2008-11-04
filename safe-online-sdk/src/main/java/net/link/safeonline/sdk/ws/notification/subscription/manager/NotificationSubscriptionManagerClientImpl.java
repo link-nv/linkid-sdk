@@ -87,8 +87,8 @@ public class NotificationSubscriptionManagerClientImpl extends AbstractMessageAc
         return builder.build();
     }
 
-    public void unsubscribe(String topic, String address) throws SubscriptionNotFoundException, RequestDeniedException,
-                                                         WSClientTransportException {
+    public void unsubscribe(String topic, String address)
+            throws SubscriptionNotFoundException, RequestDeniedException, WSClientTransportException {
 
         LOG.debug("unsubscribe");
         UnsubscribeRequest request = new UnsubscribeRequest();
@@ -115,7 +115,8 @@ public class NotificationSubscriptionManagerClientImpl extends AbstractMessageAc
         checkStatus(response);
     }
 
-    private void checkStatus(UnsubscribeResponse response) throws SubscriptionNotFoundException, RequestDeniedException {
+    private void checkStatus(UnsubscribeResponse response)
+            throws SubscriptionNotFoundException, RequestDeniedException {
 
         StatusType status = response.getStatus();
         StatusCodeType statusCode = status.getStatusCode();

@@ -59,7 +59,8 @@ public class AttributeProviderManagerServiceBean implements AttributeProviderMan
 
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public List<AttributeProviderEntity> getAttributeProviders(String attributeName) throws AttributeTypeNotFoundException {
+    public List<AttributeProviderEntity> getAttributeProviders(String attributeName)
+            throws AttributeTypeNotFoundException {
 
         LOG.debug("get attribute providers for attribute " + attributeName);
         AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeName);
@@ -68,7 +69,8 @@ public class AttributeProviderManagerServiceBean implements AttributeProviderMan
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void removeAttributeProvider(AttributeProviderEntity attributeProvider) throws AttributeProviderNotFoundException {
+    public void removeAttributeProvider(AttributeProviderEntity attributeProvider)
+            throws AttributeProviderNotFoundException {
 
         AttributeProviderEntity attachedEntity = this.attributeProviderDAO.findAttributeProvider(attributeProvider.getApplication(),
                 attributeProvider.getAttributeType());
@@ -78,10 +80,9 @@ public class AttributeProviderManagerServiceBean implements AttributeProviderMan
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void addAttributeProvider(String applicationName, String attributeName) throws ApplicationNotFoundException,
-                                                                                  AttributeTypeNotFoundException,
-                                                                                  ExistingAttributeProviderException,
-                                                                                  PermissionDeniedException {
+    public void addAttributeProvider(String applicationName, String attributeName)
+            throws ApplicationNotFoundException, AttributeTypeNotFoundException, ExistingAttributeProviderException,
+            PermissionDeniedException {
 
         ApplicationEntity application = this.applicationDAO.getApplication(applicationName);
         AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeName);

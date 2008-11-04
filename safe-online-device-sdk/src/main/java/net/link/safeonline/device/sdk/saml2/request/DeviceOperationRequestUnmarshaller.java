@@ -30,7 +30,8 @@ import org.w3c.dom.Attr;
 public class DeviceOperationRequestUnmarshaller extends RequestAbstractTypeUnmarshaller {
 
     @Override
-    protected void processAttribute(XMLObject samlObject, Attr attribute) throws UnmarshallingException {
+    protected void processAttribute(XMLObject samlObject, Attr attribute)
+            throws UnmarshallingException {
 
         DeviceOperationRequest req = (DeviceOperationRequest) samlObject;
 
@@ -52,7 +53,8 @@ public class DeviceOperationRequestUnmarshaller extends RequestAbstractTypeUnmar
     }
 
     @Override
-    protected void processChildElement(XMLObject parentSAMLObject, XMLObject childSAMLObject) throws UnmarshallingException {
+    protected void processChildElement(XMLObject parentSAMLObject, XMLObject childSAMLObject)
+            throws UnmarshallingException {
 
         DeviceOperationRequest req = (DeviceOperationRequest) parentSAMLObject;
 

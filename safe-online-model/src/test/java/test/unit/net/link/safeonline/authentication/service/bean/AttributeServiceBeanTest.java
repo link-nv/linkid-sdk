@@ -75,7 +75,8 @@ public class AttributeServiceBeanTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.entityTestManager = new EntityTestManager();
         this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
@@ -118,13 +119,15 @@ public class AttributeServiceBeanTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.entityTestManager.tearDown();
     }
 
     @Test
-    public void testGetAttributeFailsIfUserNotSubscribed() throws Exception {
+    public void testGetAttributeFailsIfUserNotSubscribed()
+            throws Exception {
 
         // setup
         String testSubjectLogin = UUID.randomUUID().toString();
@@ -168,7 +171,8 @@ public class AttributeServiceBeanTest {
     }
 
     @Test
-    public void testGetAttributeFailsIfUserNotConfirmed() throws Exception {
+    public void testGetAttributeFailsIfUserNotConfirmed()
+            throws Exception {
 
         // setup
         String testSubjectLogin = UUID.randomUUID().toString();
@@ -216,7 +220,8 @@ public class AttributeServiceBeanTest {
     }
 
     @Test
-    public void testGetAttribute() throws Exception {
+    public void testGetAttribute()
+            throws Exception {
 
         // setup
         String testSubjectLogin = UUID.randomUUID().toString();
@@ -273,7 +278,8 @@ public class AttributeServiceBeanTest {
     }
 
     @Test
-    public void testGetBooleanAttributeValue() throws Exception {
+    public void testGetBooleanAttributeValue()
+            throws Exception {
 
         // setup
         String testSubjectLogin = UUID.randomUUID().toString();
@@ -331,7 +337,8 @@ public class AttributeServiceBeanTest {
     }
 
     @Test
-    public void testGetUnconfirmedAttributeFails() throws Exception {
+    public void testGetUnconfirmedAttributeFails()
+            throws Exception {
 
         // setup
         String testSubjectLogin = UUID.randomUUID().toString();
@@ -392,7 +399,8 @@ public class AttributeServiceBeanTest {
     }
 
     @Test
-    public void testGetAttributeFailsIfDataMining() throws Exception {
+    public void testGetAttributeFailsIfDataMining()
+            throws Exception {
 
         // setup
         String testSubjectLogin = UUID.randomUUID().toString();
@@ -451,7 +459,8 @@ public class AttributeServiceBeanTest {
     }
 
     @Test
-    public void testGetMultivaluedAttribute() throws Exception {
+    public void testGetMultivaluedAttribute()
+            throws Exception {
 
         // setup
         String testSubjectLogin = UUID.randomUUID().toString();
@@ -534,7 +543,8 @@ public class AttributeServiceBeanTest {
 
     @SuppressWarnings("unchecked")
     @Test
-    public void getCompoundedAttribute() throws Exception {
+    public void getCompoundedAttribute()
+            throws Exception {
 
         // setup
         String testSubjectLogin = "test-subject-login";

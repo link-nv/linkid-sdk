@@ -27,7 +27,8 @@ public class DERUtils {
      * @param out
      * @throws IOException
      */
-    public static void writeLength(int length, OutputStream out) throws IOException {
+    public static void writeLength(int length, OutputStream out)
+            throws IOException {
 
         if (length > 127) {
             int size = 1;

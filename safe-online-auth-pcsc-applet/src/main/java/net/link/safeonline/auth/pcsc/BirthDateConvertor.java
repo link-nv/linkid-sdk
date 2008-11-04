@@ -20,7 +20,8 @@ public class BirthDateConvertor implements Convertor<Date> {
             { "JAN", "FEB", "M\u00C4R", "APR", "MAI", "JUN", "JUL", "AUG", "SEP", "OKT", "NOV", "DEZ" } };
 
 
-    public Date convert(byte[] value) throws ConvertorException {
+    public Date convert(byte[] value)
+            throws ConvertorException {
 
         String strValue = new String(value, Charset.forName("UTF-8"));
         StringTokenizer stringTokenizer = new StringTokenizer(strValue, " .");

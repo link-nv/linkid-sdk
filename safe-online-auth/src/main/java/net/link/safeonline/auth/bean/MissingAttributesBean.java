@@ -76,8 +76,9 @@ public class MissingAttributesBean implements MissingAttributes {
 
     @Factory(MISSING_ATTRIBUTE_LIST)
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
-    public void missingAttributeListFactory() throws ApplicationNotFoundException, ApplicationIdentityNotFoundException,
-                                             PermissionDeniedException, AttributeTypeNotFoundException, AttributeUnavailableException {
+    public void missingAttributeListFactory()
+            throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException,
+            AttributeTypeNotFoundException, AttributeUnavailableException {
 
         LOG.debug("missing attribute list factory");
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -87,8 +88,9 @@ public class MissingAttributesBean implements MissingAttributes {
 
     @Factory(OPTIONAL_ATTRIBUTE_LIST)
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
-    public void optionalAttributeListFactory() throws ApplicationNotFoundException, ApplicationIdentityNotFoundException,
-                                              PermissionDeniedException, AttributeTypeNotFoundException, AttributeUnavailableException {
+    public void optionalAttributeListFactory()
+            throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException,
+            AttributeTypeNotFoundException, AttributeUnavailableException {
 
         LOG.debug("optional attribute list factory");
         FacesContext facesContext = FacesContext.getCurrentInstance();

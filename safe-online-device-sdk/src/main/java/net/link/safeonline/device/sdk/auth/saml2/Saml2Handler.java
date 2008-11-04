@@ -105,7 +105,7 @@ public class Saml2Handler implements Serializable {
     }
 
     public void init(Map<String, String> configParams, X509Certificate newApplicationCertificate, KeyPair newApplicationKeyPair)
-                                                                                                                                throws AuthenticationInitializationException {
+            throws AuthenticationInitializationException {
 
         this.stsWsLocation = configParams.get("StsWsLocation");
         this.issuer = configParams.get("DeviceName");
@@ -115,7 +115,8 @@ public class Saml2Handler implements Serializable {
             throw new AuthenticationInitializationException("Missing STS WS Location ( \"StsWsLocation\" )");
     }
 
-    public void initAuthentication(HttpServletRequest request) throws AuthenticationInitializationException {
+    public void initAuthentication(HttpServletRequest request)
+            throws AuthenticationInitializationException {
 
         AuthnRequest samlAuthnRequest;
         try {
@@ -171,7 +172,8 @@ public class Saml2Handler implements Serializable {
         DeviceManager.setApplicationName(applicationFriendlyName, request);
     }
 
-    public void finalizeAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationFinalizationException {
+    public void finalizeAuthentication(HttpServletRequest request, HttpServletResponse response)
+            throws AuthenticationFinalizationException {
 
         AuthenticationContext authenticationContext = AuthenticationContext.getAuthenticationContext(request.getSession());
         String usedDevice = authenticationContext.getUsedDevice();

@@ -21,11 +21,13 @@ public interface Notification {
 
     public static final String JNDI_BINDING = OperatorConstants.JNDI_PREFIX + "NotificationBean/local";
 
+
     void destroyCallback();
 
     void topicListFactory();
 
-    void subscriptionListFactory() throws SubscriptionNotFoundException;
+    void subscriptionListFactory()
+            throws SubscriptionNotFoundException;
 
     List<SelectItem> consumerListFactory();
 
@@ -33,9 +35,11 @@ public interface Notification {
 
     String add();
 
-    String addSubscription() throws SubscriptionNotFoundException;
+    String addSubscription()
+            throws SubscriptionNotFoundException;
 
-    String remove() throws SubscriptionNotFoundException;
+    String remove()
+            throws SubscriptionNotFoundException;
 
     String getAddress();
 

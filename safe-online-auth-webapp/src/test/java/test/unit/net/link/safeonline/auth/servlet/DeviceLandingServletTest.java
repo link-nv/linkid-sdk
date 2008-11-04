@@ -77,7 +77,8 @@ public class DeviceLandingServletTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.jndiTestUtils = new JndiTestUtils();
         this.jndiTestUtils.setUp();
@@ -95,8 +96,7 @@ public class DeviceLandingServletTest {
         initParams.put("DeviceErrorUrl", this.deviceErrorUrl);
         initParams.put("ServletEndpointUrl", this.servletEndpointUrl);
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
-        initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE,
-                this.mockAuthenticationService);
+        initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE, this.mockAuthenticationService);
         initialSessionAttributes.put(AuthenticationUtils.REQUEST_URL_INIT_PARAM, this.startUrl);
 
         this.servletTestManager.setUp(DeviceLandingServlet.class, initParams, null, null, initialSessionAttributes);
@@ -109,13 +109,15 @@ public class DeviceLandingServletTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.servletTestManager.tearDown();
     }
 
     @Test
-    public void getNotAllowed() throws Exception {
+    public void getNotAllowed()
+            throws Exception {
 
         // setup
         GetMethod getMethod = new GetMethod(this.location);
@@ -129,7 +131,8 @@ public class DeviceLandingServletTest {
     }
 
     @Test
-    public void authenticationNotRegistered() throws Exception {
+    public void authenticationNotRegistered()
+            throws Exception {
 
         // setup
         PostMethod postMethod = new PostMethod(this.location);
@@ -155,7 +158,8 @@ public class DeviceLandingServletTest {
     }
 
     @Test
-    public void authenticationFailed() throws Exception {
+    public void authenticationFailed()
+            throws Exception {
 
         // setup
         PostMethod postMethod = new PostMethod(this.location);
@@ -181,7 +185,8 @@ public class DeviceLandingServletTest {
     }
 
     @Test
-    public void authenticationSuccess() throws Exception {
+    public void authenticationSuccess()
+            throws Exception {
 
         // setup
         String userId = UUID.randomUUID().toString();

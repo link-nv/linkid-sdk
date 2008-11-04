@@ -27,6 +27,7 @@ public interface ApplicationIdentifierMappingService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationIdentifierMappingServiceBean/local";
 
+
     /**
      * Returns the subject's user id using the application's id scope.
      * 
@@ -36,8 +37,8 @@ public interface ApplicationIdentifierMappingService extends SafeOnlineService {
      * @throws SubscriptionNotFoundException
      * @throws SubjectNotFoundException
      */
-    String getApplicationUserId(String username) throws PermissionDeniedException, ApplicationNotFoundException,
-                                                SubscriptionNotFoundException, SubjectNotFoundException;
+    String getApplicationUserId(String username)
+            throws PermissionDeniedException, ApplicationNotFoundException, SubscriptionNotFoundException, SubjectNotFoundException;
 
     /**
      * Returns the global OLAS user ID using the application's id scope. Returns null if not found.
@@ -46,5 +47,6 @@ public interface ApplicationIdentifierMappingService extends SafeOnlineService {
      * @param applicationUserId
      * @throws ApplicationNotFoundException
      */
-    String findUserId(String applicationName, String applicationUserId) throws ApplicationNotFoundException;
+    String findUserId(String applicationName, String applicationUserId)
+            throws ApplicationNotFoundException;
 }

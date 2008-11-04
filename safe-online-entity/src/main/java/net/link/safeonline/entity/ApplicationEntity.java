@@ -119,25 +119,23 @@ public class ApplicationEntity implements Serializable {
         // empty
     }
 
-    public ApplicationEntity(String name, String friendlyName, ApplicationOwnerEntity applicationOwner,
-            String description, URL applicationUrl, byte[] applicationLogo, X509Certificate certificate) {
+    public ApplicationEntity(String name, String friendlyName, ApplicationOwnerEntity applicationOwner, String description,
+                             URL applicationUrl, byte[] applicationLogo, X509Certificate certificate) {
 
-        this(name, friendlyName, applicationOwner, description, applicationUrl, applicationLogo, true, true,
-                certificate, 0, 0);
+        this(name, friendlyName, applicationOwner, description, applicationUrl, applicationLogo, true, true, certificate, 0, 0);
     }
 
-    public ApplicationEntity(String name, String friendlyName, ApplicationOwnerEntity applicationOwner,
-            String description, URL applicationUrl, byte[] applicationLogo, boolean allowUserSubscription,
-            boolean removable, X509Certificate certificate, long identityVersion, long usageAgreementVersion) {
+    public ApplicationEntity(String name, String friendlyName, ApplicationOwnerEntity applicationOwner, String description,
+                             URL applicationUrl, byte[] applicationLogo, boolean allowUserSubscription, boolean removable,
+                             X509Certificate certificate, long identityVersion, long usageAgreementVersion) {
 
-        this(name, friendlyName, applicationOwner, description, applicationUrl, applicationLogo, allowUserSubscription,
-                removable, certificate, identityVersion, usageAgreementVersion, false);
+        this(name, friendlyName, applicationOwner, description, applicationUrl, applicationLogo, allowUserSubscription, removable,
+             certificate, identityVersion, usageAgreementVersion, false);
     }
 
-    public ApplicationEntity(String name, String friendlyName, ApplicationOwnerEntity applicationOwner,
-            String description, URL applicationUrl, byte[] applicationLogo, boolean allowUserSubscription,
-            boolean removable, X509Certificate certificate, long identityVersion, long usageAgreementVersion,
-            boolean deviceRestriction) {
+    public ApplicationEntity(String name, String friendlyName, ApplicationOwnerEntity applicationOwner, String description,
+                             URL applicationUrl, byte[] applicationLogo, boolean allowUserSubscription, boolean removable,
+                             X509Certificate certificate, long identityVersion, long usageAgreementVersion, boolean deviceRestriction) {
 
         this.name = name;
         this.friendlyName = friendlyName;
@@ -231,8 +229,8 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * Marks whether a user is allowed to subscribe himself onto this application. This field prevents users from
-     * subscribing themselves onto the operator web application or the application owner web application.
+     * Marks whether a user is allowed to subscribe himself onto this application. This field prevents users from subscribing themselves
+     * onto the operator web application or the application owner web application.
      * 
      */
     public boolean isAllowUserSubscription() {
@@ -371,8 +369,8 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * When set to <code>true</code> the WS-Security SOAP handlers will not check whether the SOAP body has been signed.
-     * This is required for compatability with .NET 3.0 WCF clients.
+     * When set to <code>true</code> the WS-Security SOAP handlers will not check whether the SOAP body has been signed. This is required
+     * for compatability with .NET 3.0 WCF clients.
      * 
      */
     public boolean isSkipMessageIntegrityCheck() {

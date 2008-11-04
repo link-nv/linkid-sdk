@@ -28,6 +28,7 @@ public interface HelpdeskService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/HelpdeskServiceBean/local";
 
+
     /**
      * Gives back all available helpdesk log contexts.
      * 
@@ -59,6 +60,7 @@ public interface HelpdeskService extends SafeOnlineService {
      * 
      * @param logId
      */
-    void removeLog(Long logId) throws HelpdeskContextNotFoundException;
+    void removeLog(Long logId)
+            throws HelpdeskContextNotFoundException;
 
 }

@@ -51,7 +51,8 @@ public class TimeoutFilter extends AbstractInjectionFilter {
         LOG.debug("destroy");
     }
 
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
 
         LOG.debug("doFilter");
         HttpServletRequest httpRequest = (HttpServletRequest) request;
@@ -81,8 +82,8 @@ public class TimeoutFilter extends AbstractInjectionFilter {
             return;
         }
         /*
-         * In this case no corresponding session context for the given requested session Id was found. This could be an
-         * indication that the browser caused a timeout on the web application. We detect this via the login cookie.
+         * In this case no corresponding session context for the given requested session Id was found. This could be an indication that the
+         * browser caused a timeout on the web application. We detect this via the login cookie.
          * 
          * We also signal the JAASLoginFilter that we redirected. Else it will redirect to the login page.
          */

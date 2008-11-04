@@ -14,7 +14,8 @@ import net.link.safeonline.p11sc.SmartCardFactory;
 
 public class SmartCardFactoryTest extends TestCase {
 
-    public void testNewInstance() throws Exception {
+    public void testNewInstance()
+            throws Exception {
 
         // operate
         SmartCard smartCard = SmartCardFactory.newInstance();

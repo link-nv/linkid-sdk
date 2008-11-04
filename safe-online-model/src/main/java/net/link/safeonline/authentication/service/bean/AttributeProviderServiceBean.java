@@ -95,9 +95,8 @@ public class AttributeProviderServiceBean implements AttributeProviderService, A
     }
 
     @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
-    public List<AttributeEntity> getAttributes(String subjectLogin, String attributeName) throws AttributeTypeNotFoundException,
-                                                                                         PermissionDeniedException,
-                                                                                         SubjectNotFoundException {
+    public List<AttributeEntity> getAttributes(String subjectLogin, String attributeName)
+            throws AttributeTypeNotFoundException, PermissionDeniedException, SubjectNotFoundException {
 
         LOG.debug("get attributes of type " + attributeName + " for subject " + subjectLogin);
         AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
@@ -134,8 +133,8 @@ public class AttributeProviderServiceBean implements AttributeProviderService, A
      * @throws AttributeTypeNotFoundException
      * @throws PermissionDeniedException
      */
-    private AttributeTypeEntity checkAttributeProviderPermission(String attributeName) throws AttributeTypeNotFoundException,
-                                                                                      PermissionDeniedException {
+    private AttributeTypeEntity checkAttributeProviderPermission(String attributeName)
+            throws AttributeTypeNotFoundException, PermissionDeniedException {
 
         ApplicationEntity application = this.applicationManager.getCallerApplication();
         AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeName);
@@ -165,10 +164,8 @@ public class AttributeProviderServiceBean implements AttributeProviderService, A
 
     @SuppressWarnings("unchecked")
     @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
-    public void createAttribute(String subjectLogin, String attributeName, Object attributeValue) throws AttributeTypeNotFoundException,
-                                                                                                 PermissionDeniedException,
-                                                                                                 SubjectNotFoundException,
-                                                                                                 DatatypeMismatchException {
+    public void createAttribute(String subjectLogin, String attributeName, Object attributeValue)
+            throws AttributeTypeNotFoundException, PermissionDeniedException, SubjectNotFoundException, DatatypeMismatchException {
 
         LOG.debug("create attribute: " + attributeName + " for " + subjectLogin);
         AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
@@ -210,7 +207,8 @@ public class AttributeProviderServiceBean implements AttributeProviderService, A
         }
     }
 
-    private void setAttributeValue(AttributeEntity attribute, Object value) throws DatatypeMismatchException {
+    private void setAttributeValue(AttributeEntity attribute, Object value)
+            throws DatatypeMismatchException {
 
         try {
             attribute.setValue(value);
@@ -220,11 +218,9 @@ public class AttributeProviderServiceBean implements AttributeProviderService, A
     }
 
     @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
-    public void setAttribute(String subjectLogin, String attributeName, Object attributeValue) throws AttributeTypeNotFoundException,
-                                                                                              PermissionDeniedException,
-                                                                                              SubjectNotFoundException,
-                                                                                              AttributeNotFoundException,
-                                                                                              DatatypeMismatchException {
+    public void setAttribute(String subjectLogin, String attributeName, Object attributeValue)
+            throws AttributeTypeNotFoundException, PermissionDeniedException, SubjectNotFoundException, AttributeNotFoundException,
+            DatatypeMismatchException {
 
         LOG.debug("set attribute " + attributeName + " for " + subjectLogin);
         AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
@@ -243,8 +239,7 @@ public class AttributeProviderServiceBean implements AttributeProviderService, A
     }
 
     private void setSinglevaluedAttribute(Object attributeValue, AttributeTypeEntity attributeType, SubjectEntity subject)
-                                                                                                                          throws AttributeNotFoundException,
-                                                                                                                          DatatypeMismatchException {
+            throws AttributeNotFoundException, DatatypeMismatchException {
 
         /*
          * Single-valued attribute.
@@ -263,8 +258,7 @@ public class AttributeProviderServiceBean implements AttributeProviderService, A
     }
 
     private void setMultivaluedAttribute(Object attributeValue, AttributeTypeEntity attributeType, SubjectEntity subject)
-                                                                                                                         throws AttributeNotFoundException,
-                                                                                                                         DatatypeMismatchException {
+            throws AttributeNotFoundException, DatatypeMismatchException {
 
         List<AttributeEntity> attributes = this.attributeDAO.listAttributes(subject, attributeType);
         if (attributes.isEmpty())
@@ -307,11 +301,8 @@ public class AttributeProviderServiceBean implements AttributeProviderService, A
 
     @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
     public void setCompoundAttributeRecord(String subjectLogin, String attributeName, String attributeId, Map<String, Object> memberValues)
-                                                                                                                                           throws AttributeTypeNotFoundException,
-                                                                                                                                           PermissionDeniedException,
-                                                                                                                                           SubjectNotFoundException,
-                                                                                                                                           DatatypeMismatchException,
-                                                                                                                                           AttributeNotFoundException {
+            throws AttributeTypeNotFoundException, PermissionDeniedException, SubjectNotFoundException, DatatypeMismatchException,
+            AttributeNotFoundException {
 
         LOG.debug("set compound attribute " + attributeName + " for " + subjectLogin);
         AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
@@ -336,7 +327,7 @@ public class AttributeProviderServiceBean implements AttributeProviderService, A
     }
 
     private AttributeEntity getCompoundAttribute(SubjectEntity subject, AttributeTypeEntity attributeType, String attributeId)
-                                                                                                                              throws AttributeNotFoundException {
+            throws AttributeNotFoundException {
 
         List<AttributeEntity> compoundAttributes = this.attributeDAO.listAttributes(subject, attributeType);
         for (AttributeEntity compoundAttribute : compoundAttributes) {
@@ -347,9 +338,8 @@ public class AttributeProviderServiceBean implements AttributeProviderService, A
     }
 
     @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
-    public void removeAttribute(String subjectLogin, String attributeName) throws AttributeTypeNotFoundException,
-                                                                          PermissionDeniedException, SubjectNotFoundException,
-                                                                          AttributeNotFoundException {
+    public void removeAttribute(String subjectLogin, String attributeName)
+            throws AttributeTypeNotFoundException, PermissionDeniedException, SubjectNotFoundException, AttributeNotFoundException {
 
         LOG.debug("remove attribute " + attributeName + " from subject " + subjectLogin);
         AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
@@ -365,10 +355,7 @@ public class AttributeProviderServiceBean implements AttributeProviderService, A
 
     @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
     public void removeCompoundAttributeRecord(String subjectLogin, String attributeName, String attributeId)
-                                                                                                            throws AttributeTypeNotFoundException,
-                                                                                                            PermissionDeniedException,
-                                                                                                            SubjectNotFoundException,
-                                                                                                            AttributeNotFoundException {
+            throws AttributeTypeNotFoundException, PermissionDeniedException, SubjectNotFoundException, AttributeNotFoundException {
 
         LOG.debug("remove compound attribute " + attributeName + " from subject " + subjectLogin + " with attrib Id " + attributeId);
         AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);

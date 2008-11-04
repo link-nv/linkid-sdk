@@ -12,13 +12,14 @@ import java.util.List;
 import javax.ejb.Local;
 import javax.faces.model.SelectItem;
 
-
 import net.link.safeonline.oper.OperatorConstants;
+
 
 @Local
 public interface Scheduling {
 
     public static final String JNDI_BINDING = OperatorConstants.JNDI_PREFIX + "SchedulingBean/local";
+
 
     /*
      * Factories.

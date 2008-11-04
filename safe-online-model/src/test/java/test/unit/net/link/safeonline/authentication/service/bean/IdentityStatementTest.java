@@ -22,7 +22,8 @@ import net.link.safeonline.test.util.PkiTestUtils;
 
 public class IdentityStatementTest extends TestCase {
 
-    public void testVerify() throws Exception {
+    public void testVerify()
+            throws Exception {
 
         // setup
         KeyPair keyPair = PkiTestUtils.generateKeyPair();

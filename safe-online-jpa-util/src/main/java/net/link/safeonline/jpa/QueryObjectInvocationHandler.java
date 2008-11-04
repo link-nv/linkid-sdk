@@ -44,7 +44,8 @@ public class QueryObjectInvocationHandler implements InvocationHandler {
     private static final Log LOG = LogFactory.getLog(QueryObjectInvocationHandler.class);
 
 
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+    public Object invoke(Object proxy, Method method, Object[] args)
+            throws Throwable {
 
         LOG.debug("invoke: " + method.getName());
         QueryMethod queryMethodAnnotation = method.getAnnotation(QueryMethod.class);
@@ -76,7 +77,8 @@ public class QueryObjectInvocationHandler implements InvocationHandler {
         return null;
     }
 
-    private Object query(QueryMethod queryMethodAnnotation, Method method, Object[] args) throws Exception {
+    private Object query(QueryMethod queryMethodAnnotation, Method method, Object[] args)
+            throws Exception {
 
         String namedQueryName = queryMethodAnnotation.value();
         Query query = this.entityManager.createNamedQuery(namedQueryName);

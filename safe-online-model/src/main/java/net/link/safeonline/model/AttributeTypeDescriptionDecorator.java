@@ -30,6 +30,7 @@ public interface AttributeTypeDescriptionDecorator extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AttributeTypeDescriptionDecoratorBean/local";
 
+
     /**
      * @param identityAttributes
      * @param locale

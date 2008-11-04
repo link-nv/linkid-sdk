@@ -34,7 +34,8 @@ public class TestClassLoader extends ClassLoader {
     }
 
     @Override
-    public Enumeration<URL> getResources(String name) throws IOException {
+    public Enumeration<URL> getResources(String name)
+            throws IOException {
 
         LOG.debug("get resources for resource name: " + name);
         List<URL> resourceList = this.resources.get(name);

@@ -21,9 +21,12 @@ public interface AccountService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AccountServiceBean/local";
 
-    void removeAccount() throws SubscriptionNotFoundException, MessageHandlerNotFoundException;
 
-    void removeAccount(SubjectEntity subject) throws SubscriptionNotFoundException, MessageHandlerNotFoundException;
+    void removeAccount()
+            throws SubscriptionNotFoundException, MessageHandlerNotFoundException;
+
+    void removeAccount(SubjectEntity subject)
+            throws SubscriptionNotFoundException, MessageHandlerNotFoundException;
 
     /**
      * Removes the specified account, not removing the subject identifers.
@@ -32,5 +35,6 @@ public interface AccountService extends SafeOnlineService {
      * @throws SubjectNotFoundException
      * @throws MessageHandlerNotFoundException
      */
-    void removeAccount(String userId) throws SubjectNotFoundException, SubscriptionNotFoundException, MessageHandlerNotFoundException;
+    void removeAccount(String userId)
+            throws SubjectNotFoundException, SubscriptionNotFoundException, MessageHandlerNotFoundException;
 }

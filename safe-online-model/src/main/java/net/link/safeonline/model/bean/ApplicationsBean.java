@@ -33,7 +33,8 @@ public class ApplicationsBean implements Applications {
     private ApplicationIdentityDAO applicationIdentityDAO;
 
 
-    public ApplicationEntity getApplication(String applicationName) throws ApplicationNotFoundException {
+    public ApplicationEntity getApplication(String applicationName)
+            throws ApplicationNotFoundException {
 
         return this.applicationDAO.getApplication(applicationName);
     }
@@ -51,7 +52,7 @@ public class ApplicationsBean implements Applications {
     }
 
     public Set<ApplicationIdentityAttributeEntity> getCurrentApplicationIdentity(ApplicationEntity application)
-                                                                                                               throws ApplicationIdentityNotFoundException {
+            throws ApplicationIdentityNotFoundException {
 
         LOG.debug("get current application identity: " + application.getName());
 

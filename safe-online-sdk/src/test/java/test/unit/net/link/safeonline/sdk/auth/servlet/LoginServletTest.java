@@ -50,20 +50,23 @@ public class LoginServletTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.servletTestManager = new ServletTestManager();
         this.servletTestManager.setUp(LoginServlet.class);
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.servletTestManager.tearDown();
     }
 
     @Test
-    public void testNoProtocolHandler() throws Exception {
+    public void testNoProtocolHandler()
+            throws Exception {
 
         // setup
         String location = this.servletTestManager.getServletLocation();
@@ -90,7 +93,8 @@ public class LoginServletTest {
     }
 
     @Test
-    public void testHandlerCannotFinalize() throws Exception {
+    public void testHandlerCannotFinalize()
+            throws Exception {
 
         // setup
         String location = this.servletTestManager.getServletLocation();
@@ -121,7 +125,8 @@ public class LoginServletTest {
     }
 
     @Test
-    public void testLogin() throws Exception {
+    public void testLogin()
+            throws Exception {
 
         // setup
         String location = this.servletTestManager.getServletLocation();

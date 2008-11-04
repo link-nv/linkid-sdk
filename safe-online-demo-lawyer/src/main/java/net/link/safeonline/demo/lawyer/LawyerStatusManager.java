@@ -10,11 +10,11 @@ package net.link.safeonline.demo.lawyer;
 import javax.ejb.Local;
 
 
-
-
 @Local
 public interface LawyerStatusManager extends AbstractLawyerDataClient {
+
     public static final String JNDI_BINDING = "SafeOnlineLawyerDemo/LawyerStatusManagerBean/local";
+
 
     /*
      * Factory.

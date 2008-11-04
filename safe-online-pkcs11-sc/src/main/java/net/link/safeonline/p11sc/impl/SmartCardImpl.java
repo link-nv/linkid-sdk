@@ -165,8 +165,8 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
         throw new IllegalArgumentException("no config found for card: " + smartCardAlias);
     }
 
-    public void open(String smartCardAlias) throws SmartCardNotFoundException, NoPkcs11LibraryException, MissingSmartCardReaderException,
-                                           UnsupportedSmartCardException {
+    public void open(String smartCardAlias)
+            throws SmartCardNotFoundException, NoPkcs11LibraryException, MissingSmartCardReaderException, UnsupportedSmartCardException {
 
         SmartCardConfig smartCardConfig = getSmartCardConfig(smartCardAlias);
 
@@ -240,8 +240,8 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
         }
     }
 
-    private void loadCertificates(SmartCardConfig smartCardConfig) throws KeyStoreException, IOException, NoSuchAlgorithmException,
-                                                                  CertificateException, UnrecoverableKeyException {
+    private void loadCertificates(SmartCardConfig smartCardConfig)
+            throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException {
 
         CallbackHandler callbackHandler = new PKCS11CallbackHandler(this.smartCardPinCallback);
         KeyStore.CallbackHandlerProtection callbackHandlerProtection = new KeyStore.CallbackHandlerProtection(callbackHandler);
@@ -304,7 +304,8 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
         return null;
     }
 
-    private void loadSecurityProvider(File existingDriverLocation, long slotIdx) throws IOException, FileNotFoundException {
+    private void loadSecurityProvider(File existingDriverLocation, long slotIdx)
+            throws IOException, FileNotFoundException {
 
         File tmpConfigFile = File.createTempFile("pkcs11", "conf");
         tmpConfigFile.deleteOnExit();
@@ -366,8 +367,8 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
         }
     }
 
-    private long getBestEffortSlotIdx(File pkcs11LibraryFile) throws SmartCardNotFoundException, MissingSmartCardReaderException,
-                                                             UnsupportedSmartCardException {
+    private long getBestEffortSlotIdx(File pkcs11LibraryFile)
+            throws SmartCardNotFoundException, MissingSmartCardReaderException, UnsupportedSmartCardException {
 
         String pkcs11Library = pkcs11LibraryFile.getAbsolutePath();
         try {
@@ -489,7 +490,8 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
             this.smartCardPinCallback = smartCardPinCallback;
         }
 
-        public void handle(Callback[] callbacks) throws UnsupportedCallbackException {
+        public void handle(Callback[] callbacks)
+                throws UnsupportedCallbackException {
 
             pkcsLOG.debug("callback handle");
             for (Callback callback : callbacks) {

@@ -26,9 +26,9 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 @Local
 public interface AccountRegistration {
 
-    public static final String JNDI_BINDING = AuthenticationConstants.JNDI_PREFIX + "AccountRegistrationBean/local";
+    public static final String JNDI_BINDING                 = AuthenticationConstants.JNDI_PREFIX + "AccountRegistrationBean/local";
 
-    static final String REQUESTED_USERNAME_ATTRIBUTE = "requestedUsername";
+    static final String        REQUESTED_USERNAME_ATTRIBUTE = "requestedUsername";
 
 
     /*
@@ -58,13 +58,15 @@ public interface AccountRegistration {
     /*
      * Factories
      */
-    List<SelectItem> allDevicesFactory() throws ApplicationNotFoundException, EmptyDevicePolicyException;
+    List<SelectItem> allDevicesFactory()
+            throws ApplicationNotFoundException, EmptyDevicePolicyException;
 
     /*
      * Actions.
      */
-    String loginNext() throws ExistingUserException, AttributeTypeNotFoundException, PermissionDeniedException,
-                      AttributeUnavailableException;
+    String loginNext()
+            throws ExistingUserException, AttributeTypeNotFoundException, PermissionDeniedException, AttributeUnavailableException;
 
-    String deviceNext() throws DeviceNotFoundException, IOException;
+    String deviceNext()
+            throws DeviceNotFoundException, IOException;
 }

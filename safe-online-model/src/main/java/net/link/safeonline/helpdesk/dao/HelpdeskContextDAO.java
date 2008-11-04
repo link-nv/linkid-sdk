@@ -21,6 +21,7 @@ public interface HelpdeskContextDAO extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/HelpdeskContextDAOBean/local";
 
+
     HelpdeskContextEntity createHelpdeskContext(String location);
 
     List<HelpdeskContextEntity> listContexts();
@@ -28,6 +29,7 @@ public interface HelpdeskContextDAO extends SafeOnlineService {
     // cleanup contexts without any events related to it
     void cleanup();
 
-    void removeContext(Long logId) throws HelpdeskContextNotFoundException;
+    void removeContext(Long logId)
+            throws HelpdeskContextNotFoundException;
 
 }

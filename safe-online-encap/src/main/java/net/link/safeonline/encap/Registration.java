@@ -24,6 +24,7 @@ public interface Registration {
 
     public static final String JNDI_BINDING = EncapConstants.JNDI_PREFIX + "RegistrationBean/local";
 
+
     /*
      * Accessors.
      */
@@ -44,19 +45,25 @@ public interface Registration {
     /*
      * Actions.
      */
-    String mobileRegister() throws MobileException, MalformedURLException, MobileRegistrationException;
+    String mobileRegister()
+            throws MobileException, MalformedURLException, MobileRegistrationException;
 
-    String cancel() throws IOException;
+    String cancel()
+            throws IOException;
 
     String mobileActivationOk();
 
-    String mobileActivationRetry() throws MalformedURLException, MobileException, MobileRegistrationException;
+    String mobileActivationRetry()
+            throws MalformedURLException, MobileException, MobileRegistrationException;
 
-    String mobileActivationCancel() throws SubjectNotFoundException, MobileException, MalformedURLException, IOException;
+    String mobileActivationCancel()
+            throws SubjectNotFoundException, MobileException, MalformedURLException, IOException;
 
-    String requestOTP() throws MalformedURLException, MobileException;
+    String requestOTP()
+            throws MalformedURLException, MobileException;
 
-    String authenticate() throws IOException, MobileException, SubjectNotFoundException, AttributeTypeNotFoundException;
+    String authenticate()
+            throws IOException, MobileException, SubjectNotFoundException, AttributeTypeNotFoundException;
 
     /*
      * Lifecycle.

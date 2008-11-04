@@ -17,7 +17,8 @@ import org.bouncycastle.asn1.ASN1Object;
 
 public class DERBitStringTest extends TestCase {
 
-    public void testEncoding() throws Exception {
+    public void testEncoding()
+            throws Exception {
 
         // setup
         byte[] data = "hello world".getBytes();

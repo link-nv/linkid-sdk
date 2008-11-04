@@ -28,7 +28,8 @@ public class JndiTest extends TestCase {
     private static final Log LOG = LogFactory.getLog(JndiTest.class);
 
 
-    public void testJndiIteration() throws Exception {
+    public void testJndiIteration()
+            throws Exception {
 
         InitialContext initialContext = IntegrationTestUtils.getInitialContext();
         Context context = (Context) initialContext.lookup("SafeOnline");
@@ -43,7 +44,8 @@ public class JndiTest extends TestCase {
 
     }
 
-    private List<String> contextIteration(Context context, Class<?> type) throws Exception {
+    private List<String> contextIteration(Context context, Class<?> type)
+            throws Exception {
 
         LOG.debug("Entering context: " + context.getNameInNamespace());
 

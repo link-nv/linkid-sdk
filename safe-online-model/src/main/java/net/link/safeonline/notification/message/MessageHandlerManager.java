@@ -52,8 +52,8 @@ public class MessageHandlerManager {
         }
     }
 
-    public static NotificationMessage getMessage(String topic, String subject, String content,
-            EndpointReferenceEntity consumer) throws MessageHandlerNotFoundException {
+    public static NotificationMessage getMessage(String topic, String subject, String content, EndpointReferenceEntity consumer)
+            throws MessageHandlerNotFoundException {
 
         MessageHandler messageHandler = messageHandlerMap.get(topic);
         if (null == messageHandler)
@@ -74,8 +74,7 @@ public class MessageHandlerManager {
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
         NotificationConsumerClient consumerClient = new NotificationConsumerClientImpl(consumer.getAddress(),
                 authIdentityServiceClient.getCertificate(), authIdentityServiceClient.getPrivateKey());
-        consumerClient.sendNotification(message.getTopic(), message.getDestination(), message.getSubject(), message
-                .getContent());
+        consumerClient.sendNotification(message.getTopic(), message.getDestination(), message.getSubject(), message.getContent());
     }
 
     public static void handleMessage(String topic, String destination, String subject, String content)

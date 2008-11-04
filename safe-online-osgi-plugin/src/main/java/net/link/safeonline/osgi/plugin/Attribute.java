@@ -206,7 +206,8 @@ public class Attribute implements Serializable, Cloneable {
      * @param value
      * @throws UnsupportedDataTypeException
      */
-    public void setValue(Object value) throws UnsupportedDataTypeException {
+    public void setValue(Object value)
+            throws UnsupportedDataTypeException {
 
         switch (this.type) {
             case STRING: {
@@ -242,7 +243,8 @@ public class Attribute implements Serializable, Cloneable {
      * @return attribute value
      * @throws UnsupportedDataTypeException
      */
-    public Object getValue() throws UnsupportedDataTypeException {
+    public Object getValue()
+            throws UnsupportedDataTypeException {
 
         switch (this.type) {
             case STRING:

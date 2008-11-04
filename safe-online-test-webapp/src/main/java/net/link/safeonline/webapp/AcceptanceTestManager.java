@@ -44,7 +44,8 @@ public class AcceptanceTestManager {
     String                   safeOnlineLocation;
 
 
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.seleniumServer = new SeleniumServer(SELENIUM_SERVER_PORT);
         this.seleniumServer.start();
@@ -60,7 +61,8 @@ public class AcceptanceTestManager {
         Page.setAcceptanceManager(this);
     }
 
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         this.selenium.stop();
         this.seleniumServer.stop();

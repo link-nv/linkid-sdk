@@ -20,6 +20,7 @@ public interface CachedOcspResponseDAO extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/CachedOcspResponseDAOBean/local";
 
+
     CachedOcspResponseEntity findCachedOcspResponse(String key);
 
     CachedOcspResponseEntity addCachedOcspResponse(String key, CachedOcspResultType result, TrustDomainEntity trustDomain);

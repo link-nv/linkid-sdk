@@ -92,14 +92,16 @@ public class RegistrationBean implements Registration {
         this.challengeId = null;
     }
 
-    public String cancel() throws IOException {
+    public String cancel()
+            throws IOException {
 
         this.protocolContext.setSuccess(false);
         exit();
         return null;
     }
 
-    private void exit() throws IOException {
+    private void exit()
+            throws IOException {
 
         this.log.debug("exit");
         reset();
@@ -112,20 +114,23 @@ public class RegistrationBean implements Registration {
 
     @Begin
     @ErrorHandling( { @Error(exceptionClass = MalformedURLException.class, messageId = "mobileCommunicationFailed") })
-    public String mobileRegister() throws MobileException, MalformedURLException, MobileRegistrationException {
+    public String mobileRegister()
+            throws MobileException, MalformedURLException, MobileRegistrationException {
 
         this.log.debug("register mobile: " + this.mobile);
         return mobileActivation();
     }
 
     @ErrorHandling( { @Error(exceptionClass = MalformedURLException.class, messageId = "mobileCommunicationFailed") })
-    public String mobileActivationRetry() throws MalformedURLException, MobileException, MobileRegistrationException {
+    public String mobileActivationRetry()
+            throws MalformedURLException, MobileException, MobileRegistrationException {
 
         this.log.debug("mobile retry activation: " + this.mobile);
         return mobileActivation();
     }
 
-    private String mobileActivation() throws MalformedURLException, MobileException, MobileRegistrationException {
+    private String mobileActivation()
+            throws MalformedURLException, MobileException, MobileRegistrationException {
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ExternalContext externalContext = facesContext.getExternalContext();
@@ -143,7 +148,8 @@ public class RegistrationBean implements Registration {
 
     @End
     @ErrorHandling( { @Error(exceptionClass = MalformedURLException.class, messageId = "mobileCommunicationFailed") })
-    public String mobileActivationCancel() throws SubjectNotFoundException, MobileException, IOException {
+    public String mobileActivationCancel()
+            throws SubjectNotFoundException, MobileException, IOException {
 
         this.log.debug("mobile activation canceled: " + this.mobile);
         this.encapDeviceService.removeEncapMobile(this.mobile);
@@ -152,7 +158,8 @@ public class RegistrationBean implements Registration {
         return null;
     }
 
-    public String requestOTP() throws MalformedURLException, MobileException {
+    public String requestOTP()
+            throws MalformedURLException, MobileException {
 
         this.log.debug("request OTP: mobile=" + this.mobile);
         this.challengeId = this.encapDeviceService.requestOTP(this.mobile);
@@ -161,7 +168,8 @@ public class RegistrationBean implements Registration {
     }
 
     @End
-    public String authenticate() throws IOException, MobileException, SubjectNotFoundException, AttributeTypeNotFoundException {
+    public String authenticate()
+            throws IOException, MobileException, SubjectNotFoundException, AttributeTypeNotFoundException {
 
         boolean result = this.encapDeviceService.authenicateEncap(this.challengeId, this.mobileOTP);
         if (false == result) {

@@ -130,29 +130,32 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public List<DeviceDescriptionEntity> listDeviceDescriptions(String deviceName) throws DeviceNotFoundException {
+    public List<DeviceDescriptionEntity> listDeviceDescriptions(String deviceName)
+            throws DeviceNotFoundException {
 
         DeviceEntity device = this.deviceDAO.getDevice(deviceName);
         return this.deviceDAO.listDescriptions(device);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public List<DevicePropertyEntity> listDeviceProperties(String deviceName) throws DeviceNotFoundException {
+    public List<DevicePropertyEntity> listDeviceProperties(String deviceName)
+            throws DeviceNotFoundException {
 
         DeviceEntity device = this.deviceDAO.getDevice(deviceName);
         return this.deviceDAO.listProperties(device);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void addDeviceDescription(DeviceDescriptionEntity newDeviceDescription) throws DeviceNotFoundException,
-                                                                                  ExistingDeviceDescriptionException {
+    public void addDeviceDescription(DeviceDescriptionEntity newDeviceDescription)
+            throws DeviceNotFoundException, ExistingDeviceDescriptionException {
 
         checkExistingDeviceDescription(newDeviceDescription.getDeviceName(), newDeviceDescription.getPk().getLanguage());
         DeviceEntity device = this.deviceDAO.getDevice(newDeviceDescription.getDeviceName());
         this.deviceDAO.addDescription(device, newDeviceDescription);
     }
 
-    private void checkExistingDeviceDescription(String deviceName, String language) throws ExistingDeviceDescriptionException {
+    private void checkExistingDeviceDescription(String deviceName, String language)
+            throws ExistingDeviceDescriptionException {
 
         DeviceDescriptionEntity description = this.deviceDAO.findDescription(new DeviceDescriptionPK(deviceName, language));
         if (null != description)
@@ -160,14 +163,16 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void addDeviceProperty(DevicePropertyEntity newDeviceProperty) throws DeviceNotFoundException, ExistingDevicePropertyException {
+    public void addDeviceProperty(DevicePropertyEntity newDeviceProperty)
+            throws DeviceNotFoundException, ExistingDevicePropertyException {
 
         checkExistingDeviceProperty(newDeviceProperty.getDeviceName(), newDeviceProperty.getPk().getName());
         DeviceEntity device = this.deviceDAO.getDevice(newDeviceProperty.getDeviceName());
         this.deviceDAO.addProperty(device, newDeviceProperty);
     }
 
-    private void checkExistingDeviceProperty(String deviceName, String name) throws ExistingDevicePropertyException {
+    private void checkExistingDeviceProperty(String deviceName, String name)
+            throws ExistingDevicePropertyException {
 
         DevicePropertyEntity property = this.deviceDAO.findProperty(new DevicePropertyPK(deviceName, name));
         if (null != property)
@@ -177,11 +182,9 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public void addDevice(String name, String deviceClassName, String nodeName, String authenticationPath, String registrationPath,
                           String removalPath, String updatePath, String disablePath, byte[] encodedCertificate, String attributeTypeName,
-                          String userAttributeTypeName, String disableAttributeTypeName) throws CertificateEncodingException,
-                                                                                        DeviceClassNotFoundException,
-                                                                                        ExistingDeviceException,
-                                                                                        AttributeTypeNotFoundException,
-                                                                                        NodeNotFoundException, PermissionDeniedException {
+                          String userAttributeTypeName, String disableAttributeTypeName)
+            throws CertificateEncodingException, DeviceClassNotFoundException, ExistingDeviceException, AttributeTypeNotFoundException,
+            NodeNotFoundException, PermissionDeniedException {
 
         checkExistingDevice(name);
         LOG.debug("add device: " + name);
@@ -222,7 +225,7 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
      * @throws PermissionDeniedException
      */
     private void checkAttributeTypes(AttributeTypeEntity attributeType, AttributeTypeEntity userOrDisableAttributeType)
-                                                                                                                       throws PermissionDeniedException {
+            throws PermissionDeniedException {
 
         if (null == userOrDisableAttributeType)
             return;
@@ -249,7 +252,8 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
         throw new PermissionDeniedException(message);
     }
 
-    private void checkExistingDevice(String name) throws ExistingDeviceException {
+    private void checkExistingDevice(String name)
+            throws ExistingDeviceException {
 
         DeviceEntity existingDevice = this.deviceDAO.findDevice(name);
         if (null != existingDevice)
@@ -257,8 +261,8 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void removeDevice(String name) throws DeviceNotFoundException, DeviceDescriptionNotFoundException,
-                                         DevicePropertyNotFoundException, PermissionDeniedException {
+    public void removeDevice(String name)
+            throws DeviceNotFoundException, DeviceDescriptionNotFoundException, DevicePropertyNotFoundException, PermissionDeniedException {
 
         DeviceEntity device = this.deviceDAO.getDevice(name);
 
@@ -289,14 +293,16 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public List<DeviceClassDescriptionEntity> listDeviceClassDescriptions(String deviceClassName) throws DeviceClassNotFoundException {
+    public List<DeviceClassDescriptionEntity> listDeviceClassDescriptions(String deviceClassName)
+            throws DeviceClassNotFoundException {
 
         DeviceClassEntity deviceClass = this.deviceClassDAO.getDeviceClass(deviceClassName);
         return this.deviceClassDAO.listDescriptions(deviceClass);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void addDeviceClass(String name, String authenticationContextClass) throws ExistingDeviceClassException {
+    public void addDeviceClass(String name, String authenticationContextClass)
+            throws ExistingDeviceClassException {
 
         checkExistingDeviceClass(name);
         LOG.debug("add device class: " + name);
@@ -304,7 +310,8 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
         this.deviceClassDAO.addDeviceClass(name, authenticationContextClass);
     }
 
-    private void checkExistingDeviceClass(String name) throws ExistingDeviceClassException {
+    private void checkExistingDeviceClass(String name)
+            throws ExistingDeviceClassException {
 
         DeviceClassEntity existingDeviceClass = this.deviceClassDAO.findDeviceClass(name);
         if (null != existingDeviceClass)
@@ -312,13 +319,15 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void removeDeviceClass(String name) throws PermissionDeniedException {
+    public void removeDeviceClass(String name)
+            throws PermissionDeniedException {
 
         checkDeviceClassInUse(name);
         this.deviceClassDAO.removeDeviceClass(name);
     }
 
-    private void checkDeviceClassInUse(String deviceClassName) throws PermissionDeniedException {
+    private void checkDeviceClassInUse(String deviceClassName)
+            throws PermissionDeniedException {
 
         DeviceClassEntity deviceClass = this.deviceClassDAO.findDeviceClass(deviceClassName);
         List<DeviceEntity> deviceList = this.deviceDAO.listDevices(deviceClass);
@@ -327,8 +336,8 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void addDeviceClassDescription(DeviceClassDescriptionEntity newDeviceClassDescription) throws DeviceClassNotFoundException,
-                                                                                                 ExistingDeviceClassDescriptionException {
+    public void addDeviceClassDescription(DeviceClassDescriptionEntity newDeviceClassDescription)
+            throws DeviceClassNotFoundException, ExistingDeviceClassDescriptionException {
 
         checkExistingDeviceClassDescription(newDeviceClassDescription.getDeviceClassName(), newDeviceClassDescription.getPk().getLanguage());
         DeviceClassEntity deviceClass = this.deviceClassDAO.getDeviceClass(newDeviceClassDescription.getDeviceClassName());
@@ -336,7 +345,7 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
     }
 
     private void checkExistingDeviceClassDescription(String deviceClassName, String language)
-                                                                                             throws ExistingDeviceClassDescriptionException {
+            throws ExistingDeviceClassDescriptionException {
 
         LOG.debug("checkExistingDeviceClassDescription: " + deviceClassName + ", " + language);
         DeviceClassDescriptionEntity description = this.deviceClassDAO.findDescription(new DeviceClassDescriptionPK(deviceClassName,
@@ -346,43 +355,48 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void updateAuthenticationPath(String deviceName, String authenticationPath) throws DeviceNotFoundException {
+    public void updateAuthenticationPath(String deviceName, String authenticationPath)
+            throws DeviceNotFoundException {
 
         DeviceEntity device = this.deviceDAO.getDevice(deviceName);
         device.setAuthenticationPath(authenticationPath);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void updateRegistrationPath(String deviceName, String registrationPath) throws DeviceNotFoundException {
+    public void updateRegistrationPath(String deviceName, String registrationPath)
+            throws DeviceNotFoundException {
 
         DeviceEntity device = this.deviceDAO.getDevice(deviceName);
         device.setRegistrationPath(registrationPath);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void updateRemovalPath(String deviceName, String removalPath) throws DeviceNotFoundException {
+    public void updateRemovalPath(String deviceName, String removalPath)
+            throws DeviceNotFoundException {
 
         DeviceEntity device = this.deviceDAO.getDevice(deviceName);
         device.setRemovalPath(removalPath);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void updateUpdatePath(String deviceName, String updatePath) throws DeviceNotFoundException {
+    public void updateUpdatePath(String deviceName, String updatePath)
+            throws DeviceNotFoundException {
 
         DeviceEntity device = this.deviceDAO.getDevice(deviceName);
         device.setUpdatePath(updatePath);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void updateDisablePath(String deviceName, String disablePath) throws DeviceNotFoundException {
+    public void updateDisablePath(String deviceName, String disablePath)
+            throws DeviceNotFoundException {
 
         DeviceEntity device = this.deviceDAO.getDevice(deviceName);
         device.setDisablePath(disablePath);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void updateDeviceCertificate(String deviceName, byte[] encodedCertificate) throws DeviceNotFoundException,
-                                                                                     CertificateEncodingException {
+    public void updateDeviceCertificate(String deviceName, byte[] encodedCertificate)
+            throws DeviceNotFoundException, CertificateEncodingException {
 
         X509Certificate certificate = PkiUtils.decodeCertificate(encodedCertificate);
 
@@ -391,8 +405,8 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void updateAttributeType(String deviceName, String attributeTypeName) throws DeviceNotFoundException,
-                                                                                AttributeTypeNotFoundException, PermissionDeniedException {
+    public void updateAttributeType(String deviceName, String attributeTypeName)
+            throws DeviceNotFoundException, AttributeTypeNotFoundException, PermissionDeniedException {
 
         AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeTypeName);
         DeviceEntity device = this.deviceDAO.getDevice(deviceName);
@@ -404,9 +418,8 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void updateUserAttributeType(String deviceName, String userAttributeTypeName) throws DeviceNotFoundException,
-                                                                                        AttributeTypeNotFoundException,
-                                                                                        PermissionDeniedException {
+    public void updateUserAttributeType(String deviceName, String userAttributeTypeName)
+            throws DeviceNotFoundException, AttributeTypeNotFoundException, PermissionDeniedException {
 
         AttributeTypeEntity userAttributeType = this.attributeTypeDAO.getAttributeType(userAttributeTypeName);
         DeviceEntity device = this.deviceDAO.getDevice(deviceName);
@@ -417,9 +430,8 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void updateDisableAttributeType(String deviceName, String disableAttributeTypeName) throws DeviceNotFoundException,
-                                                                                              AttributeTypeNotFoundException,
-                                                                                              PermissionDeniedException {
+    public void updateDisableAttributeType(String deviceName, String disableAttributeTypeName)
+            throws DeviceNotFoundException, AttributeTypeNotFoundException, PermissionDeniedException {
 
         AttributeTypeEntity disableAttributeType = this.attributeTypeDAO.getAttributeType(disableAttributeTypeName);
         if (!disableAttributeType.getType().equals(DatatypeType.BOOLEAN)) {
@@ -435,28 +447,32 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void removeDeviceClassDescription(DeviceClassDescriptionEntity description) throws DeviceClassDescriptionNotFoundException {
+    public void removeDeviceClassDescription(DeviceClassDescriptionEntity description)
+            throws DeviceClassDescriptionNotFoundException {
 
         DeviceClassDescriptionEntity deviceClassDescriptionEntity = this.deviceClassDAO.getDescription(description.getPk());
         this.deviceClassDAO.removeDescription(deviceClassDescriptionEntity);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void removeDescription(AttributeTypeDescriptionEntity attributeTypeDescription) throws AttributeTypeDescriptionNotFoundException {
+    public void removeDescription(AttributeTypeDescriptionEntity attributeTypeDescription)
+            throws AttributeTypeDescriptionNotFoundException {
 
         AttributeTypeDescriptionEntity attachedEntity = this.attributeTypeDAO.getDescription(attributeTypeDescription.getPk());
         this.attributeTypeDAO.removeDescription(attachedEntity);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void removeDeviceDescription(DeviceDescriptionEntity description) throws DeviceDescriptionNotFoundException {
+    public void removeDeviceDescription(DeviceDescriptionEntity description)
+            throws DeviceDescriptionNotFoundException {
 
         DeviceDescriptionEntity deviceDescriptionEntity = this.deviceDAO.getDescription(description.getPk());
         this.deviceDAO.removeDescription(deviceDescriptionEntity);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void removeDeviceProperty(DevicePropertyEntity property) throws DevicePropertyNotFoundException {
+    public void removeDeviceProperty(DevicePropertyEntity property)
+            throws DevicePropertyNotFoundException {
 
         DevicePropertyEntity devicePropertyEntity = this.deviceDAO.getProperty(property.getPk());
         this.deviceDAO.removeProperty(devicePropertyEntity);
@@ -482,29 +498,29 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public void updateAuthenticationContextClass(String deviceClassName, String authenticationContextClass)
-                                                                                                           throws DeviceClassNotFoundException {
+            throws DeviceClassNotFoundException {
 
         DeviceClassEntity deviceClass = this.deviceClassDAO.getDeviceClass(deviceClassName);
         deviceClass.setAuthenticationContextClass(authenticationContextClass);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public DeviceEntity getDevice(String deviceName) throws DeviceNotFoundException {
+    public DeviceEntity getDevice(String deviceName)
+            throws DeviceNotFoundException {
 
         return this.deviceDAO.getDevice(deviceName);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public DeviceClassEntity getDeviceClass(String deviceClassName) throws DeviceClassNotFoundException {
+    public DeviceClassEntity getDeviceClass(String deviceClassName)
+            throws DeviceClassNotFoundException {
 
         return this.deviceClassDAO.getDeviceClass(deviceClassName);
     }
 
     @RolesAllowed( { SafeOnlineRoles.USER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
-    public List<DeviceRegistrationDO> getDeviceRegistrations(SubjectEntity subject, Locale locale) throws SubjectNotFoundException,
-                                                                                                  DeviceNotFoundException,
-                                                                                                  PermissionDeniedException,
-                                                                                                  AttributeTypeNotFoundException {
+    public List<DeviceRegistrationDO> getDeviceRegistrations(SubjectEntity subject, Locale locale)
+            throws SubjectNotFoundException, DeviceNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException {
 
         List<DeviceRegistrationDO> deviceRegistrations = new LinkedList<DeviceRegistrationDO>();
         List<DeviceEntity> deviceList = this.deviceDAO.listDevices();
@@ -524,7 +540,8 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
     }
 
     private void addRegistrations(List<DeviceRegistrationDO> registrations, SubjectEntity subject, DeviceEntity device,
-                                  String deviceDescription, Locale locale) throws PermissionDeniedException, AttributeTypeNotFoundException {
+                                  String deviceDescription, Locale locale)
+            throws PermissionDeniedException, AttributeTypeNotFoundException {
 
         List<AttributeDO> attributes;
         try {

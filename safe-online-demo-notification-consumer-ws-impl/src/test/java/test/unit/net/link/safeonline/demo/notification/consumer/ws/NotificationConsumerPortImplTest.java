@@ -67,7 +67,8 @@ public class NotificationConsumerPortImplTest {
 
     @SuppressWarnings("unchecked")
     @Before
-    public void setup() throws Exception {
+    public void setup()
+            throws Exception {
 
         LOG.debug("setup");
 
@@ -109,7 +110,8 @@ public class NotificationConsumerPortImplTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown()
+            throws Exception {
 
         LOG.debug("tearDown");
         this.webServiceTestUtils.tearDown();
@@ -117,7 +119,8 @@ public class NotificationConsumerPortImplTest {
     }
 
     @Test
-    public void testNotify() throws Exception {
+    public void testNotify()
+            throws Exception {
 
         // setup
         String destination = "test-destination";
@@ -142,8 +145,7 @@ public class NotificationConsumerPortImplTest {
 
         // expectations
         expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
-        this.mockNotificationConsumerService.handleMessage(SafeOnlineConstants.TOPIC_REMOVE_USER, destination, subject,
-                content);
+        this.mockNotificationConsumerService.handleMessage(SafeOnlineConstants.TOPIC_REMOVE_USER, destination, subject, content);
 
         // prepare
         replay(this.mockObjects);

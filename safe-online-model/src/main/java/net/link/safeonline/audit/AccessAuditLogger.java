@@ -60,7 +60,8 @@ public class AccessAuditLogger {
 
 
     @AroundInvoke
-    public Object interceptor(InvocationContext context) throws Exception {
+    public Object interceptor(InvocationContext context)
+            throws Exception {
 
         auditAccessBegin(context);
 

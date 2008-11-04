@@ -58,7 +58,8 @@ public class SubjectDAOBean implements SubjectDAO {
         return subject;
     }
 
-    public SubjectEntity getSubject(String userId) throws SubjectNotFoundException {
+    public SubjectEntity getSubject(String userId)
+            throws SubjectNotFoundException {
 
         LOG.debug("get subject: " + userId);
         SubjectEntity subject = findSubject(userId);

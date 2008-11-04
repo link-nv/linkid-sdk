@@ -49,7 +49,8 @@ public class PkiValidatorBeanTest extends TestCase {
 
 
     @Override
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         super.setUp();
 
@@ -64,7 +65,8 @@ public class PkiValidatorBeanTest extends TestCase {
         EJBTestUtils.init(this.testedInstance);
     }
 
-    public void testValidateCertificateOnEmptyTrustDomainFails() throws Exception {
+    public void testValidateCertificateOnEmptyTrustDomainFails()
+            throws Exception {
 
         // setup
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
@@ -87,7 +89,8 @@ public class PkiValidatorBeanTest extends TestCase {
         assertEquals(PkiResult.INVALID, result);
     }
 
-    public void testValidateNullCertificateThrowsIllegalArgumentException() throws Exception {
+    public void testValidateNullCertificateThrowsIllegalArgumentException()
+            throws Exception {
 
         // operate & verify
         try {
@@ -98,7 +101,8 @@ public class PkiValidatorBeanTest extends TestCase {
         }
     }
 
-    public void testValidateCertificate() throws Exception {
+    public void testValidateCertificate()
+            throws Exception {
 
         // setup
         KeyPair caKeyPair = PkiTestUtils.generateKeyPair();
@@ -138,7 +142,8 @@ public class PkiValidatorBeanTest extends TestCase {
         assertEquals(PkiResult.VALID, result);
     }
 
-    public void testValidateTrustPointCertificate() throws Exception {
+    public void testValidateTrustPointCertificate()
+            throws Exception {
 
         // setup
         KeyPair caKeyPair = PkiTestUtils.generateKeyPair();
@@ -173,7 +178,8 @@ public class PkiValidatorBeanTest extends TestCase {
         assertEquals(PkiResult.VALID, result);
     }
 
-    public void testValidateCertificateFailsIfOCSPRevokes() throws Exception {
+    public void testValidateCertificateFailsIfOCSPRevokes()
+            throws Exception {
 
         // setup
         KeyPair caKeyPair = PkiTestUtils.generateKeyPair();
@@ -212,7 +218,8 @@ public class PkiValidatorBeanTest extends TestCase {
         assertEquals(PkiResult.REVOKED, result);
     }
 
-    public void testValidateCertificateRootCaAndInterCa() throws Exception {
+    public void testValidateCertificateRootCaAndInterCa()
+            throws Exception {
 
         // setup
         KeyPair rootCaKeyPair = PkiTestUtils.generateKeyPair();
@@ -258,7 +265,8 @@ public class PkiValidatorBeanTest extends TestCase {
         assertEquals(PkiResult.VALID, result);
     }
 
-    public void testValidationFailsIfTrustPointIsNotCA() throws Exception {
+    public void testValidationFailsIfTrustPointIsNotCA()
+            throws Exception {
 
         // setup
         KeyPair rootCaKeyPair = PkiTestUtils.generateKeyPair();
@@ -304,7 +312,8 @@ public class PkiValidatorBeanTest extends TestCase {
         assertEquals(PkiResult.INVALID, result);
     }
 
-    public void testValidateCertificateIfRootIsNotSelfSignedFails() throws Exception {
+    public void testValidateCertificateIfRootIsNotSelfSignedFails()
+            throws Exception {
 
         // setup
         KeyPair rootKeyPair = PkiTestUtils.generateKeyPair();

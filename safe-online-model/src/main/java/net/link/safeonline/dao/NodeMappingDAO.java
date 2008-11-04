@@ -22,6 +22,7 @@ public interface NodeMappingDAO extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/NodeMappingDAOBean/local";
 
+
     public NodeMappingEntity addNodeMapping(SubjectEntity subject, NodeEntity node);
 
     public List<NodeMappingEntity> listNodeMappings(SubjectEntity subject);
@@ -30,7 +31,8 @@ public interface NodeMappingDAO extends SafeOnlineService {
 
     public NodeMappingEntity findNodeMapping(String id);
 
-    public NodeMappingEntity getNodeMapping(String id) throws NodeMappingNotFoundException;
+    public NodeMappingEntity getNodeMapping(String id)
+            throws NodeMappingNotFoundException;
 
     public void removeNodeMappings(SubjectEntity subject);
 

@@ -26,6 +26,7 @@ public interface ConfigurationManager extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ConfigurationManagerBean/local";
 
+
     ConfigItemEntity findConfigItem(String name);
 
     long getMaximumWsSecurityTimestampOffset();
@@ -38,5 +39,6 @@ public interface ConfigurationManager extends SafeOnlineService {
      * @param applicationName
      * @throws ApplicationNotFoundException
      */
-    boolean skipMessageIntegrityCheck(String applicationName) throws ApplicationNotFoundException;
+    boolean skipMessageIntegrityCheck(String applicationName)
+            throws ApplicationNotFoundException;
 }

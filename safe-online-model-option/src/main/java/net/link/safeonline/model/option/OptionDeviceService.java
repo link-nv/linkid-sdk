@@ -38,17 +38,19 @@ public interface OptionDeviceService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/OptionDeviceServiceBean/local";
 
-    String authenticate(String imei, String pin) throws SubjectNotFoundException, OptionAuthenticationException,
-                                                OptionRegistrationException, AttributeTypeNotFoundException, AttributeNotFoundException,
-                                                DeviceDisabledException;
 
-    void register(String userId, String imei, String pin) throws OptionAuthenticationException, OptionRegistrationException,
-                                                         AttributeTypeNotFoundException;
+    String authenticate(String imei, String pin)
+            throws SubjectNotFoundException, OptionAuthenticationException, OptionRegistrationException, AttributeTypeNotFoundException,
+            AttributeNotFoundException, DeviceDisabledException;
 
-    void remove(String userId, String imei, String pin) throws OptionAuthenticationException, OptionRegistrationException,
-                                                       SubjectNotFoundException, AttributeTypeNotFoundException,
-                                                       AttributeNotFoundException, DeviceDisabledException;
+    void register(String userId, String imei, String pin)
+            throws OptionAuthenticationException, OptionRegistrationException, AttributeTypeNotFoundException;
 
-    void disable(String userId, String imei) throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException;
+    void remove(String userId, String imei, String pin)
+            throws OptionAuthenticationException, OptionRegistrationException, SubjectNotFoundException, AttributeTypeNotFoundException,
+            AttributeNotFoundException, DeviceDisabledException;
+
+    void disable(String userId, String imei)
+            throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException;
 
 }

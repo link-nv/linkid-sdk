@@ -39,7 +39,8 @@ public class IdentityStatementStructure extends AbstractStatementStructure {
 
 
     @Override
-    protected void decode(ASN1Sequence tbsSequence) throws DecodingException {
+    protected void decode(ASN1Sequence tbsSequence)
+            throws DecodingException {
 
         if (tbsSequence.size() != 7)
             throw new DecodingException();

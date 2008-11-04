@@ -23,6 +23,7 @@ public interface EndpointReferenceDAO extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/EndpointReferenceDAOBean/local";
 
+
     EndpointReferenceEntity addEndpointReference(String address, ApplicationEntity application);
 
     EndpointReferenceEntity addEndpointReference(String address, NodeEntity node);
@@ -30,12 +31,14 @@ public interface EndpointReferenceDAO extends SafeOnlineService {
     EndpointReferenceEntity findEndpointReference(String address, ApplicationEntity application);
 
     EndpointReferenceEntity findEndpointReference(String address, NodeEntity node);
-    
+
     EndpointReferenceEntity findEndpointReference(long id);
 
-    EndpointReferenceEntity getEndpointReference(String address, ApplicationEntity application) throws EndpointReferenceNotFoundException;
+    EndpointReferenceEntity getEndpointReference(String address, ApplicationEntity application)
+            throws EndpointReferenceNotFoundException;
 
-    EndpointReferenceEntity getEndpointReference(String address, NodeEntity node) throws EndpointReferenceNotFoundException;
+    EndpointReferenceEntity getEndpointReference(String address, NodeEntity node)
+            throws EndpointReferenceNotFoundException;
 
     List<EndpointReferenceEntity> listEndpoints();
 

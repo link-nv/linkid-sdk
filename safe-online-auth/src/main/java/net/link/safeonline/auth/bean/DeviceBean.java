@@ -88,7 +88,8 @@ public class DeviceBean implements Device {
         this.deviceSelection = deviceSelection;
     }
 
-    public String next() throws IOException, DeviceNotFoundException {
+    public String next()
+            throws IOException, DeviceNotFoundException {
 
         this.log.debug("next: " + this.deviceSelection);
         HelpdeskLogger.add("selected authentication device: " + this.deviceSelection, LogLevelType.INFO);
@@ -108,7 +109,8 @@ public class DeviceBean implements Device {
     }
 
     @Factory("applicationDevices")
-    public List<SelectItem> applicationDevicesFactory() throws ApplicationNotFoundException, EmptyDevicePolicyException {
+    public List<SelectItem> applicationDevicesFactory()
+            throws ApplicationNotFoundException, EmptyDevicePolicyException {
 
         this.log.debug("application devices factory");
         FacesContext facesContext = FacesContext.getCurrentInstance();

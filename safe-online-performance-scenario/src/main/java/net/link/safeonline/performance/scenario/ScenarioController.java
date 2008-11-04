@@ -34,7 +34,8 @@ public interface ScenarioController {
     /**
      * Execute the scenario.
      */
-    public void execute(Date executionId) throws Exception;
+    public void execute(Date executionId)
+            throws Exception;
 
     /**
      * This method is called before any iterations are executed.<br>

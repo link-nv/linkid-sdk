@@ -73,9 +73,8 @@ public class LawyerEditBean extends AbstractLawyerDataClientBean implements Lawy
         return "success";
     }
 
-    private void createOrUpdateAttribute(String attributeName, Object attributeValue) throws WSClientTransportException,
-                                                                                     RequestDeniedException, SubjectNotFoundException,
-                                                                                     AttributeNotFoundException {
+    private void createOrUpdateAttribute(String attributeName, Object attributeValue)
+            throws WSClientTransportException, RequestDeniedException, SubjectNotFoundException, AttributeNotFoundException {
 
         String userId = getNameIdentifierMappingClient().getUserId(this.name);
 

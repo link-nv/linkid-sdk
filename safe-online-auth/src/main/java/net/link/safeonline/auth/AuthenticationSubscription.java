@@ -24,12 +24,13 @@ public interface AuthenticationSubscription {
 
     public static final String JNDI_BINDING = AuthenticationConstants.JNDI_PREFIX + "AuthenticationSubscriptionBean/local";
 
+
     /*
      * Actions.
      */
-    String subscribe() throws ApplicationNotFoundException, AlreadySubscribedException, PermissionDeniedException,
-                      SubscriptionNotFoundException, ApplicationIdentityNotFoundException, AttributeTypeNotFoundException,
-                      AttributeUnavailableException;
+    String subscribe()
+            throws ApplicationNotFoundException, AlreadySubscribedException, PermissionDeniedException, SubscriptionNotFoundException,
+            ApplicationIdentityNotFoundException, AttributeTypeNotFoundException, AttributeUnavailableException;
 
     /*
      * Accessors

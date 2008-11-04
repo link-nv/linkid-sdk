@@ -33,7 +33,8 @@ public class InputValidationTest extends TestCase {
 
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp()
+            throws Exception {
 
         super.setUp();
 
@@ -85,7 +86,8 @@ public class InputValidationTest extends TestCase {
         throw new IllegalArgumentException("no method found with name: " + methodName);
     }
 
-    public void testInvoke() throws Exception {
+    public void testInvoke()
+            throws Exception {
 
         // setup
         Method method = getLocalMethod("method");
@@ -132,7 +134,8 @@ public class InputValidationTest extends TestCase {
             return null;
         }
 
-        public Object proceed() throws Exception {
+        public Object proceed()
+                throws Exception {
 
             return null;
         }

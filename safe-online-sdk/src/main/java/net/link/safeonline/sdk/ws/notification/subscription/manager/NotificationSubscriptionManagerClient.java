@@ -30,6 +30,7 @@ public interface NotificationSubscriptionManagerClient extends MessageAccessor {
      * @throws RequestDeniedException
      * @throws WSClientTransportException
      */
-    void unsubscribe(String topic, String address) throws SubscriptionNotFoundException, RequestDeniedException, WSClientTransportException;
+    void unsubscribe(String topic, String address)
+            throws SubscriptionNotFoundException, RequestDeniedException, WSClientTransportException;
 
 }

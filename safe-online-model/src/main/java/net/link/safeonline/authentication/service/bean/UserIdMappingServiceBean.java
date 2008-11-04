@@ -59,8 +59,8 @@ public class UserIdMappingServiceBean implements UserIdMappingService {
     private SubjectService        subjectService;
 
 
-    public String getApplicationUserId(String applicationName, String userId) throws ApplicationNotFoundException,
-                                                                             SubscriptionNotFoundException {
+    public String getApplicationUserId(String applicationName, String userId)
+            throws ApplicationNotFoundException, SubscriptionNotFoundException {
 
         ApplicationEntity application = this.applicationDAO.getApplication(applicationName);
         IdScopeType idScope = application.getIdScope();
@@ -82,7 +82,8 @@ public class UserIdMappingServiceBean implements UserIdMappingService {
         return subjectApplicationScopeId.getId();
     }
 
-    private String getSubscriptionScopeId(ApplicationEntity application, String userId) throws SubscriptionNotFoundException {
+    private String getSubscriptionScopeId(ApplicationEntity application, String userId)
+            throws SubscriptionNotFoundException {
 
         SubjectEntity subject = this.subjectService.findSubject(userId);
         SubscriptionEntity subscription = this.subscriptionDAO.findSubscription(subject, application);
@@ -93,7 +94,8 @@ public class UserIdMappingServiceBean implements UserIdMappingService {
         return subscription.getSubscriptionUserId();
     }
 
-    public String findUserId(String applicationName, String applicationUserId) throws ApplicationNotFoundException {
+    public String findUserId(String applicationName, String applicationUserId)
+            throws ApplicationNotFoundException {
 
         LOG.debug("findUserId: " + applicationName + ", " + applicationUserId);
         ApplicationEntity application = this.applicationDAO.getApplication(applicationName);

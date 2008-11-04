@@ -27,6 +27,7 @@ public interface ApplicationAuthenticationService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationAuthenticationServiceBean/local";
 
+
     /**
      * Authenticates an application given an application certificate. At this point the application certificate already passed the PKI
      * validation.
@@ -36,7 +37,8 @@ public interface ApplicationAuthenticationService extends SafeOnlineService {
      * @return the application Id of the authentication application.
      * @throws ApplicationNotFoundException
      */
-    String authenticate(X509Certificate certificate) throws ApplicationNotFoundException;
+    String authenticate(X509Certificate certificate)
+            throws ApplicationNotFoundException;
 
     /**
      * Gives back the application X509 certificates given the application Id.
@@ -46,7 +48,8 @@ public interface ApplicationAuthenticationService extends SafeOnlineService {
      * @return the X509 application certificates.
      * @throws ApplicationNotFoundException
      */
-    List<X509Certificate> getCertificates(String applicationId) throws ApplicationNotFoundException;
+    List<X509Certificate> getCertificates(String applicationId)
+            throws ApplicationNotFoundException;
 
     /**
      * Checks whether we have to skip the message integrity check. This means that the SOAP body should not be signed by the WS-Security
@@ -57,5 +60,6 @@ public interface ApplicationAuthenticationService extends SafeOnlineService {
      * @return <code>true</code> if we can skip the message integrity check.
      * @throws ApplicationNotFoundException
      */
-    boolean skipMessageIntegrityCheck(String applicationId) throws ApplicationNotFoundException;
+    boolean skipMessageIntegrityCheck(String applicationId)
+            throws ApplicationNotFoundException;
 }

@@ -145,18 +145,21 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 
 
     @Override
-    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         invoke(request, response);
     }
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         invoke(request, response);
     }
 
-    private void invoke(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    private void invoke(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
 
         LOG.debug("doPost");
         LOG.debug("platform: " + this.platformRequestParameter);
@@ -231,7 +234,8 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
         response.sendRedirect(target);
     }
 
-    private boolean checkJavaVersion() throws ServletException {
+    private boolean checkJavaVersion()
+            throws ServletException {
 
         if (null == this.javaVersion) {
             throw new ServletException("javaVersion request parameter is required");
@@ -247,7 +251,8 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
         return result;
     }
 
-    private boolean checkJavaEnabled() throws ServletException {
+    private boolean checkJavaEnabled()
+            throws ServletException {
 
         if (null == this.javaEnabled) {
             throw new ServletException("javaEnabled request parameter required");
@@ -257,7 +262,8 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
         return true;
     }
 
-    private boolean checkPlatform() throws ServletException {
+    private boolean checkPlatform()
+            throws ServletException {
 
         if (null == this.platformRequestParameter) {
             throw new ServletException("platform request parameter required");
