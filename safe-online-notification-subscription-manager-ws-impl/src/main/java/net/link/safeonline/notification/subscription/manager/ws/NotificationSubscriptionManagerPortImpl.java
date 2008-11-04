@@ -47,7 +47,7 @@ public class NotificationSubscriptionManagerPortImpl implements NotificationSubs
     @Resource
     private WebServiceContext           context;
 
-    @EJB(mappedName = "SafeOnline/NotificationProducerServiceBean/local")
+    @EJB(mappedName = NotificationProducerService.JNDI_BINDING)
     private NotificationProducerService notificationProducerService;
 
 

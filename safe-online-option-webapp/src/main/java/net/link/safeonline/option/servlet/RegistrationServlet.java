@@ -47,10 +47,10 @@ public class RegistrationServlet extends AbstractInjectionServlet {
 
     private static final Log     LOG              = LogFactory.getLog(RegistrationServlet.class);
 
-    @EJB(mappedName = "SafeOnlineOption/OptionDeviceServiceBean/local")
+    @EJB(mappedName = OptionDeviceService.JNDI_BINDING)
     private OptionDeviceService  optionDeviceService;
 
-    @EJB(mappedName = "SafeOnline/SamlAuthorityServiceBean/local")
+    @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
     private SamlAuthorityService samlAuthorityService;
 
 

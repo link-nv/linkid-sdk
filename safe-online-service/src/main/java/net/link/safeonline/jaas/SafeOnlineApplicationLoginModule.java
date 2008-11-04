@@ -57,7 +57,7 @@ public class SafeOnlineApplicationLoginModule implements LoginModule {
 
     public static final String OPTION_AUTHENTICATION_SERVICE_JNDI_NAME  = "authenticationServiceJndiName";
 
-    public static final String DEFAULT_AUTHENTICATION_SERVICE_JNDI_NAME = "SafeOnline/ApplicationAuthenticationServiceBean/local";
+    public static final String DEFAULT_AUTHENTICATION_SERVICE_JNDI_NAME = ApplicationAuthenticationService.JNDI_BINDING;
 
     private String             authenticationServiceJndiName;
 

@@ -102,7 +102,7 @@ public class ProtocolHandlerManager {
             } catch (ProtocolException e) {
                 String protocolName = protocolHandler.getName();
                 e.setProtocolName(protocolName);
-                SecurityAuditLogger securityAuditLogger = EjbUtils.getEJB("SafeOnline/SecurityAuditLoggerBean/local",
+                SecurityAuditLogger securityAuditLogger = EjbUtils.getEJB(SecurityAuditLogger.JNDI_BINDING,
                         SecurityAuditLogger.class);
                 securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, "Protocol: " + protocolName + " : " + e.getMessage());
                 throw e;
@@ -170,7 +170,7 @@ public class ProtocolHandlerManager {
             } catch (ProtocolException e) {
                 String protocolName = protocolHandler.getName();
                 e.setProtocolName(protocolName);
-                SecurityAuditLogger securityAuditLogger = EjbUtils.getEJB("SafeOnline/SecurityAuditLoggerBean/local",
+                SecurityAuditLogger securityAuditLogger = EjbUtils.getEJB(SecurityAuditLogger.JNDI_BINDING,
                         SecurityAuditLogger.class);
                 securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, "Protocol: " + protocolName + " : " + e.getMessage());
                 throw e;

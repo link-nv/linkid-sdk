@@ -41,7 +41,7 @@ public class AuthenticationServiceManager implements HttpSessionListener {
         /*
          * When the HTTP session starts we assign it an authentication service instance.
          */
-        AuthenticationService authenticationService = EjbUtils.getEJB("SafeOnline/AuthenticationServiceBean/local",
+        AuthenticationService authenticationService = EjbUtils.getEJB(AuthenticationService.JNDI_BINDING,
                 AuthenticationService.class);
 
         HttpSession session = event.getSession();

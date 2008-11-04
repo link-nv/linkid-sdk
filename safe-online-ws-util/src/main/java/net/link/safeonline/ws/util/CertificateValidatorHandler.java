@@ -58,7 +58,7 @@ public class CertificateValidatorHandler implements SOAPHandler<SOAPMessageConte
     public void postConstructCallback() {
 
         System.setProperty("com.sun.xml.ws.fault.SOAPFaultBuilder.disableCaptureStackTrace", "true");
-        this.pkiValidator = EjbUtils.getEJB("SafeOnline/PkiValidatorBean/local", PkiValidator.class);
+        this.pkiValidator = EjbUtils.getEJB(PkiValidator.JNDI_BINDING, PkiValidator.class);
     }
 
     public Set<QName> getHeaders() {

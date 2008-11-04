@@ -137,7 +137,7 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
             XMLSignature xmlSignature = new XMLSignature(tokenSignatureElement, null);
             LOG.debug("checking token signature");
             if (trustDomain == TrustDomainType.NODE) {
-                NodeAuthenticationService nodeAuthenticationService = EjbUtils.getEJB("SafeOnline/NodeAuthenticationServiceBean/local",
+                NodeAuthenticationService nodeAuthenticationService = EjbUtils.getEJB(NodeAuthenticationService.JNDI_BINDING,
                         NodeAuthenticationService.class);
                 try {
                     List<X509Certificate> nodeSigningCertificates = nodeAuthenticationService.getSigningCertificates(issuerName);
@@ -154,7 +154,7 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
                 }
             } else if (trustDomain == TrustDomainType.DEVICE) {
                 DeviceAuthenticationService deviceAuthenticationService = EjbUtils.getEJB(
-                        "SafeOnline/DeviceAuthenticationServiceBean/local", DeviceAuthenticationService.class);
+                        DeviceAuthenticationService.JNDI_BINDING, DeviceAuthenticationService.class);
                 try {
                     List<X509Certificate> deviceCertificates = deviceAuthenticationService.getCertificates(issuerName);
                     result = false;
@@ -170,7 +170,7 @@ public class TokenValidationHandler implements SOAPHandler<SOAPMessageContext> {
                 }
             } else if (trustDomain == TrustDomainType.APPLICATION) {
                 ApplicationAuthenticationService applicationAuthenticationService = EjbUtils.getEJB(
-                        "SafeOnline/ApplicationAuthenticationServiceBean/local", ApplicationAuthenticationService.class);
+                        ApplicationAuthenticationService.JNDI_BINDING, ApplicationAuthenticationService.class);
                 try {
                     List<X509Certificate> applicationCertificates = applicationAuthenticationService.getCertificates(issuerName);
                     result = false;

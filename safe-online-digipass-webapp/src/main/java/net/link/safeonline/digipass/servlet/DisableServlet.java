@@ -38,7 +38,7 @@ public class DisableServlet extends AbstractInjectionServlet {
     @Init(name = "DeviceExitPath")
     private String                deviceExitPath;
 
-    @EJB(mappedName = "SafeOnlineDigipass/DigipassDeviceServiceBean/local")
+    @EJB(mappedName = DigipassDeviceService.JNDI_BINDING)
     private DigipassDeviceService digipassDeviceService;
 
 

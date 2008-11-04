@@ -32,7 +32,7 @@ public class ExportServlet extends AbstractInjectionServlet {
 
     private static final Log  LOG              = LogFactory.getLog(ExportServlet.class);
 
-    @EJB(mappedName = "SafeOnline/StatisticServiceBean/local")
+    @EJB(mappedName = StatisticService.JNDI_BINDING)
     private StatisticService  statisticService;
 
 

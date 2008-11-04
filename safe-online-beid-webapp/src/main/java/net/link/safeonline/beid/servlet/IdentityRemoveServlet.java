@@ -40,7 +40,7 @@ public class IdentityRemoveServlet extends AbstractStatementServlet {
 
     private static final Log  LOG              = LogFactory.getLog(IdentityRemoveServlet.class);
 
-    @EJB(mappedName = "SafeOnlineBeid/BeIdDeviceServiceBean/local")
+    @EJB(mappedName = BeIdDeviceService.JNDI_BINDING)
     private BeIdDeviceService beIdDeviceService;
 
 

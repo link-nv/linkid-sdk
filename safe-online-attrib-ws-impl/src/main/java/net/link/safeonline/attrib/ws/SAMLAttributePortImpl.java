@@ -89,13 +89,13 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 
     private static final Log     LOG = LogFactory.getLog(SAMLAttributePortImpl.class);
 
-    @EJB(mappedName = "SafeOnline/AttributeServiceBean/local")
+    @EJB(mappedName = AttributeService.JNDI_BINDING)
     private AttributeService     attributeService;
 
-    @EJB(mappedName = "SafeOnline/NodeAttributeServiceBean/local")
+    @EJB(mappedName = NodeAttributeService.JNDI_BINDING)
     private NodeAttributeService nodeAttributeService;
 
-    @EJB(mappedName = "SafeOnline/SamlAuthorityServiceBean/local")
+    @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
     private SamlAuthorityService samlAuthorityService;
 
     @Resource
@@ -145,11 +145,11 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 
     private String findUserId(String applicationUserId) throws ApplicationNotFoundException {
 
-        ApplicationManager applicationManager = EjbUtils.getEJB("SafeOnline/ApplicationManagerBean/local", ApplicationManager.class);
+        ApplicationManager applicationManager = EjbUtils.getEJB(ApplicationManager.JNDI_BINDING, ApplicationManager.class);
         ApplicationEntity application = applicationManager.getCallerApplication();
 
         ApplicationIdentifierMappingService applicationIdentifierMappingService = EjbUtils.getEJB(
-                "SafeOnline/ApplicationIdentifierMappingServiceBean/local", ApplicationIdentifierMappingService.class);
+                ApplicationIdentifierMappingService.JNDI_BINDING, ApplicationIdentifierMappingService.class);
         return applicationIdentifierMappingService.findUserId(application.getName(), applicationUserId);
     }
 

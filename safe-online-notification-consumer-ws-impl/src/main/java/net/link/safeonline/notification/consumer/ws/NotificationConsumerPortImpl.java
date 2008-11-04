@@ -31,7 +31,7 @@ public class NotificationConsumerPortImpl implements NotificationConsumerPort {
 
     private final static Log            LOG = LogFactory.getLog(NotificationConsumerPortImpl.class);
 
-    @EJB(mappedName = "SafeOnline/NotificationConsumerServiceBean/local")
+    @EJB(mappedName = NotificationConsumerService.JNDI_BINDING)
     private NotificationConsumerService notificationConsumerService;
 
 

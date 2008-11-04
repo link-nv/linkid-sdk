@@ -217,7 +217,7 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
     private String findUserId(String applicationName, String applicationUserId) throws ApplicationNotFoundException {
 
         ApplicationIdentifierMappingService applicationIdentifierMappingService = EjbUtils.getEJB(
-                "SafeOnline/ApplicationIdentifierMappingServiceBean/local", ApplicationIdentifierMappingService.class);
+                ApplicationIdentifierMappingService.JNDI_BINDING, ApplicationIdentifierMappingService.class);
         return applicationIdentifierMappingService.findUserId(applicationName, applicationUserId);
     }
 

@@ -49,10 +49,10 @@ public class IdentityServlet extends AbstractStatementServlet {
 
     private static final Log     LOG              = LogFactory.getLog(IdentityServlet.class);
 
-    @EJB(mappedName = "SafeOnlineBeid/BeIdDeviceServiceBean/local")
+    @EJB(mappedName = BeIdDeviceService.JNDI_BINDING)
     private BeIdDeviceService    beIdDeviceService;
 
-    @EJB(mappedName = "SafeOnline/SamlAuthorityServiceBean/local")
+    @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
     private SamlAuthorityService samlAuthorityService;
 
 

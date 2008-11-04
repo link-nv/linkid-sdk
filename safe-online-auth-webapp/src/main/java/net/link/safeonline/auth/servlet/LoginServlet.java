@@ -52,16 +52,16 @@ public class LoginServlet extends AbstractInjectionServlet {
 
     private static final Log      LOG              = LogFactory.getLog(LoginServlet.class);
 
-    @EJB(mappedName = "SafeOnline/IdentityServiceBean/local")
+    @EJB(mappedName = IdentityService.JNDI_BINDING)
     private IdentityService       identityService;
 
-    @EJB(mappedName = "SafeOnline/SubscriptionServiceBean/local")
+    @EJB(mappedName = SubscriptionService.JNDI_BINDING)
     private SubscriptionService   subscriptionService;
 
-    @EJB(mappedName = "SafeOnline/DevicePolicyServiceBean/local")
+    @EJB(mappedName = DevicePolicyService.JNDI_BINDING)
     private DevicePolicyService   devicePolicyService;
 
-    @EJB(mappedName = "SafeOnline/UsageAgreementServiceBean/local")
+    @EJB(mappedName = UsageAgreementService.JNDI_BINDING)
     private UsageAgreementService usageAgreementService;
 
     @In(LoginManager.AUTHENTICATION_DEVICE_ATTRIBUTE)

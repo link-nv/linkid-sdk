@@ -45,7 +45,7 @@ public class DisableServlet extends AbstractInjectionServlet {
     @Init(name = "DeviceExitPath")
     private String              deviceExitPath;
 
-    @EJB(mappedName = "SafeOnlineOption/OptionDeviceServiceBean/local")
+    @EJB(mappedName = OptionDeviceService.JNDI_BINDING)
     private OptionDeviceService optionDeviceService;
 
 

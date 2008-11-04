@@ -67,10 +67,10 @@ public class NameIdentifierMappingPortImpl implements NameIdentifierMappingPort 
     @Resource
     private WebServiceContext                   context;
 
-    @EJB(mappedName = "SafeOnline/ApplicationIdentifierMappingServiceBean/local")
+    @EJB(mappedName = ApplicationIdentifierMappingService.JNDI_BINDING)
     private ApplicationIdentifierMappingService applicationIdentifierMappingService;
 
-    @EJB(mappedName = "SafeOnline/NodeIdentifierMappingServiceBean/local")
+    @EJB(mappedName = NodeIdentifierMappingService.JNDI_BINDING)
     private NodeIdentifierMappingService        nodeIdentifierMappingService;
 
 

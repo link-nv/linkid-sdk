@@ -39,7 +39,7 @@ public class DisableServlet extends AbstractInjectionServlet {
     @Init(name = "DeviceExitPath")
     private String             deviceExitPath;
 
-    @EJB(mappedName = "SafeOnlineEncap/EncapDeviceServiceBean/local")
+    @EJB(mappedName = EncapDeviceService.JNDI_BINDING)
     private EncapDeviceService encapDeviceService;
 
 

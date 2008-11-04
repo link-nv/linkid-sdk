@@ -90,7 +90,7 @@ public class DeviceOperationUtils {
         if (null != deviceOperationService) {
             deviceOperationService.abort();
         }
-        deviceOperationService = EjbUtils.getEJB("SafeOnline/DeviceOperationServiceBean/local", DeviceOperationService.class);
+        deviceOperationService = EjbUtils.getEJB(DeviceOperationService.JNDI_BINDING, DeviceOperationService.class);
         httpSession.setAttribute(DeviceOperationService.DEVICE_OPERATION_SERVICE_ATTRIBUTE, deviceOperationService);
 
         String encodedSamlRequestToken;

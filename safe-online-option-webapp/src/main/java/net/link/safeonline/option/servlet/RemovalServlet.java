@@ -49,7 +49,7 @@ public class RemovalServlet extends AbstractInjectionServlet {
 
     private static final Log    LOG              = LogFactory.getLog(RemovalServlet.class);
 
-    @EJB(mappedName = "SafeOnlineOption/OptionDeviceServiceBean/local")
+    @EJB(mappedName = OptionDeviceService.JNDI_BINDING)
     private OptionDeviceService optionDeviceService;
 
 

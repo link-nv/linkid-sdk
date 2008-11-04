@@ -57,7 +57,7 @@ public class SafeOnlineDeviceLoginModule implements LoginModule {
 
     public static final String OPTION_AUTHENTICATION_SERVICE_JNDI_NAME  = "authenticationServiceJndiName";
 
-    public static final String DEFAULT_AUTHENTICATION_SERVICE_JNDI_NAME = "SafeOnline/DeviceAuthenticationServiceBean/local";
+    public static final String DEFAULT_AUTHENTICATION_SERVICE_JNDI_NAME = DeviceAuthenticationService.JNDI_BINDING;
 
     private String             authenticationServiceJndiName;
 

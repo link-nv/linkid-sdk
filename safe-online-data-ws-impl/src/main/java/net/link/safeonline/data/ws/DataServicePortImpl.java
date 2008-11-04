@@ -75,7 +75,7 @@ public class DataServicePortImpl implements DataServicePort {
 
     private static final Log         LOG = LogFactory.getLog(DataServicePortImpl.class);
 
-    @EJB(mappedName = "SafeOnline/AttributeProviderServiceBean/local")
+    @EJB(mappedName = AttributeProviderService.JNDI_BINDING)
     private AttributeProviderService attributeProviderService;
 
     @Resource
