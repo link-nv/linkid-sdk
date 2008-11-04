@@ -22,6 +22,7 @@ import net.link.safeonline.jpa.QueryObjectFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = ConfigItemDAO.JNDI_BINDING)
 public class ConfigItemDAOBean implements ConfigItemDAO {
 
     @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)

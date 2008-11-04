@@ -30,6 +30,7 @@ import org.jboss.annotation.security.SecurityDomain;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_APPLICATION_SECURITY_DOMAIN)
+@LocalBinding(jndiBinding = ApplicationManager.JNDI_BINDING)
 public class ApplicationManagerBean implements ApplicationManager {
 
     private static final Log LOG = LogFactory.getLog(ApplicationManagerBean.class);

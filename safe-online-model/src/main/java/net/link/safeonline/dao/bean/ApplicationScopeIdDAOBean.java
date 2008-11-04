@@ -26,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = ApplicationScopeIdDAO.JNDI_BINDING)
 public class ApplicationScopeIdDAOBean implements ApplicationScopeIdDAO {
 
     private static final Log                        LOG = LogFactory.getLog(ApplicationScopeIdDAOBean.class);

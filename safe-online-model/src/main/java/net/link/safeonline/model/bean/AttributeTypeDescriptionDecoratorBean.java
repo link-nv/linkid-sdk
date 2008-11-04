@@ -26,6 +26,7 @@ import net.link.safeonline.model.AttributeTypeDescriptionDecorator;
 
 
 @Stateless
+@LocalBinding(jndiBinding = AttributeTypeDescriptionDecorator.JNDI_BINDING)
 public class AttributeTypeDescriptionDecoratorBean implements AttributeTypeDescriptionDecorator {
 
     @EJB

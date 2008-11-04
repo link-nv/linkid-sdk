@@ -26,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = SubjectIdentifierDAO.JNDI_BINDING)
 public class SubjectIdentifierDAOBean implements SubjectIdentifierDAO {
 
     private static final Log                       LOG = LogFactory.getLog(SubjectIdentifierDAOBean.class);

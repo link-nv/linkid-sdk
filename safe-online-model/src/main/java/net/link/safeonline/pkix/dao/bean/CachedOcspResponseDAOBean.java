@@ -26,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = CachedOcspResponseDAO.JNDI_BINDING)
 public class CachedOcspResponseDAOBean implements CachedOcspResponseDAO {
 
     private static final Log                        LOG = LogFactory.getLog(CachedOcspResponseDAOBean.class);

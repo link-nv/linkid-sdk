@@ -14,6 +14,7 @@ import net.link.safeonline.model.HelpdeskContexts;
 
 
 @Stateless
+@LocalBinding(jndiBinding = HelpdeskContexts.JNDI_BINDING)
 public class HelpdeskContextsBean implements HelpdeskContexts {
 
     @EJB

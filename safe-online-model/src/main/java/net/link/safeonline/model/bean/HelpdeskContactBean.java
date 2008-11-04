@@ -16,6 +16,7 @@ import net.link.safeonline.model.HelpdeskContact;
 
 
 @Stateless
+@LocalBinding(jndiBinding = HelpdeskContact.JNDI_BINDING)
 @Interceptors(ConfigurationInterceptor.class)
 @Configurable
 public class HelpdeskContactBean implements HelpdeskContact {

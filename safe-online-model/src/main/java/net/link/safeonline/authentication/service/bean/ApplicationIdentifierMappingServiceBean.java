@@ -34,6 +34,7 @@ import org.jboss.annotation.security.SecurityDomain;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_APPLICATION_SECURITY_DOMAIN)
+@LocalBinding(jndiBinding = ApplicationIdentifierMappingService.JNDI_BINDING)
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
 public class ApplicationIdentifierMappingServiceBean implements ApplicationIdentifierMappingService {
 

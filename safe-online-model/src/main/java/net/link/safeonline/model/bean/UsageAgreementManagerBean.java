@@ -24,6 +24,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = UsageAgreementManager.JNDI_BINDING)
 public class UsageAgreementManagerBean implements UsageAgreementManager {
 
     private final static Log  LOG = LogFactory.getLog(UsageAgreementManagerBean.class);

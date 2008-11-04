@@ -29,6 +29,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = NotificationMessageDAO.JNDI_BINDING)
 public class NotificationMessageDAOBean implements NotificationMessageDAO {
 
     private static final Log                         LOG = LogFactory.getLog(NotificationMessageDAOBean.class);

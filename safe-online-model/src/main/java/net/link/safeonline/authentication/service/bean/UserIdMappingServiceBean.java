@@ -40,6 +40,7 @@ import org.apache.commons.logging.LogFactory;
  */
 
 @Stateless
+@LocalBinding(jndiBinding = UserIdMappingService.JNDI_BINDING)
 public class UserIdMappingServiceBean implements UserIdMappingService {
 
     private final static Log      LOG = LogFactory.getLog(UserIdMappingServiceBean.class);

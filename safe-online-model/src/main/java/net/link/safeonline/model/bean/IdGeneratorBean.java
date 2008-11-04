@@ -11,6 +11,7 @@ import net.link.safeonline.model.IdGenerator;
 
 
 @Stateless
+@LocalBinding(jndiBinding = IdGenerator.JNDI_BINDING)
 @Interceptors(ConfigurationInterceptor.class)
 @Configurable
 public class IdGeneratorBean implements IdGenerator {

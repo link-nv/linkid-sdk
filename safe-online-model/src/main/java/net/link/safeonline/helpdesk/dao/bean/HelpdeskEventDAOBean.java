@@ -26,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = HelpdeskEventDAO.JNDI_BINDING)
 public class HelpdeskEventDAOBean implements HelpdeskEventDAO {
 
     private final static Log                   LOG = LogFactory.getLog(HelpdeskEventDAOBean.class);

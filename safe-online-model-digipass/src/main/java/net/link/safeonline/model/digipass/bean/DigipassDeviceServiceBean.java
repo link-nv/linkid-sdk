@@ -59,6 +59,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = DigipassDeviceService.JNDI_BINDING)
 public class DigipassDeviceServiceBean implements DigipassDeviceService, DigipassDeviceServiceRemote {
 
     private static final Log     LOG = LogFactory.getLog(DigipassDeviceServiceBean.class);

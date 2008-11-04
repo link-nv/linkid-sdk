@@ -33,6 +33,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = DevicePolicyService.JNDI_BINDING)
 public class DevicePolicyServiceBean implements DevicePolicyService {
 
     private static final Log LOG = LogFactory.getLog(DevicePolicyServiceBean.class);

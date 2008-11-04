@@ -48,6 +48,7 @@ import org.jboss.annotation.security.SecurityDomain;
  */
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
+@LocalBinding(jndiBinding = AuthorizationManagerService.JNDI_BINDING)
 public class AuthorizationManagerServiceBean implements AuthorizationManagerService {
 
     private static final Log                 LOG                    = LogFactory.getLog(AuthorizationManagerServiceBean.class);

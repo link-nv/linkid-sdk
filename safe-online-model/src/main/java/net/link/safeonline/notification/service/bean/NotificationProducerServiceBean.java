@@ -59,6 +59,7 @@ import org.apache.commons.logging.LogFactory;
  * 
  */
 @Stateless
+@LocalBinding(jndiBinding = NotificationProducerService.JNDI_BINDING)
 @Interceptors( { AuditContextManager.class })
 public class NotificationProducerServiceBean implements NotificationProducerService {
 

@@ -43,6 +43,7 @@ import org.jboss.annotation.security.SecurityDomain;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
+@LocalBinding(jndiBinding = AttributeTypeService.JNDI_BINDING)
 public class AttributeTypeServiceBean implements AttributeTypeService, AttributeTypeServiceRemote {
 
     private static final Log       LOG = LogFactory.getLog(AttributeTypeServiceBean.class);

@@ -25,6 +25,7 @@ import net.link.safeonline.util.ee.IdentityServiceClient;
 
 
 @Stateless
+@LocalBinding(jndiBinding = WSSecurityConfiguration.JNDI_BINDING)
 public class WSSecurityConfigurationBean implements WSSecurityConfiguration {
 
     @EJB

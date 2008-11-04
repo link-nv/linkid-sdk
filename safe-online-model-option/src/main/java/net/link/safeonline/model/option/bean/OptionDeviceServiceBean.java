@@ -56,6 +56,7 @@ import net.link.safeonline.service.SubjectService;
  * @author dhouthoo
  */
 @Stateless
+@LocalBinding(jndiBinding = OptionDeviceService.JNDI_BINDING)
 public class OptionDeviceServiceBean implements OptionDeviceService, OptionDeviceServiceRemote {
 
     @EJB

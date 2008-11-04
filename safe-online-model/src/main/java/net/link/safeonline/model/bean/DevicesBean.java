@@ -20,6 +20,7 @@ import net.link.safeonline.model.Devices;
 
 
 @Stateless
+@LocalBinding(jndiBinding = Devices.JNDI_BINDING)
 public class DevicesBean implements Devices {
 
     @EJB

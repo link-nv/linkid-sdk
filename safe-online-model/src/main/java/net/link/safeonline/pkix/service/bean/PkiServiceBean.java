@@ -37,6 +37,7 @@ import org.jboss.annotation.security.SecurityDomain;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
+@LocalBinding(jndiBinding = PkiService.JNDI_BINDING)
 public class PkiServiceBean implements PkiService, PkiServiceRemote {
 
     private static final Log      LOG = LogFactory.getLog(PkiServiceBean.class);

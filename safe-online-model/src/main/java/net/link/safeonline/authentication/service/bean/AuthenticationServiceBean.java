@@ -160,6 +160,7 @@ import org.opensaml.xml.validation.ValidationException;
  * 
  */
 @Stateful
+@LocalBinding(jndiBinding = AuthenticationService.JNDI_BINDING)
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class, InputValidation.class })
 public class AuthenticationServiceBean implements AuthenticationService, AuthenticationServiceRemote {
 

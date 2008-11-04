@@ -35,6 +35,7 @@ import org.jboss.annotation.security.SecurityDomain;
  */
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
+@LocalBinding(jndiBinding = HelpdeskService.JNDI_BINDING)
 public class HelpdeskServiceBean implements HelpdeskService, HelpdeskServiceRemote {
 
     @EJB

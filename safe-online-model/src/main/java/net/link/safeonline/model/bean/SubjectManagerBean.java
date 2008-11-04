@@ -37,6 +37,7 @@ import org.jboss.annotation.security.SecurityDomain;
  */
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
+@LocalBinding(jndiBinding = SubjectManager.JNDI_BINDING)
 public class SubjectManagerBean implements SubjectManager {
 
     private static final Log LOG = LogFactory.getLog(SubjectManagerBean.class);

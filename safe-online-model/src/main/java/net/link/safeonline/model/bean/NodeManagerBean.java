@@ -30,6 +30,7 @@ import org.jboss.annotation.security.SecurityDomain;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_NODE_SECURITY_DOMAIN)
+@LocalBinding(jndiBinding = NodeManager.JNDI_BINDING)
 public class NodeManagerBean implements NodeManager {
 
     private static final Log LOG = LogFactory.getLog(NodeManagerBean.class);

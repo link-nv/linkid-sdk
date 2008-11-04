@@ -84,6 +84,7 @@ import org.jboss.annotation.security.SecurityDomain;
  */
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
+@LocalBinding(jndiBinding = IdentityService.JNDI_BINDING)
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class, InputValidation.class })
 public class IdentityServiceBean implements IdentityService, IdentityServiceRemote {
 

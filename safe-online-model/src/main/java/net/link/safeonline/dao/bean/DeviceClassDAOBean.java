@@ -24,6 +24,7 @@ import net.link.safeonline.jpa.QueryObjectFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = DeviceClassDAO.JNDI_BINDING)
 public class DeviceClassDAOBean implements DeviceClassDAO {
 
     @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)

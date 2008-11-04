@@ -36,6 +36,7 @@ import org.apache.commons.logging.LogFactory;
  * @author wvdhaute
  */
 @Stateless
+@LocalBinding(jndiBinding = NodeMappingService.JNDI_BINDING)
 public class NodeMappingServiceBean implements NodeMappingService {
 
     private final static Log LOG = LogFactory.getLog(NodeMappingServiceBean.class);

@@ -28,6 +28,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = CachedOcspValidator.JNDI_BINDING)
 public class CachedOcspValidatorBean implements CachedOcspValidator {
 
     private static final Log LOG = LogFactory.getLog(CachedOcspValidatorBean.class);

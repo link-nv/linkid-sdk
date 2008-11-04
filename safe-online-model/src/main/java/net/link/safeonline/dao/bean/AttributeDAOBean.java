@@ -31,6 +31,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = AttributeDAO.JNDI_BINDING)
 public class AttributeDAOBean implements AttributeDAO {
 
     private static final Log               LOG = LogFactory.getLog(AttributeDAOBean.class);

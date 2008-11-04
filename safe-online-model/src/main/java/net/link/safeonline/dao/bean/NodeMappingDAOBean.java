@@ -28,6 +28,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = NodeMappingDAO.JNDI_BINDING)
 public class NodeMappingDAOBean implements NodeMappingDAO {
 
     private static final Log                 LOG = LogFactory.getLog(NodeMappingDAOBean.class);

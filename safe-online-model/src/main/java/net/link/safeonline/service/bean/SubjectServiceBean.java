@@ -35,6 +35,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = SubjectService.JNDI_BINDING)
 public class SubjectServiceBean implements SubjectService, SubjectServiceRemote {
 
     @EJB

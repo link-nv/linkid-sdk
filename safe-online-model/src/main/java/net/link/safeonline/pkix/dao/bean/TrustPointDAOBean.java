@@ -28,6 +28,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = TrustPointDAO.JNDI_BINDING)
 public class TrustPointDAOBean implements TrustPointDAO {
 
     private static final Log                LOG = LogFactory.getLog(TrustPointDAOBean.class);

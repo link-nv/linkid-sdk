@@ -32,6 +32,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = PasswordDeviceService.JNDI_BINDING)
 public class PasswordDeviceServiceBean implements PasswordDeviceService, PasswordDeviceServiceRemote {
 
     private final static Log    LOG = LogFactory.getLog(PasswordDeviceServiceBean.class);

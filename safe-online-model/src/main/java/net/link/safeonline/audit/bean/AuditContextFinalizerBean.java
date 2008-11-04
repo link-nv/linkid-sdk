@@ -35,6 +35,7 @@ import org.apache.commons.logging.LogFactory;
  * @author fcorneli
  */
 @Stateless
+@LocalBinding(jndiBinding = AuditContextFinalizer.JNDI_BINDING)
 public class AuditContextFinalizerBean implements AuditContextFinalizer {
 
     private static final Log  LOG = LogFactory.getLog(AuditContextFinalizerBean.class);

@@ -23,6 +23,7 @@ import net.link.safeonline.jpa.QueryObjectFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = StatisticDataPointDAO.JNDI_BINDING)
 public class StatisticDataPointDAOBean implements StatisticDataPointDAO {
 
     @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)

@@ -48,6 +48,7 @@ import org.bouncycastle.x509.extension.X509ExtensionUtil;
 
 
 @Stateless
+@LocalBinding(jndiBinding = PkiValidator.JNDI_BINDING)
 public class PkiValidatorBean implements PkiValidator {
 
     private static final Log    LOG = LogFactory.getLog(PkiValidatorBean.class);

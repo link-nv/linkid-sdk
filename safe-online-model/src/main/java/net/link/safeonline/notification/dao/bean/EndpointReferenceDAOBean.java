@@ -30,6 +30,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = EndpointReferenceDAO.JNDI_BINDING)
 public class EndpointReferenceDAOBean implements EndpointReferenceDAO {
 
     private static final Log               LOG = LogFactory.getLog(EndpointReferenceDAOBean.class);

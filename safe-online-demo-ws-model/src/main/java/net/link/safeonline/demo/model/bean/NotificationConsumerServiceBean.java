@@ -46,6 +46,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = NotificationConsumerService.JNDI_BINDING)
 public class NotificationConsumerServiceBean implements NotificationConsumerService {
 
     private static final Log    LOG                           = LogFactory.getLog(NotificationConsumerServiceBean.class);

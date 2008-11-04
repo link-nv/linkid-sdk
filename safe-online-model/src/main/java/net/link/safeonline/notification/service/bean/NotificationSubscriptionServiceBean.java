@@ -39,6 +39,7 @@ import org.jboss.annotation.security.SecurityDomain;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
+@LocalBinding(jndiBinding = NotificationSubscriptionService.JNDI_BINDING)
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
 public class NotificationSubscriptionServiceBean implements NotificationSubscriptionService {
 

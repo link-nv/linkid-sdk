@@ -32,6 +32,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = SubscriptionDAO.JNDI_BINDING)
 public class SubscriptionDAOBean implements SubscriptionDAO {
 
     private static final Log                  LOG = LogFactory.getLog(SubscriptionDAOBean.class);

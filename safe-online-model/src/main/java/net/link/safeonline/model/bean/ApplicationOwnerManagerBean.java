@@ -25,6 +25,7 @@ import org.jboss.annotation.security.SecurityDomain;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
+@LocalBinding(jndiBinding = ApplicationOwnerManager.JNDI_BINDING)
 public class ApplicationOwnerManagerBean implements ApplicationOwnerManager {
 
     @EJB

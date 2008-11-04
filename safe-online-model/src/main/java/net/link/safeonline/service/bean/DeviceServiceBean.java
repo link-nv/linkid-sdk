@@ -73,6 +73,7 @@ import org.jboss.annotation.security.SecurityDomain;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
+@LocalBinding(jndiBinding = DeviceService.JNDI_BINDING)
 public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 
     private static final Log LOG = LogFactory.getLog(DeviceServiceBean.class);

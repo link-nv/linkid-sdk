@@ -27,6 +27,7 @@ import org.jboss.annotation.security.SecurityDomain;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
+@LocalBinding(jndiBinding = ConfigurationService.JNDI_BINDING)
 public class ConfigurationServiceBean implements ConfigurationService, ConfigurationServiceRemote {
 
     @EJB

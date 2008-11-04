@@ -71,6 +71,7 @@ import org.bouncycastle.ocsp.UnknownStatus;
  * 
  */
 @Stateless
+@LocalBinding(jndiBinding = OcspValidator.JNDI_BINDING)
 public class OcspValidatorBean implements OcspValidator {
 
     private static final Log LOG = LogFactory.getLog(OcspValidatorBean.class);

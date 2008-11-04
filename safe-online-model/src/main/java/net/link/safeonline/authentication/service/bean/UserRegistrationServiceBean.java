@@ -35,6 +35,7 @@ import net.link.safeonline.service.SubjectService;
  * 
  */
 @Stateless
+@LocalBinding(jndiBinding = UserRegistrationService.JNDI_BINDING)
 public class UserRegistrationServiceBean implements UserRegistrationService, UserRegistrationServiceRemote {
 
     @EJB

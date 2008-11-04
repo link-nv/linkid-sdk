@@ -34,6 +34,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = ApplicationIdentityManager.JNDI_BINDING)
 public class ApplicationIdentityManagerBean implements ApplicationIdentityManager {
 
     private static final Log       LOG = LogFactory.getLog(ApplicationIdentityManagerBean.class);

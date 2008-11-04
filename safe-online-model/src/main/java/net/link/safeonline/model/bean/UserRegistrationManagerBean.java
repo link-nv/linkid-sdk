@@ -27,6 +27,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = UserRegistrationManager.JNDI_BINDING)
 public class UserRegistrationManagerBean implements UserRegistrationManager {
 
     private static final Log LOG = LogFactory.getLog(UserRegistrationManagerBean.class);

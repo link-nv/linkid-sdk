@@ -31,6 +31,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = HistoryDAO.JNDI_BINDING)
 public class HistoryDAOBean implements HistoryDAO {
 
     private static final Log                     LOG = LogFactory.getLog(HistoryDAOBean.class);

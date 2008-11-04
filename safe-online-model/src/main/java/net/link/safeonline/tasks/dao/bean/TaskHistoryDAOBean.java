@@ -28,6 +28,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = TaskHistoryDAO.JNDI_BINDING)
 public class TaskHistoryDAOBean implements TaskHistoryDAO {
 
     private static final Log                 LOG = LogFactory.getLog(TaskHistoryDAOBean.class);

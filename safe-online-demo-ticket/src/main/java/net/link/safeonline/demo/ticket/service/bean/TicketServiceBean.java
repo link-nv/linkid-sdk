@@ -26,7 +26,7 @@ import org.joda.time.DateTime;
 
 
 @Stateless
-@LocalBinding(jndiBinding = TicketService.LOCAL_BINDING)
+@LocalBinding(jndiBinding = TicketService.JNDI_BINDING)
 public class TicketServiceBean implements TicketService {
 
     private static final Log LOG = LogFactory.getLog(TicketServiceBean.class);

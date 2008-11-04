@@ -16,6 +16,7 @@ import net.link.safeonline.model.Messaging;
 
 
 @Stateless
+@LocalBinding(jndiBinding = Messaging.JNDI_BINDING)
 public class MessagingBean implements Messaging {
 
     @Resource(mappedName = "ConnectionFactory")

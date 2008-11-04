@@ -31,6 +31,7 @@ import org.jboss.annotation.security.SecurityDomain;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_NODE_SECURITY_DOMAIN)
+@LocalBinding(jndiBinding = NodeIdentifierMappingService.JNDI_BINDING)
 public class NodeIdentifierMappingServiceBean implements NodeIdentifierMappingService {
 
     private static final Log          LOG = LogFactory.getLog(NodeIdentifierMappingServiceBean.class);

@@ -26,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = PkiProviderManager.JNDI_BINDING)
 public class PkiProviderManagerBean implements PkiProviderManager {
 
     private static final Log LOG = LogFactory.getLog(PkiProviderManagerBean.class);

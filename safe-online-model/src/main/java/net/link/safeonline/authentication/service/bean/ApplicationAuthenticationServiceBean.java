@@ -32,6 +32,7 @@ import org.apache.commons.logging.LogFactory;
  * 
  */
 @Stateless
+@LocalBinding(jndiBinding = ApplicationAuthenticationService.JNDI_BINDING)
 public class ApplicationAuthenticationServiceBean implements ApplicationAuthenticationService {
 
     private static final Log LOG = LogFactory.getLog(ApplicationAuthenticationServiceBean.class);

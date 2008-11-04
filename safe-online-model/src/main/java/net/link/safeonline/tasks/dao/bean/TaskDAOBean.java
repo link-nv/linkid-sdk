@@ -25,6 +25,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = TaskDAO.JNDI_BINDING)
 public class TaskDAOBean implements TaskDAO {
 
     private static final Log          LOG = LogFactory.getLog(TaskDAOBean.class);

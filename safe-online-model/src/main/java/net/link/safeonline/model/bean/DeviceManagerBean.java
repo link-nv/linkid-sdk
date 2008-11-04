@@ -30,6 +30,7 @@ import org.jboss.annotation.security.SecurityDomain;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_DEVICE_SECURITY_DOMAIN)
+@LocalBinding(jndiBinding = DeviceManager.JNDI_BINDING)
 public class DeviceManagerBean implements DeviceManager {
 
     private static final Log LOG = LogFactory.getLog(DeviceManagerBean.class);

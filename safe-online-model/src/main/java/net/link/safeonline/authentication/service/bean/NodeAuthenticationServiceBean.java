@@ -33,6 +33,7 @@ import org.apache.commons.logging.LogFactory;
  * 
  */
 @Stateless
+@LocalBinding(jndiBinding = NodeAuthenticationService.JNDI_BINDING)
 public class NodeAuthenticationServiceBean implements NodeAuthenticationService {
 
     private static final Log LOG = LogFactory.getLog(NodeAuthenticationServiceBean.class);

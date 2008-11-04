@@ -34,6 +34,7 @@ import org.jboss.annotation.security.SecurityDomain;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_NODE_SECURITY_DOMAIN)
+@LocalBinding(jndiBinding = NodeAccountService.JNDI_BINDING)
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
 public class NodeAccountServiceBean implements NodeAccountService, NodeAccountServiceRemote {
 

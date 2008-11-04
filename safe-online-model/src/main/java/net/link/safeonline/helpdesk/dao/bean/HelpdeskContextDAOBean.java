@@ -28,6 +28,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = HelpdeskContextDAO.JNDI_BINDING)
 public class HelpdeskContextDAOBean implements HelpdeskContextDAO {
 
     @EJB

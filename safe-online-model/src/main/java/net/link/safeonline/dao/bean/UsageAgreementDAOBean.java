@@ -31,6 +31,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = UsageAgreementDAO.JNDI_BINDING)
 public class UsageAgreementDAOBean implements UsageAgreementDAO {
 
     private static final Log                          LOG = LogFactory.getLog(UsageAgreementDAOBean.class);

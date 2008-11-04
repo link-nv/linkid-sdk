@@ -25,6 +25,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = TrustDomainDAO.JNDI_BINDING)
 public class TrustDomainDAOBean implements TrustDomainDAO {
 
     private static final Log                 LOG = LogFactory.getLog(TrustDomainDAOBean.class);

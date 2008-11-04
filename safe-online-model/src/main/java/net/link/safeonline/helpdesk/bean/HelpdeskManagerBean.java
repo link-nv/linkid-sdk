@@ -25,6 +25,7 @@ import org.apache.commons.logging.LogFactory;
 
 @Stateless
 @Configurable
+@LocalBinding(jndiBinding = HelpdeskManager.JNDI_BINDING)
 public class HelpdeskManagerBean implements HelpdeskManager {
 
     private final static Log   LOG                  = LogFactory.getLog(HelpdeskManagerBean.class);

@@ -38,6 +38,7 @@ import org.jboss.annotation.security.SecurityDomain;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
+@LocalBinding(jndiBinding = AuditService.JNDI_BINDING)
 public class AuditServiceBean implements AuditService {
 
     @EJB

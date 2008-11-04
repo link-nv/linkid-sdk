@@ -59,6 +59,7 @@ import org.jboss.annotation.security.SecurityDomain;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
+@LocalBinding(jndiBinding = AccountMergingService.JNDI_BINDING)
 public class AccountMergingServiceBean implements AccountMergingService {
 
     private static final Log     LOG = LogFactory.getLog(AccountMergingServiceBean.class);

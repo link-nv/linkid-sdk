@@ -53,6 +53,7 @@ import org.jboss.annotation.security.SecurityDomain;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_APPLICATION_SECURITY_DOMAIN)
+@LocalBinding(jndiBinding = AttributeProviderService.JNDI_BINDING)
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
 public class AttributeProviderServiceBean implements AttributeProviderService, AttributeProviderServiceRemote {
 

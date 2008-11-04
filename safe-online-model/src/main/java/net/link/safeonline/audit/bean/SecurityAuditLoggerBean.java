@@ -26,6 +26,7 @@ import net.link.safeonline.entity.audit.SecurityThreatType;
 
 
 @Stateless
+@LocalBinding(jndiBinding = SecurityAuditLogger.JNDI_BINDING)
 public class SecurityAuditLoggerBean implements SecurityAuditLogger {
 
     @EJB

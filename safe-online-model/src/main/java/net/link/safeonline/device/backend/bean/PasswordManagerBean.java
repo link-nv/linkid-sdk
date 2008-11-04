@@ -36,6 +36,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 
 @Stateless
+@LocalBinding(jndiBinding = PasswordManager.JNDI_BINDING)
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
 public class PasswordManagerBean implements PasswordManager {
 

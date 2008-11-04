@@ -24,6 +24,7 @@ import net.link.safeonline.entity.audit.ResourceNameType;
 
 
 @Stateless
+@LocalBinding(jndiBinding = ResourceAuditLogger.JNDI_BINDING)
 public class ResourceAuditLoggerBean implements ResourceAuditLogger {
 
     @EJB

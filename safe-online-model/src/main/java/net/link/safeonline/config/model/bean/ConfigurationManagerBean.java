@@ -23,6 +23,7 @@ import net.link.safeonline.entity.config.ConfigItemEntity;
 
 @Stateless
 @Configurable
+@LocalBinding(jndiBinding = ConfigurationManager.JNDI_BINDING)
 @Interceptors( { ConfigurationInterceptor.class })
 public class ConfigurationManagerBean implements ConfigurationManager {
 

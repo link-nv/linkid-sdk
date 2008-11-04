@@ -17,6 +17,7 @@ import net.link.safeonline.config.model.ConfigurationInterceptor;
 
 @Stateless
 @Configurable
+@LocalBinding(jndiBinding = SamlAuthorityService.JNDI_BINDING)
 @Interceptors(ConfigurationInterceptor.class)
 public class SamlAuthorityServiceBean implements SamlAuthorityService {
 

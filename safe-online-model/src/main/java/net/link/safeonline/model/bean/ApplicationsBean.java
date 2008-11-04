@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = Applications.JNDI_BINDING)
 public class ApplicationsBean implements Applications {
 
     private static final Log       LOG = LogFactory.getLog(ApplicationsBean.class);

@@ -35,6 +35,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = BeIdDeviceService.JNDI_BINDING)
 public class BeIdDeviceServiceBean implements BeIdDeviceService, BeIdDeviceServiceRemote {
 
     private final static Log  LOG = LogFactory.getLog(BeIdDeviceServiceBean.class);

@@ -39,6 +39,7 @@ import org.apache.commons.logging.LogFactory;
  * 
  */
 @Stateless
+@LocalBinding(jndiBinding = AuthorizationService.JNDI_BINDING)
 public class AuthorizationServiceBean implements AuthorizationService, AuthorizationServiceRemote {
 
     private static final Log LOG              = LogFactory.getLog(AuthorizationServiceBean.class);

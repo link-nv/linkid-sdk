@@ -77,6 +77,7 @@ import org.opensaml.saml2.core.Subject;
  * 
  */
 @Stateful
+@LocalBinding(jndiBinding = DeviceOperationService.JNDI_BINDING)
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class, InputValidation.class })
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
 public class DeviceOperationServiceBean implements DeviceOperationService, DeviceOperationServiceRemote {

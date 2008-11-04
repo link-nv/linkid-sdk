@@ -54,6 +54,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = ProxyAttributeService.JNDI_BINDING)
 public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAttributeServiceRemote {
 
     private static final Log    LOG = LogFactory.getLog(ProxyAttributeServiceBean.class);

@@ -29,6 +29,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = AccessAuditDAO.JNDI_BINDING)
 public class AccessAuditDAOBean implements AccessAuditDAO {
 
     private static final Log                 LOG = LogFactory.getLog(AccessAuditDAOBean.class);

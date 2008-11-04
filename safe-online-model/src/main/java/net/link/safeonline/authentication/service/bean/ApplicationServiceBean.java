@@ -85,6 +85,7 @@ import org.jboss.annotation.security.SecurityDomain;
  */
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
+@LocalBinding(jndiBinding = ApplicationService.JNDI_BINDING)
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
 public class ApplicationServiceBean implements ApplicationService, ApplicationServiceRemote {
 

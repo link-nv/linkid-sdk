@@ -54,6 +54,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
+@LocalBinding(jndiBinding = StatisticService.JNDI_BINDING)
 public class StatisticServiceBean implements StatisticService, StatisticServiceRemote {
 
     private static final Log    LOG            = LogFactory.getLog(StatisticServiceBean.class);

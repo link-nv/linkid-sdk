@@ -25,6 +25,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = SchedulingDAO.JNDI_BINDING)
 public class SchedulingDAOBean implements SchedulingDAO {
 
     private static final Log                LOG = LogFactory.getLog(SchedulingDAOBean.class);

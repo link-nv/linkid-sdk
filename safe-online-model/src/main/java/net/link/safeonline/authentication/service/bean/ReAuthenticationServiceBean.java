@@ -40,6 +40,7 @@ import org.jboss.annotation.security.SecurityDomain;
 
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
 @Stateful
+@LocalBinding(jndiBinding = ReAuthenticationService.JNDI_BINDING)
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class, InputValidation.class })
 public class ReAuthenticationServiceBean implements ReAuthenticationService {
 

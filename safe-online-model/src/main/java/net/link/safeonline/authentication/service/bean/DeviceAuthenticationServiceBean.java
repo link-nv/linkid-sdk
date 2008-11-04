@@ -35,6 +35,7 @@ import org.apache.commons.logging.LogFactory;
  * 
  */
 @Stateless
+@LocalBinding(jndiBinding = DeviceAuthenticationService.JNDI_BINDING)
 public class DeviceAuthenticationServiceBean implements DeviceAuthenticationService {
 
     private static final Log LOG = LogFactory.getLog(DeviceAuthenticationServiceBean.class);

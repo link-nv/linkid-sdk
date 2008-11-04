@@ -32,6 +32,7 @@ import org.jboss.annotation.security.SecurityDomain;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
+@LocalBinding(jndiBinding = SchedulingService.JNDI_BINDING)
 public class SchedulingServiceBean implements SchedulingService, SchedulingServiceRemote {
 
     @EJB

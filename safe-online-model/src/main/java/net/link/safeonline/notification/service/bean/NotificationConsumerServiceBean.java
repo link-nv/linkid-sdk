@@ -23,6 +23,7 @@ import org.jboss.annotation.security.SecurityDomain;
 
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_NODE_SECURITY_DOMAIN)
+@LocalBinding(jndiBinding = NotificationConsumerService.JNDI_BINDING)
 public class NotificationConsumerServiceBean implements NotificationConsumerService {
 
     private static final Log LOG = LogFactory.getLog(NotificationConsumerServiceBean.class);

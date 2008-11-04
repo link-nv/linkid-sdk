@@ -33,6 +33,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = AuditContextDAO.JNDI_BINDING)
 public class AuditContextDAOBean implements AuditContextDAO {
 
     private static final Log                  LOG = LogFactory.getLog(AuditContextDAOBean.class);

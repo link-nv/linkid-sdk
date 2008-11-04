@@ -53,6 +53,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = EncapDeviceService.JNDI_BINDING)
 public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceServiceRemote {
 
     private static final Log     LOG = LogFactory.getLog(EncapDeviceServiceBean.class);

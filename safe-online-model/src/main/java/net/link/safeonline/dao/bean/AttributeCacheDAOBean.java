@@ -28,6 +28,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = AttributeCacheDAO.JNDI_BINDING)
 public class AttributeCacheDAOBean implements AttributeCacheDAO {
 
     private static final Log                    LOG = LogFactory.getLog(AttributeCacheDAOBean.class);

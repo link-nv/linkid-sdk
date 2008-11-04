@@ -29,6 +29,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = ApplicationDAO.JNDI_BINDING)
 public class ApplicationDAOBean implements ApplicationDAO {
 
     private static final Log                 LOG = LogFactory.getLog(ApplicationDAOBean.class);

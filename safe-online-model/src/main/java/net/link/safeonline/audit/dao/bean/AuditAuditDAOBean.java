@@ -25,6 +25,7 @@ import net.link.safeonline.jpa.QueryObjectFactory;
 
 
 @Stateless
+@LocalBinding(jndiBinding = AuditAuditDAO.JNDI_BINDING)
 public class AuditAuditDAOBean implements AuditAuditDAO {
 
     @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)

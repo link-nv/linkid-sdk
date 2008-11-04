@@ -19,6 +19,7 @@ import net.link.safeonline.sdk.ws.encap.authentication.EncapAuthenticationClient
 
 
 @Stateless
+@LocalBinding(jndiBinding = MobileManager.JNDI_BINDING)
 @Interceptors(ConfigurationInterceptor.class)
 @Configurable
 public class MobileManagerBean implements MobileManager {
