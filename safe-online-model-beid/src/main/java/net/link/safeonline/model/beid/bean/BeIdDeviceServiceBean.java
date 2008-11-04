@@ -32,11 +32,13 @@ import net.link.safeonline.pkix.model.PkiProvider;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
 @LocalBinding(jndiBinding = BeIdDeviceService.JNDI_BINDING)
+@RemoteBinding(jndiBinding = BeIdDeviceServiceRemote.JNDI_BINDING)
 public class BeIdDeviceServiceBean implements BeIdDeviceService, BeIdDeviceServiceRemote {
 
     private final static Log  LOG = LogFactory.getLog(BeIdDeviceServiceBean.class);

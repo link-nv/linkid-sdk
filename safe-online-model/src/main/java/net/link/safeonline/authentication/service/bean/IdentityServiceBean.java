@@ -73,6 +73,7 @@ import net.link.safeonline.validation.annotation.NotNull;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 
@@ -86,6 +87,7 @@ import org.jboss.annotation.security.SecurityDomain;
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
 @LocalBinding(jndiBinding = IdentityService.JNDI_BINDING)
+@RemoteBinding(jndiBinding = IdentityServiceRemote.JNDI_BINDING)
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class, InputValidation.class })
 public class IdentityServiceBean implements IdentityService, IdentityServiceRemote {
 

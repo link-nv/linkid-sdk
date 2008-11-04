@@ -38,6 +38,7 @@ import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 import org.jfree.chart.ChartFactory;
@@ -56,6 +57,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
 @LocalBinding(jndiBinding = StatisticService.JNDI_BINDING)
+@RemoteBinding(jndiBinding = StatisticServiceRemote.JNDI_BINDING)
 public class StatisticServiceBean implements StatisticService, StatisticServiceRemote {
 
     private static final Log    LOG            = LogFactory.getLog(StatisticServiceBean.class);

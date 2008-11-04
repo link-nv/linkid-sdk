@@ -56,11 +56,13 @@ import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
 @LocalBinding(jndiBinding = DigipassDeviceService.JNDI_BINDING)
+@RemoteBinding(jndiBinding = DigipassDeviceServiceRemote.JNDI_BINDING)
 public class DigipassDeviceServiceBean implements DigipassDeviceService, DigipassDeviceServiceRemote {
 
     private static final Log     LOG = LogFactory.getLog(DigipassDeviceServiceBean.class);

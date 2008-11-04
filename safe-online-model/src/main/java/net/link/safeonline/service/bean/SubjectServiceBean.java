@@ -32,11 +32,13 @@ import net.link.safeonline.service.SubjectServiceRemote;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
 @LocalBinding(jndiBinding = SubjectService.JNDI_BINDING)
+@RemoteBinding(jndiBinding = SubjectServiceRemote.JNDI_BINDING)
 public class SubjectServiceBean implements SubjectService, SubjectServiceRemote {
 
     @EJB

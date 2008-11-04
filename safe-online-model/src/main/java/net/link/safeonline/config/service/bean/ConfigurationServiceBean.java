@@ -22,6 +22,7 @@ import net.link.safeonline.config.service.ConfigurationServiceRemote;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
 
+import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 
@@ -29,6 +30,7 @@ import org.jboss.annotation.security.SecurityDomain;
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
 @LocalBinding(jndiBinding = ConfigurationService.JNDI_BINDING)
+@RemoteBinding(jndiBinding = ConfigurationServiceRemote.JNDI_BINDING)
 public class ConfigurationServiceBean implements ConfigurationService, ConfigurationServiceRemote {
 
     @EJB

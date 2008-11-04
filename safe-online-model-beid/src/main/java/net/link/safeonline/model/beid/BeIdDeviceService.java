@@ -33,42 +33,22 @@ public interface BeIdDeviceService extends SafeOnlineService {
 
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/BeIdDeviceServiceBean/local";
 
+
     String authenticate(String sessionId, String applicationId, AuthenticationStatement authenticationStatement)
-                                                                                                                throws ArgumentIntegrityException,
-                                                                                                                TrustDomainNotFoundException,
-                                                                                                                SubjectNotFoundException,
-                                                                                                                PkiRevokedException,
-                                                                                                                PkiSuspendedException,
-                                                                                                                PkiExpiredException,
-                                                                                                                PkiNotYetValidException,
-                                                                                                                PkiInvalidException,
-                                                                                                                DeviceNotFoundException,
-                                                                                                                DeviceDisabledException;
+            throws ArgumentIntegrityException, TrustDomainNotFoundException, SubjectNotFoundException, PkiRevokedException,
+            PkiSuspendedException, PkiExpiredException, PkiNotYetValidException, PkiInvalidException, DeviceNotFoundException,
+            DeviceDisabledException;
 
-    void register(String sessionId, String userId, String operation, byte[] identityStatementData) throws PermissionDeniedException,
-                                                                                                  ArgumentIntegrityException,
-                                                                                                  TrustDomainNotFoundException,
-                                                                                                  AttributeTypeNotFoundException,
-                                                                                                  DeviceNotFoundException,
-                                                                                                  AttributeNotFoundException,
-                                                                                                  AlreadyRegisteredException,
-                                                                                                  PkiRevokedException,
-                                                                                                  PkiSuspendedException,
-                                                                                                  PkiExpiredException,
-                                                                                                  PkiNotYetValidException,
-                                                                                                  PkiInvalidException;
+    void register(String sessionId, String userId, String operation, byte[] identityStatementData)
+            throws PermissionDeniedException, ArgumentIntegrityException, TrustDomainNotFoundException, AttributeTypeNotFoundException,
+            DeviceNotFoundException, AttributeNotFoundException, AlreadyRegisteredException, PkiRevokedException, PkiSuspendedException,
+            PkiExpiredException, PkiNotYetValidException, PkiInvalidException;
 
-    void remove(String sessionId, String userId, String operation, byte[] identityStatementData) throws TrustDomainNotFoundException,
-                                                                                                PermissionDeniedException,
-                                                                                                ArgumentIntegrityException,
-                                                                                                AttributeTypeNotFoundException,
-                                                                                                SubjectNotFoundException,
-                                                                                                DeviceNotFoundException,
-                                                                                                PkiRevokedException, PkiSuspendedException,
-                                                                                                PkiExpiredException,
-                                                                                                PkiNotYetValidException,
-                                                                                                PkiInvalidException;
+    void remove(String sessionId, String userId, String operation, byte[] identityStatementData)
+            throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException, AttributeTypeNotFoundException,
+            SubjectNotFoundException, DeviceNotFoundException, PkiRevokedException, PkiSuspendedException, PkiExpiredException,
+            PkiNotYetValidException, PkiInvalidException;
 
-    void disable(String userId, String attribute) throws DeviceNotFoundException, SubjectNotFoundException,
-                                                 DeviceRegistrationNotFoundException;
+    void disable(String userId, String attribute)
+            throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException;
 }

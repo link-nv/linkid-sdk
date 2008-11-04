@@ -60,6 +60,7 @@ import net.link.safeonline.validation.annotation.NotNull;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.utils.Base64;
+import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 import org.joda.time.DateTime;
@@ -79,6 +80,7 @@ import org.opensaml.saml2.core.Subject;
  */
 @Stateful
 @LocalBinding(jndiBinding = DeviceOperationService.JNDI_BINDING)
+@RemoteBinding(jndiBinding = DeviceOperationServiceRemote.JNDI_BINDING)
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class, InputValidation.class })
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
 public class DeviceOperationServiceBean implements DeviceOperationService, DeviceOperationServiceRemote {

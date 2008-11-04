@@ -68,6 +68,7 @@ import net.link.safeonline.service.DeviceServiceRemote;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 
@@ -75,6 +76,7 @@ import org.jboss.annotation.security.SecurityDomain;
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
 @LocalBinding(jndiBinding = DeviceService.JNDI_BINDING)
+@RemoteBinding(jndiBinding = DeviceServiceRemote.JNDI_BINDING)
 public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 
     private static final Log LOG = LogFactory.getLog(DeviceServiceBean.class);

@@ -50,11 +50,13 @@ import net.link.safeonline.service.SubjectService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
 @LocalBinding(jndiBinding = EncapDeviceService.JNDI_BINDING)
+@RemoteBinding(jndiBinding = EncapDeviceServiceRemote.JNDI_BINDING)
 public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceServiceRemote {
 
     private static final Log     LOG = LogFactory.getLog(EncapDeviceServiceBean.class);

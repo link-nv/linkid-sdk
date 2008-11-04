@@ -29,6 +29,7 @@ import net.link.safeonline.service.SubjectService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
 
 
@@ -41,6 +42,7 @@ import org.jboss.annotation.ejb.LocalBinding;
  */
 @Stateless
 @LocalBinding(jndiBinding = AuthorizationService.JNDI_BINDING)
+@RemoteBinding(jndiBinding = AuthorizationServiceRemote.JNDI_BINDING)
 public class AuthorizationServiceBean implements AuthorizationService, AuthorizationServiceRemote {
 
     private static final Log LOG              = LogFactory.getLog(AuthorizationServiceBean.class);

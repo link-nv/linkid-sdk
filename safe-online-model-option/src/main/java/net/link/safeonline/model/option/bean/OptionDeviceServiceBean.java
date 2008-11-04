@@ -40,6 +40,7 @@ import net.link.safeonline.model.option.exception.OptionAuthenticationException;
 import net.link.safeonline.model.option.exception.OptionRegistrationException;
 import net.link.safeonline.service.SubjectService;
 
+import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
 
 
@@ -59,6 +60,7 @@ import org.jboss.annotation.ejb.LocalBinding;
  */
 @Stateless
 @LocalBinding(jndiBinding = OptionDeviceService.JNDI_BINDING)
+@RemoteBinding(jndiBinding = OptionDeviceServiceRemote.JNDI_BINDING)
 public class OptionDeviceServiceBean implements OptionDeviceService, OptionDeviceServiceRemote {
 
     @EJB

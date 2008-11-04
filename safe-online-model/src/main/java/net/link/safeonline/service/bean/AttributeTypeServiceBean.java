@@ -38,6 +38,7 @@ import net.link.safeonline.util.FilterUtil;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 
@@ -45,6 +46,7 @@ import org.jboss.annotation.security.SecurityDomain;
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
 @LocalBinding(jndiBinding = AttributeTypeService.JNDI_BINDING)
+@RemoteBinding(jndiBinding = AttributeTypeServiceRemote.JNDI_BINDING)
 public class AttributeTypeServiceBean implements AttributeTypeService, AttributeTypeServiceRemote {
 
     private static final Log       LOG = LogFactory.getLog(AttributeTypeServiceBean.class);

@@ -14,7 +14,7 @@ import java.security.cert.X509Certificate;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 
-import net.link.safeonline.model.performance.PerformanceService;
+import net.link.safeonline.model.performance.PerformanceServiceRemote;
 import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
 
 import org.apache.commons.logging.Log;
@@ -23,8 +23,8 @@ import org.jboss.annotation.ejb.RemoteBinding;
 
 
 @Stateless
-@RemoteBinding(jndiBinding = PerformanceService.JNDI_BINDING)
-public class PerformanceServiceBean implements PerformanceService {
+@RemoteBinding(jndiBinding = PerformanceServiceRemote.JNDI_BINDING)
+public class PerformanceServiceBean implements PerformanceServiceRemote {
 
     private static final Log LOG = LogFactory.getLog(PerformanceServiceBean.class);
 

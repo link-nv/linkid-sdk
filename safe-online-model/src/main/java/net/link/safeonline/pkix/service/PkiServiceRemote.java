@@ -9,8 +9,12 @@ package net.link.safeonline.pkix.service;
 
 import javax.ejb.Remote;
 
+import net.link.safeonline.SafeOnlineService;
+
 
 @Remote
 public interface PkiServiceRemote extends PkiService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/PkiServiceBean/remote";
 
 }

@@ -51,11 +51,13 @@ import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
 @LocalBinding(jndiBinding = ProxyAttributeService.JNDI_BINDING)
+@RemoteBinding(jndiBinding = ProxyAttributeServiceRemote.JNDI_BINDING)
 public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAttributeServiceRemote {
 
     private static final Log    LOG = LogFactory.getLog(ProxyAttributeServiceBean.class);

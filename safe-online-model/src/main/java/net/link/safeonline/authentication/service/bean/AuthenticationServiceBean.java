@@ -132,6 +132,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.utils.Base64;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
@@ -162,6 +163,7 @@ import org.opensaml.xml.validation.ValidationException;
  */
 @Stateful
 @LocalBinding(jndiBinding = AuthenticationService.JNDI_BINDING)
+@RemoteBinding(jndiBinding = AuthenticationServiceRemote.JNDI_BINDING)
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class, InputValidation.class })
 public class AuthenticationServiceBean implements AuthenticationService, AuthenticationServiceRemote {
 

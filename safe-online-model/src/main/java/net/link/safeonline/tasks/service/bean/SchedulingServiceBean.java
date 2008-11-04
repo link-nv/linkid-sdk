@@ -27,6 +27,7 @@ import net.link.safeonline.tasks.model.TaskScheduler;
 import net.link.safeonline.tasks.service.SchedulingService;
 import net.link.safeonline.tasks.service.SchedulingServiceRemote;
 
+import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 
@@ -34,6 +35,7 @@ import org.jboss.annotation.security.SecurityDomain;
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
 @LocalBinding(jndiBinding = SchedulingService.JNDI_BINDING)
+@RemoteBinding(jndiBinding = SchedulingServiceRemote.JNDI_BINDING)
 public class SchedulingServiceBean implements SchedulingService, SchedulingServiceRemote {
 
     @EJB

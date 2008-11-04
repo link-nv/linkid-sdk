@@ -17,7 +17,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import net.link.safeonline.model.performance.PerformanceService;
+import net.link.safeonline.model.performance.PerformanceServiceRemote;
 import net.link.safeonline.performance.drivers.AttribDriver;
 import net.link.safeonline.performance.drivers.AuthDriver;
 import net.link.safeonline.performance.drivers.IdMappingDriver;
@@ -84,7 +84,7 @@ public class BasicScenario implements Scenario {
 
         LOG.debug("retrieving performance keys..");
         try {
-            PerformanceService service = (PerformanceService) getInitialContext(execution.getHostname()).lookup(PerformanceService.JNDI_BINDING);
+            PerformanceServiceRemote service = (PerformanceServiceRemote) getInitialContext(execution.getHostname()).lookup(PerformanceServiceRemote.JNDI_BINDING);
             this.applicationKey = new KeyStore.PrivateKeyEntry(service.getPrivateKey(), new Certificate[] { service.getCertificate() });
         } catch (NamingException e) {
             LOG.error("OLAS couldn't provide performance keys.", e);

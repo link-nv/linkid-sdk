@@ -29,6 +29,7 @@ import net.link.safeonline.entity.SubjectEntity;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 
@@ -36,6 +37,7 @@ import org.jboss.annotation.security.SecurityDomain;
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_NODE_SECURITY_DOMAIN)
 @LocalBinding(jndiBinding = NodeAccountService.JNDI_BINDING)
+@RemoteBinding(jndiBinding = NodeAccountServiceRemote.JNDI_BINDING)
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
 public class NodeAccountServiceBean implements NodeAccountService, NodeAccountServiceRemote {
 

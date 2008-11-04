@@ -9,8 +9,12 @@ package net.link.safeonline.service;
 
 import javax.ejb.Remote;
 
+import net.link.safeonline.SafeOnlineService;
+
 
 @Remote
 public interface SubjectServiceRemote extends SubjectService {
+
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/SubjectServiceBean/remote";
 
 }

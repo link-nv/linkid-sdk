@@ -41,6 +41,7 @@ import net.link.safeonline.model.UsageAgreementManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 
@@ -54,6 +55,7 @@ import org.jboss.annotation.security.SecurityDomain;
 @Stateless
 @SecurityDomain(SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN)
 @LocalBinding(jndiBinding = UsageAgreementService.JNDI_BINDING)
+@RemoteBinding(jndiBinding = UsageAgreementServiceRemote.JNDI_BINDING)
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
 public class UsageAgreementServiceBean implements UsageAgreementService, UsageAgreementServiceRemote {
 

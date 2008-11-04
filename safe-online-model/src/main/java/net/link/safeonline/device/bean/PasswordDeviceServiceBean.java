@@ -29,11 +29,13 @@ import net.link.safeonline.service.SubjectService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
 @LocalBinding(jndiBinding = PasswordDeviceService.JNDI_BINDING)
+@RemoteBinding(jndiBinding = PasswordDeviceServiceRemote.JNDI_BINDING)
 public class PasswordDeviceServiceBean implements PasswordDeviceService, PasswordDeviceServiceRemote {
 
     private final static Log    LOG = LogFactory.getLog(PasswordDeviceServiceBean.class);
