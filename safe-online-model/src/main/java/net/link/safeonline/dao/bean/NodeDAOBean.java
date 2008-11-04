@@ -21,6 +21,8 @@ import net.link.safeonline.dao.NodeDAO;
 import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.jpa.QueryObjectFactory;
 
+import org.jboss.annotation.ejb.LocalBinding;
+
 
 @Stateless
 @LocalBinding(jndiBinding = NodeDAO.JNDI_BINDING)
@@ -61,9 +63,8 @@ public class NodeDAOBean implements NodeDAO {
     public NodeEntity getNode(String name) throws NodeNotFoundException {
 
         NodeEntity node = findNode(name);
-        if (null == node) {
+        if (null == node)
             throw new NodeNotFoundException();
-        }
         return node;
     }
 
@@ -71,9 +72,8 @@ public class NodeDAOBean implements NodeDAO {
 
         List<NodeEntity> nodes = this.queryObject.listNodeEntitiesWhereAuthnCertificateSubject(authnCertificate.getSubjectX500Principal()
                                                                                                                .getName());
-        if (nodes.isEmpty()) {
+        if (nodes.isEmpty())
             throw new NodeNotFoundException();
-        }
         NodeEntity node = nodes.get(0);
         return node;
     }
@@ -94,9 +94,8 @@ public class NodeDAOBean implements NodeDAO {
                                                  .listNodeEntitiesWhereSigningCertificateSubject(signingCertificate
                                                                                                                    .getSubjectX500Principal()
                                                                                                                    .getName());
-        if (nodes.isEmpty()) {
+        if (nodes.isEmpty())
             throw new NodeNotFoundException();
-        }
         NodeEntity node = nodes.get(0);
         return node;
     }

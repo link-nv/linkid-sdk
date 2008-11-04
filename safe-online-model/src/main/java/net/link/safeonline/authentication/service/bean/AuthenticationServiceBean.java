@@ -132,6 +132,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.utils.Base64;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.jboss.annotation.ejb.LocalBinding;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
@@ -276,9 +277,10 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     private SecurityAuditLogger              securityAuditLogger;
 
 
-    public ProtocolContext initialize(Locale language, Integer color, Boolean minimal,
-            @NotNull AuthnRequest samlAuthnRequest) throws AuthenticationInitializationException,
-            ApplicationNotFoundException, TrustDomainNotFoundException {
+    public ProtocolContext initialize(Locale language, Integer color, Boolean minimal, @NotNull AuthnRequest samlAuthnRequest)
+                                                                                                                              throws AuthenticationInitializationException,
+                                                                                                                              ApplicationNotFoundException,
+                                                                                                                              TrustDomainNotFoundException {
 
         Issuer issuer = samlAuthnRequest.getIssuer();
         String issuerName = issuer.getValue();
@@ -343,8 +345,8 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         this.expectedChallengeId = samlAuthnRequestId;
         this.ssoEnabled = !forceAuthn;
 
-        return new ProtocolContext(this.expectedApplicationId, this.expectedApplicationFriendlyName,
-                this.expectedTarget, language, color, minimal, this.requiredDevicePolicy);
+        return new ProtocolContext(this.expectedApplicationId, this.expectedApplicationFriendlyName, this.expectedTarget, language, color,
+                minimal, this.requiredDevicePolicy);
     }
 
     private boolean validateSignature(X509Certificate certificate, AuthnRequest samlAuthnRequest) throws TrustDomainNotFoundException {
@@ -1101,7 +1103,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     }
 
     private void checkRequiredUsageAgreement(String language) throws ApplicationNotFoundException,
-            UsageAgreementAcceptationRequiredException, SubscriptionNotFoundException {
+                                                             UsageAgreementAcceptationRequiredException, SubscriptionNotFoundException {
 
         boolean requiresUsageAgreementAcceptation = this.usageAgreementService.requiresUsageAgreementAcceptation(
                 this.expectedApplicationId, language);
@@ -1111,16 +1113,16 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
     private void checkRequiredGlobalUsageAgreement(String language) throws UsageAgreementAcceptationRequiredException {
 
-        boolean requiresGlobalUsageAgreementAcceptation = this.usageAgreementService
-                .requiresGlobalUsageAgreementAcceptation(language);
+        boolean requiresGlobalUsageAgreementAcceptation = this.usageAgreementService.requiresGlobalUsageAgreementAcceptation(language);
         if (true == requiresGlobalUsageAgreementAcceptation)
             throw new UsageAgreementAcceptationRequiredException();
     }
 
-    public void commitAuthentication(String language) throws ApplicationNotFoundException,
-            SubscriptionNotFoundException, ApplicationIdentityNotFoundException, IdentityConfirmationRequiredException,
-            MissingAttributeException, EmptyDevicePolicyException, DevicePolicyException,
-            UsageAgreementAcceptationRequiredException, PermissionDeniedException, AttributeTypeNotFoundException {
+    public void commitAuthentication(String language) throws ApplicationNotFoundException, SubscriptionNotFoundException,
+                                                     ApplicationIdentityNotFoundException, IdentityConfirmationRequiredException,
+                                                     MissingAttributeException, EmptyDevicePolicyException, DevicePolicyException,
+                                                     UsageAgreementAcceptationRequiredException, PermissionDeniedException,
+                                                     AttributeTypeNotFoundException {
 
         LOG.debug("commitAuthentication for application: " + this.expectedApplicationId);
 

@@ -2,7 +2,6 @@ package net.link.safeonline.beid.bean;
 
 import javax.ejb.Stateless;
 
-import net.link.safeonline.beid.BeidConstants;
 import net.link.safeonline.beid.LanguageSelection;
 import net.link.safeonline.ctrl.bean.LanguageSelectionBaseBean;
 

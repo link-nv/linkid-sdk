@@ -25,7 +25,6 @@ import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.device.sdk.AuthenticationContext;
 import net.link.safeonline.digipass.Authentication;
-import net.link.safeonline.digipass.DigipassConstants;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.model.digipass.DigipassDeviceService;
 import net.link.safeonline.shared.helpdesk.LogLevelType;

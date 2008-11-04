@@ -21,6 +21,8 @@ import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.jpa.QueryObjectFactory;
 
+import org.jboss.annotation.ejb.LocalBinding;
+
 
 @Stateless
 @LocalBinding(jndiBinding = StatisticDataPointDAO.JNDI_BINDING)
@@ -55,11 +57,11 @@ public class StatisticDataPointDAOBean implements StatisticDataPointDAO {
     public StatisticDataPointEntity findOrAddStatisticDataPoint(String name, StatisticEntity statistic) {
 
         StatisticDataPointEntity dp = null;
-        List<StatisticDataPointEntity> dps = this.listStatisticDataPoints(name, statistic);
+        List<StatisticDataPointEntity> dps = listStatisticDataPoints(name, statistic);
         if (dps.size() > 0) {
             dp = dps.get(0);
         } else {
-            dp = this.addStatisticDataPoint(name, statistic, 0, 0, 0);
+            dp = addStatisticDataPoint(name, statistic, 0, 0, 0);
         }
         return dp;
     }

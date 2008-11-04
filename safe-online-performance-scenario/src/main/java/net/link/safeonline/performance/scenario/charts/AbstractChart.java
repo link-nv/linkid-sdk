@@ -293,6 +293,7 @@ public abstract class AbstractChart implements Chart {
         }
     }
 
+    // FIXME
     <S> S getService(Class<S> service, String binding) {
 
         try {

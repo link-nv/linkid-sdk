@@ -30,7 +30,6 @@ import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.data.DeviceRegistrationDO;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.encap.Disable;
-import net.link.safeonline.encap.EncapConstants;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionPK;

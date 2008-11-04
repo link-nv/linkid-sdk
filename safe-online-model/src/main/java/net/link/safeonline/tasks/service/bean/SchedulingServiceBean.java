@@ -27,6 +27,7 @@ import net.link.safeonline.tasks.model.TaskScheduler;
 import net.link.safeonline.tasks.service.SchedulingService;
 import net.link.safeonline.tasks.service.SchedulingServiceRemote;
 
+import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 
 

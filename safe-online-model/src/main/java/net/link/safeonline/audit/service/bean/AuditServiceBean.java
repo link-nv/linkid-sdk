@@ -33,6 +33,7 @@ import net.link.safeonline.entity.audit.ResourceAuditEntity;
 import net.link.safeonline.entity.audit.SecurityAuditEntity;
 import net.link.safeonline.service.SubjectService;
 
+import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 
 

@@ -41,6 +41,7 @@ import net.link.safeonline.model.UsageAgreementManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 
 
@@ -89,8 +90,8 @@ public class UsageAgreementServiceBean implements UsageAgreementService, UsageAg
     }
 
     /**
-     * Check write permission on the given application. Only the subject corresponding with the application owner of the
-     * application is allowed to write to the application entity.
+     * Check write permission on the given application. Only the subject corresponding with the application owner of the application is
+     * allowed to write to the application entity.
      * 
      * @param application
      * @throws PermissionDeniedException
@@ -232,8 +233,8 @@ public class UsageAgreementServiceBean implements UsageAgreementService, UsageAg
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public boolean requiresUsageAgreementAcceptation(String applicationName, String language)
-            throws ApplicationNotFoundException, SubscriptionNotFoundException {
+    public boolean requiresUsageAgreementAcceptation(String applicationName, String language) throws ApplicationNotFoundException,
+                                                                                             SubscriptionNotFoundException {
 
         SubjectEntity subject = this.subjectManager.getCallerSubject();
         LOG.debug("is confirmation required for application " + applicationName + " by subject " + subject.getUserId());
@@ -396,8 +397,7 @@ public class UsageAgreementServiceBean implements UsageAgreementService, UsageAg
 
         long confirmedUsageAgreementVersion = subject.getConfirmedUsageAgreementVersion();
         if (confirmedUsageAgreementVersion != currentUsageAgreementVersion
-                && currentUsageAgreementVersion != GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION
-                        .longValue()) {
+                && currentUsageAgreementVersion != GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION.longValue()) {
             String text = getGlobalUsageAgreementText(language);
 
             return text != null && text.length() > 0;

@@ -15,7 +15,6 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.ejb.EJBException;
-import javax.ejb.Local;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;

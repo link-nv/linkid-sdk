@@ -28,6 +28,7 @@ import net.link.safeonline.jpa.QueryObjectFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
@@ -102,7 +103,7 @@ public class UsageAgreementDAOBean implements UsageAgreementDAO {
     public void removeUsageAgreement(ApplicationEntity application, Long usageAgreementVersion) {
 
         LOG.debug("remove usage agreement for application: " + application.getName() + " version=" + usageAgreementVersion);
-        UsageAgreementEntity usageAgreement = this.getUsageAgreement(application, usageAgreementVersion);
+        UsageAgreementEntity usageAgreement = getUsageAgreement(application, usageAgreementVersion);
         if (null == usageAgreement)
             return;
         this.entityManager.remove(usageAgreement);

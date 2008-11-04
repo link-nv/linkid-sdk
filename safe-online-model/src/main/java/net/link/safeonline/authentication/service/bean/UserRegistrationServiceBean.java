@@ -26,6 +26,8 @@ import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.UserRegistrationManager;
 import net.link.safeonline.service.SubjectService;
 
+import org.jboss.annotation.ejb.LocalBinding;
+
 
 /**
  * Implementation of user registration service interface. This component does not live within the SafeOnline core security domain. This
@@ -68,9 +70,8 @@ public class UserRegistrationServiceBean implements UserRegistrationService, Use
             } catch (SubjectNotFoundException e) {
                 continue;
             }
-            if (null != attribute) {
+            if (null != attribute)
                 throw new ExistingUserException();
-            }
         }
         return subject;
     }

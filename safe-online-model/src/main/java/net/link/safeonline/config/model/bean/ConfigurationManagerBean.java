@@ -20,6 +20,8 @@ import net.link.safeonline.dao.ApplicationDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
 
+import org.jboss.annotation.ejb.LocalBinding;
+
 
 @Stateless
 @Configurable

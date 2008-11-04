@@ -74,6 +74,7 @@ import net.link.safeonline.util.ee.SecurityManagerUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 
 
@@ -307,8 +308,7 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
 
         this.applicationOwnerDAO.addApplicationOwner(ownerName, adminSubject);
 
-        ApplicationEntity ownerApplication = this.applicationDAO
-                .findApplication(SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME);
+        ApplicationEntity ownerApplication = this.applicationDAO.findApplication(SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME);
         if (null == ownerApplication)
             throw new EJBException("SafeOnline owner application not found");
 
@@ -350,8 +350,7 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
 
         this.applicationOwnerDAO.removeApplicationOwner(ownerName);
 
-        ApplicationEntity ownerApplication = this.applicationDAO
-                .findApplication(SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME);
+        ApplicationEntity ownerApplication = this.applicationDAO.findApplication(SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME);
         if (null == ownerApplication)
             throw new EJBException("SafeOnline owner application not found");
 
@@ -372,8 +371,7 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
         if (null == owner.getApplications())
             return;
         if (!owner.getApplications().isEmpty())
-            throw new PermissionDeniedException("application owner still owns " + owner.getApplications().size()
-                    + " applications");
+            throw new PermissionDeniedException("application owner still owns " + owner.getApplications().size() + " applications");
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)

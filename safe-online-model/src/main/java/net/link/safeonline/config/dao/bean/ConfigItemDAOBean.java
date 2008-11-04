@@ -20,6 +20,8 @@ import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
 import net.link.safeonline.jpa.QueryObjectFactory;
 
+import org.jboss.annotation.ejb.LocalBinding;
+
 
 @Stateless
 @LocalBinding(jndiBinding = ConfigItemDAO.JNDI_BINDING)

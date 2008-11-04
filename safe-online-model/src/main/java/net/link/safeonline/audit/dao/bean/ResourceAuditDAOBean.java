@@ -25,6 +25,8 @@ import net.link.safeonline.entity.audit.ResourceLevelType;
 import net.link.safeonline.entity.audit.ResourceNameType;
 import net.link.safeonline.jpa.QueryObjectFactory;
 
+import org.jboss.annotation.ejb.LocalBinding;
+
 
 @Stateless
 @LocalBinding(jndiBinding = ResourceAuditDAO.JNDI_BINDING)

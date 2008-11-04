@@ -11,8 +11,6 @@ import javax.ejb.Stateful;
 
 import net.link.safeonline.helpdesk.bean.HelpdeskBaseBean;
 import net.link.safeonline.option.Helpdesk;
-import net.link.safeonline.option.OptionConstants;
-
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.seam.annotations.Name;
 

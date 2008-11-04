@@ -9,7 +9,6 @@ package net.link.safeonline.auth.bean;
 
 import javax.ejb.Stateful;
 
-import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.Helpdesk;
 import net.link.safeonline.helpdesk.bean.HelpdeskBaseBean;
 

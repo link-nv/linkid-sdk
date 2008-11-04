@@ -11,7 +11,6 @@ import java.net.InetAddress;
 import java.net.SocketException;
 
 import javax.ejb.EJB;
-import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;

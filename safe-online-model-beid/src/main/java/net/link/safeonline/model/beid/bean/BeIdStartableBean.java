@@ -17,11 +17,9 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.ejb.EJB;
-import javax.ejb.Local;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
-import net.link.safeonline.Startable;
 import net.link.safeonline.beid.keystore.BeidKeyStoreUtils;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;

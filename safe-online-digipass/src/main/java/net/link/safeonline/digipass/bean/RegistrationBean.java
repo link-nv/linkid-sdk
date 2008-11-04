@@ -19,7 +19,6 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.ctrl.error.annotation.Error;
 import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
-import net.link.safeonline.digipass.DigipassConstants;
 import net.link.safeonline.digipass.Registration;
 import net.link.safeonline.model.digipass.DigipassDeviceService;
 

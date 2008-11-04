@@ -15,6 +15,8 @@ import javax.ejb.Stateless;
 import net.link.safeonline.demo.model.WSSecurityConfiguration;
 import net.link.safeonline.util.ee.IdentityServiceClient;
 
+import org.jboss.annotation.ejb.LocalBinding;
+
 
 @Stateless
 @LocalBinding(jndiBinding = WSSecurityConfiguration.JNDI_BINDING)

@@ -21,6 +21,8 @@ import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.jpa.QueryObjectFactory;
 
+import org.jboss.annotation.ejb.LocalBinding;
+
 
 @Stateless
 @LocalBinding(jndiBinding = AllowedDeviceDAO.JNDI_BINDING)

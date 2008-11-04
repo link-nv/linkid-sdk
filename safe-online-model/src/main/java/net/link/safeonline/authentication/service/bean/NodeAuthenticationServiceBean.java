@@ -24,6 +24,7 @@ import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.LocalBinding;
 
 
 /**
@@ -74,6 +75,6 @@ public class NodeAuthenticationServiceBean implements NodeAuthenticationService 
     public NodeEntity getLocalNode() throws NodeNotFoundException {
 
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-        return this.getNode(this.authenticate(authIdentityServiceClient.getCertificate()));
+        return getNode(authenticate(authIdentityServiceClient.getCertificate()));
     }
 }

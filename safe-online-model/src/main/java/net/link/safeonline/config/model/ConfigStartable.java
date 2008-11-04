@@ -10,7 +10,6 @@ package net.link.safeonline.config.model;
 import javax.ejb.Local;
 
 import net.link.safeonline.Startable;
-import net.link.safeonline.Startable;
 
 
 @Local

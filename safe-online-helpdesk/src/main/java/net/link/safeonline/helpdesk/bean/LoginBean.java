@@ -10,7 +10,6 @@ package net.link.safeonline.helpdesk.bean;
 import javax.ejb.Stateful;
 
 import net.link.safeonline.ctrl.bean.LoginBaseBean;
-import net.link.safeonline.helpdesk.HelpdeskConstants;
 import net.link.safeonline.helpdesk.Login;
 
 import org.jboss.annotation.ejb.LocalBinding;

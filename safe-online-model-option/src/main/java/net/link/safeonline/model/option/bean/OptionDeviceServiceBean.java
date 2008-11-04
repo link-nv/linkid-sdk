@@ -40,6 +40,8 @@ import net.link.safeonline.model.option.exception.OptionAuthenticationException;
 import net.link.safeonline.model.option.exception.OptionRegistrationException;
 import net.link.safeonline.service.SubjectService;
 
+import org.jboss.annotation.ejb.LocalBinding;
+
 
 /**
  * <h2>{@link OptionDeviceServiceBean}<br>

@@ -16,4 +16,5 @@ import net.link.safeonline.sdk.ws.WSSecurityConfigurationService;
 @Local
 public interface WSSecurityConfiguration extends SafeOnlineService, WSSecurityConfigurationService {
 
+    public static final String JNDI_BINDING = JNDI_PREFIX + "WSSecurityConfigurationBean/local";
 }

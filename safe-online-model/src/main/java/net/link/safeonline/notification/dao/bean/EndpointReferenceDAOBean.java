@@ -27,6 +27,7 @@ import net.link.safeonline.notification.dao.NotificationProducerDAO;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
@@ -77,7 +78,7 @@ public class EndpointReferenceDAOBean implements EndpointReferenceDAO {
         LOG.debug("find endpoint ref: address=" + address + " node=" + node.getName());
         return this.queryObject.find(address, node);
     }
-    
+
     public EndpointReferenceEntity findEndpointReference(long id) {
 
         LOG.debug("find endpoint ref: id=" + id);

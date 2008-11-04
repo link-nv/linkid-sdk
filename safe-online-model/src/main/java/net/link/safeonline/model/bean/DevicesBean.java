@@ -18,6 +18,8 @@ import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.model.Devices;
 
+import org.jboss.annotation.ejb.LocalBinding;
+
 
 @Stateless
 @LocalBinding(jndiBinding = Devices.JNDI_BINDING)

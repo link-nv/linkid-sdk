@@ -22,7 +22,6 @@ import javax.interceptor.Interceptors;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.beid.BeidConstants;
 import net.link.safeonline.beid.Disable;
 import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.dao.AttributeDAO;

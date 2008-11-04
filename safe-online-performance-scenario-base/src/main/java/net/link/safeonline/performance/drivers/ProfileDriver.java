@@ -51,7 +51,8 @@ public abstract class ProfileDriver {
 
     private final DriverProfileService   driverProfileService   = getService(DriverProfileService.class, DriverProfileService.JNDI_BINDING);
     private final ProfileDataService     profileDataService     = getService(ProfileDataService.class, ProfileDataService.JNDI_BINDING);
-    private final DriverExceptionService driverExceptionService = getService(DriverExceptionService.class, DriverExceptionService.JNDI_BINDING);
+    private final DriverExceptionService driverExceptionService = getService(DriverExceptionService.class,
+                                                                        DriverExceptionService.JNDI_BINDING);
 
     private String                       title;
     private ExecutionEntity              execution;
@@ -115,6 +116,7 @@ public abstract class ProfileDriver {
         return new IllegalStateException(error);
     }
 
+    // FIXME
     <S> S getService(Class<S> service, String binding) {
 
         try {

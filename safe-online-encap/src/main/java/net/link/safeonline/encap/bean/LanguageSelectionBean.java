@@ -3,7 +3,6 @@ package net.link.safeonline.encap.bean;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.ctrl.bean.LanguageSelectionBaseBean;
-import net.link.safeonline.encap.EncapConstants;
 import net.link.safeonline.encap.LanguageSelection;
 
 import org.jboss.annotation.ejb.LocalBinding;

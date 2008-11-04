@@ -22,6 +22,7 @@ import net.link.safeonline.tasks.dao.TaskDAO;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless

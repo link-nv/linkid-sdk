@@ -12,6 +12,8 @@ import net.link.safeonline.helpdesk.dao.HelpdeskEventDAO;
 import net.link.safeonline.helpdesk.exception.HelpdeskContextNotFoundException;
 import net.link.safeonline.model.HelpdeskContexts;
 
+import org.jboss.annotation.ejb.LocalBinding;
+
 
 @Stateless
 @LocalBinding(jndiBinding = HelpdeskContexts.JNDI_BINDING)

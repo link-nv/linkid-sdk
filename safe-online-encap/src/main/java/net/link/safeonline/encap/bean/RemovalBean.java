@@ -28,7 +28,6 @@ import net.link.safeonline.ctrl.error.annotation.Error;
 import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.device.sdk.ProtocolContext;
-import net.link.safeonline.encap.EncapConstants;
 import net.link.safeonline.encap.Removal;
 import net.link.safeonline.model.encap.EncapDeviceService;
 

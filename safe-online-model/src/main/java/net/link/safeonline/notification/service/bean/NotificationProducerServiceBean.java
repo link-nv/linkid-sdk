@@ -50,6 +50,7 @@ import net.link.safeonline.notification.service.NotificationProducerService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.LocalBinding;
 
 
 /**
@@ -188,11 +189,10 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
 
     public void sendNotification(NotificationMessageEntity notification) throws MessageHandlerNotFoundException {
 
-        LOG.debug("send persisted notification for topic: " + notification.getTopic() + " subject: "
-                + notification.getSubject() + " content: " + notification.getContent() + " consumerId: "
-                + notification.getConsumer().getId());
-        NotificationMessage message = MessageHandlerManager.getMessage(notification.getTopic(), notification
-                .getSubject(), notification.getContent(), notification.getConsumer());
+        LOG.debug("send persisted notification for topic: " + notification.getTopic() + " subject: " + notification.getSubject()
+                + " content: " + notification.getContent() + " consumerId: " + notification.getConsumer().getId());
+        NotificationMessage message = MessageHandlerManager.getMessage(notification.getTopic(), notification.getSubject(),
+                notification.getContent(), notification.getConsumer());
         if (null != message) {
             pushMessage(message, notification.getConsumer());
         }
@@ -222,8 +222,8 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
             }
         } catch (JMSException e) {
             LOG.debug("Failed to push notification message on JMS queue: " + e.getMessage());
-            NotificationMessageEntity notificationMessageEntity = this.notificationMessageDAO.findNotificationMessage(
-                    notificationMessage, consumer);
+            NotificationMessageEntity notificationMessageEntity = this.notificationMessageDAO.findNotificationMessage(notificationMessage,
+                    consumer);
             if (null == notificationMessageEntity) {
                 this.notificationMessageDAO.addNotificationMessage(notificationMessage, consumer);
             } else {

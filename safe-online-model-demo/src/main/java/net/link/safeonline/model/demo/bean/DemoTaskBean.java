@@ -9,7 +9,6 @@ package net.link.safeonline.model.demo.bean;
 
 import java.util.Date;
 
-import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;

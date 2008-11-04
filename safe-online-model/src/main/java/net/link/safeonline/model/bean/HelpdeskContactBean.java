@@ -14,6 +14,8 @@ import net.link.safeonline.common.Configurable;
 import net.link.safeonline.config.model.ConfigurationInterceptor;
 import net.link.safeonline.model.HelpdeskContact;
 
+import org.jboss.annotation.ejb.LocalBinding;
+
 
 @Stateless
 @LocalBinding(jndiBinding = HelpdeskContact.JNDI_BINDING)

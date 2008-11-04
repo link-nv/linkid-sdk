@@ -2,7 +2,6 @@ package net.link.safeonline.auth.bean;
 
 import javax.ejb.Stateless;
 
-import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.LanguageSelection;
 import net.link.safeonline.ctrl.bean.LanguageSelectionBaseBean;
 

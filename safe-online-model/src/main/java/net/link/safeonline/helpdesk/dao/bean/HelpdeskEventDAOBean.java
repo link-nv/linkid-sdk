@@ -23,6 +23,7 @@ import net.link.safeonline.shared.helpdesk.LogLevelType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless

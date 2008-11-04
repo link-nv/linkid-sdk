@@ -23,7 +23,6 @@ import javax.interceptor.Interceptors;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.AccountRegistration;
-import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.AuthenticationUtils;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;

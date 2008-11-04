@@ -23,6 +23,8 @@ import net.link.safeonline.pkix.model.PkiValidator.PkiResult;
 import net.link.safeonline.sdk.ws.WSSecurityUtil;
 import net.link.safeonline.util.ee.IdentityServiceClient;
 
+import org.jboss.annotation.ejb.LocalBinding;
+
 
 @Stateless
 @LocalBinding(jndiBinding = WSSecurityConfiguration.JNDI_BINDING)

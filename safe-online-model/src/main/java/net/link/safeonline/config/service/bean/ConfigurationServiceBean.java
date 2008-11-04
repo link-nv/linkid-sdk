@@ -22,6 +22,7 @@ import net.link.safeonline.config.service.ConfigurationServiceRemote;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
 
+import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 
 

@@ -11,8 +11,6 @@ import javax.ejb.Stateful;
 
 import net.link.safeonline.ctrl.bean.LoginBaseBean;
 import net.link.safeonline.oper.Login;
-import net.link.safeonline.oper.OperatorConstants;
-
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.ejb.cache.simple.CacheConfig;
 import org.jboss.seam.ScopeType;

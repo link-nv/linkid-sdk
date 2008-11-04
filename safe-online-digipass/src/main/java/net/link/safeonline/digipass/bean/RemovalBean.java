@@ -24,7 +24,6 @@ import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.ctrl.error.annotation.Error;
 import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
 import net.link.safeonline.data.AttributeDO;
-import net.link.safeonline.digipass.DigipassConstants;
 import net.link.safeonline.digipass.Removal;
 import net.link.safeonline.model.digipass.DigipassDeviceService;
 import net.link.safeonline.model.digipass.DigipassException;

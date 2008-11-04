@@ -24,6 +24,8 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.model.AttributeTypeDescriptionDecorator;
 
+import org.jboss.annotation.ejb.LocalBinding;
+
 
 @Stateless
 @LocalBinding(jndiBinding = AttributeTypeDescriptionDecorator.JNDI_BINDING)

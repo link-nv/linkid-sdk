@@ -38,6 +38,7 @@ import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
@@ -267,7 +268,7 @@ public class StatisticServiceBean implements StatisticService, StatisticServiceR
         mainSheet.autoSizeColumn((short) 12);
         mainSheet.autoSizeColumn((short) 13);
 
-        JFreeChart chart = this.getChart(statistic.getName(), statistic.getDomain(), statistic.getApplication().getName());
+        JFreeChart chart = getChart(statistic.getName(), statistic.getDomain(), statistic.getApplication().getName());
 
         byte[] image = null;
 

@@ -37,6 +37,7 @@ import net.link.safeonline.service.SubjectService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 
 
@@ -105,8 +106,7 @@ public class AccountServiceBean implements AccountService, AccountServiceRemote 
 
         LOG.debug("remove account: " + subject.getUserId());
 
-        this.notificationProducerService.sendNotification(SafeOnlineConstants.TOPIC_REMOVE_USER, subject.getUserId(),
-                null);
+        this.notificationProducerService.sendNotification(SafeOnlineConstants.TOPIC_REMOVE_USER, subject.getUserId(), null);
 
         this.historyDAO.clearAllHistory(subject);
         this.subscriptionDAO.removeAllSubscriptions(subject);

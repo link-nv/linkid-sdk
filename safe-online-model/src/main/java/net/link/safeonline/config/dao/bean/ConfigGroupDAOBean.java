@@ -19,6 +19,8 @@ import net.link.safeonline.config.dao.ConfigGroupDAO;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.jpa.QueryObjectFactory;
 
+import org.jboss.annotation.ejb.LocalBinding;
+
 
 @Stateless
 @LocalBinding(jndiBinding = ConfigGroupDAO.JNDI_BINDING)

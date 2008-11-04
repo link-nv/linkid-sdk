@@ -14,6 +14,8 @@ import javax.jms.Session;
 import net.link.safeonline.messaging.bean.EndUserMessage;
 import net.link.safeonline.model.Messaging;
 
+import org.jboss.annotation.ejb.LocalBinding;
+
 
 @Stateless
 @LocalBinding(jndiBinding = Messaging.JNDI_BINDING)

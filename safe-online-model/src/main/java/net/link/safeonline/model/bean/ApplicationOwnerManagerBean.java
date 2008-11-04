@@ -20,6 +20,7 @@ import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.ApplicationOwnerManager;
 import net.link.safeonline.model.SubjectManager;
 
+import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 
 

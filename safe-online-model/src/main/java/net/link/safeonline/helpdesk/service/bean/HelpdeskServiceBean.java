@@ -24,6 +24,7 @@ import net.link.safeonline.helpdesk.service.HelpdeskService;
 import net.link.safeonline.helpdesk.service.HelpdeskServiceRemote;
 import net.link.safeonline.model.HelpdeskContexts;
 
+import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 
 

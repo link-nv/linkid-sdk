@@ -36,7 +36,6 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.option.Disable;
-import net.link.safeonline.option.OptionConstants;
 import net.link.safeonline.service.SubjectService;
 
 import org.jboss.annotation.ejb.LocalBinding;

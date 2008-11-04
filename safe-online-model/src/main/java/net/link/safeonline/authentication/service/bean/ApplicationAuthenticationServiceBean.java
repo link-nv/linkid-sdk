@@ -23,6 +23,7 @@ import net.link.safeonline.pkix.dao.TrustPointDAO;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.LocalBinding;
 
 
 /**

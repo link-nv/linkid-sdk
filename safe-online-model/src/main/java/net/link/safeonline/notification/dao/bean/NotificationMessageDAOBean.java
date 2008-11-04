@@ -26,6 +26,7 @@ import net.link.safeonline.notification.message.NotificationMessage;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
@@ -43,38 +44,32 @@ public class NotificationMessageDAOBean implements NotificationMessageDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
-                NotificationMessageEntity.QueryInterface.class);
+        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, NotificationMessageEntity.QueryInterface.class);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public NotificationMessageEntity addNotificationMessage(NotificationMessage notificationMessage,
-            EndpointReferenceEntity consumer) {
+    public NotificationMessageEntity addNotificationMessage(NotificationMessage notificationMessage, EndpointReferenceEntity consumer) {
 
         LOG.debug("persist notification message");
-        NotificationMessageEntity notificationMessageEntity = new NotificationMessageEntity(notificationMessage
-                .getTopic(), consumer, notificationMessage.getSubject(), notificationMessage.getContent());
+        NotificationMessageEntity notificationMessageEntity = new NotificationMessageEntity(notificationMessage.getTopic(), consumer,
+                notificationMessage.getSubject(), notificationMessage.getContent());
         this.entityManager.persist(notificationMessageEntity);
         return notificationMessageEntity;
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public NotificationMessageEntity findNotificationMessage(NotificationMessage message,
-            EndpointReferenceEntity consumer) {
+    public NotificationMessageEntity findNotificationMessage(NotificationMessage message, EndpointReferenceEntity consumer) {
 
-        LOG.debug("find notification message topic: " + message.getTopic() + " subject: " + message.getSubject()
-                + " content: " + message.getContent() + " consumerId: " + consumer.getId());
+        LOG.debug("find notification message topic: " + message.getTopic() + " subject: " + message.getSubject() + " content: "
+                + message.getContent() + " consumerId: " + consumer.getId());
         if (null == message.getSubject() && null == message.getContent())
             return this.queryObject.findNotificationMessage(message.getTopic(), consumer);
         else if (null == message.getSubject())
-            return this.queryObject.findNotificationMessageWhereContent(message.getTopic(), consumer, message
-                    .getContent());
+            return this.queryObject.findNotificationMessageWhereContent(message.getTopic(), consumer, message.getContent());
         else if (null == message.getContent())
-            return this.queryObject.findNotificationMessageWhereSubject(message.getTopic(), consumer, message
-                    .getSubject());
+            return this.queryObject.findNotificationMessageWhereSubject(message.getTopic(), consumer, message.getSubject());
         else
-            return this.queryObject.findNotificationMessage(message.getTopic(), consumer, message.getSubject(), message
-                    .getContent());
+            return this.queryObject.findNotificationMessage(message.getTopic(), consumer, message.getSubject(), message.getContent());
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -89,8 +84,8 @@ public class NotificationMessageDAOBean implements NotificationMessageDAO {
         }
     }
 
-    public NotificationMessageEntity getNotificationMessage(NotificationMessage notificationMessage,
-            EndpointReferenceEntity consumer) throws NotificationMessageNotFoundException {
+    public NotificationMessageEntity getNotificationMessage(NotificationMessage notificationMessage, EndpointReferenceEntity consumer)
+                                                                                                                                      throws NotificationMessageNotFoundException {
 
         LOG.debug("get notification message");
         NotificationMessageEntity notificationMessageEntity = findNotificationMessage(notificationMessage, consumer);

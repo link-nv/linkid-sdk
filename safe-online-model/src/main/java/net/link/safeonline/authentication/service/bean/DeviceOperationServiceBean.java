@@ -60,6 +60,7 @@ import net.link.safeonline.validation.annotation.NotNull;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.utils.Base64;
+import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 import org.joda.time.DateTime;
 import org.opensaml.saml2.core.Assertion;

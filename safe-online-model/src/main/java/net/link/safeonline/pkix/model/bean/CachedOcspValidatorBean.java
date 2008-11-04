@@ -25,6 +25,7 @@ import net.link.safeonline.pkix.model.OcspValidator.OcspResult;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless

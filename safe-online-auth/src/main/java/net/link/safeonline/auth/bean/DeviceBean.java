@@ -23,7 +23,6 @@ import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.SafeOnlineConstants;
-import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.AuthenticationUtils;
 import net.link.safeonline.auth.Device;
 import net.link.safeonline.auth.LoginManager;

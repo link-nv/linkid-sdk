@@ -30,7 +30,6 @@ import net.link.safeonline.ctrl.error.annotation.Error;
 import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
 import net.link.safeonline.device.sdk.AuthenticationContext;
 import net.link.safeonline.encap.Authentication;
-import net.link.safeonline.encap.EncapConstants;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.model.encap.EncapDeviceService;
 import net.link.safeonline.shared.helpdesk.LogLevelType;

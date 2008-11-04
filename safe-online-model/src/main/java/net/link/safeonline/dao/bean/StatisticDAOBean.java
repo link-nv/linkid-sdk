@@ -23,6 +23,8 @@ import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.StatisticEntity;
 import net.link.safeonline.jpa.QueryObjectFactory;
 
+import org.jboss.annotation.ejb.LocalBinding;
+
 
 @Stateless
 @LocalBinding(jndiBinding = StatisticDAO.JNDI_BINDING)
@@ -69,9 +71,9 @@ public class StatisticDAOBean implements StatisticDAO {
 
     public StatisticEntity findOrAddStatisticByNameDomainAndApplication(String name, String domain, ApplicationEntity application) {
 
-        StatisticEntity statistic = this.findStatisticByNameDomainAndApplication(name, domain, application);
+        StatisticEntity statistic = findStatisticByNameDomainAndApplication(name, domain, application);
         if (statistic == null) {
-            statistic = this.addStatistic(name, domain, application);
+            statistic = addStatistic(name, domain, application);
         }
         return statistic;
     }

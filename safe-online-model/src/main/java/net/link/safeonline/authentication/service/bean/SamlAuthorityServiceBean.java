@@ -14,6 +14,8 @@ import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.common.Configurable;
 import net.link.safeonline.config.model.ConfigurationInterceptor;
 
+import org.jboss.annotation.ejb.LocalBinding;
+
 
 @Stateless
 @Configurable

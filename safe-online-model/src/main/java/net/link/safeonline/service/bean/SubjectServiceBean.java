@@ -32,6 +32,7 @@ import net.link.safeonline.service.SubjectServiceRemote;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
@@ -132,8 +133,7 @@ public class SubjectServiceBean implements SubjectService, SubjectServiceRemote 
     public SubjectEntity getSubjectFromUserName(String login) throws SubjectNotFoundException {
 
         LOG.debug("get subject login: " + login);
-        SubjectEntity subject = this.subjectIdentifierDAO.findSubject(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN,
-                login);
+        SubjectEntity subject = this.subjectIdentifierDAO.findSubject(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN, login);
         if (null == subject)
             throw new SubjectNotFoundException();
 

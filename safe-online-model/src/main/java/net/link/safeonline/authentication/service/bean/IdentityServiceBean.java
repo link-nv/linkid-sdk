@@ -73,6 +73,7 @@ import net.link.safeonline.validation.annotation.NotNull;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 
 
@@ -178,9 +179,8 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
                                                                                                    AttributeTypeNotFoundException {
 
         AttributeTypeEntity attributeType = this.attributeTypeDAO.findAttributeType(attributeName);
-        if (null == attributeType) {
+        if (null == attributeType)
             throw new IllegalArgumentException("attribute type not found: " + attributeName);
-        }
         if (true == attributeType.isUserEditable())
             return attributeType;
         if (false == attributeType.isCompoundMember()) {
@@ -248,15 +248,13 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
 
         boolean multiValued = attributeType.isMultivalued();
         if (false == multiValued) {
-            if (0 != index) {
+            if (0 != index)
                 throw new IllegalArgumentException("index cannot <> 0 on single-valued attribute type");
-            }
         }
 
         DatatypeType type = attributeType.getType();
-        if (attribute.getType() != type) {
+        if (attribute.getType() != type)
             throw new EJBException("datatype does not match");
-        }
 
         AttributeEntity attributeEntity = this.attributeDAO.findAttribute(subject, attributeType, index);
         if (null == attributeEntity) {
@@ -783,17 +781,15 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
         AttributeTypeEntity attributeType = getUserEditableAttributeType(attributeName);
 
         boolean multivalued = attributeType.isMultivalued();
-        if (false == multivalued) {
+        if (false == multivalued)
             throw new PermissionDeniedException("attribute type is not multivalued");
-        }
 
         if (newAttributeContext.size() > 1) {
             /*
              * In this case the first entry is the compounded attribute for which the user wants to create a new record.
              */
-            if (false == attributeType.isCompounded()) {
+            if (false == attributeType.isCompounded())
                 throw new PermissionDeniedException("attribute type is not compounded");
-            }
             AttributeEntity compoundedAttribute = this.attributeDAO.addAttribute(attributeType, subject);
             String compoundedAttributeId = UUID.randomUUID().toString();
             LOG.debug("adding new compounded entry with Id: " + compoundedAttributeId);
@@ -864,9 +860,8 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
 
             return attributeEditContext;
         }
-        if (attributeType.isCompoundMember()) {
+        if (attributeType.isCompoundMember())
             throw new IllegalArgumentException("cannot handle members itself.");
-        }
         /*
          * Else we're dealing with simple- or multivalued attributes that do not participate in a compounded record somehow.
          */
@@ -911,9 +906,8 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
             return attributeTemplate;
         }
 
-        if (attributeType.isCompoundMember()) {
+        if (attributeType.isCompoundMember())
             throw new IllegalArgumentException("cannot handle compounded members itself");
-        }
 
         /*
          * Notice that we mark the entry as single-valued here since we cannot yet pass a usefull attribute index to the GUI.

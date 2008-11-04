@@ -22,6 +22,8 @@ import net.link.safeonline.entity.audit.AuditContextEntity;
 import net.link.safeonline.entity.audit.ResourceLevelType;
 import net.link.safeonline.entity.audit.ResourceNameType;
 
+import org.jboss.annotation.ejb.LocalBinding;
+
 
 @Stateless
 @LocalBinding(jndiBinding = ResourceAuditLogger.JNDI_BINDING)

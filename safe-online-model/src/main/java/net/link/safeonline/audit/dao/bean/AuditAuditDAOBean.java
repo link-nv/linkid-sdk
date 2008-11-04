@@ -23,6 +23,8 @@ import net.link.safeonline.entity.audit.AuditAuditEntity;
 import net.link.safeonline.entity.audit.AuditContextEntity;
 import net.link.safeonline.jpa.QueryObjectFactory;
 
+import org.jboss.annotation.ejb.LocalBinding;
+
 
 @Stateless
 @LocalBinding(jndiBinding = AuditAuditDAO.JNDI_BINDING)

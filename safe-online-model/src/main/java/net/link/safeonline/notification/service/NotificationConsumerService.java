@@ -16,4 +16,5 @@ import net.link.safeonline.notification.consumer.ws.AbstractNotificationConsumer
 @Local
 public interface NotificationConsumerService extends SafeOnlineService, AbstractNotificationConsumerService {
 
+    public static final String JNDI_BINDING = JNDI_PREFIX + "NotificationConsumerServiceBean/local";
 }

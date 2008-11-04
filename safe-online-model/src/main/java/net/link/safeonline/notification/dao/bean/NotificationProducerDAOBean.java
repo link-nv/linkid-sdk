@@ -22,6 +22,7 @@ import net.link.safeonline.notification.dao.NotificationProducerDAO;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
@@ -61,9 +62,8 @@ public class NotificationProducerDAOBean implements NotificationProducerDAO {
 
         LOG.debug("get subscription: " + topic);
         NotificationProducerSubscriptionEntity subscription = findSubscription(topic);
-        if (null == subscription) {
+        if (null == subscription)
             throw new SubscriptionNotFoundException();
-        }
         return subscription;
     }
 

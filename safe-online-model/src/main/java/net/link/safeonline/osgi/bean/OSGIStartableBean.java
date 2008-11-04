@@ -112,9 +112,9 @@ public class OSGIStartableBean implements OSGIStartable {
 
         // Bind OSGI Host activator to JNDI
         try {
-            EjbUtils.bindComponent(OSGIHostActivator.JNDI_PATH, hostActivator);
+            EjbUtils.bindComponent(OSGIHostActivator.JNDI_BINDING, hostActivator);
         } catch (NamingException e) {
-            throw new EJBException("Unable to bind OSGI Host activator to the JNDI tree: " + OSGIHostActivator.JNDI_PATH);
+            throw new EJBException("Unable to bind OSGI Host activator to the JNDI tree: " + OSGIHostActivator.JNDI_BINDING);
         }
 
         // Now create an instance of the framework.
@@ -142,9 +142,9 @@ public class OSGIStartableBean implements OSGIStartable {
 
         OSGIHostActivator hostActivator;
         try {
-            hostActivator = (OSGIHostActivator) EjbUtils.getComponent(OSGIHostActivator.JNDI_PATH);
+            hostActivator = (OSGIHostActivator) EjbUtils.getComponent(OSGIHostActivator.JNDI_BINDING);
         } catch (NamingException e) {
-            throw new EJBException("Unable to find OSGI Host activator in the JNDI tree: " + OSGIHostActivator.JNDI_PATH);
+            throw new EJBException("Unable to find OSGI Host activator in the JNDI tree: " + OSGIHostActivator.JNDI_BINDING);
         }
         return hostActivator.getPluginServices();
 

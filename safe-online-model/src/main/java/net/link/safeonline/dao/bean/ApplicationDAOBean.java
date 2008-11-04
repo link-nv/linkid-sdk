@@ -26,6 +26,7 @@ import net.link.safeonline.jpa.QueryObjectFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
@@ -58,8 +59,8 @@ public class ApplicationDAOBean implements ApplicationDAO {
                                             byte[] applicationLogo, Color applicationColor, X509Certificate certificate) {
 
         LOG.debug("adding application: " + applicationName);
-        ApplicationEntity application = new ApplicationEntity(applicationName, applicationFriendlyName,
-                applicationOwner, description, applicationUrl, applicationLogo, certificate);
+        ApplicationEntity application = new ApplicationEntity(applicationName, applicationFriendlyName, applicationOwner, description,
+                applicationUrl, applicationLogo, certificate);
         this.entityManager.persist(application);
         return application;
     }
@@ -90,9 +91,9 @@ public class ApplicationDAOBean implements ApplicationDAO {
                                             X509Certificate certificate, long initialIdentityVersion, long usageAgreementVersion) {
 
         LOG.debug("adding application: " + applicationName);
-        ApplicationEntity application = new ApplicationEntity(applicationName, applicationFriendlyName,
-                applicationOwner, description, applicationUrl, applicationLogo, allowUserSubscription, removable,
-                certificate, initialIdentityVersion, usageAgreementVersion);
+        ApplicationEntity application = new ApplicationEntity(applicationName, applicationFriendlyName, applicationOwner, description,
+                applicationUrl, applicationLogo, allowUserSubscription, removable, certificate, initialIdentityVersion,
+                usageAgreementVersion);
         this.entityManager.persist(application);
         return application;
     }

@@ -54,6 +54,7 @@ import net.link.safeonline.service.SubjectService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.annotation.security.SecurityDomain;
 
 
@@ -130,9 +131,8 @@ public class AccountMergingServiceBean implements AccountMergingService {
                                                                                                 MessageHandlerNotFoundException {
 
         LOG.debug("commit merge with account " + accountMergingDO.getSourceSubject().getUserId());
-        if (null != neededDevices && neededDevices.size() != 0) {
+        if (null != neededDevices && neededDevices.size() != 0)
             throw new PermissionDeniedException("authentication needed for certain devices");
-        }
         SubjectEntity targetSubject = this.subjectManager.getCallerSubject();
         SubjectEntity sourceSubject = this.subjectService.getSubject(accountMergingDO.getSourceSubject().getUserId());
         /*

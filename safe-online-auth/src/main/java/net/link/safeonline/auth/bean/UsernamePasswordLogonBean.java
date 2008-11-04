@@ -13,7 +13,6 @@ import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
 
 import net.link.safeonline.SafeOnlineConstants;
-import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.UsernamePasswordLogon;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;

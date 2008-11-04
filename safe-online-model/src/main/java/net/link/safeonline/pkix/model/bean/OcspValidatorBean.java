@@ -62,6 +62,7 @@ import org.bouncycastle.ocsp.OCSPRespStatus;
 import org.bouncycastle.ocsp.RevokedStatus;
 import org.bouncycastle.ocsp.SingleResp;
 import org.bouncycastle.ocsp.UnknownStatus;
+import org.jboss.annotation.ejb.LocalBinding;
 
 
 /**

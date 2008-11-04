@@ -17,6 +17,8 @@ import net.link.safeonline.sdk.ws.encap.administration.EncapAdministrationClient
 import net.link.safeonline.sdk.ws.encap.authentication.EncapAuthenticationClient;
 import net.link.safeonline.sdk.ws.encap.authentication.EncapAuthenticationClientImpl;
 
+import org.jboss.annotation.ejb.LocalBinding;
+
 
 @Stateless
 @LocalBinding(jndiBinding = MobileManager.JNDI_BINDING)
@@ -82,8 +84,7 @@ public class MobileManagerBean implements MobileManager {
     public void lock(String mobile) throws MobileException, MalformedURLException {
 
         try {
-            EncapAdministrationClient encapAdministrationClient = new EncapAdministrationClientImpl(
-                    this.encapServerLocation);
+            EncapAdministrationClient encapAdministrationClient = new EncapAdministrationClientImpl(this.encapServerLocation);
             encapAdministrationClient.lock(mobile, this.encapOrganisationId);
         } catch (RemoteException e) {
             throw new MobileException(e.getMessage());
@@ -93,8 +94,7 @@ public class MobileManagerBean implements MobileManager {
     public void unLock(String mobile) throws MobileException, MalformedURLException {
 
         try {
-            EncapAdministrationClient encapAdministrationClient = new EncapAdministrationClientImpl(
-                    this.encapServerLocation);
+            EncapAdministrationClient encapAdministrationClient = new EncapAdministrationClientImpl(this.encapServerLocation);
             encapAdministrationClient.unLock(mobile, this.encapOrganisationId);
         } catch (RemoteException e) {
             throw new MobileException(e.getMessage());

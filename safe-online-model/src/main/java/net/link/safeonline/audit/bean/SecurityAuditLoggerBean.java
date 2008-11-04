@@ -24,6 +24,8 @@ import net.link.safeonline.authentication.exception.SafeOnlineSecurityException;
 import net.link.safeonline.entity.audit.AuditContextEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
 
+import org.jboss.annotation.ejb.LocalBinding;
+
 
 @Stateless
 @LocalBinding(jndiBinding = SecurityAuditLogger.JNDI_BINDING)

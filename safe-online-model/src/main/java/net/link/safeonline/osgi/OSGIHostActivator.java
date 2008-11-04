@@ -35,7 +35,7 @@ public class OSGIHostActivator implements BundleActivator, Serializable {
 
     private static final long   serialVersionUID                 = 1L;
 
-    public static final String  JNDI_PATH                        = "SafeOnline/OSGI/HostActivator";
+    public static final String  JNDI_BINDING                        = "SafeOnline/OSGI/HostActivator";
 
     private ServiceTracker      pluginAttributeServiceTracker    = null;
 

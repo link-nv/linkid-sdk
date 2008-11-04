@@ -33,6 +33,7 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless

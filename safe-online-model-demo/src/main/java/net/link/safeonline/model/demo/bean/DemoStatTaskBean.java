@@ -10,7 +10,6 @@ package net.link.safeonline.model.demo.bean;
 import java.util.Random;
 
 import javax.ejb.EJB;
-import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;

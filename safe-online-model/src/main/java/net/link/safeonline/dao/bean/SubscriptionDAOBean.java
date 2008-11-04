@@ -29,6 +29,7 @@ import net.link.safeonline.model.IdGenerator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
@@ -88,9 +89,8 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
     public void removeSubscription(SubjectEntity subject, ApplicationEntity application) throws SubscriptionNotFoundException {
 
         SubscriptionEntity subscription = findSubscription(subject, application);
-        if (null == subscription) {
+        if (null == subscription)
             throw new SubscriptionNotFoundException();
-        }
         this.entityManager.remove(subscription);
     }
 
@@ -116,9 +116,8 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
     public SubscriptionEntity getSubscription(SubjectEntity subject, ApplicationEntity application) throws SubscriptionNotFoundException {
 
         SubscriptionEntity subscription = findSubscription(subject, application);
-        if (null == subscription) {
+        if (null == subscription)
             throw new SubscriptionNotFoundException();
-        }
         return subscription;
     }
 

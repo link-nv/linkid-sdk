@@ -51,6 +51,7 @@ import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
@@ -608,13 +609,11 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                 String[] values = new String[attributeView.size()];
                 for (int idx = 0; idx < values.length; idx++) {
                     Attribute attribute = attributeView.get(idx);
-                    if (!attribute.getType().equals(datatype)) {
+                    if (!attribute.getType().equals(datatype))
                         throw new InvalidDataException("datatype " + attribute.getType() + " not matching expected datatype " + datatype);
-                    }
-                    if (!attribute.getName().equals(attributeType.getName())) {
+                    if (!attribute.getName().equals(attributeType.getName()))
                         throw new InvalidDataException("attribute name " + attribute.getName() + " not matching expected "
                                 + attributeType.getName());
-                    }
                     values[idx] = attributeView.get(idx).getStringValue();
                 }
                 return values;
@@ -625,13 +624,11 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                 Boolean[] values = new Boolean[attributeView.size()];
                 for (int idx = 0; idx < values.length; idx++) {
                     Attribute attribute = attributeView.get(idx);
-                    if (!attribute.getType().equals(datatype)) {
+                    if (!attribute.getType().equals(datatype))
                         throw new InvalidDataException("datatype " + attribute.getType() + " not matching expected datatype " + datatype);
-                    }
-                    if (!attribute.getName().equals(attributeType.getName())) {
+                    if (!attribute.getName().equals(attributeType.getName()))
                         throw new InvalidDataException("attribute name " + attribute.getName() + " not matching expected "
                                 + attributeType.getName());
-                    }
                     values[idx] = attributeView.get(idx).getBooleanValue();
                 }
                 return values;
@@ -642,13 +639,11 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                 Integer[] values = new Integer[attributeView.size()];
                 for (int idx = 0; idx < values.length; idx++) {
                     Attribute attribute = attributeView.get(idx);
-                    if (!attribute.getType().equals(datatype)) {
+                    if (!attribute.getType().equals(datatype))
                         throw new InvalidDataException("datatype " + attribute.getType() + " not matching expected datatype " + datatype);
-                    }
-                    if (!attribute.getName().equals(attributeType.getName())) {
+                    if (!attribute.getName().equals(attributeType.getName()))
                         throw new InvalidDataException("attribute name " + attribute.getName() + " not matching expected "
                                 + attributeType.getName());
-                    }
                     values[idx] = attributeView.get(idx).getIntegerValue();
                 }
                 return values;
@@ -659,13 +654,11 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                 Double[] values = new Double[attributeView.size()];
                 for (int idx = 0; idx < values.length; idx++) {
                     Attribute attribute = attributeView.get(idx);
-                    if (!attribute.getType().equals(datatype)) {
+                    if (!attribute.getType().equals(datatype))
                         throw new InvalidDataException("datatype " + attribute.getType() + " not matching expected datatype " + datatype);
-                    }
-                    if (!attribute.getName().equals(attributeType.getName())) {
+                    if (!attribute.getName().equals(attributeType.getName()))
                         throw new InvalidDataException("attribute name " + attribute.getName() + " not matching expected "
                                 + attributeType.getName());
-                    }
                     values[idx] = attributeView.get(idx).getDoubleValue();
                 }
                 return values;
@@ -676,13 +669,11 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                 Date[] values = new Date[attributeView.size()];
                 for (int idx = 0; idx < values.length; idx++) {
                     Attribute attribute = attributeView.get(idx);
-                    if (!attribute.getType().equals(datatype)) {
+                    if (!attribute.getType().equals(datatype))
                         throw new InvalidDataException("datatype " + attribute.getType() + " not matching expected datatype " + datatype);
-                    }
-                    if (!attribute.getName().equals(attributeType.getName())) {
+                    if (!attribute.getName().equals(attributeType.getName()))
                         throw new InvalidDataException("attribute name " + attribute.getName() + " not matching expected "
                                 + attributeType.getName());
-                    }
                     values[idx] = attributeView.get(idx).getDateValue();
                 }
                 return values;
@@ -696,9 +687,8 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                 int memberIdx = 0;
                 for (int idx = 0; idx < size; idx++) {
                     Attribute attribute = attributeView.get(memberIdx);
-                    if (!attribute.getType().equals(datatype)) {
+                    if (!attribute.getType().equals(datatype))
                         throw new InvalidDataException("datatype " + attribute.getType() + " not matching expected datatype " + datatype);
-                    }
                     if (!attribute.getName().equals(attributeType.getName()))
                         throw new InvalidDataException("attribute name " + attribute.getName() + " not matching expected "
                                 + attributeType.getName());
@@ -708,10 +698,9 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                     for (CompoundedAttributeTypeMemberEntity member : attributeType.getMembers()) {
                         AttributeTypeEntity memberAttributeType = member.getMember();
                         Attribute memberAttribute = attributeView.get(memberIdx);
-                        if (!sameType(memberAttribute.getType(), memberAttributeType.getType())) {
+                        if (!sameType(memberAttribute.getType(), memberAttributeType.getType()))
                             throw new InvalidDataException("datatype " + memberAttribute.getType() + " not matching expected datatype "
                                     + memberAttributeType.getType());
-                        }
                         if (!memberAttribute.getName().equals(memberAttributeType.getName()))
                             throw new InvalidDataException("attribute name " + memberAttribute.getName() + " not matching expected "
                                     + memberAttributeType.getName());

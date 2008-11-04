@@ -11,7 +11,6 @@ import javax.ejb.Local;
 import javax.ejb.Timer;
 
 import net.link.safeonline.Startable;
-import net.link.safeonline.Startable;
 import net.link.safeonline.authentication.exception.InvalidCronExpressionException;
 import net.link.safeonline.entity.tasks.SchedulingEntity;
 import net.link.safeonline.entity.tasks.TaskEntity;

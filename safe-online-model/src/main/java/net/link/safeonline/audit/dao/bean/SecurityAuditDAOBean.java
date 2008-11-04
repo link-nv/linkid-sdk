@@ -24,6 +24,8 @@ import net.link.safeonline.entity.audit.SecurityAuditEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.jpa.QueryObjectFactory;
 
+import org.jboss.annotation.ejb.LocalBinding;
+
 
 @Stateless
 @LocalBinding(jndiBinding = SecurityAuditDAO.JNDI_BINDING)

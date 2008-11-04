@@ -11,7 +11,6 @@ import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.interceptor.Interceptors;
 
-import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.Timeout;
 import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 

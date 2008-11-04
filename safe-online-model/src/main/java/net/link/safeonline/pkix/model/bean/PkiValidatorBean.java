@@ -45,6 +45,7 @@ import org.bouncycastle.asn1.x509.BasicConstraints;
 import org.bouncycastle.asn1.x509.X509Extensions;
 import org.bouncycastle.x509.extension.AuthorityKeyIdentifierStructure;
 import org.bouncycastle.x509.extension.X509ExtensionUtil;
+import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
