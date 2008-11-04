@@ -49,10 +49,9 @@ public abstract class ProfileDriver {
 
     private final Log                    LOG                    = LogFactory.getLog(getClass());
 
-    private final DriverProfileService   driverProfileService   = getService(DriverProfileService.class, DriverProfileService.JNDI_BINDING);
-    private final ProfileDataService     profileDataService     = getService(ProfileDataService.class, ProfileDataService.JNDI_BINDING);
-    private final DriverExceptionService driverExceptionService = getService(DriverExceptionService.class,
-                                                                        DriverExceptionService.JNDI_BINDING);
+    private final DriverProfileService   driverProfileService   = getService(DriverProfileService.class);
+    private final ProfileDataService     profileDataService     = getService(ProfileDataService.class);
+    private final DriverExceptionService driverExceptionService = getService(DriverExceptionService.class);
 
     private String                       title;
     private ExecutionEntity              execution;
@@ -117,27 +116,46 @@ public abstract class ProfileDriver {
     }
 
     // FIXME
-    <S> S getService(Class<S> service, String binding) {
+    <S> S getService(Class<S> service) {
 
         try {
-            InitialContext initialContext = new InitialContext();
-            return service.cast(initialContext.lookup(binding));
-        } catch (NoInitialContextException e) {
+            String binding = (String) service.getField("JNDI_BINDING").get(null);
             try {
-                return service.cast(Class.forName(service.getName().replaceFirst("\\.([^\\.]*)$", ".bean.$1Bean")).newInstance());
-            } catch (InstantiationException ee) {
-                this.LOG.error("Couldn't create service " + service + " at " + binding, ee);
-                throw new RuntimeException(ee);
-            } catch (IllegalAccessException ee) {
-                this.LOG.error("Couldn't access service " + service + " at " + binding, ee);
-                throw new RuntimeException(ee);
-            } catch (ClassNotFoundException ee) {
-                this.LOG.error("Couldn't find service " + service.getName().replaceFirst("\\.([^\\.]*)$", ".bean.$1Bean") + " at "
-                        + binding, ee);
-                throw new RuntimeException(ee);
+                InitialContext initialContext = new InitialContext();
+                return service.cast(initialContext.lookup(binding));
             }
-        } catch (NamingException e) {
-            this.LOG.error("Couldn't find service " + service + " at " + binding, e);
+
+            catch (NoInitialContextException e) {
+                String beanName = service.getName().replaceFirst("\\.([^\\.]*)$", ".bean.$1Bean");
+                try {
+                    return service.cast(Class.forName(beanName).newInstance());
+                } catch (InstantiationException ee) {
+                    this.LOG.error("Couldn't create service " + service + " at " + beanName, ee);
+                    throw new RuntimeException(ee);
+                } catch (IllegalAccessException ee) {
+                    this.LOG.error("Couldn't access service " + service + " at " + beanName, ee);
+                    throw new RuntimeException(ee);
+                } catch (ClassNotFoundException ee) {
+                    this.LOG.error("Couldn't find service " + service + " at " + beanName, ee);
+                    throw new RuntimeException(ee);
+                }
+            } catch (NamingException e) {
+                this.LOG.error("Couldn't find service " + service + " at " + binding, e);
+                throw new RuntimeException(e);
+            }
+        }
+
+        catch (IllegalArgumentException e) {
+            this.LOG.error("JNDI_BINDING field for " + service + " not static?", e);
+            throw e;
+        } catch (SecurityException e) {
+            this.LOG.error("No permission to access JNDI_BINDING field for " + service, e);
+            throw e;
+        } catch (IllegalAccessException e) {
+            this.LOG.error("Access denied to JNDI_BINDING field for " + service, e);
+            throw new RuntimeException(e);
+        } catch (NoSuchFieldException e) {
+            this.LOG.error("JNDI_BINDING field for " + service + " not declared.", e);
             throw new RuntimeException(e);
         }
     }

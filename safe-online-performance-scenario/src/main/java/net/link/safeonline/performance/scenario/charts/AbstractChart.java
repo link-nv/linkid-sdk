@@ -25,10 +25,6 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.naming.NoInitialContextException;
-
 import net.link.safeonline.performance.entity.DriverExceptionEntity;
 import net.link.safeonline.performance.entity.MeasurementEntity;
 import net.link.safeonline.performance.entity.ProfileDataEntity;
@@ -291,32 +287,6 @@ public abstract class AbstractChart implements Chart {
             return encoder.encode(chart.createBufferedImage(width, height));
         } catch (IOException e) {
             return null;
-        }
-    }
-
-    // FIXME
-    <S> S getService(Class<S> service, String binding) {
-
-        try {
-            InitialContext initialContext = new InitialContext();
-            return service.cast(initialContext.lookup(binding));
-        } catch (NoInitialContextException e) {
-            try {
-                return service.cast(Class.forName(service.getName().replaceFirst("\\.([^\\.]*)$", ".bean.$1Bean")).newInstance());
-            } catch (InstantiationException ee) {
-                this.LOG.error("Couldn't create service " + service + " at " + binding, ee);
-                throw new RuntimeException(ee);
-            } catch (IllegalAccessException ee) {
-                this.LOG.error("Couldn't access service " + service + " at " + binding, ee);
-                throw new RuntimeException(ee);
-            } catch (ClassNotFoundException ee) {
-                this.LOG.error("Couldn't find service " + service.getName().replaceFirst("\\.([^\\.]*)$", ".bean.$1Bean") + " at "
-                        + binding, ee);
-                throw new RuntimeException(ee);
-            }
-        } catch (NamingException e) {
-            this.LOG.error("Couldn't find service " + service + " at " + binding, e);
-            throw new RuntimeException(e);
         }
     }
 
