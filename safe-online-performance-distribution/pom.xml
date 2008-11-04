@@ -113,7 +113,7 @@
                         <configuration>
                             <patches>
                                 <patch>make_headless.patch</patch>
-                                <patch>log4j.patch</patch>
+                                <!--patch>log4j.patch</patch-->
                             </patches>
                             <targetDirectory>target/files/safe-online-base-distribution-${safe-online.version}</targetDirectory>
                         </configuration>
