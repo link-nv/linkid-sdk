@@ -26,7 +26,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = DemoTaskBean.JNDI_BINDING)
 public class DemoTaskBean implements Task {
 
-    public static final String JNDI_BINDING = Task.JNDI_PREFIX + "/DemoTaskBean/local";
+    public static final String JNDI_BINDING = Task.JNDI_PREFIX + "DemoTaskBean/local";
 
     private static final Log   LOG          = LogFactory.getLog(DemoTaskBean.class);
 

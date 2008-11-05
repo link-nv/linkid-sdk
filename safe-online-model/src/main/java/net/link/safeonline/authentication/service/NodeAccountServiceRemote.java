@@ -15,6 +15,6 @@ import net.link.safeonline.SafeOnlineService;
 @Remote
 public interface NodeAccountServiceRemote extends NodeAccountService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/NodeAccountServiceBean/remote";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "NodeAccountServiceBean/remote";
 
 }

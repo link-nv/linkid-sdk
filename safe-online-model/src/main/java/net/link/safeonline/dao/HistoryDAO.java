@@ -28,7 +28,7 @@ import net.link.safeonline.entity.SubjectEntity;
 @Local
 public interface HistoryDAO extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/HistoryDAOBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "HistoryDAOBean/local";
 
 
     HistoryEntity addHistoryEntry(Date when, SubjectEntity subject, HistoryEventType event, Map<String, String> properties);

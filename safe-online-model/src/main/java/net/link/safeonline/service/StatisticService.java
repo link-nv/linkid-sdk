@@ -25,7 +25,7 @@ import org.jfree.chart.JFreeChart;
 @Local
 public interface StatisticService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/StatisticServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "StatisticServiceBean/local";
 
 
     public StatisticEntity getStatistic(String statisticName, String statisticDomain, String applicationName)

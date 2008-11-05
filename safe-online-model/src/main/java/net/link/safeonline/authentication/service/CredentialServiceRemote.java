@@ -15,6 +15,6 @@ import net.link.safeonline.SafeOnlineService;
 @Remote
 public interface CredentialServiceRemote extends CredentialService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/CredentialServiceBean/remote";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "CredentialServiceBean/remote";
 
 }

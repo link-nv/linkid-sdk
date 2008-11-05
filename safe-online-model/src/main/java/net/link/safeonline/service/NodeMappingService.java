@@ -35,7 +35,7 @@ import net.link.safeonline.entity.SubjectEntity;
 @Local
 public interface NodeMappingService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/NodeMappingServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "NodeMappingServiceBean/local";
 
 
     /**

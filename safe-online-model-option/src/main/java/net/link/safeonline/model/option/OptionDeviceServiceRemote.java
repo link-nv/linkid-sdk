@@ -28,6 +28,6 @@ import net.link.safeonline.SafeOnlineService;
 @Remote
 public interface OptionDeviceServiceRemote extends OptionDeviceService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/OptionDeviceServiceBean/remote";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "OptionDeviceServiceBean/remote";
 
 }

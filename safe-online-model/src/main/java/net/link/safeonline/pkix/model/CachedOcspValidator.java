@@ -19,7 +19,7 @@ import net.link.safeonline.pkix.model.OcspValidator.OcspResult;
 @Local
 public interface CachedOcspValidator extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/CachedOcspValidatorBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "CachedOcspValidatorBean/local";
 
 
     /**

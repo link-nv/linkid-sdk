@@ -15,6 +15,6 @@ import net.link.safeonline.SafeOnlineService;
 @Remote
 public interface ApplicationPoolServiceRemote extends ApplicationPoolService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationPoolServiceBean/remote";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "ApplicationPoolServiceBean/remote";
 
 }

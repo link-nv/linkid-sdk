@@ -30,7 +30,7 @@ import net.link.safeonline.entity.SubjectEntity;
 @Local
 public interface ReAuthenticationService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ReAuthenticationServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "ReAuthenticationServiceBean/local";
 
 
     /**

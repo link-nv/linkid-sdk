@@ -25,7 +25,7 @@ import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 @Local
 public interface PkiValidator extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/PkiValidatorBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "PkiValidatorBean/local";
 
 
     public enum PkiResult {

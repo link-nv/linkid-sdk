@@ -15,6 +15,6 @@ import net.link.safeonline.SafeOnlineService;
 @Remote
 public interface ProxyAttributeServiceRemote extends ProxyAttributeService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ProxyAttributeServiceBean/remote";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "ProxyAttributeServiceBean/remote";
 
 }

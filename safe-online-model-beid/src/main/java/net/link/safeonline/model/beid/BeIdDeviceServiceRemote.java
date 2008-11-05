@@ -14,5 +14,5 @@ import net.link.safeonline.SafeOnlineService;
 @Remote
 public interface BeIdDeviceServiceRemote extends BeIdDeviceService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/BeIdDeviceServiceBean/remote";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "BeIdDeviceServiceBean/remote";
 }

@@ -19,7 +19,7 @@ import net.link.safeonline.helpdesk.exception.HelpdeskContextNotFoundException;
 @Local
 public interface HelpdeskContextDAO extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/HelpdeskContextDAOBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "HelpdeskContextDAOBean/local";
 
 
     HelpdeskContextEntity createHelpdeskContext(String location);

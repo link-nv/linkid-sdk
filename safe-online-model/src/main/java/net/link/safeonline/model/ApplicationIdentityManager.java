@@ -27,7 +27,7 @@ import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 @Local
 public interface ApplicationIdentityManager extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationIdentityManagerBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "ApplicationIdentityManagerBean/local";
 
 
     /**

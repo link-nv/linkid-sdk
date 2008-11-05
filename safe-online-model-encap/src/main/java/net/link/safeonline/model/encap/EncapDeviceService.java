@@ -28,7 +28,7 @@ import net.link.safeonline.data.AttributeDO;
 @Local
 public interface EncapDeviceService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/EncapDeviceServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "EncapDeviceServiceBean/local";
 
 
     /**

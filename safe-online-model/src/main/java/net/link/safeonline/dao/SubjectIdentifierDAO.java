@@ -19,7 +19,7 @@ import net.link.safeonline.entity.SubjectIdentifierEntity;
 @Local
 public interface SubjectIdentifierDAO extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/SubjectIdentifierDAOBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "SubjectIdentifierDAOBean/local";
 
 
     void addSubjectIdentifier(String domain, String subjectIdentifier, SubjectEntity subject);

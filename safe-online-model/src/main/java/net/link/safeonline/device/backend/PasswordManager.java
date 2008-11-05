@@ -17,7 +17,7 @@ import net.link.safeonline.entity.SubjectEntity;
 @Local
 public interface PasswordManager extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/PasswordManagerBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "PasswordManagerBean/local";
 
 
     void setPassword(SubjectEntity subject, String password)

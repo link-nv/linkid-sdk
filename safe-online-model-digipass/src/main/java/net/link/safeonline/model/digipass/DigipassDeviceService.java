@@ -25,7 +25,7 @@ import net.link.safeonline.data.AttributeDO;
 @Local
 public interface DigipassDeviceService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/DigipassDeviceServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "DigipassDeviceServiceBean/local";
 
 
     String authenticate(String loginName, String token)

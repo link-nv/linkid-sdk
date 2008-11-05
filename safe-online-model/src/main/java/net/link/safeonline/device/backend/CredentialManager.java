@@ -30,7 +30,7 @@ import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 @Local
 public interface CredentialManager extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/CredentialManagerBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "CredentialManagerBean/local";
 
 
     String authenticate(String sessionId, String applicationId, AuthenticationStatement authenticationStatement)

@@ -15,6 +15,6 @@ import net.link.safeonline.SafeOnlineService;
 @Remote
 public interface SubjectServiceRemote extends SubjectService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/SubjectServiceBean/remote";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "SubjectServiceBean/remote";
 
 }

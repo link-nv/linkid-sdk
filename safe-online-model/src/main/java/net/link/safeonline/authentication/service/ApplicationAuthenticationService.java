@@ -25,7 +25,7 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 @Local
 public interface ApplicationAuthenticationService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationAuthenticationServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "ApplicationAuthenticationServiceBean/local";
 
 
     /**

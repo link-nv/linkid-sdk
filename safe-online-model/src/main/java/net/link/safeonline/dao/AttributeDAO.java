@@ -30,7 +30,7 @@ import net.link.safeonline.entity.SubjectEntity;
 @Local
 public interface AttributeDAO extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AttributeDAOBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "AttributeDAOBean/local";
 
 
     AttributeEntity addAttribute(AttributeTypeEntity attributeType, SubjectEntity subject, String stringValue);

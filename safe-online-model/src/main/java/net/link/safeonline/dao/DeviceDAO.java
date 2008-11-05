@@ -29,7 +29,7 @@ import net.link.safeonline.entity.NodeEntity;
 @Local
 public interface DeviceDAO extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/DeviceDAOBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "DeviceDAOBean/local";
 
 
     DeviceEntity addDevice(String name, DeviceClassEntity deviceClass, NodeEntity node, String authenticationPath, String registrationPath,

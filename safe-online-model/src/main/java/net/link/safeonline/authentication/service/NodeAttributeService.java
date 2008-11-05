@@ -25,7 +25,7 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 @Local
 public interface NodeAttributeService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/NodeAttributeServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "NodeAttributeServiceBean/local";
 
 
     /**

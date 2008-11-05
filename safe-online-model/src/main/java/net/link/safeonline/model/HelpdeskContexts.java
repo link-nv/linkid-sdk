@@ -12,7 +12,7 @@ import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
 @Local
 public interface HelpdeskContexts extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/HelpdeskContextsBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "HelpdeskContextsBean/local";
 
 
     List<HelpdeskContextEntity> listContexts();

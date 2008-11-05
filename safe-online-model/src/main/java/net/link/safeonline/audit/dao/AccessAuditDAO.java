@@ -21,7 +21,7 @@ import net.link.safeonline.entity.audit.OperationStateType;
 @Local
 public interface AccessAuditDAO extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AccessAuditDAOBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "AccessAuditDAOBean/local";
 
 
     void addAccessAudit(AuditContextEntity auditContext, String operation, OperationStateType operationState, String principal);

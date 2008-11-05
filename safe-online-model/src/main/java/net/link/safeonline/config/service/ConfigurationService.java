@@ -19,7 +19,7 @@ import net.link.safeonline.entity.config.ConfigItemEntity;
 @Local
 public interface ConfigurationService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ConfigurationServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "ConfigurationServiceBean/local";
 
 
     List<ConfigGroupEntity> listConfigGroups();

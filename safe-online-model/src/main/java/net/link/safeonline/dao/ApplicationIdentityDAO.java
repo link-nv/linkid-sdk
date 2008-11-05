@@ -22,7 +22,7 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 @Local
 public interface ApplicationIdentityDAO extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationIdentityDAOBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "ApplicationIdentityDAOBean/local";
 
 
     ApplicationIdentityEntity addApplicationIdentity(ApplicationEntity application, long identityVersion);

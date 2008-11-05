@@ -17,7 +17,7 @@ import net.link.safeonline.entity.ApplicationEntity;
 @Local
 public interface UsageAgreementManager extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/UsageAgreementManagerBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "UsageAgreementManagerBean/local";
 
 
     /**

@@ -25,7 +25,7 @@ import net.link.safeonline.entity.DatatypeType;
 @Local
 public interface AttributeTypeService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AttributeTypeServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "AttributeTypeServiceBean/local";
 
 
     /**

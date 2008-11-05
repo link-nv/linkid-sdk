@@ -18,7 +18,7 @@ import net.link.safeonline.entity.config.ConfigGroupEntity;
 @Local
 public interface ConfigGroupDAO extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ConfigGroupDAOBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "ConfigGroupDAOBean/local";
 
 
     ConfigGroupEntity addConfigGroup(String name);

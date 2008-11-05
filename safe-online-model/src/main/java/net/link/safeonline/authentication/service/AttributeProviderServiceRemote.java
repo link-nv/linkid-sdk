@@ -15,6 +15,6 @@ import net.link.safeonline.SafeOnlineService;
 @Remote
 public interface AttributeProviderServiceRemote extends AttributeProviderService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AttributeProviderServiceBean/remote";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "AttributeProviderServiceBean/remote";
 
 }

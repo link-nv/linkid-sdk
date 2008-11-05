@@ -31,7 +31,7 @@ import net.link.safeonline.entity.AttributeEntity;
 @Local
 public interface AttributeProviderService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AttributeProviderServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "AttributeProviderServiceBean/local";
 
 
     /**

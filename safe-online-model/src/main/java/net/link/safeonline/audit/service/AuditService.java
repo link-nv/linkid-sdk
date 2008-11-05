@@ -25,7 +25,7 @@ import net.link.safeonline.entity.audit.SecurityAuditEntity;
 @Local
 public interface AuditService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AuditServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "AuditServiceBean/local";
 
 
     Set<String> listUsers();

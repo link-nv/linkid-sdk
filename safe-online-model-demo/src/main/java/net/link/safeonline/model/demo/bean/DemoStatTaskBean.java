@@ -30,7 +30,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = DemoStatTaskBean.JNDI_BINDING)
 public class DemoStatTaskBean implements Task {
 
-    public static final String    JNDI_BINDING = Task.JNDI_PREFIX + "/DemoStatTaskBean/local";
+    public static final String    JNDI_BINDING = Task.JNDI_PREFIX + "DemoStatTaskBean/local";
 
     @EJB
     private StatisticDAO          statisticDAO;

@@ -28,7 +28,7 @@ import net.link.safeonline.pkix.exception.CertificateEncodingException;
 @Local
 public interface NodeService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/NodeServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "NodeServiceBean/local";
 
 
     /**

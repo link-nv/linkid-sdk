@@ -21,7 +21,7 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 @Local
 public interface AuthorizationManagerService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AuthorizationManagerServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "AuthorizationManagerServiceBean/local";
 
 
     /**

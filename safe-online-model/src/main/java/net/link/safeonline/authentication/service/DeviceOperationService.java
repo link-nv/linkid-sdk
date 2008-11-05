@@ -30,7 +30,7 @@ import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
 @Local
 public interface DeviceOperationService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING                       = SafeOnlineService.JNDI_PREFIX + "/DeviceOperationServiceBean/local";
+    public static final String JNDI_BINDING                       = SafeOnlineService.JNDI_PREFIX + "DeviceOperationServiceBean/local";
 
     /**
      * Used to store this stateful bean on the session

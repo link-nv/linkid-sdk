@@ -30,7 +30,7 @@ import net.link.safeonline.pkix.exception.TrustPointNotFoundException;
 @Local
 public interface PkiService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/PkiServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "PkiServiceBean/local";
 
 
     /**

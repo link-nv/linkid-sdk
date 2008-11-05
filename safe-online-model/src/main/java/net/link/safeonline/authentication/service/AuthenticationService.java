@@ -55,7 +55,7 @@ import org.opensaml.saml2.core.LogoutRequest;
 @Local
 public interface AuthenticationService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AuthenticationServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "AuthenticationServiceBean/local";
 
 
     /**

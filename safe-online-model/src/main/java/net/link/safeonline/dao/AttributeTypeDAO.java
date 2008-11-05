@@ -33,7 +33,7 @@ import net.link.safeonline.entity.NodeEntity;
 @Local
 public interface AttributeTypeDAO extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AttributeTypeDAOBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "AttributeTypeDAOBean/local";
 
 
     void addAttributeType(AttributeTypeEntity attributeType);

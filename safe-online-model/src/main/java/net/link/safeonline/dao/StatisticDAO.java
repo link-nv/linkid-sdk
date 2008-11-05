@@ -19,7 +19,7 @@ import net.link.safeonline.entity.StatisticEntity;
 @Local
 public interface StatisticDAO extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/StatisticDAOBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "StatisticDAOBean/local";
 
 
     StatisticEntity addStatistic(String name, String domain, ApplicationEntity application);

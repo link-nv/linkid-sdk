@@ -21,7 +21,7 @@ import net.link.safeonline.SafeOnlineService;
 @Local
 public interface SamlAuthorityService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/SamlAuthorityServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "SamlAuthorityServiceBean/local";
 
 
     /**

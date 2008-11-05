@@ -21,7 +21,7 @@ import net.link.safeonline.entity.SubjectEntity;
 @Local
 public interface ApplicationOwnerDAO extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationOwnerDAOBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "ApplicationOwnerDAOBean/local";
 
 
     ApplicationOwnerEntity findApplicationOwner(String name);

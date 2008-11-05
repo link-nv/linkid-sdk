@@ -23,7 +23,7 @@ import net.link.safeonline.entity.notification.NotificationProducerSubscriptionE
 @Local
 public interface NotificationSubscriptionService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/NotificationSubscriptionServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "NotificationSubscriptionServiceBean/local";
 
 
     List<NotificationProducerSubscriptionEntity> listTopics();

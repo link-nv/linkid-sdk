@@ -24,7 +24,7 @@ import net.link.safeonline.SafeOnlineService;
 @Local
 public interface AuthorizationService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AuthorizationServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "AuthorizationServiceBean/local";
 
 
     /**

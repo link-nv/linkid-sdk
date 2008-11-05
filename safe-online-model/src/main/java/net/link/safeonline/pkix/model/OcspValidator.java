@@ -24,7 +24,7 @@ import net.link.safeonline.SafeOnlineService;
 @Local
 public interface OcspValidator extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/OcspValidatorBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "OcspValidatorBean/local";
 
 
     public enum OcspResult {

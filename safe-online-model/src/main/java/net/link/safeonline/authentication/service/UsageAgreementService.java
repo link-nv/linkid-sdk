@@ -29,7 +29,7 @@ import net.link.safeonline.entity.UsageAgreementTextEntity;
 @Local
 public interface UsageAgreementService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/UsageAgreementServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "UsageAgreementServiceBean/local";
 
 
     /**

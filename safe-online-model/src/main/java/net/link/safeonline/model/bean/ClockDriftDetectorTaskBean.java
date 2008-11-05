@@ -50,7 +50,7 @@ public class ClockDriftDetectorTaskBean implements Task {
 
     private static final Log    LOG                     = LogFactory.getLog(ClockDriftDetectorTaskBean.class);
 
-    public static final String  JNDI_BINDING            = Task.JNDI_PREFIX + "/ClockDriftDetectorTaskBean/local";
+    public static final String  JNDI_BINDING            = Task.JNDI_PREFIX + "ClockDriftDetectorTaskBean/local";
 
     @EJB
     private SecurityAuditLogger securityAuditLogger;

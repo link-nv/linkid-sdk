@@ -22,7 +22,7 @@ import net.link.safeonline.entity.tasks.TaskHistoryEntity;
 @Local
 public interface SchedulingService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/SchedulingServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "SchedulingServiceBean/local";
 
 
     List<TaskEntity> listTaskList();

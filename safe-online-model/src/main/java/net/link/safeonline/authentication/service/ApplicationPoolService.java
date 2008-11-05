@@ -28,7 +28,7 @@ import net.link.safeonline.entity.ApplicationPoolEntity;
 @Local
 public interface ApplicationPoolService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationPoolServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "ApplicationPoolServiceBean/local";
 
 
     /**

@@ -29,7 +29,7 @@ public class AttributeCacheCleanerTaskBean implements Task {
 
     private static final String name         = "Attribute cache cleaner";
 
-    public static final String  JNDI_BINDING = Task.JNDI_PREFIX + "/AttributeCacheCleanerTaskBean/local";
+    public static final String  JNDI_BINDING = Task.JNDI_PREFIX + "AttributeCacheCleanerTaskBean/local";
 
     @EJB
     private AttributeCacheDAO   attributeCacheDAO;

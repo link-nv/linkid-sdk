@@ -20,7 +20,7 @@ import net.link.safeonline.entity.SubjectEntity;
 @Local
 public interface NodeMappingDAO extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/NodeMappingDAOBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "NodeMappingDAOBean/local";
 
 
     public NodeMappingEntity addNodeMapping(SubjectEntity subject, NodeEntity node);

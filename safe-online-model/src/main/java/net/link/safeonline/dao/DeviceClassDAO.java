@@ -22,7 +22,7 @@ import net.link.safeonline.entity.DeviceClassEntity;
 @Local
 public interface DeviceClassDAO extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/DeviceClassDAOBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "DeviceClassDAOBean/local";
 
 
     DeviceClassEntity addDeviceClass(String name, String authenticationContextClass);

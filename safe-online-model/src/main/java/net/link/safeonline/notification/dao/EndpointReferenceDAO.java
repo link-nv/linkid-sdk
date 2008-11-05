@@ -21,7 +21,7 @@ import net.link.safeonline.entity.notification.EndpointReferenceEntity;
 @Local
 public interface EndpointReferenceDAO extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/EndpointReferenceDAOBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "EndpointReferenceDAOBean/local";
 
 
     EndpointReferenceEntity addEndpointReference(String address, ApplicationEntity application);

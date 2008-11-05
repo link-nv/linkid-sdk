@@ -26,7 +26,7 @@ import net.link.safeonline.entity.SubjectEntity;
 @Local
 public interface AttributeCacheDAO extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AttributeCacheDAOBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "AttributeCacheDAOBean/local";
 
 
     /**

@@ -22,7 +22,7 @@ import net.link.safeonline.pkix.exception.TrustPointNotFoundException;
 @Local
 public interface TrustPointDAO extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/TrustPointDAOBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "TrustPointDAOBean/local";
 
 
     void addTrustPoint(TrustDomainEntity trustDomain, X509Certificate certificate);

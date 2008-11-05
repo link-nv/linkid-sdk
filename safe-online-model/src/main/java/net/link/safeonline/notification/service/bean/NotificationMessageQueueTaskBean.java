@@ -39,7 +39,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = NotificationMessageQueueTaskBean.JNDI_BINDING)
 public class NotificationMessageQueueTaskBean implements Task {
 
-    public static final String          JNDI_BINDING   = Task.JNDI_PREFIX + "/NotificationMessageQueueTaskBean/local";
+    public static final String          JNDI_BINDING   = Task.JNDI_PREFIX + "NotificationMessageQueueTaskBean/local";
 
     private static final String         name           = "Failed Notifications Handler";
 

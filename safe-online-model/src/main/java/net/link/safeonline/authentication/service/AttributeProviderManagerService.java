@@ -23,7 +23,7 @@ import net.link.safeonline.entity.AttributeProviderEntity;
 @Local
 public interface AttributeProviderManagerService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AttributeProviderManagerServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "AttributeProviderManagerServiceBean/local";
 
 
     List<AttributeProviderEntity> getAttributeProviders(String attributeName)

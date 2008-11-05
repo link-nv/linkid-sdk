@@ -35,7 +35,7 @@ import net.link.safeonline.pkix.exception.CertificateEncodingException;
 @Local
 public interface DeviceService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/DeviceServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "DeviceServiceBean/local";
 
 
     List<DeviceEntity> listDevices();

@@ -17,7 +17,7 @@ import net.link.safeonline.entity.audit.ResourceNameType;
 @Local
 public interface ResourceAuditLogger extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ResourceAuditLoggerBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "ResourceAuditLoggerBean/local";
 
 
     void addResourceAudit(ResourceNameType resourceName, ResourceLevelType resourceLevel, String sourceComponent, String message);

@@ -23,7 +23,7 @@ import net.link.safeonline.SafeOnlineService;
 @Local
 public interface PkiProviderManager extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/PkiProviderManagerBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "PkiProviderManagerBean/local";
 
 
     /**

@@ -35,7 +35,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = AuditCleanerTaskBean.JNDI_BINDING)
 public class AuditCleanerTaskBean implements Task {
 
-    public static final String  JNDI_BINDING       = Task.JNDI_PREFIX + "/AuditCleanerTaskBean/local";
+    public static final String  JNDI_BINDING       = Task.JNDI_PREFIX + "AuditCleanerTaskBean/local";
 
     private static final String name               = "Audit cleaner";
 

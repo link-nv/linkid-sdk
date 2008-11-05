@@ -22,7 +22,7 @@ import net.link.safeonline.entity.UsageAgreementTextEntity;
 @Local
 public interface UsageAgreementDAO extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/UsageAgreementDAOBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "UsageAgreementDAOBean/local";
 
 
     UsageAgreementEntity addUsageAgreement(ApplicationEntity application, Long usageAgreementVersion);

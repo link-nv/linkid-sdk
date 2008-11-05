@@ -28,7 +28,7 @@ import net.link.safeonline.entity.DeviceEntity;
 @Local
 public interface DevicePolicyService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/DevicePolicyServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "DevicePolicyServiceBean/local";
 
 
     /**

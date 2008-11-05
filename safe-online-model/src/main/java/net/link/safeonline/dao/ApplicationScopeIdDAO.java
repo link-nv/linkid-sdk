@@ -24,7 +24,7 @@ import net.link.safeonline.entity.SubjectEntity;
 @Local
 public interface ApplicationScopeIdDAO extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationScopeIdDAOBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "ApplicationScopeIdDAOBean/local";
 
 
     ApplicationScopeIdEntity findApplicationScopeId(SubjectEntity subject, ApplicationEntity application);

@@ -18,7 +18,7 @@ import net.link.safeonline.entity.pkix.TrustDomainEntity;
 @Local
 public interface CachedOcspResponseDAO extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/CachedOcspResponseDAOBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "CachedOcspResponseDAOBean/local";
 
 
     CachedOcspResponseEntity findCachedOcspResponse(String key);

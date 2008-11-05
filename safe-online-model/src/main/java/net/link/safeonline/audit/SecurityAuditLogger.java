@@ -16,7 +16,7 @@ import net.link.safeonline.entity.audit.SecurityThreatType;
 @Local
 public interface SecurityAuditLogger extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/SecurityAuditLoggerBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "SecurityAuditLoggerBean/local";
 
 
     void addSecurityAudit(SecurityThreatType securityThreat, String message);

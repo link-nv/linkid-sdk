@@ -19,7 +19,7 @@ import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 @Local
 public interface TrustDomainDAO extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/TrustDomainDAOBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "TrustDomainDAOBean/local";
 
 
     List<TrustDomainEntity> listTrustDomains();

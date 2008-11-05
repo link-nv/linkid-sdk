@@ -20,7 +20,7 @@ import net.link.safeonline.entity.NodeEntity;
 @Local
 public interface NodeDAO extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/NodeDAOBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "NodeDAOBean/local";
 
 
     NodeEntity addNode(String name, String protocol, String hostname, int port, int sslPort, X509Certificate authnCertificate,

@@ -16,7 +16,7 @@ import net.link.safeonline.entity.SubjectEntity;
 @Local
 public interface NodeAccountService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/NodeAccountServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "NodeAccountServiceBean/local";
 
 
     void removeAccount(SubjectEntity subject);

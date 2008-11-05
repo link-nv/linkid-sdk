@@ -19,7 +19,7 @@ import net.link.safeonline.entity.SubjectEntity;
 @Local
 public interface PasswordDeviceService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/PasswordDeviceServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "PasswordDeviceServiceBean/local";
 
 
     SubjectEntity authenticate(String loginName, String password)

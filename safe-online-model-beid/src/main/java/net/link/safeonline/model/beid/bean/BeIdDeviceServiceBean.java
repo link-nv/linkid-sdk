@@ -46,7 +46,7 @@ public class BeIdDeviceServiceBean implements BeIdDeviceService, BeIdDeviceServi
     @EJB
     private CredentialManager credentialManager;
 
-    @EJB(mappedName = PkiProvider.JNDI_PREFIX + "/beid")
+    @EJB(mappedName = PkiProvider.JNDI_PREFIX + "beid")
     private PkiProvider       beIdPkiProvider;
 
 

@@ -24,7 +24,7 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 @Local
 public interface CredentialService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/CredentialServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "CredentialServiceBean/local";
 
 
     /**

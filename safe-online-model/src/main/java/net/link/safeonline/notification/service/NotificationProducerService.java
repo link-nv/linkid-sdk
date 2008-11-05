@@ -24,7 +24,7 @@ import net.link.safeonline.notification.exception.MessageHandlerNotFoundExceptio
 @Local
 public interface NotificationProducerService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/NotificationProducerServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "NotificationProducerServiceBean/local";
 
 
     public void sendNotification(String topic, String subject, String content)

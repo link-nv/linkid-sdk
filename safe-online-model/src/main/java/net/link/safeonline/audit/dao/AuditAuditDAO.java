@@ -20,7 +20,7 @@ import net.link.safeonline.entity.audit.AuditContextEntity;
 @Local
 public interface AuditAuditDAO extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AuditAuditDAOBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "AuditAuditDAOBean/local";
 
 
     void addAuditAudit(AuditContextEntity auditContext, String message);

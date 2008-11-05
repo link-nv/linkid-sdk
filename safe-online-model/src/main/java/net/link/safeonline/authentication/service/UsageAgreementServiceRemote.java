@@ -15,6 +15,6 @@ import net.link.safeonline.SafeOnlineService;
 @Remote
 public interface UsageAgreementServiceRemote extends UsageAgreementService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/UsageAgreementServiceBean/remote";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "UsageAgreementServiceBean/remote";
 
 }

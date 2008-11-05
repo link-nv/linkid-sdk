@@ -30,7 +30,7 @@ import net.link.safeonline.entity.SubscriptionEntity;
 @Local
 public interface SubscriptionService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/SubscriptionServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "SubscriptionServiceBean/local";
 
 
     /**

@@ -26,7 +26,7 @@ import net.link.safeonline.entity.NodeEntity;
 @Local
 public interface NodeAuthenticationService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/NodeAuthenticationServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "NodeAuthenticationServiceBean/local";
 
 
     /**

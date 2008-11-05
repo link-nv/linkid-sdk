@@ -19,7 +19,7 @@ import net.link.safeonline.notification.exception.MessageHandlerNotFoundExceptio
 @Local
 public interface AccountService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AccountServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "AccountServiceBean/local";
 
 
     void removeAccount()

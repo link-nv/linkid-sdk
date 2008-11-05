@@ -33,9 +33,7 @@ import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 @Local
 public interface PkiProvider extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/PkiProviderBean/local";
-
-    public static String       JNDI_PREFIX  = "SafeOnline/pkix";
+    public static final String JNDI_PREFIX = "SafeOnline/pkix/";
 
 
     /**

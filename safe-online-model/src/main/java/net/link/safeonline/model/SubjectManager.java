@@ -22,7 +22,7 @@ import net.link.safeonline.entity.SubjectEntity;
 @Local
 public interface SubjectManager extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/SubjectManagerBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "SubjectManagerBean/local";
 
 
     /**

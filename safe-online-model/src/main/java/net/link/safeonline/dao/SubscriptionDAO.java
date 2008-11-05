@@ -29,7 +29,7 @@ import net.link.safeonline.entity.SubscriptionOwnerType;
 @Local
 public interface SubscriptionDAO extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/SubscriptionDAOBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "SubscriptionDAOBean/local";
 
 
     SubscriptionEntity findSubscription(SubjectEntity subject, ApplicationEntity application);

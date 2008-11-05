@@ -20,7 +20,7 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 @Local
 public interface AttributeProviderDAO extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AttributeProviderDAOBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "AttributeProviderDAOBean/local";
 
 
     AttributeProviderEntity findAttributeProvider(ApplicationEntity application, AttributeTypeEntity attributeType);

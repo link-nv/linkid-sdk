@@ -36,7 +36,7 @@ import net.link.safeonline.model.option.exception.OptionRegistrationException;
 @Local
 public interface OptionDeviceService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/OptionDeviceServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "OptionDeviceServiceBean/local";
 
 
     String authenticate(String imei, String pin)

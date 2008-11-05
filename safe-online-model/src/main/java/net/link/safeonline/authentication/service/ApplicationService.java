@@ -41,7 +41,7 @@ import net.link.safeonline.pkix.exception.CertificateEncodingException;
 @Local
 public interface ApplicationService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "ApplicationServiceBean/local";
 
 
     /**

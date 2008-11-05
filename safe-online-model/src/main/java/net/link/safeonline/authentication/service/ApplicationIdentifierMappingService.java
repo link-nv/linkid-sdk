@@ -25,7 +25,7 @@ import net.link.safeonline.authentication.exception.SubscriptionNotFoundExceptio
 @Local
 public interface ApplicationIdentifierMappingService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationIdentifierMappingServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "ApplicationIdentifierMappingServiceBean/local";
 
 
     /**

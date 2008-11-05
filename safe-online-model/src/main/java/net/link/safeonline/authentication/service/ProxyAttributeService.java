@@ -18,7 +18,7 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 @Local
 public interface ProxyAttributeService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ProxyAttributeServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "ProxyAttributeServiceBean/local";
 
 
     /**

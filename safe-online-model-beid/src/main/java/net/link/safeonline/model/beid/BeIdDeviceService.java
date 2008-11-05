@@ -31,7 +31,7 @@ import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 @Local
 public interface BeIdDeviceService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/BeIdDeviceServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "BeIdDeviceServiceBean/local";
 
 
     String authenticate(String sessionId, String applicationId, AuthenticationStatement authenticationStatement)

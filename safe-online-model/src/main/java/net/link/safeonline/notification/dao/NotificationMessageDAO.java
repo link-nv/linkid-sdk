@@ -21,7 +21,7 @@ import net.link.safeonline.notification.message.NotificationMessage;
 @Local
 public interface NotificationMessageDAO extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/NotificationMessageDAOBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "NotificationMessageDAOBean/local";
 
 
     NotificationMessageEntity addNotificationMessage(NotificationMessage notificationMessage, EndpointReferenceEntity consumer);

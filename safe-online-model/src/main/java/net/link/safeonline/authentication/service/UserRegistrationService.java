@@ -29,7 +29,7 @@ import net.link.safeonline.entity.SubjectEntity;
 @Local
 public interface UserRegistrationService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/UserRegistrationServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "UserRegistrationServiceBean/local";
 
 
     /**

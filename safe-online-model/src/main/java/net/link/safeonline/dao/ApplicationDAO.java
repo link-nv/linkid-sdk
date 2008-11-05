@@ -29,7 +29,7 @@ import net.link.safeonline.entity.ApplicationOwnerEntity;
 @Local
 public interface ApplicationDAO extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationDAOBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "ApplicationDAOBean/local";
 
 
     /**

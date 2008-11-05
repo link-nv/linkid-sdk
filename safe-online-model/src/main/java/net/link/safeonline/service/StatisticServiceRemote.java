@@ -15,6 +15,6 @@ import net.link.safeonline.SafeOnlineService;
 @Remote
 public interface StatisticServiceRemote extends StatisticService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/StatisticServiceBean/remote";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "StatisticServiceBean/remote";
 
 }

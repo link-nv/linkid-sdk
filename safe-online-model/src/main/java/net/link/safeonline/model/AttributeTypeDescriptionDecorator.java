@@ -28,7 +28,7 @@ import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 @Local
 public interface AttributeTypeDescriptionDecorator extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AttributeTypeDescriptionDecoratorBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "AttributeTypeDescriptionDecoratorBean/local";
 
 
     /**

@@ -17,7 +17,7 @@ import net.link.safeonline.entity.ApplicationOwnerEntity;
 @Local
 public interface ApplicationOwnerManager extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationOwnerManagerBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "ApplicationOwnerManagerBean/local";
 
 
     ApplicationOwnerEntity getCallerApplicationOwner()

@@ -15,6 +15,6 @@ import net.link.safeonline.SafeOnlineService;
 @Remote
 public interface UserRegistrationServiceRemote extends UserRegistrationService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/UserRegistrationServiceBean/remote";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "UserRegistrationServiceBean/remote";
 
 }

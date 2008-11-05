@@ -29,7 +29,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = TaskHistoryCleanerTaskBean.JNDI_BINDING)
 public class TaskHistoryCleanerTaskBean implements Task {
 
-    public static final String  JNDI_BINDING      = Task.JNDI_PREFIX + "/TaskHistoryCleanerTaskBean/local";
+    public static final String  JNDI_BINDING      = Task.JNDI_PREFIX + "TaskHistoryCleanerTaskBean/local";
 
     private static final String name              = "Task history cleaner";
 

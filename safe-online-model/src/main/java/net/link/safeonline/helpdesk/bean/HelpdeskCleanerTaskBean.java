@@ -33,7 +33,7 @@ public class HelpdeskCleanerTaskBean implements Task {
 
     private static final String name                    = "Helpdesk event history cleaner";
 
-    public static final String  JNDI_BINDING            = Task.JNDI_PREFIX + "/HelpdeskCleanerTaskBean/local";
+    public static final String  JNDI_BINDING            = Task.JNDI_PREFIX + "HelpdeskCleanerTaskBean/local";
 
     @EJB
     private HelpdeskEventDAO    helpdeskEventDAO;

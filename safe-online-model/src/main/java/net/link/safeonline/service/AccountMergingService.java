@@ -26,7 +26,7 @@ import net.link.safeonline.notification.exception.MessageHandlerNotFoundExceptio
 @Local
 public interface AccountMergingService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AccountMergingServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "AccountMergingServiceBean/local";
 
 
     /**

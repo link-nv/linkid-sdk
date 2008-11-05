@@ -15,6 +15,6 @@ import net.link.safeonline.SafeOnlineService;
 @Remote
 public interface SchedulingServiceRemote extends SchedulingService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/SchedulingServiceBean/remote";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "SchedulingServiceBean/remote";
 
 }

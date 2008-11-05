@@ -24,7 +24,7 @@ import net.link.safeonline.entity.config.ConfigItemEntity;
 @Local
 public interface ConfigurationManager extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ConfigurationManagerBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "ConfigurationManagerBean/local";
 
 
     ConfigItemEntity findConfigItem(String name);

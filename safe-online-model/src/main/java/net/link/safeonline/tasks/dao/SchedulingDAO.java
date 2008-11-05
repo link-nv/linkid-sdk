@@ -19,7 +19,7 @@ import net.link.safeonline.entity.tasks.SchedulingEntity;
 @Local
 public interface SchedulingDAO extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/SchedulingDAOBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "SchedulingDAOBean/local";
 
 
     SchedulingEntity findSchedulingByTimerHandle(TimerHandle timerHandle);

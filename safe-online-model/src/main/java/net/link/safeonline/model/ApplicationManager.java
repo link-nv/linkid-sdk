@@ -22,7 +22,7 @@ import net.link.safeonline.entity.ApplicationEntity;
 @Local
 public interface ApplicationManager extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/ApplicationManagerBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "ApplicationManagerBean/local";
 
 
     /**

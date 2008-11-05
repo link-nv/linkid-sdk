@@ -26,7 +26,7 @@ import net.link.safeonline.helpdesk.exception.HelpdeskContextNotFoundException;
 @Local
 public interface HelpdeskService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/HelpdeskServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "HelpdeskServiceBean/local";
 
 
     /**

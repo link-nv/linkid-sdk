@@ -32,7 +32,7 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 @Local
 public interface AttributeService extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/AttributeServiceBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "AttributeServiceBean/local";
 
 
     /**

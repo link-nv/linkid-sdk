@@ -28,7 +28,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = CachedOcspResponseCleanerTaskBean.JNDI_BINDING)
 public class CachedOcspResponseCleanerTaskBean implements Task {
 
-    public static final String    JNDI_BINDING = Task.JNDI_PREFIX + "/CachedOcspResponseCleanerTaskBean/local";
+    public static final String    JNDI_BINDING = Task.JNDI_PREFIX + "CachedOcspResponseCleanerTaskBean/local";
 
     private static final String   name         = "Ocsp response cache cleaner";
 

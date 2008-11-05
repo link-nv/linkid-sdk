@@ -17,7 +17,7 @@ import net.link.safeonline.authentication.exception.MobileException;
 @Local
 public interface MobileManager extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/MobileManagerBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "MobileManagerBean/local";
 
 
     String requestOTP(String mobile)

@@ -22,7 +22,7 @@ import net.link.safeonline.entity.DeviceEntity;
 @Local
 public interface DeviceManager extends SafeOnlineService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "/DeviceManagerBean/local";
+    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "DeviceManagerBean/local";
 
 
     /**
