@@ -10,6 +10,7 @@ package net.link.safeonline.model.bean;
 import java.util.List;
 
 import javax.ejb.EJB;
+import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -22,6 +23,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
+@Local(Task.class)
 @LocalBinding(jndiBinding = AttributeCacheCleanerTaskBean.JNDI_BINDING)
 public class AttributeCacheCleanerTaskBean implements Task {
 

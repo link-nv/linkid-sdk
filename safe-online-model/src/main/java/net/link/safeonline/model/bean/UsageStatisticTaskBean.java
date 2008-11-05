@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.ejb.EJB;
+import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -31,9 +32,10 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
-@LocalBinding(jndiBinding = UsageStatisticTaskBean.JNDI_BINDING)
 @Configurable(group = "User Statistic Generation")
 @Interceptors(ConfigurationInterceptor.class)
+@Local(Task.class)
+@LocalBinding(jndiBinding = UsageStatisticTaskBean.JNDI_BINDING)
 public class UsageStatisticTaskBean implements Task {
 
     public static final String    JNDI_BINDING        = Task.JNDI_PREFIX + "/UsageStatisticTaskBean/local";

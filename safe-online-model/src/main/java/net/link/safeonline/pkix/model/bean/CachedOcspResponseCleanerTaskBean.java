@@ -10,6 +10,7 @@ package net.link.safeonline.pkix.model.bean;
 import java.util.List;
 
 import javax.ejb.EJB;
+import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -23,6 +24,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
+@Local(Task.class)
 @LocalBinding(jndiBinding = CachedOcspResponseCleanerTaskBean.JNDI_BINDING)
 public class CachedOcspResponseCleanerTaskBean implements Task {
 

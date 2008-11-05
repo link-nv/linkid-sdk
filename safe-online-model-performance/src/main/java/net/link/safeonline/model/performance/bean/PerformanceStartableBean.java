@@ -12,6 +12,7 @@ import java.security.cert.X509Certificate;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import javax.ejb.Local;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
@@ -31,6 +32,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
+@Local(Startable.class)
 @LocalBinding(jndiBinding = PerformanceStartableBean.JNDI_BINDING)
 public class PerformanceStartableBean extends AbstractInitBean {
 

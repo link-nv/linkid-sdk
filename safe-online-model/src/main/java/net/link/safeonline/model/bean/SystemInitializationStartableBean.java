@@ -15,6 +15,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.ejb.EJBException;
+import javax.ejb.Local;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
@@ -44,6 +45,7 @@ import org.jboss.annotation.ejb.LocalBinding;
  * 
  */
 @Stateless
+@Local(Startable.class)
 @LocalBinding(jndiBinding = SystemInitializationStartableBean.JNDI_BINDING)
 public class SystemInitializationStartableBean extends AbstractInitBean {
 

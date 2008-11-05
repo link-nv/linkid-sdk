@@ -7,6 +7,7 @@
 
 package net.link.safeonline.util.ee;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -139,12 +140,24 @@ public class EjbUtils {
                 String objectName = nameClassPair.getName();
                 LOG.debug(objectName + ":" + nameClassPair.getClassName());
                 Object object = context.lookup(objectName);
+
+                // If the bean is bound to a /local of the objectName.
+                if (object instanceof Context) {
+                    Context objectContext = (Context) object;
+                    objectName += "/local";
+                    object = objectContext.lookup("local");
+                    LOG.debug(objectName + ":" + object == null? "null": object.getClass().getName());
+                }
+
+                // Check the object type.
                 if (!type.isInstance(object)) {
-                    String message = "object \"" + jndiPrefix + "/" + objectName + "\" is not a " + type.getName() + "; it is "
-                            + (object == null? "null": "a " + object.getClass().getName());
+                    String message = String.format("object \"%s/%s\" is not a %s; it is a %s %s", jndiPrefix, objectName, type.getName(),
+                            object == null? "null": "a " + object.getClass().getName(), object == null? "null"
+                                    : Arrays.asList(object.getClass().getInterfaces()));
                     LOG.error(message);
                     throw new IllegalStateException(message);
                 }
+
                 Type component = type.cast(object);
                 names.put(objectName, component);
             }

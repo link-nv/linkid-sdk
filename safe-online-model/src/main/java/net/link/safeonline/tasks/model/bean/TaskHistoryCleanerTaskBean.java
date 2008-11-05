@@ -8,6 +8,7 @@
 package net.link.safeonline.tasks.model.bean;
 
 import javax.ejb.EJB;
+import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -22,9 +23,10 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
-@LocalBinding(jndiBinding = TaskHistoryCleanerTaskBean.JNDI_BINDING)
-@Interceptors(ConfigurationInterceptor.class)
 @Configurable
+@Interceptors(ConfigurationInterceptor.class)
+@Local(Task.class)
+@LocalBinding(jndiBinding = TaskHistoryCleanerTaskBean.JNDI_BINDING)
 public class TaskHistoryCleanerTaskBean implements Task {
 
     public static final String  JNDI_BINDING      = Task.JNDI_PREFIX + "/TaskHistoryCleanerTaskBean/local";

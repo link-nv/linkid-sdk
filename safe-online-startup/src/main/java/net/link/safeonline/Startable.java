@@ -7,7 +7,6 @@
 
 package net.link.safeonline;
 
-import javax.ejb.Local;
 
 
 /**
@@ -16,7 +15,6 @@ import javax.ejb.Local;
  * @author fcorneli
  * 
  */
-@Local
 public interface Startable {
 
     public static final String JNDI_PREFIX        = "SafeOnline/startup/";

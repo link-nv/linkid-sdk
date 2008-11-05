@@ -1,7 +1,7 @@
 #!/bin/bash
 # ___________________________________________________________________________ #
 #                                                                             #
-#       Restart -- Stop, Clean-up and Start the Application Server.           #
+#       Start -- Stop, Clean-up and Start the Application Server.             #
 #                                                                             #
 #                                                                             #
 #    Licensed under the Apache License, Version 2.0 (the "License");          #
@@ -29,13 +29,21 @@ source "$scripts/bashlib"
 
 
 # Stop the distribution if it's running.
-"$scripts/stop"
+if { kill -0 $(<"$scripts/jboss.pid"); } 2>/dev/null; then
+    ask -y!N "This distribution is already running.  Stop it?" || { emit -y "Aborting."; exit 1; }
+    "$scripts/stop" || exit
+fi
 
 
 # Delete temporary JBoss stuff.
 emit "Cleaning $distribution" --
     rm -rf data/ tmp/ log/ work/
 emit -$?
+
+
+# Initialize the database.
+emit "(Re)Initializing the database"
+    "$scripts/initdb" || exit
 
 
 # Start the distribution.

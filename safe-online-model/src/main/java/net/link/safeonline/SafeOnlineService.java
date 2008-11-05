@@ -22,5 +22,5 @@ package net.link.safeonline;
  */
 public interface SafeOnlineService {
 
-    static final String JNDI_PREFIX = "SafeOnline";
+    static final String JNDI_PREFIX = "SafeOnline/";
 }

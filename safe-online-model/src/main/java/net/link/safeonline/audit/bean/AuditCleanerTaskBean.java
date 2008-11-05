@@ -8,6 +8,7 @@
 package net.link.safeonline.audit.bean;
 
 import javax.ejb.EJB;
+import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -28,9 +29,10 @@ import org.jboss.annotation.ejb.LocalBinding;
  * 
  */
 @Stateless
-@LocalBinding(jndiBinding = AuditCleanerTaskBean.JNDI_BINDING)
 @Interceptors(ConfigurationInterceptor.class)
 @Configurable
+@Local(Task.class)
+@LocalBinding(jndiBinding = AuditCleanerTaskBean.JNDI_BINDING)
 public class AuditCleanerTaskBean implements Task {
 
     public static final String  JNDI_BINDING       = Task.JNDI_PREFIX + "/AuditCleanerTaskBean/local";

@@ -10,9 +10,11 @@ import java.security.cert.X509Certificate;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import javax.ejb.Local;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.Startable;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
@@ -40,6 +42,7 @@ import org.jboss.annotation.ejb.LocalBinding;
  * @author dhouthoo
  */
 @Stateless
+@Local(Startable.class)
 @LocalBinding(jndiBinding = OptionStartableBean.JNDI_BINDING)
 public class OptionStartableBean extends AbstractInitBean {
 

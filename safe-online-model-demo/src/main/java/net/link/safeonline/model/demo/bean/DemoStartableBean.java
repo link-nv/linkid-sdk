@@ -17,9 +17,11 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.ejb.EJBException;
+import javax.ejb.Local;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.Startable;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.demo.bank.keystore.DemoBankKeyStoreUtils;
 import net.link.safeonline.demo.cinema.keystore.DemoCinemaKeyStoreUtils;
@@ -50,6 +52,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
+@Local(Startable.class)
 @LocalBinding(jndiBinding = DemoStartableBean.JNDI_BINDING)
 public class DemoStartableBean extends AbstractInitBean {
 

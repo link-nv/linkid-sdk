@@ -8,6 +8,7 @@
 package net.link.safeonline.helpdesk.bean;
 
 import javax.ejb.EJB;
+import javax.ejb.Local;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -24,9 +25,10 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
-@LocalBinding(jndiBinding = HelpdeskCleanerTaskBean.JNDI_BINDING)
-@Interceptors(ConfigurationInterceptor.class)
 @Configurable
+@Interceptors(ConfigurationInterceptor.class)
+@Local(Task.class)
+@LocalBinding(jndiBinding = HelpdeskCleanerTaskBean.JNDI_BINDING)
 public class HelpdeskCleanerTaskBean implements Task {
 
     private static final String name                    = "Helpdesk event history cleaner";
