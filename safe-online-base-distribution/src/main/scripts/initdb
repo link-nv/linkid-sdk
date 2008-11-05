@@ -96,6 +96,10 @@ if [[ $dbms = mysql ]]; then
 	done
 
 	emit "Ready with '$db' for '$distribution'."
+
+elif [[ $dbms = hsqldb ]]; then
+    emit "Nothing to do for '$dbms'."
+
 else
 	emit -y "Cannot handle DBMS '$dbms'."
 	exit 1

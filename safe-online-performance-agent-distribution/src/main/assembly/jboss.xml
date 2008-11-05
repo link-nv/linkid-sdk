@@ -9,7 +9,7 @@
 
 	<fileSets>
 
-        <!-- Exclude the HSQL stuff from Base-Distribution: we use MySQL. -->
+		<!-- Exclude the HSQL stuff from Base-Distribution: we use MySQL. -->
 		<fileSet>
 			<directory>target/files/safe-online-base-distribution-${safe-online.version}/jboss</directory>
 			<outputDirectory>jboss</outputDirectory>
@@ -25,38 +25,31 @@
 			</excludes>
 		</fileSet>
 
-        <!-- Runtime scripts                                -> /scripts -->
+		<!-- Runtime scripts                                -> /scripts -->
 		<fileSet>
-			<directory>
-                target/files/safe-online-base-distribution-${safe-online.version}/scripts 
-			</directory>
+			<directory>target/files/safe-online-base-distribution-${safe-online.version}/scripts</directory>
 			<outputDirectory>scripts</outputDirectory>
 			<fileMode>0500</fileMode>
 		</fileSet>
 
-        <!-- This artifact's custom JBoss configuration     -> /jboss -->
+		<!-- This artifact's custom JBoss configuration     -> /jboss -->
 		<fileSet>
 			<directory>target/classes/jboss</directory>
 			<outputDirectory>jboss</outputDirectory>
 		</fileSet>
 
-        <!-- This artifact's dependencies                   -> /jboss/server/default/lib -->
+		<!-- This artifact's EAR dependencies               -> /jboss/server/default/lib -->
+		<fileSet>
+			<directory>target/deploy</directory>
+			<outputDirectory>jboss/server/default/deploy</outputDirectory>
+		</fileSet>
+
+        <!-- This artifact's non-EAR dependencies           -> jboss/server/default/lib -->
 		<fileSet>
 			<directory>target/dependency</directory>
-			<excludes>
-				<exclude>safe-online-performance-agent-service*</exclude>
-			</excludes>
 			<outputDirectory>jboss/server/default/lib</outputDirectory>
 		</fileSet>
 
-        <!-- Performance-Agent-Service                      -> /jboss/server/default/deploy -->
-		<fileSet>
-			<directory>target/dependency</directory>
-			<includes>
-				<include>safe-online-performance-agent-service*</include>
-			</includes>
-            <outputDirectory>jboss/server/default/deploy</outputDirectory>
-		</fileSet>
 	</fileSets>
 
 </assembly>

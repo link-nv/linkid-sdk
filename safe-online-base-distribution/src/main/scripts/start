@@ -42,8 +42,7 @@ emit -$?
 
 
 # Initialize the database.
-emit "(Re)Initializing the database"
-    "$scripts/initdb" || exit
+ask -y!N "(Re)Initialize the database?" && { "$scripts/initdb" || exit; }
 
 
 # Start the distribution.

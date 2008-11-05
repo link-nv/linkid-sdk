@@ -79,6 +79,7 @@
 						</goals>
 						<configuration>
                             <includeTypes>ear</includeTypes>
+                            <excludeScope>provided</excludeScope>
 							<outputDirectory>${project.build.directory}/deploy</outputDirectory>
 						</configuration>
 					</execution>

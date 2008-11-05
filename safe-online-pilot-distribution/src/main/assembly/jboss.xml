@@ -2,102 +2,88 @@
 <assembly xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/assembly-1.0.0.xsd">
+
 	<formats>
 		<format>zip</format>
 	</formats>
+
 	<fileSets>
+
+		<!-- Exclude the HSQL stuff from Base-Distribution: we use MySQL. -->
 		<fileSet>
-			<directory>
-                target/files/safe-online-base-distribution-${safe-online.version}/jboss
-			</directory>
+			<directory>target/files/safe-online-base-distribution-${safe-online.version}/jboss</directory>
 			<outputDirectory>jboss</outputDirectory>
 			<excludes>
-				<exclude>server/default/deploy/jmx-console.war/**</exclude>
-				<exclude>server/default/deploy/management/**</exclude>
-				<exclude>server/default/deploy/http-invoker.sar/**</exclude>
-				<exclude>server/default/conf/jboss-minimal.xml</exclude>
-				<exclude>server/default/deploy/jmx-invoker-service.xml</exclude>
-				<exclude>server/default/deploy/monitoring-service.xml</exclude>
-				<exclude>server/default/lib/jboss-monitoring.jar</exclude>
-				<exclude>server/default/deploy/jbossws.sar/jbossws-context.war</exclude>
-				<exclude>server/default/deploy/jboss-web.deployer/ROOT.war/**</exclude>
-				<exclude>server/default/deploy/bsh-deployer.xml</exclude>
-				<exclude>server/default/deploy/mail-service.xml</exclude>
-				<exclude>server/default/deploy/cache-invalidation-service.xml</exclude>
-				<exclude>server/default/deploy/client-deployer-service.xml</exclude>
+                <exclude>server/default/deploy/jms/hsqldb-jdbc2-service.xml</exclude>
+                <exclude>server/default/deploy/jmx-console.war/**</exclude>
+                <exclude>server/default/deploy/management/**</exclude>
+                <exclude>server/default/deploy/http-invoker.sar/**</exclude>
+                <exclude>server/default/conf/jboss-minimal.xml</exclude>
+                <exclude>server/default/deploy/jmx-invoker-service.xml</exclude>
+                <exclude>server/default/deploy/monitoring-service.xml</exclude>
+                <exclude>server/default/lib/jboss-monitoring.jar</exclude>
+                <exclude>server/default/deploy/jbossws.sar/jbossws-context.war</exclude>
+                <exclude>server/default/deploy/jboss-web.deployer/ROOT.war/**</exclude>
+                <exclude>server/default/deploy/bsh-deployer.xml</exclude>
+                <exclude>server/default/deploy/mail-service.xml</exclude>
+                <exclude>server/default/deploy/cache-invalidation-service.xml</exclude>
+                <exclude>server/default/deploy/client-deployer-service.xml</exclude>
                 <exclude>server/default/deploy/jboss-messaging.sar/hsqldb-persistence-service.xml</exclude>
-				<exclude>server/default/deploy/hsql-safe-online-ds.xml</exclude>
-				<exclude>server/default/deploy/hsqldb-ds.xml</exclude>
-				<exclude>server/default/lib/hsqldb.jar</exclude>
-				<exclude>server/default/lib/hsqldb-plugin.jar</exclude>
-				<exclude>server/default/deploy/properties-service.xml</exclude>
-				<exclude>server/default/lib/properties-plugin.jar</exclude>
-				<exclude>server/default/deploy/scheduler-service.xml</exclude>
-				<exclude>server/default/deploy/schedule-manager-service.xml</exclude>
-				<exclude>server/default/lib/scheduler-plugin.jar</exclude>
-				<exclude>server/default/lib/scheduler-plugin-example.jar</exclude>
-				<exclude>server/default/deploy/uuid-key-generator.sar/**</exclude>
-				<exclude>server/default/lib/autonumber-plugin.jar</exclude>
-				<exclude>server/default/conf/xmdesc/JNDIView-xmbean.xml</exclude>
-				<exclude>server/default/conf/props/*.properties</exclude>
-				<exclude>readme.html</exclude>
-				<exclude>bin/*.sh</exclude>
+                <exclude>server/default/deploy/hsql-safe-online-ds.xml</exclude>
+                <exclude>server/default/deploy/hsqldb-ds.xml</exclude>
+                <exclude>server/default/lib/hsqldb.jar</exclude>
+                <exclude>server/default/lib/hsqldb-plugin.jar</exclude>
+                <exclude>server/default/deploy/jms/hsqldb-jdbc-state-service.xml</exclude>
+                <exclude>server/default/deploy/properties-service.xml</exclude>
+                <exclude>server/default/lib/properties-plugin.jar</exclude>
+                <exclude>server/default/deploy/scheduler-service.xml</exclude>
+                <exclude>server/default/deploy/schedule-manager-service.xml</exclude>
+                <exclude>server/default/lib/scheduler-plugin.jar</exclude>
+                <exclude>server/default/lib/scheduler-plugin-example.jar</exclude>
+                <exclude>server/default/deploy/uuid-key-generator.sar/**</exclude>
+                <exclude>server/default/lib/autonumber-plugin.jar</exclude>
+                <exclude>server/default/conf/xmdesc/JNDIView-xmbean.xml</exclude>
+                <exclude>server/default/conf/props/*.properties</exclude>
 			</excludes>
 		</fileSet>
+
+		<!-- Runtime scripts                                -> /scripts -->
 		<fileSet>
-			<directory>
-                target/files/safe-online-base-distribution-${safe-online.version}/jboss
-			</directory>
-			<outputDirectory>jboss</outputDirectory>
-			<includes>
-				<include>bin/*.sh</include>
-			</includes>
-			<fileMode>0500</fileMode>
-		</fileSet>
-		<fileSet>
-			<directory>
-                target/files/safe-online-base-distribution-${safe-online.version}/scripts 
-			</directory>
+			<directory>target/files/safe-online-base-distribution-${safe-online.version}/scripts</directory>
 			<outputDirectory>scripts</outputDirectory>
 			<fileMode>0500</fileMode>
 		</fileSet>
+
+		<!-- This artifact's custom JBoss configuration     -> /jboss -->
 		<fileSet>
 			<directory>target/classes/jboss</directory>
 			<outputDirectory>jboss</outputDirectory>
 		</fileSet>
+
+		<!-- This artifact's EAR dependencies               -> /jboss/server/default/lib -->
+		<fileSet>
+			<directory>target/deploy</directory>
+			<outputDirectory>jboss/server/default/deploy</outputDirectory>
+		</fileSet>
+
+        <!-- This artifact's non-EAR dependencies           -> jboss/server/default/lib -->
+		<fileSet>
+			<directory>target/dependency</directory>
+			<outputDirectory>jboss/server/default/lib</outputDirectory>
+		</fileSet>
+
 	</fileSets>
+
 	<files>
-		<file>
-			<source>
-                target/files/safe-online-deploy-${safe-online.version}.ear
-			</source>
-			<outputDirectory>
-				jboss/server/default/deploy
-			</outputDirectory>
-			<destName>SafeOnline.ear</destName>
-		</file>
-		<file>
-			<source>
-                target/files/safe-online-root-webapp-${safe-online.version}.war
-			</source>
-			<outputDirectory>
-				jboss/server/default/deploy
-			</outputDirectory>
-		</file>
-		<file>
-			<source>target/files/install-manual.pdf</source>
-			<outputDirectory>jboss/</outputDirectory>
-		</file>
-		<file>
-			<source>target/files/maintenance-manual.pdf</source>
-			<outputDirectory>jboss/</outputDirectory>
-		</file>
-		<file>
-			<source>
-                target/files/safe-online-base-distribution-${safe-online.version}/jboss/readme.html
-			</source>
-			<outputDirectory>jboss/</outputDirectory>
-			<destName>jboss-readme.html</destName>
-		</file>
+        <!-- The manuals                                    -> /jboss -->
+       <file>
+           <source>target/files/install-manual.pdf</source>
+           <outputDirectory>jboss/</outputDirectory>
+       </file>
+       <file>
+           <source>target/files/maintenance-manual.pdf</source>
+           <outputDirectory>jboss/</outputDirectory>
+       </file>
 	</files>
+
 </assembly>

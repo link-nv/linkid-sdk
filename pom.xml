@@ -428,6 +428,7 @@
 			<modules>
 				<module>safe-online-model-performance</module>
 				<module>safe-online-performance-deploy</module>
+				<module>safe-online-performance-agent-deploy</module>
 				<module>safe-online-performance-entity</module>
 				<module>safe-online-performance-startup-runtime</module>
 				<module>safe-online-performance-keystore</module>

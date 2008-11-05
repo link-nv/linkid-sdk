@@ -1,66 +1,45 @@
 <?xml version="1.0"?>
-<assembly xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<assembly xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/assembly-1.0.0.xsd">
+
 	<formats>
 		<format>zip</format>
 	</formats>
+
 	<fileSets>
+
+		<!-- Exclude nothing: We use the base HSQL configuration. -->
 		<fileSet>
-			<directory>
-                target/files/safe-online-base-distribution-${safe-online.version}/scripts 
-			</directory>
+			<directory>target/files/safe-online-base-distribution-${safe-online.version}/jboss</directory>
+			<outputDirectory>jboss</outputDirectory>
+		</fileSet>
+
+		<!-- Runtime scripts                                -> /scripts -->
+		<fileSet>
+			<directory>target/files/safe-online-base-distribution-${safe-online.version}/scripts</directory>
 			<outputDirectory>scripts</outputDirectory>
 			<fileMode>0500</fileMode>
 		</fileSet>
+
+		<!-- This artifact's custom JBoss configuration     -> /jboss -->
 		<fileSet>
-			<directory>
-                target/files/safe-online-base-distribution-${safe-online.version}/jboss 
-			</directory>
+			<directory>target/classes/jboss</directory>
 			<outputDirectory>jboss</outputDirectory>
-			<excludes>
-				<exclude>bin/*.sh</exclude>
-			</excludes>
 		</fileSet>
+
+		<!-- This artifact's EAR dependencies               -> /jboss/server/default/lib -->
 		<fileSet>
-			<directory>
-                target/files/safe-online-base-distribution-${safe-online.version}/jboss 
-			</directory>
-			<outputDirectory>jboss</outputDirectory>
-			<includes>
-				<include>bin/*.sh</include>
-			</includes>
-			<fileMode>0500</fileMode>
+			<directory>target/deploy</directory>
+			<outputDirectory>jboss/server/default/deploy</outputDirectory>
 		</fileSet>
+
+        <!-- This artifact's non-EAR dependencies           -> jboss/server/default/lib -->
+		<fileSet>
+			<directory>target/dependency</directory>
+			<outputDirectory>jboss/server/default/lib</outputDirectory>
+		</fileSet>
+
 	</fileSets>
-	<files>
-		<file>
-            <source> target/files/safe-online-deploy-${safe-online.version}.ear </source>
-			<outputDirectory> jboss/server/default/deploy </outputDirectory>
-			<destName>SafeOnline.ear</destName>
-		</file>
-		<file>
-            <source> target/files/safe-online-demo-deploy-${safe-online.version}.ear 
-			</source>
-			<outputDirectory> jboss/server/default/deploy </outputDirectory>
-			<destName>SafeOnlineZDemo.ear</destName>
-		</file>
-		<file>
-            <source> target/files/safe-online-beid-deploy-${safe-online.version}.ear 
-			</source>
-			<outputDirectory> jboss/server/default/deploy </outputDirectory>
-			<destName>SafeOnlineBeid.ear</destName>
-		</file>
-		<file>
-            <source> target/files/safe-online-digipass-deploy-${safe-online.version}.ear 
-			</source>
-			<outputDirectory> jboss/server/default/deploy </outputDirectory>
-			<destName>SafeOnlineDigipass.ear</destName>
-		</file>
-		<file>
-            <source> target/files/safe-online-encap-deploy-${safe-online.version}.ear 
-			</source>
-			<outputDirectory> jboss/server/default/deploy </outputDirectory>
-			<destName>SafeOnlineEncap.ear</destName>
-		</file>
-	</files>
+
 </assembly>
