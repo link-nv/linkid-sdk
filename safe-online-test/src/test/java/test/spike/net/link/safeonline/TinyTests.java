@@ -15,9 +15,6 @@
  */
 package test.spike.net.link.safeonline;
 
-import java.text.NumberFormat;
-import java.util.Locale;
-
 import org.junit.Test;
 
 
@@ -34,10 +31,42 @@ import org.junit.Test;
  */
 public class TinyTests {
 
-    @Test
-    public void testCurrency() {
+    private static final int    DARKER_OFFSET = 17;
+    private static final double DARKER_FACTOR = 1.26;
 
-        System.out.println(NumberFormat.getCurrencyInstance(Locale.FRANCE).format(2.5d));
+
+    @Test
+    public void testColor() {
+
+        Integer base = Integer.decode("#5A7500");
+
+        System.out.println(getThemedColor(base, DARKER_FACTOR, DARKER_OFFSET));
+    }
+
+    private String getThemedColor(Integer base, double factor, int offset) {
+
+        System.err.format("%X\n", ((base >> 16) % (0xFF + 1)));
+        System.err.format("%X\n", (int) ((base >> 16) % (0xFF + 1) * factor));
+        System.err.format("%X\n", (int) ((base >> 16) % (0xFF + 1) * factor + offset));
+        int red = (int) ((base >> 16) % (0xFF + 1) * factor + offset);
+        int green = (int) ((base >> 8) % (0xFF + 1) * factor + offset);
+        int blue = (int) ((base >> 0) % (0xFF + 1) * factor + offset);
+
+        return String.format("#%02X%02X%02X", red, green, blue);
+    }
+
+    void printBits(int number) {
+
+        int i = 0;
+        for (int left = number; left > 0;) {
+            System.out.print(left % 2);
+            left = left >> 1;
+            i++;
+            if (i % 8 == 0) {
+                System.out.print(", ");
+            }
+        }
+        System.out.println();
     }
 
     void print(Object[] array) {

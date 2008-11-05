@@ -138,9 +138,9 @@ public class ApplicationStyleServlet extends AbstractInjectionServlet {
 
     private String getThemedColor(Integer base, double factor, int offset) {
 
-        int red = (int) ((base >> 16) % 0xFF * factor + offset);
-        int green = (int) ((base >> 8) % 0xFF * factor + offset);
-        int blue = (int) ((base >> 0) % 0xFF * factor + offset);
+        int red = Math.min((int) ((base >> 16) % (0xFF + 1) * factor + offset), 0xFF);
+        int green = Math.min((int) ((base >> 8) % (0xFF + 1) * factor + offset), 0xFF);
+        int blue = Math.min((int) ((base >> 0) % (0xFF + 1) * factor + offset), 0xFF);
 
         return String.format("#%02X%02X%02X", red, green, blue);
     }
