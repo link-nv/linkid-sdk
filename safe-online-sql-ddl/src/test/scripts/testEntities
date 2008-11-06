@@ -1,0 +1,23 @@
+#!/bin/bash
+#
+# Test whether all entity beans from safe-online-entity are in the safe-online-cfg.xml file.
+
+cd "${0%/*}"
+echo "Checking for missing entities in the sql-ddl config.."
+
+# Parse in what entities we have and which entities are configured in s-o-sql-ddl.
+realEntities=$(     find ../../../../safe-online-entity/src/main/java/ -name '*.java' -exec grep -qF '@Entity' {} \; -print \
+                        | sed -e 's,^.*\(net/link\),\1,' -e 's,\.java$,,' -e 's,/,.,g'                                      )
+configEntities=$(   sed -n 's,.*class="\([^"]*\)".*,\1,p' ../../main/resources/safe-online-cfg.xml                          )
+
+# Check to see whether any entities are missing.
+missing=$(          comm -3 <(sort <<< "$realEntities") <(sort <<< "$configEntities")                                       )
+
+if [[ $missing ]]; then
+    echo "Entities missing (first column: missing in config, second column: config entities that don't exist):" >&2
+    echo "$missing" >&2
+
+    exit $(wc -l <<< "$missing")
+fi
+
+echo "No missing entities."
