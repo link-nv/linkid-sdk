@@ -70,7 +70,7 @@ import org.jboss.security.SimplePrincipal;
  */
 public final class EJBTestUtils {
 
-    private static final Log LOG = LogFactory.getLog(EJBTestUtils.class);
+    static final Log LOG = LogFactory.getLog(EJBTestUtils.class);
 
 
     private EJBTestUtils() {
@@ -259,13 +259,18 @@ public final class EJBTestUtils {
         Enhancer enhancer = new Enhancer();
         enhancer.setSuperclass(beanType);
         enhancer.setCallback(testContainerMethodInterceptor);
-        Type object = (Type) enhancer.create();
         try {
-            init(beanType, object);
+            Type object = (Type) enhancer.create();
+
+            try {
+                init(beanType, object);
+                return object;
+            } catch (Exception e) {
+                throw new RuntimeException("init error: " + beanType, e);
+            }
         } catch (Exception e) {
-            throw new RuntimeException("init error: " + beanType.getName(), e);
+            throw new RuntimeException("CG Enhancer error: " + beanType, e);
         }
-        return object;
     }
 
 
@@ -451,7 +456,10 @@ public final class EJBTestUtils {
                 if (null == ejbAnnotation) {
                     continue;
                 }
+
                 Class fieldType = field.getType();
+                LOG.debug("injecting: " + fieldType + " into field: " + field + " of " + clazz);
+
                 if (false == fieldType.isInterface())
                     throw new EJBException("field is not an interface type");
                 Local localAnnotation = (Local) fieldType.getAnnotation(Local.class);
@@ -460,6 +468,7 @@ public final class EJBTestUtils {
                 Remote remoteAnnotation = (Remote) fieldType.getAnnotation(Remote.class);
                 if (null != remoteAnnotation)
                     throw new EJBException("interface cannot have both @Local and @Remote annotation");
+
                 Class beanType = getBeanType(fieldType);
                 Object bean = EJBTestUtils.newInstance(beanType, this.container, this.entityManager, this.sessionContext);
                 setField(field, bean);
