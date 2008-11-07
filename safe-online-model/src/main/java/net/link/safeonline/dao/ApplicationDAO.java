@@ -7,7 +7,6 @@
 
 package net.link.safeonline.dao;
 
-import java.awt.Color;
 import java.net.URL;
 import java.security.cert.X509Certificate;
 import java.util.List;
@@ -52,13 +51,12 @@ public interface ApplicationDAO extends SafeOnlineService {
             throws ApplicationNotFoundException;
 
     ApplicationEntity addApplication(String applicationName, String applicationFriendlyName, ApplicationOwnerEntity applicationOwner,
-                                     String description, URL applicationUrl, byte[] applicationLogo, Color applicationColor,
-                                     X509Certificate certificate);
+                                     String description, URL applicationUrl, byte[] applicationLogo, X509Certificate certificate);
 
     ApplicationEntity addApplication(String applicationName, String applicationFriendlyName, ApplicationOwnerEntity applicationOwner,
                                      boolean allowUserSubscription, boolean removable, String description, URL applicationUrl,
-                                     byte[] applicationLogo, Color applicationColor, X509Certificate certificate,
-                                     long initialIdentityVersion, long usageAgreementVersion);
+                                     byte[] applicationLogo, X509Certificate certificate, long initialIdentityVersion,
+                                     long usageAgreementVersion);
 
     /**
      * Gives back a list of all application registered within the SafeOnline system.

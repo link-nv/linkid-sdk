@@ -94,7 +94,7 @@ public class AllowedDeviceDAOBeanTest extends TestCase {
 
         this.applicationOwnerDAO.addApplicationOwner("testowner", subject);
         ApplicationOwnerEntity applicationOwner = this.applicationOwnerDAO.findApplicationOwner("testowner");
-        ApplicationEntity application = this.applicationDAO.addApplication("testapp", null, applicationOwner, null, null, null, null, null);
+        ApplicationEntity application = this.applicationDAO.addApplication("testapp", null, applicationOwner, null, null, null, null);
 
         DeviceClassEntity deviceClass = this.deviceClassDAO.addDeviceClass(SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
                 SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
@@ -127,7 +127,7 @@ public class AllowedDeviceDAOBeanTest extends TestCase {
 
         this.applicationOwnerDAO.addApplicationOwner("testowner", subject);
         ApplicationOwnerEntity applicationOwner = this.applicationOwnerDAO.findApplicationOwner("testowner");
-        ApplicationEntity application = this.applicationDAO.addApplication("testapp", null, applicationOwner, null, null, null, null, null);
+        ApplicationEntity application = this.applicationDAO.addApplication("testapp", null, applicationOwner, null, null, null, null);
 
         try {
             this.testedInstance.addAllowedDevice(application, null, 0);
@@ -145,7 +145,7 @@ public class AllowedDeviceDAOBeanTest extends TestCase {
 
         this.applicationOwnerDAO.addApplicationOwner("testowner", subject);
         ApplicationOwnerEntity applicationOwner = this.applicationOwnerDAO.findApplicationOwner("testowner");
-        ApplicationEntity application = this.applicationDAO.addApplication("testapp", null, applicationOwner, null, null, null, null, null);
+        ApplicationEntity application = this.applicationDAO.addApplication("testapp", null, applicationOwner, null, null, null, null);
 
         DeviceClassEntity deviceClass = this.deviceClassDAO.addDeviceClass(SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
                 SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);

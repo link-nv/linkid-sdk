@@ -131,8 +131,8 @@ public class DemoStartableBean extends AbstractInitBean {
         X509Certificate demoCertificate = (X509Certificate) demoPrivateKeyEntry.getCertificate();
         try {
             this.registeredApplications.add(new Application(DEMO_APPLICATION_NAME, "owner", null, new URL(this.protocol, this.hostname,
-                    this.hostport, "/" + this.demoAppWebappName), getLogo(), null, true, true, demoCertificate, false, IdScopeType.USER,
-                    true, new URL(this.sslProtocol, this.hostname, this.hostportssl, "/" + this.demoAppWebappName + "/logout")));
+                    this.hostport, "/" + this.demoAppWebappName), getLogo(), true, true, demoCertificate, false, IdScopeType.USER, true,
+                    new URL(this.sslProtocol, this.hostname, this.hostportssl, "/" + this.demoAppWebappName + "/logout")));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
         }
@@ -172,8 +172,8 @@ public class DemoStartableBean extends AbstractInitBean {
         this.trustedCertificates.put(demoMandateCertificate, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
         try {
             this.registeredApplications.add(new Application(DEMO_MANDATE_APPLICATION_NAME, "owner", null, new URL(this.protocol,
-                    this.hostname, this.hostport, "/" + this.demoMandateWebappName), getLogo(), null, true, true, demoMandateCertificate,
-                    true, IdScopeType.APPLICATION, true, new URL(this.sslProtocol, this.hostname, this.hostportssl, "/"
+                    this.hostname, this.hostport, "/" + this.demoMandateWebappName), getLogo(), true, true, demoMandateCertificate, true,
+                    IdScopeType.APPLICATION, true, new URL(this.sslProtocol, this.hostname, this.hostportssl, "/"
                             + this.demoMandateWebappName + "/authlogout")));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
@@ -252,7 +252,7 @@ public class DemoStartableBean extends AbstractInitBean {
         this.trustedCertificates.put(demoTicketCertificate, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
         try {
             this.registeredApplications.add(new Application(DEMO_TICKET_APPLICATION_NAME, "owner", null, new URL(this.protocol,
-                    this.hostname, this.hostport, "/" + this.demoTicketWebappName), getLogo("/eticket-small.png"), null, true, true,
+                    this.hostname, this.hostport, "/" + this.demoTicketWebappName), getLogo("/eticket-small.png"), true, true,
                     demoTicketCertificate, false, IdScopeType.SUBSCRIPTION, true, new URL(this.sslProtocol, this.hostname,
                             this.hostportssl, "/" + this.demoTicketWebappName + "/logout")));
         } catch (MalformedURLException e) {
@@ -292,7 +292,7 @@ public class DemoStartableBean extends AbstractInitBean {
         this.trustedCertificates.put(demoBankCertificate, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
         try {
             this.registeredApplications.add(new Application(DEMO_BANK_APPLICATION_NAME, "owner", null, new URL(this.protocol,
-                    this.hostname, this.hostport, "/" + this.demoBankWebappName), getLogo("/ebank-small.png"), null, true, true,
+                    this.hostname, this.hostport, "/" + this.demoBankWebappName), getLogo("/ebank-small.png"), true, true,
                     demoBankCertificate, false, IdScopeType.SUBSCRIPTION, true, new URL(this.sslProtocol, this.hostname, this.hostportssl,
                             "/" + this.demoBankWebappName + "/logout")));
         } catch (MalformedURLException e) {
@@ -331,7 +331,7 @@ public class DemoStartableBean extends AbstractInitBean {
         this.trustedCertificates.put(demoCinemaCertificate, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
         try {
             this.registeredApplications.add(new Application(DEMO_CINEMA_APPLICATION_NAME, "owner", null, new URL(this.protocol,
-                    this.hostname, this.hostport, "/" + this.demoCinemaWebappName), getLogo("/cinema.png"), null, true, true,
+                    this.hostname, this.hostport, "/" + this.demoCinemaWebappName), getLogo("/cinema.png"), true, true,
                     demoCinemaCertificate, false, IdScopeType.SUBSCRIPTION, true, new URL(this.sslProtocol, this.hostname,
                             this.hostportssl, "/" + this.demoCinemaWebappName + "/logout")));
         } catch (MalformedURLException e) {
@@ -378,7 +378,7 @@ public class DemoStartableBean extends AbstractInitBean {
 
         try {
             this.registeredApplications.add(new Application(DEMO_PAYMENT_APPLICATION_NAME, "owner", null, new URL(this.protocol,
-                    this.hostname, this.hostport, "/" + this.demoPaymentWebappName), getLogo("/ebank-small.png"), null, true, true,
+                    this.hostname, this.hostport, "/" + this.demoPaymentWebappName), getLogo("/ebank-small.png"), true, true,
                     demoPaymentCertificate, true, IdScopeType.SUBSCRIPTION, true, new URL(this.sslProtocol, this.hostname,
                             this.hostportssl, "/" + this.demoPaymentWebappName + "/authlogout")));
         } catch (MalformedURLException e) {
@@ -455,7 +455,7 @@ public class DemoStartableBean extends AbstractInitBean {
         this.trustedCertificates.put(demoPrescriptionCertificate, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
         try {
             this.registeredApplications.add(new Application(DEMO_PRESCRIPTION_APPLICATION_NAME, "owner", null, new URL(this.protocol,
-                    this.hostname, this.hostport, "/" + this.demoPrescriptionWebappName), getLogo(), null, true, true,
+                    this.hostname, this.hostport, "/" + this.demoPrescriptionWebappName), getLogo(), true, true,
                     demoPrescriptionCertificate, true, IdScopeType.SUBSCRIPTION, true, new URL(this.sslProtocol, this.hostname,
                             this.hostportssl, "/" + this.demoPrescriptionWebappName + "/authlogout")));
         } catch (MalformedURLException e) {
@@ -525,8 +525,8 @@ public class DemoStartableBean extends AbstractInitBean {
         X509Certificate demoLawyerCertificate = (X509Certificate) demoLawyerPrivateKeyEntry.getCertificate();
         try {
             this.registeredApplications.add(new Application(DEMO_LAWYER_APPLICATION_NAME, "owner", null, new URL(this.protocol,
-                    this.hostname, this.hostport, "/" + this.demoLawyerWebappName), getLogo(), null, true, true, demoLawyerCertificate,
-                    true, IdScopeType.SUBSCRIPTION, true, new URL(this.sslProtocol, this.hostname, this.hostportssl, "/"
+                    this.hostname, this.hostport, "/" + this.demoLawyerWebappName), getLogo(), true, true, demoLawyerCertificate, true,
+                    IdScopeType.SUBSCRIPTION, true, new URL(this.sslProtocol, this.hostname, this.hostportssl, "/"
                             + this.demoLawyerWebappName + "/authlogout")));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());

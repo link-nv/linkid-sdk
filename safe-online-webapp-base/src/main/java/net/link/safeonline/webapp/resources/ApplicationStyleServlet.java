@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.util.servlet.AbstractInjectionServlet;
+import net.link.safeonline.util.servlet.annotation.Context;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -59,6 +60,8 @@ public class ApplicationStyleServlet extends AbstractInjectionServlet {
     private static final long   serialVersionUID = 1L;
     private static final Log    LOG              = LogFactory.getLog(ApplicationStyleServlet.class);
 
+    @Context(name = "ApplicationColor", defaultValue = "#5A7500")
+    private String              applicationColor;
     private VelocityEngine      velocity;
 
 
@@ -108,9 +111,10 @@ public class ApplicationStyleServlet extends AbstractInjectionServlet {
         } catch (NumberFormatException e) {
             LOG.warn(String.format("Couldn't parse color attribute '%s' into a 24-bit color integer.", colorAttribute), e);
         }
-        // Default to a green shade.
+
+        // If not yet set, use the default application color.
         if (baseColor == null) {
-            baseColor = Integer.decode("#5A7500");
+            baseColor = Integer.decode(this.applicationColor);
         }
 
         // Merge the velocity style template with the color attributes.

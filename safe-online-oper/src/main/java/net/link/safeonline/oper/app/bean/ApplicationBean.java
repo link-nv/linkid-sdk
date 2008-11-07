@@ -7,7 +7,6 @@
 
 package net.link.safeonline.oper.app.bean;
 
-import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -255,7 +254,6 @@ public class ApplicationBean implements Application {
         }
 
         URL newApplicationUrl = null;
-        Color newApplicationColor = null;
         byte[] newApplicationLogo = null;
         URL newSsoLogoutUrl = null;
         if (null != this.applicationUrl && this.applicationUrl.length() != 0) {
@@ -319,9 +317,8 @@ public class ApplicationBean implements Application {
                 encodedCertificate = null;
             }
             this.applicationService.addApplication(this.name, this.friendlyName, this.applicationOwner, this.description, this.idmapping,
-                    IdScopeType.valueOf(this.applicationIdScope), newApplicationUrl, newApplicationLogo, newApplicationColor,
-                    encodedCertificate, tempIdentityAttributes, this.skipMessageIntegrityCheck, this.deviceRestriction, this.ssoEnabled,
-                    newSsoLogoutUrl);
+                    IdScopeType.valueOf(this.applicationIdScope), newApplicationUrl, newApplicationLogo, encodedCertificate,
+                    tempIdentityAttributes, this.skipMessageIntegrityCheck, this.deviceRestriction, this.ssoEnabled, newSsoLogoutUrl);
 
         } catch (ExistingApplicationException e) {
             LOG.debug("application already exists: " + this.name);

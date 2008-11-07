@@ -120,8 +120,12 @@ public class TaskSchedulerBeanTest {
     public void tearDown()
             throws Exception {
 
-        this.entityTestManager.tearDown();
-        this.jndiTestUtils.tearDown();
+        if (this.entityTestManager != null) {
+            this.entityTestManager.tearDown();
+        }
+        if (this.jndiTestUtils != null) {
+            this.jndiTestUtils.tearDown();
+        }
     }
 
     @Test

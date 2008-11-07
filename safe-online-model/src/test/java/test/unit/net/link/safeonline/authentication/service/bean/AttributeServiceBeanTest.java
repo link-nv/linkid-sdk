@@ -154,7 +154,7 @@ public class AttributeServiceBeanTest {
 
         ApplicationService applicationService = EJBTestUtils.newInstance(ApplicationServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator", "operator");
-        applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null, null,
+        applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null,
                 Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(testAttributeName, true, false) }), false, false,
                 false, null);
 
@@ -199,7 +199,7 @@ public class AttributeServiceBeanTest {
 
         ApplicationService applicationService = EJBTestUtils.newInstance(ApplicationServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator", "operator");
-        applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null, null,
+        applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null,
                 Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(testAttributeName, true, false) }), false, false,
                 false, null);
 
@@ -249,7 +249,7 @@ public class AttributeServiceBeanTest {
 
         ApplicationService applicationService = EJBTestUtils.newInstance(ApplicationServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator", "operator");
-        applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null, null,
+        applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null,
                 Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(testAttributeName, true, false) }), false, false,
                 false, null);
 
@@ -308,7 +308,7 @@ public class AttributeServiceBeanTest {
 
         ApplicationService applicationService = EJBTestUtils.newInstance(ApplicationServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator", "operator");
-        applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null, null,
+        applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null,
                 Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(testAttributeName, true, false) }), false, false,
                 false, null);
 
@@ -370,7 +370,7 @@ public class AttributeServiceBeanTest {
 
         ApplicationService applicationService = EJBTestUtils.newInstance(ApplicationServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator", "operator");
-        applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null, null,
+        applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null,
                 Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(testAttributeName, true, false) }), false, false,
                 false, null);
 
@@ -429,7 +429,7 @@ public class AttributeServiceBeanTest {
 
         ApplicationService applicationService = EJBTestUtils.newInstance(ApplicationServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator", "operator");
-        applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null, null,
+        applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null,
                 Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(testAttributeName, true, true) }), false, false,
                 false, null);
 
@@ -493,7 +493,7 @@ public class AttributeServiceBeanTest {
 
         ApplicationService applicationService = EJBTestUtils.newInstance(ApplicationServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator", SafeOnlineRoles.OPERATOR_ROLE);
-        applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null, null,
+        applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null,
                 Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(testAttributeName, true, false) }), false, false,
                 false, null);
 
@@ -590,7 +590,7 @@ public class AttributeServiceBeanTest {
 
         ApplicationService applicationService = EJBTestUtils.newInstance(ApplicationServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator", SafeOnlineRoles.OPERATOR_ROLE);
-        applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null, null,
+        applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null,
                 Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(compoundName, true, false) }), false, false,
                 false, null);
 

@@ -7,7 +7,6 @@
 
 package net.link.safeonline.dao.bean;
 
-import java.awt.Color;
 import java.net.URL;
 import java.security.cert.X509Certificate;
 import java.util.List;
@@ -56,7 +55,7 @@ public class ApplicationDAOBean implements ApplicationDAO {
 
     public ApplicationEntity addApplication(String applicationName, String applicationFriendlyName,
                                             ApplicationOwnerEntity applicationOwner, String description, URL applicationUrl,
-                                            byte[] applicationLogo, Color applicationColor, X509Certificate certificate) {
+                                            byte[] applicationLogo, X509Certificate certificate) {
 
         LOG.debug("adding application: " + applicationName);
         ApplicationEntity application = new ApplicationEntity(applicationName, applicationFriendlyName, applicationOwner, description,
@@ -88,8 +87,8 @@ public class ApplicationDAOBean implements ApplicationDAO {
 
     public ApplicationEntity addApplication(String applicationName, String applicationFriendlyName,
                                             ApplicationOwnerEntity applicationOwner, boolean allowUserSubscription, boolean removable,
-                                            String description, URL applicationUrl, byte[] applicationLogo, Color applicationColor,
-                                            X509Certificate certificate, long initialIdentityVersion, long usageAgreementVersion) {
+                                            String description, URL applicationUrl, byte[] applicationLogo, X509Certificate certificate,
+                                            long initialIdentityVersion, long usageAgreementVersion) {
 
         LOG.debug("adding application: " + applicationName);
         ApplicationEntity application = new ApplicationEntity(applicationName, applicationFriendlyName, applicationOwner, description,

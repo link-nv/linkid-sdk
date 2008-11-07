@@ -7,7 +7,6 @@
 
 package net.link.safeonline.authentication.service;
 
-import java.awt.Color;
 import java.net.URL;
 import java.util.List;
 import java.util.Set;
@@ -91,9 +90,9 @@ public interface ApplicationService extends SafeOnlineService {
      * @throws AttributeTypeNotFoundException
      */
     void addApplication(String name, String friendlyName, String applicationOwnerName, String description, boolean idMappingServiceAccess,
-                        IdScopeType idScope, URL applicationUrl, byte[] newApplicationLogo, Color applicationColor,
-                        byte[] encodedCertificate, List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes,
-                        boolean skipMessageIntegrityCheck, boolean deviceRestriction, boolean ssoEnabled, URL ssoLogoutUrl)
+                        IdScopeType idScope, URL applicationUrl, byte[] newApplicationLogo, byte[] encodedCertificate,
+                        List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes, boolean skipMessageIntegrityCheck,
+                        boolean deviceRestriction, boolean ssoEnabled, URL ssoLogoutUrl)
             throws ExistingApplicationException, ApplicationOwnerNotFoundException, CertificateEncodingException,
             AttributeTypeNotFoundException;
 

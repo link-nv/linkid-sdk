@@ -7,7 +7,6 @@
 
 package net.link.safeonline.model.bean;
 
-import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -162,8 +161,6 @@ public abstract class AbstractInitBean implements Startable {
 
         final byte[]          applicationLogo;
 
-        final Color           applicationColor;
-
         final String          owner;
 
         final boolean         allowUserSubscription;
@@ -182,15 +179,14 @@ public abstract class AbstractInitBean implements Startable {
 
 
         public Application(String name, String owner, String description, URL applicationUrl, byte[] applicationLogo,
-                           Color applicationColor, boolean allowUserSubscription, boolean removable, X509Certificate certificate,
-                           boolean idmappingAccess, IdScopeType idScope, boolean ssoEnabled, URL ssoLogoutUrl) {
+                           boolean allowUserSubscription, boolean removable, X509Certificate certificate, boolean idmappingAccess,
+                           IdScopeType idScope, boolean ssoEnabled, URL ssoLogoutUrl) {
 
             this.name = name;
             this.owner = owner;
             this.description = description;
             this.applicationUrl = applicationUrl;
             this.applicationLogo = applicationLogo;
-            this.applicationColor = applicationColor;
             this.allowUserSubscription = allowUserSubscription;
             this.removable = removable;
             this.certificate = certificate;
@@ -202,7 +198,7 @@ public abstract class AbstractInitBean implements Startable {
 
         public Application(String name, String owner, X509Certificate certificate, IdScopeType idScope) {
 
-            this(name, owner, null, null, null, null, true, true, certificate, false, idScope, false, null);
+            this(name, owner, null, null, null, true, true, certificate, false, idScope, false, null);
         }
     }
 
@@ -790,8 +786,7 @@ public abstract class AbstractInitBean implements Startable {
             long usageAgreementVersion = UsageAgreementPK.EMPTY_USAGE_AGREEMENT_VERSION;
             ApplicationEntity newApplication = this.applicationDAO.addApplication(applicationName, null, applicationOwner,
                     application.allowUserSubscription, application.removable, application.description, application.applicationUrl,
-                    application.applicationLogo, application.applicationColor, application.certificate, identityVersion,
-                    usageAgreementVersion);
+                    application.applicationLogo, application.certificate, identityVersion, usageAgreementVersion);
             newApplication.setIdentifierMappingAllowed(application.idmappingAccess);
             newApplication.setIdScope(application.idScope);
             newApplication.setSsoEnabled(application.ssoEnabled);

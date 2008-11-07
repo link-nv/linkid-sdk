@@ -66,7 +66,7 @@ public class PerformanceStartableBean extends AbstractInitBean {
          * Register the application and the application certificate.
          */
         this.trustedCertificates.put(perfCertificate, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
-        this.registeredApplications.add(new Application(PERFORMANCE_APPLICATION_NAME, "owner", null, null, getLogo(), null, true, false,
+        this.registeredApplications.add(new Application(PERFORMANCE_APPLICATION_NAME, "owner", null, null, getLogo(), true, false,
                 perfCertificate, true, IdScopeType.USER, false, null));
 
         /*

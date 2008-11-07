@@ -7,7 +7,6 @@
 
 package net.link.safeonline.authentication.service.bean;
 
-import java.awt.Color;
 import java.net.URL;
 import java.security.cert.X509Certificate;
 import java.util.List;
@@ -74,8 +73,8 @@ import net.link.safeonline.util.ee.SecurityManagerUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.security.SecurityDomain;
 
 
@@ -160,9 +159,8 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void addApplication(String name, String friendlyName, String applicationOwnerName, String description,
                                boolean idMappingServiceAccess, IdScopeType idScope, URL applicationUrl, byte[] applicationLogo,
-                               Color applicationColor, byte[] encodedCertificate,
-                               List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes, boolean skipMessageIntegrityCheck,
-                               boolean deviceRestriction, boolean ssoEnabled, URL ssoLogoutUrl)
+                               byte[] encodedCertificate, List<IdentityAttributeTypeDO> initialApplicationIdentityAttributes,
+                               boolean skipMessageIntegrityCheck, boolean deviceRestriction, boolean ssoEnabled, URL ssoLogoutUrl)
             throws ExistingApplicationException, ApplicationOwnerNotFoundException, CertificateEncodingException,
             AttributeTypeNotFoundException {
 
@@ -174,7 +172,7 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
         ApplicationOwnerEntity applicationOwner = this.applicationOwnerDAO.getApplicationOwner(applicationOwnerName);
 
         ApplicationEntity application = this.applicationDAO.addApplication(name, friendlyName, applicationOwner, description,
-                applicationUrl, applicationLogo, applicationColor, certificate);
+                applicationUrl, applicationLogo, certificate);
 
         application.setIdentifierMappingAllowed(idMappingServiceAccess);
 

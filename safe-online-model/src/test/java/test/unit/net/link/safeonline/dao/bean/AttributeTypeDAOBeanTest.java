@@ -131,7 +131,7 @@ public class AttributeTypeDAOBeanTest extends TestCase {
 
         // setup application
         String applicationName = UUID.randomUUID().toString();
-        ApplicationEntity application = this.applicationDAO.addApplication(applicationName, null, owner, null, null, null, null, null);
+        ApplicationEntity application = this.applicationDAO.addApplication(applicationName, null, owner, null, null, null, null);
 
         // setup application identity
         this.applicationIdentityDAO.addApplicationIdentity(application, 1);

@@ -40,6 +40,10 @@
 		<param-value>${safe-online.owner.webapp.name}</param-value>
 	</context-param>
 	<context-param>
+		<param-name>ApplicationColor</param-name>
+		<param-value>#001975</param-value>
+	</context-param>
+	<context-param>
 		<param-name>AuthenticationProtocol</param-name>
 		<param-value>SAML2_BROWSER_POST</param-value>
 	</context-param>
