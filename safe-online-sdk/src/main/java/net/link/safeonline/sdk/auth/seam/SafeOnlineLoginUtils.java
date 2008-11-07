@@ -26,6 +26,7 @@ import javax.servlet.UnavailableException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.link.safeonline.common.SafeOnlineAppConstants;
 import net.link.safeonline.sdk.KeyStoreUtils;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
@@ -289,8 +290,20 @@ public class SafeOnlineLoginUtils {
             throw new RuntimeException("could not init authentication protocol handler: " + authenticationProtocol + "; original message: "
                     + e.getMessage(), e);
         }
+
+        // Defaults for color & minimal from web.xml init params.
+        Integer authColor = color;
+        if (authColor == null) {
+            authColor = Integer.decode(config.get(SafeOnlineAppConstants.COLOR_CONTEXT));
+        }
+        Boolean authMinimal = minimal;
+        if (authMinimal == null) {
+            authMinimal = Boolean.parseBoolean(config.get(SafeOnlineAppConstants.MINIMAL_CONTEXT));
+        }
+
+        // Initiate the authentication.
         try {
-            AuthenticationProtocolManager.initiateAuthentication(httpRequest, httpResponse, targetUrl, language, color, minimal);
+            AuthenticationProtocolManager.initiateAuthentication(httpRequest, httpResponse, targetUrl, language, authColor, authMinimal);
             LOG.debug("executed protocol");
         } catch (Exception e) {
             throw new RuntimeException("could not initiate authentication: " + e.getMessage(), e);

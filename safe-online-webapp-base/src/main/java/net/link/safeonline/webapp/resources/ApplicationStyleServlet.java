@@ -15,7 +15,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.common.SafeOnlineAppConstants;
 import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.servlet.annotation.Context;
 
@@ -60,7 +60,7 @@ public class ApplicationStyleServlet extends AbstractInjectionServlet {
     private static final long   serialVersionUID = 1L;
     private static final Log    LOG              = LogFactory.getLog(ApplicationStyleServlet.class);
 
-    @Context(name = "ApplicationColor", defaultValue = "#5A7500")
+    @Context(name = SafeOnlineAppConstants.COLOR_CONTEXT, defaultValue = SafeOnlineAppConstants.DEFAULT_COLOR)
     private String              applicationColor;
     private VelocityEngine      velocity;
 
@@ -105,7 +105,7 @@ public class ApplicationStyleServlet extends AbstractInjectionServlet {
 
         // Figure out the base color for the style.
         Integer baseColor = null;
-        Object colorAttribute = request.getAttribute(SafeOnlineConstants.COLOR_ATTRIBUTE);
+        Object colorAttribute = request.getAttribute(SafeOnlineAppConstants.COLOR_ATTRIBUTE);
         try {
             baseColor = colorAttribute == null? null: Integer.decode(colorAttribute.toString());
         } catch (NumberFormatException e) {
@@ -114,7 +114,11 @@ public class ApplicationStyleServlet extends AbstractInjectionServlet {
 
         // If not yet set, use the default application color.
         if (baseColor == null) {
-            baseColor = Integer.decode(this.applicationColor);
+            try {
+                baseColor = Integer.decode(this.applicationColor);
+            } catch (NumberFormatException e) {
+                baseColor = Integer.decode(SafeOnlineAppConstants.DEFAULT_COLOR);
+            }
         }
 
         // Merge the velocity style template with the color attributes.

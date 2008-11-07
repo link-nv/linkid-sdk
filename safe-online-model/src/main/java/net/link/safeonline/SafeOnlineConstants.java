@@ -121,12 +121,6 @@ public class SafeOnlineConstants {
     public static final String DEVICE_PROPERTY                         = "device";
     public static final String INFO_PROPERTY                           = "info";
 
-    /**
-     * Application Style.
-     */
-    public static final String COLOR_ATTRIBUTE                         = "OLAS-AUTH.color";
-    public static final String MINIMAL_ATTRIBUTE                       = "OLAS-AUTH.minimal";
-
 
     private SafeOnlineConstants() {
 

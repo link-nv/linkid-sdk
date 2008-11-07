@@ -17,7 +17,9 @@ import org.jboss.seam.log.Log;
 
 public class LanguageSelectionBaseBean implements LanguageSelectionBase {
 
-    public static final String LAST_PAGE = "lang.selection.lastpage";
+    private static final int   LANG_EXPIRATION = 60 * 60 * 24 * 30 * 6;
+
+    public static final String LAST_PAGE       = "lang.selection.lastpage";
 
     @In
     Context                    sessionContext;
@@ -47,14 +49,21 @@ public class LanguageSelectionBaseBean implements LanguageSelectionBase {
 
     public void selectLanguage(ActionEvent event) {
 
-        this.log.debug("selected language: " + event.getComponent().getId());
-        this.localeSelector.selectLanguage(event.getComponent().getId());
+        String language = event.getComponent().getId();
+
+        this.log.debug("selected language: " + language);
+        this.localeSelector.selectLanguage(language);
 
         HttpServletResponse response = (HttpServletResponse) this.facesContext.getExternalContext().getResponse();
 
-        Cookie languageCookie = new Cookie(SafeOnlineCookies.LANGUAGE_COOKIE, event.getComponent().getId());
+        Cookie languageCookie = new Cookie(getLanguageCookieName(), language);
         languageCookie.setPath("/");
-        languageCookie.setMaxAge(60 * 60 * 24 * 30 * 6);
+        languageCookie.setMaxAge(LANG_EXPIRATION);
         response.addCookie(languageCookie);
+    }
+
+    protected String getLanguageCookieName() {
+
+        return SafeOnlineCookies.LANGUAGE_COOKIE;
     }
 }

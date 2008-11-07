@@ -60,7 +60,7 @@ if [[ $dbms = mysql ]]; then
 	# Rebuild the database if we can find the DDL scripts for it.
 	for ear in *.ear; do
 		case $ear in
-			SafeOnline.ear)
+			SafeOnline.ear|safe-online-deploy*.ear)
 				emit "Rebuilding SafeOnline" --
 					mysql -h"$host" -P"$port" -uroot -p"$rootpass" < <(unzip -qc "$ear" resources/mysql-create-database.sql) && \
 					mysql -h"$host" -P"$port" -uroot -p"$rootpass" < <(unzip -qc "$ear" resources/mysql-create-account.sql) && \
@@ -77,7 +77,7 @@ if [[ $dbms = mysql ]]; then
 				emit -$? || exit
 			;;
 
-			Dodentocht.ear)
+            Dodentocht.ear|dodentocht-deploy*.ear)
 				emit "Rebuilding Dodentocht" --
 					(
 						cd "$scripts/../sql"

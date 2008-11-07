@@ -28,6 +28,7 @@ import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Logger;
 import org.jboss.seam.contexts.Context;
 import org.jboss.seam.faces.FacesMessages;
+import org.jboss.seam.international.LocaleSelector;
 import org.jboss.seam.log.Log;
 
 
@@ -41,6 +42,9 @@ public class LoginBaseBean implements LoginBase {
 
     @EJB
     private SubjectService subjectService;
+
+    @In(create = true)
+    LocaleSelector         localeSelector;
 
     @Logger
     private Log            log;
@@ -76,7 +80,7 @@ public class LoginBaseBean implements LoginBase {
          * The login cookie is used to help in detecting an application level session timeout.
          */
         addLoginCookie();
-        return SafeOnlineLoginUtils.login("overview.seam");
+        return SafeOnlineLoginUtils.login("overview.seam", this.localeSelector.getLocale(), null, false);
     }
 
     public String logout() {
@@ -88,7 +92,7 @@ public class LoginBaseBean implements LoginBase {
         return "success";
     }
 
-    private void addLoginCookie() {
+    protected void addLoginCookie() {
 
         this.log.debug("add login cookie");
         FacesContext facesContext = FacesContext.getCurrentInstance();
@@ -99,7 +103,7 @@ public class LoginBaseBean implements LoginBase {
         response.addCookie(loginCookie);
     }
 
-    private void removeLoginCookie() {
+    protected void removeLoginCookie() {
 
         this.log.debug("remove login cookie");
         FacesContext facesContext = FacesContext.getCurrentInstance();
