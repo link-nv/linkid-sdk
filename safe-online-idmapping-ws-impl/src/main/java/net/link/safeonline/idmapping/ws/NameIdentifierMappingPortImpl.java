@@ -142,7 +142,7 @@ public class NameIdentifierMappingPortImpl implements NameIdentifierMappingPort 
             return response;
         } catch (SubjectNotFoundException e) {
             LOG.debug("subject not found: " + username);
-            NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.REQUEST_DENIED);
+            NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.UNKNOWN_PRINCIPAL);
             return response;
         } catch (NodeNotFoundException e) {
             LOG.debug("node not found");

@@ -96,11 +96,10 @@ public class RemovalBean implements Removal {
     }
 
     @ErrorHandling( { @Error(exceptionClass = DigipassException.class, messageId = "errorDeviceRegistrationNotFound") })
-    public String remove() throws SubjectNotFoundException, DigipassException, PermissionDeniedException, DeviceNotFoundException,
-                          AttributeTypeNotFoundException {
+    public String remove() throws DigipassException, AttributeTypeNotFoundException {
 
         this.log.debug("remove digipass: " + this.selectedDigipass.getStringValue() + " for user " + this.loginName);
-        this.digipassDeviceService.remove(this.loginName, this.selectedDigipass.getStringValue());
+        this.digipassDeviceService.remove(this.selectedDigipass.getStringValue());
         return "success";
     }
 

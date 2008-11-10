@@ -19,6 +19,9 @@ import javax.ejb.Local;
 @Local
 public interface SamlAuthorityService {
 
+    public static final String JNDI_BINDING = "SafeOnline/SamlAuthorityServiceBean/local";
+
+
     /**
      * Gives back the name of the SAML assertion issuer.
      * 

@@ -14,8 +14,11 @@ import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.common.Configurable;
 import net.link.safeonline.config.model.ConfigurationInterceptor;
 
+import org.jboss.annotation.ejb.LocalBinding;
+
 
 @Stateless
+@LocalBinding(jndiBinding = SamlAuthorityService.JNDI_BINDING)
 @Configurable
 @Interceptors(ConfigurationInterceptor.class)
 public class SamlAuthorityServiceBean implements SamlAuthorityService {

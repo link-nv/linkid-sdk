@@ -21,9 +21,12 @@ import javax.servlet.http.HttpServletRequest;
 import net.link.safeonline.demo.wicket.javaee.DummyAnnotJavaEEInjector;
 import net.link.safeonline.demo.wicket.service.OlasNamingStrategy;
 import net.link.safeonline.demo.wicket.tools.olas.DummyAttributeClient;
+import net.link.safeonline.demo.wicket.tools.olas.DummyNameIdentifierMappingClient;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
+import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
+import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -52,10 +55,11 @@ import org.wicketstuff.javaee.injection.AnnotJavaEEInjector;
  */
 public abstract class WicketUtil {
 
-    static final Log            LOG         = LogFactory.getLog(WicketUtil.class);
+    static final Log            LOG             = LogFactory.getLog(WicketUtil.class);
     static ConfigurableInjector injector;
 
-    private static final String WS_LOCATION = "WsLocation";
+    private static final String WS_LOCATION     = "WsLocation";
+    private static final String STS_WS_LOCATION = "StsWsLocation";
     private static boolean      isUnitTest;
 
 
@@ -177,6 +181,10 @@ public abstract class WicketUtil {
         if (!isUnitTest) {
             // Find the location of the OLAS web services to use.
             String wsLocation = loginRequest.getSession().getServletContext().getInitParameter(WS_LOCATION);
+            // TODO: remove this STS_WS stuff after fixing SOS-310
+            if (null == wsLocation) {
+                wsLocation = loginRequest.getSession().getServletContext().getInitParameter(STS_WS_LOCATION);
+            }
 
             // Find the key and certificate of the bank application.
             X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
@@ -187,5 +195,37 @@ public abstract class WicketUtil {
         }
 
         return new DummyAttributeClient();
+    }
+
+    /**
+     * Retrieve a proxy to the OLAS id mapping web service.
+     * 
+     * @param request
+     *            The request that contains a session with a servlet context that has the WsLocation init parameter set.<br>
+     *            Note: This can be <code>null</code> for unit tests - it is not used. {@link DummyAttributeClient} is used instead,
+     *            provided you called {@link #setUnitTesting(boolean)}.
+     */
+    public static NameIdentifierMappingClient getOLASIdMappingService(HttpServletRequest request, PrivateKeyEntry privateKeyEntry) {
+
+        return getOLASIdMappingService(request, privateKeyEntry.getPrivateKey(), (X509Certificate) privateKeyEntry.getCertificate());
+
+    }
+
+    public static NameIdentifierMappingClient getOLASIdMappingService(HttpServletRequest request, PrivateKey privateKey,
+                                                                      X509Certificate certificate) {
+
+        if (!isUnitTest) {
+            // Find the location of the OLAS web services to use.
+            String wsLocation = request.getSession().getServletContext().getInitParameter(WS_LOCATION);
+            // TODO: remove this STS_WS stuff after fixing SOS-310
+            if (null == wsLocation) {
+                wsLocation = request.getSession().getServletContext().getInitParameter(STS_WS_LOCATION);
+            }
+
+            // Create the attribute service client.
+            return new NameIdentifierMappingClientImpl(wsLocation, certificate, privateKey);
+        }
+
+        return new DummyNameIdentifierMappingClient();
     }
 }

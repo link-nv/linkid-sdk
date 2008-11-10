@@ -49,8 +49,6 @@ public interface Registration {
 
     String mobileActivationRetry() throws MalformedURLException, MobileException, MobileRegistrationException;
 
-    String mobileActivationCancel() throws SubjectNotFoundException, MobileException, MalformedURLException, IOException;
-
     String requestOTP() throws MalformedURLException, MobileException;
 
     String authenticate() throws IOException, MobileException, SubjectNotFoundException, AttributeTypeNotFoundException;

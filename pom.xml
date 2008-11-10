@@ -540,7 +540,7 @@
 		<safe-online.option.webapp.name>olas-option</safe-online.option.webapp.name>
 
 		<!-- DEFAULT VERSIONS, SEE DEPENDENCIES -->
-        <safe-online.version>${pom.version}</safe-online.version>
+		<safe-online.version>${pom.version}</safe-online.version>
 		<bcel.version>5.1</bcel.version>
 		<bsf.version>2.4.0</bsf.version>
 		<bsh.version>1.3.0</bsh.version>
@@ -642,7 +642,7 @@
 		<trinidad-impl.version>1.2.1</trinidad-impl.version>
 		<resolver.version>2.9.1</resolver.version>
 		<maven-jaxb-plugin.version>1.1</maven-jaxb-plugin.version>
-		<maven-jar-plugin.version>2.1</maven-jar-plugin.version>
+		<maven-jar-plugin.version>2.2</maven-jar-plugin.version>
 		<maven-assembly-plugin.version> 2.2-beta-1 
 		</maven-assembly-plugin.version>
 		<maven-dependency-plugin.version> 2.0 
@@ -662,7 +662,7 @@
 		<wicket-so.version>1.4-m3-safe-online</wicket-so.version>
 		<wicket.version>1.4-m3</wicket.version>
 		<wicket-javaee.version>1.1-safe-online</wicket-javaee.version>
-        <wicketstuff-annotation.version>1.1</wicketstuff-annotation.version>
+		<wicketstuff-annotation.version>1.1</wicketstuff-annotation.version>
 		<maven-compiler-plugin.version> 2.0.2 </maven-compiler-plugin.version>
 		<dumbster.version>1.6-safe-online</dumbster.version>
 		<javax-mail.version>1.4</javax-mail.version>
@@ -749,6 +749,8 @@
 
 		<!-- CORE WEB APPS -->
 		<module>safe-online-webapp-base</module>
+		<module>safe-online-webapp-base-jsf</module>
+		<module>safe-online-webapp-base-wicket</module>
 		<module>safe-online-webapp-common</module>
 		<module>safe-online-wicket-tools</module>
 		<module>safe-online-taglib</module>
@@ -818,6 +820,7 @@
 		<module>safe-online-digipass-deploy</module>
 		<module>safe-online-digipass-keystore</module>
 		<module>safe-online-digipass-webapp</module>
+		<module>safe-online-digipass-webapp-wicket</module>
 		<module>safe-online-device-sdk</module>
 		<module>safe-online-java-version-applet</module>
 		<module>safe-online-java-version-applet-package</module>
@@ -1321,7 +1324,7 @@
 		<repository>
 			<id>openqa</id>
 			<name>OpenQA Repository</name>
-            <url>http://archiva.openqa.org/repository/releases/</url>
+			<url>http://archiva.openqa.org/repository/releases/</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
@@ -1480,54 +1483,61 @@
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-container-as</artifactId>
 				<type>pom</type>
-                <version>${safe-online.version}</version>
+				<version>${safe-online.version}</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-container-jsf</artifactId>
 				<type>pom</type>
-                <version>${safe-online.version}</version>
+				<version>${safe-online.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-container-saml</artifactId>
 				<type>pom</type>
-                <version>${safe-online.version}</version>
+				<version>${safe-online.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-container-test</artifactId>
 				<type>pom</type>
-                <version>${safe-online.version}</version>
+				<version>${safe-online.version}</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-device-webapp-base</artifactId>
 				<type>war</type>
-                <version>${safe-online.version}</version>
+				<version>${safe-online.version}</version>
 				<scope>runtime</scope>
 			</dependency>
 			<dependency>
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-webapp-base</artifactId>
 				<type>war</type>
-                <version>${safe-online.version}</version>
+				<version>${safe-online.version}</version>
+				<scope>runtime</scope>
+			</dependency>
+			<dependency>
+				<groupId>net.lin-k.safe-online</groupId>
+				<artifactId>safe-online-webapp-base-jsf</artifactId>
+				<type>war</type>
+				<version>${safe-online.version}</version>
 				<scope>runtime</scope>
 			</dependency>
 			<dependency>
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-sql-ddl</artifactId>
 				<type>jar</type>
-                <version>${safe-online.version}</version>
+				<version>${safe-online.version}</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-model</artifactId>
 				<type>ejb-client</type>
-                <version>${safe-online.version}</version>
+				<version>${safe-online.version}</version>
 				<exclusions>
 					<exclusion>
 						<groupId>net.lin-k.safe-online</groupId>
@@ -1551,7 +1561,7 @@
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-model-beid</artifactId>
 				<type>ejb-client</type>
-                <version>${safe-online.version}</version>
+				<version>${safe-online.version}</version>
 				<exclusions>
 					<exclusion>
 						<groupId>net.lin-k.safe-online</groupId>
@@ -1563,7 +1573,7 @@
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-model-option</artifactId>
 				<type>ejb-client</type>
-                <version>${safe-online.version}</version>
+				<version>${safe-online.version}</version>
 				<exclusions>
 					<exclusion>
 						<groupId>net.lin-k.safe-online</groupId>
@@ -1575,7 +1585,7 @@
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-model-demo</artifactId>
 				<type>ejb-client</type>
-                <version>${safe-online.version}</version>
+				<version>${safe-online.version}</version>
 				<exclusions>
 					<exclusion>
 						<groupId>net.lin-k.safe-online</groupId>
@@ -1587,7 +1597,7 @@
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-model-digipass</artifactId>
 				<type>ejb-client</type>
-                <version>${safe-online.version}</version>
+				<version>${safe-online.version}</version>
 				<exclusions>
 					<exclusion>
 						<groupId>net.lin-k.safe-online</groupId>
@@ -1599,7 +1609,7 @@
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-model-encap</artifactId>
 				<type>ejb-client</type>
-                <version>${safe-online.version}</version>
+				<version>${safe-online.version}</version>
 				<exclusions>
 					<exclusion>
 						<groupId>net.lin-k.safe-online</groupId>
@@ -1611,7 +1621,7 @@
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-model-performance</artifactId>
 				<type>ejb-client</type>
-                <version>${safe-online.version}</version>
+				<version>${safe-online.version}</version>
 
 				<!--
 					model-performance client jar really only just provides interface
@@ -2081,44 +2091,25 @@
 				<version>${servlet-api.version}</version>
 			</dependency>
 
-            <!-- Disable these dependencies: They cause conflicts -->
-            <!-- org.apache.xerces:xml-apis supersedes xmlParserAPIs -->
-            <!-- We use org.apache.* instead -->
-			<!--dependency>
-				<groupId>xml-apis</groupId>
-				<artifactId>xml-apis</artifactId>
-				<version>-1</version>
-			</dependency>
-			<dependency>
-				<groupId>xerces</groupId>
-				<artifactId>xmlParserAPIs</artifactId>
-				<version>-1</version>
-			</dependency>
-			<dependency>
-				<groupId>xerces</groupId>
-				<artifactId>xercesImpl</artifactId>
-				<version>-1</version>
-			</dependency>
-			<dependency>
-				<groupId>xalan</groupId>
-				<artifactId>xalan</artifactId>
-				<version>-1</version>
-			</dependency>
-			<dependency>
-				<groupId>xml-security</groupId>
-				<artifactId>xmlsec</artifactId>
-				<version>-1</version>
-			</dependency>
-			<dependency>
-				<groupId>wss4j</groupId>
-				<artifactId>wss4j</artifactId>
-				<version>-1</version>
-			</dependency>
-			<dependency>
-				<groupId>xom</groupId>
-				<artifactId>xom</artifactId>
-				<version>-1</version>
-			</dependency-->
+			<!-- Disable these dependencies: They cause conflicts -->
+			<!-- org.apache.xerces:xml-apis supersedes xmlParserAPIs -->
+			<!-- We use org.apache.* instead -->
+			<!--
+				dependency> <groupId>xml-apis</groupId>
+				<artifactId>xml-apis</artifactId> <version>-1</version>
+				</dependency> <dependency> <groupId>xerces</groupId>
+				<artifactId>xmlParserAPIs</artifactId> <version>-1</version>
+				</dependency> <dependency> <groupId>xerces</groupId>
+				<artifactId>xercesImpl</artifactId> <version>-1</version>
+				</dependency> <dependency> <groupId>xalan</groupId>
+				<artifactId>xalan</artifactId> <version>-1</version> </dependency>
+				<dependency> <groupId>xml-security</groupId>
+				<artifactId>xmlsec</artifactId> <version>-1</version> </dependency>
+				<dependency> <groupId>wss4j</groupId> <artifactId>wss4j</artifactId>
+				<version>-1</version> </dependency> <dependency>
+				<groupId>xom</groupId> <artifactId>xom</artifactId>
+				<version>-1</version> </dependency
+			-->
 
 			<!-- External -->
 			<dependency>
@@ -2331,37 +2322,37 @@
 				<groupId>org.opensaml</groupId>
 				<artifactId>opensaml</artifactId>
 				<version>${opensaml.version}</version>
-                <exclusions>
-                    <!-- Provided by container-as -->
-                    <exclusion>
-                        <groupId>org.apache.xerces</groupId>
-                        <artifactId>resolver</artifactId>
-                    </exclusion>
-                </exclusions>
+				<exclusions>
+					<!-- Provided by container-as -->
+					<exclusion>
+						<groupId>org.apache.xerces</groupId>
+						<artifactId>resolver</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.opensaml</groupId>
 				<artifactId>xmltooling</artifactId>
 				<version>${xmltooling.version}</version>
-                <exclusions>
-                    <!-- Provided by container-as -->
-                    <exclusion>
-                        <groupId>org.apache.xerces</groupId>
-                        <artifactId>resolver</artifactId>
-                    </exclusion>
-                </exclusions>
+				<exclusions>
+					<!-- Provided by container-as -->
+					<exclusion>
+						<groupId>org.apache.xerces</groupId>
+						<artifactId>resolver</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.opensaml</groupId>
 				<artifactId>openws</artifactId>
 				<version>${openws.version}</version>
-                <exclusions>
-                    <!-- Provided by container-as -->
-                    <exclusion>
-                        <groupId>org.apache.xerces</groupId>
-                        <artifactId>resolver</artifactId>
-                    </exclusion>
-                </exclusions>
+				<exclusions>
+					<!-- Provided by container-as -->
+					<exclusion>
+						<groupId>org.apache.xerces</groupId>
+						<artifactId>resolver</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>commons-digester</groupId>
@@ -2443,11 +2434,11 @@
 				<artifactId>trinidad-impl</artifactId>
 				<version>${trinidad-impl.version}</version>
 			</dependency>
-            <dependency>
-                <groupId>org.apache.xerces</groupId>
-                <artifactId>resolver</artifactId>
+			<dependency>
+				<groupId>org.apache.xerces</groupId>
+				<artifactId>resolver</artifactId>
 				<version>${resolver.version}</version>
-            </dependency>
+			</dependency>
 			<dependency>
 				<groupId>org.apache.ws.security</groupId>
 				<artifactId>wss4j</artifactId>
@@ -2457,8 +2448,8 @@
 						<groupId>axis</groupId>
 						<artifactId>axis-ant</artifactId>
 					</exclusion>
-                    <!-- Compile-time dependency on JUnit? Wtf - who writes those POMs? -->
-                    <exclusion>
+					<!-- Compile-time dependency on JUnit? Wtf - who writes those POMs? -->
+					<exclusion>
 						<groupId>junit</groupId>
 						<artifactId>junit</artifactId>
 					</exclusion>
@@ -2486,10 +2477,10 @@
 						WSS4J uses discontinued OpenSAML 1.1
 					-->
 					<!-- FIXME: See SOS-274 -->
-                    <!-->exclusion>
-                        <groupId>opensaml</groupId>
-                        <artifactId>opensaml</artifactId>
-                    </exclusion-->
+					<!--
+						>exclusion> <groupId>opensaml</groupId>
+						<artifactId>opensaml</artifactId> </exclusion
+					-->
 				</exclusions>
 			</dependency>
 			<dependency>

@@ -24,17 +24,19 @@ import net.link.safeonline.data.AttributeDO;
 @Local
 public interface DigipassDeviceService {
 
-    String authenticate(String loginName, String token) throws SubjectNotFoundException, PermissionDeniedException,
-                                                       DeviceNotFoundException, DeviceDisabledException;
+    public static final String JNDI_BINDING = "SafeOnline/DigipassDeviceServiceBean/local";
 
-    String register(String loginName, String serialNumber) throws ArgumentIntegrityException, SubjectNotFoundException,
-                                                          PermissionDeniedException, AttributeTypeNotFoundException;
 
-    void remove(String loginName, String serialNumber) throws SubjectNotFoundException, DigipassException, PermissionDeniedException,
-                                                      DeviceNotFoundException, AttributeTypeNotFoundException;
+    String authenticate(String userId, String token) throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException,
+                                                    DeviceDisabledException;
 
-    List<AttributeDO> getDigipasses(String loginName, Locale locale) throws SubjectNotFoundException, PermissionDeniedException,
-                                                                    DeviceNotFoundException;
+    String register(String userId, String serialNumber) throws ArgumentIntegrityException, SubjectNotFoundException,
+                                                       PermissionDeniedException, AttributeTypeNotFoundException;
+
+    void remove(String serialNumber) throws DigipassException, AttributeTypeNotFoundException;
+
+    List<AttributeDO> getDigipasses(String userId, Locale locale) throws SubjectNotFoundException, PermissionDeniedException,
+                                                                 DeviceNotFoundException;
 
     void disable(String userId, String serialNumber) throws SubjectNotFoundException, DeviceNotFoundException,
                                                     DeviceRegistrationNotFoundException;

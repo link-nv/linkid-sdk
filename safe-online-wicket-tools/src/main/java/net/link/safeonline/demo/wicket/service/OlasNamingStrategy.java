@@ -16,8 +16,8 @@ import org.wicketstuff.javaee.naming.IJndiNamingStrategy;
  * <sub>Pull the JNDI binding of EJB service classes out of their class descriptions.</sub></h2>
  * 
  * <p>
- * This injector assumes the field is of a type that is a bean interface with a publicly accessible BINDING constant field which points to
- * the JNDI location of the bean that needs to be injected into the field.
+ * This injector assumes the field is of a type that is a bean interface with a publicly accessible JNDI_BINDING constant field which points
+ * to the JNDI location of the bean that needs to be injected into the field.
  * </p>
  * 
  * <p>
@@ -35,7 +35,7 @@ public class OlasNamingStrategy implements IJndiNamingStrategy {
     public String calculateName(String ejbName, Class ejbType) {
 
         try {
-            return ejbType.getDeclaredField("BINDING").get(null).toString();
+            return ejbType.getDeclaredField("JNDI_BINDING").get(null).toString();
         }
 
         catch (IllegalArgumentException e) {

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/"
+	xml:lang="en" lang="en">
+
+	<head>
+		<wicket:head>
+			<link rel="stylesheet" type="text/css" href="css/style.css" />
+			<link wicket:id="themeCSS" rel="stylesheet" type="text/css" />
+			<meta http-equiv="cache-control" content="no-cache" />
+			<title wicket:id="pageTitle">[Page Title]</title>
+		</wicket:head>
+	</head>
+	<body>
+		<wicket:border>
+			<div id="c-header">
+				<div id="header">
+					<a wicket:id="language" href="#">
+						<img wicket:id="language_image" />
+						<wicket:message key="chooseLanguage">[Choose language]
+						</wicket:message>
+					</a>
+					<a wicket:id="logout" href="#">
+						<wicket:message key="logout">[Logout]
+						</wicket:message>
+					</a>
+
+					<wicket:body />
+
+				</div>
+			</div>
+		</wicket:border>
+	</body>
+</html>
