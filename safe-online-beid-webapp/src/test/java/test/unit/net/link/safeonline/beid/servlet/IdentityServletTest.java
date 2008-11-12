@@ -66,10 +66,10 @@ public class IdentityServletTest {
         this.jndiTestUtils.setUp();
 
         this.mockBeIdDeviceServiceBean = createMock(BeIdDeviceService.class);
-        this.jndiTestUtils.bindComponent("SafeOnlineBeid/BeIdDeviceServiceBean/local", this.mockBeIdDeviceServiceBean);
+        this.jndiTestUtils.bindComponent(BeIdDeviceService.JNDI_BINDING, this.mockBeIdDeviceServiceBean);
 
         this.mockSamlAuthorityService = createMock(SamlAuthorityService.class);
-        this.jndiTestUtils.bindComponent("SafeOnline/SamlAuthorityServiceBean/local", this.mockSamlAuthorityService);
+        this.jndiTestUtils.bindComponent(SamlAuthorityService.JNDI_BINDING, this.mockSamlAuthorityService);
 
         this.servletTestManager = new ServletTestManager();
         this.servletTestManager.setUp(IdentityServlet.class);
@@ -101,6 +101,7 @@ public class IdentityServletTest {
 
         // verify
         LOG.debug("result: " + result);
+        LOG.debug("output: \n" + postMethod.getResponseBodyAsString());
         assertEquals(HttpServletResponse.SC_BAD_REQUEST, result);
     }
 

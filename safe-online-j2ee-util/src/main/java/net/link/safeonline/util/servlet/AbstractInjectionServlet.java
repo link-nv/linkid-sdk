@@ -223,19 +223,24 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
             }
             String mappedName = ejb.mappedName();
             if (null == mappedName)
-                throw new ServletException("@EJB mappedName attribute required");
+                throw new ServletException(String.format("field %s.%s's @EJB requires mappedName attribute", getClass(), field));
             LOG.debug("injecting: " + mappedName);
             Class type = field.getType();
             if (false == type.isInterface())
-                throw new ServletException("field is not an interface type");
-            Object ejbRef = EjbUtils.getEJB(mappedName, type);
-            field.setAccessible(true);
+                throw new ServletException(String.format("field %s.%s's type should be an interface", getClass(), field));
             try {
-                field.set(this, ejbRef);
-            } catch (IllegalArgumentException e) {
-                throw new ServletException("illegal argument: " + e.getMessage(), e);
-            } catch (IllegalAccessException e) {
-                throw new ServletException("illegal access: " + e.getMessage(), e);
+                Object ejbRef = EjbUtils.getEJB(mappedName, type);
+                field.setAccessible(true);
+                try {
+                    field.set(this, ejbRef);
+                } catch (IllegalArgumentException e) {
+                    throw new ServletException(String.format("while injecting into %s:", getClass()), e);
+                } catch (IllegalAccessException e) {
+                    throw new ServletException(String.format("while injecting into %s:", getClass()), e);
+                }
+            } catch (RuntimeException e) {
+                throw new ServletException(
+                        String.format("couldn't resolve EJB named: %s (while injecting into %s)", mappedName, getClass()), e);
             }
         }
     }
@@ -334,9 +339,8 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
             Object value;
             try {
                 value = field.get(this);
-                if (value == null && outAnnotation.required()) {
+                if (value == null && outAnnotation.required())
                     throw new ServletException("missing required session attribute: " + outName);
-                }
             } catch (IllegalArgumentException e) {
                 throw new ServletException("illegal argument: " + e.getMessage(), e);
             } catch (IllegalAccessException e) {
