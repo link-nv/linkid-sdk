@@ -39,6 +39,7 @@ public class CinemaApplication extends WebApplication {
     public Session newSession(Request request, Response response) {
 
         return new CinemaSession(request);
+
     }
 
 }

@@ -54,7 +54,7 @@ public class NodeIdentifierMappingServiceBean implements NodeIdentifierMappingSe
     public String getNodeMappingId(String username)
             throws NodeNotFoundException, SubjectNotFoundException {
 
-        LOG.debug("get device mapping id: " + username);
+        LOG.debug("get node mapping id: " + username);
         NodeEntity node = this.nodeManager.getCallerNode();
         SubjectEntity subject = this.subjectService.getSubjectFromUserName(username);
         NodeEntity localNode = this.nodeAuthenticationService.getLocalNode();

@@ -10,7 +10,7 @@
 	</parent>
 
 	<name>SafeOnline Digipass Deploy</name>
-    <description>
+	<description>
         SafeOnline Deployable Digipass Application Package 
 	</description>
 
@@ -30,21 +30,28 @@
 					<jboss>
 						<version>4</version>
 					</jboss>
-                    <defaultJavaBundleDir>lib/</defaultJavaBundleDir>
-                    <modules>
-                        <webModule>
-                            <groupId>net.lin-k.safe-online</groupId>
-                            <artifactId>safe-online-digipass-webapp</artifactId>
-                            <contextRoot>/${safe-online.digipass.webapp.name}</contextRoot>
-                        </webModule>
-                    </modules>
+					<defaultJavaBundleDir>lib/</defaultJavaBundleDir>
+					<modules>
+						<webModule>
+							<groupId>net.lin-k.safe-online</groupId>
+							<artifactId>safe-online-digipass-webapp</artifactId>
+							<contextRoot>/${safe-online.digipass.webapp.name}-jsf</contextRoot>
+						</webModule>
+						<webModule>
+							<groupId>net.lin-k.safe-online</groupId>
+							<artifactId>safe-online-digipass-webapp-wicket</artifactId>
+							<contextRoot>/${safe-online.digipass.webapp.name}</contextRoot>
+						</webModule>
+					</modules>
 
-                    <!-- Exlude ZIPs.
-                         They only serve to force the deps of wars/sars to become transitive. -->
-                    <artifactTypeMappings>
-                        <artifactTypeMapping type="zip" mapping="jar"/>
-                    </artifactTypeMappings>
-                    <earSourceExcludes>*.zip,lib/*.zip</earSourceExcludes>
+					<!--
+						Exlude ZIPs. They only serve to force the deps of wars/sars to
+						become transitive.
+					-->
+					<artifactTypeMappings>
+						<artifactTypeMapping type="zip" mapping="jar" />
+					</artifactTypeMappings>
+					<earSourceExcludes>*.zip,lib/*.zip</earSourceExcludes>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -84,25 +91,37 @@
 
 	<dependencies>
 
-        <!-- Specific Dependencies: OLAS: Forced Dependency Transition -->
+		<!-- Specific Dependencies: OLAS: Forced Dependency Transition -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-digipass-webapp</artifactId>
 			<version>1.3-SNAPSHOT</version>
 			<type>war</type>
 		</dependency>
-            <dependency>
-                <groupId>net.lin-k.safe-online</groupId>
-                <artifactId>safe-online-digipass-webapp</artifactId>
-                <version>1.3-SNAPSHOT</version>
-                <type>zip</type>
-            </dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-digipass-webapp</artifactId>
+			<version>1.3-SNAPSHOT</version>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-digipass-webapp-wicket</artifactId>
+			<version>1.3-SNAPSHOT</version>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-digipass-webapp-wicket</artifactId>
+			<version>1.3-SNAPSHOT</version>
+			<type>zip</type>
+		</dependency>
 
-        <!-- Specific Dependencies: OLAS -->
+		<!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model-digipass</artifactId>
-            <version>1.3-SNAPSHOT</version>
+			<version>1.3-SNAPSHOT</version>
 			<type>ejb</type>
 		</dependency>
 

@@ -12,6 +12,7 @@ import java.util.Locale;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServlet;
 
+import junit.framework.TestCase;
 import net.link.safeonline.demo.wicket.javaee.DummyJndi;
 import net.link.safeonline.demo.wicket.tools.WicketUtil;
 import net.link.safeonline.demo.wicket.tools.olas.DummyAttributeClient;
@@ -49,7 +50,7 @@ import org.junit.BeforeClass;
  * 
  * @author lhunath
  */
-public abstract class AbstractWicketTests {
+public abstract class AbstractWicketTests extends TestCase {
 
     protected final Log         LOG = LogFactory.getLog(getClass());
     protected EntityTestManager entityTestManager;
@@ -63,8 +64,9 @@ public abstract class AbstractWicketTests {
         WicketUtil.setUnitTesting(true);
     }
 
+    @Override
     @Before
-    public void setup() {
+    public void setUp() {
 
         // Dummy OLAS Setup.
         TestAuthenticationProtocolHandler.setAuthenticatingUserId(getOLASUserId());
@@ -100,6 +102,7 @@ public abstract class AbstractWicketTests {
         this.wicket.processRequestCycle();
     }
 
+    @Override
     @After
     public void tearDown()
             throws Exception {

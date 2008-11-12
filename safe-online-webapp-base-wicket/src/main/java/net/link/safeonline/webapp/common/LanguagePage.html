@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/"
+	xml:lang="en" lang="en">
+
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+	</head>
+
+	<body>
+
+		<div wicket:id="header_border"></div>
+
+		<div wicket:id="content_border">
+
+			<h2>
+				<wicket:message key="chooseLanguage">[Choose Language]</wicket:message>
+			</h2>
+
+			<table class="center">
+				<tbody>
+					<tr>
+						<td>
+							<a wicket:id="en" class="padded">
+								<img src="images/langs/en.png" border="0" />
+								<wicket:message key="languageEnglish">[English]</wicket:message>
+							</a>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<a wicket:id="nl" class="padded">
+								<img src="images/langs/nl.png" border="0" />
+								<wicket:message key="languageDutch">[Dutch]</wicket:message>
+							</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
+		</div>
+
+	</body>
+</html>

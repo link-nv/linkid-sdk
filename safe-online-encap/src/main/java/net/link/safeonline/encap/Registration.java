@@ -56,11 +56,15 @@ public interface Registration {
     String mobileActivationRetry()
             throws MalformedURLException, MobileException, MobileRegistrationException;
 
+<<<<<<< HEAD:safe-online-encap/src/main/java/net/link/safeonline/encap/Registration.java
     String mobileActivationCancel()
             throws SubjectNotFoundException, MobileException, MalformedURLException, IOException;
 
     String requestOTP()
             throws MalformedURLException, MobileException;
+=======
+    String requestOTP() throws MalformedURLException, MobileException;
+>>>>>>> wicket-digipass:safe-online-encap/src/main/java/net/link/safeonline/encap/Registration.java
 
     String authenticate()
             throws IOException, MobileException, SubjectNotFoundException, AttributeTypeNotFoundException;

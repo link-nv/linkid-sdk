@@ -95,12 +95,16 @@ public class RemovalBean implements Removal {
     }
 
     @ErrorHandling( { @Error(exceptionClass = DigipassException.class, messageId = "errorDeviceRegistrationNotFound") })
+<<<<<<< HEAD:safe-online-digipass/src/main/java/net/link/safeonline/digipass/bean/RemovalBean.java
     public String remove()
             throws SubjectNotFoundException, DigipassException, PermissionDeniedException, DeviceNotFoundException,
             AttributeTypeNotFoundException {
+=======
+    public String remove() throws DigipassException, AttributeTypeNotFoundException {
+>>>>>>> wicket-digipass:safe-online-digipass/src/main/java/net/link/safeonline/digipass/bean/RemovalBean.java
 
         this.log.debug("remove digipass: " + this.selectedDigipass.getStringValue() + " for user " + this.loginName);
-        this.digipassDeviceService.remove(this.loginName, this.selectedDigipass.getStringValue());
+        this.digipassDeviceService.remove(this.selectedDigipass.getStringValue());
         return "success";
     }
 

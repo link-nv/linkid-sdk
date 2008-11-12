@@ -92,8 +92,13 @@ public class RegistrationBean implements Registration {
         this.challengeId = null;
     }
 
+<<<<<<< HEAD:safe-online-encap/src/main/java/net/link/safeonline/encap/bean/RegistrationBean.java
     public String cancel()
             throws IOException {
+=======
+    @End
+    public String cancel() throws IOException {
+>>>>>>> wicket-digipass:safe-online-encap/src/main/java/net/link/safeonline/encap/bean/RegistrationBean.java
 
         this.protocolContext.setSuccess(false);
         exit();
@@ -146,6 +151,7 @@ public class RegistrationBean implements Registration {
         return "authenticate";
     }
 
+<<<<<<< HEAD:safe-online-encap/src/main/java/net/link/safeonline/encap/bean/RegistrationBean.java
     @End
     @ErrorHandling( { @Error(exceptionClass = MalformedURLException.class, messageId = "mobileCommunicationFailed") })
     public String mobileActivationCancel()
@@ -160,6 +166,9 @@ public class RegistrationBean implements Registration {
 
     public String requestOTP()
             throws MalformedURLException, MobileException {
+=======
+    public String requestOTP() throws MalformedURLException, MobileException {
+>>>>>>> wicket-digipass:safe-online-encap/src/main/java/net/link/safeonline/encap/bean/RegistrationBean.java
 
         this.log.debug("request OTP: mobile=" + this.mobile);
         this.challengeId = this.encapDeviceService.requestOTP(this.mobile);
