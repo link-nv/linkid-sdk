@@ -159,8 +159,7 @@ public class TaskSchedulerBeanTest {
         this.testedInstance = EJBTestUtils.newInstance(TaskSchedulerBean.class, SafeOnlineTestContainer.sessionBeans, entityManager);
 
         Task testTaskComponent = new TestTask();
-        String testTaskJndiName = "SafeOnline/task/TestTaskComponent";
-        this.jndiTestUtils.bindComponent(testTaskJndiName, testTaskComponent);
+        this.jndiTestUtils.bindComponent(TestTask.JNDI_BINDING, testTaskComponent);
 
         // operate
         LOG.debug("------------------ FIRST POST START -------------------------");
@@ -176,7 +175,7 @@ public class TaskSchedulerBeanTest {
         List<TaskEntity> defaultTasks = defaultScheduling.getTasks();
         assertNotNull(defaultTasks);
         assertEquals(1, defaultTasks.size());
-        assertEquals(testTaskJndiName, defaultTasks.get(0).getJndiName());
+        assertEquals(TestTask.JNDI_BINDING, defaultTasks.get(0).getJndiName());
         assertEquals("test-task", defaultTasks.get(0).getName());
         assertEquals(defaultScheduling, defaultTasks.get(0).getScheduling());
 
@@ -190,7 +189,9 @@ public class TaskSchedulerBeanTest {
 
     static class TestTask implements Task {
 
-        private static final Log taskLOG = LogFactory.getLog(TestTask.class);
+        public static final String JNDI_BINDING = Task.JNDI_PREFIX + "TestTaskComponent/local";
+
+        private static final Log   taskLOG      = LogFactory.getLog(TestTask.class);
 
 
         public String getName() {

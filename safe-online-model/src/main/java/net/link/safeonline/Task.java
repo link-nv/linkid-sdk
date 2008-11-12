@@ -15,7 +15,8 @@ package net.link.safeonline;
  */
 public interface Task {
 
-    public static final String JNDI_PREFIX = "SafeOnline/task/";
+    public static final String JNDI_CONTEXT = "SafeOnline/task";
+    public static final String JNDI_PREFIX  = JNDI_CONTEXT + "/";
 
 
     /**
