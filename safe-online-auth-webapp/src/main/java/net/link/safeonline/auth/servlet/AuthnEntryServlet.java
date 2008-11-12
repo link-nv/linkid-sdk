@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.auth.protocol.AuthenticationServiceManager;
 import net.link.safeonline.auth.protocol.ProtocolException;
@@ -27,6 +26,7 @@ import net.link.safeonline.authentication.exception.DevicePolicyException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.InvalidCookieException;
 import net.link.safeonline.authentication.service.AuthenticationService;
+import net.link.safeonline.common.SafeOnlineAppConstants;
 import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.sdk.auth.saml2.HttpServletRequestEndpointWrapper;
@@ -144,8 +144,8 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
             authLanguageCookie.setMaxAge(60 * 60 * 24 * 30 * 6);
             response.addCookie(authLanguageCookie);
         }
-        session.setAttribute(SafeOnlineConstants.COLOR_ATTRIBUTE, color);
-        session.setAttribute(SafeOnlineConstants.MINIMAL_ATTRIBUTE, minimal);
+        session.setAttribute(SafeOnlineAppConstants.COLOR_ATTRIBUTE, color);
+        session.setAttribute(SafeOnlineAppConstants.MINIMAL_ATTRIBUTE, minimal);
 
         /*
          * We save the result of the protocol handler into the HTTP session.
