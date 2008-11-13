@@ -86,14 +86,14 @@ public class TaskSchedulerBean implements TaskScheduler {
 
         // do the job
         try {
-            this.performScheduling(scheduling);
+            performScheduling(scheduling);
         } catch (Exception e) {
             LOG.debug("Exception while performing scheduling: " + e.getMessage());
         }
 
         // restore the timer
         try {
-            this.setTimer(scheduling);
+            setTimer(scheduling);
         } catch (Exception ex) {
             LOG.debug("Exception while setting timer on: " + ex.getMessage());
         }
@@ -126,7 +126,7 @@ public class TaskSchedulerBean implements TaskScheduler {
         LOG.debug("Scheduling tasks in " + scheduling.getName());
         // perform the tasks
         for (TaskEntity taskEntity : taskEntities) {
-            this.performTask(taskEntity);
+            performTask(taskEntity);
         }
     }
 
@@ -137,7 +137,7 @@ public class TaskSchedulerBean implements TaskScheduler {
         if (defaultScheduling == null) {
             defaultScheduling = this.schedulingDAO.addScheduling("default", this.defaultCronExpression);
             try {
-                this.setTimer(defaultScheduling);
+                setTimer(defaultScheduling);
             } catch (Exception ex) {
             }
         }
@@ -167,7 +167,7 @@ public class TaskSchedulerBean implements TaskScheduler {
             } catch (Exception e) {
                 LOG.debug("Resetting timer on " + scheduling.getName());
                 try {
-                    this.setTimer(scheduling);
+                    setTimer(scheduling);
                 } catch (Exception ex) {
                 }
             }
@@ -175,9 +175,9 @@ public class TaskSchedulerBean implements TaskScheduler {
 
         // find new tasks
         LOG.debug("Looking for new tasks");
-        Map<String, Task> taskNameMap = EjbUtils.getComponentNames(Task.JNDI_PREFIX, Task.class);
+        Map<String, Task> taskNameMap = EjbUtils.getComponentNames(Task.JNDI_CONTEXT, Task.class);
         for (Entry<String, Task> taskEntry : taskNameMap.entrySet()) {
-            String taskJndiName = Task.JNDI_PREFIX + "/" + taskEntry.getKey();
+            String taskJndiName = Task.JNDI_PREFIX + taskEntry.getKey();
             String taskName = taskEntry.getValue().getName();
             TaskEntity taskEntity = this.taskDAO.findTaskEntity(taskJndiName);
             if (taskEntity == null) {

@@ -57,7 +57,7 @@ public class EjbUtils {
             Type instance = type.cast(PortableRemoteObject.narrow(object, type));
             return instance;
         } catch (NamingException e) {
-            throw new RuntimeException("naming error: " + e.getMessage(), e);
+            throw new RuntimeException("naming error for: " + jndiName, e);
         }
     }
 

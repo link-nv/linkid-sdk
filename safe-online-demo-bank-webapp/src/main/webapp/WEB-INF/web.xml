@@ -51,6 +51,10 @@
         <param-value>demo-bank</param-value>
     </context-param>
     <context-param>
+        <param-name>ApplicationMinimal</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
         <param-name>AuthenticationProtocol</param-name>
         <param-value>SAML2_BROWSER_POST</param-value>
     </context-param>
