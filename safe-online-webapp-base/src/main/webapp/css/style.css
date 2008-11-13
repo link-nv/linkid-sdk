@@ -268,7 +268,7 @@ table.timeline {
     margin:             0;
     padding:            0;
 
-    background:         url('../images/timeline/timeline.png') top left repeat;
+    background:         url('../images/timeline/timeline.png') top left repeat-x;
 
     font:               inherit;
     text-align:         center;
@@ -299,13 +299,13 @@ table.timeline td.start {
     width:              50px;
     height:             100%;
 
-    background:         url('../images/timeline/timeline_fade_in.png') top right repeat-y;
+    background:         url('../images/timeline/timeline_fade_in.png') top right no-repeat;
 }
 table.timeline td.end {
     width:              50px;
     height:             100%;
 
-    background:         url('../images/timeline/timeline_fade_out.png') top left repeat-y;
+    background:         url('../images/timeline/timeline_fade_out.png') top left no-repeat;
 }
 
 

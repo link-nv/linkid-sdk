@@ -146,7 +146,7 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>DisableServlet</servlet-name>
-		<servlet-class>net.link.safeonline.digipass.servlet.DisableServlet</servlet-class>
+		<servlet-class>net.link.safeonline.digipass.webapp.servlet.DisableServlet</servlet-class>
 		<init-param>
 			<param-name>DeviceExitPath</param-name>
 			<param-value>deviceexit</param-value>
