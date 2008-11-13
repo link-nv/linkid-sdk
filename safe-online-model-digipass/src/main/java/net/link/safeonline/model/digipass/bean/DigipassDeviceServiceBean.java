@@ -72,8 +72,8 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
     private SecurityAuditLogger  securityAuditLogger;
 
 
-    public String authenticate(String userId, String token) throws SubjectNotFoundException, PermissionDeniedException,
-                                                           DeviceNotFoundException, DeviceDisabledException {
+    public String authenticate(String userId, String token)
+            throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException, DeviceDisabledException {
 
         SubjectEntity subject = this.subjectService.getSubject(userId);
         DeviceEntity device = this.deviceDAO.getDevice(DigipassConstants.DIGIPASS_DEVICE_ID);
@@ -94,8 +94,8 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
         return userId;
     }
 
-    public String register(String userId, String serialNumber) throws SubjectNotFoundException, PermissionDeniedException,
-                                                              ArgumentIntegrityException, AttributeTypeNotFoundException {
+    public String register(String userId, String serialNumber)
+            throws SubjectNotFoundException, PermissionDeniedException, ArgumentIntegrityException, AttributeTypeNotFoundException {
 
         SubjectEntity existingMappedSubject = this.subjectIdentifierDAO.findSubject(DigipassConstants.DIGIPASS_IDENTIFIER_DOMAIN,
                 serialNumber);
@@ -112,7 +112,8 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
         return userId;
     }
 
-    private void setSerialNumber(SubjectEntity subject, String serialNumber) throws AttributeTypeNotFoundException {
+    private void setSerialNumber(SubjectEntity subject, String serialNumber)
+            throws AttributeTypeNotFoundException {
 
         AttributeTypeEntity deviceAttributeType = this.attributeTypeDAO.getAttributeType(DigipassConstants.DIGIPASS_DEVICE_ATTRIBUTE);
         AttributeTypeEntity snAttributeType = this.attributeTypeDAO.getAttributeType(DigipassConstants.DIGIPASS_SN_ATTRIBUTE);
@@ -134,7 +135,8 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
         deviceAttribute.setMembers(deviceAttributeMembers);
     }
 
-    public void remove(String serialNumber) throws DigipassException, AttributeTypeNotFoundException {
+    public void remove(String serialNumber)
+            throws DigipassException, AttributeTypeNotFoundException {
 
         SubjectEntity subject = this.subjectIdentifierDAO.findSubject(DigipassConstants.DIGIPASS_IDENTIFIER_DOMAIN, serialNumber);
         if (null == subject)
@@ -165,8 +167,8 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
         this.subjectIdentifierDAO.removeSubjectIdentifier(subject, DigipassConstants.DIGIPASS_IDENTIFIER_DOMAIN, serialNumber);
     }
 
-    public List<AttributeDO> getDigipasses(String userId, Locale locale) throws SubjectNotFoundException, PermissionDeniedException,
-                                                                        DeviceNotFoundException {
+    public List<AttributeDO> getDigipasses(String userId, Locale locale)
+            throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException {
 
         LOG.debug("get digipasses for: " + userId);
         DeviceEntity device = this.deviceDAO.getDevice(DigipassConstants.DIGIPASS_DEVICE_ID);
@@ -206,8 +208,8 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
     /**
      * {@inheritDoc}
      */
-    public void disable(String userId, String serialNumber) throws SubjectNotFoundException, DeviceNotFoundException,
-                                                           DeviceRegistrationNotFoundException {
+    public void disable(String userId, String serialNumber)
+            throws SubjectNotFoundException, DeviceNotFoundException, DeviceRegistrationNotFoundException {
 
         DeviceEntity device = this.deviceDAO.getDevice(DigipassConstants.DIGIPASS_DEVICE_ID);
         SubjectEntity subject = this.subjectService.getSubject(userId);

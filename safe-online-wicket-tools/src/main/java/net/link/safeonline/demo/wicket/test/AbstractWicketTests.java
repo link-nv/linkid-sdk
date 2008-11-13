@@ -12,10 +12,10 @@ import java.util.Locale;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServlet;
 
-import junit.framework.TestCase;
 import net.link.safeonline.demo.wicket.javaee.DummyJndi;
 import net.link.safeonline.demo.wicket.tools.WicketUtil;
 import net.link.safeonline.demo.wicket.tools.olas.DummyAttributeClient;
+import net.link.safeonline.demo.wicket.tools.olas.DummyNameIdentifierMappingClient;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
 import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
@@ -50,7 +50,7 @@ import org.junit.BeforeClass;
  * 
  * @author lhunath
  */
-public abstract class AbstractWicketTests extends TestCase {
+public abstract class AbstractWicketTests {
 
     protected final Log         LOG = LogFactory.getLog(getClass());
     protected EntityTestManager entityTestManager;
@@ -64,14 +64,15 @@ public abstract class AbstractWicketTests extends TestCase {
         WicketUtil.setUnitTesting(true);
     }
 
-    @Override
     @Before
-    public void setUp() {
+    public void setUp()
+            throws Exception {
 
         // Dummy OLAS Setup.
         TestAuthenticationProtocolHandler.setAuthenticatingUserId(getOLASUserId());
         TestAuthenticationProtocolHandler.setLogoutServlet(getLogoutServlet());
         DummyAttributeClient.setAttribute(getOLASUserId(), "urn:net:lin-k:safe-online:attribute:login", getOLASUserId());
+        DummyNameIdentifierMappingClient.setUserId(getOLASUserId());
 
         // Set up an HSQL entity manager.
         this.entityTestManager = new EntityTestManager();
@@ -102,7 +103,6 @@ public abstract class AbstractWicketTests extends TestCase {
         this.wicket.processRequestCycle();
     }
 
-    @Override
     @After
     public void tearDown()
             throws Exception {

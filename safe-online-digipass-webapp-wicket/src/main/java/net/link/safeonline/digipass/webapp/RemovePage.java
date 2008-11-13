@@ -36,14 +36,28 @@ import org.apache.wicket.model.PropertyModel;
 
 public class RemovePage extends TemplatePage {
 
-    private static final long serialVersionUID   = 1L;
+    private static final long       serialVersionUID   = 1L;
 
-    static final Log          LOG                = LogFactory.getLog(RemovePage.class);
+    static final Log                LOG                = LogFactory.getLog(RemovePage.class);
+
+    public static final String      GET_FORM_ID        = "get_form";
+
+    public static final String      LIST_FORM_ID       = "list_form";
+
+    public static final String      LOGIN_FIELD_ID     = "login";
+
+    public static final String      VIEW_BUTTON_ID     = "view";
+
+    public static final String      CANCEL_BUTTON_ID   = "cancel";
+
+    public static final String      DIGIPASSS_LIST_ID  = "digipassList";
+
+    public static final String      REMOVE_LINK_ID     = "remove";
 
     @EJB
-    DigipassDeviceService     digipassDeviceService;
+    transient DigipassDeviceService digipassDeviceService;
 
-    List<AttributeDO>         digipassAttributes = new LinkedList<AttributeDO>();
+    List<AttributeDO>               digipassAttributes = new LinkedList<AttributeDO>();
 
 
     public RemovePage() {
@@ -72,14 +86,14 @@ public class RemovePage extends TemplatePage {
 
             super(id);
 
-            final TextField<String> loginField = new TextField<String>("login", new PropertyModel<String>(this, "login"));
+            final TextField<String> loginField = new TextField<String>(LOGIN_FIELD_ID, new PropertyModel<String>(this, "login"));
             loginField.setRequired(true);
             loginField.setEnabled(RemovePage.this.digipassAttributes.isEmpty());
 
             add(loginField);
             add(new ErrorComponentFeedbackLabel("login_feedback", loginField));
 
-            add(new Button("view") {
+            add(new Button(VIEW_BUTTON_ID) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -112,12 +126,13 @@ public class RemovePage extends TemplatePage {
                     if (RemovePage.this.digipassAttributes.isEmpty()) {
                         LOG.debug("no digipasses found");
                         GetForm.this.error(getLocalizer().getString("errorNoDeviceRegistrationsFound", this));
+                        return;
                     }
                 }
 
             });
 
-            Button cancel = new Button("cancel") {
+            Button cancel = new Button(CANCEL_BUTTON_ID) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -141,7 +156,8 @@ public class RemovePage extends TemplatePage {
             add(new ErrorFeedbackPanel("feedback_get", new ComponentFeedbackMessageFilter(this)));
         }
 
-        protected String getUserId() throws SubjectNotFoundException, PermissionDeniedException {
+        protected String getUserId()
+                throws SubjectNotFoundException, PermissionDeniedException {
 
             AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
 
@@ -175,7 +191,7 @@ public class RemovePage extends TemplatePage {
 
             super(id);
 
-            add(new ListView<AttributeDO>("digipassList", new PropertyModel<List<AttributeDO>>(RemovePage.this, "digipassAttributes")) {
+            add(new ListView<AttributeDO>(DIGIPASSS_LIST_ID, new PropertyModel<List<AttributeDO>>(RemovePage.this, "digipassAttributes")) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -186,7 +202,7 @@ public class RemovePage extends TemplatePage {
                     final AttributeDO attribute = attributeItem.getModelObject();
 
                     attributeItem.add(new Label("digipass", attribute.getStringValue()));
-                    attributeItem.add(new Link<String>("remove") {
+                    attributeItem.add(new Link<String>(REMOVE_LINK_ID) {
 
                         private static final long serialVersionUID = 1L;
 

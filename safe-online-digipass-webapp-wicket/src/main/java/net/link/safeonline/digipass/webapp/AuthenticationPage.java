@@ -42,17 +42,27 @@ import org.apache.wicket.protocol.http.WebApplication;
 
 public class AuthenticationPage extends TemplatePage {
 
-    private static final long serialVersionUID = 1L;
+    private static final long       serialVersionUID       = 1L;
 
-    static final Log          LOG              = LogFactory.getLog(AuthenticationPage.class);
+    static final Log                LOG                    = LogFactory.getLog(AuthenticationPage.class);
+
+    public static final String      AUTHENTICATION_FORM_ID = "authentication_form";
+
+    public static final String      LOGIN_NAME_FIELD_ID    = "loginName";
+
+    public static final String      TOKEN_FIELD_ID         = "token";
+
+    public static final String      LOGIN_BUTTON_ID        = "login";
+
+    public static final String      CANCEL_BUTTON_ID       = "cancel";
 
     @EJB
-    DigipassDeviceService     digipassDeviceService;
+    transient DigipassDeviceService digipassDeviceService;
 
     @EJB
-    SamlAuthorityService      samlAuthorityService;
+    transient SamlAuthorityService  samlAuthorityService;
 
-    AuthenticationContext     authenticationContext;
+    AuthenticationContext           authenticationContext;
 
 
     public AuthenticationPage() {
@@ -84,7 +94,7 @@ public class AuthenticationPage extends TemplatePage {
                 + WebApplication.get().getServletContext().getInitParameter("ApplicationName");
         getContent().add(new Label("title", title));
 
-        getContent().add(new AuthenticationForm("authentication_form"));
+        getContent().add(new AuthenticationForm(AUTHENTICATION_FORM_ID));
 
     }
 
@@ -103,17 +113,17 @@ public class AuthenticationPage extends TemplatePage {
 
             super(id);
 
-            final TextField<String> loginField = new TextField<String>("loginName", new PropertyModel<String>(this, "login"));
+            final TextField<String> loginField = new TextField<String>(LOGIN_NAME_FIELD_ID, new PropertyModel<String>(this, "login"));
             loginField.setRequired(true);
 
             add(loginField);
 
-            final TextField<String> tokenField = new TextField<String>("token", new PropertyModel<String>(this, "token"));
+            final TextField<String> tokenField = new TextField<String>(TOKEN_FIELD_ID, new PropertyModel<String>(this, "token"));
             loginField.setRequired(true);
 
             add(tokenField);
 
-            add(new Button("login") {
+            add(new Button(LOGIN_BUTTON_ID) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -128,35 +138,40 @@ public class AuthenticationPage extends TemplatePage {
                                 AuthenticationForm.this.token);
                         if (null == userId) {
                             AuthenticationForm.this.error(getLocalizer().getString("authenticationFailedMsg", this));
-                            HelpdeskLogger.add("login failed: " + AuthenticationForm.this.login, LogLevelType.ERROR);
+                            HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "login failed: "
+                                    + AuthenticationForm.this.login, LogLevelType.ERROR);
                             return;
                         }
                         login(userId);
                     } catch (SubjectNotFoundException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("digipassNotRegistered", this));
-                        HelpdeskLogger.add("login: subject not found for " + AuthenticationForm.this.login, LogLevelType.ERROR);
+                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "login: subject not found for "
+                                + AuthenticationForm.this.login, LogLevelType.ERROR);
                         return;
                     } catch (PermissionDeniedException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("digipassAuthenticationFailed", this));
-                        HelpdeskLogger.add("Failed to contact OLAS to retrieve device mapping for " + AuthenticationForm.this.login,
+                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(),
+                                "Failed to contact OLAS to retrieve device mapping for " + AuthenticationForm.this.login,
                                 LogLevelType.ERROR);
                         return;
                     } catch (DeviceNotFoundException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("digipassAuthenticationFailed", this));
-                        HelpdeskLogger.add("Digipass Device not found", LogLevelType.ERROR);
+                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "Digipass Device not found",
+                                LogLevelType.ERROR);
                         return;
                     } catch (DeviceDisabledException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("digipassDisabled", this));
-                        HelpdeskLogger.add("Digipass Device is disabled", LogLevelType.ERROR);
+                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "Digipass Device is disabled",
+                                LogLevelType.ERROR);
                         return;
                     }
-                    HelpdeskLogger.clear();
+                    HelpdeskLogger.clear(WicketUtil.toServletRequest(getRequest()).getSession());
                     return;
                 }
 
             });
 
-            Button cancel = new Button("cancel") {
+            Button cancel = new Button(CANCEL_BUTTON_ID) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -174,7 +189,8 @@ public class AuthenticationPage extends TemplatePage {
             add(new ErrorFeedbackPanel("feedback", new ComponentFeedbackMessageFilter(this)));
         }
 
-        protected String getUserId() throws SubjectNotFoundException, PermissionDeniedException {
+        protected String getUserId()
+                throws SubjectNotFoundException, PermissionDeniedException {
 
             AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
 

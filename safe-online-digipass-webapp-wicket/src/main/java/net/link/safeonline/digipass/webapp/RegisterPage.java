@@ -35,12 +35,22 @@ import org.apache.wicket.validation.validator.StringValidator;
 
 public class RegisterPage extends TemplatePage {
 
-    private static final long serialVersionUID = 1L;
+    private static final long       serialVersionUID      = 1L;
 
-    static final Log          LOG              = LogFactory.getLog(RegisterPage.class);
+    static final Log                LOG                   = LogFactory.getLog(RegisterPage.class);
+
+    public static final String      REGISTER_FORM_ID      = "register_form";
+
+    public static final String      LOGIN_FIELD_ID        = "login";
+
+    public static final String      SERIALNUMBER_FIELD_ID = "serialNumber";
+
+    public static final String      REGISTER_BUTTON_ID    = "register";
+
+    public static final String      CANCEL_BUTTON_ID      = "cancel";
 
     @EJB
-    DigipassDeviceService     digipassDeviceService;
+    transient DigipassDeviceService digipassDeviceService;
 
 
     public RegisterPage() {
@@ -50,7 +60,7 @@ public class RegisterPage extends TemplatePage {
         addHeader(this);
         addSidebar();
 
-        getContent().add(new RegisterForm("register_form"));
+        getContent().add(new RegisterForm(REGISTER_FORM_ID));
     }
 
 
@@ -68,20 +78,20 @@ public class RegisterPage extends TemplatePage {
 
             super(id);
 
-            final TextField<String> loginField = new TextField<String>("login", new PropertyModel<String>(this, "login"));
+            final TextField<String> loginField = new TextField<String>(LOGIN_FIELD_ID, new PropertyModel<String>(this, "login"));
             loginField.setRequired(true);
 
             add(loginField);
             add(new ErrorComponentFeedbackLabel("login_feedback", loginField));
 
-            final TextField serialNumberField = new TextField("serialNumber", new PropertyModel(this, "serialNumber"));
+            final TextField serialNumberField = new TextField(SERIALNUMBER_FIELD_ID, new PropertyModel(this, "serialNumber"));
             serialNumberField.setRequired(true);
             serialNumberField.add(StringValidator.lengthBetween(8, 12));
 
             add(serialNumberField);
             add(new ErrorComponentFeedbackLabel("serialNumber_feedback", serialNumberField));
 
-            add(new Button("register") {
+            add(new Button(REGISTER_BUTTON_ID) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -116,7 +126,7 @@ public class RegisterPage extends TemplatePage {
 
             });
 
-            Button cancel = new Button("cancel") {
+            Button cancel = new Button(CANCEL_BUTTON_ID) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -134,7 +144,8 @@ public class RegisterPage extends TemplatePage {
             add(new ErrorFeedbackPanel("feedback", new ComponentFeedbackMessageFilter(this)));
         }
 
-        protected String getUserId() throws SubjectNotFoundException, PermissionDeniedException {
+        protected String getUserId()
+                throws SubjectNotFoundException, PermissionDeniedException {
 
             AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
 

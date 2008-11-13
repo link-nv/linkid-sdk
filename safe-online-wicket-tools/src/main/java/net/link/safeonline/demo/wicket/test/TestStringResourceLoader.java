@@ -4,18 +4,16 @@
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
-package net.link.safeonline.demo.wicket.tools;
+package net.link.safeonline.demo.wicket.test;
 
 import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.resource.loader.IStringResourceLoader;
 
 
 /**
- * <h2>{@link CustomStringResourceLoader}<br>
+ * <h2>{@link TestStringResourceLoader}<br>
  * <sub>[in short] (TODO).</sub></h2>
  * 
  * <p>
@@ -28,16 +26,7 @@ import org.apache.wicket.resource.loader.IStringResourceLoader;
  * 
  * @author wvdhaute
  */
-public class CustomStringResourceLoader implements IStringResourceLoader {
-
-    private String resourceBase;
-
-
-    public CustomStringResourceLoader(String resourceBase) {
-
-        super();
-        this.resourceBase = resourceBase;
-    }
+public class TestStringResourceLoader implements IStringResourceLoader {
 
     /**
      * {@inheritDoc}
@@ -55,14 +44,10 @@ public class CustomStringResourceLoader implements IStringResourceLoader {
         return getStringResource(keySuffix, locale);
     }
 
-    private String getStringResource(String key, Locale locale) {
+    private String getStringResource(@SuppressWarnings("unused") String key, @SuppressWarnings("unused") Locale locale) {
 
-        try {
-            ResourceBundle messages = ResourceBundle.getBundle(this.resourceBase, locale);
-            return messages.getString(key);
-        } catch (MissingResourceException e) {
-            return null;
-        }
+        return key;
+
     }
 
 }

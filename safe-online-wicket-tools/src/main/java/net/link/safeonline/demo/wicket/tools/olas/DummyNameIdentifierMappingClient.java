@@ -34,12 +34,26 @@ import org.w3c.dom.Document;
  */
 public class DummyNameIdentifierMappingClient implements NameIdentifierMappingClient {
 
+    private static String userId;
+
+
+    public static void setUserId(String userId) {
+
+        DummyNameIdentifierMappingClient.userId = userId;
+    }
+
+    public static String getUserId() {
+
+        return userId;
+    }
+
     /**
      * {@inheritDoc}
      */
-    public String getUserId(String username) throws SubjectNotFoundException, RequestDeniedException, WSClientTransportException {
+    public String getUserId(String username)
+            throws SubjectNotFoundException, RequestDeniedException, WSClientTransportException {
 
-        return null;
+        return userId;
     }
 
     /**

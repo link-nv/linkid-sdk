@@ -6,17 +6,21 @@ import org.apache.wicket.markup.html.WebPage;
 
 public abstract class TemplatePage extends WebPage {
 
-    private HeaderBorder  headerBorder;
+    public static final String HEADER_ID  = "header_border";
+    public static final String CONTENT_ID = "content_border";
+    public static final String SIDEBAR_ID = "sidebar_border";
 
-    private ContentBorder contentBorder;
+    private HeaderBorder       headerBorder;
 
-    private SidebarBorder sidebarBorder;
+    private ContentBorder      contentBorder;
+
+    private SidebarBorder      sidebarBorder;
 
 
     public void addHeader(Page page) {
 
         if (null == this.headerBorder) {
-            this.headerBorder = new HeaderBorder("header_border", page);
+            this.headerBorder = new HeaderBorder(HEADER_ID, page);
             super.add(this.headerBorder);
         }
     }
@@ -30,7 +34,7 @@ public abstract class TemplatePage extends WebPage {
     public void addContent() {
 
         if (null == this.contentBorder) {
-            this.contentBorder = new ContentBorder("content_border");
+            this.contentBorder = new ContentBorder(CONTENT_ID);
             super.add(this.contentBorder);
         }
     }
@@ -44,7 +48,7 @@ public abstract class TemplatePage extends WebPage {
     public void addSidebar() {
 
         if (null == this.sidebarBorder) {
-            this.sidebarBorder = new SidebarBorder("sidebar_border");
+            this.sidebarBorder = new SidebarBorder(SIDEBAR_ID);
             addContent();
             this.contentBorder.add(this.sidebarBorder);
         }

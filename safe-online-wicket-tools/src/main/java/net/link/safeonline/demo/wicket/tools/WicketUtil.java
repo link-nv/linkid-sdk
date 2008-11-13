@@ -223,7 +223,7 @@ public abstract class WicketUtil {
                 wsLocation = request.getSession().getServletContext().getInitParameter(STS_WS_LOCATION);
             }
 
-            // Create the attribute service client.
+            // Create the id mapping service client.
             return new NameIdentifierMappingClientImpl(wsLocation, certificate, privateKey);
         }
 
