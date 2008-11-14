@@ -144,6 +144,8 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
             authLanguageCookie.setMaxAge(60 * 60 * 24 * 30 * 6);
             response.addCookie(authLanguageCookie);
         }
+        LOG.debug(SafeOnlineAppConstants.COLOR_ATTRIBUTE + " = " + color);
+        LOG.debug(SafeOnlineAppConstants.MINIMAL_ATTRIBUTE + " = " + minimal);
         session.setAttribute(SafeOnlineAppConstants.COLOR_ATTRIBUTE, color);
         session.setAttribute(SafeOnlineAppConstants.MINIMAL_ATTRIBUTE, minimal);
 
