@@ -22,7 +22,7 @@ import net.link.safeonline.authentication.exception.SafeOnlineSecurityException;
  */
 public class SecurityAuditLoggerInterceptor {
 
-    @EJB
+    @EJB(mappedName = SecurityAuditLogger.JNDI_BINDING)
     private SecurityAuditLogger securityAuditLogger;
 
 

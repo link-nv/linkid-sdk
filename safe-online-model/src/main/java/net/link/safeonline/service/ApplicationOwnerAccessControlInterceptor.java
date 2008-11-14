@@ -20,7 +20,7 @@ import net.link.safeonline.entity.ApplicationEntity;
 
 public class ApplicationOwnerAccessControlInterceptor {
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     SubjectService subjectService;
 
     @Resource

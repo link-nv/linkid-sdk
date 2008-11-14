@@ -37,16 +37,16 @@ public class NodeIdentifierMappingServiceBean implements NodeIdentifierMappingSe
 
     private static final Log          LOG = LogFactory.getLog(NodeIdentifierMappingServiceBean.class);
 
-    @EJB
+    @EJB(mappedName = NodeManager.JNDI_BINDING)
     private NodeManager               nodeManager;
 
-    @EJB
+    @EJB(mappedName = NodeMappingService.JNDI_BINDING)
     private NodeMappingService        nodeMappingService;
 
-    @EJB
+    @EJB(mappedName = NodeAuthenticationService.JNDI_BINDING)
     private NodeAuthenticationService nodeAuthenticationService;
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService            subjectService;
 
 

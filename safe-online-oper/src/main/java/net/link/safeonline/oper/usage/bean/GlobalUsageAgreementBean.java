@@ -63,7 +63,7 @@ public class GlobalUsageAgreementBean implements GlobalUsageAgreement {
     @In(create = true)
     FacesMessages                         facesMessages;
 
-    @EJB
+    @EJB(mappedName = UsageAgreementService.JNDI_BINDING)
     private UsageAgreementService         usageAgreementService;
 
     /*

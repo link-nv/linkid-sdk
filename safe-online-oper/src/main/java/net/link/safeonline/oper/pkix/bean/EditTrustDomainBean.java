@@ -48,7 +48,7 @@ public class EditTrustDomainBean implements EditTrustDomain {
     @In(value = "selectedTrustDomain")
     private TrustDomainEntity selectedTrustDomain;
 
-    @EJB
+    @EJB(mappedName = PkiService.JNDI_BINDING)
     private PkiService        pkiService;
 
 

@@ -43,7 +43,7 @@ public class BeIdDeviceServiceBean implements BeIdDeviceService, BeIdDeviceServi
 
     private final static Log  LOG = LogFactory.getLog(BeIdDeviceServiceBean.class);
 
-    @EJB
+    @EJB(mappedName = CredentialManager.JNDI_BINDING)
     private CredentialManager credentialManager;
 
     @EJB(mappedName = PkiProvider.JNDI_PREFIX + "beid")

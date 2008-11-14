@@ -64,10 +64,10 @@ public class StatisticServiceBean implements StatisticService, StatisticServiceR
 
     private static final String usageStatistic = "Usage statistic";
 
-    @EJB
+    @EJB(mappedName = ApplicationDAO.JNDI_BINDING)
     private ApplicationDAO      applicationDAO;
 
-    @EJB
+    @EJB(mappedName = StatisticDAO.JNDI_BINDING)
     private StatisticDAO        statisticDAO;
 
 

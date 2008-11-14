@@ -45,7 +45,7 @@ public class AttributeAddBean implements AttributeAdd {
 
     private static final Log   LOG                   = LogFactory.getLog(AttributeAddBean.class);
 
-    @EJB
+    @EJB(mappedName = IdentityService.JNDI_BINDING)
     private IdentityService    identityService;
 
     @In

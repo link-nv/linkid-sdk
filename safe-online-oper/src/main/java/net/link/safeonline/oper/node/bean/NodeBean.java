@@ -78,7 +78,7 @@ public class NodeBean implements Node {
 
     private UploadedFile        signingUpFile;
 
-    @EJB
+    @EJB(mappedName = NodeService.JNDI_BINDING)
     private NodeService         nodeService;
 
     @In(create = true)

@@ -62,19 +62,19 @@ public class SubscriptionServiceBean implements SubscriptionService, Subscriptio
 
     private static final Log      LOG = LogFactory.getLog(SubscriptionServiceBean.class);
 
-    @EJB
+    @EJB(mappedName = SubjectManager.JNDI_BINDING)
     private SubjectManager        subjectManager;
 
-    @EJB
+    @EJB(mappedName = SubscriptionDAO.JNDI_BINDING)
     private SubscriptionDAO       subscriptionDAO;
 
-    @EJB
+    @EJB(mappedName = ApplicationDAO.JNDI_BINDING)
     private ApplicationDAO        applicationDAO;
 
-    @EJB
+    @EJB(mappedName = ApplicationScopeIdDAO.JNDI_BINDING)
     private ApplicationScopeIdDAO applicationScopeIdDAO;
 
-    @EJB
+    @EJB(mappedName = HistoryDAO.JNDI_BINDING)
     private HistoryDAO            historyDAO;
 
     @Resource

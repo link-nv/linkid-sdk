@@ -31,7 +31,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = AttributeTypeDescriptionDecorator.JNDI_BINDING)
 public class AttributeTypeDescriptionDecoratorBean implements AttributeTypeDescriptionDecorator {
 
-    @EJB
+    @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
     private AttributeTypeDAO attributeTypeDAO;
 
 

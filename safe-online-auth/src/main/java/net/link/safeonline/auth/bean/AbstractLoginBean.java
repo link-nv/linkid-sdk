@@ -40,10 +40,10 @@ public class AbstractLoginBean {
     @Logger
     private Log          log;
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     SubjectService       subjectService;
 
-    @EJB
+    @EJB(mappedName = DeviceDAO.JNDI_BINDING)
     DeviceDAO            deviceDAO;
 
     @Out(value = LoginManager.USERID_ATTRIBUTE, required = false, scope = ScopeType.SESSION)

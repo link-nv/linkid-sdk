@@ -39,7 +39,7 @@ public class ApplicationManagerBean implements ApplicationManager {
     @Resource
     private SessionContext   context;
 
-    @EJB
+    @EJB(mappedName = ApplicationDAO.JNDI_BINDING)
     private ApplicationDAO   applicationDAO;
 
 

@@ -41,7 +41,7 @@ public class EndpointReferenceDAOBean implements EndpointReferenceDAO {
 
     EndpointReferenceEntity.QueryInterface queryObject;
 
-    @EJB
+    @EJB(mappedName = NotificationProducerDAO.JNDI_BINDING)
     private NotificationProducerDAO        notificationProducerDAO;
 
 

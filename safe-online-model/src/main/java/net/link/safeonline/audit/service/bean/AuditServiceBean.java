@@ -42,22 +42,22 @@ import org.jboss.annotation.security.SecurityDomain;
 @LocalBinding(jndiBinding = AuditService.JNDI_BINDING)
 public class AuditServiceBean implements AuditService {
 
-    @EJB
+    @EJB(mappedName = AuditContextDAO.JNDI_BINDING)
     private AuditContextDAO  auditContextDAO;
 
-    @EJB
+    @EJB(mappedName = AuditAuditDAO.JNDI_BINDING)
     private AuditAuditDAO    auditAuditDAO;
 
-    @EJB
+    @EJB(mappedName = AccessAuditDAO.JNDI_BINDING)
     private AccessAuditDAO   accessAuditDAO;
 
-    @EJB
+    @EJB(mappedName = ResourceAuditDAO.JNDI_BINDING)
     private ResourceAuditDAO resourceAuditDAO;
 
-    @EJB
+    @EJB(mappedName = SecurityAuditDAO.JNDI_BINDING)
     private SecurityAuditDAO securityAuditDAO;
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService   subjectService;
 
 

@@ -54,13 +54,13 @@ public class AuthorizationManagerServiceBean implements AuthorizationManagerServ
 
     private static final Log                 LOG                    = LogFactory.getLog(AuthorizationManagerServiceBean.class);
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService                   subjectService;
 
-    @EJB
+    @EJB(mappedName = SubscriptionDAO.JNDI_BINDING)
     private SubscriptionDAO                  subscriptionDAO;
 
-    @EJB
+    @EJB(mappedName = ApplicationDAO.JNDI_BINDING)
     private ApplicationDAO                   applicationDAO;
 
     private static final Map<String, String> roleApplicationNameMap = new HashMap<String, String>();

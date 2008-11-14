@@ -93,52 +93,52 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
 
     private static final Log           LOG = LogFactory.getLog(ApplicationServiceBean.class);
 
-    @EJB
+    @EJB(mappedName = ApplicationDAO.JNDI_BINDING)
     private ApplicationDAO             applicationDAO;
 
-    @EJB
+    @EJB(mappedName = SubscriptionDAO.JNDI_BINDING)
     private SubscriptionDAO            subscriptionDAO;
 
-    @EJB
+    @EJB(mappedName = ApplicationScopeIdDAO.JNDI_BINDING)
     private ApplicationScopeIdDAO      applicationScopeIdDAO;
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService             subjectService;
 
-    @EJB
+    @EJB(mappedName = ApplicationOwnerDAO.JNDI_BINDING)
     private ApplicationOwnerDAO        applicationOwnerDAO;
 
-    @EJB
+    @EJB(mappedName = ApplicationOwnerManager.JNDI_BINDING)
     private ApplicationOwnerManager    applicationOwnerManager;
 
-    @EJB
+    @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
     private AttributeTypeDAO           attributeTypeDAO;
 
-    @EJB
+    @EJB(mappedName = ApplicationIdentityDAO.JNDI_BINDING)
     private ApplicationIdentityDAO     applicationIdentityDAO;
 
-    @EJB
+    @EJB(mappedName = AttributeProviderDAO.JNDI_BINDING)
     private AttributeProviderDAO       attributeProviderDAO;
 
-    @EJB
+    @EJB(mappedName = StatisticDAO.JNDI_BINDING)
     private StatisticDAO               statisticDAO;
 
-    @EJB
+    @EJB(mappedName = UsageAgreementDAO.JNDI_BINDING)
     private UsageAgreementDAO          usageAgreementDAO;
 
-    @EJB
+    @EJB(mappedName = AllowedDeviceDAO.JNDI_BINDING)
     private AllowedDeviceDAO           allowedDeviceDAO;
 
-    @EJB
+    @EJB(mappedName = EndpointReferenceDAO.JNDI_BINDING)
     private EndpointReferenceDAO       endpointReferenceDAO;
 
-    @EJB
+    @EJB(mappedName = ApplicationIdentityManager.JNDI_BINDING)
     private ApplicationIdentityManager applicationIdentityService;
 
-    @EJB
+    @EJB(mappedName = Applications.JNDI_BINDING)
     private Applications               applications;
 
-    @EJB
+    @EJB(mappedName = SubjectManager.JNDI_BINDING)
     private SubjectManager             subjectManager;
 
     @Resource

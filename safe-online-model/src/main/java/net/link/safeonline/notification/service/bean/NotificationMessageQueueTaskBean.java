@@ -43,10 +43,10 @@ public class NotificationMessageQueueTaskBean implements Task {
 
     private static final String         name           = "Failed Notifications Handler";
 
-    @EJB
+    @EJB(mappedName = NotificationMessageDAO.JNDI_BINDING)
     private NotificationMessageDAO      notificationMessageDAO;
 
-    @EJB
+    @EJB(mappedName = NotificationProducerService.JNDI_BINDING)
     private NotificationProducerService notificationProducerService;
 
     @Configurable(name = "Maximum Attempts", group = "Failed Notifications Handler")

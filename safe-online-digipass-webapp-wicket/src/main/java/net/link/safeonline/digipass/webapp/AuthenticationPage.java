@@ -56,10 +56,10 @@ public class AuthenticationPage extends TemplatePage {
 
     public static final String      CANCEL_BUTTON_ID       = "cancel";
 
-    @EJB
+    @EJB(mappedName = DigipassDeviceService.JNDI_BINDING)
     transient DigipassDeviceService digipassDeviceService;
 
-    @EJB
+    @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
     transient SamlAuthorityService  samlAuthorityService;
 
     AuthenticationContext           authenticationContext;

@@ -47,7 +47,7 @@ public class AuditContextFinalizerBean implements AuditContextFinalizer {
     @Resource(mappedName = AuditConstants.AUDIT_BACKEND_QUEUE_NAME)
     private Queue             auditBackendQueue;
 
-    @EJB
+    @EJB(mappedName = AuditAuditDAO.JNDI_BINDING)
     private AuditAuditDAO     auditAuditDAO;
 
 

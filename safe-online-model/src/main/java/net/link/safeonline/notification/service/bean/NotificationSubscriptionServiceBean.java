@@ -46,16 +46,16 @@ public class NotificationSubscriptionServiceBean implements NotificationSubscrip
 
     private static final Log            LOG = LogFactory.getLog(NotificationSubscriptionServiceBean.class);
 
-    @EJB
+    @EJB(mappedName = NotificationProducerDAO.JNDI_BINDING)
     private NotificationProducerDAO     notificationProducerDAO;
 
-    @EJB
+    @EJB(mappedName = NotificationProducerService.JNDI_BINDING)
     private NotificationProducerService notificationProducerService;
 
-    @EJB
+    @EJB(mappedName = ApplicationDAO.JNDI_BINDING)
     private ApplicationDAO              applicationDAO;
 
-    @EJB
+    @EJB(mappedName = NodeDAO.JNDI_BINDING)
     private NodeDAO                     nodeDAO;
 
 

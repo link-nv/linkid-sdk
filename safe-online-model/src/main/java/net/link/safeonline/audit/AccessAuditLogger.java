@@ -46,16 +46,16 @@ public class AccessAuditLogger {
     @Resource
     private SessionContext   sessionContext;
 
-    @EJB
+    @EJB(mappedName = AccessAuditDAO.JNDI_BINDING)
     private AccessAuditDAO   accessAuditDAO;
 
-    @EJB
+    @EJB(mappedName = AuditContextDAO.JNDI_BINDING)
     private AuditContextDAO  auditContextDAO;
 
-    @EJB
+    @EJB(mappedName = AuditAuditDAO.JNDI_BINDING)
     private AuditAuditDAO    auditAuditDAO;
 
-    @EJB
+    @EJB(mappedName = SecurityAuditDAO.JNDI_BINDING)
     private SecurityAuditDAO securityAuditDAO;
 
 

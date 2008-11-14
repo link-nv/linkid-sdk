@@ -41,7 +41,7 @@ import org.jboss.annotation.security.SecurityDomain;
 @RemoteBinding(jndiBinding = HelpdeskServiceRemote.JNDI_BINDING)
 public class HelpdeskServiceBean implements HelpdeskService, HelpdeskServiceRemote {
 
-    @EJB
+    @EJB(mappedName = HelpdeskContexts.JNDI_BINDING)
     private HelpdeskContexts contexts;
 
 

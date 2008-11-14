@@ -51,7 +51,7 @@ public class RemovalBean implements Removal {
 
     private static final String MOBILE_ATTRIBUTE_LIST_NAME = "mobileAttributes";
 
-    @EJB
+    @EJB(mappedName = EncapDeviceService.JNDI_BINDING)
     private EncapDeviceService  encapDeviceService;
 
     @Logger

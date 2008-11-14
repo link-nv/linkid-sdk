@@ -78,22 +78,22 @@ public class UserManagementBean implements UserManagement {
 
     private static final String         AVAILABLE_ROLES_LIST_NAME = "availableRoles";
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService              subjectService;
 
-    @EJB
+    @EJB(mappedName = AuthorizationManagerService.JNDI_BINDING)
     private AuthorizationManagerService authorizationManagerService;
 
-    @EJB
+    @EJB(mappedName = IdentityService.JNDI_BINDING)
     private IdentityService             identityService;
 
-    @EJB
+    @EJB(mappedName = SubscriptionService.JNDI_BINDING)
     private SubscriptionService         subscriptionService;
 
-    @EJB
+    @EJB(mappedName = DeviceService.JNDI_BINDING)
     private DeviceService               deviceService;
 
-    @EJB
+    @EJB(mappedName = AccountService.JNDI_BINDING)
     private AccountService              accountService;
 
     @In(create = true)

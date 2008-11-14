@@ -62,22 +62,22 @@ public class AttributeProviderServiceBean implements AttributeProviderService, A
 
     private static final Log       LOG = LogFactory.getLog(AttributeProviderServiceBean.class);
 
-    @EJB
+    @EJB(mappedName = AttributeProviderDAO.JNDI_BINDING)
     private AttributeProviderDAO   attributeProviderDAO;
 
-    @EJB
+    @EJB(mappedName = ApplicationManager.JNDI_BINDING)
     private ApplicationManager     applicationManager;
 
-    @EJB
+    @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
     private AttributeTypeDAO       attributeTypeDAO;
 
-    @EJB
+    @EJB(mappedName = AttributeDAO.JNDI_BINDING)
     private AttributeDAO           attributeDAO;
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService         subjectService;
 
-    @EJB
+    @EJB(mappedName = HistoryDAO.JNDI_BINDING)
     private HistoryDAO             historyDAO;
 
     private AttributeManagerLWBean attributeManager;

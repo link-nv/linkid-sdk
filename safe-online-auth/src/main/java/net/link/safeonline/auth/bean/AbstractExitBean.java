@@ -31,7 +31,7 @@ public class AbstractExitBean {
     @Logger
     private Log                      log;
 
-    @EJB
+    @EJB(mappedName = PublicApplicationService.JNDI_BINDING)
     private PublicApplicationService publicApplicationService;
 
 

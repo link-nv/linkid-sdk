@@ -38,7 +38,7 @@ public class ConfigurationBean implements Configuration {
     @DataModel("configGroupList")
     private List<ConfigGroupEntity> configGroupList;
 
-    @EJB
+    @EJB(mappedName = ConfigurationService.JNDI_BINDING)
     private ConfigurationService    configurationService;
 
     @In(create = true)

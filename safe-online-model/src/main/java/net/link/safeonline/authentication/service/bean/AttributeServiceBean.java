@@ -63,19 +63,19 @@ public class AttributeServiceBean implements AttributeService, AttributeServiceR
 
     private static final Log       LOG = LogFactory.getLog(AttributeServiceBean.class);
 
-    @EJB
+    @EJB(mappedName = ApplicationManager.JNDI_BINDING)
     private ApplicationManager     applicationManager;
 
-    @EJB
+    @EJB(mappedName = ApplicationIdentityDAO.JNDI_BINDING)
     private ApplicationIdentityDAO applicationIdentityDAO;
 
-    @EJB
+    @EJB(mappedName = SubscriptionDAO.JNDI_BINDING)
     private SubscriptionDAO        subscriptionDAO;
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService         subjectService;
 
-    @EJB
+    @EJB(mappedName = ProxyAttributeService.JNDI_BINDING)
     private ProxyAttributeService  proxyAttributeService;
 
 

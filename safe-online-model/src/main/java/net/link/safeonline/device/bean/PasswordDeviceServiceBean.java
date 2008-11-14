@@ -40,16 +40,16 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
 
     private final static Log    LOG = LogFactory.getLog(PasswordDeviceServiceBean.class);
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService      subjectService;
 
-    @EJB
+    @EJB(mappedName = PasswordManager.JNDI_BINDING)
     private PasswordManager     passwordManager;
 
-    @EJB
+    @EJB(mappedName = SecurityAuditLogger.JNDI_BINDING)
     private SecurityAuditLogger securityAuditLogger;
 
-    @EJB
+    @EJB(mappedName = HistoryDAO.JNDI_BINDING)
     private HistoryDAO          historyDAO;
 
 

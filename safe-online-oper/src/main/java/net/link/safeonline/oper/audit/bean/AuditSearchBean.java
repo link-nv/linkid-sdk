@@ -78,7 +78,7 @@ public class AuditSearchBean implements AuditSearch {
     @In(create = true)
     FacesMessages        facesMessages;
 
-    @EJB
+    @EJB(mappedName = AuditService.JNDI_BINDING)
     private AuditService auditService;
 
     private Long         searchContextId;

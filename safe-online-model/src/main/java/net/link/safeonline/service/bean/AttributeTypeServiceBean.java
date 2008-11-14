@@ -51,19 +51,19 @@ public class AttributeTypeServiceBean implements AttributeTypeService, Attribute
 
     private static final Log       LOG = LogFactory.getLog(AttributeTypeServiceBean.class);
 
-    @EJB
+    @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
     private AttributeTypeDAO       attributeTypeDAO;
 
-    @EJB
+    @EJB(mappedName = AttributeProviderDAO.JNDI_BINDING)
     private AttributeProviderDAO   attributeProviderDAO;
 
-    @EJB
+    @EJB(mappedName = ApplicationIdentityDAO.JNDI_BINDING)
     private ApplicationIdentityDAO applicationIdentityDAO;
 
-    @EJB
+    @EJB(mappedName = AttributeDAO.JNDI_BINDING)
     private AttributeDAO           attributeDAO;
 
-    @EJB
+    @EJB(mappedName = DeviceDAO.JNDI_BINDING)
     private DeviceDAO              deviceDAO;
 
 

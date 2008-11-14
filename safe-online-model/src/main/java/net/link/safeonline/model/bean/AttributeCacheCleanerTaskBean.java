@@ -31,7 +31,7 @@ public class AttributeCacheCleanerTaskBean implements Task {
 
     public static final String  JNDI_BINDING = Task.JNDI_PREFIX + "AttributeCacheCleanerTaskBean/local";
 
-    @EJB
+    @EJB(mappedName = AttributeCacheDAO.JNDI_BINDING)
     private AttributeCacheDAO   attributeCacheDAO;
 
 

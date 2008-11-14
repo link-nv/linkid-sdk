@@ -48,13 +48,13 @@ public class AttributeProviderManagerServiceBean implements AttributeProviderMan
 
     private static final Log     LOG = LogFactory.getLog(AttributeProviderManagerServiceBean.class);
 
-    @EJB
+    @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
     private AttributeTypeDAO     attributeTypeDAO;
 
-    @EJB
+    @EJB(mappedName = AttributeProviderDAO.JNDI_BINDING)
     private AttributeProviderDAO attributeProviderDAO;
 
-    @EJB
+    @EJB(mappedName = ApplicationDAO.JNDI_BINDING)
     private ApplicationDAO       applicationDAO;
 
 

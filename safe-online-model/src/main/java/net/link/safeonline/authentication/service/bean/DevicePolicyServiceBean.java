@@ -39,13 +39,13 @@ public class DevicePolicyServiceBean implements DevicePolicyService {
 
     private static final Log LOG = LogFactory.getLog(DevicePolicyServiceBean.class);
 
-    @EJB
+    @EJB(mappedName = Devices.JNDI_BINDING)
     private Devices          devices;
 
-    @EJB
+    @EJB(mappedName = ApplicationDAO.JNDI_BINDING)
     private ApplicationDAO   applicationDAO;
 
-    @EJB
+    @EJB(mappedName = DeviceDAO.JNDI_BINDING)
     private DeviceDAO        deviceDAO;
 
 

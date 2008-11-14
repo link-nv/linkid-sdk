@@ -66,13 +66,13 @@ public class NotificationBean implements Notification {
     @In(create = true)
     FacesMessages                                        facesMessages;
 
-    @EJB
+    @EJB(mappedName = NotificationSubscriptionService.JNDI_BINDING)
     private NotificationSubscriptionService              notificationSubscriptionService;
 
-    @EJB
+    @EJB(mappedName = ApplicationService.JNDI_BINDING)
     private ApplicationService                           applicationService;
 
-    @EJB
+    @EJB(mappedName = NodeService.JNDI_BINDING)
     private NodeService                                  nodeService;
 
     private String                                       address;

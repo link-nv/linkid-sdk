@@ -26,13 +26,13 @@ public abstract class LayoutPage extends WebPage {
     private static final long  serialVersionUID = 1L;
     Log                        LOG              = LogFactory.getLog(getClass());
 
-    @EJB
+    @EJB(mappedName = UserService.JNDI_BINDING)
     private UserService        userService;
 
-    @EJB
+    @EJB(mappedName = AccountService.JNDI_BINDING)
     private AccountService     accountService;
 
-    @EJB
+    @EJB(mappedName = TransactionService.JNDI_BINDING)
     private TransactionService transactionService;
 
 

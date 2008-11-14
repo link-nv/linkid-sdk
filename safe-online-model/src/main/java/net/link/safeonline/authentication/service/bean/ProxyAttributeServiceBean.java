@@ -62,28 +62,28 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
 
     private static final Log    LOG = LogFactory.getLog(ProxyAttributeServiceBean.class);
 
-    @EJB
+    @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
     private AttributeTypeDAO    attributeTypeDAO;
 
-    @EJB
+    @EJB(mappedName = AttributeDAO.JNDI_BINDING)
     private AttributeDAO        attributeDAO;
 
-    @EJB
+    @EJB(mappedName = AttributeCacheDAO.JNDI_BINDING)
     private AttributeCacheDAO   attributeCacheDAO;
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService      subjectService;
 
-    @EJB
+    @EJB(mappedName = OSGIStartable.JNDI_BINDING)
     private OSGIStartable       osgiStartable;
 
-    @EJB
+    @EJB(mappedName = ResourceAuditLogger.JNDI_BINDING)
     private ResourceAuditLogger resourceAuditLogger;
 
-    @EJB
+    @EJB(mappedName = SecurityAuditLogger.JNDI_BINDING)
     private SecurityAuditLogger securityAuditLogger;
 
-    @EJB
+    @EJB(mappedName = NodeMappingService.JNDI_BINDING)
     private NodeMappingService  nodeMappingService;
 
 

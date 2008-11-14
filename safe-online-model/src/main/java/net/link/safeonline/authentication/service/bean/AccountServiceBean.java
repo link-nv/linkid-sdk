@@ -51,34 +51,34 @@ public class AccountServiceBean implements AccountService, AccountServiceRemote 
 
     private static final Log            LOG = LogFactory.getLog(AccountServiceBean.class);
 
-    @EJB
+    @EJB(mappedName = SubjectManager.JNDI_BINDING)
     private SubjectManager              subjectManager;
 
-    @EJB
+    @EJB(mappedName = HistoryDAO.JNDI_BINDING)
     private HistoryDAO                  historyDAO;
 
-    @EJB
+    @EJB(mappedName = AttributeDAO.JNDI_BINDING)
     private AttributeDAO                attributeDAO;
 
-    @EJB
+    @EJB(mappedName = SubscriptionDAO.JNDI_BINDING)
     private SubscriptionDAO             subscriptionDAO;
 
-    @EJB
+    @EJB(mappedName = ApplicationScopeIdDAO.JNDI_BINDING)
     private ApplicationScopeIdDAO       applicationScopeIdDAO;
 
-    @EJB
+    @EJB(mappedName = SubjectDAO.JNDI_BINDING)
     private SubjectDAO                  subjectDAO;
 
-    @EJB
+    @EJB(mappedName = SubjectIdentifierDAO.JNDI_BINDING)
     private SubjectIdentifierDAO        subjectIdentifierDAO;
 
-    @EJB
+    @EJB(mappedName = NodeMappingDAO.JNDI_BINDING)
     private NodeMappingDAO              nodeMappingDAO;
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService              subjectService;
 
-    @EJB
+    @EJB(mappedName = NotificationProducerService.JNDI_BINDING)
     private NotificationProducerService notificationProducerService;
 
 

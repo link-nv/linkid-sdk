@@ -57,16 +57,16 @@ public class DisableBean implements Disable {
 
     private static final String        REGISTRATIONS_LIST_NAME = "encapRegistrations";
 
-    @EJB
+    @EJB(mappedName = DeviceDAO.JNDI_BINDING)
     private DeviceDAO                  deviceDAO;
 
-    @EJB
+    @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
     private AttributeTypeDAO           attributeTypeDAO;
 
-    @EJB
+    @EJB(mappedName = AttributeDAO.JNDI_BINDING)
     private AttributeDAO               attributeDAO;
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService             subjectService;
 
     @Logger

@@ -42,16 +42,16 @@ public class AuditContextDAOBean implements AuditContextDAO {
     @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
     private EntityManager                     entityManager;
 
-    @EJB
+    @EJB(mappedName = AuditAuditDAO.JNDI_BINDING)
     AuditAuditDAO                             auditAuditDAO;
 
-    @EJB
+    @EJB(mappedName = AccessAuditDAO.JNDI_BINDING)
     AccessAuditDAO                            accessAuditDAO;
 
-    @EJB
+    @EJB(mappedName = SecurityAuditDAO.JNDI_BINDING)
     SecurityAuditDAO                          securityAuditDAO;
 
-    @EJB
+    @EJB(mappedName = ResourceAuditDAO.JNDI_BINDING)
     ResourceAuditDAO                          resourceAuditDAO;
 
     private AuditContextEntity.QueryInterface queryObject;

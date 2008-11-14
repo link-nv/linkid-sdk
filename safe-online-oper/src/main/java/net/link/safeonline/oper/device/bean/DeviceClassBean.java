@@ -54,7 +54,7 @@ public class DeviceClassBean implements DeviceClass {
     @In(create = true)
     FacesMessages                  facesMessages;
 
-    @EJB
+    @EJB(mappedName = DeviceService.JNDI_BINDING)
     DeviceService                  deviceService;
 
     private String                 name;

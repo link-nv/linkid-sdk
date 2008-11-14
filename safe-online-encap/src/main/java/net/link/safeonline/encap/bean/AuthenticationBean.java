@@ -59,10 +59,10 @@ public class AuthenticationBean implements Authentication {
     @In(value = AuthenticationContext.AUTHENTICATION_CONTEXT)
     AuthenticationContext        authenticationContext;
 
-    @EJB
+    @EJB(mappedName = EncapDeviceService.JNDI_BINDING)
     private EncapDeviceService   encapDeviceService;
 
-    @EJB
+    @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
     private SamlAuthorityService samlAuthorityService;
 
     private String               challengeId;

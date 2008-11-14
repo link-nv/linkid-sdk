@@ -33,10 +33,10 @@ import org.jboss.annotation.security.SecurityDomain;
 @RemoteBinding(jndiBinding = ConfigurationServiceRemote.JNDI_BINDING)
 public class ConfigurationServiceBean implements ConfigurationService, ConfigurationServiceRemote {
 
-    @EJB
+    @EJB(mappedName = ConfigGroupDAO.JNDI_BINDING)
     private ConfigGroupDAO configGroupDAO;
 
-    @EJB
+    @EJB(mappedName = ConfigItemDAO.JNDI_BINDING)
     private ConfigItemDAO  configItemDAO;
 
 

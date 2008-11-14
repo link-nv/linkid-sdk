@@ -50,7 +50,7 @@ public class ActionsBean implements Actions {
     @In(create = true)
     FacesMessages          facesMessages;
 
-    @EJB
+    @EJB(mappedName = AccountService.JNDI_BINDING)
     private AccountService accountService;
 
     @Logger

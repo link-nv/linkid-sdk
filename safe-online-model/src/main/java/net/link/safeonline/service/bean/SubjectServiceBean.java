@@ -39,19 +39,19 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = SubjectService.JNDI_BINDING)
 public class SubjectServiceBean implements SubjectService, SubjectServiceRemote {
 
-    @EJB
+    @EJB(mappedName = SubjectDAO.JNDI_BINDING)
     private SubjectDAO           subjectDAO;
 
-    @EJB
+    @EJB(mappedName = AttributeDAO.JNDI_BINDING)
     private AttributeDAO         attributeDAO;
 
-    @EJB
+    @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
     private AttributeTypeDAO     attributeTypeDAO;
 
-    @EJB
+    @EJB(mappedName = SubjectIdentifierDAO.JNDI_BINDING)
     private SubjectIdentifierDAO subjectIdentifierDAO;
 
-    @EJB
+    @EJB(mappedName = IdGenerator.JNDI_BINDING)
     private IdGenerator          idGenerator;
 
     private static final Log     LOG = LogFactory.getLog(SubjectServiceBean.class);

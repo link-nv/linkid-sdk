@@ -34,10 +34,10 @@ public class CachedOcspValidatorBean implements CachedOcspValidator {
 
     private static final Log LOG = LogFactory.getLog(CachedOcspValidatorBean.class);
 
-    @EJB
+    @EJB(mappedName = OcspValidator.JNDI_BINDING)
     OcspValidator            ocspValidator;
 
-    @EJB
+    @EJB(mappedName = CachedOcspResponseDAO.JNDI_BINDING)
     CachedOcspResponseDAO    cachedOcspResponseDAO;
 
 

@@ -41,13 +41,13 @@ public class ApplicationIdentifierMappingServiceBean implements ApplicationIdent
 
     private static final Log     LOG = LogFactory.getLog(ApplicationIdentifierMappingServiceBean.class);
 
-    @EJB
+    @EJB(mappedName = ApplicationManager.JNDI_BINDING)
     private ApplicationManager   applicationManager;
 
-    @EJB
+    @EJB(mappedName = UserIdMappingService.JNDI_BINDING)
     private UserIdMappingService userIdMappingService;
 
-    @EJB
+    @EJB(mappedName = SubjectIdentifierDAO.JNDI_BINDING)
     private SubjectIdentifierDAO subjectIdentifierDAO;
 
 

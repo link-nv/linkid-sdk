@@ -60,7 +60,7 @@ public class UsageAgreementBean implements UsageAgreement {
     @In(create = true)
     FacesMessages                         facesMessages;
 
-    @EJB
+    @EJB(mappedName = UsageAgreementService.JNDI_BINDING)
     private UsageAgreementService         usageAgreementService;
 
     private String                        language;

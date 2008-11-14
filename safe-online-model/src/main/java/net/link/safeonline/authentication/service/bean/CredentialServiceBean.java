@@ -48,10 +48,10 @@ public class CredentialServiceBean implements CredentialService, CredentialServi
 
     private static Log            LOG = LogFactory.getLog(CredentialServiceBean.class);
 
-    @EJB
+    @EJB(mappedName = SubjectManager.JNDI_BINDING)
     private SubjectManager        subjectManager;
 
-    @EJB
+    @EJB(mappedName = PasswordDeviceService.JNDI_BINDING)
     private PasswordDeviceService passwordDeviceService;
 
 

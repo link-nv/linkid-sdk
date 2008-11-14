@@ -38,16 +38,16 @@ import org.jboss.annotation.security.SecurityDomain;
 @RemoteBinding(jndiBinding = SchedulingServiceRemote.JNDI_BINDING)
 public class SchedulingServiceBean implements SchedulingService, SchedulingServiceRemote {
 
-    @EJB
+    @EJB(mappedName = TaskDAO.JNDI_BINDING)
     private TaskDAO        taskDAO;
 
-    @EJB
+    @EJB(mappedName = SchedulingDAO.JNDI_BINDING)
     private SchedulingDAO  schedulingDAO;
 
-    @EJB
+    @EJB(mappedName = TaskHistoryDAO.JNDI_BINDING)
     private TaskHistoryDAO taskHistoryDAO;
 
-    @EJB
+    @EJB(mappedName = TaskScheduler.JNDI_BINDING)
     private TaskScheduler  taskScheduler;
 
 

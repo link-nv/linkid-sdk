@@ -87,22 +87,22 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
 
     private static final Log          LOG = LogFactory.getLog(DeviceOperationServiceBean.class);
 
-    @EJB
+    @EJB(mappedName = NodeAuthenticationService.JNDI_BINDING)
     private NodeAuthenticationService nodeAuthenticationService;
 
-    @EJB
+    @EJB(mappedName = NodeMappingService.JNDI_BINDING)
     private NodeMappingService        nodeMappingService;
 
-    @EJB
+    @EJB(mappedName = DeviceDAO.JNDI_BINDING)
     private DeviceDAO                 deviceDAO;
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService            subjectService;
 
-    @EJB
+    @EJB(mappedName = SecurityAuditLogger.JNDI_BINDING)
     private SecurityAuditLogger       securityAuditLogger;
 
-    @EJB
+    @EJB(mappedName = HistoryDAO.JNDI_BINDING)
     private HistoryDAO                historyDAO;
 
     private String                    expectedChallengeId;

@@ -40,13 +40,13 @@ public class ApplicationIdentityManagerBean implements ApplicationIdentityManage
 
     private static final Log       LOG = LogFactory.getLog(ApplicationIdentityManagerBean.class);
 
-    @EJB
+    @EJB(mappedName = ApplicationDAO.JNDI_BINDING)
     private ApplicationDAO         applicationDAO;
 
-    @EJB
+    @EJB(mappedName = ApplicationIdentityDAO.JNDI_BINDING)
     private ApplicationIdentityDAO applicationIdentityDAO;
 
-    @EJB
+    @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
     private AttributeTypeDAO       attributeTypeDAO;
 
 

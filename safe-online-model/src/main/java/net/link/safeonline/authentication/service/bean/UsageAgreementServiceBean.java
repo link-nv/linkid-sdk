@@ -61,19 +61,19 @@ public class UsageAgreementServiceBean implements UsageAgreementService, UsageAg
 
     private static final Log      LOG = LogFactory.getLog(UsageAgreementServiceBean.class);
 
-    @EJB
+    @EJB(mappedName = UsageAgreementManager.JNDI_BINDING)
     private UsageAgreementManager usageAgreementManager;
 
-    @EJB
+    @EJB(mappedName = UsageAgreementDAO.JNDI_BINDING)
     private UsageAgreementDAO     usageAgreementDAO;
 
-    @EJB
+    @EJB(mappedName = SubjectManager.JNDI_BINDING)
     private SubjectManager        subjectManager;
 
-    @EJB
+    @EJB(mappedName = ApplicationDAO.JNDI_BINDING)
     private ApplicationDAO        applicationDAO;
 
-    @EJB
+    @EJB(mappedName = SubscriptionDAO.JNDI_BINDING)
     private SubscriptionDAO       subscriptionDAO;
 
     @Resource

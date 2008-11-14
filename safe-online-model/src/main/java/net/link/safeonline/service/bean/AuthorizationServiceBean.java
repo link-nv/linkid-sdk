@@ -47,13 +47,13 @@ public class AuthorizationServiceBean implements AuthorizationService, Authoriza
 
     private static final Log LOG              = LogFactory.getLog(AuthorizationServiceBean.class);
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService   subjectService;
 
-    @EJB
+    @EJB(mappedName = SubscriptionDAO.JNDI_BINDING)
     private SubscriptionDAO  subscriptionDAO;
 
-    @EJB
+    @EJB(mappedName = ApplicationDAO.JNDI_BINDING)
     private ApplicationDAO   applicationDAO;
 
     @Resource(name = "isGlobalOperator")

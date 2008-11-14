@@ -53,7 +53,7 @@ public class ChartsBean implements Charts {
 
     private static final Log      LOG            = LogFactory.getLog(ChartsBean.class);
 
-    @EJB
+    @EJB(mappedName = StatisticService.JNDI_BINDING)
     private StatisticService      statisticService;
 
     @In(create = true)

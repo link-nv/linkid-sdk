@@ -51,7 +51,7 @@ public class AttributesBean implements Attributes {
     @In(create = true)
     FacesMessages                     facesMessages;
 
-    @EJB
+    @EJB(mappedName = AttributeTypeService.JNDI_BINDING)
     private AttributeTypeService      attributeTypeService;
 
     private String                    pluginConfiguration;

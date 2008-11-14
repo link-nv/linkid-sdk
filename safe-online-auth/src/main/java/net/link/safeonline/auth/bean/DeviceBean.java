@@ -59,7 +59,7 @@ public class DeviceBean implements Device {
     @Logger
     private Log                 log;
 
-    @EJB
+    @EJB(mappedName = DevicePolicyService.JNDI_BINDING)
     private DevicePolicyService devicePolicyService;
 
     @In(value = LoginManager.APPLICATION_ID_ATTRIBUTE, required = true)

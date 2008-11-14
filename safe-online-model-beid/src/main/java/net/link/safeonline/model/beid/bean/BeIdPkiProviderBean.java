@@ -62,19 +62,19 @@ public class BeIdPkiProviderBean implements PkiProvider {
     @Resource
     private SessionContext     context;
 
-    @EJB
+    @EJB(mappedName = TrustDomainDAO.JNDI_BINDING)
     private TrustDomainDAO     trustDomainDAO;
 
-    @EJB
+    @EJB(mappedName = AttributeDAO.JNDI_BINDING)
     private AttributeDAO       attributeDAO;
 
-    @EJB
+    @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
     private AttributeTypeDAO   attributeTypeDAO;
 
-    @EJB
+    @EJB(mappedName = DeviceDAO.JNDI_BINDING)
     private DeviceDAO          deviceDAO;
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService     subjectService;
 
 

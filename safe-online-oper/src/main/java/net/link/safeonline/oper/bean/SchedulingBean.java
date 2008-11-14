@@ -74,7 +74,7 @@ public class SchedulingBean implements Scheduling {
     @In(value = "newScheduling", required = false)
     private SchedulingEntity        newScheduling;
 
-    @EJB
+    @EJB(mappedName = SchedulingService.JNDI_BINDING)
     private SchedulingService       schedulingService;
 
     @In(create = true)

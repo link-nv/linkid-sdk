@@ -30,7 +30,7 @@ public class UsageAgreementManagerBean implements UsageAgreementManager {
 
     private final static Log  LOG = LogFactory.getLog(UsageAgreementManagerBean.class);
 
-    @EJB
+    @EJB(mappedName = UsageAgreementDAO.JNDI_BINDING)
     private UsageAgreementDAO usageAgreementDAO;
 
 

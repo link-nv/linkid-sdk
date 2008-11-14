@@ -43,7 +43,7 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 
     private SubscriptionEntity.QueryInterface queryObject;
 
-    @EJB
+    @EJB(mappedName = IdGenerator.JNDI_BINDING)
     private IdGenerator                       idGenerator;
 
 

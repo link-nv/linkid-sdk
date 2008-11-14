@@ -56,16 +56,16 @@ public class AuthenticationSubscriptionBean extends AbstractExitBean implements 
     @In(value = LoginManager.APPLICATION_ID_ATTRIBUTE, required = true)
     private String                applicationId;
 
-    @EJB
+    @EJB(mappedName = SubscriptionService.JNDI_BINDING)
     private SubscriptionService   subscriptionService;
 
-    @EJB
+    @EJB(mappedName = UsageAgreementService.JNDI_BINDING)
     private UsageAgreementService usageAgreementService;
 
     @In(create = true)
     FacesMessages                 facesMessages;
 
-    @EJB
+    @EJB(mappedName = IdentityService.JNDI_BINDING)
     private IdentityService       identityService;
 
 

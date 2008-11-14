@@ -51,10 +51,10 @@ public class BeIdStartableBean extends AbstractInitBean {
 
     public static final String INDEX_RESOURCE = "certs/beid/index.txt";
 
-    @EJB
+    @EJB(mappedName = TrustDomainDAO.JNDI_BINDING)
     private TrustDomainDAO     trustDomainDAO;
 
-    @EJB
+    @EJB(mappedName = TrustPointDAO.JNDI_BINDING)
     private TrustPointDAO      trustPointDAO;
 
 

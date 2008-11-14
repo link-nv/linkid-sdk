@@ -32,10 +32,10 @@ public class CachedOcspResponseCleanerTaskBean implements Task {
 
     private static final String   name         = "Ocsp response cache cleaner";
 
-    @EJB
+    @EJB(mappedName = TrustDomainDAO.JNDI_BINDING)
     private TrustDomainDAO        trustDomainDAO;
 
-    @EJB
+    @EJB(mappedName = CachedOcspResponseDAO.JNDI_BINDING)
     private CachedOcspResponseDAO cachedOcspResponseDAO;
 
 

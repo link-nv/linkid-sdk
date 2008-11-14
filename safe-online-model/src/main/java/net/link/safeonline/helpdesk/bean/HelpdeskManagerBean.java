@@ -34,10 +34,10 @@ public class HelpdeskManagerBean implements HelpdeskManager {
     @Configurable(group = "Helpdesk", name = "Helpdesk event list size")
     private int                helpdeskContextLimit = 50;
 
-    @EJB
+    @EJB(mappedName = HelpdeskContextDAO.JNDI_BINDING)
     private HelpdeskContextDAO helpdeskContextDAO;
 
-    @EJB
+    @EJB(mappedName = HelpdeskEventDAO.JNDI_BINDING)
     private HelpdeskEventDAO   helpdeskEventDAO;
 
 

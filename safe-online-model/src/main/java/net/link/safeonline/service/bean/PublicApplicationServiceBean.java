@@ -36,7 +36,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = PublicApplicationService.JNDI_BINDING)
 public class PublicApplicationServiceBean implements PublicApplicationService {
 
-    @EJB
+    @EJB(mappedName = ApplicationDAO.JNDI_BINDING)
     private ApplicationDAO applicationDAO;
 
 

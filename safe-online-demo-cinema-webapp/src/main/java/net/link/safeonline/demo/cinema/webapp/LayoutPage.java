@@ -36,7 +36,7 @@ public class LayoutPage extends WebPage {
 
     Log                       LOG              = LogFactory.getLog(getClass());
 
-    @EJB
+    @EJB(mappedName = TicketService.JNDI_BINDING)
     transient TicketService   ticketService;
 
 

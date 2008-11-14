@@ -54,16 +54,16 @@ public class AuditSyslogBean implements AuditBackend {
     @Configurable(name = "Facility", group = CONFIG_GROUP)
     private String              facility         = "LOCAL0";
 
-    @EJB
+    @EJB(mappedName = SecurityAuditDAO.JNDI_BINDING)
     private SecurityAuditDAO    securityAuditDAO;
 
-    @EJB
+    @EJB(mappedName = ResourceAuditDAO.JNDI_BINDING)
     private ResourceAuditDAO    resourceAuditDAO;
 
-    @EJB
+    @EJB(mappedName = AccessAuditDAO.JNDI_BINDING)
     private AccessAuditDAO      accessAuditDAO;
 
-    @EJB
+    @EJB(mappedName = AuditAuditDAO.JNDI_BINDING)
     private AuditAuditDAO       auditAuditDAO;
 
     private TinySyslogger       syslog;

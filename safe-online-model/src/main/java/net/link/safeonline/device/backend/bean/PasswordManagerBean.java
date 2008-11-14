@@ -43,10 +43,10 @@ public class PasswordManagerBean implements PasswordManager {
 
     private static final String defaultHashingAlgorithm = "SHA-512";
 
-    @EJB
+    @EJB(mappedName = AttributeDAO.JNDI_BINDING)
     private AttributeDAO        attributeDAO;
 
-    @EJB
+    @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
     private AttributeTypeDAO    attributeTypeDAO;
 
 

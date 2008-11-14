@@ -35,10 +35,10 @@ public class HelpdeskCleanerTaskBean implements Task {
 
     public static final String  JNDI_BINDING            = Task.JNDI_PREFIX + "HelpdeskCleanerTaskBean/local";
 
-    @EJB
+    @EJB(mappedName = HelpdeskEventDAO.JNDI_BINDING)
     private HelpdeskEventDAO    helpdeskEventDAO;
 
-    @EJB
+    @EJB(mappedName = HelpdeskContextDAO.JNDI_BINDING)
     private HelpdeskContextDAO  helpdeskContextDAO;
 
     @Configurable(name = "Info Event Age (min)", group = "Helpdesk event cleaner")

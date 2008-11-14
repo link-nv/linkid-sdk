@@ -30,13 +30,13 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = WSSecurityConfiguration.JNDI_BINDING)
 public class WSSecurityConfigurationBean implements WSSecurityConfiguration {
 
-    @EJB
+    @EJB(mappedName = ConfigurationManager.JNDI_BINDING)
     private ConfigurationManager             configurationManager;
 
-    @EJB
+    @EJB(mappedName = PkiValidator.JNDI_BINDING)
     private PkiValidator                     pkiValidator;
 
-    @EJB
+    @EJB(mappedName = ApplicationAuthenticationService.JNDI_BINDING)
     private ApplicationAuthenticationService applicationAuthenticationService;
 
 

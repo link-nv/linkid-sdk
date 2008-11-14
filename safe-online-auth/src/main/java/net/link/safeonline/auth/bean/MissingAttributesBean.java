@@ -54,7 +54,7 @@ public class MissingAttributesBean implements MissingAttributes {
 
     private static final Log   LOG                     = LogFactory.getLog(MissingAttributesBean.class);
 
-    @EJB
+    @EJB(mappedName = IdentityService.JNDI_BINDING)
     private IdentityService    identityService;
 
     @In(value = LoginManager.APPLICATION_ID_ATTRIBUTE, required = true)

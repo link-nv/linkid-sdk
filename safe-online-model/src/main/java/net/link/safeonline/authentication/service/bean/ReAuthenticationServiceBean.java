@@ -53,13 +53,13 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 
     private Set<DeviceEntity>     authenticationDevices;
 
-    @EJB
+    @EJB(mappedName = DeviceDAO.JNDI_BINDING)
     private DeviceDAO             deviceDAO;
 
-    @EJB
+    @EJB(mappedName = SubjectManager.JNDI_BINDING)
     private SubjectManager        subjectManager;
 
-    @EJB
+    @EJB(mappedName = PasswordDeviceService.JNDI_BINDING)
     private PasswordDeviceService passwordDeviceService;
 
 
