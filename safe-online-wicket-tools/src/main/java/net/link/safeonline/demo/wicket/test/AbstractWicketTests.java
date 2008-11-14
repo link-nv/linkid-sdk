@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import net.link.safeonline.demo.wicket.javaee.DummyJndi;
 import net.link.safeonline.demo.wicket.tools.WicketUtil;
 import net.link.safeonline.demo.wicket.tools.olas.DummyAttributeClient;
+import net.link.safeonline.demo.wicket.tools.olas.DummyNameIdentifierMappingClient;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
 import net.link.safeonline.sdk.auth.seam.SafeOnlineLoginUtils;
@@ -64,12 +65,14 @@ public abstract class AbstractWicketTests {
     }
 
     @Before
-    public void setup() {
+    public void setUp()
+            throws Exception {
 
         // Dummy OLAS Setup.
         TestAuthenticationProtocolHandler.setAuthenticatingUserId(getOLASUserId());
         TestAuthenticationProtocolHandler.setLogoutServlet(getLogoutServlet());
         DummyAttributeClient.setAttribute(getOLASUserId(), "urn:net:lin-k:safe-online:attribute:login", getOLASUserId());
+        DummyNameIdentifierMappingClient.setUserId(getOLASUserId());
 
         // Set up an HSQL entity manager.
         this.entityTestManager = new EntityTestManager();

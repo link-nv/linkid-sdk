@@ -294,11 +294,17 @@ public class SafeOnlineLoginUtils {
         // Defaults for color & minimal from web.xml init params.
         Integer authColor = color;
         if (authColor == null) {
-            authColor = Integer.decode(config.get(SafeOnlineAppConstants.COLOR_CONTEXT));
+            String colorConfig = config.get(SafeOnlineAppConstants.COLOR_CONTEXT);
+            if (colorConfig != null && colorConfig.length() > 0) {
+                authColor = Integer.decode(colorConfig);
+            }
         }
         Boolean authMinimal = minimal;
         if (authMinimal == null) {
-            authMinimal = Boolean.parseBoolean(config.get(SafeOnlineAppConstants.MINIMAL_CONTEXT));
+            String minimalConfig = config.get(SafeOnlineAppConstants.MINIMAL_CONTEXT);
+            if (minimalConfig != null && minimalConfig.length() > 0) {
+                authMinimal = Boolean.parseBoolean(minimalConfig);
+            }
         }
 
         // Initiate the authentication.

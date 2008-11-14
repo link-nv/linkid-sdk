@@ -12,7 +12,6 @@ import java.net.MalformedURLException;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.encap.EncapConstants;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
@@ -55,9 +54,6 @@ public interface Registration {
 
     String mobileActivationRetry()
             throws MalformedURLException, MobileException, MobileRegistrationException;
-
-    String mobileActivationCancel()
-            throws SubjectNotFoundException, MobileException, MalformedURLException, IOException;
 
     String requestOTP()
             throws MalformedURLException, MobileException;

@@ -32,13 +32,11 @@ import net.link.safeonline.service.SubjectServiceRemote;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
 @LocalBinding(jndiBinding = SubjectService.JNDI_BINDING)
-@RemoteBinding(jndiBinding = SubjectServiceRemote.JNDI_BINDING)
 public class SubjectServiceBean implements SubjectService, SubjectServiceRemote {
 
     @EJB
@@ -59,8 +57,7 @@ public class SubjectServiceBean implements SubjectService, SubjectServiceRemote 
     private static final Log     LOG = LogFactory.getLog(SubjectServiceBean.class);
 
 
-    public SubjectEntity addSubject(String login)
-            throws AttributeTypeNotFoundException {
+    public SubjectEntity addSubject(String login) throws AttributeTypeNotFoundException {
 
         LOG.debug("add subject: " + login);
 
@@ -93,8 +90,7 @@ public class SubjectServiceBean implements SubjectService, SubjectServiceRemote 
         return this.subjectIdentifierDAO.findSubject(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN, login);
     }
 
-    public SubjectEntity getSubject(String userId)
-            throws SubjectNotFoundException {
+    public SubjectEntity getSubject(String userId) throws SubjectNotFoundException {
 
         LOG.debug("get subject user id: " + userId);
         return this.subjectDAO.getSubject(userId);
@@ -134,8 +130,7 @@ public class SubjectServiceBean implements SubjectService, SubjectServiceRemote 
         return null;
     }
 
-    public SubjectEntity getSubjectFromUserName(String login)
-            throws SubjectNotFoundException {
+    public SubjectEntity getSubjectFromUserName(String login) throws SubjectNotFoundException {
 
         LOG.debug("get subject login: " + login);
         SubjectEntity subject = this.subjectIdentifierDAO.findSubject(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN, login);
@@ -145,8 +140,7 @@ public class SubjectServiceBean implements SubjectService, SubjectServiceRemote 
         return subject;
     }
 
-    public List<String> listUsers(String prefix)
-            throws AttributeTypeNotFoundException {
+    public List<String> listUsers(String prefix) throws AttributeTypeNotFoundException {
 
         List<String> userList = new LinkedList<String>();
         AttributeTypeEntity loginAttributeType = this.attributeTypeDAO.getAttributeType(SafeOnlineConstants.LOGIN_ATTRIBTUE);

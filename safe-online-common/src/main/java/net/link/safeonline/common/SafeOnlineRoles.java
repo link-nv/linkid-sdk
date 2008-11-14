@@ -7,13 +7,7 @@
 
 package net.link.safeonline.common;
 
-public class SafeOnlineRoles {
-
-    private SafeOnlineRoles() {
-
-        // empty
-    }
-
+public interface SafeOnlineRoles {
 
     public static final String USER_ROLE            = "user";
 

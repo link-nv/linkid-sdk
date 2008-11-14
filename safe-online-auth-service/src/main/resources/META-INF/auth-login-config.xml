@@ -9,7 +9,7 @@
 			<login-module
 				code="org.jboss.security.auth.spi.IdentityLoginModule"
 				flag="required">
-				<module-option name="roles">user</module-option>
+				<module-option name="roles">OLAS-AUTH.user</module-option>
 			</login-module>
 		</authentication>
 	</application-policy>

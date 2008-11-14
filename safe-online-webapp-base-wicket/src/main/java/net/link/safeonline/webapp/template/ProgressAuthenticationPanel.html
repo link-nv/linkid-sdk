@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/"
+	xml:lang="en" lang="en">
+
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+	</head>
+
+	<body>
+
+		<wicket:panel>
+
+			<table class="plain timeline">
+				<td class="start" />
+				<td id="stage_select" wicket:id="selectedDevice">
+					[Selected Device]
+					</td>
+				<td id="stage_authenticate" wicket:id="authenticate">
+					[Authenticate]
+					</td>
+				<td id="stage_agreements" wicket:id="usageAgreements">
+					[Usage Agreements]
+					</td>
+				<td id="stage_attributes" wicket:id="attributes">
+					[Attributes]
+					</td>
+				<td class="end" />
+			</table>
+
+			<script language="JavaScript" wicket:id="setActive" />
+
+		</wicket:panel>
+
+	</body>
+
+</html>

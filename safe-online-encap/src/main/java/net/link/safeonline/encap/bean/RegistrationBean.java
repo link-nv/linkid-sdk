@@ -92,6 +92,7 @@ public class RegistrationBean implements Registration {
         this.challengeId = null;
     }
 
+    @End
     public String cancel()
             throws IOException {
 
@@ -144,18 +145,6 @@ public class RegistrationBean implements Registration {
 
         this.log.debug("mobile activation ok: " + this.mobile);
         return "authenticate";
-    }
-
-    @End
-    @ErrorHandling( { @Error(exceptionClass = MalformedURLException.class, messageId = "mobileCommunicationFailed") })
-    public String mobileActivationCancel()
-            throws SubjectNotFoundException, MobileException, IOException {
-
-        this.log.debug("mobile activation canceled: " + this.mobile);
-        this.encapDeviceService.removeEncapMobile(this.mobile);
-        this.protocolContext.setSuccess(false);
-        exit();
-        return null;
     }
 
     public String requestOTP()
