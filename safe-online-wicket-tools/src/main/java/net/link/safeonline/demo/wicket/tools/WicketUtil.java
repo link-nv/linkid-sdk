@@ -17,6 +17,7 @@ import java.util.Locale;
 import javax.ejb.EJB;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.demo.wicket.javaee.DummyAnnotJavaEEInjector;
 import net.link.safeonline.demo.wicket.service.OlasNamingStrategy;
@@ -138,6 +139,14 @@ public abstract class WicketUtil {
     public static HttpServletRequest toServletRequest(Request request) {
 
         return ((WebRequest) request).getHttpServletRequest();
+    }
+
+    /**
+     * Get the {@link HttpSession} contained in the given Wicket {@link Request}.
+     */
+    public static HttpSession getHttpSession(Request request) {
+
+        return toServletRequest(request).getSession();
     }
 
     /**

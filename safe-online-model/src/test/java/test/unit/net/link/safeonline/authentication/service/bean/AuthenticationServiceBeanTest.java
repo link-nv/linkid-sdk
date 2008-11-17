@@ -54,7 +54,6 @@ import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.StatisticDAO;
 import net.link.safeonline.dao.StatisticDataPointDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
-import net.link.safeonline.device.PasswordDeviceService;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.ApplicationPoolEntity;
@@ -93,8 +92,6 @@ public class AuthenticationServiceBeanTest {
     private AuthenticationServiceBean        testedInstance;
 
     private SubjectService                   mockSubjectService;
-
-    private PasswordDeviceService            mockPasswordDeviceService;
 
     private ApplicationDAO                   mockApplicationDAO;
 
@@ -161,9 +158,6 @@ public class AuthenticationServiceBeanTest {
         this.mockSubjectService = createMock(SubjectService.class);
         EJBTestUtils.inject(this.testedInstance, this.mockSubjectService);
 
-        this.mockPasswordDeviceService = createMock(PasswordDeviceService.class);
-        EJBTestUtils.inject(this.testedInstance, this.mockPasswordDeviceService);
-
         this.mockApplicationDAO = createMock(ApplicationDAO.class);
         EJBTestUtils.inject(this.testedInstance, this.mockApplicationDAO);
 
@@ -202,67 +196,16 @@ public class AuthenticationServiceBeanTest {
 
         EJBTestUtils.init(this.testedInstance);
 
-        this.mockObjects = new Object[] { this.mockSubjectService, this.mockPasswordDeviceService, this.mockApplicationDAO,
-                this.mockSubscriptionDAO, this.mockHistoryDAO, this.mockStatisticDAO, this.mockStatisticDataPointDAO, this.mockDeviceDAO,
-                this.mockApplicationAuthenticationService, this.mockPkiValidator, this.mockDevicePolicyService,
-                this.mockApplicationPoolDAO, this.mockSecurityAuditLogger, this.mockUserIdMappingService };
+        this.mockObjects = new Object[] { this.mockSubjectService, this.mockApplicationDAO, this.mockSubscriptionDAO, this.mockHistoryDAO,
+                this.mockStatisticDAO, this.mockStatisticDataPointDAO, this.mockDeviceDAO, this.mockApplicationAuthenticationService,
+                this.mockPkiValidator, this.mockDevicePolicyService, this.mockApplicationPoolDAO, this.mockSecurityAuditLogger,
+                this.mockUserIdMappingService };
     }
 
     @After
     public void tearDown()
             throws Exception {
 
-    }
-
-    @Test
-    public void authenticate()
-            throws Exception {
-
-        // setup
-        String applicationName = "test-application";
-        String login = "test-login";
-        String password = "test-password";
-
-        KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate applicationCert = PkiTestUtils.generateSelfSignedCertificate(applicationKeyPair, "CN=TestApplication");
-        ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, applicationCert);
-        String assertionConsumerService = "http://test.assertion.consumer.service";
-        String destinationUrl = "http://test.destination.url";
-
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
-                assertionConsumerService, destinationUrl, null, null, false);
-        AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
-
-        // expectations
-        expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
-                Collections.singletonList(applicationCert));
-        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
-                                                                                                                                     .andReturn(
-                                                                                                                                             PkiResult.VALID);
-
-        // stubs
-        SubjectEntity subject = new SubjectEntity(login);
-        expect(this.mockSubjectService.getSubjectFromUserName(login)).andStubReturn(subject);
-        expect(this.mockPasswordDeviceService.authenticate(login, password)).andStubReturn(subject);
-        expect(this.mockApplicationDAO.findApplication(applicationName)).andStubReturn(application);
-
-        DeviceClassEntity deviceClass = new DeviceClassEntity(SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
-                SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
-        DeviceEntity device = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, deviceClass, null, null, null, null, null,
-                null, null);
-        expect(this.mockDeviceDAO.getDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)).andReturn(device);
-
-        // prepare
-        replay(this.mockObjects);
-
-        // operate
-        this.testedInstance.initialize(null, null, null, authnRequest);
-
-        boolean result = this.testedInstance.authenticate(login, password);
-
-        // verify
-        verify(this.mockObjects);
-        assertTrue(result);
     }
 
     @Test
@@ -325,7 +268,7 @@ public class AuthenticationServiceBeanTest {
                                                                                                                                              PkiResult.VALID);
 
         List<DeviceEntity> authnDevices = new LinkedList<DeviceEntity>();
-        DeviceEntity passwordDevice = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, new DeviceClassEntity(
+        DeviceEntity passwordDevice = new DeviceEntity("test-password-device", new DeviceClassEntity(
                 SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null,
                 null, null, null);
         authnDevices.add(passwordDevice);
@@ -427,6 +370,7 @@ public class AuthenticationServiceBeanTest {
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
+        String passwordDeviceId = "test-password-device-id";
         ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
@@ -440,9 +384,8 @@ public class AuthenticationServiceBeanTest {
         String userId = UUID.randomUUID().toString();
         SubjectEntity subject = new SubjectEntity(userId);
 
-        DeviceEntity device = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, new DeviceClassEntity(
-                SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null,
-                null, null, null);
+        DeviceEntity device = new DeviceEntity(passwordDeviceId, new DeviceClassEntity(SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
+                SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null, null, null, null);
         Cookie ssoCookie = getSsoCookie(subject, application, device, null);
 
         // expectations
@@ -456,7 +399,7 @@ public class AuthenticationServiceBeanTest {
         expect(this.mockApplicationDAO.findApplication(applicationName)).andStubReturn(application);
         expect(this.mockApplicationPoolDAO.listCommonApplicationPools(application, application)).andStubReturn(
                 Collections.singletonList(applicationPool));
-        expect(this.mockDeviceDAO.findDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)).andStubReturn(device);
+        expect(this.mockDeviceDAO.findDevice(passwordDeviceId)).andStubReturn(device);
         expect(this.mockDevicePolicyService.getDevicePolicy(applicationName, null)).andStubReturn(Collections.singletonList(device));
 
         // prepare
@@ -492,6 +435,7 @@ public class AuthenticationServiceBeanTest {
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
+        String passwordDeviceId = "test-password-device-id";
         ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, applicationCert);
         application.setSsoEnabled(false);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
@@ -505,9 +449,8 @@ public class AuthenticationServiceBeanTest {
         String userId = UUID.randomUUID().toString();
         SubjectEntity subject = new SubjectEntity(userId);
 
-        DeviceEntity device = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, new DeviceClassEntity(
-                SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null,
-                null, null, null);
+        DeviceEntity device = new DeviceEntity(passwordDeviceId, new DeviceClassEntity(SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
+                SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null, null, null, null);
         Cookie ssoCookie = getSsoCookie(subject, application, device, null);
 
         // expectations
@@ -547,6 +490,7 @@ public class AuthenticationServiceBeanTest {
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
+        String passwordDeviceId = "test-password-device-id";
         ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
@@ -560,9 +504,8 @@ public class AuthenticationServiceBeanTest {
         String userId = UUID.randomUUID().toString();
         SubjectEntity subject = new SubjectEntity(userId);
 
-        DeviceEntity device = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, new DeviceClassEntity(
-                SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null,
-                null, null, null);
+        DeviceEntity device = new DeviceEntity(passwordDeviceId, new DeviceClassEntity(SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
+                SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null, null, null, null);
         Cookie ssoCookie = getSsoCookie(subject, application, device, null);
 
         // expectations
@@ -649,6 +592,7 @@ public class AuthenticationServiceBeanTest {
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
+        String passwordDeviceId = "test-password-device-id";
         ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
@@ -662,9 +606,8 @@ public class AuthenticationServiceBeanTest {
         String invalidUser = "foobar";
         SubjectEntity invalidSubject = new SubjectEntity(invalidUser);
 
-        DeviceEntity device = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, new DeviceClassEntity(
-                SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null,
-                null, null, null);
+        DeviceEntity device = new DeviceEntity(passwordDeviceId, new DeviceClassEntity(SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
+                SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null, null, null, null);
         Cookie ssoCookie = getSsoCookie(invalidSubject, application, device, null);
 
         // expectations
@@ -705,6 +648,7 @@ public class AuthenticationServiceBeanTest {
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
+        String passwordDeviceId = "test-password-device-id";
         ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
@@ -720,9 +664,8 @@ public class AuthenticationServiceBeanTest {
         String userId = UUID.randomUUID().toString();
         SubjectEntity subject = new SubjectEntity(userId);
 
-        DeviceEntity device = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, new DeviceClassEntity(
-                SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null,
-                null, null, null);
+        DeviceEntity device = new DeviceEntity(passwordDeviceId, new DeviceClassEntity(SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
+                SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null, null, null, null);
         Cookie ssoCookie = getSsoCookie(subject, invalidApplication, device, null);
 
         // expectations
@@ -764,6 +707,7 @@ public class AuthenticationServiceBeanTest {
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
+        String passwordDeviceId = "test-password-device-id";
         ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
@@ -778,9 +722,8 @@ public class AuthenticationServiceBeanTest {
         String userId = UUID.randomUUID().toString();
         SubjectEntity subject = new SubjectEntity(userId);
 
-        DeviceEntity device = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, new DeviceClassEntity(
-                SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null,
-                null, null, null);
+        DeviceEntity device = new DeviceEntity(passwordDeviceId, new DeviceClassEntity(SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
+                SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null, null, null, null);
         Cookie ssoCookie = getSsoCookie(subject, cookieApplication, device, null);
 
         // expectations
@@ -836,6 +779,7 @@ public class AuthenticationServiceBeanTest {
         String applicationPool2Name = "test-applicaiton-pool-2";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
+        String passwordDeviceId = "test-password-device-id";
 
         ApplicationEntity application1 = new ApplicationEntity(application1Name, null, null, null, null, null, applicationCert);
         application1.setSsoEnabled(true);
@@ -870,9 +814,8 @@ public class AuthenticationServiceBeanTest {
         String userId = UUID.randomUUID().toString();
         SubjectEntity subject = new SubjectEntity(userId);
 
-        DeviceEntity device = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, new DeviceClassEntity(
-                SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null,
-                null, null, null);
+        DeviceEntity device = new DeviceEntity(passwordDeviceId, new DeviceClassEntity(SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
+                SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null, null, null, null);
         Cookie ssoCookie = getSsoCookie(subject, application1, device, Collections.singletonList(application2));
 
         // expectations
@@ -978,6 +921,7 @@ public class AuthenticationServiceBeanTest {
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
+        String passwordDeviceId = "test-password-device-id";
         ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
@@ -991,9 +935,8 @@ public class AuthenticationServiceBeanTest {
         String userId = UUID.randomUUID().toString();
         SubjectEntity subject = new SubjectEntity(userId);
 
-        DeviceEntity device = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, new DeviceClassEntity(
-                SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null,
-                null, null, null);
+        DeviceEntity device = new DeviceEntity(passwordDeviceId, new DeviceClassEntity(SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
+                SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null, null, null, null);
         Cookie ssoCookie = getSsoCookie(subject, application, device, null);
 
         // expectations
@@ -1007,7 +950,7 @@ public class AuthenticationServiceBeanTest {
         expect(this.mockApplicationDAO.findApplication(applicationName)).andStubReturn(application);
         expect(this.mockApplicationPoolDAO.listCommonApplicationPools(application, application)).andStubReturn(
                 Collections.singletonList(applicationPool));
-        expect(this.mockDeviceDAO.findDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)).andStubReturn(device);
+        expect(this.mockDeviceDAO.findDevice(passwordDeviceId)).andStubReturn(device);
         expect(this.mockDevicePolicyService.getDevicePolicy(applicationName, null)).andStubReturn(new LinkedList<DeviceEntity>());
 
         // prepare
@@ -1039,6 +982,7 @@ public class AuthenticationServiceBeanTest {
         String applicationPoolName = "test-application-pool";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String destinationUrl = "http://test.destination.url";
+        String passwordDeviceId = "test-password-device-id";
         ApplicationEntity application = new ApplicationEntity(applicationName, null, null, null, null, null, applicationCert);
         application.setSsoEnabled(true);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, 1000 * 60 * 5);
@@ -1052,9 +996,8 @@ public class AuthenticationServiceBeanTest {
         String userId = UUID.randomUUID().toString();
         SubjectEntity subject = new SubjectEntity(userId);
 
-        DeviceEntity device = new DeviceEntity(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, new DeviceClassEntity(
-                SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null,
-                null, null, null);
+        DeviceEntity device = new DeviceEntity(passwordDeviceId, new DeviceClassEntity(SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
+                SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null, null, null, null);
         Cookie ssoCookie = getExpiredSsoCookie(subject, application, device);
 
         // expectations
@@ -1068,7 +1011,7 @@ public class AuthenticationServiceBeanTest {
         expect(this.mockApplicationDAO.findApplication(applicationName)).andStubReturn(application);
         expect(this.mockApplicationPoolDAO.listCommonApplicationPools(application, application)).andStubReturn(
                 Collections.singletonList(applicationPool));
-        expect(this.mockDeviceDAO.findDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)).andStubReturn(device);
+        expect(this.mockDeviceDAO.findDevice(passwordDeviceId)).andStubReturn(device);
         expect(this.mockDevicePolicyService.getDevicePolicy(applicationName, null)).andStubReturn(Collections.singletonList(device));
 
         // prepare

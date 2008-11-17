@@ -7,33 +7,28 @@
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
 		<version>1.3-SNAPSHOT</version>
-    </parent>
+	</parent>
 
 	<name>SafeOnline Web Common</name>
-    <description>
+	<description>
         SafeOnline Web Application Common Library.
     </description>
 
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-webapp-common</artifactId>
 	<version>1.3-SNAPSHOT</version>
-    <packaging>jar</packaging>
+	<packaging>jar</packaging>
 
 	<dependencies>
 
-        <!-- Dependency Groups -->
-        <dependency>
-            <groupId>net.lin-k.safe-online</groupId>
-            <artifactId>safe-online-container-as</artifactId>
-            <type>pom</type>
-        </dependency>
-
-        <!-- Specific Dependencies: OLAS -->
+		<!-- Dependency Groups -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-ctrl-base</artifactId>
-			<version>1.3-SNAPSHOT</version>
+			<artifactId>safe-online-container-as</artifactId>
+			<type>pom</type>
 		</dependency>
+
+		<!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-shared</artifactId>
@@ -49,12 +44,17 @@
 			<artifactId>safe-online-sdk</artifactId>
 			<version>1.3-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-model</artifactId>
+			<type>ejb-client</type>
+		</dependency>
 
-        <!-- Test Dependencies -->
+		<!-- Test Dependencies -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-container-test</artifactId>
-            <type>pom</type>
+			<type>pom</type>
 		</dependency>
 
 	</dependencies>

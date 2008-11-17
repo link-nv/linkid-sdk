@@ -30,14 +30,15 @@ import net.link.safeonline.authentication.service.bean.UserRegistrationServiceBe
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.ApplicationOwnerDAO;
 import net.link.safeonline.dao.bean.ApplicationOwnerDAOBean;
-import net.link.safeonline.device.PasswordDeviceService;
-import net.link.safeonline.device.bean.PasswordDeviceServiceBean;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
+import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.IdScopeType;
-import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
+import net.link.safeonline.service.AttributeTypeService;
+import net.link.safeonline.service.bean.AttributeTypeServiceBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
 import net.link.safeonline.test.util.JmxTestUtils;
@@ -54,9 +55,11 @@ import test.unit.net.link.safeonline.SafeOnlineTestContainer;
 
 public class ApplicationServiceBeanTest extends TestCase {
 
-    private static final Log  LOG = LogFactory.getLog(ApplicationServiceBeanTest.class);
+    private static final Log    LOG            = LogFactory.getLog(ApplicationServiceBeanTest.class);
 
-    private EntityTestManager entityTestManager;
+    private static final String NAME_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:name";
+
+    private EntityTestManager   entityTestManager;
 
 
     @Override
@@ -126,8 +129,13 @@ public class ApplicationServiceBeanTest extends TestCase {
         assertTrue(result.isEmpty());
 
         // operate
+        AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(AttributeTypeServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager, "test-admin", "global-operator");
+        AttributeTypeEntity attributeType = new AttributeTypeEntity(NAME_ATTRIBUTE, DatatypeType.STRING, true, true);
+        attributeTypeService.add(attributeType);
+
         IdentityAttributeTypeDO[] applicationIdentityAttributes = new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
-                SafeOnlineConstants.NAME_ATTRIBUTE, false, false) };
+                NAME_ATTRIBUTE, false, false) };
         LOG.debug("---------- UPDATING APPLICATION IDENTITY ----------");
         applicationService.updateApplicationIdentity(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
                 Arrays.asList(applicationIdentityAttributes));
@@ -135,12 +143,11 @@ public class ApplicationServiceBeanTest extends TestCase {
 
         // verify
         assertEquals(1, result.size());
-        assertEquals(SafeOnlineConstants.NAME_ATTRIBUTE, result.iterator().next().getAttributeTypeName());
+        assertEquals(NAME_ATTRIBUTE, result.iterator().next().getAttributeTypeName());
         assertFalse(result.iterator().next().isRequired());
 
         // operate
-        applicationIdentityAttributes = new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(SafeOnlineConstants.NAME_ATTRIBUTE,
-                true, false) };
+        applicationIdentityAttributes = new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(NAME_ATTRIBUTE, true, false) };
         entityManager.getTransaction().commit();
         entityManager.getTransaction().begin();
         applicationService.updateApplicationIdentity(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
@@ -151,7 +158,7 @@ public class ApplicationServiceBeanTest extends TestCase {
 
         // verify
         assertEquals(1, result.size());
-        assertEquals(SafeOnlineConstants.NAME_ATTRIBUTE, result.iterator().next().getAttributeTypeName());
+        assertEquals(NAME_ATTRIBUTE, result.iterator().next().getAttributeTypeName());
         assertTrue(result.iterator().next().isRequired());
     }
 
@@ -169,15 +176,17 @@ public class ApplicationServiceBeanTest extends TestCase {
 
         UserRegistrationService userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager);
-        PasswordDeviceService passwordDeviceService = EJBTestUtils.newInstance(PasswordDeviceServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager);
 
-        SubjectEntity testAdminSubject = userRegistrationService.registerUser(testAdminLogin);
-        passwordDeviceService.register(testAdminSubject, "secret");
+        userRegistrationService.registerUser(testAdminLogin);
         applicationService.registerApplicationOwner(testApplicationOwnerName, testAdminLogin);
 
+        AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(AttributeTypeServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager, "test-admin", "global-operator");
+        AttributeTypeEntity attributeType = new AttributeTypeEntity(NAME_ATTRIBUTE, DatatypeType.STRING, true, true);
+        attributeTypeService.add(attributeType);
+
         List<IdentityAttributeTypeDO> initialIdentity = new LinkedList<IdentityAttributeTypeDO>();
-        initialIdentity.add(new IdentityAttributeTypeDO(SafeOnlineConstants.NAME_ATTRIBUTE));
+        initialIdentity.add(new IdentityAttributeTypeDO(NAME_ATTRIBUTE));
 
         applicationService.addApplication(testApplicationName, testApplicationFriendlyName, testApplicationOwnerName, null, false,
                 IdScopeType.USER, null, null, null, initialIdentity, false, false, false, null);
@@ -210,15 +219,17 @@ public class ApplicationServiceBeanTest extends TestCase {
         String testAdminLogin = "test-admin-login-" + UUID.randomUUID().toString();
         UserRegistrationService userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager);
-        PasswordDeviceService passwordDeviceService = EJBTestUtils.newInstance(PasswordDeviceServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager);
 
-        SubjectEntity testAdminSubject = userRegistrationService.registerUser(testAdminLogin);
-        passwordDeviceService.register(testAdminSubject, "secret");
+        userRegistrationService.registerUser(testAdminLogin);
         applicationService.registerApplicationOwner(testApplicationOwnerName, testAdminLogin);
 
+        AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(AttributeTypeServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager, "test-admin", "global-operator");
+        AttributeTypeEntity attributeType = new AttributeTypeEntity(NAME_ATTRIBUTE, DatatypeType.STRING, true, true);
+        attributeTypeService.add(attributeType);
+
         List<IdentityAttributeTypeDO> initialIdentity = new LinkedList<IdentityAttributeTypeDO>();
-        initialIdentity.add(new IdentityAttributeTypeDO(SafeOnlineConstants.NAME_ATTRIBUTE));
+        initialIdentity.add(new IdentityAttributeTypeDO(NAME_ATTRIBUTE));
 
         applicationService.addApplication(testApplicationName, null, testApplicationOwnerName, null, false, IdScopeType.USER, null, null,
                 null, initialIdentity, false, false, false, null);
@@ -257,15 +268,17 @@ public class ApplicationServiceBeanTest extends TestCase {
         String testAdminLogin = "test-admin-login-" + UUID.randomUUID().toString();
         UserRegistrationService userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager);
-        PasswordDeviceService passwordDeviceService = EJBTestUtils.newInstance(PasswordDeviceServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager);
 
-        SubjectEntity testAdminSubject = userRegistrationService.registerUser(testAdminLogin);
-        passwordDeviceService.register(testAdminSubject, "secret");
+        userRegistrationService.registerUser(testAdminLogin);
         applicationService.registerApplicationOwner(testApplicationOwnerName, testAdminLogin);
 
+        AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(AttributeTypeServiceBean.class,
+                SafeOnlineTestContainer.sessionBeans, entityManager, "test-admin", "global-operator");
+        AttributeTypeEntity attributeType = new AttributeTypeEntity(NAME_ATTRIBUTE, DatatypeType.STRING, true, true);
+        attributeTypeService.add(attributeType);
+
         List<IdentityAttributeTypeDO> initialIdentity = new LinkedList<IdentityAttributeTypeDO>();
-        initialIdentity.add(new IdentityAttributeTypeDO(SafeOnlineConstants.NAME_ATTRIBUTE));
+        initialIdentity.add(new IdentityAttributeTypeDO(NAME_ATTRIBUTE));
 
         applicationService.addApplication(testApplicationName, null, testApplicationOwnerName, null, false, IdScopeType.USER, null, null,
                 null, initialIdentity, false, false, false, null);

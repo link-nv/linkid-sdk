@@ -92,10 +92,13 @@ public class OptionStartableBean extends AbstractInitBean {
 
         ResourceBundle properties = ResourceBundle.getBundle("config");
         String nodeName = properties.getString("olas.node.name");
+        String optionWebappName = properties.getString("option.webapp.name");
 
-        this.devices.add(new Device(OptionConstants.OPTION_DEVICE_ID, SafeOnlineConstants.MOBILE_DEVICE_CLASS, nodeName,
-                "/olas-option/auth", "/olas-option/device", "/olas-option/device", null, "/olas-option/device", certificate,
-                optionDeviceAttributeType, imeiAttributeType, optionDeviceDisableAttributeType));
+        this.devices
+                    .add(new Device(OptionConstants.OPTION_DEVICE_ID, SafeOnlineConstants.MOBILE_DEVICE_CLASS, nodeName, "/"
+                            + optionWebappName + "/auth", "/" + optionWebappName + "/device", "/" + optionWebappName + "/device", null, "/"
+                            + optionWebappName + "/device", certificate, optionDeviceAttributeType, imeiAttributeType,
+                            optionDeviceDisableAttributeType));
         this.deviceDescriptions.add(new DeviceDescription(OptionConstants.OPTION_DEVICE_ID, "nl", "Option Datakaart"));
         this.deviceDescriptions.add(new DeviceDescription(OptionConstants.OPTION_DEVICE_ID, Locale.ENGLISH.getLanguage(),
                 "Option Data Card"));

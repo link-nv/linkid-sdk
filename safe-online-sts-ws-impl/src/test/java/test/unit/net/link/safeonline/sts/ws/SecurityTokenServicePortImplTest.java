@@ -576,8 +576,7 @@ public class SecurityTokenServicePortImplTest {
 
         Challenge<String> challenge = new Challenge<String>();
         String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(issuerName, applicationName, applicationName, this.keyPair,
-                assertionConsumerServiceURL, destinationURL, challenge,
-                Collections.singleton(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID), false);
+                assertionConsumerServiceURL, destinationURL, challenge, Collections.singleton("test-device-name"), false);
         Document doc = DomUtils.parseDocument(encodedAuthnRequest);
         return doc.getDocumentElement();
     }

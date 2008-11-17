@@ -21,11 +21,6 @@ public class ProgressAuthenticationPanel extends Panel {
 
         super(id);
 
-        add(new Label("selectedDevice", getLocalizer().getString("progressSelectDevice", this)));
-        add(new Label("authenticate", getLocalizer().getString("progressAuthenticate", this)));
-        add(new Label("usageAgreements", getLocalizer().getString("progressUsageAgreements", this)));
-        add(new Label("attributes", getLocalizer().getString("progressAttributes", this)));
-
         String setActiveScript = "function setActive(id, className)" + "{ obj = document.getElementById(id); " + "if (obj != null) "
                 + "{ obj.className = className; }" + " }" + " setActive(\"stage_" + stage + "\", \"active\");";
 

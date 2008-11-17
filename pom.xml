@@ -539,6 +539,7 @@
 		<safe-online.digipass.webapp.name>olas-digipass</safe-online.digipass.webapp.name>
 		<safe-online.encap.webapp.name>olas-encap</safe-online.encap.webapp.name>
 		<safe-online.option.webapp.name>olas-option</safe-online.option.webapp.name>
+		<safe-online.password.webapp.name>olas-password</safe-online.password.webapp.name>
 
 		<!-- DEFAULT VERSIONS, SEE DEPENDENCIES -->
 		<safe-online.version>${pom.version}</safe-online.version>
@@ -850,6 +851,11 @@
 		<module>safe-online-option-webapp</module>
 		<module>safe-online-option-deploy</module>
 		<module>safe-online-model-option</module>
+		<module>safe-online-model-password</module>
+		<module>safe-online-password-keystore</module>
+		<module>safe-online-password-startup-runtime</module>
+		<module>safe-online-password-webapp</module>
+		<module>safe-online-password-deploy</module>
 	</modules>
 
 	<!-- DEFAULT BUILD CONFIGURATION -->
@@ -1614,6 +1620,18 @@
 					<exclusion>
 						<groupId>net.lin-k.safe-online</groupId>
 						<artifactId>safe-online-encap-startup-runtime</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>net.lin-k.safe-online</groupId>
+				<artifactId>safe-online-model-password</artifactId>
+				<type>ejb-client</type>
+				<version>${safe-online.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>net.lin-k.safe-online</groupId>
+						<artifactId>safe-online-password-startup-runtime</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>

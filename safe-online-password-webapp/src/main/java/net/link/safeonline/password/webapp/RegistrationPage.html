@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/"
+	xml:lang="en" lang="en">
+
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+	</head>
+
+	<body>
+
+		<div wicket:id="header_border"></div>
+
+		<div wicket:id="content_border">
+
+			<h1>
+				<wicket:message key="usernamePassword">[Username Password]</wicket:message>
+			</h1>
+
+			<div wicket:id="sidebar_border">
+
+				<ul>
+					<li>
+						<a wicket:id="help">
+							<wicket:message key="helpaction">[Help]</wicket:message>
+						</a>
+					</li>
+				</ul>
+
+				<p>
+					<wicket:message key="helpRegisterPassword">[Register Password
+						Help]</wicket:message>
+				</p>
+			</div>
+
+			<div wicket:id="progress">[Progress Panel]</div>
+
+			<a wicket:id="already_registered">
+				<wicket:message key="errorPasswordAlreadyRegistered">[Password Already
+					Registered]</wicket:message>
+			</a>
+
+			<form wicket:id="registration_form">
+
+				<label>
+					<wicket:message key="password">[Password]</wicket:message>
+				</label>
+				<div>
+					<input wicket:id="password1" type="password" class="label" />
+				</div>
+				<div wicket:id="password1_feedback" class="error"></div>
+
+				<label>
+					<wicket:message key="repeatPassword">[Repeat Password]</wicket:message>
+				</label>
+				<div>
+					<input wicket:id="password2" type="password" class="label" />
+				</div>
+				<div wicket:id="password2_feedback" class="error"></div>
+
+				<label>&nbsp;</label>
+				<input wicket:id="save" type="submit" value="[Save]"
+					wicket:message="value:saveaction" class="submit" />
+				<input wicket:id="cancel" type="submit" value="[Cancel]"
+					wicket:message="value:cancelaction" class="submit" />
+
+				<div wicket:id="feedback" class="error"></div>
+			</form>
+
+		</div>
+
+	</body>
+</html>

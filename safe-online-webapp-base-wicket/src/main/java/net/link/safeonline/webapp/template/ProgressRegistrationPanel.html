@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/"
+	xml:lang="en" lang="en">
+
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+	</head>
+
+	<body>
+
+		<wicket:panel>
+
+			<table class="plain timeline">
+				<td class="start" />
+				<td id="stage_choose">
+					<wicket:message key="progressChooseLogin">[Choose login]</wicket:message>
+				</td>
+				<td id="stage_initial">
+					<wicket:message key="progressChooseInitialDevice">
+						[Choose Initial Device]</wicket:message>
+				</td>
+				<td id="stage_register">
+					<wicket:message key="progressRegister">
+						[Register]</wicket:message>
+				</td>
+				<td class="end" />
+			</table>
+
+			<script language="JavaScript" wicket:id="setActive" />
+
+		</wicket:panel>
+
+	</body>
+
+</html>

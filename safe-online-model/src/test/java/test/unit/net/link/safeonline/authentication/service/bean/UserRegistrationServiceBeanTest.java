@@ -15,17 +15,12 @@ import javax.persistence.EntityTransaction;
 
 import junit.framework.TestCase;
 import net.link.safeonline.SafeOnlineConstants;
-import net.link.safeonline.authentication.exception.ExistingUserException;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.authentication.service.bean.UserRegistrationServiceBean;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.bean.AttributeDAOBean;
 import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
-import net.link.safeonline.device.PasswordDeviceService;
-import net.link.safeonline.device.backend.PasswordManager;
-import net.link.safeonline.device.backend.bean.PasswordManagerBean;
-import net.link.safeonline.device.bean.PasswordDeviceServiceBean;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -106,17 +101,13 @@ public class UserRegistrationServiceBeanTest extends TestCase {
 
         // setup
         String testLogin = "test-login";
-        String testPassword = "test-password";
 
         EntityManager entityManager = this.entityTestManager.getEntityManager();
         UserRegistrationService userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager);
-        PasswordDeviceService passwordDeviceService = EJBTestUtils.newInstance(PasswordDeviceServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager);
 
         // operate
-        SubjectEntity testSubject = userRegistrationService.registerUser(testLogin);
-        passwordDeviceService.register(testSubject, testPassword);
+        userRegistrationService.registerUser(testLogin);
 
         // verify
         SubjectService subjectService = EJBTestUtils.newInstance(SubjectServiceBean.class, SafeOnlineTestContainer.sessionBeans,
@@ -128,42 +119,5 @@ public class UserRegistrationServiceBeanTest extends TestCase {
         AttributeDAO attributeDAO = EJBTestUtils.newInstance(AttributeDAOBean.class, SafeOnlineTestContainer.sessionBeans, entityManager);
         AttributeEntity loginAttribute = attributeDAO.getAttribute(loginAttributeType, resultSubject);
         assertEquals(testLogin, loginAttribute.getValue());
-
-        PasswordManager passwordManager = EJBTestUtils.newInstance(PasswordManagerBean.class, SafeOnlineTestContainer.sessionBeans,
-                entityManager);
-
-        boolean isPasswordConfigured = passwordManager.isPasswordConfigured(resultSubject);
-        assertTrue(isPasswordConfigured);
-
-        boolean isPasswordCorrect = passwordManager.validatePassword(resultSubject, testPassword);
-
-        assertTrue(isPasswordCorrect);
-
-    }
-
-    public void testRegisteringTwiceFails()
-            throws Exception {
-
-        // setup
-        String testLogin = "test-login";
-        String testPassword = "test-password";
-
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
-        UserRegistrationService userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager);
-        PasswordDeviceService passwordDeviceService = EJBTestUtils.newInstance(PasswordDeviceServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager);
-
-        // operate
-        SubjectEntity testSubject = userRegistrationService.registerUser(testLogin);
-        passwordDeviceService.register(testSubject, testPassword);
-
-        // operate & verify
-        try {
-            userRegistrationService.registerUser(testLogin);
-            fail();
-        } catch (ExistingUserException e) {
-            // expected
-        }
     }
 }
