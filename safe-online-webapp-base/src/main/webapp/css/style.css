@@ -32,6 +32,9 @@ body {
     font:               14px/ 21px "Trebuchet MS", Verdana, Arial;
     text-align:         center;
 }
+body.minimal {
+    background:         transparent;
+}
 p, h1, h2, h3, h4, h5, h6, br {
     margin:             0;
     padding:            0;
@@ -75,15 +78,25 @@ a:hover {
     padding:            0;
 
     background:         url('../images/header.png') no-repeat left top;
+}
+.minimal #c-header {
+    position:           absolute;
+    left:               50%;
 
-    border:             none;
+    height:             auto;
+    margin-left:        -500px;
+
+    background:         transparent;
+}
+.minimal #c-header a {
+    color: #333;
 }
 
 /********************************************************* HEADER **/
 #header {
     display:            block;
 
-    width:              900px;
+    width:              865px;
     height:             115px;                      /* IE doesn't include padding in h/w. */
     margin:             0;
     padding:            25px 0 0;
@@ -92,6 +105,9 @@ a:hover {
 }
 #header[id] {
     height:             90px;
+}
+.minimal #header {
+    height:             auto;
 }
 #header form img {
     margin-right:       5px;
@@ -199,6 +215,9 @@ a:hover {
 
     background:         url('../images/footer.png') left top;
 }
+.minimal #footer {
+    display:            none;
+}
 
 /********************************************* SIDE BOX CONTAINER **/
 #c-sidebox {
@@ -210,6 +229,9 @@ a:hover {
     padding:            0;
 
     text-align:         left;
+}
+.minimal #c-sidebox {
+    margin-top:         -2em;
 }
 
 /******************************************************* SIDE BOX **/

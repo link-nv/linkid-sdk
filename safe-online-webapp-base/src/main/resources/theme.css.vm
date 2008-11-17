@@ -30,7 +30,6 @@ div.dr-dscr table tr:hover {
  * ----- */
 
 #c-header a,
-#c-header ul.menu li a,
 input.submit {
 
     color:              white;
@@ -128,6 +127,7 @@ body {
 
 
 body,
+.minimal #c-header a,
 #c-header ul.menu li a:hover,
 #c-header ul.menu li.selected a,
     a:hover,
