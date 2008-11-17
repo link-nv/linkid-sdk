@@ -9,22 +9,30 @@ package net.link.safeonline.model.performance.bean;
 
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import javax.ejb.EJB;
+import javax.ejb.EJBException;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.IdScopeType;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.model.bean.AbstractInitBean;
+import net.link.safeonline.model.password.PasswordManager;
 import net.link.safeonline.model.performance.PerformanceConstants;
 import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
+import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.IdentityServiceClient;
 
@@ -45,14 +53,41 @@ public class PerformanceStartableBean extends AbstractInitBean {
     private static final String LICENSE_AGREEMENT_CONFIRM_TEXT_NL = "Deze software dient enkel voor performance testing gebruikt te worden.";
 
 
+    private static class PasswordRegistration {
+
+        final String login;
+
+        final String password;
+
+
+        public PasswordRegistration(String login, String password) {
+
+            this.login = login;
+            this.password = password;
+        }
+    }
+
+
+    private List<PasswordRegistration> passwordRegistrations;
+
+    @EJB
+    private PasswordManager            passwordManager;
+
+    @EJB
+    private SubjectService             subjectService;
+
+
     public PerformanceStartableBean() {
+
+        this.passwordRegistrations = new LinkedList<PasswordRegistration>();
 
         configureNode();
 
         /*
          * Create the performance user.
          */
-        this.authorizedUsers.put("performance", new AuthenticationDevice("performance", null, null));
+        this.users.add("performance");
+        this.passwordRegistrations.add(new PasswordRegistration("performance", "performance"));
         this.subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, "performance",
                 SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
 
@@ -116,6 +151,28 @@ public class PerformanceStartableBean extends AbstractInitBean {
         this.node = new Node(nodeName, protocol, hostname, hostport, hostportssl, authIdentityServiceClient.getCertificate(),
                 identityServiceClient.getCertificate());
         this.trustedCertificates.put(authIdentityServiceClient.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
+    }
+
+    @Override
+    public void postStart() {
+
+        super.postStart();
+
+        for (PasswordRegistration passwordRegistration : this.passwordRegistrations) {
+
+            SubjectEntity subject = this.subjectService.findSubjectFromUserName(passwordRegistration.login);
+            if (null != subject) {
+                continue;
+            }
+
+            try {
+                this.passwordManager.setPassword(subject, passwordRegistration.password);
+            } catch (PermissionDeniedException e) {
+                throw new EJBException("could not set password");
+            }
+
+        }
+
     }
 
     @Override
