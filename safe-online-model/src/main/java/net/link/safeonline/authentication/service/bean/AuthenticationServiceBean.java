@@ -93,7 +93,6 @@ import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.StatisticDAO;
 import net.link.safeonline.dao.StatisticDataPointDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
-import net.link.safeonline.device.PasswordDeviceService;
 import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
 import net.link.safeonline.device.sdk.saml2.request.DeviceOperationRequestFactory;
 import net.link.safeonline.device.sdk.saml2.response.DeviceOperationResponse;
@@ -132,8 +131,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.utils.Base64;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.annotation.ejb.RemoteBinding;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
@@ -256,9 +255,6 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
     @EJB
     private UsageAgreementService            usageAgreementService;
-
-    @EJB
-    private PasswordDeviceService            passwordDeviceService;
 
     @EJB
     private NodeAuthenticationService        nodeAuthenticationService;
@@ -884,19 +880,18 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     public boolean authenticate(@NonEmptyString String loginName, @NonEmptyString String password)
             throws SubjectNotFoundException, DeviceNotFoundException, DeviceDisabledException {
 
-        SubjectEntity subject = this.passwordDeviceService.authenticate(loginName, password);
-        if (null == subject)
-            return false;
-        DeviceEntity device = this.deviceDAO.getDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
+        /*
+         * SubjectEntity subject = this.passwordDeviceService.authenticate(loginName, password); if (null == subject) return false;
+         * DeviceEntity device = this.deviceDAO.getDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
+         */
 
         /*
          * Safe the state in this stateful session bean.
          */
-        this.authenticationState = USER_AUTHENTICATED;
-        this.authenticatedSubject = subject;
-        this.authenticationDevice = device;
-        this.authenticationDate = new DateTime();
-
+        /*
+         * this.authenticationState = USER_AUTHENTICATED; this.authenticatedSubject = subject; this.authenticationDevice = device;
+         * this.authenticationDate = new DateTime();
+         */
         /*
          * Create SSO Cookie for authentication webapp
          */
@@ -1186,10 +1181,10 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
             throws SubjectNotFoundException, DeviceNotFoundException {
 
         LOG.debug("set password");
-        this.passwordDeviceService.register(userId, password);
-        DeviceEntity device = this.deviceDAO.findDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
+        // this.passwordDeviceService.register(userId, password);
+        // DeviceEntity device = this.deviceDAO.findDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
 
-        this.authenticationDevice = device;
+        // this.authenticationDevice = device;
     }
 
     public AuthenticationState getAuthenticationState() {

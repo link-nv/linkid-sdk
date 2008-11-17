@@ -25,6 +25,15 @@ public abstract class TemplatePage extends WebPage {
         }
     }
 
+    public void addHeader(Page page, boolean logoutEnabled) {
+
+        if (null == this.headerBorder) {
+            this.headerBorder = new HeaderBorder(HEADER_ID, page, logoutEnabled);
+            super.add(this.headerBorder);
+        }
+
+    }
+
     public HeaderBorder getHeader(Page page) {
 
         addHeader(page);

@@ -42,8 +42,6 @@ import net.link.safeonline.dao.bean.SubscriptionDAOBean;
 import net.link.safeonline.dao.bean.UsageAgreementDAOBean;
 import net.link.safeonline.device.backend.bean.CredentialManagerBean;
 import net.link.safeonline.device.backend.bean.MobileManagerBean;
-import net.link.safeonline.device.backend.bean.PasswordManagerBean;
-import net.link.safeonline.device.bean.PasswordDeviceServiceBean;
 import net.link.safeonline.entity.AllowedDeviceEntity;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
@@ -141,14 +139,13 @@ public class SafeOnlineTestContainer {
             HelpdeskContextDAOBean.class, HelpdeskEventDAOBean.class, CredentialManagerBean.class, PkiProviderManagerBean.class,
             PkiValidatorBean.class, CachedOcspValidatorBean.class, OcspValidatorBean.class, SubjectIdentifierDAOBean.class,
             UserRegistrationManagerBean.class, ResourceAuditLoggerBean.class, AuditAuditDAOBean.class, AuditContextDAOBean.class,
-            AccessAuditDAOBean.class, SecurityAuditDAOBean.class, ResourceAuditDAOBean.class, PasswordManagerBean.class,
-            SubjectServiceBean.class, IdGeneratorBean.class, UsageAgreementDAOBean.class, UsageAgreementManagerBean.class,
-            PasswordDeviceServiceBean.class, MobileManagerBean.class, SecurityAuditLoggerBean.class, DevicePolicyServiceBean.class,
-            DevicesBean.class, AccountServiceBean.class, NodeDAOBean.class, NodeMappingServiceBean.class, NodeMappingDAOBean.class,
-            ProxyAttributeServiceBean.class, StatisticDAOBean.class, StatisticDataPointDAOBean.class,
-            NotificationProducerServiceBean.class, NotificationProducerDAOBean.class, NotificationConsumerServiceBean.class,
-            EndpointReferenceDAOBean.class, ApplicationScopeIdDAOBean.class, OSGIStartableBean.class, AttributeCacheDAOBean.class,
-            ApplicationPoolDAOBean.class, NotificationMessageDAOBean.class };
+            AccessAuditDAOBean.class, SecurityAuditDAOBean.class, ResourceAuditDAOBean.class, SubjectServiceBean.class,
+            IdGeneratorBean.class, UsageAgreementDAOBean.class, UsageAgreementManagerBean.class, MobileManagerBean.class,
+            SecurityAuditLoggerBean.class, DevicePolicyServiceBean.class, DevicesBean.class, AccountServiceBean.class, NodeDAOBean.class,
+            NodeMappingServiceBean.class, NodeMappingDAOBean.class, ProxyAttributeServiceBean.class, StatisticDAOBean.class,
+            StatisticDataPointDAOBean.class, NotificationProducerServiceBean.class, NotificationProducerDAOBean.class,
+            NotificationConsumerServiceBean.class, EndpointReferenceDAOBean.class, ApplicationScopeIdDAOBean.class,
+            OSGIStartableBean.class, AttributeCacheDAOBean.class, ApplicationPoolDAOBean.class, NotificationMessageDAOBean.class };
 
     public static final Class<?>[] entities     = new Class[] { SubjectEntity.class, ApplicationEntity.class, ApplicationOwnerEntity.class,
             AttributeEntity.class, AttributeTypeEntity.class, SubscriptionEntity.class, TrustDomainEntity.class,

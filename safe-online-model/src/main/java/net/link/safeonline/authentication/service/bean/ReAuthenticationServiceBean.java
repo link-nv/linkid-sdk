@@ -26,7 +26,6 @@ import net.link.safeonline.authentication.exception.SubjectMismatchException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.ReAuthenticationService;
 import net.link.safeonline.dao.DeviceDAO;
-import net.link.safeonline.device.PasswordDeviceService;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.SubjectManager;
@@ -47,20 +46,17 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 
     // TODO: update for remote devices
 
-    private final static Log      LOG = LogFactory.getLog(ReAuthenticationServiceBean.class);
+    private final static Log  LOG = LogFactory.getLog(ReAuthenticationServiceBean.class);
 
-    private SubjectEntity         authenticatedSubject;
+    private SubjectEntity     authenticatedSubject;
 
-    private Set<DeviceEntity>     authenticationDevices;
-
-    @EJB
-    private DeviceDAO             deviceDAO;
+    private Set<DeviceEntity> authenticationDevices;
 
     @EJB
-    private SubjectManager        subjectManager;
+    private DeviceDAO         deviceDAO;
 
     @EJB
-    private PasswordDeviceService passwordDeviceService;
+    private SubjectManager    subjectManager;
 
 
     @PostConstruct
@@ -112,18 +108,18 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
             throws SubjectNotFoundException, DeviceNotFoundException, SubjectMismatchException, PermissionDeniedException,
             DeviceDisabledException {
 
-        SubjectEntity subject = this.passwordDeviceService.authenticate(login, password);
-        if (null == subject)
-            return false;
-        LOG.debug("sucessfully authenticated " + login);
+        /*
+         * SubjectEntity subject = this.passwordDeviceService.authenticate(login, password); if (null == subject) return false;
+         * LOG.debug("sucessfully authenticated " + login);
+         */
 
         /*
          * Safe the state in this stateful session bean.
          */
-        setAuthenticatedSubject(subject);
-        DeviceEntity passwordDevice = this.deviceDAO.getDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
-        addAuthenticationDevice(passwordDevice);
-
+        /*
+         * setAuthenticatedSubject(subject); DeviceEntity passwordDevice =
+         * this.deviceDAO.getDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID); addAuthenticationDevice(passwordDevice);
+         */
         /*
          * Communicate that the authentication process can continue.
          */

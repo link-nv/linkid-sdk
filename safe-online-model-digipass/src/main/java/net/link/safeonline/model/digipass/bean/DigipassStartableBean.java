@@ -76,10 +76,11 @@ public class DigipassStartableBean extends AbstractInitBean {
 
         ResourceBundle properties = ResourceBundle.getBundle("config");
         String nodeName = properties.getString("olas.node.name");
+        String digipassWebappName = properties.getString("digipass.webapp.name");
 
-        this.devices.add(new Device(DigipassConstants.DIGIPASS_DEVICE_ID, SafeOnlineConstants.DIGIPASS_DEVICE_CLASS, nodeName,
-                "/olas-digipass/auth", null, null, null, "/olas-digipass/device", certificate, digipassDeviceAttributeType,
-                digipassSNAttributeType, digipassDeviceDisableAttributeType));
+        this.devices.add(new Device(DigipassConstants.DIGIPASS_DEVICE_ID, SafeOnlineConstants.DIGIPASS_DEVICE_CLASS, nodeName, "/"
+                + digipassWebappName + "/auth", null, null, null, "/" + digipassWebappName + "/device", certificate,
+                digipassDeviceAttributeType, digipassSNAttributeType, digipassDeviceDisableAttributeType));
         this.deviceDescriptions.add(new DeviceDescription(DigipassConstants.DIGIPASS_DEVICE_ID, "nl", "EBank Digipass"));
         this.deviceDescriptions.add(new DeviceDescription(DigipassConstants.DIGIPASS_DEVICE_ID, Locale.ENGLISH.getLanguage(),
                 "EBank Digipass"));

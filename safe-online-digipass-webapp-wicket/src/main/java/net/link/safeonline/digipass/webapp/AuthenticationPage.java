@@ -119,7 +119,7 @@ public class AuthenticationPage extends TemplatePage {
             add(loginField);
 
             final TextField<String> tokenField = new TextField<String>(TOKEN_FIELD_ID, new PropertyModel<String>(this, "token"));
-            loginField.setRequired(true);
+            tokenField.setRequired(true);
 
             add(tokenField);
 

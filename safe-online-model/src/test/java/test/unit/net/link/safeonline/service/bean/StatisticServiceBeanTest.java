@@ -26,13 +26,10 @@ import net.link.safeonline.authentication.service.bean.UserRegistrationServiceBe
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.StatisticDAO;
 import net.link.safeonline.dao.bean.StatisticDAOBean;
-import net.link.safeonline.device.PasswordDeviceService;
-import net.link.safeonline.device.bean.PasswordDeviceServiceBean;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.StatisticDataPointEntity;
 import net.link.safeonline.entity.StatisticEntity;
-import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
 import net.link.safeonline.service.StatisticService;
 import net.link.safeonline.service.bean.StatisticServiceBean;
@@ -124,11 +121,7 @@ public class StatisticServiceBeanTest extends TestCase {
 
         UserRegistrationService userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager);
-        PasswordDeviceService passwordDeviceService = EJBTestUtils.newInstance(PasswordDeviceServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager);
-
-        SubjectEntity testAdminSubject = userRegistrationService.registerUser(testAdminLogin);
-        passwordDeviceService.register(testAdminSubject, "secret");
+        userRegistrationService.registerUser(testAdminLogin);
         applicationService.registerApplicationOwner(testApplicationOwnerName, testAdminLogin);
 
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null, null, false,
@@ -178,11 +171,7 @@ public class StatisticServiceBeanTest extends TestCase {
 
         UserRegistrationService userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager);
-        PasswordDeviceService passwordDeviceService = EJBTestUtils.newInstance(PasswordDeviceServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager);
-
-        SubjectEntity testAdminSubject = userRegistrationService.registerUser(testAdminLogin);
-        passwordDeviceService.register(testAdminSubject, "secret");
+        userRegistrationService.registerUser(testAdminLogin);
         applicationService.registerApplicationOwner(testApplicationOwnerName, testAdminLogin);
 
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null, null, false,

@@ -46,7 +46,6 @@ import net.link.safeonline.dao.bean.SubjectDAOBean;
 import net.link.safeonline.dao.bean.SubjectIdentifierDAOBean;
 import net.link.safeonline.dao.bean.SubscriptionDAOBean;
 import net.link.safeonline.dao.bean.UsageAgreementDAOBean;
-import net.link.safeonline.device.backend.bean.PasswordManagerBean;
 import net.link.safeonline.entity.AllowedDeviceEntity;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
@@ -89,6 +88,7 @@ import net.link.safeonline.model.beid.bean.BeIdStartableBean;
 import net.link.safeonline.model.demo.bean.DemoStartableBean;
 import net.link.safeonline.model.digipass.bean.DigipassStartableBean;
 import net.link.safeonline.model.encap.bean.EncapStartableBean;
+import net.link.safeonline.model.password.bean.PasswordManagerBean;
 import net.link.safeonline.notification.dao.bean.EndpointReferenceDAOBean;
 import net.link.safeonline.notification.dao.bean.NotificationMessageDAOBean;
 import net.link.safeonline.notification.dao.bean.NotificationProducerDAOBean;
@@ -121,12 +121,12 @@ public class DemoStartableBeanTest {
             ApplicationIdentityDAOBean.class, ConfigGroupDAOBean.class, ConfigItemDAOBean.class, TaskDAOBean.class,
             SchedulingDAOBean.class, TaskHistoryDAOBean.class, ApplicationIdentityManagerBean.class, TrustPointDAOBean.class,
             AttributeProviderDAOBean.class, DeviceDAOBean.class, DeviceClassDAOBean.class, AllowedDeviceDAOBean.class,
-            PasswordManagerBean.class, SubjectServiceBean.class, SubjectIdentifierDAOBean.class, IdGeneratorBean.class,
-            UsageAgreementDAOBean.class, UsageAgreementManagerBean.class, NodeDAOBean.class, DevicePolicyServiceBean.class,
-            ResourceAuditLoggerBean.class, AuditAuditDAOBean.class, AuditContextDAOBean.class, AccessAuditDAOBean.class,
-            SecurityAuditDAOBean.class, ResourceAuditDAOBean.class, DevicesBean.class, NotificationProducerServiceBean.class,
-            NotificationProducerDAOBean.class, EndpointReferenceDAOBean.class, ApplicationScopeIdDAOBean.class,
-            AttributeCacheDAOBean.class, ApplicationPoolDAOBean.class, NotificationMessageDAOBean.class };
+            SubjectServiceBean.class, SubjectIdentifierDAOBean.class, IdGeneratorBean.class, UsageAgreementDAOBean.class,
+            UsageAgreementManagerBean.class, NodeDAOBean.class, DevicePolicyServiceBean.class, ResourceAuditLoggerBean.class,
+            AuditAuditDAOBean.class, AuditContextDAOBean.class, AccessAuditDAOBean.class, SecurityAuditDAOBean.class,
+            ResourceAuditDAOBean.class, DevicesBean.class, NotificationProducerServiceBean.class, NotificationProducerDAOBean.class,
+            EndpointReferenceDAOBean.class, ApplicationScopeIdDAOBean.class, AttributeCacheDAOBean.class, ApplicationPoolDAOBean.class,
+            NotificationMessageDAOBean.class, PasswordManagerBean.class };
 
 
     @Before

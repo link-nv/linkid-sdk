@@ -12,7 +12,6 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.user.UserConstants;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -29,16 +28,6 @@ public interface Devices {
     /*
      * Accessors.
      */
-    String getNewPassword();
-
-    void setNewPassword(String newPassword);
-
-    String getOldPassword();
-
-    void setOldPassword(String oldPassword);
-
-    boolean isPasswordConfigured()
-            throws SubjectNotFoundException, DeviceNotFoundException;
 
     /*
      * Actions.
@@ -55,15 +44,6 @@ public interface Devices {
     String disableDevice()
             throws DeviceNotFoundException, IOException, SubjectNotFoundException, PermissionDeniedException,
             AttributeTypeNotFoundException;
-
-    String changePassword()
-            throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException;
-
-    String registerPassword()
-            throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException;
-
-    String removePassword()
-            throws SubjectNotFoundException, DeviceNotFoundException, PermissionDeniedException;
 
     /*
      * Lifecycle.
