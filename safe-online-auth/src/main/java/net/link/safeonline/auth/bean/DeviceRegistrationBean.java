@@ -17,22 +17,17 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.interceptor.Interceptors;
 
-import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.AuthenticationConstants;
 import net.link.safeonline.auth.AuthenticationUtils;
 import net.link.safeonline.auth.DeviceRegistration;
 import net.link.safeonline.auth.LoginManager;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
-import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
-import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.entity.DeviceEntity;
@@ -55,20 +50,15 @@ import org.jboss.seam.log.Log;
 public class DeviceRegistrationBean extends AbstractLoginBean implements DeviceRegistration {
 
     @Logger
-    private Log                   log;
+    private Log                 log;
 
-    private String                device;
-
-    private String                password;
-
-    @In(required = true)
-    private AuthenticationService authenticationService;
+    private String              device;
 
     @In(value = LoginManager.APPLICATION_ID_ATTRIBUTE, required = true)
-    private String                application;
+    private String              application;
 
     @In(value = LoginManager.REQUIRED_DEVICES_ATTRIBUTE, required = false)
-    private Set<DeviceEntity>     requiredDevicePolicy;
+    private Set<DeviceEntity>   requiredDevicePolicy;
 
     @EJB(mappedName = DevicePolicyService.JNDI_BINDING)
     private DevicePolicyService   devicePolicyService;
@@ -80,7 +70,6 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements DeviceR
 
         this.log.debug("destroy");
         this.device = null;
-        this.password = null;
     }
 
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
@@ -90,12 +79,6 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements DeviceR
         this.log.debug("deviceNext: " + this.device);
 
         String registrationURL = this.devicePolicyService.getRegistrationURL(this.device);
-        if (this.device.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
-            FacesContext context = FacesContext.getCurrentInstance();
-            ExternalContext externalContext = context.getExternalContext();
-            externalContext.redirect(registrationURL);
-            return null;
-        }
         AuthenticationUtils.redirect(registrationURL, this.device, this.userId);
         return null;
     }
@@ -110,29 +93,6 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements DeviceR
     public void setDevice(String device) {
 
         this.device = device;
-    }
-
-    @RolesAllowed(AuthenticationConstants.USER_ROLE)
-    public String getPassword() {
-
-        return this.password;
-    }
-
-    @RolesAllowed(AuthenticationConstants.USER_ROLE)
-    public String passwordNext()
-            throws SubjectNotFoundException, DeviceNotFoundException, DeviceDisabledException {
-
-        this.log.debug("passwordNext");
-        this.authenticationService.setPassword(this.userId, this.password);
-        this.authenticationService.authenticate(getUsername(), this.password);
-        super.relogin(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, this.authenticationService.getSsoCookie());
-        return null;
-    }
-
-    @RolesAllowed(AuthenticationConstants.USER_ROLE)
-    public void setPassword(String password) {
-
-        this.password = password;
     }
 
     @RolesAllowed(AuthenticationConstants.USER_ROLE)

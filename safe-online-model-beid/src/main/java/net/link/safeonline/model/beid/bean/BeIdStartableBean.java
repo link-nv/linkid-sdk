@@ -121,10 +121,11 @@ public class BeIdStartableBean extends AbstractInitBean {
 
         ResourceBundle properties = ResourceBundle.getBundle("config");
         String nodeName = properties.getString("olas.node.name");
+        String beidWebappName = properties.getString("beid.webapp.name");
 
-        this.devices.add(new Device(BeIdConstants.BEID_DEVICE_ID, SafeOnlineConstants.PKI_DEVICE_CLASS, nodeName, "/olas-beid/auth",
-                "/olas-beid/device", "/olas-beid/device", null, "/olas-beid/device", certificate, beidDeviceAttributeType,
-                beidDeviceUserAttributeType, beidDeviceDisableAttributeType));
+        this.devices.add(new Device(BeIdConstants.BEID_DEVICE_ID, SafeOnlineConstants.PKI_DEVICE_CLASS, nodeName, "/" + beidWebappName
+                + "/auth", "/" + beidWebappName + "/device", "/" + beidWebappName + "/device", null, "/" + beidWebappName + "/device",
+                certificate, beidDeviceAttributeType, beidDeviceUserAttributeType, beidDeviceDisableAttributeType));
         this.deviceDescriptions.add(new DeviceDescription(BeIdConstants.BEID_DEVICE_ID, "nl", "Belgische eID"));
         this.deviceDescriptions.add(new DeviceDescription(BeIdConstants.BEID_DEVICE_ID, Locale.ENGLISH.getLanguage(), "Belgian eID"));
     }

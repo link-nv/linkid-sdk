@@ -19,7 +19,6 @@ import javax.ejb.EJBException;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.interceptor.Interceptors;
 import javax.security.jacc.PolicyContext;
@@ -27,16 +26,12 @@ import javax.security.jacc.PolicyContextException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.authentication.service.CredentialService;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
-import net.link.safeonline.ctrl.error.annotation.Error;
-import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
 import net.link.safeonline.data.DeviceRegistrationDO;
 import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
 import net.link.safeonline.entity.DeviceEntity;
@@ -76,10 +71,6 @@ public class DevicesBean implements Devices {
 
     private static final String  DEVICE_REGISTRATIONS_LIST_NAME = "deviceRegistrations";
 
-    private String               oldPassword;
-
-    private String               newPassword;
-
     private boolean              credentialCacheFlushRequired;
 
     @DataModel(DEVICES_LIST_NAME)
@@ -108,9 +99,6 @@ public class DevicesBean implements Devices {
     @EJB(mappedName = DeviceService.JNDI_BINDING)
     private DeviceService       deviceService;
 
-    @EJB(mappedName = CredentialService.JNDI_BINDING)
-    private CredentialService   credentialService;
-
     @EJB(mappedName = DevicePolicyService.JNDI_BINDING)
     private DevicePolicyService devicePolicyService;
 
@@ -123,67 +111,6 @@ public class DevicesBean implements Devices {
     @In(value = LoginManager.AUTHENTICATED_DEVICE_SESSION_ATTRIBUTE)
     String                      authenticatedDevice;
 
-
-    public String getNewPassword() {
-
-        return this.newPassword;
-    }
-
-    @RolesAllowed(UserConstants.USER_ROLE)
-    public void setNewPassword(String newPassword) {
-
-        this.newPassword = newPassword;
-    }
-
-    public String getOldPassword() {
-
-        return this.oldPassword;
-    }
-
-    @RolesAllowed(UserConstants.USER_ROLE)
-    public void setOldPassword(String oldPassword) {
-
-        this.oldPassword = oldPassword;
-    }
-
-    @RolesAllowed(UserConstants.USER_ROLE)
-    @ErrorHandling( {
-            @Error(exceptionClass = PermissionDeniedException.class, messageId = "errorOldPasswordNotCorrect", fieldId = "newpassword"),
-            @Error(exceptionClass = DeviceNotFoundException.class, messageId = "errorOldPasswordNotFound", fieldId = "newpassword") })
-    public String registerPassword()
-            throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException {
-
-        this.credentialService.registerPassword(this.newPassword);
-        this.credentialCacheFlushRequired = true;
-        LOG.debug("returning success");
-        return "success";
-
-    }
-
-    @RolesAllowed(UserConstants.USER_ROLE)
-    @ErrorHandling( {
-            @Error(exceptionClass = PermissionDeniedException.class, messageId = "errorOldPasswordNotCorrect", fieldId = "oldpassword"),
-            @Error(exceptionClass = DeviceNotFoundException.class, messageId = "errorOldPasswordNotFound", fieldId = "oldpassword") })
-    public String changePassword()
-            throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException {
-
-        this.credentialService.changePassword(this.oldPassword, this.newPassword);
-        this.credentialCacheFlushRequired = true;
-        LOG.debug("returning success");
-        return "success";
-    }
-
-    @RolesAllowed(UserConstants.USER_ROLE)
-    @ErrorHandling( {
-            @Error(exceptionClass = PermissionDeniedException.class, messageId = "errorOldPasswordNotCorrect", fieldId = "oldpassword"),
-            @Error(exceptionClass = DeviceNotFoundException.class, messageId = "errorOldPasswordNotFound", fieldId = "oldpassword") })
-    public String removePassword()
-            throws SubjectNotFoundException, DeviceNotFoundException, PermissionDeniedException {
-
-        this.credentialService.removePassword(this.oldPassword);
-        this.credentialCacheFlushRequired = true;
-        return "success";
-    }
 
     @Remove
     @Destroy
@@ -214,8 +141,6 @@ public class DevicesBean implements Devices {
                 throw new EJBException("JACC policy context error: " + e.getMessage());
             }
         }
-        this.oldPassword = null;
-        this.newPassword = null;
         this.credentialCacheFlushRequired = false;
     }
 
@@ -248,11 +173,7 @@ public class DevicesBean implements Devices {
         List<DeviceEntity> deviceList = this.devicePolicyService.getDevices();
         for (DeviceEntity device : deviceList) {
             String deviceDescription = this.devicePolicyService.getDeviceDescription(device.getName(), locale);
-            if (device.getName().equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID) && isPasswordConfigured()) {
-                this.devices.add(new DeviceEntry(device, deviceDescription, false));
-            } else {
-                this.devices.add(new DeviceEntry(device, deviceDescription));
-            }
+            this.devices.add(new DeviceEntry(device, deviceDescription));
         }
         return this.devices;
     }
@@ -265,12 +186,6 @@ public class DevicesBean implements Devices {
         String userId = this.subjectManager.getCallerSubject().getUserId();
 
         String registrationURL = this.devicePolicyService.getRegistrationURL(this.selectedDevice.getDevice().getName());
-        if (this.selectedDevice.getDevice().getName().equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
-            FacesContext context = FacesContext.getCurrentInstance();
-            ExternalContext externalContext = context.getExternalContext();
-            externalContext.redirect(registrationURL);
-            return null;
-        }
         DeviceOperationUtils.redirect(registrationURL, DeviceOperationType.REGISTER, this.selectedDevice.getDevice().getName(),
                 this.authenticatedDevice, userId, null);
         return null;
@@ -288,12 +203,6 @@ public class DevicesBean implements Devices {
         String userId = this.subjectManager.getCallerSubject().getUserId();
         String removalURL = this.selectedDeviceRegistration.getDevice().getRemovalURL();
 
-        if (this.selectedDeviceRegistration.getDevice().getName().equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
-            FacesContext context = FacesContext.getCurrentInstance();
-            ExternalContext externalContext = context.getExternalContext();
-            externalContext.redirect(removalURL);
-            return null;
-        }
         DeviceOperationUtils.redirect(removalURL, DeviceOperationType.REMOVE, this.selectedDeviceRegistration.getDevice().getName(),
                 this.authenticatedDevice, userId, this.selectedDeviceRegistration.getAttribute());
         return null;
@@ -314,12 +223,6 @@ public class DevicesBean implements Devices {
         String userId = this.subjectManager.getCallerSubject().getUserId();
         String updateURL = this.selectedDeviceRegistration.getDevice().getUpdateURL();
 
-        if (this.selectedDeviceRegistration.getDevice().getName().equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
-            FacesContext context = FacesContext.getCurrentInstance();
-            ExternalContext externalContext = context.getExternalContext();
-            externalContext.redirect(updateURL);
-            return null;
-        }
         DeviceOperationUtils.redirect(updateURL, DeviceOperationType.UPDATE, this.selectedDeviceRegistration.getDevice().getName(),
                 this.authenticatedDevice, userId, this.selectedDeviceRegistration.getAttribute());
         return null;
@@ -338,22 +241,9 @@ public class DevicesBean implements Devices {
         LOG.debug("disable device: " + this.selectedDeviceRegistration.getFriendlyName());
         String userId = this.subjectManager.getCallerSubject().getUserId();
 
-        if (this.selectedDeviceRegistration.getDevice().getName().equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
-            this.credentialService.disablePassword();
-            deviceRegistrationsFactory();
-            return "success";
-        }
-
         DeviceOperationUtils.redirect(this.selectedDeviceRegistration.getDevice().getDisableURL(), DeviceOperationType.DISABLE,
                 this.selectedDeviceRegistration.getDevice().getName(), this.authenticatedDevice, userId,
                 this.selectedDeviceRegistration.getAttribute());
         return null;
-    }
-
-    @RolesAllowed(UserConstants.USER_ROLE)
-    public boolean isPasswordConfigured()
-            throws SubjectNotFoundException, DeviceNotFoundException {
-
-        return this.credentialService.isPasswordConfigured();
     }
 }

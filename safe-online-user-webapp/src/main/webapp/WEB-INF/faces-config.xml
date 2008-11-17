@@ -16,9 +16,9 @@
 		<view-handler>com.sun.facelets.FaceletViewHandler</view-handler>
 	</application>
 	<lifecycle>
-		<phase-listener> org.jboss.seam.jsf.SeamPhaseListener 
-		</phase-listener>
-		<phase-listener>net.link.safeonline.webapp.listener.LanguagePhaseListener</phase-listener>
+		<phase-listener>org.jboss.seam.jsf.SeamPhaseListener</phase-listener>
+		<phase-listener>
+			net.link.safeonline.webapp.listener.LanguagePhaseListener</phase-listener>
 	</lifecycle>
 	<navigation-rule>
 		<navigation-case>
@@ -96,36 +96,6 @@
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
-		<from-view-id> /device/password/register-password.xhtml 
-		</from-view-id>
-		<navigation-case>
-			<from-outcome>success</from-outcome>
-			<to-view-id> /device/password/confirm-password.xhtml </to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>back</from-outcome>
-			<to-view-id>/device/devices.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-	<navigation-rule>
-		<from-view-id> /device/password/confirm-password.xhtml </from-view-id>
-		<navigation-case>
-			<from-outcome>back</from-outcome>
-			<to-view-id>/device/devices.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-	<navigation-rule>
-		<from-view-id> /device/password/remove-password.xhtml </from-view-id>
-		<navigation-case>
-			<from-outcome>back</from-outcome>
-			<to-view-id>/device/devices.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>success</from-outcome>
-			<to-view-id>/device/devices.xhtml</to-view-id>
-		</navigation-case>
-	</navigation-rule>
-	<navigation-rule>
 		<from-view-id>/account.xhtml</from-view-id>
 		<navigation-case>
 			<from-outcome>remove</from-outcome>
@@ -139,8 +109,8 @@
 			<to-view-id>/account.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
-		<from-outcome>success</from-outcome>
-		<to-view-id>/main.xhtml</to-view-id>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/main.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 </faces-config>

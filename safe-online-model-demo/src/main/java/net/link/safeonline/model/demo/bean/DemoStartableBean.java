@@ -16,12 +16,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.demo.bank.keystore.DemoBankKeyStoreUtils;
 import net.link.safeonline.demo.cinema.keystore.DemoCinemaKeyStoreUtils;
@@ -39,12 +41,15 @@ import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.IdScopeType;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.model.bean.AbstractInitBean;
 import net.link.safeonline.model.beid.BeIdConstants;
 import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.model.digipass.DigipassConstants;
 import net.link.safeonline.model.encap.EncapConstants;
+import net.link.safeonline.model.password.PasswordManager;
+import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.IdentityServiceClient;
 
@@ -74,37 +79,63 @@ public class DemoStartableBean extends AbstractInitBean {
 
     private static final String DEMO_BANK_APPLICATION_NAME         = "demo-bank";
 
+    private static final String PASSWORD                           = "secret";
+
     public static final String  LICENSE_AGREEMENT_CONFIRM_TEXT_EN  = "PLEASE READ THIS SOFTWARE LICENSE AGREEMENT (\"LICENSE\") CAREFULLY BEFORE USING THE SOFTWARE. \n BY USING THE SOFTWARE, YOU ARE AGREEING TO BE BOUND BY THE TERMS OF THIS LICENSE. \n IF YOU ARE ACCESSING THE SOFTWARE ELECTRONICALLY, SIGNIFY YOUR AGREEMENT TO BE BOUND BY THE TERMS OF THIS LICENSE BY CLICKING THE \"AGREE/ACCEPT\" BUTTON. \n IF YOU DO NOT AGREE TO THE TERMS OF THIS LICENSE, DO NOT USE THE SOFTWARE AND (IF APPLICABLE) RETURN THE APPLE SOFTWARE TO THE PLACE WHERE YOU OBTAINED IT FOR A REFUND OR, IF THE SOFTWARE WAS ACCESSED ELECTRONICALLY, CLICK \"DISAGREE/DECLINE\".";
 
     public static final String  LICENSE_AGREEMENT_CONFIRM_TEXT_NL  = "GELIEVE ZORGVULDIG DEZE OVEREENKOMST VAN DE VERGUNNING VAN SOFTWARE (\"LICENSE \") TE LEZEN ALVORENS DE SOFTWARE TE GEBRUIKEN.";
 
-    private String              nodeName;
 
-    private String              protocol;
+    private static class PasswordRegistration {
 
-    private String              sslProtocol;
+        final String login;
 
-    private String              hostname;
+        final String password;
 
-    private int                 hostport;
 
-    private int                 hostportssl;
+        public PasswordRegistration(String login, String password) {
 
-    private String              demoAppWebappName;
+            this.login = login;
+            this.password = password;
+        }
+    }
 
-    private String              demoTicketWebappName;
 
-    private String              demoPaymentWebappName;
+    private List<PasswordRegistration> passwordRegistrations;
 
-    private String              demoLawyerWebappName;
+    private String                     nodeName;
 
-    private String              demoPrescriptionWebappName;
+    private String                     protocol;
 
-    private String              demoMandateWebappName;
+    private String                     sslProtocol;
 
-    private String              demoCinemaWebappName;
+    private String                     hostname;
 
-    private String              demoBankWebappName;
+    private int                        hostport;
+
+    private int                        hostportssl;
+
+    private String                     demoAppWebappName;
+
+    private String                     demoTicketWebappName;
+
+    private String                     demoPaymentWebappName;
+
+    private String                     demoLawyerWebappName;
+
+    private String                     demoPrescriptionWebappName;
+
+    private String                     demoMandateWebappName;
+
+    private String                     demoCinemaWebappName;
+
+    private String                     demoBankWebappName;
+
+    @EJB
+    private PasswordManager            passwordManager;
+
+    @EJB
+    private SubjectService             subjectService;
 
 
     public DemoStartableBean() {
@@ -124,6 +155,7 @@ public class DemoStartableBean extends AbstractInitBean {
         this.demoMandateWebappName = properties.getString("olas.demo.mandate.webapp.name");
         this.demoCinemaWebappName = properties.getString("olas.demo.cinema.webapp.name");
         this.demoBankWebappName = properties.getString("olas.demo.bank.webapp.name");
+        this.passwordRegistrations = new LinkedList<PasswordRegistration>();
 
         configureNode();
 
@@ -154,6 +186,29 @@ public class DemoStartableBean extends AbstractInitBean {
         configPrescriptionDemo();
 
         configMandateDemo();
+
+    }
+
+    @Override
+    public void postStart() {
+
+        super.postStart();
+
+        for (PasswordRegistration passwordRegistration : this.passwordRegistrations) {
+
+            SubjectEntity subject = this.subjectService.findSubjectFromUserName(passwordRegistration.login);
+            if (null != subject) {
+                continue;
+            }
+
+            try {
+                this.passwordManager.setPassword(subject, passwordRegistration.password);
+            } catch (PermissionDeniedException e) {
+                throw new EJBException("could not set password");
+            }
+
+        }
+
     }
 
     private byte[] getLogo() {
@@ -231,7 +286,8 @@ public class DemoStartableBean extends AbstractInitBean {
          * Register admin
          */
         String mandateAdmin = "mandate-admin";
-        this.authorizedUsers.put(mandateAdmin, new AuthenticationDevice("secret", null, null));
+        this.users.add(mandateAdmin);
+        this.passwordRegistrations.add(new PasswordRegistration(mandateAdmin, PASSWORD));
 
         this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, mandateAdmin, DEMO_MANDATE_APPLICATION_NAME));
         this.subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, mandateAdmin,
@@ -368,7 +424,8 @@ public class DemoStartableBean extends AbstractInitBean {
     private void configPaymentDemo() {
 
         String paymentAdmin = "payment-admin";
-        this.authorizedUsers.put(paymentAdmin, new AuthenticationDevice("secret", null, null));
+        this.users.add(paymentAdmin);
+        this.passwordRegistrations.add(new PasswordRegistration(paymentAdmin, PASSWORD));
 
         /*
          * Register the payment and ticket demo application within SafeOnline.
@@ -466,7 +523,8 @@ public class DemoStartableBean extends AbstractInitBean {
          * Subscribe the prescription admin.
          */
         String prescriptionAdmin = "prescription-admin";
-        this.authorizedUsers.put(prescriptionAdmin, new AuthenticationDevice("secret", null, null));
+        this.users.add(prescriptionAdmin);
+        this.passwordRegistrations.add(new PasswordRegistration(prescriptionAdmin, PASSWORD));
         this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, prescriptionAdmin, DEMO_PRESCRIPTION_APPLICATION_NAME));
         this.subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, prescriptionAdmin,
                 SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
@@ -533,7 +591,9 @@ public class DemoStartableBean extends AbstractInitBean {
         }
         this.trustedCertificates.put(demoLawyerCertificate, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
 
-        this.authorizedUsers.put("baradmin", new AuthenticationDevice("secret", null, null));
+        String baradmin = "baradmin";
+        this.users.add(baradmin);
+        this.passwordRegistrations.add(new PasswordRegistration(baradmin, PASSWORD));
 
         this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "baradmin", DEMO_LAWYER_APPLICATION_NAME));
         this.subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, "baradmin",
@@ -608,11 +668,17 @@ public class DemoStartableBean extends AbstractInitBean {
 
     private void configDemoUsers() {
 
-        this.authorizedUsers.put("fcorneli", new AuthenticationDevice("secret", null, null));
-        this.authorizedUsers.put("dieter", new AuthenticationDevice("secret", null, null));
-        this.authorizedUsers.put("mario", new AuthenticationDevice("secret", null, null));
-        this.authorizedUsers.put("wvdhaute", new AuthenticationDevice("secret", new String[] { "95874644" }, null));
-        this.authorizedUsers.put("mbillemo", new AuthenticationDevice("secret", null, null));
+        // TODO: add password registration
+        this.users.add("fcorneli");
+        this.users.add("dieter");
+        this.users.add("mario");
+        this.users.add("wvdhaute");
+        this.users.add("mbillemo");
+        this.passwordRegistrations.add(new PasswordRegistration("fcorneli", PASSWORD));
+        this.passwordRegistrations.add(new PasswordRegistration("dieter", PASSWORD));
+        this.passwordRegistrations.add(new PasswordRegistration("mario", PASSWORD));
+        this.passwordRegistrations.add(new PasswordRegistration("wvdhaute", PASSWORD));
+        this.passwordRegistrations.add(new PasswordRegistration("mbillemo", PASSWORD));
 
         this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "fcorneli", DEMO_APPLICATION_NAME));
         this.subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "fcorneli", DEMO_TICKET_APPLICATION_NAME));

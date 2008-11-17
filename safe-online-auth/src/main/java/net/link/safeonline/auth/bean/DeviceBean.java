@@ -22,7 +22,6 @@ import javax.faces.model.SelectItem;
 import javax.interceptor.Interceptors;
 import javax.servlet.http.HttpServletRequest;
 
-import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.AuthenticationUtils;
 import net.link.safeonline.auth.Device;
 import net.link.safeonline.auth.LoginManager;
@@ -101,11 +100,7 @@ public class DeviceBean implements Device {
         ExternalContext externalContext = context.getExternalContext();
         String requestPath = ((HttpServletRequest) externalContext.getRequest()).getRequestURL().toString();
 
-        if (!this.deviceSelection.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID))
-            return AuthenticationUtils.redirectAuthentication(requestPath, authenticationPath, this.deviceSelection);
-
-        externalContext.redirect(authenticationPath);
-        return null;
+        return AuthenticationUtils.redirectAuthentication(requestPath, authenticationPath, this.deviceSelection);
     }
 
     @Factory("applicationDevices")

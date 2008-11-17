@@ -14,8 +14,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Locale;
 
-import javax.xml.namespace.QName;
-
 import net.link.safeonline.applet.AppletControl;
 import net.link.safeonline.applet.AppletController;
 import net.link.safeonline.applet.AppletView;
@@ -24,9 +22,6 @@ import net.link.safeonline.applet.PinDialog;
 import net.link.safeonline.applet.RuntimeContext;
 import net.link.safeonline.applet.StatementProvider;
 import net.link.safeonline.option.applet.OptionMessages.KEY;
-import net.link.safeonline.option.connection.manager.ws.ConnectionManagerConstants;
-import net.link.safeonline.option.connection.manager.ws.generated.ConnectionManager;
-import net.link.safeonline.option.connection.manager.ws.generated.ConnectionManagerService;
 import net.link.safeonline.shared.SharedConstants;
 
 
@@ -46,14 +41,14 @@ import net.link.safeonline.shared.SharedConstants;
  */
 public class OptionController implements AppletController {
 
-    private AppletView        appletView;
+    private AppletView     appletView;
 
-    private RuntimeContext    runtimeContext;
+    private RuntimeContext runtimeContext;
 
-    private OptionMessages    messages;
+    private OptionMessages messages;
 
-    private ConnectionManager port = null;
 
+    // private ConnectionManager port = null;
 
     /**
      * {@inheritDoc}
@@ -81,26 +76,27 @@ public class OptionController implements AppletController {
 
         this.appletView.outputInfoMessage(InfoLevel.NORMAL, this.messages.getString(KEY.START));
 
-        if (null == this.port) {
-            try {
-                this.appletView.outputDetailMessage("Contacting connection manager");
-                ConnectionManagerService service = new ConnectionManagerService(new URL(ConnectionManagerConstants.URL + "?wsdl"),
-                        new QName(ConnectionManagerConstants.NAMESPACE, ConnectionManagerConstants.LOCALPART));
-                this.port = service.getConnectionManagerPort();
-            } catch (Throwable e) {
-                this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages.getString(KEY.ERROR));
-                this.appletView.outputDetailMessage(e.getMessage());
-                return;
-            }
-        }
+        // if (null == this.port) {
+        // try {
+        // this.appletView.outputDetailMessage("Contacting connection manager");
+        // ConnectionManagerService service = new ConnectionManagerService(new URL(ConnectionManagerConstants.URL + "?wsdl"),
+        // new QName(ConnectionManagerConstants.NAMESPACE, ConnectionManagerConstants.LOCALPART));
+        // this.port = service.getConnectionManagerPort();
+        // } catch (Throwable e) {
+        // this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages.getString(KEY.ERROR));
+        // this.appletView.outputDetailMessage(e.getMessage());
+        // return;
+        // }
+        // }
 
-        String IMEI = this.port.getIMEI();
+        // String IMEI = this.port.getIMEI();
+        String IMEI = "359741015676162";
 
-        if (null == IMEI) {
-            this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages.getString(KEY.ERROR));
-            this.appletView.outputDetailMessage("Could not read IMEI from connection manager");
-            return;
-        }
+        // if (null == IMEI) {
+        // this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages.getString(KEY.ERROR));
+        // this.appletView.outputDetailMessage("Could not read IMEI from connection manager");
+        // return;
+        // }
 
         this.appletView.outputDetailMessage("Found datacard  with IMEI: " + IMEI);
 

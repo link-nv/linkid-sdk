@@ -21,12 +21,22 @@ public class HeaderBorder extends Border {
     @SuppressWarnings("unused")
     private Page              page;
 
+    @SuppressWarnings("unused")
+    private boolean           logoutEnabled    = true;
+
 
     public HeaderBorder(final String id, Page page) {
+
+        this(id, page, true);
+
+    }
+
+    public HeaderBorder(final String id, Page page, final boolean logoutEnabled) {
 
         super(id);
 
         this.page = page;
+        this.logoutEnabled = logoutEnabled;
 
         // theme.css
         String applicationName = WebApplication.get().getServletContext().getInitParameter("ApplicationName");
@@ -78,7 +88,7 @@ public class HeaderBorder extends Border {
             @Override
             public boolean isVisible() {
 
-                return null != LoginManager.findUserId(WicketUtil.toServletRequest(getRequest()));
+                return null != LoginManager.findUserId(WicketUtil.toServletRequest(getRequest())) && logoutEnabled;
             }
 
         });

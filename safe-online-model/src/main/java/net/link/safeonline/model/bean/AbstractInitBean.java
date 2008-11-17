@@ -52,7 +52,6 @@ import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.dao.NodeDAO;
 import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.dao.UsageAgreementDAO;
-import net.link.safeonline.device.backend.PasswordManager;
 import net.link.safeonline.entity.AllowedDeviceEntity;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationIdentityPK;
@@ -127,26 +126,7 @@ public abstract class AbstractInitBean implements Startable {
     }
 
 
-    protected Map<String, AuthenticationDevice> authorizedUsers;
-
-
-    protected static class AuthenticationDevice {
-
-        final String   password;
-
-        final String[] weakMobiles;
-
-        final String[] strongMobiles;
-
-
-        public AuthenticationDevice(String password, String[] weakMobiles, String[] strongMobiles) {
-
-            this.password = password;
-            this.weakMobiles = weakMobiles;
-            this.strongMobiles = strongMobiles;
-        }
-    }
-
+    protected List<String>        users;
 
     protected Map<String, String> applicationOwnersAndLogin;
 
@@ -471,7 +451,7 @@ public abstract class AbstractInitBean implements Startable {
 
         this.applicationOwnersAndLogin = new HashMap<String, String>();
         this.attributeTypes = new LinkedList<AttributeTypeEntity>();
-        this.authorizedUsers = new HashMap<String, AuthenticationDevice>();
+        this.users = new LinkedList<String>();
         this.registeredApplications = new LinkedList<Application>();
         this.applicationPools = new LinkedList<ApplicationPool>();
         this.subscriptions = new LinkedList<Subscription>();
@@ -598,9 +578,6 @@ public abstract class AbstractInitBean implements Startable {
 
     @EJB(mappedName = DeviceClassDAO.JNDI_BINDING)
     private DeviceClassDAO         deviceClassDAO;
-
-    @EJB(mappedName = PasswordManager.JNDI_BINDING)
-    private PasswordManager        passwordManager;
 
 
     private void initApplicationTrustPoints() {
@@ -826,22 +803,12 @@ public abstract class AbstractInitBean implements Startable {
     private void initSubjects()
             throws AttributeTypeNotFoundException {
 
-        for (Map.Entry<String, AuthenticationDevice> authorizedUser : this.authorizedUsers.entrySet()) {
-            String login = authorizedUser.getKey();
+        for (String login : this.users) {
             SubjectEntity subject = this.subjectService.findSubjectFromUserName(login);
             if (null != subject) {
                 continue;
             }
             subject = this.subjectService.addSubject(login);
-
-            AuthenticationDevice device = authorizedUser.getValue();
-            String password = device.password;
-            try {
-                this.passwordManager.setPassword(subject, password);
-            } catch (PermissionDeniedException e) {
-                throw new EJBException("could not set password");
-            }
-
         }
     }
 

@@ -55,18 +55,6 @@ public class SafeOnlineConstants {
 
     public static final String SAFE_ONLINE_APPLICATION_POOL_NAME       = "olas";
 
-    public static final String NAME_ATTRIBUTE                          = "urn:net:lin-k:safe-online:attribute:name";
-
-    public static final String PASSWORD_HASH_ATTRIBUTE                 = "urn:net:lin-k:safe-online:attribute:password:hash";
-
-    public static final String PASSWORD_SEED_ATTRIBUTE                 = "urn:net:lin-k:safe-online:attribute:password:seed";
-
-    public static final String PASSWORD_ALGORITHM_ATTRIBUTE            = "urn:net:lin-k:safe-online:attribute:password:algorithm";
-
-    public static final String PASSWORD_DEVICE_ATTRIBUTE               = "urn:net:lin-k:safe-online:attribute:device:password";
-
-    public static final String PASSWORD_DEVICE_DISABLE_ATTRIBUTE       = "urn:net:lin-k:safe-online:attribute:device:password:disable";
-
     /**
      * The PKI trust domain name for the SafeOnline devices.
      */
@@ -76,11 +64,6 @@ public class SafeOnlineConstants {
      * The PKI trust domain for the Olas Nodes.
      */
     public static final String SAFE_ONLINE_OLAS_TRUST_DOMAIN           = "olas";
-
-    /**
-     * Device ID's
-     */
-    public static final String USERNAME_PASSWORD_DEVICE_ID             = "password";
 
     /**
      * Device classes
@@ -120,6 +103,12 @@ public class SafeOnlineConstants {
     public static final String APPLICATION_PROPERTY                    = "application";
     public static final String DEVICE_PROPERTY                         = "device";
     public static final String INFO_PROPERTY                           = "info";
+
+    /**
+     * Administrator and owner users
+     */
+    public static final String ADMIN_LOGIN                             = "admin";
+    public static final String OWNER_LOGIN                             = "owner";
 
 
     private SafeOnlineConstants() {

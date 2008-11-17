@@ -16,12 +16,10 @@ import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.faces.application.FacesMessage;
-import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.interceptor.Interceptors;
 
-import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.auth.AccountRegistration;
 import net.link.safeonline.auth.AuthenticationUtils;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
@@ -133,12 +131,6 @@ public class AccountRegistrationBean extends AbstractLoginBean implements Accoun
 
         String registrationURL = this.devicePolicyService.getRegistrationURL(this.device);
 
-        if (this.device.equals(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID)) {
-            FacesContext context = FacesContext.getCurrentInstance();
-            ExternalContext externalContext = context.getExternalContext();
-            externalContext.redirect(registrationURL);
-            return null;
-        }
         AuthenticationUtils.redirect(registrationURL, this.device, this.userId);
         return null;
     }

@@ -71,9 +71,9 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         configureDevices();
 
         // Add some initial users.
-        this.authorizedUsers.put("admin", new AuthenticationDevice("admin", null, null));
-        this.authorizedUsers.put("owner", new AuthenticationDevice("secret", null, null));
-        this.applicationOwnersAndLogin.put("owner", "owner");
+        this.users.add(SafeOnlineConstants.ADMIN_LOGIN);
+        this.users.add(SafeOnlineConstants.OWNER_LOGIN);
+        this.applicationOwnersAndLogin.put(SafeOnlineConstants.OWNER_LOGIN, SafeOnlineConstants.OWNER_LOGIN);
 
         // Add the core applications.
         X509Certificate userCert = (X509Certificate) UserKeyStoreUtils.getPrivateKeyEntry().getCertificate();
@@ -144,12 +144,6 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 
     private void configureAttributeTypes() {
 
-        AttributeTypeEntity nameAttributeType = new AttributeTypeEntity(SafeOnlineConstants.NAME_ATTRIBUTE, DatatypeType.STRING, true, true);
-        this.attributeTypes.add(nameAttributeType);
-        this.attributeTypeDescriptions
-                                      .add(new AttributeTypeDescriptionEntity(nameAttributeType, Locale.ENGLISH.getLanguage(), "Name", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(nameAttributeType, "nl", "Naam", null));
-
         AttributeTypeEntity loginAttributeType = new AttributeTypeEntity(SafeOnlineConstants.LOGIN_ATTRIBTUE, DatatypeType.STRING, false,
                 false);
         this.attributeTypes.add(loginAttributeType);
@@ -167,61 +161,6 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         this.deviceClasses.add(new DeviceClass(SafeOnlineConstants.PKI_DEVICE_CLASS, SafeOnlineConstants.PKI_DEVICE_AUTH_CONTEXT_CLASS));
         this.deviceClasses.add(new DeviceClass(SafeOnlineConstants.DIGIPASS_DEVICE_CLASS,
                 SafeOnlineConstants.DIGIPASS_DEVICE_AUTH_CONTEXT_CLASS));
-
-        configurePasswordDevice();
-    }
-
-    private void configurePasswordDevice() {
-
-        AttributeTypeEntity passwordHashAttributeType = new AttributeTypeEntity(SafeOnlineConstants.PASSWORD_HASH_ATTRIBUTE,
-                DatatypeType.STRING, false, false);
-        AttributeTypeEntity passwordSeedAttributeType = new AttributeTypeEntity(SafeOnlineConstants.PASSWORD_SEED_ATTRIBUTE,
-                DatatypeType.STRING, false, false);
-        AttributeTypeEntity passwordAlgorithmAttributeType = new AttributeTypeEntity(SafeOnlineConstants.PASSWORD_ALGORITHM_ATTRIBUTE,
-                DatatypeType.STRING, false, false);
-        this.attributeTypes.add(passwordHashAttributeType);
-        this.attributeTypes.add(passwordSeedAttributeType);
-        this.attributeTypes.add(passwordAlgorithmAttributeType);
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordHashAttributeType, Locale.ENGLISH.getLanguage(),
-                "Password hash", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordSeedAttributeType, Locale.ENGLISH.getLanguage(),
-                "Password hash seed", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordAlgorithmAttributeType, Locale.ENGLISH.getLanguage(),
-                "Password hash algorithm", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordHashAttributeType, "nl", "Wachtwoord hash", null));
-        this.attributeTypeDescriptions
-                                      .add(new AttributeTypeDescriptionEntity(passwordSeedAttributeType, "nl", "Wachtwoord hash seed", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordAlgorithmAttributeType, "nl",
-                "Wachtwoord hash algoritme", null));
-
-        AttributeTypeEntity passwordDeviceDisableAttributeType = new AttributeTypeEntity(
-                SafeOnlineConstants.PASSWORD_DEVICE_DISABLE_ATTRIBUTE, DatatypeType.BOOLEAN, false, false);
-        passwordDeviceDisableAttributeType.setMultivalued(true);
-        this.attributeTypes.add(passwordDeviceDisableAttributeType);
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordDeviceDisableAttributeType,
-                Locale.ENGLISH.getLanguage(), "Password Disable Attribute", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordDeviceDisableAttributeType, "nl",
-                "Paswoord Disable Attribuut", null));
-
-        AttributeTypeEntity passwordDeviceAttributeType = new AttributeTypeEntity(SafeOnlineConstants.PASSWORD_DEVICE_ATTRIBUTE,
-                DatatypeType.COMPOUNDED, false, false);
-        passwordDeviceAttributeType.setMultivalued(true);
-        passwordDeviceAttributeType.addMember(passwordHashAttributeType, 0, true);
-        passwordDeviceAttributeType.addMember(passwordSeedAttributeType, 1, true);
-        passwordDeviceAttributeType.addMember(passwordAlgorithmAttributeType, 2, true);
-        passwordDeviceAttributeType.addMember(passwordDeviceDisableAttributeType, 3, true);
-        this.attributeTypes.add(passwordDeviceAttributeType);
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordDeviceAttributeType, Locale.ENGLISH.getLanguage(),
-                "Password", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordDeviceAttributeType, "nl", "Wachtwoord", null));
-
-        this.devices.add(new Device(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, SafeOnlineConstants.PASSWORD_DEVICE_CLASS, null,
-                "password/username-password.seam", "password/register-password.seam", "password/remove-password.seam",
-                "password/register-password.seam", "disable-dummy-path.seam", null, passwordDeviceAttributeType, null,
-                passwordDeviceDisableAttributeType));
-        this.deviceDescriptions.add(new DeviceDescription(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, "nl", "Paswoord"));
-        this.deviceDescriptions.add(new DeviceDescription(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID, Locale.ENGLISH.getLanguage(),
-                "Password"));
     }
 
     @Override

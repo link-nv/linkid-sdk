@@ -18,8 +18,6 @@ import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.authentication.service.bean.AccountServiceBean;
 import net.link.safeonline.authentication.service.bean.UserRegistrationServiceBean;
 import net.link.safeonline.common.SafeOnlineRoles;
-import net.link.safeonline.device.PasswordDeviceService;
-import net.link.safeonline.device.bean.PasswordDeviceServiceBean;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
 import net.link.safeonline.test.util.EJBTestUtils;
@@ -94,16 +92,12 @@ public class AccountServiceBeanTest extends TestCase {
         EntityManager entityManager = this.entityTestManager.getEntityManager();
 
         String testLogin = "test-login";
-        String testPassword = "test-password";
 
         UserRegistrationService userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager);
-        PasswordDeviceService passwordDeviceService = EJBTestUtils.newInstance(PasswordDeviceServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager);
 
         // operate
         SubjectEntity resultSubject = userRegistrationService.registerUser(testLogin);
-        passwordDeviceService.register(resultSubject, testPassword);
 
         AccountService accountService = EJBTestUtils.newInstance(AccountServiceBean.class, SafeOnlineTestContainer.sessionBeans,
                 entityManager, testLogin, SafeOnlineRoles.USER_ROLE);
