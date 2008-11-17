@@ -184,7 +184,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
 
         Locale olasLanguage = language == null? httpRequest.getLocale(): language;
         RequestUtil.sendRequest(this.authnServiceUrl, encodedSamlRequestToken, olasLanguage, color, minimal, templateResourceName,
-                httpResponse);
+                httpResponse, !minimal);
     }
 
     public AuthenticationProtocolContext finalizeAuthentication(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
@@ -228,7 +228,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
             templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
         }
 
-        RequestUtil.sendRequest(this.authnServiceUrl, encodedSamlRequestToken, null, null, null, templateResourceName, httpResponse);
+        RequestUtil.sendRequest(this.authnServiceUrl, encodedSamlRequestToken, null, null, null, templateResourceName, httpResponse, true);
     }
 
     /**

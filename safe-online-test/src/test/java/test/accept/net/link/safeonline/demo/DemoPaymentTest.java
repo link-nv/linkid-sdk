@@ -10,7 +10,7 @@ package test.accept.net.link.safeonline.demo;
 import java.util.UUID;
 
 import junit.framework.TestCase;
-import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.model.password.PasswordConstants;
 import net.link.safeonline.webapp.AcceptanceTestManager;
 import net.link.safeonline.webapp.PageUtils;
 import net.link.safeonline.webapp.WebappConstants;
@@ -93,7 +93,7 @@ public class DemoPaymentTest extends TestCase {
         demoPaymentMain.open();
 
         AuthMain authMain = demoPaymentMain.login();
-        authMain.selectDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
+        authMain.selectDevice(PasswordConstants.PASSWORD_DEVICE_ID);
 
         AuthUserNamePassword authUserNamePassword = (AuthUserNamePassword) authMain.next();
         authUserNamePassword.setLogin(login);
@@ -140,7 +140,7 @@ public class DemoPaymentTest extends TestCase {
         demoPaymentMain.open();
 
         authMain = demoPaymentMain.login();
-        authMain.selectDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
+        authMain.selectDevice(PasswordConstants.PASSWORD_DEVICE_ID);
 
         authUserNamePassword = (AuthUserNamePassword) authMain.next();
         authUserNamePassword.setLogin(login);

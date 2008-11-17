@@ -256,7 +256,7 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
         String templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
 
         try {
-            RequestUtil.sendRequest(target, encodedSamlLogoutRequestToken, templateResourceName, response);
+            RequestUtil.sendRequest(target, encodedSamlLogoutRequestToken, null, null, null, templateResourceName, response, false);
         } catch (ServletException e) {
             throw new ProtocolException(e.getMessage());
         } catch (IOException e) {

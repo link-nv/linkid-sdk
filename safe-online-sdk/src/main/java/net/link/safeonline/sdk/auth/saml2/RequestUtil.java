@@ -49,47 +49,14 @@ import org.w3c.dom.Element;
  * @author wvdhaute
  * 
  */
-public class RequestUtil {
-
-    private RequestUtil() {
-
-        // empty
-    }
+public abstract class RequestUtil {
 
     /**
      * Sends a SAML2 authentication or logout Request using the specified Velocity template. The SAML2 Token should already be Base64
      * encoded.
-     * 
-     * @param targetUrl
-     * @param encodedSamlRequestToken
-     * @param templateResourceName
-     * @param httpResponse
-     * @throws ServletException
-     * @throws IOException
-     */
-    public static void sendRequest(String targetUrl, String encodedSamlRequestToken, String templateResourceName,
-                                   HttpServletResponse httpResponse)
-            throws ServletException, IOException {
-
-        sendRequest(targetUrl, encodedSamlRequestToken, null, null, null, templateResourceName, httpResponse);
-    }
-
-    /**
-     * Sends a SAML2 authentication or logout Request using the specified Velocity template. The SAML2 Token should already be Base64
-     * encoded.
-     * 
-     * @param targetUrl
-     * @param encodedSamlRequestToken
-     * @param language
-     * @param minimal
-     * @param color
-     * @param templateResourceName
-     * @param httpResponse
-     * @throws ServletException
-     * @throws IOException
      */
     public static void sendRequest(String targetUrl, String encodedSamlRequestToken, Locale language, Integer color, Boolean minimal,
-                                   String templateResourceName, HttpServletResponse httpResponse)
+                                   String templateResourceName, HttpServletResponse httpResponse, boolean breakFrame)
             throws ServletException, IOException {
 
         /*
@@ -111,6 +78,7 @@ public class RequestUtil {
         VelocityContext velocityContext = new VelocityContext();
         velocityContext.put("action", targetUrl);
         velocityContext.put("SAMLRequest", encodedSamlRequestToken);
+        velocityContext.put("BreakFrame", breakFrame);
         if (null != language) {
             velocityContext.put("Language", language.getLanguage());
         }

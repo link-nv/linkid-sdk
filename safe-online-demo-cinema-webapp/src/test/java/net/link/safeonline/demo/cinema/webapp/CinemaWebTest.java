@@ -41,9 +41,9 @@ import net.link.safeonline.demo.cinema.webapp.TicketPage.TicketForm;
 import net.link.safeonline.demo.cinema.webapp.servlet.LogoutServlet;
 import net.link.safeonline.demo.wicket.javaee.DummyJndi;
 import net.link.safeonline.demo.wicket.test.AbstractWicketTests;
-import net.link.safeonline.demo.wicket.tools.OlasAuthLink;
-import net.link.safeonline.demo.wicket.tools.OlasLogoutLink;
 import net.link.safeonline.demo.wicket.tools.WicketUtil;
+import net.link.safeonline.demo.wicket.web.OlasAuthLink;
+import net.link.safeonline.demo.wicket.web.OlasLogoutLink;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 
 import org.apache.wicket.Session;

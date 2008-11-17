@@ -70,6 +70,20 @@ public class ResponseUtil {
     }
 
     /**
+     * Sends out a SAML response message to the specified consumer URL.<br>
+     * <b>Note:</b> This method breaks out of frames by default.
+     * 
+     * @throws IOException
+     * @throws ServletException
+     */
+    public static void sendResponse(String encodedSamlResponseToken, String templateResourceName, String authnServiceUrl,
+                                    HttpServletResponse response)
+            throws ServletException, IOException {
+
+        sendResponse(encodedSamlResponseToken, templateResourceName, authnServiceUrl, response, true);
+    }
+
+    /**
      * Sends out a SAML response message to the specified consumer URL.
      * 
      * @param encodedSamlResponseToken
@@ -79,7 +93,7 @@ public class ResponseUtil {
      * @throws IOException
      */
     public static void sendResponse(String encodedSamlResponseToken, String templateResourceName, String consumerUrl,
-                                    HttpServletResponse httpResponse)
+                                    HttpServletResponse httpResponse, boolean breakFrame)
             throws ServletException, IOException {
 
         /*
@@ -101,6 +115,7 @@ public class ResponseUtil {
         VelocityContext velocityContext = new VelocityContext();
         velocityContext.put("action", consumerUrl);
         velocityContext.put("SAMLResponse", encodedSamlResponseToken);
+        velocityContext.put("BreakFrame", breakFrame);
 
         Template template;
         try {
@@ -339,5 +354,4 @@ public class ResponseUtil {
 
         return logoutResponse;
     }
-
 }
