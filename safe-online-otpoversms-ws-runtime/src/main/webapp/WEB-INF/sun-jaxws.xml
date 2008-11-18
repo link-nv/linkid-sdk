@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoints xmlns="http://java.sun.com/xml/ns/jax-ws/ri/runtime"
+	version="2.0">
+	<endpoint name="SafeOnline-SMS-WS" implementation="net.link.safeonline.otpoversms.ws.SmsPortImpl"
+		url-pattern="/dummy" interface="sis.mobile.SmsPortType" service="{urn:sis:mobile}SmsService"
+		port="{urn:sis:mobile}SmsPortType" />
+</endpoints>

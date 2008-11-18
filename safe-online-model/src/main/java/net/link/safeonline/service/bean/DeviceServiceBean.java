@@ -68,8 +68,8 @@ import net.link.safeonline.service.DeviceServiceRemote;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.security.SecurityDomain;
 
 
@@ -572,7 +572,7 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
             }
         }
         boolean disabled = false;
-        if (null != disableAttribute) {
+        if (null != disableAttribute && null != disableAttribute.getBooleanValue()) {
             disabled = disableAttribute.getBooleanValue();
         }
         registrations.add(new DeviceRegistrationDO(device, deviceDescription, userAttribute, disabled));
