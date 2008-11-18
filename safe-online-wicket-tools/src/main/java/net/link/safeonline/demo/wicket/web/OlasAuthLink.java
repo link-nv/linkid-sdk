@@ -9,6 +9,8 @@ package net.link.safeonline.demo.wicket.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.link.safeonline.demo.wicket.tools.RedirectResponseException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.IRequestTarget;
@@ -55,8 +57,7 @@ public abstract class OlasAuthLink extends Link<Object> {
     @Override
     public void onClick() {
 
-        this.LOG.debug("Logout clicked.");
-        getRequestCycle().setRequestTarget(new IRequestTarget() {
+        throw new RedirectResponseException(new IRequestTarget() {
 
             public void detach(RequestCycle requestCycle) {
 
@@ -64,7 +65,6 @@ public abstract class OlasAuthLink extends Link<Object> {
 
             public void respond(RequestCycle requestCycle) {
 
-                OlasAuthLink.this.LOG.debug("Logout responded.");
                 HttpServletRequest request = ((WebRequest) requestCycle.getRequest()).getHttpServletRequest();
                 HttpServletResponse response = ((WebResponse) requestCycle.getResponse()).getHttpServletResponse();
 

@@ -13,5 +13,6 @@ public class OlasAuthRedirectPage extends WebPage {
      */
     public OlasAuthRedirectPage() {
 
+        new OlasLoginLink("olasLogin").onClick();
     }
 }
