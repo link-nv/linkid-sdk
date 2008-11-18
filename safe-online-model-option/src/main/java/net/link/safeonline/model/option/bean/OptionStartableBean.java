@@ -90,7 +90,7 @@ public class OptionStartableBean extends AbstractInitBean {
 
         X509Certificate certificate = (X509Certificate) OptionKeyStoreUtils.getPrivateKeyEntry().getCertificate();
 
-        ResourceBundle properties = ResourceBundle.getBundle("config");
+        ResourceBundle properties = ResourceBundle.getBundle("option_config");
         String nodeName = properties.getString("olas.node.name");
         String optionWebappName = properties.getString("option.webapp.name");
 
@@ -107,7 +107,7 @@ public class OptionStartableBean extends AbstractInitBean {
 
     private void configureNode() {
 
-        ResourceBundle properties = ResourceBundle.getBundle("config");
+        ResourceBundle properties = ResourceBundle.getBundle("option_config");
         String nodeName = properties.getString("olas.node.name");
         String protocol = properties.getString("olas.host.protocol");
         String hostname = properties.getString("olas.host.name");
