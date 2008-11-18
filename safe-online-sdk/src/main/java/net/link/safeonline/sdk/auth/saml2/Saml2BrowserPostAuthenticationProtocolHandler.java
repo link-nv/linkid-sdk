@@ -184,7 +184,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
 
         Locale olasLanguage = language == null? httpRequest.getLocale(): language;
         RequestUtil.sendRequest(this.authnServiceUrl, encodedSamlRequestToken, olasLanguage, color, minimal, templateResourceName,
-                httpResponse, !minimal);
+                httpResponse, minimal == null || !minimal);
     }
 
     public AuthenticationProtocolContext finalizeAuthentication(HttpServletRequest httpRequest, HttpServletResponse httpResponse)

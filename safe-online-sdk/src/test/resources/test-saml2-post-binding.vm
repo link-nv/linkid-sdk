@@ -21,6 +21,8 @@
             </p>
         </noscript>
         
+        custom template
+
         #if($BreakFrame)
             <form action="${action}" method="post" target="_top">
         #else

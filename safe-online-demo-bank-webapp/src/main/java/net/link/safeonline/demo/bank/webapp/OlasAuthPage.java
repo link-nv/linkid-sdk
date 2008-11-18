@@ -4,6 +4,7 @@ import net.link.safeonline.demo.wicket.tools.WicketUtil;
 import net.link.safeonline.demo.wicket.web.OlasAuthRedirectPage;
 
 import org.apache.wicket.Page;
+import org.apache.wicket.PageMap;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.link.InlineFrame;
 
@@ -25,7 +26,7 @@ public class OlasAuthPage extends LayoutPage {
             throw new RestartResponseException(LoginPage.class);
 
         // HTML Components.
-        add(new InlineFrame("olasFrame", null, OlasAuthRedirectPage.class));
+        add(new InlineFrame("olasFrame", PageMap.forName("olasFrame"), OlasAuthRedirectPage.class));
     }
 
     /**

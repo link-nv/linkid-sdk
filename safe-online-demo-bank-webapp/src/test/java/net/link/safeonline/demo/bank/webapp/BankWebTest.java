@@ -21,7 +21,6 @@ import net.link.safeonline.demo.bank.webapp.servlet.LogoutServlet;
 import net.link.safeonline.demo.wicket.javaee.DummyJndi;
 import net.link.safeonline.demo.wicket.test.AbstractWicketTests;
 import net.link.safeonline.demo.wicket.tools.WicketUtil;
-import net.link.safeonline.demo.wicket.web.OlasAuthLink;
 import net.link.safeonline.demo.wicket.web.OlasLoginLink;
 import net.link.safeonline.demo.wicket.web.OlasLogoutLink;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
@@ -117,7 +116,7 @@ public class BankWebTest extends AbstractWicketTests {
         // LoginPage: Verify.
         this.wicket.processRequestCycle();
         this.wicket.assertRenderedPage(LoginPage.class);
-        this.wicket.assertComponent("olasLoginLink", OlasAuthLink.class);
+        this.wicket.assertPageLink("olasLoginLink", OlasAuthPage.class);
 
         // LoginPage: Click to login with digipass.
         this.wicket.clickLink("olasLoginLink");
