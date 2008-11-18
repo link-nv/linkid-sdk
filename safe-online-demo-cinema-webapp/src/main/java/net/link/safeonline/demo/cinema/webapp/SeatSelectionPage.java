@@ -34,10 +34,10 @@ import org.apache.wicket.markup.html.list.ListView;
  */
 public class SeatSelectionPage extends LayoutPage {
 
-    @EJB
+    @EJB(mappedName = RoomService.JNDI_BINDING)
     transient RoomService roomService;
 
-    @EJB
+    @EJB(mappedName = SeatService.JNDI_BINDING)
     transient SeatService seatService;
 
 

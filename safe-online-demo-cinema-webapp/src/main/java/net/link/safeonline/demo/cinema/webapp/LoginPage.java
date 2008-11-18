@@ -5,8 +5,8 @@ import javax.servlet.ServletException;
 
 import net.link.safeonline.demo.cinema.entity.CinemaUserEntity;
 import net.link.safeonline.demo.cinema.service.UserService;
-import net.link.safeonline.demo.wicket.tools.OlasLoginLink;
 import net.link.safeonline.demo.wicket.tools.WicketUtil;
+import net.link.safeonline.demo.wicket.web.OlasLoginLink;
 
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
@@ -16,7 +16,7 @@ public class LoginPage extends LayoutPage {
 
     private static final long serialVersionUID = 1L;
 
-    @EJB
+    @EJB(mappedName = UserService.JNDI_BINDING)
     transient UserService     userService;
 
 

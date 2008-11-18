@@ -64,25 +64,25 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
     @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
     private EntityManager        entityManager;
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService       subjectService;
 
-    @EJB
+    @EJB(mappedName = SubjectIdentifierDAO.JNDI_BINDING)
     private SubjectIdentifierDAO subjectIdentifierDAO;
 
-    @EJB
+    @EJB(mappedName = MobileManager.JNDI_BINDING)
     private MobileManager        mobileManager;
 
-    @EJB
+    @EJB(mappedName = AttributeDAO.JNDI_BINDING)
     private AttributeDAO         attributeDAO;
 
-    @EJB
+    @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
     private AttributeTypeDAO     attributeTypeDAO;
 
-    @EJB
+    @EJB(mappedName = DeviceDAO.JNDI_BINDING)
     private DeviceDAO            deviceDAO;
 
-    @EJB
+    @EJB(mappedName = SecurityAuditLogger.JNDI_BINDING)
     private SecurityAuditLogger  securityAuditLogger;
 
 

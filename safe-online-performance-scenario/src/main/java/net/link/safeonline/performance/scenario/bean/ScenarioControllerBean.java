@@ -90,16 +90,16 @@ public class ScenarioControllerBean implements ScenarioController {
         }
     }
 
-    @EJB
+    @EJB(mappedName = ExecutionService.JNDI_BINDING)
     private ExecutionService             executionService;
 
-    @EJB
+    @EJB(mappedName = ProfileDataService.JNDI_BINDING)
     private ProfileDataService           profileDataService;
 
-    @EJB
+    @EJB(mappedName = DriverExceptionService.JNDI_BINDING)
     private DriverExceptionService       driverExceptionService;
 
-    @EJB
+    @EJB(mappedName = ScenarioTimingService.JNDI_BINDING)
     private ScenarioTimingService        scenarioTimingService;
 
     @Resource

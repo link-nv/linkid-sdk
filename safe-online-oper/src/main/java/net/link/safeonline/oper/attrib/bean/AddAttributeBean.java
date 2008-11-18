@@ -68,13 +68,13 @@ public class AddAttributeBean implements AddAttribute {
     @Logger
     private Log                       log;
 
-    @EJB
+    @EJB(mappedName = AttributeTypeService.JNDI_BINDING)
     private AttributeTypeService      attributeTypeService;
 
-    @EJB
+    @EJB(mappedName = NodeService.JNDI_BINDING)
     private NodeService               nodeService;
 
-    @EJB
+    @EJB(mappedName = OSGIStartable.JNDI_BINDING)
     private OSGIStartable             osgiStartable;
 
     @In(create = true)

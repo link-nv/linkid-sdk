@@ -41,13 +41,13 @@ public class DeviceAuthenticationServiceBean implements DeviceAuthenticationServ
 
     private static final Log LOG = LogFactory.getLog(DeviceAuthenticationServiceBean.class);
 
-    @EJB
+    @EJB(mappedName = DeviceDAO.JNDI_BINDING)
     private DeviceDAO        deviceDAO;
 
-    @EJB
+    @EJB(mappedName = TrustDomainDAO.JNDI_BINDING)
     private TrustDomainDAO   trustDomainDAO;
 
-    @EJB
+    @EJB(mappedName = TrustPointDAO.JNDI_BINDING)
     private TrustPointDAO    trustPointDAO;
 
 

@@ -57,16 +57,16 @@ public class SubscriptionsBean implements Subscriptions {
 
     private static final Log         LOG = LogFactory.getLog(SubscriptionsBean.class);
 
-    @EJB
+    @EJB(mappedName = SubscriptionService.JNDI_BINDING)
     private SubscriptionService      subscriptionService;
 
-    @EJB
+    @EJB(mappedName = IdentityService.JNDI_BINDING)
     private IdentityService          identityService;
 
-    @EJB
+    @EJB(mappedName = UsageAgreementService.JNDI_BINDING)
     private UsageAgreementService    usageAgreementService;
 
-    @EJB
+    @EJB(mappedName = SubjectManager.JNDI_BINDING)
     private SubjectManager           subjectManager;
 
     @In(create = true)

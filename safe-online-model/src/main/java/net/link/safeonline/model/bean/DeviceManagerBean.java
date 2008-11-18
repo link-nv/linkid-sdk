@@ -39,7 +39,7 @@ public class DeviceManagerBean implements DeviceManager {
     @Resource
     private SessionContext   context;
 
-    @EJB
+    @EJB(mappedName = DeviceDAO.JNDI_BINDING)
     private DeviceDAO        deviceDAO;
 
 

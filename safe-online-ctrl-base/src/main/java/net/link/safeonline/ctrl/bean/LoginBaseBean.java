@@ -40,7 +40,7 @@ public class LoginBaseBean implements LoginBase {
     @In(create = true)
     FacesMessages          facesMessages;
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService subjectService;
 
     @In(create = true)

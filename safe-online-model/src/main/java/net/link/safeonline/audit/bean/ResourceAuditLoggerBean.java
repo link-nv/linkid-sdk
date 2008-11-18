@@ -29,13 +29,13 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = ResourceAuditLogger.JNDI_BINDING)
 public class ResourceAuditLoggerBean implements ResourceAuditLogger {
 
-    @EJB
+    @EJB(mappedName = AuditAuditDAO.JNDI_BINDING)
     private AuditAuditDAO    auditAuditDAO;
 
-    @EJB
+    @EJB(mappedName = AuditContextDAO.JNDI_BINDING)
     private AuditContextDAO  auditContextDAO;
 
-    @EJB
+    @EJB(mappedName = ResourceAuditDAO.JNDI_BINDING)
     private ResourceAuditDAO resourceAuditDAO;
 
 

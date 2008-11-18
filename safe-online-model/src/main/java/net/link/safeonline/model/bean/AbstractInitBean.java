@@ -418,10 +418,10 @@ public abstract class AbstractInitBean implements Startable {
 
     protected Map<String, List<String>>            allowedDevices;
 
-    @EJB
+    @EJB(mappedName = ApplicationIdentityManager.JNDI_BINDING)
     private ApplicationIdentityManager             applicationIdentityService;
 
-    @EJB
+    @EJB(mappedName = UsageAgreementManager.JNDI_BINDING)
     private UsageAgreementManager                  usageAgreementManager;
 
 
@@ -537,46 +537,46 @@ public abstract class AbstractInitBean implements Startable {
     }
 
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService         subjectService;
 
-    @EJB
+    @EJB(mappedName = ApplicationDAO.JNDI_BINDING)
     private ApplicationDAO         applicationDAO;
 
-    @EJB
+    @EJB(mappedName = SubscriptionDAO.JNDI_BINDING)
     private SubscriptionDAO        subscriptionDAO;
 
-    @EJB
+    @EJB(mappedName = ApplicationScopeIdDAO.JNDI_BINDING)
     private ApplicationScopeIdDAO  applicationScopeIdDAO;
 
-    @EJB
+    @EJB(mappedName = ApplicationOwnerDAO.JNDI_BINDING)
     private ApplicationOwnerDAO    applicationOwnerDAO;
 
-    @EJB
+    @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
     private AttributeTypeDAO       attributeTypeDAO;
 
-    @EJB
+    @EJB(mappedName = AttributeDAO.JNDI_BINDING)
     private AttributeDAO           attributeDAO;
 
-    @EJB
+    @EJB(mappedName = TrustDomainDAO.JNDI_BINDING)
     protected TrustDomainDAO       trustDomainDAO;
 
-    @EJB
+    @EJB(mappedName = TrustPointDAO.JNDI_BINDING)
     private TrustPointDAO          trustPointDAO;
 
-    @EJB
+    @EJB(mappedName = ApplicationIdentityDAO.JNDI_BINDING)
     private ApplicationIdentityDAO applicationIdentityDAO;
 
-    @EJB
+    @EJB(mappedName = UsageAgreementDAO.JNDI_BINDING)
     private UsageAgreementDAO      usageAgreementDAO;
 
-    @EJB
+    @EJB(mappedName = AttributeProviderDAO.JNDI_BINDING)
     private AttributeProviderDAO   attributeProviderDAO;
 
-    @EJB
+    @EJB(mappedName = DeviceDAO.JNDI_BINDING)
     private DeviceDAO              deviceDAO;
 
-    @EJB
+    @EJB(mappedName = DeviceClassDAO.JNDI_BINDING)
     private DeviceClassDAO         deviceClassDAO;
 
 
@@ -774,7 +774,7 @@ public abstract class AbstractInitBean implements Startable {
     }
 
 
-    @EJB
+    @EJB(mappedName = ApplicationPoolDAO.JNDI_BINDING)
     private ApplicationPoolDAO applicationPoolDAO;
 
 
@@ -931,7 +931,7 @@ public abstract class AbstractInitBean implements Startable {
     }
 
 
-    @EJB
+    @EJB(mappedName = AllowedDeviceDAO.JNDI_BINDING)
     private AllowedDeviceDAO allowedDeviceDAO;
 
 
@@ -953,7 +953,7 @@ public abstract class AbstractInitBean implements Startable {
     }
 
 
-    @EJB
+    @EJB(mappedName = NotificationProducerDAO.JNDI_BINDING)
     private NotificationProducerDAO notificationProducerDAO;
 
 
@@ -967,7 +967,7 @@ public abstract class AbstractInitBean implements Startable {
     }
 
 
-    @EJB
+    @EJB(mappedName = NotificationProducerService.JNDI_BINDING)
     private NotificationProducerService notificationProducerService;
 
 
@@ -980,7 +980,7 @@ public abstract class AbstractInitBean implements Startable {
     }
 
 
-    @EJB
+    @EJB(mappedName = NodeDAO.JNDI_BINDING)
     private NodeDAO olasDAO;
 
 

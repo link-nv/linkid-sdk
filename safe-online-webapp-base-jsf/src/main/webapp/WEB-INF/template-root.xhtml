@@ -1,5 +1,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:c="http://java.sun.com/jstl/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
     xmlns:h="http://java.sun.com/jsf/html">
@@ -14,7 +15,11 @@
         <title><ui:insert name="title">#{initParam['CommercialName']}</ui:insert></title>
 	</head>
 
-	<body>
+    <c:set var="bodyStyle" value="" />
+    <c:if test="${applicationMinimal}">
+        <c:set var="bodyStyle" value="minimal" />
+    </c:if>
+	<body class="${bodyStyle}">
         <div id="c-header">
             <div id="header">
                 <h:form>

@@ -45,7 +45,7 @@ public class AttributeEditBean implements AttributeEdit {
 
     private static final Log   LOG                    = LogFactory.getLog(AttributeEditBean.class);
 
-    @EJB
+    @EJB(mappedName = IdentityService.JNDI_BINDING)
     private IdentityService    identityService;
 
     @In

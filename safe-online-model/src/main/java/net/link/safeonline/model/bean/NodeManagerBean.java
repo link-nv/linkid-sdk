@@ -39,7 +39,7 @@ public class NodeManagerBean implements NodeManager {
     @Resource
     private SessionContext   context;
 
-    @EJB
+    @EJB(mappedName = NodeDAO.JNDI_BINDING)
     private NodeDAO          nodeDAO;
 
 

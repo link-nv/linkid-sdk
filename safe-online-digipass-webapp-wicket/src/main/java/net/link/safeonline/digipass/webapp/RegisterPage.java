@@ -49,7 +49,7 @@ public class RegisterPage extends TemplatePage {
 
     public static final String      CANCEL_BUTTON_ID      = "cancel";
 
-    @EJB
+    @EJB(mappedName = DigipassDeviceService.JNDI_BINDING)
     transient DigipassDeviceService digipassDeviceService;
 
 

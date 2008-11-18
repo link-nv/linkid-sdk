@@ -37,10 +37,10 @@ public class FilmTheatreSelectionPage extends LayoutPage {
 
     private static final long serialVersionUID = 1L;
 
-    @EJB
+    @EJB(mappedName = FilmService.JNDI_BINDING)
     transient FilmService     filmService;
 
-    @EJB
+    @EJB(mappedName = TheatreService.JNDI_BINDING)
     transient TheatreService  theatreService;
 
 

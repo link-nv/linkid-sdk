@@ -54,10 +54,10 @@ public class ApplicationPoolServiceBean implements ApplicationPoolService, Appli
 
     private static final Log   LOG = LogFactory.getLog(ApplicationPoolServiceBean.class);
 
-    @EJB
+    @EJB(mappedName = ApplicationPoolDAO.JNDI_BINDING)
     private ApplicationPoolDAO applicationPoolDAO;
 
-    @EJB
+    @EJB(mappedName = ApplicationDAO.JNDI_BINDING)
     private ApplicationDAO     applicationDAO;
 
 

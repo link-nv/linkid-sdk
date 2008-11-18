@@ -68,25 +68,25 @@ public class CredentialManagerBean implements CredentialManager {
 
     public static final String   SECURITY_MESSAGE_OPERATION_MISMATCH      = "Operation mismatch";
 
-    @EJB
+    @EJB(mappedName = PkiProviderManager.JNDI_BINDING)
     private PkiProviderManager   pkiProviderManager;
 
-    @EJB
+    @EJB(mappedName = PkiValidator.JNDI_BINDING)
     private PkiValidator         pkiValidator;
 
-    @EJB
+    @EJB(mappedName = SubjectIdentifierDAO.JNDI_BINDING)
     private SubjectIdentifierDAO subjectIdentifierDAO;
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService       subjectService;
 
-    @EJB
+    @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
     private AttributeTypeDAO     attributeTypeDAO;
 
-    @EJB
+    @EJB(mappedName = AttributeDAO.JNDI_BINDING)
     private AttributeDAO         attributeDAO;
 
-    @EJB
+    @EJB(mappedName = SecurityAuditLogger.JNDI_BINDING)
     private SecurityAuditLogger  securityAuditLogger;
 
 

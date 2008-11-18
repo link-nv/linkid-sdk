@@ -4,7 +4,7 @@
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
-package net.link.safeonline.demo.wicket.tools;
+package net.link.safeonline.demo.wicket.web;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

@@ -7,8 +7,8 @@ import net.link.safeonline.demo.bank.entity.BankUserEntity;
 import net.link.safeonline.demo.bank.service.AccountService;
 import net.link.safeonline.demo.bank.service.TransactionService;
 import net.link.safeonline.demo.bank.service.UserService;
-import net.link.safeonline.demo.wicket.tools.OlasLogoutLink;
 import net.link.safeonline.demo.wicket.tools.WicketUtil;
+import net.link.safeonline.demo.wicket.web.OlasLogoutLink;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,13 +26,13 @@ public abstract class LayoutPage extends WebPage {
     private static final long  serialVersionUID = 1L;
     Log                        LOG              = LogFactory.getLog(getClass());
 
-    @EJB
+    @EJB(mappedName = UserService.JNDI_BINDING)
     private UserService        userService;
 
-    @EJB
+    @EJB(mappedName = AccountService.JNDI_BINDING)
     private AccountService     accountService;
 
-    @EJB
+    @EJB(mappedName = TransactionService.JNDI_BINDING)
     private TransactionService transactionService;
 
 

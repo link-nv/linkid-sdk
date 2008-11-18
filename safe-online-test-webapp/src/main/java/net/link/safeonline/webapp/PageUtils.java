@@ -8,7 +8,7 @@
 package net.link.safeonline.webapp;
 
 import junit.framework.Assert;
-import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.model.password.PasswordConstants;
 import net.link.safeonline.webapp.auth.AuthFirstTime;
 import net.link.safeonline.webapp.auth.AuthIdentityConfirmation;
 import net.link.safeonline.webapp.auth.AuthMain;
@@ -63,7 +63,7 @@ public class PageUtils {
         authNewUser.setCaptcha(acceptanceTestManager);
 
         AuthNewUserDevice authNewUserDevice = authNewUser.register();
-        authNewUserDevice.selectDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
+        authNewUserDevice.selectDevice(PasswordConstants.PASSWORD_DEVICE_ID);
 
         AuthRegisterPassword authRegisterPassword = (AuthRegisterPassword) authNewUserDevice.next();
         authRegisterPassword.setPassword1(password);
@@ -161,7 +161,7 @@ public class PageUtils {
     private static void loginWithPassword(String login, String password) {
 
         AuthMain authMain = new AuthMain();
-        authMain.selectDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
+        authMain.selectDevice(PasswordConstants.PASSWORD_DEVICE_ID);
 
         AuthUserNamePassword authUserNamePassword = (AuthUserNamePassword) authMain.next();
         authUserNamePassword.setLogin(login);
@@ -174,7 +174,7 @@ public class PageUtils {
         DemoPaymentMain demoPaymentMain = new DemoPaymentMain();
         demoPaymentMain.open();
         AuthMain authMain = demoPaymentMain.login();
-        authMain.selectDevice(SafeOnlineConstants.USERNAME_PASSWORD_DEVICE_ID);
+        authMain.selectDevice(PasswordConstants.PASSWORD_DEVICE_ID);
 
         AuthUserNamePassword authUserNamePassword = (AuthUserNamePassword) authMain.next();
         authUserNamePassword.setLogin(WebappConstants.DEMO_PAYMENT_ADMIN);

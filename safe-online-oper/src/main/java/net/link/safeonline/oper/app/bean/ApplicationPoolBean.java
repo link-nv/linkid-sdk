@@ -61,10 +61,10 @@ public class ApplicationPoolBean implements ApplicationPool {
 
     private static final String            OPER_APPLICATION_POOL_ELEMENTS_NAME         = "operApplicationPoolElements";
 
-    @EJB
+    @EJB(mappedName = ApplicationPoolService.JNDI_BINDING)
     private ApplicationPoolService         applicationPoolService;
 
-    @EJB
+    @EJB(mappedName = ApplicationService.JNDI_BINDING)
     private ApplicationService             applicationService;
 
     @In(create = true)

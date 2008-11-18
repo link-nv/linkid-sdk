@@ -60,10 +60,10 @@ public class ApplicationOwnerBean implements ApplicationOwner {
 
     private static final String           APPLICATION_LIST_NAME       = "applicationList";
 
-    @EJB
+    @EJB(mappedName = ApplicationService.JNDI_BINDING)
     private ApplicationService            applicationService;
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     protected SubjectService              subjectService;
 
     @DataModel(APPLICATION_OWNER_LIST_NAME)

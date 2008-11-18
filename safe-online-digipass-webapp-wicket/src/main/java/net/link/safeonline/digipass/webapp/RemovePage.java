@@ -54,7 +54,7 @@ public class RemovePage extends TemplatePage {
 
     public static final String      REMOVE_LINK_ID     = "remove";
 
-    @EJB
+    @EJB(mappedName = DigipassDeviceService.JNDI_BINDING)
     transient DigipassDeviceService digipassDeviceService;
 
     List<AttributeDO>               digipassAttributes = new LinkedList<AttributeDO>();

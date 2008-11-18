@@ -42,13 +42,13 @@ public class NodeMappingServiceBean implements NodeMappingService {
 
     private final static Log LOG = LogFactory.getLog(NodeMappingServiceBean.class);
 
-    @EJB
+    @EJB(mappedName = NodeMappingDAO.JNDI_BINDING)
     private NodeMappingDAO   nodeMappingDAO;
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService   subjectService;
 
-    @EJB
+    @EJB(mappedName = NodeDAO.JNDI_BINDING)
     private NodeDAO          nodeDAO;
 
 

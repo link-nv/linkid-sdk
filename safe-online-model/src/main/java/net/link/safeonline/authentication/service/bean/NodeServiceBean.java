@@ -57,13 +57,13 @@ public class NodeServiceBean implements NodeService, NodeServiceRemote {
 
     private static final Log     LOG = LogFactory.getLog(NodeServiceBean.class);
 
-    @EJB
+    @EJB(mappedName = NodeDAO.JNDI_BINDING)
     private NodeDAO              olasDAO;
 
-    @EJB
+    @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
     private AttributeTypeDAO     attributeTypeDAO;
 
-    @EJB
+    @EJB(mappedName = EndpointReferenceDAO.JNDI_BINDING)
     private EndpointReferenceDAO endpointReferenceDAO;
 
 

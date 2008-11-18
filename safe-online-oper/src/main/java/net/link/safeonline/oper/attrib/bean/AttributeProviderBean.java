@@ -49,10 +49,10 @@ public class AttributeProviderBean implements AttributeProvider {
     @Logger
     private Log                             log;
 
-    @EJB
+    @EJB(mappedName = AttributeProviderManagerService.JNDI_BINDING)
     private AttributeProviderManagerService attributeProviderManagerService;
 
-    @EJB
+    @EJB(mappedName = ApplicationService.JNDI_BINDING)
     private ApplicationService              applicationService;
 
     @SuppressWarnings("unused")

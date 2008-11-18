@@ -60,8 +60,8 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements DeviceR
     @In(value = LoginManager.REQUIRED_DEVICES_ATTRIBUTE, required = false)
     private Set<DeviceEntity>   requiredDevicePolicy;
 
-    @EJB
-    private DevicePolicyService devicePolicyService;
+    @EJB(mappedName = DevicePolicyService.JNDI_BINDING)
+    private DevicePolicyService   devicePolicyService;
 
 
     @Remove

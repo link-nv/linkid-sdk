@@ -39,10 +39,10 @@ public class NodeAuthenticationServiceBean implements NodeAuthenticationService 
 
     private static final Log LOG = LogFactory.getLog(NodeAuthenticationServiceBean.class);
 
-    @EJB
+    @EJB(mappedName = NodeDAO.JNDI_BINDING)
     private NodeDAO          olasDAO;
 
-    @EJB
+    @EJB(mappedName = TrustPointDAO.JNDI_BINDING)
     private TrustPointDAO    trustPointDAO;
 
 

@@ -46,16 +46,16 @@ public class UserIdMappingServiceBean implements UserIdMappingService {
 
     private final static Log      LOG = LogFactory.getLog(UserIdMappingServiceBean.class);
 
-    @EJB
+    @EJB(mappedName = ApplicationDAO.JNDI_BINDING)
     private ApplicationDAO        applicationDAO;
 
-    @EJB
+    @EJB(mappedName = SubscriptionDAO.JNDI_BINDING)
     private SubscriptionDAO       subscriptionDAO;
 
-    @EJB
+    @EJB(mappedName = ApplicationScopeIdDAO.JNDI_BINDING)
     private ApplicationScopeIdDAO applicationScopeIdDAO;
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService        subjectService;
 
 

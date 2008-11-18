@@ -55,10 +55,10 @@ import org.jboss.seam.log.Log;
 @Interceptors(ErrorMessageInterceptor.class)
 public class AccountRegistrationBean extends AbstractLoginBean implements AccountRegistration {
 
-    @EJB
+    @EJB(mappedName = UserRegistrationService.JNDI_BINDING)
     private UserRegistrationService userRegistrationService;
 
-    @EJB
+    @EJB(mappedName = DevicePolicyService.JNDI_BINDING)
     private DevicePolicyService     devicePolicyService;
 
     @Logger

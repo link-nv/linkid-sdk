@@ -53,7 +53,7 @@ public class AttributeDescriptionBean implements AttributeDescription {
 
     public static final String                   ATTRIBUTE_TYPE_DESCRIPTION_NAME      = "attributeTypeDescriptions";
 
-    @EJB
+    @EJB(mappedName = AttributeTypeService.JNDI_BINDING)
     private AttributeTypeService                 attributeTypeService;
 
     @In(value = "selectedAttributeType", required = true)

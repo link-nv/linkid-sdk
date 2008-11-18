@@ -82,17 +82,17 @@ public class DigipassLoginPage extends LayoutPage {
      * {@inheritDoc}
      */
     @Override
-    Class<? extends Page> getPageLinkDestination() {
+    String getPageLinkString() {
 
-        return LoginPage.class;
+        return "Login Portal";
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    String getPageLinkString() {
+    Class<? extends Page> getPageLinkDestination() {
 
-        return "Login Methods";
+        return LoginPage.class;
     }
 }

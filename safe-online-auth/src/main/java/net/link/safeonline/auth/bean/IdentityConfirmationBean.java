@@ -59,7 +59,7 @@ public class IdentityConfirmationBean extends AbstractExitBean implements Identi
     @In(create = true)
     FacesMessages            facesMessages;
 
-    @EJB
+    @EJB(mappedName = IdentityService.JNDI_BINDING)
     private IdentityService  identityService;
 
 

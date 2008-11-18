@@ -42,16 +42,16 @@ import org.jboss.annotation.ejb.LocalBinding;
 @RemoteBinding(jndiBinding = UserRegistrationServiceRemote.JNDI_BINDING)
 public class UserRegistrationServiceBean implements UserRegistrationService, UserRegistrationServiceRemote {
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService          subjectService;
 
-    @EJB
+    @EJB(mappedName = UserRegistrationManager.JNDI_BINDING)
     private UserRegistrationManager userRegistrationManager;
 
-    @EJB
+    @EJB(mappedName = DevicePolicyService.JNDI_BINDING)
     private DevicePolicyService     devicePolicyService;
 
-    @EJB
+    @EJB(mappedName = ProxyAttributeService.JNDI_BINDING)
     private ProxyAttributeService   proxyAttributeService;
 
 

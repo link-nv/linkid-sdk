@@ -56,7 +56,7 @@ public class TrustDomainBean implements TrustDomain {
     @SuppressWarnings("unused")
     private List<TrustDomainEntity> trustDomainList;
 
-    @EJB
+    @EJB(mappedName = PkiService.JNDI_BINDING)
     private PkiService              pkiService;
 
     @DataModelSelection("trustDomainList")

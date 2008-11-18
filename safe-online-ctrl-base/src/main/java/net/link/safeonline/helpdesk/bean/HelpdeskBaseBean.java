@@ -41,7 +41,7 @@ public class HelpdeskBaseBean implements HelpdeskBase {
     @In(required = false, scope = ScopeType.SESSION)
     private String          location;
 
-    @EJB
+    @EJB(mappedName = HelpdeskContact.JNDI_BINDING)
     private HelpdeskContact contact;
 
 

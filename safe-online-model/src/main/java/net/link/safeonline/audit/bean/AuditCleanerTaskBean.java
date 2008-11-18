@@ -39,7 +39,7 @@ public class AuditCleanerTaskBean implements Task {
 
     private static final String name               = "Audit cleaner";
 
-    @EJB
+    @EJB(mappedName = AuditContextDAO.JNDI_BINDING)
     private AuditContextDAO     auditContextDAO;
 
     @Configurable(name = "Audit Record Age (min)", group = "Audit cleaner")

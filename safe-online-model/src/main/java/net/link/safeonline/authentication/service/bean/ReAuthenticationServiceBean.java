@@ -6,7 +6,6 @@
  */
 package net.link.safeonline.authentication.service.bean;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.PostConstruct;
@@ -25,7 +24,6 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectMismatchException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.ReAuthenticationService;
-import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.SubjectManager;
@@ -52,10 +50,7 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
 
     private Set<DeviceEntity> authenticationDevices;
 
-    @EJB
-    private DeviceDAO         deviceDAO;
-
-    @EJB
+    @EJB(mappedName = SubjectManager.JNDI_BINDING)
     private SubjectManager    subjectManager;
 
 
@@ -69,15 +64,6 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
     public Set<DeviceEntity> getAuthenticatedDevices() {
 
         return this.authenticationDevices;
-    }
-
-    private void addAuthenticationDevice(DeviceEntity authenticationDevice) {
-
-        LOG.debug("set re-auth device: " + authenticationDevice.getName());
-        if (null == this.authenticationDevices) {
-            this.authenticationDevices = new HashSet<DeviceEntity>();
-        }
-        this.authenticationDevices.add(authenticationDevice);
     }
 
     /**

@@ -45,7 +45,7 @@ public class AuditPrincipalBean implements AuditPrincipal {
     @Out(required = true)
     String                   principal;
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService   subjectService;
 
 

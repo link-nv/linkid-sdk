@@ -35,10 +35,10 @@ public class ConfigStartableBean implements ConfigStartable {
 
     private static final Log LOG = LogFactory.getLog(ConfigStartableBean.class);
 
-    @EJB
+    @EJB(mappedName = ConfigItemDAO.JNDI_BINDING)
     private ConfigItemDAO    configItemDAO;
 
-    @EJB
+    @EJB(mappedName = ConfigGroupDAO.JNDI_BINDING)
     private ConfigGroupDAO   configGroupDAO;
 
 

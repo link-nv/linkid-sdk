@@ -81,25 +81,25 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 
     private static final Log LOG = LogFactory.getLog(DeviceServiceBean.class);
 
-    @EJB
+    @EJB(mappedName = Devices.JNDI_BINDING)
     private Devices          devices;
 
-    @EJB
+    @EJB(mappedName = DeviceDAO.JNDI_BINDING)
     private DeviceDAO        deviceDAO;
 
-    @EJB
+    @EJB(mappedName = DeviceClassDAO.JNDI_BINDING)
     private DeviceClassDAO   deviceClassDAO;
 
-    @EJB
+    @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
     private AttributeTypeDAO attributeTypeDAO;
 
-    @EJB
+    @EJB(mappedName = ApplicationDAO.JNDI_BINDING)
     private ApplicationDAO   applicationDAO;
 
-    @EJB
+    @EJB(mappedName = NodeDAO.JNDI_BINDING)
     private NodeDAO          olasDAO;
 
-    @EJB
+    @EJB(mappedName = IdentityService.JNDI_BINDING)
     private IdentityService  identityService;
 
 

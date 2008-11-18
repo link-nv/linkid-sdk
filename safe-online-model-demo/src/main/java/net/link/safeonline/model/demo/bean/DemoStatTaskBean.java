@@ -32,13 +32,13 @@ public class DemoStatTaskBean implements Task {
 
     public static final String    JNDI_BINDING = Task.JNDI_PREFIX + "DemoStatTaskBean/local";
 
-    @EJB
+    @EJB(mappedName = StatisticDAO.JNDI_BINDING)
     private StatisticDAO          statisticDAO;
 
-    @EJB
+    @EJB(mappedName = StatisticDataPointDAO.JNDI_BINDING)
     private StatisticDataPointDAO statisticDataPointDAO;
 
-    @EJB
+    @EJB(mappedName = ApplicationDAO.JNDI_BINDING)
     private ApplicationDAO        applicationDAO;
 
     private final static String   STAT_NAME    = "demo stat";

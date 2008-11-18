@@ -45,13 +45,13 @@ public class PkiServiceBean implements PkiService, PkiServiceRemote {
 
     private static final Log      LOG = LogFactory.getLog(PkiServiceBean.class);
 
-    @EJB
+    @EJB(mappedName = TrustDomainDAO.JNDI_BINDING)
     private TrustDomainDAO        trustDomainDAO;
 
-    @EJB
+    @EJB(mappedName = TrustPointDAO.JNDI_BINDING)
     private TrustPointDAO         trustPointDAO;
 
-    @EJB
+    @EJB(mappedName = CachedOcspResponseDAO.JNDI_BINDING)
     private CachedOcspResponseDAO cachedOcspResponseDAO;
 
 

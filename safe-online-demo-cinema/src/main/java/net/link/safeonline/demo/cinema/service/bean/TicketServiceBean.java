@@ -41,7 +41,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = TicketService.JNDI_BINDING)
 public class TicketServiceBean extends AbstractCinemaServiceBean implements TicketService {
 
-    @EJB
+    @EJB(mappedName = SeatService.JNDI_BINDING)
     private transient SeatService seatService;
 
 

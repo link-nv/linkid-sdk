@@ -38,10 +38,10 @@ public class ApplicationAuthenticationServiceBean implements ApplicationAuthenti
 
     private static final Log LOG = LogFactory.getLog(ApplicationAuthenticationServiceBean.class);
 
-    @EJB
+    @EJB(mappedName = ApplicationDAO.JNDI_BINDING)
     private ApplicationDAO   applicationDAO;
 
-    @EJB
+    @EJB(mappedName = TrustPointDAO.JNDI_BINDING)
     private TrustPointDAO    trustPointDAO;
 
 

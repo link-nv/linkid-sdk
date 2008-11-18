@@ -52,10 +52,10 @@ public class ClockDriftDetectorTaskBean implements Task {
 
     public static final String  JNDI_BINDING            = Task.JNDI_PREFIX + "ClockDriftDetectorTaskBean/local";
 
-    @EJB
+    @EJB(mappedName = SecurityAuditLogger.JNDI_BINDING)
     private SecurityAuditLogger securityAuditLogger;
 
-    @EJB
+    @EJB(mappedName = ResourceAuditLogger.JNDI_BINDING)
     private ResourceAuditLogger resourceAuditLogger;
 
     public static final String  CONFIG_GROUP            = "Clock Drift Detector";

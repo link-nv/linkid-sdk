@@ -37,7 +37,7 @@ public class NodeMappingDAOBean implements NodeMappingDAO {
     @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
     private EntityManager                    entityManager;
 
-    @EJB
+    @EJB(mappedName = IdGenerator.JNDI_BINDING)
     private IdGenerator                      idGenerator;
 
     private NodeMappingEntity.QueryInterface queryObject;

@@ -40,10 +40,10 @@ public class TimeRoomSelectionPage extends LayoutPage {
 
     private static final long serialVersionUID = 1L;
 
-    @EJB
+    @EJB(mappedName = FilmService.JNDI_BINDING)
     transient FilmService     filmService;
 
-    @EJB
+    @EJB(mappedName = RoomService.JNDI_BINDING)
     transient RoomService     roomService;
 
 

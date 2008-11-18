@@ -37,7 +37,7 @@ public class ApplicationScopeIdDAOBean implements ApplicationScopeIdDAO {
 
     private ApplicationScopeIdEntity.QueryInterface queryObject;
 
-    @EJB
+    @EJB(mappedName = IdGenerator.JNDI_BINDING)
     private IdGenerator                             idGenerator;
 
 

@@ -35,7 +35,7 @@ public class TicketPage extends LayoutPage {
 
     private static final long serialVersionUID = 1L;
 
-    @EJB
+    @EJB(mappedName = UserService.JNDI_BINDING)
     transient UserService     userService;
 
 

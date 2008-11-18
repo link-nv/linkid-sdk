@@ -33,7 +33,7 @@ public class StatisticDAOBean implements StatisticDAO {
     @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
     private EntityManager                  entityManager;
 
-    @EJB
+    @EJB(mappedName = StatisticDataPointDAO.JNDI_BINDING)
     StatisticDataPointDAO                  statisticDataPointDAO;
 
     private StatisticEntity.QueryInterface queryObject;

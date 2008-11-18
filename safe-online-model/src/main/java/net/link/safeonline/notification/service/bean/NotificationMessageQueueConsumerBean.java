@@ -54,16 +54,16 @@ public class NotificationMessageQueueConsumerBean implements MessageListener {
 
     private static final Log       LOG = LogFactory.getLog(NotificationMessageQueueConsumerBean.class);
 
-    @EJB
+    @EJB(mappedName = NotificationMessageDAO.JNDI_BINDING)
     private NotificationMessageDAO notificationMessageDAO;
 
-    @EJB
+    @EJB(mappedName = EndpointReferenceDAO.JNDI_BINDING)
     private EndpointReferenceDAO   endpointReferenceDAO;
 
-    @EJB
+    @EJB(mappedName = ResourceAuditLogger.JNDI_BINDING)
     private ResourceAuditLogger    resourceAuditLogger;
 
-    @EJB
+    @EJB(mappedName = SecurityAuditLogger.JNDI_BINDING)
     private SecurityAuditLogger    securityAuditLogger;
 
 

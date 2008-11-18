@@ -46,7 +46,7 @@ public class NodeAttributeServiceBean implements NodeAttributeService, NodeAttri
 
     private static final Log      LOG = LogFactory.getLog(NodeAttributeServiceBean.class);
 
-    @EJB
+    @EJB(mappedName = ProxyAttributeService.JNDI_BINDING)
     private ProxyAttributeService proxyAttributeService;
 
 

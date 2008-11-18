@@ -84,13 +84,13 @@ public class DeviceBean implements Device {
     @In(create = true)
     FacesMessages                facesMessages;
 
-    @EJB
+    @EJB(mappedName = DeviceService.JNDI_BINDING)
     private DeviceService        deviceService;
 
-    @EJB
+    @EJB(mappedName = AttributeTypeService.JNDI_BINDING)
     private AttributeTypeService attributeTypeService;
 
-    @EJB
+    @EJB(mappedName = NodeService.JNDI_BINDING)
     private NodeService          nodeService;
 
     private String               name;

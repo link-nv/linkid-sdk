@@ -19,10 +19,10 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = HelpdeskContexts.JNDI_BINDING)
 public class HelpdeskContextsBean implements HelpdeskContexts {
 
-    @EJB
+    @EJB(mappedName = HelpdeskContextDAO.JNDI_BINDING)
     private HelpdeskContextDAO helpdeskContextDAO;
 
-    @EJB
+    @EJB(mappedName = HelpdeskEventDAO.JNDI_BINDING)
     private HelpdeskEventDAO   helpdeskEventDAO;
 
 

@@ -77,7 +77,7 @@ public class OcspValidatorBean implements OcspValidator {
 
     private static final Log LOG = LogFactory.getLog(OcspValidatorBean.class);
 
-    @EJB
+    @EJB(mappedName = ResourceAuditLogger.JNDI_BINDING)
     ResourceAuditLogger      resourceAuditLogger;
 
 

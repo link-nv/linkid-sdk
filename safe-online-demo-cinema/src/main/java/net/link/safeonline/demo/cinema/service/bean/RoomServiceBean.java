@@ -39,7 +39,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = RoomService.JNDI_BINDING)
 public class RoomServiceBean extends AbstractCinemaServiceBean implements RoomService {
 
-    @EJB
+    @EJB(mappedName = SeatService.JNDI_BINDING)
     private transient SeatService seatService;
 
 

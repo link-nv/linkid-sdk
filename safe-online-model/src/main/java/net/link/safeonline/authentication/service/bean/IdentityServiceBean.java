@@ -93,34 +93,34 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
 
     static final Log                          LOG = LogFactory.getLog(IdentityServiceBean.class);
 
-    @EJB
+    @EJB(mappedName = SubjectManager.JNDI_BINDING)
     private SubjectManager                    subjectManager;
 
-    @EJB
+    @EJB(mappedName = HistoryDAO.JNDI_BINDING)
     private HistoryDAO                        historyDAO;
 
-    @EJB
+    @EJB(mappedName = AttributeDAO.JNDI_BINDING)
     private AttributeDAO                      attributeDAO;
 
-    @EJB
+    @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
     private AttributeTypeDAO                  attributeTypeDAO;
 
-    @EJB
+    @EJB(mappedName = ApplicationDAO.JNDI_BINDING)
     private ApplicationDAO                    applicationDAO;
 
-    @EJB
+    @EJB(mappedName = SubscriptionDAO.JNDI_BINDING)
     private SubscriptionDAO                   subscriptionDAO;
 
-    @EJB
+    @EJB(mappedName = ApplicationIdentityDAO.JNDI_BINDING)
     private ApplicationIdentityDAO            applicationIdentityDAO;
 
-    @EJB
+    @EJB(mappedName = AttributeTypeDescriptionDecorator.JNDI_BINDING)
     private AttributeTypeDescriptionDecorator attributeTypeDescriptionDecorator;
 
-    @EJB
+    @EJB(mappedName = ProxyAttributeService.JNDI_BINDING)
     private ProxyAttributeService             proxyAttributeService;
 
-    @EJB
+    @EJB(mappedName = DeviceDAO.JNDI_BINDING)
     private DeviceDAO                         deviceDAO;
 
     private AttributeManagerLWBean            attributeManager;

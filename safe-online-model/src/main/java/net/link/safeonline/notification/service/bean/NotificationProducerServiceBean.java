@@ -72,19 +72,19 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
     @Resource(mappedName = NotificationConstants.NOTIFICATIONS_QUEUE_NAME)
     private Queue                   notificationsQueue;
 
-    @EJB
+    @EJB(mappedName = NotificationProducerDAO.JNDI_BINDING)
     private NotificationProducerDAO notificationProducerDAO;
 
-    @EJB
+    @EJB(mappedName = ApplicationDAO.JNDI_BINDING)
     private ApplicationDAO          applicationDAO;
 
-    @EJB
+    @EJB(mappedName = NodeDAO.JNDI_BINDING)
     private NodeDAO                 nodeDAO;
 
-    @EJB
+    @EJB(mappedName = EndpointReferenceDAO.JNDI_BINDING)
     private EndpointReferenceDAO    endpointReferenceDAO;
 
-    @EJB
+    @EJB(mappedName = NotificationMessageDAO.JNDI_BINDING)
     private NotificationMessageDAO  notificationMessageDAO;
 
 

@@ -47,13 +47,13 @@ public class TaskSchedulerBean implements TaskScheduler {
 
     private static final Log LOG                   = LogFactory.getLog(TaskSchedulerBean.class);
 
-    @EJB
+    @EJB(mappedName = TaskDAO.JNDI_BINDING)
     private TaskDAO          taskDAO;
 
-    @EJB
+    @EJB(mappedName = SchedulingDAO.JNDI_BINDING)
     private SchedulingDAO    schedulingDAO;
 
-    @EJB
+    @EJB(mappedName = TaskHistoryDAO.JNDI_BINDING)
     private TaskHistoryDAO   taskHistoryDAO;
 
     @Resource

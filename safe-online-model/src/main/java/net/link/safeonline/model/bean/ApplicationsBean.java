@@ -26,10 +26,10 @@ public class ApplicationsBean implements Applications {
 
     private static final Log       LOG = LogFactory.getLog(ApplicationsBean.class);
 
-    @EJB
+    @EJB(mappedName = ApplicationDAO.JNDI_BINDING)
     private ApplicationDAO         applicationDAO;
 
-    @EJB
+    @EJB(mappedName = ApplicationIdentityDAO.JNDI_BINDING)
     private ApplicationIdentityDAO applicationIdentityDAO;
 
 

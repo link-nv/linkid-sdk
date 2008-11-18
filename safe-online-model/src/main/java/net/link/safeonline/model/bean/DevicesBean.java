@@ -25,10 +25,10 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = Devices.JNDI_BINDING)
 public class DevicesBean implements Devices {
 
-    @EJB
+    @EJB(mappedName = DeviceDAO.JNDI_BINDING)
     private DeviceDAO        deviceDAO;
 
-    @EJB
+    @EJB(mappedName = AllowedDeviceDAO.JNDI_BINDING)
     private AllowedDeviceDAO allowedDeviceDAO;
 
 

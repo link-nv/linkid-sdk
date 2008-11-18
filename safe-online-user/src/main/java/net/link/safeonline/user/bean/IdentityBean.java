@@ -56,10 +56,10 @@ public class IdentityBean implements Identity {
 
     private static final Log   LOG                 = LogFactory.getLog(IdentityBean.class);
 
-    @EJB
+    @EJB(mappedName = IdentityService.JNDI_BINDING)
     private IdentityService    identityService;
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService     subjectService;
 
     public static final String ATTRIBUTE_LIST_NAME = "attributeList";

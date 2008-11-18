@@ -36,10 +36,10 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = TransactionService.JNDI_BINDING)
 public class TransactionServiceBean extends AbstractBankServiceBean implements TransactionService {
 
-    @EJB
+    @EJB(mappedName = UserService.JNDI_BINDING)
     transient UserService    userService;
 
-    @EJB
+    @EJB(mappedName = AccountService.JNDI_BINDING)
     transient AccountService accountService;
 
 

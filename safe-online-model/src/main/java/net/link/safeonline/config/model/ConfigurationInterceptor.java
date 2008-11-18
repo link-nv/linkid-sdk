@@ -28,7 +28,7 @@ public class ConfigurationInterceptor {
 
     private static final Log LOG = LogFactory.getLog(ConfigurationInterceptor.class);
 
-    @EJB
+    @EJB(mappedName = ConfigItemDAO.JNDI_BINDING)
     private ConfigItemDAO    configItemDAO;
 
 

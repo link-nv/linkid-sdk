@@ -66,7 +66,7 @@ public class DeviceDescriptionBean implements DeviceDescription {
     @In(create = true)
     FacesMessages                        facesMessages;
 
-    @EJB
+    @EJB(mappedName = DeviceService.JNDI_BINDING)
     private DeviceService                deviceService;
 
     @DataModel(OPER_DEVICE_DESCR_LIST_NAME)

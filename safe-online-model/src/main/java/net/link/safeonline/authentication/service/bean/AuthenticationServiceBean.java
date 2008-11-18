@@ -220,58 +220,58 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
     }
 
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService                   subjectService;
 
-    @EJB
+    @EJB(mappedName = ApplicationDAO.JNDI_BINDING)
     private ApplicationDAO                   applicationDAO;
 
-    @EJB
+    @EJB(mappedName = ApplicationPoolDAO.JNDI_BINDING)
     private ApplicationPoolDAO               applicationPoolDAO;
 
-    @EJB
+    @EJB(mappedName = SubscriptionDAO.JNDI_BINDING)
     private SubscriptionDAO                  subscriptionDAO;
 
-    @EJB
+    @EJB(mappedName = HistoryDAO.JNDI_BINDING)
     private HistoryDAO                       historyDAO;
 
-    @EJB
+    @EJB(mappedName = StatisticDAO.JNDI_BINDING)
     private StatisticDAO                     statisticDAO;
 
-    @EJB
+    @EJB(mappedName = DeviceDAO.JNDI_BINDING)
     private DeviceDAO                        deviceDAO;
 
-    @EJB
+    @EJB(mappedName = StatisticDataPointDAO.JNDI_BINDING)
     private StatisticDataPointDAO            statisticDataPointDAO;
 
-    @EJB
+    @EJB(mappedName = IdentityService.JNDI_BINDING)
     private IdentityService                  identityService;
 
-    @EJB
+    @EJB(mappedName = DevicePolicyService.JNDI_BINDING)
     private DevicePolicyService              devicePolicyService;
 
-    @EJB
+    @EJB(mappedName = NodeMappingService.JNDI_BINDING)
     private NodeMappingService               nodeMappingService;
 
-    @EJB
+    @EJB(mappedName = UsageAgreementService.JNDI_BINDING)
     private UsageAgreementService            usageAgreementService;
 
-    @EJB
+    @EJB(mappedName = NodeAuthenticationService.JNDI_BINDING)
     private NodeAuthenticationService        nodeAuthenticationService;
 
-    @EJB
+    @EJB(mappedName = ApplicationAuthenticationService.JNDI_BINDING)
     private ApplicationAuthenticationService applicationAuthenticationService;
 
-    @EJB
+    @EJB(mappedName = PkiValidator.JNDI_BINDING)
     private PkiValidator                     pkiValidator;
 
-    @EJB
+    @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
     private SamlAuthorityService             samlAuthorityService;
 
-    @EJB
+    @EJB(mappedName = UserIdMappingService.JNDI_BINDING)
     private UserIdMappingService             userIdMappingService;
 
-    @EJB
+    @EJB(mappedName = SecurityAuditLogger.JNDI_BINDING)
     private SecurityAuditLogger              securityAuditLogger;
 
 

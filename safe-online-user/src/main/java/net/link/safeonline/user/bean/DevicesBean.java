@@ -93,13 +93,13 @@ public class DevicesBean implements Devices {
     }
 
 
-    @EJB
+    @EJB(mappedName = SubjectManager.JNDI_BINDING)
     private SubjectManager      subjectManager;
 
-    @EJB
+    @EJB(mappedName = DeviceService.JNDI_BINDING)
     private DeviceService       deviceService;
 
-    @EJB
+    @EJB(mappedName = DevicePolicyService.JNDI_BINDING)
     private DevicePolicyService devicePolicyService;
 
     @In

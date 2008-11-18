@@ -58,7 +58,7 @@ public class HelpdeskLogBean implements HelpdeskLog {
 
     private static final String         HELPDESK_USER_CONTEXT_LIST_NAME = "helpdeskUserContextList";
 
-    @EJB
+    @EJB(mappedName = HelpdeskService.JNDI_BINDING)
     private HelpdeskService             helpdeskService;
 
     @In(create = true)

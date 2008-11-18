@@ -64,19 +64,19 @@ public class ApplicationBean implements Application {
 
     private static final String   selectedApplicationUsageAgreementsModel = "selectedApplicationUsageAgreements";
 
-    @EJB
+    @EJB(mappedName = ApplicationService.JNDI_BINDING)
     private ApplicationService    applicationService;
 
-    @EJB
+    @EJB(mappedName = UsageAgreementService.JNDI_BINDING)
     private UsageAgreementService usageAgreementService;
 
-    @EJB
+    @EJB(mappedName = SubscriptionService.JNDI_BINDING)
     private SubscriptionService   subscriptionService;
 
-    @EJB
+    @EJB(mappedName = DeviceService.JNDI_BINDING)
     private DeviceService         deviceService;
 
-    @EJB
+    @EJB(mappedName = DevicePolicyService.JNDI_BINDING)
     private DevicePolicyService   devicePolicyService;
 
     @In(create = true)

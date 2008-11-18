@@ -31,10 +31,10 @@ public class ConfigurationManagerBean implements ConfigurationManager {
 
     public static final String WS_SECURITY_MAX_TIMESTAMP_OFFSET = "Maximum WS-Security Timestamp Offset (ms)";
 
-    @EJB
+    @EJB(mappedName = ConfigItemDAO.JNDI_BINDING)
     private ConfigItemDAO      configItemDAO;
 
-    @EJB
+    @EJB(mappedName = ApplicationDAO.JNDI_BINDING)
     private ApplicationDAO     applicationDAO;
 
 

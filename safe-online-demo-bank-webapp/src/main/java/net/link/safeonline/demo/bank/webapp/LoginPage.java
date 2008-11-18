@@ -3,7 +3,6 @@ package net.link.safeonline.demo.bank.webapp;
 import javax.servlet.ServletException;
 
 import net.link.safeonline.demo.bank.entity.BankUserEntity;
-import net.link.safeonline.demo.wicket.tools.OlasLoginLink;
 import net.link.safeonline.demo.wicket.tools.WicketUtil;
 
 import org.apache.wicket.Page;
@@ -48,7 +47,7 @@ public class LoginPage extends LayoutPage {
             throw new RestartResponseException(AccountPage.class);
 
         // HTML Components.
-        add(new OlasLoginLink("olasLoginLink"));
+        add(new PageLink("olasLoginLink", OlasAuthPage.class));
         add(new PageLink("digipassLoginLink", DigipassLoginPage.class));
     }
 

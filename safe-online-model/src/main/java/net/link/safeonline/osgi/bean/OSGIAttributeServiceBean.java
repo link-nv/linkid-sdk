@@ -55,10 +55,10 @@ public class OSGIAttributeServiceBean implements OSGIAttributeService {
 
     private static final Log      LOG = LogFactory.getLog(OSGIAttributeServiceBean.class);
 
-    @EJB
+    @EJB(mappedName = ProxyAttributeService.JNDI_BINDING)
     private ProxyAttributeService proxyAttributeService;
 
-    @EJB
+    @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
     private AttributeTypeDAO      attributeTypeDAO;
 
 

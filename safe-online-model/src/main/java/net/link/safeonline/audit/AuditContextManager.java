@@ -31,13 +31,13 @@ public class AuditContextManager {
 
     private static final Log      LOG = LogFactory.getLog(AuditContextManager.class);
 
-    @EJB
+    @EJB(mappedName = AuditContextFinalizer.JNDI_BINDING)
     private AuditContextFinalizer auditContextFinalizer;
 
-    @EJB
+    @EJB(mappedName = AuditContextDAO.JNDI_BINDING)
     private AuditContextDAO       auditContextDAO;
 
-    @EJB
+    @EJB(mappedName = AuditAuditDAO.JNDI_BINDING)
     private AuditAuditDAO         auditAuditDAO;
 
 

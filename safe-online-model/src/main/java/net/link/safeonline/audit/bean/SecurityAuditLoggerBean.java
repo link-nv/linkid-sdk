@@ -31,13 +31,13 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = SecurityAuditLogger.JNDI_BINDING)
 public class SecurityAuditLoggerBean implements SecurityAuditLogger {
 
-    @EJB
+    @EJB(mappedName = AuditAuditDAO.JNDI_BINDING)
     private AuditAuditDAO    auditAuditDAO;
 
-    @EJB
+    @EJB(mappedName = AuditContextDAO.JNDI_BINDING)
     private AuditContextDAO  auditContextDAO;
 
-    @EJB
+    @EJB(mappedName = SecurityAuditDAO.JNDI_BINDING)
     private SecurityAuditDAO securityAuditDAO;
 
 

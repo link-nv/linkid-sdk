@@ -66,13 +66,13 @@ public class RegistrationBean implements Registration {
     @In(value = ProtocolContext.PROTOCOL_CONTEXT)
     private ProtocolContext      protocolContext;
 
-    @EJB
+    @EJB(mappedName = EncapDeviceService.JNDI_BINDING)
     private EncapDeviceService   encapDeviceService;
 
-    @EJB
+    @EJB(mappedName = MobileManager.JNDI_BINDING)
     private MobileManager        mobileManager;
 
-    @EJB
+    @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
     private SamlAuthorityService samlAuthorityService;
 
 

@@ -32,7 +32,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = HelpdeskContextDAO.JNDI_BINDING)
 public class HelpdeskContextDAOBean implements HelpdeskContextDAO {
 
-    @EJB
+    @EJB(mappedName = HelpdeskEventDAO.JNDI_BINDING)
     private HelpdeskEventDAO                     helpdeskEventDAO;
 
     private static final Log                     LOG = LogFactory.getLog(HelpdeskContextDAOBean.class);

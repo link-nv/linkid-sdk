@@ -35,7 +35,7 @@ public class HistoryCleanerTaskBean implements Task {
 
     private static final String name              = "Subject history cleaner";
 
-    @EJB
+    @EJB(mappedName = HistoryDAO.JNDI_BINDING)
     private HistoryDAO          historyDAO;
 
     @Configurable(name = "History Age (ms)", group = "User history cleaner")

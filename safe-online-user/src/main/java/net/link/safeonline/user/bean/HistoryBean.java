@@ -33,7 +33,7 @@ import org.jboss.seam.annotations.Name;
 @SecurityDomain(UserConstants.SAFE_ONLINE_USER_SECURITY_DOMAIN)
 public class HistoryBean implements History {
 
-    @EJB
+    @EJB(mappedName = IdentityService.JNDI_BINDING)
     private IdentityService identityService;
 
 

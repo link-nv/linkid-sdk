@@ -64,10 +64,10 @@ public class AccountingBean implements Accounting {
     @In(create = true)
     FacesMessages                   facesMessages;
 
-    @EJB
+    @EJB(mappedName = ApplicationService.JNDI_BINDING)
     private ApplicationService      applicationService;
 
-    @EJB
+    @EJB(mappedName = StatisticService.JNDI_BINDING)
     private StatisticService        statisticService;
 
     @SuppressWarnings("unused")

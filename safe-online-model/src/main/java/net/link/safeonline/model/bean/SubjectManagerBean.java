@@ -46,7 +46,7 @@ public class SubjectManagerBean implements SubjectManager {
     @Resource
     private SessionContext   context;
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService   subjectService;
 
 

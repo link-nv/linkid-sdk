@@ -102,25 +102,25 @@ public class ApplicationBean implements Application {
 
     private static final String        SELECTED_APPLICATION_USAGE_AGREEMENTS_MODEL = "operSelectedApplicationUsageAgreements";
 
-    @EJB
+    @EJB(mappedName = ApplicationService.JNDI_BINDING)
     private ApplicationService         applicationService;
 
-    @EJB
+    @EJB(mappedName = SubscriptionService.JNDI_BINDING)
     private SubscriptionService        subscriptionService;
 
-    @EJB
+    @EJB(mappedName = AttributeTypeService.JNDI_BINDING)
     private AttributeTypeService       attributeTypeService;
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService             subjectService;
 
-    @EJB
+    @EJB(mappedName = UsageAgreementService.JNDI_BINDING)
     private UsageAgreementService      usageAgreementService;
 
-    @EJB
+    @EJB(mappedName = DeviceService.JNDI_BINDING)
     private DeviceService              deviceService;
 
-    @EJB
+    @EJB(mappedName = DevicePolicyService.JNDI_BINDING)
     private DevicePolicyService        devicePolicyService;
 
     private String                     name;

@@ -29,10 +29,10 @@ import org.jboss.annotation.security.SecurityDomain;
 @LocalBinding(jndiBinding = ApplicationOwnerManager.JNDI_BINDING)
 public class ApplicationOwnerManagerBean implements ApplicationOwnerManager {
 
-    @EJB
+    @EJB(mappedName = SubjectManager.JNDI_BINDING)
     private SubjectManager      subjectManager;
 
-    @EJB
+    @EJB(mappedName = ApplicationOwnerDAO.JNDI_BINDING)
     private ApplicationOwnerDAO applicationOwnerDAO;
 
 

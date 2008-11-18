@@ -27,7 +27,9 @@ public interface SafeOnlineAppConstants {
      */
     public static final String COLOR_CONTEXT     = "ApplicationColor";
     public static final String MINIMAL_CONTEXT   = "ApplicationMinimal";
-    public static final String COLOR_ATTRIBUTE   = "OLAS-AUTH.color";
-    public static final String MINIMAL_ATTRIBUTE = "OLAS-AUTH.minimal";
+
+    public static final String COLOR_ATTRIBUTE   = "applicationColor";
+    public static final String MINIMAL_ATTRIBUTE = "applicationMinimal";
+
     public static final String DEFAULT_COLOR     = "#5A7500";
 }

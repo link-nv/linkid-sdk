@@ -33,13 +33,13 @@ public class UserRegistrationManagerBean implements UserRegistrationManager {
 
     private static final Log LOG = LogFactory.getLog(UserRegistrationManagerBean.class);
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService   subjectService;
 
-    @EJB
+    @EJB(mappedName = ApplicationDAO.JNDI_BINDING)
     private ApplicationDAO   applicationDAO;
 
-    @EJB
+    @EJB(mappedName = SubscriptionDAO.JNDI_BINDING)
     private SubscriptionDAO  subscriptionDAO;
 
 

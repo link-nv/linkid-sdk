@@ -68,7 +68,7 @@ public class TrustPointBean implements TrustPoint {
     @In(value = "selectedTrustDomain")
     private TrustDomainEntity  selectedTrustDomain;
 
-    @EJB
+    @EJB(mappedName = PkiService.JNDI_BINDING)
     private PkiService         pkiService;
 
     @In(create = true)
