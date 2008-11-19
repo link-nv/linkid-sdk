@@ -12,7 +12,7 @@ import java.security.cert.X509Certificate;
 import java.util.UUID;
 
 import junit.framework.TestCase;
-import net.link.safeonline.authentication.service.bean.AuthenticationStatement;
+import net.link.safeonline.authentication.service.AuthenticationStatement;
 import net.link.safeonline.shared.JceSigner;
 import net.link.safeonline.shared.Signer;
 import net.link.safeonline.test.util.PkiTestUtils;

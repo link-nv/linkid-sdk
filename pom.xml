@@ -735,6 +735,7 @@
 		<module>safe-online-entity</module>
 		<module>safe-online-deploy</module>
 		<module>safe-online-test-util</module>
+		<module>safe-online-model-client</module>
 		<module>safe-online-model</module>
 		<module>safe-online-startup</module>
 		<module>safe-online-startup-runtime</module>
@@ -804,8 +805,11 @@
 
 		<!-- EXTERNAL DEVICES -->
 		<module>safe-online-device-webapp-base</module>
+		<module>safe-online-model-beid-client</module>
 		<module>safe-online-model-beid</module>
+		<module>safe-online-model-encap-client</module>
 		<module>safe-online-model-encap</module>
+		<module>safe-online-model-digipass-client</module>
 		<module>safe-online-model-digipass</module>
 		<module>safe-online-sms</module>
 		<module>safe-online-sms-ra</module>
@@ -851,12 +855,15 @@
 		<module>safe-online-option</module>
 		<module>safe-online-option-webapp</module>
 		<module>safe-online-option-deploy</module>
+		<module>safe-online-model-option-client</module>
 		<module>safe-online-model-option</module>
+		<module>safe-online-model-password-client</module>
 		<module>safe-online-model-password</module>
 		<module>safe-online-password-keystore</module>
 		<module>safe-online-password-startup-runtime</module>
 		<module>safe-online-password-webapp</module>
 		<module>safe-online-password-deploy</module>
+		<module>safe-online-model-otpoversms-client</module>
 		<module>safe-online-model-otpoversms</module>
 		<module>safe-online-otpoversms-keystore</module>
 		<module>safe-online-otpoversms-startup-runtime</module>
