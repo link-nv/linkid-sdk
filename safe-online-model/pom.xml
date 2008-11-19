@@ -31,17 +31,6 @@
 							<addClasspath>true</addClasspath>
 						</manifest>
 					</archive>
-
-					<!--
-						Exclude all default excludes except for **/*Bean.class. We also
-						want Abstract*Bean.class files in the client jar.
-					-->
-					<generateClient>true</generateClient>
-					<clientExcludes>
-						<clientExclude>**/*CMP.class</clientExclude>
-						<clientExclude>**/*Session.class</clientExclude>
-						<clientExclude>**/package.html</clientExclude>
-					</clientExcludes>
 				</configuration>
 			</plugin>
 			<plugin>
