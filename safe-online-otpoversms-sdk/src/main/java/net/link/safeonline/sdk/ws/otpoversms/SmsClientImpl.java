@@ -10,6 +10,7 @@ package net.link.safeonline.sdk.ws.otpoversms;
 import java.net.ConnectException;
 
 import javax.xml.ws.BindingProvider;
+import javax.xml.ws.WebServiceException;
 
 import net.link.safeonline.otpoversms.ws.SmsServiceFactory;
 import sis.mobile.SmsPortType;
@@ -49,6 +50,8 @@ public class SmsClientImpl implements SmsClient {
         } catch (ClientTransportException e) {
             throw new ConnectException(e.getMessage());
         } catch (SmsPortTypeSendSmsGenericFaultFaultMessage e) {
+            throw new ConnectException(e.getMessage());
+        } catch (WebServiceException e) {
             throw new ConnectException(e.getMessage());
         }
 

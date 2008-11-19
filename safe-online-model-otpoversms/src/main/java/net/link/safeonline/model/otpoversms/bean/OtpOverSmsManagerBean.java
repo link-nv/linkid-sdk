@@ -155,14 +155,12 @@ public class OtpOverSmsManagerBean implements OtpOverSmsManager {
             }
             return true;
         }
+
         return false;
     }
 
-    public void removeMobile(SubjectEntity subject, String mobile, String pin)
+    public void removeMobile(SubjectEntity subject, String mobile)
             throws DeviceNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException {
-
-        if (!validatePin(subject, mobile, pin))
-            throw new PermissionDeniedException("pin mismatch");
 
         AttributeTypeEntity deviceAttributeType = this.attributeTypeDAO.getAttributeType(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ATTRIBUTE);
         AttributeTypeEntity mobileAttributeType = this.attributeTypeDAO.getAttributeType(OtpOverSmsConstants.OTPOVERSMS_MOBILE_ATTRIBUTE);

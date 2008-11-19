@@ -133,6 +133,7 @@ public class RegistrationPage extends TemplatePage {
                         RequestOtpForm.this.error(getLocalizer().getString("errorMessage", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: failed to send otp"
                                 + RegistrationPage.this.mobile, LogLevelType.ERROR);
+                        RegistrationPage.this.mobile = null;
                         return;
                     }
 

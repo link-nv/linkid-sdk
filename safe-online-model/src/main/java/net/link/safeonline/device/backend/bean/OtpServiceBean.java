@@ -4,7 +4,7 @@
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
-package net.link.safeonline.model.otpoversms.bean;
+package net.link.safeonline.device.backend.bean;
 
 import java.net.ConnectException;
 import java.security.SecureRandom;
@@ -14,8 +14,8 @@ import javax.interceptor.Interceptors;
 
 import net.link.safeonline.common.Configurable;
 import net.link.safeonline.config.model.ConfigurationInterceptor;
-import net.link.safeonline.model.otpoversms.OtpService;
-import net.link.safeonline.model.otpoversms.OtpServiceRemote;
+import net.link.safeonline.device.backend.OtpService;
+import net.link.safeonline.device.backend.OtpServiceRemote;
 import net.link.safeonline.sdk.ws.otpoversms.SmsClient;
 import net.link.safeonline.sdk.ws.otpoversms.SmsClientImpl;
 
@@ -35,7 +35,7 @@ public class OtpServiceBean implements OtpService, OtpServiceRemote {
     private final static Log LOG               = LogFactory.getLog(OtpServiceBean.class);
 
     @Configurable(name = "Mobile OTP Server", group = "Mobile OTP")
-    private String           otpServerLocation = OtpService.DUMMY_OTP_LOCATION;
+    private String           otpServerLocation = "http://localhost:8080/safe-online-sms-ws/dummy";
 
     private String           expectedOtp;
 
