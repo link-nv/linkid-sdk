@@ -56,26 +56,6 @@
 				</rich:simpleTogglePanel>
 
 				<rich:simpleTogglePanel switchType="client"
-					styleClass="fullwidth" label="#{msgs.attributes}" opened="false">
-
-					<h:dataTable id="data" var="item"
-						value="#{userManager.attributeList}" preserveDataModel="false"
-						styleClass="inner" rowClasses="listingTable_Row1,listingTable_Row2">
-
-						<h:column headerClass="third">
-							<f:facet name="header">#{msgs.name}</f:facet>
-							<so:outputAttributeName value="#{item}" />
-						</h:column>
-
-						<h:column>
-							<f:facet name="header">#{msgs.value}</f:facet>
-							<so:outputAttribute styleClass="text" value="#{item}" />
-						</h:column>
-					</h:dataTable>
-
-				</rich:simpleTogglePanel>
-
-				<rich:simpleTogglePanel switchType="client"
 					styleClass="fullwidth" label="#{msgs.subscriptions}" opened="false">
 					<a4j:form id="subscriptionForm" ajaxSubmit="true"
 						reRender="subscription_data">
