@@ -540,6 +540,7 @@
 		<safe-online.encap.webapp.name>olas-encap</safe-online.encap.webapp.name>
 		<safe-online.option.webapp.name>olas-option</safe-online.option.webapp.name>
 		<safe-online.password.webapp.name>olas-password</safe-online.password.webapp.name>
+		<safe-online.otpoversms.webapp.name>olas-otp-over-sms</safe-online.otpoversms.webapp.name>
 
 		<!-- DEFAULT VERSIONS, SEE DEPENDENCIES -->
 		<safe-online.version>${pom.version}</safe-online.version>
@@ -856,6 +857,15 @@
 		<module>safe-online-password-startup-runtime</module>
 		<module>safe-online-password-webapp</module>
 		<module>safe-online-password-deploy</module>
+		<module>safe-online-model-otpoversms</module>
+		<module>safe-online-otpoversms-keystore</module>
+		<module>safe-online-otpoversms-startup-runtime</module>
+		<module>safe-online-otpoversms-webapp</module>
+		<module>safe-online-otpoversms-deploy</module>
+		<module>safe-online-otpoversms-ws</module>
+		<module>safe-online-otpoversms-ws-impl</module>
+		<module>safe-online-otpoversms-sdk</module>
+		<module>safe-online-otpoversms-ws-runtime</module>
 	</modules>
 
 	<!-- DEFAULT BUILD CONFIGURATION -->
@@ -1632,6 +1642,18 @@
 					<exclusion>
 						<groupId>net.lin-k.safe-online</groupId>
 						<artifactId>safe-online-password-startup-runtime</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>net.lin-k.safe-online</groupId>
+				<artifactId>safe-online-model-otpoversms</artifactId>
+				<type>ejb-client</type>
+				<version>${safe-online.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>net.lin-k.safe-online</groupId>
+						<artifactId>safe-online-otpoversms-startup-runtime</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>

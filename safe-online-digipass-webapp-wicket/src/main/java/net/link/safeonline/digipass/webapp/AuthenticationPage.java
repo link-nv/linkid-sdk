@@ -37,7 +37,6 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.protocol.http.WebApplication;
 
 
 public class AuthenticationPage extends TemplatePage {
@@ -90,8 +89,7 @@ public class AuthenticationPage extends TemplatePage {
         getContent().add(new ProgressAuthenticationPanel("progress", ProgressAuthenticationPanel.stage.authenticate));
 
         String title = getLocalizer().getString("digipassAuthentication", this) + " : "
-                + getLocalizer().getString("authenticatingFor", this) + " "
-                + WebApplication.get().getServletContext().getInitParameter("ApplicationName");
+                + getLocalizer().getString("authenticatingFor", this) + " " + this.authenticationContext.getApplication();
         getContent().add(new Label("title", title));
 
         getContent().add(new AuthenticationForm(AUTHENTICATION_FORM_ID));
