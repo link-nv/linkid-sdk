@@ -9,11 +9,16 @@ package net.link.safeonline.demo.wicket.web;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.link.safeonline.demo.wicket.tools.RedirectResponseException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.IRequestTarget;
 import org.apache.wicket.Page;
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.protocol.http.WebRequest;
+import org.apache.wicket.protocol.http.WebResponse;
 
 
 /**
@@ -52,23 +57,28 @@ public abstract class OlasAuthLink extends Link<Object> {
     @Override
     public void onClick() {
 
-        /*
-         * throw new RedirectResponseException(new IRequestTarget() {
-         * 
-         * public void detach(RequestCycle requestCycle) {
-         * 
-         * }
-         * 
-         * public void respond(RequestCycle requestCycle) {
-         * 
-         * HttpServletRequest request = ((WebRequest) requestCycle.getRequest()).getHttpServletRequest(); HttpServletResponse response =
-         * ((WebResponse) requestCycle.getResponse()).getHttpServletResponse();
-         * 
-         * // Where do we go to after the whole operation? String realTarget = OlasAuthLink.this.requestTarget; if (realTarget == null) {
-         * realTarget = request.getServletPath(); }
-         * 
-         * // The SDK does the rest. delegate(realTarget, request, response); } });
-         */
+        throw new RedirectResponseException(new IRequestTarget() {
+
+            public void detach(RequestCycle requestCycle) {
+
+            }
+
+            public void respond(RequestCycle requestCycle) {
+
+                HttpServletRequest request = ((WebRequest) requestCycle.getRequest()).getHttpServletRequest();
+                HttpServletResponse response = ((WebResponse) requestCycle.getResponse()).getHttpServletResponse();
+
+                // Where do we go to after the whole operation?
+                String realTarget = OlasAuthLink.this.requestTarget;
+                if (realTarget == null) {
+                    realTarget = request.getServletPath();
+                }
+
+                // The SDK does the rest.
+                delegate(realTarget, request, response);
+            }
+        });
+
     }
 
     /**
