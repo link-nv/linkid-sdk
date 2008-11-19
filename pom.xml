@@ -463,6 +463,17 @@
 			</properties>
 		</profile>
 
+		<!-- Profile for deploying on sebeco-dev-10 -->
+		<profile>
+			<id>sebeco-dev-10</id>
+			<properties>
+				<safe-online.host.name> sebeco-dev-10 </safe-online.host.name>
+				<safe-online.host.auth.basename>
+					${safe-online.host.protocol}://${safe-online.host.name}:${safe-online.host.port} 
+				</safe-online.host.auth.basename>
+			</properties>
+		</profile>
+
 		<!-- Profile for deploying on sebeco-dev-11 -->
 		<profile>
 			<id>sebeco-dev-11</id>
@@ -1009,7 +1020,7 @@
 					<execution>
 						<phase>test</phase>
 						<goals>
-							<goal>validate</goal>
+							<!-->goal>validate</goal-->
 						</goals>
 					</execution>
 				</executions>

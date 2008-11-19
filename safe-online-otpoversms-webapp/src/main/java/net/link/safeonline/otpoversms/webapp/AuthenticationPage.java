@@ -37,7 +37,6 @@ import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.form.validation.EqualPasswordInputValidator;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.PropertyModel;
 
@@ -55,8 +54,7 @@ public class AuthenticationPage extends TemplatePage {
 
     public static final String        VERIFY_OTP_FORM_ID       = "verify_otp_form";
     public static final String        OTP_FIELD_ID             = "otp";
-    public static final String        PIN1_FIELD_ID            = "pin1";
-    public static final String        PIN2_FIELD_ID            = "pin2";
+    public static final String        PIN_FIELD_ID             = "pin";
     public static final String        LOGIN_BUTTON_ID          = "login";
     public static final String        CANCEL_BUTTON_ID         = "cancel";
 
@@ -176,7 +174,7 @@ public class AuthenticationPage extends TemplatePage {
                                 AuthenticationPage.this.mobile);
                     } catch (ConnectException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorMessage", this));
-                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: failed to send otp"
+                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: failed to send otp to "
                                 + AuthenticationPage.this.mobile, LogLevelType.ERROR);
                         AuthenticationPage.this.mobile = null;
                         return;
@@ -221,9 +219,7 @@ public class AuthenticationPage extends TemplatePage {
 
         String                    otp;
 
-        String                    pin1;
-
-        String                    pin2;
+        String                    pin;
 
 
         public VerifyOtpForm(String id) {
@@ -235,15 +231,9 @@ public class AuthenticationPage extends TemplatePage {
             add(otpField);
             add(new ErrorComponentFeedbackLabel("otp_feedback", otpField));
 
-            final PasswordTextField pin1Field = new PasswordTextField(PIN1_FIELD_ID, new PropertyModel<String>(this, "pin1"));
-            add(pin1Field);
-            add(new ErrorComponentFeedbackLabel("pin1_feedback", pin1Field));
-
-            final PasswordTextField pin2Field = new PasswordTextField(PIN2_FIELD_ID, new PropertyModel<String>(this, "pin2"));
-            add(pin2Field);
-            add(new ErrorComponentFeedbackLabel("pin2_feedback", pin2Field));
-
-            add(new EqualPasswordInputValidator(pin1Field, pin2Field));
+            final PasswordTextField pinField = new PasswordTextField(PIN_FIELD_ID, new PropertyModel<String>(this, "pin"));
+            add(pinField);
+            add(new ErrorComponentFeedbackLabel("pin_feedback", pinField));
 
             add(new Button(LOGIN_BUTTON_ID) {
 
@@ -263,7 +253,7 @@ public class AuthenticationPage extends TemplatePage {
                     }
                     try {
                         String userId = AuthenticationPage.this.otpOverSmsDeviceService.authenticate(AuthenticationPage.this.mobile,
-                                VerifyOtpForm.this.pin1);
+                                VerifyOtpForm.this.pin);
                         if (null == userId) {
                             VerifyOtpForm.this.error(getLocalizer().getString("authenticationFailedMsg", this));
                             HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "login failed: "

@@ -30,6 +30,6 @@ public interface OtpOverSmsManager extends SafeOnlineService {
     boolean validatePin(SubjectEntity subject, String mobile, String pin)
             throws DeviceNotFoundException;
 
-    void removeMobile(SubjectEntity subject, String mobile, String pin)
+    void removeMobile(SubjectEntity subject, String mobile)
             throws DeviceNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException;
 }

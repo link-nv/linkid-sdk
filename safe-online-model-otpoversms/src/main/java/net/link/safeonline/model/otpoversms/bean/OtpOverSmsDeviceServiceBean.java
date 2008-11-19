@@ -31,6 +31,7 @@ import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
+import net.link.safeonline.device.backend.OtpService;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DeviceEntity;
@@ -41,7 +42,6 @@ import net.link.safeonline.model.otpoversms.OtpOverSmsConstants;
 import net.link.safeonline.model.otpoversms.OtpOverSmsDeviceService;
 import net.link.safeonline.model.otpoversms.OtpOverSmsDeviceServiceRemote;
 import net.link.safeonline.model.otpoversms.OtpOverSmsManager;
-import net.link.safeonline.model.otpoversms.OtpService;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.util.ee.EjbUtils;
 
@@ -146,16 +146,17 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
 
         SubjectEntity subject = this.subjectIdentifierDAO.findSubject(OtpOverSmsConstants.OTPOVERSMS_IDENTIFIER_DOMAIN, mobile);
         if (null != subject) {
-            this.otpOverSmsManager.removeMobile(subject, mobile, pin);
+            this.otpOverSmsManager.removeMobile(subject, mobile);
+            this.subjectIdentifierDAO.removeSubjectIdentifier(subject, OtpOverSmsConstants.OTPOVERSMS_IDENTIFIER_DOMAIN, mobile);
             // flush and clear to commit and release the removed entities.
             this.entityManager.flush();
             this.entityManager.clear();
-        } else {
-            subject = this.subjectService.findSubject(userId);
-            if (null == subject) {
-                subject = this.subjectService.addSubjectWithoutLogin(userId);
-            }
         }
+        subject = this.subjectService.findSubject(userId);
+        if (null == subject) {
+            subject = this.subjectService.addSubjectWithoutLogin(userId);
+        }
+
         try {
             this.otpOverSmsManager.registerMobile(subject, mobile, pin);
         } catch (PermissionDeniedException e) {
@@ -175,7 +176,10 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
         LOG.debug("remove otp over sms device for " + userId + " mobile=" + mobile);
         SubjectEntity subject = this.subjectService.getSubject(userId);
 
-        this.otpOverSmsManager.removeMobile(subject, mobile, pin);
+        if (!this.otpOverSmsManager.validatePin(subject, mobile, pin))
+            throw new PermissionDeniedException("pin mismatch");
+
+        this.otpOverSmsManager.removeMobile(subject, mobile);
 
         this.subjectIdentifierDAO.removeSubjectIdentifier(subject, OtpOverSmsConstants.OTPOVERSMS_IDENTIFIER_DOMAIN, mobile);
 
@@ -242,6 +246,5 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
 
         OtpService otpService = (OtpService) httpSession.getAttribute(OTP_SERVICE_ATTRIBUTE);
         return otpService.verifyOtp(otp);
-        // TODO proper cleanup of otp service on HttpSession ...
     }
 }

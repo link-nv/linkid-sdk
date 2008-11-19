@@ -75,6 +75,7 @@ public class OtpOverSmsStartableBean extends AbstractInitBean {
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(otpOverSmsMobileAttributeType, Locale.ENGLISH.getLanguage(),
                 "Mobile", null));
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(otpOverSmsMobileAttributeType, "nl", "Gsm nummer", null));
+
         AttributeTypeEntity pinHashAttributeType = new AttributeTypeEntity(OtpOverSmsConstants.OTPOVERSMS_PIN_HASH_ATTRIBUTE,
                 DatatypeType.STRING, false, false);
         AttributeTypeEntity pinSeedAttributeType = new AttributeTypeEntity(OtpOverSmsConstants.OTPOVERSMS_PIN_SEED_ATTRIBUTE,

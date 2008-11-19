@@ -78,6 +78,7 @@ public abstract class OlasAuthLink extends Link<Object> {
                 delegate(realTarget, request, response);
             }
         });
+
     }
 
     /**

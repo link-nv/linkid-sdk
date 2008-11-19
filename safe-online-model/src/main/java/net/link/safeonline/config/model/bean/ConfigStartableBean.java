@@ -66,7 +66,7 @@ public class ConfigStartableBean implements ConfigStartable {
     }
 
     @SuppressWarnings("unchecked")
-    private void configure(Class classObject) {
+    protected void configure(Class classObject) {
 
         try {
             Object target = classObject.newInstance();
