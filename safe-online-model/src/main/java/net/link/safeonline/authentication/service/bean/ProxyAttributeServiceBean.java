@@ -36,11 +36,8 @@ import net.link.safeonline.entity.audit.ResourceLevelType;
 import net.link.safeonline.entity.audit.ResourceNameType;
 import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.osgi.OSGIStartable;
-import net.link.safeonline.osgi.plugin.Attribute;
 import net.link.safeonline.osgi.plugin.PluginAttributeService;
 import net.link.safeonline.osgi.plugin.exception.AttributeNotFoundException;
-import net.link.safeonline.osgi.plugin.exception.InvalidDataException;
-import net.link.safeonline.osgi.plugin.exception.UnsupportedDataTypeException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
@@ -51,8 +48,8 @@ import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.annotation.ejb.RemoteBinding;
 
 
 @Stateless
@@ -219,24 +216,19 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
      * @throws SubjectNotFoundException
      */
     private Object findExternalAttributeValue(SubjectEntity subject, AttributeTypeEntity attributeType)
-            throws AttributeUnavailableException, AttributeTypeNotFoundException, PermissionDeniedException, SubjectNotFoundException {
+            throws AttributeUnavailableException, AttributeTypeNotFoundException, SubjectNotFoundException {
 
         LOG.debug("find external attribute " + attributeType.getName() + " for " + subject.getUserId());
         try {
             PluginAttributeService pluginAttributeService = this.osgiStartable.getPluginService(attributeType.getPluginName());
-            List<Attribute> attributeView = pluginAttributeService.getAttribute(subject.getUserId(), attributeType.getName(),
-                    attributeType.getPluginConfiguration());
-            return getValueFromPlugin(attributeView, attributeType);
-        } catch (UnsupportedDataTypeException e) {
-            throw new PermissionDeniedException("Unsupported data type");
+            return pluginAttributeService
+                                         .getAttribute(subject.getUserId(), attributeType.getName(), attributeType.getPluginConfiguration());
         } catch (AttributeNotFoundException e) {
             LOG.debug("external attribute " + attributeType.getName() + " not found for " + subject.getUserId() + " ( plugin="
                     + attributeType.getPluginName() + " )");
             return null;
         } catch (net.link.safeonline.osgi.plugin.exception.AttributeTypeNotFoundException e) {
             throw new AttributeTypeNotFoundException();
-        } catch (InvalidDataException e) {
-            throw new PermissionDeniedException("Invalid data");
         } catch (SafeOnlineResourceException e) {
             throw new AttributeUnavailableException();
         } catch (net.link.safeonline.osgi.plugin.exception.AttributeUnavailableException e) {
@@ -583,160 +575,4 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
         return attribute.getValue();
 
     }
-
-    /**
-     * Returns attribute value object from OSGi plugin attribute view.
-     * 
-     * @throws InvalidDataException
-     * @throws UnsupportedDataTypeException
-     */
-    @SuppressWarnings("unchecked")
-    private Object getValueFromPlugin(List<Attribute> attributeView, AttributeTypeEntity attributeType)
-            throws InvalidDataException, UnsupportedDataTypeException {
-
-        if (null == attributeView || attributeView.isEmpty())
-            return null;
-
-        Attribute parent = attributeView.get(0);
-        net.link.safeonline.osgi.plugin.DatatypeType datatype = parent.getType();
-        switch (datatype) {
-            case STRING: {
-                if (attributeView.size() == 1)
-                    return parent.getStringValue();
-                String[] values = new String[attributeView.size()];
-                for (int idx = 0; idx < values.length; idx++) {
-                    Attribute attribute = attributeView.get(idx);
-                    if (!attribute.getType().equals(datatype))
-                        throw new InvalidDataException("datatype " + attribute.getType() + " not matching expected datatype " + datatype);
-                    if (!attribute.getName().equals(attributeType.getName()))
-                        throw new InvalidDataException("attribute name " + attribute.getName() + " not matching expected "
-                                + attributeType.getName());
-                    values[idx] = attributeView.get(idx).getStringValue();
-                }
-                return values;
-            }
-            case BOOLEAN: {
-                if (attributeView.size() == 1)
-                    return parent.getBooleanValue();
-                Boolean[] values = new Boolean[attributeView.size()];
-                for (int idx = 0; idx < values.length; idx++) {
-                    Attribute attribute = attributeView.get(idx);
-                    if (!attribute.getType().equals(datatype))
-                        throw new InvalidDataException("datatype " + attribute.getType() + " not matching expected datatype " + datatype);
-                    if (!attribute.getName().equals(attributeType.getName()))
-                        throw new InvalidDataException("attribute name " + attribute.getName() + " not matching expected "
-                                + attributeType.getName());
-                    values[idx] = attributeView.get(idx).getBooleanValue();
-                }
-                return values;
-            }
-            case INTEGER: {
-                if (attributeView.size() == 1)
-                    return parent.getIntegerValue();
-                Integer[] values = new Integer[attributeView.size()];
-                for (int idx = 0; idx < values.length; idx++) {
-                    Attribute attribute = attributeView.get(idx);
-                    if (!attribute.getType().equals(datatype))
-                        throw new InvalidDataException("datatype " + attribute.getType() + " not matching expected datatype " + datatype);
-                    if (!attribute.getName().equals(attributeType.getName()))
-                        throw new InvalidDataException("attribute name " + attribute.getName() + " not matching expected "
-                                + attributeType.getName());
-                    values[idx] = attributeView.get(idx).getIntegerValue();
-                }
-                return values;
-            }
-            case DOUBLE: {
-                if (attributeView.size() == 1)
-                    return parent.getDoubleValue();
-                Double[] values = new Double[attributeView.size()];
-                for (int idx = 0; idx < values.length; idx++) {
-                    Attribute attribute = attributeView.get(idx);
-                    if (!attribute.getType().equals(datatype))
-                        throw new InvalidDataException("datatype " + attribute.getType() + " not matching expected datatype " + datatype);
-                    if (!attribute.getName().equals(attributeType.getName()))
-                        throw new InvalidDataException("attribute name " + attribute.getName() + " not matching expected "
-                                + attributeType.getName());
-                    values[idx] = attributeView.get(idx).getDoubleValue();
-                }
-                return values;
-            }
-            case DATE: {
-                if (attributeView.size() == 1)
-                    return parent.getDateValue();
-                Date[] values = new Date[attributeView.size()];
-                for (int idx = 0; idx < values.length; idx++) {
-                    Attribute attribute = attributeView.get(idx);
-                    if (!attribute.getType().equals(datatype))
-                        throw new InvalidDataException("datatype " + attribute.getType() + " not matching expected datatype " + datatype);
-                    if (!attribute.getName().equals(attributeType.getName()))
-                        throw new InvalidDataException("attribute name " + attribute.getName() + " not matching expected "
-                                + attributeType.getName());
-                    values[idx] = attributeView.get(idx).getDateValue();
-                }
-                return values;
-            }
-            case COMPOUNDED: {
-                if (attributeView.size() % (1 + attributeType.getMembers().size()) != 0)
-                    throw new InvalidDataException("invalid data for compounded attribute  " + attributeType.getName());
-
-                int size = attributeView.size() / (1 + attributeType.getMembers().size());
-                Map[] values = new Map[size];
-                int memberIdx = 0;
-                for (int idx = 0; idx < size; idx++) {
-                    Attribute attribute = attributeView.get(memberIdx);
-                    if (!attribute.getType().equals(datatype))
-                        throw new InvalidDataException("datatype " + attribute.getType() + " not matching expected datatype " + datatype);
-                    if (!attribute.getName().equals(attributeType.getName()))
-                        throw new InvalidDataException("attribute name " + attribute.getName() + " not matching expected "
-                                + attributeType.getName());
-                    Map<String, Object> memberMap = new HashMap<String, Object>();
-                    values[idx] = memberMap;
-                    memberIdx++;
-                    for (CompoundedAttributeTypeMemberEntity member : attributeType.getMembers()) {
-                        AttributeTypeEntity memberAttributeType = member.getMember();
-                        Attribute memberAttribute = attributeView.get(memberIdx);
-                        if (!sameType(memberAttribute.getType(), memberAttributeType.getType()))
-                            throw new InvalidDataException("datatype " + memberAttribute.getType() + " not matching expected datatype "
-                                    + memberAttributeType.getType());
-                        if (!memberAttribute.getName().equals(memberAttributeType.getName()))
-                            throw new InvalidDataException("attribute name " + memberAttribute.getName() + " not matching expected "
-                                    + memberAttributeType.getName());
-                        memberMap.put(memberAttributeType.getName(), memberAttribute.getValue());
-                        memberIdx++;
-                    }
-                }
-                return values;
-            }
-            default:
-                throw new UnsupportedDataTypeException("datatype " + datatype + " not supported");
-        }
-    }
-
-    private boolean sameType(net.link.safeonline.osgi.plugin.DatatypeType osgiDatatype, DatatypeType olasDatatypeType) {
-
-        switch (osgiDatatype) {
-            case BOOLEAN: {
-                return olasDatatypeType.equals(DatatypeType.BOOLEAN);
-            }
-            case STRING: {
-                return olasDatatypeType.equals(DatatypeType.STRING);
-            }
-            case DOUBLE: {
-                return olasDatatypeType.equals(DatatypeType.DOUBLE);
-            }
-            case INTEGER: {
-                return olasDatatypeType.equals(DatatypeType.INTEGER);
-            }
-            case DATE: {
-                return olasDatatypeType.equals(DatatypeType.DATE);
-            }
-            case COMPOUNDED: {
-                return olasDatatypeType.equals(DatatypeType.COMPOUNDED);
-            }
-            default: {
-                return false;
-            }
-        }
-    }
-
 }

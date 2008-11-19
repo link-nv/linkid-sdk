@@ -6,15 +6,11 @@
  */
 package net.link.safeonline.osgi;
 
-import java.util.List;
-
-import net.link.safeonline.osgi.plugin.Attribute;
 import net.link.safeonline.osgi.plugin.OlasAttributeService;
 import net.link.safeonline.osgi.plugin.exception.AttributeNotFoundException;
 import net.link.safeonline.osgi.plugin.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.osgi.plugin.exception.AttributeUnavailableException;
 import net.link.safeonline.osgi.plugin.exception.SubjectNotFoundException;
-import net.link.safeonline.osgi.plugin.exception.UnsupportedDataTypeException;
 import net.link.safeonline.util.ee.EjbUtils;
 
 
@@ -37,9 +33,8 @@ public class OlasAttributeServiceImpl implements OlasAttributeService {
     /**
      * {@inheritDoc}
      */
-    public List<Attribute> getAttribute(String userId, String attributeName)
-            throws AttributeTypeNotFoundException, AttributeNotFoundException, UnsupportedDataTypeException, AttributeUnavailableException,
-            SubjectNotFoundException {
+    public Object getAttribute(String userId, String attributeName)
+            throws AttributeTypeNotFoundException, AttributeNotFoundException, AttributeUnavailableException, SubjectNotFoundException {
 
         OSGIAttributeService attributeService = EjbUtils.getEJB(OSGIAttributeService.JNDI_BINDING, OSGIAttributeService.class);
         try {
