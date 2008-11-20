@@ -173,7 +173,7 @@ public class AuthenticationPage extends TemplatePage {
                         AuthenticationPage.this.otpOverSmsDeviceService.requestOtp(WicketUtil.getHttpSession(getRequest()),
                                 AuthenticationPage.this.mobile);
                     } catch (ConnectException e) {
-                        RequestOtpForm.this.error(getLocalizer().getString("errorMessage", this));
+                        RequestOtpForm.this.error(getLocalizer().getString("errorServiceConnection", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: failed to send otp to "
                                 + AuthenticationPage.this.mobile, LogLevelType.ERROR);
                         AuthenticationPage.this.mobile = null;

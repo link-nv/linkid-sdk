@@ -7,8 +7,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.MobileException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.device.sdk.saml2.DeviceOperationManager;
@@ -82,6 +84,10 @@ public class RemoveServlet extends AbstractInjectionServlet {
             LOG.debug("mobile exception thrown", e);
         } catch (AttributeTypeNotFoundException e) {
             LOG.debug("AttributeTypeNotFoundException", e);
+        } catch (PermissionDeniedException e) {
+            LOG.debug("PermissionDeniedException", e);
+        } catch (AttributeNotFoundException e) {
+            LOG.debug("AttributeNotFoundException", e);
         }
 
         response.sendRedirect(this.deviceExitPath);

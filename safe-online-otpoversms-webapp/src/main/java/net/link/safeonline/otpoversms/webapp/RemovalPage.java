@@ -9,6 +9,7 @@ package net.link.safeonline.otpoversms.webapp;
 
 import javax.ejb.EJB;
 
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -137,6 +138,11 @@ public class RemovalPage extends TemplatePage {
                     } catch (AttributeTypeNotFoundException e) {
                         passwordField.error(getLocalizer().getString("errorAttributeTypeNotFound", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "remove: attribute type not found",
+                                LogLevelType.ERROR);
+                        return;
+                    } catch (AttributeNotFoundException e) {
+                        passwordField.error(getLocalizer().getString("errorAttributeNotFound", this));
+                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "remove: attribute not found",
                                 LogLevelType.ERROR);
                         return;
                     }

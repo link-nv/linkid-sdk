@@ -46,5 +46,5 @@ public interface CredentialManager extends SafeOnlineService {
     void removeIdentity(String sessionId, String userId, String operation, byte[] identityStatementData)
             throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException, AttributeTypeNotFoundException,
             SubjectNotFoundException, DeviceNotFoundException, PkiRevokedException, PkiSuspendedException, PkiExpiredException,
-            PkiNotYetValidException, PkiInvalidException;
+            PkiNotYetValidException, PkiInvalidException, AttributeNotFoundException;
 }

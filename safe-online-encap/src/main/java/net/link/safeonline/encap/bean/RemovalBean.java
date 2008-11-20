@@ -19,9 +19,11 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.interceptor.Interceptors;
 
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.MobileException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.ctrl.error.annotation.Error;
@@ -111,7 +113,8 @@ public class RemovalBean implements Removal {
 
     @ErrorHandling( { @Error(exceptionClass = MalformedURLException.class, messageId = "mobileCommunicationFailed") })
     public String mobileRemove()
-            throws SubjectNotFoundException, MobileException, IOException, AttributeTypeNotFoundException {
+            throws SubjectNotFoundException, MobileException, IOException, AttributeTypeNotFoundException, PermissionDeniedException,
+            AttributeNotFoundException {
 
         this.encapDeviceService.remove(this.protocolContext.getSubject(), this.selectedMobile.getStringValue());
         this.protocolContext.setSuccess(true);

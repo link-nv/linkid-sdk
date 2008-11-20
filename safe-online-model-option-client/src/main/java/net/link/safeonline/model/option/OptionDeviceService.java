@@ -14,6 +14,7 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.model.option.exception.OptionAuthenticationException;
 import net.link.safeonline.model.option.exception.OptionRegistrationException;
@@ -44,11 +45,12 @@ public interface OptionDeviceService extends SafeOnlineService {
             AttributeNotFoundException, DeviceDisabledException;
 
     void register(String userId, String imei, String pin)
-            throws OptionAuthenticationException, OptionRegistrationException, AttributeTypeNotFoundException;
+            throws OptionAuthenticationException, OptionRegistrationException, PermissionDeniedException, AttributeNotFoundException,
+            AttributeTypeNotFoundException;
 
     void remove(String userId, String imei, String pin)
             throws OptionAuthenticationException, OptionRegistrationException, SubjectNotFoundException, AttributeTypeNotFoundException,
-            AttributeNotFoundException, DeviceDisabledException;
+            AttributeNotFoundException, DeviceDisabledException, PermissionDeniedException, AttributeNotFoundException;
 
     void disable(String userId, String imei)
             throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException;

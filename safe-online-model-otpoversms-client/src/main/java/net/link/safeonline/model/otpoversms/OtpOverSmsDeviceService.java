@@ -31,13 +31,15 @@ public interface OtpOverSmsDeviceService extends SafeOnlineService {
             throws DeviceNotFoundException, SubjectNotFoundException;
 
     void register(String userId, String mobile, String pin)
-            throws SubjectNotFoundException, DeviceNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException;
+            throws SubjectNotFoundException, DeviceNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException,
+            AttributeNotFoundException;
 
     void update(String userId, String mobile, String oldPin, String newPin)
             throws PermissionDeniedException, DeviceNotFoundException, SubjectNotFoundException;
 
     void remove(String userId, String mobile, String pin)
-            throws DeviceNotFoundException, PermissionDeniedException, SubjectNotFoundException, AttributeTypeNotFoundException;
+            throws DeviceNotFoundException, PermissionDeniedException, SubjectNotFoundException, AttributeTypeNotFoundException,
+            AttributeNotFoundException;
 
     void disable(String userId, String mobile)
             throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException;
