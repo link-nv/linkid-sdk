@@ -49,7 +49,7 @@ public class BeIdStartableBean extends AbstractInitBean {
 
     private static final Log   LOG            = LogFactory.getLog(BeIdStartableBean.class);
 
-    public static final String INDEX_RESOURCE = "certs/beid/index.txt";
+    public static final String INDEX_RESOURCE = "certs/beid/index";
 
     @EJB(mappedName = TrustDomainDAO.JNDI_BINDING)
     private TrustDomainDAO     trustDomainDAO;
