@@ -47,7 +47,7 @@ public interface BeIdDeviceService extends SafeOnlineService {
     void remove(String sessionId, String userId, String operation, byte[] identityStatementData)
             throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException, AttributeTypeNotFoundException,
             SubjectNotFoundException, DeviceNotFoundException, PkiRevokedException, PkiSuspendedException, PkiExpiredException,
-            PkiNotYetValidException, PkiInvalidException;
+            PkiNotYetValidException, PkiInvalidException, AttributeNotFoundException;
 
     void disable(String userId, String attribute)
             throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException;

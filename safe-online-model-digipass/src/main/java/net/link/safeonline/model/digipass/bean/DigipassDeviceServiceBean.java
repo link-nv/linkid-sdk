@@ -12,11 +12,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
@@ -32,10 +34,10 @@ import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
-import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
+import net.link.safeonline.model.bean.AttributeManagerLWBean;
 import net.link.safeonline.model.digipass.DigipassConstants;
 import net.link.safeonline.model.digipass.DigipassDeviceService;
 import net.link.safeonline.model.digipass.DigipassDeviceServiceRemote;
@@ -51,26 +53,38 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = DigipassDeviceService.JNDI_BINDING)
 public class DigipassDeviceServiceBean implements DigipassDeviceService, DigipassDeviceServiceRemote {
 
-    private static final Log     LOG = LogFactory.getLog(DigipassDeviceServiceBean.class);
+    private static final Log       LOG = LogFactory.getLog(DigipassDeviceServiceBean.class);
 
     @EJB(mappedName = SubjectService.JNDI_BINDING)
-    private SubjectService       subjectService;
+    private SubjectService         subjectService;
 
     @EJB(mappedName = SubjectIdentifierDAO.JNDI_BINDING)
-    private SubjectIdentifierDAO subjectIdentifierDAO;
+    private SubjectIdentifierDAO   subjectIdentifierDAO;
 
     @EJB(mappedName = DeviceDAO.JNDI_BINDING)
-    private DeviceDAO            deviceDAO;
+    private DeviceDAO              deviceDAO;
 
     @EJB(mappedName = AttributeDAO.JNDI_BINDING)
-    private AttributeDAO         attributeDAO;
+    private AttributeDAO           attributeDAO;
 
     @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
-    private AttributeTypeDAO     attributeTypeDAO;
+    private AttributeTypeDAO       attributeTypeDAO;
 
     @EJB(mappedName = SecurityAuditLogger.JNDI_BINDING)
-    private SecurityAuditLogger  securityAuditLogger;
+    private SecurityAuditLogger    securityAuditLogger;
 
+    private AttributeManagerLWBean attributeManager;
+
+
+    @PostConstruct
+    public void postConstructCallback() {
+
+        /*
+         * By injecting the attribute DAO of this session bean in the attribute manager we are sure that the attribute manager (a
+         * lightweight bean) will live within the same transaction and security context as this identity service EJB3 session bean.
+         */
+        this.attributeManager = new AttributeManagerLWBean(this.attributeDAO);
+    }
 
     public String authenticate(String userId, String token)
             throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException, DeviceDisabledException {
@@ -120,11 +134,9 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
         AttributeTypeEntity deviceDisableAttributeType = this.attributeTypeDAO
                                                                               .getAttributeType(DigipassConstants.DIGIPASS_DEVICE_DISABLE_ATTRIBUTE);
 
-        int attributeIdx = this.attributeDAO.listAttributes(subject, deviceAttributeType).size();
-
-        AttributeEntity snAttribute = this.attributeDAO.addAttribute(snAttributeType, subject, attributeIdx);
+        AttributeEntity snAttribute = this.attributeDAO.addAttribute(snAttributeType, subject);
         snAttribute.setStringValue(serialNumber);
-        AttributeEntity deviceDisableAttribute = this.attributeDAO.addAttribute(deviceDisableAttributeType, subject, attributeIdx);
+        AttributeEntity deviceDisableAttribute = this.attributeDAO.addAttribute(deviceDisableAttributeType, subject);
         deviceDisableAttribute.setBooleanValue(false);
 
         AttributeEntity deviceAttribute = this.attributeDAO.addAttribute(deviceAttributeType, subject);
@@ -136,7 +148,7 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
     }
 
     public void remove(String serialNumber)
-            throws DigipassException, AttributeTypeNotFoundException {
+            throws DigipassException, AttributeTypeNotFoundException, PermissionDeniedException, AttributeNotFoundException {
 
         SubjectEntity subject = this.subjectIdentifierDAO.findSubject(DigipassConstants.DIGIPASS_IDENTIFIER_DOMAIN, serialNumber);
         if (null == subject)
@@ -151,15 +163,7 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
                                                                .findAttribute(subject, snAttributeType, deviceAttribute.getAttributeIndex());
             if (mobileAttribute.getStringValue().equals(serialNumber)) {
                 LOG.debug("remove attribute");
-                List<CompoundedAttributeTypeMemberEntity> members = deviceAttributeType.getMembers();
-                for (CompoundedAttributeTypeMemberEntity member : members) {
-                    AttributeEntity memberAttribute = this.attributeDAO.findAttribute(subject, member.getMember(),
-                            deviceAttribute.getAttributeIndex());
-                    if (null != memberAttribute) {
-                        this.attributeDAO.removeAttribute(memberAttribute);
-                    }
-                }
-                this.attributeDAO.removeAttribute(deviceAttribute);
+                this.attributeManager.removeAttribute(deviceAttributeType, deviceAttribute.getAttributeIndex(), subject);
                 break;
             }
         }

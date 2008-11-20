@@ -59,7 +59,7 @@ public class AttributeDAOBean implements AttributeDAO {
 
     public AttributeEntity addAttribute(AttributeTypeEntity attributeType, SubjectEntity subject, long index) {
 
-        LOG.debug("add attribute " + attributeType + " for subject " + subject);
+        LOG.debug("add attribute " + attributeType + " for subject " + subject + " index " + index);
         AttributeEntity attribute = new AttributeEntity(attributeType, subject, index);
         this.entityManager.persist(attribute);
         return attribute;
@@ -201,7 +201,7 @@ public class AttributeDAOBean implements AttributeDAO {
 
         AttributeEntity attribute = new AttributeEntity(attributeType, subject, index);
         this.entityManager.persist(attribute);
-        LOG.debug("addAttribute index: " + index);
+        LOG.debug("addAttribute for subject " + subject.getUserId() + " index: " + index);
         return attribute;
     }
 

@@ -10,6 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -22,6 +23,7 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
@@ -29,10 +31,10 @@ import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
-import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
+import net.link.safeonline.model.bean.AttributeManagerLWBean;
 import net.link.safeonline.model.option.OptionConstants;
 import net.link.safeonline.model.option.OptionDeviceService;
 import net.link.safeonline.model.option.OptionDeviceServiceRemote;
@@ -40,8 +42,8 @@ import net.link.safeonline.model.option.exception.OptionAuthenticationException;
 import net.link.safeonline.model.option.exception.OptionRegistrationException;
 import net.link.safeonline.service.SubjectService;
 
-import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.annotation.ejb.RemoteBinding;
 
 
 /**
@@ -64,26 +66,38 @@ import org.jboss.annotation.ejb.LocalBinding;
 public class OptionDeviceServiceBean implements OptionDeviceService, OptionDeviceServiceRemote {
 
     @EJB(mappedName = SubjectIdentifierDAO.JNDI_BINDING)
-    private SubjectIdentifierDAO subjectIdentifierDAO;
+    private SubjectIdentifierDAO   subjectIdentifierDAO;
 
     @EJB(mappedName = AttributeDAO.JNDI_BINDING)
-    private AttributeDAO         attributeDAO;
+    private AttributeDAO           attributeDAO;
 
     @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
-    private AttributeTypeDAO     attributeTypeDAO;
+    private AttributeTypeDAO       attributeTypeDAO;
 
     @EJB(mappedName = DeviceDAO.JNDI_BINDING)
-    private DeviceDAO            deviceDAO;
+    private DeviceDAO              deviceDAO;
 
     @EJB(mappedName = SecurityAuditLogger.JNDI_BINDING)
-    private SecurityAuditLogger  securityAuditLogger;
+    private SecurityAuditLogger    securityAuditLogger;
 
     @EJB(mappedName = SubjectService.JNDI_BINDING)
-    private SubjectService       subjectService;
+    private SubjectService         subjectService;
 
     @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
-    private EntityManager        entityManager;
+    private EntityManager          entityManager;
 
+    private AttributeManagerLWBean attributeManager;
+
+
+    @PostConstruct
+    public void postConstructCallback() {
+
+        /*
+         * By injecting the attribute DAO of this session bean in the attribute manager we are sure that the attribute manager (a
+         * lightweight bean) will live within the same transaction and security context as this identity service EJB3 session bean.
+         */
+        this.attributeManager = new AttributeManagerLWBean(this.attributeDAO);
+    }
 
     /**
      * {@inheritDoc}
@@ -123,7 +137,8 @@ public class OptionDeviceServiceBean implements OptionDeviceService, OptionDevic
      * {@inheritDoc}
      */
     public void register(String userId, String imei, String pin)
-            throws OptionAuthenticationException, OptionRegistrationException, AttributeTypeNotFoundException {
+            throws OptionAuthenticationException, OptionRegistrationException, AttributeTypeNotFoundException, PermissionDeniedException,
+            AttributeNotFoundException {
 
         SubjectEntity subject = this.subjectIdentifierDAO.findSubject(OptionConstants.OPTION_IDENTIFIER_DOMAIN, imei);
         if (null != subject) {
@@ -144,21 +159,13 @@ public class OptionDeviceServiceBean implements OptionDeviceService, OptionDevic
         AttributeTypeEntity deviceDisableAttributeType = this.attributeTypeDAO
                                                                               .getAttributeType(OptionConstants.OPTION_DEVICE_DISABLE_ATTRIBUTE);
 
-        int attributeIdx = this.attributeDAO.listAttributes(subject, deviceAttributeType).size();
-
-        AttributeEntity imeiAttribute = this.attributeDAO.findAttribute(subject, imeiType, attributeIdx);
-        if (null == imeiAttribute) {
-            imeiAttribute = this.attributeDAO.addAttribute(imeiType, subject, attributeIdx);
-        }
+        AttributeEntity imeiAttribute = this.attributeDAO.addAttribute(imeiType, subject);
         imeiAttribute.setStringValue(imei);
 
-        AttributeEntity pinAttribute = this.attributeDAO.findAttribute(subject, pinType, attributeIdx);
-        if (null == pinAttribute) {
-            pinAttribute = this.attributeDAO.addAttribute(pinType, subject, attributeIdx);
-        }
+        AttributeEntity pinAttribute = this.attributeDAO.addAttribute(pinType, subject);
         pinAttribute.setStringValue(pin);
 
-        AttributeEntity deviceDisableAttribute = this.attributeDAO.addAttribute(deviceDisableAttributeType, subject, attributeIdx);
+        AttributeEntity deviceDisableAttribute = this.attributeDAO.addAttribute(deviceDisableAttributeType, subject);
         deviceDisableAttribute.setBooleanValue(false);
 
         AttributeEntity deviceAttribute = this.attributeDAO.addAttribute(deviceAttributeType, subject);
@@ -178,7 +185,7 @@ public class OptionDeviceServiceBean implements OptionDeviceService, OptionDevic
      */
     public void remove(String userId, String imei, String pin)
             throws OptionAuthenticationException, OptionRegistrationException, SubjectNotFoundException, AttributeTypeNotFoundException,
-            AttributeNotFoundException, DeviceDisabledException {
+            AttributeNotFoundException, DeviceDisabledException, PermissionDeniedException, AttributeNotFoundException {
 
         String assignedSubject = authenticate(imei, pin);
 
@@ -206,7 +213,7 @@ public class OptionDeviceServiceBean implements OptionDeviceService, OptionDevic
     }
 
     private void removeRegistration(SubjectEntity subject, String imei)
-            throws AttributeTypeNotFoundException {
+            throws AttributeTypeNotFoundException, PermissionDeniedException, AttributeNotFoundException {
 
         AttributeTypeEntity deviceAttributeType = this.attributeTypeDAO.getAttributeType(OptionConstants.OPTION_DEVICE_ATTRIBUTE);
         AttributeTypeEntity imeiAttributeType = this.attributeTypeDAO.getAttributeType(OptionConstants.IMEI_OPTION_ATTRIBUTE);
@@ -216,15 +223,7 @@ public class OptionDeviceServiceBean implements OptionDeviceService, OptionDevic
             AttributeEntity imeiAttribute = this.attributeDAO
                                                              .findAttribute(subject, imeiAttributeType, deviceAttribute.getAttributeIndex());
             if (imeiAttribute.getStringValue().equals(imei)) {
-                List<CompoundedAttributeTypeMemberEntity> members = deviceAttributeType.getMembers();
-                for (CompoundedAttributeTypeMemberEntity member : members) {
-                    AttributeEntity memberAttribute = this.attributeDAO.findAttribute(subject, member.getMember(),
-                            deviceAttribute.getAttributeIndex());
-                    if (null != memberAttribute) {
-                        this.attributeDAO.removeAttribute(memberAttribute);
-                    }
-                }
-                this.attributeDAO.removeAttribute(deviceAttribute);
+                this.attributeManager.removeAttribute(deviceAttributeType, deviceAttribute.getAttributeIndex(), subject);
                 break;
             }
         }

@@ -14,8 +14,10 @@ import javax.ejb.Local;
 
 import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.IdentityStatementAttributes;
 import net.link.safeonline.entity.AttributeEntity;
@@ -73,9 +75,8 @@ public interface PkiProvider extends SafeOnlineService {
      * @param subject
      *            the subject for which to store additional attributes.
      * @param certificate
-     * @param index
      */
-    void storeAdditionalAttributes(SubjectEntity subject, X509Certificate certificate, long index);
+    void storeAdditionalAttributes(SubjectEntity subject, X509Certificate certificate);
 
     /**
      * Store the device attribute related to this PKI device.
@@ -107,9 +108,12 @@ public interface PkiProvider extends SafeOnlineService {
      * @param subject
      * @param certificate
      * @throws DeviceNotFoundException
+     * @throws AttributeTypeNotFoundException
+     * @throws AttributeNotFoundException
+     * @throws PermissionDeniedException
      */
     void removeDeviceAttribute(SubjectEntity subject, X509Certificate certificate)
-            throws DeviceNotFoundException;
+            throws DeviceNotFoundException, PermissionDeniedException, AttributeNotFoundException, AttributeTypeNotFoundException;
 
     /**
      * Checks whether this device registration is disabled or not.

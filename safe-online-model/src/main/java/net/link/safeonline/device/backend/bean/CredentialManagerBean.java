@@ -37,6 +37,7 @@ import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.device.backend.CredentialManager;
+import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
@@ -226,37 +227,34 @@ public class CredentialManagerBean implements CredentialManager {
          * makes sense for authentication devices for which a subject can have only one. This is for example the case for BeID identity
          * cards.
          */
-        this.subjectIdentifierDAO.removeOtherSubjectIdentifiers(domain, identifier, subject);
-
-        /*
-         * Store the attributes retrieved from the identity statement.
-         */
-        long index = pkiProvider.listDeviceAttributes(subject).size();
-
+        // TODO: this ok?
+        // this.subjectIdentifierDAO.removeOtherSubjectIdentifiers(domain, identifier, subject);
         String surname = identityStatement.getSurname();
         String givenName = identityStatement.getGivenName();
 
-        setOrUpdateAttribute(IdentityStatementAttributes.SURNAME, subject, surname, pkiProvider, index);
-        setOrUpdateAttribute(IdentityStatementAttributes.GIVEN_NAME, subject, givenName, pkiProvider, index);
+        long index = setAttribute(IdentityStatementAttributes.SURNAME, subject, surname, pkiProvider);
+        setAttribute(IdentityStatementAttributes.GIVEN_NAME, subject, givenName, pkiProvider);
 
-        pkiProvider.storeAdditionalAttributes(subject, certificate, index);
+        pkiProvider.storeAdditionalAttributes(subject, certificate);
 
         pkiProvider.storeDeviceAttribute(subject, index);
     }
 
-    private void setOrUpdateAttribute(IdentityStatementAttributes identityStatementAttribute, SubjectEntity subject, String value,
-                                      PkiProvider pkiProvider, long index)
+    private long setAttribute(IdentityStatementAttributes identityStatementAttribute, SubjectEntity subject, String value,
+                              PkiProvider pkiProvider)
             throws AttributeTypeNotFoundException {
 
         String attributeName = pkiProvider.mapAttribute(identityStatementAttribute);
         AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeName);
-        this.attributeDAO.addOrUpdateAttribute(attributeType, subject, index, value);
+        AttributeEntity attribute = this.attributeDAO.addAttribute(attributeType, subject);
+        attribute.setStringValue(value);
+        return attribute.getAttributeIndex();
     }
 
     public void removeIdentity(String sessionId, String userId, String operation, byte[] identityStatementData)
             throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException, AttributeTypeNotFoundException,
             SubjectNotFoundException, DeviceNotFoundException, PkiRevokedException, PkiSuspendedException, PkiExpiredException,
-            PkiNotYetValidException, PkiInvalidException {
+            PkiNotYetValidException, PkiInvalidException, AttributeNotFoundException {
 
         /*
          * First check integrity of the received identity statement.

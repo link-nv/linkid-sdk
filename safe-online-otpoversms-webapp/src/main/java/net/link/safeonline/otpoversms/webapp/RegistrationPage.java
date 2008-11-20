@@ -11,6 +11,7 @@ import java.net.ConnectException;
 
 import javax.ejb.EJB;
 
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -130,7 +131,7 @@ public class RegistrationPage extends TemplatePage {
                         RegistrationPage.this.otpOverSmsDeviceService.requestOtp(WicketUtil.getHttpSession(getRequest()),
                                 RegistrationPage.this.mobile);
                     } catch (ConnectException e) {
-                        RequestOtpForm.this.error(getLocalizer().getString("errorMessage", this));
+                        RequestOtpForm.this.error(getLocalizer().getString("errorServiceConnection", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: failed to send otp"
                                 + RegistrationPage.this.mobile, LogLevelType.ERROR);
                         RegistrationPage.this.mobile = null;
@@ -242,6 +243,11 @@ public class RegistrationPage extends TemplatePage {
                     } catch (AttributeTypeNotFoundException e) {
                         VerifyOtpForm.this.error(getLocalizer().getString("errorAttributeTypeNotFound", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "register: attribute type not found",
+                                LogLevelType.ERROR);
+                        return;
+                    } catch (AttributeNotFoundException e) {
+                        VerifyOtpForm.this.error(getLocalizer().getString("errorAttributeNotFound", this));
+                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "register: attribute not found",
                                 LogLevelType.ERROR);
                         return;
                     }

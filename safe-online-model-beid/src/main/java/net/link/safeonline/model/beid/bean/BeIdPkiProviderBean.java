@@ -13,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
@@ -24,6 +25,7 @@ import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.IdentityStatementAttributes;
 import net.link.safeonline.dao.AttributeDAO;
@@ -31,10 +33,10 @@ import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
-import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
+import net.link.safeonline.model.bean.AttributeManagerLWBean;
 import net.link.safeonline.model.beid.BeIdConstants;
 import net.link.safeonline.pkix.dao.TrustDomainDAO;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
@@ -51,32 +53,44 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = BeIdPkiProviderBean.JNDI_BINDING)
 public class BeIdPkiProviderBean implements PkiProvider {
 
-    public static final String JNDI_BINDING           = PkiProvider.JNDI_PREFIX + "beid";
+    public static final String     JNDI_BINDING           = PkiProvider.JNDI_PREFIX + "beid";
 
-    public static final String TRUST_DOMAIN_NAME      = "beid";
+    public static final String     TRUST_DOMAIN_NAME      = "beid";
 
-    public static final String IDENTIFIER_DOMAIN_NAME = "beid";
+    public static final String     IDENTIFIER_DOMAIN_NAME = "beid";
 
-    private static final Log   LOG                    = LogFactory.getLog(BeIdPkiProviderBean.class);
+    private static final Log       LOG                    = LogFactory.getLog(BeIdPkiProviderBean.class);
 
     @Resource
-    private SessionContext     context;
+    private SessionContext         context;
 
     @EJB(mappedName = TrustDomainDAO.JNDI_BINDING)
-    private TrustDomainDAO     trustDomainDAO;
+    private TrustDomainDAO         trustDomainDAO;
 
     @EJB(mappedName = AttributeDAO.JNDI_BINDING)
-    private AttributeDAO       attributeDAO;
+    private AttributeDAO           attributeDAO;
 
     @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
-    private AttributeTypeDAO   attributeTypeDAO;
+    private AttributeTypeDAO       attributeTypeDAO;
 
     @EJB(mappedName = DeviceDAO.JNDI_BINDING)
-    private DeviceDAO          deviceDAO;
+    private DeviceDAO              deviceDAO;
 
     @EJB(mappedName = SubjectService.JNDI_BINDING)
-    private SubjectService     subjectService;
+    private SubjectService         subjectService;
 
+    private AttributeManagerLWBean attributeManager;
+
+
+    @PostConstruct
+    public void postConstructCallback() {
+
+        /*
+         * By injecting the attribute DAO of this session bean in the attribute manager we are sure that the attribute manager (a
+         * lightweight bean) will live within the same transaction and security context as this identity service EJB3 session bean.
+         */
+        this.attributeManager = new AttributeManagerLWBean(this.attributeDAO);
+    }
 
     public boolean accept(X509Certificate certificate) {
 
@@ -137,25 +151,22 @@ public class BeIdPkiProviderBean implements PkiProvider {
         return identifier;
     }
 
-    public void storeAdditionalAttributes(SubjectEntity subject, X509Certificate certificate, long index) {
+    public void storeAdditionalAttributes(SubjectEntity subject, X509Certificate certificate) {
 
         String subjectName = getSubjectName(certificate);
         String nrn = getAttributeFromSubjectName(subjectName, "SERIALNUMBER");
-        setOrOverrideAttribute(BeIdConstants.NRN_ATTRIBUTE, subject, nrn, index);
+        setAttribute(BeIdConstants.NRN_ATTRIBUTE, subject, nrn);
     }
 
-    private void setOrOverrideAttribute(String attributeName, SubjectEntity subject, String value, long index) {
+    private void setAttribute(String attributeName, SubjectEntity subject, String value) {
 
-        AttributeEntity attribute = this.attributeDAO.findAttribute(subject, attributeName, index);
-        if (null == attribute) {
-            AttributeTypeEntity attributeType;
-            try {
-                attributeType = this.attributeTypeDAO.getAttributeType(attributeName);
-            } catch (AttributeTypeNotFoundException e) {
-                throw new EJBException("attribute type not found");
-            }
-            attribute = this.attributeDAO.addAttribute(attributeType, subject, index);
+        AttributeTypeEntity attributeType;
+        try {
+            attributeType = this.attributeTypeDAO.getAttributeType(attributeName);
+        } catch (AttributeTypeNotFoundException e) {
+            throw new EJBException("attribute type not found");
         }
+        AttributeEntity attribute = this.attributeDAO.addAttribute(attributeType, subject);
         attribute.setStringValue(value);
     }
 
@@ -218,7 +229,7 @@ public class BeIdPkiProviderBean implements PkiProvider {
     }
 
     public void removeDeviceAttribute(SubjectEntity subject, X509Certificate certificate)
-            throws DeviceNotFoundException {
+            throws DeviceNotFoundException, PermissionDeniedException, AttributeNotFoundException, AttributeTypeNotFoundException {
 
         DeviceEntity device = this.deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
         String subjectName = getSubjectName(certificate);
@@ -231,16 +242,7 @@ public class BeIdPkiProviderBean implements PkiProvider {
                     attribute.getAttributeIndex());
             if (nrnAttribute.getStringValue().equals(nrn)) {
                 LOG.debug("remove attribute");
-                List<CompoundedAttributeTypeMemberEntity> members = deviceAttributeType.getMembers();
-                for (CompoundedAttributeTypeMemberEntity member : members) {
-                    AttributeEntity memberAttribute = this.attributeDAO.findAttribute(subject, member.getMember(),
-                            attribute.getAttributeIndex());
-                    if (null != memberAttribute) {
-                        this.attributeDAO.removeAttribute(memberAttribute);
-                    }
-                }
-                this.attributeDAO.removeAttribute(attribute);
-                break;
+                this.attributeManager.removeAttribute(deviceAttributeType, attribute.getAttributeIndex(), subject);
             }
         }
     }

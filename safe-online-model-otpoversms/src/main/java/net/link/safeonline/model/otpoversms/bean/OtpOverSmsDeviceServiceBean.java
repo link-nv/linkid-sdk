@@ -63,28 +63,28 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
     @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
     private EntityManager        entityManager;
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService       subjectService;
 
-    @EJB
+    @EJB(mappedName = SubjectIdentifierDAO.JNDI_BINDING)
     private SubjectIdentifierDAO subjectIdentifierDAO;
 
-    @EJB
+    @EJB(mappedName = OtpOverSmsManager.JNDI_BINDING)
     private OtpOverSmsManager    otpOverSmsManager;
 
-    @EJB
+    @EJB(mappedName = AttributeDAO.JNDI_BINDING)
     private AttributeDAO         attributeDAO;
 
-    @EJB
+    @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
     private AttributeTypeDAO     attributeTypeDAO;
 
-    @EJB
+    @EJB(mappedName = DeviceDAO.JNDI_BINDING)
     private DeviceDAO            deviceDAO;
 
-    @EJB
+    @EJB(mappedName = SecurityAuditLogger.JNDI_BINDING)
     private SecurityAuditLogger  securityAuditLogger;
 
-    @EJB
+    @EJB(mappedName = HistoryDAO.JNDI_BINDING)
     private HistoryDAO           historyDAO;
 
 
@@ -140,7 +140,8 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
     }
 
     public void register(String userId, String mobile, String pin)
-            throws SubjectNotFoundException, DeviceNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException {
+            throws SubjectNotFoundException, DeviceNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException,
+            AttributeNotFoundException {
 
         LOG.debug("register otp over sms device for \"" + userId + "\" mobile=" + mobile);
 
@@ -171,7 +172,8 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
     }
 
     public void remove(String userId, String mobile, String pin)
-            throws DeviceNotFoundException, PermissionDeniedException, SubjectNotFoundException, AttributeTypeNotFoundException {
+            throws DeviceNotFoundException, PermissionDeniedException, SubjectNotFoundException, AttributeTypeNotFoundException,
+            AttributeNotFoundException {
 
         LOG.debug("remove otp over sms device for " + userId + " mobile=" + mobile);
         SubjectEntity subject = this.subjectService.getSubject(userId);

@@ -78,10 +78,13 @@ public class OtpOverSmsStartableBean extends AbstractInitBean {
 
         AttributeTypeEntity pinHashAttributeType = new AttributeTypeEntity(OtpOverSmsConstants.OTPOVERSMS_PIN_HASH_ATTRIBUTE,
                 DatatypeType.STRING, false, false);
+        pinHashAttributeType.setMultivalued(true);
         AttributeTypeEntity pinSeedAttributeType = new AttributeTypeEntity(OtpOverSmsConstants.OTPOVERSMS_PIN_SEED_ATTRIBUTE,
                 DatatypeType.STRING, false, false);
+        pinSeedAttributeType.setMultivalued(true);
         AttributeTypeEntity pinAlgorithmAttributeType = new AttributeTypeEntity(OtpOverSmsConstants.OTPOVERSMS_PIN_ALGORITHM_ATTRIBUTE,
                 DatatypeType.STRING, false, false);
+        pinAlgorithmAttributeType.setMultivalued(true);
         this.attributeTypes.add(pinHashAttributeType);
         this.attributeTypes.add(pinSeedAttributeType);
         this.attributeTypes.add(pinAlgorithmAttributeType);

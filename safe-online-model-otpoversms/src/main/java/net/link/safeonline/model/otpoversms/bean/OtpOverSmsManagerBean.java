@@ -12,6 +12,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
@@ -19,6 +20,7 @@ import javax.interceptor.Interceptors;
 
 import net.link.safeonline.audit.AccessAuditLogger;
 import net.link.safeonline.audit.AuditContextManager;
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -27,9 +29,9 @@ import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
-import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.model.bean.AttributeManagerLWBean;
 import net.link.safeonline.model.otpoversms.OtpOverSmsConstants;
 import net.link.safeonline.model.otpoversms.OtpOverSmsManager;
 
@@ -42,17 +44,29 @@ import org.jboss.annotation.ejb.LocalBinding;
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
 public class OtpOverSmsManagerBean implements OtpOverSmsManager {
 
-    private static final String defaultHashingAlgorithm = "SHA-512";
+    private static final String    defaultHashingAlgorithm = "SHA-512";
 
-    @EJB
-    private AttributeDAO        attributeDAO;
+    @EJB(mappedName = AttributeDAO.JNDI_BINDING)
+    private AttributeDAO           attributeDAO;
 
-    @EJB
-    private AttributeTypeDAO    attributeTypeDAO;
+    @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
+    private AttributeTypeDAO       attributeTypeDAO;
 
-    @EJB
-    private DeviceDAO           deviceDAO;
+    @EJB(mappedName = DeviceDAO.JNDI_BINDING)
+    private DeviceDAO              deviceDAO;
 
+    private AttributeManagerLWBean attributeManager;
+
+
+    @PostConstruct
+    public void postConstructCallback() {
+
+        /*
+         * By injecting the attribute DAO of this session bean in the attribute manager we are sure that the attribute manager (a
+         * lightweight bean) will live within the same transaction and security context as this identity service EJB3 session bean.
+         */
+        this.attributeManager = new AttributeManagerLWBean(this.attributeDAO);
+    }
 
     public void changePin(SubjectEntity subject, String mobile, String oldPin, String newPin)
             throws PermissionDeniedException, DeviceNotFoundException {
@@ -108,17 +122,15 @@ public class OtpOverSmsManagerBean implements OtpOverSmsManager {
             throw new EJBException("Could not find the default otp over sms pin hashing algorithm: " + defaultHashingAlgorithm);
         }
 
-        int attributeIdx = this.attributeDAO.listAttributes(subject, otpOverSmsDeviceAttributeType).size();
-
-        AttributeEntity mobileAttribute = this.attributeDAO.addAttribute(mobileAttributeType, subject, attributeIdx);
+        AttributeEntity mobileAttribute = this.attributeDAO.addAttribute(mobileAttributeType, subject);
         mobileAttribute.setStringValue(mobile);
-        AttributeEntity hashAttribute = this.attributeDAO.addAttribute(pinHashAttributeType, subject, attributeIdx);
+        AttributeEntity hashAttribute = this.attributeDAO.addAttribute(pinHashAttributeType, subject);
         hashAttribute.setStringValue(hashValue);
-        AttributeEntity seedAttribute = this.attributeDAO.addAttribute(pinSeedAttributeType, subject, attributeIdx);
+        AttributeEntity seedAttribute = this.attributeDAO.addAttribute(pinSeedAttributeType, subject);
         seedAttribute.setStringValue(seed);
-        AttributeEntity algorithmAttribute = this.attributeDAO.addAttribute(pinAlgorithmAttributeType, subject, attributeIdx);
+        AttributeEntity algorithmAttribute = this.attributeDAO.addAttribute(pinAlgorithmAttributeType, subject);
         algorithmAttribute.setStringValue(defaultHashingAlgorithm);
-        AttributeEntity disableAttribute = this.attributeDAO.addAttribute(otpOverSmsDeviceDisableAttributeType, subject, attributeIdx);
+        AttributeEntity disableAttribute = this.attributeDAO.addAttribute(otpOverSmsDeviceDisableAttributeType, subject);
         disableAttribute.setBooleanValue(false);
         List<AttributeEntity> members = new LinkedList<AttributeEntity>();
         members.add(mobileAttribute);
@@ -126,7 +138,7 @@ public class OtpOverSmsManagerBean implements OtpOverSmsManager {
         members.add(seedAttribute);
         members.add(algorithmAttribute);
         members.add(disableAttribute);
-        AttributeEntity parentAttribute = this.attributeDAO.addAttribute(otpOverSmsDeviceAttributeType, subject, attributeIdx);
+        AttributeEntity parentAttribute = this.attributeDAO.addAttribute(otpOverSmsDeviceAttributeType, subject);
         parentAttribute.setMembers(members);
     }
 
@@ -160,7 +172,7 @@ public class OtpOverSmsManagerBean implements OtpOverSmsManager {
     }
 
     public void removeMobile(SubjectEntity subject, String mobile)
-            throws DeviceNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException {
+            throws DeviceNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException, AttributeNotFoundException {
 
         AttributeTypeEntity deviceAttributeType = this.attributeTypeDAO.getAttributeType(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ATTRIBUTE);
         AttributeTypeEntity mobileAttributeType = this.attributeTypeDAO.getAttributeType(OtpOverSmsConstants.OTPOVERSMS_MOBILE_ATTRIBUTE);
@@ -170,16 +182,8 @@ public class OtpOverSmsManagerBean implements OtpOverSmsManager {
             AttributeEntity mobileAttribute = this.attributeDAO.findAttribute(subject, mobileAttributeType,
                     deviceAttribute.getAttributeIndex());
             if (mobileAttribute.getStringValue().equals(mobile)) {
-                List<CompoundedAttributeTypeMemberEntity> members = deviceAttributeType.getMembers();
-                for (CompoundedAttributeTypeMemberEntity member : members) {
-                    AttributeEntity memberAttribute = this.attributeDAO.findAttribute(subject, member.getMember(),
-                            deviceAttribute.getAttributeIndex());
-                    if (null != memberAttribute) {
-                        this.attributeDAO.removeAttribute(memberAttribute);
-                    }
-                }
-                this.attributeDAO.removeAttribute(deviceAttribute);
-                break;
+                this.attributeManager.removeAttribute(deviceAttributeType, deviceAttribute.getAttributeIndex(), subject);
+                return;
             }
         }
         return;

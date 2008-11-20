@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -28,6 +29,7 @@ import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundEx
 import net.link.safeonline.authentication.exception.MobileAuthenticationException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
@@ -39,10 +41,10 @@ import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
-import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
+import net.link.safeonline.model.bean.AttributeManagerLWBean;
 import net.link.safeonline.model.encap.EncapConstants;
 import net.link.safeonline.model.encap.EncapDeviceService;
 import net.link.safeonline.model.encap.EncapDeviceServiceRemote;
@@ -50,8 +52,8 @@ import net.link.safeonline.service.SubjectService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.annotation.ejb.RemoteBinding;
 
 
 @Stateless
@@ -59,32 +61,44 @@ import org.jboss.annotation.ejb.LocalBinding;
 @RemoteBinding(jndiBinding = EncapDeviceServiceRemote.JNDI_BINDING)
 public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceServiceRemote {
 
-    private static final Log     LOG = LogFactory.getLog(EncapDeviceServiceBean.class);
+    private static final Log       LOG = LogFactory.getLog(EncapDeviceServiceBean.class);
 
     @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
-    private EntityManager        entityManager;
+    private EntityManager          entityManager;
 
     @EJB(mappedName = SubjectService.JNDI_BINDING)
-    private SubjectService       subjectService;
+    private SubjectService         subjectService;
 
     @EJB(mappedName = SubjectIdentifierDAO.JNDI_BINDING)
-    private SubjectIdentifierDAO subjectIdentifierDAO;
+    private SubjectIdentifierDAO   subjectIdentifierDAO;
 
     @EJB(mappedName = MobileManager.JNDI_BINDING)
-    private MobileManager        mobileManager;
+    private MobileManager          mobileManager;
 
     @EJB(mappedName = AttributeDAO.JNDI_BINDING)
-    private AttributeDAO         attributeDAO;
+    private AttributeDAO           attributeDAO;
 
     @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
-    private AttributeTypeDAO     attributeTypeDAO;
+    private AttributeTypeDAO       attributeTypeDAO;
 
     @EJB(mappedName = DeviceDAO.JNDI_BINDING)
-    private DeviceDAO            deviceDAO;
+    private DeviceDAO              deviceDAO;
 
     @EJB(mappedName = SecurityAuditLogger.JNDI_BINDING)
-    private SecurityAuditLogger  securityAuditLogger;
+    private SecurityAuditLogger    securityAuditLogger;
 
+    private AttributeManagerLWBean attributeManager;
+
+
+    @PostConstruct
+    public void postConstructCallback() {
+
+        /*
+         * By injecting the attribute DAO of this session bean in the attribute manager we are sure that the attribute manager (a
+         * lightweight bean) will live within the same transaction and security context as this identity service EJB3 session bean.
+         */
+        this.attributeManager = new AttributeManagerLWBean(this.attributeDAO);
+    }
 
     public void checkMobile(String mobile)
             throws SubjectNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException, DeviceDisabledException {
@@ -144,7 +158,7 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
     }
 
     public void commitRegistration(String userId, String mobile)
-            throws SubjectNotFoundException, AttributeTypeNotFoundException {
+            throws SubjectNotFoundException, AttributeTypeNotFoundException, PermissionDeniedException, AttributeNotFoundException {
 
         SubjectEntity subject = this.subjectIdentifierDAO.findSubject(EncapConstants.ENCAP_IDENTIFIER_DOMAIN, mobile);
         if (null != subject) {
@@ -152,11 +166,10 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
             // flush and clear to commit and release the removed entities.
             this.entityManager.flush();
             this.entityManager.clear();
-        } else {
-            subject = this.subjectService.findSubject(userId);
-            if (null == subject) {
-                subject = this.subjectService.addSubjectWithoutLogin(userId);
-            }
+        }
+        subject = this.subjectService.findSubject(userId);
+        if (null == subject) {
+            subject = this.subjectService.addSubjectWithoutLogin(userId);
         }
 
         setMobile(subject, mobile);
@@ -172,11 +185,9 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
         AttributeTypeEntity deviceDisableAttributeType = this.attributeTypeDAO
                                                                               .getAttributeType(EncapConstants.ENCAP_DEVICE_DISABLE_ATTRIBUTE);
 
-        int attributeIdx = this.attributeDAO.listAttributes(subject, deviceAttributeType).size();
-
-        AttributeEntity mobileAttribute = this.attributeDAO.addAttribute(mobileAttributeType, subject, attributeIdx);
+        AttributeEntity mobileAttribute = this.attributeDAO.addAttribute(mobileAttributeType, subject);
         mobileAttribute.setStringValue(mobile);
-        AttributeEntity deviceDisableAttribute = this.attributeDAO.addAttribute(deviceDisableAttributeType, subject, attributeIdx);
+        AttributeEntity deviceDisableAttribute = this.attributeDAO.addAttribute(deviceDisableAttributeType, subject);
         deviceDisableAttribute.setBooleanValue(false);
 
         AttributeEntity deviceAttribute = this.attributeDAO.addAttribute(deviceAttributeType, subject);
@@ -194,7 +205,8 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
     }
 
     public void remove(String userId, String mobile)
-            throws MobileException, MalformedURLException, SubjectNotFoundException, AttributeTypeNotFoundException {
+            throws MobileException, MalformedURLException, SubjectNotFoundException, AttributeTypeNotFoundException,
+            PermissionDeniedException, AttributeNotFoundException {
 
         removeEncapMobile(mobile);
 
@@ -206,7 +218,7 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
     }
 
     private void removeRegistration(SubjectEntity subject, String mobile)
-            throws AttributeTypeNotFoundException {
+            throws AttributeTypeNotFoundException, PermissionDeniedException, AttributeNotFoundException {
 
         AttributeTypeEntity deviceAttributeType = this.attributeTypeDAO.getAttributeType(EncapConstants.ENCAP_DEVICE_ATTRIBUTE);
         AttributeTypeEntity mobileAttributeType = this.attributeTypeDAO.getAttributeType(EncapConstants.ENCAP_MOBILE_ATTRIBUTE);
@@ -217,15 +229,7 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
                     deviceAttribute.getAttributeIndex());
             if (mobileAttribute.getStringValue().equals(mobile)) {
                 LOG.debug("remove attribute");
-                List<CompoundedAttributeTypeMemberEntity> members = deviceAttributeType.getMembers();
-                for (CompoundedAttributeTypeMemberEntity member : members) {
-                    AttributeEntity memberAttribute = this.attributeDAO.findAttribute(subject, member.getMember(),
-                            deviceAttribute.getAttributeIndex());
-                    if (null != memberAttribute) {
-                        this.attributeDAO.removeAttribute(memberAttribute);
-                    }
-                }
-                this.attributeDAO.removeAttribute(deviceAttribute);
+                this.attributeManager.removeAttribute(deviceAttributeType, deviceAttribute.getAttributeIndex(), subject);
                 break;
             }
         }
