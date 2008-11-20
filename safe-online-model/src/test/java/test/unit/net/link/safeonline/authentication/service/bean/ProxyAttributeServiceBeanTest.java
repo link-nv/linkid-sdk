@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -30,11 +31,9 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.osgi.OSGIStartable;
-import net.link.safeonline.osgi.plugin.Attribute;
 import net.link.safeonline.osgi.plugin.PluginAttributeService;
 import net.link.safeonline.osgi.plugin.exception.AttributeNotFoundException;
 import net.link.safeonline.osgi.plugin.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.osgi.plugin.exception.UnsupportedDataTypeException;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.test.util.EJBTestUtils;
 
@@ -752,96 +751,58 @@ public class ProxyAttributeServiceBeanTest {
 
     static class TestPluginService implements PluginAttributeService {
 
-        public List<Attribute> getAttribute(String userId, String attributeName, String configuration)
-                throws UnsupportedDataTypeException, AttributeNotFoundException, AttributeTypeNotFoundException {
-
-            List<Attribute> testAttribute = new LinkedList<Attribute>();
+        @SuppressWarnings("unchecked")
+        public Object getAttribute(String userId, String attributeName, String configuration)
+                throws AttributeNotFoundException, AttributeTypeNotFoundException {
 
             if (attributeName.equals(testCompoundAttributeName)) {
-                testAttribute.addAll(createCompoundAttribute(0));
-                testAttribute.addAll(createCompoundAttribute(1));
+                Map<String, Object>[] values = new Map[2];
+                values[0] = createCompoundAttribute();
+                values[1] = createCompoundAttribute();
+                return values;
             } else if (attributeName.equals(testStringAttributeName)) {
-                testAttribute.add(createStringAttribute(0));
-                testAttribute.add(createStringAttribute(1));
-                testAttribute.add(createStringAttribute(2));
+                String[] values = new String[3];
+                values[0] = "test-string-" + UUID.randomUUID().toString();
+                values[1] = "test-string-" + UUID.randomUUID().toString();
+                values[2] = "test-string-" + UUID.randomUUID().toString();
+                return values;
             } else if (attributeName.equals(testBooleanAttributeName)) {
-                testAttribute.add(createBooleanAttribute(0));
-                testAttribute.add(createBooleanAttribute(1));
-                testAttribute.add(createBooleanAttribute(2));
+                Boolean[] values = new Boolean[3];
+                values[0] = true;
+                values[0] = false;
+                values[0] = true;
+                return values;
             } else if (attributeName.equals(testDateAttributeName)) {
-                testAttribute.add(createDateAttribute(0));
-                testAttribute.add(createDateAttribute(1));
-                testAttribute.add(createDateAttribute(2));
+                Date[] values = new Date[3];
+                values[0] = new Date();
+                values[1] = new Date();
+                values[2] = new Date();
+                return values;
             } else if (attributeName.equals(testDoubleAttributeName)) {
-                testAttribute.add(createDoubleAttribute(0));
-                testAttribute.add(createDoubleAttribute(1));
-                testAttribute.add(createDoubleAttribute(2));
+                Double[] values = new Double[3];
+                values[0] = 0.1;
+                values[0] = 0.2;
+                values[0] = 0.3;
+                return values;
             } else if (attributeName.equals(testIntegerAttributeName)) {
-                testAttribute.add(createIntegerAttribute(0));
-                testAttribute.add(createIntegerAttribute(1));
-                testAttribute.add(createIntegerAttribute(2));
+                Integer[] values = new Integer[3];
+                values[0] = 0;
+                values[1] = 1;
+                values[2] = 2;
+                return values;
             }
-
-            return testAttribute;
+            return null;
         }
 
-        private Attribute createStringAttribute(int index) {
+        private Map<String, Object> createCompoundAttribute() {
 
-            Attribute stringAttribute = new Attribute(testStringAttributeName, net.link.safeonline.osgi.plugin.DatatypeType.STRING);
-            stringAttribute.setIndex(index);
-            stringAttribute.setStringValue("string-value-" + index);
-            return stringAttribute;
-        }
-
-        private Attribute createBooleanAttribute(int index) {
-
-            Attribute booleanAttribute = new Attribute(testBooleanAttributeName, net.link.safeonline.osgi.plugin.DatatypeType.BOOLEAN);
-            booleanAttribute.setIndex(index);
-            booleanAttribute.setBooleanValue(true);
-            return booleanAttribute;
-        }
-
-        private Attribute createDateAttribute(int index) {
-
-            Attribute dateAttribute = new Attribute(testDateAttributeName, net.link.safeonline.osgi.plugin.DatatypeType.DATE);
-            dateAttribute.setIndex(index);
-            dateAttribute.setDateValue(new Date());
-            return dateAttribute;
-        }
-
-        private Attribute createDoubleAttribute(int index) {
-
-            Attribute doubleAttribute = new Attribute(testDoubleAttributeName, net.link.safeonline.osgi.plugin.DatatypeType.DOUBLE);
-            doubleAttribute.setIndex(index);
-            doubleAttribute.setDoubleValue(0.5 + index);
-            return doubleAttribute;
-        }
-
-        private Attribute createIntegerAttribute(int index) {
-
-            Attribute integerAttribute = new Attribute(testIntegerAttributeName, net.link.safeonline.osgi.plugin.DatatypeType.INTEGER);
-            integerAttribute.setIndex(index);
-            integerAttribute.setIntegerValue(index);
-            return integerAttribute;
-        }
-
-        private List<Attribute> createCompoundAttribute(int index) {
-
-            List<Attribute> attribute = new LinkedList<Attribute>();
-
-            // create first compounded attribute + its member attributes
-            Attribute compoundedAttribute1 = new Attribute(testCompoundAttributeName,
-                    net.link.safeonline.osgi.plugin.DatatypeType.COMPOUNDED);
-            compoundedAttribute1.setIndex(index);
-
-            attribute.add(compoundedAttribute1);
-            attribute.add(createStringAttribute(index));
-            attribute.add(createBooleanAttribute(index));
-            attribute.add(createDateAttribute(index));
-            attribute.add(createDoubleAttribute(index));
-            attribute.add(createIntegerAttribute(index));
-
-            return attribute;
+            Map<String, Object> compoundedAttribute = new HashMap<String, Object>();
+            compoundedAttribute.put(testStringAttributeName, "test-string-" + UUID.randomUUID().toString());
+            compoundedAttribute.put(testBooleanAttributeName, true);
+            compoundedAttribute.put(testDateAttributeName, new Date());
+            compoundedAttribute.put(testDoubleAttributeName, 0.5);
+            compoundedAttribute.put(testIntegerAttributeName, 666);
+            return compoundedAttribute;
         }
 
     }

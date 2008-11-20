@@ -25,6 +25,8 @@ import javax.security.jacc.PolicyContextException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.sdk.auth.filter.LoginManager;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jboss.security.SimpleGroup;
@@ -32,12 +34,11 @@ import org.jboss.security.SimplePrincipal;
 
 
 /**
- * Lawyer JAAS login module. This login module will retrieve the username and role attribute from the HTTP servlet
- * request using JACC. It uses these attribute values to populate the subject for usage within the JBoss Application
- * Server.
- *
+ * Lawyer JAAS login module. This login module will retrieve the username and role attribute from the HTTP servlet request using JACC. It
+ * uses these attribute values to populate the subject for usage within the JBoss Application Server.
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class LawyerLoginModule implements LoginModule {
 
@@ -52,14 +53,14 @@ public class LawyerLoginModule implements LoginModule {
     private String           role;
 
 
-    public void initialize(Subject inSubject, CallbackHandler inCallbackHandler, Map<String, ?> sharedState,
-            Map<String, ?> options) {
+    public void initialize(Subject inSubject, CallbackHandler inCallbackHandler, Map<String, ?> sharedState, Map<String, ?> options) {
 
         this.subject = inSubject;
         this.callbackHandler = inCallbackHandler;
     }
 
-    public boolean login() throws LoginException {
+    public boolean login()
+            throws LoginException {
 
         HttpServletRequest httpServletRequest;
         try {
@@ -69,8 +70,8 @@ public class LawyerLoginModule implements LoginModule {
         }
 
         HttpSession httpSession = httpServletRequest.getSession();
-        String sessionUsername = (String) httpSession.getAttribute("username");
-        LOG.debug("jacc http username: " + sessionUsername);
+        String sessionUserId = (String) httpSession.getAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
+        LOG.debug("jacc http userId: " + sessionUserId);
 
         NameCallback nameCallback = new NameCallback("username");
         Callback[] callbacks = new Callback[] { nameCallback };
@@ -86,11 +87,11 @@ public class LawyerLoginModule implements LoginModule {
         String jaasUsername = nameCallback.getName();
         LOG.debug("jaas username: " + jaasUsername);
 
-        if (false == jaasUsername.equals(sessionUsername))
-            throw new LoginException("JAAS login username should equal session username");
+        if (false == jaasUsername.equals(sessionUserId))
+            throw new LoginException("JAAS login userId should equal session userId");
 
         // authentication
-        this.authenticatedPrincipal = new SimplePrincipal(sessionUsername);
+        this.authenticatedPrincipal = new SimplePrincipal(sessionUserId);
 
         // authorization
         String inRole = (String) httpSession.getAttribute("role");
@@ -99,7 +100,8 @@ public class LawyerLoginModule implements LoginModule {
         return true;
     }
 
-    public boolean commit() throws LoginException {
+    public boolean commit()
+            throws LoginException {
 
         Set<Principal> principals = this.subject.getPrincipals();
         principals.add(this.authenticatedPrincipal);
@@ -134,14 +136,16 @@ public class LawyerLoginModule implements LoginModule {
         return group;
     }
 
-    public boolean abort() throws LoginException {
+    public boolean abort()
+            throws LoginException {
 
         this.authenticatedPrincipal = null;
         this.role = null;
         return true;
     }
 
-    public boolean logout() throws LoginException {
+    public boolean logout()
+            throws LoginException {
 
         this.subject.getPrincipals().clear();
         this.subject.getPublicCredentials().clear();

@@ -206,7 +206,7 @@ public class ExitServletTest {
 
         Document responseDocument = DomTestUtils.parseDocument(responseBody);
         LOG.debug("document element name: " + responseDocument.getDocumentElement().getNodeName());
-        Node valueNode = XPathAPI.selectSingleNode(responseDocument, "/:html/:body/:form/:div/:input[@name='SAMLResponse']/@value");
+        Node valueNode = XPathAPI.selectSingleNode(responseDocument, "/:html/:body/:form//:input[@name='SAMLResponse']/@value");
         assertNotNull(valueNode);
         String samlResponseValue = valueNode.getTextContent();
         LOG.debug("SAMLResponse value: " + samlResponseValue);

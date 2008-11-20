@@ -73,7 +73,7 @@ public class EncapStartableBean extends AbstractInitBean {
 
         X509Certificate certificate = (X509Certificate) EncapKeyStoreUtils.getPrivateKeyEntry().getCertificate();
 
-        ResourceBundle properties = ResourceBundle.getBundle("config");
+        ResourceBundle properties = ResourceBundle.getBundle("encap_config");
         String nodeName = properties.getString("olas.node.name");
         String encapWebappName = properties.getString("encap.webapp.name");
 
@@ -87,7 +87,7 @@ public class EncapStartableBean extends AbstractInitBean {
 
     private void configureNode() {
 
-        ResourceBundle properties = ResourceBundle.getBundle("config");
+        ResourceBundle properties = ResourceBundle.getBundle("encap_config");
         String nodeName = properties.getString("olas.node.name");
         String protocol = properties.getString("olas.host.protocol");
         String hostname = properties.getString("olas.host.name");

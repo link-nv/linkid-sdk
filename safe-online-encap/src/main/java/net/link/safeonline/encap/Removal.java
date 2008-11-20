@@ -13,10 +13,11 @@ import java.util.List;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.encap.EncapConstants;
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.MobileException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.data.AttributeDO;
 
@@ -34,7 +35,8 @@ public interface Removal {
      * Actions.
      */
     String mobileRemove()
-            throws SubjectNotFoundException, MobileException, MalformedURLException, IOException, AttributeTypeNotFoundException;
+            throws SubjectNotFoundException, MobileException, MalformedURLException, IOException, AttributeTypeNotFoundException,
+            PermissionDeniedException, AttributeNotFoundException;
 
     String mobileCancel()
             throws IOException;

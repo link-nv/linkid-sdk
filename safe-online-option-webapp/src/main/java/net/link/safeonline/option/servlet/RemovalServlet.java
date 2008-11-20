@@ -17,6 +17,7 @@ import javax.servlet.http.HttpSession;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.model.option.OptionDeviceService;
@@ -90,6 +91,9 @@ public class RemovalServlet extends AbstractInjectionServlet {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
         } catch (DeviceDisabledException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
+        } catch (PermissionDeniedException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
         }

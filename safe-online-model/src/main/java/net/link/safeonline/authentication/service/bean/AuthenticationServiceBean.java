@@ -672,13 +672,17 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         }
         if (sso.application.equals(application) || sso.ssoApplications.contains(application)) {
             if (!this.ssoApplicationsToLogOut.contains(sso.application) && !sso.application.equals(application)) {
-                LOG.debug("add application " + sso.application.getName() + " for logout");
-                this.ssoApplicationsToLogOut.add(sso.application);
+                if (null != sso.application.getSsoLogoutUrl()) {
+                    LOG.debug("add application " + sso.application.getName() + " for logout");
+                    this.ssoApplicationsToLogOut.add(sso.application);
+                }
             }
             for (ApplicationEntity ssoApplication : sso.ssoApplications) {
                 if (!this.ssoApplicationsToLogOut.contains(sso.application) && !ssoApplication.equals(application)) {
-                    LOG.debug("add application " + ssoApplication.getName() + " for logout");
-                    this.ssoApplicationsToLogOut.add(ssoApplication);
+                    if (null != ssoApplication.getSsoLogoutUrl()) {
+                        LOG.debug("add application " + ssoApplication.getName() + " for logout");
+                        this.ssoApplicationsToLogOut.add(ssoApplication);
+                    }
                 }
             }
             return true;

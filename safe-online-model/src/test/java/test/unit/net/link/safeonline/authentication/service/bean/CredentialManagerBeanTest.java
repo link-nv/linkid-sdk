@@ -25,8 +25,8 @@ import net.link.safeonline.authentication.exception.AlreadyRegisteredException;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.PkiInvalidException;
-import net.link.safeonline.authentication.service.bean.AuthenticationStatement;
-import net.link.safeonline.authentication.service.bean.IdentityStatementAttributes;
+import net.link.safeonline.authentication.service.AuthenticationStatement;
+import net.link.safeonline.authentication.service.IdentityStatementAttributes;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
@@ -241,7 +241,7 @@ public class CredentialManagerBeanTest extends TestCase {
         expect(this.mockPkiProvider.getIdentifierDomainName()).andStubReturn(identifierDomain);
         expect(this.mockPkiProvider.getSubjectIdentifier(this.certificate)).andStubReturn(identifier);
         expect(this.mockSubjectIdentifierDAO.findSubject(identifierDomain, identifier)).andStubReturn(null);
-        this.mockPkiProvider.storeAdditionalAttributes(subject, this.certificate, 0);
+        this.mockPkiProvider.storeAdditionalAttributes(subject, this.certificate);
         this.mockPkiProvider.storeDeviceAttribute(subject, 0);
 
         AttributeTypeEntity surnameAttributeType = new AttributeTypeEntity();
@@ -253,10 +253,12 @@ public class CredentialManagerBeanTest extends TestCase {
         expect(this.mockSubjectService.addSubjectWithoutLogin(userId)).andReturn(subject);
 
         // expectations
-        this.mockAttributeDAO.addOrUpdateAttribute(surnameAttributeType, subject, 0, this.identityProvider.getSurname());
-        this.mockAttributeDAO.addOrUpdateAttribute(givenNameAttributeType, subject, 0, this.identityProvider.getGivenName());
+        expect(this.mockAttributeDAO.addAttribute(surnameAttributeType, subject)).andStubReturn(
+                new AttributeEntity(surnameAttributeType, subject, 0));
+        expect(this.mockAttributeDAO.addAttribute(givenNameAttributeType, subject)).andStubReturn(
+                new AttributeEntity(givenNameAttributeType, subject, 0));
         this.mockSubjectIdentifierDAO.addSubjectIdentifier(identifierDomain, identifier, subject);
-        this.mockSubjectIdentifierDAO.removeOtherSubjectIdentifiers(identifierDomain, identifier, subject);
+        // this.mockSubjectIdentifierDAO.removeOtherSubjectIdentifiers(identifierDomain, identifier, subject);
 
         // prepare
         replay(this.mockObjects);

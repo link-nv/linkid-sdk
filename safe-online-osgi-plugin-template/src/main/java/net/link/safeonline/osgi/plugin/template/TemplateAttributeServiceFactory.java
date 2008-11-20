@@ -12,26 +12,26 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceRegistration;
 
+
 public class TemplateAttributeServiceFactory implements ServiceFactory {
 
-	private int usageCounter = 0;
+    private int usageCounter = 0;
 
-	public Object getService(Bundle bundle, ServiceRegistration registration) {
-		System.out.println("Create object of PluginAttributeService for "
-				+ bundle.getSymbolicName());
-		usageCounter++;
-		System.out.println("Number of bundles using service " + usageCounter);
-		PluginAttributeService templateAttributeService = new TemplateAttributeService(
-				bundle.getBundleContext());
-		return templateAttributeService;
-	}
 
-	public void ungetService(Bundle bundle, ServiceRegistration registration,
-			Object service) {
-		System.out.println("Release object of PluginAttributeService for "
-				+ bundle.getSymbolicName());
-		usageCounter--;
-		System.out.println("Number of bundles using service " + usageCounter);
-	}
+    public Object getService(Bundle bundle, ServiceRegistration registration) {
+
+        System.out.println("Create object of PluginAttributeService for " + bundle.getSymbolicName());
+        this.usageCounter++;
+        System.out.println("Number of bundles using service " + this.usageCounter);
+        PluginAttributeService templateAttributeService = new TemplateAttributeService(bundle.getBundleContext());
+        return templateAttributeService;
+    }
+
+    public void ungetService(Bundle bundle, ServiceRegistration registration, Object service) {
+
+        System.out.println("Release object of PluginAttributeService for " + bundle.getSymbolicName());
+        this.usageCounter--;
+        System.out.println("Number of bundles using service " + this.usageCounter);
+    }
 
 }

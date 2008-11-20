@@ -7,8 +7,8 @@ import net.link.safeonline.demo.bank.entity.BankUserEntity;
 import net.link.safeonline.demo.bank.service.AccountService;
 import net.link.safeonline.demo.bank.service.TransactionService;
 import net.link.safeonline.demo.bank.service.UserService;
-import net.link.safeonline.demo.wicket.tools.OlasLogoutLink;
 import net.link.safeonline.demo.wicket.tools.WicketUtil;
+import net.link.safeonline.demo.wicket.web.OlasLogoutLink;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

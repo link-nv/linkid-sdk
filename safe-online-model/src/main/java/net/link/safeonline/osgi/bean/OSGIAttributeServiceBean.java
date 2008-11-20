@@ -6,10 +6,6 @@
  */
 package net.link.safeonline.osgi.bean;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
@@ -19,15 +15,9 @@ import net.link.safeonline.authentication.exception.AttributeUnavailableExceptio
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.ProxyAttributeService;
-import net.link.safeonline.dao.AttributeTypeDAO;
-import net.link.safeonline.entity.AttributeTypeEntity;
-import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.osgi.OSGIAttributeService;
 import net.link.safeonline.osgi.OlasAttributeServiceImpl;
-import net.link.safeonline.osgi.plugin.Attribute;
-import net.link.safeonline.osgi.plugin.DatatypeType;
 import net.link.safeonline.osgi.plugin.OlasAttributeService;
-import net.link.safeonline.osgi.plugin.exception.UnsupportedDataTypeException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -58,22 +48,14 @@ public class OSGIAttributeServiceBean implements OSGIAttributeService {
     @EJB(mappedName = ProxyAttributeService.JNDI_BINDING)
     private ProxyAttributeService proxyAttributeService;
 
-    @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
-    private AttributeTypeDAO      attributeTypeDAO;
-
 
     /**
      * {@inheritDoc}
-     * 
      */
-    public List<Attribute> getAttribute(String userId, String attributeName)
-            throws AttributeTypeNotFoundException, AttributeNotFoundException, UnsupportedDataTypeException, AttributeUnavailableException,
-            SubjectNotFoundException {
+    public Object getAttribute(String userId, String attributeName)
+            throws AttributeNotFoundException, AttributeUnavailableException, SubjectNotFoundException, AttributeTypeNotFoundException {
 
         LOG.debug("get attribute " + attributeName + " for user " + userId);
-        List<Attribute> attributeView = new LinkedList<Attribute>();
-        AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeName);
-
         Object value;
         try {
             value = this.proxyAttributeService.findAttributeValue(userId, attributeName);
@@ -84,79 +66,6 @@ public class OSGIAttributeServiceBean implements OSGIAttributeService {
         if (null == value)
             throw new AttributeNotFoundException();
 
-        // convert value to osgi attribute view
-        addValueToView(value, attributeType, attributeView);
-
-        return attributeView;
-    }
-
-    @SuppressWarnings("unchecked")
-    private void addValueToView(Object value, AttributeTypeEntity attributeType, List<Attribute> attributesView)
-            throws UnsupportedDataTypeException {
-
-        LOG.debug("add attribute " + attributeType.getName() + " to view");
-        if (!attributeType.isMultivalued()) {
-            // single-valued
-            attributesView.add(getAttributeView(attributeType, value, 0));
-        } else if (!attributeType.isCompounded()) {
-            // multi-valued but NOT compounded
-            int idx = 0;
-            for (Object attributeValue : (Object[]) value) {
-                attributesView.add(getAttributeView(attributeType, attributeValue, idx));
-                idx++;
-            }
-        } else {
-            // compounded
-            int idx = 0;
-            for (Object attributeValue : (Object[]) value) {
-                Map<String, Object> memberMap = (Map<String, Object>) attributeValue;
-                // first add an attribute view for the parent attribute
-                // type
-                LOG.debug("add compounded attribute: " + attributeType.getName());
-                attributesView.add(getAttributeView(attributeType, null, idx));
-                for (CompoundedAttributeTypeMemberEntity memberAttributeType : attributeType.getMembers()) {
-                    LOG.debug("add compounded member attribute: " + memberAttributeType.getMember().getName());
-                    attributesView
-                                  .add(getAttributeView(memberAttributeType.getMember(), memberMap.get(memberAttributeType.getMember()
-                                                                                                                          .getName()), idx));
-                }
-                idx++;
-            }
-        }
-    }
-
-    /**
-     * Returns an attribute view for the given attribute. Must be single valued at this point.
-     * 
-     * @throws UnsupportedDataTypeException
-     */
-    private Attribute getAttributeView(AttributeTypeEntity attributeType, Object value, int idx)
-            throws UnsupportedDataTypeException {
-
-        LOG.debug("get attribute view for type: " + attributeType.getName() + " with value: " + value);
-        Attribute attributeView = new Attribute(attributeType.getName(), convertDataType(attributeType.getType()), idx);
-
-        attributeView.setValue(value);
-
-        return attributeView;
-    }
-
-    private DatatypeType convertDataType(net.link.safeonline.entity.DatatypeType dataType)
-            throws UnsupportedDataTypeException {
-
-        if (dataType.equals(net.link.safeonline.entity.DatatypeType.BOOLEAN))
-            return DatatypeType.BOOLEAN;
-        else if (dataType.equals(net.link.safeonline.entity.DatatypeType.COMPOUNDED))
-            return DatatypeType.COMPOUNDED;
-        else if (dataType.equals(net.link.safeonline.entity.DatatypeType.DATE))
-            return DatatypeType.DATE;
-        else if (dataType.equals(net.link.safeonline.entity.DatatypeType.DOUBLE))
-            return DatatypeType.DOUBLE;
-        else if (dataType.equals(net.link.safeonline.entity.DatatypeType.INTEGER))
-            return DatatypeType.INTEGER;
-        else if (dataType.equals(net.link.safeonline.entity.DatatypeType.STRING))
-            return DatatypeType.STRING;
-        else
-            throw new UnsupportedDataTypeException("Unsupported datatype: " + dataType.getFriendlyName());
+        return value;
     }
 }

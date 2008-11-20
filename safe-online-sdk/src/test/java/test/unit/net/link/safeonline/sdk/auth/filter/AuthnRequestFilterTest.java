@@ -75,7 +75,7 @@ public class AuthnRequestFilterTest {
         protected void doGet(HttpServletRequest request, HttpServletResponse response)
                 throws ServletException {
 
-            throw new ServletException("should never get called");
+            throw new UnsupportedOperationException("should never get called");
         }
     }
 

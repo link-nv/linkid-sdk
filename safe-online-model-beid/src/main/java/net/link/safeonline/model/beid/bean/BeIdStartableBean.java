@@ -119,7 +119,7 @@ public class BeIdStartableBean extends AbstractInitBean {
         X509Certificate certificate = (X509Certificate) BeidKeyStoreUtils.getPrivateKeyEntry().getCertificate();
         this.trustedCertificates.put(certificate, SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
 
-        ResourceBundle properties = ResourceBundle.getBundle("config");
+        ResourceBundle properties = ResourceBundle.getBundle("beid_config");
         String nodeName = properties.getString("olas.node.name");
         String beidWebappName = properties.getString("beid.webapp.name");
 
@@ -182,7 +182,7 @@ public class BeIdStartableBean extends AbstractInitBean {
 
     private void configureNode() {
 
-        ResourceBundle properties = ResourceBundle.getBundle("config");
+        ResourceBundle properties = ResourceBundle.getBundle("beid_config");
         String nodeName = properties.getString("olas.node.name");
         String protocol = properties.getString("olas.host.protocol");
         String hostname = properties.getString("olas.host.name");

@@ -23,7 +23,7 @@ import net.link.safeonline.authentication.exception.PkiNotYetValidException;
 import net.link.safeonline.authentication.exception.PkiRevokedException;
 import net.link.safeonline.authentication.exception.PkiSuspendedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.authentication.service.bean.AuthenticationStatement;
+import net.link.safeonline.authentication.service.AuthenticationStatement;
 import net.link.safeonline.device.backend.CredentialManager;
 import net.link.safeonline.model.beid.BeIdDeviceService;
 import net.link.safeonline.model.beid.BeIdDeviceServiceRemote;
@@ -32,8 +32,8 @@ import net.link.safeonline.pkix.model.PkiProvider;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.annotation.ejb.RemoteBinding;
 
 
 @Stateless
@@ -71,7 +71,7 @@ public class BeIdDeviceServiceBean implements BeIdDeviceService, BeIdDeviceServi
     public void remove(String sessionId, String userId, String operation, byte[] identityStatementData)
             throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException, AttributeTypeNotFoundException,
             SubjectNotFoundException, DeviceNotFoundException, PkiRevokedException, PkiSuspendedException, PkiExpiredException,
-            PkiNotYetValidException, PkiInvalidException {
+            PkiNotYetValidException, PkiInvalidException, AttributeNotFoundException {
 
         LOG.debug("remove: sessionId=" + sessionId + " userId=" + userId + " operation=" + operation);
         this.credentialManager.removeIdentity(sessionId, userId, operation, identityStatementData);

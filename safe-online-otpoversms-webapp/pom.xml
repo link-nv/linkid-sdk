@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>net.lin-k</groupId>
+		<artifactId>safe-online</artifactId>
+		<version>1.3-SNAPSHOT</version>
+	</parent>
+
+	<name>SafeOnline OTP over SMS Device Web Application</name>
+	<description>
+        SafeOnline OTP over SMS Device Web Application.
+    </description>
+
+	<groupId>net.lin-k.safe-online</groupId>
+	<artifactId>safe-online-otpoversms-webapp</artifactId>
+	<version>1.3-SNAPSHOT</version>
+	<packaging>war</packaging>
+
+	<build>
+		<resources>
+			<resource>
+				<filtering>false</filtering>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**</include>
+				</includes>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<packagingExcludes>WEB-INF/lib/*</packagingExcludes>
+					<filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
+					<webResources>
+						<resource>
+							<directory>
+								${basedir}/src/main/webapp/WEB-INF
+	                            </directory>
+							<targetPath>WEB-INF</targetPath>
+							<filtering>true</filtering>
+						</resource>
+						<resource>
+							<filtering>false</filtering>
+							<directory>${basedir}/src/main/java</directory>
+							<targetPath>WEB-INF/classes</targetPath>
+							<includes>
+								<include>**/*.html</include>
+								<include>**/*.properties</include>
+							</includes>
+							<excludes>
+								<exclude>**/*.java</exclude>
+							</excludes>
+						</resource>
+					</webResources>
+					<overlays>
+						<overlay>
+							<groupId>net.lin-k.safe-online</groupId>
+							<artifactId>safe-online-webapp-base</artifactId>
+							<excludes>
+								<exclude>WEB-INF/web.xml</exclude>
+							</excludes>
+						</overlay>
+					</overlays>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptors>
+						<descriptor> src/main/assembly/dependencies.xml </descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<id>package</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attached</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+
+		<!-- Dependency Groups -->
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-container-as</artifactId>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-container-saml</artifactId>
+			<type>pom</type>
+		</dependency>
+
+		<!-- Specific Dependencies: OLAS: Forced Dependency Transition -->
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-webapp-base</artifactId>
+			<scope>provided</scope>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-webapp-base</artifactId>
+			<version>1.3-SNAPSHOT</version>
+			<type>zip</type>
+		</dependency>
+
+		<!-- Specific Dependencies: OLAS -->
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-model-otpoversms-client</artifactId>
+			<version>1.3-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-webapp-common</artifactId>
+			<version>1.3-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-model-client</artifactId>
+			<version>1.3-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-device-sdk</artifactId>
+			<version>1.3-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-wicket-tools</artifactId>
+			<version>1.3-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-webapp-base-wicket</artifactId>
+			<version>1.3-SNAPSHOT</version>
+		</dependency>
+
+		<!-- Test Dependencies -->
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-container-test</artifactId>
+			<type>pom</type>
+		</dependency>
+
+
+	</dependencies>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-changes-plugin</artifactId>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>changes-report</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+
+		</plugins>
+	</reporting>
+
+</project>

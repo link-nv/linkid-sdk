@@ -4,8 +4,8 @@ import java.util.List;
 
 import net.link.safeonline.demo.bank.entity.BankAccountEntity;
 import net.link.safeonline.demo.bank.entity.BankTransactionEntity;
-import net.link.safeonline.demo.wicket.tools.OlasLoginLink;
 import net.link.safeonline.demo.wicket.tools.WicketUtil;
+import net.link.safeonline.demo.wicket.web.OlasLoginLink;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.RestartResponseException;

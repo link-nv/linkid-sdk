@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.ejb.EJB;
 
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -220,6 +221,14 @@ public class RemovePage extends TemplatePage {
                             } catch (AttributeTypeNotFoundException e) {
                                 LOG.debug("device not found: " + e.getMessage());
                                 ListForm.this.error(getLocalizer().getString("errorAttributeTypeNotFound", this));
+                                return;
+                            } catch (PermissionDeniedException e) {
+                                LOG.debug("permission denied: " + e.getMessage());
+                                ListForm.this.error(getLocalizer().getString("errorPermissionDenied", this));
+                                return;
+                            } catch (AttributeNotFoundException e) {
+                                LOG.debug("attribute not found: " + e.getMessage());
+                                ListForm.this.error(getLocalizer().getString("errorAttributeNotFound", this));
                                 return;
                             }
 

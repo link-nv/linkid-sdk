@@ -12,28 +12,33 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
+
 public class TemplateAttributeServiceActivator implements BundleActivator {
 
-	ServiceRegistration templateAttributeServiceRegistration;
+    ServiceRegistration templateAttributeServiceRegistration;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-	 */
-	public void start(BundleContext context) throws Exception {
-		TemplateAttributeServiceFactory helloServiceFactory = new TemplateAttributeServiceFactory();
-		this.templateAttributeServiceRegistration = context.registerService(
-				PluginAttributeService.class.getName(), helloServiceFactory,
-				null);
-	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-	 */
-	public void stop(BundleContext context) throws Exception {
-		this.templateAttributeServiceRegistration.unregister();
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
+     */
+    public void start(BundleContext context)
+            throws Exception {
+
+        TemplateAttributeServiceFactory helloServiceFactory = new TemplateAttributeServiceFactory();
+        this.templateAttributeServiceRegistration = context.registerService(PluginAttributeService.class.getName(), helloServiceFactory,
+                null);
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
+     */
+    public void stop(BundleContext context)
+            throws Exception {
+
+        this.templateAttributeServiceRegistration.unregister();
+    }
 }

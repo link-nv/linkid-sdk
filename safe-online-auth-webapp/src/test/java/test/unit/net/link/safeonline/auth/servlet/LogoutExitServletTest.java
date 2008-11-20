@@ -165,7 +165,7 @@ public class LogoutExitServletTest {
 
         Document responseDocument = DomTestUtils.parseDocument(responseBody);
         LOG.debug("document element name: " + responseDocument.getDocumentElement().getNodeName());
-        Node valueNode = XPathAPI.selectSingleNode(responseDocument, "/:html/:body/:form/:div/:input[@name='SAMLRequest']/@value");
+        Node valueNode = XPathAPI.selectSingleNode(responseDocument, "/:html/:body/:form//:input[@name='SAMLRequest']/@value");
         assertNotNull(valueNode);
         String samlRequestValue = valueNode.getTextContent();
         LOG.debug("SAMLRequest value: " + samlRequestValue);
@@ -230,7 +230,7 @@ public class LogoutExitServletTest {
 
         Document responseDocument = DomTestUtils.parseDocument(responseBody);
         LOG.debug("document element name: " + responseDocument.getDocumentElement().getNodeName());
-        Node valueNode = XPathAPI.selectSingleNode(responseDocument, "/:html/:body/:form/:div/:input[@name='SAMLRequest']/@value");
+        Node valueNode = XPathAPI.selectSingleNode(responseDocument, "/:html/:body/:form//:input[@name='SAMLRequest']/@value");
         assertNotNull(valueNode);
         String samlRequestValue = valueNode.getTextContent();
         LOG.debug("SAMLRequest value: " + samlRequestValue);

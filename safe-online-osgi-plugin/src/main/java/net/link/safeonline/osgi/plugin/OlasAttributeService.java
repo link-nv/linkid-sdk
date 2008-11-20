@@ -6,13 +6,10 @@
  */
 package net.link.safeonline.osgi.plugin;
 
-import java.util.List;
-
 import net.link.safeonline.osgi.plugin.exception.AttributeNotFoundException;
 import net.link.safeonline.osgi.plugin.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.osgi.plugin.exception.AttributeUnavailableException;
 import net.link.safeonline.osgi.plugin.exception.SubjectNotFoundException;
-import net.link.safeonline.osgi.plugin.exception.UnsupportedDataTypeException;
 
 
 /**
@@ -32,19 +29,17 @@ import net.link.safeonline.osgi.plugin.exception.UnsupportedDataTypeException;
 public interface OlasAttributeService {
 
     /**
-     * Returns the attribute view from OLAS for the specified attribute name from the specified user.
+     * Returns the attribute from OLAS for the specified attribute name from the specified user.
      * 
      * @param userId
      * @param attributeName
      * @return attribute view
      * @throws AttributeTypeNotFoundException
      * @throws AttributeNotFoundException
-     * @throws UnsupportedDataTypeException
      * @throws AttributeUnavailableException
      * @throws SubjectNotFoundException
      */
-    public List<Attribute> getAttribute(String userId, String attributeName)
-            throws AttributeTypeNotFoundException, AttributeNotFoundException, UnsupportedDataTypeException, AttributeUnavailableException,
-            SubjectNotFoundException;
+    public Object getAttribute(String userId, String attributeName)
+            throws AttributeTypeNotFoundException, AttributeNotFoundException, AttributeUnavailableException, SubjectNotFoundException;
 
 }

@@ -38,7 +38,6 @@ import net.link.safeonline.ctrl.HistoryMessageManager;
 import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.ctrl.error.annotation.Error;
 import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
-import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.data.DeviceRegistrationDO;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -109,8 +108,6 @@ public class UserManagementBean implements UserManagement {
 
     private List<DeviceRegistrationDO>  deviceRegistrationList;
 
-    private List<AttributeDO>           attributeList;
-
 
     @Remove
     @Destroy
@@ -152,7 +149,6 @@ public class UserManagementBean implements UserManagement {
         this.historyList = getHistoryList(subject);
         this.subscriptionList = this.subscriptionService.listSubscriptions(subject);
         this.deviceRegistrationList = this.deviceService.getDeviceRegistrations(subject, getViewLocale());
-        this.attributeList = this.identityService.listAttributes(subject, getViewLocale());
     }
 
     private List<HistoryMessage> getHistoryList(SubjectEntity subject) {
@@ -281,11 +277,5 @@ public class UserManagementBean implements UserManagement {
     public List<DeviceRegistrationDO> getDeviceRegistrationList() {
 
         return this.deviceRegistrationList;
-    }
-
-    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
-    public List<AttributeDO> getAttributeList() {
-
-        return this.attributeList;
     }
 }
