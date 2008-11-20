@@ -85,7 +85,7 @@ public class AuthenticationProtocolManager {
      * 
      * <p>
      * NOTE: This method uses the request URL as the target URL, doesn't set any language/color/minimal preferences, and continues with
-     * {@link #initiateAuthentication(HttpServletRequest, HttpServletResponse, String, Locale, Integer, Boolean)}.
+     * {@link #initiateAuthentication(HttpServletRequest, HttpServletResponse, String, boolean, Locale, Integer, Boolean)}.
      * </p>
      * 
      * @param request
@@ -97,7 +97,7 @@ public class AuthenticationProtocolManager {
             throws IOException, ServletException {
 
         String target = request.getRequestURL().toString();
-        initiateAuthentication(request, response, target, null, null, null);
+        initiateAuthentication(request, response, target, false, null, null, null);
     }
 
     /**
@@ -105,8 +105,8 @@ public class AuthenticationProtocolManager {
      * 
      * @see AuthenticationProtocolHandler#initiateAuthentication(HttpServletRequest, HttpServletResponse, String, Locale, Integer, Boolean)
      */
-    public static void initiateAuthentication(HttpServletRequest request, HttpServletResponse response, String target, Locale language,
-                                              Integer color, Boolean minimal)
+    public static void initiateAuthentication(HttpServletRequest request, HttpServletResponse response, String target,
+                                              boolean skipLandingPage, Locale language, Integer color, Boolean minimal)
             throws IOException, ServletException {
 
         AuthenticationProtocolHandler protocolHandler = findAuthenticationProtocolHandler(request);
@@ -114,7 +114,7 @@ public class AuthenticationProtocolManager {
             throw new IllegalStateException("no active protocol handler found");
 
         String landingPage = request.getSession().getServletContext().getInitParameter(LANDING_PAGE_INIT_PARAM);
-        if (null != landingPage) {
+        if (null != landingPage && !skipLandingPage) {
             LOG.debug("using landing page: " + landingPage);
             storeTarget(target, request);
             protocolHandler.initiateAuthentication(request, response, landingPage, language, color, minimal);

@@ -77,14 +77,19 @@ public class SafeOnlineLoginUtils {
      * 
      * @see #login(String, Locale, Integer, Boolean)
      */
-    @SuppressWarnings("unchecked")
     public static String login(String target) {
+
+        return login(target, false);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static String login(String target, boolean skipLandingPage) {
 
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext externalContext = context.getExternalContext();
 
         try {
-            return login(target, null, null, null, externalContext.getInitParameterMap(),
+            return login(target, skipLandingPage, null, null, null, externalContext.getInitParameterMap(),
                     (HttpServletRequest) externalContext.getRequest(), (HttpServletResponse) externalContext.getResponse());
         }
 
@@ -165,7 +170,7 @@ public class SafeOnlineLoginUtils {
         ExternalContext externalContext = context.getExternalContext();
 
         try {
-            return login(target, language, color, minimal, externalContext.getInitParameterMap(),
+            return login(target, false, language, color, minimal, externalContext.getInitParameterMap(),
                     (HttpServletRequest) externalContext.getRequest(), (HttpServletResponse) externalContext.getResponse());
         }
 
@@ -227,11 +232,11 @@ public class SafeOnlineLoginUtils {
             config.put(name, context.getInitParameter(name));
         }
 
-        return login(target, language, color, minimal, config, request, response);
+        return login(target, false, language, color, minimal, config, request, response);
     }
 
-    private static String login(String target, Locale language, Integer color, Boolean minimal, Map<String, String> config,
-                                HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
+    private static String login(String target, boolean skipLandingPage, Locale language, Integer color, Boolean minimal,
+                                Map<String, String> config, HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
 
         /* Initialize parameters from web.xml */
         String authenticationServiceUrl = getInitParameter(config, AUTH_SERVICE_URL_INIT_PARAM);
@@ -309,7 +314,8 @@ public class SafeOnlineLoginUtils {
 
         // Initiate the authentication.
         try {
-            AuthenticationProtocolManager.initiateAuthentication(httpRequest, httpResponse, targetUrl, language, authColor, authMinimal);
+            AuthenticationProtocolManager.initiateAuthentication(httpRequest, httpResponse, targetUrl, skipLandingPage, language,
+                    authColor, authMinimal);
             LOG.debug("executed protocol");
         } catch (Exception e) {
             throw new RuntimeException("could not initiate authentication: " + e.getMessage(), e);
