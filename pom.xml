@@ -142,6 +142,7 @@
 			</properties>
 			<modules>
 				<!-- DEMO CORE -->
+				<module>safe-online-model-demo-client</module>
 				<module>safe-online-model-demo</module>
 				<module>safe-online-demo-deploy</module>
 				<module>safe-online-demo-util</module>
@@ -190,6 +191,12 @@
 				<module>safe-online-base-distribution</module>
 				<module>safe-online-demo-distribution</module>
 			</modules>
+            <properties>
+				<safe-online.data.source.uri> jdbc:mysql://localhost:3306/safeonline 
+				</safe-online.data.source.uri>
+				<safe-online.dialect> org.hibernate.dialect.MySQLDialect 
+				</safe-online.dialect>
+            </properties>
 		</profile>
 
 		<!-- Profile to build a pilot version -->
@@ -520,7 +527,7 @@
 		<safe-online.data.source>SafeOnlineDS</safe-online.data.source>
 		<safe-online.batch.size>5</safe-online.batch.size>
 		<safe-online.dialect>org.hibernate.dialect.HSQLDialect</safe-online.dialect>
-		<safe-online.hibernate.hbm2ddl.auto>create-drop</safe-online.hibernate.hbm2ddl.auto>
+		<safe-online.hibernate.hbm2ddl.auto>update</safe-online.hibernate.hbm2ddl.auto>
 		<safe-online.show.sql>false</safe-online.show.sql>
 		<debug.mode>false</debug.mode>
 		<safe-online.node.name>olas</safe-online.node.name>
