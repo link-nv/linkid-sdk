@@ -23,6 +23,7 @@ import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.demo.bank.keystore.DemoBankKeyStoreUtils;
@@ -197,14 +198,19 @@ public class DemoStartableBean extends AbstractInitBean {
         for (PasswordRegistration passwordRegistration : this.passwordRegistrations) {
 
             SubjectEntity subject = this.subjectService.findSubjectFromUserName(passwordRegistration.login);
-            if (null != subject) {
-                continue;
+            if (null == subject) {
+                try {
+                    subject = this.subjectService.addSubject(passwordRegistration.login);
+                } catch (AttributeTypeNotFoundException e) {
+                    this.LOG.fatal("safeonline exception", e);
+                    throw new EJBException(e);
+                }
             }
 
             try {
                 this.passwordManager.setPassword(subject, passwordRegistration.password);
             } catch (PermissionDeniedException e) {
-                throw new EJBException("could not set password");
+                throw new EJBException("could not set password", e);
             }
 
         }
