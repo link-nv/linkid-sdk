@@ -130,26 +130,6 @@ public class TemplateAttributeService implements PluginAttributeService {
 				testCompoundAttributeName, DatatypeType.COMPOUNDED);
 		compoundedAttribute1.setIndex(index);
 
-		Attribute booleanMemberAttribute1 = new Attribute(
-				"test-attribute-boolean", DatatypeType.BOOLEAN);
-		booleanMemberAttribute1.setIndex(index);
-		booleanMemberAttribute1.setBooleanValue(true);
-
-		Attribute dateMemberAttribute1 = new Attribute("test-attribute-date",
-				DatatypeType.DATE);
-		dateMemberAttribute1.setIndex(index);
-		dateMemberAttribute1.setDateValue(new Date());
-
-		Attribute doubleMemberAttribute1 = new Attribute(
-				"test-attribute-double", DatatypeType.DOUBLE);
-		doubleMemberAttribute1.setIndex(index);
-		doubleMemberAttribute1.setDoubleValue(0.5 + index);
-
-		Attribute integerMemberAttribute1 = new Attribute(
-				"test-attribute-integer", DatatypeType.INTEGER);
-		integerMemberAttribute1.setIndex(index);
-		integerMemberAttribute1.setIntegerValue(index);
-
 		attribute.add(compoundedAttribute1);
 		attribute.add(createStringAttribute(index));
 		attribute.add(createBooleanAttribute(index));
