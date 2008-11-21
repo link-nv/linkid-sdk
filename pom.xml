@@ -433,6 +433,7 @@
 				</safe-online.profiling.interceptor>
 			</properties>
 			<modules>
+				<module>safe-online-model-performance-client</module>
 				<module>safe-online-model-performance</module>
 				<module>safe-online-performance-deploy</module>
 				<module>safe-online-performance-agent-deploy</module>
