@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -45,6 +45,8 @@ public class BankStartupListener implements ServletContextListener {
             ((InitializationService) new InitialContext().lookup(InitializationService.JNDI_BINDING)).buildEntities();
         } catch (NamingException e) {
             LOG.error("Couldn't find the bank initialization bean.", e);
+        } catch (Exception e) {
+            LOG.error("Initialization of demo-bank failed.", e);
         }
     }
 

@@ -45,6 +45,8 @@ public class CinemaStartupListener implements ServletContextListener {
             ((InitializationService) new InitialContext().lookup(InitializationService.JNDI_BINDING)).buildEntities();
         } catch (NamingException e) {
             LOG.error("Couldn't find the cinema initialization bean.", e);
+        } catch (Exception e) {
+            LOG.error("Initialization of demo-cinema failed.", e);
         }
     }
 
