@@ -207,12 +207,13 @@ public class DemoStartableBean extends AbstractInitBean {
                 }
             }
 
-            try {
-                this.passwordManager.setPassword(subject, passwordRegistration.password);
-            } catch (PermissionDeniedException e) {
-                this.LOG.error("could not set password for user: " + passwordRegistration.login, e); // FIXME
+            if (!this.passwordManager.isPasswordConfigured(subject)) {
+                try {
+                    this.passwordManager.setPassword(subject, passwordRegistration.password);
+                } catch (PermissionDeniedException e) {
+                    this.LOG.error("could not set password for user: " + passwordRegistration.login, e); // FIXME
+                }
             }
-
         }
 
     }
