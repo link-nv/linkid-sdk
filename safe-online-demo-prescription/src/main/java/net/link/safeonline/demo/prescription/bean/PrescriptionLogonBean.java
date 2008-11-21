@@ -59,6 +59,7 @@ public class PrescriptionLogonBean extends AbstractPrescriptionDataClientBean im
     private void activateRole(String role) {
 
         FacesContext context = FacesContext.getCurrentInstance();
+        this.log.debug("set role: " + role);
         context.getExternalContext().getSessionMap().put("role", role);
     }
 

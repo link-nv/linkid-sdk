@@ -158,6 +158,8 @@ public class LoginServlet extends HttpServlet {
         if (null == value)
             return false;
 
+        LOG.debug("boolean attribute " + attributeName + ": " + attribute.getValue());
+
         return attribute.getValue();
     }
 

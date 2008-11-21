@@ -30,7 +30,7 @@ public class PrescriptionAuthenticationBean implements PrescriptionAuthenticatio
     public String authenticate(String target) {
 
         this.log.debug("authentication for target: #0", target);
-        String result = SafeOnlineLoginUtils.login(target);
+        String result = SafeOnlineLoginUtils.login(target, true);
         return result;
     }
 }

@@ -123,7 +123,7 @@
 		<filter-class> net.link.safeonline.sdk.auth.filter.AuthnResponseFilter 
 		</filter-class>
 		<init-param>
-			<param-name>UsernameSessionParameter</param-name>
+			<param-name>UserIdSessionParameter</param-name>
 			<param-value>patient</param-value>
 		</init-param>
 	</filter>
