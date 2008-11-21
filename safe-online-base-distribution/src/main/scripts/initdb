@@ -61,7 +61,7 @@ if [[ $dbms = mysql ]]; then
 	for ear in *.ear; do
 		case $ear in
 			SafeOnline.ear|safe-online-deploy*.ear)
-				emit "Rebuilding SafeOnline" --
+				emit "Rebuilding SafeOnline"
 					mysql -h"$host" -P"$port" -uroot -p"$rootpass" < <(unzip -qc "$ear" resources/mysql-create-database.sql) && \
 					mysql -h"$host" -P"$port" -uroot -p"$rootpass" < <(unzip -qc "$ear" resources/mysql-create-account.sql) && \
 					java -jar "$ear" <<-END
@@ -74,7 +74,7 @@ if [[ $dbms = mysql ]]; then
 						I
 						E
 					END
-				emit -$? || exit
+                (( $? )) && exit
 			;;
 
             Dodentocht.ear|dodentocht-deploy*.ear)
