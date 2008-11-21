@@ -46,7 +46,7 @@ public class CinemaStartupListener implements ServletContextListener {
         } catch (NamingException e) {
             LOG.error("Couldn't find the cinema initialization bean.", e);
         } catch (Exception e) {
-            LOG.error("Initialization of demo-cinema failed.", e);
+            LOG.error("Initialization of demo-cinema failed.", e); // FIXME
         }
     }
 

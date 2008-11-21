@@ -46,7 +46,7 @@ public class BankStartupListener implements ServletContextListener {
         } catch (NamingException e) {
             LOG.error("Couldn't find the bank initialization bean.", e);
         } catch (Exception e) {
-            LOG.error("Initialization of demo-bank failed.", e);
+            LOG.error("Initialization of demo-bank failed.", e); // FIXME
         }
     }
 
