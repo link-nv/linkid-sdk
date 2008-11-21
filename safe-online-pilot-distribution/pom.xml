@@ -128,12 +128,12 @@
             <plugin>
                 <artifactId>maven-patch-plugin</artifactId>
                 <executions>
-                  <execution>
-                    <id>patch</id>
-                    <phase>package</phase>
-                    <goals>
-                        <goal>apply</goal>
-                    </goals>
+                    <execution>
+                        <id>patch</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>apply</goal>
+                        </goals>
                         <configuration>
                             <patches>
                                 <patch>disable_services.patch</patch>
