@@ -48,6 +48,9 @@
 		<fileSet>
 			<directory>target/dependency</directory>
 			<outputDirectory>jboss/server/default/lib</outputDirectory>
+            <excludes>
+                <exclude>safe-online*</exclude>
+            </excludes>
 		</fileSet>
 
 	</fileSets>

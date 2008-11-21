@@ -71,7 +71,7 @@
 
                     <!-- Copy EAR dependencies into /deploy.
                          maven-assembly-plugin will move them to /jboss/server/default/deploy. -->
-					<execution>
+					<!--execution>
 						<id>copy</id>
 						<phase>package</phase>
 						<goals>
@@ -82,7 +82,7 @@
                             <excludeScope>provided</excludeScope>
 							<outputDirectory>${project.build.directory}/deploy</outputDirectory>
 						</configuration>
-					</execution>
+					</execution-->
 
                     <!-- Copy non-provided, non-EAR dependencies to /dependency dir.
                          maven-assembly-plugin will move them to /jboss/server/default/lib. -->
@@ -162,9 +162,21 @@
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-deploy</artifactId>
+			<version>1.3-SNAPSHOT</version>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-demo-deploy</artifactId>
 			<version>1.3-SNAPSHOT</version>
 			<type>ear</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-demo-deploy</artifactId>
+			<version>1.3-SNAPSHOT</version>
+			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
@@ -174,9 +186,21 @@
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-beid-deploy</artifactId>
+			<version>1.3-SNAPSHOT</version>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-digipass-deploy</artifactId>
 			<version>1.3-SNAPSHOT</version>
 			<type>ear</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-digipass-deploy</artifactId>
+			<version>1.3-SNAPSHOT</version>
+			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
@@ -186,7 +210,25 @@
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-encap-deploy</artifactId>
+			<version>1.3-SNAPSHOT</version>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-password-deploy</artifactId>
+			<version>1.3-SNAPSHOT</version>
+			<type>ear</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-password-deploy</artifactId>
+			<version>1.3-SNAPSHOT</version>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-otpoversms-deploy</artifactId>
 			<version>1.3-SNAPSHOT</version>
 			<type>ear</type>
 		</dependency>
@@ -194,7 +236,7 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-otpoversms-deploy</artifactId>
 			<version>1.3-SNAPSHOT</version>
-			<type>ear</type>
+			<type>zip</type>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
