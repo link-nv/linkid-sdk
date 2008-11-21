@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -46,6 +46,10 @@ public class InitializationServiceBean extends AbstractBankServiceBean implement
         List<BankAccountEntity> accounts = new LinkedList<BankAccountEntity>();
         BankUserEntity user;
         BankAccountEntity account;
+
+        // Don't bother if Pol already exists.
+        if (this.em.find(BankUserEntity.class, digipassUser_BankId) != null)
+            return;
 
         // Pol.
         user = new BankUserEntity(digipassUser_BankId, digipassUser_Name);

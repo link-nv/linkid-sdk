@@ -210,7 +210,7 @@ public class DemoStartableBean extends AbstractInitBean {
             try {
                 this.passwordManager.setPassword(subject, passwordRegistration.password);
             } catch (PermissionDeniedException e) {
-                throw new EJBException("could not set password", e);
+                this.LOG.error("could not set password", e); // FIXME
             }
 
         }
