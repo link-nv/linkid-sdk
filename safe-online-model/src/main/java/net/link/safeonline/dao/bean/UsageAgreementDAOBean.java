@@ -59,8 +59,10 @@ public class UsageAgreementDAOBean implements UsageAgreementDAO {
     public UsageAgreementEntity addUsageAgreement(ApplicationEntity application, Long usageAgreementVersion) {
 
         LOG.debug("add application usage agreement: " + application.getName() + " version=" + usageAgreementVersion);
+
         UsageAgreementEntity usageAgreement = new UsageAgreementEntity(application, usageAgreementVersion);
         this.entityManager.persist(usageAgreement);
+
         return usageAgreement;
     }
 

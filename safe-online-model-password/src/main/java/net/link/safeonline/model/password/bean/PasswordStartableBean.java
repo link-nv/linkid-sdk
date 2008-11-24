@@ -98,10 +98,12 @@ public class PasswordStartableBean extends AbstractInitBean {
                 }
             }
 
-            try {
-                this.passwordManager.setPassword(subject, passwordRegistration.password);
-            } catch (PermissionDeniedException e) {
-                throw new EJBException("could not set password", e);
+            if (!this.passwordManager.isPasswordConfigured(subject)) {
+                try {
+                    this.passwordManager.setPassword(subject, passwordRegistration.password);
+                } catch (PermissionDeniedException e) {
+                    throw new EJBException(e);
+                }
             }
         }
     }

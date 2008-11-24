@@ -46,6 +46,11 @@ public class InitializationServiceBean extends AbstractCinemaServiceBean impleme
 
         this.theatreRoomEntities = new ArrayList<List<CinemaRoomEntity>>();
 
+        // Don't bother if already created.
+        Object count = this.em.createQuery("SELECT count(t) FROM CinemaTheatreEntity t").getSingleResult();
+        if (count != null && !count.toString().equals("0"))
+            return;
+
         createTheatres();
         createFilms();
     }

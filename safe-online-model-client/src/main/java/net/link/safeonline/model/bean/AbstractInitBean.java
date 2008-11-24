@@ -828,10 +828,17 @@ public abstract class AbstractInitBean implements Startable {
 
         for (UsageAgreement usageAgreement : this.usageAgreements) {
             ApplicationEntity application = this.applicationDAO.findApplication(usageAgreement.application);
-            UsageAgreementEntity usageAgreementEntity = this.usageAgreementDAO.addUsageAgreement(application,
+            UsageAgreementEntity usageAgreementEntity = this.usageAgreementDAO.getUsageAgreement(application,
                     UsageAgreementPK.INITIAL_USAGE_AGREEMENT_VERSION);
+            if (usageAgreementEntity == null) {
+                usageAgreementEntity = this.usageAgreementDAO.addUsageAgreement(application,
+                        UsageAgreementPK.INITIAL_USAGE_AGREEMENT_VERSION);
+            }
             for (UsageAgreementText usageAgreementText : usageAgreement.usageAgreementTexts) {
-                this.usageAgreementDAO.addUsageAgreementText(usageAgreementEntity, usageAgreementText.text, usageAgreementText.language);
+                if (this.usageAgreementDAO.getUsageAgreementText(usageAgreementEntity, usageAgreementText.language) == null) {
+                    this.usageAgreementDAO
+                                          .addUsageAgreementText(usageAgreementEntity, usageAgreementText.text, usageAgreementText.language);
+                }
             }
             try {
                 this.usageAgreementManager.setUsageAgreement(application, UsageAgreementPK.INITIAL_USAGE_AGREEMENT_VERSION);

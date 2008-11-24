@@ -58,6 +58,7 @@ public class HistoryDAOBean implements HistoryDAO {
         LOG.debug("add history entry: " + when + "; subject: " + subject.getUserId() + "; event: " + event);
         HistoryEntity history = new HistoryEntity(when, subject, event);
         this.entityManager.persist(history);
+        this.entityManager.flush();
         this.entityManager.refresh(history);
         if (null != properties) {
             for (Map.Entry<String, String> property : properties.entrySet()) {
