@@ -891,6 +891,8 @@
 		<module>safe-online-otpoversms-ws-impl</module>
 		<module>safe-online-otpoversms-sdk</module>
 		<module>safe-online-otpoversms-ws-runtime</module>
+	
+		<module>siemens-osgi-acceptance</module>
 	</modules>
 
 	<!-- DEFAULT BUILD CONFIGURATION -->
