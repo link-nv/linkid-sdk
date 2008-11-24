@@ -18,6 +18,7 @@ import net.link.safeonline.demo.wicket.tools.olas.DummyNameIdentifierMappingClie
 import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.model.password.PasswordDeviceService;
 import net.link.safeonline.password.webapp.AuthenticationPage;
+import net.link.safeonline.password.webapp.RegistrationPage;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.JmxTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
@@ -35,7 +36,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class AuthenticationPageTestToDo extends TestCase {
+public class RegistrationPageTestToDo extends TestCase {
 
     private PasswordDeviceService mockPasswordDeviceService;
 
@@ -91,7 +92,6 @@ public class AuthenticationPageTestToDo extends TestCase {
         });
 
         this.wicket = new WicketTester(new PasswordTestApplication());
-        this.wicket.processRequestCycle();
 
     }
 
@@ -104,35 +104,35 @@ public class AuthenticationPageTestToDo extends TestCase {
     }
 
     @Test
-    public void testAuthenticate()
+    public void testRegister()
             throws Exception {
 
         // setup
         String userId = UUID.randomUUID().toString();
-        String token = "000000";
+        String password = "test-password";
         DummyNameIdentifierMappingClient.setUserId(userId);
 
-        // Authentication Page: Verify.
-        AuthenticationPage authenticationPage = (AuthenticationPage) this.wicket.startPage(AuthenticationPage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID, Form.class);
+        // Registration Page: Verify.
+
+        RegistrationPage registrationPage = (RegistrationPage) this.wicket.startPage(RegistrationPage.class);
+        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RegistrationPage.REGISTRATION_FORM_ID, Form.class);
 
         // setup
-        EJBTestUtils.inject(authenticationPage, this.mockPasswordDeviceService);
-        EJBTestUtils.inject(authenticationPage, this.mockSamlAuthorityService);
+        EJBTestUtils.inject(registrationPage, this.mockPasswordDeviceService);
+        EJBTestUtils.inject(registrationPage, this.mockSamlAuthorityService);
 
         // stubs
-        expect(this.mockPasswordDeviceService.authenticate(userId, token)).andStubReturn(userId);
+        this.mockPasswordDeviceService.register(userId, password);
         expect(this.mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
         replay(this.mockPasswordDeviceService, this.mockSamlAuthorityService);
 
-        // RegisterPage: Register digipass for user
-        FormTester authenticationForm = this.wicket
-                                                   .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
-        authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, UUID.randomUUID().toString());
-        authenticationForm.setValue(AuthenticationPage.PASSWORD_FIELD_ID, token);
-        authenticationForm.submit(AuthenticationPage.LOGIN_BUTTON_ID);
+        // operate
+        FormTester registrationForm = this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RegistrationPage.REGISTRATION_FORM_ID);
+        registrationForm.setValue(RegistrationPage.PASSWORD1_FIELD_ID, password);
+        registrationForm.setValue(RegistrationPage.PASSWORD2_FIELD_ID, password);
+        registrationForm.submit(RegistrationPage.SAVE_BUTTON_ID);
 
         // verify
         verify(this.mockPasswordDeviceService, this.mockSamlAuthorityService);
@@ -144,7 +144,8 @@ public class AuthenticationPageTestToDo extends TestCase {
 
         // setup
         String userId = UUID.randomUUID().toString();
-        String token = "000000";
+        String login = "test-login";
+        String password = "test-password";
         DummyNameIdentifierMappingClient.setUserId(userId);
 
         // Authentication Page: Verify.
@@ -156,7 +157,7 @@ public class AuthenticationPageTestToDo extends TestCase {
         this.jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, this.mockHelpdeskManager);
 
         // stubs
-        expect(this.mockPasswordDeviceService.authenticate(userId, token)).andThrow(new SubjectNotFoundException());
+        expect(this.mockPasswordDeviceService.authenticate(userId, password)).andThrow(new SubjectNotFoundException());
         expect(this.mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
@@ -165,15 +166,15 @@ public class AuthenticationPageTestToDo extends TestCase {
         // RegisterPage: Register digipass for user
         FormTester authenticationForm = this.wicket
                                                    .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
-        authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, UUID.randomUUID().toString());
-        authenticationForm.setValue(AuthenticationPage.PASSWORD_FIELD_ID, token);
+        authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, login);
+        authenticationForm.setValue(AuthenticationPage.PASSWORD_FIELD_ID, password);
         authenticationForm.submit(AuthenticationPage.LOGIN_BUTTON_ID);
 
         // verify
         verify(this.mockPasswordDeviceService, this.mockHelpdeskManager);
 
         this.wicket.assertRenderedPage(AuthenticationPage.class);
-        this.wicket.assertErrorMessages(new String[] { "digipassNotRegistered" });
+        this.wicket.assertErrorMessages(new String[] { "authenticationFailedMsg" });
 
     }
 
@@ -183,7 +184,8 @@ public class AuthenticationPageTestToDo extends TestCase {
 
         // setup
         String userId = UUID.randomUUID().toString();
-        String token = "000000";
+        String login = "test-login";
+        String password = "test-password";
         DummyNameIdentifierMappingClient.setUserId(userId);
 
         // Authentication Page: Verify.
@@ -195,24 +197,24 @@ public class AuthenticationPageTestToDo extends TestCase {
         this.jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, this.mockHelpdeskManager);
 
         // stubs
-        expect(this.mockPasswordDeviceService.authenticate(userId, token)).andThrow(new DeviceDisabledException());
+        expect(this.mockPasswordDeviceService.authenticate(userId, password)).andThrow(new DeviceDisabledException());
         expect(this.mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
         replay(this.mockPasswordDeviceService, this.mockHelpdeskManager);
 
-        // RegisterPage: Register digipass for user
+        // operate
         FormTester authenticationForm = this.wicket
                                                    .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
-        authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, UUID.randomUUID().toString());
-        authenticationForm.setValue(AuthenticationPage.PASSWORD_FIELD_ID, token);
+        authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, login);
+        authenticationForm.setValue(AuthenticationPage.PASSWORD_FIELD_ID, password);
         authenticationForm.submit(AuthenticationPage.LOGIN_BUTTON_ID);
 
         // verify
         verify(this.mockPasswordDeviceService, this.mockHelpdeskManager);
 
         this.wicket.assertRenderedPage(AuthenticationPage.class);
-        this.wicket.assertErrorMessages(new String[] { "digipassDisabled" });
+        this.wicket.assertErrorMessages(new String[] { "errorDeviceDisabled" });
 
     }
 
@@ -222,7 +224,8 @@ public class AuthenticationPageTestToDo extends TestCase {
 
         // setup
         String userId = UUID.randomUUID().toString();
-        String token = "000000";
+        String login = "test-login";
+        String password = "test-password";
         DummyNameIdentifierMappingClient.setUserId(userId);
 
         // Authentication Page: Verify.
@@ -234,17 +237,17 @@ public class AuthenticationPageTestToDo extends TestCase {
         this.jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, this.mockHelpdeskManager);
 
         // stubs
-        expect(this.mockPasswordDeviceService.authenticate(userId, token)).andStubReturn(null);
+        expect(this.mockPasswordDeviceService.authenticate(userId, password)).andStubReturn(null);
         expect(this.mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
         replay(this.mockPasswordDeviceService, this.mockHelpdeskManager);
 
-        // RegisterPage: Register digipass for user
+        // operate
         FormTester authenticationForm = this.wicket
                                                    .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
-        authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, UUID.randomUUID().toString());
-        authenticationForm.setValue(AuthenticationPage.PASSWORD_FIELD_ID, token);
+        authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, login);
+        authenticationForm.setValue(AuthenticationPage.PASSWORD_FIELD_ID, password);
         authenticationForm.submit(AuthenticationPage.LOGIN_BUTTON_ID);
 
         // verify

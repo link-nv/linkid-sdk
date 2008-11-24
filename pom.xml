@@ -845,7 +845,7 @@
 		<module>safe-online-digipass-startup-runtime</module>
 		<module>safe-online-digipass-deploy</module>
 		<module>safe-online-digipass-keystore</module>
-		<module>safe-online-digipass-webapp-wicket</module>
+		<module>safe-online-digipass-webapp</module>
 		<module>safe-online-device-sdk</module>
 		<module>safe-online-java-version-applet</module>
 		<module>safe-online-java-version-applet-package</module>
