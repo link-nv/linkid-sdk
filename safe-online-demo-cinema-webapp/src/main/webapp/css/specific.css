@@ -1,0 +1,31 @@
+/** -*- coding: utf-8; mode: css; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:filetype=css:et:sw=4:ts=4:sts=4
+ *
+ * Bank-Cinema CSS Style:
+ *      Specific Elements
+ *
+ * @author mbillemo
+ *
+ * Copyright 2006-2008 - Lin.k NV
+ *
+ */
+
+/* ==================================================================
+ * Section: Cinema Elements
+ */
+
+#seats {
+    width:              auto;
+}
+#seats a {
+    display:            block;
+
+    width:              50px;
+    height:             50px;
+    padding:            0;
+
+    border:             1px solid #eaeaea;
+}
+#seats a:hover {
+    background:         #a6f6a6;
+}
+

@@ -1,6 +1,6 @@
 /** -*- coding: utf-8; mode: css; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:filetype=css:et:sw=4:ts=4:sts=4
  *
- * OLAS CSS Style:
+ * Demo CSS Style:
  *      Element Positioning
  *      Background Images, Borders
  *      Greyscale Coloring Only
@@ -34,14 +34,10 @@ p, h1, h2, h3, h4, h5, h6, br {
 h1 {
     margin-bottom:      21px;
 
-	color:              #000099;
-
     font:               28px/ 42px "Trebuchet MS", Verdana, Arial;
 }
 h2 {
     margin:             14px 0;
-
-	color:              #000099;
 
     font:               21px/ 28px "Trebuchet MS", Verdana, Arial;
 }
@@ -50,7 +46,6 @@ p {
     padding-bottom:     7px;
 }
 a, a:link, a:visited, input[type=submit] {
-    color:              #8a8aea;
     font:               inherit;
     border:             none;
     background:         transparent;
@@ -58,20 +53,16 @@ a, a:link, a:visited, input[type=submit] {
     text-decoration:    none;
 }
 a:active {
-    color:              #ea8a8a;
-
     text-decoration:    underline;
 }
 table {
     width:              100%;
     margin:             1em auto 3em;
 
-    border:             1px solid #eaeaea;
-    background:         #fbfbfb;
+    border:             1px solid black;
     border-collapse:    collapse;
 }
 table th {
-    background:         #f0f0f0;
 
     text-align:         center;
 }
@@ -81,7 +72,7 @@ table td, table th {
 table caption {
     padding:            1ex;
 
-    border:             1px solid #eaeaea;
+    border:             1px solid black;
 
     font-weight:        bold;
     font-size:          120%;
@@ -92,24 +83,15 @@ table a, input[type=submit] {
     padding:            1ex 0;
     width:              100%;
 }
-table a:hover, input[type=submit]:hover {
-    color:              #2a2aea;
-}
-table th a:hover, table th input[type=submit]:hover {
-    background:         #eaeaea;
-}
-table td a:hover, table td input[type=submit]:hover {
-    background:         #f6f6f6;
-}
 table tfoot tr {
-    border-top:         1px solid #a6a6a6;
+    border-top:         1px solid black;
 }
 .header {
-    border-bottom:      1px solid #a6a6a6;
+    border-bottom:      1px solid black;
 }
 input[type=text], textarea, select {
     width:              70%;
-    border:             1px solid #2a2a2a;
+    border:             1px solid black;
 }
 textarea, select {
     height:             5em;
@@ -133,12 +115,8 @@ textarea, select {
 .disabled {
     background:         #f6a6a6;
 }
-.selected {
-    background:         #a6a6f6;
-}
 .key {
-    background:         #d9d9d9;
-    border:             1px solid #a6a6a6;
+    border:             1px solid black;
 
     padding:            0.5ex 1ex;
     margin:             0 0.5ex;
@@ -156,8 +134,7 @@ textarea, select {
     padding:            2em 5em 0;
     margin:             0 0 1em;
 
-    background:         #eaeaea;
-    border-bottom:      1px solid #a6a6a6;
+    border-bottom:      1px solid black;
 
 	font-size:          36px;
 	font-weight:        normal;
@@ -181,32 +158,16 @@ textarea, select {
     margin:             3em 0 0;
 	padding:            1em 2em;
 
-	border-top:         1px solid #eaeaea;
+	border-top:         1px solid black;
 
-	color:              #ccc;
 	text-align:         right;
 	font-size:          x-small;
 }
 
+#olasFrame {
+    width:              100%;
+    height:             100%;
 
-
-/* ==================================================================
- * Section: Cinema Elements
- */
-
-#seats {
-    width:              auto;
-}
-#seats a {
-    display:            block;
-
-    width:              50px;
-    height:             50px;
-    padding:            0;
-
-    border:             1px solid #eaeaea;
-}
-#seats a:hover {
-    background:         #a6f6a6;
+    border:             none;
 }
 
