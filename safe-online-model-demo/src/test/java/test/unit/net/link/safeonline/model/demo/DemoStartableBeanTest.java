@@ -89,6 +89,7 @@ import net.link.safeonline.model.demo.bean.DemoStartableBean;
 import net.link.safeonline.model.digipass.bean.DigipassStartableBean;
 import net.link.safeonline.model.encap.bean.EncapStartableBean;
 import net.link.safeonline.model.password.bean.PasswordManagerBean;
+import net.link.safeonline.model.password.bean.PasswordStartableBean;
 import net.link.safeonline.notification.dao.bean.EndpointReferenceDAOBean;
 import net.link.safeonline.notification.dao.bean.NotificationMessageDAOBean;
 import net.link.safeonline.notification.dao.bean.NotificationProducerDAOBean;
@@ -197,6 +198,7 @@ public class DemoStartableBeanTest {
         BeIdStartableBean beIdStartableBean = EJBTestUtils.newInstance(BeIdStartableBean.class, container, entityManager);
         DigipassStartableBean digipassStartableBean = EJBTestUtils.newInstance(DigipassStartableBean.class, container, entityManager);
         EncapStartableBean encapStartableBean = EJBTestUtils.newInstance(EncapStartableBean.class, container, entityManager);
+        PasswordStartableBean passwordStartableBean = EJBTestUtils.newInstance(PasswordStartableBean.class, container, entityManager);
         DemoStartableBean demoStartableBean = EJBTestUtils.newInstance(DemoStartableBean.class, container, entityManager);
 
         EJBTestUtils.setJBossPrincipal("test-operator", "operator");
@@ -205,6 +207,7 @@ public class DemoStartableBeanTest {
         beIdStartableBean.postStart();
         digipassStartableBean.postStart();
         encapStartableBean.postStart();
+        passwordStartableBean.postStart();
         demoStartableBean.postStart();
     }
 }

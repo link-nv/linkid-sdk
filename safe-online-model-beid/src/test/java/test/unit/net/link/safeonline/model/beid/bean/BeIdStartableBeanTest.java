@@ -99,7 +99,7 @@ public class BeIdStartableBeanTest extends TestCase {
         // expectations
         expect(this.mockTrustDomainDAO.addTrustDomain(BeIdPkiProviderBean.TRUST_DOMAIN_NAME, true)).andReturn(trustDomain);
         this.mockTrustPointDAO.addTrustPoint(EasyMock.eq(trustDomain), (X509Certificate) EasyMock.anyObject());
-        expectLastCall().times(1 + 2 + 1 + 15 + 20 + 1 + 1 + 1 + 1 + 1);
+        expectLastCall().times(1 + 2 + 1 + 15 + 20 + 1 + 1 + 1 + 1 + 1 + 11);
 
         // prepare
         replay(this.mockObjects);
