@@ -44,10 +44,10 @@ public class PasswordStartableBean extends AbstractInitBean {
 
     public static final String JNDI_BINDING = PasswordConstants.PASSWORD_STARTABLE_JNDI_PREFIX + "PasswordStartableBean";
 
-    @EJB
+    @EJB(mappedName = PasswordManager.JNDI_BINDING)
     private PasswordManager    passwordManager;
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService     subjectService;
 
 

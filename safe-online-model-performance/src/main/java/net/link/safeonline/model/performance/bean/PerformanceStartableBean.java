@@ -70,10 +70,10 @@ public class PerformanceStartableBean extends AbstractInitBean {
 
     private List<PasswordRegistration> passwordRegistrations;
 
-    @EJB
+    @EJB(mappedName = PasswordManager.JNDI_BINDING)
     private PasswordManager            passwordManager;
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService             subjectService;
 
 

@@ -132,10 +132,10 @@ public class DemoStartableBean extends AbstractInitBean {
 
     private String                     demoBankWebappName;
 
-    @EJB
+    @EJB(mappedName = PasswordManager.JNDI_BINDING)
     private PasswordManager            passwordManager;
 
-    @EJB
+    @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService             subjectService;
 
 
