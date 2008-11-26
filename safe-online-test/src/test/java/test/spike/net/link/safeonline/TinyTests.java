@@ -31,16 +31,16 @@ import org.junit.Test;
  */
 public class TinyTests {
 
-    private static final int    DARKER_OFFSET = 17;
-    private static final double DARKER_FACTOR = 1.26;
+    private static final int    BRIGHT_OFFSET = 0;
+    private static final double BRIGHT_FACTOR = 1.45;
 
 
     @Test
     public void testColor() {
 
-        Integer base = Integer.decode("#5A7500");
+        Integer base = Integer.decode("#00006A");
 
-        System.out.println(getThemedColor(base, DARKER_FACTOR, DARKER_OFFSET));
+        System.out.println(getThemedColor(base, BRIGHT_FACTOR, BRIGHT_OFFSET));
     }
 
     private String getThemedColor(Integer base, double factor, int offset) {
@@ -48,9 +48,9 @@ public class TinyTests {
         System.err.format("%X\n", ((base >> 16) % (0xFF + 1)));
         System.err.format("%X\n", (int) ((base >> 16) % (0xFF + 1) * factor));
         System.err.format("%X\n", (int) ((base >> 16) % (0xFF + 1) * factor + offset));
-        int red = (int) ((base >> 16) % (0xFF + 1) * factor + offset);
-        int green = (int) ((base >> 8) % (0xFF + 1) * factor + offset);
-        int blue = (int) ((base >> 0) % (0xFF + 1) * factor + offset);
+        int red = Math.min((int) ((base >> 16) % (0xFF + 1) * factor + offset), 0xFF);
+        int green = Math.min((int) ((base >> 8) % (0xFF + 1) * factor + offset), 0xFF);
+        int blue = Math.min((int) ((base >> 0) % (0xFF + 1) * factor + offset), 0xFF);
 
         return String.format("#%02X%02X%02X", red, green, blue);
     }
