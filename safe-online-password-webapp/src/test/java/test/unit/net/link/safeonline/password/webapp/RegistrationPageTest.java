@@ -10,14 +10,13 @@ import java.security.cert.X509Certificate;
 import java.util.UUID;
 
 import junit.framework.TestCase;
-import net.link.safeonline.authentication.exception.DeviceDisabledException;
-import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.demo.wicket.tools.WicketUtil;
 import net.link.safeonline.demo.wicket.tools.olas.DummyNameIdentifierMappingClient;
+import net.link.safeonline.device.sdk.ProtocolContext;
+import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
 import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.model.password.PasswordDeviceService;
-import net.link.safeonline.password.webapp.AuthenticationPage;
 import net.link.safeonline.password.webapp.RegistrationPage;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.JmxTestUtils;
@@ -36,7 +35,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class RegistrationPageTestToDo extends TestCase {
+public class RegistrationPageTest extends TestCase {
 
     private PasswordDeviceService mockPasswordDeviceService;
 
@@ -112,8 +111,11 @@ public class RegistrationPageTestToDo extends TestCase {
         String password = "test-password";
         DummyNameIdentifierMappingClient.setUserId(userId);
 
-        // Registration Page: Verify.
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(this.wicket.getServletSession());
+        protocolContext.setDeviceOperation(DeviceOperationType.NEW_ACCOUNT_REGISTER);
+        protocolContext.setSubject(userId);
 
+        // Registration Page: Verify.
         RegistrationPage registrationPage = (RegistrationPage) this.wicket.startPage(RegistrationPage.class);
         this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RegistrationPage.REGISTRATION_FORM_ID, Form.class);
 
@@ -139,122 +141,43 @@ public class RegistrationPageTestToDo extends TestCase {
     }
 
     @Test
-    public void testAuthenticateSubjectNotFound()
+    public void testRegisterPasswordsNotEqual()
             throws Exception {
 
         // setup
         String userId = UUID.randomUUID().toString();
-        String login = "test-login";
         String password = "test-password";
         DummyNameIdentifierMappingClient.setUserId(userId);
 
-        // Authentication Page: Verify.
-        AuthenticationPage authenticationPage = (AuthenticationPage) this.wicket.startPage(AuthenticationPage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID, Form.class);
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(this.wicket.getServletSession());
+        protocolContext.setDeviceOperation(DeviceOperationType.NEW_ACCOUNT_REGISTER);
+        protocolContext.setSubject(userId);
+
+        // Registration Page: Verify.
+        RegistrationPage registrationPage = (RegistrationPage) this.wicket.startPage(RegistrationPage.class);
+        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RegistrationPage.REGISTRATION_FORM_ID, Form.class);
 
         // setup
-        EJBTestUtils.inject(authenticationPage, this.mockPasswordDeviceService);
+        EJBTestUtils.inject(registrationPage, this.mockPasswordDeviceService);
         this.jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, this.mockHelpdeskManager);
 
         // stubs
-        expect(this.mockPasswordDeviceService.authenticate(userId, password)).andThrow(new SubjectNotFoundException());
-        expect(this.mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
-
-        // prepare
-        replay(this.mockPasswordDeviceService, this.mockHelpdeskManager);
-
-        // RegisterPage: Register digipass for user
-        FormTester authenticationForm = this.wicket
-                                                   .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
-        authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, login);
-        authenticationForm.setValue(AuthenticationPage.PASSWORD_FIELD_ID, password);
-        authenticationForm.submit(AuthenticationPage.LOGIN_BUTTON_ID);
-
-        // verify
-        verify(this.mockPasswordDeviceService, this.mockHelpdeskManager);
-
-        this.wicket.assertRenderedPage(AuthenticationPage.class);
-        this.wicket.assertErrorMessages(new String[] { "authenticationFailedMsg" });
-
-    }
-
-    @Test
-    public void testAuthenticateDeviceDisabled()
-            throws Exception {
-
-        // setup
-        String userId = UUID.randomUUID().toString();
-        String login = "test-login";
-        String password = "test-password";
-        DummyNameIdentifierMappingClient.setUserId(userId);
-
-        // Authentication Page: Verify.
-        AuthenticationPage authenticationPage = (AuthenticationPage) this.wicket.startPage(AuthenticationPage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID, Form.class);
-
-        // setup
-        EJBTestUtils.inject(authenticationPage, this.mockPasswordDeviceService);
-        this.jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, this.mockHelpdeskManager);
-
-        // stubs
-        expect(this.mockPasswordDeviceService.authenticate(userId, password)).andThrow(new DeviceDisabledException());
         expect(this.mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
         replay(this.mockPasswordDeviceService, this.mockHelpdeskManager);
 
         // operate
-        FormTester authenticationForm = this.wicket
-                                                   .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
-        authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, login);
-        authenticationForm.setValue(AuthenticationPage.PASSWORD_FIELD_ID, password);
-        authenticationForm.submit(AuthenticationPage.LOGIN_BUTTON_ID);
+        FormTester registrationForm = this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RegistrationPage.REGISTRATION_FORM_ID);
+        registrationForm.setValue(RegistrationPage.PASSWORD1_FIELD_ID, password);
+        registrationForm.setValue(RegistrationPage.PASSWORD2_FIELD_ID, "foobar-password");
+        registrationForm.submit(RegistrationPage.SAVE_BUTTON_ID);
 
         // verify
         verify(this.mockPasswordDeviceService, this.mockHelpdeskManager);
 
-        this.wicket.assertRenderedPage(AuthenticationPage.class);
-        this.wicket.assertErrorMessages(new String[] { "errorDeviceDisabled" });
-
-    }
-
-    @Test
-    public void testAuthenticateFailed()
-            throws Exception {
-
-        // setup
-        String userId = UUID.randomUUID().toString();
-        String login = "test-login";
-        String password = "test-password";
-        DummyNameIdentifierMappingClient.setUserId(userId);
-
-        // Authentication Page: Verify.
-        AuthenticationPage authenticationPage = (AuthenticationPage) this.wicket.startPage(AuthenticationPage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID, Form.class);
-
-        // setup
-        EJBTestUtils.inject(authenticationPage, this.mockPasswordDeviceService);
-        this.jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, this.mockHelpdeskManager);
-
-        // stubs
-        expect(this.mockPasswordDeviceService.authenticate(userId, password)).andStubReturn(null);
-        expect(this.mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
-
-        // prepare
-        replay(this.mockPasswordDeviceService, this.mockHelpdeskManager);
-
-        // operate
-        FormTester authenticationForm = this.wicket
-                                                   .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
-        authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, login);
-        authenticationForm.setValue(AuthenticationPage.PASSWORD_FIELD_ID, password);
-        authenticationForm.submit(AuthenticationPage.LOGIN_BUTTON_ID);
-
-        // verify
-        verify(this.mockPasswordDeviceService, this.mockHelpdeskManager);
-
-        this.wicket.assertRenderedPage(AuthenticationPage.class);
-        this.wicket.assertErrorMessages(new String[] { "authenticationFailedMsg" });
+        this.wicket.assertRenderedPage(RegistrationPage.class);
+        this.wicket.assertErrorMessages(new String[] { RegistrationPage.PASSWORD2_FIELD_ID + ".EqualPasswordInputValidator" });
 
     }
 }

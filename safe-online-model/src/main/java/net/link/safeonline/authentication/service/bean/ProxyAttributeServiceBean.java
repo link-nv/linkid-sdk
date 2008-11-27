@@ -128,6 +128,9 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
         if (attributeType.getAttributeCacheTimeoutMillis() <= 0)
             return;
 
+        if (null == value)
+            return;
+
         DatatypeType datatype = attributeType.getType();
         if (attributeType.isMultivalued()) {
             switch (datatype) {

@@ -34,9 +34,9 @@ import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
-import net.link.safeonline.device.PasswordDeviceService;
 import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.model.password.PasswordDeviceService;
 import net.link.safeonline.pkix.service.PkiService;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
@@ -62,170 +62,132 @@ import test.integ.net.link.safeonline.IntegrationTestUtils;
  */
 public class IdentifierMappingWebServiceTest {
 
-	private static final Log LOG = LogFactory
-			.getLog(IdentifierMappingWebServiceTest.class);
+    private static final Log LOG = LogFactory.getLog(IdentifierMappingWebServiceTest.class);
 
-	private X509Certificate certificate;
+    private X509Certificate  certificate;
 
-	private PrivateKey privateKey;
+    private PrivateKey       privateKey;
 
-	@Before
-	public void setUp() throws Exception {
 
-		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		this.certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair,
-				"CN=Test");
-		this.privateKey = keyPair.getPrivate();
-	}
+    @Before
+    public void setUp()
+            throws Exception {
 
-	@Test
-	public void testMap() throws Exception {
-		// setup
-		InitialContext initialContext = IntegrationTestUtils
-				.getInitialContext();
+        KeyPair keyPair = PkiTestUtils.generateKeyPair();
+        this.certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test" + UUID.randomUUID().toString());
+        this.privateKey = keyPair.getPrivate();
+    }
 
-		IntegrationTestUtils.setupLoginConfig();
+    @Test
+    public void testMap()
+            throws Exception {
 
-		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
-		IdentityService identityService = getIdentityService(initialContext);
-		PasswordDeviceService passwordDeviceService = getPasswordDeviceService(initialContext);
+        // setup
+        InitialContext initialContext = IntegrationTestUtils.getInitialContext();
 
-		String testApplicationName = UUID.randomUUID().toString();
+        IntegrationTestUtils.setupLoginConfig();
 
-		// operate: register user
-		String login = "login-" + UUID.randomUUID().toString();
-		String password = UUID.randomUUID().toString();
-		SubjectEntity loginSubject = userRegistrationService
-				.registerUser(login);
-		passwordDeviceService.register(loginSubject, password);
+        UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
+        IdentityService identityService = getIdentityService(initialContext);
+        PasswordDeviceService passwordDeviceService = getPasswordDeviceService(initialContext);
+        SubjectService subjectService = getSubjectService(initialContext);
 
-		// operate: register certificate as application trust point
-		PkiService pkiService = getPkiService(initialContext);
+        String testApplicationName = UUID.randomUUID().toString();
 
-		SubjectService subjectService = getSubjectService(initialContext);
-		String adminUserId = subjectService.getSubjectFromUserName("admin")
-				.getUserId();
-		LOG.debug("admin userId: " + adminUserId);
+        // operate: register user
+        String login = "login-" + UUID.randomUUID().toString();
+        String password = UUID.randomUUID().toString();
+        SubjectEntity loginSubject = userRegistrationService.registerUser(login);
+        passwordDeviceService.register(loginSubject.getUserId(), password);
 
-		IntegrationTestUtils.login(adminUserId, "admin");
-		pkiService.addTrustPoint(
-				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-				this.certificate.getEncoded());
+        // operate: register certificate as application trust point
+        PkiService pkiService = getPkiService(initialContext);
 
-		// operate: add application with certificate
-		ApplicationService applicationService = getApplicationService(initialContext);
-		applicationService
-				.addApplication(
-						testApplicationName,
-						null,
-						"owner",
-						null,
-						true,
-						IdScopeType.USER,
-						null,
-						null,
-						null,
-						this.certificate.getEncoded(),
-						Arrays
-								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
-										SafeOnlineConstants.NAME_ATTRIBUTE) }),
-						false);
+        String adminUserId = subjectService.getSubjectFromUserName(SafeOnlineConstants.ADMIN_LOGIN).getUserId();
+        IntegrationTestUtils.login(adminUserId, "admin");
+        pkiService.addTrustPoint(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, this.certificate.getEncoded());
 
-		// operate: subscribe onto the application and confirm identity usage
-		SubscriptionService subscriptionService = getSubscriptionService(initialContext);
+        // operate: add application with certificate
+        ApplicationService applicationService = getApplicationService(initialContext);
+        applicationService.addApplication(testApplicationName, null, "owner", null, true, IdScopeType.USER, null, null,
+                this.certificate.getEncoded(), Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
+                        IntegrationTestUtils.NAME_ATTRIBUTE) }), false, false, false, null);
 
-		IntegrationTestUtils.login(loginSubject.getUserId(), password);
-		subscriptionService.subscribe(testApplicationName);
-		identityService.confirmIdentity(testApplicationName);
+        // operate: subscribe onto the application and confirm identity usage
+        SubscriptionService subscriptionService = getSubscriptionService(initialContext);
 
-		// operate & verify
-		NameIdentifierMappingClient client = new NameIdentifierMappingClientImpl(
-				"https://localhost:8443", this.certificate, this.privateKey);
-		client.setCaptureMessages(true);
-		String resultUserId = client.getUserId(login);
-		LOG.debug("userId: " + resultUserId);
-		assertNotNull(resultUserId);
-		assertEquals(loginSubject.getUserId(), resultUserId);
-		LOG.debug("client outbound message: "
-				+ DomTestUtils.domToString(client.getOutboundMessage()));
-		File tmpFile = File.createTempFile("idmapping-outbound-", ".xml");
-		IOUtils.write(DomTestUtils.domToString(client.getOutboundMessage()),
-				new FileOutputStream(tmpFile));
-		LOG.debug("client inbound message: "
-				+ DomTestUtils.domToString(client.getInboundMessage()));
-		tmpFile = File.createTempFile("idmapping-inbound-", ".xml");
-		IOUtils.write(DomTestUtils.domToString(client.getInboundMessage()),
-				new FileOutputStream(tmpFile));
-	}
+        IntegrationTestUtils.login(loginSubject.getUserId(), password);
+        subscriptionService.subscribe(testApplicationName);
+        identityService.confirmIdentity(testApplicationName);
 
-	@Test
-	public void testPermissionDenied() throws Exception {
-		// setup
-		InitialContext initialContext = IntegrationTestUtils
-				.getInitialContext();
+        // operate & verify
+        NameIdentifierMappingClient client = new NameIdentifierMappingClientImpl("https://localhost:8443", this.certificate,
+                this.privateKey);
+        client.setCaptureMessages(false);
+        String resultUserId = client.getUserId(login);
+        LOG.debug("userId: " + resultUserId);
+        assertNotNull(resultUserId);
+        assertEquals(loginSubject.getUserId(), resultUserId);
+        LOG.debug("client outbound message: " + DomTestUtils.domToString(client.getOutboundMessage()));
+        File tmpFile = File.createTempFile("idmapping-outbound-", ".xml");
+        IOUtils.write(DomTestUtils.domToString(client.getOutboundMessage()), new FileOutputStream(tmpFile));
+        LOG.debug("client inbound message: " + DomTestUtils.domToString(client.getInboundMessage()));
+        tmpFile = File.createTempFile("idmapping-inbound-", ".xml");
+        IOUtils.write(DomTestUtils.domToString(client.getInboundMessage()), new FileOutputStream(tmpFile));
+    }
 
-		IntegrationTestUtils.setupLoginConfig();
+    @Test
+    public void testPermissionDenied()
+            throws Exception {
 
-		UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
-		IdentityService identityService = getIdentityService(initialContext);
-		PasswordDeviceService passwordDeviceService = getPasswordDeviceService(initialContext);
+        // setup
+        InitialContext initialContext = IntegrationTestUtils.getInitialContext();
 
-		String testApplicationName = UUID.randomUUID().toString();
+        IntegrationTestUtils.setupLoginConfig();
 
-		// operate: register user
-		String login = "login-" + UUID.randomUUID().toString();
-		String password = UUID.randomUUID().toString();
-		SubjectEntity loginSubject = userRegistrationService
-				.registerUser(login);
-		passwordDeviceService.register(loginSubject, password);
+        UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
+        IdentityService identityService = getIdentityService(initialContext);
+        PasswordDeviceService passwordDeviceService = getPasswordDeviceService(initialContext);
 
-		// operate: register certificate as application trust point
-		PkiService pkiService = getPkiService(initialContext);
+        String testApplicationName = UUID.randomUUID().toString();
 
-		SubjectService subjectService = getSubjectService(initialContext);
-		String adminUserId = subjectService.getSubjectFromUserName("admin")
-				.getUserId();
-		LOG.debug("admin userId: " + adminUserId);
+        // operate: register user
+        String login = "login-" + UUID.randomUUID().toString();
+        String password = UUID.randomUUID().toString();
+        SubjectEntity loginSubject = userRegistrationService.registerUser(login);
+        passwordDeviceService.register(loginSubject.getUserId(), password);
 
-		IntegrationTestUtils.login(adminUserId, "admin");
-		pkiService.addTrustPoint(
-				SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN,
-				this.certificate.getEncoded());
+        // operate: register certificate as application trust point
+        PkiService pkiService = getPkiService(initialContext);
 
-		// operate: add application with certificate
-		ApplicationService applicationService = getApplicationService(initialContext);
-		applicationService
-				.addApplication(
-						testApplicationName,
-						null,
-						"owner",
-						null,
-						false,
-						IdScopeType.USER,
-						null,
-						null,
-						null,
-						this.certificate.getEncoded(),
-						Arrays
-								.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
-										SafeOnlineConstants.NAME_ATTRIBUTE) }),
-						false);
+        SubjectService subjectService = getSubjectService(initialContext);
+        String adminUserId = subjectService.getSubjectFromUserName("admin").getUserId();
+        LOG.debug("admin userId: " + adminUserId);
 
-		// operate: subscribe onto the application and confirm identity usage
-		SubscriptionService subscriptionService = getSubscriptionService(initialContext);
+        IntegrationTestUtils.login(adminUserId, "admin");
+        pkiService.addTrustPoint(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, this.certificate.getEncoded());
 
-		IntegrationTestUtils.login(loginSubject.getUserId(), password);
-		subscriptionService.subscribe(testApplicationName);
-		identityService.confirmIdentity(testApplicationName);
+        // operate: add application with certificate
+        ApplicationService applicationService = getApplicationService(initialContext);
+        applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null,
+                this.certificate.getEncoded(), Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
+                        IntegrationTestUtils.NAME_ATTRIBUTE) }), false, false, false, null);
 
-		// operate & verify
-		NameIdentifierMappingClient client = new NameIdentifierMappingClientImpl(
-				"https://localhost:8443", this.certificate, this.privateKey);
-		try {
-			client.getUserId(login);
-			fail();
-		} catch (RequestDeniedException e) {
-			// expected
-		}
-	}
+        // operate: subscribe onto the application and confirm identity usage
+        SubscriptionService subscriptionService = getSubscriptionService(initialContext);
+
+        IntegrationTestUtils.login(loginSubject.getUserId(), password);
+        subscriptionService.subscribe(testApplicationName);
+        identityService.confirmIdentity(testApplicationName);
+
+        // operate & verify
+        NameIdentifierMappingClient client = new NameIdentifierMappingClientImpl("https://localhost:8443", this.certificate,
+                this.privateKey);
+        try {
+            client.getUserId(login);
+            fail();
+        } catch (RequestDeniedException e) {
+            // expected
+        }
+    }
 }

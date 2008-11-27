@@ -86,9 +86,8 @@ public abstract class AbstractMessageAccessor implements MessageAccessor {
     @SuppressWarnings("unchecked")
     protected void retrieveHeadersFromPort(Object port) {
 
-        if (!(port instanceof BindingProvider)) {
+        if (!(port instanceof BindingProvider))
             throw new IllegalArgumentException("Can only retrieve result HTTP headers from a JAX-WS proxy object.");
-        }
 
         Map<String, Object> context = ((BindingProvider) port).getResponseContext();
         if (context == null || !context.containsKey(MessageContext.HTTP_RESPONSE_HEADERS))

@@ -26,9 +26,10 @@ public class AcceptanceAttributeServiceActivator implements BundleActivator {
     public void start(BundleContext context)
             throws Exception {
 
+        System.out.println("registering acceptance attribute service");
         AcceptanceAttributeServiceFactory acceptanceAttributeServiceFactory = new AcceptanceAttributeServiceFactory();
-        this.acceptanceAttributeServiceRegistration = context.registerService(PluginAttributeService.class.getName(), acceptanceAttributeServiceFactory,
-                null);
+        this.acceptanceAttributeServiceRegistration = context.registerService(PluginAttributeService.class.getName(),
+                acceptanceAttributeServiceFactory, null);
     }
 
     /*
@@ -39,6 +40,7 @@ public class AcceptanceAttributeServiceActivator implements BundleActivator {
     public void stop(BundleContext context)
             throws Exception {
 
+        System.out.println("unregistering acceptance attribute service");
         this.acceptanceAttributeServiceRegistration.unregister();
     }
 }

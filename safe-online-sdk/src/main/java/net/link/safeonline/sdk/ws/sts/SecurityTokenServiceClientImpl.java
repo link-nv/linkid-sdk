@@ -101,11 +101,15 @@ public class SecurityTokenServiceClientImpl extends AbstractMessageAccessor impl
         try {
             response = this.port.requestSecurityToken(request);
         } catch (ClientTransportException e) {
+            LOG.error("ClientTransportException: " + e.getMessage(), e);
             throw new WSClientTransportException(this.location);
         } catch (Exception e) {
+            LOG.error("Exception: " + e.getMessage(), e);
             throw retrieveHeadersFromException(e);
         } finally {
+            LOG.debug("finally");
             retrieveHeadersFromPort(this.port);
+            LOG.debug("finally done");
         }
 
         StatusType status = null;
@@ -118,9 +122,8 @@ public class SecurityTokenServiceClientImpl extends AbstractMessageAccessor impl
                     status = (StatusType) value;
                 }
             }
-        if (null == status) {
+        if (null == status)
             throw new RuntimeException("no Status found in response");
-        }
         String statusCode = status.getCode();
         if (SecurityTokenServiceConstants.STATUS_VALID.equals(statusCode))
             return;

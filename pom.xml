@@ -191,12 +191,12 @@
 				<module>safe-online-base-distribution</module>
 				<module>safe-online-demo-distribution</module>
 			</modules>
-            <properties>
+			<properties>
 				<safe-online.data.source.uri> jdbc:mysql://localhost:3306/safeonline 
 				</safe-online.data.source.uri>
 				<safe-online.dialect> org.hibernate.dialect.MySQLDialect 
 				</safe-online.dialect>
-            </properties>
+			</properties>
 		</profile>
 
 		<!-- Profile to build a pilot version -->
@@ -892,7 +892,7 @@
 		<module>safe-online-otpoversms-ws-impl</module>
 		<module>safe-online-otpoversms-sdk</module>
 		<module>safe-online-otpoversms-ws-runtime</module>
-	
+
 		<module>siemens-osgi-acceptance</module>
 	</modules>
 

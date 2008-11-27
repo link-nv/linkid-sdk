@@ -68,11 +68,15 @@ public class RegistrationPage extends TemplatePage {
 
         this.protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
-        try {
-            this.alreadyRegistered = this.passwordDeviceService.isPasswordConfigured(this.protocolContext.getSubject());
-        } catch (SubjectNotFoundException e) {
-            error(getLocalizer().getString("errorSubjectNotFound", this));
-            return;
+        if (null == this.passwordDeviceService) {
+            this.alreadyRegistered = false;
+        } else {
+            try {
+                this.alreadyRegistered = this.passwordDeviceService.isPasswordConfigured(this.protocolContext.getSubject());
+            } catch (SubjectNotFoundException e) {
+                error(getLocalizer().getString("errorSubjectNotFound", this));
+                return;
+            }
         }
 
         addHeader(this, false);
@@ -167,7 +171,7 @@ public class RegistrationPage extends TemplatePage {
                                 LogLevelType.ERROR);
                         return;
                     } catch (DeviceNotFoundException e) {
-                        password1Field.error(getLocalizer().getString("errorOldPasswordNotFound", this));
+                        password1Field.error(getLocalizer().getString("errorDeviceNotFound", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "register: device not found",
                                 LogLevelType.ERROR);
                         return;
