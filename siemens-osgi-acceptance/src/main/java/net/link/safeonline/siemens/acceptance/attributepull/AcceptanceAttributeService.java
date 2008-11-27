@@ -18,9 +18,9 @@ import net.link.safeonline.osgi.plugin.exception.AttributeNotFoundException;
 import net.link.safeonline.osgi.plugin.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.osgi.plugin.exception.AttributeUnavailableException;
 import net.link.safeonline.osgi.plugin.exception.SubjectNotFoundException;
-import net.link.safeonline.sdk.KeyStoreUtils;
-import net.link.safeonline.sdk.ws.attrib.AttributeClient;
-import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
+import net.link.safeonline.siemens.acceptance.attributepull.wsclient.AttributeClient;
+import net.link.safeonline.siemens.acceptance.attributepull.wsclient.AttributeClientImpl;
+import net.link.safeonline.siemens.acceptance.attributepull.wsclient.KeyStoreUtils;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -89,15 +89,13 @@ public class AcceptanceAttributeService implements PluginAttributeService {
         ClassLoader cl = Thread.currentThread().getContextClassLoader();
         String wsValue = null;
         try {
-            // Thread.currentThread().setContextClassLoader(new MyClassLoader(this.getClass().getClassLoader()));
+            // Have to set the thread's context classloader to the bundle's classloader, jaxws loads in a resource for the Provider class
+            // using Thread.currentThread.getContextClassLoader which returns the classloader of JBoss.
             Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
-            // Thread.currentThread().setContextClassLoader(ClassLoader.getSystemClassLoader());
 
-            System.out.println("ws: fetch attribute through ws");
             AttributeClient attributeClient = new AttributeClientImpl(location, this.certificate, this.privateKeyEntry.getPrivateKey());
             HashMap<String, Object> attributes = new HashMap<String, Object>();
             attributes.put(targetName, (Object) null);
-            System.out.println("ws: get attribute values");
             attributeClient.getAttributeValues(userId, attributes);
             wsValue = (String) attributes.get(targetName);
             System.out.println("ws: found attribute: " + wsValue);

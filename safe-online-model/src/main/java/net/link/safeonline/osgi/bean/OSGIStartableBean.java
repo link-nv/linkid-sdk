@@ -95,12 +95,71 @@ public class OSGIStartableBean implements OSGIStartable {
                 + "org.osgi.service.startlevel; version=1.0.0, " + "org.osgi.service.url; version=1.0.0, "
                 + "org.osgi.util.tracker; version=1.3.1, ";
 
-        // jsse.jar packages
+        // javax.*
         systemPackages += "javax; version=1.0.0, ";
-        systemPackages += "javax.net; version=1.0.0, ";
-        systemPackages += "javax.net.ssl; version=1.0.0, ";
-        systemPackages += "javax.security; version=1.0.0, ";
-        systemPackages += "javax.security.cert; version=1.0.0, ";
+        systemPackages += "javax.accessibility ; version=1.0.0, ";
+        systemPackages += "javax.activity ; version=1.0.0, ";
+        systemPackages += "javax.crypto ; version=1.0.0, ";
+        systemPackages += "javax.crypto.interfaces ; version=1.0.0, ";
+        systemPackages += "javax.crypto.spec ; version=1.0.0, ";
+        systemPackages += "javax.management ; version=1.0.0, ";
+        systemPackages += "javax.management.loading ; version=1.0.0, ";
+        systemPackages += "javax.management.modelmbean ; version=1.0.0, ";
+        systemPackages += "javax.management.monitor ; version=1.0.0, ";
+        systemPackages += "javax.management.openmbean ; version=1.0.0, ";
+        systemPackages += "javax.management.relation ; version=1.0.0, ";
+        systemPackages += "javax.management.remote ; version=1.0.0, ";
+        systemPackages += "javax.management.remote.rmi ; version=1.0.0, ";
+        systemPackages += "javax.management.timer ; version=1.0.0, ";
+        systemPackages += "javax.naming ; version=1.0.0, ";
+        systemPackages += "javax.naming.directory ; version=1.0.0, ";
+        systemPackages += "javax.naming.event ; version=1.0.0, ";
+        systemPackages += "javax.naming.ldap ; version=1.0.0, ";
+        systemPackages += "javax.naming.spi ; version=1.0.0, ";
+        systemPackages += "javax.net ; version=1.0.0, ";
+        systemPackages += "javax.net.ssl ; version=1.0.0, ";
+        systemPackages += "javax.print ; version=1.0.0, ";
+        systemPackages += "javax.print.attribute ; version=1.0.0, ";
+        systemPackages += "javax.print.attribute.standard ; version=1.0.0, ";
+        systemPackages += "javax.print.event ; version=1.0.0, ";
+        systemPackages += "javax.rmi ; version=1.0.0, ";
+        systemPackages += "javax.rmi.CORBA ; version=1.0.0, ";
+        systemPackages += "javax.rmi.ssl ; version=1.0.0, ";
+        systemPackages += "javax.security.auth ; version=1.0.0, ";
+        systemPackages += "javax.security.auth.callback ; version=1.0.0, ";
+        systemPackages += "javax.security.auth.kerberos ; version=1.0.0, ";
+        systemPackages += "javax.security.auth.login ; version=1.0.0, ";
+        systemPackages += "javax.security.auth.spi ; version=1.0.0, ";
+        systemPackages += "javax.security.auth.x500 ; version=1.0.0, ";
+        systemPackages += "javax.security.cert ; version=1.0.0, ";
+        systemPackages += "javax.security.sasl ; version=1.0.0, ";
+        systemPackages += "javax.sql ; version=1.0.0, ";
+        systemPackages += "javax.sql.rowset ; version=1.0.0, ";
+        systemPackages += "javax.sql.rowset.serial ; version=1.0.0, ";
+        systemPackages += "javax.sql.rowset.spi ; version=1.0.0, ";
+        systemPackages += "javax.transaction ; version=1.0.0, ";
+        systemPackages += "javax.transaction.xa ; version=1.0.0, ";
+        systemPackages += "javax.xml ; version=1.0.0, ";
+        systemPackages += "javax.xml.datatype; version=1.0.0, ";
+        systemPackages += "javax.xml.namespace ; version=1.0.0, ";
+        systemPackages += "javax.xml.parsers ; version=1.0.0, ";
+        systemPackages += "javax.xml.transform ; version=1.0.0, ";
+        systemPackages += "javax.xml.transform.dom ; version=1.0.0, ";
+        systemPackages += "javax.xml.transform.sax ; version=1.0.0, ";
+        systemPackages += "javax.xml.transform.stream ; version=1.0.0, ";
+        systemPackages += "javax.xml.validation ; version=1.0.0, ";
+        systemPackages += "javax.xml.xpath ; version=1.0.0, ";
+
+        // org.*
+        systemPackages += "org.w3c.dom ; version=1.0.0, ";
+        systemPackages += "org.w3c.dom.bootstrap ; version=1.0.0, ";
+        systemPackages += "org.w3c.dom.events ; version=1.0.0, ";
+        systemPackages += "org.w3c.dom.ls ; version=1.0.0, ";
+        systemPackages += "org.xml.sax ; version=1.0.0, ";
+        systemPackages += "org.xml.sax.ext ; version=1.0.0, ";
+        systemPackages += "org.xml.sax.helpers ; version=1.0.0, ";
+
+        // jsse.jar packages
         systemPackages += "sun; version=1.0.0, ";
         systemPackages += "sun.net; version=1.0.0, ";
         systemPackages += "sun.net.www; version=1.0.0, ";
@@ -121,53 +180,11 @@ public class OSGIStartableBean implements OSGIStartable {
         systemPackages += "com.sun.security.cert.internal; version=1.0.0, ";
         systemPackages += "com.sun.security.cert.internal.x509; version=1.0.0, ";
 
-        // where are these coming from ...
-        systemPackages += "javax.security.auth; version=1.0.0, ";
-        systemPackages += "javax.security.auth.callback; version=1.0.0, ";
-        systemPackages += "javax.security.auth.login; version=1.0.0, ";
-        systemPackages += "javax.security.auth.spi; version=1.0.0, ";
-        systemPackages += "javax.security.auth.x500; version=1.0.0, ";
-        systemPackages += "javax.security.jacc; version=1.0.0, ";
-        systemPackages += "javax.xml.rpc,javax.xml.rpc.handler; version=1.0.0, ";
-        systemPackages += "javax.xml.rpc.handler.soap; version=1.0.0, ";
-        systemPackages += "javax.crypto; version=1.0.0, ";
-        systemPackages += "javax.servlet; version=1.0.0, ";
-
-        // jaxws-api packages
-        /*
-         * systemPackages += "javax.xml; version=1.0.0, "; systemPackages += "javax.xml.ws; version=1.0.0, "; systemPackages +=
-         * "javax.xml.ws.handler; version=1.0.0, "; systemPackages += "javax.xml.ws.handler.soap; version=1.0.0, "; systemPackages +=
-         * "javax.xml.ws.http; version=1.0.0, "; systemPackages += "javax.xml.ws.soap; version=1.0.0, "; systemPackages +=
-         * "javax.xml.ws.spi; version=1.0.0, "; systemPackages += "javax.xml.ws.wsaddressing; version=1.0.0, ";
-         */
-
-        /*
-         * javax. javax.xml. javax.xml.ws. javax.xml.ws.handler. javax.xml.ws.handler.soap. javax.xml.ws.http. javax.xml.ws.soap.
-         * javax.xml.ws.spi. javax.xml.ws.wsaddressing.
-         */
-
-        /*
-         * List<String> packageNames = PackageExporter.getPackageNames("javax"); for (String packageName : packageNames) { systemPackages +=
-         * packageName + "; version=1.0.0, "; }
-         */
-
         // plugin service package
         systemPackages += "net.link.safeonline.osgi.plugin; version=1.0.0";
         LOG.debug("systemPackages: " + systemPackages);
 
         configMap.put(Constants.FRAMEWORK_SYSTEMPACKAGES, systemPackages);
-
-        /*
-         * "javax.net.ssl; version=1.0.0, " + "javax.crypto; version=1.0.0, " + "javax.servlet; version=1.0.0, " +
-         * "javax.security.auth.callback; version=1.0.0, " + "javax.xml.ws.spi; version=1.0.0, " + "javax.xml.namespace; version=1.0.0, " +
-         * "javax.xml.ws; version=1.0.0, " + "javax.xml.transform; version=1.0.0, " + "javax.xml.ws.wsaddressing; version=1.0.0"
-         */
-
-        /*
-         * + "org.apache.log4j.xml; version=1.0.0, " + "javax.jws; version=1.0.0, " + "com.sun.xml.ws.developer; version=1.0.0, " +
-         * "com.sun.xml.ws; version=1.0.0, " + "com.sun.xml.ws.api.message; version=1.0.0, " + "javax.xml.ws; version=1.0.0, " +
-         * "com.sun.xml.ws.binding; version=1.0.0, " + "javax.xml.ws.handler; version=1.0.0, " + "javax.xml.ws.handler.soap; version=1.0.0"
-         */
 
         // Autostart the fileinstall bundle, configured with the path to drop our plugin bundles into
         configMap.put(AutoActivator.AUTO_START_PROP + ".1", "file://" + jbossHome + "/osgi/autostart/org.apache.felix.fileinstall.jar");

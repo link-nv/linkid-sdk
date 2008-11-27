@@ -56,6 +56,7 @@ public class OSGIHostActivator implements BundleActivator, Serializable {
 
     public void stop(BundleContext context) {
 
+        this.pluginAttributeServiceTracker.close();
         this.olasAttributeServiceRegistration.unregister();
 
     }
