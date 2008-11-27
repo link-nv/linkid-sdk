@@ -105,7 +105,7 @@ public class ApplicationStyleServlet extends AbstractInjectionServlet {
 
         // Figure out the base color for the style.
         Integer baseColor = null;
-        Object colorAttribute = request.getAttribute(SafeOnlineAppConstants.COLOR_ATTRIBUTE);
+        Object colorAttribute = request.getSession().getAttribute(SafeOnlineAppConstants.COLOR_ATTRIBUTE);
         try {
             baseColor = colorAttribute == null? null: Integer.decode(colorAttribute.toString());
         } catch (NumberFormatException e) {

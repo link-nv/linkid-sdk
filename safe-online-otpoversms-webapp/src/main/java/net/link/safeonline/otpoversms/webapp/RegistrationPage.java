@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -59,10 +59,10 @@ public class RegistrationPage extends TemplatePage {
     public static final String        SAVE_BUTTON_ID           = "save";
     public static final String        CANCEL_BUTTON_ID         = "cancel";
 
-    @EJB
+    @EJB(mappedName = OtpOverSmsDeviceService.JNDI_BINDING)
     transient OtpOverSmsDeviceService otpOverSmsDeviceService;
 
-    @EJB
+    @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
     transient SamlAuthorityService    samlAuthorityService;
 
     ProtocolContext                   protocolContext;

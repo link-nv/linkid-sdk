@@ -111,27 +111,8 @@ fi
 
 
 # Extraction work functions.
-function extractCss {
-    css=( *'/css/style.css' )
-    [[ -e $css ]]                                   || return 0
+extractStuff() {
 
-    mkdir -p "$work/$webapp/css"                    || return
-    (( reverse )) || {
-        mv "$css" "$work/$webapp/css/" && \
-        cp "$work/$webapp/css/${css##*/}"{,~}       || return
-    }
-
-    for file in "${css[@]}"; do
-        if (( nolink )); then
-            cp -f "$work/$webapp/css/style.css" "$file"
-        else
-            ln -f "$work/$webapp/css/style.css" "$file"
-        fi
-
-        (( ! $? )) && touch "$file"                 || return
-    done
-}
-function extractHtml {
     while read file; do
         mkdir -p "$work/$webapp/${file%/*}"         || return
         (( reverse )) || {
@@ -150,12 +131,7 @@ function extractHtml {
         }
 
         touch "$file"                               || return
-    done < <(find . -name '*.xhtml' -o -name '*.html')
-}
-function extractStuff {
-
-        extractCss && \
-        extractHtml
+    done < <(find . -name '*.xhtml' -o -name '*.html' -o -name '*.css')
 }
 
 

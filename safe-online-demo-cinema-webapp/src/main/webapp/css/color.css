@@ -1,0 +1,85 @@
+/** -*- coding: utf-8; mode: css; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- vim:fenc=utf-8:filetype=css:et:sw=4:ts=4:sts=4
+ *
+ * Demo CSS Style:
+ *      Application-Specific Colors.
+ *
+ * @author mbillemo
+ *
+ * Copyright 2006-2008 - Lin.k NV
+ *
+ */
+
+
+
+/* ==================================================================
+ * Section: Basic HTML
+ */
+
+h1, h2 {
+	color:              #000099;
+}
+a, a:link, a:visited, input[type=submit] {
+    color:              #8a8aea;
+}
+a:active {
+    color:              #ea8a8a;
+}
+table {
+    background:         #fbfbfb;
+    border-color:       #eaeaea;
+}
+table th {
+    background:         #f0f0f0;
+}
+table caption {
+    border-color:       #eaeaea;
+}
+table a:hover, input[type=submit]:hover {
+    color:              #2a2aea;
+}
+table th a:hover, table th input[type=submit]:hover {
+    background:         #eaeaea;
+}
+table td a:hover, table td input[type=submit]:hover {
+    background:         #f6f6f6;
+}
+table tfoot tr {
+    border-top-color:   #a6a6a6;
+}
+.header {
+    border-bottom-color:#a6a6a6;
+}
+input[type=text], textarea, select {
+    border-color:       #2a2a2a;
+}
+
+
+
+/* ==================================================================
+ * Section: Classes
+ */
+
+.selected {
+    background:         #a6a6f6;
+}
+.key {
+    background:         #d9d9d9;
+    border-color:       #a6a6a6;
+}
+
+
+
+/* ==================================================================
+ * Section: Base Elements
+ */
+
+#header {
+    background:         #eaeaea;
+    border-bottom-color:#a6a6a6;
+}
+
+#footer {
+	border-top-color:   #eaeaea;
+	color:              #ccc;
+}
+

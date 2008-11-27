@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -58,10 +58,10 @@ public class AuthenticationPage extends TemplatePage {
     public static final String        LOGIN_BUTTON_ID          = "login";
     public static final String        CANCEL_BUTTON_ID         = "cancel";
 
-    @EJB
+    @EJB(mappedName = OtpOverSmsDeviceService.JNDI_BINDING)
     transient OtpOverSmsDeviceService otpOverSmsDeviceService;
 
-    @EJB
+    @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
     transient SamlAuthorityService    samlAuthorityService;
 
     AuthenticationContext             authenticationContext;

@@ -77,7 +77,7 @@ rebuildDb() {
 initDbWithCLI() {
 	java -jar "$1" <<-END
 		C
-		../lib/ojdbc5-11.1.0.6.0.jar
+		../lib/$driver
 		1
 		$jdbcUrl
 		$user
@@ -103,6 +103,7 @@ initDb() {
 						mysql -h"$host" -P"$port" -uroot -p"$rootpass" < <(unzip -qc "$ear" resources/mysql-create-database.sql) && \
 						mysql -h"$host" -P"$port" -uroot -p"$rootpass" < <(unzip -qc "$ear" resources/mysql-create-account.sql) && \
 
+                        driver=mysql-connector-java-5.1.5.jar
 						initDbWithCLI "$ear"
 					(( $? )) && exit
 				;;
@@ -139,6 +140,7 @@ initDb() {
 							END
 						)
 
+                        driver=ojdbc5-11.1.0.6.0.jar
 						initDbWithCLI "$ear"
 					(( $? )) && exit ;;
             esac ;;
