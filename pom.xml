@@ -518,6 +518,15 @@
 				</safe-online.jboss.host.port.ssl>
 			</properties>
 		</profile>
+
+		<!-- Profile to enable Option branding. -->
+		<profile>
+			<id>option</id>
+			<properties>
+				<safe-online.branding>option</safe-online.branding>
+			</properties>
+		</profile>
+
 	</profiles>
 
 	<!-- DEFAULT PROPERTIES -->
@@ -525,6 +534,7 @@
 		<isGlobalOperator>true</isGlobalOperator>
 		<defaultCronExpression>0 0/5 * * * ?</defaultCronExpression>
 		<sessionTimeout>5</sessionTimeout>
+        <safe-online.branding>olas</safe-online.branding>
 		<safe-online.data.source>SafeOnlineDS</safe-online.data.source>
 		<safe-online.batch.size>5</safe-online.batch.size>
 		<safe-online.dialect>org.hibernate.dialect.HSQLDialect</safe-online.dialect>
