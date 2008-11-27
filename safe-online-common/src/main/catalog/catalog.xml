@@ -89,19 +89,21 @@
     <!-- JBoss -->
     <public         publicId="-//JBoss//DTD JBOSS 5.0//EN"
                         uri="jboss_4_0.dtd"/>
+    <systemSuffix   systemIdSuffix="jboss_4_0.dtd"
+                        uri="../jboss_4_0.dtd"/>
     <public         publicId="-//JBoss//DTD JBOSS Security Config 3.0//EN"
                         uri="security_config.dtd"/>
     <public         publicId="-//JBoss//DTD JBOSS 5.0//EN"
                         uri="jboss_4_0.dtd" />
     <public         publicId="-//JBoss//DTD JBOSSCMP-JDBC 4.0//EN"
                         uri="jbosscmp-jdbc_4_0.dtd" />
-                    <public publicId="-//JBoss//DTD JBOSS JCA Config 1.5//EN"
+    <public         publicId="-//JBoss//DTD JBOSS JCA Config 1.5//EN"
                         uri="jboss-ds_1_5.dtd" />
-                    <public publicId="-//JBoss//DTD MBean Service 4.0//EN"
+    <public         publicId="-//JBoss//DTD MBean Service 4.0//EN"
                         uri="jboss-service_4_0.dtd" />
-                    <public publicId="-//JBoss//DTD JBOSS XMBEAN 1.2//EN"
+    <public         publicId="-//JBoss//DTD JBOSS XMBEAN 1.2//EN"
                         uri="jboss_xmbean_1_2.dtd" />
-                    <public publicId="-//JBoss//DTD Web Service Reference 4.0//EN"
+    <public         publicId="-//JBoss//DTD Web Service Reference 4.0//EN"
                         uri="service-ref_4_0.dtd" />
 
     <!-- Sun -->
