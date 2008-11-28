@@ -213,7 +213,7 @@ public class Saml2Handler implements Serializable {
         String templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
 
         try {
-            ResponseUtil.sendResponse(encodedSamlResponseToken, templateResourceName, target, response);
+            ResponseUtil.sendResponse(encodedSamlResponseToken, templateResourceName, target, response, false);
         } catch (ServletException e) {
             throw new AuthenticationFinalizationException(e.getMessage());
         } catch (IOException e) {

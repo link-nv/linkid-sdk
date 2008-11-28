@@ -521,7 +521,7 @@
 
 		<!-- Profile to enable Option branding. -->
 		<profile>
-			<id>option</id>
+			<id>option-branding</id>
 			<properties>
 				<safe-online.branding>option</safe-online.branding>
 			</properties>

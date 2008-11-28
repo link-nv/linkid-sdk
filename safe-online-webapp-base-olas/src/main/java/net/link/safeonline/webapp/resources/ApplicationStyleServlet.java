@@ -9,7 +9,6 @@ package net.link.safeonline.webapp.resources;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Properties;
-import java.util.ResourceBundle;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -123,8 +122,7 @@ public class ApplicationStyleServlet extends AbstractInjectionServlet {
             }
 
             if (baseColor == null) {
-                String defaultColor = ResourceBundle.getBundle("net.link.safeonline.webapp.resources.theme").getString("defaultColor");
-                baseColor = Integer.decode(defaultColor);
+                baseColor = ApplicationThemeConstants.DEFAULT_COLOR;
             }
         }
 

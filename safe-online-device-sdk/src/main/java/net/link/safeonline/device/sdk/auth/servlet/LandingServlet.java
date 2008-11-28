@@ -14,13 +14,18 @@ import java.io.InputStream;
 import java.security.KeyPair;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
+import java.util.Locale;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.UnavailableException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.common.SafeOnlineAppConstants;
+import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.device.sdk.auth.saml2.Saml2Handler;
 import net.link.safeonline.device.sdk.exception.AuthenticationInitializationException;
 import net.link.safeonline.sdk.KeyStoreUtils;
@@ -111,6 +116,29 @@ public class LandingServlet extends AbstractInjectionServlet {
             requestWrapper = new HttpServletRequestEndpointWrapper(request, request.getRequestURL().toString());
         }
 
+        /*
+         * Set the language cookie if language was specified in the browser post
+         */
+        HttpSession session = request.getSession();
+        String reqLang = request.getParameter("Language");
+        String reqCol = request.getParameter("Color");
+        String reqMin = request.getParameter("Minimal");
+        Locale language = reqLang == null || reqLang.length() == 0? null: new Locale(reqLang);
+        Integer color = reqCol == null || reqCol.length() == 0? null: Integer.decode(reqCol);
+        Boolean minimal = reqMin == null || reqMin.length() == 0? null: Boolean.parseBoolean(reqMin);
+
+        if (null != language) {
+            Cookie languageCookie = new Cookie(SafeOnlineCookies.LANGUAGE_COOKIE, language.getLanguage());
+            languageCookie.setPath("/");
+            languageCookie.setMaxAge(60 * 60 * 24 * 30 * 6);
+            response.addCookie(languageCookie);
+        }
+        session.setAttribute(SafeOnlineAppConstants.COLOR_ATTRIBUTE, color);
+        session.setAttribute(SafeOnlineAppConstants.MINIMAL_ATTRIBUTE, minimal);
+
+        /*
+         * Start the authentication using this device.
+         */
         try {
             Saml2Handler handler = Saml2Handler.getSaml2Handler(requestWrapper);
             handler.init(this.configParams, this.applicationCertificate, this.applicationKeyPair);
