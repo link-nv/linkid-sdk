@@ -30,6 +30,4 @@ public interface SafeOnlineAppConstants {
 
     public static final String COLOR_ATTRIBUTE   = "applicationColor";
     public static final String MINIMAL_ATTRIBUTE = "applicationMinimal";
-
-    public static final String DEFAULT_COLOR     = "#5A7500";
 }

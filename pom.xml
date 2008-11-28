@@ -525,6 +525,9 @@
 			<properties>
 				<safe-online.branding>option</safe-online.branding>
 			</properties>
+			<modules>
+				<module>safe-online-webapp-base-option</module>
+            </modules>
 		</profile>
 
 	</profiles>

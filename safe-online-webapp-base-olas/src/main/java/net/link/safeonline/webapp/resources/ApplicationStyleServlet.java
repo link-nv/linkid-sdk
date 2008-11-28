@@ -9,6 +9,7 @@ package net.link.safeonline.webapp.resources;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Properties;
+import java.util.ResourceBundle;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -60,7 +61,7 @@ public class ApplicationStyleServlet extends AbstractInjectionServlet {
     private static final long   serialVersionUID = 1L;
     private static final Log    LOG              = LogFactory.getLog(ApplicationStyleServlet.class);
 
-    @Context(name = SafeOnlineAppConstants.COLOR_CONTEXT, defaultValue = SafeOnlineAppConstants.DEFAULT_COLOR)
+    @Context(name = SafeOnlineAppConstants.COLOR_CONTEXT)
     private String              applicationColor;
     private VelocityEngine      velocity;
 
@@ -115,9 +116,15 @@ public class ApplicationStyleServlet extends AbstractInjectionServlet {
         // If not yet set, use the default application color.
         if (baseColor == null) {
             try {
-                baseColor = Integer.decode(this.applicationColor);
+                if (this.applicationColor != null) {
+                    baseColor = Integer.decode(this.applicationColor);
+                }
             } catch (NumberFormatException e) {
-                baseColor = Integer.decode(SafeOnlineAppConstants.DEFAULT_COLOR);
+            }
+
+            if (baseColor == null) {
+                String defaultColor = ResourceBundle.getBundle("net.link.safeonline.webapp.resources.theme").getString("defaultColor");
+                baseColor = Integer.decode(defaultColor);
             }
         }
 
