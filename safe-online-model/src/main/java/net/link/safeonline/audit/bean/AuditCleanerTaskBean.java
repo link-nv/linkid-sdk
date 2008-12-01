@@ -57,5 +57,4 @@ public class AuditCleanerTaskBean implements Task {
 
         this.auditContextDAO.cleanup(this.configAgeInMinutes);
     }
-
 }

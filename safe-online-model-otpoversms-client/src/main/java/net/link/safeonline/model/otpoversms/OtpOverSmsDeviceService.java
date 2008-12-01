@@ -11,7 +11,6 @@ import java.net.ConnectException;
 import javax.ejb.Local;
 import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
@@ -22,9 +21,9 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 
 
 @Local
-public interface OtpOverSmsDeviceService extends SafeOnlineService {
+public interface OtpOverSmsDeviceService extends OtpOverSmsService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "OtpOverSmsDeviceServiceBean/local";
+    public static final String JNDI_BINDING = OtpOverSmsService.JNDI_PREFIX + "OtpOverSmsDeviceServiceBean/local";
 
 
     String authenticate(String mobile, String pin)
@@ -34,18 +33,22 @@ public interface OtpOverSmsDeviceService extends SafeOnlineService {
             throws SubjectNotFoundException, DeviceNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException,
             AttributeNotFoundException;
 
-    void update(String userId, String mobile, String oldPin, String newPin)
-            throws PermissionDeniedException, DeviceNotFoundException, SubjectNotFoundException;
+    boolean update(String userId, String mobile, String oldPin, String newPin)
+            throws DeviceNotFoundException, SubjectNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException,
+            DeviceDisabledException;
 
-    void remove(String userId, String mobile, String pin)
-            throws DeviceNotFoundException, PermissionDeniedException, SubjectNotFoundException, AttributeTypeNotFoundException,
-            AttributeNotFoundException;
+    boolean remove(String userId, String mobile, String pin)
+            throws DeviceNotFoundException, SubjectNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException,
+            PermissionDeniedException, DeviceDisabledException;
 
-    void disable(String userId, String mobile)
-            throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException;
+    boolean disable(String userId, String mobile, String pin)
+            throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException, AttributeTypeNotFoundException;
 
     void requestOtp(HttpSession httpSession, String mobile)
             throws ConnectException;
+
+    boolean verifyOtp(HttpSession httpSession, String mobile, String otp)
+            throws SubjectNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException, DeviceDisabledException;
 
     boolean verifyOtp(HttpSession httpSession, String otp);
 

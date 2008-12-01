@@ -8,7 +8,6 @@ package net.link.safeonline.model.password;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -16,9 +15,9 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 
 
 @Local
-public interface PasswordDeviceService extends SafeOnlineService {
+public interface PasswordDeviceService extends PasswordService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "PasswordDeviceServiceBean/local";
+    public static final String JNDI_BINDING = PasswordService.JNDI_PREFIX + "PasswordDeviceServiceBean/local";
 
 
     String authenticate(String userId, String password)

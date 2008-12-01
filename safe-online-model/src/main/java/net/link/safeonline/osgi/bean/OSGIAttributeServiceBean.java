@@ -6,6 +6,8 @@
  */
 package net.link.safeonline.osgi.bean;
 
+import java.util.Arrays;
+
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
@@ -65,6 +67,10 @@ public class OSGIAttributeServiceBean implements OSGIAttributeService {
         }
         if (null == value)
             throw new AttributeNotFoundException();
+
+        // we provide List's to the OSGI plugins, convert
+        if (value.getClass().isArray())
+            return Arrays.asList(value);
 
         return value;
     }

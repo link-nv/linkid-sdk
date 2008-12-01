@@ -36,7 +36,6 @@ import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.data.AttributeDO;
-import net.link.safeonline.device.backend.MobileManager;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionPK;
@@ -48,6 +47,7 @@ import net.link.safeonline.model.bean.AttributeManagerLWBean;
 import net.link.safeonline.model.encap.EncapConstants;
 import net.link.safeonline.model.encap.EncapDeviceService;
 import net.link.safeonline.model.encap.EncapDeviceServiceRemote;
+import net.link.safeonline.model.encap.MobileManager;
 import net.link.safeonline.service.SubjectService;
 
 import org.apache.commons.logging.Log;

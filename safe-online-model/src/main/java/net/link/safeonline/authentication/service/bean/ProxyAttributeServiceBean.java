@@ -1,5 +1,6 @@
 package net.link.safeonline.authentication.service.bean;
 
+import java.lang.reflect.Array;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -218,14 +219,39 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
      * @throws PermissionDeniedException
      * @throws SubjectNotFoundException
      */
+    @SuppressWarnings("unchecked")
     private Object findExternalAttributeValue(SubjectEntity subject, AttributeTypeEntity attributeType)
             throws AttributeUnavailableException, AttributeTypeNotFoundException, SubjectNotFoundException {
 
         LOG.debug("find external attribute " + attributeType.getName() + " for " + subject.getUserId());
         try {
             PluginAttributeService pluginAttributeService = this.osgiStartable.getPluginService(attributeType.getPluginName());
-            return pluginAttributeService
-                                         .getAttribute(subject.getUserId(), attributeType.getName(), attributeType.getPluginConfiguration());
+            Object value = pluginAttributeService.getAttribute(subject.getUserId(), attributeType.getName(),
+                    attributeType.getPluginConfiguration());
+            DatatypeType datatype = attributeType.getType();
+            if (attributeType.isMultivalued()) {
+
+                switch (datatype) {
+                    case STRING:
+                        return ((List<String>) value).toArray(new String[] {});
+                    case BOOLEAN:
+                        return ((List<Boolean>) value).toArray(new Boolean[] {});
+                    case COMPOUNDED:
+                        return ((List<Map>) value).toArray(new Map[] {});
+                    case DATE:
+                        return ((List<Date>) value).toArray(new Date[] {});
+                    case DOUBLE:
+                        return ((List<Double>) value).toArray(new Double[] {});
+                    case INTEGER:
+                        return ((List<Integer>) value).toArray(new Integer[] {});
+                }
+            }
+
+            if (value instanceof List) {
+                List<?> values = (List<?>) value;
+                return values.toArray();
+            }
+            return value;
         } catch (AttributeNotFoundException e) {
             LOG.debug("external attribute " + attributeType.getName() + " not found for " + subject.getUserId() + " ( plugin="
                     + attributeType.getPluginName() + " )");
@@ -239,6 +265,12 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
         } catch (net.link.safeonline.osgi.plugin.exception.SubjectNotFoundException e) {
             throw new SubjectNotFoundException();
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T[] toArray(final List<?> c) {
+
+        return c.toArray((T[]) Array.newInstance(c.iterator().next().getClass(), 0));
     }
 
     /**

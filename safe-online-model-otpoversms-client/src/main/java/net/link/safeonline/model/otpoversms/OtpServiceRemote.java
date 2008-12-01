@@ -8,12 +8,10 @@ package net.link.safeonline.model.otpoversms;
 
 import javax.ejb.Remote;
 
-import net.link.safeonline.SafeOnlineService;
-
 
 @Remote
 public interface OtpServiceRemote extends OtpService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "OtpServiceBean/remote";
+    public static final String JNDI_BINDING = OtpOverSmsService.JNDI_PREFIX + "OtpServiceBean/remote";
 
 }

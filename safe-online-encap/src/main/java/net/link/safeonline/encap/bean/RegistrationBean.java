@@ -29,10 +29,10 @@ import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.ctrl.error.annotation.Error;
 import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
-import net.link.safeonline.device.backend.MobileManager;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.encap.Registration;
 import net.link.safeonline.model.encap.EncapDeviceService;
+import net.link.safeonline.model.encap.MobileManager;
 
 import org.jboss.annotation.ejb.LocalBinding;
 import org.jboss.seam.annotations.Begin;

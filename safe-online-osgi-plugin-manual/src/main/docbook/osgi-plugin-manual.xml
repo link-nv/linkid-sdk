@@ -46,79 +46,42 @@
 				the interface
 				<code>PluginAttributeService</code>
 				. This interface has one method:
-				<code>getAttribute(String userId, String
-					attributeName, String configuration)</code>
+				<code>Object getAttribute(String userId, String
+					attributeName,
+					String configuration)</code>
 				. The configuration string is optional for each external attribute
-				type configured in OLAS. This method has as return type a list of
-				<code>Attribute</code>
-				objects. These objects contain the name, type, index and value of
-				the attribute the plugin is returning. A list of these objects is
-				returned as besides single-valued attributes, there exist also
-				multi-valued and compounded attributes. Below is explained what OLAS
-				expects in these 3 cases :
+				type configured in OLAS. This method has as return type of Object.
+				This can be a String, Integer, Boolean, Double, Date or a List of
+				these types. Also a List of type
+				<code><![CDATA[
+					Map<String , Object>
+				]]></code>
+				representing compound attributes.
 			</para>
 			<section>
 				<title>Single-valued</title>
 				<para>
-					For single-valued attributes plugins should return a singleton
-					list, whereas the index of the
-					<code>Attribute</code>
-					object in that list should be zero ( which is the default ).
+					For single-valued attributes, plugins should return the value
+					of the
+					requested attribute as String, Integer, Boolean, Double or
+					Date.
 				</para>
 			</section>
 			<section>
 				<title>Multi-valued</title>
 				<para>
-					For multi-valued attributes plugins should return a list of
-					<code>Attribute</code>
-					objects, each object having the same name, and the index
-					incrementing, starting from 0.
+					For multi-valued attributes, plugins should return a List of
+					value objects, of type String, Integer, Boolean, Double or Date.
 				</para>
 			</section>
 			<section>
 				<title>Compound</title>
 				<para>
-					For compound attributes plugins it is best explained what to return
-					with a simple example. Assume the plugin wants to return a compound
-					attribute named
-					<code>test-compound-attribute</code>
-					containing 2 member attributes. The first being a String attribute
-					named
-					<code>test-string-attribute</code>
-					, the second being a Boolean attribute named
-					<code>test-boolean-attribute</code>
-					. In this case OLAS will expect following list of
-					<code>Attribute</code>
-					objects :
-					<itemizedlist>
-						<listitem>
-							<code>Attribute("test-compound-attribute",COMPOUND,0)
-							</code>
-						</listitem>
-						<listitem>
-							<code>Attribute("test-string-attribute",STRING,0)
-							</code>
-						</listitem>
-						<listitem>
-							<code>Attribute("test-boolean-attribute",BOOLEAN,0)
-							</code>
-						</listitem>
-						<listitem>
-							<code>Attribute("test-compound-attribute",COMPOUND,1)
-							</code>
-						</listitem>
-						<listitem>
-							<code>Attribute("test-string-attribute",STRING,1)
-							</code>
-						</listitem>
-						<listitem>
-							<code>Attribute("test-boolean-attribute",BOOLEAN,1)
-							</code>
-						</listitem>
-						<listitem>
-							<code>...</code>
-						</listitem>
-					</itemizedlist>
+					For compound attributes, plugins should return a List of
+					<code><![CDATA[Map<String,Object]]></code>
+					. Each map representing one compound attribute.
+					The map's key will
+					be the member's attribute name.
 				</para>
 			</section>
 		</section>

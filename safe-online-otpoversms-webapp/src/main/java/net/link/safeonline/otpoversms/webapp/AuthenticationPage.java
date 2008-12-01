@@ -243,8 +243,31 @@ public class AuthenticationPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    boolean verified = AuthenticationPage.this.otpOverSmsDeviceService.verifyOtp(WicketUtil.getHttpSession(getRequest()),
-                            VerifyOtpForm.this.otp);
+                    boolean verified;
+                    try {
+                        verified = AuthenticationPage.this.otpOverSmsDeviceService.verifyOtp(WicketUtil.getHttpSession(getRequest()),
+                                AuthenticationPage.this.mobile, VerifyOtpForm.this.otp);
+                    } catch (SubjectNotFoundException e) {
+                        VerifyOtpForm.this.error(getLocalizer().getString("errorSubjectNotFound", this));
+                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "subject not found: "
+                                + AuthenticationPage.this.mobile, LogLevelType.ERROR);
+                        return;
+                    } catch (AttributeTypeNotFoundException e) {
+                        VerifyOtpForm.this.error(getLocalizer().getString("errorAttributeTypeNotFound", this));
+                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: attribute type not found for "
+                                + AuthenticationPage.this.mobile, LogLevelType.ERROR);
+                        return;
+                    } catch (AttributeNotFoundException e) {
+                        VerifyOtpForm.this.error(getLocalizer().getString("errorAttributeNotFound", this));
+                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: attribute not found for "
+                                + AuthenticationPage.this.mobile, LogLevelType.ERROR);
+                        return;
+                    } catch (DeviceDisabledException e) {
+                        pinField.error(getLocalizer().getString("mobileDisabled", this));
+                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: mobile " + AuthenticationPage.this.mobile
+                                + " disabled", LogLevelType.ERROR);
+                        return;
+                    }
                     if (!verified) {
                         otpField.error(getLocalizer().getString("authenticationFailedMsg", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(),

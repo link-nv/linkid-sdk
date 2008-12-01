@@ -12,7 +12,6 @@ import java.util.Locale;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
@@ -27,9 +26,9 @@ import net.link.safeonline.data.AttributeDO;
 
 
 @Local
-public interface EncapDeviceService extends SafeOnlineService {
+public interface EncapDeviceService extends EncapService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "EncapDeviceServiceBean/local";
+    public static final String JNDI_BINDING = EncapService.JNDI_PREFIX + "EncapDeviceServiceBean/local";
 
 
     /**

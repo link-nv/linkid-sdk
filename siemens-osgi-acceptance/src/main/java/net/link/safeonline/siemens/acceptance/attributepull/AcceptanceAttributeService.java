@@ -10,6 +10,8 @@ import java.io.InputStream;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import net.link.safeonline.osgi.plugin.OlasAttributeService;
@@ -112,9 +114,9 @@ public class AcceptanceAttributeService implements PluginAttributeService {
             Map<String, Object> result = new HashMap<String, Object>();
             result.put(wsName, wsValue);
             result.put(osgiName, osgiValue);
-            Map<String, Object>[] resultArray = new Map[1];
-            resultArray[0] = result;
-            return resultArray;
+            List<Map<String, Object>> resultList = new LinkedList<Map<String, Object>>();
+            resultList.add(result);
+            return resultList;
         } else if (attributeName.equals(wsName))
             return wsValue;
         else if (attributeName.equals(osgiName))

@@ -8,6 +8,8 @@ package net.link.safeonline.osgi.plugin.template;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -60,39 +62,39 @@ public class TemplateAttributeService implements PluginAttributeService {
         System.out.println("get attribute " + attributeName + " for user " + userId + " (configuration=" + configuration + ")");
 
         if (attributeName.equals(testCompoundAttributeName)) {
-            Map<String, Object>[] values = new Map[2];
-            values[0] = createCompoundAttribute();
-            values[1] = createCompoundAttribute();
+            List<Map<String, Object>> values = new LinkedList<Map<String, Object>>();
+            values.add(createCompoundAttribute());
+            values.add(createCompoundAttribute());
             return values;
         } else if (attributeName.equals(testStringAttributeName)) {
-            String[] values = new String[3];
-            values[0] = "test-string-" + UUID.randomUUID().toString();
-            values[1] = "test-string-" + UUID.randomUUID().toString();
-            values[2] = "test-string-" + UUID.randomUUID().toString();
+            List<String> values = new LinkedList<String>();
+            values.add("test-string-1-" + UUID.randomUUID().toString());
+            values.add("test-string-2-" + UUID.randomUUID().toString());
+            values.add("test-string-3-" + UUID.randomUUID().toString());
             return values;
         } else if (attributeName.equals(testBooleanAttributeName)) {
-            Boolean[] values = new Boolean[3];
-            values[0] = true;
-            values[0] = false;
-            values[0] = true;
+            List<Boolean> values = new LinkedList<Boolean>();
+            values.add(true);
+            values.add(false);
+            values.add(true);
             return values;
         } else if (attributeName.equals(testDateAttributeName)) {
-            Date[] values = new Date[3];
-            values[0] = new Date();
-            values[1] = new Date();
-            values[2] = new Date();
+            List<Date> values = new LinkedList<Date>();
+            values.add(new Date());
+            values.add(new Date());
+            values.add(new Date());
             return values;
         } else if (attributeName.equals(testDoubleAttributeName)) {
-            Double[] values = new Double[3];
-            values[0] = 0.1;
-            values[0] = 0.2;
-            values[0] = 0.3;
+            List<Double> values = new LinkedList<Double>();
+            values.add(values.size() + 0.5);
+            values.add(values.size() + 0.5);
+            values.add(values.size() + 0.5);
             return values;
         } else if (attributeName.equals(testIntegerAttributeName)) {
-            Integer[] values = new Integer[3];
-            values[0] = 0;
-            values[1] = 1;
-            values[2] = 2;
+            List<Integer> values = new LinkedList<Integer>();
+            values.add(values.size());
+            values.add(values.size());
+            values.add(values.size());
             return values;
         } else {
             // Beware: this code makes an endless loop by getting the external

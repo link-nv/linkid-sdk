@@ -9,11 +9,9 @@ package net.link.safeonline.otpoversms.webapp;
 
 import javax.ejb.EJB;
 
-import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.demo.wicket.tools.WicketUtil;
@@ -37,19 +35,19 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.PropertyModel;
 
 
-public class RemovalPage extends TemplatePage {
+public class DisablePage extends TemplatePage {
 
-    private static final long         serialVersionUID = 1L;
+    private static final long         serialVersionUID  = 1L;
 
-    static final Log                  LOG              = LogFactory.getLog(RemovalPage.class);
+    static final Log                  LOG               = LogFactory.getLog(DisablePage.class);
 
-    public static final String        REMOVAL_FORM_ID  = "removal_form";
+    public static final String        DISABLE_FORM_ID   = "disable_form";
 
-    public static final String        PIN_FIELD_ID     = "pin";
+    public static final String        PIN_FIELD_ID      = "pin";
 
-    public static final String        REMOVE_BUTTON_ID = "remove";
+    public static final String        DISABLE_BUTTON_ID = "disable";
 
-    public static final String        CANCEL_BUTTON_ID = "cancel";
+    public static final String        CANCEL_BUTTON_ID  = "cancel";
 
     @EJB(mappedName = OtpOverSmsDeviceService.JNDI_BINDING)
     transient OtpOverSmsDeviceService otpOverSmsDeviceService;
@@ -60,7 +58,7 @@ public class RemovalPage extends TemplatePage {
     ProtocolContext                   protocolContext;
 
 
-    public RemovalPage() {
+    public DisablePage() {
 
         super();
 
@@ -82,16 +80,16 @@ public class RemovalPage extends TemplatePage {
 
         });
 
-        String title = getLocalizer().getString("removeaction", this) + " " + getLocalizer().getString("mobile", this) + " "
-                + this.protocolContext.getAttribute();
+        String title = getLocalizer().getString("disable", this) + "/" + getLocalizer().getString("enable", this) + " "
+                + getLocalizer().getString("mobile", this) + " " + this.protocolContext.getAttribute();
         getContent().add(new Label("title", title));
 
-        getContent().add(new RemovalForm(REMOVAL_FORM_ID));
+        getContent().add(new DisableForm(DISABLE_FORM_ID));
 
     }
 
 
-    class RemovalForm extends Form<String> {
+    class DisableForm extends Form<String> {
 
         private static final long serialVersionUID = 1L;
 
@@ -99,15 +97,15 @@ public class RemovalPage extends TemplatePage {
 
 
         @SuppressWarnings("unchecked")
-        public RemovalForm(String id) {
+        public DisableForm(String id) {
 
             super(id);
 
-            final PasswordTextField passwordField = new PasswordTextField(PIN_FIELD_ID, new PropertyModel<String>(this, "pin"));
-            add(passwordField);
-            add(new ErrorComponentFeedbackLabel("pin_feedback", passwordField));
+            final PasswordTextField pinField = new PasswordTextField(PIN_FIELD_ID, new PropertyModel<String>(this, "pin"));
+            add(pinField);
+            add(new ErrorComponentFeedbackLabel("pin_feedback", pinField));
 
-            add(new Button(REMOVE_BUTTON_ID) {
+            add(new Button(DISABLE_BUTTON_ID) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -115,53 +113,43 @@ public class RemovalPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    LOG.debug("remove mobile " + RemovalPage.this.protocolContext.getAttribute() + " for "
-                            + RemovalPage.this.protocolContext.getSubject());
+                    LOG.debug("disable/enable mobile " + DisablePage.this.protocolContext.getAttribute() + " for "
+                            + DisablePage.this.protocolContext.getSubject());
 
                     boolean result;
                     try {
-                        result = RemovalPage.this.otpOverSmsDeviceService.remove(RemovalPage.this.protocolContext.getSubject(),
-                                RemovalPage.this.protocolContext.getAttribute(), RemovalForm.this.pin);
+                        result = DisablePage.this.otpOverSmsDeviceService.disable(DisablePage.this.protocolContext.getSubject(),
+                                DisablePage.this.protocolContext.getAttribute(), DisableForm.this.pin);
                     } catch (SubjectNotFoundException e) {
-                        passwordField.error(getLocalizer().getString("errorSubjectNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "remove: subject not found",
+                        pinField.error(getLocalizer().getString("errorSubjectNotFound", this));
+                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "disable: subject not found",
                                 LogLevelType.ERROR);
                         return;
                     } catch (DeviceNotFoundException e) {
-                        passwordField.error(getLocalizer().getString("errorDeviceNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "remove: device not found",
-                                LogLevelType.ERROR);
-                        return;
-                    } catch (PermissionDeniedException e) {
-                        passwordField.error(getLocalizer().getString("errorPinNotCorrect", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "remove: device not found",
+                        pinField.error(getLocalizer().getString("errorDeviceNotFound", this));
+                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "disable: device not found",
                                 LogLevelType.ERROR);
                         return;
                     } catch (AttributeTypeNotFoundException e) {
-                        passwordField.error(getLocalizer().getString("errorAttributeTypeNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "remove: attribute type not found",
+                        pinField.error(getLocalizer().getString("errorAttributeTypeNotFound", this));
+                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "disable: attribute type not found",
                                 LogLevelType.ERROR);
                         return;
-                    } catch (AttributeNotFoundException e) {
-                        passwordField.error(getLocalizer().getString("errorAttributeNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "remove: attribute not found",
-                                LogLevelType.ERROR);
-                        return;
-                    } catch (DeviceDisabledException e) {
-                        passwordField.error(getLocalizer().getString("mobileDisabled", this));
-                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "remove: mobile "
-                                + RemovalPage.this.protocolContext.getAttribute() + " disabled", LogLevelType.ERROR);
+                    } catch (DeviceRegistrationNotFoundException e) {
+                        pinField.error(getLocalizer().getString("errorDeviceRegistrationNotFound", this));
+                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(),
+                                "disable: device registration not found", LogLevelType.ERROR);
                         return;
                     }
 
                     if (false == result) {
-                        passwordField.error(getLocalizer().getString("errorPinNotCorrect", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "remove: device not found",
+                        pinField.error(getLocalizer().getString("errorPinNotCorrect", this));
+                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "disable: pin not correct",
                                 LogLevelType.ERROR);
                         return;
                     }
 
-                    RemovalPage.this.protocolContext.setSuccess(true);
+                    DisablePage.this.protocolContext.setSuccess(true);
                     exit();
                 }
 
@@ -175,7 +163,7 @@ public class RemovalPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    RemovalPage.this.protocolContext.setSuccess(false);
+                    DisablePage.this.protocolContext.setSuccess(false);
                     exit();
                 }
 

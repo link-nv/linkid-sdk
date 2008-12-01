@@ -9,8 +9,10 @@ package net.link.safeonline.otpoversms.webapp;
 
 import javax.ejb.EJB;
 
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.demo.wicket.tools.WicketUtil;
@@ -83,12 +85,12 @@ public class UpdatePage extends TemplatePage {
 
         });
 
-        getContent().add(new RegistrationForm(UPDATE_FORM_ID));
+        getContent().add(new UpdateForm(UPDATE_FORM_ID));
 
     }
 
 
-    class RegistrationForm extends Form<String> {
+    class UpdateForm extends Form<String> {
 
         private static final long serialVersionUID = 1L;
 
@@ -100,7 +102,7 @@ public class UpdatePage extends TemplatePage {
 
 
         @SuppressWarnings("unchecked")
-        public RegistrationForm(String id) {
+        public UpdateForm(String id) {
 
             super(id);
 
@@ -129,9 +131,10 @@ public class UpdatePage extends TemplatePage {
                     LOG.debug("update pin for " + UpdatePage.this.protocolContext.getSubject() + " for mobile "
                             + UpdatePage.this.protocolContext.getAttribute());
 
+                    boolean result;
                     try {
-                        UpdatePage.this.otpOverSmsDeviceService.update(UpdatePage.this.protocolContext.getSubject(),
-                                UpdatePage.this.protocolContext.getAttribute(), RegistrationForm.this.oldPin, RegistrationForm.this.pin1);
+                        result = UpdatePage.this.otpOverSmsDeviceService.update(UpdatePage.this.protocolContext.getSubject(),
+                                UpdatePage.this.protocolContext.getAttribute(), UpdateForm.this.oldPin, UpdateForm.this.pin1);
                     } catch (SubjectNotFoundException e) {
                         password1Field.error(getLocalizer().getString("errorSubjectNotFound", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "update: subject not found",
@@ -142,11 +145,29 @@ public class UpdatePage extends TemplatePage {
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "update: device not found",
                                 LogLevelType.ERROR);
                         return;
-                    } catch (PermissionDeniedException e) {
+                    } catch (DeviceDisabledException e) {
+                        password1Field.error(getLocalizer().getString("mobileDisabled", this));
+                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: mobile "
+                                + UpdatePage.this.protocolContext.getAttribute() + " disabled", LogLevelType.ERROR);
+                        return;
+                    } catch (AttributeTypeNotFoundException e) {
+                        UpdateForm.this.error(getLocalizer().getString("errorAttributeTypeNotFound", this));
+                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: attribute type not found for "
+                                + UpdatePage.this.protocolContext.getAttribute(), LogLevelType.ERROR);
+                        return;
+                    } catch (AttributeNotFoundException e) {
+                        UpdateForm.this.error(getLocalizer().getString("errorAttributeNotFound", this));
+                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: attribute not found for "
+                                + UpdatePage.this.protocolContext.getAttribute(), LogLevelType.ERROR);
+                        return;
+                    }
+
+                    if (false == result) {
                         oldpinField.error(getLocalizer().getString("errorPinNotCorrect", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "register: device not found",
+                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "update: device not found",
                                 LogLevelType.ERROR);
                         return;
+
                     }
 
                     UpdatePage.this.protocolContext.setSuccess(true);
