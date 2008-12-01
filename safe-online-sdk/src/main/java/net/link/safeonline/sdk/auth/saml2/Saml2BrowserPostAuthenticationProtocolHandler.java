@@ -283,6 +283,6 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
             templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
         }
 
-        ResponseUtil.sendResponse(encodedSamlResponseToken, templateResourceName, this.authnServiceUrl, response);
+        ResponseUtil.sendResponse(encodedSamlResponseToken, templateResourceName, this.authnServiceUrl, response, true);
     }
 }

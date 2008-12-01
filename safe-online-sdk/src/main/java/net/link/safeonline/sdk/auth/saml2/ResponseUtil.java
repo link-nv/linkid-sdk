@@ -70,20 +70,6 @@ public class ResponseUtil {
     }
 
     /**
-     * Sends out a SAML response message to the specified consumer URL.<br>
-     * <b>Note:</b> This method breaks out of frames by default.
-     * 
-     * @throws IOException
-     * @throws ServletException
-     */
-    public static void sendResponse(String encodedSamlResponseToken, String templateResourceName, String authnServiceUrl,
-                                    HttpServletResponse response)
-            throws ServletException, IOException {
-
-        sendResponse(encodedSamlResponseToken, templateResourceName, authnServiceUrl, response, true);
-    }
-
-    /**
      * Sends out a SAML response message to the specified consumer URL.
      * 
      * @param encodedSamlResponseToken

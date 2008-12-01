@@ -150,7 +150,7 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
         String templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
 
         try {
-            ResponseUtil.sendResponse(encodedSamlResponseToken, templateResourceName, target, authnResponse);
+            ResponseUtil.sendResponse(encodedSamlResponseToken, templateResourceName, target, authnResponse, true);
         } catch (ServletException e) {
             throw new ProtocolException(e.getMessage());
         } catch (IOException e) {
@@ -281,7 +281,7 @@ public class Saml2PostProtocolHandler implements ProtocolHandler {
         String templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
 
         try {
-            ResponseUtil.sendResponse(encodedSamlLogoutResponseToken, templateResourceName, target, logoutResponse);
+            ResponseUtil.sendResponse(encodedSamlLogoutResponseToken, templateResourceName, target, logoutResponse, true);
         } catch (ServletException e) {
             throw new ProtocolException(e.getMessage());
         } catch (IOException e) {
