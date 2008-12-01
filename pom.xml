@@ -518,6 +518,18 @@
 				</safe-online.jboss.host.port.ssl>
 			</properties>
 		</profile>
+
+		<!-- Profile to enable Option branding. -->
+		<profile>
+			<id>option-branding</id>
+			<properties>
+				<safe-online.branding>option</safe-online.branding>
+			</properties>
+			<modules>
+				<module>safe-online-webapp-base-option</module>
+            </modules>
+		</profile>
+
 	</profiles>
 
 	<!-- DEFAULT PROPERTIES -->
@@ -525,6 +537,7 @@
 		<isGlobalOperator>true</isGlobalOperator>
 		<defaultCronExpression>0 0/5 * * * ?</defaultCronExpression>
 		<sessionTimeout>5</sessionTimeout>
+        <safe-online.branding>olas</safe-online.branding>
 		<safe-online.data.source>SafeOnlineDS</safe-online.data.source>
 		<safe-online.batch.size>5</safe-online.batch.size>
 		<safe-online.dialect>org.hibernate.dialect.HSQLDialect</safe-online.dialect>
@@ -772,7 +785,7 @@
 		<module>safe-online-node-keystore</module>
 
 		<!-- CORE WEB APPS -->
-		<module>safe-online-webapp-base</module>
+		<module>safe-online-webapp-base-olas</module>
 		<module>safe-online-webapp-base-jsf</module>
 		<module>safe-online-webapp-base-wicket</module>
 		<module>safe-online-webapp-common</module>
@@ -823,7 +836,6 @@
 		<module>safe-online-notification-subscription-manager-ws-impl</module>
 
 		<!-- EXTERNAL DEVICES -->
-		<module>safe-online-device-webapp-base</module>
 		<module>safe-online-model-beid-client</module>
 		<module>safe-online-model-beid</module>
 		<module>safe-online-model-encap-client</module>
@@ -1558,14 +1570,14 @@
 			</dependency>
 			<dependency>
 				<groupId>net.lin-k.safe-online</groupId>
-				<artifactId>safe-online-device-webapp-base</artifactId>
+				<artifactId>safe-online-webapp-base-olas</artifactId>
 				<type>war</type>
 				<version>${safe-online.version}</version>
 				<scope>runtime</scope>
 			</dependency>
 			<dependency>
 				<groupId>net.lin-k.safe-online</groupId>
-				<artifactId>safe-online-webapp-base</artifactId>
+				<artifactId>safe-online-webapp-base-option</artifactId>
 				<type>war</type>
 				<version>${safe-online.version}</version>
 				<scope>runtime</scope>

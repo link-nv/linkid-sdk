@@ -37,7 +37,7 @@ import org.opensaml.xml.ConfigurationException;
  * SAML handler used by remote device issuers to handle an incoming SAML authentication request used for registration, updating or removal
  * and store the retrieved information on the session into {@link ProtocolContext}.
  * 
- * After registrating, updating or removing it will post a SAML authentication response containing the necessary assertions or a SAML
+ * After registering, updating or removing it will post a SAML authentication response containing the necessary assertions or a SAML
  * authentication response telling the authentication has failed.
  * 
  * @author wvdhaute
@@ -182,7 +182,7 @@ public class Saml2Handler implements Serializable {
         String templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
 
         try {
-            ResponseUtil.sendResponse(encodedSamlResponseToken, templateResourceName, protocolContext.getTargetUrl(), response);
+            ResponseUtil.sendResponse(encodedSamlResponseToken, templateResourceName, protocolContext.getTargetUrl(), response, false);
         } catch (ServletException e) {
             throw new DeviceFinalizationException(e.getMessage());
         } catch (IOException e) {
@@ -221,7 +221,7 @@ public class Saml2Handler implements Serializable {
         String templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
 
         try {
-            ResponseUtil.sendResponse(encodedSamlResponseToken, templateResourceName, protocolContext.getTargetUrl(), response);
+            ResponseUtil.sendResponse(encodedSamlResponseToken, templateResourceName, protocolContext.getTargetUrl(), response, false);
         } catch (ServletException e) {
             throw new DeviceFinalizationException(e.getMessage());
         } catch (IOException e) {
