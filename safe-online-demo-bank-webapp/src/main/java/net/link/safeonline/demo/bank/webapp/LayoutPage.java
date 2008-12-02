@@ -23,17 +23,17 @@ import org.apache.wicket.model.Model;
 
 public abstract class LayoutPage extends WebPage {
 
-    private static final long  serialVersionUID = 1L;
-    Log                        LOG              = LogFactory.getLog(getClass());
+    private static final long            serialVersionUID = 1L;
+    Log                                  LOG              = LogFactory.getLog(getClass());
 
     @EJB(mappedName = UserService.JNDI_BINDING)
-    private UserService        userService;
+    transient private UserService        userService;
 
     @EJB(mappedName = AccountService.JNDI_BINDING)
-    private AccountService     accountService;
+    transient private AccountService     accountService;
 
     @EJB(mappedName = TransactionService.JNDI_BINDING)
-    private TransactionService transactionService;
+    transient private TransactionService transactionService;
 
 
     /**
