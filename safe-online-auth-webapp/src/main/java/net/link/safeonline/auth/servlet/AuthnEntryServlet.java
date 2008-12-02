@@ -144,8 +144,10 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
             authLanguageCookie.setMaxAge(60 * 60 * 24 * 30 * 6);
             response.addCookie(authLanguageCookie);
         }
-        session.setAttribute(SafeOnlineAppConstants.COLOR_ATTRIBUTE, color);
-        session.setAttribute(SafeOnlineAppConstants.MINIMAL_ATTRIBUTE, minimal);
+        if (null != minimal && minimal) {
+            session.setAttribute(SafeOnlineAppConstants.COLOR_ATTRIBUTE, color);
+            session.setAttribute(SafeOnlineAppConstants.MINIMAL_ATTRIBUTE, minimal);
+        }
 
         /*
          * We save the result of the protocol handler into the HTTP session.

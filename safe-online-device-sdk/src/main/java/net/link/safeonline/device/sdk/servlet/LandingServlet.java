@@ -150,8 +150,10 @@ public class LandingServlet extends AbstractInjectionServlet {
             languageCookie.setMaxAge(60 * 60 * 24 * 30 * 6);
             response.addCookie(languageCookie);
         }
-        session.setAttribute(SafeOnlineAppConstants.COLOR_ATTRIBUTE, color);
-        session.setAttribute(SafeOnlineAppConstants.MINIMAL_ATTRIBUTE, minimal);
+        if (null != minimal && minimal) {
+            session.setAttribute(SafeOnlineAppConstants.COLOR_ATTRIBUTE, color);
+            session.setAttribute(SafeOnlineAppConstants.MINIMAL_ATTRIBUTE, minimal);
+        }
 
         /*
          * Figure out what the request wants us to do.
