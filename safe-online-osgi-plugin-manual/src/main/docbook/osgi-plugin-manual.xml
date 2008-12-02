@@ -110,4 +110,14 @@
 			</para>
 		</section>
 	</chapter>
+	<chapter id="SSL">
+		<title>SSL</title>
+		<para>
+			If you want to setup an SSL connection in the OSGi plugin there is
+			one caveat. You cannot set the
+			<code>HttpsUrlConnection.setDefaultSSLSocketFactory
+			</code>
+			for this as this will break OLAS's SSL connections.
+		</para>
+	</chapter>
 </book>
