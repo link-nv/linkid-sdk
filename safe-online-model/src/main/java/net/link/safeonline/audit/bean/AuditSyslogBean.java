@@ -38,6 +38,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 @Stateless
 @LocalBinding(jndiBinding = AuditSyslogBean.JNDI_BINDING)
 @Interceptors(ConfigurationInterceptor.class)
+@Configurable
 public class AuditSyslogBean implements AuditBackend {
 
     public static final String  JNDI_BINDING     = AuditBackend.JNDI_PREFIX + "AuditSyslogBean";

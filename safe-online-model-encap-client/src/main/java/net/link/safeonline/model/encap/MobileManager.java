@@ -4,20 +4,19 @@
  * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
-package net.link.safeonline.device.backend;
+package net.link.safeonline.model.encap;
 
 import java.net.MalformedURLException;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.MobileException;
 
 
 @Local
-public interface MobileManager extends SafeOnlineService {
+public interface MobileManager extends EncapService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "MobileManagerBean/local";
+    public static final String JNDI_BINDING = EncapService.JNDI_PREFIX + "MobileManagerBean/local";
 
 
     String requestOTP(String mobile)

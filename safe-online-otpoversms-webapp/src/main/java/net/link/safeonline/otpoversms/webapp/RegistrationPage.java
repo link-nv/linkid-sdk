@@ -210,19 +210,19 @@ public class RegistrationPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    boolean verified = RegistrationPage.this.otpOverSmsDeviceService.verifyOtp(WicketUtil.getHttpSession(getRequest()),
-                            VerifyOtpForm.this.otp);
-                    if (!verified) {
-                        otpField.error(getLocalizer().getString("authenticationFailedMsg", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(),
-                                "mobile otp: verification failed for mobile " + RegistrationPage.this.mobile, LogLevelType.ERROR);
-                        return;
-                    }
-
-                    LOG.debug("register mobile " + RegistrationPage.this.mobile + " for "
-                            + RegistrationPage.this.protocolContext.getSubject());
-
                     try {
+                        boolean verified = RegistrationPage.this.otpOverSmsDeviceService.verifyOtp(WicketUtil.getHttpSession(getRequest()),
+                                VerifyOtpForm.this.otp);
+                        if (!verified) {
+                            otpField.error(getLocalizer().getString("authenticationFailedMsg", this));
+                            HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(),
+                                    "mobile otp: verification failed for mobile " + RegistrationPage.this.mobile, LogLevelType.ERROR);
+                            return;
+                        }
+
+                        LOG.debug("register mobile " + RegistrationPage.this.mobile + " for "
+                                + RegistrationPage.this.protocolContext.getSubject());
+
                         RegistrationPage.this.otpOverSmsDeviceService.register(RegistrationPage.this.protocolContext.getSubject(),
                                 RegistrationPage.this.mobile, VerifyOtpForm.this.pin1);
                     } catch (PermissionDeniedException e) {

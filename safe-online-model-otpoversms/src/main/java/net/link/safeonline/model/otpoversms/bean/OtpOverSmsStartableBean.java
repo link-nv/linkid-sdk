@@ -85,19 +85,27 @@ public class OtpOverSmsStartableBean extends AbstractInitBean {
         AttributeTypeEntity pinAlgorithmAttributeType = new AttributeTypeEntity(OtpOverSmsConstants.OTPOVERSMS_PIN_ALGORITHM_ATTRIBUTE,
                 DatatypeType.STRING, false, false);
         pinAlgorithmAttributeType.setMultivalued(true);
+        AttributeTypeEntity pinAttemptsAttributeType = new AttributeTypeEntity(OtpOverSmsConstants.OTPOVERSMS_PIN_ATTEMPTS_ATTRIBUTE,
+                DatatypeType.INTEGER, false, false);
+        pinAttemptsAttributeType.setMultivalued(true);
         this.attributeTypes.add(pinHashAttributeType);
         this.attributeTypes.add(pinSeedAttributeType);
         this.attributeTypes.add(pinAlgorithmAttributeType);
+        this.attributeTypes.add(pinAttemptsAttributeType);
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(pinHashAttributeType, Locale.ENGLISH.getLanguage(),
                 "Mobile Lite Pin hash", null));
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(pinSeedAttributeType, Locale.ENGLISH.getLanguage(),
                 "Mobile Lite Pin hash seed", null));
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(pinAlgorithmAttributeType, Locale.ENGLISH.getLanguage(),
                 "Mobile Lite Pin hash algorithm", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(pinAttemptsAttributeType, Locale.ENGLISH.getLanguage(),
+                "Mobile Lite Pin Attempts", null));
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(pinHashAttributeType, "nl", "GSM lite pin hash", null));
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(pinSeedAttributeType, "nl", "GSM lite hash seed", null));
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(pinAlgorithmAttributeType, "nl",
                 "GSM lite pin hash algoritme", null));
+        this.attributeTypeDescriptions
+                                      .add(new AttributeTypeDescriptionEntity(pinAttemptsAttributeType, "nl", "GSM lite pin pogingen", null));
 
         AttributeTypeEntity otpOverSmsDeviceDisableAttributeType = new AttributeTypeEntity(
                 OtpOverSmsConstants.OTPOVERSMS_DEVICE_DISABLE_ATTRIBUTE, DatatypeType.BOOLEAN, false, false);
@@ -115,7 +123,8 @@ public class OtpOverSmsStartableBean extends AbstractInitBean {
         otpOverSmsDeviceAttributeType.addMember(pinHashAttributeType, 1, true);
         otpOverSmsDeviceAttributeType.addMember(pinSeedAttributeType, 2, true);
         otpOverSmsDeviceAttributeType.addMember(pinAlgorithmAttributeType, 3, true);
-        otpOverSmsDeviceAttributeType.addMember(otpOverSmsDeviceDisableAttributeType, 4, true);
+        otpOverSmsDeviceAttributeType.addMember(pinAttemptsAttributeType, 4, true);
+        otpOverSmsDeviceAttributeType.addMember(otpOverSmsDeviceDisableAttributeType, 5, true);
         this.attributeTypes.add(otpOverSmsDeviceAttributeType);
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(otpOverSmsDeviceAttributeType, Locale.ENGLISH.getLanguage(),
                 "Mobile Lite", null));
