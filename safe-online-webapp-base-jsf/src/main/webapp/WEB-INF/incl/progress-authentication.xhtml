@@ -1,20 +1,20 @@
 <div xmlns="http://www.w3.org/1999/xhtml">
-<table class="plain timeline">
-	<td class="start" />
-	<td id="stage_select">#{msgs.progressSelectDevice}</td>
-	<td id="stage_authenticate">#{msgs.progressAuthenticate}</td>
-	<td id="stage_agreements">#{msgs.progressUsageAgreements}</td>
-	<td id="stage_attributes">#{msgs.progressAttributes}</td>
-	<td class="end" />
-</table>
+    <table class="plain timeline">
+        <td class="start" />
+        <td id="stage_select"><div>#{msgs.progressSelectDevice}</div></td>
+        <td id="stage_authenticate"><div>#{msgs.progressAuthenticate}</div></td>
+        <td id="stage_agreements"><div>#{msgs.progressUsageAgreements}</div></td>
+        <td id="stage_attributes"><div>#{msgs.progressAttributes}</div></td>
+        <td class="end" />
+    </table>
 
-
-<script language="JavaScript">
-        function setActive(id, className) {
-            obj = document.getElementById(id);
-            if (obj != null) {
-                obj.className = className;
+    <script language="JavaScript">
+            function setActive(id, className) {
+                obj = document.getElementById(id);
+                if (obj != null) {
+                    obj.className = className;
+                }
             }
-        }
-        setActive("stage_" + "#{stage}", "active");
-</script></div>
+            setActive("stage_" + "#{stage}", "active");
+    </script>
+</div>

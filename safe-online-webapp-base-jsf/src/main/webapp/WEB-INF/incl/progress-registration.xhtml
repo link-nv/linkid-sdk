@@ -1,19 +1,19 @@
 <div xmlns="http://www.w3.org/1999/xhtml">
-<table class="plain timeline">
-	<td class="start" />
-	<td id="stage_choose">#{msgs.progressChooseLogin}</td>
-	<td id="stage_initial">#{msgs.progressChooseInitialDevice}</td>
-	<td id="stage_register">#{msgs.progressRegister}</td>
-	<td class="end" />
-</table>
+    <table class="plain timeline">
+        <td class="start" />
+        <td id="stage_choose"><div>#{msgs.progressChooseLogin}</div></td>
+        <td id="stage_initial"><div>#{msgs.progressChooseInitialDevice}</div></td>
+        <td id="stage_register"><div>#{msgs.progressRegister}</div></td>
+        <td class="end" />
+    </table>
 
-
-<script language="JavaScript">
-        function setActive(id, className) {
-            obj = document.getElementById(id);
-            if (obj != null) {
-                obj.className = className;
+    <script language="JavaScript">
+            function setActive(id, className) {
+                obj = document.getElementById(id);
+                if (obj != null) {
+                    obj.className = className;
+                }
             }
-        }
-        setActive("stage_" + "#{stage}", "active");
-</script></div>
+            setActive("stage_" + "#{stage}", "active");
+    </script>
+</div>
