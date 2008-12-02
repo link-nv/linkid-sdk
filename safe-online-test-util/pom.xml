@@ -92,10 +92,6 @@
             <artifactId>hibernate-entitymanager</artifactId>
             <version>${hibernate-entitymanager.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.jboss</groupId>
-            <artifactId>jboss-annotations-ejb3</artifactId>
-        </dependency>
 		<dependency>
 			<groupId>org.mortbay.jetty</groupId>
 			<artifactId>jetty</artifactId>

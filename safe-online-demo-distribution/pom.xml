@@ -71,7 +71,7 @@
 
                     <!-- Copy EAR dependencies into /deploy.
                          maven-assembly-plugin will move them to /jboss/server/default/deploy. -->
-					<!--execution>
+					<execution>
 						<id>copy</id>
 						<phase>package</phase>
 						<goals>
@@ -82,7 +82,7 @@
                             <excludeScope>provided</excludeScope>
 							<outputDirectory>${project.build.directory}/deploy</outputDirectory>
 						</configuration>
-					</execution-->
+					</execution>
 
                     <!-- Copy non-provided, non-EAR dependencies to /dependency dir.
                          maven-assembly-plugin will move them to /jboss/server/default/lib. -->

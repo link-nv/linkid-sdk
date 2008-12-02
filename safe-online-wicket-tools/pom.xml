@@ -62,10 +62,6 @@
 			<groupId>org.apache.wicket</groupId>
 			<artifactId>wicket-contrib-javaee</artifactId>
 		</dependency>
-        <dependency>
-            <groupId>org.jboss</groupId>
-            <artifactId>jboss-annotations-ejb3</artifactId>
-        </dependency>
 
         <!-- Test Dependencies -->
         <dependency>

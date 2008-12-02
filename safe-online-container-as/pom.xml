@@ -38,6 +38,36 @@
                 BELOW ARE ALL LIBRARIES THAT COME WITH THE JBOSS-AS.
                 YOU SHOULDN'T TOUCH THEM UNLESS YOU'RE UPGRADING THE AS. -->
 
+        <!-- deploy/ejb3.deployer -->
+		<dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-annotations-ejb3</artifactId>
+		</dependency>
+
+        <!-- deploy/jboss-web.deployer -->
+		<dependency>
+            <groupId>javax.faces</groupId>
+            <artifactId>jsf-api</artifactId>
+		</dependency>
+		<dependency>
+            <groupId>javax.faces</groupId>
+            <artifactId>jsf-impl</artifactId>
+		</dependency>
+		<dependency>
+            <groupId>jstl</groupId>
+            <artifactId>jstl</artifactId>
+		</dependency>
+
+        <!-- deploy/jbossws.sar -->
+        <dependency>
+            <groupId>axis</groupId>
+            <artifactId>axis-jaxrpc</artifactId>
+		</dependency>
+        <dependency>
+            <groupId>javax.xml.stream</groupId>
+            <artifactId>stax-api</artifactId>
+        </dependency>
+
         <!-- jaxws-ri/lib -->
 		<dependency>
 			<groupId>javax.activation</groupId>
