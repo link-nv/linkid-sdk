@@ -56,6 +56,13 @@
 		<converter-class> net.link.safeonline.converter.AttributeTypeConverter 
 		</converter-class>
 	</converter>
+	<converter>
+		<converter-for-class>
+			net.link.safeonline.custom.converter.PhoneNumber 
+		</converter-for-class>
+		<converter-class> net.link.safeonline.converter.PhoneNumberConverter 
+		</converter-class>
+	</converter>
 	<lifecycle>
 		<phase-listener>
 			net.link.safeonline.listener.CacheControlPhaseListener

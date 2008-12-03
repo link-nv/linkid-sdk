@@ -33,7 +33,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.validation.EqualPasswordInputValidator;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.Model;
 
 
 public class UpdatePage extends TemplatePage {
@@ -94,11 +94,11 @@ public class UpdatePage extends TemplatePage {
 
         private static final long serialVersionUID = 1L;
 
-        String                    oldPin;
+        Model<String>             oldPin;
 
-        String                    pin1;
+        Model<String>             pin1;
 
-        String                    pin2;
+        Model<String>             pin2;
 
 
         @SuppressWarnings("unchecked")
@@ -106,15 +106,15 @@ public class UpdatePage extends TemplatePage {
 
             super(id);
 
-            final PasswordTextField oldpinField = new PasswordTextField(OLDPIN_FIELD_ID, new PropertyModel<String>(this, "oldPin"));
+            final PasswordTextField oldpinField = new PasswordTextField(OLDPIN_FIELD_ID, this.oldPin = new Model<String>());
             add(oldpinField);
             add(new ErrorComponentFeedbackLabel("oldpin_feedback", oldpinField));
 
-            final PasswordTextField password1Field = new PasswordTextField(PIN1_FIELD_ID, new PropertyModel<String>(this, "pin1"));
+            final PasswordTextField password1Field = new PasswordTextField(PIN1_FIELD_ID, this.pin1 = new Model<String>());
             add(password1Field);
             add(new ErrorComponentFeedbackLabel("pin1_feedback", password1Field));
 
-            final PasswordTextField password2Field = new PasswordTextField(PIN2_FIELD_ID, new PropertyModel<String>(this, "pin2"));
+            final PasswordTextField password2Field = new PasswordTextField(PIN2_FIELD_ID, this.pin2 = new Model<String>());
             add(password2Field);
             add(new ErrorComponentFeedbackLabel("pin2_feedback", password2Field));
 
@@ -134,7 +134,8 @@ public class UpdatePage extends TemplatePage {
                     boolean result;
                     try {
                         result = UpdatePage.this.otpOverSmsDeviceService.update(UpdatePage.this.protocolContext.getSubject(),
-                                UpdatePage.this.protocolContext.getAttribute(), UpdateForm.this.oldPin, UpdateForm.this.pin1);
+                                UpdatePage.this.protocolContext.getAttribute(), UpdateForm.this.oldPin.getObject(),
+                                UpdateForm.this.pin1.getObject());
                     } catch (SubjectNotFoundException e) {
                         password1Field.error(getLocalizer().getString("errorSubjectNotFound", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "update: subject not found",

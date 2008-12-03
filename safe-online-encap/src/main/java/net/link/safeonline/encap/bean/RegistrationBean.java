@@ -29,6 +29,7 @@ import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
 import net.link.safeonline.ctrl.error.annotation.Error;
 import net.link.safeonline.ctrl.error.annotation.ErrorHandling;
+import net.link.safeonline.custom.converter.PhoneNumber;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.encap.Registration;
 import net.link.safeonline.model.encap.EncapDeviceService;
@@ -57,7 +58,7 @@ public class RegistrationBean implements Registration {
     @In(create = true)
     FacesMessages                facesMessages;
 
-    private String               mobile;
+    private PhoneNumber          mobile;
 
     private String               mobileActivationCode;
 
@@ -139,7 +140,7 @@ public class RegistrationBean implements Registration {
         ExternalContext externalContext = facesContext.getExternalContext();
         HttpSession session = (HttpSession) externalContext.getSession(true);
         String sessionId = session.getId();
-        this.mobileActivationCode = this.encapDeviceService.register(this.mobile, sessionId);
+        this.mobileActivationCode = this.encapDeviceService.register(this.mobile.getNumber(), sessionId);
         return "";
     }
 
@@ -153,7 +154,7 @@ public class RegistrationBean implements Registration {
             throws MalformedURLException, MobileException {
 
         this.log.debug("request OTP: mobile=" + this.mobile);
-        this.challengeId = this.encapDeviceService.requestOTP(this.mobile);
+        this.challengeId = this.encapDeviceService.requestOTP(this.mobile.getNumber());
         this.log.debug("received challengeId: " + this.challengeId);
         return "success";
     }
@@ -171,19 +172,19 @@ public class RegistrationBean implements Registration {
 
         // encap registration and authentication was successful, commit this
         // registration to OLAS.
-        this.encapDeviceService.commitRegistration(this.protocolContext.getSubject(), this.mobile);
+        this.encapDeviceService.commitRegistration(this.protocolContext.getSubject(), this.mobile.getNumber());
 
         this.protocolContext.setSuccess(true);
         exit();
         return null;
     }
 
-    public String getMobile() {
+    public PhoneNumber getMobile() {
 
         return this.mobile;
     }
 
-    public void setMobile(String mobile) {
+    public void setMobile(PhoneNumber mobile) {
 
         this.mobile = mobile;
     }

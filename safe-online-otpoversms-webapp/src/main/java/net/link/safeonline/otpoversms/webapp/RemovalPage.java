@@ -34,7 +34,7 @@ import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.Model;
 
 
 public class RemovalPage extends TemplatePage {
@@ -95,7 +95,7 @@ public class RemovalPage extends TemplatePage {
 
         private static final long serialVersionUID = 1L;
 
-        String                    pin;
+        Model<String>             pin;
 
 
         @SuppressWarnings("unchecked")
@@ -103,7 +103,7 @@ public class RemovalPage extends TemplatePage {
 
             super(id);
 
-            final PasswordTextField passwordField = new PasswordTextField(PIN_FIELD_ID, new PropertyModel<String>(this, "pin"));
+            final PasswordTextField passwordField = new PasswordTextField(PIN_FIELD_ID, this.pin = new Model<String>());
             add(passwordField);
             add(new ErrorComponentFeedbackLabel("pin_feedback", passwordField));
 
@@ -121,7 +121,7 @@ public class RemovalPage extends TemplatePage {
                     boolean result;
                     try {
                         result = RemovalPage.this.otpOverSmsDeviceService.remove(RemovalPage.this.protocolContext.getSubject(),
-                                RemovalPage.this.protocolContext.getAttribute(), RemovalForm.this.pin);
+                                RemovalPage.this.protocolContext.getAttribute(), RemovalForm.this.pin.getObject());
                     } catch (SubjectNotFoundException e) {
                         passwordField.error(getLocalizer().getString("errorSubjectNotFound", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "remove: subject not found",

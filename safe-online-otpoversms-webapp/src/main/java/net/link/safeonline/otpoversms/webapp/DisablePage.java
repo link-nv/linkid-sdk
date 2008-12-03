@@ -32,7 +32,7 @@ import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.Model;
 
 
 public class DisablePage extends TemplatePage {
@@ -93,7 +93,7 @@ public class DisablePage extends TemplatePage {
 
         private static final long serialVersionUID = 1L;
 
-        String                    pin;
+        Model<String>             pin;
 
 
         @SuppressWarnings("unchecked")
@@ -101,7 +101,7 @@ public class DisablePage extends TemplatePage {
 
             super(id);
 
-            final PasswordTextField pinField = new PasswordTextField(PIN_FIELD_ID, new PropertyModel<String>(this, "pin"));
+            final PasswordTextField pinField = new PasswordTextField(PIN_FIELD_ID, this.pin = new Model<String>());
             add(pinField);
             add(new ErrorComponentFeedbackLabel("pin_feedback", pinField));
 
@@ -119,7 +119,7 @@ public class DisablePage extends TemplatePage {
                     boolean result;
                     try {
                         result = DisablePage.this.otpOverSmsDeviceService.disable(DisablePage.this.protocolContext.getSubject(),
-                                DisablePage.this.protocolContext.getAttribute(), DisableForm.this.pin);
+                                DisablePage.this.protocolContext.getAttribute(), DisableForm.this.pin.getObject());
                     } catch (SubjectNotFoundException e) {
                         pinField.error(getLocalizer().getString("errorSubjectNotFound", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "disable: subject not found",

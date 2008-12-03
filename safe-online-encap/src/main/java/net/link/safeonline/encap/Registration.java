@@ -18,6 +18,7 @@ import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.custom.converter.PhoneNumber;
 
 
 @Local
@@ -29,9 +30,9 @@ public interface Registration {
     /*
      * Accessors.
      */
-    String getMobile();
+    PhoneNumber getMobile();
 
-    void setMobile(String mobile);
+    void setMobile(PhoneNumber mobile);
 
     String getMobileActivationCode();
 
