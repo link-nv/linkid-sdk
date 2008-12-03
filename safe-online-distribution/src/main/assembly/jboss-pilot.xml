@@ -30,12 +30,24 @@
     <!-- BASE CONFIGURATION -->
     <!-- ================== -->
 
-
         <!-- Link's HTTPS certificate                       -> /jboss/server/default/conf -->
 		<file>
 			<source>target/files/ssl.jks</source>
 			<outputDirectory>jboss/server/default/conf</outputDirectory>
 		</file>
+
+        <!-- The DS configuration                           -> /jboss/server/default/deploy -->
+		<file>
+            <source>target/files/resources/${safe-online.data.source.type}-safe-online-ds.xml</source>
+			<outputDirectory>jboss/server/default/deploy</outputDirectory>
+		</file>
+
+        <!-- The JBoss Messaging DS configuration           -> /jboss/server/default/deploy/jboss-messaging.sar -->
+		<file>
+            <source>target/classes/jboss/server/default/deploy/jboss-messaging.sar/${safe-online.data.source.type}-persistence-service.xml</source>
+			<outputDirectory>jboss/server/default/deploy/jboss-messaging.sar</outputDirectory>
+		</file>
+
 	</files>
 
 	<fileSets>
@@ -57,21 +69,18 @@
 				<exclude>bin/wstools.*</exclude>
 				<exclude>bin/*.sh</exclude>
 				<exclude>jar-versions.xml</exclude>
-				<exclude>server/default/lib/jboss-jaxws.jar</exclude>
 				<exclude>server/default/lib/jbossmq.jar</exclude>
+				<exclude>server/default/lib/jboss-jaxws.jar</exclude>
 				<exclude>server/default/conf/jboss-minimal.xml</exclude>
-				<exclude>server/default/deploy/hsqldb-ds.xml</exclude>
 				<exclude>server/default/deploy/jms/**</exclude>
+				<exclude>server/default/deploy/hsqldb-ds.xml</exclude>
 				<exclude>server/default/deploy/jbossws.sar/jboss-jaxws.jar</exclude>
 
                 <!-- Exclude the default HSQL configuration. -->
- 				<exclude>server/default/deploy/jms/hsqldb-jdbc2-service.xml</exclude>
-				<exclude>server/default/deploy/jboss-messaging.sar/hsqldb-persistence-service.xml</exclude>
 				<exclude>server/default/deploy/hsql-safe-online-ds.xml</exclude>
-				<exclude>server/default/deploy/hsqldb-ds.xml</exclude>
+				<exclude>server/default/deploy/jboss-messaging.sar/hsqldb-persistence-service.xml</exclude>
 				<exclude>server/default/lib/hsqldb.jar</exclude>
 				<exclude>server/default/lib/hsqldb-plugin.jar</exclude>
-				<exclude>server/default/deploy/jms/hsqldb-jdbc-state-service.xml</exclude>
 
                 <!-- Exclude some JBoss AS features we want disabled in PILOT. -->
                 <exclude>server/default/lib/autonumber-plugin.jar</exclude>
@@ -159,6 +168,9 @@
 		<!-- This artifact's custom JBoss configuration     -> /jboss -->
 		<fileSet>
 			<directory>target/classes/jboss</directory>
+			<excludes>
+                <exclude>server/default/deploy/jboss-messaging.sar/*-persistence-service.xml</exclude>
+			</excludes>
 			<outputDirectory>jboss</outputDirectory>
 		</fileSet>
 
@@ -194,12 +206,6 @@
 			<directory>target/dependency</directory>
 			<outputDirectory>jboss/server/default/lib</outputDirectory>
 		</fileSet>
-
-        <!-- The DS configuration                           -> /jboss/server/default/deploy -->
-		<file>
-            <source>target/files/resources/${safe-online.data.source.dialect}-safe-online-ds.xml</source>
-			<outputDirectory>jboss/server/default/deploy</outputDirectory>
-		</file>
 
 	</fileSets>
 

@@ -286,11 +286,28 @@
     <profiles>
 
         <profile>
-            <id>mysql</id>
+            <id>ds:hsql</id>
 
             <activation>
                 <property>
-                    <name>safe-online.data.source.dialect</name>
+                    <name>safe-online.data.source.type</name>
+                    <value>hsql</value>
+                </property>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>hsqldb</groupId>
+                    <artifactId>hsqldb</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>ds:mysql</id>
+
+            <activation>
+                <property>
+                    <name>safe-online.data.source.type</name>
                     <value>mysql</value>
                 </property>
             </activation>
@@ -303,11 +320,11 @@
         </profile>
 
         <profile>
-            <id>postgresql</id>
+            <id>ds:postgresql</id>
 
             <activation>
                 <property>
-                    <name>safe-online.data.source.dialect</name>
+                    <name>safe-online.data.source.type</name>
                     <value>postgresql</value>
                 </property>
             </activation>
@@ -320,11 +337,11 @@
         </profile>
 
         <profile>
-            <id>oracle</id>
+            <id>ds:oracle</id>
 
             <activation>
                 <property>
-                    <name>safe-online.data.source.dialect</name>
+                    <name>safe-online.data.source.type</name>
                     <value>oracle</value>
                 </property>
             </activation>

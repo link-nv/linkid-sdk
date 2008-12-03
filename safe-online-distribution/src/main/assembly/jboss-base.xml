@@ -1,10 +1,34 @@
 <?xml version="1.0"?>
-<assembly xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<assembly xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/assembly-1.0.0.xsd">
 
-	<formats>
-		<format>zip</format>
-	</formats>
+
+    <!-- ================== -->
+    <!-- BASE CONFIGURATION -->
+    <!-- ================== -->
+
+    <files>
+
+        <!-- Link's HTTPS certificate                       -> /jboss/server/default/conf -->
+		<file>
+			<source>target/files/ssl.jks</source>
+			<outputDirectory>jboss/server/default/conf</outputDirectory>
+		</file>
+
+        <!-- The DS configuration                           -> /jboss/server/default/deploy -->
+		<file>
+            <source>target/files/resources/${safe-online.data.source.type}-safe-online-ds.xml</source>
+			<outputDirectory>jboss/server/default/deploy</outputDirectory>
+		</file>
+
+        <!-- The JBoss Messaging DS configuration           -> /jboss/server/default/deploy/jboss-messaging.sar -->
+		<file>
+            <source>target/classes/jboss/server/default/deploy/jboss-messaging.sar/${safe-online.data.source.type}-persistence-service.xml</source>
+			<outputDirectory>jboss/server/default/deploy/jboss-messaging.sar</outputDirectory>
+		</file>
+
+	</files>
 
 	<fileSets>
 
@@ -25,12 +49,19 @@
 				<exclude>bin/wstools.*</exclude>
 				<exclude>bin/*.sh</exclude>
 				<exclude>jar-versions.xml</exclude>
-				<exclude>server/default/lib/jboss-jaxws.jar</exclude>
 				<exclude>server/default/lib/jbossmq.jar</exclude>
-				<exclude>server/default/deploy/hsqldb-ds.xml</exclude>
+				<exclude>server/default/lib/jboss-jaxws.jar</exclude>
+				<exclude>server/default/conf/jboss-minimal.xml</exclude>
 				<exclude>server/default/deploy/jms/**</exclude>
+				<exclude>server/default/deploy/hsqldb-ds.xml</exclude>
 				<exclude>server/default/deploy/jbossws.sar/jboss-jaxws.jar</exclude>
- 			</excludes>
+
+                <!-- Exclude the default HSQL configuration. -->
+				<exclude>server/default/deploy/hsql-safe-online-ds.xml</exclude>
+				<exclude>server/default/deploy/jboss-messaging.sar/hsqldb-persistence-service.xml</exclude>
+				<exclude>server/default/lib/hsqldb.jar</exclude>
+				<exclude>server/default/lib/hsqldb-plugin.jar</exclude>
+			</excludes>
 		</fileSet>
 
         <!-- Re-include some things we do need, like jms-ra.rar & jbossall-client.jar -->
@@ -93,6 +124,9 @@
 		<!-- This artifact's custom JBoss configuration     -> /jboss -->
 		<fileSet>
 			<directory>target/classes/jboss</directory>
+			<excludes>
+                <exclude>server/default/deploy/jboss-messaging.sar/*-persistence-service.xml</exclude>
+			</excludes>
 			<outputDirectory>jboss</outputDirectory>
 		</fileSet>
 
@@ -117,20 +151,22 @@
 			<outputDirectory>jboss/osgi</outputDirectory>
 		</fileSet>
 
-	</fileSets>
-
-	<files>
-        <!-- The DS configuration                           -> /jboss/server/default/deploy -->
-		<file>
-			<source>target/files/resources/hsql-safe-online-ds.xml</source>
+		<!-- This artifact's EAR dependencies               -> /jboss/server/default/lib -->
+		<fileSet>
+			<directory>target/deploy</directory>
 			<outputDirectory>jboss/server/default/deploy</outputDirectory>
-		</file>
+		</fileSet>
 
-        <!-- Link's HTTPS certificate                       -> /jboss/server/default/conf -->
-		<file>
-			<source>target/files/ssl.jks</source>
-			<outputDirectory>jboss/server/default/conf</outputDirectory>
-		</file>
-	</files>
+        <!-- This artifact's non-EAR dependencies           -> jboss/server/default/lib -->
+		<fileSet>
+			<directory>target/dependency</directory>
+			<outputDirectory>jboss/server/default/lib</outputDirectory>
+		</fileSet>
+
+	</fileSets>
+ 
+	<formats>
+		<format>zip</format>
+	</formats>
 
 </assembly>

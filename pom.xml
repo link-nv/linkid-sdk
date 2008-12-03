@@ -123,17 +123,74 @@
 	<!-- COMPILATION PROFILES -->
 	<profiles>
 
+		<!-- Profile to enable Option branding. -->
+		<profile>
+			<id>brand:option</id>
+			<properties>
+				<safe-online.branding>option</safe-online.branding>
+			</properties>
+			<modules>
+				<module>safe-online-webapp-base-option</module>
+            </modules>
+		</profile>
+
+		<!-- Profile to enable Hypersonic SQL as DS -->
+		<profile>
+			<id>ds:hsql</id>
+			<properties>
+				<safe-online.data.source.type>hsql</safe-online.data.source.type>
+				<safe-online.data.source.uri></safe-online.data.source.uri>
+                <safe-online.data.source.dialect>org.hibernate.dialect.HSQLDialect</safe-online.data.source.dialect>
+            </properties>
+        </profile>
+
+		<!-- Profile to enable MySQL as DS -->
+		<profile>
+			<id>ds:mysql</id>
+			<properties>
+				<safe-online.data.source.type>mysql</safe-online.data.source.type>
+				<safe-online.data.source.uri>jdbc:mysql://localhost:3306/safeonline</safe-online.data.source.uri>
+				<safe-online.data.source.dialect>org.hibernate.dialect.MySQLDialect</safe-online.data.source.dialect>
+            </properties>
+        </profile>
+
+		<!-- Profile to enable PostGreSQL as DS -->
+		<profile>
+			<id>ds:postgresql</id>
+			<properties>
+				<safe-online.data.source.type>postgresql</safe-online.data.source.type>
+				<safe-online.data.source.uri>jdbc:postgresql://localhost:5432/safeonline</safe-online.data.source.uri>
+				<safe-online.data.source.dialect>org.hibernate.dialect.PostgreSQLDialect</safe-online.data.source.dialect>
+			</properties>
+		</profile>
+
+		<!-- Profile to enable Oracle as DS -->
+		<profile>
+			<id>ds:oracle</id>
+			<properties>
+				<safe-online.data.source.type>oracle</safe-online.data.source.type>
+				<safe-online.data.source.uri>jdbc:oracle:thin:@localhost:1521:safeonline</safe-online.data.source.uri>
+				<safe-online.data.source.dialect>net.link.safeonline.hibernate.dialect.Oracle11Dialect</safe-online.data.source.dialect>
+			</properties>
+		</profile>
+
+		<!-- Profile to build base distribution -->
+		<profile>
+			<id>dist:base</id>
+			<properties>
+                <safe-online.distribution>base</safe-online.distribution>
+			</properties>
+			<modules>
+				<module>safe-online-distribution</module>
+			</modules>
+		</profile>
+
 		<!-- Profile to build demo artifacts -->
 		<profile>
-			<id>demo</id>
+			<id>dist:demo</id>
 			<properties>
                 <safe-online.distribution>demo</safe-online.distribution>
-				<safe-online.data.source.dialect>mysql</safe-online.data.source.dialect>
-				<safe-online.data.source.uri> jdbc:mysql://localhost:3306/safeonline 
-				</safe-online.data.source.uri>
-				<safe-online.dialect> org.hibernate.dialect.MySQLDialect 
-				</safe-online.dialect>
-				<defaultCronExpression> 0 0 0 1 1 1 </defaultCronExpression>
+                <defaultCronExpression> 0 0 0 1 1 1 </defaultCronExpression>
 				<sessionTimeout>60</sessionTimeout>
 
 				<!-- WEBAPP NAMES -->
@@ -193,143 +250,31 @@
 
 		<!-- Profile to build a pilot version -->
 		<profile>
-			<id>pilot-core</id>
+			<id>dist:pilot</id>
 			<properties>
-				<defaultCronExpression> 0 0 3 * * ? </defaultCronExpression>
-				<safe-online.hibernate.hbm2ddl.auto> validate 
-				</safe-online.hibernate.hbm2ddl.auto>
+                <safe-online.distribution>pilot</safe-online.distribution>
+				<defaultCronExpression>0 0 3 * * ?</defaultCronExpression>
+				<safe-online.hibernate.hbm2ddl.auto>validate</safe-online.hibernate.hbm2ddl.auto>
 				<debug.mode>false</debug.mode>
 				<safe-online.show.sql>false</safe-online.show.sql>
 				<safe-online.host.name>localhost</safe-online.host.name>
 				<safe-online.host.port>80</safe-online.host.port>
-				<safe-online.host.port.ssl> 443 </safe-online.host.port.ssl>
-				<safe-online.jboss.host.port> 80 </safe-online.jboss.host.port>
-				<safe-online.jboss.host.port.ssl> 443 
-				</safe-online.jboss.host.port.ssl>
+				<safe-online.host.port.ssl>443</safe-online.host.port.ssl>
+				<safe-online.jboss.host.port>80</safe-online.jboss.host.port>
+				<safe-online.jboss.host.port.ssl>443</safe-online.jboss.host.port.ssl>
 			</properties>
 			<modules>
 				<module>safe-online-root-webapp</module>
 				<module>safe-online-install-manual</module>
 				<module>safe-online-maintenance-manual</module>
 				<module>safe-online-osgi-plugin-manual</module>
-			</modules>
-		</profile>
-
-		<!-- Profile to build the pilot distribution that uses MySQL as DS -->
-		<profile>
-			<id>pilot-mysql</id>
-			<properties>
-                <safe-online.distribution>pilot</safe-online.distribution>
-				<safe-online.data.source.dialect>mysql</safe-online.data.source.dialect>
-				<safe-online.data.source.uri> jdbc:mysql://localhost:3306/safeonline 
-				</safe-online.data.source.uri>
-				<safe-online.dialect> org.hibernate.dialect.MySQLDialect 
-				</safe-online.dialect>
-			</properties>
-			<modules>
 				<module>safe-online-distribution</module>
-			</modules>
-		</profile>
-
-		<!-- Profile to build the pilot distribution that uses HSQL as DS -->
-		<profile>
-			<id>pilot-hsql</id>
-			<properties>
-                <safe-online.distribution>pilot</safe-online.distribution>
-            </properties>
-			<modules>
-				<module>safe-online-distribution</module>
-			</modules>
-		</profile>
-
-		<!--
-			Profile to build the pilot distribution that uses PostgreSQL as DS
-		-->
-		<profile>
-			<id>pilot-postgres</id>
-			<properties>
-                <safe-online.distribution>pilot</safe-online.distribution>
-				<safe-online.data.source.dialect>postgresql</safe-online.data.source.dialect>
-				<safe-online.data.source.uri>
-					jdbc:postgresql://localhost:5432/safeonline 
-				</safe-online.data.source.uri>
-				<safe-online.dialect> org.hibernate.dialect.PostgreSQLDialect 
-				</safe-online.dialect>
-			</properties>
-			<modules>
-				<module>safe-online-distribution</module>
-			</modules>
-		</profile>
-
-		<!-- Profile to build the pilot distribution that uses Oracle as DS -->
-		<profile>
-			<id>pilot-oracle</id>
-			<properties>
-                <safe-online.distribution>pilot</safe-online.distribution>
-				<safe-online.data.source.dialect>oracle</safe-online.data.source.dialect>
-				<safe-online.data.source.uri>
-					jdbc:oracle:thin:@localhost:1521:safeonline 
-				</safe-online.data.source.uri>
-				<safe-online.dialect>
-					net.link.safeonline.hibernate.dialect.Oracle11Dialect 
-				</safe-online.dialect>
-			</properties>
-			<modules>
-				<module>safe-online-distribution</module>
-			</modules>
-		</profile>
-
-		<!-- Profile used to create a development version -->
-		<profile>
-			<id>development</id>
-			<properties>
-				<debug.mode>true</debug.mode>
-				<safe-online.show.sql>true</safe-online.show.sql>
-				<safe-online.batch.size>0</safe-online.batch.size>
-			</properties>
-		</profile>
-
-		<!-- Profile used by Hudson -->
-		<profile>
-			<id>hudson</id>
-			<distributionManagement>
-				<repository>
-					<id>buildserver-release-repository</id>
-					<url>file:///maven2</url>
-				</repository>
-				<snapshotRepository>
-					<id>buildserver-snapshot-repository</id>
-					<url>file:///maven2-snapshots</url>
-					<uniqueVersion>false</uniqueVersion>
-				</snapshotRepository>
-				<site>
-					<id>buildserver-site-repository</id>
-					<url>file:///site/safe-online</url>
-				</site>
-			</distributionManagement>
-		</profile>
-
-		<!-- Profile used to perform Web Application tests -->
-		<profile>
-			<id>test</id>
-			<properties>
-				<defaultCronExpression> 0 0 3 * * ? </defaultCronExpression>
-				<safe-online.host.basename>
-					${safe-online.host.protocol}://${safe-online.host.name}:${safe-online.host.port} 
-				</safe-online.host.basename>
-				<safe-online.host.auth.basename>
-					${safe-online.host.protocol}://${safe-online.host.name}:${safe-online.host.port} 
-				</safe-online.host.auth.basename>
-			</properties>
-			<modules>
-				<module>safe-online-test-webapp</module>
-				<module>safe-online-test</module>
 			</modules>
 		</profile>
 
 		<!-- Profile used to build a distribution for remote devices -->
 		<profile>
-			<id>remote-device</id>
+			<id>dist:remote</id>
 			<properties>
 				<safe-online.node.name> olas-buildserver </safe-online.node.name>
 				<safe-online.host.name> buildserver </safe-online.host.name>
@@ -339,55 +284,41 @@
 			</modules>
 		</profile>
 
-		<!-- Profile that creates an SDK package -->
+		<!-- Profile that creates a distribution for Encap -->
 		<profile>
-			<id>sdk</id>
+			<id>dist:encap</id>
 			<properties>
-				<safe-online.host.name>localhost</safe-online.host.name>
-				<defaultCronExpression> 0 0/5 * * * ? </defaultCronExpression>
+				<safe-online.host.name> test.encap.no </safe-online.host.name>
+				<safe-online.host.port>80</safe-online.host.port>
+				<safe-online.host.port.ssl> 443 </safe-online.host.port.ssl>
+				<safe-online.jboss.host.port> 12080 </safe-online.jboss.host.port>
+				<safe-online.jboss.host.port.ssl> 12443 
+				</safe-online.jboss.host.port.ssl>
 			</properties>
 			<modules>
-				<module>safe-online-sdk-manual</module>
-				<module>safe-online-sdk-package</module>
-				<module>safe-online-device-sdk-manual</module>
+				<module>safe-online-distribution</module>
 			</modules>
 		</profile>
 
 		<!-- Profile that enables the performance testing framework -->
 		<profile>
-			<id>performance</id>
+			<id>dist:performance</id>
 			<properties>
                 <safe-online.distribution>performance</safe-online.distribution>
-				<safe-online.data.source.dialect>mysql</safe-online.data.source.dialect>
-				<safe-online.data.source.uri>jdbc:mysql://localhost:3306/safeonline</safe-online.data.source.uri>
-				<safe-online.dialect> org.hibernate.dialect.MySQLDialect 
-				</safe-online.dialect>
 				<safe-online.host.name> sebeco-dev-10 </safe-online.host.name>
-				<safe-online.host.basename>
-					${safe-online.host.protocol}://${safe-online.host.name}:${safe-online.host.port} 
-				</safe-online.host.basename>
-				<safe-online.host.auth.basename>
+				<safe-online.host.auth.basename><!-- Use HTTP for auth -->
 					${safe-online.host.protocol}://${safe-online.host.name}:${safe-online.host.port} 
 				</safe-online.host.auth.basename>
 				<safe-online.profiling.agent.data.source.uri>
-					jdbc:mysql://localhost:3306/safeonline 
+                    ${safe-online.data.source.uri}
 				</safe-online.profiling.agent.data.source.uri>
-				<safe-online.profiling.group> net.lin-k.safe-online.performance 
-				</safe-online.profiling.group>
-				<safe-online.profiling.agent.batch.size> 5 
-				</safe-online.profiling.agent.batch.size>
-				<safe-online.profiling.agent.show.sql> false 
-				</safe-online.profiling.agent.show.sql>
-				<safe-online.profiling.agent.dialect>
-					org.hibernate.dialect.MySQLDialect 
-				</safe-online.profiling.agent.dialect>
-				<safe-online.profiling.agent.hibernate.hbm2ddl.auto> update 
-				</safe-online.profiling.agent.hibernate.hbm2ddl.auto>
-				<safe-online.profiling.agent.data.source> AgentDS 
-				</safe-online.profiling.agent.data.source>
-				<safe-online.profiling.initial_hosts>
-					sebeco-dev-11.lin-k.net[7800],sebeco-dev-12.lin-k.net[7800] 
-				</safe-online.profiling.initial_hosts>
+				<safe-online.profiling.group>net.lin-k.safe-online.performance</safe-online.profiling.group>
+				<safe-online.profiling.agent.batch.size>5</safe-online.profiling.agent.batch.size>
+				<safe-online.profiling.agent.show.sql>false</safe-online.profiling.agent.show.sql>
+                <safe-online.profiling.agent.dialect>${safe-online.data.source.dialect}</safe-online.profiling.agent.dialect>
+				<safe-online.profiling.agent.hibernate.hbm2ddl.auto>update</safe-online.profiling.agent.hibernate.hbm2ddl.auto>
+				<safe-online.profiling.agent.data.source>AgentDS</safe-online.profiling.agent.data.source>
+				<safe-online.profiling.initial_hosts>sebeco-dev-11.lin-k.net[7800],sebeco-dev-12.lin-k.net[7800]</safe-online.profiling.initial_hosts>
 				<safe-online.profiling.filter><![CDATA[-->
 					<filter>
 						<filter-name>ProfileFilter</filter-name>
@@ -445,6 +376,65 @@
 			</modules>
 		</profile>
 
+		<!-- Profile used to create a development version -->
+		<profile>
+			<id>development</id>
+			<properties>
+				<debug.mode>true</debug.mode>
+				<safe-online.show.sql>true</safe-online.show.sql>
+				<safe-online.batch.size>0</safe-online.batch.size>
+			</properties>
+		</profile>
+
+		<!-- Profile used by Hudson -->
+		<profile>
+			<id>hudson</id>
+			<distributionManagement>
+				<repository>
+					<id>buildserver-release-repository</id>
+					<url>file:///maven2</url>
+				</repository>
+				<snapshotRepository>
+					<id>buildserver-snapshot-repository</id>
+					<url>file:///maven2-snapshots</url>
+					<uniqueVersion>false</uniqueVersion>
+				</snapshotRepository>
+				<site>
+					<id>buildserver-site-repository</id>
+					<url>file:///site/safe-online</url>
+				</site>
+			</distributionManagement>
+		</profile>
+
+		<!-- Profile used to perform Web Application tests -->
+		<profile>
+			<id>test</id>
+			<properties>
+				<defaultCronExpression>0 0 3 * * ?</defaultCronExpression>
+                <safe-online.host.auth.basename><!-- Use HTTP for auth -->
+					${safe-online.host.protocol}://${safe-online.host.name}:${safe-online.host.port} 
+				</safe-online.host.auth.basename>
+			</properties>
+			<modules>
+				<module>safe-online-test-webapp</module>
+				<module>safe-online-test</module>
+			</modules>
+		</profile>
+
+		<!-- Profile that creates an SDK package -->
+		<profile>
+			<id>sdk</id>
+			<properties>
+				<safe-online.host.name>localhost</safe-online.host.name>
+				<defaultCronExpression> 0 0/5 * * * ? </defaultCronExpression>
+			</properties>
+			<modules>
+				<module>safe-online-sdk-manual</module>
+				<module>safe-online-sdk-package</module>
+				<module>safe-online-device-sdk-manual</module>
+			</modules>
+		</profile>
+
 		<!-- Profile for deploying on sebeco-test-10 -->
 		<profile>
 			<id>sebeco-test-10</id>
@@ -458,9 +448,6 @@
 			<id>sebeco-dev-10</id>
 			<properties>
 				<safe-online.host.name> sebeco-dev-10 </safe-online.host.name>
-				<safe-online.host.auth.basename>
-					${safe-online.host.protocol}://${safe-online.host.name}:${safe-online.host.port} 
-				</safe-online.host.auth.basename>
 			</properties>
 		</profile>
 
@@ -469,6 +456,14 @@
 			<id>sebeco-dev-11</id>
 			<properties>
 				<safe-online.host.name> sebeco-dev-11 </safe-online.host.name>
+			</properties>
+		</profile>
+
+		<!-- Profile for deploying on sebeco-dev-12 -->
+		<profile>
+			<id>sebeco-dev-12</id>
+			<properties>
+				<safe-online.host.name> sebeco-dev-12 </safe-online.host.name>
 			</properties>
 		</profile>
 
@@ -488,43 +483,16 @@
 			</properties>
 		</profile>
 
-		<!-- Profile that creates a distribution for Encap -->
-		<profile>
-			<id>test.encap.no</id>
-			<properties>
-				<safe-online.host.name> test.encap.no </safe-online.host.name>
-				<safe-online.host.port>80</safe-online.host.port>
-				<safe-online.host.port.ssl> 443 </safe-online.host.port.ssl>
-				<safe-online.jboss.host.port> 12080 </safe-online.jboss.host.port>
-				<safe-online.jboss.host.port.ssl> 12443 
-				</safe-online.jboss.host.port.ssl>
-			</properties>
-		</profile>
-
-		<!-- Profile to enable Option branding. -->
-		<profile>
-			<id>option-branding</id>
-			<properties>
-				<safe-online.branding>option</safe-online.branding>
-			</properties>
-			<modules>
-				<module>safe-online-webapp-base-option</module>
-            </modules>
-		</profile>
-
 	</profiles>
 
 	<!-- DEFAULT PROPERTIES -->
 	<properties>
-        <safe-online.data.source.dialect>hsql</safe-online.data.source.dialect>
-        <safe-online.distribution>base</safe-online.distribution>
 		<isGlobalOperator>true</isGlobalOperator>
 		<defaultCronExpression>0 0/5 * * * ?</defaultCronExpression>
 		<sessionTimeout>5</sessionTimeout>
         <safe-online.branding>olas</safe-online.branding>
 		<safe-online.data.source>SafeOnlineDS</safe-online.data.source>
 		<safe-online.batch.size>5</safe-online.batch.size>
-		<safe-online.dialect>org.hibernate.dialect.HSQLDialect</safe-online.dialect>
 		<safe-online.hibernate.hbm2ddl.auto>update</safe-online.hibernate.hbm2ddl.auto>
 		<safe-online.show.sql>false</safe-online.show.sql>
 		<debug.mode>false</debug.mode>
