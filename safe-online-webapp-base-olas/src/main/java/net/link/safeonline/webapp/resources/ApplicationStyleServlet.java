@@ -60,7 +60,7 @@ public class ApplicationStyleServlet extends AbstractInjectionServlet {
     private static final long   serialVersionUID = 1L;
     private static final Log    LOG              = LogFactory.getLog(ApplicationStyleServlet.class);
 
-    @Context(name = SafeOnlineAppConstants.COLOR_CONTEXT)
+    @Context(name = SafeOnlineAppConstants.COLOR_CONTEXT, optional = true)
     private String              applicationColor;
     private VelocityEngine      velocity;
 
