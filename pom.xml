@@ -127,6 +127,15 @@
 		<profile>
 			<id>demo</id>
 			<properties>
+                <safe-online.distribution>demo</safe-online.distribution>
+				<safe-online.data.source.dialect>mysql</safe-online.data.source.dialect>
+				<safe-online.data.source.uri> jdbc:mysql://localhost:3306/safeonline 
+				</safe-online.data.source.uri>
+				<safe-online.dialect> org.hibernate.dialect.MySQLDialect 
+				</safe-online.dialect>
+				<defaultCronExpression> 0 0 0 1 1 1 </defaultCronExpression>
+				<sessionTimeout>60</sessionTimeout>
+
 				<!-- WEBAPP NAMES -->
 				<safe-online.demo.app.webapp.name>demo</safe-online.demo.app.webapp.name>
 				<safe-online.demo.prescription.webapp.name>demo-prescription</safe-online.demo.prescription.webapp.name>
@@ -137,8 +146,6 @@
 				<safe-online.demo.payment.webapp.name>demo-payment</safe-online.demo.payment.webapp.name>
 				<safe-online.demo.ticket.webapp.name>demo-ticket</safe-online.demo.ticket.webapp.name>
 				<safe-online.demo.ws.webapp.name>safe-online-demo-ws</safe-online.demo.ws.webapp.name>
-				<defaultCronExpression> 0 0 0 1 1 1 </defaultCronExpression>
-				<sessionTimeout>60</sessionTimeout>
 			</properties>
 			<modules>
 				<!-- DEMO CORE -->
@@ -184,21 +191,6 @@
 			</modules>
 		</profile>
 
-		<!-- Profile to build demo distributions; requires profile 'demo' -->
-		<profile>
-			<id>demo-distribution</id>
-			<modules>
-				<module>safe-online-base-distribution</module>
-				<module>safe-online-demo-distribution</module>
-			</modules>
-			<properties>
-				<safe-online.data.source.uri> jdbc:mysql://localhost:3306/safeonline 
-				</safe-online.data.source.uri>
-				<safe-online.dialect> org.hibernate.dialect.MySQLDialect 
-				</safe-online.dialect>
-			</properties>
-		</profile>
-
 		<!-- Profile to build a pilot version -->
 		<profile>
 			<id>pilot-core</id>
@@ -227,25 +219,26 @@
 		<profile>
 			<id>pilot-mysql</id>
 			<properties>
+                <safe-online.distribution>pilot</safe-online.distribution>
+				<safe-online.data.source.dialect>mysql</safe-online.data.source.dialect>
 				<safe-online.data.source.uri> jdbc:mysql://localhost:3306/safeonline 
 				</safe-online.data.source.uri>
 				<safe-online.dialect> org.hibernate.dialect.MySQLDialect 
 				</safe-online.dialect>
 			</properties>
 			<modules>
-				<module>safe-online-base-distribution</module>
-				<module>safe-online-pilot-distribution</module>
-				<module>safe-online-pilot-mysql-distribution</module>
+				<module>safe-online-distribution</module>
 			</modules>
 		</profile>
 
 		<!-- Profile to build the pilot distribution that uses HSQL as DS -->
 		<profile>
 			<id>pilot-hsql</id>
+			<properties>
+                <safe-online.distribution>pilot</safe-online.distribution>
+            </properties>
 			<modules>
-				<module>safe-online-base-distribution</module>
-				<module>safe-online-pilot-distribution</module>
-				<module>safe-online-pilot-hsql-distribution</module>
+				<module>safe-online-distribution</module>
 			</modules>
 		</profile>
 
@@ -255,6 +248,8 @@
 		<profile>
 			<id>pilot-postgres</id>
 			<properties>
+                <safe-online.distribution>pilot</safe-online.distribution>
+				<safe-online.data.source.dialect>postgresql</safe-online.data.source.dialect>
 				<safe-online.data.source.uri>
 					jdbc:postgresql://localhost:5432/safeonline 
 				</safe-online.data.source.uri>
@@ -262,9 +257,7 @@
 				</safe-online.dialect>
 			</properties>
 			<modules>
-				<module>safe-online-base-distribution</module>
-				<module>safe-online-pilot-distribution</module>
-				<module>safe-online-pilot-postgres-distribution</module>
+				<module>safe-online-distribution</module>
 			</modules>
 		</profile>
 
@@ -272,6 +265,8 @@
 		<profile>
 			<id>pilot-oracle</id>
 			<properties>
+                <safe-online.distribution>pilot</safe-online.distribution>
+				<safe-online.data.source.dialect>oracle</safe-online.data.source.dialect>
 				<safe-online.data.source.uri>
 					jdbc:oracle:thin:@localhost:1521:safeonline 
 				</safe-online.data.source.uri>
@@ -280,9 +275,7 @@
 				</safe-online.dialect>
 			</properties>
 			<modules>
-				<module>safe-online-base-distribution</module>
-				<module>safe-online-pilot-distribution</module>
-				<module>safe-online-pilot-oracle-distribution</module>
+				<module>safe-online-distribution</module>
 			</modules>
 		</profile>
 
@@ -342,7 +335,7 @@
 				<safe-online.host.name> buildserver </safe-online.host.name>
 			</properties>
 			<modules>
-				<module>safe-online-base-distribution</module>
+				<module>safe-online-distribution</module>
 			</modules>
 		</profile>
 
@@ -364,8 +357,9 @@
 		<profile>
 			<id>performance</id>
 			<properties>
-				<safe-online.data.source.uri> jdbc:mysql://localhost:3306/safeonline 
-				</safe-online.data.source.uri>
+                <safe-online.distribution>performance</safe-online.distribution>
+				<safe-online.data.source.dialect>mysql</safe-online.data.source.dialect>
+				<safe-online.data.source.uri>jdbc:mysql://localhost:3306/safeonline</safe-online.data.source.uri>
 				<safe-online.dialect> org.hibernate.dialect.MySQLDialect 
 				</safe-online.dialect>
 				<safe-online.host.name> sebeco-dev-10 </safe-online.host.name>
@@ -447,19 +441,7 @@
 				<module>safe-online-performance-console-base</module>
 				<module>safe-online-performance-console-swing</module>
 				<module>safe-online-performance-console-package</module>
-			</modules>
-		</profile>
-
-		<!--
-			Profile used to create an OLAS distribution for performance testing;
-			requires profile 'performance'
-		-->
-		<profile>
-			<id>performance-distribution</id>
-			<modules>
-				<module>safe-online-base-distribution</module>
-				<module>safe-online-performance-distribution</module>
-				<module>safe-online-performance-agent-distribution</module>
+				<module>safe-online-distribution</module>
 			</modules>
 		</profile>
 
@@ -534,6 +516,8 @@
 
 	<!-- DEFAULT PROPERTIES -->
 	<properties>
+        <safe-online.data.source.dialect>hsql</safe-online.data.source.dialect>
+        <safe-online.distribution>base</safe-online.distribution>
 		<isGlobalOperator>true</isGlobalOperator>
 		<defaultCronExpression>0 0/5 * * * ?</defaultCronExpression>
 		<sessionTimeout>5</sessionTimeout>
@@ -1038,14 +1022,14 @@
 						</validationSet>
 					</validationSets>
 				</configuration>
-				<executions>
+				<!--executions> TODO: Fix Catalog Issues.
 					<execution>
 						<phase>test</phase>
 						<goals>
 							<goal>validate</goal>
 						</goals>
 					</execution>
-				</executions>
+				</executions-->
 			</plugin>
 
 			<!-- NON-INHERITED PLUGIN SETTINGS -->
