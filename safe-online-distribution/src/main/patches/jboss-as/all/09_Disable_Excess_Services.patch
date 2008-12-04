@@ -1,0 +1,283 @@
+--- server/default/conf/jboss-service.xml	2008-06-09 15:52:57 +0200
++++ server/default/conf/jboss-service.xml	2008-06-09 16:00:09 +0200
+@@ -27,12 +27,10 @@
+       <attribute name="RARDeployer">jboss.jca:service=RARDeployer</attribute>
+       <attribute name="CMDeployer">jboss.jca:service=ConnectionFactoryDeployer</attribute>
+       <attribute name="WARDeployer">jboss.web:service=WebServer</attribute>
+-      <attribute name="CARDeployer">jboss.j2ee:service=ClientDeployer</attribute>
+       <attribute name="MailService">jboss:service=Mail</attribute>
+       <attribute name="JNDIService">jboss:service=Naming</attribute>
+       <attribute name="JTAService">jboss:service=TransactionManager</attribute>
+       <attribute name="UserTransactionService">jboss:service=ClientUserTransaction</attribute>
+-      <attribute name="RMI_IIOPService">jboss:service=CorbaORB</attribute>
+    </mbean>
+ 
+    <!-- ==================================================================== -->
+@@ -56,28 +54,6 @@
+    <!-- Thread Pool                                                          -->
+    <!-- ==================================================================== -->
+    
+-   <!-- A Thread pool service -->
+-   <mbean code="org.jboss.util.threadpool.BasicThreadPool"
+-      name="jboss.system:service=ThreadPool">
+-      <attribute name="Name">JBoss System Threads</attribute>
+-      <attribute name="ThreadGroupName">System Threads</attribute>
+-      <!-- How long a thread will live without any tasks in MS -->
+-      <attribute name="KeepAliveTime">60000</attribute>
+-      <!-- The max number of threads in the pool -->
+-      <attribute name="MaximumPoolSize">10</attribute>
+-      <!-- The max number of tasks before the queue is full -->
+-      <attribute name="MaximumQueueSize">1000</attribute>
+-      <!-- The behavior of the pool when a task is added and the queue is full.
+-      abort - a RuntimeException is thrown
+-      run - the calling thread executes the task
+-      wait - the calling thread blocks until the queue has room
+-      discard - the task is silently discarded without being run
+-      discardOldest - check to see if a task is about to complete and enque
+-         the new task if possible, else run the task in the calling thread
+-      -->
+-      <attribute name="BlockingMode">run</attribute>
+-   </mbean>
+-
+    <!-- Preload all custom editors for VMs that don't use the thread
+         context class loader when searching for PropertyEditors. Uncomment
+         if your JDK 1.3.0 VM fails to find JBoss PropertyEditors.
+@@ -157,15 +133,6 @@
+    -->
+ 
+    <!-- ==================================================================== -->
+-   <!-- JBoss RMI Classloader - only install when available                  -->
+-   <!-- ==================================================================== -->
+-   <mbean code="org.jboss.util.property.jmx.SystemPropertyClassValue"
+-      name="jboss.rmi:type=RMIClassLoader">
+-      <attribute name="Property">java.rmi.server.RMIClassLoaderSpi</attribute>
+-      <attribute name="ClassName">org.jboss.system.JBossRMIClassLoader</attribute>
+-   </mbean>
+-
+-   <!-- ==================================================================== -->
+    <!-- Service Binding                                                      -->
+    <!-- ==================================================================== -->
+ 
+@@ -198,33 +165,6 @@
+    -->
+ 
+    <!-- ==================================================================== -->
+-   <!-- Class Loading                                                        -->
+-   <!-- ==================================================================== -->
+-
+-   <!-- A mini webserver used for dynamic and class and resource loading --> 
+-   <mbean code="org.jboss.web.WebService"
+-      name="jboss:service=WebService">
+-      <!-- The Bind address and Port -->
+-      <attribute name="BindAddress">${jboss.bind.address}</attribute>      
+-      <attribute name="Port">8083</attribute>
+-      <!--  The address to use for the host portion of the RMI codebase URL -->
+-      <attribute name="Host">${java.rmi.server.hostname}</attribute>
+-      <!-- Should non-EJB .class files be downloadable -->
+-      <attribute name="DownloadServerClasses">true</attribute>
+-      <!-- Should resources other than .class files be downloadable. Both
+-         DownloadServerClasses and DownloadResources must be true for resources
+-         to be downloadable. This is false by default because its generally a
+-         bad idea as server configuration files that container security
+-         information can be accessed.
+-       -->
+-      <attribute name="DownloadResources">false</attribute>
+-
+-      <!-- Use the default thread pool for dynamic class loading -->
+-      <depends optional-attribute-name="ThreadPool"
+-         proxy-type="attribute">jboss.system:service=ThreadPool</depends>
+-   </mbean>
+-
+-   <!-- ==================================================================== -->
+    <!-- JNDI                                                                 -->
+    <!-- ==================================================================== -->
+ 
+@@ -247,19 +187,16 @@
+       <!-- The listening port for the bootstrap JNP service. Set this to -1
+          to run the NamingService without the JNP invoker listening port.
+       -->
+-      <attribute name="Port">1099</attribute>
++      <attribute name="Port">-1</attribute>
+       <!-- The bootstrap JNP server bind address. This also sets the default
+          RMI service bind address. Empty == all addresses
+       -->
+       <attribute name="BindAddress">${jboss.bind.address}</attribute>
+       <!-- The port of the RMI naming service, 0 == anonymous -->
+-      <attribute name="RmiPort">1098</attribute>
++      <attribute name="RmiPort">0</attribute>
+       <!-- The RMI service bind address. Empty == all addresses
+       -->
+       <attribute name="RmiBindAddress">${jboss.bind.address}</attribute>
+-      <!-- The thread pool service used to control the bootstrap lookups -->
+-      <depends optional-attribute-name="LookupPool"
+-         proxy-type="attribute">jboss.system:service=ThreadPool</depends>
+       <!-- An example of using the unifed invoker as the transport.
+          <depends optional-attribute-name="InvokerProxyFactory"
+          proxy-type="attribute">jboss:service=proxyFactory,type=unified,target=Naming</depends>
+@@ -268,13 +205,6 @@
+          proxy-type="attribute">jboss:service=NamingBeanImpl</depends>
+    </mbean>
+    
+-   <mbean code="org.jboss.naming.JNDIView"
+-   	name="jboss:service=JNDIView"
+-   	xmbean-dd="resource:xmdesc/JNDIView-xmbean.xml">
+-   	<!-- The HANamingService service name -->
+-  	    <attribute name="HANamingService">jboss:service=HAJNDI</attribute>
+-   </mbean>
+-
+    <!-- ==================================================================== -->
+    <!-- Security                                                             -->
+    <!-- ==================================================================== -->
+@@ -362,7 +292,7 @@
+       <attribute name="ObjectStoreDir">${jboss.server.data.dir}/tx-object-store</attribute> 
+    </mbean>
+ 
+-   <!--
++	<!--
+       | UserTransaction support.
+     -->
+    <mbean code="org.jboss.tm.usertx.server.ClientUserTransactionService"
+@@ -438,27 +368,6 @@
+       <depends>jboss:service=TransactionManager</depends>
+    </mbean>
+ 
+-   <mbean code="org.jboss.invocation.pooled.server.PooledInvoker"
+-      name="jboss:service=invoker,type=pooled">
+-      <attribute name="NumAcceptThreads">1</attribute>
+-      <attribute name="MaxPoolSize">300</attribute>
+-      <attribute name="ClientMaxPoolSize">300</attribute>
+-      <attribute name="SocketTimeout">60000</attribute>
+-      <attribute name="ServerBindAddress">${jboss.bind.address}</attribute>
+-      <attribute name="ServerBindPort">4445</attribute>
+-      <attribute name="ClientConnectAddress">${jboss.bind.address}</attribute>
+-      <attribute name="ClientConnectPort">0</attribute>
+-      <attribute name="ClientRetryCount">1</attribute>
+-      <attribute name="EnableTcpNoDelay">false</attribute>
+-
+-      <!-- Customized socket factory attributes
+-      <attribute name="ClientSocketFactoryName">custom.client.factory</attribute>
+-      <attribute name="ServerSocketFactoryName">custom.server.factory</attribute>
+-      <attribute name="SslDomain">java:/jaas/pooledInvoker</attribute>
+-      -->
+-      <depends optional-attribute-name="TransactionManagerService">jboss:service=TransactionManager</depends>
+-   </mbean>
+-
+    <!-- ==================================================================== -->
+    <!-- Remoting services 						                                   -->
+    <!-- ==================================================================== -->
+@@ -646,10 +555,10 @@
+       </attribute>
+ 
+       <!-- Frequency in milliseconds to rescan the URLs for changes -->
+-      <attribute name="ScanPeriod">5000</attribute>
++      <attribute name="ScanPeriod">60000</attribute>
+ 
+       <!-- A flag to disable the scans -->
+-      <attribute name="ScanEnabled">true</attribute>
++      <attribute name="ScanEnabled">false</attribute>
+ 
+       <!-- URLs are comma separated and resolve relative to the server home URL
+          unless the given path is absolute. If the URL ends in "/" it is
+--- server/default/deploy/ejb-deployer.xml	2008-10-06 09:41:04.000000000 +0200
++++ server/default/deploy/ejb-deployer.xml	2008-10-06 09:41:04.000000000 +0200
+@@ -303,9 +303,6 @@
+ 
+     <!-- The EJBDeployer needs the JTA transaction manager service -->
+     <depends optional-attribute-name="TransactionManagerServiceName">jboss:service=TransactionManager</depends>
+-    <!-- The dynamic class loading simple web server -->
+-    <depends optional-attribute-name="WebServiceName">jboss:service=WebService</depends>
+-    
+   </mbean>
+ 
+ </server>
+--- server/default/deploy/ejb3.deployer/META-INF/jboss-service.xml	2008-10-06 09:41:04.000000000 +0200
++++ server/default/deploy/ejb3.deployer/META-INF/jboss-service.xml	2008-10-06 09:41:04.000000000 +0200
+@@ -6,6 +6,17 @@
+ -->
+ <server>
+ 
+-   <mbean code="org.jboss.remoting.transport.Connector"
+-          name="jboss.remoting:type=Connector,name=DefaultEjb3Connector,handler=ejb3">
+-      <depends>jboss.aop:service=AspectDeployer</depends>
+-      <attribute name="InvokerLocator">socket://${jboss.bind.address}:3873</attribute>
+-      <attribute name="Configuration">
+-         <handlers>
+-            <handler subsystem="AOP">org.jboss.aspects.remoting.AOPRemotingInvocationHandler</handler>
+-         </handlers>
+-      </attribute>
+-   </mbean>
+-   
+    <!-- The following is sample configuration for modifying the Connector 
+    <mbean code="org.jboss.remoting.transport.Connector"
+           name="jboss.remoting:type=Connector,name=DefaultEjb3Connector,handler=ejb3">
+--- server/default/deploy/jboss-web.deployer/conf/web.xml	2008-10-06 09:41:04.000000000 +0200
++++ server/default/deploy/jboss-web.deployer/conf/web.xml	2008-10-06 09:41:04.000000000 +0200
+@@ -28,7 +28,7 @@
+       <filter-class>org.jboss.web.tomcat.filters.ReplyHeaderFilter</filter-class>
+       <init-param>
+          <param-name>X-Powered-By</param-name>
+-         <param-value>Servlet 2.4; JBoss-4.2.2.GA (build: SVNTag=JBoss_4_2_2_GA date=200710221139)/Tomcat-5.5</param-value>
++         <param-value>Servlet 2.4</param-value>
+       </init-param>
+    </filter>
+ 
+@@ -303,11 +303,6 @@
+            <param-name>tagLibJar1</param-name>
+            <param-value>jstl.jar</param-value>
+         </init-param>
++        
++        <init-param>
++      	   <param-name>development</param-name>
++           <param-value>false</param-value>
++        </init-param>
+ 
+         <load-on-startup>3</load-on-startup>
+     </servlet>
+--- server/default/deploy/jboss-web.deployer/server.xml	2008-12-04 14:42:02.000000000 +0100
++++ server/default/deploy/jboss-web.deployer/server.xml	2008-12-04 14:42:02.000000000 +0100
+@@ -19,26 +19,25 @@
+          APR (HTTP/AJP) Connector: /docs/apr.html
+          Define a non-SSL HTTP/1.1 Connector on port 8080
+     -->
+-    <Connector port="8080" address="${jboss.bind.address}"    
++    <Connector port="${safe-online.jboss.host.port:insecure}" address="${jboss.bind.address}"    
+          maxThreads="250" maxHttpHeaderSize="8192"
+-         emptySessionPath="true" protocol="HTTP/1.1"
+-         enableLookups="false" redirectPort="8443" acceptCount="100"
++         emptySessionPath="false" protocol="HTTP/1.1" enableLookups="false"
++         redirectPort="${safe-online.host.port:secure}" acceptCount="100"
+          connectionTimeout="20000" disableUploadTimeout="true" />
+ 
+     <!-- Define a SSL HTTP/1.1 Connector on port 8443
+          This connector uses the JSSE configuration, when using APR, the 
+          connector should be using the OpenSSL style configuration
+          described in the APR documentation -->
+-    <!--
+-    <Connector port="8443" protocol="HTTP/1.1" SSLEnabled="true"
++    
++    <Connector port="${safe-online.jboss.host.port:secure}" protocol="HTTP/1.1" SSLEnabled="true"
+                maxThreads="150" scheme="https" secure="true"
+-               clientAuth="false" sslProtocol="TLS" />
+-    -->
++               clientAuth="false" sslProtocol="TLS"
++               keystoreFile="${jboss.server.home.dir}/conf/ssl.jks"
++               keystorePass="secret" /> 
+ 
+     <!-- Define an AJP 1.3 Connector on port 8009 -->
+     <Connector port="8009" address="${jboss.bind.address}" protocol="AJP/1.3"
+-         emptySessionPath="true" enableLookups="false" redirectPort="8443" />
++         emptySessionPath="false" enableLookups="false" redirectPort="${safe-online.host.port:secure}" />
+ 
+       <Engine name="jboss.web" defaultHost="localhost">
+ 
+--- server/default/deploy/jbossjca-service.xml	2008-10-06 09:41:04.000000000 +0200
++++ server/default/deploy/jbossjca-service.xml	2008-10-06 09:41:04.000000000 +0200
+@@ -60,7 +60,7 @@
+     <depends optional-attribute-name="TransactionManagerServiceName">jboss:service=TransactionManager</depends>
+ 
+     <!-- Enable connection close debug monitoring -->
+-    <attribute name="Debug">true</attribute>
++    <attribute name="Debug">false</attribute>
+ 
+   </mbean>
+ 
