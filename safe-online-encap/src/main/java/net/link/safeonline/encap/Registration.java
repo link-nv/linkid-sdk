@@ -16,7 +16,6 @@ import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.custom.converter.PhoneNumber;
 
@@ -62,8 +61,7 @@ public interface Registration {
             throws MalformedURLException, MobileException;
 
     String authenticate()
-            throws IOException, MobileException, SubjectNotFoundException, AttributeTypeNotFoundException, PermissionDeniedException,
-            AttributeNotFoundException;
+            throws IOException, MobileException, SubjectNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException;
 
     /*
      * Lifecycle.

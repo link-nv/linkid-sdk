@@ -15,7 +15,7 @@
 		<div wicket:id="content_border">
 
 			<h1>
-				<span wicket:id="title">[Remove Mobile xxx]</span>
+				<span wicket:id="title">[Enable Digipass xxx]</span>
 			</h1>
 
 			<div wicket:id="sidebar_border">
@@ -29,24 +29,22 @@
 				</ul>
 
 				<p>
-					<wicket:message key="helpOtpOverSmsRemove">[Remove OTP over SMS
-						Help]</wicket:message>
+					<wicket:message key="helpDigipassEnable">[Enable Digipass Help]</wicket:message>
 				</p>
 			</div>
 
-			<form wicket:id="removal_form">
+			<form wicket:id="enable_form">
 
 				<label>
-					<wicket:message key="mobilePin">[Pin]</wicket:message>
+					<wicket:message key="digipassToken">[Digipass Token]</wicket:message>
 				</label>
 				<div>
-					<input wicket:id="pin" type="password" class="label" />
+					<input wicket:id="token" type="text" class="label" />
 				</div>
-				<div wicket:id="pin_feedback" class="error"></div>
 
 				<label>&nbsp;</label>
-				<input wicket:id="remove" type="submit" value="[Remove]"
-					wicket:message="value:removeaction" class="submit" />
+				<input wicket:id="enable" type="submit" value="[Save]"
+					wicket:message="value:saveaction" class="submit" />
 				<input wicket:id="cancel" type="submit" value="[Cancel]"
 					wicket:message="value:cancelaction" class="submit" />
 

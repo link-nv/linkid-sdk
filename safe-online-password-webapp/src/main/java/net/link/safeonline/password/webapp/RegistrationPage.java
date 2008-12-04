@@ -32,7 +32,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.validation.EqualPasswordInputValidator;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.Model;
 
 
 public class RegistrationPage extends TemplatePage {
@@ -130,9 +130,9 @@ public class RegistrationPage extends TemplatePage {
 
         private static final long serialVersionUID = 1L;
 
-        String                    password1;
+        Model<String>             password1;
 
-        String                    password2;
+        Model<String>             password2;
 
 
         @SuppressWarnings("unchecked")
@@ -140,12 +140,12 @@ public class RegistrationPage extends TemplatePage {
 
             super(id);
 
-            final PasswordTextField password1Field = new PasswordTextField(PASSWORD1_FIELD_ID, new PropertyModel<String>(this, "password1"));
+            final PasswordTextField password1Field = new PasswordTextField(PASSWORD1_FIELD_ID, this.password1 = new Model<String>());
 
             add(password1Field);
             add(new ErrorComponentFeedbackLabel("password1_feedback", password1Field));
 
-            final PasswordTextField password2Field = new PasswordTextField(PASSWORD2_FIELD_ID, new PropertyModel<String>(this, "password2"));
+            final PasswordTextField password2Field = new PasswordTextField(PASSWORD2_FIELD_ID, this.password2 = new Model<String>());
 
             add(password2Field);
             add(new ErrorComponentFeedbackLabel("password2_feedback", password2Field));
@@ -164,7 +164,7 @@ public class RegistrationPage extends TemplatePage {
 
                     try {
                         RegistrationPage.this.passwordDeviceService.register(RegistrationPage.this.protocolContext.getSubject(),
-                                RegistrationForm.this.password1);
+                                RegistrationForm.this.password1.getObject());
                     } catch (SubjectNotFoundException e) {
                         password1Field.error(getLocalizer().getString("errorSubjectNotFound", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "register: subject not found",

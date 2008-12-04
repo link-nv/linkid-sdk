@@ -5,17 +5,17 @@
 		<ui:composition template="/WEB-INF/template.xhtml">
 
 			<ui:define name="top_content">
-				<h2>#{msgs.removeBeId}</h2>
+				<h2>#{msgs.beidEnable}</h2>
 			</ui:define>
 
 			<ui:define name="content">
 				<applet name="IdentityApplet"
 					code="net.link.safeonline.auth.pcsc.IdentityApplet.class" archive="safe-online-auth-pcsc-applet-package.jar"
 					width="450" height="200">
-					<param name="ServletPath" value="identityremove" />
+					<param name="ServletPath" value="identityenable" />
 					<param name="TargetPath" value="deviceexit" />
 					<param name="HelpdeskEventPath" value="helpdesk" />
-					<param name="HelpPath" value="./help.seam?location=remove-beid-pcsc.seam" />
+					<param name="HelpPath" value="./help.seam?location=enable-beid-pcsc.seam" />
 					<param name="SessionId"
 						value="#{facesContext.externalContext.request.session.id}" />
 					<param name="User" value="#{userId}" />
@@ -31,7 +31,7 @@
 			</ui:define>
 
 			<ui:define name="sidebar">
-				<p>#{msgs.helpBeid}</p>
+				<p>#{msgs.helpEnableIdentity}</p>
 			</ui:define>
 
 		</ui:composition>

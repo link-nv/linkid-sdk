@@ -7,11 +7,9 @@
 package net.link.safeonline.model.otpoversms.bean;
 
 import java.net.ConnectException;
-import java.util.Collections;
 import java.util.List;
 
 import javax.ejb.EJB;
-import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -29,12 +27,10 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.DeviceDAO;
-import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DeviceEntity;
-import net.link.safeonline.entity.HistoryEventType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.model.otpoversms.OtpOverSmsConstants;
@@ -83,9 +79,6 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
 
     @EJB(mappedName = SecurityAuditLogger.JNDI_BINDING)
     private SecurityAuditLogger  securityAuditLogger;
-
-    @EJB(mappedName = HistoryDAO.JNDI_BINDING)
-    private HistoryDAO           historyDAO;
 
 
     public void checkMobile(String mobile)
@@ -140,8 +133,8 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
     }
 
     public void register(String userId, String mobile, String pin)
-            throws SubjectNotFoundException, DeviceNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException,
-            AttributeNotFoundException {
+            throws SubjectNotFoundException, DeviceNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException,
+            PermissionDeniedException {
 
         LOG.debug("register otp over sms device for \"" + userId + "\" mobile=" + mobile);
 
@@ -158,39 +151,26 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
             subject = this.subjectService.addSubjectWithoutLogin(userId);
         }
 
-        try {
-            this.otpOverSmsManager.registerMobile(subject, mobile, pin);
-        } catch (PermissionDeniedException e) {
-            throw new EJBException("Not allowed to set mobile");
-        }
+        this.otpOverSmsManager.registerMobile(subject, mobile, pin);
 
         this.subjectIdentifierDAO.addSubjectIdentifier(OtpOverSmsConstants.OTPOVERSMS_IDENTIFIER_DOMAIN, mobile, subject);
 
-        this.historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_REGISTRATION, Collections.singletonMap(
-                SafeOnlineConstants.DEVICE_PROPERTY, OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID));
-
     }
 
-    public boolean remove(String userId, String mobile, String pin)
+    public void remove(String userId, String mobile)
             throws DeviceNotFoundException, SubjectNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException,
-            PermissionDeniedException, DeviceDisabledException {
+            DeviceDisabledException {
 
         checkMobile(mobile);
 
         LOG.debug("remove otp over sms device for " + userId + " mobile=" + mobile);
         SubjectEntity subject = this.subjectService.getSubject(userId);
 
-        if (!this.otpOverSmsManager.validatePin(subject, mobile, pin))
-            return false;
-
         this.otpOverSmsManager.removeMobile(subject, mobile);
 
         this.subjectIdentifierDAO.removeSubjectIdentifier(subject, OtpOverSmsConstants.OTPOVERSMS_IDENTIFIER_DOMAIN, mobile);
 
-        this.historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_REMOVAL, Collections.singletonMap(
-                SafeOnlineConstants.DEVICE_PROPERTY, OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID));
-
-        return true;
+        return;
 
     }
 
@@ -206,9 +186,6 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
         if (!this.otpOverSmsManager.changePin(subject, mobile, oldPin, newPin))
             return false;
 
-        this.historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_UPDATE, Collections.singletonMap(
-                SafeOnlineConstants.DEVICE_PROPERTY, OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID));
-
         return true;
 
     }
@@ -216,7 +193,7 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
     /**
      * {@inheritDoc}
      */
-    public boolean disable(String userId, String mobile, String pin)
+    public boolean enable(String userId, String mobile, String pin)
             throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException, AttributeTypeNotFoundException {
 
         DeviceEntity device = this.deviceDAO.getDevice(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID);
@@ -241,8 +218,35 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
                             deviceAttribute.getAttributeIndex());
                     attemptsAttribute.setIntegerValue(0);
                 }
-                disableAttribute.setBooleanValue(!disableAttribute.getBooleanValue());
+                disableAttribute.setBooleanValue(false);
+
                 return true;
+            }
+        }
+
+        throw new DeviceRegistrationNotFoundException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void disable(String userId, String mobile)
+            throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException {
+
+        DeviceEntity device = this.deviceDAO.getDevice(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID);
+        SubjectEntity subject = this.subjectService.getSubject(userId);
+
+        List<AttributeEntity> deviceAttributes = this.attributeDAO.listAttributes(subject, device.getAttributeType());
+        for (AttributeEntity deviceAttribute : deviceAttributes) {
+            AttributeEntity mobileAttribute = this.attributeDAO.findAttribute(subject, OtpOverSmsConstants.OTPOVERSMS_MOBILE_ATTRIBUTE,
+                    deviceAttribute.getAttributeIndex());
+            if (mobileAttribute.getStringValue().equals(mobile)) {
+                LOG.debug("disable mobile " + mobile);
+                AttributeEntity disableAttribute = this.attributeDAO.findAttribute(subject, device.getDisableAttributeType(),
+                        deviceAttribute.getAttributeIndex());
+                disableAttribute.setBooleanValue(true);
+
+                return;
             }
         }
 

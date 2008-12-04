@@ -28,6 +28,7 @@ public class DigipassApplication extends OlasApplication {
         super.init();
 
         mountBookmarkablePage("authentication", AuthenticationPage.class);
+        mountBookmarkablePage("enable", EnablePage.class);
 
     }
 

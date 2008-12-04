@@ -109,6 +109,8 @@ public class DeviceBean implements Device {
 
     private String               disablePath;
 
+    private String               enablePath;
+
     private UploadedFile         certificate;
 
     private String               attributeType;
@@ -259,8 +261,8 @@ public class DeviceBean implements Device {
         }
 
         this.deviceService.addDevice(this.name, this.deviceClass, this.node, this.authenticationPath, this.registrationPath,
-                this.removalPath, this.updatePath, this.disablePath, encodedCertificate, this.attributeType, this.userAttributeType,
-                this.disableAttributeType);
+                this.removalPath, this.updatePath, this.disablePath, this.enablePath, encodedCertificate, this.attributeType,
+                this.userAttributeType, this.disableAttributeType);
         return "success";
     }
 
@@ -288,6 +290,8 @@ public class DeviceBean implements Device {
         this.authenticationPath = this.selectedDevice.getAuthenticationPath();
         this.registrationPath = this.selectedDevice.getRegistrationPath();
         this.removalPath = this.selectedDevice.getRemovalPath();
+        this.disablePath = this.selectedDevice.getDisablePath();
+        this.enablePath = this.selectedDevice.getEnablePath();
         if (null != this.selectedDevice.getAttributeType()) {
             this.attributeType = this.selectedDevice.getAttributeType().getName();
         }
@@ -321,6 +325,9 @@ public class DeviceBean implements Device {
         }
         if (null != this.disablePath) {
             this.deviceService.updateDisablePath(deviceName, this.disablePath);
+        }
+        if (null != this.enablePath) {
+            this.deviceService.updateEnablePath(deviceName, this.enablePath);
         }
 
         if (null != this.certificate) {
@@ -453,6 +460,18 @@ public class DeviceBean implements Device {
     public void setDisablePath(String disablePath) {
 
         this.disablePath = disablePath;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getEnablePath() {
+
+        return this.enablePath;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setEnablePath(String enablePath) {
+
+        this.enablePath = enablePath;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)

@@ -115,6 +115,10 @@
 			<param-value>disable</param-value>
 		</init-param>
 		<init-param>
+			<param-name>EnableUrl</param-name>
+			<param-value>enable</param-value>
+		</init-param>
+		<init-param>
 			<param-name>ServletEndpointUrl</param-name>
 			<param-value>
 				${safe-online.host.auth.basename}/${safe-online.digipass.webapp.name}/device 

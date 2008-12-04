@@ -33,9 +33,8 @@ public class OtpOverSmsApplication extends OlasApplication {
 
         mountBookmarkablePage("authentication", AuthenticationPage.class);
         mountBookmarkablePage("registration", RegistrationPage.class);
-        mountBookmarkablePage("removal", DisablePage.class);
         mountBookmarkablePage("update", UpdatePage.class);
-        mountBookmarkablePage("disable", DisablePage.class);
+        mountBookmarkablePage("enable", EnablePage.class);
 
     }
 

@@ -15,7 +15,7 @@
 		<div wicket:id="content_border">
 
 			<h1>
-				<span wicket:id="title">[Disable Mobile xxx]</span>
+				<wicket:message key="usernamePassword">[Username Password]</wicket:message>
 			</h1>
 
 			<div wicket:id="sidebar_border">
@@ -29,28 +29,30 @@
 				</ul>
 
 				<p>
-					<wicket:message key="helpOtpOverSmsDisable">[Disable OTP over SMS
+					<wicket:message key="helpPasswordEnable">[Enable Password
 						Help]</wicket:message>
 				</p>
 			</div>
 
-			<form wicket:id="disable_form">
+			<form wicket:id="enable_form">
 
 				<label>
-					<wicket:message key="mobilePin">[Pin]</wicket:message>
+					<wicket:message key="password">[Password]</wicket:message>
 				</label>
 				<div>
-					<input wicket:id="pin" type="password" class="label" />
+					<input wicket:id="password" type="password" class="label" />
 				</div>
-				<div wicket:id="pin_feedback" class="error"></div>
+				<div wicket:id="password_feedback" class="error"></div>
 
-				<label>&nbsp;</label>
-				<input wicket:id="disable" type="submit" value="[Save]"
-					wicket:message="value:saveaction" class="submit" />
+				<label>&nbsp;
+				</label>
+				<input wicket:id="enable" type="submit" value="[Enable]"
+					wicket:message="value:enable" class="submit" />
 				<input wicket:id="cancel" type="submit" value="[Cancel]"
 					wicket:message="value:cancelaction" class="submit" />
 
-				<div wicket:id="feedback" class="error"></div>
+				<div wicket:id="feedback" class="error">
+		</div>
 			</form>
 
 		</div>

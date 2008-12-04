@@ -16,6 +16,7 @@ import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.PkiExpiredException;
 import net.link.safeonline.authentication.exception.PkiInvalidException;
@@ -43,8 +44,8 @@ public interface CredentialManager extends SafeOnlineService {
             DeviceNotFoundException, AttributeNotFoundException, AlreadyRegisteredException, PkiRevokedException, PkiSuspendedException,
             PkiExpiredException, PkiNotYetValidException, PkiInvalidException;
 
-    void removeIdentity(String sessionId, String userId, String operation, byte[] identityStatementData)
+    void enable(String sessionId, String userId, String operation, byte[] identityStatementData)
             throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException, AttributeTypeNotFoundException,
             SubjectNotFoundException, DeviceNotFoundException, PkiRevokedException, PkiSuspendedException, PkiExpiredException,
-            PkiNotYetValidException, PkiInvalidException, AttributeNotFoundException;
+            PkiNotYetValidException, PkiInvalidException, AttributeNotFoundException, DeviceRegistrationNotFoundException;
 }

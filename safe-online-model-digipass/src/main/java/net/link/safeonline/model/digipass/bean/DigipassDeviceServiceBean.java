@@ -100,16 +100,23 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
             this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, "device is disabled");
             throw new DeviceDisabledException();
         }
+
+        return authenticate(subject, token);
+    }
+
+    private String authenticate(SubjectEntity subject, String token) {
+
         if (Integer.parseInt(token) % 2 != 0) {
             LOG.debug("Invalid token: " + token);
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, "incorrect digipass token");
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, subject.getUserId(), "incorrect digipass token");
             return null;
         }
-        return userId;
+        return subject.getUserId();
+
     }
 
     public String register(String userId, String serialNumber)
-            throws SubjectNotFoundException, PermissionDeniedException, ArgumentIntegrityException, AttributeTypeNotFoundException {
+            throws SubjectNotFoundException, ArgumentIntegrityException, AttributeTypeNotFoundException {
 
         SubjectEntity existingMappedSubject = this.subjectIdentifierDAO.findSubject(DigipassConstants.DIGIPASS_IDENTIFIER_DOMAIN,
                 serialNumber);
@@ -148,7 +155,7 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
     }
 
     public void remove(String serialNumber)
-            throws DigipassException, AttributeTypeNotFoundException, PermissionDeniedException, AttributeNotFoundException {
+            throws DigipassException, AttributeTypeNotFoundException, AttributeNotFoundException {
 
         SubjectEntity subject = this.subjectIdentifierDAO.findSubject(DigipassConstants.DIGIPASS_IDENTIFIER_DOMAIN, serialNumber);
         if (null == subject)
@@ -172,7 +179,7 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
     }
 
     public List<AttributeDO> getDigipasses(String userId, Locale locale)
-            throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException {
+            throws SubjectNotFoundException, DeviceNotFoundException {
 
         LOG.debug("get digipasses for: " + userId);
         DeviceEntity device = this.deviceDAO.getDevice(DigipassConstants.DIGIPASS_DEVICE_ID);
@@ -226,8 +233,33 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
                 LOG.debug("disable digipass " + serialNumber);
                 AttributeEntity disableAttribute = this.attributeDAO.findAttribute(subject, device.getDisableAttributeType(),
                         deviceAttribute.getAttributeIndex());
-                disableAttribute.setBooleanValue(!disableAttribute.getBooleanValue());
+                disableAttribute.setBooleanValue(true);
                 return;
+            }
+        }
+
+        throw new DeviceRegistrationNotFoundException();
+    }
+
+    public String enable(String userId, String serialNumber, String token)
+            throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException {
+
+        DeviceEntity device = this.deviceDAO.getDevice(DigipassConstants.DIGIPASS_DEVICE_ID);
+        SubjectEntity subject = this.subjectService.getSubject(userId);
+
+        if (null == authenticate(subject, token))
+            return null;
+
+        List<AttributeEntity> deviceAttributes = this.attributeDAO.listAttributes(subject, device.getAttributeType());
+        for (AttributeEntity deviceAttribute : deviceAttributes) {
+            AttributeEntity snAttribute = this.attributeDAO.findAttribute(subject, DigipassConstants.DIGIPASS_SN_ATTRIBUTE,
+                    deviceAttribute.getAttributeIndex());
+            if (snAttribute.getStringValue().equals(serialNumber)) {
+                LOG.debug("disable digipass " + serialNumber);
+                AttributeEntity disableAttribute = this.attributeDAO.findAttribute(subject, device.getDisableAttributeType(),
+                        deviceAttribute.getAttributeIndex());
+                disableAttribute.setBooleanValue(false);
+                return subject.getUserId();
             }
         }
 

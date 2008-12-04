@@ -32,6 +32,7 @@ import net.link.safeonline.authentication.exception.DeviceDescriptionNotFoundExc
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DevicePropertyNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.EndpointReferenceNotFoundException;
 import net.link.safeonline.authentication.exception.ExistingAttributeProviderException;
@@ -90,6 +91,7 @@ public class ErrorMessageInterceptor {
             new ErrorHandle(DeviceDisabledException.class, "errorDeviceDisabled"),
             new ErrorHandle(DeviceNotFoundException.class, "errorDeviceNotFound"),
             new ErrorHandle(DevicePropertyNotFoundException.class, "errorDevicePropertyNotFound"),
+            new ErrorHandle(DeviceRegistrationNotFoundException.class, "errorDeviceRegistrationNotFound"),
             new ErrorHandle(EmptyDevicePolicyException.class, "errorEmptyDevicePolicy"),
             new ErrorHandle(EndpointReferenceNotFoundException.class, "errorConsumerNotFound"),
             new ErrorHandle(ExistingAttributeProviderException.class, "errorAttributeProviderAlreadyExists"),

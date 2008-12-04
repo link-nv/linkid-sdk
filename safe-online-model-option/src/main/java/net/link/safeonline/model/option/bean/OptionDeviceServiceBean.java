@@ -23,7 +23,6 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
@@ -137,13 +136,13 @@ public class OptionDeviceServiceBean implements OptionDeviceService, OptionDevic
      * {@inheritDoc}
      */
     public void register(String userId, String imei, String pin)
-            throws OptionAuthenticationException, OptionRegistrationException, AttributeTypeNotFoundException, PermissionDeniedException,
-            AttributeNotFoundException {
+            throws OptionAuthenticationException, OptionRegistrationException, AttributeTypeNotFoundException, AttributeNotFoundException,
+            DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException {
 
         SubjectEntity subject = this.subjectIdentifierDAO.findSubject(OptionConstants.OPTION_IDENTIFIER_DOMAIN, imei);
         if (null != subject) {
             authenticate(subject, imei, pin);
-            removeRegistration(subject, imei);
+            remove(userId, imei);
             this.entityManager.flush();
             this.entityManager.clear();
         }
@@ -180,22 +179,6 @@ public class OptionDeviceServiceBean implements OptionDeviceService, OptionDevic
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void remove(String userId, String imei, String pin)
-            throws OptionAuthenticationException, OptionRegistrationException, SubjectNotFoundException, AttributeTypeNotFoundException,
-            AttributeNotFoundException, DeviceDisabledException, PermissionDeniedException, AttributeNotFoundException {
-
-        String assignedSubject = authenticate(imei, pin);
-
-        if (!assignedSubject.equals(userId))
-            throw new OptionRegistrationException();
-
-        SubjectEntity subject = this.subjectService.findSubject(userId);
-        removeRegistration(subject, imei);
-    }
-
     private void authenticate(SubjectEntity subject, String givenImei, String givenPin)
             throws OptionRegistrationException, OptionAuthenticationException {
 
@@ -210,25 +193,6 @@ public class OptionDeviceServiceBean implements OptionDeviceService, OptionDevic
             this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, subject.getUserId(), "incorrect PIN");
             throw new OptionAuthenticationException();
         }
-    }
-
-    private void removeRegistration(SubjectEntity subject, String imei)
-            throws AttributeTypeNotFoundException, PermissionDeniedException, AttributeNotFoundException {
-
-        AttributeTypeEntity deviceAttributeType = this.attributeTypeDAO.getAttributeType(OptionConstants.OPTION_DEVICE_ATTRIBUTE);
-        AttributeTypeEntity imeiAttributeType = this.attributeTypeDAO.getAttributeType(OptionConstants.IMEI_OPTION_ATTRIBUTE);
-
-        List<AttributeEntity> deviceAttributes = this.attributeDAO.listAttributes(subject, deviceAttributeType);
-        for (AttributeEntity deviceAttribute : deviceAttributes) {
-            AttributeEntity imeiAttribute = this.attributeDAO
-                                                             .findAttribute(subject, imeiAttributeType, deviceAttribute.getAttributeIndex());
-            if (imeiAttribute.getStringValue().equals(imei)) {
-                this.attributeManager.removeAttribute(deviceAttributeType, deviceAttribute.getAttributeIndex(), subject);
-                break;
-            }
-        }
-
-        this.subjectIdentifierDAO.removeSubjectIdentifier(subject, OptionConstants.OPTION_IDENTIFIER_DOMAIN, imei);
     }
 
     /**
@@ -247,13 +211,70 @@ public class OptionDeviceServiceBean implements OptionDeviceService, OptionDevic
             if (imeiAttribute.getStringValue().equals(imei)) {
                 AttributeEntity disableAttribute = this.attributeDAO.findAttribute(subject, device.getDisableAttributeType(),
                         deviceAttribute.getAttributeIndex());
-                disableAttribute.setBooleanValue(!disableAttribute.getBooleanValue());
+                disableAttribute.setBooleanValue(true);
+                return;
+            }
+        }
+
+        throw new DeviceRegistrationNotFoundException();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void enable(String userId, String imei, String pin)
+            throws OptionAuthenticationException, OptionRegistrationException, SubjectNotFoundException,
+            DeviceRegistrationNotFoundException, DeviceNotFoundException {
+
+        SubjectEntity subject = this.subjectIdentifierDAO.findSubject(OptionConstants.OPTION_IDENTIFIER_DOMAIN, imei);
+        if (null == subject)
+            throw new SubjectNotFoundException();
+
+        authenticate(subject, imei, pin);
+
+        if (!subject.getUserId().equals(userId))
+            throw new OptionRegistrationException();
+
+        DeviceEntity device = this.deviceDAO.getDevice(OptionConstants.OPTION_DEVICE_ID);
+
+        List<AttributeEntity> deviceAttributes = this.attributeDAO.listAttributes(subject, device.getAttributeType());
+        for (AttributeEntity deviceAttribute : deviceAttributes) {
+            AttributeEntity imeiAttribute = this.attributeDAO.findAttribute(subject, OptionConstants.IMEI_OPTION_ATTRIBUTE,
+                    deviceAttribute.getAttributeIndex());
+            if (imeiAttribute.getStringValue().equals(imei)) {
+                AttributeEntity disableAttribute = this.attributeDAO.findAttribute(subject, device.getDisableAttributeType(),
+                        deviceAttribute.getAttributeIndex());
+                disableAttribute.setBooleanValue(false);
                 return;
             }
         }
 
         throw new DeviceRegistrationNotFoundException();
 
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void remove(String userId, String imei)
+            throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException, AttributeTypeNotFoundException,
+            AttributeNotFoundException {
+
+        DeviceEntity device = this.deviceDAO.getDevice(OptionConstants.OPTION_DEVICE_ID);
+        SubjectEntity subject = this.subjectService.getSubject(userId);
+
+        List<AttributeEntity> deviceAttributes = this.attributeDAO.listAttributes(subject, device.getAttributeType());
+        for (AttributeEntity deviceAttribute : deviceAttributes) {
+            AttributeEntity imeiAttribute = this.attributeDAO.findAttribute(subject, OptionConstants.IMEI_OPTION_ATTRIBUTE,
+                    deviceAttribute.getAttributeIndex());
+            if (imeiAttribute.getStringValue().equals(imei)) {
+
+                this.attributeManager.removeAttribute(device.getAttributeType(), deviceAttribute.getAttributeIndex(), subject);
+                this.subjectIdentifierDAO.removeSubjectIdentifier(subject, OptionConstants.OPTION_IDENTIFIER_DOMAIN, imei);
+                return;
+            }
+        }
+        throw new DeviceRegistrationNotFoundException();
     }
 
 }

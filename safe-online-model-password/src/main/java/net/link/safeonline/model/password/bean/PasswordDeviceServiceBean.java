@@ -95,13 +95,13 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
 
     }
 
-    public void remove(String userId, String password)
-            throws DeviceNotFoundException, PermissionDeniedException, SubjectNotFoundException {
+    public void remove(String userId)
+            throws DeviceNotFoundException, SubjectNotFoundException {
 
         LOG.debug("remove password for " + userId);
         SubjectEntity subject = this.subjectService.getSubject(userId);
 
-        this.passwordManager.removePassword(subject, password);
+        this.passwordManager.removePassword(subject);
 
         this.historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_REMOVAL, Collections.singletonMap(
                 SafeOnlineConstants.DEVICE_PROPERTY, PasswordConstants.PASSWORD_DEVICE_ID));
@@ -129,18 +129,29 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
 
         SubjectEntity subject = this.subjectService.getSubject(userId);
 
-        boolean disable = !this.passwordManager.isDisabled(subject);
+        LOG.debug("disable password for \"" + subject.getUserId() + "\"");
+        this.passwordManager.disablePassword(subject, true);
 
-        LOG.debug("set password disable for \"" + subject.getUserId() + "\" to " + disable);
-        this.passwordManager.disablePassword(subject, disable);
+        this.historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_DISABLE, Collections.singletonMap(
+                SafeOnlineConstants.DEVICE_PROPERTY, PasswordConstants.PASSWORD_DEVICE_ID));
+    }
 
-        if (disable) {
-            this.historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_DISABLE, Collections.singletonMap(
-                    SafeOnlineConstants.DEVICE_PROPERTY, PasswordConstants.PASSWORD_DEVICE_ID));
-        } else {
-            this.historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_ENABLE, Collections.singletonMap(
-                    SafeOnlineConstants.DEVICE_PROPERTY, PasswordConstants.PASSWORD_DEVICE_ID));
-        }
+    /**
+     * {@inheritDoc}
+     */
+    public void enable(String userId, String password)
+            throws DeviceNotFoundException, SubjectNotFoundException, PermissionDeniedException {
+
+        SubjectEntity subject = this.subjectService.getSubject(userId);
+
+        if (!this.passwordManager.validatePassword(subject, password))
+            throw new PermissionDeniedException("Invalid password");
+
+        LOG.debug("enable password for \"" + subject.getUserId() + "\"");
+        this.passwordManager.disablePassword(subject, false);
+
+        this.historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_ENABLE, Collections.singletonMap(
+                SafeOnlineConstants.DEVICE_PROPERTY, PasswordConstants.PASSWORD_DEVICE_ID));
     }
 
     public boolean isPasswordConfigured(String userId)

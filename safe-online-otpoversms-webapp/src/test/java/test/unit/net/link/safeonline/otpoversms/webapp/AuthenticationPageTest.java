@@ -1,3 +1,10 @@
+/*
+ * SafeOnline project.
+ *
+ * Copyright 2006-2008 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
 package test.unit.net.link.safeonline.otpoversms.webapp;
 
 import static org.easymock.EasyMock.createMock;
@@ -6,8 +13,6 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
 import java.net.ConnectException;
-import java.security.KeyPair;
-import java.security.cert.X509Certificate;
 import java.util.UUID;
 
 import junit.framework.TestCase;
@@ -16,17 +21,11 @@ import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.demo.wicket.tools.WicketUtil;
-import net.link.safeonline.demo.wicket.tools.olas.DummyNameIdentifierMappingClient;
 import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.model.otpoversms.OtpOverSmsDeviceService;
 import net.link.safeonline.otpoversms.webapp.AuthenticationPage;
 import net.link.safeonline.test.util.EJBTestUtils;
-import net.link.safeonline.test.util.JmxTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
-import net.link.safeonline.test.util.MBeanActionHandler;
-import net.link.safeonline.test.util.PkiTestUtils;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
-import net.link.safeonline.util.ee.IdentityServiceClient;
 import net.link.safeonline.webapp.template.TemplatePage;
 
 import org.apache.wicket.markup.html.form.Form;
@@ -70,32 +69,6 @@ public class AuthenticationPageTest extends TestCase {
         this.mockHelpdeskManager = createMock(HelpdeskManager.class);
         this.mockSecurityAuditLogger = createMock(SecurityAuditLogger.class);
 
-        // Initialize MBean's
-        JmxTestUtils jmxTestUtils = new JmxTestUtils();
-        jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
-
-        final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
-
-            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
-
-                return authCertificate;
-            }
-        });
-
-        jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
-
-        final KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
-
-            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
-
-                return certificate;
-            }
-        });
-
         this.wicket = new WicketTester(new OtpOverSmsTestApplication());
 
     }
@@ -118,9 +91,8 @@ public class AuthenticationPageTest extends TestCase {
         String convertedMobile = net.link.safeonline.custom.converter.PhoneNumberConverter.convertNumber(mobile);
         String otp = UUID.randomUUID().toString();
         String pin = "0000";
-        DummyNameIdentifierMappingClient.setUserId(userId);
 
-        // Authentication Page: Verify.
+        // verify
         AuthenticationPage authenticationPage = (AuthenticationPage) this.wicket.startPage(AuthenticationPage.class);
         this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.REQUEST_OTP_FORM_ID, Form.class);
         this.wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.VERIFY_OTP_FORM_ID);
@@ -175,10 +147,8 @@ public class AuthenticationPageTest extends TestCase {
             throws Exception {
 
         // setup
-        String userId = UUID.randomUUID().toString();
         String mobile = "+32 494 575 697";
         String convertedMobile = net.link.safeonline.custom.converter.PhoneNumberConverter.convertNumber(mobile);
-        DummyNameIdentifierMappingClient.setUserId(userId);
 
         // Authentication Page: Verify.
         AuthenticationPage authenticationPage = (AuthenticationPage) this.wicket.startPage(AuthenticationPage.class);
@@ -215,10 +185,8 @@ public class AuthenticationPageTest extends TestCase {
             throws Exception {
 
         // setup
-        String userId = UUID.randomUUID().toString();
         String mobile = "+32 494 575 697";
         String convertedMobile = net.link.safeonline.custom.converter.PhoneNumberConverter.convertNumber(mobile);
-        DummyNameIdentifierMappingClient.setUserId(userId);
 
         // Authentication Page: Verify.
         AuthenticationPage authenticationPage = (AuthenticationPage) this.wicket.startPage(AuthenticationPage.class);
@@ -255,10 +223,8 @@ public class AuthenticationPageTest extends TestCase {
             throws Exception {
 
         // setup
-        String userId = UUID.randomUUID().toString();
         String mobile = "+32 494 575 697";
         String convertedMobile = net.link.safeonline.custom.converter.PhoneNumberConverter.convertNumber(mobile);
-        DummyNameIdentifierMappingClient.setUserId(userId);
 
         // Authentication Page: Verify.
         AuthenticationPage authenticationPage = (AuthenticationPage) this.wicket.startPage(AuthenticationPage.class);
@@ -297,12 +263,10 @@ public class AuthenticationPageTest extends TestCase {
             throws Exception {
 
         // setup
-        String userId = UUID.randomUUID().toString();
         String mobile = "+32 494 575 697";
         String convertedMobile = net.link.safeonline.custom.converter.PhoneNumberConverter.convertNumber(mobile);
         String otp = UUID.randomUUID().toString();
         String pin = "0000";
-        DummyNameIdentifierMappingClient.setUserId(userId);
 
         // Authentication Page: Verify.
         AuthenticationPage authenticationPage = (AuthenticationPage) this.wicket.startPage(AuthenticationPage.class);
@@ -363,12 +327,10 @@ public class AuthenticationPageTest extends TestCase {
             throws Exception {
 
         // setup
-        String userId = UUID.randomUUID().toString();
         String mobile = "+32 494 575 697";
         String convertedMobile = net.link.safeonline.custom.converter.PhoneNumberConverter.convertNumber(mobile);
         String otp = UUID.randomUUID().toString();
         String pin = "0000";
-        DummyNameIdentifierMappingClient.setUserId(userId);
 
         // Authentication Page: Verify.
         AuthenticationPage authenticationPage = (AuthenticationPage) this.wicket.startPage(AuthenticationPage.class);

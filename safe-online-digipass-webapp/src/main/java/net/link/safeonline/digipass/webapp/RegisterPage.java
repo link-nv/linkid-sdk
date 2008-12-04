@@ -29,7 +29,7 @@ import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.validation.validator.StringValidator;
 
 
@@ -68,9 +68,9 @@ public class RegisterPage extends TemplatePage {
 
         private static final long serialVersionUID = 1L;
 
-        String                    login;
+        Model<String>             login;
 
-        String                    serialNumber;
+        Model<String>             serialNumber;
 
 
         @SuppressWarnings("unchecked")
@@ -78,13 +78,13 @@ public class RegisterPage extends TemplatePage {
 
             super(id);
 
-            final TextField<String> loginField = new TextField<String>(LOGIN_FIELD_ID, new PropertyModel<String>(this, "login"));
+            final TextField<String> loginField = new TextField<String>(LOGIN_FIELD_ID, this.login = new Model<String>());
             loginField.setRequired(true);
 
             add(loginField);
             add(new ErrorComponentFeedbackLabel("login_feedback", loginField));
 
-            final TextField serialNumberField = new TextField(SERIALNUMBER_FIELD_ID, new PropertyModel(this, "serialNumber"));
+            final TextField serialNumberField = new TextField(SERIALNUMBER_FIELD_ID, this.serialNumber = new Model<String>());
             serialNumberField.setRequired(true);
             serialNumberField.add(StringValidator.lengthBetween(8, 12));
 
@@ -103,7 +103,7 @@ public class RegisterPage extends TemplatePage {
                             + RegisterForm.this.login);
 
                     try {
-                        RegisterPage.this.digipassDeviceService.register(getUserId(), RegisterForm.this.serialNumber);
+                        RegisterPage.this.digipassDeviceService.register(getUserId(), RegisterForm.this.serialNumber.getObject());
                     } catch (SubjectNotFoundException e) {
                         LOG.debug("subject not found");
                         loginField.error(getLocalizer().getString("errorSubjectNotFound", this));
@@ -154,7 +154,7 @@ public class RegisterPage extends TemplatePage {
 
             String userId;
             try {
-                userId = idMappingClient.getUserId(this.login);
+                userId = idMappingClient.getUserId(this.login.getObject());
             } catch (net.link.safeonline.sdk.exception.SubjectNotFoundException e) {
                 LOG.error("subject not found: " + this.login);
                 throw new SubjectNotFoundException();

@@ -202,7 +202,7 @@ public class OtpOverSmsManagerBean implements OtpOverSmsManager {
     }
 
     public void removeMobile(SubjectEntity subject, String mobile)
-            throws DeviceNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException, AttributeNotFoundException {
+            throws DeviceNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException {
 
         AttributeTypeEntity deviceAttributeType = this.attributeTypeDAO.getAttributeType(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ATTRIBUTE);
         AttributeTypeEntity mobileAttributeType = this.attributeTypeDAO.getAttributeType(OtpOverSmsConstants.OTPOVERSMS_MOBILE_ATTRIBUTE);

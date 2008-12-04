@@ -6,8 +6,6 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
 import java.net.ConnectException;
-import java.security.KeyPair;
-import java.security.cert.X509Certificate;
 import java.util.UUID;
 
 import junit.framework.TestCase;
@@ -15,19 +13,13 @@ import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.demo.wicket.tools.WicketUtil;
-import net.link.safeonline.demo.wicket.tools.olas.DummyNameIdentifierMappingClient;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
 import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.model.otpoversms.OtpOverSmsDeviceService;
 import net.link.safeonline.otpoversms.webapp.RegistrationPage;
 import net.link.safeonline.test.util.EJBTestUtils;
-import net.link.safeonline.test.util.JmxTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
-import net.link.safeonline.test.util.MBeanActionHandler;
-import net.link.safeonline.test.util.PkiTestUtils;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
-import net.link.safeonline.util.ee.IdentityServiceClient;
 import net.link.safeonline.webapp.template.TemplatePage;
 
 import org.apache.wicket.markup.html.form.Form;
@@ -71,32 +63,6 @@ public class RegistrationPageTest extends TestCase {
         this.mockHelpdeskManager = createMock(HelpdeskManager.class);
         this.mockSecurityAuditLogger = createMock(SecurityAuditLogger.class);
 
-        // Initialize MBean's
-        JmxTestUtils jmxTestUtils = new JmxTestUtils();
-        jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
-
-        final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
-
-            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
-
-                return authCertificate;
-            }
-        });
-
-        jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
-
-        final KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
-
-            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
-
-                return certificate;
-            }
-        });
-
         this.wicket = new WicketTester(new OtpOverSmsTestApplication());
 
     }
@@ -119,7 +85,6 @@ public class RegistrationPageTest extends TestCase {
         String convertedMobile = net.link.safeonline.custom.converter.PhoneNumberConverter.convertNumber(mobile);
         String otp = UUID.randomUUID().toString();
         String pin = "0000";
-        DummyNameIdentifierMappingClient.setUserId(userId);
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(this.wicket.getServletSession());
         protocolContext.setDeviceOperation(DeviceOperationType.NEW_ACCOUNT_REGISTER);
@@ -183,7 +148,6 @@ public class RegistrationPageTest extends TestCase {
         String userId = UUID.randomUUID().toString();
         String mobile = "+32 494 575 697";
         String convertedMobile = net.link.safeonline.custom.converter.PhoneNumberConverter.convertNumber(mobile);
-        DummyNameIdentifierMappingClient.setUserId(userId);
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(this.wicket.getServletSession());
         protocolContext.setDeviceOperation(DeviceOperationType.NEW_ACCOUNT_REGISTER);
@@ -229,7 +193,6 @@ public class RegistrationPageTest extends TestCase {
         String convertedMobile = net.link.safeonline.custom.converter.PhoneNumberConverter.convertNumber(mobile);
         String otp = UUID.randomUUID().toString();
         String pin = "0000";
-        DummyNameIdentifierMappingClient.setUserId(userId);
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(this.wicket.getServletSession());
         protocolContext.setDeviceOperation(DeviceOperationType.NEW_ACCOUNT_REGISTER);
@@ -298,7 +261,6 @@ public class RegistrationPageTest extends TestCase {
         String convertedMobile = net.link.safeonline.custom.converter.PhoneNumberConverter.convertNumber(mobile);
         String otp = UUID.randomUUID().toString();
         String pin = "0000";
-        DummyNameIdentifierMappingClient.setUserId(userId);
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(this.wicket.getServletSession());
         protocolContext.setDeviceOperation(DeviceOperationType.NEW_ACCOUNT_REGISTER);

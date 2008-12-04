@@ -23,7 +23,6 @@ import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.ctrl.error.ErrorMessageInterceptor;
@@ -161,8 +160,7 @@ public class RegistrationBean implements Registration {
 
     @End
     public String authenticate()
-            throws IOException, MobileException, SubjectNotFoundException, AttributeTypeNotFoundException, PermissionDeniedException,
-            AttributeNotFoundException {
+            throws IOException, MobileException, SubjectNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException {
 
         boolean result = this.encapDeviceService.authenicateEncap(this.challengeId, this.mobileOTP);
         if (false == result) {

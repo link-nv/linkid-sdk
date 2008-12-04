@@ -30,21 +30,18 @@ import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.Model;
 
 
-public class RemovalPage extends TemplatePage {
+public class EnablePage extends TemplatePage {
 
     private static final long       serialVersionUID  = 1L;
 
-    static final Log                LOG               = LogFactory.getLog(RemovalPage.class);
+    static final Log                LOG               = LogFactory.getLog(EnablePage.class);
 
-    public static final String      REMOVAL_FORM_ID   = "removal_form";
-
+    public static final String      ENABLE_FORM_ID    = "enable_form";
     public static final String      PASSWORD_FIELD_ID = "password";
-
-    public static final String      REMOVE_BUTTON_ID  = "remove";
-
+    public static final String      ENABLE_BUTTON_ID  = "enable";
     public static final String      CANCEL_BUTTON_ID  = "cancel";
 
     @EJB(mappedName = PasswordDeviceService.JNDI_BINDING)
@@ -56,7 +53,7 @@ public class RemovalPage extends TemplatePage {
     ProtocolContext                 protocolContext;
 
 
-    public RemovalPage() {
+    public EnablePage() {
 
         super();
 
@@ -78,28 +75,28 @@ public class RemovalPage extends TemplatePage {
 
         });
 
-        getContent().add(new RegistrationForm(REMOVAL_FORM_ID));
+        getContent().add(new EnableForm(ENABLE_FORM_ID));
 
     }
 
 
-    class RegistrationForm extends Form<String> {
+    class EnableForm extends Form<String> {
 
         private static final long serialVersionUID = 1L;
 
-        String                    password;
+        Model<String>             password;
 
 
         @SuppressWarnings("unchecked")
-        public RegistrationForm(String id) {
+        public EnableForm(String id) {
 
             super(id);
 
-            final PasswordTextField passwordField = new PasswordTextField(PASSWORD_FIELD_ID, new PropertyModel<String>(this, "password"));
+            final PasswordTextField passwordField = new PasswordTextField(PASSWORD_FIELD_ID, this.password = new Model<String>());
             add(passwordField);
             add(new ErrorComponentFeedbackLabel("password_feedback", passwordField));
 
-            add(new Button(REMOVE_BUTTON_ID) {
+            add(new Button(ENABLE_BUTTON_ID) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -107,29 +104,29 @@ public class RemovalPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    LOG.debug("remove password for " + RemovalPage.this.protocolContext.getSubject());
+                    LOG.debug("enable password for " + EnablePage.this.protocolContext.getSubject());
 
                     try {
-                        RemovalPage.this.passwordDeviceService.remove(RemovalPage.this.protocolContext.getSubject(),
-                                RegistrationForm.this.password);
+                        EnablePage.this.passwordDeviceService.enable(EnablePage.this.protocolContext.getSubject(),
+                                EnableForm.this.password.getObject());
                     } catch (SubjectNotFoundException e) {
                         passwordField.error(getLocalizer().getString("errorSubjectNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "remove: subject not found",
+                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: subject not found",
                                 LogLevelType.ERROR);
                         return;
                     } catch (DeviceNotFoundException e) {
-                        passwordField.error(getLocalizer().getString("errorOldPasswordNotFound", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "remove: device not found",
+                        passwordField.error(getLocalizer().getString("errorPasswordNotFound", this));
+                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: device not found",
                                 LogLevelType.ERROR);
                         return;
                     } catch (PermissionDeniedException e) {
-                        passwordField.error(getLocalizer().getString("errorOldPasswordNotCorrect", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "remove: device not found",
-                                LogLevelType.ERROR);
+                        passwordField.error(getLocalizer().getString("errorPasswordNotCorrect", this));
+                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: permission denied: "
+                                + e.getMessage(), LogLevelType.ERROR);
                         return;
                     }
 
-                    RemovalPage.this.protocolContext.setSuccess(true);
+                    EnablePage.this.protocolContext.setSuccess(true);
                     exit();
                 }
 
@@ -143,7 +140,7 @@ public class RemovalPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    RemovalPage.this.protocolContext.setSuccess(false);
+                    EnablePage.this.protocolContext.setSuccess(false);
                     exit();
                 }
 

@@ -33,7 +33,7 @@ public interface DeviceDAO extends SafeOnlineService {
 
 
     DeviceEntity addDevice(String name, DeviceClassEntity deviceClass, NodeEntity node, String authenticationPath, String registrationPath,
-                           String removalPath, String updatePath, String disablePath, X509Certificate certificate,
+                           String removalPath, String updatePath, String disablePath, String enablePath, X509Certificate certificate,
                            AttributeTypeEntity attributeType, AttributeTypeEntity userAttributeType,
                            AttributeTypeEntity disableAttributeType);
 

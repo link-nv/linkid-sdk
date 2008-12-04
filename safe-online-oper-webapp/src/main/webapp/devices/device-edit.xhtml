@@ -98,6 +98,18 @@
 										</s:decorate>
 									</td>
 								</tr>
+								<tr>
+									<th>
+										<h:outputText value="#{msgs.enablePath}" />
+									</th>
+									<td>
+										<s:decorate>
+											<h:inputText id="enablePath" value="#{operDevice.enablePath}"
+												styleClass="label" />
+											<h:message for="enablePath" styleClass="error" />
+										</s:decorate>
+									</td>
+								</tr>
 							</tbody>
 						</table>
 					</rich:simpleTogglePanel>

@@ -9,43 +9,50 @@ package net.link.safeonline.encap;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.List;
 
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.data.AttributeDO;
+import net.link.safeonline.custom.converter.PhoneNumber;
 
 
 @Local
-public interface Removal {
+public interface Enable {
 
-    public static final String JNDI_BINDING = EncapConstants.JNDI_PREFIX + "RemovalBean/local";
+    public static final String JNDI_BINDING = EncapConstants.JNDI_PREFIX + "EnableBean/local";
 
 
     /*
      * Accessors.
      */
+    PhoneNumber getMobile();
+
+    void setMobile(PhoneNumber mobile);
+
+    String getMobileOTP();
+
+    void setMobileOTP(String mobileOTP);
+
+    String getChallengeId();
+
     /*
      * Actions.
      */
-    String mobileRemove()
-            throws SubjectNotFoundException, MobileException, MalformedURLException, IOException, AttributeTypeNotFoundException,
-            PermissionDeniedException, AttributeNotFoundException;
-
-    String mobileCancel()
+    String cancel()
             throws IOException;
 
-    /*
-     * Factories
-     */
-    List<AttributeDO> mobileAttributesFactory()
-            throws SubjectNotFoundException, DeviceNotFoundException;
+    String requestOTP()
+            throws MalformedURLException, MobileException;
+
+    String authenticate()
+            throws IOException, MobileException, SubjectNotFoundException, AttributeTypeNotFoundException, PermissionDeniedException,
+            AttributeNotFoundException, DeviceNotFoundException, DeviceRegistrationNotFoundException;
 
     /*
      * Lifecycle.

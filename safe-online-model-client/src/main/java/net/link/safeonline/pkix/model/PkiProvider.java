@@ -103,17 +103,20 @@ public interface PkiProvider extends SafeOnlineService {
     String getSubjectIdentifier(X509Certificate certificate);
 
     /**
-     * Remove the device attribute related to this PKI device.
+     * Enables the device registration related to this PKI device.
      * 
      * @param subject
      * @param certificate
+     * 
      * @throws DeviceNotFoundException
      * @throws AttributeTypeNotFoundException
      * @throws AttributeNotFoundException
      * @throws PermissionDeniedException
+     * @throws DeviceRegistrationNotFoundException
      */
-    void removeDeviceAttribute(SubjectEntity subject, X509Certificate certificate)
-            throws DeviceNotFoundException, PermissionDeniedException, AttributeNotFoundException, AttributeTypeNotFoundException;
+    void enable(SubjectEntity subject, X509Certificate certificate)
+            throws DeviceNotFoundException, PermissionDeniedException, AttributeNotFoundException, AttributeTypeNotFoundException,
+            DeviceRegistrationNotFoundException;
 
     /**
      * Checks whether this device registration is disabled or not.
@@ -128,7 +131,9 @@ public interface PkiProvider extends SafeOnlineService {
     /**
      * Disables the device registration associated with the specified user attribute.
      * 
+     * @param userId
      * @param attribute
+     * 
      * @throws DeviceNotFoundException
      * @throws SubjectNotFoundException
      * @throws DeviceRegistrationNotFoundException
@@ -144,4 +149,20 @@ public interface PkiProvider extends SafeOnlineService {
      */
     List<AttributeEntity> listDeviceAttributes(SubjectEntity subject)
             throws DeviceNotFoundException;
+
+    /**
+     * Removes the device registration associated with the specified user attribute.
+     * 
+     * @param userId
+     * @param attribute
+     * 
+     * @throws SubjectNotFoundException
+     * @throws DeviceNotFoundException
+     * @throws AttributeTypeNotFoundException
+     * @throws DeviceRegistrationNotFoundException
+     * @throws AttributeNotFoundException
+     */
+    void remove(String userId, String attribute)
+            throws SubjectNotFoundException, DeviceNotFoundException, AttributeTypeNotFoundException, DeviceRegistrationNotFoundException,
+            AttributeNotFoundException;
 }

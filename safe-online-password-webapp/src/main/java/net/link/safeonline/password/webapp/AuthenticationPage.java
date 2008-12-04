@@ -38,7 +38,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.Model;
 
 
 public class AuthenticationPage extends TemplatePage {
@@ -116,9 +116,9 @@ public class AuthenticationPage extends TemplatePage {
 
         private static final long serialVersionUID = 1L;
 
-        String                    login;
+        Model<String>             login;
 
-        String                    password;
+        Model<String>             password;
 
 
         @SuppressWarnings("unchecked")
@@ -126,12 +126,12 @@ public class AuthenticationPage extends TemplatePage {
 
             super(id);
 
-            final TextField<String> loginField = new TextField<String>(LOGIN_NAME_FIELD_ID, new PropertyModel<String>(this, "login"));
+            final TextField<String> loginField = new TextField<String>(LOGIN_NAME_FIELD_ID, this.login = new Model<String>());
             loginField.setRequired(true);
 
             add(loginField);
 
-            final PasswordTextField passwordField = new PasswordTextField(PASSWORD_FIELD_ID, new PropertyModel<String>(this, "password"));
+            final PasswordTextField passwordField = new PasswordTextField(PASSWORD_FIELD_ID, this.password = new Model<String>());
 
             add(passwordField);
 
@@ -147,7 +147,7 @@ public class AuthenticationPage extends TemplatePage {
 
                     try {
                         String userId = AuthenticationPage.this.passwordDeviceService.authenticate(getUserId(),
-                                AuthenticationForm.this.password);
+                                AuthenticationForm.this.password.getObject());
                         if (null == userId) {
                             AuthenticationForm.this.error(getLocalizer().getString("authenticationFailedMsg", this));
                             HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "login failed: "
@@ -211,7 +211,7 @@ public class AuthenticationPage extends TemplatePage {
 
             String userId;
             try {
-                userId = idMappingClient.getUserId(this.login);
+                userId = idMappingClient.getUserId(this.login.getObject());
             } catch (net.link.safeonline.sdk.exception.SubjectNotFoundException e) {
                 LOG.error("subject not found: " + this.login);
                 throw new SubjectNotFoundException();

@@ -4,17 +4,17 @@
 	<body>
 		<ui:composition template="/WEB-INF/template.xhtml">
 			<ui:define name="top_content">
-				<h1>#{msgs.removeBeId}</h1>
+				<h1>#{msgs.beidEnable}</h1>
 			</ui:define>
 			<ui:define name="content">
 				<applet name="IdentityApplet"
 					code="net.link.safeonline.identity.IdentityApplet.class" archive="safe-online-identity-applet-package.jar"
 					width="400" height="200">
 					<param name="SmartCardConfig" value="beid" />
-					<param name="ServletPath" value="identityremove" />
+					<param name="ServletPath" value="identityenable" />
 					<param name="TargetPath" value="deviceexit" />
 					<param name="HelpdeskEventPath" value="helpdesk" />
-					<param name="HelpPath" value="./help.seam?location=remove-identity.seam" />
+					<param name="HelpPath" value="./help.seam?location=enable-beid.seam" />
 					<param name="SessionId"
 						value="#{facesContext.externalContext.request.session.id}" />
 					<param name="User" value="#{userId}" />
@@ -29,7 +29,7 @@
 
 			</ui:define>
 			<ui:define name="sidebar">
-				<p>#{msgs.helpRemoveIdentity}</p>
+				<p>#{msgs.helpEnableIdentity}</p>
 			</ui:define>
 		</ui:composition>
 	</body>

@@ -115,6 +115,10 @@
 			<param-value>disable</param-value>
 		</init-param>
 		<init-param>
+			<param-name>EnableUrl</param-name>
+			<param-value>enable</param-value>
+		</init-param>
+		<init-param>
 			<param-name>RegistrationUrl</param-name>
 			<param-value>registration</param-value>
 		</init-param>
@@ -167,6 +171,18 @@
 	<servlet-mapping>
 		<servlet-name>DisableServlet</servlet-name>
 		<url-pattern>/disable</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>RemovalServlet</servlet-name>
+		<servlet-class>net.link.safeonline.password.webapp.servlet.RemovalServlet</servlet-class>
+		<init-param>
+			<param-name>DeviceExitPath</param-name>
+			<param-value>deviceexit</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>RemovalServlet</servlet-name>
+		<url-pattern>/removal</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>Style Servlet</servlet-name>

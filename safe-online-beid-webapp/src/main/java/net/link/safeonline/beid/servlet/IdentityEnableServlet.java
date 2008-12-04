@@ -34,11 +34,11 @@ import org.apache.commons.logging.LogFactory;
  * @author wvdhaute
  * 
  */
-public class IdentityRemoveServlet extends AbstractStatementServlet {
+public class IdentityEnableServlet extends AbstractStatementServlet {
 
     private static final long serialVersionUID = 1L;
 
-    private static final Log  LOG              = LogFactory.getLog(IdentityRemoveServlet.class);
+    private static final Log  LOG              = LogFactory.getLog(IdentityEnableServlet.class);
 
     @EJB(mappedName = BeIdDeviceService.JNDI_BINDING)
     private BeIdDeviceService beIdDeviceService;
@@ -56,7 +56,7 @@ public class IdentityRemoveServlet extends AbstractStatementServlet {
         try {
             String userId = DeviceOperationManager.getUserId(session);
             String operation = DeviceOperationManager.getOperation(session);
-            this.beIdDeviceService.remove(sessionId, userId, operation, statementData);
+            this.beIdDeviceService.enable(sessionId, userId, operation, statementData);
             response.setStatus(HttpServletResponse.SC_OK);
             protocolContext.setSuccess(true);
         } catch (TrustDomainNotFoundException e) {
