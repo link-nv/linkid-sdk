@@ -296,8 +296,12 @@
             </activation>
             <dependencies>
                 <dependency>
-                    <groupId>hsqldb</groupId>
+                    <groupId>org.jboss</groupId>
                     <artifactId>hsqldb</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>org.jboss</groupId>
+                    <artifactId>hsqldb-plugin</artifactId>
                 </dependency>
             </dependencies>
         </profile>
