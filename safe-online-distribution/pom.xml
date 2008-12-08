@@ -286,9 +286,9 @@
 
 	</dependencies>
 
-    <!-- DEPLOY profiles to manage deploy configuration ear dependencies. -->
     <profiles>
 
+        <!-- DEPLOY profiles to manage deploy configuration ear dependencies. -->
         <profile>
             <id>dep:demo</id>
 
@@ -368,11 +368,7 @@
             </dependencies>
         </profile>
 
-    </profiles>
-
-    <!-- DS profiles to manage DS dialect dependencies. -->
-    <profiles>
-
+        <!-- DS profiles to manage DS dialect dependencies. -->
         <profile>
             <id>ds:hsql</id>
 
