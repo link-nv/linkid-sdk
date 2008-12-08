@@ -31,5 +31,5 @@ public interface OtpOverSmsManager extends OtpOverSmsService {
             throws DeviceNotFoundException;
 
     void removeMobile(SubjectEntity subject, String mobile)
-            throws DeviceNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException, AttributeNotFoundException;
+            throws DeviceNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException;
 }

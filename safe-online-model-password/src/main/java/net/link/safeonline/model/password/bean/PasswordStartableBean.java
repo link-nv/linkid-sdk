@@ -177,8 +177,8 @@ public class PasswordStartableBean extends AbstractInitBean {
 
         this.devices.add(new Device(PasswordConstants.PASSWORD_DEVICE_ID, SafeOnlineConstants.PASSWORD_DEVICE_CLASS, nodeName, "/"
                 + passwordWebappName + "/auth", "/" + passwordWebappName + "/device", "/" + passwordWebappName + "/device", "/"
-                + passwordWebappName + "/device", "/" + passwordWebappName + "/device", certificate, passwordDeviceAttributeType, null,
-                passwordDeviceDisableAttributeType));
+                + passwordWebappName + "/device", "/" + passwordWebappName + "/device", "/" + passwordWebappName + "/device", certificate,
+                passwordDeviceAttributeType, null, passwordDeviceDisableAttributeType));
         this.deviceDescriptions.add(new DeviceDescription(PasswordConstants.PASSWORD_DEVICE_ID, "nl", "Paswoord"));
         this.deviceDescriptions.add(new DeviceDescription(PasswordConstants.PASSWORD_DEVICE_ID, Locale.ENGLISH.getLanguage(), "Password"));
         this.trustedCertificates.put(certificate, SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);

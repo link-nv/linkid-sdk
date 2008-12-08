@@ -30,19 +30,22 @@ public interface OtpOverSmsDeviceService extends OtpOverSmsService {
             throws DeviceNotFoundException, SubjectNotFoundException;
 
     void register(String userId, String mobile, String pin)
-            throws SubjectNotFoundException, DeviceNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException,
-            AttributeNotFoundException;
+            throws SubjectNotFoundException, DeviceNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException,
+            PermissionDeniedException;
 
     boolean update(String userId, String mobile, String oldPin, String newPin)
             throws DeviceNotFoundException, SubjectNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException,
             DeviceDisabledException;
 
-    boolean remove(String userId, String mobile, String pin)
+    void remove(String userId, String mobile)
             throws DeviceNotFoundException, SubjectNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException,
-            PermissionDeniedException, DeviceDisabledException;
+            DeviceDisabledException;
 
-    boolean disable(String userId, String mobile, String pin)
+    boolean enable(String userId, String mobile, String pin)
             throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException, AttributeTypeNotFoundException;
+
+    void disable(String userId, String mobile)
+            throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException;
 
     void requestOtp(HttpSession httpSession, String mobile)
             throws ConnectException;

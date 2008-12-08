@@ -1,3 +1,10 @@
+/*
+ * SafeOnline project.
+ *
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
 package net.link.safeonline.password.webapp.servlet;
 
 import java.io.IOException;
@@ -7,10 +14,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.device.sdk.saml2.DeviceOperationManager;
+import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.model.password.PasswordDeviceService;
 import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.servlet.annotation.Init;
@@ -37,6 +46,9 @@ public class DisableServlet extends AbstractInjectionServlet {
     @EJB(mappedName = PasswordDeviceService.JNDI_BINDING)
     private PasswordDeviceService passwordDeviceService;
 
+    @EJB(mappedName = SecurityAuditLogger.JNDI_BINDING)
+    private SecurityAuditLogger   securityAuditLogger;
+
 
     @Override
     protected void invokeGet(HttpServletRequest request, HttpServletResponse response)
@@ -56,7 +68,7 @@ public class DisableServlet extends AbstractInjectionServlet {
             throws IOException, ServletException {
 
         String userId = DeviceOperationManager.getUserId(request.getSession());
-        LOG.debug("disable password device for user " + userId);
+        LOG.debug("disable password for user " + userId);
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(request.getSession());
         protocolContext.setSuccess(false);
@@ -68,9 +80,11 @@ public class DisableServlet extends AbstractInjectionServlet {
             // notify that disable operation was successful.
             protocolContext.setSuccess(true);
         } catch (DeviceNotFoundException e) {
-            LOG.debug("device not found");
+            LOG.error("device not found", e);
         } catch (SubjectNotFoundException e) {
-            LOG.debug("subject " + userId + " not found");
+            String message = "subject " + userId + " not found";
+            LOG.error(message, e);
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, message);
         }
 
         response.sendRedirect(this.deviceExitPath);

@@ -30,8 +30,8 @@ public interface PasswordManager extends PasswordService {
 
     boolean isPasswordConfigured(SubjectEntity subject);
 
-    void removePassword(SubjectEntity subject, String password)
-            throws DeviceNotFoundException, PermissionDeniedException;
+    void removePassword(SubjectEntity subject)
+            throws DeviceNotFoundException;
 
     boolean isDisabled(SubjectEntity subject)
             throws DeviceNotFoundException;

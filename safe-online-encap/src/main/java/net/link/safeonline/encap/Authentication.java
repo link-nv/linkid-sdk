@@ -5,11 +5,11 @@ import java.net.MalformedURLException;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.encap.EncapConstants;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.MobileAuthenticationException;
 import net.link.safeonline.authentication.exception.MobileException;
+import net.link.safeonline.custom.converter.PhoneNumber;
 
 
 @Local
@@ -25,9 +25,9 @@ public interface Authentication {
 
     void setMobileOTP(String mobileOTP);
 
-    String getMobile();
+    PhoneNumber getMobile();
 
-    void setMobile(String mobile);
+    void setMobile(PhoneNumber mobile);
 
     String getChallengeId();
 

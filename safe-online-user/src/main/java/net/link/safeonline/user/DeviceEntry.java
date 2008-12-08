@@ -42,19 +42,4 @@ public class DeviceEntry {
 
         this.friendlyName = friendlyName;
     }
-
-    public boolean isRegistrable() {
-
-        return null != this.device.getRegistrationPath();
-    }
-
-    public boolean isUpdatable() {
-
-        return null != this.device.getUpdatePath();
-    }
-
-    public boolean isRemovable() {
-
-        return null != this.device.getRemovalPath();
-    }
 }

@@ -14,7 +14,6 @@ import javax.ejb.EJBException;
 
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
@@ -104,12 +103,11 @@ public class AttributeManagerLWBean {
      * @param attributeIndex
      *            the index of the attribute entry to be removed in case of a multi-valued (compounded) attribute.
      * @param subject
-     * @throws PermissionDeniedException
      * @throws AttributeNotFoundException
      * @throws AttributeTypeNotFoundException
      */
     public void removeAttribute(AttributeTypeEntity attributeType, long attributeIndex, SubjectEntity subject)
-            throws PermissionDeniedException, AttributeNotFoundException, AttributeTypeNotFoundException {
+            throws AttributeNotFoundException, AttributeTypeNotFoundException {
 
         LOG.debug("remove attribute " + attributeType.getName() + " for entity with login " + subject);
 

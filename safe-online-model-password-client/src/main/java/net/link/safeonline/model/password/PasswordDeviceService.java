@@ -29,11 +29,14 @@ public interface PasswordDeviceService extends PasswordService {
     void update(String userId, String oldPassword, String newPassword)
             throws PermissionDeniedException, DeviceNotFoundException, SubjectNotFoundException;
 
-    void remove(String userId, String password)
-            throws DeviceNotFoundException, PermissionDeniedException, SubjectNotFoundException;
+    void remove(String userId)
+            throws DeviceNotFoundException, SubjectNotFoundException;
 
     void disable(String userId)
             throws DeviceNotFoundException, SubjectNotFoundException;
+
+    void enable(String userId, String password)
+            throws DeviceNotFoundException, SubjectNotFoundException, PermissionDeniedException;
 
     boolean isPasswordConfigured(String userId)
             throws SubjectNotFoundException;

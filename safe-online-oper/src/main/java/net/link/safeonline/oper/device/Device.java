@@ -13,7 +13,6 @@ import java.util.List;
 import javax.ejb.Local;
 import javax.faces.model.SelectItem;
 
-import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceClassNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDescriptionNotFoundException;
@@ -22,6 +21,7 @@ import net.link.safeonline.authentication.exception.DevicePropertyNotFoundExcept
 import net.link.safeonline.authentication.exception.ExistingDeviceException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.oper.OperatorConstants;
 import net.link.safeonline.pkix.exception.CertificateEncodingException;
 
 import org.apache.myfaces.custom.fileupload.UploadedFile;
@@ -85,6 +85,10 @@ public interface Device {
     String getDisablePath();
 
     void setDisablePath(String disablePath);
+
+    String getEnablePath();
+
+    void setEnablePath(String enablePath);
 
     UploadedFile getCertificate();
 

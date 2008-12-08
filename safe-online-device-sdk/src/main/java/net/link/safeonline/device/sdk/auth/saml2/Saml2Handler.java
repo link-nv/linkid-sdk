@@ -59,7 +59,7 @@ public class Saml2Handler implements Serializable {
 
     private HttpSession        session;
 
-    private String             stsWsLocation;
+    private String             wsLocation;
 
     private String             issuer;
 
@@ -107,12 +107,12 @@ public class Saml2Handler implements Serializable {
     public void init(Map<String, String> configParams, X509Certificate newApplicationCertificate, KeyPair newApplicationKeyPair)
             throws AuthenticationInitializationException {
 
-        this.stsWsLocation = configParams.get("StsWsLocation");
+        this.wsLocation = configParams.get("WsLocation");
         this.issuer = configParams.get("DeviceName");
         this.applicationCertificate = newApplicationCertificate;
         this.applicationKeyPair = newApplicationKeyPair;
-        if (null == this.stsWsLocation)
-            throw new AuthenticationInitializationException("Missing STS WS Location ( \"StsWsLocation\" )");
+        if (null == this.wsLocation)
+            throw new AuthenticationInitializationException("Missing WS Location ( \"WsLocation\" )");
     }
 
     public void initAuthentication(HttpServletRequest request)
@@ -120,7 +120,7 @@ public class Saml2Handler implements Serializable {
 
         AuthnRequest samlAuthnRequest;
         try {
-            samlAuthnRequest = RequestUtil.validateAuthnRequest(request, this.stsWsLocation, this.applicationCertificate,
+            samlAuthnRequest = RequestUtil.validateAuthnRequest(request, this.wsLocation, this.applicationCertificate,
                     this.applicationKeyPair.getPrivate(), TrustDomainType.NODE);
         } catch (ServletException e) {
             throw new AuthenticationInitializationException(e.getMessage());

@@ -1,0 +1,39 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:s="http://jboss.com/products/seam/taglib" xmlns:t="http://myfaces.apache.org/tomahawk">
+	<body>
+		<ui:composition template="/WEB-INF/template.xhtml">
+
+			<ui:define name="top_content">
+				<h2>#{msgs.beidEnable}</h2>
+			</ui:define>
+
+			<ui:define name="content">
+				<applet name="IdentityApplet"
+					code="net.link.safeonline.auth.pcsc.IdentityApplet.class" archive="safe-online-auth-pcsc-applet-package.jar"
+					width="450" height="200">
+					<param name="ServletPath" value="identityenable" />
+					<param name="TargetPath" value="deviceexit" />
+					<param name="HelpdeskEventPath" value="helpdesk" />
+					<param name="HelpPath" value="./help.seam?location=enable-beid-pcsc.seam" />
+					<param name="SessionId"
+						value="#{facesContext.externalContext.request.session.id}" />
+					<param name="User" value="#{userId}" />
+					<param name="Operation" value="#{operation}" />
+					<param name="Language" value="#{localeSelector.language}" />
+				</applet>
+
+				<form id="cancelForm" method="post" action="deviceexit">
+					<input id="cancel" type="submit" value="#{msgs.cancelaction}"
+						class="submit" />
+				</form>
+
+			</ui:define>
+
+			<ui:define name="sidebar">
+				<p>#{msgs.helpEnableIdentity}</p>
+			</ui:define>
+
+		</ui:composition>
+	</body>
+</html>

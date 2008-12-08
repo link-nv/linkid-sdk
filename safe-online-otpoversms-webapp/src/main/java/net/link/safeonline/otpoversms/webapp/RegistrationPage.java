@@ -17,6 +17,7 @@ import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
+import net.link.safeonline.custom.converter.PhoneNumber;
 import net.link.safeonline.demo.wicket.tools.WicketUtil;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
@@ -38,7 +39,7 @@ import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.form.validation.EqualPasswordInputValidator;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.Model;
 
 
 public class RegistrationPage extends TemplatePage {
@@ -67,7 +68,7 @@ public class RegistrationPage extends TemplatePage {
 
     ProtocolContext                   protocolContext;
 
-    String                            mobile;
+    Model<PhoneNumber>                mobile;
 
 
     public RegistrationPage() {
@@ -111,8 +112,8 @@ public class RegistrationPage extends TemplatePage {
 
             super(id);
 
-            TextField<String> mobileField = new TextField<String>(MOBILE_FIELD_ID, new PropertyModel<String>(RegistrationPage.this,
-                    "mobile"));
+            TextField<PhoneNumber> mobileField = new TextField<PhoneNumber>(MOBILE_FIELD_ID,
+                    RegistrationPage.this.mobile = new Model<PhoneNumber>(), PhoneNumber.class);
             mobileField.setRequired(true);
             add(mobileField);
             add(new ErrorComponentFeedbackLabel("mobile_feedback", mobileField));
@@ -129,12 +130,12 @@ public class RegistrationPage extends TemplatePage {
 
                     try {
                         RegistrationPage.this.otpOverSmsDeviceService.requestOtp(WicketUtil.getHttpSession(getRequest()),
-                                RegistrationPage.this.mobile);
+                                RegistrationPage.this.mobile.getObject().getNumber());
                     } catch (ConnectException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorServiceConnection", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: failed to send otp"
                                 + RegistrationPage.this.mobile, LogLevelType.ERROR);
-                        RegistrationPage.this.mobile = null;
+                        RegistrationPage.this.mobile.setObject(null);
                         return;
                     }
 
@@ -168,7 +169,7 @@ public class RegistrationPage extends TemplatePage {
         @Override
         public boolean isVisible() {
 
-            return null == RegistrationPage.this.mobile;
+            return null == RegistrationPage.this.mobile.getObject();
         }
     }
 
@@ -176,27 +177,27 @@ public class RegistrationPage extends TemplatePage {
 
         private static final long serialVersionUID = 1L;
 
-        String                    otp;
+        Model<String>             otp;
 
-        String                    pin1;
+        Model<String>             pin1;
 
-        String                    pin2;
+        Model<String>             pin2;
 
 
         public VerifyOtpForm(String id) {
 
             super(id);
 
-            final TextField<String> otpField = new TextField<String>(OTP_FIELD_ID, new PropertyModel<String>(this, "otp"));
+            final TextField<String> otpField = new TextField<String>(OTP_FIELD_ID, this.otp = new Model<String>());
             otpField.setRequired(true);
             add(otpField);
             add(new ErrorComponentFeedbackLabel("otp_feedback", otpField));
 
-            final PasswordTextField pin1Field = new PasswordTextField(PIN1_FIELD_ID, new PropertyModel<String>(this, "pin1"));
+            final PasswordTextField pin1Field = new PasswordTextField(PIN1_FIELD_ID, this.pin1 = new Model<String>());
             add(pin1Field);
             add(new ErrorComponentFeedbackLabel("pin1_feedback", pin1Field));
 
-            final PasswordTextField pin2Field = new PasswordTextField(PIN2_FIELD_ID, new PropertyModel<String>(this, "pin2"));
+            final PasswordTextField pin2Field = new PasswordTextField(PIN2_FIELD_ID, this.pin2 = new Model<String>());
             add(pin2Field);
             add(new ErrorComponentFeedbackLabel("pin2_feedback", pin2Field));
 
@@ -212,7 +213,7 @@ public class RegistrationPage extends TemplatePage {
 
                     try {
                         boolean verified = RegistrationPage.this.otpOverSmsDeviceService.verifyOtp(WicketUtil.getHttpSession(getRequest()),
-                                VerifyOtpForm.this.otp);
+                                VerifyOtpForm.this.otp.getObject());
                         if (!verified) {
                             otpField.error(getLocalizer().getString("authenticationFailedMsg", this));
                             HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(),
@@ -224,7 +225,7 @@ public class RegistrationPage extends TemplatePage {
                                 + RegistrationPage.this.protocolContext.getSubject());
 
                         RegistrationPage.this.otpOverSmsDeviceService.register(RegistrationPage.this.protocolContext.getSubject(),
-                                RegistrationPage.this.mobile, VerifyOtpForm.this.pin1);
+                                RegistrationPage.this.mobile.getObject().getNumber(), VerifyOtpForm.this.pin1.getObject());
                     } catch (PermissionDeniedException e) {
                         pin2Field.error(getLocalizer().getString("errorPinNotCorrect", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "register: pin not correct",
@@ -284,7 +285,7 @@ public class RegistrationPage extends TemplatePage {
         @Override
         public boolean isVisible() {
 
-            return RegistrationPage.this.mobile != null;
+            return RegistrationPage.this.mobile.getObject() != null;
         }
     }
 

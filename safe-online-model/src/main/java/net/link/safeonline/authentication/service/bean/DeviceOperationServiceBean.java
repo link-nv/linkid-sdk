@@ -60,8 +60,8 @@ import net.link.safeonline.validation.annotation.NotNull;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.utils.Base64;
-import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.security.SecurityDomain;
 import org.joda.time.DateTime;
 import org.opensaml.saml2.core.Assertion;
@@ -264,6 +264,12 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
                     SafeOnlineConstants.DEVICE_PROPERTY, device.getName()));
         } else if (this.expectedDeviceOperation.equals(DeviceOperationType.REMOVE)) {
             this.historyDAO.addHistoryEntry(subjectEntity, HistoryEventType.DEVICE_REMOVAL, Collections.singletonMap(
+                    SafeOnlineConstants.DEVICE_PROPERTY, device.getName()));
+        } else if (this.expectedDeviceOperation.equals(DeviceOperationType.DISABLE)) {
+            this.historyDAO.addHistoryEntry(subjectEntity, HistoryEventType.DEVICE_DISABLE, Collections.singletonMap(
+                    SafeOnlineConstants.DEVICE_PROPERTY, device.getName()));
+        } else if (this.expectedDeviceOperation.equals(DeviceOperationType.ENABLE)) {
+            this.historyDAO.addHistoryEntry(subjectEntity, HistoryEventType.DEVICE_ENABLE, Collections.singletonMap(
                     SafeOnlineConstants.DEVICE_PROPERTY, device.getName()));
         }
 

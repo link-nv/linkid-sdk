@@ -212,7 +212,13 @@ public class DevicesBean implements Devices {
 
         if (this.deviceRegistrations.size() == 1)
             return false;
-        return true;
+
+        for (DeviceRegistrationDO deviceRegistration : this.deviceRegistrations) {
+            if (!deviceRegistration.isDisabled())
+                return true;
+        }
+
+        return false;
     }
 
     @RolesAllowed(UserConstants.USER_ROLE)
@@ -242,6 +248,19 @@ public class DevicesBean implements Devices {
         String userId = this.subjectManager.getCallerSubject().getUserId();
 
         DeviceOperationUtils.redirect(this.selectedDeviceRegistration.getDevice().getDisableURL(), DeviceOperationType.DISABLE,
+                this.selectedDeviceRegistration.getDevice().getName(), this.authenticatedDevice, userId,
+                this.selectedDeviceRegistration.getAttribute());
+        return null;
+    }
+
+    @RolesAllowed(UserConstants.USER_ROLE)
+    public String enableDevice()
+            throws DeviceNotFoundException, IOException, SubjectNotFoundException, AttributeTypeNotFoundException {
+
+        LOG.debug("enable device: " + this.selectedDeviceRegistration.getFriendlyName());
+        String userId = this.subjectManager.getCallerSubject().getUserId();
+
+        DeviceOperationUtils.redirect(this.selectedDeviceRegistration.getDevice().getEnableURL(), DeviceOperationType.ENABLE,
                 this.selectedDeviceRegistration.getDevice().getName(), this.authenticatedDevice, userId,
                 this.selectedDeviceRegistration.getAttribute());
         return null;

@@ -28,7 +28,7 @@
 							<f:facet name="header">#{msgs.deviceActions}
 							</f:facet>
 							<h:commandLink action="#{devicesBean.register}" id="register"
-								value="#{msgs.deviceRegister}" rendered="#{item.registrable}" />
+								value="#{msgs.deviceRegister}" rendered="#{item.device.registrable}" />
 						</h:column>
 					</rich:dataTable>
 				</a4j:form>
@@ -56,13 +56,13 @@
 								rendered="#{item.device.removable}" />
 							<h:commandLink action="#{devicesBean.updateDevice}"
 								id="update" styleClass="noblock" value=" #{msgs.deviceUpdate}"
-								rendered="#{item.device.updatable}" />
+								rendered="#{item.device.updatable and !item.disabled}" />
 							<h:commandLink action="#{devicesBean.disableDevice}"
 								id="disable" styleClass="noblock" value=" #{msgs.deviceDisable}"
 								rendered="#{item.device.disablable and !item.disabled}" />
-							<h:commandLink action="#{devicesBean.disableDevice}"
+							<h:commandLink action="#{devicesBean.enableDevice}"
 								id="enable" styleClass="noblock" value=" #{msgs.deviceEnable}"
-								rendered="#{item.device.disablable and item.disabled}" />
+								rendered="#{item.device.enablable and item.disabled}" />
 						</h:column>
 					</rich:dataTable>
 				</a4j:form>

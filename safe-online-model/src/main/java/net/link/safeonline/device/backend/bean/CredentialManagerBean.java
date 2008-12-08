@@ -23,6 +23,7 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.DecodingException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.PkiExpiredException;
 import net.link.safeonline.authentication.exception.PkiInvalidException;
@@ -221,14 +222,7 @@ public class CredentialManagerBean implements CredentialManager {
             LOG.debug("device already registered");
             throw new AlreadyRegisteredException();
         }
-        /*
-         * The user can only have one subject identifier for the domain. We don't want the user to block identifiers of cards that he is no
-         * longer using since there is the possibility that these cards are to be used by other subjects. Such a strategy of course only
-         * makes sense for authentication devices for which a subject can have only one. This is for example the case for BeID identity
-         * cards.
-         */
-        // TODO: this ok?
-        // this.subjectIdentifierDAO.removeOtherSubjectIdentifiers(domain, identifier, subject);
+
         String surname = identityStatement.getSurname();
         String givenName = identityStatement.getGivenName();
 
@@ -251,10 +245,10 @@ public class CredentialManagerBean implements CredentialManager {
         return attribute.getAttributeIndex();
     }
 
-    public void removeIdentity(String sessionId, String userId, String operation, byte[] identityStatementData)
+    public void enable(String sessionId, String userId, String operation, byte[] identityStatementData)
             throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException, AttributeTypeNotFoundException,
             SubjectNotFoundException, DeviceNotFoundException, PkiRevokedException, PkiSuspendedException, PkiExpiredException,
-            PkiNotYetValidException, PkiInvalidException, AttributeNotFoundException {
+            PkiNotYetValidException, PkiInvalidException, AttributeNotFoundException, DeviceRegistrationNotFoundException {
 
         /*
          * First check integrity of the received identity statement.
@@ -310,9 +304,7 @@ public class CredentialManagerBean implements CredentialManager {
         String domain = pkiProvider.getIdentifierDomainName();
         String identifier = pkiProvider.getSubjectIdentifier(certificate);
         SubjectEntity existingMappedSubject = this.subjectIdentifierDAO.findSubject(domain, identifier);
-        this.subjectIdentifierDAO.removeSubjectIdentifier(existingMappedSubject, domain, identifier);
 
-        // device attribute should contain as member all other device attributes so they are removed all at once.
-        pkiProvider.removeDeviceAttribute(existingMappedSubject, certificate);
+        pkiProvider.enable(existingMappedSubject, certificate);
     }
 }

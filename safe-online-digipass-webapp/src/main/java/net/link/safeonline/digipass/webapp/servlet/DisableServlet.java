@@ -7,11 +7,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.device.sdk.saml2.DeviceOperationManager;
+import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.model.digipass.DigipassDeviceService;
 import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.servlet.annotation.Init;
@@ -35,26 +37,31 @@ public class DisableServlet extends AbstractInjectionServlet {
     @Init(name = "DeviceExitPath")
     private String                deviceExitPath;
 
-    @EJB(mappedName = "SafeOnlineDigipass/DigipassDeviceServiceBean/local")
+    @EJB(mappedName = DigipassDeviceService.JNDI_BINDING)
     private DigipassDeviceService digipassDeviceService;
 
+    @EJB(mappedName = SecurityAuditLogger.JNDI_BINDING)
+    private SecurityAuditLogger   securityAuditLogger;
+
 
     @Override
-    protected void invokeGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void invokeGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         handleLanding(request, response);
     }
 
     @Override
-    protected void invokePost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void invokePost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
         handleLanding(request, response);
     }
 
-    private void handleLanding(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    private void handleLanding(HttpServletRequest request, HttpServletResponse response)
+            throws IOException, ServletException {
 
         String attribute = DeviceOperationManager.getAttribute(request.getSession());
-
         String userId = DeviceOperationManager.getUserId(request.getSession());
         LOG.debug("disable encap device: " + attribute + " for user " + userId);
 
@@ -68,11 +75,15 @@ public class DisableServlet extends AbstractInjectionServlet {
             // notify that disable operation was successful.
             protocolContext.setSuccess(true);
         } catch (DeviceNotFoundException e) {
-            LOG.debug("device not found");
+            LOG.error("device not found", e);
         } catch (SubjectNotFoundException e) {
-            LOG.debug("subject " + userId + " not found");
+            String message = "subject " + userId + " not found";
+            LOG.error(message, e);
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, message);
         } catch (DeviceRegistrationNotFoundException e) {
-            LOG.debug("device registration not found");
+            String message = "device registration \"" + attribute + "\" not found";
+            LOG.error(message, e);
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, message);
         }
 
         response.sendRedirect(this.deviceExitPath);

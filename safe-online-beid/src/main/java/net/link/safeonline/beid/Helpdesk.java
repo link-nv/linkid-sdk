@@ -9,12 +9,12 @@ package net.link.safeonline.beid;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.beid.BeidConstants;
 import net.link.safeonline.helpdesk.HelpdeskBase;
+import net.link.safeonline.model.beid.BeIdService;
 
 
 @Local
 public interface Helpdesk extends HelpdeskBase {
 
-    public static final String JNDI_BINDING = BeidConstants.JNDI_PREFIX + "HelpdeskBean/local";
+    public static final String JNDI_BINDING = BeIdService.JNDI_PREFIX + "HelpdeskBean/local";
 }

@@ -105,14 +105,13 @@ public abstract class RequestUtil {
      * Validates a SAML request in the HTTP request
      * 
      * @param request
-     * @param stsWsLocation
+     * @param wsLocation
      * @param applicationCertificate
      * @param applicationPrivateKey
      * @throws ServletException
      */
-    public static AuthnRequest validateAuthnRequest(HttpServletRequest request, String stsWsLocation,
-                                                    X509Certificate applicationCertificate, PrivateKey applicationPrivateKey,
-                                                    TrustDomainType trustDomain)
+    public static AuthnRequest validateAuthnRequest(HttpServletRequest request, String wsLocation, X509Certificate applicationCertificate,
+                                                    PrivateKey applicationPrivateKey, TrustDomainType trustDomain)
             throws ServletException {
 
         String encodedSamlRequest = request.getParameter("SAMLRequest");
@@ -132,8 +131,7 @@ public abstract class RequestUtil {
             throw new ServletException("DOM parsing error");
         }
         Element samlElement = samlDocument.getDocumentElement();
-        SecurityTokenServiceClient stsClient = new SecurityTokenServiceClientImpl(stsWsLocation, applicationCertificate,
-                applicationPrivateKey);
+        SecurityTokenServiceClient stsClient = new SecurityTokenServiceClientImpl(wsLocation, applicationCertificate, applicationPrivateKey);
         try {
             stsClient.validate(samlElement, trustDomain);
         } catch (RuntimeException e) {
@@ -169,12 +167,12 @@ public abstract class RequestUtil {
      * Validates a SAML logout request in the HTTP request
      * 
      * @param request
-     * @param stsWsLocation
+     * @param wsLocation
      * @param applicationCertificate
      * @param applicationPrivateKey
      * @throws ServletException
      */
-    public static LogoutRequest validateLogoutRequest(HttpServletRequest request, String stsWsLocation,
+    public static LogoutRequest validateLogoutRequest(HttpServletRequest request, String wsLocation,
                                                       X509Certificate applicationCertificate, PrivateKey applicationPrivateKey,
                                                       TrustDomainType trustDomain)
             throws ServletException {
@@ -196,7 +194,7 @@ public abstract class RequestUtil {
             throw new ServletException("DOM parsing error");
         }
         Element samlElement = samlDocument.getDocumentElement();
-        SecurityTokenServiceClient stsClient = new SecurityTokenServiceClientImpl(stsWsLocation, applicationCertificate,
+        SecurityTokenServiceClient stsClient = new SecurityTokenServiceClientImpl(wsLocation, applicationCertificate,
                 applicationPrivateKey);
         try {
             stsClient.validate(samlElement, trustDomain);

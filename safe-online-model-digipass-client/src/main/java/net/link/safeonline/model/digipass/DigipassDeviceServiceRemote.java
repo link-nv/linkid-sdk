@@ -8,12 +8,10 @@ package net.link.safeonline.model.digipass;
 
 import javax.ejb.Remote;
 
-import net.link.safeonline.SafeOnlineService;
-
 
 @Remote
 public interface DigipassDeviceServiceRemote extends DigipassDeviceService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "DigipassDeviceServiceBean/remote";
+    public static final String JNDI_BINDING = DigipassService.JNDI_PREFIX + "DigipassDeviceServiceBean/remote";
 
 }

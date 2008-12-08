@@ -51,7 +51,7 @@ public class Saml2Handler implements Serializable {
 
     private static final String SAML2_POST_BINDING_VM_RESOURCE = "/net/link/safeonline/device/sdk/saml2/binding/saml2-post-binding.vm";
 
-    private String              stsWsLocation;
+    private String              wsLocation;
 
     private String              issuer;
 
@@ -98,12 +98,12 @@ public class Saml2Handler implements Serializable {
     public void init(Map<String, String> configParams, X509Certificate newApplicationCertificate, KeyPair newApplicationKeyPair)
             throws DeviceInitializationException {
 
-        this.stsWsLocation = configParams.get("StsWsLocation");
+        this.wsLocation = configParams.get("WsLocation");
         this.issuer = configParams.get("DeviceName");
         this.applicationCertificate = newApplicationCertificate;
         this.applicationKeyPair = newApplicationKeyPair;
-        if (null == this.stsWsLocation)
-            throw new DeviceInitializationException("Missing STS WS Location ( \"StsWsLocation\" )");
+        if (null == this.wsLocation)
+            throw new DeviceInitializationException("Missing WS Location ( \"WsLocation\" )");
     }
 
     public DeviceOperationType initDeviceOperation(HttpServletRequest request)
@@ -111,7 +111,7 @@ public class Saml2Handler implements Serializable {
 
         DeviceOperationRequest deviceOperationRequest;
         try {
-            deviceOperationRequest = DeviceOperationRequestUtil.validateRequest(request, this.stsWsLocation, this.applicationCertificate,
+            deviceOperationRequest = DeviceOperationRequestUtil.validateRequest(request, this.wsLocation, this.applicationCertificate,
                     this.applicationKeyPair.getPrivate(), TrustDomainType.NODE);
         } catch (ServletException e) {
             throw new DeviceInitializationException(e.getMessage());
