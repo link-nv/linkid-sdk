@@ -351,21 +351,6 @@
 			</modules>
 		</profile>
 
-		<!-- Profile used to perform Web Application tests -->
-		<profile>
-			<id>dep:test</id>
-			<properties>
-				<defaultCronExpression>0 0 3 * * ?</defaultCronExpression>
-                <safe-online.host.auth.basename><!-- Use HTTP for auth -->
-					${safe-online.host.protocol:insecure}://${safe-online.host.name}:${safe-online.host.port:insecure} 
-				</safe-online.host.auth.basename>
-			</properties>
-			<modules>
-				<module>safe-online-test-webapp</module>
-				<module>safe-online-test</module>
-			</modules>
-		</profile>
-
 		<!-- Profile that enables the option artifacts -->
 		<profile>
 			<id>dep:option</id>
@@ -422,12 +407,35 @@
 			</modules>
 		</profile>
 
+		<!-- Profile used to perform Web Application tests -->
+		<profile>
+			<id>dep:test</id>
+			<properties>
+				<defaultCronExpression>0 0 3 * * ?</defaultCronExpression>
+                <safe-online.host.auth.basename><!-- Use HTTP for auth -->
+					${safe-online.host.protocol:insecure}://${safe-online.host.name}:${safe-online.host.port:insecure} 
+				</safe-online.host.auth.basename>
+			</properties>
+			<modules>
+				<module>safe-online-test-webapp</module>
+				<module>safe-online-test</module>
+			</modules>
+		</profile>
+
         <!-- HOST SELECTION PROFILES -->
 		<!-- Profile for deploying on encap server -->
 		<profile>
 			<id>host:encap</id>
 			<properties>
 				<safe-online.host.name>test.encap.no</safe-online.host.name>
+			</properties>
+		</profile>
+
+		<!-- Profile for deploying on sebeco-test-10 -->
+		<profile>
+			<id>host:buildserver</id>
+			<properties>
+				<safe-online.host.name>buildserver</safe-online.host.name>
 			</properties>
 		</profile>
 
