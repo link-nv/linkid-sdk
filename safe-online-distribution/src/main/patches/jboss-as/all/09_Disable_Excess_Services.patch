@@ -233,43 +233,6 @@
  
          <load-on-startup>3</load-on-startup>
      </servlet>
---- server/default/deploy/jboss-web.deployer/server.xml	2008-12-04 14:42:02.000000000 +0100
-+++ server/default/deploy/jboss-web.deployer/server.xml	2008-12-04 14:42:02.000000000 +0100
-@@ -19,26 +19,25 @@
-          APR (HTTP/AJP) Connector: /docs/apr.html
-          Define a non-SSL HTTP/1.1 Connector on port 8080
-     -->
--    <Connector port="8080" address="${jboss.bind.address}"    
-+    <Connector port="${safe-online.jboss.host.port:insecure}" address="${jboss.bind.address}"    
-          maxThreads="250" maxHttpHeaderSize="8192"
--         emptySessionPath="true" protocol="HTTP/1.1"
--         enableLookups="false" redirectPort="8443" acceptCount="100"
-+         emptySessionPath="false" protocol="HTTP/1.1" enableLookups="false"
-+         redirectPort="${safe-online.host.port:secure}" acceptCount="100"
-          connectionTimeout="20000" disableUploadTimeout="true" />
- 
-     <!-- Define a SSL HTTP/1.1 Connector on port 8443
-          This connector uses the JSSE configuration, when using APR, the 
-          connector should be using the OpenSSL style configuration
-          described in the APR documentation -->
--    <!--
--    <Connector port="8443" protocol="HTTP/1.1" SSLEnabled="true"
-+    
-+    <Connector port="${safe-online.jboss.host.port:secure}" protocol="HTTP/1.1" SSLEnabled="true"
-                maxThreads="150" scheme="https" secure="true"
--               clientAuth="false" sslProtocol="TLS" />
--    -->
-+               clientAuth="false" sslProtocol="TLS"
-+               keystoreFile="${jboss.server.home.dir}/conf/ssl.jks"
-+               keystorePass="secret" /> 
- 
-     <!-- Define an AJP 1.3 Connector on port 8009 -->
-     <Connector port="8009" address="${jboss.bind.address}" protocol="AJP/1.3"
--         emptySessionPath="true" enableLookups="false" redirectPort="8443" />
-+         emptySessionPath="false" enableLookups="false" redirectPort="${safe-online.host.port:secure}" />
- 
-       <Engine name="jboss.web" defaultHost="localhost">
- 
 --- server/default/deploy/jbossjca-service.xml	2008-10-06 09:41:04.000000000 +0200
 +++ server/default/deploy/jbossjca-service.xml	2008-10-06 09:41:04.000000000 +0200
 @@ -60,7 +60,7 @@

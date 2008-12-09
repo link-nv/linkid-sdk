@@ -157,7 +157,7 @@
                         </goals>
                         <configuration>
                             <naturalOrderProcessing>true</naturalOrderProcessing>
-                            <patchDirectory>src/main/patches/jboss-as</patchDirectory>
+                            <patchDirectory>target/classes/patches/jboss-as</patchDirectory>
                             <targetDirectory>target/files/jboss-${jboss.version}</targetDirectory>
                         </configuration>
                     </execution>
@@ -169,7 +169,7 @@
                         </goals>
                         <configuration>
                             <naturalOrderProcessing>true</naturalOrderProcessing>
-                            <patchDirectory>src/main/patches/jboss-messaging</patchDirectory>
+                            <patchDirectory>target/classes/patches/jboss-messaging</patchDirectory>
                             <targetDirectory>target/files/jboss-messaging.sar</targetDirectory>
                         </configuration>
                     </execution>
@@ -181,7 +181,7 @@
                         </goals>
                         <configuration>
                             <naturalOrderProcessing>true</naturalOrderProcessing>
-                            <patchDirectory>src/main/patches/jboss-as/${safe-online.distribution}</patchDirectory>
+                            <patchDirectory>target/classes/patches/jboss-as/${safe-online.distribution}</patchDirectory>
                             <targetDirectory>target/files/jboss-${jboss.version}</targetDirectory>
                         </configuration>
                     </execution>
@@ -193,7 +193,7 @@
                         </goals>
                         <configuration>
                             <naturalOrderProcessing>true</naturalOrderProcessing>
-                            <patchDirectory>src/main/patches/jboss-messaging/${safe-online.distribution}</patchDirectory>
+                            <patchDirectory>target/classes/patches/jboss-messaging/${safe-online.distribution}</patchDirectory>
                             <targetDirectory>target/files/jboss-messaging.sar</targetDirectory>
                         </configuration>
                     </execution>
