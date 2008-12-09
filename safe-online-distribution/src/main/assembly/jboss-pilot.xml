@@ -208,8 +208,8 @@
 		</fileSet>
 
 	</fileSets>
-
- 	<formats>
+ 
+	<formats>
 		<format>zip</format>
 	</formats>
 

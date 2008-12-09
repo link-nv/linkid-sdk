@@ -141,7 +141,7 @@
 			<id>ds:hsql</id>
 			<properties>
 				<safe-online.data.source.type>hsql</safe-online.data.source.type>
-				<safe-online.data.source.uri></safe-online.data.source.uri>
+				<safe-online.data.source.uri>jdbc:hsqldb:.</safe-online.data.source.uri>
                 <safe-online.data.source.dialect>org.hibernate.dialect.HSQLDialect</safe-online.data.source.dialect>
             </properties>
         </profile>
@@ -285,6 +285,7 @@
 				<module>safe-online-performance-console-swing</module>
 				<module>safe-online-performance-console-package</module>
 				<module>safe-online-distribution</module>
+				<module>safe-online-performance-agent-distribution</module>
 			</modules>
 		</profile>
 
@@ -533,6 +534,8 @@
 
 		<safe-online.batch.size>5</safe-online.batch.size>
 		<safe-online.data.source>SafeOnlineDS</safe-online.data.source>
+        <safe-online.data.source.user>safeonline</safe-online.data.source.user>
+        <safe-online.data.source.pass>safeonline</safe-online.data.source.pass>
 		<safe-online.hibernate.hbm2ddl.auto>update</safe-online.hibernate.hbm2ddl.auto>
 
 		<safe-online.host.name>localhost</safe-online.host.name>

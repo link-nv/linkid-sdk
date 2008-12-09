@@ -1,0 +1,69 @@
+--- jboss/server/default/conf/login-config.xml	2008-10-15 11:58:12.000000000 +0200
++++ jboss/server/default/conf/login-config.xml	2008-10-15 11:58:12.000000000 +0200
+@@ -47,7 +47,7 @@
+           <login-module code = "org.jboss.security.auth.spi.DatabaseServerLoginModule"
+              flag = "required">
+              <module-option name = "unauthenticatedIdentity">guest</module-option>
+-             <module-option name = "dsJndiName">java:/${safe-online.data.source}</module-option>
++             <module-option name = "dsJndiName">java:/${safe-online.profiling.agent.data.source}</module-option>
+              <module-option name = "principalsQuery">SELECT PASSWD FROM JMS_USERS WHERE USERID=?</module-option>
+              <module-option name = "rolesQuery">SELECT ROLEID, 'Roles' FROM JMS_ROLES WHERE USERID=?</module-option>
+           </login-module>
+@@ -61,7 +61,7 @@
+             <login-module code = "org.jboss.security.auth.spi.DatabaseServerLoginModule"
+                 flag = "required">
+                 <module-option name = "unauthenticatedIdentity">guest</module-option>
+-                <module-option name = "dsJndiName">java:/${safe-online.data.source}</module-option>
++                <module-option name = "dsJndiName">java:/${safe-online.profiling.agent.data.source}</module-option>
+                 <module-option name = "principalsQuery">SELECT PASSWD FROM JBM_USER WHERE USER_ID=?</module-option>
+                 <module-option name = "rolesQuery">SELECT ROLE_ID, 'Roles' FROM JBM_ROLE WHERE USER_ID=?</module-option>
+             </login-module>
+@@ -88,7 +88,7 @@
+              <module-option name = "principal">sa</module-option>
+              <module-option name = "userName">${safe-online.data.source.user}</module-option>
+              <module-option name = "password">${safe-online.data.source.user}</module-option>
+-             <module-option name = "managedConnectionFactoryName">jboss.jca:service=LocalTxCM,name=${safe-online.data.source}</module-option>
++             <module-option name = "managedConnectionFactoryName">jboss.jca:service=LocalTxCM,name=${safe-online.profiling.agent.data.source}</module-option>
+           </login-module>
+        </authentication>
+     </application-policy>
+--- jboss/server/default/conf/standardjbosscmp-jdbc.xml	2008-10-15 11:58:12.000000000 +0200
++++ jboss/server/default/conf/standardjbosscmp-jdbc.xml	2008-10-15 11:58:12.000000000 +0200
+@@ -14,7 +14,7 @@
+ <jbosscmp-jdbc>
+ 
+    <defaults>
+-      <datasource>java:/${safe-online.data.source}</datasource>
++      <datasource>java:/${safe-online.profiling.agent.data.source}</datasource>
+       <!-- optional since 4.0 <datasource-mapping>Hypersonic SQL</datasource-mapping> -->
+ 
+       <create-table>true</create-table>
+--- jboss/server/default/deploy/ejb-deployer.xml	2008-10-06 09:41:04.000000000 +0200
++++ jboss/server/default/deploy/ejb-deployer.xml	2008-10-06 09:41:04.000000000 +0200
+@@ -45,7 +45,7 @@
+   -->
+   <mbean code="org.jboss.ejb.txtimer.DatabasePersistencePolicy" name="jboss.ejb:service=EJBTimerService,persistencePolicy=database">
+     <!-- DataSourceBinding ObjectName -->
+-    <depends optional-attribute-name="DataSource">jboss.jca:service=DataSourceBinding,name=${safe-online.data.source}</depends>
++    <depends optional-attribute-name="DataSource">jboss.jca:service=DataSourceBinding,name=${safe-online.profiling.agent.data.source}</depends>
+     <!-- The plugin that handles database persistence -->
+     <attribute name="DatabasePersistencePlugin">org.jboss.ejb.txtimer.GeneralPurposeDatabasePersistencePlugin</attribute>
+     <!-- The timers table name -->
+--- jboss/server/default/deploy/uuid-key-generator.sar/META-INF/jboss-service.xml	2008-10-06 09:41:04.000000000 +0200
++++ jboss/server/default/deploy/uuid-key-generator.sar/META-INF/jboss-service.xml	2008-10-06 09:41:04.000000000 +0200
+@@ -22,7 +22,7 @@
+      <!-- Attributes common to HiLo factory instances -->
+ 
+      <!-- DataSource JNDI name -->
+-     <depends optional-attribute-name="DataSource">jboss.jca:service=DataSourceBinding,name=${safe-online.data.source}</depends>
++     <depends optional-attribute-name="DataSource">jboss.jca:service=DataSourceBinding,name=${safe-online.profiling.agent.data.source}</depends>
+ 
+      <!-- table name -->
+      <attribute name="TableName">HILOSEQUENCES</attribute>
+--- jboss/server/default/deploy/${safe-online.data.source.type}-safe-online-ds.xml	2008-12-09 11:41:05.000000000 +0100
++++ jboss/server/default/deploy/${safe-online.data.source.type}-safe-online-ds.xml	2008-12-09 11:41:05.000000000 +0100
+@@ -4,2 +4,2 @@
+-		<jndi-name>${safe-online.data.source}</jndi-name>
+-		<connection-url>${safe-online.data.source.uri}</connection-url>
++       <jndi-name>${safe-online.profiling.agent.data.source}</jndi-name>
++		<connection-url>${safe-online.profiling.agent.data.source.uri}</connection-url>

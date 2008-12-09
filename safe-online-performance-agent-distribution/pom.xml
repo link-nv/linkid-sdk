@@ -1,6 +1,5 @@
-<?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -11,21 +10,23 @@
 	</parent>
 
 	<name>SafeOnline Performance Agent Distribution</name>
-
 	<groupId>net.lin-k.safe-online</groupId>
 	<artifactId>safe-online-performance-agent-distribution</artifactId>
 	<version>1.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<build>
-        <resources>
-            <resource>
-                <directory>src/main</directory>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-		<plugins>
+    <build>
 
+		<resources>
+			<resource>
+				<directory>src/main</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+
+        <plugins>
+
+            <!-- 1. Expand Maven parameters into our patches. -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
@@ -40,13 +41,12 @@
 				</executions>
 			</plugin>
 
+            <!-- 2. Gather all the artifacts that will make up the distribution. -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
-                <executions>
+				<executions>
 
-                    <!-- Unpack provided base-distribution and sql-ddl.
-                         maven-assembly-plugin needs their files to assemble the new distribution from. -->
 					<execution>
 						<id>unpack</id>
 						<phase>package</phase>
@@ -57,13 +57,14 @@
 							<artifactItems>
 								<artifactItem>
 									<groupId>net.lin-k.safe-online</groupId>
-									<artifactId>safe-online-base-distribution</artifactId>
-									<type>zip</type>
+									<artifactId>safe-online-distribution</artifactId>
+                                    <version>1.3-SNAPSHOT</version>
+                                    <type>zip</type>
 								</artifactItem>
 							</artifactItems>
 							<outputDirectory>${project.build.directory}/files</outputDirectory>
 						</configuration>
-                    </execution>
+					</execution>
 
                     <!-- Copy EAR dependencies into /deploy.
                          maven-assembly-plugin will move them to /jboss/server/default/deploy. -->
@@ -98,33 +99,32 @@
 				</executions>
 			</plugin>
 
+            <!-- 3. Apply customization patches to the default distribution configuration. -->
             <plugin>
                 <artifactId>maven-patch-plugin</artifactId>
                 <executions>
-                  <execution>
-                    <id>patch</id>
-                    <phase>package</phase>
-                    <goals>
-                        <goal>apply</goal>
-                    </goals>
+                    <execution>
+                        <id>dist:general</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>apply</goal>
+                        </goals>
                         <configuration>
-                            <patches>
-                                <patch>headless.patch</patch>
-                                <patch>profiler.patch</patch>
-                                <patch>log4j.patch</patch>
-                            </patches>
-                            <targetDirectory>target/files/safe-online-base-distribution-${safe-online.version}</targetDirectory>
+                            <naturalOrderProcessing>true</naturalOrderProcessing>
+                            <patchDirectory>target/classes/patches</patchDirectory>
+                            <targetDirectory>target/files/safe-online-distribution-${safe-online.version}</targetDirectory>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
 
+            <!-- 4. Assemble our distribution. -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
 					<descriptors>
-						<descriptor>src/main/assembly/jboss.xml</descriptor>
+                        <descriptor>src/main/assembly/jboss-agent.xml</descriptor>
 					</descriptors>
 				</configuration>
 				<executions>
@@ -139,16 +139,16 @@
 			</plugin>
 
 		</plugins>
-	</build>
+    </build>
 
 	<dependencies>
 
         <!-- Specific Dependencies: Distribution -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-base-distribution</artifactId>
-			<version>1.3-SNAPSHOT</version>
-            <scope>provided</scope>
+			<artifactId>safe-online-distribution</artifactId>
+            <version>1.3-SNAPSHOT</version>
+			<scope>provided</scope>
 			<type>zip</type>
 		</dependency>
 
@@ -158,12 +158,6 @@
 			<artifactId>safe-online-performance-agent-deploy</artifactId>
 			<version>1.3-SNAPSHOT</version>
 			<type>ear</type>
-		</dependency>
-
-        <!-- Specific Dependencies: External -->
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
 		</dependency>
 
 	</dependencies>
