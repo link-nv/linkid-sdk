@@ -11,11 +11,19 @@
 
 		<!-- Based on the SafeOnline distribution without SafeOnline applications. -->
 		<fileSet>
-			<directory>target/files/safe-online-distribution-${safe-online.version}</directory>
+            <directory>target/files/safe-online-distribution-${safe-online.version}/jboss</directory>
+            <outputDirectory>jboss</outputDirectory>
             <excludes>
                 <exclude>server/default/deploy/SafeOnline*</exclude>
             </excludes>
 		</fileSet>
+
+        <!-- Runtime scripts                                -> /scripts -->
+        <fileSet>
+            <directory>target/files/safe-online-distribution-${safe-online.version}/scripts</directory>
+            <outputDirectory>scripts</outputDirectory>
+            <fileMode>0500</fileMode>
+        </fileSet>
 
 		<!-- This artifact's EAR dependencies               -> /jboss/server/default/lib -->
 		<fileSet>

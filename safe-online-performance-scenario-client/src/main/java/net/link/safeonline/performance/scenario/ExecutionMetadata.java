@@ -18,8 +18,6 @@ package net.link.safeonline.performance.scenario;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import net.link.safeonline.performance.scenario.bean.ScenarioControllerBean;
-
 
 /**
  * <h2>{@link ExecutionMetadata}<br>

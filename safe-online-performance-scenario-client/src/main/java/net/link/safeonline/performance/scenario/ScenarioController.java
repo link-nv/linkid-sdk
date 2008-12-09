@@ -12,8 +12,6 @@ import java.util.Set;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.performance.scenario.bean.ScenarioControllerBean;
-
 
 /**
  * <h2>{@link ScenarioController}<br>

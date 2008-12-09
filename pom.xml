@@ -217,9 +217,10 @@
 			<id>dist:performance</id>
 			<properties>
                 <safe-online.distribution>performance</safe-online.distribution>
-				<safe-online.host.auth.basename><!-- Use HTTP for auth -->
-					${safe-online.host.protocol:insecure}://${safe-online.host.name}:${safe-online.host.port:insecure} 
-				</safe-online.host.auth.basename>
+
+                <!-- Use insecure transport for secure traffic to reduce transport overhead. -->
+                <safe-online.host.protocol:secure>${safe-online.host.protocol:insecure}</safe-online.host.protocol:secure>
+                <safe-online.host.port:secure>${safe-online.host.port:insecure}</safe-online.host.port:secure>
 
 				<safe-online.profiling.group>net.lin-k.safe-online.performance</safe-online.profiling.group>
 				<safe-online.profiling.initial_hosts>sebeco-dev-11.lin-k.net[7800],sebeco-dev-12.lin-k.net[7800]</safe-online.profiling.initial_hosts>
@@ -278,6 +279,7 @@
 				<module>safe-online-performance-startup-runtime</module>
 				<module>safe-online-performance-keystore</module>
 				<module>safe-online-performance-agent-service</module>
+				<module>safe-online-performance-scenario-client</module>
 				<module>safe-online-performance-scenario</module>
 				<module>safe-online-performance-scenario-base</module>
 				<module>safe-online-performance-scenario-deploy</module>
@@ -413,9 +415,10 @@
 			<id>dep:test</id>
 			<properties>
 				<defaultCronExpression>0 0 3 * * ?</defaultCronExpression>
-                <safe-online.host.auth.basename><!-- Use HTTP for auth -->
-					${safe-online.host.protocol:insecure}://${safe-online.host.name}:${safe-online.host.port:insecure} 
-				</safe-online.host.auth.basename>
+
+                <!-- Use insecure transport for secure traffic to reduce transport overhead. -->
+                <safe-online.host.protocol:secure>${safe-online.host.protocol:insecure}</safe-online.host.protocol:secure>
+                <safe-online.host.port:secure>${safe-online.host.port:insecure}</safe-online.host.port:secure>
 			</properties>
 			<modules>
 				<module>safe-online-test-webapp</module>

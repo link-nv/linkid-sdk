@@ -107,15 +107,11 @@
  
      <!-- Security domain for JBossMQ when using file-state-service.xml
      <application-policy name = "jbossmq">
-@@ -70,9 +85,9 @@
-           <login-module code = "org.jboss.resource.security.ConfiguredIdentityLoginModule"
-              flag = "required">
+@@ -72,7 +87,7 @@
               <module-option name = "principal">sa</module-option>
--             <module-option name = "userName">sa</module-option>
--             <module-option name = "password"></module-option>
+              <module-option name = "userName">sa</module-option>
+              <module-option name = "password"></module-option>
 -             <module-option name = "managedConnectionFactoryName">jboss.jca:service=LocalTxCM,name=DefaultDS</module-option>
-+             <module-option name = "userName">${safe-online.data.source.user}</module-option>
-+             <module-option name = "password">${safe-online.data.source.pass}</module-option>
 +             <module-option name = "managedConnectionFactoryName">jboss.jca:service=LocalTxCM,name=${safe-online.data.source}</module-option>
            </login-module>
         </authentication>
