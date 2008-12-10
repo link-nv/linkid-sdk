@@ -119,7 +119,7 @@
 							<goal>copy-dependencies</goal>
 						</goals>
 						<configuration>
-                            <includeTypes>ear</includeTypes>
+                            <includeTypes>ear,war</includeTypes>
                             <excludeScope>provided</excludeScope>
 							<outputDirectory>${project.build.directory}/deploy</outputDirectory>
 						</configuration>
@@ -135,7 +135,7 @@
 						</goals>
 						<configuration>
 							<excludeScope>provided</excludeScope>
-                            <excludeTypes>ear</excludeTypes>
+                            <excludeTypes>ear,war</excludeTypes>
 							<outputDirectory>${project.build.directory}/dependency</outputDirectory>
 						</configuration>
 					</execution>
