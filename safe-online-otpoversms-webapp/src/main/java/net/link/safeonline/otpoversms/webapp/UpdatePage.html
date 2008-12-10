@@ -34,8 +34,35 @@
 				</p>
 			</div>
 
+			<form wicket:id="request_otp_form">
+
+				<label>
+					<wicket:message key="mobile">[Mobile]</wicket:message>
+				</label>
+				<div>
+					<input wicket:id="mobile" type="text" class="label" />
+				</div>
+				<div wicket:id="mobile_feedback" class="error"></div>
+
+				<label>&nbsp;</label>
+				<input wicket:id="request_otp" type="submit" value="[Request Token]"
+					wicket:message="value:mobileRequestOTP" class="submit" />
+				<input wicket:id="request_cancel" type="submit" value="[Cancel]"
+					wicket:message="value:cancelaction" class="submit" />
+
+				<div wicket:id="request_feedback" class="error"></div>
+			</form>
+
 			<form wicket:id="update_form">
 
+				<label>
+					<wicket:message key="mobileOTP">[Mobile Token]</wicket:message>
+				</label>
+				<div>
+					<input wicket:id="otp" type="text" class="label" />
+				</div>
+				<div wicket:id="otp_feedback" class="error"></div>
+				
 				<label>
 					<wicket:message key="mobileOldPin">[Old Mobile Pin]</wicket:message>
 				</label>

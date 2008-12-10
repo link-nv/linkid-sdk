@@ -7,112 +7,47 @@
 
 package net.link.safeonline.config.model.bean;
 
-import static net.link.safeonline.common.Configurable.defaultGroup;
-
-import java.lang.reflect.Field;
-
-import javax.ejb.EJB;
-import javax.ejb.EJBException;
+import javax.ejb.Local;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.Startable;
-import net.link.safeonline.common.Configurable;
-import net.link.safeonline.config.dao.ConfigGroupDAO;
-import net.link.safeonline.config.dao.ConfigItemDAO;
-import net.link.safeonline.config.model.ConfigStartable;
-import net.link.safeonline.config.model.ConfigurationDeploymentStrategy;
-import net.link.safeonline.entity.config.ConfigGroupEntity;
-import net.link.safeonline.entity.config.ConfigItemEntity;
+import net.link.safeonline.audit.bean.AuditCleanerTaskBean;
+import net.link.safeonline.audit.bean.AuditSyslogBean;
+import net.link.safeonline.authentication.service.bean.SamlAuthorityServiceBean;
+import net.link.safeonline.helpdesk.bean.HelpdeskCleanerTaskBean;
+import net.link.safeonline.helpdesk.bean.HelpdeskManagerBean;
+import net.link.safeonline.messaging.bean.EmailBean;
+import net.link.safeonline.model.bean.ClockDriftDetectorTaskBean;
+import net.link.safeonline.model.bean.HelpdeskContactBean;
+import net.link.safeonline.model.bean.HistoryCleanerTaskBean;
+import net.link.safeonline.model.bean.IdGeneratorBean;
+import net.link.safeonline.model.bean.UsageStatisticTaskBean;
+import net.link.safeonline.notification.service.bean.NotificationMessageQueueTaskBean;
+import net.link.safeonline.tasks.model.bean.TaskHistoryCleanerTaskBean;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
-@LocalBinding(jndiBinding = ConfigStartable.JNDI_BINDING)
-public class ConfigStartableBean implements ConfigStartable {
+@Local(Startable.class)
+@LocalBinding(jndiBinding = ConfigStartableBean.JNDI_BINDING)
+public class ConfigStartableBean extends AbstractConfigStartableBean {
 
-    private static final Log LOG = LogFactory.getLog(ConfigStartableBean.class);
-
-    @EJB(mappedName = ConfigItemDAO.JNDI_BINDING)
-    private ConfigItemDAO    configItemDAO;
-
-    @EJB(mappedName = ConfigGroupDAO.JNDI_BINDING)
-    private ConfigGroupDAO   configGroupDAO;
+    public static final String JNDI_BINDING = Startable.JNDI_PREFIX + "ConfigStartableBean";
 
 
+    public ConfigStartableBean() {
+
+        this.configurationBeans = new Class[] { AuditCleanerTaskBean.class, AuditSyslogBean.class, SamlAuthorityServiceBean.class,
+                ConfigurationManagerBean.class, HelpdeskCleanerTaskBean.class, HelpdeskManagerBean.class, EmailBean.class,
+                ClockDriftDetectorTaskBean.class, HelpdeskContactBean.class, HistoryCleanerTaskBean.class, IdGeneratorBean.class,
+                UsageStatisticTaskBean.class, NotificationMessageQueueTaskBean.class, TaskHistoryCleanerTaskBean.class };
+
+    }
+
+    @Override
     public int getPriority() {
 
         return Startable.PRIORITY_BOOTSTRAP;
     }
-
-    public void postStart() {
-
-        LOG.debug("Starting configuration");
-
-        ConfigurationDeploymentStrategy configurationDeploymentStrategy = new ConfigurationDeploymentStrategy();
-        configurationDeploymentStrategy.scan();
-
-        for (Class<?> classObject : configurationDeploymentStrategy.getScannedConfigurationClasses()) {
-            LOG.debug("found configurable class: " + classObject.getName());
-            configure(classObject);
-        }
-    }
-
-    public void preStop() {
-
-        // empty
-    }
-
-    @SuppressWarnings("unchecked")
-    protected void configure(Class classObject) {
-
-        try {
-            Object target = classObject.newInstance();
-            Field[] fields = classObject.getDeclaredFields();
-
-            Configurable generalConfigurable = (Configurable) classObject.getAnnotation(Configurable.class);
-
-            String group = generalConfigurable.group();
-
-            LOG.debug("Configuring: " + classObject.getName());
-
-            for (Field field : fields) {
-                LOG.debug("Inspecting field: " + field.getName());
-                Configurable configurable = field.getAnnotation(Configurable.class);
-                if (configurable != null) {
-                    LOG.debug("Configuring field: " + field.getName());
-                    String name = configurable.name();
-                    if (name == null || name == "") {
-                        name = field.getName();
-                    }
-
-                    if (!configurable.group().equals(defaultGroup)) {
-                        group = configurable.group();
-                    }
-                    ConfigGroupEntity configGroup = this.configGroupDAO.findConfigGroup(group);
-                    if (configGroup == null) {
-                        LOG.debug("Adding configuration group: " + group);
-                        configGroup = this.configGroupDAO.addConfigGroup(group);
-                    }
-
-                    ConfigItemEntity configItem = this.configItemDAO.findConfigItem(name);
-                    field.setAccessible(true);
-                    if (configItem == null) {
-                        LOG.debug("Adding configuration item: " + name);
-                        Object value = field.get(target);
-                        String valueType = value.getClass().getName();
-                        String stringValue = value.toString();
-                        configItem = this.configItemDAO.addConfigItem(name, stringValue, valueType, configGroup);
-                    } else {
-                        configItem.setConfigGroup(configGroup);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            throw new EJBException("Failed to execute @Configurable", e);
-        }
-    }
-
 }

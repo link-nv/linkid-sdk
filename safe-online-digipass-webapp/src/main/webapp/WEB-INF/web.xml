@@ -53,7 +53,7 @@
 		<param-value>secret</param-value>
 	</context-param>
 	<context-param>
-		<param-name>StsWsLocation</param-name>
+		<param-name>WsLocation</param-name>
 		<param-value> ${safe-online.host.auth.basename} </param-value>
 	</context-param>
 	<filter>
@@ -113,6 +113,10 @@
 		<init-param>
 			<param-name>DisableUrl</param-name>
 			<param-value>disable</param-value>
+		</init-param>
+		<init-param>
+			<param-name>EnableUrl</param-name>
+			<param-value>enable</param-value>
 		</init-param>
 		<init-param>
 			<param-name>ServletEndpointUrl</param-name>

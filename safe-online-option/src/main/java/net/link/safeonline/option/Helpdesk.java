@@ -9,12 +9,12 @@ package net.link.safeonline.option;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.option.OptionConstants;
 import net.link.safeonline.helpdesk.HelpdeskBase;
+import net.link.safeonline.model.option.OptionService;
 
 
 @Local
 public interface Helpdesk extends HelpdeskBase {
 
-    public static final String JNDI_BINDING = OptionConstants.JNDI_PREFIX + "HelpdeskBean/local";
+    public static final String JNDI_BINDING = OptionService.JNDI_PREFIX + "HelpdeskBean/local";
 }

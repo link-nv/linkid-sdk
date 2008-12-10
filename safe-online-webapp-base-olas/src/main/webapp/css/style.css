@@ -290,8 +290,6 @@ table.timeline {
     margin:             0;
     padding:            0;
 
-    background:         url('../images/timeline/timeline.png') top left repeat-x;
-
     font:               inherit;
     text-align:         center;
 }
@@ -299,6 +297,15 @@ table.timeline[class] {
     height:             35px;
 }
 table.timeline td {
+    padding:            0;
+    vertical-align:     top;
+
+    background:         url('../images/timeline/timeline.png') top left repeat-x;
+
+    font:               10px/ 15px "Trebuchet MS", Verdana, Arial;
+    text-align:         center;
+}
+table.timeline div {
     height:             70px;                       /* IE doesn't include padding in h/w. */
     padding:            0;
     padding-top:        35px;
@@ -306,15 +313,12 @@ table.timeline td {
     padding-right:      5px;
 
     background:         url('../images/timeline/timeline_other.png') top center no-repeat;
-
-    font:               10px/ 15px "Trebuchet MS", Verdana, Arial;
-    text-align:         center;
 }
-table.timeline>td {
+table.timeline td>div {
     height:             35px;
 }
 
-table.timeline td.active {
+table.timeline td.active div {
     background:         url('../images/timeline/timeline_current.png') top center no-repeat;
 }
 table.timeline td.start {

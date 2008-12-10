@@ -8,8 +8,6 @@ package net.link.safeonline.model.option;
 
 import javax.ejb.Remote;
 
-import net.link.safeonline.SafeOnlineService;
-
 
 /**
  * <h2>{@link OptionDeviceServiceRemote}<br>
@@ -28,6 +26,6 @@ import net.link.safeonline.SafeOnlineService;
 @Remote
 public interface OptionDeviceServiceRemote extends OptionDeviceService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "OptionDeviceServiceBean/remote";
+    public static final String JNDI_BINDING = OptionService.JNDI_PREFIX + "OptionDeviceServiceBean/remote";
 
 }

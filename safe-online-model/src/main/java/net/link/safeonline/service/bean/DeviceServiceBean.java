@@ -181,8 +181,8 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public void addDevice(String name, String deviceClassName, String nodeName, String authenticationPath, String registrationPath,
-                          String removalPath, String updatePath, String disablePath, byte[] encodedCertificate, String attributeTypeName,
-                          String userAttributeTypeName, String disableAttributeTypeName)
+                          String removalPath, String updatePath, String disablePath, String enablePath, byte[] encodedCertificate,
+                          String attributeTypeName, String userAttributeTypeName, String disableAttributeTypeName)
             throws CertificateEncodingException, DeviceClassNotFoundException, ExistingDeviceException, AttributeTypeNotFoundException,
             NodeNotFoundException, PermissionDeniedException {
 
@@ -216,7 +216,7 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
         NodeEntity node = this.olasDAO.getNode(nodeName);
 
         this.deviceDAO.addDevice(name, deviceClass, node, authenticationPath, registrationPath, removalPath, updatePath, disablePath,
-                certificate, attributeType, userAttributeType, disableAttributeType);
+                enablePath, certificate, attributeType, userAttributeType, disableAttributeType);
     }
 
     /**
@@ -392,6 +392,14 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 
         DeviceEntity device = this.deviceDAO.getDevice(deviceName);
         device.setDisablePath(disablePath);
+    }
+
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public void updateEnablePath(String deviceName, String enablePath)
+            throws DeviceNotFoundException {
+
+        DeviceEntity device = this.deviceDAO.getDevice(deviceName);
+        device.setEnablePath(enablePath);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)

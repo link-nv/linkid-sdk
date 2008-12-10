@@ -1,0 +1,160 @@
+--- server/default/deploy/ejb-deployer.xml	2008-10-06 09:41:01.000000000 +0200
++++ server/default/deploy/ejb-deployer.xml	2008-10-06 09:41:01.000000000 +0200
+@@ -45,7 +45,7 @@
+   -->
+   <mbean code="org.jboss.ejb.txtimer.DatabasePersistencePolicy" name="jboss.ejb:service=EJBTimerService,persistencePolicy=database">
+     <!-- DataSourceBinding ObjectName -->
+-    <depends optional-attribute-name="DataSource">jboss.jca:service=DataSourceBinding,name=DefaultDS</depends>
++    <depends optional-attribute-name="DataSource">jboss.jca:service=DataSourceBinding,name=${safe-online.data.source}</depends>
+     <!-- The plugin that handles database persistence -->
+     <attribute name="DatabasePersistencePlugin">org.jboss.ejb.txtimer.GeneralPurposeDatabasePersistencePlugin</attribute>
+     <!-- The timers table name -->
+--- server/default/conf/jboss-log4j.xml	2008-12-01 10:59:56.000000000 +0100
++++ server/default/conf/jboss-log4j.xml	2008-12-01 10:59:56.000000000 +0100
+@@ -64,7 +64,7 @@
+    <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+       <errorHandler class="org.jboss.logging.util.OnlyOnceErrorHandler"/>
+       <param name="Target" value="System.out"/>
+-      <param name="Threshold" value="INFO"/>
++      <param name="Threshold" value="DEBUG"/>
+ 
+       <layout class="org.apache.log4j.PatternLayout">
+          <!-- The default pattern: Date Priority [Category] Message\n -->
+@@ -155,6 +155,20 @@
+    </appender>
+    -->
+    
++   <appender name="SAFEONLINE" class="org.jboss.logging.appender.FileAppender">
++      <param name="File" value="${jboss.server.home.dir}/log/safe-online.log"/>
++      <param name="Append" value="false"/>
++
++      <layout class="org.apache.log4j.PatternLayout">
++         <param name="ConversionPattern" value="%d{ABSOLUTE} %-5p [%c{1}] %m%n"/>
++      </layout>
++   </appender>
++   
++   <category name="net.link.safeonline">
++     <priority value="DEBUG" />
++     <appender-ref ref="SAFEONLINE" />
++   </category>
++   
+    <!-- ================ -->
+    <!-- Limit categories -->
+    <!-- ================ -->
+@@ -164,6 +178,11 @@
+       <priority value="INFO"/>
+    </category>
+ 
++   <!-- Apache Wicket -->
++   <category name="org.apache.wicket">
++      <priority value="INFO"/>
++   </category>
++
+    <!-- Limit the jacorb category to WARN as its INFO is verbose -->
+    <category name="jacorb">
+       <priority value="WARN"/>
+--- server/default/conf/jboss-service.xml	2008-10-06 09:41:01.000000000 +0200
++++ server/default/conf/jboss-service.xml	2008-10-06 09:41:01.000000000 +0200
+@@ -12,6 +12,7 @@
+      can be restricted to specific jars by specifying them in the archives
+      attribute.
+     -->
++   <classpath codebase="${jboss.server.lib.url:lib}" archives="jaxws-rt.jar"/>
+    <classpath codebase="${jboss.server.lib.url:lib}" archives="*"/>
+ 
+    <!-- ==================================================================== -->
+@@ -28,7 +29,6 @@
+       <attribute name="WARDeployer">jboss.web:service=WebServer</attribute>
+       <attribute name="CARDeployer">jboss.j2ee:service=ClientDeployer</attribute>
+       <attribute name="MailService">jboss:service=Mail</attribute>
+-      <attribute name="JMSService">jboss.mq:service=DestinationManager</attribute>
+       <attribute name="JNDIService">jboss:service=Naming</attribute>
+       <attribute name="JTAService">jboss:service=TransactionManager</attribute>
+       <attribute name="UserTransactionService">jboss:service=ClientUserTransaction</attribute>
+--- server/default/conf/login-config.xml	2008-10-06 09:41:01.000000000 +0200
++++ server/default/conf/login-config.xml	2008-10-06 09:41:01.000000000 +0200
+@@ -41,17 +41,32 @@
+     </application-policy>
+ 
+     <!-- Security domain for JBossMQ -->
++    <!--
+     <application-policy name = "jbossmq">
+        <authentication>
+           <login-module code = "org.jboss.security.auth.spi.DatabaseServerLoginModule"
+              flag = "required">
+              <module-option name = "unauthenticatedIdentity">guest</module-option>
+-             <module-option name = "dsJndiName">java:/DefaultDS</module-option>
++             <module-option name = "dsJndiName">java:/${safe-online.data.source}</module-option>
+              <module-option name = "principalsQuery">SELECT PASSWD FROM JMS_USERS WHERE USERID=?</module-option>
+              <module-option name = "rolesQuery">SELECT ROLEID, 'Roles' FROM JMS_ROLES WHERE USERID=?</module-option>
+           </login-module>
+        </authentication>
+     </application-policy>
++    -->
++
++    <!-- Security domain for JBossMessaging -->
++    <application-policy name = "messaging">
++        <authentication>
++            <login-module code = "org.jboss.security.auth.spi.DatabaseServerLoginModule"
++                flag = "required">
++                <module-option name = "unauthenticatedIdentity">guest</module-option>
++                <module-option name = "dsJndiName">java:/${safe-online.data.source}</module-option>
++                <module-option name = "principalsQuery">SELECT PASSWD FROM JBM_USER WHERE USER_ID=?</module-option>
++                <module-option name = "rolesQuery">SELECT ROLE_ID, 'Roles' FROM JBM_ROLE WHERE USER_ID=?</module-option>
++            </login-module>
++        </authentication>
++    </application-policy>
+ 
+     <!-- Security domain for JBossMQ when using file-state-service.xml
+     <application-policy name = "jbossmq">
+@@ -72,7 +87,7 @@
+              <module-option name = "principal">sa</module-option>
+              <module-option name = "userName">sa</module-option>
+              <module-option name = "password"></module-option>
+-             <module-option name = "managedConnectionFactoryName">jboss.jca:service=LocalTxCM,name=DefaultDS</module-option>
++             <module-option name = "managedConnectionFactoryName">jboss.jca:service=LocalTxCM,name=${safe-online.data.source}</module-option>
+           </login-module>
+        </authentication>
+     </application-policy>
+--- server/default/conf/standardjboss.xml	2008-10-06 09:41:01.000000000 +0200
++++ server/default/conf/standardjboss.xml	2008-10-06 09:41:01.000000000 +0200
+@@ -358,7 +358,7 @@
+       <proxy-factory-config>
+         <JMSProviderAdapterJNDI>DefaultJMSProvider</JMSProviderAdapterJNDI>
+         <ServerSessionPoolFactoryJNDI>StdJMSPool</ServerSessionPoolFactoryJNDI>
+-        <CreateJBossMQDestination>true</CreateJBossMQDestination>
++        <CreateJBossMQDestination>false</CreateJBossMQDestination>
+         <!-- WARN: Don't set this to zero until a bug in the pooled executor is fixed -->
+         <MinimumSize>1</MinimumSize>
+         <MaximumSize>15</MaximumSize>
+@@ -440,7 +440,7 @@
+       <proxy-factory-config>
+         <JMSProviderAdapterJNDI>DefaultJMSProvider</JMSProviderAdapterJNDI>
+         <ServerSessionPoolFactoryJNDI>StdJMSPool</ServerSessionPoolFactoryJNDI>
+-        <CreateJBossMQDestination>true</CreateJBossMQDestination>
++        <CreateJBossMQDestination>false</CreateJBossMQDestination>
+         <!-- WARN: Don't set this to zero until a bug in the pooled executor is fixed -->
+         <MinimumSize>1</MinimumSize>
+         <MaximumSize>1</MaximumSize>
+--- server/default/conf/standardjbosscmp-jdbc.xml	2008-10-06 09:41:01.000000000 +0200
++++ server/default/conf/standardjbosscmp-jdbc.xml	2008-10-06 09:41:01.000000000 +0200
+@@ -14,7 +14,7 @@
+ <jbosscmp-jdbc>
+ 
+    <defaults>
+-      <datasource>java:/DefaultDS</datasource>
++      <datasource>java:/${safe-online.data.source}</datasource>
+       <!-- optional since 4.0 <datasource-mapping>Hypersonic SQL</datasource-mapping> -->
+ 
+       <create-table>true</create-table>
+--- server/default/deploy/uuid-key-generator.sar/META-INF/jboss-service.xml	2008-10-06 09:41:01.000000000 +0200
++++ server/default/deploy/uuid-key-generator.sar/META-INF/jboss-service.xml	2008-10-06 09:41:01.000000000 +0200
+@@ -22,7 +22,7 @@
+      <!-- Attributes common to HiLo factory instances -->
+ 
+      <!-- DataSource JNDI name -->
+-     <depends optional-attribute-name="DataSource">jboss.jca:service=DataSourceBinding,name=DefaultDS</depends>
++     <depends optional-attribute-name="DataSource">jboss.jca:service=DataSourceBinding,name=${safe-online.data.source}</depends>
+ 
+      <!-- table name -->
+      <attribute name="TableName">HILOSEQUENCES</attribute>

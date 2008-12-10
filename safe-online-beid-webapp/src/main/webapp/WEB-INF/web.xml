@@ -64,7 +64,7 @@
 		<param-value>secret</param-value>
 	</context-param>
 	<context-param>
-		<param-name>StsWsLocation</param-name>
+		<param-name>WsLocation</param-name>
 		<param-value>${safe-online.host.auth.basename}</param-value>
 	</context-param>
 	<filter>
@@ -168,11 +168,15 @@
 		</init-param>
 		<init-param>
 			<param-name>RemovalUrl</param-name>
-			<param-value>removeService</param-value>
+			<param-value>removal</param-value>
 		</init-param>
 		<init-param>
 			<param-name>DisableUrl</param-name>
 			<param-value>disable</param-value>
+		</init-param>
+		<init-param>
+			<param-name>EnableUrl</param-name>
+			<param-value>enable</param-value>
 		</init-param>
 		<init-param>
 			<param-name>ServletEndpointUrl</param-name>
@@ -229,12 +233,12 @@
 		<url-pattern>/no-pkcs11</url-pattern>
 	</servlet-mapping>
 	<servlet>
-		<servlet-name>IdentityRemoveServlet</servlet-name>
-		<servlet-class>net.link.safeonline.beid.servlet.IdentityRemoveServlet</servlet-class>
+		<servlet-name>IdentityEnableServlet</servlet-name>
+		<servlet-class>net.link.safeonline.beid.servlet.IdentityEnableServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>IdentityRemoveServlet</servlet-name>
-		<url-pattern>/identityremove</url-pattern>
+		<servlet-name>IdentityEnableServlet</servlet-name>
+		<url-pattern>/identityenable</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>IdentificationServlet</servlet-name>
@@ -281,18 +285,18 @@
 	<servlet>
 		<servlet-name>RemoveServlet</servlet-name>
 		<servlet-class>net.link.safeonline.beid.servlet.RemoveServlet</servlet-class>
+		<init-param>
+			<param-name>DeviceExitPath</param-name>
+			<param-value>deviceexit</param-value>
+		</init-param>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>RemoveServlet</servlet-name>
-		<url-pattern>/removeService</url-pattern>
+		<url-pattern>/removal</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>DisableServlet</servlet-name>
 		<servlet-class>net.link.safeonline.beid.servlet.DisableServlet</servlet-class>
-		<init-param>
-			<param-name>DisablePath</param-name>
-			<param-value>disable-beid.seam</param-value>
-		</init-param>
 		<init-param>
 			<param-name>DeviceExitPath</param-name>
 			<param-value>deviceexit</param-value>
@@ -301,6 +305,14 @@
 	<servlet-mapping>
 		<servlet-name>DisableServlet</servlet-name>
 		<url-pattern>/disable</url-pattern>
+	</servlet-mapping>
+	<servlet>
+		<servlet-name>EnableServlet</servlet-name>
+		<servlet-class>net.link.safeonline.beid.servlet.EnableServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>EnableServlet</servlet-name>
+		<url-pattern>/enable</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>Style Servlet</servlet-name>

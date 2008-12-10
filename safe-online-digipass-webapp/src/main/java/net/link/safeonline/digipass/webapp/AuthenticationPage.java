@@ -36,7 +36,7 @@ import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.Model;
 
 
 public class AuthenticationPage extends TemplatePage {
@@ -101,9 +101,9 @@ public class AuthenticationPage extends TemplatePage {
 
         private static final long serialVersionUID = 1L;
 
-        String                    login;
+        Model<String>             login;
 
-        String                    token;
+        Model<String>             token;
 
 
         @SuppressWarnings("unchecked")
@@ -111,14 +111,12 @@ public class AuthenticationPage extends TemplatePage {
 
             super(id);
 
-            final TextField<String> loginField = new TextField<String>(LOGIN_NAME_FIELD_ID, new PropertyModel<String>(this, "login"));
+            final TextField<String> loginField = new TextField<String>(LOGIN_NAME_FIELD_ID, this.login = new Model<String>());
             loginField.setRequired(true);
-
             add(loginField);
 
-            final TextField<String> tokenField = new TextField<String>(TOKEN_FIELD_ID, new PropertyModel<String>(this, "token"));
+            final TextField<String> tokenField = new TextField<String>(TOKEN_FIELD_ID, this.token = new Model<String>());
             tokenField.setRequired(true);
-
             add(tokenField);
 
             add(new Button(LOGIN_BUTTON_ID) {
@@ -133,7 +131,7 @@ public class AuthenticationPage extends TemplatePage {
 
                     try {
                         String userId = AuthenticationPage.this.digipassDeviceService.authenticate(getUserId(),
-                                AuthenticationForm.this.token);
+                                AuthenticationForm.this.token.getObject());
                         if (null == userId) {
                             AuthenticationForm.this.error(getLocalizer().getString("authenticationFailedMsg", this));
                             HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "login failed: "
@@ -197,7 +195,7 @@ public class AuthenticationPage extends TemplatePage {
 
             String userId;
             try {
-                userId = idMappingClient.getUserId(this.login);
+                userId = idMappingClient.getUserId(this.login.getObject());
             } catch (net.link.safeonline.sdk.exception.SubjectNotFoundException e) {
                 LOG.error("subject not found: " + this.login);
                 throw new SubjectNotFoundException();

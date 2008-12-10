@@ -12,7 +12,6 @@ import java.util.Locale;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
@@ -21,15 +20,14 @@ import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundEx
 import net.link.safeonline.authentication.exception.MobileAuthenticationException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.data.AttributeDO;
 
 
 @Local
-public interface EncapDeviceService extends SafeOnlineService {
+public interface EncapDeviceService extends EncapService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "EncapDeviceServiceBean/local";
+    public static final String JNDI_BINDING = EncapService.JNDI_PREFIX + "EncapDeviceServiceBean/local";
 
 
     /**
@@ -94,14 +92,14 @@ public interface EncapDeviceService extends SafeOnlineService {
      * @throws AttributeTypeNotFoundException
      */
     void commitRegistration(String userId, String mobile)
-            throws SubjectNotFoundException, AttributeTypeNotFoundException, PermissionDeniedException, AttributeNotFoundException;
+            throws SubjectNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException;
 
     void removeEncapMobile(String mobile)
             throws MalformedURLException, MobileException;
 
     void remove(String userId, String mobile)
             throws MobileException, MalformedURLException, SubjectNotFoundException, AttributeTypeNotFoundException,
-            PermissionDeniedException, AttributeNotFoundException;
+            AttributeNotFoundException;
 
     /**
      * Requests the encap server to send an OTP to the specified mobile.
@@ -136,6 +134,21 @@ public interface EncapDeviceService extends SafeOnlineService {
      * @throws MalformedURLException
      */
     void disable(String userId, String mobile)
+            throws SubjectNotFoundException, DeviceNotFoundException, DeviceRegistrationNotFoundException, MalformedURLException,
+            MobileException;
+
+    /**
+     * Enables the encap device registration.
+     * 
+     * @param userId
+     * @param mobile
+     * @throws SubjectNotFoundException
+     * @throws DeviceNotFoundException
+     * @throws DeviceRegistrationNotFoundException
+     * @throws MobileException
+     * @throws MalformedURLException
+     */
+    void enable(String userId, String mobile)
             throws SubjectNotFoundException, DeviceNotFoundException, DeviceRegistrationNotFoundException, MalformedURLException,
             MobileException;
 }

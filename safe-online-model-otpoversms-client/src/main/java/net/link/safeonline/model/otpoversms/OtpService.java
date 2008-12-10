@@ -10,13 +10,11 @@ import java.net.ConnectException;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.SafeOnlineService;
-
 
 @Local
-public interface OtpService extends SafeOnlineService {
+public interface OtpService extends OtpOverSmsService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "OtpServiceBean/local";
+    public static final String JNDI_BINDING = OtpOverSmsService.JNDI_PREFIX + "OtpServiceBean/local";
 
 
     void requestOtp(String mobile)

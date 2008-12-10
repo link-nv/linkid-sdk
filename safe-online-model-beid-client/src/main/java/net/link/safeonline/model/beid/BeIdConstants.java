@@ -24,6 +24,8 @@ public interface BeIdConstants {
 
     public static final String NRN_ATTRIBUTE                 = "urn:net:lin-k:safe-online:attribute:beid:nrn";
 
+    public static final String IDENTIFIER_ATTRIBUTE          = "urn:net:lin-k:safe-online:attribute:beid:identifier";
+
     public static final String BEID_DEVICE_ATTRIBUTE         = "urn:net:lin-k:safe-online:attribute:device:beid";
 
     public static final String BEID_DEVICE_USER_ATTRIBUTE    = "urn:net:lin-k:safe-online:attribute:device:beid:user";

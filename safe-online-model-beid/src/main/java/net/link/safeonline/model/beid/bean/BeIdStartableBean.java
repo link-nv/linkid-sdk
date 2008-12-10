@@ -86,6 +86,15 @@ public class BeIdStartableBean extends AbstractInitBean {
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(nrnAttributeType, "nl",
                 "Identificatienummer van het Rijksregister", null));
 
+        AttributeTypeEntity identifierAttributeType = new AttributeTypeEntity(BeIdConstants.IDENTIFIER_ATTRIBUTE, DatatypeType.STRING,
+                false, false);
+        identifierAttributeType.setMultivalued(true);
+        this.attributeTypes.add(identifierAttributeType);
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(identifierAttributeType, Locale.ENGLISH.getLanguage(),
+                "Identifier (BeID)", null));
+        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(identifierAttributeType, "nl", "Identificatienummer (BeID)",
+                null));
+
         AttributeTypeEntity beidDeviceUserAttributeType = new AttributeTypeEntity(BeIdConstants.BEID_DEVICE_USER_ATTRIBUTE,
                 DatatypeType.STRING, true, false);
         beidDeviceUserAttributeType.setMultivalued(true);
@@ -109,8 +118,9 @@ public class BeIdStartableBean extends AbstractInitBean {
         beidDeviceAttributeType.addMember(givenNameAttributeType, 0, true);
         beidDeviceAttributeType.addMember(surnameAttributeType, 1, true);
         beidDeviceAttributeType.addMember(nrnAttributeType, 2, true);
-        beidDeviceAttributeType.addMember(beidDeviceUserAttributeType, 3, true);
-        beidDeviceAttributeType.addMember(beidDeviceDisableAttributeType, 4, true);
+        beidDeviceAttributeType.addMember(identifierAttributeType, 3, true);
+        beidDeviceAttributeType.addMember(beidDeviceUserAttributeType, 4, true);
+        beidDeviceAttributeType.addMember(beidDeviceDisableAttributeType, 5, true);
         this.attributeTypes.add(beidDeviceAttributeType);
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(beidDeviceAttributeType, Locale.ENGLISH.getLanguage(),
                 "BeID", null));
@@ -124,8 +134,9 @@ public class BeIdStartableBean extends AbstractInitBean {
         String beidWebappName = properties.getString("beid.webapp.name");
 
         this.devices.add(new Device(BeIdConstants.BEID_DEVICE_ID, SafeOnlineConstants.PKI_DEVICE_CLASS, nodeName, "/" + beidWebappName
-                + "/auth", "/" + beidWebappName + "/device", "/" + beidWebappName + "/device", null, "/" + beidWebappName + "/device",
-                certificate, beidDeviceAttributeType, beidDeviceUserAttributeType, beidDeviceDisableAttributeType));
+                + "/auth", "/" + beidWebappName + "/device", "/" + beidWebappName + "/device", null, "/" + beidWebappName + "/device", "/"
+                + beidWebappName + "/device", certificate, beidDeviceAttributeType, beidDeviceUserAttributeType,
+                beidDeviceDisableAttributeType));
         this.deviceDescriptions.add(new DeviceDescription(BeIdConstants.BEID_DEVICE_ID, "nl", "Belgische eID"));
         this.deviceDescriptions.add(new DeviceDescription(BeIdConstants.BEID_DEVICE_ID, Locale.ENGLISH.getLanguage(), "Belgian eID"));
     }

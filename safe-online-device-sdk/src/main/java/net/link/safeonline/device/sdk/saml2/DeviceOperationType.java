@@ -13,5 +13,6 @@ public enum DeviceOperationType {
     REGISTER,
     REMOVE,
     UPDATE,
-    DISABLE;
+    DISABLE,
+    ENABLE;
 }

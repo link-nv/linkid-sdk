@@ -5,17 +5,15 @@
 <datasources>
 	<local-tx-datasource>
         <jndi-name>${safe-online.data.source}</jndi-name>
-		<connection-url>
-            ${safe-online.data.source.uri}
-		</connection-url>
+		<connection-url>${safe-online.data.source.uri}</connection-url>
 		<driver-class>oracle.jdbc.driver.OracleDriver</driver-class>
-		<transaction-isolation>
-			TRANSACTION_READ_COMMITTED
-		</transaction-isolation>
-		<user-name>safeonline</user-name>
-		<password>safeonline</password>
+
+		<transaction-isolation>TRANSACTION_READ_COMMITTED</transaction-isolation>
+		<user-name>${safe-online.data.source.user}</user-name>
+		<password>${safe-online.data.source.pass}</password>
 		<min-pool-size>5</min-pool-size>
 		<max-pool-size>200</max-pool-size>
+
 		<metadata>
 			<type-mapping>Oracle9i</type-mapping>
 		</metadata>

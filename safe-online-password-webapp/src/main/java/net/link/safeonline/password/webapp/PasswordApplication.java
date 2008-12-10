@@ -12,9 +12,6 @@ import net.link.safeonline.webapp.template.OlasApplication;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Page;
-import org.apache.wicket.Request;
-import org.apache.wicket.Response;
-import org.apache.wicket.Session;
 
 
 public class PasswordApplication extends OlasApplication {
@@ -29,8 +26,8 @@ public class PasswordApplication extends OlasApplication {
 
         mountBookmarkablePage("authentication", AuthenticationPage.class);
         mountBookmarkablePage("registration", RegistrationPage.class);
-        mountBookmarkablePage("removal", RemovalPage.class);
         mountBookmarkablePage("update", UpdatePage.class);
+        mountBookmarkablePage("enable", EnablePage.class);
 
     }
 
@@ -42,15 +39,4 @@ public class PasswordApplication extends OlasApplication {
 
         return null;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Session newSession(Request request, Response response) {
-
-        return new PasswordSession(request);
-
-    }
-
 }

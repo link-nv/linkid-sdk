@@ -56,11 +56,10 @@ import org.wicketstuff.javaee.injection.AnnotJavaEEInjector;
  */
 public abstract class WicketUtil {
 
-    static final Log            LOG             = LogFactory.getLog(WicketUtil.class);
+    static final Log            LOG         = LogFactory.getLog(WicketUtil.class);
     static ConfigurableInjector injector;
 
-    private static final String WS_LOCATION     = "WsLocation";
-    private static final String STS_WS_LOCATION = "StsWsLocation";
+    private static final String WS_LOCATION = "WsLocation";
     private static boolean      isUnitTest;
 
 
@@ -191,10 +190,6 @@ public abstract class WicketUtil {
         if (!isUnitTest) {
             // Find the location of the OLAS web services to use.
             String wsLocation = loginRequest.getSession().getServletContext().getInitParameter(WS_LOCATION);
-            // TODO: remove this STS_WS stuff after fixing SOS-310
-            if (null == wsLocation) {
-                wsLocation = loginRequest.getSession().getServletContext().getInitParameter(STS_WS_LOCATION);
-            }
 
             // Find the key and certificate of the bank application.
             X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
@@ -227,10 +222,6 @@ public abstract class WicketUtil {
         if (!isUnitTest) {
             // Find the location of the OLAS web services to use.
             String wsLocation = request.getSession().getServletContext().getInitParameter(WS_LOCATION);
-            // TODO: remove this STS_WS stuff after fixing SOS-310
-            if (null == wsLocation) {
-                wsLocation = request.getSession().getServletContext().getInitParameter(STS_WS_LOCATION);
-            }
 
             // Create the id mapping service client.
             return new NameIdentifierMappingClientImpl(wsLocation, certificate, privateKey);

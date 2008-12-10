@@ -45,6 +45,9 @@ public interface Devices {
             throws DeviceNotFoundException, IOException, SubjectNotFoundException, PermissionDeniedException,
             AttributeTypeNotFoundException;
 
+    String enableDevice()
+            throws DeviceNotFoundException, IOException, SubjectNotFoundException, AttributeTypeNotFoundException;
+
     /*
      * Lifecycle.
      */

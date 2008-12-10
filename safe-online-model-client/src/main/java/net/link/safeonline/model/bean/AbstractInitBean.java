@@ -323,6 +323,8 @@ public abstract class AbstractInitBean implements Startable {
 
         final String              disablePath;
 
+        final String              enablePath;
+
         final AttributeTypeEntity deviceAttribute;
 
         final AttributeTypeEntity deviceUserAttribute;
@@ -331,7 +333,7 @@ public abstract class AbstractInitBean implements Startable {
 
 
         public Device(String deviceName, String deviceClassName, String nodeName, String authenticationPath, String registrationPath,
-                      String removalPath, String updatePath, String disablePath, X509Certificate certificate,
+                      String removalPath, String updatePath, String disablePath, String enablePath, X509Certificate certificate,
                       AttributeTypeEntity deviceAttribute, AttributeTypeEntity deviceUserAttribute,
                       AttributeTypeEntity deviceDisableAttribute) {
 
@@ -343,6 +345,7 @@ public abstract class AbstractInitBean implements Startable {
             this.removalPath = removalPath;
             this.updatePath = updatePath;
             this.disablePath = disablePath;
+            this.enablePath = enablePath;
             this.certificate = certificate;
             this.deviceAttribute = deviceAttribute;
             this.deviceUserAttribute = deviceUserAttribute;
@@ -894,8 +897,8 @@ public abstract class AbstractInitBean implements Startable {
                     olasNode = this.olasDAO.getNode(device.nodeName);
                 }
                 deviceEntity = this.deviceDAO.addDevice(device.deviceName, deviceClassEntity, olasNode, device.authenticationPath,
-                        device.registrationPath, device.removalPath, device.updatePath, device.disablePath, device.certificate,
-                        device.deviceAttribute, device.deviceUserAttribute, device.deviceDisableAttribute);
+                        device.registrationPath, device.removalPath, device.updatePath, device.disablePath, device.enablePath,
+                        device.certificate, device.deviceAttribute, device.deviceUserAttribute, device.deviceDisableAttribute);
             }
         }
     }

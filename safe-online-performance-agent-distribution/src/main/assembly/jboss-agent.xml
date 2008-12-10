@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<assembly xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/assembly-1.0.0.xsd">
+
+	<formats>
+		<format>zip</format>
+	</formats>
+
+	<fileSets>
+
+		<!-- Based on the SafeOnline distribution without SafeOnline applications. -->
+		<fileSet>
+            <directory>target/files/safe-online-distribution-${safe-online.version}/jboss</directory>
+            <outputDirectory>jboss</outputDirectory>
+            <excludes>
+                <exclude>server/default/deploy/SafeOnline*</exclude>
+            </excludes>
+		</fileSet>
+
+        <!-- Runtime scripts                                -> /scripts -->
+        <fileSet>
+            <directory>target/files/safe-online-distribution-${safe-online.version}/scripts</directory>
+            <outputDirectory>scripts</outputDirectory>
+            <fileMode>0500</fileMode>
+        </fileSet>
+
+		<!-- This artifact's EAR dependencies               -> /jboss/server/default/lib -->
+		<fileSet>
+			<directory>target/deploy</directory>
+			<outputDirectory>jboss/server/default/deploy</outputDirectory>
+		</fileSet>
+
+        <!-- This artifact's non-EAR dependencies           -> jboss/server/default/lib -->
+		<fileSet>
+			<directory>target/dependency</directory>
+			<outputDirectory>jboss/server/default/lib</outputDirectory>
+		</fileSet>
+
+	</fileSets>
+
+</assembly>

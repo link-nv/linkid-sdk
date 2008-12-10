@@ -11,7 +11,6 @@ import java.util.Locale;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
@@ -24,23 +23,26 @@ import net.link.safeonline.data.AttributeDO;
 
 
 @Local
-public interface DigipassDeviceService extends SafeOnlineService {
+public interface DigipassDeviceService extends DigipassService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "DigipassDeviceServiceBean/local";
+    public static final String JNDI_BINDING = DigipassService.JNDI_PREFIX + "DigipassDeviceServiceBean/local";
 
 
     String authenticate(String userId, String token)
             throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException, DeviceDisabledException;
 
     String register(String userId, String serialNumber)
-            throws ArgumentIntegrityException, SubjectNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException;
+            throws ArgumentIntegrityException, SubjectNotFoundException, AttributeTypeNotFoundException;
 
     void remove(String serialNumber)
-            throws DigipassException, AttributeTypeNotFoundException, PermissionDeniedException, AttributeNotFoundException;
+            throws DigipassException, AttributeTypeNotFoundException, AttributeNotFoundException;
 
     List<AttributeDO> getDigipasses(String userId, Locale locale)
-            throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException;
+            throws SubjectNotFoundException, DeviceNotFoundException;
 
     void disable(String userId, String serialNumber)
             throws SubjectNotFoundException, DeviceNotFoundException, DeviceRegistrationNotFoundException;
+
+    String enable(String userId, String serialNumber, String token)
+            throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException;
 }

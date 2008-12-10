@@ -8,12 +8,10 @@ package net.link.safeonline.model.password;
 
 import javax.ejb.Remote;
 
-import net.link.safeonline.SafeOnlineService;
-
 
 @Remote
 public interface PasswordDeviceServiceRemote extends PasswordDeviceService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "PasswordDeviceServiceBean/remote";
+    public static final String JNDI_BINDING = PasswordService.JNDI_PREFIX + "PasswordDeviceServiceBean/remote";
 
 }

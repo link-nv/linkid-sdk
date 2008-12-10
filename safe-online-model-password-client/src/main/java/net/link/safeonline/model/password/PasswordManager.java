@@ -8,16 +8,15 @@ package net.link.safeonline.model.password;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.entity.SubjectEntity;
 
 
 @Local
-public interface PasswordManager extends SafeOnlineService {
+public interface PasswordManager extends PasswordService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "PasswordManagerBean/local";
+    public static final String JNDI_BINDING = PasswordService.JNDI_PREFIX + "PasswordManagerBean/local";
 
 
     void setPassword(SubjectEntity subject, String password)
@@ -31,8 +30,8 @@ public interface PasswordManager extends SafeOnlineService {
 
     boolean isPasswordConfigured(SubjectEntity subject);
 
-    void removePassword(SubjectEntity subject, String password)
-            throws DeviceNotFoundException, PermissionDeniedException;
+    void removePassword(SubjectEntity subject)
+            throws DeviceNotFoundException;
 
     boolean isDisabled(SubjectEntity subject)
             throws DeviceNotFoundException;

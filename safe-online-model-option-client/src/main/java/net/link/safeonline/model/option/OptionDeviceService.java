@@ -8,13 +8,11 @@ package net.link.safeonline.model.option;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.model.option.exception.OptionAuthenticationException;
 import net.link.safeonline.model.option.exception.OptionRegistrationException;
@@ -35,9 +33,9 @@ import net.link.safeonline.model.option.exception.OptionRegistrationException;
  * @author dhouthoo
  */
 @Local
-public interface OptionDeviceService extends SafeOnlineService {
+public interface OptionDeviceService extends OptionService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "OptionDeviceServiceBean/local";
+    public static final String JNDI_BINDING = OptionService.JNDI_PREFIX + "OptionDeviceServiceBean/local";
 
 
     String authenticate(String imei, String pin)
@@ -45,14 +43,18 @@ public interface OptionDeviceService extends SafeOnlineService {
             AttributeNotFoundException, DeviceDisabledException;
 
     void register(String userId, String imei, String pin)
-            throws OptionAuthenticationException, OptionRegistrationException, PermissionDeniedException, AttributeNotFoundException,
-            AttributeTypeNotFoundException;
+            throws OptionAuthenticationException, OptionRegistrationException, AttributeNotFoundException, AttributeTypeNotFoundException,
+            DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException;
 
-    void remove(String userId, String imei, String pin)
-            throws OptionAuthenticationException, OptionRegistrationException, SubjectNotFoundException, AttributeTypeNotFoundException,
-            AttributeNotFoundException, DeviceDisabledException, PermissionDeniedException, AttributeNotFoundException;
+    void enable(String userId, String imei, String pin)
+            throws OptionAuthenticationException, OptionRegistrationException, SubjectNotFoundException,
+            DeviceRegistrationNotFoundException, DeviceNotFoundException;
 
     void disable(String userId, String imei)
             throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException;
+
+    void remove(String userId, String imei)
+            throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException, AttributeTypeNotFoundException,
+            AttributeNotFoundException;
 
 }

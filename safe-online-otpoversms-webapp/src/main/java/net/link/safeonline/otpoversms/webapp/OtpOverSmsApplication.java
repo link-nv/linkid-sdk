@@ -7,14 +7,18 @@
 
 package net.link.safeonline.otpoversms.webapp;
 
+import net.link.safeonline.custom.converter.PhoneNumber;
+import net.link.safeonline.webapp.converter.PhoneNumberConverter;
 import net.link.safeonline.webapp.template.OlasApplication;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.IConverterLocator;
 import org.apache.wicket.Page;
 import org.apache.wicket.Request;
 import org.apache.wicket.Response;
 import org.apache.wicket.Session;
+import org.apache.wicket.util.convert.ConverterLocator;
 
 
 public class OtpOverSmsApplication extends OlasApplication {
@@ -29,9 +33,21 @@ public class OtpOverSmsApplication extends OlasApplication {
 
         mountBookmarkablePage("authentication", AuthenticationPage.class);
         mountBookmarkablePage("registration", RegistrationPage.class);
-        mountBookmarkablePage("removal", RemovalPage.class);
         mountBookmarkablePage("update", UpdatePage.class);
+        mountBookmarkablePage("enable", EnablePage.class);
 
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IConverterLocator newConverterLocator() {
+
+        ConverterLocator converterLocator = new ConverterLocator();
+        converterLocator.set(PhoneNumber.class, new PhoneNumberConverter());
+
+        return converterLocator;
     }
 
     /**

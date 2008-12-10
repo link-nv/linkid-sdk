@@ -82,7 +82,7 @@
 	</context-param>
 	<context-param>
 		<param-name>DemoHostPort</param-name>
-		<param-value>${safe-online.host.port}</param-value>
+		<param-value>${safe-online.host.port:insecure}</param-value>
 	</context-param>
 	<context-param>
 		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>

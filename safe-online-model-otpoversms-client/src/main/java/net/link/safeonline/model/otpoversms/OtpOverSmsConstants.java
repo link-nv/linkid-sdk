@@ -19,6 +19,8 @@ public interface OtpOverSmsConstants {
 
     public static final String OTPOVERSMS_PIN_ALGORITHM_ATTRIBUTE  = "urn:net:lin-k:safe-online:attribute:otpoversms:pin:algorithm";
 
+    public static final String OTPOVERSMS_PIN_ATTEMPTS_ATTRIBUTE   = "urn:net:lin-k:safe-online:attribute:otpoversms:pin:attempts";
+
     public static final String OTPOVERSMS_DEVICE_ATTRIBUTE         = "urn:net:lin-k:safe-online:attribute:device:otpoversms";
 
     public static final String OTPOVERSMS_DEVICE_DISABLE_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:device:otpoversms:disable";

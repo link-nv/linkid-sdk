@@ -81,6 +81,9 @@ public class LandingServlet extends AbstractInjectionServlet {
     @Init(name = "DisableUrl", optional = true)
     private String            disableUrl;
 
+    @Init(name = "EnableUrl", optional = true)
+    private String            enableUrl;
+
     @Init(name = "ErrorPage", optional = true)
     private String            errorPage;
 
@@ -150,8 +153,10 @@ public class LandingServlet extends AbstractInjectionServlet {
             languageCookie.setMaxAge(60 * 60 * 24 * 30 * 6);
             response.addCookie(languageCookie);
         }
-        session.setAttribute(SafeOnlineAppConstants.COLOR_ATTRIBUTE, color);
-        session.setAttribute(SafeOnlineAppConstants.MINIMAL_ATTRIBUTE, minimal);
+        if (null != minimal && minimal) {
+            session.setAttribute(SafeOnlineAppConstants.COLOR_ATTRIBUTE, color);
+            session.setAttribute(SafeOnlineAppConstants.MINIMAL_ATTRIBUTE, minimal);
+        }
 
         /*
          * Figure out what the request wants us to do.
@@ -181,6 +186,11 @@ public class LandingServlet extends AbstractInjectionServlet {
                     handler.abortDeviceOperation(requestWrapper, response);
                 }
                 response.sendRedirect(this.disableUrl);
+            } else if (deviceOperation.equals(DeviceOperationType.ENABLE)) {
+                if (null == this.enableUrl) {
+                    handler.abortDeviceOperation(requestWrapper, response);
+                }
+                response.sendRedirect(this.enableUrl);
             } else {
                 handler.abortDeviceOperation(requestWrapper, response);
             }

@@ -128,7 +128,7 @@ public class LandingServletTest {
         initParams.put("KeyStorePassword", "secret");
         initParams.put("DeviceName", this.deviceName);
         initParams.put("ServletEndpointUrl", this.servletEndpointUrl);
-        initParams.put("StsWsLocation", this.webServiceTestUtils.getLocation());
+        initParams.put("WsLocation", this.webServiceTestUtils.getLocation());
 
         this.servletTestManager.setUp(LandingServlet.class, initParams, null, null, null);
         this.location = this.servletTestManager.getServletLocation();

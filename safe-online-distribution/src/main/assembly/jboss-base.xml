@@ -1,0 +1,172 @@
+<?xml version="1.0"?>
+<assembly xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/assembly-1.0.0.xsd">
+
+
+    <!-- ================== -->
+    <!-- BASE CONFIGURATION -->
+    <!-- ================== -->
+
+    <files>
+
+        <!-- Link's HTTPS certificate                       -> /jboss/server/default/conf -->
+		<file>
+			<source>target/files/ssl.jks</source>
+			<outputDirectory>jboss/server/default/conf</outputDirectory>
+		</file>
+
+        <!-- The DS configuration                           -> /jboss/server/default/deploy -->
+		<file>
+            <source>target/files/resources/${safe-online.data.source.type}-safe-online-ds.xml</source>
+			<outputDirectory>jboss/server/default/deploy</outputDirectory>
+		</file>
+
+        <!-- The JBoss Messaging DS configuration           -> /jboss/server/default/deploy/jboss-messaging.sar -->
+		<file>
+            <source>target/classes/jboss/server/default/deploy/jboss-messaging.sar/${safe-online.data.source.type}-persistence-service.xml</source>
+			<outputDirectory>jboss/server/default/deploy/jboss-messaging.sar</outputDirectory>
+		</file>
+
+	</files>
+
+	<fileSets>
+
+        <!-- Exclude All & Minimal configs, useless scripts, client jars & docs, DS config, JBossMQ & bundled JaxWS. -->
+		<fileSet>
+			<directory>target/files/jboss-${jboss.version}</directory>
+			<outputDirectory>jboss</outputDirectory>
+			<excludes>
+				<exclude>**/jboss-saaj.jar</exclude>
+				<exclude>server/all/**</exclude>
+				<exclude>server/minimal/**</exclude>
+				<exclude>client/**</exclude>
+				<exclude>docs/**</exclude>
+				<exclude>bin/probe.*</exclude>
+				<exclude>bin/wsconsume.*</exclude>
+				<exclude>bin/wsprovide.*</exclude>
+				<exclude>bin/wsrunclient.*</exclude>
+				<exclude>bin/wstools.*</exclude>
+				<exclude>bin/*.sh</exclude>
+				<exclude>jar-versions.xml</exclude>
+				<exclude>server/default/lib/jbossmq.jar</exclude>
+				<exclude>server/default/lib/jboss-jaxws.jar</exclude>
+				<exclude>server/default/conf/jboss-minimal.xml</exclude>
+				<exclude>server/default/deploy/jms/**</exclude>
+				<exclude>server/default/deploy/hsqldb-ds.xml</exclude>
+				<exclude>server/default/deploy/jbossws.sar/jboss-jaxws.jar</exclude>
+
+                <!-- Exclude the default HSQL configuration. -->
+				<exclude>server/default/deploy/hsql-safe-online-ds.xml</exclude>
+				<exclude>server/default/deploy/jboss-messaging.sar/hsqldb-persistence-service.xml</exclude>
+				<exclude>server/default/lib/hsqldb.jar</exclude>
+				<exclude>server/default/lib/hsqldb-plugin.jar</exclude>
+			</excludes>
+		</fileSet>
+
+        <!-- Re-include some things we do need, like jms-ra.rar & jbossall-client.jar -->
+		<fileSet>
+			<directory>target/files/jboss-${jboss.version}/server/default/deploy/jms</directory>
+			<outputDirectory>jboss/server/default/deploy</outputDirectory>
+			<includes>
+				<include>jms-ra.rar</include>
+			</includes>
+        </fileSet>
+		<fileSet>
+			<directory>target/files/jboss-${jboss.version}</directory>
+			<outputDirectory>jboss</outputDirectory>
+			<includes>
+				<include>client/jbossall-client.jar</include>
+			</includes>
+		</fileSet>
+		<!--fileSet>
+			<directory>target/files/jboss-${jboss.version}</directory>
+			<outputDirectory>jboss</outputDirectory>
+			<includes>
+				<include>bin/run.sh</include>
+				<include>bin/shutdown.sh</include>
+			</includes>
+			<fileMode>0500</fileMode>
+		</fileSet-->
+		<fileSet>
+			<directory>target/classes/scripts</directory>
+			<outputDirectory>scripts</outputDirectory>
+			<fileMode>0500</fileMode>
+		</fileSet>
+
+        <!-- External JaxWS lib to replace bundled JaxWS    -> /jboss/server/default/lib -->
+		<fileSet>
+			<directory>target/files/jaxws-ri/lib</directory>
+			<outputDirectory>jboss/server/default/lib</outputDirectory>
+		</fileSet>
+
+        <!-- External JBoss-Messaging (not the default DS)  -> /jboss/server/default/deploy -->
+		<fileSet>
+			<directory>target/files</directory>
+			<excludes>
+				<exclude>jboss-messaging.sar/hsqldb-persistence-service.xml</exclude>
+			</excludes>
+			<includes>
+				<include>jboss-messaging.sar/**</include>
+			</includes>
+			<outputDirectory>jboss/server/default/deploy</outputDirectory>
+		</fileSet>
+
+        <!-- External JBoss-Messaging lib                   -> /jboss/server/default/lib -->
+		<fileSet>
+			<directory>target/files/jboss-messaging-${jboss-messaging.version}</directory>
+			<includes>
+				<include>jboss-messaging.jar</include>
+			</includes>
+			<outputDirectory>jboss/server/default/lib</outputDirectory>
+		</fileSet>
+
+		<!-- This artifact's custom JBoss configuration     -> /jboss -->
+		<fileSet>
+			<directory>target/classes/jboss</directory>
+			<excludes>
+                <exclude>server/default/deploy/jboss-messaging.sar/*-persistence-service.xml</exclude>
+			</excludes>
+			<outputDirectory>jboss</outputDirectory>
+		</fileSet>
+
+        <!-- OSGI Support -->
+		<fileSet>
+			<directory>target/dependency</directory>
+			<excludes>
+				<exclude>safe-online*</exclude>
+				<exclude>org.apache.felix.fileinstall*</exclude>
+			</excludes>
+			<outputDirectory>jboss/server/default/lib</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>target/dependency</directory>
+			<includes>
+				<include>org.apache.felix.fileinstall*</include>
+			</includes>
+			<outputDirectory>jboss/osgi/autostart</outputDirectory>
+		</fileSet>
+		<fileSet>
+			<directory>target/classes/osgi</directory>
+			<outputDirectory>jboss/osgi</outputDirectory>
+		</fileSet>
+
+		<!-- This artifact's EAR dependencies               -> /jboss/server/default/lib -->
+		<fileSet>
+			<directory>target/deploy</directory>
+			<outputDirectory>jboss/server/default/deploy</outputDirectory>
+		</fileSet>
+
+        <!-- This artifact's non-EAR dependencies           -> jboss/server/default/lib -->
+		<fileSet>
+			<directory>target/dependency</directory>
+			<outputDirectory>jboss/server/default/lib</outputDirectory>
+		</fileSet>
+
+	</fileSets>
+ 
+	<formats>
+		<format>zip</format>
+	</formats>
+
+</assembly>

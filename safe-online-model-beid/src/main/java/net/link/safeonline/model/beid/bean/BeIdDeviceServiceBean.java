@@ -46,7 +46,7 @@ public class BeIdDeviceServiceBean implements BeIdDeviceService, BeIdDeviceServi
     @EJB(mappedName = CredentialManager.JNDI_BINDING)
     private CredentialManager credentialManager;
 
-    @EJB(mappedName = PkiProvider.JNDI_PREFIX + "beid")
+    @EJB(mappedName = BeIdPkiProviderBean.JNDI_BINDING)
     private PkiProvider       beIdPkiProvider;
 
 
@@ -68,13 +68,13 @@ public class BeIdDeviceServiceBean implements BeIdDeviceService, BeIdDeviceServi
         this.credentialManager.mergeIdentityStatement(sessionId, userId, operation, identityStatementData);
     }
 
-    public void remove(String sessionId, String userId, String operation, byte[] identityStatementData)
+    public void enable(String sessionId, String userId, String operation, byte[] identityStatementData)
             throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException, AttributeTypeNotFoundException,
             SubjectNotFoundException, DeviceNotFoundException, PkiRevokedException, PkiSuspendedException, PkiExpiredException,
-            PkiNotYetValidException, PkiInvalidException, AttributeNotFoundException {
+            PkiNotYetValidException, PkiInvalidException, AttributeNotFoundException, DeviceRegistrationNotFoundException {
 
-        LOG.debug("remove: sessionId=" + sessionId + " userId=" + userId + " operation=" + operation);
-        this.credentialManager.removeIdentity(sessionId, userId, operation, identityStatementData);
+        LOG.debug("enable: sessionId=" + sessionId + " userId=" + userId + " operation=" + operation);
+        this.credentialManager.enable(sessionId, userId, operation, identityStatementData);
     }
 
     public void disable(String userId, String attribute)
@@ -82,6 +82,15 @@ public class BeIdDeviceServiceBean implements BeIdDeviceService, BeIdDeviceServi
 
         LOG.debug("disable: userId=" + userId + " attribute=" + attribute);
         this.beIdPkiProvider.disable(userId, attribute);
+    }
+
+    public void remove(String userId, String attribute)
+            throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException, AttributeTypeNotFoundException,
+            AttributeNotFoundException {
+
+        LOG.debug("remove: userId=" + userId + " attribute=" + attribute);
+        this.beIdPkiProvider.remove(userId, attribute);
 
     }
+
 }

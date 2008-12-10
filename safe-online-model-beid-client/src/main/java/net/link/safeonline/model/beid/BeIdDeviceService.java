@@ -9,7 +9,6 @@ package net.link.safeonline.model.beid;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.AlreadyRegisteredException;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
@@ -29,9 +28,9 @@ import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 
 
 @Local
-public interface BeIdDeviceService extends SafeOnlineService {
+public interface BeIdDeviceService extends BeIdService {
 
-    public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "BeIdDeviceServiceBean/local";
+    public static final String JNDI_BINDING = BeIdService.JNDI_PREFIX + "BeIdDeviceServiceBean/local";
 
 
     String authenticate(String sessionId, String applicationId, AuthenticationStatement authenticationStatement)
@@ -44,11 +43,16 @@ public interface BeIdDeviceService extends SafeOnlineService {
             DeviceNotFoundException, AttributeNotFoundException, AlreadyRegisteredException, PkiRevokedException, PkiSuspendedException,
             PkiExpiredException, PkiNotYetValidException, PkiInvalidException;
 
-    void remove(String sessionId, String userId, String operation, byte[] identityStatementData)
+    void enable(String sessionId, String userId, String operation, byte[] identityStatementData)
             throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException, AttributeTypeNotFoundException,
             SubjectNotFoundException, DeviceNotFoundException, PkiRevokedException, PkiSuspendedException, PkiExpiredException,
-            PkiNotYetValidException, PkiInvalidException, AttributeNotFoundException;
+            PkiNotYetValidException, PkiInvalidException, AttributeNotFoundException, DeviceRegistrationNotFoundException;
+
+    void remove(String userId, String attribute)
+            throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException, AttributeTypeNotFoundException,
+            AttributeNotFoundException;
 
     void disable(String userId, String attribute)
             throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException;
+
 }

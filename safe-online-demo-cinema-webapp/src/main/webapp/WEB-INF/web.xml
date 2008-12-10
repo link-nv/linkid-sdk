@@ -110,7 +110,7 @@
 	</context-param>
 	<context-param>
 		<param-name>DemoHostPort</param-name>
-		<param-value>${safe-online.host.port}</param-value>
+		<param-value>${safe-online.host.port:insecure}</param-value>
 	</context-param>
 	<servlet>
 		<servlet-name>AuthLoginServlet</servlet-name>

@@ -59,7 +59,7 @@
 		<param-value>secret</param-value>
 	</context-param>
 	<context-param>
-		<param-name>StsWsLocation</param-name>
+		<param-name>WsLocation</param-name>
 		<param-value> ${safe-online.host.auth.basename} </param-value>
 	</context-param>
 	<filter>
@@ -158,6 +158,10 @@
 			<param-value>disable</param-value>
 		</init-param>
 		<init-param>
+			<param-name>EnableUrl</param-name>
+			<param-value>enable-mobile.seam</param-value>
+		</init-param>
+		<init-param>
 			<param-name>ServletEndpointUrl</param-name>
 			<param-value>
 				${safe-online.host.auth.basename}/${safe-online.encap.webapp.name}/device 
@@ -190,10 +194,6 @@
 	<servlet>
 		<servlet-name>DisableServlet</servlet-name>
 		<servlet-class>net.link.safeonline.encap.servlet.DisableServlet</servlet-class>
-		<init-param>
-			<param-name>DisablePath</param-name>
-			<param-value>disable-mobile.seam</param-value>
-		</init-param>
 		<init-param>
 			<param-name>DeviceExitPath</param-name>
 			<param-value>deviceexit</param-value>

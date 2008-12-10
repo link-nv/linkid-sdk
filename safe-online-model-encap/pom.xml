@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
@@ -11,7 +10,7 @@
 	</parent>
 
 	<name>SafeOnline Model Encap</name>
-    <description>
+	<description>
         The SafeOnline Model Encap.
     </description>
 
@@ -63,31 +62,36 @@
 
 	<dependencies>
 
-        <!-- Dependency Groups -->
-        <dependency>
-            <groupId>net.lin-k.safe-online</groupId>
-            <artifactId>safe-online-container-as</artifactId>
-            <type>pom</type>
-        </dependency>
+		<!-- Dependency Groups -->
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-container-as</artifactId>
+			<type>pom</type>
+		</dependency>
 
-        <!-- Specific Dependencies: OLAS -->
-        <dependency>
-   			<groupId>net.lin-k.safe-online</groupId>
+		<!-- Specific Dependencies: OLAS -->
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-model-encap-client</artifactId>
 			<version>1.3-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-   			<groupId>net.lin-k.safe-online</groupId>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-encap-sdk</artifactId>
+			<version>1.3-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-startup</artifactId>
 			<version>1.3-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-   			<groupId>net.lin-k.safe-online</groupId>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-encap-startup-runtime</artifactId>
 			<version>1.3-SNAPSHOT</version>
-            <scope>runtime</scope>
-            <type>war</type>
-        </dependency>
+			<scope>runtime</scope>
+			<type>war</type>
+		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-j2ee-util</artifactId>

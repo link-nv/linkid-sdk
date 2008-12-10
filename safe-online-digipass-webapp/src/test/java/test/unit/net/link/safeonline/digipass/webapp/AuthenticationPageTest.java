@@ -162,7 +162,7 @@ public class AuthenticationPageTest extends TestCase {
         // prepare
         replay(this.mockDigipassDeviceService, this.mockHelpdeskManager);
 
-        // RegisterPage: Register digipass for user
+        // operate
         FormTester authenticationForm = this.wicket
                                                    .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
         authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, UUID.randomUUID().toString());
@@ -201,7 +201,7 @@ public class AuthenticationPageTest extends TestCase {
         // prepare
         replay(this.mockDigipassDeviceService, this.mockHelpdeskManager);
 
-        // RegisterPage: Register digipass for user
+        // operate
         FormTester authenticationForm = this.wicket
                                                    .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
         authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, UUID.randomUUID().toString());
@@ -240,7 +240,7 @@ public class AuthenticationPageTest extends TestCase {
         // prepare
         replay(this.mockDigipassDeviceService, this.mockHelpdeskManager);
 
-        // RegisterPage: Register digipass for user
+        // operate
         FormTester authenticationForm = this.wicket
                                                    .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
         authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, UUID.randomUUID().toString());

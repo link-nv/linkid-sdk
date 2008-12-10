@@ -25,7 +25,10 @@ import net.link.safeonline.demo.wicket.web.OlasLoginLink;
 import net.link.safeonline.demo.wicket.web.OlasLogoutLink;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 
+import org.apache.wicket.AbortException;
+import org.apache.wicket.RequestCycle;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.link.InlineFrame;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.protocol.http.WebApplication;
@@ -120,6 +123,15 @@ public class BankWebTest extends AbstractWicketTests {
 
         // LoginPage: Click to login with digipass.
         this.wicket.clickLink("olasLoginLink");
+
+        this.wicket.assertComponent("olasFrame", InlineFrame.class);
+        InlineFrame olasFrame = (InlineFrame) this.wicket.getLastRenderedPage().get("olasFrame");
+        try {
+            olasFrame.onLinkClicked();
+        } catch (AbortException e) {
+            RequestCycle.get().request(RequestCycle.get().getRequestTarget());
+            this.wicket.processRequestCycle();
+        }
 
         // AccountPage: Verify && we've logged in successfully.
         assertTrue("Not logged in.", //

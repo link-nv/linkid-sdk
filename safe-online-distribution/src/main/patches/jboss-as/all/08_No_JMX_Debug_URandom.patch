@@ -1,0 +1,12 @@
+--- bin/run.conf	2008-01-30 15:21:21 +0100
++++ bin/run.conf	2008-01-30 15:20:55 +0100
+@@ -8,9 +8,3 @@
+ JAVA_OPTS="$JAVA_OPTS -XX:MaxPermSize=128m"
+ 
+ JAVA_OPTS="$JAVA_OPTS -Djava.awt.headless=true"
+-
+-JAVA_OPTS="$JAVA_OPTS -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=7777 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false" 
+-
+-if [ -c /dev/urandom ]; then
+-    JAVA_OPTS="$JAVA_OPTS -Djava.security.egd=file:/dev/urandom"
+-fi

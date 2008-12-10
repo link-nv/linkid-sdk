@@ -32,6 +32,7 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 
 
@@ -79,7 +80,7 @@ public class RemovePage extends TemplatePage {
 
         private static final long serialVersionUID = 1L;
 
-        String                    login;
+        Model<String>             login;
 
 
         @SuppressWarnings("unchecked")
@@ -87,7 +88,7 @@ public class RemovePage extends TemplatePage {
 
             super(id);
 
-            final TextField<String> loginField = new TextField<String>(LOGIN_FIELD_ID, new PropertyModel<String>(this, "login"));
+            final TextField<String> loginField = new TextField<String>(LOGIN_FIELD_ID, this.login = new Model<String>());
             loginField.setRequired(true);
             loginField.setEnabled(RemovePage.this.digipassAttributes.isEmpty());
 
@@ -167,7 +168,7 @@ public class RemovePage extends TemplatePage {
 
             String userId;
             try {
-                userId = idMappingClient.getUserId(this.login);
+                userId = idMappingClient.getUserId(this.login.getObject());
             } catch (net.link.safeonline.sdk.exception.SubjectNotFoundException e) {
                 LOG.error("subject not found: " + this.login);
                 throw new SubjectNotFoundException();
@@ -221,10 +222,6 @@ public class RemovePage extends TemplatePage {
                             } catch (AttributeTypeNotFoundException e) {
                                 LOG.debug("device not found: " + e.getMessage());
                                 ListForm.this.error(getLocalizer().getString("errorAttributeTypeNotFound", this));
-                                return;
-                            } catch (PermissionDeniedException e) {
-                                LOG.debug("permission denied: " + e.getMessage());
-                                ListForm.this.error(getLocalizer().getString("errorPermissionDenied", this));
                                 return;
                             } catch (AttributeNotFoundException e) {
                                 LOG.debug("attribute not found: " + e.getMessage());

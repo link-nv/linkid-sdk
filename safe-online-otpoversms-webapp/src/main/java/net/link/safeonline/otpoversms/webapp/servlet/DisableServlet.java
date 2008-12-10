@@ -1,3 +1,10 @@
+/*
+ * SafeOnline project.
+ *
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
 package net.link.safeonline.otpoversms.webapp.servlet;
 
 import java.io.IOException;
@@ -7,11 +14,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.device.sdk.saml2.DeviceOperationManager;
+import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.model.otpoversms.OtpOverSmsDeviceService;
 import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.servlet.annotation.Init;
@@ -38,6 +47,9 @@ public class DisableServlet extends AbstractInjectionServlet {
     @EJB(mappedName = OtpOverSmsDeviceService.JNDI_BINDING)
     private OtpOverSmsDeviceService otpOverSmsDeviceService;
 
+    @EJB(mappedName = SecurityAuditLogger.JNDI_BINDING)
+    private SecurityAuditLogger     securityAuditLogger;
+
 
     @Override
     protected void invokeGet(HttpServletRequest request, HttpServletResponse response)
@@ -56,18 +68,12 @@ public class DisableServlet extends AbstractInjectionServlet {
     private void handleLanding(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
 
+        String userId = DeviceOperationManager.getUserId(request.getSession());
+        String attribute = DeviceOperationManager.getAttribute(request.getSession());
+        LOG.debug("disable mobile " + attribute + " for user " + userId);
+
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(request.getSession());
         protocolContext.setSuccess(false);
-
-        String attribute = DeviceOperationManager.findAttribute(request.getSession());
-        if (null == attribute) {
-            LOG.debug("attribute not found");
-            response.sendRedirect(this.deviceExitPath);
-            return;
-        }
-
-        String userId = DeviceOperationManager.getUserId(request.getSession());
-        LOG.debug("disable password device for user " + userId);
 
         try {
             this.otpOverSmsDeviceService.disable(userId, attribute);
@@ -76,11 +82,15 @@ public class DisableServlet extends AbstractInjectionServlet {
             // notify that disable operation was successful.
             protocolContext.setSuccess(true);
         } catch (DeviceNotFoundException e) {
-            LOG.debug("device not found");
+            LOG.error("device not found", e);
         } catch (SubjectNotFoundException e) {
-            LOG.debug("subject " + userId + " not found");
+            String message = "subject " + userId + " not found";
+            LOG.error(message, e);
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, message);
         } catch (DeviceRegistrationNotFoundException e) {
-            LOG.error("device registration not found", e);
+            String message = "device registration \"" + attribute + "\" not found";
+            LOG.error(message, e);
+            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, message);
         }
 
         response.sendRedirect(this.deviceExitPath);

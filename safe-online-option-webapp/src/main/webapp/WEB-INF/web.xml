@@ -59,7 +59,7 @@
 		<param-value>secret</param-value>
 	</context-param>
 	<context-param>
-		<param-name>StsWsLocation</param-name>
+		<param-name>WsLocation</param-name>
 		<param-value> ${safe-online.host.auth.basename} </param-value>
 	</context-param>
 	<filter>
@@ -160,11 +160,15 @@
 		</init-param>
 		<init-param>
 			<param-name>RemovalUrl</param-name>
-			<param-value>remove.seam</param-value>
+			<param-value>removal</param-value>
 		</init-param>
 		<init-param>
 			<param-name>DisableUrl</param-name>
 			<param-value>disable</param-value>
+		</init-param>
+		<init-param>
+			<param-name>EnableUrl</param-name>
+			<param-value>enable.seam</param-value>
 		</init-param>
 		<init-param>
 			<param-name>ServletEndpointUrl</param-name>
@@ -189,12 +193,12 @@
 		<url-pattern>/identity</url-pattern>
 	</servlet-mapping>
 	<servlet>
-		<servlet-name>RemovalServlet</servlet-name>
-		<servlet-class>net.link.safeonline.option.servlet.RemovalServlet</servlet-class>
+		<servlet-name>EnableServlet</servlet-name>
+		<servlet-class>net.link.safeonline.option.servlet.EnableServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>RemovalServlet</servlet-name>
-		<url-pattern>/identityremove</url-pattern>
+		<servlet-name>EnableServlet</servlet-name>
+		<url-pattern>/identityenable</url-pattern>
 	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>DeviceLandingServlet</servlet-name>
@@ -213,12 +217,20 @@
 		<url-pattern>/deviceexit</url-pattern>
 	</servlet-mapping>
 	<servlet>
+		<servlet-name>RemoveServlet</servlet-name>
+		<servlet-class>net.link.safeonline.option.servlet.RemoveServlet</servlet-class>
+		<init-param>
+			<param-name>DeviceExitPath</param-name>
+			<param-value>deviceexit</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>RemoveServlet</servlet-name>
+		<url-pattern>/removal</url-pattern>
+	</servlet-mapping>
+	<servlet>
 		<servlet-name>DisableServlet</servlet-name>
 		<servlet-class>net.link.safeonline.option.servlet.DisableServlet</servlet-class>
-		<init-param>
-			<param-name>DisablePath</param-name>
-			<param-value>disable.seam</param-value>
-		</init-param>
 		<init-param>
 			<param-name>DeviceExitPath</param-name>
 			<param-value>deviceexit</param-value>
@@ -227,7 +239,8 @@
 	<servlet-mapping>
 		<servlet-name>DisableServlet</servlet-name>
 		<url-pattern>/disable</url-pattern>
-	</servlet-mapping>	<servlet>
+	</servlet-mapping>
+	<servlet>
 		<servlet-name>Style Servlet</servlet-name>
 		<servlet-class>
 			net.link.safeonline.webapp.resources.ApplicationStyleServlet</servlet-class>

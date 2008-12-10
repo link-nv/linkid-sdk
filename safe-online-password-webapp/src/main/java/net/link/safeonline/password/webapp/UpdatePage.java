@@ -31,7 +31,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.validation.EqualPasswordInputValidator;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.Model;
 
 
 public class UpdatePage extends TemplatePage {
@@ -92,11 +92,11 @@ public class UpdatePage extends TemplatePage {
 
         private static final long serialVersionUID = 1L;
 
-        String                    oldpassword;
+        Model<String>             oldpassword;
 
-        String                    password1;
+        Model<String>             password1;
 
-        String                    password2;
+        Model<String>             password2;
 
 
         @SuppressWarnings("unchecked")
@@ -104,16 +104,15 @@ public class UpdatePage extends TemplatePage {
 
             super(id);
 
-            final PasswordTextField oldpasswordField = new PasswordTextField(OLDPASSWORD_FIELD_ID, new PropertyModel<String>(this,
-                    "oldpassword"));
+            final PasswordTextField oldpasswordField = new PasswordTextField(OLDPASSWORD_FIELD_ID, this.oldpassword = new Model<String>());
             add(oldpasswordField);
             add(new ErrorComponentFeedbackLabel("oldpassword_feedback", oldpasswordField));
 
-            final PasswordTextField password1Field = new PasswordTextField(PASSWORD1_FIELD_ID, new PropertyModel<String>(this, "password1"));
+            final PasswordTextField password1Field = new PasswordTextField(PASSWORD1_FIELD_ID, this.password1 = new Model<String>());
             add(password1Field);
             add(new ErrorComponentFeedbackLabel("password1_feedback", password1Field));
 
-            final PasswordTextField password2Field = new PasswordTextField(PASSWORD2_FIELD_ID, new PropertyModel<String>(this, "password2"));
+            final PasswordTextField password2Field = new PasswordTextField(PASSWORD2_FIELD_ID, this.password2 = new Model<String>());
             add(password2Field);
             add(new ErrorComponentFeedbackLabel("password2_feedback", password2Field));
 
@@ -131,7 +130,7 @@ public class UpdatePage extends TemplatePage {
 
                     try {
                         UpdatePage.this.passwordDeviceService.update(UpdatePage.this.protocolContext.getSubject(),
-                                RegistrationForm.this.oldpassword, RegistrationForm.this.password1);
+                                RegistrationForm.this.oldpassword.getObject(), RegistrationForm.this.password1.getObject());
                     } catch (SubjectNotFoundException e) {
                         password1Field.error(getLocalizer().getString("errorSubjectNotFound", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "update: subject not found",
