@@ -136,7 +136,7 @@
 						<configuration>
 							<excludeScope>provided</excludeScope>
                             <excludeTypes>ear,war</excludeTypes>
-                            <excludeGroupIds>net.lin-k.safe-online</excludeGroupIds>
+                            <excludeGroupIds>net.lin-k.safe-online,org.jboss.seam</excludeGroupIds>
 							<outputDirectory>${project.build.directory}/dependency</outputDirectory>
 						</configuration>
 					</execution>
