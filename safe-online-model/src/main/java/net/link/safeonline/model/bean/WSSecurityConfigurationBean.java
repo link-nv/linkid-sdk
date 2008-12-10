@@ -11,11 +11,15 @@ import java.security.cert.X509Certificate;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.interceptor.Interceptors;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
-import net.link.safeonline.config.model.ConfigurationManager;
+import net.link.safeonline.common.Configurable;
+import net.link.safeonline.config.model.ConfigurationInterceptor;
+import net.link.safeonline.dao.ApplicationDAO;
+import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.model.WSSecurityConfiguration;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.pkix.model.PkiValidator;
@@ -27,11 +31,18 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 
 @Stateless
+@Configurable
 @LocalBinding(jndiBinding = WSSecurityConfiguration.JNDI_BINDING)
+@Interceptors( { ConfigurationInterceptor.class })
 public class WSSecurityConfigurationBean implements WSSecurityConfiguration {
 
-    @EJB(mappedName = ConfigurationManager.JNDI_BINDING)
-    private ConfigurationManager             configurationManager;
+    public static final String               WS_SECURITY_MAX_TIMESTAMP_OFFSET = "Maximum WS-Security Timestamp Offset (ms)";
+
+    /**
+     * Maximum Offset between the WS-Security Created time and the time indicated by the local clock.
+     */
+    @Configurable(group = "Security", name = WS_SECURITY_MAX_TIMESTAMP_OFFSET)
+    private Long                             maxWsSecurityTimestampOffset     = 1000 * 60 * 5L;
 
     @EJB(mappedName = PkiValidator.JNDI_BINDING)
     private PkiValidator                     pkiValidator;
@@ -39,10 +50,21 @@ public class WSSecurityConfigurationBean implements WSSecurityConfiguration {
     @EJB(mappedName = ApplicationAuthenticationService.JNDI_BINDING)
     private ApplicationAuthenticationService applicationAuthenticationService;
 
+    @EJB(mappedName = ApplicationDAO.JNDI_BINDING)
+    private ApplicationDAO                   applicationDAO;
+
 
     public long getMaximumWsSecurityTimestampOffset() {
 
-        return this.configurationManager.getMaximumWsSecurityTimestampOffset();
+        return this.maxWsSecurityTimestampOffset;
+    }
+
+    public boolean skipMessageIntegrityCheck(String applicationName)
+            throws ApplicationNotFoundException {
+
+        ApplicationEntity application = this.applicationDAO.getApplication(applicationName);
+        boolean skipMessageIntegrityCheck = application.isSkipMessageIntegrityCheck();
+        return skipMessageIntegrityCheck;
     }
 
     public boolean skipMessageIntegrityCheck(X509Certificate certificate) {

@@ -4,7 +4,7 @@
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
-package net.link.safeonline.osgi.plugin.exception;
+package net.link.safeonline.osgi.exception;
 
 /**
  * <h2>{@link InvalidDataException}<br>

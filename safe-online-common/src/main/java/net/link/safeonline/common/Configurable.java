@@ -14,4 +14,6 @@ public @interface Configurable {
 
     String name() default "";
 
+    boolean multipleChoice() default false;
+
 }

@@ -18,8 +18,8 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.ProxyAttributeService;
 import net.link.safeonline.osgi.OSGIAttributeService;
+import net.link.safeonline.osgi.OlasAttributeService;
 import net.link.safeonline.osgi.OlasAttributeServiceImpl;
-import net.link.safeonline.osgi.plugin.OlasAttributeService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

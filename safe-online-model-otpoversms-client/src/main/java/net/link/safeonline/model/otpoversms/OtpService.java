@@ -10,6 +10,8 @@ import java.net.ConnectException;
 
 import javax.ejb.Local;
 
+import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
+
 
 @Local
 public interface OtpService extends OtpOverSmsService {
@@ -18,7 +20,7 @@ public interface OtpService extends OtpOverSmsService {
 
 
     void requestOtp(String mobile)
-            throws ConnectException;
+            throws ConnectException, SafeOnlineResourceException;
 
     boolean verifyOtp(String otp);
 

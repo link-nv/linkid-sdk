@@ -22,13 +22,13 @@ public interface ConfigItemDAO extends SafeOnlineService {
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "ConfigItemDAOBean/local";
 
 
-    ConfigItemEntity addConfigItem(String name, String value, String valueType, ConfigGroupEntity configGroup);
+    ConfigItemEntity addConfigItem(String name, String valueType, boolean multipleChoice, ConfigGroupEntity configGroup);
 
     void removeConfigItem(ConfigItemEntity configItem);
 
     void saveConfigItem(ConfigItemEntity configItem);
 
-    ConfigItemEntity findConfigItem(String name);
+    ConfigItemEntity findConfigItem(String groupName, String name);
 
     List<ConfigItemEntity> listConfigItems();
 }

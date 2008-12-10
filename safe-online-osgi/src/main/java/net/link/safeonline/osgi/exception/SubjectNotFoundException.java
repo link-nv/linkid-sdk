@@ -4,10 +4,10 @@
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
-package net.link.safeonline.osgi.plugin.exception;
+package net.link.safeonline.osgi.exception;
 
 /**
- * <h2>{@link AttributeNotFoundException}<br>
+ * <h2>{@link SubjectNotFoundException}<br>
  * <sub>Attribute not found Exception.</sub></h2>
  * 
  * <p>
@@ -21,14 +21,14 @@ package net.link.safeonline.osgi.plugin.exception;
  * 
  * @author wvdhaute
  */
-public class AttributeNotFoundException extends Exception {
+public class SubjectNotFoundException extends Exception {
 
     private static final long serialVersionUID = 1L;
 
     private final String      errorMessage;
 
 
-    public AttributeNotFoundException(String errorMessage) {
+    public SubjectNotFoundException(String errorMessage) {
 
         this.errorMessage = errorMessage;
     }

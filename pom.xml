@@ -532,9 +532,15 @@
 		<sessionTimeout>5</sessionTimeout>
 		<isGlobalOperator>true</isGlobalOperator>
 		<defaultCronExpression>0 0/5 * * * ?</defaultCronExpression>
+<<<<<<< Updated upstream:pom.xml
         <safe-online.branding>olas</safe-online.branding>
 		<safe-online.commercial.name>OLAS</safe-online.commercial.name>
 
+=======
+		<sessionTimeout>5</sessionTimeout>
+		<safe-online.branding>olas</safe-online.branding>
+		<safe-online.data.source>SafeOnlineDS</safe-online.data.source>
+>>>>>>> Stashed changes:pom.xml
 		<safe-online.batch.size>5</safe-online.batch.size>
 		<safe-online.data.source>SafeOnlineDS</safe-online.data.source>
         <safe-online.data.source.user>safeonline</safe-online.data.source.user>
@@ -870,6 +876,7 @@
 		<module>safe-online-identity-applet-package</module>
 		<module>safe-online-osgi-plugin</module>
 		<module>safe-online-osgi-plugin-template</module>
+		<module>safe-online-osgi-sms</module>
 		<module>safe-online-serial</module>
 		<module>safe-online-model-password-client</module>
 		<module>safe-online-model-password</module>
@@ -879,6 +886,7 @@
 		<module>safe-online-password-deploy</module>
 
 		<module>siemens-osgi-acceptance</module>
+		<module>siemens-osgi-sms</module>
 	</modules>
 
 	<!-- DEFAULT BUILD CONFIGURATION -->

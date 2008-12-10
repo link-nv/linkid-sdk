@@ -17,6 +17,7 @@ import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 
 
@@ -48,7 +49,7 @@ public interface OtpOverSmsDeviceService extends OtpOverSmsService {
             throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException;
 
     void requestOtp(HttpSession httpSession, String mobile)
-            throws ConnectException;
+            throws ConnectException, SafeOnlineResourceException;
 
     boolean verifyOtp(HttpSession httpSession, String mobile, String otp)
             throws SubjectNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException, DeviceDisabledException;

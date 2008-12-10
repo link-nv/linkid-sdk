@@ -6,10 +6,10 @@
  */
 package net.link.safeonline.osgi.plugin;
 
-import net.link.safeonline.osgi.plugin.exception.AttributeNotFoundException;
-import net.link.safeonline.osgi.plugin.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.osgi.plugin.exception.AttributeUnavailableException;
-import net.link.safeonline.osgi.plugin.exception.SubjectNotFoundException;
+import net.link.safeonline.osgi.exception.AttributeNotFoundException;
+import net.link.safeonline.osgi.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.osgi.exception.AttributeUnavailableException;
+import net.link.safeonline.osgi.exception.SubjectNotFoundException;
 
 
 /**

@@ -1,68 +1,83 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:t="http://myfaces.apache.org/tomahawk"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:s="http://jboss.com/products/seam/taglib"
-	xmlns:rich="http://richfaces.org/rich">
-<body>
-<ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="topnav">
-		<ui:include src="/WEB-INF/incl/navigation.xhtml">
-			<ui:param name="page" value="configuration" />
-		</ui:include>
-	</ui:define>
-	<ui:define name="top_content">
-		<h1>#{msgs.configuration}</h1>
-	</ui:define>
-	<ui:define name="content">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:s="http://jboss.com/products/seam/taglib" xmlns:rich="http://richfaces.org/rich">
+	<body>
+		<ui:composition template="/WEB-INF/template.xhtml">
+			<ui:define name="topnav">
+				<ui:include src="/WEB-INF/incl/navigation.xhtml">
+					<ui:param name="page" value="configuration" />
+				</ui:include>
+			</ui:define>
+			<ui:define name="top_content">
+				<h1>#{msgs.configuration}</h1>
+			</ui:define>
+			<ui:define name="content">
 
-		<f:facet name="aroundInvalidField">
-			<s:span styleClass="error" />
-		</f:facet>
+				<f:facet name="aroundInvalidField">
+					<s:span styleClass="error" />
+				</f:facet>
 
-		<h:form>
-			<ui:repeat id="group-data" var="group" value="#{configGroupList}">
-				<h2><h:outputText value="#{group.name}" /></h2>
-				<ui:repeat id="config-data" var="item" value="#{group.configItems}">
-					<h:outputLabel for="value" value="#{item.name}" />
+				<h:form>
+					<ui:repeat id="group-data" var="group" value="#{configGroupList}">
+						<h2>
+							<h:outputText value="#{group.name}" />
+						</h2>
+						<ui:repeat id="config-data" var="item"
+							value="#{group.configItemsAsList}">
+							<h:outputLabel for="value" value="#{item.name}" />
 
-					<s:decorate>
-						<h:inputText value="#{item.value}" required="true" id="value"
-							styleClass="label" />
-						<h:message for="value" styleClass="error" />
-					</s:decorate>
-				</ui:repeat>
-			</ui:repeat>
+							<h:selectOneMenu id="selectvalue" value="#{item.value}"
+								rendered="#{item.multipleChoice}" styleClass="label">
+								<s:selectItems value="#{item.values}" var="multivalue"
+									label="#{multivalue.value}" />
+							</h:selectOneMenu>
 
-			<h:messages styleClass="error" globalOnly="true" />
+							<ui:repeat id="value-data" var="value" value="#{item.values}"
+								rendered="#{!item.multipleChoice}">
+								<s:decorate>
+									<h:inputText value="#{value.value}" required="true"
+										id="value" styleClass="label" />
+									<h:message for="value" styleClass="error" />
+								</s:decorate>
+							</ui:repeat>
 
-			<rich:spacer height="10" />
-			<h:outputLabel for="save" value="" />
-			<h:commandButton value="#{msgs.saveaction}" id="save"
-				action="#{configuration.save}" styleClass="submit" />
-			<h:commandButton value="#{msgs.cancelaction}" id="cancel"
-				action="cancel" immediate="true" styleClass="submit" />
+						</ui:repeat>
+					</ui:repeat>
 
-		</h:form>
+					<h:messages styleClass="error" globalOnly="true" />
 
-	</ui:define>
-	<ui:define name="sidebar">
-		<h:form>
-			<ul>
-				<li><h:commandLink action="/nodes/nodes.seam"
-					value="#{msgs.operatorOlasNodes}" /></li>
-				<li><h:commandLink action="/pkix/pkix.seam"
-					value="#{msgs.PKIX}" /></li>
-				<li><h:commandLink action="/usage/usage-agreements.seam"
-					value="#{msgs.usageAgreementOLAS}" /></li>
-				<li><h:commandLink action="/notifications/notifications.seam"
-					value="#{msgs.operatorNotifications}" /></li>
-			</ul>
-		</h:form>
-	</ui:define>
-</ui:composition>
-</body>
+					<rich:spacer height="10" />
+					<h:outputLabel for="save" value="" />
+					<h:commandButton value="#{msgs.saveaction}" id="save"
+						action="#{configuration.save}" styleClass="submit" />
+					<h:commandButton value="#{msgs.cancelaction}" id="cancel"
+						action="cancel" immediate="true" styleClass="submit" />
+
+				</h:form>
+
+			</ui:define>
+			<ui:define name="sidebar">
+				<h:form>
+					<ul>
+						<li>
+							<h:commandLink action="/nodes/nodes.seam" value="#{msgs.operatorOlasNodes}" />
+						</li>
+						<li>
+							<h:commandLink action="/pkix/pkix.seam" value="#{msgs.PKIX}" />
+						</li>
+						<li>
+							<h:commandLink action="/usage/usage-agreements.seam"
+								value="#{msgs.usageAgreementOLAS}" />
+						</li>
+						<li>
+							<h:commandLink action="/notifications/notifications.seam"
+								value="#{msgs.operatorNotifications}" />
+						</li>
+					</ul>
+				</h:form>
+			</ui:define>
+		</ui:composition>
+	</body>
 
 </html>

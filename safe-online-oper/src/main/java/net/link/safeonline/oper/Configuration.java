@@ -7,9 +7,11 @@
 
 package net.link.safeonline.oper;
 
-import javax.ejb.Local;
+import java.util.List;
 
-import net.link.safeonline.oper.OperatorConstants;
+import javax.ejb.Local;
+import javax.faces.event.ValueChangeEvent;
+import javax.faces.model.SelectItem;
 
 
 @Local
@@ -23,6 +25,8 @@ public interface Configuration {
      */
     void configGroupListFactory();
 
+    List<SelectItem> configItemValueListFactory();
+
     /*
      * Lifecycle.
      */
@@ -32,5 +36,10 @@ public interface Configuration {
      * Actions.
      */
     String save();
+
+    /*
+     * Listeners
+     */
+    void valueChanged(ValueChangeEvent event);
 
 }

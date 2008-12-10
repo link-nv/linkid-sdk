@@ -24,6 +24,7 @@ import net.link.safeonline.entity.audit.ResourceNameType;
 import net.link.safeonline.osgi.OSGIHostActivator;
 import net.link.safeonline.osgi.OSGIStartable;
 import net.link.safeonline.osgi.plugin.PluginAttributeService;
+import net.link.safeonline.osgi.sms.SmsService;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
@@ -37,6 +38,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
+import org.osgi.framework.ServiceReference;
 
 
 /**
@@ -181,7 +183,11 @@ public class OSGIStartableBean implements OSGIStartable {
         systemPackages += "com.sun.security.cert.internal.x509; version=1.0.0, ";
 
         // plugin service package
-        systemPackages += "net.link.safeonline.osgi.plugin; version=1.0.0";
+        systemPackages += "net.link.safeonline.osgi.plugin; version=1.0.0, ";
+
+        // sms service package
+        systemPackages += "net.link.safeonline.osgi.sms; version=1.0.0";
+
         LOG.debug("systemPackages: " + systemPackages);
 
         configMap.put(Constants.FRAMEWORK_SYSTEMPACKAGES, systemPackages);
@@ -240,9 +246,34 @@ public class OSGIStartableBean implements OSGIStartable {
 
     }
 
+    public Object[] getSmsServices() {
+
+        OSGIHostActivator hostActivator;
+        try {
+            hostActivator = (OSGIHostActivator) EjbUtils.getComponent(OSGIHostActivator.JNDI_BINDING);
+        } catch (NamingException e) {
+            throw new EJBException("Unable to find OSGI Host activator in the JNDI tree: " + OSGIHostActivator.JNDI_BINDING);
+        }
+        return hostActivator.getSmsServices();
+
+    }
+
+    public ServiceReference[] getSmsServiceReferences() {
+
+        OSGIHostActivator hostActivator;
+        try {
+            hostActivator = (OSGIHostActivator) EjbUtils.getComponent(OSGIHostActivator.JNDI_BINDING);
+        } catch (NamingException e) {
+            throw new EJBException("Unable to find OSGI Host activator in the JNDI tree: " + OSGIHostActivator.JNDI_BINDING);
+        }
+        return hostActivator.getSmsServiceReferences();
+
+    }
+
     public PluginAttributeService getPluginService(String serviceName)
             throws SafeOnlineResourceException {
 
+        // XXX: should we not access the service via its servicereference ??
         Object[] services = getPluginServices();
         if (null == services)
             throw new SafeOnlineResourceException(ResourceNameType.OSGI, ResourceLevelType.RESOURCE_UNAVAILABLE, serviceName);
@@ -252,5 +283,27 @@ public class OSGIStartableBean implements OSGIStartable {
                 return (PluginAttributeService) service;
         }
         throw new SafeOnlineResourceException(ResourceNameType.OSGI, ResourceLevelType.RESOURCE_UNAVAILABLE, serviceName);
+    }
+
+    public SmsService getSmsService(String serviceName)
+            throws SafeOnlineResourceException {
+
+        ServiceReference[] serviceReferences = getSmsServiceReferences();
+        for (ServiceReference serviceReference : serviceReferences) {
+            Object service = serviceReference.getBundle().getBundleContext().getService(serviceReference);
+            LOG.debug("service class: " + service.getClass().getName());
+            if (service.getClass().getName().equals(serviceName))
+                return (SmsService) service;
+        }
+
+        throw new SafeOnlineResourceException(ResourceNameType.OSGI, ResourceLevelType.RESOURCE_UNAVAILABLE, serviceName);
+
+        /*
+         * Object[] services = getSmsServices(); if (null == services) throw new SafeOnlineResourceException(ResourceNameType.OSGI,
+         * ResourceLevelType.RESOURCE_UNAVAILABLE, serviceName);
+         * 
+         * for (Object service : services) { if (service.getClass().getName().equals(serviceName)) return (SmsService) service; } throw new
+         * SafeOnlineResourceException(ResourceNameType.OSGI, ResourceLevelType.RESOURCE_UNAVAILABLE, serviceName);
+         */
     }
 }
