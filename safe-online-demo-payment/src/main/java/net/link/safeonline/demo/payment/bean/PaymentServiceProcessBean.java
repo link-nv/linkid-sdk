@@ -101,9 +101,9 @@ public class PaymentServiceProcessBean extends AbstractPaymentDataClientBean imp
             this.facesMessages.add("authenticated user != requested user");
             return null;
         }
-        UserEntity targetUser = this.entityManager.find(UserEntity.class, username);
+        UserEntity targetUser = this.entityManager.find(UserEntity.class, getUserId());
         if (targetUser == null) {
-            targetUser = new UserEntity(username);
+            targetUser = new UserEntity(getUserId(), username);
             this.entityManager.persist(targetUser);
         }
 

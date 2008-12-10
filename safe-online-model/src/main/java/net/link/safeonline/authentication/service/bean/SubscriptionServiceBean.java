@@ -125,11 +125,12 @@ public class SubscriptionServiceBean implements SubscriptionService, Subscriptio
 
         Subject subject = SubjectFactory.getCallerSubject(this);
         Application application = ApplicationFactory.getApplication(this, applicationName);
-        subject.unsubscribe(application);
 
         this.notificationProducerService.sendNotification(SafeOnlineConstants.TOPIC_UNSUBSCRIBE_USER, subject.getSubjectEntity()
                                                                                                              .getUserId(),
                 application.getEntity().getName());
+
+        subject.unsubscribe(application);
 
         this.historyDAO.addHistoryEntry(subject.getSubjectEntity(), HistoryEventType.SUBSCRIPTION_REMOVE, Collections.singletonMap(
                 SafeOnlineConstants.APPLICATION_PROPERTY, applicationName));

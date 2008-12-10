@@ -242,9 +242,9 @@ public class TicketBuyBean extends AbstractTicketDataClientBean implements Ticke
     // conversation begin via pages.xml
     public String confirm() {
 
-        User user = this.entityManager.find(User.class, this.getUsername());
+        User user = this.entityManager.find(User.class, getUserId());
         if (user == null) {
-            user = new User(this.getUsername(), this.nrn);
+            user = new User(getUserId(), this.getUsername(), this.nrn);
             this.entityManager.persist(user);
         }
         user.setNrn(this.nrn);

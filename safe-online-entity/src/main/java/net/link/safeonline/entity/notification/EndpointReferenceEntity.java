@@ -14,13 +14,16 @@ import static net.link.safeonline.entity.notification.EndpointReferenceEntity.QU
 import static net.link.safeonline.entity.notification.EndpointReferenceEntity.QUERY_WHERE_NODE;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -55,25 +58,27 @@ import org.apache.commons.lang.builder.ToStringBuilder;
         @NamedQuery(name = QUERY_WHERE_NODE, query = "SELECT epr FROM EndpointReferenceEntity AS epr " + "WHERE epr.node = :node") })
 public class EndpointReferenceEntity implements Serializable {
 
-    private static final long  serialVersionUID                = 1L;
+    private static final long                           serialVersionUID                = 1L;
 
-    public static final String QUERY_LIST_ALL                  = "epr.list.all";
+    public static final String                          QUERY_LIST_ALL                  = "epr.list.all";
 
-    public static final String QUERY_WHERE_ADDRESS_NODE        = "epr.add.node";
+    public static final String                          QUERY_WHERE_ADDRESS_NODE        = "epr.add.node";
 
-    public static final String QUERY_WHERE_ADDRESS_APPLICATION = "epr.add.app";
+    public static final String                          QUERY_WHERE_ADDRESS_APPLICATION = "epr.add.app";
 
-    public static final String QUERY_WHERE_NODE                = "epr.node";
+    public static final String                          QUERY_WHERE_NODE                = "epr.node";
 
-    public static final String QUERY_WHERE_APPLICATION         = "epr.app";
+    public static final String                          QUERY_WHERE_APPLICATION         = "epr.app";
 
-    private long               id;
+    private long                                        id;
 
-    private String             address;
+    private String                                      address;
 
-    private ApplicationEntity  application;
+    private ApplicationEntity                           application;
 
-    private NodeEntity         node;
+    private NodeEntity                                  node;
+
+    private Set<NotificationProducerSubscriptionEntity> subscriptions;
 
 
     public EndpointReferenceEntity() {
@@ -85,12 +90,14 @@ public class EndpointReferenceEntity implements Serializable {
 
         this.address = address;
         this.application = application;
+        this.subscriptions = new HashSet<NotificationProducerSubscriptionEntity>();
     }
 
     public EndpointReferenceEntity(String address, NodeEntity node) {
 
         this.address = address;
         this.node = node;
+        this.subscriptions = new HashSet<NotificationProducerSubscriptionEntity>();
     }
 
     @Id
@@ -137,6 +144,17 @@ public class EndpointReferenceEntity implements Serializable {
     public void setNode(NodeEntity node) {
 
         this.node = node;
+    }
+
+    @ManyToMany(mappedBy = NotificationProducerSubscriptionEntity.CONSUMERS_COLUMN_NAME)
+    public Set<NotificationProducerSubscriptionEntity> getSubscriptions() {
+
+        return this.subscriptions;
+    }
+
+    public void setSubscriptions(Set<NotificationProducerSubscriptionEntity> subscriptions) {
+
+        this.subscriptions = subscriptions;
     }
 
     @Transient

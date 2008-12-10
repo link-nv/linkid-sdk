@@ -26,21 +26,34 @@ public class UserEntity implements Serializable {
 
     private List<PaymentEntity> payments;
 
+    private String              safeOnlineUserId;
+
     private String              safeOnlineUserName;
 
 
     public UserEntity() {
 
-        this(null);
+        this(null, null);
     }
 
-    public UserEntity(String safeOnlineUserName) {
+    public UserEntity(String safeOnlineUserId, String safeOnlineUserName) {
 
         this.payments = new ArrayList<PaymentEntity>();
+        this.safeOnlineUserId = safeOnlineUserId;
         this.safeOnlineUserName = safeOnlineUserName;
     }
 
     @Id
+    public String getSafeOnlineUserId() {
+
+        return this.safeOnlineUserId;
+    }
+
+    public void setSafeOnlineUserId(String safeOnlineUserId) {
+
+        this.safeOnlineUserId = safeOnlineUserId;
+    }
+
     public String getSafeOnlineUserName() {
 
         return this.safeOnlineUserName;

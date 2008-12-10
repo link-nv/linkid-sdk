@@ -36,6 +36,8 @@ public class User implements Serializable {
 
     private List<Ticket>       tickets;
 
+    private String             safeOnlineUserId;
+
     private String             safeOnlineUserName;
 
     private String             nrn;
@@ -46,19 +48,30 @@ public class User implements Serializable {
         this.tickets = new ArrayList<Ticket>();
     }
 
-    public User(String safeOnlineUserName, String nrn) {
+    public User(String safeOnlineUserId, String safeOnlineUserName, String nrn) {
 
         this.tickets = new ArrayList<Ticket>();
+        this.safeOnlineUserId = safeOnlineUserId;
         this.safeOnlineUserName = safeOnlineUserName;
         this.nrn = nrn;
     }
 
-    public User(String safeOnlineUserName) {
+    public User(String safeOnlineUserId, String safeOnlineUserName) {
 
-        this(safeOnlineUserName, null);
+        this(safeOnlineUserId, safeOnlineUserName, null);
     }
 
     @Id
+    public String getSafeOnlineUserId() {
+
+        return this.safeOnlineUserId;
+    }
+
+    public void setSafeOnlineUserId(String safeOnlineUserId) {
+
+        this.safeOnlineUserId = safeOnlineUserId;
+    }
+
     public String getSafeOnlineUserName() {
 
         return this.safeOnlineUserName;

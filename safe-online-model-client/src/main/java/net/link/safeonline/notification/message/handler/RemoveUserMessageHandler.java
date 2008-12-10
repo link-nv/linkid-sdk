@@ -68,9 +68,11 @@ public class RemoveUserMessageHandler implements MessageHandler {
         if (null != consumer.getApplication()) {
             try {
                 SubjectEntity subjectEntity = subjectService.getSubject(subject);
-                publicSubscriptionService.checkSubscribed(subjectEntity, consumer.getApplication());
-                String applicationUserId = userIdMappingService.getApplicationUserId(consumer.getApplication().getName(), subject);
-                return new NotificationMessage(topic, consumer.getApplication().getName(), applicationUserId, content, consumer.getId());
+                if (publicSubscriptionService.isSubscribed(subjectEntity, consumer.getApplication())) {
+                    String applicationUserId = userIdMappingService.getApplicationUserId(consumer.getApplication().getName(), subject);
+                    return new NotificationMessage(topic, consumer.getApplication().getName(), applicationUserId, content, consumer.getId());
+                }
+                return null;
             } catch (SubscriptionNotFoundException e) {
                 return null;
             } catch (ApplicationNotFoundException e) {

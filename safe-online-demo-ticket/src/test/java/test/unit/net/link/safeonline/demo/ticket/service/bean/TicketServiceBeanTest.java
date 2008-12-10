@@ -55,13 +55,14 @@ public class TicketServiceBeanTest extends TestCase {
         String testFrom = Site.GENT.name();
         String testTo = Site.BRUSSEL.name();
         String testUser = "test-user";
+        String testUserId = UUID.randomUUID().toString();
         Date beginDate = new Date();
         Date endDate = new DateTime(beginDate).plusMonths(1).toDate();
 
         EntityManager entityManager = this.entityTestManager.getEntityManager();
         TicketService ticketService = EJBTestUtils.newInstance(TicketServiceBean.class, null, entityManager);
 
-        User user = new User(testUser, testNrn);
+        User user = new User(testUserId, testUser, testNrn);
         entityManager.persist(user);
         Ticket ticket = new Ticket(user, Site.GENT, Site.BRUSSEL, beginDate, endDate, false);
         entityManager.persist(ticket);
@@ -80,6 +81,7 @@ public class TicketServiceBeanTest extends TestCase {
         String testNrn = UUID.randomUUID().toString();
         String testFrom = Site.GENT.name();
         String testTo = Site.BRUSSEL.name();
+        String testUserId = UUID.randomUUID().toString();
         String testUser = "test-user-" + getName();
         DateTime now = new DateTime();
         Date beginDate = now.minusMonths(2).toDate();
@@ -88,7 +90,7 @@ public class TicketServiceBeanTest extends TestCase {
         EntityManager entityManager = this.entityTestManager.getEntityManager();
         TicketService ticketService = EJBTestUtils.newInstance(TicketServiceBean.class, null, entityManager);
 
-        User user = new User(testUser, testNrn);
+        User user = new User(testUserId, testUser, testNrn);
         entityManager.persist(user);
         Ticket ticket = new Ticket(user, Site.GENT, Site.BRUSSEL, beginDate, endDate, false);
         entityManager.persist(ticket);
@@ -107,6 +109,7 @@ public class TicketServiceBeanTest extends TestCase {
         String testNrn = UUID.randomUUID().toString();
         String testFrom = Site.GENT.name();
         String testTo = Site.BRUSSEL.name();
+        String testUserId = UUID.randomUUID().toString();
         String testUser = "test-user";
         Date beginDate = new Date();
         Date endDate = new DateTime(beginDate).plusMonths(1).toDate();
@@ -114,7 +117,7 @@ public class TicketServiceBeanTest extends TestCase {
         EntityManager entityManager = this.entityTestManager.getEntityManager();
         TicketService ticketService = EJBTestUtils.newInstance(TicketServiceBean.class, null, entityManager);
 
-        User user = new User(testUser, testNrn);
+        User user = new User(testUserId, testUser, testNrn);
         entityManager.persist(user);
         Ticket ticket = new Ticket(user, Site.GENT, Site.BRUSSEL, beginDate, endDate, true);
         entityManager.persist(ticket);
@@ -133,12 +136,13 @@ public class TicketServiceBeanTest extends TestCase {
         String testNrn = UUID.randomUUID().toString();
         String testFrom = "foobar-from";
         String testTo = Site.BRUSSEL.name();
+        String testUserId = UUID.randomUUID().toString();
         String testUser = "test-user";
 
         EntityManager entityManager = this.entityTestManager.getEntityManager();
         TicketService ticketService = EJBTestUtils.newInstance(TicketServiceBean.class, null, entityManager);
 
-        User user = new User(testUser, testNrn);
+        User user = new User(testUserId, testUser, testNrn);
         entityManager.persist(user);
 
         // operate

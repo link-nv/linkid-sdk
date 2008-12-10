@@ -34,7 +34,7 @@ public interface PublicSubscriptionService {
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "PublicSubscriptionServiceBean/local";
 
 
-    void checkSubscribed(SubjectEntity subject, ApplicationEntity application)
+    boolean isSubscribed(SubjectEntity subject, ApplicationEntity application)
             throws SubscriptionNotFoundException;
 
 }

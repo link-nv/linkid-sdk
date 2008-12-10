@@ -68,6 +68,7 @@ import net.link.safeonline.entity.config.ConfigItemEntity;
 import net.link.safeonline.entity.helpdesk.HelpdeskContextEntity;
 import net.link.safeonline.entity.notification.EndpointReferenceEntity;
 import net.link.safeonline.entity.notification.NotificationMessageEntity;
+import net.link.safeonline.entity.notification.NotificationProducerSubscriptionEntity;
 import net.link.safeonline.entity.pkix.CachedOcspResponseEntity;
 import net.link.safeonline.entity.pkix.CachedOcspResultType;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
@@ -114,7 +115,7 @@ public class EntityTest {
                     AuditContextEntity.class, AuditAuditEntity.class, HelpdeskContextEntity.class,
                     CompoundedAttributeTypeMemberEntity.class, AccessAuditEntity.class, UsageAgreementEntity.class,
                     UsageAgreementTextEntity.class, GlobalUsageAgreementEntity.class, NodeEntity.class, ApplicationPoolEntity.class,
-                    EndpointReferenceEntity.class, NotificationMessageEntity.class);
+                    EndpointReferenceEntity.class, NotificationProducerSubscriptionEntity.class, NotificationMessageEntity.class);
         } catch (Exception e) {
             LOG.fatal("JPA annotations incorrect: " + e.getMessage(), e);
             throw new RuntimeException("JPA annotations incorrect: " + e.getMessage(), e);
