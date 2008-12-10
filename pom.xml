@@ -2609,7 +2609,8 @@
 						<artifactId>axis-saaj</artifactId>
 					</exclusion>
 					<exclusion>
-                        <!-- Provided by container-as -->
+                        <!-- Provided by container-as
+                            FIXME: should remove these types of exclusions and make container-as force these types of dependencies to go provided. -->
 						<groupId>axis</groupId>
 						<artifactId>axis-jaxrpc</artifactId>
 					</exclusion>
