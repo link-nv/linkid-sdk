@@ -69,14 +69,12 @@ public abstract class AbstractInjectionFilter implements Filter {
                 continue;
             }
             String mappedName = ejb.mappedName();
-            if (null == mappedName) {
+            if (null == mappedName)
                 throw new ServletException("@EJB mappedName attribute required");
-            }
             LOG.debug("injecting: " + mappedName);
             Class type = field.getType();
-            if (false == type.isInterface()) {
+            if (false == type.isInterface())
                 throw new ServletException("field is not an interface type");
-            }
             Object ejbRef = EjbUtils.getEJB(mappedName, type);
             field.setAccessible(true);
             try {
@@ -100,18 +98,20 @@ public abstract class AbstractInjectionFilter implements Filter {
                 continue;
             }
             String name = initAnnotation.name();
-            if (null == name) {
+            if (null == name)
                 throw new ServletException("@Init name attribute required");
-            }
             LOG.debug("init: " + name);
             String defaultValue = initAnnotation.defaultValue();
             boolean optional = initAnnotation.optional();
+            boolean checkContext = initAnnotation.checkContext();
 
             String value = config.getInitParameter(name);
+            if (null == value && checkContext) {
+                value = config.getServletContext().getInitParameter(name);
+            }
             if (null == value) {
-                if (Init.NOT_SPECIFIED.equals(defaultValue) && !optional) {
+                if (Init.NOT_SPECIFIED.equals(defaultValue) && !optional)
                     throw new UnavailableException("missing init parameter: " + name);
-                }
                 if (Init.NOT_SPECIFIED.equals(defaultValue)) {
                     defaultValue = null;
                 }
@@ -136,6 +136,7 @@ public abstract class AbstractInjectionFilter implements Filter {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void initContextParameters(FilterConfig config)
             throws ServletException {
 
@@ -146,18 +147,16 @@ public abstract class AbstractInjectionFilter implements Filter {
                 continue;
             }
             String name = contextAnnotation.name();
-            if (null == name) {
+            if (null == name)
                 throw new ServletException("@Context name attribute required");
-            }
             LOG.debug("init: " + name);
             String defaultValue = contextAnnotation.defaultValue();
             boolean optional = contextAnnotation.optional();
 
             String value = config.getServletContext().getInitParameter(name);
             if (null == value) {
-                if (Context.NOT_SPECIFIED.equals(defaultValue) && !optional) {
+                if (Context.NOT_SPECIFIED.equals(defaultValue) && !optional)
                     throw new UnavailableException("missing init parameter: " + name);
-                }
                 if (Context.NOT_SPECIFIED.equals(defaultValue)) {
                     defaultValue = null;
                 }
@@ -170,6 +169,18 @@ public abstract class AbstractInjectionFilter implements Filter {
                 throw new ServletException("illegal argument: " + e.getMessage(), e);
             } catch (IllegalAccessException e) {
                 throw new ServletException("illegal access: " + e.getMessage(), e);
+            }
+        }
+        if (null == this.configParams) {
+            this.configParams = new HashMap<String, String>();
+        }
+        Enumeration<String> initParamsEnum = config.getServletContext().getInitParameterNames();
+        while (initParamsEnum.hasMoreElements()) {
+            String paramName = initParamsEnum.nextElement();
+            if (null == this.configParams.get(paramName)) {
+                String paramValue = config.getServletContext().getInitParameter(paramName);
+                LOG.debug("config param: " + paramName + "=" + paramValue);
+                this.configParams.put(paramName, paramValue);
             }
         }
     }

@@ -12,7 +12,6 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
-import net.link.safeonline.authentication.service.NodeAccountService;
 import net.link.safeonline.authentication.service.UserIdMappingService;
 import net.link.safeonline.entity.NodeMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
@@ -24,34 +23,22 @@ import net.link.safeonline.service.PublicSubscriptionService;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.util.ee.EjbUtils;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 
 /**
- * Message handler for topic: {@link SafeOnlineConstants#TOPIC_REMOVE_USER}.
+ * Message handler for topic: {@link SafeOnlineConstants#TOPIC_UNSUBSCRIBE_USER}.
  * 
  * @author wvdhaute
  * 
  */
-public class RemoveUserMessageHandler implements MessageHandler {
-
-    private static final Log LOG = LogFactory.getLog(RemoveUserMessageHandler.class);
-
+public class UnsubscribeUserMessageHandler implements MessageHandler {
 
     /**
      * {@inheritDoc}
      */
     public void handleMessage(String destination, String subject, String content) {
 
-        SubjectService subjectService = EjbUtils.getEJB(SubjectService.JNDI_BINDING, SubjectService.class);
-        NodeAccountService nodeAccountService = EjbUtils.getEJB(NodeAccountService.JNDI_BINDING, NodeAccountService.class);
-        LOG.debug("handle remove message for user: " + subject);
-        SubjectEntity subjectEntity = subjectService.findSubject(subject);
-        if (null != subject) {
-            LOG.debug("remove user: " + subject);
-            nodeAccountService.removeAccount(subjectEntity);
-        }
+        // do nothing
+        return;
     }
 
     /**
@@ -71,6 +58,7 @@ public class RemoveUserMessageHandler implements MessageHandler {
                 publicSubscriptionService.checkSubscribed(subjectEntity, consumer.getApplication());
                 String applicationUserId = userIdMappingService.getApplicationUserId(consumer.getApplication().getName(), subject);
                 return new NotificationMessage(topic, consumer.getApplication().getName(), applicationUserId, content, consumer.getId());
+
             } catch (SubscriptionNotFoundException e) {
                 return null;
             } catch (ApplicationNotFoundException e) {

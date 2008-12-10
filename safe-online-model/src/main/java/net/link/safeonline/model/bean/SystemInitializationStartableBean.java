@@ -121,6 +121,7 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
 
         // add available notification topics
         this.notificationTopics.add(SafeOnlineConstants.TOPIC_REMOVE_USER);
+        this.notificationTopics.add(SafeOnlineConstants.TOPIC_UNSUBSCRIBE_USER);
 
     }
 

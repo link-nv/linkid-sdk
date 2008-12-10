@@ -19,6 +19,7 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
+import net.link.safeonline.notification.exception.MessageHandlerNotFoundException;
 
 
 /**
@@ -68,9 +69,10 @@ public interface SubscriptionService extends SafeOnlineService {
      * @throws SubscriptionNotFoundException
      * @throws PermissionDeniedException
      *             in case the user is not the owner of the subscription.
+     * @throws MessageHandlerNotFoundException
      */
     void unsubscribe(String applicationName)
-            throws ApplicationNotFoundException, SubscriptionNotFoundException, PermissionDeniedException;
+            throws ApplicationNotFoundException, SubscriptionNotFoundException, PermissionDeniedException, MessageHandlerNotFoundException;
 
     /**
      * Gives back the number of subscriptions for a given application.

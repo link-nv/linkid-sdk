@@ -14,6 +14,7 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.entity.notification.EndpointReferenceEntity;
 import net.link.safeonline.notification.exception.MessageHandlerNotFoundException;
 import net.link.safeonline.notification.message.handler.RemoveUserMessageHandler;
+import net.link.safeonline.notification.message.handler.UnsubscribeUserMessageHandler;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.sdk.ws.notification.consumer.NotificationConsumerClient;
 import net.link.safeonline.sdk.ws.notification.consumer.NotificationConsumerClientImpl;
@@ -38,6 +39,7 @@ public class MessageHandlerManager {
 
     static {
         registerProtocolHandler(SafeOnlineConstants.TOPIC_REMOVE_USER, RemoveUserMessageHandler.class);
+        registerProtocolHandler(SafeOnlineConstants.TOPIC_UNSUBSCRIBE_USER, UnsubscribeUserMessageHandler.class);
     }
 
 
@@ -58,7 +60,6 @@ public class MessageHandlerManager {
         MessageHandler messageHandler = messageHandlerMap.get(topic);
         if (null == messageHandler)
             throw new MessageHandlerNotFoundException(topic);
-        messageHandler.init();
 
         return messageHandler.createMessage(topic, subject, content, consumer);
     }
@@ -69,7 +70,6 @@ public class MessageHandlerManager {
         MessageHandler messageHandler = messageHandlerMap.get(message.getTopic());
         if (null == messageHandler)
             throw new MessageHandlerNotFoundException(message.getTopic());
-        messageHandler.init();
 
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
         NotificationConsumerClient consumerClient = new NotificationConsumerClientImpl(consumer.getAddress(),
@@ -83,7 +83,6 @@ public class MessageHandlerManager {
         MessageHandler messageHandler = messageHandlerMap.get(topic);
         if (null == messageHandler)
             throw new MessageHandlerNotFoundException(topic);
-        messageHandler.init();
 
         messageHandler.handleMessage(destination, subject, content);
     }

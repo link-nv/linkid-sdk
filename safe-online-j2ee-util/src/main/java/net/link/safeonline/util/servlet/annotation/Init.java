@@ -45,4 +45,9 @@ public @interface Init {
      * If not optional {@link UnavailableException} will be thrown during servlet initialization.
      */
     boolean optional() default false;
+
+    /**
+     * If Init parameter not found, will try to find it in the Context
+     */
+    boolean checkContext() default true;
 }

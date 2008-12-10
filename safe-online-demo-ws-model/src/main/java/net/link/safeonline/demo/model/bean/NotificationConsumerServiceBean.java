@@ -89,6 +89,10 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
                 } else if (destination.equals(DEMO_PAYMENT_APPLICATION_NAME)) {
                     removeDemoPaymentUser(subject);
                 }
+            } else if (topic.equals(SafeOnlineConstants.TOPIC_UNSUBSCRIBE_USER)) {
+                if (destination.equals(DEMO_BANK_APPLICATION_NAME)) {
+                    unsubscribeDemoBankUser(subject);
+                }
             }
         } catch (WSClientTransportException e) {
             LOG.debug("WSClientTransportException thrown: " + e.getMessage());
@@ -107,6 +111,18 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
         String wsLocation = properties.getString("olas.ws.location");
         LOG.debug("wsLocation: " + wsLocation);
         return wsLocation;
+    }
+
+    private void unsubscribeDemoBankUser(String userId) {
+
+        LOG.debug("remove demo bank user id: " + userId);
+
+        try {
+            BankUserEntity user = (BankUserEntity) this.demoBankEntityManager.createNamedQuery(BankUserEntity.getByOlasId).setParameter(
+                    "olasId", userId).getSingleResult();
+            user.setOlasId(null);
+        } catch (NoResultException e) {
+        }
     }
 
     private void removeDemoBankUser(String userId) {

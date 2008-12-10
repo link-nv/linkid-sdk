@@ -18,8 +18,6 @@ import net.link.safeonline.entity.notification.EndpointReferenceEntity;
  */
 public interface MessageHandler {
 
-    void init();
-
     void handleMessage(String destination, String subject, String content);
 
     NotificationMessage createMessage(String topic, String subject, String content, EndpointReferenceEntity consumer);

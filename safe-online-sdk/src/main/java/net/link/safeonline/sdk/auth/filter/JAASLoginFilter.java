@@ -143,8 +143,8 @@ public class JAASLoginFilter implements Filter {
                 LOG.debug("already redirected");
                 return true;
             }
-            if (null != this.loginPath && !this.loginPath.equals(request.getRequestURL().toString())
-                    && !this.unauthenticatedPaths.contains(request.getRequestURL().toString())) {
+            String requestPath = request.getContextPath() + request.getServletPath();
+            if (null != this.loginPath && !this.loginPath.equals(requestPath) && !this.unauthenticatedPaths.contains(requestPath)) {
                 LOG.debug("redirect to " + this.loginPath);
                 session.setAttribute(REDIRECTED_SESSION_ATTRIBUTE, true);
                 response.sendRedirect(this.loginPath);

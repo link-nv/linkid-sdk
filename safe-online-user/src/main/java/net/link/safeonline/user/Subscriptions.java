@@ -9,10 +9,10 @@ package net.link.safeonline.user;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.user.UserConstants;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+import net.link.safeonline.notification.exception.MessageHandlerNotFoundException;
 
 
 @Local
@@ -27,7 +27,7 @@ public interface Subscriptions {
             throws SubscriptionNotFoundException, ApplicationNotFoundException, ApplicationIdentityNotFoundException;
 
     String unsubscribe()
-            throws SubscriptionNotFoundException, ApplicationNotFoundException;
+            throws SubscriptionNotFoundException, ApplicationNotFoundException, MessageHandlerNotFoundException;
 
     String getUsageAgreement()
             throws ApplicationNotFoundException;

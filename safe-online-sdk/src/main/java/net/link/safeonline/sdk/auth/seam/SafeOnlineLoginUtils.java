@@ -48,6 +48,8 @@ public class SafeOnlineLoginUtils {
 
     public static final String                 AUTH_SERVICE_URL_INIT_PARAM          = "AuthenticationServiceUrl";
     public static final String                 TARGET_BASE_URL_INIT_PARAM           = "TargetBaseUrl";
+    public static final String                 TARGET_INIT_PARAM                    = "Target";
+    public static final String                 SKIP_LANDING_PAGE_INIT_PARAM         = "SkipLandingPage";
     public static final String                 APPLICATION_NAME_INIT_PARAM          = "ApplicationName";
     public static final String                 APPLICATION_FRIENDLY_NAME_INIT_PARAM = "ApplicationFriendlyName";
     public static final String                 AUTHN_PROTOCOL_INIT_PARAM            = "AuthenticationProtocol";
@@ -150,6 +152,16 @@ public class SafeOnlineLoginUtils {
      * <p>
      * The optional <code>SingleSignOnEnabled</code> init parameter specified whether single sign-on can be used or not. Accepted values
      * are: <code>true</code> or <code>false</code>. If omitted, single sign-on will be enabled by default.
+     * </p>
+     * 
+     * <p>
+     * The optional <code>ApplicationColor</code> init parameter specifies the color the OLAS authentication webapp should display. Accepted
+     * values are HTML color codes e.g. <code>#000000</code>
+     * </p>
+     * 
+     * <p>
+     * The optional <code>ApplicationMinimal</code> init parameter specified whether the OLAS authentication webapp should be displayed in
+     * an inline frame or not. Accepted values are: <code>true</code> or <code>false</code>.
      * </p>
      * 
      * @param target

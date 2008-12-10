@@ -4,16 +4,14 @@
 	version="2.4">
 	<display-name>SafeOnline Demo Payment Web Application</display-name>
 	<listener>
-		<listener-class> org.jboss.seam.servlet.SeamListener </listener-class>
+		<listener-class>org.jboss.seam.servlet.SeamListener</listener-class>
 	</listener>
 	<listener>
-		<listener-class> com.sun.faces.config.ConfigureListener 
-		</listener-class>
+		<listener-class>com.sun.faces.config.ConfigureListener</listener-class>
 	</listener>
 	<listener>
 		<listener-class>
-			net.link.safeonline.demo.payment.listener.PaymentSessionListener 
-		</listener-class>
+			net.link.safeonline.demo.payment.listener.PaymentSessionListener</listener-class>
 	</listener>
 	<context-param>
 		<description>URL used to initiate a login process.</description>
@@ -98,9 +96,16 @@
 		<description>Url to redirect to after successful authentication</description>
 	</context-param>
 	<filter>
+		<filter-name>AuthnRequestFilter</filter-name>
+		<filter-class>net.link.safeonline.sdk.auth.filter.AuthnRequestFilter</filter-class>
+		<init-param>
+			<param-name>Target</param-name>
+			<param-value>/login</param-value>
+		</init-param>
+	</filter>
+	<filter>
 		<filter-name>AuthnResponseFilter</filter-name>
-		<filter-class> net.link.safeonline.sdk.auth.filter.AuthnResponseFilter 
-		</filter-class>
+		<filter-class>net.link.safeonline.sdk.auth.filter.AuthnResponseFilter</filter-class>
 	</filter>
 	<filter>
 		<filter-name>Seam Filter</filter-name>
@@ -108,8 +113,7 @@
 	</filter>
 	<filter>
 		<filter-name>JAASLoginFilter</filter-name>
-		<filter-class> net.link.safeonline.sdk.auth.filter.JAASLoginFilter 
-		</filter-class>
+		<filter-class>net.link.safeonline.sdk.auth.filter.JAASLoginFilter</filter-class>
 		<init-param>
 			<param-name>LoginContextName</param-name>
 			<param-value>client-login</param-value>
@@ -118,12 +122,19 @@
 	<filter>
 		<filter-name>ContainerLoginFilter</filter-name>
 		<filter-class>
-			net.link.safeonline.sdk.auth.filter.ContainerLoginFilter 
-		</filter-class>
+			net.link.safeonline.sdk.auth.filter.ContainerLoginFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>Seam Filter</filter-name>
 		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>AuthnResponseFilter</filter-name>
+		<url-pattern>/overview.seam</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>AuthnRequestFilter</filter-name>
+		<url-pattern>/overview.seam</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>AuthnResponseFilter</filter-name>
@@ -144,8 +155,7 @@
 	</servlet>
 	<servlet>
 		<servlet-name>LoginServlet</servlet-name>
-		<servlet-class> net.link.safeonline.demo.payment.servlet.LoginServlet 
-		</servlet-class>
+		<servlet-class>net.link.safeonline.demo.payment.servlet.LoginServlet</servlet-class>
 		<init-param>
 			<param-name>WsLocation</param-name>
 			<param-value>${safe-online.host.basename}</param-value>
@@ -161,8 +171,7 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>AuthLoginServlet</servlet-name>
-		<servlet-class> net.link.safeonline.sdk.auth.servlet.LoginServlet 
-		</servlet-class>
+		<servlet-class>net.link.safeonline.sdk.auth.servlet.LoginServlet</servlet-class>
 		<init-param>
 			<param-name>ServletEndpointUrl</param-name>
 			<param-value>
@@ -179,8 +188,7 @@
 	</servlet>
 	<servlet>
 		<servlet-name>AuthLogoutServlet</servlet-name>
-		<servlet-class> net.link.safeonline.sdk.auth.servlet.LogoutServlet 
-		</servlet-class>
+		<servlet-class>net.link.safeonline.sdk.auth.servlet.LogoutServlet</servlet-class>
 		<init-param>
 			<param-name>LogoutUrl</param-name>
 			<param-value>
@@ -203,8 +211,7 @@
 	</servlet>
 	<servlet>
 		<servlet-name>PaymentLogoutServlet</servlet-name>
-		<servlet-class> net.link.safeonline.demo.payment.servlet.LogoutServlet 
-		</servlet-class>
+		<servlet-class>net.link.safeonline.demo.payment.servlet.LogoutServlet</servlet-class>
 		<init-param>
 			<param-name>LogoutExitUrl</param-name>
 			<param-value>
@@ -227,8 +234,7 @@
 	<servlet>
 		<servlet-name>Style Servlet</servlet-name>
 		<servlet-class>
-			net.link.safeonline.webapp.resources.ApplicationStyleServlet 
-		</servlet-class>
+			net.link.safeonline.webapp.resources.ApplicationStyleServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>Style Servlet</servlet-name>
