@@ -95,6 +95,7 @@ public interface SafeOnlineConstants {
      * Notification topics
      */
     public static final String TOPIC_REMOVE_USER                       = "urn:net:lin-k:safe-online:topic:user:remove";
+    public static final String TOPIC_UNSUBSCRIBE_USER                  = "urn:net:lin-k:safe-online:topic:user:unsubscribe";
 
     /**
      * User History Properties

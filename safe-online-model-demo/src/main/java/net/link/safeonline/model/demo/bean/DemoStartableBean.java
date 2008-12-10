@@ -384,6 +384,7 @@ public class DemoStartableBean extends AbstractInitBean {
          * WS-Notification subscriptions
          */
         configSubscription(SafeOnlineConstants.TOPIC_REMOVE_USER, demoBankCertificate);
+        configSubscription(SafeOnlineConstants.TOPIC_UNSUBSCRIBE_USER, demoBankCertificate);
     }
 
     private void configCinemaDemo() {

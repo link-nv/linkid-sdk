@@ -45,11 +45,13 @@ import net.link.safeonline.model.application.ApplicationFactory;
 import net.link.safeonline.model.subject.Subject;
 import net.link.safeonline.model.subject.SubjectContext;
 import net.link.safeonline.model.subject.SubjectFactory;
+import net.link.safeonline.notification.exception.MessageHandlerNotFoundException;
+import net.link.safeonline.notification.service.NotificationProducerService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.security.SecurityDomain;
 
 
@@ -60,25 +62,28 @@ import org.jboss.annotation.security.SecurityDomain;
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
 public class SubscriptionServiceBean implements SubscriptionService, SubscriptionServiceRemote, SubjectContext, ApplicationContext {
 
-    private static final Log      LOG = LogFactory.getLog(SubscriptionServiceBean.class);
+    private static final Log            LOG = LogFactory.getLog(SubscriptionServiceBean.class);
 
     @EJB(mappedName = SubjectManager.JNDI_BINDING)
-    private SubjectManager        subjectManager;
+    private SubjectManager              subjectManager;
 
     @EJB(mappedName = SubscriptionDAO.JNDI_BINDING)
-    private SubscriptionDAO       subscriptionDAO;
+    private SubscriptionDAO             subscriptionDAO;
 
     @EJB(mappedName = ApplicationDAO.JNDI_BINDING)
-    private ApplicationDAO        applicationDAO;
+    private ApplicationDAO              applicationDAO;
 
     @EJB(mappedName = ApplicationScopeIdDAO.JNDI_BINDING)
-    private ApplicationScopeIdDAO applicationScopeIdDAO;
+    private ApplicationScopeIdDAO       applicationScopeIdDAO;
 
     @EJB(mappedName = HistoryDAO.JNDI_BINDING)
-    private HistoryDAO            historyDAO;
+    private HistoryDAO                  historyDAO;
+
+    @EJB(mappedName = NotificationProducerService.JNDI_BINDING)
+    private NotificationProducerService notificationProducerService;
 
     @Resource
-    private SessionContext        sessionContext;
+    private SessionContext              sessionContext;
 
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
@@ -116,11 +121,15 @@ public class SubscriptionServiceBean implements SubscriptionService, Subscriptio
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
     public void unsubscribe(String applicationName)
-            throws ApplicationNotFoundException, SubscriptionNotFoundException, PermissionDeniedException {
+            throws ApplicationNotFoundException, SubscriptionNotFoundException, PermissionDeniedException, MessageHandlerNotFoundException {
 
         Subject subject = SubjectFactory.getCallerSubject(this);
         Application application = ApplicationFactory.getApplication(this, applicationName);
         subject.unsubscribe(application);
+
+        this.notificationProducerService.sendNotification(SafeOnlineConstants.TOPIC_UNSUBSCRIBE_USER, subject.getSubjectEntity()
+                                                                                                             .getUserId(),
+                application.getEntity().getName());
 
         this.historyDAO.addHistoryEntry(subject.getSubjectEntity(), HistoryEventType.SUBSCRIPTION_REMOVE, Collections.singletonMap(
                 SafeOnlineConstants.APPLICATION_PROPERTY, applicationName));

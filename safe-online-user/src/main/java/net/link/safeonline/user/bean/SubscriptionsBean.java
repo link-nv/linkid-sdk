@@ -30,6 +30,7 @@ import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.model.SubjectManager;
+import net.link.safeonline.notification.exception.MessageHandlerNotFoundException;
 import net.link.safeonline.user.Subscriptions;
 import net.link.safeonline.user.UserConstants;
 
@@ -108,7 +109,7 @@ public class SubscriptionsBean implements Subscriptions {
 
     @RolesAllowed(UserConstants.USER_ROLE)
     public String unsubscribe()
-            throws SubscriptionNotFoundException, ApplicationNotFoundException {
+            throws SubscriptionNotFoundException, ApplicationNotFoundException, MessageHandlerNotFoundException {
 
         LOG.debug("unsubscribe from: " + this.selectedSubscription.getApplication().getName());
         String applicationName = this.selectedSubscription.getApplication().getName();
