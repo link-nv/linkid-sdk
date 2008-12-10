@@ -109,6 +109,11 @@ public class AuthenticationProtocolManager {
                                               boolean skipLandingPage, Locale language, Integer color, Boolean minimal)
             throws IOException, ServletException {
 
+        String targetUrl = target;
+        if (null == targetUrl) {
+            targetUrl = request.getRequestURL().toString();
+        }
+
         AuthenticationProtocolHandler protocolHandler = findAuthenticationProtocolHandler(request);
         if (null == protocolHandler)
             throw new IllegalStateException("no active protocol handler found");
@@ -116,11 +121,11 @@ public class AuthenticationProtocolManager {
         String landingPage = request.getSession().getServletContext().getInitParameter(LANDING_PAGE_INIT_PARAM);
         if (null != landingPage && !skipLandingPage) {
             LOG.debug("using landing page: " + landingPage);
-            storeTarget(target, request);
+            storeTarget(targetUrl, request);
             protocolHandler.initiateAuthentication(request, response, landingPage, language, color, minimal);
         } else {
             clearTarget(request);
-            protocolHandler.initiateAuthentication(request, response, target, language, color, minimal);
+            protocolHandler.initiateAuthentication(request, response, targetUrl, language, color, minimal);
         }
     }
 

@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.security.KeyPair;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.X509Certificate;
+import java.util.Locale;
 
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -24,6 +25,7 @@ import javax.servlet.UnavailableException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.link.safeonline.common.SafeOnlineAppConstants;
 import net.link.safeonline.sdk.KeyStoreUtils;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolManager;
@@ -41,7 +43,8 @@ import org.apache.commons.logging.LogFactory;
  * authentication response is done via the {@link AuthnResponseFilter}.
  * 
  * <p>
- * The configuration of this filter should be managed via the <code>web.xml</code> deployment descriptor.
+ * The configuration of this filter should be managed via the <code>web.xml</code> deployment descriptor. If these configuration parameters
+ * are not specified as init parameters in the Filter's declaration, it will search in the context parameters in web.xml.
  * </p>
  * 
  * <p>
@@ -76,8 +79,33 @@ import org.apache.commons.logging.LogFactory;
  * </p>
  * 
  * <p>
- * The optional <code>SingleSignOnEnabled</code> init parameter specified whether single sign-on can be used or not. Accepted values are:
+ * The optional <code>SingleSignOnEnabled</code> init parameter specifies whether single sign-on can be used or not. Accepted values are:
  * <code>true</code> or <code>false</code>. If omitted, single sign-on will be enabled by default.
+ * </p>
+ * 
+ * <p>
+ * The optional <code>TargetBaseUrl</code> init parameter specifies the base location to redirect to after successful authentication.
+ * </p>
+ * 
+ * <p>
+ * The optional <code>Target</code> init parameter specifies the location to redirecto to after successful authentication. If not specified
+ * the authentication will redirect to the location this filter is activated on. This init parameter should be configured together with the
+ * <code>TargetBaseUrl</code> parameter.
+ * </p>
+ * 
+ * <p>
+ * The optional <code>ApplicationColor</code> init parameter specifies the color the OLAS authentication webapp should display. Accepted
+ * values are HTML color codes e.g. <code>#000000</code>
+ * </p>
+ * 
+ * <p>
+ * The optional <code>ApplicationMinimal</code> init parameter specified whether the OLAS authentication webapp should be displayed in an
+ * inline frame or not. Accepted values are: <code>true</code> or <code>false</code>.
+ * </p>
+ * 
+ * <p>
+ * If an application wishes to communicate to the OLAS authentication webapp the language to be used, the session parameter
+ * <code>Language</code> needs to be set containing as value the {@link Locale} of the language.
  * </p>
  * 
  * @author fcorneli
@@ -87,10 +115,24 @@ public class AuthnRequestFilter extends AbstractInjectionFilter {
 
     private static final Log                   LOG                    = LogFactory.getLog(AuthnRequestFilter.class);
 
+    public static final String                 LANGUAGE_SESSION_PARAM = "Language";
+
     public static final AuthenticationProtocol DEFAULT_AUTHN_PROTOCOL = AuthenticationProtocol.SAML2_BROWSER_POST;
 
     @Init(name = SafeOnlineLoginUtils.AUTH_SERVICE_URL_INIT_PARAM)
     private String                             authenticationServiceUrl;
+
+    @Init(name = SafeOnlineLoginUtils.TARGET_BASE_URL_INIT_PARAM, optional = true)
+    private String                             targetBaseUrl;
+
+    @Init(name = SafeOnlineLoginUtils.TARGET_INIT_PARAM, optional = true, checkContext = false)
+    private String                             target;
+
+    private String                             targetUrl;
+
+    @Init(name = SafeOnlineLoginUtils.SKIP_LANDING_PAGE_INIT_PARAM, optional = true, checkContext = false)
+    private String                             skipLandingPageString;
+    private boolean                            skipLandingPage;
 
     @Init(name = SafeOnlineLoginUtils.APPLICATION_NAME_INIT_PARAM)
     private String                             applicationName;
@@ -117,8 +159,15 @@ public class AuthnRequestFilter extends AbstractInjectionFilter {
 
     @Init(name = SafeOnlineLoginUtils.SINGLE_SIGN_ON_INIT_PARAM, optional = true)
     private String                             ssoEnabledString;
-
     private boolean                            ssoEnabled;
+
+    @Init(name = SafeOnlineAppConstants.COLOR_CONTEXT, optional = true)
+    private String                             colorConfig;
+    private Integer                            authColor;
+
+    @Init(name = SafeOnlineAppConstants.MINIMAL_CONTEXT, optional = true)
+    private String                             minimalConfig;
+    private Boolean                            authMinimal;
 
     private KeyPair                            applicationKeyPair;
 
@@ -144,6 +193,20 @@ public class AuthnRequestFilter extends AbstractInjectionFilter {
             this.ssoEnabled = Boolean.parseBoolean(this.ssoEnabledString);
         }
         LOG.debug("single sign-on enabled: " + this.ssoEnabled);
+
+        if (null == this.skipLandingPageString) {
+            this.skipLandingPage = false;
+        } else {
+            this.skipLandingPage = Boolean.parseBoolean(this.skipLandingPageString);
+        }
+
+        // Defaults for color & minimal from web.xml init params.
+        if (this.colorConfig != null && this.colorConfig.length() > 0) {
+            this.authColor = Integer.decode(this.colorConfig);
+        }
+        if (this.minimalConfig != null && this.minimalConfig.length() > 0) {
+            this.authMinimal = Boolean.parseBoolean(this.minimalConfig);
+        }
 
         InputStream keyStoreInputStream = null;
         if (null != this.p12KeyStoreResourceName) {
@@ -188,7 +251,24 @@ public class AuthnRequestFilter extends AbstractInjectionFilter {
         AuthenticationProtocolManager.createAuthenticationProtocolHandler(this.authenticationProtocol, this.authenticationServiceUrl,
                 this.applicationName, this.applicationFriendlyName, this.applicationKeyPair, this.applicationCertificate, this.ssoEnabled,
                 this.configParams, httpRequest);
-        AuthenticationProtocolManager.initiateAuthentication(httpRequest, httpResponse);
+
+        /*
+         * Use encodeRedirectURL to add parameters to it that should help preserve the session upon return from SafeOnline auth should the
+         * browser not support cookies.
+         */
+        if (null != this.targetBaseUrl && null != this.target) {
+            this.targetUrl = this.targetBaseUrl + this.target;
+            this.targetUrl = httpResponse.encodeRedirectURL(this.targetUrl);
+            LOG.debug("target url: " + this.targetUrl);
+        }
+
+        Locale language = null;
+        if (null != httpRequest.getAttribute(LANGUAGE_SESSION_PARAM)) {
+            language = (Locale) httpRequest.getAttribute(LANGUAGE_SESSION_PARAM);
+        }
+
+        AuthenticationProtocolManager.initiateAuthentication(httpRequest, httpResponse, this.targetUrl, this.skipLandingPage, language,
+                this.authColor, this.authMinimal);
     }
 
     public void destroy() {

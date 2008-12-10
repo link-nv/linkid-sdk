@@ -245,6 +245,7 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void initInitParameters(ServletConfig config)
             throws ServletException {
 
@@ -260,8 +261,12 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
             LOG.debug("init: " + name);
             String defaultValue = initAnnotation.defaultValue();
             boolean optional = initAnnotation.optional();
+            boolean checkContext = initAnnotation.checkContext();
 
             String value = config.getInitParameter(name);
+            if (null == value && checkContext) {
+                value = config.getServletContext().getInitParameter(name);
+            }
             if (null == value) {
                 if (Init.NOT_SPECIFIED.equals(defaultValue) && !optional)
                     throw new UnavailableException("missing init parameter: " + name);
@@ -279,6 +284,15 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
                 throw new ServletException("illegal access: " + e.getMessage(), e);
             }
         }
+        this.configParams = new HashMap<String, String>();
+        Enumeration<String> initParamsEnum = config.getInitParameterNames();
+        while (initParamsEnum.hasMoreElements()) {
+            String paramName = initParamsEnum.nextElement();
+            String paramValue = config.getInitParameter(paramName);
+            LOG.debug("config param: " + paramName + "=" + paramValue);
+            this.configParams.put(paramName, paramValue);
+        }
+
     }
 
     @SuppressWarnings("unchecked")
@@ -316,12 +330,14 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
                 throw new ServletException("illegal access: " + e.getMessage(), e);
             }
         }
-        this.configParams = new HashMap<String, String>();
         Enumeration<String> initParamsEnum = config.getServletContext().getInitParameterNames();
         while (initParamsEnum.hasMoreElements()) {
             String paramName = initParamsEnum.nextElement();
-            String paramValue = config.getServletContext().getInitParameter(paramName);
-            this.configParams.put(paramName, paramValue);
+            if (null == this.configParams.get(paramName)) {
+                String paramValue = config.getServletContext().getInitParameter(paramName);
+                LOG.debug("config param: " + paramName + "=" + paramValue);
+                this.configParams.put(paramName, paramValue);
+            }
         }
     }
 
