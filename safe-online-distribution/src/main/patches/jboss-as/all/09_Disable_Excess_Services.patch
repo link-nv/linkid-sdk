@@ -190,9 +190,9 @@
    </mbean>
  
  </server>
---- server/default/deploy/ejb3.deployer/META-INF/jboss-service.xml	2008-10-06 09:41:04.000000000 +0200
-+++ server/default/deploy/ejb3.deployer/META-INF/jboss-service.xml	2008-10-06 09:41:04.000000000 +0200
-@@ -6,6 +6,17 @@
+--- server/default/deploy/ejb3.deployer/META-INF/jboss-service.xml	2008-12-10 09:20:18.000000000 +0100
++++ server/default/deploy/ejb3.deployer/META-INF/jboss-service.xml	2008-12-10 09:20:27.000000000 +0100
+@@ -6,17 +6,6 @@
  -->
  <server>
  
@@ -221,7 +221,7 @@
        </init-param>
     </filter>
  
-@@ -303,11 +303,6 @@
+@@ -303,6 +303,11 @@
             <param-name>tagLibJar1</param-name>
             <param-value>jstl.jar</param-value>
          </init-param>
