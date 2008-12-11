@@ -1246,7 +1246,7 @@
 				<updatePolicy>never</updatePolicy>
 			</releases>
 		</repository>
-		<repository>
+		<!--repository>
 			<id>ibiblio</id>
 			<name>IBibilio Repository</name>
 			<url>http://mirrors.ibiblio.org/pub/mirrors/maven2/</url>
@@ -1257,7 +1257,7 @@
 				<enabled>true</enabled>
 				<updatePolicy>never</updatePolicy>
 			</releases>
-		</repository>
+		</repository-->
 		<repository>
 			<id>java.net-maven2</id>
 			<name>java.net Maven2 Repository</name>

@@ -29,6 +29,7 @@
 					<jboss>
 						<version>4</version>
 					</jboss>
+					<defaultJavaBundleDir>lib/</defaultJavaBundleDir>
                     <modules>
                         <webModule>
                             <groupId>net.lin-k.safe-online</groupId>
@@ -44,6 +45,7 @@
 					<artifactTypeMappings>
 						<artifactTypeMapping type="zip" mapping="jar" />
 					</artifactTypeMappings>
+
                     <excludes>
                         <exclude>
                             <groupId>^(?!net.lin-k\.).*$</groupId>
@@ -94,7 +96,7 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-option-webapp</artifactId>
 			<version>1.3-SNAPSHOT</version>
-            <scope>provided</scope>
+            <optional>true</optional>
 			<type>war</type>
 		</dependency>
             <dependency>
@@ -107,7 +109,7 @@
    			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-option-startup-runtime</artifactId>
 			<version>1.3-SNAPSHOT</version>
-            <scope>provided</scope>
+            <optional>true</optional>
             <type>war</type>
         </dependency>
             <dependency>
