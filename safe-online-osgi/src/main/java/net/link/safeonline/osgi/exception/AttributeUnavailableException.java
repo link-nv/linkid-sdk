@@ -4,15 +4,15 @@
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
-package net.link.safeonline.osgi.plugin.exception;
+package net.link.safeonline.osgi.exception;
 
 /**
- * <h2>{@link SubjectNotFoundException}<br>
- * <sub>Attribute not found Exception.</sub></h2>
+ * <h2>{@link AttributeUnavailableException}<br>
+ * <sub>Attribute Unavailable Exception.</sub></h2>
  * 
  * <p>
- * Exception thrown when a requested existing attribute could not be found for a certain user by this OSGi plugin or by OLAS.
- * 
+ * Exception thrown when a requested attribute is not available. Reasons can be that the OSGi plugin responsible for this type is not
+ * running.
  * </p>
  * 
  * <p>
@@ -21,14 +21,14 @@ package net.link.safeonline.osgi.plugin.exception;
  * 
  * @author wvdhaute
  */
-public class SubjectNotFoundException extends Exception {
+public class AttributeUnavailableException extends Exception {
 
     private static final long serialVersionUID = 1L;
 
     private final String      errorMessage;
 
 
-    public SubjectNotFoundException(String errorMessage) {
+    public AttributeUnavailableException(String errorMessage) {
 
         this.errorMessage = errorMessage;
     }

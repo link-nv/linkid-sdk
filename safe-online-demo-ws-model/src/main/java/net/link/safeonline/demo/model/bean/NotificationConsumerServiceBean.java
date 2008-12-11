@@ -7,12 +7,8 @@
 
 package net.link.safeonline.demo.model.bean;
 
-import java.security.PrivateKey;
-import java.security.KeyStore.PrivateKeyEntry;
-import java.security.cert.X509Certificate;
 import java.util.Collection;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import javax.ejb.Stateless;
 import javax.naming.InitialContext;
@@ -29,17 +25,8 @@ import net.link.safeonline.demo.cinema.service.TicketService;
 import net.link.safeonline.demo.model.NotificationConsumerService;
 import net.link.safeonline.demo.payment.entity.PaymentEntity;
 import net.link.safeonline.demo.payment.entity.UserEntity;
-import net.link.safeonline.demo.payment.keystore.DemoPaymentKeyStoreUtils;
 import net.link.safeonline.demo.ticket.entity.Ticket;
 import net.link.safeonline.demo.ticket.entity.User;
-import net.link.safeonline.demo.ticket.keystore.DemoTicketKeyStoreUtils;
-import net.link.safeonline.model.demo.DemoConstants;
-import net.link.safeonline.sdk.exception.AttributeNotFoundException;
-import net.link.safeonline.sdk.exception.AttributeUnavailableException;
-import net.link.safeonline.sdk.exception.RequestDeniedException;
-import net.link.safeonline.sdk.ws.attrib.AttributeClient;
-import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
-import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -78,44 +65,26 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
             LOG.error("Naming exception thrown: " + e.getMessage(), e);
         }
 
-        try {
-            if (topic.equals(SafeOnlineConstants.TOPIC_REMOVE_USER)) {
-                if (destination.equals(DEMO_BANK_APPLICATION_NAME)) {
-                    removeDemoBankUser(subject);
-                } else if (destination.equals(DEMO_CINEMA_APPLICATION_NAME)) {
-                    removeDemoCinemaUser(subject);
-                } else if (destination.equals(DEMO_TICKET_APPLICATION_NAME)) {
-                    removeDemoTicketUser(subject);
-                } else if (destination.equals(DEMO_PAYMENT_APPLICATION_NAME)) {
-                    removeDemoPaymentUser(subject);
-                }
-            } else if (topic.equals(SafeOnlineConstants.TOPIC_UNSUBSCRIBE_USER)) {
-                if (destination.equals(DEMO_BANK_APPLICATION_NAME)) {
-                    unsubscribeDemoBankUser(subject);
-                }
+        if (topic.equals(SafeOnlineConstants.TOPIC_REMOVE_USER)) {
+            if (destination.equals(DEMO_BANK_APPLICATION_NAME)) {
+                removeDemoBankUser(subject);
+            } else if (destination.equals(DEMO_CINEMA_APPLICATION_NAME)) {
+                removeDemoCinemaUser(subject);
+            } else if (destination.equals(DEMO_TICKET_APPLICATION_NAME)) {
+                removeDemoTicketUser(subject);
+            } else if (destination.equals(DEMO_PAYMENT_APPLICATION_NAME)) {
+                removeDemoPaymentUser(subject);
             }
-        } catch (WSClientTransportException e) {
-            LOG.debug("WSClientTransportException thrown: " + e.getMessage());
-        } catch (AttributeNotFoundException e) {
-            LOG.debug("AttributeNotFoundException thrown: " + e.getMessage(), e);
-        } catch (RequestDeniedException e) {
-            LOG.debug("RequestDeniedException thrown: " + e.getMessage());
-        } catch (AttributeUnavailableException e) {
-            LOG.debug("AttributeUnavailableException thrown: " + e.getMessage(), e);
+        } else if (topic.equals(SafeOnlineConstants.TOPIC_UNSUBSCRIBE_USER)) {
+            if (destination.equals(DEMO_BANK_APPLICATION_NAME)) {
+                unsubscribeDemoBankUser(subject);
+            }
         }
-    }
-
-    private String getWsLocation() {
-
-        ResourceBundle properties = ResourceBundle.getBundle("properties.config");
-        String wsLocation = properties.getString("olas.ws.location");
-        LOG.debug("wsLocation: " + wsLocation);
-        return wsLocation;
     }
 
     private void unsubscribeDemoBankUser(String userId) {
 
-        LOG.debug("remove demo bank user id: " + userId);
+        LOG.debug("unsubscribe demo bank user id: " + userId);
 
         try {
             BankUserEntity user = (BankUserEntity) this.demoBankEntityManager.createNamedQuery(BankUserEntity.getByOlasId).setParameter(
@@ -161,20 +130,13 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
         }
     }
 
-    private void removeDemoTicketUser(String userId)
-            throws WSClientTransportException, AttributeNotFoundException, RequestDeniedException, AttributeUnavailableException {
+    private void removeDemoTicketUser(String userId) {
 
         LOG.debug("remove demo ticket user id: " + userId);
 
-        PrivateKeyEntry privateKeyEntry = DemoTicketKeyStoreUtils.getPrivateKeyEntry();
-        X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
-        PrivateKey privateKey = privateKeyEntry.getPrivateKey();
-        AttributeClient attributeClient = new AttributeClientImpl(getWsLocation(), certificate, privateKey);
-        String username = attributeClient.getAttributeValue(userId, DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, String.class);
-        LOG.debug("removing demo ticket user: " + username);
-
-        User user = this.demoTicketEntityManager.find(User.class, username);
+        User user = this.demoTicketEntityManager.find(User.class, userId);
         if (null != user) {
+            LOG.debug("removing demo ticket user: " + user.getSafeOnlineUserName());
             List<Ticket> tickets = user.getTickets();
             for (Ticket ticket : tickets) {
                 this.demoTicketEntityManager.remove(ticket);
@@ -184,20 +146,13 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
 
     }
 
-    private void removeDemoPaymentUser(String userId)
-            throws WSClientTransportException, AttributeNotFoundException, RequestDeniedException, AttributeUnavailableException {
+    private void removeDemoPaymentUser(String userId) {
 
         LOG.debug("remove demo payment user id: " + userId);
 
-        PrivateKeyEntry privateKeyEntry = DemoPaymentKeyStoreUtils.getPrivateKeyEntry();
-        X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
-        PrivateKey privateKey = privateKeyEntry.getPrivateKey();
-        AttributeClient attributeClient = new AttributeClientImpl(getWsLocation(), certificate, privateKey);
-        String username = attributeClient.getAttributeValue(userId, DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, String.class);
-        LOG.debug("removing demo payment user: " + username);
-
-        UserEntity user = this.demoPaymentEntityManager.find(UserEntity.class, username);
+        UserEntity user = this.demoPaymentEntityManager.find(UserEntity.class, userId);
         if (null != user) {
+            LOG.debug("removing demo payment user: " + user.getSafeOnlineUserName());
             List<PaymentEntity> payments = user.getPayments();
             for (PaymentEntity payment : payments) {
                 this.demoPaymentEntityManager.remove(payment);

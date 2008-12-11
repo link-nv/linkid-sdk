@@ -60,9 +60,9 @@ public class TicketOverviewBean extends AbstractTicketDataClientBean implements 
     @SuppressWarnings("unchecked")
     public void ticketListFactory() {
 
-        User user = this.entityManager.find(User.class, this.getUsername());
+        User user = this.entityManager.find(User.class, getUserId());
         if (null == user) {
-            user = new User(this.getUsername());
+            user = new User(getUserId(), this.getUsername());
             this.entityManager.persist(user);
         }
         this.ticketList = user.getTickets();
@@ -71,10 +71,16 @@ public class TicketOverviewBean extends AbstractTicketDataClientBean implements 
 
     private String getUsername() {
 
-        Principal principal = this.sessionContext.getCallerPrincipal();
-        String userId = principal.getName();
-        String username = getUsername(userId);
+        String username = getUsername(getUserId());
         this.log.debug("username #0", username);
         return username;
+    }
+
+    private String getUserId() {
+
+        Principal principal = this.sessionContext.getCallerPrincipal();
+        String userId = principal.getName();
+        return userId;
+
     }
 }

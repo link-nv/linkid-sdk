@@ -37,8 +37,8 @@ import net.link.safeonline.entity.audit.ResourceLevelType;
 import net.link.safeonline.entity.audit.ResourceNameType;
 import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.osgi.OSGIStartable;
+import net.link.safeonline.osgi.exception.AttributeNotFoundException;
 import net.link.safeonline.osgi.plugin.PluginAttributeService;
-import net.link.safeonline.osgi.plugin.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
@@ -256,13 +256,13 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
             LOG.debug("external attribute " + attributeType.getName() + " not found for " + subject.getUserId() + " ( plugin="
                     + attributeType.getPluginName() + " )");
             return null;
-        } catch (net.link.safeonline.osgi.plugin.exception.AttributeTypeNotFoundException e) {
+        } catch (net.link.safeonline.osgi.exception.AttributeTypeNotFoundException e) {
             throw new AttributeTypeNotFoundException();
         } catch (SafeOnlineResourceException e) {
             throw new AttributeUnavailableException();
-        } catch (net.link.safeonline.osgi.plugin.exception.AttributeUnavailableException e) {
+        } catch (net.link.safeonline.osgi.exception.AttributeUnavailableException e) {
             throw new AttributeUnavailableException();
-        } catch (net.link.safeonline.osgi.plugin.exception.SubjectNotFoundException e) {
+        } catch (net.link.safeonline.osgi.exception.SubjectNotFoundException e) {
             throw new SubjectNotFoundException();
         }
     }

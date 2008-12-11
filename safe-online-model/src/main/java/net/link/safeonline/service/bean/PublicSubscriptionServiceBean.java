@@ -43,9 +43,9 @@ public class PublicSubscriptionServiceBean implements PublicSubscriptionService 
     /**
      * {@inheritDoc}
      */
-    public void checkSubscribed(SubjectEntity subject, ApplicationEntity application)
+    public boolean isSubscribed(SubjectEntity subject, ApplicationEntity application)
             throws SubscriptionNotFoundException {
 
-        this.subscriptionDAO.getSubscription(subject, application);
+        return null != this.subscriptionDAO.findSubscription(subject, application);
     }
 }

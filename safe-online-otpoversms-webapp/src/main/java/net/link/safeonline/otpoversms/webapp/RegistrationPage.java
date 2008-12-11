@@ -15,6 +15,7 @@ import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.custom.converter.PhoneNumber;
@@ -134,7 +135,13 @@ public class RegistrationPage extends TemplatePage {
                     } catch (ConnectException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorServiceConnection", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: failed to send otp"
-                                + RegistrationPage.this.mobile, LogLevelType.ERROR);
+                                + RegistrationPage.this.mobile.getObject(), LogLevelType.ERROR);
+                        RegistrationPage.this.mobile.setObject(null);
+                        return;
+                    } catch (SafeOnlineResourceException e) {
+                        RequestOtpForm.this.error(getLocalizer().getString("errorServiceConnection", this));
+                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: failed to send otp"
+                                + RegistrationPage.this.mobile.getObject(), LogLevelType.ERROR);
                         RegistrationPage.this.mobile.setObject(null);
                         return;
                     }

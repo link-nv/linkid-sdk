@@ -10,20 +10,30 @@ package net.link.safeonline.entity.config;
 import static net.link.safeonline.entity.config.ConfigItemEntity.QUERY_LIST_ALL;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 
 @Entity
@@ -31,17 +41,31 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @NamedQueries( { @NamedQuery(name = QUERY_LIST_ALL, query = "FROM ConfigItemEntity c") })
 public class ConfigItemEntity implements Serializable {
 
-    private static final long  serialVersionUID = 1L;
+    private static final Log            LOG                   = LogFactory.getLog(ConfigItemEntity.class);
 
-    public static final String QUERY_LIST_ALL   = "cie.list";
+    private static final long           serialVersionUID      = 1L;
 
-    private String             name;
+    public static final String          QUERY_LIST_ALL        = "cie.list";
 
-    private String             value;
+    public static final String          GROUP_COLUMN_NAME     = "configGroup";
+    public static final String          ITEM_NAME_COLUMN_NAME = "name";
 
-    private String             valueType;
+    private ConfigItemPK                pk;
 
-    private ConfigGroupEntity  configGroup;
+    private String                      name;
+
+    private List<ConfigItemValueEntity> values;
+
+    private int                         valueIndex;
+
+    private boolean                     multipleChoice;
+
+    private String                      valueType;
+
+    private ConfigGroupEntity           configGroup;
+
+    @Transient
+    ConfigItemValueEntity               value;
 
 
     public ConfigItemEntity() {
@@ -49,15 +73,32 @@ public class ConfigItemEntity implements Serializable {
         // empty
     }
 
-    public ConfigItemEntity(String name, String value, String valueType, ConfigGroupEntity configGroup) {
+    public ConfigItemEntity(String name, String valueType, boolean multipleChoice, ConfigGroupEntity configGroup) {
 
         this.name = name;
-        this.value = value;
+        this.values = new LinkedList<ConfigItemValueEntity>();
+        this.valueIndex = 0;
         this.valueType = valueType;
+        this.multipleChoice = multipleChoice;
         this.configGroup = configGroup;
+        this.pk = new ConfigItemPK(configGroup.getName(), name);
+    }
+
+    @EmbeddedId
+    @AttributeOverrides( { @AttributeOverride(name = ConfigItemPK.PK_GROUP_NAME, column = @Column(name = GROUP_COLUMN_NAME)),
+            @AttributeOverride(name = ConfigItemPK.PK_NAME, column = @Column(name = ITEM_NAME_COLUMN_NAME)) })
+    public ConfigItemPK getPk() {
+
+        return this.pk;
+    }
+
+    public void setPk(ConfigItemPK pk) {
+
+        this.pk = pk;
     }
 
     @ManyToOne
+    @JoinColumn(name = GROUP_COLUMN_NAME, insertable = false, updatable = false)
     public ConfigGroupEntity getConfigGroup() {
 
         return this.configGroup;
@@ -68,7 +109,7 @@ public class ConfigItemEntity implements Serializable {
         this.configGroup = configGroup;
     }
 
-    @Id
+    @Column(name = ITEM_NAME_COLUMN_NAME, insertable = false, updatable = false)
     public String getName() {
 
         return this.name;
@@ -79,14 +120,46 @@ public class ConfigItemEntity implements Serializable {
         this.name = name;
     }
 
-    public String getValue() {
+    @OneToMany(mappedBy = "configItem", fetch = FetchType.EAGER)
+    public List<ConfigItemValueEntity> getValues() {
 
+        return this.values;
+    }
+
+    public void setValues(List<ConfigItemValueEntity> values) {
+
+        this.values = values;
+    }
+
+    @Transient
+    public ConfigItemValueEntity getValue() {
+
+        if (this.values.isEmpty())
+            return null;
+
+        if (null == this.value) {
+            this.value = this.values.get(this.valueIndex);
+        }
+
+        LOG.debug("get value: " + this.value.getValue());
         return this.value;
     }
 
-    public void setValue(String value) {
+    @Transient
+    public void setValue(ConfigItemValueEntity value) {
 
+        LOG.debug("set value: " + value.getValue());
         this.value = value;
+    }
+
+    public int getValueIndex() {
+
+        return this.valueIndex;
+    }
+
+    public void setValueIndex(int valueIndex) {
+
+        this.valueIndex = valueIndex;
     }
 
     public String getValueType() {
@@ -99,10 +172,20 @@ public class ConfigItemEntity implements Serializable {
         this.valueType = valueType;
     }
 
+    public boolean isMultipleChoice() {
+
+        return this.multipleChoice;
+    }
+
+    public void setMultipleChoice(boolean multipleChoice) {
+
+        this.multipleChoice = multipleChoice;
+    }
+
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("name", this.name).toString();
+        return new ToStringBuilder(this).append("pk", this.pk).toString();
     }
 
     @Override
@@ -115,13 +198,13 @@ public class ConfigItemEntity implements Serializable {
         if (false == obj instanceof ConfigItemEntity)
             return false;
         ConfigItemEntity rhs = (ConfigItemEntity) obj;
-        return new EqualsBuilder().append(this.name, rhs.name).isEquals();
+        return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.name).toHashCode();
+        return new HashCodeBuilder().append(this.pk).toHashCode();
     }
 
 

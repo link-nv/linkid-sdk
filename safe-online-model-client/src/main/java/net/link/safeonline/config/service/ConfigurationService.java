@@ -14,6 +14,7 @@ import javax.ejb.Local;
 import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
+import net.link.safeonline.entity.config.ConfigItemValueEntity;
 
 
 @Local
@@ -27,4 +28,6 @@ public interface ConfigurationService extends SafeOnlineService {
     void saveConfiguration(List<ConfigGroupEntity> configGroupList);
 
     void saveConfigItem(ConfigItemEntity configItem);
+
+    List<ConfigItemValueEntity> listConfigItemValues(ConfigItemEntity configItem);
 }

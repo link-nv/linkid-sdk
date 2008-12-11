@@ -57,9 +57,9 @@ public class PaymentOverviewBean extends AbstractPaymentDataClientBean implement
     @RolesAllowed(PaymentConstants.AUTHENTICATED_ROLE)
     public void paymentListFactory() {
 
-        UserEntity user = this.entityManager.find(UserEntity.class, getUsername());
+        UserEntity user = this.entityManager.find(UserEntity.class, getUserId());
         if (user == null) {
-            user = new UserEntity(this.getUsername());
+            user = new UserEntity(getUserId(), getUsername());
             this.entityManager.persist(user);
         }
         this.paymentList = user.getPayments();
@@ -67,10 +67,15 @@ public class PaymentOverviewBean extends AbstractPaymentDataClientBean implement
 
     private String getUsername() {
 
-        Principal principal = this.sessionContext.getCallerPrincipal();
-        String userId = principal.getName();
-        String username = getUsername(userId);
+        String username = getUsername(getUserId());
         this.log.debug("username #0", username);
         return username;
+    }
+
+    private String getUserId() {
+
+        Principal principal = this.sessionContext.getCallerPrincipal();
+        return principal.getName();
+
     }
 }

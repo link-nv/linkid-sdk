@@ -20,6 +20,7 @@
 <mapping class="net.link.safeonline.entity.ApplicationIdentityAttributeEntity" />
 <mapping class="net.link.safeonline.entity.config.ConfigGroupEntity" />
 <mapping class="net.link.safeonline.entity.config.ConfigItemEntity" />
+<mapping class="net.link.safeonline.entity.config.ConfigItemValueEntity" />
 <mapping class="net.link.safeonline.entity.StatisticEntity" />
 <mapping class="net.link.safeonline.entity.StatisticDataPointEntity" />
 <mapping class="net.link.safeonline.entity.AttributeProviderEntity" />

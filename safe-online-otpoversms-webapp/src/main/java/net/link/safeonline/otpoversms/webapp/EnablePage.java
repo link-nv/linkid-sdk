@@ -14,6 +14,7 @@ import javax.ejb.EJB;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
+import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.custom.converter.PhoneNumber;
@@ -128,6 +129,11 @@ public class EnablePage extends TemplatePage {
                         EnablePage.this.otpOverSmsDeviceService.requestOtp(WicketUtil.getHttpSession(getRequest()),
                                 EnablePage.this.protocolContext.getAttribute());
                     } catch (ConnectException e) {
+                        RequestOtpForm.this.error(getLocalizer().getString("errorServiceConnection", this));
+                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "enable: failed to send otp to "
+                                + EnablePage.this.protocolContext.getAttribute(), LogLevelType.ERROR);
+                        return;
+                    } catch (SafeOnlineResourceException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorServiceConnection", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "enable: failed to send otp to "
                                 + EnablePage.this.protocolContext.getAttribute(), LogLevelType.ERROR);

@@ -13,12 +13,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import net.link.safeonline.osgi.plugin.OlasAttributeService;
+import net.link.safeonline.osgi.OlasAttributeService;
+import net.link.safeonline.osgi.exception.AttributeNotFoundException;
+import net.link.safeonline.osgi.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.osgi.exception.AttributeUnavailableException;
+import net.link.safeonline.osgi.exception.SubjectNotFoundException;
 import net.link.safeonline.osgi.plugin.PluginAttributeService;
-import net.link.safeonline.osgi.plugin.exception.AttributeNotFoundException;
-import net.link.safeonline.osgi.plugin.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.osgi.plugin.exception.AttributeUnavailableException;
-import net.link.safeonline.osgi.plugin.exception.SubjectNotFoundException;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;

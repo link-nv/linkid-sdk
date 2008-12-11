@@ -15,6 +15,7 @@ import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.custom.converter.PhoneNumber;
@@ -152,6 +153,11 @@ public class UpdatePage extends TemplatePage {
                         UpdatePage.this.otpOverSmsDeviceService.requestOtp(WicketUtil.getHttpSession(getRequest()),
                                 UpdatePage.this.protocolContext.getAttribute());
                     } catch (ConnectException e) {
+                        RequestOtpForm.this.error(getLocalizer().getString("errorServiceConnection", this));
+                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: failed to send otp to "
+                                + UpdatePage.this.protocolContext.getAttribute(), LogLevelType.ERROR);
+                        return;
+                    } catch (SafeOnlineResourceException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorServiceConnection", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: failed to send otp to "
                                 + UpdatePage.this.protocolContext.getAttribute(), LogLevelType.ERROR);

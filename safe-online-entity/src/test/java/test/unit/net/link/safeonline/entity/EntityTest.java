@@ -18,6 +18,7 @@ import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -65,9 +66,11 @@ import net.link.safeonline.entity.audit.AuditContextEntity;
 import net.link.safeonline.entity.audit.OperationStateType;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
+import net.link.safeonline.entity.config.ConfigItemValueEntity;
 import net.link.safeonline.entity.helpdesk.HelpdeskContextEntity;
 import net.link.safeonline.entity.notification.EndpointReferenceEntity;
 import net.link.safeonline.entity.notification.NotificationMessageEntity;
+import net.link.safeonline.entity.notification.NotificationProducerSubscriptionEntity;
 import net.link.safeonline.entity.pkix.CachedOcspResponseEntity;
 import net.link.safeonline.entity.pkix.CachedOcspResultType;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
@@ -108,13 +111,13 @@ public class EntityTest {
             this.entityTestManager.setUp(SubjectEntity.class, ApplicationEntity.class, SubscriptionEntity.class, HistoryEntity.class,
                     HistoryPropertyEntity.class, ApplicationOwnerEntity.class, AttributeTypeEntity.class, AttributeEntity.class,
                     TrustDomainEntity.class, TrustPointEntity.class, SubjectIdentifierEntity.class, CachedOcspResponseEntity.class,
-                    TaskEntity.class, SchedulingEntity.class, TaskHistoryEntity.class, ConfigItemEntity.class, ConfigGroupEntity.class,
-                    StatisticEntity.class, StatisticDataPointEntity.class, ApplicationIdentityEntity.class,
+                    TaskEntity.class, SchedulingEntity.class, TaskHistoryEntity.class, ConfigItemEntity.class, ConfigItemValueEntity.class,
+                    ConfigGroupEntity.class, StatisticEntity.class, StatisticDataPointEntity.class, ApplicationIdentityEntity.class,
                     ApplicationIdentityAttributeEntity.class, AttributeTypeDescriptionEntity.class, AttributeProviderEntity.class,
                     AuditContextEntity.class, AuditAuditEntity.class, HelpdeskContextEntity.class,
                     CompoundedAttributeTypeMemberEntity.class, AccessAuditEntity.class, UsageAgreementEntity.class,
                     UsageAgreementTextEntity.class, GlobalUsageAgreementEntity.class, NodeEntity.class, ApplicationPoolEntity.class,
-                    EndpointReferenceEntity.class, NotificationMessageEntity.class);
+                    EndpointReferenceEntity.class, NotificationProducerSubscriptionEntity.class, NotificationMessageEntity.class);
         } catch (Exception e) {
             LOG.fatal("JPA annotations incorrect: " + e.getMessage(), e);
             throw new RuntimeException("JPA annotations incorrect: " + e.getMessage(), e);
@@ -920,13 +923,46 @@ public class EntityTest {
     public void testAddRemoveConfig() {
 
         // setup
-        ConfigGroupEntity group = new ConfigGroupEntity("group 1");
-        ConfigItemEntity item = new ConfigItemEntity("name 1", "value 1", "string", group);
+        String groupName = "group 1";
+        ConfigGroupEntity group = new ConfigGroupEntity(groupName);
+        ConfigItemEntity item = new ConfigItemEntity("name 1", String.class.getName(), false, group);
+        ConfigItemValueEntity value1 = new ConfigItemValueEntity(item, "value 1");
+        ConfigItemValueEntity value2 = new ConfigItemValueEntity(item, "value 2");
 
+        // operate
         EntityManager entityManager = this.entityTestManager.getEntityManager();
         entityManager.persist(group);
         entityManager.persist(item);
+        entityManager.persist(value1);
+        entityManager.persist(value2);
         entityManager.flush();
+
+        // verify
+        entityManager = this.entityTestManager.refreshEntityManager();
+        ConfigGroupEntity resultGroup = entityManager.find(ConfigGroupEntity.class, groupName);
+        assertNotNull(resultGroup);
+        assertEquals(1, resultGroup.getConfigItems().size());
+        Iterator<ConfigItemEntity> it = resultGroup.getConfigItems().iterator();
+        assertTrue(it.hasNext());
+        ConfigItemEntity resultItem = it.next();
+        assertEquals(item, resultItem);
+        assertEquals(2, resultItem.getValues().size());
+        assertEquals(value1, resultItem.getValues().get(0));
+        assertEquals(value2, resultItem.getValues().get(1));
+
+        // operate
+        entityManager.remove(resultItem);
+        entityManager.remove(resultItem.getValues().get(0));
+        entityManager.remove(resultItem.getValues().get(1));
+        resultGroup.getConfigItems().remove(0);
+        entityManager.flush();
+        entityManager.remove(resultGroup);
+        entityManager.flush();
+
+        // verify
+        entityManager = this.entityTestManager.refreshEntityManager();
+        resultGroup = entityManager.find(ConfigGroupEntity.class, groupName);
+        assertNull(resultGroup);
     }
 
     @Test

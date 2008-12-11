@@ -17,9 +17,9 @@ import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
@@ -40,9 +40,11 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 @NamedQueries( { @NamedQuery(name = QUERY_LIST_ALL, query = "FROM NotificationProducerSubscriptionEntity s") })
 public class NotificationProducerSubscriptionEntity implements Serializable {
 
-    private static final long            serialVersionUID = 1L;
+    private static final long            serialVersionUID      = 1L;
 
-    public static final String           QUERY_LIST_ALL   = "not.sub.list.all";
+    public static final String           CONSUMERS_COLUMN_NAME = "consumers";
+
+    public static final String           QUERY_LIST_ALL        = "not.sub.list.all";
 
     private String                       topic;
 
@@ -71,7 +73,7 @@ public class NotificationProducerSubscriptionEntity implements Serializable {
         this.topic = topic;
     }
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     public Set<EndpointReferenceEntity> getConsumers() {
 
         return this.consumers;

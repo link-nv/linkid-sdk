@@ -4,14 +4,15 @@
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
-package net.link.safeonline.osgi.plugin.exception;
+package net.link.safeonline.osgi.exception;
 
 /**
- * <h2>{@link AttributeTypeNotFoundException}<br>
- * <sub>Attribute type not found Exception.</sub></h2>
+ * <h2>{@link AttributeNotFoundException}<br>
+ * <sub>Attribute not found Exception.</sub></h2>
  * 
  * <p>
- * Exception thrown when a requested attribute's type does not exist in the OSGi plugin or OLAS.
+ * Exception thrown when a requested existing attribute could not be found for a certain user by this OSGi plugin or by OLAS.
+ * 
  * </p>
  * 
  * <p>
@@ -20,14 +21,14 @@ package net.link.safeonline.osgi.plugin.exception;
  * 
  * @author wvdhaute
  */
-public class AttributeTypeNotFoundException extends Exception {
+public class AttributeNotFoundException extends Exception {
 
     private static final long serialVersionUID = 1L;
 
     private final String      errorMessage;
 
 
-    public AttributeTypeNotFoundException(String errorMessage) {
+    public AttributeNotFoundException(String errorMessage) {
 
         this.errorMessage = errorMessage;
     }

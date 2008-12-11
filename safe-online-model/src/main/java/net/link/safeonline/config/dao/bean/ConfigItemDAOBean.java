@@ -18,6 +18,7 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.config.dao.ConfigItemDAO;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
+import net.link.safeonline.entity.config.ConfigItemPK;
 import net.link.safeonline.jpa.QueryObjectFactory;
 
 import org.jboss.annotation.ejb.LocalBinding;
@@ -39,9 +40,9 @@ public class ConfigItemDAOBean implements ConfigItemDAO {
         this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, ConfigItemEntity.QueryInterface.class);
     }
 
-    public ConfigItemEntity addConfigItem(String name, String value, String valueType, ConfigGroupEntity configGroup) {
+    public ConfigItemEntity addConfigItem(String name, String valueType, boolean multipleChoice, ConfigGroupEntity configGroup) {
 
-        ConfigItemEntity configItem = new ConfigItemEntity(name, value, valueType, configGroup);
+        ConfigItemEntity configItem = new ConfigItemEntity(name, valueType, multipleChoice, configGroup);
         if (configGroup != null) {
             configGroup.getConfigItems().add(configItem);
         }
@@ -59,9 +60,9 @@ public class ConfigItemDAOBean implements ConfigItemDAO {
         this.entityManager.merge(configItem);
     }
 
-    public ConfigItemEntity findConfigItem(String name) {
+    public ConfigItemEntity findConfigItem(String groupName, String name) {
 
-        return this.entityManager.find(ConfigItemEntity.class, name);
+        return this.entityManager.find(ConfigItemEntity.class, new ConfigItemPK(groupName, name));
     }
 
     public List<ConfigItemEntity> listConfigItems() {

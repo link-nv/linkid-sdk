@@ -31,9 +31,9 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.osgi.OSGIStartable;
+import net.link.safeonline.osgi.exception.AttributeNotFoundException;
+import net.link.safeonline.osgi.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.osgi.plugin.PluginAttributeService;
-import net.link.safeonline.osgi.plugin.exception.AttributeNotFoundException;
-import net.link.safeonline.osgi.plugin.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.test.util.EJBTestUtils;
 

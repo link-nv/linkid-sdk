@@ -83,9 +83,9 @@ public class TransactionBean extends AbstractPaymentDataClientBean implements Tr
 
         this.log.debug("confirm");
         LOG.debug("confirm");
-        UserEntity user = this.entityManager.find(UserEntity.class, this.getUsername());
+        UserEntity user = this.entityManager.find(UserEntity.class, getUserId());
         if (user == null) {
-            user = new UserEntity(this.getUsername());
+            user = new UserEntity(getUserId(), getUsername());
             this.entityManager.persist(user);
         }
 

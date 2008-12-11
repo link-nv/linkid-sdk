@@ -23,6 +23,7 @@ import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
@@ -257,7 +258,7 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
      * {@inheritDoc}
      */
     public void requestOtp(HttpSession httpSession, String mobile)
-            throws ConnectException {
+            throws ConnectException, SafeOnlineResourceException {
 
         OtpService otpService = EjbUtils.getEJB(OtpService.JNDI_BINDING, OtpService.class);
         otpService.requestOtp(mobile);
