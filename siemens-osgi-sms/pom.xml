@@ -68,7 +68,8 @@
 							!*
 						</Import-Package>
 						<Bundle-Activator>
-							net.link.safeonline.siemens.osgi.sms.SiemensSmsServiceActivator</Bundle-Activator>
+							net.link.safeonline.siemens.osgi.sms.SiemensSmsServiceActivator
+						</Bundle-Activator>
 						<Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
 						<Embed-Dependency>*;scope=compile|runtime;type=!pom</Embed-Dependency>
 						<Embed-Transitive>true</Embed-Transitive>

@@ -29,7 +29,7 @@
 	</build>
 	<dependencies>
 
-        <!-- jsf -->
+		<!-- jsf -->
 		<dependency>
 			<groupId>javax.faces</groupId>
 			<artifactId>jsf-api</artifactId>
@@ -40,10 +40,16 @@
 		</dependency>
 
 
-        <!-- seam -->
+		<!-- seam -->
 		<dependency>
 			<groupId>org.jboss.seam</groupId>
 			<artifactId>jboss-seam</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>jboss</groupId>
+					<artifactId>javassist</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.jboss.seam</groupId>
@@ -54,7 +60,7 @@
 			<artifactId>jboss-seam-debug</artifactId>
 		</dependency>
 
-        <!-- taglibs -->
+		<!-- taglibs -->
 		<dependency>
 			<groupId>org.apache.myfaces.tomahawk</groupId>
 			<artifactId>tomahawk</artifactId>
