@@ -32,16 +32,12 @@ import net.link.safeonline.jpa.annotation.QueryMethod;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 
 @Entity
 @Table(name = "config_item")
 @NamedQueries( { @NamedQuery(name = QUERY_LIST_ALL, query = "FROM ConfigItemEntity c") })
 public class ConfigItemEntity implements Serializable {
-
-    private static final Log            LOG                   = LogFactory.getLog(ConfigItemEntity.class);
 
     private static final long           serialVersionUID      = 1L;
 
@@ -65,7 +61,7 @@ public class ConfigItemEntity implements Serializable {
     private ConfigGroupEntity           configGroup;
 
     @Transient
-    ConfigItemValueEntity               value;
+    String                              value;
 
 
     public ConfigItemEntity() {
@@ -132,23 +128,21 @@ public class ConfigItemEntity implements Serializable {
     }
 
     @Transient
-    public ConfigItemValueEntity getValue() {
+    public String getValue() {
 
         if (this.values.isEmpty())
             return null;
 
         if (null == this.value) {
-            this.value = this.values.get(this.valueIndex);
+            this.value = this.values.get(this.valueIndex).getValue();
         }
 
-        LOG.debug("get value: " + this.value.getValue());
         return this.value;
     }
 
     @Transient
-    public void setValue(ConfigItemValueEntity value) {
+    public void setValue(String value) {
 
-        LOG.debug("set value: " + value.getValue());
         this.value = value;
     }
 

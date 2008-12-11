@@ -9,6 +9,7 @@ package net.link.safeonline.osgi.bean;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
@@ -177,14 +178,20 @@ public class OSGIStartableBean implements OSGIStartable {
         systemPackages += "com.sun.security.cert.internal; version=1.0.0, ";
         systemPackages += "com.sun.security.cert.internal.x509; version=1.0.0, ";
 
+        // Load OLAS version
+        ResourceBundle properties = ResourceBundle.getBundle("config");
+        String version = properties.getString("olas.version");
+        // remove '-SNAPSHOT' or NumberFormatException will be thrown
+        version = version.replaceAll("-SNAPSHOT", "");
+
         // Add the OLAS service packages to be exported from the class path via the system bundle.
-        systemPackages += "net.link.safeonline.osgi; version=1.0.0, ";
+        systemPackages += "net.link.safeonline.osgi; version=" + version + ", ";
 
         // Add the attribute plugin service package to be exported from the class path via the system bundle.
-        systemPackages += "net.link.safeonline.osgi.plugin; version=1.0.0, ";
+        systemPackages += "net.link.safeonline.osgi.plugin; version=" + version + ", ";
 
         // Add the sms service package to be exported from the class path via the system bundle.
-        systemPackages += "net.link.safeonline.osgi.sms; version=1.0.0";
+        systemPackages += "net.link.safeonline.osgi.sms; version=" + version + "";
 
         LOG.debug("systemPackages: " + systemPackages);
 

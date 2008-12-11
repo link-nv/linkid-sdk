@@ -96,7 +96,7 @@ public class ConfigurationServiceBeanTest extends TestCase {
         Iterator<ConfigItemEntity> it = groupList.get(0).getConfigItems().iterator();
         assertTrue(it.hasNext());
         ConfigItemEntity resultItem = it.next();
-        String result = resultItem.getValue().getValue();
+        String result = resultItem.getValue();
         assertEquals(1, resultItem.getValues().size());
         assertEquals("value 2", result);
     }
@@ -121,7 +121,7 @@ public class ConfigurationServiceBeanTest extends TestCase {
         detachedItem.getValues().add(detachedItemValue1);
         detachedItem.getValues().add(detachedItemValue2);
         detachedItem.getValues().add(detachedItemValue3);
-        detachedItem.setValue(detachedItemValue3);
+        detachedItem.setValue(detachedItemValue3.getValue());
         List<ConfigGroupEntity> groupList = new ArrayList<ConfigGroupEntity>();
         groupList.add(detachedGroup);
 
@@ -135,7 +135,7 @@ public class ConfigurationServiceBeanTest extends TestCase {
         ConfigItemEntity resultItem = it.next();
 
         assertEquals(3, resultItem.getValues().size());
-        String result = resultItem.getValue().getValue();
+        String result = resultItem.getValue();
         assertEquals(2, resultItem.getValueIndex());
         assertEquals("value 3", result);
     }

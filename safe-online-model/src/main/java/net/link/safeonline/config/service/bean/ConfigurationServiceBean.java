@@ -71,13 +71,17 @@ public class ConfigurationServiceBean implements ConfigurationService, Configura
                 List<ConfigItemValueEntity> configItemValues = this.configItemValueDAO.listConfigItemValues(configItem);
                 if (configItem.isMultipleChoice()) {
                     LOG.debug("save multiple choice");
-                    ConfigItemValueEntity configItemValue = configItem.getValue();
-                    LOG.debug("selected value: " + configItemValue.getValue());
-                    int index = configItemValues.indexOf(configItemValue);
-                    configItem = this.configItemDAO.findConfigItem(configGroup.getName(), configItem.getName());
-                    if (index != -1) {
-                        configItem.setValueIndex(index);
+                    String selectedValue = configItem.getValue();
+                    int idx = 0;
+                    for (ConfigItemValueEntity configItemValue : configItemValues) {
+                        if (configItemValue.getValue().equals(selectedValue)) {
+                            LOG.debug("selected value: " + selectedValue + " index=" + idx);
+                            break;
+                        }
+                        idx++;
                     }
+                    configItem = this.configItemDAO.findConfigItem(configGroup.getName(), configItem.getName());
+                    configItem.setValueIndex(idx);
 
                 } else {
                     LOG.debug("save single");

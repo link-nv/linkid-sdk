@@ -59,7 +59,14 @@
 				<configuration>
 					<instructions>
 						<Export-Package>net.link.safeonline.siemens.osgi.sms.*</Export-Package>
-						<Import-Package>net.link.safeonline.osgi,net.link.safeonline.osgi.sms,org.osgi.framework,javax.net.ssl,javax.crypto,!*</Import-Package>
+						<Import-Package>
+							net.link.safeonline.osgi; version=1.3,
+							net.link.safeonline.osgi.sms; version=1.3,
+							org.osgi.framework,
+							javax.net.ssl,
+							javax.crypto,
+							!*
+						</Import-Package>
 						<Bundle-Activator>
 							net.link.safeonline.siemens.osgi.sms.SiemensSmsServiceActivator</Bundle-Activator>
 						<Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>

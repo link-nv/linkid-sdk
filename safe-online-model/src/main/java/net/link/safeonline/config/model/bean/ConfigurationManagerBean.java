@@ -76,7 +76,7 @@ public class ConfigurationManagerBean implements ConfigurationManager {
         if (null == configItem)
             return null;
 
-        return configItem.getValue().getValue();
+        return configItem.getValue();
 
     }
 
@@ -162,10 +162,10 @@ public class ConfigurationManagerBean implements ConfigurationManager {
             return;
         }
         if (String.class.equals(fieldType)) {
-            value = configItem.getValue().getValue();
+            value = configItem.getValue();
         } else if (Integer.class.equals(fieldType)) {
             try {
-                value = Integer.parseInt(configItem.getValue().getValue());
+                value = Integer.parseInt(configItem.getValue());
             } catch (NumberFormatException e) {
                 LOG.error("invalid integer value for config item: " + configItem.getName());
                 /*
@@ -175,20 +175,20 @@ public class ConfigurationManagerBean implements ConfigurationManager {
             }
         } else if (Double.class.equals(fieldType)) {
             try {
-                value = Double.parseDouble(configItem.getValue().getValue());
+                value = Double.parseDouble(configItem.getValue());
             } catch (NumberFormatException e) {
                 LOG.error("invalid double value for config item: " + configItem.getName());
                 return;
             }
         } else if (Long.class.equals(fieldType)) {
             try {
-                value = Long.parseLong(configItem.getValue().getValue());
+                value = Long.parseLong(configItem.getValue());
             } catch (NumberFormatException e) {
                 LOG.error("invalid long value for config item: " + configItem.getName());
                 return;
             }
         } else if (Boolean.class.equals(fieldType)) {
-            value = Boolean.parseBoolean(configItem.getValue().getValue());
+            value = Boolean.parseBoolean(configItem.getValue());
         } else {
             LOG.error("unsupported field type: " + fieldType.getName());
             return;

@@ -30,7 +30,7 @@
 							<h:selectOneMenu id="selectvalue" value="#{item.value}"
 								rendered="#{item.multipleChoice}" styleClass="label">
 								<s:selectItems value="#{item.values}" var="multivalue"
-									label="#{multivalue.value}" />
+									label="#{multivalue.value}" itemValue="#{multivalue.value}" />
 							</h:selectOneMenu>
 
 							<ui:repeat id="value-data" var="value" value="#{item.values}"
