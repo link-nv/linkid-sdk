@@ -13,13 +13,16 @@ import javax.ejb.EJB;
 import javax.ejb.Stateful;
 import javax.interceptor.Interceptors;
 
+import net.link.safeonline.audit.ResourceAuditLoggerInterceptor;
 import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
 import net.link.safeonline.common.Configurable;
 import net.link.safeonline.config.model.ConfigurationInterceptor;
 import net.link.safeonline.model.otpoversms.OtpService;
 import net.link.safeonline.model.otpoversms.OtpServiceRemote;
 import net.link.safeonline.osgi.OSGIHostActivator;
+import net.link.safeonline.osgi.OSGIService;
 import net.link.safeonline.osgi.OSGIStartable;
+import net.link.safeonline.osgi.OSGIHostActivator.OSGIServiceType;
 import net.link.safeonline.osgi.sms.SmsService;
 
 import org.apache.commons.logging.Log;
@@ -31,14 +34,11 @@ import org.jboss.annotation.ejb.RemoteBinding;
 @Stateful
 @LocalBinding(jndiBinding = OtpService.JNDI_BINDING)
 @RemoteBinding(jndiBinding = OtpServiceRemote.JNDI_BINDING)
-@Interceptors(ConfigurationInterceptor.class)
+@Interceptors( { ConfigurationInterceptor.class, ResourceAuditLoggerInterceptor.class })
 @Configurable
 public class OtpServiceBean implements OtpService, OtpServiceRemote {
 
     private final static Log LOG = LogFactory.getLog(OtpServiceBean.class);
-
-    // @Configurable(name = "Mobile OTP Server", group = "Mobile OTP")
-    // private String otpServerLocation = "http://localhost:8080/safe-online-sms-ws/dummy";
 
     @Configurable(name = OSGIHostActivator.SMS_SERVICE_IMPL_NAME, group = OSGIHostActivator.SMS_SERVICE_GROUP_NAME, multipleChoice = true)
     private String           smsServiceName;
@@ -60,8 +60,9 @@ public class OtpServiceBean implements OtpService, OtpServiceRemote {
         SecureRandom random = new SecureRandom();
         this.expectedOtp = Integer.toString(Math.abs(random.nextInt()));
 
-        SmsService smsService = this.osgiStartable.getSmsService(this.smsServiceName);
-        smsService.sendSms(mobile, this.expectedOtp);
+        OSGIService osgiService = this.osgiStartable.getService(this.smsServiceName, OSGIServiceType.SMS_SERVICE);
+        ((SmsService) osgiService.getService()).sendSms(mobile, this.expectedOtp);
+        osgiService.ungetService();
     }
 
     /**

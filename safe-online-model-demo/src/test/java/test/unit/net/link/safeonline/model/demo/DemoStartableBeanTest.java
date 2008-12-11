@@ -72,6 +72,7 @@ import net.link.safeonline.entity.UsageAgreementEntity;
 import net.link.safeonline.entity.UsageAgreementTextEntity;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
+import net.link.safeonline.entity.config.ConfigItemValueEntity;
 import net.link.safeonline.entity.notification.EndpointReferenceEntity;
 import net.link.safeonline.entity.notification.NotificationProducerSubscriptionEntity;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
@@ -137,10 +138,10 @@ public class DemoStartableBeanTest {
         this.entityTestManager = new EntityTestManager();
         this.entityTestManager.setUp(SubjectEntity.class, ApplicationEntity.class, ApplicationOwnerEntity.class, AttributeEntity.class,
                 AttributeTypeEntity.class, SubscriptionEntity.class, TrustDomainEntity.class, ApplicationIdentityEntity.class,
-                ConfigGroupEntity.class, ConfigItemEntity.class, SchedulingEntity.class, TaskEntity.class, TaskHistoryEntity.class,
-                TrustPointEntity.class, ApplicationIdentityAttributeEntity.class, AttributeTypeDescriptionEntity.class,
-                AttributeProviderEntity.class, DeviceEntity.class, DeviceClassEntity.class, DeviceDescriptionEntity.class,
-                DevicePropertyEntity.class, DeviceClassDescriptionEntity.class, AllowedDeviceEntity.class,
+                ConfigGroupEntity.class, ConfigItemEntity.class, ConfigItemValueEntity.class, SchedulingEntity.class, TaskEntity.class,
+                TaskHistoryEntity.class, TrustPointEntity.class, ApplicationIdentityAttributeEntity.class,
+                AttributeTypeDescriptionEntity.class, AttributeProviderEntity.class, DeviceEntity.class, DeviceClassEntity.class,
+                DeviceDescriptionEntity.class, DevicePropertyEntity.class, DeviceClassDescriptionEntity.class, AllowedDeviceEntity.class,
                 CompoundedAttributeTypeMemberEntity.class, SubjectIdentifierEntity.class, UsageAgreementEntity.class,
                 UsageAgreementTextEntity.class, NodeEntity.class, EndpointReferenceEntity.class,
                 NotificationProducerSubscriptionEntity.class, ApplicationScopeIdEntity.class, AttributeCacheEntity.class,

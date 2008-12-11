@@ -10,6 +10,8 @@ import java.io.Serializable;
 
 import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.config.model.ConfigurationManager;
+import net.link.safeonline.osgi.attribute.OlasAttributeServiceFactory;
+import net.link.safeonline.osgi.configuration.OlasConfigurationServiceFactory;
 import net.link.safeonline.osgi.plugin.PluginAttributeService;
 import net.link.safeonline.osgi.sms.SmsService;
 import net.link.safeonline.util.ee.EjbUtils;
@@ -41,20 +43,28 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public class OSGIHostActivator implements BundleActivator, ServiceListener, Serializable {
 
-    private static final long   serialVersionUID                 = 1L;
+    private static final long serialVersionUID = 1L;
 
-    public static final String  JNDI_BINDING                     = SafeOnlineService.JNDI_PREFIX + "OSGI/HostActivator";
 
-    private static final Log    LOG                              = LogFactory.getLog(OSGIHostActivator.class);
+    public enum OSGIServiceType {
+        PLUGIN_SERVICE,
+        SMS_SERVICE;
+    }
 
-    public static final String  SMS_SERVICE_GROUP_NAME           = "SMS Service";
-    public static final String  SMS_SERVICE_IMPL_NAME            = "Implementations";
 
-    private ServiceTracker      pluginAttributeServiceTracker    = null;
+    public static final String  JNDI_BINDING                         = SafeOnlineService.JNDI_PREFIX + "OSGI/HostActivator";
 
-    private ServiceTracker      smsServiceTracker                = null;
+    private static final Log    LOG                                  = LogFactory.getLog(OSGIHostActivator.class);
 
-    private ServiceRegistration olasAttributeServiceRegistration = null;
+    public static final String  SMS_SERVICE_GROUP_NAME               = "SMS Service";
+    public static final String  SMS_SERVICE_IMPL_NAME                = "Implementations";
+
+    private ServiceTracker      pluginAttributeServiceTracker        = null;
+
+    private ServiceTracker      smsServiceTracker                    = null;
+
+    private ServiceRegistration olasAttributeServiceRegistration     = null;
+    private ServiceRegistration olasConfigurationServiceRegistration = null;
 
 
     /**
@@ -74,8 +84,14 @@ public class OSGIHostActivator implements BundleActivator, ServiceListener, Seri
         this.smsServiceTracker.open();
 
         // Initialize olas attribute service
-        OlasAttributeServiceFactory serviceFactory = new OlasAttributeServiceFactory();
-        this.olasAttributeServiceRegistration = context.registerService(OlasAttributeService.class.getName(), serviceFactory, null);
+        OlasAttributeServiceFactory attribtueServiceFactory = new OlasAttributeServiceFactory();
+        this.olasAttributeServiceRegistration = context
+                                                       .registerService(OlasAttributeService.class.getName(), attribtueServiceFactory, null);
+
+        // Initialize olas configuration service
+        OlasConfigurationServiceFactory configurationServiceFactory = new OlasConfigurationServiceFactory();
+        this.olasConfigurationServiceRegistration = context.registerService(OlasConfigurationService.class.getName(),
+                configurationServiceFactory, null);
 
     }
 
@@ -87,6 +103,7 @@ public class OSGIHostActivator implements BundleActivator, ServiceListener, Seri
         this.pluginAttributeServiceTracker.close();
         this.smsServiceTracker.close();
         this.olasAttributeServiceRegistration.unregister();
+        this.olasConfigurationServiceRegistration.unregister();
 
     }
 
@@ -101,7 +118,7 @@ public class OSGIHostActivator implements BundleActivator, ServiceListener, Seri
                 LOG.debug("registered sms service: " + ((SmsService) service).getClass().getName());
                 addSmsService(service.getClass().getName());
             }
-            // event.getServiceReference().getBundle().getBundleContext().ungetService(event.getServiceReference());
+            event.getServiceReference().getBundle().getBundleContext().ungetService(event.getServiceReference());
         } else if (event.getType() == ServiceEvent.UNREGISTERING) {
             Object service = event.getServiceReference().getBundle().getBundleContext().getService(event.getServiceReference());
             if (service instanceof SmsService) {
@@ -125,6 +142,16 @@ public class OSGIHostActivator implements BundleActivator, ServiceListener, Seri
         configurationManager.removeConfigurationValue(SMS_SERVICE_GROUP_NAME, SMS_SERVICE_IMPL_NAME, serviceName);
     }
 
+    public ServiceReference[] getPluginServiceReferences() {
+
+        return this.pluginAttributeServiceTracker.getServiceReferences();
+    }
+
+    public ServiceReference[] getSmsServiceReferences() {
+
+        return this.smsServiceTracker.getServiceReferences();
+    }
+
     public Object[] getPluginServices() {
 
         return this.pluginAttributeServiceTracker.getServices();
@@ -133,11 +160,6 @@ public class OSGIHostActivator implements BundleActivator, ServiceListener, Seri
     public Object[] getSmsServices() {
 
         return this.smsServiceTracker.getServices();
-    }
-
-    public ServiceReference[] getSmsServiceReferences() {
-
-        return this.smsServiceTracker.getServiceReferences();
     }
 
 }

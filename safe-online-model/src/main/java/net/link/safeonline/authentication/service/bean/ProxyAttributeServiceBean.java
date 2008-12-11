@@ -36,7 +36,9 @@ import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.ResourceLevelType;
 import net.link.safeonline.entity.audit.ResourceNameType;
 import net.link.safeonline.entity.audit.SecurityThreatType;
+import net.link.safeonline.osgi.OSGIService;
 import net.link.safeonline.osgi.OSGIStartable;
+import net.link.safeonline.osgi.OSGIHostActivator.OSGIServiceType;
 import net.link.safeonline.osgi.exception.AttributeNotFoundException;
 import net.link.safeonline.osgi.plugin.PluginAttributeService;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
@@ -225,9 +227,12 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
 
         LOG.debug("find external attribute " + attributeType.getName() + " for " + subject.getUserId());
         try {
-            PluginAttributeService pluginAttributeService = this.osgiStartable.getPluginService(attributeType.getPluginName());
+            OSGIService osgiService = this.osgiStartable.getService(attributeType.getPluginName(), OSGIServiceType.PLUGIN_SERVICE);
+            PluginAttributeService pluginAttributeService = (PluginAttributeService) osgiService.getService();
             Object value = pluginAttributeService.getAttribute(subject.getUserId(), attributeType.getName(),
                     attributeType.getPluginConfiguration());
+            osgiService.ungetService();
+
             DatatypeType datatype = attributeType.getType();
             if (attributeType.isMultivalued()) {
 

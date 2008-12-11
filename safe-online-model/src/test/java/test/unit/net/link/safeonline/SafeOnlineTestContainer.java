@@ -73,6 +73,7 @@ import net.link.safeonline.entity.UsageAgreementEntity;
 import net.link.safeonline.entity.UsageAgreementTextEntity;
 import net.link.safeonline.entity.config.ConfigGroupEntity;
 import net.link.safeonline.entity.config.ConfigItemEntity;
+import net.link.safeonline.entity.config.ConfigItemValueEntity;
 import net.link.safeonline.entity.helpdesk.HelpdeskContextEntity;
 import net.link.safeonline.entity.helpdesk.HelpdeskEventEntity;
 import net.link.safeonline.entity.notification.EndpointReferenceEntity;
@@ -148,13 +149,14 @@ public class SafeOnlineTestContainer {
 
     public static final Class<?>[] entities     = new Class[] { SubjectEntity.class, ApplicationEntity.class, ApplicationOwnerEntity.class,
             AttributeEntity.class, AttributeTypeEntity.class, SubscriptionEntity.class, TrustDomainEntity.class,
-            ApplicationIdentityEntity.class, ConfigGroupEntity.class, ConfigItemEntity.class, TaskEntity.class, SchedulingEntity.class,
-            TaskHistoryEntity.class, ApplicationIdentityAttributeEntity.class, TrustPointEntity.class,
-            AttributeTypeDescriptionEntity.class, AttributeProviderEntity.class, DeviceEntity.class, AllowedDeviceEntity.class,
-            DeviceClassEntity.class, DeviceDescriptionEntity.class, DeviceClassDescriptionEntity.class, DevicePropertyEntity.class,
-            CompoundedAttributeTypeMemberEntity.class, HelpdeskContextEntity.class, HelpdeskEventEntity.class, HistoryEntity.class,
-            HistoryPropertyEntity.class, SubjectIdentifierEntity.class, UsageAgreementEntity.class, UsageAgreementTextEntity.class,
-            GlobalUsageAgreementEntity.class, NodeEntity.class, NodeMappingEntity.class, StatisticEntity.class,
-            StatisticDataPointEntity.class, EndpointReferenceEntity.class, NotificationProducerSubscriptionEntity.class,
-            ApplicationScopeIdEntity.class, AttributeCacheEntity.class, ApplicationPoolEntity.class };
+            ApplicationIdentityEntity.class, ConfigGroupEntity.class, ConfigItemEntity.class, ConfigItemValueEntity.class,
+            TaskEntity.class, SchedulingEntity.class, TaskHistoryEntity.class, ApplicationIdentityAttributeEntity.class,
+            TrustPointEntity.class, AttributeTypeDescriptionEntity.class, AttributeProviderEntity.class, DeviceEntity.class,
+            AllowedDeviceEntity.class, DeviceClassEntity.class, DeviceDescriptionEntity.class, DeviceClassDescriptionEntity.class,
+            DevicePropertyEntity.class, CompoundedAttributeTypeMemberEntity.class, HelpdeskContextEntity.class, HelpdeskEventEntity.class,
+            HistoryEntity.class, HistoryPropertyEntity.class, SubjectIdentifierEntity.class, UsageAgreementEntity.class,
+            UsageAgreementTextEntity.class, GlobalUsageAgreementEntity.class, NodeEntity.class, NodeMappingEntity.class,
+            StatisticEntity.class, StatisticDataPointEntity.class, EndpointReferenceEntity.class,
+            NotificationProducerSubscriptionEntity.class, ApplicationScopeIdEntity.class, AttributeCacheEntity.class,
+            ApplicationPoolEntity.class        };
 }

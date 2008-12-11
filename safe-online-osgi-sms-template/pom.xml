@@ -58,7 +58,7 @@
 				<configuration>
 					<instructions>
 						<Export-Package>net.link.safeonline.osgi.sms.template.*</Export-Package>
-						<Import-Package>net.link.safeonline.osgi.sms,org.osgi.framework,!*</Import-Package>
+						<Import-Package>net.link.safeonline.osgi,net.link.safeonline.osgi.sms,org.osgi.framework,!*</Import-Package>
 						<Bundle-Activator>
 							net.link.safeonline.osgi.sms.template.TemplateSmsServiceActivator</Bundle-Activator>
 						<Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>

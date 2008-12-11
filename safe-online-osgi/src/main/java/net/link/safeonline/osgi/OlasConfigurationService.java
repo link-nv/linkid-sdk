@@ -6,7 +6,6 @@
  */
 package net.link.safeonline.osgi;
 
-
 /**
  * <h2>{@link OlasConfigurationService}<br>
  * <sub>OLAS Configuration Service API.</sub></h2>
@@ -23,5 +22,10 @@ package net.link.safeonline.osgi;
  * @author wvdhaute
  */
 public interface OlasConfigurationService {
+
+	public void initConfigurationValue(String group, String name, Object value);
+
+	public Object getConfigurationValue(String group, String name,
+			Object defaultValue);
 
 }

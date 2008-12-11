@@ -58,7 +58,7 @@
 				<configuration>
 					<instructions>
 						<Export-Package>net.link.safeonline.siemens.acceptance.attributepull.*</Export-Package>
-						<Import-Package>net.link.safeonline.osgi.plugin,org.osgi.framework,javax.net.ssl,javax.crypto,!*</Import-Package>
+						<Import-Package>net.link.safeonline.osgi,net.link.safeonline.osgi.plugin,org.osgi.framework,javax.net.ssl,javax.crypto,!*</Import-Package>
 						<Bundle-Activator>
 							net.link.safeonline.siemens.acceptance.attributepull.AcceptanceAttributeServiceActivator</Bundle-Activator>
 						<Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>

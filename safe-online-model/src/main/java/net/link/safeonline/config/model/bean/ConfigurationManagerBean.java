@@ -66,6 +66,20 @@ public class ConfigurationManagerBean implements ConfigurationManager {
 
     }
 
+    public Object getConfigurationValue(String group, String name) {
+
+        ConfigGroupEntity configGroup = this.configGroupDAO.findConfigGroup(group);
+        if (null == configGroup)
+            return null;
+
+        ConfigItemEntity configItem = this.configItemDAO.findConfigItem(configGroup.getName(), name);
+        if (null == configItem)
+            return null;
+
+        return configItem.getValue().getValue();
+
+    }
+
     public void removeConfigurationValue(String group, String name, Object value) {
 
         ConfigGroupEntity configGroup = this.configGroupDAO.findConfigGroup(group);

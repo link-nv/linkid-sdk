@@ -26,6 +26,8 @@ public interface ConfigurationManager extends SafeOnlineService {
 
     void addConfigurationValue(String group, String name, boolean multipleChoice, Object value);
 
+    Object getConfigurationValue(String group, String name);
+
     void removeConfigurationValue(String group, String name, Object value);
 
     void configure(Object object);

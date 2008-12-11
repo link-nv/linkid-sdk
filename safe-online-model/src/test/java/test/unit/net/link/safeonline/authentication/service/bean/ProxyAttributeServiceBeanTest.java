@@ -30,13 +30,16 @@ import net.link.safeonline.entity.AttributeCacheEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.osgi.OSGIService;
 import net.link.safeonline.osgi.OSGIStartable;
+import net.link.safeonline.osgi.OSGIHostActivator.OSGIServiceType;
 import net.link.safeonline.osgi.exception.AttributeNotFoundException;
 import net.link.safeonline.osgi.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.osgi.plugin.PluginAttributeService;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.test.util.EJBTestUtils;
 
+import org.easymock.classextension.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -55,6 +58,7 @@ public class ProxyAttributeServiceBeanTest {
     private ProxyAttributeService testedInstance;
 
     private OSGIStartable         mockOSGIStartable;
+    private OSGIService           mockOSGIService;
 
     private AttributeTypeDAO      mockAttributeTypeDAO;
 
@@ -73,6 +77,8 @@ public class ProxyAttributeServiceBeanTest {
 
         this.mockOSGIStartable = createMock(OSGIStartable.class);
         EJBTestUtils.inject(this.testedInstance, this.mockOSGIStartable);
+
+        this.mockOSGIService = EasyMock.createMock(OSGIService.class);
 
         this.mockAttributeTypeDAO = createMock(AttributeTypeDAO.class);
         EJBTestUtils.inject(this.testedInstance, this.mockAttributeTypeDAO);
@@ -162,7 +168,9 @@ public class ProxyAttributeServiceBeanTest {
         expect(this.mockSubjectService.getSubject(userId)).andStubReturn(testSubject);
         expect(this.mockAttributeCacheDAO.listAttributes(testSubject, attributeType)).andStubReturn(Collections.singletonList(attribute));
         this.mockAttributeCacheDAO.removeAttributes(testSubject, attributeType);
-        expect(this.mockOSGIStartable.getPluginService(pluginServiceName)).andStubReturn(testPluginService);
+        expect(this.mockOSGIStartable.getService(pluginServiceName, OSGIServiceType.PLUGIN_SERVICE)).andStubReturn(this.mockOSGIService);
+        expect(this.mockOSGIService.getService()).andStubReturn(testPluginService);
+        this.mockOSGIService.ungetService();
         expect(this.mockAttributeCacheDAO.addAttribute(attributeType, testSubject, 0)).andStubReturn(
                 new AttributeCacheEntity(attributeType, testSubject, 0));
         expect(this.mockAttributeCacheDAO.addAttribute(attributeType, testSubject, 1)).andStubReturn(
@@ -172,12 +180,14 @@ public class ProxyAttributeServiceBeanTest {
 
         // prepare
         replay(this.mockObjects);
+        EasyMock.replay(this.mockOSGIService);
 
         // operate: fetch attribute value
         Object attributeValue = this.testedInstance.findAttributeValue(userId, testStringAttributeName);
 
         // verify
         verify(this.mockObjects);
+        EasyMock.verify(this.mockOSGIService);
         assertNotNull(attributeValue);
         assertTrue(attributeValue.getClass().equals(String[].class));
         String[] stringAttributeValue = (String[]) attributeValue;
@@ -383,7 +393,9 @@ public class ProxyAttributeServiceBeanTest {
         this.mockAttributeCacheDAO.removeAttributes(testSubject, compoundedAttributeType);
 
         // find external
-        expect(this.mockOSGIStartable.getPluginService(pluginServiceName)).andStubReturn(testPluginService);
+        expect(this.mockOSGIStartable.getService(pluginServiceName, OSGIServiceType.PLUGIN_SERVICE)).andStubReturn(this.mockOSGIService);
+        expect(this.mockOSGIService.getService()).andStubReturn(testPluginService);
+        this.mockOSGIService.ungetService();
 
         // cache
         expect(this.mockAttributeCacheDAO.addAttribute(compoundedAttributeType, testSubject, 0)).andStubReturn(
@@ -428,12 +440,14 @@ public class ProxyAttributeServiceBeanTest {
 
         // prepare
         replay(this.mockObjects);
+        EasyMock.replay(this.mockOSGIService);
 
         // operate: fetch attribute value
         Object attributeValue = this.testedInstance.findAttributeValue(userId, testCompoundAttributeName);
 
         // verify
         verify(this.mockObjects);
+        EasyMock.verify(this.mockOSGIService);
         assertNotNull(attributeValue);
         assertTrue(attributeValue.getClass().equals(Map[].class));
         Map<String, Object>[] mapAttributeValue = (Map<String, Object>[]) attributeValue;
@@ -469,7 +483,9 @@ public class ProxyAttributeServiceBeanTest {
         expect(this.mockAttributeTypeDAO.getAttributeType(testStringAttributeName)).andStubReturn(attributeType);
         expect(this.mockSubjectService.getSubject(userId)).andStubReturn(testSubject);
         expect(this.mockAttributeCacheDAO.listAttributes(testSubject, attributeType)).andStubReturn(null);
-        expect(this.mockOSGIStartable.getPluginService(pluginServiceName)).andStubReturn(testPluginService);
+        expect(this.mockOSGIStartable.getService(pluginServiceName, OSGIServiceType.PLUGIN_SERVICE)).andStubReturn(this.mockOSGIService);
+        expect(this.mockOSGIService.getService()).andStubReturn(testPluginService);
+        this.mockOSGIService.ungetService();
         expect(this.mockAttributeCacheDAO.addAttribute(attributeType, testSubject, 0)).andStubReturn(
                 new AttributeCacheEntity(attributeType, testSubject, 0));
         expect(this.mockAttributeCacheDAO.addAttribute(attributeType, testSubject, 1)).andStubReturn(
@@ -479,12 +495,14 @@ public class ProxyAttributeServiceBeanTest {
 
         // prepare
         replay(this.mockObjects);
+        EasyMock.replay(this.mockOSGIService);
 
         // operate: fetch attribute value
         Object attributeValue = this.testedInstance.findAttributeValue(userId, testStringAttributeName);
 
         // verify
         verify(this.mockObjects);
+        EasyMock.verify(this.mockOSGIService);
         assertNotNull(attributeValue);
         assertTrue(attributeValue.getClass().equals(String[].class));
         String[] stringAttributeValue = (String[]) attributeValue;
@@ -540,16 +558,20 @@ public class ProxyAttributeServiceBeanTest {
         expect(this.mockAttributeTypeDAO.getAttributeType(testCompoundAttributeName)).andStubReturn(compoundedAttributeType);
         expect(this.mockSubjectService.getSubject(userId)).andStubReturn(testSubject);
         expect(this.mockAttributeCacheDAO.listAttributes(testSubject, compoundedAttributeType)).andStubReturn(null);
-        expect(this.mockOSGIStartable.getPluginService(pluginServiceName)).andStubReturn(testPluginService);
+        expect(this.mockOSGIStartable.getService(pluginServiceName, OSGIServiceType.PLUGIN_SERVICE)).andStubReturn(this.mockOSGIService);
+        expect(this.mockOSGIService.getService()).andStubReturn(testPluginService);
+        this.mockOSGIService.ungetService();
 
         // prepare
         replay(this.mockObjects);
+        EasyMock.replay(this.mockOSGIService);
 
         // operate: fetch attribute value
         Object attributeValue = this.testedInstance.findAttributeValue(userId, testCompoundAttributeName);
 
         // verify
         verify(this.mockObjects);
+        EasyMock.verify(this.mockOSGIService);
         assertNotNull(attributeValue);
         assertTrue(attributeValue.getClass().equals(Map[].class));
         Map<String, Object>[] mapAttributeValue = (Map<String, Object>[]) attributeValue;
@@ -584,16 +606,20 @@ public class ProxyAttributeServiceBeanTest {
         expect(this.mockAttributeTypeDAO.getAttributeType(testStringAttributeName)).andStubReturn(attributeType);
         expect(this.mockSubjectService.getSubject(userId)).andStubReturn(testSubject);
         expect(this.mockAttributeCacheDAO.listAttributes(testSubject, attributeType)).andStubReturn(null);
-        expect(this.mockOSGIStartable.getPluginService(pluginServiceName)).andStubReturn(testPluginService);
+        expect(this.mockOSGIStartable.getService(pluginServiceName, OSGIServiceType.PLUGIN_SERVICE)).andStubReturn(this.mockOSGIService);
+        expect(this.mockOSGIService.getService()).andStubReturn(testPluginService);
+        this.mockOSGIService.ungetService();
 
         // prepare
         replay(this.mockObjects);
+        EasyMock.replay(this.mockOSGIService);
 
         // operate: fetch attribute value
         Object attributeValue = this.testedInstance.findAttributeValue(userId, testStringAttributeName);
 
         // verify
         verify(this.mockObjects);
+        EasyMock.verify(this.mockOSGIService);
         assertNotNull(attributeValue);
         assertTrue(attributeValue.getClass().equals(String[].class));
         String[] stringAttributeValue = (String[]) attributeValue;
@@ -621,16 +647,20 @@ public class ProxyAttributeServiceBeanTest {
         expect(this.mockAttributeTypeDAO.getAttributeType(testBooleanAttributeName)).andStubReturn(attributeType);
         expect(this.mockSubjectService.getSubject(userId)).andStubReturn(testSubject);
         expect(this.mockAttributeCacheDAO.listAttributes(testSubject, attributeType)).andStubReturn(null);
-        expect(this.mockOSGIStartable.getPluginService(pluginServiceName)).andStubReturn(testPluginService);
+        expect(this.mockOSGIStartable.getService(pluginServiceName, OSGIServiceType.PLUGIN_SERVICE)).andStubReturn(this.mockOSGIService);
+        expect(this.mockOSGIService.getService()).andStubReturn(testPluginService);
+        this.mockOSGIService.ungetService();
 
         // prepare
         replay(this.mockObjects);
+        EasyMock.replay(this.mockOSGIService);
 
         // operate: fetch attribute value
         Object attributeValue = this.testedInstance.findAttributeValue(userId, testBooleanAttributeName);
 
         // verify
         verify(this.mockObjects);
+        EasyMock.verify(this.mockOSGIService);
         assertNotNull(attributeValue);
         assertTrue(attributeValue.getClass().equals(Boolean[].class));
         Boolean[] booleanAttributeValue = (Boolean[]) attributeValue;
@@ -658,16 +688,20 @@ public class ProxyAttributeServiceBeanTest {
         expect(this.mockAttributeTypeDAO.getAttributeType(testDateAttributeName)).andStubReturn(attributeType);
         expect(this.mockSubjectService.getSubject(userId)).andStubReturn(testSubject);
         expect(this.mockAttributeCacheDAO.listAttributes(testSubject, attributeType)).andStubReturn(null);
-        expect(this.mockOSGIStartable.getPluginService(pluginServiceName)).andStubReturn(testPluginService);
+        expect(this.mockOSGIStartable.getService(pluginServiceName, OSGIServiceType.PLUGIN_SERVICE)).andStubReturn(this.mockOSGIService);
+        expect(this.mockOSGIService.getService()).andStubReturn(testPluginService);
+        this.mockOSGIService.ungetService();
 
         // prepare
         replay(this.mockObjects);
+        EasyMock.replay(this.mockOSGIService);
 
         // operate: fetch attribute value
         Object attributeValue = this.testedInstance.findAttributeValue(userId, testDateAttributeName);
 
         // verify
         verify(this.mockObjects);
+        EasyMock.verify(this.mockOSGIService);
         assertNotNull(attributeValue);
         assertTrue(attributeValue.getClass().equals(Date[].class));
         Date[] dateAttributeValue = (Date[]) attributeValue;
@@ -695,16 +729,20 @@ public class ProxyAttributeServiceBeanTest {
         expect(this.mockAttributeTypeDAO.getAttributeType(testDoubleAttributeName)).andStubReturn(attributeType);
         expect(this.mockSubjectService.getSubject(userId)).andStubReturn(testSubject);
         expect(this.mockAttributeCacheDAO.listAttributes(testSubject, attributeType)).andStubReturn(null);
-        expect(this.mockOSGIStartable.getPluginService(pluginServiceName)).andStubReturn(testPluginService);
+        expect(this.mockOSGIStartable.getService(pluginServiceName, OSGIServiceType.PLUGIN_SERVICE)).andStubReturn(this.mockOSGIService);
+        expect(this.mockOSGIService.getService()).andStubReturn(testPluginService);
+        this.mockOSGIService.ungetService();
 
         // prepare
         replay(this.mockObjects);
+        EasyMock.replay(this.mockOSGIService);
 
         // operate: fetch attribute value
         Object attributeValue = this.testedInstance.findAttributeValue(userId, testDoubleAttributeName);
 
         // verify
         verify(this.mockObjects);
+        EasyMock.verify(this.mockOSGIService);
         assertNotNull(attributeValue);
         assertTrue(attributeValue.getClass().equals(Double[].class));
         Double[] doubleAttributeValue = (Double[]) attributeValue;
@@ -732,16 +770,20 @@ public class ProxyAttributeServiceBeanTest {
         expect(this.mockAttributeTypeDAO.getAttributeType(testIntegerAttributeName)).andStubReturn(attributeType);
         expect(this.mockSubjectService.getSubject(userId)).andStubReturn(testSubject);
         expect(this.mockAttributeCacheDAO.listAttributes(testSubject, attributeType)).andStubReturn(null);
-        expect(this.mockOSGIStartable.getPluginService(pluginServiceName)).andStubReturn(testPluginService);
+        expect(this.mockOSGIStartable.getService(pluginServiceName, OSGIServiceType.PLUGIN_SERVICE)).andStubReturn(this.mockOSGIService);
+        expect(this.mockOSGIService.getService()).andStubReturn(testPluginService);
+        this.mockOSGIService.ungetService();
 
         // prepare
         replay(this.mockObjects);
+        EasyMock.replay(this.mockOSGIService);
 
         // operate: fetch attribute value
         Object attributeValue = this.testedInstance.findAttributeValue(userId, testIntegerAttributeName);
 
         // verify
         verify(this.mockObjects);
+        EasyMock.verify(this.mockOSGIService);
         assertNotNull(attributeValue);
         assertTrue(attributeValue.getClass().equals(Integer[].class));
         Integer[] integerAttributeValue = (Integer[]) attributeValue;

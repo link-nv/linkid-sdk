@@ -102,7 +102,9 @@ public class TemplateAttributeService implements PluginAttributeService {
             ServiceReference serviceReference = this.bundleContext.getServiceReference(OlasAttributeService.class.getName());
             if (null != serviceReference) {
                 OlasAttributeService attributeService = (OlasAttributeService) this.bundleContext.getService(serviceReference);
-                return attributeService.getAttribute(userId, attributeName);
+                Object value = attributeService.getAttribute(userId, attributeName);
+                this.bundleContext.ungetService(serviceReference);
+                return value;
             }
         }
         System.err.println("OSGI service reference not found for: " + OlasAttributeService.class.getName());

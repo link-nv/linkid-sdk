@@ -8,11 +8,13 @@ package net.link.safeonline.siemens.osgi.sms;
 
 import java.net.ConnectException;
 
+import net.link.safeonline.osgi.OlasConfigurationService;
 import net.link.safeonline.osgi.sms.SmsService;
 import net.link.safeonline.sdk.ws.otpoversms.SmsClient;
 import net.link.safeonline.sdk.ws.otpoversms.SmsClientImpl;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 
 /**
@@ -33,7 +35,9 @@ public class SiemensSmsService implements SmsService {
 
     private BundleContext bundleContext;
 
-    private String        location = "http://localhost:8080/safe-online-sms-ws/dummy";
+    private String        groupName = "Siemens SMS Service";
+    private String        itemName  = "Location";
+    private String        location  = "http://localhost:8080/safe-online-sms-ws/dummy";
 
 
     public SiemensSmsService(BundleContext bundleContext) {
@@ -41,6 +45,15 @@ public class SiemensSmsService implements SmsService {
         System.out.println("SiemensSmsService constructor");
 
         this.bundleContext = bundleContext;
+
+        ServiceReference serviceReference = this.bundleContext.getServiceReference(OlasConfigurationService.class.getName());
+        if (null != serviceReference) {
+            System.out.println("OLAS Configuration service found");
+            OlasConfigurationService configurationService = (OlasConfigurationService) this.bundleContext.getService(serviceReference);
+            configurationService.initConfigurationValue(this.groupName, this.itemName, this.location);
+            this.bundleContext.ungetService(serviceReference);
+        }
+
     }
 
     /**
@@ -56,7 +69,7 @@ public class SiemensSmsService implements SmsService {
             // Have to set the thread's context classloader to the bundle's classloader, jaxws loads in a resource for the Provider class
             // using Thread.currentThread.getContextClassLoader which returns the classloader of JBoss.
             Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
-            SmsClient smsClient = new SmsClientImpl(this.location);
+            SmsClient smsClient = new SmsClientImpl(getLocation());
             smsClient.sendSms(mobile, message);
         } catch (Exception e) {
             // empty
@@ -65,6 +78,19 @@ public class SiemensSmsService implements SmsService {
         } finally {
             Thread.currentThread().setContextClassLoader(cl);
         }
+    }
+
+    private String getLocation() {
+
+        ServiceReference serviceReference = this.bundleContext.getServiceReference(OlasConfigurationService.class.getName());
+        if (null != serviceReference) {
+            OlasConfigurationService configurationService = (OlasConfigurationService) this.bundleContext.getService(serviceReference);
+            String value = (String) configurationService.getConfigurationValue(this.groupName, this.itemName, this.location);
+            this.bundleContext.ungetService(serviceReference);
+            return value;
+        }
+
+        return null;
 
     }
 }

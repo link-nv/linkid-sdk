@@ -19,6 +19,7 @@ import javax.persistence.NoResultException;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.demo.bank.entity.BankAccountEntity;
 import net.link.safeonline.demo.bank.entity.BankUserEntity;
+import net.link.safeonline.demo.bank.service.InitializationService;
 import net.link.safeonline.demo.cinema.entity.CinemaTicketEntity;
 import net.link.safeonline.demo.cinema.entity.CinemaUserEntity;
 import net.link.safeonline.demo.cinema.service.TicketService;
@@ -90,6 +91,7 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
             BankUserEntity user = (BankUserEntity) this.demoBankEntityManager.createNamedQuery(BankUserEntity.getByOlasId).setParameter(
                     "olasId", userId).getSingleResult();
             user.setOlasId(null);
+            user.setName(InitializationService.digipassUser_Name);
         } catch (NoResultException e) {
         }
     }

@@ -83,6 +83,7 @@ public class AcceptanceAttributeService implements PluginAttributeService {
         if (null != serviceReference) {
             OlasAttributeService attributeService = (OlasAttributeService) this.bundleContext.getService(serviceReference);
             osgiValue = (String) attributeService.getAttribute(userId, targetName);
+            this.bundleContext.ungetService(serviceReference);
             System.out.println("osgi: found attribute: " + osgiValue);
         }
 

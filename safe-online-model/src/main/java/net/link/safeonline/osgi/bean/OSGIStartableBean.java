@@ -18,13 +18,10 @@ import javax.naming.NamingException;
 import net.link.safeonline.Startable;
 import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.audit.ResourceAuditLoggerInterceptor;
-import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
-import net.link.safeonline.entity.audit.ResourceLevelType;
-import net.link.safeonline.entity.audit.ResourceNameType;
 import net.link.safeonline.osgi.OSGIHostActivator;
+import net.link.safeonline.osgi.OSGIService;
 import net.link.safeonline.osgi.OSGIStartable;
-import net.link.safeonline.osgi.plugin.PluginAttributeService;
-import net.link.safeonline.osgi.sms.SmsService;
+import net.link.safeonline.osgi.OSGIHostActivator.OSGIServiceType;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
@@ -38,7 +35,6 @@ import org.jboss.annotation.ejb.LocalBinding;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.Constants;
-import org.osgi.framework.ServiceReference;
 
 
 /**
@@ -91,13 +87,12 @@ public class OSGIStartableBean implements OSGIStartable {
         // Configure the Felix instance to be embedded.
         configMap.put(FelixConstants.EMBEDDED_EXECUTION_PROP, "true");
 
-        // Add the attribute service interface package and the core OSGi
-        // packages to be exported from the class path via the system bundle.
+        // Add the core OSGi packages to be exported from the class path via the system bundle.
         String systemPackages = "org.osgi.framework; version=1.3.0, " + "org.osgi.service.packageadmin; version=1.2.0, "
                 + "org.osgi.service.startlevel; version=1.0.0, " + "org.osgi.service.url; version=1.0.0, "
                 + "org.osgi.util.tracker; version=1.3.1, ";
 
-        // javax.*
+        // Add the javax.* packages to be exported from the class path via the system bundle.
         systemPackages += "javax; version=1.0.0, ";
         systemPackages += "javax.accessibility ; version=1.0.0, ";
         systemPackages += "javax.activity ; version=1.0.0, ";
@@ -152,7 +147,7 @@ public class OSGIStartableBean implements OSGIStartable {
         systemPackages += "javax.xml.validation ; version=1.0.0, ";
         systemPackages += "javax.xml.xpath ; version=1.0.0, ";
 
-        // org.*
+        // Add the org.* packages to be exported from the class path via the system bundle.
         systemPackages += "org.w3c.dom ; version=1.0.0, ";
         systemPackages += "org.w3c.dom.bootstrap ; version=1.0.0, ";
         systemPackages += "org.w3c.dom.events ; version=1.0.0, ";
@@ -161,7 +156,7 @@ public class OSGIStartableBean implements OSGIStartable {
         systemPackages += "org.xml.sax.ext ; version=1.0.0, ";
         systemPackages += "org.xml.sax.helpers ; version=1.0.0, ";
 
-        // jsse.jar packages
+        // Add the jsse.jar packages to be exported from the class path via the system bundle.
         systemPackages += "sun; version=1.0.0, ";
         systemPackages += "sun.net; version=1.0.0, ";
         systemPackages += "sun.net.www; version=1.0.0, ";
@@ -182,10 +177,13 @@ public class OSGIStartableBean implements OSGIStartable {
         systemPackages += "com.sun.security.cert.internal; version=1.0.0, ";
         systemPackages += "com.sun.security.cert.internal.x509; version=1.0.0, ";
 
-        // plugin service package
+        // Add the OLAS service packages to be exported from the class path via the system bundle.
+        systemPackages += "net.link.safeonline.osgi; version=1.0.0, ";
+
+        // Add the attribute plugin service package to be exported from the class path via the system bundle.
         systemPackages += "net.link.safeonline.osgi.plugin; version=1.0.0, ";
 
-        // sms service package
+        // Add the sms service package to be exported from the class path via the system bundle.
         systemPackages += "net.link.safeonline.osgi.sms; version=1.0.0";
 
         LOG.debug("systemPackages: " + systemPackages);
@@ -258,7 +256,7 @@ public class OSGIStartableBean implements OSGIStartable {
 
     }
 
-    public ServiceReference[] getSmsServiceReferences() {
+    public OSGIService getService(String serviceName, OSGIServiceType serviceType) {
 
         OSGIHostActivator hostActivator;
         try {
@@ -266,44 +264,15 @@ public class OSGIStartableBean implements OSGIStartable {
         } catch (NamingException e) {
             throw new EJBException("Unable to find OSGI Host activator in the JNDI tree: " + OSGIHostActivator.JNDI_BINDING);
         }
-        return hostActivator.getSmsServiceReferences();
 
-    }
+        switch (serviceType) {
+            case PLUGIN_SERVICE:
+                return new OSGIService(hostActivator.getPluginServiceReferences(), serviceName);
 
-    public PluginAttributeService getPluginService(String serviceName)
-            throws SafeOnlineResourceException {
-
-        // XXX: should we not access the service via its servicereference ??
-        Object[] services = getPluginServices();
-        if (null == services)
-            throw new SafeOnlineResourceException(ResourceNameType.OSGI, ResourceLevelType.RESOURCE_UNAVAILABLE, serviceName);
-
-        for (Object service : services) {
-            if (service.getClass().getName().equals(serviceName))
-                return (PluginAttributeService) service;
-        }
-        throw new SafeOnlineResourceException(ResourceNameType.OSGI, ResourceLevelType.RESOURCE_UNAVAILABLE, serviceName);
-    }
-
-    public SmsService getSmsService(String serviceName)
-            throws SafeOnlineResourceException {
-
-        ServiceReference[] serviceReferences = getSmsServiceReferences();
-        for (ServiceReference serviceReference : serviceReferences) {
-            Object service = serviceReference.getBundle().getBundleContext().getService(serviceReference);
-            LOG.debug("service class: " + service.getClass().getName());
-            if (service.getClass().getName().equals(serviceName))
-                return (SmsService) service;
+            case SMS_SERVICE:
+                return new OSGIService(hostActivator.getSmsServiceReferences(), serviceName);
         }
 
-        throw new SafeOnlineResourceException(ResourceNameType.OSGI, ResourceLevelType.RESOURCE_UNAVAILABLE, serviceName);
-
-        /*
-         * Object[] services = getSmsServices(); if (null == services) throw new SafeOnlineResourceException(ResourceNameType.OSGI,
-         * ResourceLevelType.RESOURCE_UNAVAILABLE, serviceName);
-         * 
-         * for (Object service : services) { if (service.getClass().getName().equals(serviceName)) return (SmsService) service; } throw new
-         * SafeOnlineResourceException(ResourceNameType.OSGI, ResourceLevelType.RESOURCE_UNAVAILABLE, serviceName);
-         */
+        return null;
     }
 }

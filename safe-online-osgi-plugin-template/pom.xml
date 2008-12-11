@@ -66,8 +66,8 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Import-Package>net.link.safeonline.osgi.plugin,org.osgi.framework,!*</Import-Package>
 						<Export-Package>net.link.safeonline.osgi.plugin.template</Export-Package>
+						<Import-Package>net.link.safeonline.osgi,net.link.safeonline.osgi.plugin,org.osgi.framework,!*</Import-Package>
 						<Bundle-Activator>net.link.safeonline.osgi.plugin.template.TemplateAttributeServiceActivator</Bundle-Activator>
 						<Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
 						<Embed-Dependency>*;scope=compile;inline=false;artifactId=!safe-online-osgi-plugin</Embed-Dependency>

@@ -9,9 +9,7 @@ package net.link.safeonline.osgi;
 import javax.ejb.Local;
 
 import net.link.safeonline.Startable;
-import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
-import net.link.safeonline.osgi.plugin.PluginAttributeService;
-import net.link.safeonline.osgi.sms.SmsService;
+import net.link.safeonline.osgi.OSGIHostActivator.OSGIServiceType;
 
 
 /**
@@ -34,14 +32,10 @@ public interface OSGIStartable extends Startable {
     public static final String JNDI_BINDING = Startable.JNDI_PREFIX + "OSGIStartableBean";
 
 
+    OSGIService getService(String serviceName, OSGIServiceType serviceType);
+
     Object[] getPluginServices();
 
-    PluginAttributeService getPluginService(String serviceName)
-            throws SafeOnlineResourceException;
-
     Object[] getSmsServices();
-
-    SmsService getSmsService(String serviceName)
-            throws SafeOnlineResourceException;
 
 }
