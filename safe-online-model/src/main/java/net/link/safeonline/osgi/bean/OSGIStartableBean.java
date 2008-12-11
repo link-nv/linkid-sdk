@@ -198,7 +198,8 @@ public class OSGIStartableBean implements OSGIStartable {
         configMap.put(Constants.FRAMEWORK_SYSTEMPACKAGES, systemPackages);
 
         // Autostart the fileinstall bundle, configured with the path to drop our plugin bundles into
-        configMap.put(AutoActivator.AUTO_START_PROP + ".1", "file://" + jbossHome + "/osgi/autostart/org.apache.felix.fileinstall.jar");
+        configMap.put(AutoActivator.AUTO_START_PROP + ".1", "file://" + jbossHome
+                + "/osgi/autostart/org.apache.felix.fileinstall-0.9.0.jar");
         configMap.put("felix.fileinstall.dir", jbossHome + "/osgi/plugins");
 
         // Explicitly specify the directory to use for caching bundles.
