@@ -74,12 +74,6 @@
 			<version>1.3-SNAPSHOT</version>
 		</dependency>
 
-        <!-- Specific Dependencies: External -->
-        <dependency>
-            <groupId>org.jboss</groupId>
-            <artifactId>jboss-annotations-ejb3</artifactId>
-        </dependency>
-
         <!-- Test Dependencies -->
         <dependency>
             <groupId>net.lin-k.safe-online</groupId>

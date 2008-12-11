@@ -1,4 +1,4 @@
-#!/bin/bash
+#! /usr/bin/env bash
 # __________________________________________________________________________ #
 #																			 #
 #		Mvn2Eclipse -- Prepare Maven2 Artifacts for use in Eclipse.			 #

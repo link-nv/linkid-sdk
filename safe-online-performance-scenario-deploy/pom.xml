@@ -37,7 +37,12 @@
                     <artifactTypeMappings>
                         <artifactTypeMapping type="zip" mapping="jar"/>
                     </artifactTypeMappings>
-                    <earSourceExcludes>*.zip,lib/*.zip</earSourceExcludes>
+                    <excludes>
+                        <exclude>
+                            <groupId>^(?!net.lin-k\.).*$</groupId>
+                            <artifactId>^(?!jsf-impl).*$</artifactId>
+                        </exclude>
+                    </excludes>
 				</configuration>
 			</plugin>
 			<plugin>

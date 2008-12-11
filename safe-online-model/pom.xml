@@ -162,10 +162,6 @@
 			<artifactId>org.apache.felix.main</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.jboss</groupId>
-			<artifactId>jboss-annotations-ejb3</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>commons-net</groupId>
 			<artifactId>commons-net</artifactId>
 		</dependency>

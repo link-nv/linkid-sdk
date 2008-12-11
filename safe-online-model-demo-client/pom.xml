@@ -41,10 +41,6 @@
             <groupId>org.jboss</groupId>
             <artifactId>jboss-ejb3x</artifactId>
         </dependency>
-		<dependency>
-			<groupId>org.jboss</groupId>
-			<artifactId>jboss-annotations-ejb3</artifactId>
-		</dependency>
 
 	</dependencies>
 

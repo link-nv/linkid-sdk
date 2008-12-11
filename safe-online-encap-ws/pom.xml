@@ -51,6 +51,10 @@
             <groupId>axis</groupId>
             <artifactId>axis</artifactId>
         </dependency>
+        <dependency>
+            <groupId>axis</groupId>
+            <artifactId>axis-jaxrpc</artifactId>
+        </dependency>
 
 	</dependencies>
 
