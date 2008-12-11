@@ -47,7 +47,8 @@
 					</artifactTypeMappings>
                     <excludes>
                         <exclude>
-                            <groupId>(?!^net.lin-k).*</groupId>
+                            <groupId>^(?!net.lin-k\.).*$</groupId>
+                            <artifactId>^(?!jsf-impl).*$</artifactId>
                         </exclude>
                     </excludes>
 				</configuration>

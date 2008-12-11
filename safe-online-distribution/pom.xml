@@ -136,7 +136,8 @@
 						<configuration>
 							<excludeScope>provided</excludeScope>
                             <excludeTypes>ear,war</excludeTypes>
-                            <excludeGroupIds>net.lin-k.safe-online,org.jboss.seam</excludeGroupIds>
+                            <excludeGroupIds>net.lin-k.safe-online</excludeGroupIds>
+                            <excludeArtifactIds>jsf-impl</excludeArtifactIds>
 							<outputDirectory>${project.build.directory}/dependency</outputDirectory>
 						</configuration>
 					</execution>

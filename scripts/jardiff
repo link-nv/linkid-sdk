@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /usr/bin/env bash
 # ___________________________________________________________________________ #
 #                                                                             #
 #       JarDiff -- Compare two Java Archives to find relevant differences.    #

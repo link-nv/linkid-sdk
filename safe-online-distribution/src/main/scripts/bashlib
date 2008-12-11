@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /usr/bin/env bash
 # ___________________________________________________________________________ #
 #                                                                             #
 #       BashLIB -- A library for Bash scripting convenience.                  #

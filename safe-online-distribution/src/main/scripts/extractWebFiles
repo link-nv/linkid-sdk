@@ -1,4 +1,4 @@
-#!/bin/bash
+#! /usr/bin/env bash
 # ___________________________________________________________________________ #
 #                                                                             #
 #       ExtractWebFiles -- Extract JBoss web files to allow live editing and  #
