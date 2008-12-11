@@ -41,6 +41,13 @@
             <groupId>org.jboss</groupId>
             <artifactId>jboss-ejb3x</artifactId>
         </dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+            <!-- FIXME: Make container-as override this dependency scope and make it provided.
+            Should be compile if no container-as is in the tree. (eg, for javase clients that depend on this) -->
+            <scope>provided</scope>
+		</dependency>
 
 	</dependencies>
 
