@@ -32,6 +32,12 @@
 						<version>4</version>
 					</jboss>
                     <defaultJavaBundleDir>lib/</defaultJavaBundleDir>
+                    <modules>
+                        <webModule>
+                            <groupId>net.lin-k.safe-online</groupId>
+                            <artifactId>safe-online-performance-startup-runtime</artifactId>
+                        </webModule>
+                    </modules>
 
                     <!-- Exlude ZIPs.
                          They only serve to force the deps of wars/sars to become transitive. -->
@@ -83,13 +89,7 @@
 
 	<dependencies>
 
-        <!-- Specific Dependencies: OLAS -->
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-model-performance</artifactId>
-            <version>1.3-SNAPSHOT</version>
-			<type>ejb</type>
-		</dependency>
+        <!-- Specific Dependencies: OLAS: Forced Dependency Transition -->
         <dependency>
    			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-performance-startup-runtime</artifactId>
@@ -103,6 +103,14 @@
                 <version>1.3-SNAPSHOT</version>
                 <type>zip</type>
             </dependency>
+
+        <!-- Specific Dependencies: OLAS -->
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-model-performance</artifactId>
+            <version>1.3-SNAPSHOT</version>
+			<type>ejb</type>
+		</dependency>
 
 	</dependencies>
 
