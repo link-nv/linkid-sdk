@@ -16,7 +16,7 @@
        <errorHandler class="org.jboss.logging.util.OnlyOnceErrorHandler"/>
        <param name="Target" value="System.out"/>
 -      <param name="Threshold" value="INFO"/>
-+      <param name="Threshold" value="DEBUG"/>
++      <param name="Threshold" value="${log.level}"/>
  
        <layout class="org.apache.log4j.PatternLayout">
           <!-- The default pattern: Date Priority [Category] Message\n -->
@@ -34,7 +34,7 @@
 +   </appender>
 +   
 +   <category name="net.link.safeonline">
-+     <priority value="DEBUG" />
++     <priority value="${log.level}" />
 +     <appender-ref ref="SAFEONLINE" />
 +   </category>
 +   
