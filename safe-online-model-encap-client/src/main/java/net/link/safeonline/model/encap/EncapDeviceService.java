@@ -6,7 +6,6 @@
  */
 package net.link.safeonline.model.encap;
 
-import java.net.MalformedURLException;
 import java.util.List;
 import java.util.Locale;
 
@@ -49,13 +48,12 @@ public interface EncapDeviceService extends EncapService {
      * @param challengeId
      * @param mobileOTP
      * @return device subject ID
-     * @throws MalformedURLException
      * @throws SubjectNotFoundException
      * @throws MobileAuthenticationException
      * @throws MobileException
      */
     String authenticate(String mobile, String challengeId, String mobileOTP)
-            throws MalformedURLException, SubjectNotFoundException, MobileAuthenticationException, MobileException;
+            throws SubjectNotFoundException, MobileAuthenticationException, MobileException;
 
     /**
      * Authenticates against the encap server.
@@ -63,11 +61,10 @@ public interface EncapDeviceService extends EncapService {
      * @param challengeId
      * @param mobileOTP
      * @return true or false
-     * @throws MalformedURLException
      * @throws MobileException
      */
-    boolean authenicateEncap(String challengeId, String mobileOTP)
-            throws MalformedURLException, MobileException;
+    boolean authenticateEncap(String challengeId, String mobileOTP)
+            throws MobileException;
 
     /**
      * Activates the specified mobile at the encap server.
@@ -75,12 +72,11 @@ public interface EncapDeviceService extends EncapService {
      * @param mobile
      * @param sessionId
      * @return activationCode code to be used by the user on his mobile
-     * @throws MalformedURLException
      * @throws MobileException
      * @throws MobileRegistrationException
      */
     String register(String mobile, String sessionId)
-            throws MalformedURLException, MobileException, MobileRegistrationException;
+            throws MobileException, MobileRegistrationException;
 
     /**
      * Commits the encap registration for OLAS, creates a device subject if necessary, creates a new device registration for this mobile and
@@ -95,21 +91,19 @@ public interface EncapDeviceService extends EncapService {
             throws SubjectNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException;
 
     void removeEncapMobile(String mobile)
-            throws MalformedURLException, MobileException;
+            throws MobileException;
 
     void remove(String userId, String mobile)
-            throws MobileException, MalformedURLException, SubjectNotFoundException, AttributeTypeNotFoundException,
-            AttributeNotFoundException;
+            throws MobileException, SubjectNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException;
 
     /**
      * Requests the encap server to send an OTP to the specified mobile.
      * 
      * @param mobile
-     * @throws MalformedURLException
      * @throws MobileException
      */
     String requestOTP(String mobile)
-            throws MalformedURLException, MobileException;
+            throws MobileException;
 
     /**
      * Returns list of mobiles registered with this user.
@@ -131,11 +125,9 @@ public interface EncapDeviceService extends EncapService {
      * @throws DeviceNotFoundException
      * @throws DeviceRegistrationNotFoundException
      * @throws MobileException
-     * @throws MalformedURLException
      */
     void disable(String userId, String mobile)
-            throws SubjectNotFoundException, DeviceNotFoundException, DeviceRegistrationNotFoundException, MalformedURLException,
-            MobileException;
+            throws SubjectNotFoundException, DeviceNotFoundException, DeviceRegistrationNotFoundException, MobileException;
 
     /**
      * Enables the encap device registration.
@@ -146,9 +138,7 @@ public interface EncapDeviceService extends EncapService {
      * @throws DeviceNotFoundException
      * @throws DeviceRegistrationNotFoundException
      * @throws MobileException
-     * @throws MalformedURLException
      */
     void enable(String userId, String mobile)
-            throws SubjectNotFoundException, DeviceNotFoundException, DeviceRegistrationNotFoundException, MalformedURLException,
-            MobileException;
+            throws SubjectNotFoundException, DeviceNotFoundException, DeviceRegistrationNotFoundException, MobileException;
 }

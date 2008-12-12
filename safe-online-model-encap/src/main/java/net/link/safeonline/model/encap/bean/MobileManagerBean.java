@@ -49,7 +49,7 @@ public class MobileManagerBean implements MobileManager {
      * RemoteException are transformed to a MobileException, else they get wrapped by JBoss into EJBTransactionRolledbackException
      */
     public String requestOTP(String mobile)
-            throws MalformedURLException, MobileException {
+            throws MobileException {
 
         try {
             EncapAuthenticationClient encapAuthenticationClient = new EncapAuthenticationClientImpl(this.encapServerLocation);
@@ -61,12 +61,12 @@ public class MobileManagerBean implements MobileManager {
         } catch (MalformedURLException e) {
             this.resourceAuditLogger.addResourceAudit(ResourceNameType.WS, ResourceLevelType.RESOURCE_UNKNOWN, this.encapServerLocation,
                     "Encap WS not valid");
-            throw e;
+            throw new RuntimeException(e);
         }
     }
 
     public boolean verifyOTP(String challengeId, String OTPValue)
-            throws MalformedURLException, MobileException {
+            throws MobileException {
 
         try {
             EncapAuthenticationClient encapAuthenticationClient = new EncapAuthenticationClientImpl(this.encapServerLocation);
@@ -78,12 +78,12 @@ public class MobileManagerBean implements MobileManager {
         } catch (MalformedURLException e) {
             this.resourceAuditLogger.addResourceAudit(ResourceNameType.WS, ResourceLevelType.RESOURCE_UNKNOWN, this.encapServerLocation,
                     "Encap WS not valid");
-            throw e;
+            throw new RuntimeException(e);
         }
     }
 
     public String activate(String mobile, String sessionInfo)
-            throws MobileException, MalformedURLException {
+            throws MobileException {
 
         try {
             EncapActivationClient encapActivationClient = new EncapActivationClientImpl(this.encapServerLocation);
@@ -95,12 +95,12 @@ public class MobileManagerBean implements MobileManager {
         } catch (MalformedURLException e) {
             this.resourceAuditLogger.addResourceAudit(ResourceNameType.WS, ResourceLevelType.RESOURCE_UNKNOWN, this.encapServerLocation,
                     "Encap WS not valid");
-            throw e;
+            throw new RuntimeException(e);
         }
     }
 
     public void remove(String mobile)
-            throws MobileException, MalformedURLException {
+            throws MobileException {
 
         try {
             EncapAdministrationClient encapAdministrationClient = new EncapAdministrationClientImpl(this.encapServerLocation);
@@ -112,12 +112,12 @@ public class MobileManagerBean implements MobileManager {
         } catch (MalformedURLException e) {
             this.resourceAuditLogger.addResourceAudit(ResourceNameType.WS, ResourceLevelType.RESOURCE_UNKNOWN, this.encapServerLocation,
                     "Encap WS not valid");
-            throw e;
+            throw new RuntimeException(e);
         }
     }
 
     public void lock(String mobile)
-            throws MobileException, MalformedURLException {
+            throws MobileException {
 
         try {
             EncapAdministrationClient encapAdministrationClient = new EncapAdministrationClientImpl(this.encapServerLocation);
@@ -129,12 +129,12 @@ public class MobileManagerBean implements MobileManager {
         } catch (MalformedURLException e) {
             this.resourceAuditLogger.addResourceAudit(ResourceNameType.WS, ResourceLevelType.RESOURCE_UNKNOWN, this.encapServerLocation,
                     "Encap WS not valid");
-            throw e;
+            throw new RuntimeException(e);
         }
     }
 
     public void unLock(String mobile)
-            throws MobileException, MalformedURLException {
+            throws MobileException {
 
         try {
             EncapAdministrationClient encapAdministrationClient = new EncapAdministrationClientImpl(this.encapServerLocation);
@@ -146,7 +146,7 @@ public class MobileManagerBean implements MobileManager {
         } catch (MalformedURLException e) {
             this.resourceAuditLogger.addResourceAudit(ResourceNameType.WS, ResourceLevelType.RESOURCE_UNKNOWN, this.encapServerLocation,
                     "Encap WS not valid");
-            throw e;
+            throw new RuntimeException(e);
         }
     }
 

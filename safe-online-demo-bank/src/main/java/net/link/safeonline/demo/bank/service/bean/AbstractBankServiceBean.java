@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -9,7 +9,7 @@ package net.link.safeonline.demo.bank.service.bean;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import net.link.safeonline.demo.wicket.service.AbstractWicketServiceBean;
+import net.link.safeonline.wicket.service.AbstractWicketServiceBean;
 
 
 /**

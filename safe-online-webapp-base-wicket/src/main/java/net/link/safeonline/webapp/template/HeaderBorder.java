@@ -1,8 +1,8 @@
 package net.link.safeonline.webapp.template;
 
-import net.link.safeonline.demo.wicket.tools.WicketUtil;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.webapp.common.LanguagePage;
+import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.behavior.SimpleAttributeModifier;

@@ -6,8 +6,6 @@
  */
 package net.link.safeonline.model.encap;
 
-import java.net.MalformedURLException;
-
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.MobileException;
@@ -20,22 +18,22 @@ public interface MobileManager extends EncapService {
 
 
     String requestOTP(String mobile)
-            throws MalformedURLException, MobileException;
+            throws MobileException;
 
     boolean verifyOTP(String challengeId, String OTPValue)
-            throws MalformedURLException, MobileException;
+            throws MobileException;
 
     String activate(String mobile, String sessionInfo)
-            throws MalformedURLException, MobileException;
+            throws MobileException;
 
     void remove(String mobile)
-            throws MalformedURLException, MobileException;
+            throws MobileException;
 
     void lock(String mobile)
-            throws MalformedURLException, MobileException;
+            throws MobileException;
 
     void unLock(String mobile)
-            throws MalformedURLException, MobileException;
+            throws MobileException;
 
     String getClientDownloadLink();
 }

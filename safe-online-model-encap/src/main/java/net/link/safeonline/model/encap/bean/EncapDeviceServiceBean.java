@@ -7,7 +7,6 @@
 
 package net.link.safeonline.model.encap.bean;
 
-import java.net.MalformedURLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -127,13 +126,13 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
     }
 
     public String authenticate(String mobile, String challengeId, String mobileOTP)
-            throws MalformedURLException, MobileException, SubjectNotFoundException, MobileAuthenticationException {
+            throws MobileException, SubjectNotFoundException, MobileAuthenticationException {
 
         SubjectEntity subject = this.subjectIdentifierDAO.findSubject(EncapConstants.ENCAP_IDENTIFIER_DOMAIN, mobile);
         if (null == subject)
             throw new SubjectNotFoundException();
 
-        boolean result = authenicateEncap(challengeId, mobileOTP);
+        boolean result = authenticateEncap(challengeId, mobileOTP);
         if (false == result) {
             this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, subject.getUserId(), "incorrect mobile token");
             throw new MobileAuthenticationException();
@@ -142,7 +141,7 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
     }
 
     public String register(String mobile, String sessionId)
-            throws MalformedURLException, MobileException, MobileRegistrationException {
+            throws MobileException, MobileRegistrationException {
 
         String activationCode = this.mobileManager.activate(mobile, sessionId);
         if (null == activationCode)
@@ -150,8 +149,8 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
         return activationCode;
     }
 
-    public boolean authenicateEncap(String challengeId, String mobileOTP)
-            throws MalformedURLException, MobileException {
+    public boolean authenticateEncap(String challengeId, String mobileOTP)
+            throws MobileException {
 
         return this.mobileManager.verifyOTP(challengeId, mobileOTP);
     }
@@ -199,14 +198,13 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
     }
 
     public void removeEncapMobile(String mobile)
-            throws MalformedURLException, MobileException {
+            throws MobileException {
 
         this.mobileManager.remove(mobile);
     }
 
     public void remove(String userId, String mobile)
-            throws MobileException, MalformedURLException, SubjectNotFoundException, AttributeTypeNotFoundException,
-            AttributeNotFoundException {
+            throws MobileException, SubjectNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException {
 
         removeEncapMobile(mobile);
 
@@ -239,7 +237,7 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
     }
 
     public String requestOTP(String mobile)
-            throws MalformedURLException, MobileException {
+            throws MobileException {
 
         return this.mobileManager.requestOTP(mobile);
     }
@@ -288,8 +286,7 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
      * {@inheritDoc}
      */
     public void disable(String userId, String mobile)
-            throws SubjectNotFoundException, DeviceNotFoundException, DeviceRegistrationNotFoundException, MalformedURLException,
-            MobileException {
+            throws SubjectNotFoundException, DeviceNotFoundException, DeviceRegistrationNotFoundException, MobileException {
 
         DeviceEntity device = this.deviceDAO.getDevice(EncapConstants.ENCAP_DEVICE_ID);
         SubjectEntity subject = this.subjectService.getSubject(userId);
@@ -317,8 +314,7 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
      * {@inheritDoc}
      */
     public void enable(String userId, String mobile)
-            throws SubjectNotFoundException, DeviceNotFoundException, DeviceRegistrationNotFoundException, MalformedURLException,
-            MobileException {
+            throws SubjectNotFoundException, DeviceNotFoundException, DeviceRegistrationNotFoundException, MobileException {
 
         DeviceEntity device = this.deviceDAO.getDevice(EncapConstants.ENCAP_DEVICE_ID);
         SubjectEntity subject = this.subjectService.getSubject(userId);

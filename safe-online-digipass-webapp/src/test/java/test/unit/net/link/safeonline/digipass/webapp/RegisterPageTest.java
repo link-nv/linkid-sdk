@@ -12,8 +12,6 @@ import java.util.UUID;
 import junit.framework.TestCase;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.demo.wicket.tools.WicketUtil;
-import net.link.safeonline.demo.wicket.tools.olas.DummyNameIdentifierMappingClient;
 import net.link.safeonline.digipass.webapp.MainPage;
 import net.link.safeonline.digipass.webapp.RegisterPage;
 import net.link.safeonline.digipass.webapp.RemovePage;
@@ -25,6 +23,8 @@ import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.IdentityServiceClient;
 import net.link.safeonline.webapp.template.TemplatePage;
+import net.link.safeonline.wicket.tools.WicketUtil;
+import net.link.safeonline.wicket.tools.olas.DummyNameIdentifierMappingClient;
 
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.util.tester.FormTester;

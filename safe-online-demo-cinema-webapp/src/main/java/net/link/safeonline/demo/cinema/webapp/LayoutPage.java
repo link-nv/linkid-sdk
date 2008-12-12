@@ -9,9 +9,9 @@ import javax.ejb.EJB;
 import net.link.safeonline.demo.cinema.CinemaConstants;
 import net.link.safeonline.demo.cinema.entity.CinemaTicketEntity;
 import net.link.safeonline.demo.cinema.service.TicketService;
-import net.link.safeonline.demo.wicket.tools.WicketUtil;
-import net.link.safeonline.demo.wicket.web.OlasLogoutLink;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
+import net.link.safeonline.wicket.tools.WicketUtil;
+import net.link.safeonline.wicket.web.OlasLogoutLink;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

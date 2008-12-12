@@ -9,7 +9,7 @@ package net.link.safeonline.demo.cinema.service.bean;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import net.link.safeonline.demo.wicket.service.AbstractWicketServiceBean;
+import net.link.safeonline.wicket.service.AbstractWicketServiceBean;
 
 
 /**

@@ -11,10 +11,10 @@ import static org.junit.Assert.assertEquals;
 import javax.ejb.EJB;
 
 import net.link.safeonline.demo.cinema.entity.CinemaUserEntity;
-import net.link.safeonline.demo.wicket.tools.WicketUtil;
-import net.link.safeonline.demo.wicket.tools.olas.DummyAttributeClient;
 import net.link.safeonline.model.beid.BeIdConstants;
 import net.link.safeonline.model.demo.DemoConstants;
+import net.link.safeonline.wicket.tools.WicketUtil;
+import net.link.safeonline.wicket.tools.olas.DummyAttributeClient;
 
 import org.apache.ws.security.util.UUIDGenerator;
 import org.junit.Test;

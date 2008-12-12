@@ -3,7 +3,7 @@ package net.link.safeonline.demo.bank.webapp;
 import javax.servlet.ServletException;
 
 import net.link.safeonline.demo.bank.entity.BankUserEntity;
-import net.link.safeonline.demo.wicket.tools.WicketUtil;
+import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.RestartResponseException;

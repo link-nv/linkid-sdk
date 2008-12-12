@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/"
+	xml:lang="en" lang="en">
+
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+	</head>
+
+	<body>
+
+		<div wicket:id="header_border"></div>
+
+		<div wicket:id="content_border">
+
+			<div wicket:id="sidebar_border">
+				<p>
+					<wicket:message key="helpRemoveEncap">[Remove Encap
+						Help]</wicket:message>
+				</p>
+			</div>
+
+			<h2>
+				<wicket:message key="encapRemove">[Remove Encap]</wicket:message>
+			</h2>
+
+			<form wicket:id="get_form">
+
+				<label>
+					<wicket:message key="login">[Login Name]</wicket:message>
+				</label>
+				<div>
+					<input wicket:id="login" type="text" class="label" />
+				</div>
+				<div wicket:id="login_feedback" class="error"></div>
+
+				<label>&nbsp;</label>
+				<input wicket:id="view" type="submit" value="[View]"
+					wicket:message="value:viewaction" class="submit" />
+				<input wicket:id="cancel" type="submit" value="[Cancel]"
+					wicket:message="value:cancelaction" class="submit" />
+
+				<div wicket:id="feedback_get" class="error"></div>
+
+			</form>
+
+			<form wicket:id="list_form">
+
+				<table>
+
+					<thead>
+						<tr>
+							<th>
+								<wicket:message key="encap">[Encap]</wicket:message>
+							</th>
+							<th>
+								<wicket:message key="action">[Action]</wicket:message>
+							</th>
+						</tr>
+					</thead>
+
+					<tbody>
+						<tr wicket:id="encapList">
+							<td wicket:id="encap">[Encap]</td>
+							<td>
+								<a wicket:id="remove">
+									<wicket:message key="removeaction">[Remove]</wicket:message>
+								</a>
+							</td>
+						</tr>
+					</tbody>
+
+				</table>
+
+				<div wicket:id="feedback_list" class="error"></div>
+
+			</form>
+
+		</div>
+
+	</body>
+</html>
