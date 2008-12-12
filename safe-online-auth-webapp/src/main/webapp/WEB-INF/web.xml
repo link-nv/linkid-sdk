@@ -13,20 +13,17 @@
 		</auth-constraint>
 	</security-constraint>
 	<listener>
-		<listener-class> org.jboss.seam.servlet.SeamListener </listener-class>
+		<listener-class>org.jboss.seam.servlet.SeamListener</listener-class>
 	</listener>
 	<listener>
-		<listener-class> com.sun.faces.config.ConfigureListener 
-		</listener-class>
+		<listener-class>com.sun.faces.config.ConfigureListener</listener-class>
 	</listener>
 	<listener>
 		<listener-class>
-			net.link.safeonline.auth.protocol.AuthenticationServiceManager 
-		</listener-class>
+			net.link.safeonline.auth.protocol.AuthenticationServiceManager</listener-class>
 	</listener>
 	<listener>
-		<listener-class> net.link.safeonline.auth.servlet.LoginSessionListener 
-		</listener-class>
+		<listener-class>net.link.safeonline.auth.servlet.LoginSessionListener</listener-class>
 	</listener>
 	<context-param>
 		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
@@ -86,8 +83,7 @@
 	</filter>
 	<filter>
 		<filter-name>JAASLoginFilter</filter-name>
-		<filter-class> net.link.safeonline.sdk.auth.filter.JAASLoginFilter 
-		</filter-class>
+		<filter-class>net.link.safeonline.sdk.auth.filter.JAASLoginFilter</filter-class>
 		<init-param>
 			<param-name>LoginContextName</param-name>
 			<param-value>client-login</param-value>
@@ -99,14 +95,13 @@
 	</filter>
 	<filter>
 		<filter-name>MyFacesExtensionsFilter</filter-name>
-		<filter-class> org.apache.myfaces.webapp.filter.ExtensionsFilter 
-		</filter-class>
+		<filter-class>org.apache.myfaces.webapp.filter.ExtensionsFilter</filter-class>
 	</filter>
 
 	<!-- ${safe-online.profiling.filter} -->
 	<filter-mapping>
 		<filter-name>TimeoutFilter</filter-name>
-		<url-pattern>*.seam</url-pattern>
+		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>MyFacesExtensionsFilter</filter-name>
@@ -143,8 +138,7 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>LoginServlet</servlet-name>
-		<servlet-class> net.link.safeonline.auth.servlet.LoginServlet 
-		</servlet-class>
+		<servlet-class>net.link.safeonline.auth.servlet.LoginServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>LoginServlet</servlet-name>
@@ -152,8 +146,7 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>AuthnEntryServlet</servlet-name>
-		<servlet-class> net.link.safeonline.auth.servlet.AuthnEntryServlet 
-		</servlet-class>
+		<servlet-class>net.link.safeonline.auth.servlet.AuthnEntryServlet</servlet-class>
 		<init-param>
 			<param-name>StartUrl</param-name>
 			<param-value>main.seam</param-value>
@@ -194,8 +187,7 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>ExitServlet</servlet-name>
-		<servlet-class> net.link.safeonline.auth.servlet.ExitServlet 
-		</servlet-class>
+		<servlet-class>net.link.safeonline.auth.servlet.ExitServlet</servlet-class>
 		<init-param>
 			<param-name>ProtocolErrorUrl</param-name>
 			<param-value>protocol-error.seam</param-value>
@@ -207,8 +199,7 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>LogoutEntryServlet</servlet-name>
-		<servlet-class> net.link.safeonline.auth.servlet.LogoutEntryServlet 
-		</servlet-class>
+		<servlet-class>net.link.safeonline.auth.servlet.LogoutEntryServlet</servlet-class>
 		<init-param>
 			<param-name>LogoutExitUrl</param-name>
 			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/logoutexit</param-value>
@@ -241,8 +232,7 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>LogoutExitServlet</servlet-name>
-		<servlet-class> net.link.safeonline.auth.servlet.LogoutExitServlet 
-		</servlet-class>
+		<servlet-class>net.link.safeonline.auth.servlet.LogoutExitServlet</servlet-class>
 		<init-param>
 			<description>Used to wrap the servlet request's request URL for
 				verification of the receiving endpoint with the destination in the
@@ -271,8 +261,7 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>DeviceLandingServlet</servlet-name>
-		<servlet-class> net.link.safeonline.auth.servlet.DeviceLandingServlet 
-		</servlet-class>
+		<servlet-class>net.link.safeonline.auth.servlet.DeviceLandingServlet</servlet-class>
 		<init-param>
 			<param-name>LoginUrl</param-name>
 			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/login</param-value>
@@ -302,8 +291,7 @@
 	<servlet>
 		<servlet-name>DeviceRegistrationLandingServlet</servlet-name>
 		<servlet-class>
-			net.link.safeonline.auth.servlet.DeviceRegistrationLandingServlet 
-		</servlet-class>
+			net.link.safeonline.auth.servlet.DeviceRegistrationLandingServlet</servlet-class>
 		<init-param>
 			<param-name>RegisterDeviceUrl</param-name>
 			<param-value>${safe-online.host.auth.basename}/${safe-online.auth.webapp.name}/register-device.seam</param-value>
@@ -336,8 +324,7 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>PkiServlet</servlet-name>
-		<servlet-class> net.link.safeonline.auth.servlet.PkiServlet 
-		</servlet-class>
+		<servlet-class>net.link.safeonline.auth.servlet.PkiServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>PkiServlet</servlet-name>
@@ -346,8 +333,7 @@
 	<servlet>
 		<servlet-name>Logo Servlet</servlet-name>
 		<servlet-class>
-			net.link.safeonline.webapp.resources.ApplicationLogoServlet 
-		</servlet-class>
+			net.link.safeonline.webapp.resources.ApplicationLogoServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>Logo Servlet</servlet-name>
@@ -356,8 +342,7 @@
 	<servlet>
 		<servlet-name>Style Servlet</servlet-name>
 		<servlet-class>
-			net.link.safeonline.webapp.resources.ApplicationStyleServlet 
-		</servlet-class>
+			net.link.safeonline.webapp.resources.ApplicationStyleServlet</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>Style Servlet</servlet-name>

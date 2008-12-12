@@ -19,14 +19,10 @@
 				net.link.safeonline.demo.bank.webapp.BankApplication 
 			</param-value>
 		</init-param>
-		<!--<init-param>
+		<init-param>
 			<param-name>configuration</param-name>
-			<param-value>DEPLOYMENT</param-value>
-        </init-param>-->
-		<context-param>
-			<param-name>configuration</param-name>
-			<param-value>development</param-value>
-		</context-param>
+			<param-value>${wicket.configuration}</param-value>
+		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
     <context-param>
