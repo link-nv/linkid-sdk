@@ -14,7 +14,7 @@ import java.net.ConnectException;
  * <sub>SMS service API. </sub></h2>
  * 
  * <p>
- * SMS Attribute service API. OSGi SMS service implementations should implement this interface.
+ * SMS service API. OSGi SMS service implementations should implement this interface.
  * </p>
  * 
  * <p>
