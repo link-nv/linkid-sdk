@@ -18,12 +18,12 @@ import net.link.safeonline.demo.bank.service.bean.InitializationServiceBean;
 import net.link.safeonline.demo.bank.service.bean.TransactionServiceBean;
 import net.link.safeonline.demo.bank.service.bean.UserServiceBean;
 import net.link.safeonline.demo.bank.webapp.servlet.LogoutServlet;
-import net.link.safeonline.demo.wicket.javaee.DummyJndi;
-import net.link.safeonline.demo.wicket.test.AbstractWicketTests;
-import net.link.safeonline.demo.wicket.tools.WicketUtil;
-import net.link.safeonline.demo.wicket.web.OlasLoginLink;
-import net.link.safeonline.demo.wicket.web.OlasLogoutLink;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
+import net.link.safeonline.wicket.javaee.DummyJndi;
+import net.link.safeonline.wicket.test.AbstractWicketTests;
+import net.link.safeonline.wicket.tools.WicketUtil;
+import net.link.safeonline.wicket.web.OlasLoginLink;
+import net.link.safeonline.wicket.web.OlasLogoutLink;
 
 import org.apache.wicket.AbortException;
 import org.apache.wicket.RequestCycle;

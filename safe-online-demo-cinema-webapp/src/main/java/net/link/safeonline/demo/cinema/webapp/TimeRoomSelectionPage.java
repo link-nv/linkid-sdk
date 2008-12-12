@@ -12,7 +12,7 @@ import net.link.safeonline.demo.cinema.entity.CinemaRoomEntity;
 import net.link.safeonline.demo.cinema.entity.CinemaShowTimeEntity;
 import net.link.safeonline.demo.cinema.service.FilmService;
 import net.link.safeonline.demo.cinema.service.RoomService;
-import net.link.safeonline.demo.wicket.tools.WicketUtil;
+import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;

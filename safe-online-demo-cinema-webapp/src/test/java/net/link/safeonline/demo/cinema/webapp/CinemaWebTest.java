@@ -39,12 +39,12 @@ import net.link.safeonline.demo.cinema.webapp.LayoutPage.SelectedTheatre;
 import net.link.safeonline.demo.cinema.webapp.LayoutPage.SelectedTime;
 import net.link.safeonline.demo.cinema.webapp.TicketPage.TicketForm;
 import net.link.safeonline.demo.cinema.webapp.servlet.LogoutServlet;
-import net.link.safeonline.demo.wicket.javaee.DummyJndi;
-import net.link.safeonline.demo.wicket.test.AbstractWicketTests;
-import net.link.safeonline.demo.wicket.tools.WicketUtil;
-import net.link.safeonline.demo.wicket.web.OlasAuthLink;
-import net.link.safeonline.demo.wicket.web.OlasLogoutLink;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
+import net.link.safeonline.wicket.javaee.DummyJndi;
+import net.link.safeonline.wicket.test.AbstractWicketTests;
+import net.link.safeonline.wicket.tools.WicketUtil;
+import net.link.safeonline.wicket.web.OlasAuthLink;
+import net.link.safeonline.wicket.web.OlasLogoutLink;
 
 import org.apache.wicket.Session;
 import org.apache.wicket.markup.html.form.Form;

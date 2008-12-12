@@ -1,7 +1,7 @@
 package test.unit.net.link.safeonline.digipass.webapp;
 
-import net.link.safeonline.demo.wicket.test.TestStringResourceLoader;
 import net.link.safeonline.digipass.webapp.DigipassApplication;
+import net.link.safeonline.wicket.test.TestStringResourceLoader;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

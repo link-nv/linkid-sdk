@@ -162,7 +162,7 @@ public class RegistrationBean implements Registration {
     public String authenticate()
             throws IOException, MobileException, SubjectNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException {
 
-        boolean result = this.encapDeviceService.authenicateEncap(this.challengeId, this.mobileOTP);
+        boolean result = this.encapDeviceService.authenticateEncap(this.challengeId, this.mobileOTP);
         if (false == result) {
             this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
             return null;

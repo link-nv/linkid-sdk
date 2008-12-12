@@ -8,10 +8,10 @@ package net.link.safeonline.webapp.common;
 
 import javax.ejb.EJB;
 
-import net.link.safeonline.demo.wicket.tools.WicketUtil;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.model.HelpdeskContact;
 import net.link.safeonline.webapp.template.TemplatePage;
+import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

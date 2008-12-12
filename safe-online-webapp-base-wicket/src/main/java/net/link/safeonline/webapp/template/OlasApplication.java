@@ -1,8 +1,8 @@
 package net.link.safeonline.webapp.template;
 
-import net.link.safeonline.demo.wicket.tools.CustomStringResourceLoader;
-import net.link.safeonline.demo.wicket.tools.WicketUtil;
 import net.link.safeonline.webapp.common.ProtocolErrorPage;
+import net.link.safeonline.wicket.tools.CustomStringResourceLoader;
+import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

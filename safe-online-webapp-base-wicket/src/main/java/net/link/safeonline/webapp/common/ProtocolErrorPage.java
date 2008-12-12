@@ -6,8 +6,8 @@
  */
 package net.link.safeonline.webapp.common;
 
-import net.link.safeonline.demo.wicket.tools.WicketUtil;
 import net.link.safeonline.webapp.template.TemplatePage;
+import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.wicket.markup.html.basic.Label;
 

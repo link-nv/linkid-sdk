@@ -10,7 +10,6 @@ import java.util.UUID;
 import junit.framework.TestCase;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
-import net.link.safeonline.demo.wicket.tools.WicketUtil;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.digipass.webapp.EnablePage;
 import net.link.safeonline.helpdesk.HelpdeskManager;
@@ -18,6 +17,7 @@ import net.link.safeonline.model.digipass.DigipassDeviceService;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.webapp.template.TemplatePage;
+import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.util.tester.FormTester;

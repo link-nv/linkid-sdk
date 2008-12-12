@@ -1,7 +1,7 @@
 package net.link.safeonline.demo.bank.webapp;
 
-import net.link.safeonline.demo.wicket.tools.WicketUtil;
-import net.link.safeonline.demo.wicket.web.OlasAuthRedirectPage;
+import net.link.safeonline.wicket.tools.WicketUtil;
+import net.link.safeonline.wicket.web.OlasAuthRedirectPage;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.PageMap;

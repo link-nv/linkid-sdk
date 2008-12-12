@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import net.link.safeonline.demo.cinema.entity.CinemaUserEntity;
 import net.link.safeonline.demo.cinema.keystore.DemoCinemaKeyStoreUtils;
 import net.link.safeonline.demo.cinema.service.UserService;
-import net.link.safeonline.demo.wicket.tools.WicketUtil;
 import net.link.safeonline.model.beid.BeIdConstants;
 import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
@@ -21,6 +20,7 @@ import net.link.safeonline.sdk.exception.AttributeUnavailableException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
+import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.jboss.annotation.ejb.LocalBinding;
 

@@ -1,6 +1,6 @@
 package net.link.safeonline.demo.cinema.webapp;
 
-import net.link.safeonline.demo.wicket.tools.WicketUtil;
+import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

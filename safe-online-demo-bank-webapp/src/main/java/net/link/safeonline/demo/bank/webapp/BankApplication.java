@@ -2,7 +2,7 @@ package net.link.safeonline.demo.bank.webapp;
 
 import net.link.safeonline.demo.bank.converters.BankAccountConverter;
 import net.link.safeonline.demo.bank.entity.BankAccountEntity;
-import net.link.safeonline.demo.wicket.tools.WicketUtil;
+import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.wicket.IConverterLocator;
 import org.apache.wicket.Page;
