@@ -7,7 +7,7 @@
 
 package test.unit.net.link.safeonline.otpoversms.webapp;
 
-import net.link.safeonline.demo.wicket.test.TestStringResourceLoader;
+import net.link.safeonline.wicket.test.TestStringResourceLoader;
 import net.link.safeonline.otpoversms.webapp.OtpOverSmsApplication;
 
 import org.apache.commons.logging.Log;
