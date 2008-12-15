@@ -119,7 +119,7 @@ public class AuthorizationManagerServiceBean implements AuthorizationManagerServ
             unsetRole(subject, removeRole);
         }
 
-        SecurityManagerUtils.flushCredentialCache(login, SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
+        SecurityManagerUtils.flushCredentialCache(subject.getUserId(), SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
     }
 
     private void setRole(SubjectEntity subject, String role)
