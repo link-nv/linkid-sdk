@@ -2,14 +2,12 @@ package test.unit.net.link.safeonline.encap.webapp;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
-import java.security.KeyPair;
-import java.security.cert.X509Certificate;
 import java.util.UUID;
 
-import junit.framework.TestCase;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
@@ -17,15 +15,9 @@ import net.link.safeonline.encap.webapp.AuthenticationPage;
 import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.model.encap.EncapDeviceService;
 import net.link.safeonline.test.util.EJBTestUtils;
-import net.link.safeonline.test.util.JmxTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
-import net.link.safeonline.test.util.MBeanActionHandler;
-import net.link.safeonline.test.util.PkiTestUtils;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
-import net.link.safeonline.util.ee.IdentityServiceClient;
 import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.tools.WicketUtil;
-import net.link.safeonline.wicket.tools.olas.DummyNameIdentifierMappingClient;
 
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.util.tester.FormTester;
@@ -35,7 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class AuthenticationPageTest extends TestCase {
+public class AuthenticationPageTest {
 
     private EncapDeviceService   mockEncapDeviceService;
 
@@ -47,15 +39,18 @@ public class AuthenticationPageTest extends TestCase {
 
     private JndiTestUtils        jndiTestUtils;
 
+    private static final String  TEST_USERID    = UUID.randomUUID().toString();
 
-    @Override
+    private static final String  TEST_MOBILE    = "0523012295";
+
+    private static final String  TEST_CHALLENGE = "0123456789";
+
+    private static final String  TEST_OTP       = "000000";
+
+
     @Before
     public void setUp()
             throws Exception {
-
-        super.setUp();
-
-        WicketUtil.setUnitTesting(true);
 
         this.jndiTestUtils = new JndiTestUtils();
         this.jndiTestUtils.setUp();
@@ -64,38 +59,11 @@ public class AuthenticationPageTest extends TestCase {
         this.mockSamlAuthorityService = createMock(SamlAuthorityService.class);
         this.mockHelpdeskManager = createMock(HelpdeskManager.class);
 
-        // Initialize MBean's
-        JmxTestUtils jmxTestUtils = new JmxTestUtils();
-        jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
-
-        final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
-
-            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
-
-                return authCertificate;
-            }
-        });
-
-        jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
-
-        final KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
-
-            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
-
-                return certificate;
-            }
-        });
-
+        WicketUtil.setUnitTesting(true);
         this.wicket = new WicketTester(new EncapTestApplication());
         this.wicket.processRequestCycle();
-
     }
 
-    @Override
     @After
     public void tearDown()
             throws Exception {
@@ -103,50 +71,60 @@ public class AuthenticationPageTest extends TestCase {
         this.jndiTestUtils.tearDown();
     }
 
+    /**
+     * Sets wicket up to begin authentication and injects the Encap device service, SAML authority service and HelpDesk service.
+     * 
+     * @return The {@link FormTester} for the authentication for on the authentication page.
+     */
+    private FormTester prepareAuthentication()
+            throws Exception {
+
+        // Load Authentication Page.
+        this.wicket.startPage(AuthenticationPage.class);
+        this.wicket.assertRenderedPage(AuthenticationPage.class);
+        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID, Form.class);
+
+        // Inject EJBs.
+        EJBTestUtils.inject(this.wicket.getLastRenderedPage(), this.mockEncapDeviceService);
+        EJBTestUtils.inject(this.wicket.getLastRenderedPage(), this.mockSamlAuthorityService);
+        this.jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, this.mockHelpdeskManager);
+
+        // Setup mocks.
+        expect(this.mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
+        expect(this.mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
+
+        // Return Authentication Form.
+        return this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
+    }
+
     @Test
     public void testAuthenticate()
             throws Exception {
 
-        // setup
-        String userId = UUID.randomUUID().toString();
-        String mobile = "0523012295";
-        String challenge = "0123456789";
-        String otp = "000000";
+        // Setup.
+        FormTester authenticationForm = prepareAuthentication();
+        this.mockEncapDeviceService.checkMobile(TEST_MOBILE);
+        expect(this.mockEncapDeviceService.requestOTP(TEST_MOBILE)).andStubReturn(TEST_CHALLENGE);
+        expect(this.mockEncapDeviceService.authenticate(TEST_MOBILE, TEST_CHALLENGE, TEST_OTP)).andStubReturn(TEST_USERID);
+        replay(this.mockEncapDeviceService, this.mockSamlAuthorityService, this.mockHelpdeskManager);
 
-        // Authentication Page: Verify.
-        this.wicket.startPage(AuthenticationPage.class);
-        this.wicket.assertRenderedPage(AuthenticationPage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID, Form.class);
-
-        // setup
-        EJBTestUtils.inject(this.wicket.getLastRenderedPage(), this.mockEncapDeviceService);
-        EJBTestUtils.inject(this.wicket.getLastRenderedPage(), this.mockSamlAuthorityService);
-
-        // stubs
-        expect(this.mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
-        expect(this.mockEncapDeviceService.authenticate(mobile, challenge, otp)).andStubReturn(userId);
-        expect(this.mockEncapDeviceService.requestOTP(mobile)).andStubReturn(challenge);
-
-        // prepare
-        replay(this.mockEncapDeviceService, this.mockSamlAuthorityService);
-
-        // Send OTP, get challenge.
-        FormTester authenticationForm = this.wicket
-                                                   .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
-        authenticationForm.setValue(AuthenticationPage.MOBILE_FIELD_ID, mobile);
+        // Request OTP for our mobile.
+        authenticationForm.setValue(AuthenticationPage.MOBILE_FIELD_ID, TEST_MOBILE);
         authenticationForm.submit(AuthenticationPage.CHALLENGE_BUTTON_ID);
 
-        // Authentication Page: Verify.
-        this.wicket.startPage(AuthenticationPage.class);
+        // Check for errors.
         this.wicket.assertRenderedPage(AuthenticationPage.class);
         this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID, Form.class);
+        this.wicket.assertNoErrorMessage();
 
-        // Verify OTP with challenge.
+        // Specify our OTP and begin login.
         authenticationForm = this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
-        authenticationForm.setValue(AuthenticationPage.OTP_FIELD_ID, otp);
+        authenticationForm.setValue(AuthenticationPage.OTP_FIELD_ID, TEST_OTP);
         authenticationForm.submit(AuthenticationPage.LOGIN_BUTTON_ID);
 
-        // verify
+        // Check for errors.
+        this.wicket.assertRenderedPage(AuthenticationPage.class);
+        this.wicket.assertNoErrorMessage();
         verify(this.mockEncapDeviceService, this.mockSamlAuthorityService);
     }
 
@@ -154,116 +132,70 @@ public class AuthenticationPageTest extends TestCase {
     public void testAuthenticateSubjectNotFound()
             throws Exception {
 
-        // setup
-        String userId = UUID.randomUUID().toString();
-        String token = "000000";
-        DummyNameIdentifierMappingClient.setUserId(userId);
+        // Setup.
+        FormTester authenticationForm = prepareAuthentication();
+        this.mockEncapDeviceService.checkMobile(TEST_MOBILE);
+        expectLastCall().andThrow(new SubjectNotFoundException());
+        replay(this.mockEncapDeviceService, this.mockSamlAuthorityService, this.mockHelpdeskManager);
 
-        // Authentication Page: Verify.
-        AuthenticationPage authenticationPage = (AuthenticationPage) this.wicket.startPage(AuthenticationPage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID, Form.class);
+        // Request OTP for our mobile.
+        authenticationForm.setValue(AuthenticationPage.MOBILE_FIELD_ID, TEST_MOBILE);
+        authenticationForm.submit(AuthenticationPage.CHALLENGE_BUTTON_ID);
 
-        // setup
-        EJBTestUtils.inject(authenticationPage, this.mockEncapDeviceService);
-        this.jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, this.mockHelpdeskManager);
-
-        // stubs
-        expect(this.mockEncapDeviceService.authenticate(userId, token)).andThrow(new SubjectNotFoundException());
-        expect(this.mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
-
-        // prepare
-        replay(this.mockEncapDeviceService, this.mockHelpdeskManager);
-
-        // operate
-        FormTester authenticationForm = this.wicket
-                                                   .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
-        authenticationForm.setValue(AuthenticationPage.MOBILE_FIELD_ID, UUID.randomUUID().toString());
-        authenticationForm.setValue(AuthenticationPage.OTP_FIELD_ID, token);
-        authenticationForm.submit(AuthenticationPage.LOGIN_BUTTON_ID);
-
-        // verify
-        verify(this.mockEncapDeviceService, this.mockHelpdeskManager);
-
+        // Check for errors.
         this.wicket.assertRenderedPage(AuthenticationPage.class);
-        this.wicket.assertErrorMessages(new String[] { "encapNotRegistered" });
-
+        this.wicket.assertErrorMessages(new String[] { "mobileNotRegistered" });
+        verify(this.mockEncapDeviceService, this.mockHelpdeskManager);
     }
 
     @Test
     public void testAuthenticateDeviceDisabled()
             throws Exception {
 
-        // setup
-        String userId = UUID.randomUUID().toString();
-        String token = "000000";
-        DummyNameIdentifierMappingClient.setUserId(userId);
+        // Setup.
+        FormTester authenticationForm = prepareAuthentication();
+        this.mockEncapDeviceService.checkMobile(TEST_MOBILE);
+        expectLastCall().andThrow(new DeviceDisabledException());
+        replay(this.mockEncapDeviceService, this.mockSamlAuthorityService, this.mockHelpdeskManager);
 
-        // Authentication Page: Verify.
-        AuthenticationPage authenticationPage = (AuthenticationPage) this.wicket.startPage(AuthenticationPage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID, Form.class);
+        // Request OTP for our mobile.
+        authenticationForm.setValue(AuthenticationPage.MOBILE_FIELD_ID, TEST_MOBILE);
+        authenticationForm.submit(AuthenticationPage.CHALLENGE_BUTTON_ID);
 
-        // setup
-        EJBTestUtils.inject(authenticationPage, this.mockEncapDeviceService);
-        this.jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, this.mockHelpdeskManager);
-
-        // stubs
-        expect(this.mockEncapDeviceService.authenticate(userId, token)).andThrow(new DeviceDisabledException());
-        expect(this.mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
-
-        // prepare
-        replay(this.mockEncapDeviceService, this.mockHelpdeskManager);
-
-        // operate
-        FormTester authenticationForm = this.wicket
-                                                   .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
-        authenticationForm.setValue(AuthenticationPage.MOBILE_FIELD_ID, UUID.randomUUID().toString());
-        authenticationForm.setValue(AuthenticationPage.OTP_FIELD_ID, token);
-        authenticationForm.submit(AuthenticationPage.LOGIN_BUTTON_ID);
-
-        // verify
-        verify(this.mockEncapDeviceService, this.mockHelpdeskManager);
-
+        // Check for errors.
         this.wicket.assertRenderedPage(AuthenticationPage.class);
-        this.wicket.assertErrorMessages(new String[] { "encapDisabled" });
-
+        this.wicket.assertErrorMessages(new String[] { "mobileDisabled" });
+        verify(this.mockEncapDeviceService, this.mockHelpdeskManager);
     }
 
     @Test
     public void testAuthenticateFailed()
             throws Exception {
 
-        // setup
-        String userId = UUID.randomUUID().toString();
-        String token = "000000";
-        DummyNameIdentifierMappingClient.setUserId(userId);
+        // Setup.
+        FormTester authenticationForm = prepareAuthentication();
+        this.mockEncapDeviceService.checkMobile(TEST_MOBILE);
+        expect(this.mockEncapDeviceService.requestOTP(TEST_MOBILE)).andStubReturn(TEST_CHALLENGE);
+        expect(this.mockEncapDeviceService.authenticate(TEST_MOBILE, TEST_CHALLENGE, TEST_OTP)).andStubReturn(null);
+        replay(this.mockEncapDeviceService, this.mockSamlAuthorityService, this.mockHelpdeskManager);
 
-        // Authentication Page: Verify.
-        AuthenticationPage authenticationPage = (AuthenticationPage) this.wicket.startPage(AuthenticationPage.class);
+        // Request OTP for our mobile.
+        authenticationForm.setValue(AuthenticationPage.MOBILE_FIELD_ID, TEST_MOBILE);
+        authenticationForm.submit(AuthenticationPage.CHALLENGE_BUTTON_ID);
+
+        // Check for errors.
+        this.wicket.assertRenderedPage(AuthenticationPage.class);
         this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID, Form.class);
+        this.wicket.assertNoErrorMessage();
 
-        // setup
-        EJBTestUtils.inject(authenticationPage, this.mockEncapDeviceService);
-        this.jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, this.mockHelpdeskManager);
-
-        // stubs
-        expect(this.mockEncapDeviceService.authenticate(userId, token)).andStubReturn(null);
-        expect(this.mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
-
-        // prepare
-        replay(this.mockEncapDeviceService, this.mockHelpdeskManager);
-
-        // operate
-        FormTester authenticationForm = this.wicket
-                                                   .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
-        authenticationForm.setValue(AuthenticationPage.MOBILE_FIELD_ID, UUID.randomUUID().toString());
-        authenticationForm.setValue(AuthenticationPage.OTP_FIELD_ID, token);
+        // Specify our OTP and begin login.
+        authenticationForm = this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
+        authenticationForm.setValue(AuthenticationPage.OTP_FIELD_ID, TEST_OTP);
         authenticationForm.submit(AuthenticationPage.LOGIN_BUTTON_ID);
 
-        // verify
-        verify(this.mockEncapDeviceService, this.mockHelpdeskManager);
-
+        // Check for errors.
         this.wicket.assertRenderedPage(AuthenticationPage.class);
         this.wicket.assertErrorMessages(new String[] { "authenticationFailedMsg" });
-
+        verify(this.mockEncapDeviceService, this.mockHelpdeskManager);
     }
 }

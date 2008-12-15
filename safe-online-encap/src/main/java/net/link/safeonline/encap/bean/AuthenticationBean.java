@@ -7,7 +7,6 @@
 package net.link.safeonline.encap.bean;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -121,10 +120,6 @@ public class AuthenticationBean implements Authentication {
             this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "mobileNotRegistered");
             HelpdeskLogger.add("login: subject not found for " + this.mobile, LogLevelType.ERROR);
             return null;
-        } catch (MalformedURLException e) {
-            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "mobileCommunicationFailed");
-            HelpdeskLogger.add("login: encap webservice not available", LogLevelType.ERROR);
-            return null;
         } catch (MobileException e) {
             this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "mobileCommunicationFailed");
             HelpdeskLogger.add("login: failed to contact encap webservice for " + this.mobile, LogLevelType.ERROR);
@@ -147,10 +142,9 @@ public class AuthenticationBean implements Authentication {
     }
 
     @Begin
-    @ErrorHandling( { @Error(exceptionClass = MalformedURLException.class, messageId = "mobileCommunicationFailed"),
-            @Error(exceptionClass = MobileException.class, messageId = "mobileCommunicationFailed") })
+    @ErrorHandling( { @Error(exceptionClass = MobileException.class, messageId = "mobileCommunicationFailed") })
     public String requestOTP()
-            throws MalformedURLException, MobileException, AttributeTypeNotFoundException, AttributeNotFoundException {
+            throws MobileException, AttributeTypeNotFoundException, AttributeNotFoundException {
 
         LOG.debug("check mobile: " + this.mobile);
         try {
@@ -171,10 +165,9 @@ public class AuthenticationBean implements Authentication {
         return "success";
     }
 
-    @ErrorHandling( { @Error(exceptionClass = MalformedURLException.class, messageId = "mobileCommunicationFailed"),
-            @Error(exceptionClass = MobileException.class, messageId = "mobileCommunicationFailed") })
+    @ErrorHandling( { @Error(exceptionClass = MobileException.class, messageId = "mobileCommunicationFailed") })
     public String requestNewOTP()
-            throws MalformedURLException, MobileException {
+            throws MobileException {
 
         LOG.debug("request new OTP: mobile=" + this.mobile);
         this.challengeId = this.encapDeviceService.requestOTP(this.mobile.getNumber());
