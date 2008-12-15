@@ -109,29 +109,41 @@ public class AuthenticationPageTest extends TestCase {
 
         // setup
         String userId = UUID.randomUUID().toString();
-        String token = "000000";
-        DummyNameIdentifierMappingClient.setUserId(userId);
+        String mobile = "0523012295";
+        String challenge = "0123456789";
+        String otp = "000000";
 
         // Authentication Page: Verify.
-        AuthenticationPage authenticationPage = (AuthenticationPage) this.wicket.startPage(AuthenticationPage.class);
+        this.wicket.startPage(AuthenticationPage.class);
+        this.wicket.assertRenderedPage(AuthenticationPage.class);
         this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID, Form.class);
 
         // setup
-        EJBTestUtils.inject(authenticationPage, this.mockEncapDeviceService);
-        EJBTestUtils.inject(authenticationPage, this.mockSamlAuthorityService);
+        EJBTestUtils.inject(this.wicket.getLastRenderedPage(), this.mockEncapDeviceService);
+        EJBTestUtils.inject(this.wicket.getLastRenderedPage(), this.mockSamlAuthorityService);
 
         // stubs
-        expect(this.mockEncapDeviceService.authenticate(userId, token)).andStubReturn(userId);
         expect(this.mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
+        expect(this.mockEncapDeviceService.authenticate(mobile, challenge, otp)).andStubReturn(userId);
+        expect(this.mockEncapDeviceService.requestOTP(mobile)).andStubReturn(challenge);
 
         // prepare
         replay(this.mockEncapDeviceService, this.mockSamlAuthorityService);
 
-        // RegisterPage: Register encap for user
+        // Send OTP, get challenge.
         FormTester authenticationForm = this.wicket
                                                    .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
-        authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, UUID.randomUUID().toString());
-        authenticationForm.setValue(AuthenticationPage.TOKEN_FIELD_ID, token);
+        authenticationForm.setValue(AuthenticationPage.MOBILE_FIELD_ID, mobile);
+        authenticationForm.submit(AuthenticationPage.CHALLENGE_BUTTON_ID);
+
+        // Authentication Page: Verify.
+        this.wicket.startPage(AuthenticationPage.class);
+        this.wicket.assertRenderedPage(AuthenticationPage.class);
+        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID, Form.class);
+
+        // Verify OTP with challenge.
+        authenticationForm = this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
+        authenticationForm.setValue(AuthenticationPage.OTP_FIELD_ID, otp);
         authenticationForm.submit(AuthenticationPage.LOGIN_BUTTON_ID);
 
         // verify
@@ -165,8 +177,8 @@ public class AuthenticationPageTest extends TestCase {
         // operate
         FormTester authenticationForm = this.wicket
                                                    .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
-        authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, UUID.randomUUID().toString());
-        authenticationForm.setValue(AuthenticationPage.TOKEN_FIELD_ID, token);
+        authenticationForm.setValue(AuthenticationPage.MOBILE_FIELD_ID, UUID.randomUUID().toString());
+        authenticationForm.setValue(AuthenticationPage.OTP_FIELD_ID, token);
         authenticationForm.submit(AuthenticationPage.LOGIN_BUTTON_ID);
 
         // verify
@@ -204,8 +216,8 @@ public class AuthenticationPageTest extends TestCase {
         // operate
         FormTester authenticationForm = this.wicket
                                                    .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
-        authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, UUID.randomUUID().toString());
-        authenticationForm.setValue(AuthenticationPage.TOKEN_FIELD_ID, token);
+        authenticationForm.setValue(AuthenticationPage.MOBILE_FIELD_ID, UUID.randomUUID().toString());
+        authenticationForm.setValue(AuthenticationPage.OTP_FIELD_ID, token);
         authenticationForm.submit(AuthenticationPage.LOGIN_BUTTON_ID);
 
         // verify
@@ -243,8 +255,8 @@ public class AuthenticationPageTest extends TestCase {
         // operate
         FormTester authenticationForm = this.wicket
                                                    .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
-        authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, UUID.randomUUID().toString());
-        authenticationForm.setValue(AuthenticationPage.TOKEN_FIELD_ID, token);
+        authenticationForm.setValue(AuthenticationPage.MOBILE_FIELD_ID, UUID.randomUUID().toString());
+        authenticationForm.setValue(AuthenticationPage.OTP_FIELD_ID, token);
         authenticationForm.submit(AuthenticationPage.LOGIN_BUTTON_ID);
 
         // verify

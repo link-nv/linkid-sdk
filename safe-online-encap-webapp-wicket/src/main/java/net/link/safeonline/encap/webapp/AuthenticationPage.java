@@ -25,6 +25,7 @@ import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.RedirectToUrlException;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
@@ -41,11 +42,13 @@ public class AuthenticationPage extends TemplatePage {
     static final Log               LOG                    = LogFactory.getLog(AuthenticationPage.class);
 
     public static final String     AUTHENTICATION_FORM_ID = "authentication_form";
-    public static final String     LOGIN_NAME_FIELD_ID    = "loginName";
-    public static final String     TOKEN_FIELD_ID         = "otp";
+    public static final String     MOBILE_FIELD_ID        = "loginName";
+    public static final String     OTP_FIELD_ID           = "otp";
     public static final String     LOGIN_BUTTON_ID        = "mobile";
     public static final String     CANCEL_BUTTON_ID       = "cancel";
-    public static final String     CHALLENGE_ID           = "challenge";
+    public static final String     CHALLENGE_FIELD_ID     = "challenge";
+
+    public static final String     CHALLENGE_BUTTON_ID    = "requestChallenge";
 
     @EJB(mappedName = EncapDeviceService.JNDI_BINDING)
     transient EncapDeviceService   encapDeviceService;
@@ -88,7 +91,7 @@ public class AuthenticationPage extends TemplatePage {
 
         private static final long serialVersionUID = 1L;
 
-        Model<String>             challenge;
+        String                    challenge;
         Model<String>             mobile;
         Model<String>             otp;
 
@@ -98,13 +101,39 @@ public class AuthenticationPage extends TemplatePage {
 
             super(id);
 
-            final TextField<String> mobileField = new TextField<String>(LOGIN_NAME_FIELD_ID, this.mobile = new Model<String>());
+            // Create our form's components.
+            final TextField<String> mobileField = new TextField<String>(MOBILE_FIELD_ID, this.mobile = new Model<String>());
+            mobileField.setEnabled(this.challenge == null);
             mobileField.setRequired(true);
 
-            final TextField<String> tokenField = new TextField<String>(TOKEN_FIELD_ID, this.otp = new Model<String>());
-            tokenField.setRequired(true);
+            final TextField<String> otpField = new TextField<String>(OTP_FIELD_ID, this.otp = new Model<String>());
+            otpField.setVisible(this.challenge != null);
+            otpField.setRequired(true);
 
-            Button login = new Button(LOGIN_BUTTON_ID) {
+            final Button challengeButton = new Button(CHALLENGE_BUTTON_ID) {
+
+                private static final long serialVersionUID = 1L;
+
+
+                @Override
+                public void onSubmit() {
+
+                    try {
+                        AuthenticationForm.this.challenge = AuthenticationPage.this.encapDeviceService
+                                                                                                      .requestOTP(AuthenticationForm.this.mobile
+                                                                                                                                                .getObject());
+                    }
+
+                    catch (MobileException e) {
+                        AuthenticationForm.this.error(getLocalizer().getString("encapServiceFailed", this));
+                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "mobile: " + e.getMessage() + " for "
+                                + AuthenticationForm.this.mobile, LogLevelType.ERROR);
+                    }
+                }
+            };
+            challengeButton.setVisible(this.challenge == null);
+
+            final Button loginButton = new Button(LOGIN_BUTTON_ID) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -116,37 +145,32 @@ public class AuthenticationPage extends TemplatePage {
 
                     try {
                         String userId = AuthenticationPage.this.encapDeviceService.authenticate(AuthenticationForm.this.mobile.getObject(),
-                                AuthenticationForm.this.challenge.getObject(), AuthenticationForm.this.otp.getObject());
+                                AuthenticationForm.this.challenge, AuthenticationForm.this.otp.getObject());
+                        if (null == userId)
+                            throw new MobileAuthenticationException();
 
-                        if (null == userId) {
-                            AuthenticationForm.this.error(getLocalizer().getString("authenticationFailedMsg", this));
-                            HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "mobile failed: "
-                                    + AuthenticationForm.this.mobile, LogLevelType.ERROR);
-                            return;
-                        }
                         login(userId);
-                    } catch (MobileException e) {
+                        HelpdeskLogger.clear(WicketUtil.toServletRequest(getRequest()).getSession());
+                    }
+
+                    catch (MobileException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("encapServiceFailed", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "mobile: " + e.getMessage() + " for "
                                 + AuthenticationForm.this.mobile, LogLevelType.ERROR);
-                        return;
                     } catch (MobileAuthenticationException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("encapAuthenticationFailed", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "mobile: " + e.getMessage() + " for "
                                 + AuthenticationForm.this.mobile, LogLevelType.ERROR);
-                        return;
                     } catch (SubjectNotFoundException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("encapNotRegistered", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "mobile: subject not found for "
                                 + AuthenticationForm.this.mobile, LogLevelType.ERROR);
-                        return;
                     }
-                    HelpdeskLogger.clear(WicketUtil.toServletRequest(getRequest()).getSession());
-                    return;
                 }
             };
+            loginButton.setVisible(this.challenge != null);
 
-            Button cancel = new Button(CANCEL_BUTTON_ID) {
+            final Button cancelButton = new Button(CANCEL_BUTTON_ID) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -156,15 +180,12 @@ public class AuthenticationPage extends TemplatePage {
 
                     exit();
                 }
-
             };
-            cancel.setDefaultFormProcessing(false);
+            cancelButton.setDefaultFormProcessing(false);
 
-            add(new Label(CHALLENGE_ID, this.challenge = new Model<String>()));
-            add(mobileField);
-            add(tokenField);
-            add(login);
-            add(cancel);
+            // Add em to the page.
+            add(mobileField, otpField);
+            add(challengeButton, loginButton, cancelButton);
             add(new ErrorFeedbackPanel("feedback", new ComponentFeedbackMessageFilter(this)));
         }
     }
@@ -178,12 +199,10 @@ public class AuthenticationPage extends TemplatePage {
         this.authenticationContext.setUsedDevice(net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID);
 
         exit();
-
     }
 
     public void exit() {
 
-        getResponse().redirect("authenticationexit");
-        setRedirect(false);
+        throw new RedirectToUrlException("authenticationexit");
     }
 }
