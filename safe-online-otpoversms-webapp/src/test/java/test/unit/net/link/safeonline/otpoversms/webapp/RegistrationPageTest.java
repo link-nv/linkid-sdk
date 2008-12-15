@@ -12,7 +12,7 @@ import junit.framework.TestCase;
 import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
-import net.link.safeonline.demo.wicket.tools.WicketUtil;
+import net.link.safeonline.wicket.tools.WicketUtil;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
 import net.link.safeonline.helpdesk.HelpdeskManager;

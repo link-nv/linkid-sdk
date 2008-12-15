@@ -1,6 +1,6 @@
 package net.link.safeonline.demo.lawyer.webapp;
 
-import net.link.safeonline.demo.wicket.tools.RolesAllowed;
+import net.link.safeonline.wicket.tools.RolesAllowed;
 
 import org.apache.wicket.markup.html.basic.Label;
 
