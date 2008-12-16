@@ -2304,6 +2304,12 @@
 						<groupId>org.apache.xerces</groupId>
 						<artifactId>resolver</artifactId>
 					</exclusion>
+
+                    <!-- Exclude bcprov-jdk13, bcprov-jdk14: We use bcprov-jdk15 -->
+					<exclusion>
+                        <groupId>bouncycastle</groupId>
+                        <artifactId>bcprov-jdk14</artifactId>
+					</exclusion>
 				</exclusions>
 			</dependency>
 			<dependency>
@@ -2445,6 +2451,16 @@
 						>exclusion> <groupId>opensaml</groupId>
 						<artifactId>opensaml</artifactId> </exclusion
 					-->
+
+                    <!-- Exclude bcprov-jdk13, bcprov-jdk14: We use bcprov-jdk15 -->
+					<exclusion>
+                        <groupId>bouncycastle</groupId>
+                        <artifactId>bcprov-jdk13</artifactId>
+					</exclusion>
+					<exclusion>
+                        <groupId>bouncycastle</groupId>
+                        <artifactId>bcprov-jdk14</artifactId>
+					</exclusion>
 				</exclusions>
 			</dependency>
 			<dependency>
