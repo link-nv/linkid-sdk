@@ -14,7 +14,6 @@ import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.AuthenticationContext;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.encap.webapp.AuthenticationPage;
-import net.link.safeonline.encap.webapp.EnablePage;
 import net.link.safeonline.encap.webapp.AuthenticationPage.Goal;
 import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.model.encap.EncapDeviceService;
@@ -33,15 +32,11 @@ import org.junit.Test;
 
 public class AuthenticationPageTest {
 
-    private EncapDeviceService   mockEncapDeviceService;
-
-    private SamlAuthorityService mockSamlAuthorityService;
-
-    private HelpdeskManager      mockHelpdeskManager;
-
-    private WicketTester         wicket;
-
     private JndiTestUtils        jndiTestUtils;
+    private EncapDeviceService   mockEncapDeviceService;
+    private SamlAuthorityService mockSamlAuthorityService;
+    private HelpdeskManager      mockHelpdeskManager;
+    private WicketTester         wicket;
 
     private static final String  TEST_APPLICATION = "test-application";
     private static final String  TEST_USERID      = UUID.randomUUID().toString();
@@ -278,39 +273,28 @@ public class AuthenticationPageTest {
     public void testEnableAuthenticateFailed()
             throws Exception {
 
-        // setup
-        String userId = UUID.randomUUID().toString();
-        String token = "000000";
-        String serialNumber = "12345678";
+        // Setup.
+        FormTester form = prepareAuthentication(Goal.ENABLE_DEVICE);
+        expect(mockEncapDeviceService.requestOTP(TEST_MOBILE)).andStubReturn(TEST_CHALLENGE);
+        expect(mockEncapDeviceService.authenticateEncap(TEST_CHALLENGE, TEST_OTP)).andReturn(false);
+        replay(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
-        protocolContext.setSubject(userId);
-        protocolContext.setAttribute(serialNumber);
+        // Request OTP for our mobile.
+        form.setValue(AuthenticationPage.MOBILE_FIELD_ID, TEST_MOBILE);
+        form.submit(AuthenticationPage.CHALLENGE_BUTTON_ID);
 
-        // verify
-        EnablePage enablePage = (EnablePage) wicket.startPage(EnablePage.class);
-        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID, Form.class);
+        // Check for errors.
+        wicket.assertRenderedPage(AuthenticationPage.class);
+        wicket.assertNoErrorMessage();
 
-        // setup
-        EJBTestUtils.inject(enablePage, mockEncapDeviceService);
-        jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
+        // Specify our OTP and begin login.
+        form = getAuthenticationForm();
+        form.setValue(AuthenticationPage.OTP_FIELD_ID, TEST_OTP);
+        form.submit(AuthenticationPage.LOGIN_BUTTON_ID);
 
-        // stubs
-        expect(mockEncapDeviceService.enable(userId, serialNumber, token)).andStubReturn(null);
-        expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
-
-        // prepare
-        replay(mockEncapDeviceService, mockHelpdeskManager);
-
-        // operate
-        FormTester enableForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID);
-        enableForm.setValue(EnablePage.TOKEN_FIELD_ID, token);
-        enableForm.submit(EnablePage.ENABLE_BUTTON_ID);
-
-        // verify
-        verify(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
-
-        wicket.assertRenderedPage(EnablePage.class);
+        // Check for errors.
+        wicket.assertRenderedPage(AuthenticationPage.class);
         wicket.assertErrorMessages(new String[] { "authenticationFailedMsg" });
+        verify(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
     }
 }
