@@ -184,6 +184,7 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
                             // sign-on applications
                             validSso = true;
                             cookie.setValue(authenticationService.getSsoCookie().getValue());
+                            cookie.setPath(this.cookiePath);
                             response.addCookie(cookie);
                         }
                     } catch (ApplicationNotFoundException e) {
