@@ -12,11 +12,14 @@ import javax.ejb.EJB;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
+import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.MobileAuthenticationException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.AuthenticationContext;
+import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.model.encap.EncapConstants;
 import net.link.safeonline.model.encap.EncapDeviceService;
@@ -47,9 +50,9 @@ public class AuthenticationPage extends TemplatePage {
     public static final String     AUTHENTICATION_FORM_ID = "authentication_form";
     public static final String     MOBILE_FIELD_ID        = "mobile";
     public static final String     OTP_FIELD_ID           = "otp";
+    public static final String     CHALLENGE_BUTTON_ID    = "challenge";
     public static final String     LOGIN_BUTTON_ID        = "login";
     public static final String     CANCEL_BUTTON_ID       = "cancel";
-    public static final String     CHALLENGE_BUTTON_ID    = "challenge";
 
     @EJB(mappedName = EncapDeviceService.JNDI_BINDING)
     transient EncapDeviceService   encapDeviceService;
@@ -57,37 +60,70 @@ public class AuthenticationPage extends TemplatePage {
     @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
     transient SamlAuthorityService samlAuthorityService;
 
+    Goal                           goal;
+    ProtocolContext                protocolContext;
     AuthenticationContext          authenticationContext;
 
 
-    /**
-     * @param enable
-     *            <code>false</code>: Authenticating. <code>true</code>: Enabling device.
-     */
-    public AuthenticationPage(boolean enable) {
+    public enum Goal {
+        /** Authenticate a user with the device. */
+        AUTHENTICATE,
+        /** Re-enable a disabled device. */
+        ENABLE_DEVICE,
+        /** Finalize a device registration. */
+        REGISTER_DEVICE
+    }
 
-        this.authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest(getRequest()).getSession());
+
+    /**
+     * @see Goal
+     */
+    public AuthenticationPage(final Goal goal) {
+
+        this.goal = goal;
+        protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest(getRequest()).getSession());
 
         // Header & Sidebar.
-        addHeader(this);
+        getHeader();
         getSidebar().add(new Link<String>("tryAnotherDevice") {
 
             private static final long serialVersionUID = 1L;
+
+            {
+                setVisible(goal.equals(Goal.AUTHENTICATE));
+            }
 
 
             @Override
             public void onClick() {
 
-                AuthenticationPage.this.authenticationContext.setUsedDevice(EncapConstants.ENCAP_DEVICE_ID);
-                exit();
+                authenticationContext.setUsedDevice(EncapConstants.ENCAP_DEVICE_ID);
+                exit(false);
             }
         });
 
         // Our content.
-        String title = String.format("%s: %s %s", getLocalizer().getString("encapAuthentication", this), getLocalizer().getString(
-                "authenticatingFor", this), this.authenticationContext.getApplication());
+        String title = null;
+        switch (goal) {
+            case AUTHENTICATE:
+                title = localize("%l: %l %s", "mobileAuthentication", "authenticatingFor", authenticationContext.getApplication());
+            break;
+
+            case ENABLE_DEVICE:
+                title = localize("%l %l %s", "enable", "mobile", protocolContext.getAttribute());
+            break;
+
+            case REGISTER_DEVICE:
+                title = localize("%l", "registerANewDevice");
+            break;
+        }
+
+        ProgressAuthenticationPanel progress = new ProgressAuthenticationPanel("progress", ProgressAuthenticationPanel.stage.authenticate);
+        progress.setVisible(goal.equals(Goal.AUTHENTICATE));
+
+        getContent().add(progress);
         getContent().add(new Label("title", title));
-        getContent().add(new ProgressAuthenticationPanel("progress", ProgressAuthenticationPanel.stage.authenticate));
         getContent().add(new AuthenticationForm(AUTHENTICATION_FORM_ID));
     }
 
@@ -96,7 +132,7 @@ public class AuthenticationPage extends TemplatePage {
 
         private static final long serialVersionUID = 1L;
 
-        String                    challenge;
+        String                    challengeCode;
         Model<String>             mobile;
         Model<String>             otp;
 
@@ -114,13 +150,13 @@ public class AuthenticationPage extends TemplatePage {
             super(id);
 
             // Create our form's components.
-            this.mobileField = new TextField<String>(MOBILE_FIELD_ID, this.mobile = new Model<String>());
-            this.mobileField.setRequired(true);
+            mobileField = new TextField<String>(MOBILE_FIELD_ID, mobile = new Model<String>());
+            mobileField.setRequired(true);
 
-            this.otpField = new TextField<String>(OTP_FIELD_ID, this.otp = new Model<String>());
-            this.otpField.setRequired(true);
+            otpField = new TextField<String>(OTP_FIELD_ID, otp = new Model<String>());
+            otpField.setRequired(true);
 
-            this.challengeButton = new Button(CHALLENGE_BUTTON_ID) {
+            challengeButton = new Button(CHALLENGE_BUTTON_ID) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -129,40 +165,40 @@ public class AuthenticationPage extends TemplatePage {
                 public void onSubmit() {
 
                     try {
-                        // Verify mobile exists in OLAS and is not disabled.
-                        AuthenticationPage.this.encapDeviceService.checkMobile(AuthenticationForm.this.mobile.getObject());
+                        if (goal.equals(Goal.AUTHENTICATE)) {
+                            // Verify mobile exists in OLAS and is not disabled.
+                            encapDeviceService.checkMobile(mobile.getObject());
+                        }
 
                         // Ask Encap to send OTP, we get back a challenge.
-                        AuthenticationForm.this.challenge = AuthenticationPage.this.encapDeviceService
-                                                                                                      .requestOTP(AuthenticationForm.this.mobile
-                                                                                                                                                .getObject());
+                        challengeCode = encapDeviceService.requestOTP(mobile.getObject());
                     }
 
                     catch (SubjectNotFoundException e) {
-                        AuthenticationForm.this.error(getLocalizer().getString("mobileNotRegistered", this));
-                        HelpdeskLogger.add(String.format("requestOtp: subject not found for %s", AuthenticationForm.this.mobile), //
+                        error(localize("mobileNotRegistered"));
+                        HelpdeskLogger.add(localize("requestOtp: subject not found for %s", mobile), //
                                 LogLevelType.ERROR);
                     } catch (DeviceDisabledException e) {
-                        AuthenticationForm.this.error(getLocalizer().getString("mobileDisabled", this));
-                        HelpdeskLogger.add(String.format("requestOtp: mobile %s disabled", AuthenticationForm.this.mobile), //
+                        error(localize("mobileDisabled"));
+                        HelpdeskLogger.add(localize("requestOtp: mobile %s disabled", mobile), //
                                 LogLevelType.ERROR);
                     } catch (MobileException e) {
-                        AuthenticationForm.this.error(getLocalizer().getString("mobileCommunicationFailed", this));
-                        HelpdeskLogger.add(String.format("requestOtp: %s for mobile %s", e.getMessage(), AuthenticationForm.this.mobile), //
+                        error(localize("mobileCommunicationFailed"));
+                        HelpdeskLogger.add(localize("requestOtp: %s for mobile %s", e.getMessage(), mobile), //
                                 LogLevelType.ERROR);
                     } catch (AttributeTypeNotFoundException e) {
-                        AuthenticationForm.this.error(getLocalizer().getString("errorAttributeTypeNotFound", this));
-                        HelpdeskLogger.add(String.format("requestOtp: %s", e.getMessage()), //
+                        error(localize("errorAttributeTypeNotFound"));
+                        HelpdeskLogger.add(localize("requestOtp: %s", e.getMessage()), //
                                 LogLevelType.ERROR);
                     } catch (AttributeNotFoundException e) {
-                        AuthenticationForm.this.error(getLocalizer().getString("errorAttributeNotFound", this));
-                        HelpdeskLogger.add(String.format("requestOtp: %s", e.getMessage()), //
+                        error(localize("errorAttributeNotFound"));
+                        HelpdeskLogger.add(localize("requestOtp: %s", e.getMessage()), //
                                 LogLevelType.ERROR);
                     }
                 }
             };
 
-            this.loginButton = new Button(LOGIN_BUTTON_ID) {
+            loginButton = new Button(LOGIN_BUTTON_ID) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -170,36 +206,88 @@ public class AuthenticationPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    LOG.debug("mobile: " + AuthenticationForm.this.mobile);
-                    HelpdeskLogger.add("login: begin for: " + AuthenticationForm.this.mobile.getObject(), LogLevelType.INFO);
+                    LOG.debug("mobile: " + mobile);
+                    HelpdeskLogger.add("login: begin for: " + mobile.getObject(), LogLevelType.INFO);
 
                     try {
-                        String userId = AuthenticationPage.this.encapDeviceService.authenticate(AuthenticationForm.this.mobile.getObject(),
-                                AuthenticationForm.this.challenge, AuthenticationForm.this.otp.getObject());
-                        if (null == userId)
-                            throw new MobileAuthenticationException();
+                        switch (goal) {
+                            case AUTHENTICATE:
+                                String userId = encapDeviceService.authenticate(mobile.getObject(), challengeCode, otp.getObject());
+                                if (null == userId)
+                                    // Authentication failed.
+                                    throw new MobileAuthenticationException();
 
-                        login(userId);
+                                // Authentication passed, log the user in.
+                                authenticationContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
+                                authenticationContext.setUsedDevice(EncapConstants.ENCAP_DEVICE_ID);
+                                authenticationContext.setIssuer(EncapConstants.ENCAP_DEVICE_ID);
+                                authenticationContext.setUserId(userId);
+
+                                exit(true);
+                            break;
+
+                            case ENABLE_DEVICE:
+                                if (!encapDeviceService.authenticateEncap(challengeCode, otp.getObject()))
+                                    // Authentication failed.
+                                    throw new MobileAuthenticationException();
+
+                                // Authentication passed, enable the device.
+                                encapDeviceService.enable(protocolContext.getSubject(), mobile.getObject());
+                                protocolContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
+                                protocolContext.setSuccess(true);
+
+                                exit(true);
+                            break;
+
+                            case REGISTER_DEVICE:
+                                if (!encapDeviceService.authenticateEncap(challengeCode, otp.getObject()))
+                                    // Authentication failed.
+                                    throw new MobileAuthenticationException();
+
+                                // Authentication passed, commit this registration to OLAS.
+                                encapDeviceService.commitRegistration(protocolContext.getSubject(), mobile.getObject());
+
+                                exit(true);
+                            break;
+                        }
+
+                        // All went well, clear helpdesk events.
                         HelpdeskLogger.clear(WicketUtil.toServletRequest(getRequest()).getSession());
                     }
 
                     catch (MobileException e) {
-                        AuthenticationForm.this.error(getLocalizer().getString("mobileCommunicationFailed", this));
-                        HelpdeskLogger.add(String.format("login: comm: %s for %s", e.getMessage(), AuthenticationForm.this.mobile), //
+                        error(localize("mobileCommunicationFailed"));
+                        HelpdeskLogger.add(localize("login: comm: %s for %s", e.getMessage(), mobile.getObject()), //
                                 LogLevelType.ERROR);
                     } catch (MobileAuthenticationException e) {
-                        AuthenticationForm.this.error(getLocalizer().getString("authenticationFailedMsg", this));
-                        HelpdeskLogger.add(String.format("login: failed: %s for %s", e.getMessage(), AuthenticationForm.this.mobile), //
+                        error(localize("authenticationFailedMsg"));
+                        HelpdeskLogger.add(localize("login: failed: %s for %s", e.getMessage(), mobile.getObject()), //
                                 LogLevelType.ERROR);
                     } catch (SubjectNotFoundException e) {
-                        AuthenticationForm.this.error(getLocalizer().getString("mobileNotRegistered", this));
-                        HelpdeskLogger.add(String.format("login: subject not found for %s", AuthenticationForm.this.mobile), //
+                        error(localize("mobileNotRegistered"));
+                        HelpdeskLogger.add(localize("login: subject not found for %s", mobile.getObject()), //
+                                LogLevelType.ERROR);
+                    } catch (DeviceNotFoundException e) {
+                        error(localize("errorDeviceNotFound"));
+                        HelpdeskLogger.add(localize("enable: device not found: %s", mobile.getObject()), //
+                                LogLevelType.ERROR);
+                    } catch (DeviceRegistrationNotFoundException e) {
+                        error(localize("errorDeviceRegistrationNotFound"));
+                        HelpdeskLogger.add(localize("enable: device not registered: %s", mobile.getObject()), //
+                                LogLevelType.ERROR);
+                    } catch (AttributeTypeNotFoundException e) {
+                        error(localize("errorAttributeTypeNotFound"));
+                        HelpdeskLogger.add(localize("register: device attribute types unavailable for: %s", mobile.getObject()), //
+                                LogLevelType.ERROR);
+                    } catch (AttributeNotFoundException e) {
+                        error(localize("errorAttributeNotFound"));
+                        HelpdeskLogger.add(localize("register: device attributes unavailable for: %s", mobile.getObject()), //
                                 LogLevelType.ERROR);
                     }
                 }
             };
 
-            this.cancelButton = new Button(CANCEL_BUTTON_ID) {
+            cancelButton = new Button(CANCEL_BUTTON_ID) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -207,14 +295,14 @@ public class AuthenticationPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    exit();
+                    exit(false);
                 }
             };
-            this.cancelButton.setDefaultFormProcessing(false);
+            cancelButton.setDefaultFormProcessing(false);
 
             // Add em to the page.
-            add(this.mobileField, this.otpField);
-            add(this.challengeButton, this.loginButton, this.cancelButton);
+            add(mobileField, otpField);
+            add(challengeButton, loginButton, cancelButton);
             add(new ErrorFeedbackPanel("feedback", new ComponentFeedbackMessageFilter(this)));
         }
 
@@ -224,28 +312,35 @@ public class AuthenticationPage extends TemplatePage {
         @Override
         protected void onBeforeRender() {
 
-            this.mobileField.setEnabled(this.challenge == null);
-            this.otpField.setVisible(this.challenge != null);
-            this.challengeButton.setVisible(this.challenge == null);
-            this.loginButton.setVisible(this.challenge != null);
+            mobileField.setEnabled(challengeCode == null);
+            otpField.setVisible(challengeCode != null);
+            challengeButton.setVisible(challengeCode == null);
+            loginButton.setVisible(challengeCode != null);
 
             super.onBeforeRender();
         }
     }
 
 
-    public void login(String userId) {
+    void exit(boolean success) {
 
-        this.authenticationContext.setUserId(userId);
-        this.authenticationContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());
-        this.authenticationContext.setIssuer(net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID);
-        this.authenticationContext.setUsedDevice(net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID);
+        switch (goal) {
+            case AUTHENTICATE:
+                authenticationContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
 
-        exit();
-    }
+                throw new RedirectToUrlException("authenticationexit");
 
-    public void exit() {
+            case ENABLE_DEVICE:
+                protocolContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
+                protocolContext.setSuccess(success);
 
-        throw new RedirectToUrlException("authenticationexit");
+                throw new RedirectToUrlException("deviceexit");
+
+            case REGISTER_DEVICE:
+                protocolContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
+                protocolContext.setSuccess(success);
+
+                throw new RedirectToUrlException("deviceexit");
+        }
     }
 }
