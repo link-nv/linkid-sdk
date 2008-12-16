@@ -1,4 +1,4 @@
-#!/bin/bash
+#! /usr/bin/env bash
 # ___________________________________________________________________________ #
 #																			 #
 #	   InitDB -- Initialize the DS used by the web application.			  #

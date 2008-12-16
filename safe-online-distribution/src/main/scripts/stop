@@ -1,4 +1,4 @@
-#!/bin/bash
+#! /usr/bin/env bash
 # ___________________________________________________________________________ #
 #                                                                             #
 #       Stop -- Stop the Application Server if it is currently running.       #
