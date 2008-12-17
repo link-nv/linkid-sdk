@@ -48,7 +48,7 @@ public class RegisterPage extends TemplatePage {
 
     public static final String     REGISTER_FORM_ID    = "register_form";
     public static final String     MOBILE_FIELD_ID     = "mobile";
-    public static final String     ACTIVATION_FIELD_ID = "serialNumber";
+    public static final String     ACTIVATION_FIELD_ID = "activation";
     public static final String     ACTIVATE_BUTTON_ID  = "activate";
     public static final String     REGISTER_BUTTON_ID  = "register";
     public static final String     CANCEL_BUTTON_ID    = "cancel";
@@ -83,6 +83,7 @@ public class RegisterPage extends TemplatePage {
         TextField<String>         mobileField;
         TextField<String>         activationField;
 
+        private Button            activateButton;
         private Button            registerButton;
         private Button            cancelButton;
 
@@ -99,7 +100,7 @@ public class RegisterPage extends TemplatePage {
             activationField.setRequired(true);
             activationField.add(StringValidator.lengthBetween(8, 12));
 
-            registerButton = new Button(REGISTER_BUTTON_ID) {
+            activateButton = new Button(ACTIVATE_BUTTON_ID) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -111,9 +112,7 @@ public class RegisterPage extends TemplatePage {
 
                     try {
                         HttpSession session = WicketUtil.toServletRequest(getRequest()).getSession();
-                        activationCode = encapDeviceService.register(mobile.getObject(), session.getId());
-
-                        throw new RestartResponseException(new AuthenticationPage(Goal.REGISTER_DEVICE));
+                        activation.setObject(encapDeviceService.register(mobile.getObject(), session.getId()));
                     }
 
                     catch (MobileRegistrationException e) {
@@ -125,6 +124,21 @@ public class RegisterPage extends TemplatePage {
                         HelpdeskLogger.add(localize("requestActivation: %s", e.getMessage()), //
                                 LogLevelType.ERROR);
                     }
+                }
+            };
+
+            registerButton = new Button(REGISTER_BUTTON_ID) {
+
+                private static final long serialVersionUID = 1L;
+
+
+                /**
+                 * {@inheritDoc}
+                 */
+                @Override
+                public void onSubmit() {
+
+                    throw new RestartResponseException(new AuthenticationPage(Goal.REGISTER_DEVICE));
                 }
             };
 
@@ -147,8 +161,23 @@ public class RegisterPage extends TemplatePage {
 
             // Add em to the page.
             add(mobileField, activationField);
-            add(registerButton, cancelButton);
+            add(activateButton, registerButton, cancelButton);
             add(new ErrorFeedbackPanel("feedback", new ComponentFeedbackMessageFilter(this)));
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void onBeforeRender() {
+
+            activationField.setVisible(activation.getObject() != null);
+            mobileField.setEnabled(activation.getObject() == null);
+
+            activateButton.setVisible(activation.getObject() == null);
+            registerButton.setVisible(activation.getObject() != null);
+
+            super.onBeforeRender();
         }
 
         protected String getUserId()

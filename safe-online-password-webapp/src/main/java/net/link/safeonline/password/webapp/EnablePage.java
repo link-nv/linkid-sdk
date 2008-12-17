@@ -59,7 +59,7 @@ public class EnablePage extends TemplatePage {
 
         this.protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
-        addHeader(this, false);
+        getHeader(false);
 
         getSidebar().add(new Link<String>("help") {
 
@@ -74,9 +74,7 @@ public class EnablePage extends TemplatePage {
             }
 
         });
-
         getContent().add(new EnableForm(ENABLE_FORM_ID));
-
     }
 
 

@@ -74,8 +74,7 @@ public class EnablePage extends TemplatePage {
 
         this.protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
-        addHeader(this, false);
-
+        getHeader(false);
         getSidebar().add(new Link<String>("help") {
 
             private static final long serialVersionUID = 1L;

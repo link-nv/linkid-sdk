@@ -55,11 +55,8 @@ public class RegisterPage extends TemplatePage {
 
     public RegisterPage() {
 
-        super();
-
-        addHeader(this);
-        addSidebar();
-
+        getHeader();
+        getSidebar();
         getContent().add(new RegisterForm(REGISTER_FORM_ID));
     }
 

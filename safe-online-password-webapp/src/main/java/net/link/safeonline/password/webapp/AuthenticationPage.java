@@ -48,13 +48,9 @@ public class AuthenticationPage extends TemplatePage {
     static final Log                LOG                    = LogFactory.getLog(AuthenticationPage.class);
 
     public static final String      AUTHENTICATION_FORM_ID = "authentication_form";
-
     public static final String      LOGIN_NAME_FIELD_ID    = "loginName";
-
     public static final String      PASSWORD_FIELD_ID      = "password";
-
     public static final String      LOGIN_BUTTON_ID        = "login";
-
     public static final String      CANCEL_BUTTON_ID       = "cancel";
 
     @EJB(mappedName = PasswordDeviceService.JNDI_BINDING)
@@ -72,8 +68,7 @@ public class AuthenticationPage extends TemplatePage {
 
         this.authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest(getRequest()).getSession());
 
-        addHeader(this);
-
+        getHeader();
         getSidebar().add(new Link<String>("help") {
 
             private static final long serialVersionUID = 1L;
@@ -85,7 +80,6 @@ public class AuthenticationPage extends TemplatePage {
                 setResponsePage(new HelpPage(getPage()));
 
             }
-
         });
 
         getSidebar().add(new Link<String>("tryAnotherDevice") {
@@ -108,7 +102,6 @@ public class AuthenticationPage extends TemplatePage {
         getContent().add(new Label("title", title));
 
         getContent().add(new AuthenticationForm(AUTHENTICATION_FORM_ID));
-
     }
 
 

@@ -76,6 +76,14 @@ public class AuthenticationPage extends TemplatePage {
 
 
     /**
+     * By default, use the {@link Goal#AUTHENTICATE}.
+     */
+    public AuthenticationPage() {
+
+        this(Goal.AUTHENTICATE);
+    }
+
+    /**
      * @see Goal
      */
     public AuthenticationPage(final Goal goal) {
@@ -264,7 +272,7 @@ public class AuthenticationPage extends TemplatePage {
                         HelpdeskLogger.add(localize("login: failed: %s for %s", e.getMessage(), mobile.getObject()), //
                                 LogLevelType.ERROR);
                     } catch (SubjectNotFoundException e) {
-                        error(localize("mobileNotRegistered"));
+                        error(localize("errorSubjectNotFound"));
                         HelpdeskLogger.add(localize("login: subject not found for %s", mobile.getObject()), //
                                 LogLevelType.ERROR);
                     } catch (DeviceNotFoundException e) {

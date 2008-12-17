@@ -67,7 +67,7 @@ public class UpdatePage extends TemplatePage {
 
         this.protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
-        addHeader(this, false);
+        getHeader(false);
 
         getSidebar().add(new Link<String>("help") {
 
@@ -84,7 +84,6 @@ public class UpdatePage extends TemplatePage {
         });
 
         getContent().add(new RegistrationForm(UPDATE_FORM_ID));
-
     }
 
 

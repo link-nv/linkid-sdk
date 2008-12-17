@@ -78,7 +78,7 @@ public class RegistrationPage extends TemplatePage {
 
         this.protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
-        addHeader(this, false);
+        getHeader(false);
 
         getSidebar().add(new Link<String>("help") {
 

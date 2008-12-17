@@ -15,7 +15,7 @@ import javax.ejb.Local;
 
 /**
  * <h2>{@link ScenarioController}<br>
- * <sub>The POJO interface to the {@link ScenarioControllerBean}.</sub></h2>
+ * <sub>The POJO interface to the {@link ScenarioController}.</sub></h2>
  * 
  * <p>
  * <i>Feb 19, 2008</i>

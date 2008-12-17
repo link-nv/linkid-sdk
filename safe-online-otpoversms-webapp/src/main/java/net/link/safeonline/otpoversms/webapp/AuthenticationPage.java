@@ -77,8 +77,7 @@ public class AuthenticationPage extends TemplatePage {
 
         this.authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.getHttpSession(getRequest()));
 
-        addHeader(this, false);
-
+        getHeader(false);
         getSidebar().add(new Link<String>("tryAnotherDevice") {
 
             private static final long serialVersionUID = 1L;
@@ -92,7 +91,6 @@ public class AuthenticationPage extends TemplatePage {
 
             }
         });
-
         getSidebar().add(new Link<String>("help") {
 
             private static final long serialVersionUID = 1L;
@@ -112,7 +110,6 @@ public class AuthenticationPage extends TemplatePage {
         String title = getLocalizer().getString("otpOverSmsAuthentication", this) + " : "
                 + getLocalizer().getString("authenticatingFor", this) + " " + this.authenticationContext.getApplication();
         getContent().add(new Label("title", title));
-
         getContent().add(new RequestOtpForm(REQUEST_OTP_FORM_ID));
         getContent().add(new VerifyOtpForm(VERIFY_OTP_FORM_ID));
     }

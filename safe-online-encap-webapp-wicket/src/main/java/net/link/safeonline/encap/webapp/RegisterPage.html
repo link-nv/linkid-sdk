@@ -27,22 +27,24 @@
 
 			<form wicket:id="register_form">
 
-				<label>
-					<wicket:message key="login">[Login Name]</wicket:message>
-				</label>
-				<div>
-					<input wicket:id="login" type="text" class="label" />
-				</div>
-				<div wicket:id="login_feedback" class="error"></div>
+                <wicket:enclosure>
+					<label>
+						<wicket:message key="mobile">[Mobile]</wicket:message>
+					</label>
+					<input wicket:id="mobile" type="text" class="label" />
+				</wicket:enclosure>
 
-				<label>
-					<wicket:message key="miscSerialNumber">[Serial Number]</wicket:message>
-				</label>
-				<input wicket:id="serialNumber" type="text" class="label" />
-				<div wicket:id="serialNumber_feedback" class="error"></div>
+				<wicket:enclosure>
+	                <label>
+						<wicket:message key="mobileActivation">[Activation Code]</wicket:message>
+					</label>
+					<input wicket:id="activation" type="text" class="label" />
+				</wicket:enclosure>
 
 				<label>&nbsp;</label>
-				<input wicket:id="register" type="submit" value="[Register]"
+				<input wicket:id="activate" type="submit" value="[Activate]"
+                    wicket:message="value:activate" class="submit" />
+                <input wicket:id="register" type="submit" value="[Register]"
 					wicket:message="value:register" class="submit" />
 				<input wicket:id="cancel" type="submit" value="[Cancel]"
 					wicket:message="value:cancelaction" class="submit" />
