@@ -25,7 +25,7 @@
 				</ul>
 
 				<p>
-					<wicket:message key="helpEncapAuthentication">[Authenticate
+					<wicket:message key="helpMobileAuthentication">[Authenticate
 						Encap Help]</wicket:message>
 				</p>
 			</div>
@@ -40,23 +40,23 @@
 
                 <wicket:enclosure>
 					<label>
-						<wicket:message key="mobile">[Login Name]</wicket:message>
+						<wicket:message key="mobile">[Mobile]</wicket:message>
 					</label>
 					<input wicket:id="mobile" type="text" class="label" />
 				</wicket:enclosure>
 
                 <wicket:enclosure>
 					<label>
-						<wicket:message key="otp">[Encap OTP]</wicket:message>
+						<wicket:message key="mobileOTP">[Mobile OTP]</wicket:message>
 					</label>
 					<input wicket:id="otp" type="text" class="label" />
 				</wicket:enclosure>
 
 				<label>&nbsp;</label>
 				<input wicket:id="challenge" type="submit" value="[Challenge]"
-                    wicket:message="value:challengeaction" class="submit" />
+                    wicket:message="value:mobileRequestOTP" class="submit" />
                 <input wicket:id="login" type="submit" value="[Login]"
-					wicket:message="value:loginaction" class="submit" />
+					wicket:message="value:mobileVerifyOTP" class="submit" />
                 <input wicket:id="cancel" type="submit" value="[Cancel]"
 					wicket:message="value:cancelaction" class="submit" />
 

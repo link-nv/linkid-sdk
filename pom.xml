@@ -303,7 +303,7 @@
 			<id>dep:demo</id>
 			<properties>
 				<sessionTimeout>60</sessionTimeout>
-				<defaultCronExpression>0 0 0 1 1 1</defaultCronExpression>
+				<defaultCronExpression>0 0 0 1 1 ?</defaultCronExpression>
 
 				<!-- WEBAPP NAMES -->
 				<safe-online.demo.app.webapp.name>demo</safe-online.demo.app.webapp.name>

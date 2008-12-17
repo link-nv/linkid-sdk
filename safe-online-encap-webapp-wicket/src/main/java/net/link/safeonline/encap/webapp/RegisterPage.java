@@ -37,7 +37,6 @@ import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.validation.validator.StringValidator;
 
 
 public class RegisterPage extends TemplatePage {
@@ -76,7 +75,6 @@ public class RegisterPage extends TemplatePage {
 
         private static final long serialVersionUID = 1L;
 
-        String                    activationCode;
         Model<String>             mobile;
         Model<String>             activation;
 
@@ -97,8 +95,7 @@ public class RegisterPage extends TemplatePage {
             mobileField.setRequired(true);
 
             activationField = new TextField(ACTIVATION_FIELD_ID, activation = new Model<String>());
-            activationField.setRequired(true);
-            activationField.add(StringValidator.lengthBetween(8, 12));
+            activationField.setEnabled(false);
 
             activateButton = new Button(ACTIVATE_BUTTON_ID) {
 
@@ -116,13 +113,15 @@ public class RegisterPage extends TemplatePage {
                     }
 
                     catch (MobileRegistrationException e) {
-                        error(localize("mobileRegistrationFailed"));
+                        RegisterForm.this.error(localize("mobileRegistrationFailed"));
                         HelpdeskLogger.add(localize("requestActivation: %s", e.getMessage()), //
                                 LogLevelType.ERROR);
+                        LOG.error("reg failed", e);
                     } catch (MobileException e) {
-                        error(localize("mobileCommunicationFailed"));
+                        RegisterForm.this.error(localize("mobileCommunicationFailed"));
                         HelpdeskLogger.add(localize("requestActivation: %s", e.getMessage()), //
                                 LogLevelType.ERROR);
+                        LOG.error("conn failed", e);
                     }
                 }
             };

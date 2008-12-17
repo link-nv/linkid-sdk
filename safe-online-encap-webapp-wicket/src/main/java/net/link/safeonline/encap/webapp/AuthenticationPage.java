@@ -162,7 +162,6 @@ public class AuthenticationPage extends TemplatePage {
             mobileField.setRequired(true);
 
             otpField = new TextField<String>(OTP_FIELD_ID, otp = new Model<String>());
-            otpField.setRequired(true);
 
             challengeButton = new Button(CHALLENGE_BUTTON_ID) {
 
@@ -172,6 +171,7 @@ public class AuthenticationPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
+                    LOG.debug("challenge request for: " + mobile.getObject());
                     try {
                         if (goal.equals(Goal.AUTHENTICATE)) {
                             // Verify mobile exists in OLAS and is not disabled.
@@ -183,23 +183,23 @@ public class AuthenticationPage extends TemplatePage {
                     }
 
                     catch (SubjectNotFoundException e) {
-                        error(localize("mobileNotRegistered"));
+                        AuthenticationForm.this.error(localize("mobileNotRegistered"));
                         HelpdeskLogger.add(localize("requestOtp: subject not found for %s", mobile), //
                                 LogLevelType.ERROR);
                     } catch (DeviceDisabledException e) {
-                        error(localize("mobileDisabled"));
+                        AuthenticationForm.this.error(localize("mobileDisabled"));
                         HelpdeskLogger.add(localize("requestOtp: mobile %s disabled", mobile), //
                                 LogLevelType.ERROR);
                     } catch (MobileException e) {
-                        error(localize("mobileCommunicationFailed"));
+                        AuthenticationForm.this.error(localize("mobileCommunicationFailed"));
                         HelpdeskLogger.add(localize("requestOtp: %s for mobile %s", e.getMessage(), mobile), //
                                 LogLevelType.ERROR);
                     } catch (AttributeTypeNotFoundException e) {
-                        error(localize("errorAttributeTypeNotFound"));
+                        AuthenticationForm.this.error(localize("errorAttributeTypeNotFound"));
                         HelpdeskLogger.add(localize("requestOtp: %s", e.getMessage()), //
                                 LogLevelType.ERROR);
                     } catch (AttributeNotFoundException e) {
-                        error(localize("errorAttributeNotFound"));
+                        AuthenticationForm.this.error(localize("errorAttributeNotFound"));
                         HelpdeskLogger.add(localize("requestOtp: %s", e.getMessage()), //
                                 LogLevelType.ERROR);
                     }
@@ -264,34 +264,36 @@ public class AuthenticationPage extends TemplatePage {
                     }
 
                     catch (MobileException e) {
-                        error(localize("mobileCommunicationFailed"));
+                        AuthenticationForm.this.error(localize("mobileCommunicationFailed"));
                         HelpdeskLogger.add(localize("login: comm: %s for %s", e.getMessage(), mobile.getObject()), //
                                 LogLevelType.ERROR);
                     } catch (MobileAuthenticationException e) {
-                        error(localize("authenticationFailedMsg"));
+                        AuthenticationForm.this.error(localize("authenticationFailedMsg"));
                         HelpdeskLogger.add(localize("login: failed: %s for %s", e.getMessage(), mobile.getObject()), //
                                 LogLevelType.ERROR);
                     } catch (SubjectNotFoundException e) {
-                        error(localize("errorSubjectNotFound"));
+                        AuthenticationForm.this.error(localize("errorSubjectNotFound"));
                         HelpdeskLogger.add(localize("login: subject not found for %s", mobile.getObject()), //
                                 LogLevelType.ERROR);
                     } catch (DeviceNotFoundException e) {
-                        error(localize("errorDeviceNotFound"));
+                        AuthenticationForm.this.error(localize("errorDeviceNotFound"));
                         HelpdeskLogger.add(localize("enable: device not found: %s", mobile.getObject()), //
                                 LogLevelType.ERROR);
                     } catch (DeviceRegistrationNotFoundException e) {
-                        error(localize("errorDeviceRegistrationNotFound"));
+                        AuthenticationForm.this.error(localize("errorDeviceRegistrationNotFound"));
                         HelpdeskLogger.add(localize("enable: device not registered: %s", mobile.getObject()), //
                                 LogLevelType.ERROR);
                     } catch (AttributeTypeNotFoundException e) {
-                        error(localize("errorAttributeTypeNotFound"));
+                        AuthenticationForm.this.error(localize("errorAttributeTypeNotFound"));
                         HelpdeskLogger.add(localize("register: device attribute types unavailable for: %s", mobile.getObject()), //
                                 LogLevelType.ERROR);
                     } catch (AttributeNotFoundException e) {
-                        error(localize("errorAttributeNotFound"));
+                        AuthenticationForm.this.error(localize("errorAttributeNotFound"));
                         HelpdeskLogger.add(localize("register: device attributes unavailable for: %s", mobile.getObject()), //
                                 LogLevelType.ERROR);
                     }
+
+                    setResponsePage(new AuthenticationPage(goal));
                 }
             };
 
@@ -322,6 +324,7 @@ public class AuthenticationPage extends TemplatePage {
 
             mobileField.setEnabled(challengeCode == null);
             otpField.setVisible(challengeCode != null);
+            otpField.setRequired(challengeCode != null);
             challengeButton.setVisible(challengeCode == null);
             loginButton.setVisible(challengeCode != null);
 
