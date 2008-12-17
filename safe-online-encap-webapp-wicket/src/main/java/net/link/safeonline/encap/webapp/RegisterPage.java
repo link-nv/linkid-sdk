@@ -8,58 +8,65 @@
 package net.link.safeonline.encap.webapp;
 
 import javax.ejb.EJB;
+import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.MobileRegistrationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.service.SamlAuthorityService;
+import net.link.safeonline.device.sdk.ProtocolContext;
+import net.link.safeonline.encap.webapp.AuthenticationPage.Goal;
+import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.model.encap.EncapDeviceService;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
+import net.link.safeonline.shared.helpdesk.LogLevelType;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
-import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.RedirectToUrlException;
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.validation.validator.StringValidator;
 
 
 public class RegisterPage extends TemplatePage {
 
-    private static final long    serialVersionUID      = 1L;
+    private static final long      serialVersionUID    = 1L;
 
-    static final Log             LOG                   = LogFactory.getLog(RegisterPage.class);
+    static final Log               LOG                 = LogFactory.getLog(RegisterPage.class);
 
-    public static final String   REGISTER_FORM_ID      = "register_form";
-
-    public static final String   LOGIN_FIELD_ID        = "mobile";
-
-    public static final String   SERIALNUMBER_FIELD_ID = "serialNumber";
-
-    public static final String   REGISTER_BUTTON_ID    = "register";
-
-    public static final String   CANCEL_BUTTON_ID      = "cancel";
+    public static final String     REGISTER_FORM_ID    = "register_form";
+    public static final String     MOBILE_FIELD_ID     = "mobile";
+    public static final String     ACTIVATION_FIELD_ID = "activation";
+    public static final String     ACTIVATE_BUTTON_ID  = "activate";
+    public static final String     REGISTER_BUTTON_ID  = "register";
+    public static final String     CANCEL_BUTTON_ID    = "cancel";
 
     @EJB(mappedName = EncapDeviceService.JNDI_BINDING)
-    transient EncapDeviceService encapDeviceService;
+    transient EncapDeviceService   encapDeviceService;
+
+    @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
+    transient SamlAuthorityService samlAuthorityService;
+
+    ProtocolContext                protocolContext;
 
 
     public RegisterPage() {
 
-        super();
+        protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
-        addHeader(this);
-        addSidebar();
-
+        getHeader();
+        getSidebar();
         getContent().add(new RegisterForm(REGISTER_FORM_ID));
     }
 
@@ -68,9 +75,15 @@ public class RegisterPage extends TemplatePage {
 
         private static final long serialVersionUID = 1L;
 
-        Model<String>             login;
+        Model<String>             mobile;
+        Model<String>             activation;
 
-        Model<String>             serialNumber;
+        TextField<String>         mobileField;
+        TextField<String>         activationField;
+
+        private Button            activateButton;
+        private Button            registerButton;
+        private Button            cancelButton;
 
 
         @SuppressWarnings("unchecked")
@@ -78,20 +91,13 @@ public class RegisterPage extends TemplatePage {
 
             super(id);
 
-            final TextField<String> loginField = new TextField<String>(LOGIN_FIELD_ID, this.login = new Model<String>());
-            loginField.setRequired(true);
+            mobileField = new TextField<String>(MOBILE_FIELD_ID, mobile = new Model<String>());
+            mobileField.setRequired(true);
 
-            add(loginField);
-            add(new ErrorComponentFeedbackLabel("login_feedback", loginField));
+            activationField = new TextField(ACTIVATION_FIELD_ID, activation = new Model<String>());
+            activationField.setEnabled(false);
 
-            final TextField serialNumberField = new TextField(SERIALNUMBER_FIELD_ID, this.serialNumber = new Model<String>());
-            serialNumberField.setRequired(true);
-            serialNumberField.add(StringValidator.lengthBetween(8, 12));
-
-            add(serialNumberField);
-            add(new ErrorComponentFeedbackLabel("serialNumber_feedback", serialNumberField));
-
-            add(new Button(REGISTER_BUTTON_ID) {
+            activateButton = new Button(ACTIVATE_BUTTON_ID) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -99,33 +105,43 @@ public class RegisterPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    RegisterPage.LOG.debug("register digipas with sn=" + RegisterForm.this.serialNumber + " for user: "
-                            + RegisterForm.this.login);
+                    LOG.debug("register mobile: " + mobile.getObject());
 
                     try {
-                        RegisterPage.this.encapDeviceService.register(getUserId(), RegisterForm.this.serialNumber.getObject());
-                    } catch (SubjectNotFoundException e) {
-                        LOG.debug("subject not found");
-                        loginField.error(getLocalizer().getString("errorSubjectNotFound", this));
-                        return;
-                    } catch (MobileRegistrationException e) {
-                        LOG.debug("mobile registration failed");
-                        serialNumberField.error(getLocalizer().getString("errorEncapRegistrationFailed", this));
-                        return;
-                    } catch (PermissionDeniedException e) {
-                        LOG.debug("permission denied: " + e.getMessage());
-                        RegisterForm.this.error(getLocalizer().getString("errorPermissionDenied", this));
-                        return;
-                    } catch (MobileException e) {
-                        LOG.debug("mobile registration failed");
-                        serialNumberField.error(getLocalizer().getString("errorEncapServiceFailed", this));
-                        return;
+                        HttpSession session = WicketUtil.toServletRequest(getRequest()).getSession();
+                        activation.setObject(encapDeviceService.register(mobile.getObject(), session.getId()));
                     }
-                    setResponsePage(MainPage.class);
-                }
-            });
 
-            Button cancel = new Button(CANCEL_BUTTON_ID) {
+                    catch (MobileRegistrationException e) {
+                        RegisterForm.this.error(localize("mobileRegistrationFailed"));
+                        HelpdeskLogger.add(localize("requestActivation: %s", e.getMessage()), //
+                                LogLevelType.ERROR);
+                        LOG.error("reg failed", e);
+                    } catch (MobileException e) {
+                        RegisterForm.this.error(localize("mobileCommunicationFailed"));
+                        HelpdeskLogger.add(localize("requestActivation: %s", e.getMessage()), //
+                                LogLevelType.ERROR);
+                        LOG.error("conn failed", e);
+                    }
+                }
+            };
+
+            registerButton = new Button(REGISTER_BUTTON_ID) {
+
+                private static final long serialVersionUID = 1L;
+
+
+                /**
+                 * {@inheritDoc}
+                 */
+                @Override
+                public void onSubmit() {
+
+                    throw new RestartResponseException(new AuthenticationPage(Goal.REGISTER_DEVICE));
+                }
+            };
+
+            cancelButton = new Button(CANCEL_BUTTON_ID) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -133,14 +149,34 @@ public class RegisterPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    setResponsePage(MainPage.class);
+                    protocolContext.setSuccess(false);
+                    protocolContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
+
+                    throw new RedirectToUrlException("deviceexit");
                 }
 
             };
-            cancel.setDefaultFormProcessing(false);
-            add(cancel);
+            cancelButton.setDefaultFormProcessing(false);
 
+            // Add em to the page.
+            add(mobileField, activationField);
+            add(activateButton, registerButton, cancelButton);
             add(new ErrorFeedbackPanel("feedback", new ComponentFeedbackMessageFilter(this)));
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void onBeforeRender() {
+
+            activationField.setVisible(activation.getObject() != null);
+            mobileField.setEnabled(activation.getObject() == null);
+
+            activateButton.setVisible(activation.getObject() == null);
+            registerButton.setVisible(activation.getObject() != null);
+
+            super.onBeforeRender();
         }
 
         protected String getUserId()
@@ -153,9 +189,9 @@ public class RegisterPage extends TemplatePage {
 
             String userId;
             try {
-                userId = idMappingClient.getUserId(this.login.getObject());
+                userId = idMappingClient.getUserId(mobile.getObject());
             } catch (net.link.safeonline.sdk.exception.SubjectNotFoundException e) {
-                LOG.error("subject not found: " + this.login);
+                LOG.error("subject not found: " + mobile);
                 throw new SubjectNotFoundException();
             } catch (RequestDeniedException e) {
                 LOG.error("request denied: " + e.getMessage());

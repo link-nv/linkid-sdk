@@ -133,7 +133,7 @@ public class RegistrationBean implements Registration {
     }
 
     private String mobileActivation()
-            throws MalformedURLException, MobileException, MobileRegistrationException {
+            throws MobileException, MobileRegistrationException {
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ExternalContext externalContext = facesContext.getExternalContext();
@@ -150,7 +150,7 @@ public class RegistrationBean implements Registration {
     }
 
     public String requestOTP()
-            throws MalformedURLException, MobileException {
+            throws MobileException {
 
         this.log.debug("request OTP: mobile=" + this.mobile);
         this.challengeId = this.encapDeviceService.requestOTP(this.mobile.getNumber());

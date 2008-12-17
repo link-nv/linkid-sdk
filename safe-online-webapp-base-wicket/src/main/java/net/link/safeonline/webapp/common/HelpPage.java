@@ -70,8 +70,7 @@ public class HelpPage extends TemplatePage {
 
         this.returnPage = returnPage;
 
-        addHeader(this);
-
+        getHeader();
         getSidebar().add(new Link<String>("back") {
 
             private static final long serialVersionUID = 1L;
@@ -87,9 +86,7 @@ public class HelpPage extends TemplatePage {
         });
 
         getContent().add(new CreateContainer(CREATE_FORM_ID));
-
         getContent().add(new TicketInfoContainer(TICKET_INFO_FORM_ID));
-
     }
 
 

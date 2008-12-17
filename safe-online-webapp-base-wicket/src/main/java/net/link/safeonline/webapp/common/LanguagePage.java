@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -44,7 +44,7 @@ public class LanguagePage extends TemplatePage {
 
         super();
 
-        addHeader(this);
+        getHeader();
 
         // english link
         getContent().add(new Link<String>("en") {
@@ -75,7 +75,6 @@ public class LanguagePage extends TemplatePage {
 
             }
         });
-
     }
 
     protected void setLanguage(String language) {

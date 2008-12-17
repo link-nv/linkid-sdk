@@ -18,6 +18,5 @@ public class EncapTestApplication extends EncapApplication {
         super.init();
 
         getResourceSettings().addStringResourceLoader(new TestStringResourceLoader());
-
     }
 }

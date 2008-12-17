@@ -55,12 +55,9 @@ public class EnablePage extends TemplatePage {
 
     public EnablePage() {
 
-        super();
-
         this.protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
-        addHeader(this, false);
-
+        getHeader(false);
         getSidebar().add(new Link<String>("help") {
 
             private static final long serialVersionUID = 1L;
@@ -78,9 +75,7 @@ public class EnablePage extends TemplatePage {
         String title = getLocalizer().getString("enable", this) + " " + getLocalizer().getString("digipass", this) + " "
                 + this.protocolContext.getAttribute();
         getContent().add(new Label("title", title));
-
         getContent().add(new EnableForm(ENABLE_FORM_ID));
-
     }
 
 

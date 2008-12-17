@@ -1,4 +1,4 @@
-package net.link.safeonline.encap.webapp.servlet;
+package net.link.safeonline.encap.servlet;
 
 import java.io.IOException;
 
@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.audit.SecurityAuditLogger;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
-import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.device.sdk.ProtocolContext;
@@ -24,16 +24,16 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- * The disable servlet implementation.
+ * The remove servlet implementation.
  * 
  * @author wvdhaute
  * 
  */
-public class DisableServlet extends AbstractInjectionServlet {
+public class RemoveServlet extends AbstractInjectionServlet {
 
     private static final long   serialVersionUID = 1L;
 
-    private static final Log    LOG              = LogFactory.getLog(DisableServlet.class);
+    private static final Log    LOG              = LogFactory.getLog(RemoveServlet.class);
 
     @Init(name = "DeviceExitPath")
     private String              deviceExitPath;
@@ -62,34 +62,32 @@ public class DisableServlet extends AbstractInjectionServlet {
     private void handleLanding(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
 
-        String attribute = DeviceOperationManager.getAttribute(request.getSession());
+        String attribute = DeviceOperationManager.findAttribute(request.getSession());
         String userId = DeviceOperationManager.getUserId(request.getSession());
-        LOG.debug("disable encap device: " + attribute + " for user " + userId);
+        LOG.debug("remove encap device: " + attribute + " for user " + userId);
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(request.getSession());
         protocolContext.setSuccess(false);
 
         try {
-            this.encapDeviceService.disable(userId, attribute);
+            encapDeviceService.remove(userId, attribute);
 
             response.setStatus(HttpServletResponse.SC_OK);
             // notify that disable operation was successful.
             protocolContext.setSuccess(true);
-        } catch (MobileException e) {
-            LOG.error("mobile service caused:", e);
-        } catch (DeviceNotFoundException e) {
-            LOG.error("device not found", e);
         } catch (SubjectNotFoundException e) {
             String message = "subject " + userId + " not found";
             LOG.error(message, e);
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, message);
-        } catch (DeviceRegistrationNotFoundException e) {
-            String message = "device registration \"" + attribute + "\" not found";
-            LOG.error(message, e);
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, message);
+            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, message);
+        } catch (MobileException e) {
+            LOG.error("mobile exception thrown", e);
+        } catch (AttributeTypeNotFoundException e) {
+            LOG.error("AttributeTypeNotFoundException", e);
+        } catch (AttributeNotFoundException e) {
+            LOG.error("AttributeNotFoundException", e);
         }
 
-        response.sendRedirect(this.deviceExitPath);
+        response.sendRedirect(deviceExitPath);
 
     }
 }

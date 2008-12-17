@@ -28,6 +28,8 @@ import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.RequestCycle;
+import org.apache.wicket.protocol.http.WebRequest;
 
 
 public class HelpdeskLogger {
@@ -174,6 +176,15 @@ public class HelpdeskLogger {
      */
     private static HttpSession getHttpSession() {
 
-        return (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+        HttpSession session = null;
+        if (RequestCycle.get() != null) {
+            session = ((WebRequest) RequestCycle.get().getRequest()).getHttpServletRequest().getSession(false);
+        }
+
+        if (session == null) {
+            session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+        }
+
+        return session;
     }
 }

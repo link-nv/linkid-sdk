@@ -25,7 +25,7 @@
 				</ul>
 
 				<p>
-					<wicket:message key="helpEncapAuthentication">[Authenticate
+					<wicket:message key="helpMobileAuthentication">[Authenticate
 						Encap Help]</wicket:message>
 				</p>
 			</div>
@@ -38,24 +38,26 @@
 
 			<form wicket:id="authentication_form">
 
-				<label>
-					<wicket:message key="login">[Login Name]</wicket:message>
-				</label>
-				<div>
-					<input wicket:id="loginName" type="text" class="label" />
-				</div>
+                <wicket:enclosure>
+					<label>
+						<wicket:message key="mobile">[Mobile]</wicket:message>
+					</label>
+					<input wicket:id="mobile" type="text" class="label" />
+				</wicket:enclosure>
 
-				<label>
-					<wicket:message key="encapToken">[Encap Token]</wicket:message>
-				</label>
-				<div>
-					<input wicket:id="token" type="text" class="label" />
-				</div>
+                <wicket:enclosure>
+					<label>
+						<wicket:message key="mobileOTP">[Mobile OTP]</wicket:message>
+					</label>
+					<input wicket:id="otp" type="text" class="label" />
+				</wicket:enclosure>
 
 				<label>&nbsp;</label>
-				<input wicket:id="login" type="submit" value="[Login]"
-					wicket:message="value:loginaction" class="submit" />
-				<input wicket:id="cancel" type="submit" value="[Cancel]"
+				<input wicket:id="challenge" type="submit" value="[Challenge]"
+                    wicket:message="value:mobileRequestOTP" class="submit" />
+                <input wicket:id="login" type="submit" value="[Login]"
+					wicket:message="value:mobileVerifyOTP" class="submit" />
+                <input wicket:id="cancel" type="submit" value="[Cancel]"
 					wicket:message="value:cancelaction" class="submit" />
 
 				<div wicket:id="feedback" class="error"></div>

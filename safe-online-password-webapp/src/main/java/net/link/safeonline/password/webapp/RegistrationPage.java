@@ -79,7 +79,7 @@ public class RegistrationPage extends TemplatePage {
             }
         }
 
-        addHeader(this, false);
+        getHeader(false);
 
         getSidebar().add(new Link<String>("help") {
 
@@ -122,7 +122,6 @@ public class RegistrationPage extends TemplatePage {
         });
 
         getContent().add(new RegistrationForm(REGISTRATION_FORM_ID));
-
     }
 
 

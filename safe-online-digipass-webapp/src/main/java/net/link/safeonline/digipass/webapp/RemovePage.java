@@ -64,15 +64,10 @@ public class RemovePage extends TemplatePage {
 
     public RemovePage() {
 
-        super();
-
-        addHeader(this);
-        addSidebar();
-
+        getHeader();
+        getSidebar();
         getContent().add(new GetForm("get_form"));
-
         getContent().add(new ListForm("list_form"));
-
     }
 
 

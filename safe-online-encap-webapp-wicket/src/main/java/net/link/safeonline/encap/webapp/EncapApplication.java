@@ -19,7 +19,10 @@ import org.apache.wicket.Session;
 
 public class EncapApplication extends OlasApplication {
 
-    static final Log LOG = LogFactory.getLog(EncapApplication.class);
+    public static final String ENABLE_MOUNTPOINT         = "enable";
+    public static final String AUTHENTICATION_MOUNTPOINT = "authentication";
+    public static final String REGISTRATION_MOUNTPOINT   = "registration";
+    static final Log           LOG                       = LogFactory.getLog(EncapApplication.class);
 
 
     @Override
@@ -27,8 +30,9 @@ public class EncapApplication extends OlasApplication {
 
         super.init();
 
-        mountBookmarkablePage("authentication", AuthenticationPage.class);
-        mountBookmarkablePage("enable", EnablePage.class);
+        mountBookmarkablePage(AUTHENTICATION_MOUNTPOINT, AuthenticationPage.class);
+        mountBookmarkablePage(ENABLE_MOUNTPOINT, EnablePage.class);
+        mountBookmarkablePage(REGISTRATION_MOUNTPOINT, RegisterPage.class);
     }
 
     /**

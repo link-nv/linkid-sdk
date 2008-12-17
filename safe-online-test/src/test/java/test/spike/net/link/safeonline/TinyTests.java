@@ -15,6 +15,11 @@
  */
 package test.spike.net.link.safeonline;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.junit.Test;
 
 
@@ -31,42 +36,52 @@ import org.junit.Test;
  */
 public class TinyTests {
 
-    private static final int    BRIGHT_OFFSET = 0;
-    private static final double BRIGHT_FACTOR = 1.45;
-
-
     @Test
-    public void testColor() {
+    public void testFormat() {
 
-        Integer base = Integer.decode("#00006A");
+        String format = "%s %l %s %05d %s";
 
-        System.out.println(getThemedColor(base, BRIGHT_FACTOR, BRIGHT_OFFSET));
+        System.out.println("'" + localize(format, "foo", "bar", "foobar", 21378, "end") + "'");
     }
 
-    private String getThemedColor(Integer base, double factor, int offset) {
 
-        System.err.format("%X\n", ((base >> 16) % (0xFF + 1)));
-        System.err.format("%X\n", (int) ((base >> 16) % (0xFF + 1) * factor));
-        System.err.format("%X\n", (int) ((base >> 16) % (0xFF + 1) * factor + offset));
-        int red = Math.min((int) ((base >> 16) % (0xFF + 1) * factor + offset), 0xFF);
-        int green = Math.min((int) ((base >> 8) % (0xFF + 1) * factor + offset), 0xFF);
-        int blue = Math.min((int) ((base >> 0) % (0xFF + 1) * factor + offset), 0xFF);
+    // %[argument_index$][flags][width][.precision][t]conversion
+    private static final String formatSpecifier = "%(\\d+\\$)?([-#+ 0,(\\<]*)?(\\d+)?(\\.\\d+)?([tT])?([a-zA-Z%])";
+    private static Pattern      fsPattern       = Pattern.compile(formatSpecifier);
 
-        return String.format("#%02X%02X%02X", red, green, blue);
-    }
 
-    void printBits(int number) {
+    protected String localize(String format, Object... args) {
 
-        int i = 0;
-        for (int left = number; left > 0;) {
-            System.out.print(left % 2);
-            left = left >> 1;
-            i++;
-            if (i % 8 == 0) {
-                System.out.print(", ");
+        List<Object> localizationData = new ArrayList<Object>(args.length);
+        StringBuffer newFormat = new StringBuffer(format);
+        Matcher specifiers = fsPattern.matcher(format);
+
+        int pos = 0, num = 0;
+        while (specifiers.find(pos)) {
+            if ("l".equalsIgnoreCase(specifiers.group(6))) {
+                if ("L".equals(specifiers.group(6))) {
+                    newFormat.setCharAt(specifiers.end(6) - 1, 'S');
+                } else {
+                    newFormat.setCharAt(specifiers.end(6) - 1, 's');
+                }
+
+                localizationData.add("@" + String.valueOf(args[num]));
+            } else {
+                localizationData.add(args[num]);
             }
+
+            ++num;
+            pos = specifiers.end();
         }
-        System.out.println();
+
+        System.err.println("old format: " + format);
+        System.err.println("new format: " + newFormat.toString());
+        System.err.print("old data: ");
+        print(args);
+        System.err.print("new data: ");
+        print(localizationData.toArray());
+
+        return String.format(newFormat.toString(), localizationData.toArray());
     }
 
     void print(Object[] array) {
@@ -74,17 +89,12 @@ public class TinyTests {
         boolean first = true;
         for (Object element : array) {
             if (!first) {
-                System.out.print(", ");
+                System.err.print(", ");
             }
             first = false;
-            System.out.print(element);
+            System.err.print(element);
         }
 
-        System.out.println();
-    }
-
-    @SuppressWarnings("unused")
-    public void dummy(boolean a, double[] b, byte[] c) {
-
+        System.err.println();
     }
 }

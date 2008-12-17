@@ -58,11 +58,6 @@
             <artifactId>safe-online-container-as</artifactId>
             <type>pom</type>
         </dependency>
-        <dependency>
-            <groupId>net.lin-k.safe-online</groupId>
-            <artifactId>safe-online-container-jsf</artifactId>
-            <type>pom</type>
-        </dependency>
 
         <!-- Specific Dependencies: OLAS -->
 		<dependency>

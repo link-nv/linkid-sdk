@@ -110,6 +110,14 @@
 	<servlet>
 		<servlet-name>DeviceLandingServlet</servlet-name>
 		<servlet-class>net.link.safeonline.device.sdk.servlet.LandingServlet</servlet-class>
+        <init-param>
+            <param-name>RegistrationUrl</param-name>
+            <param-value>registration</param-value>
+        </init-param>
+        <init-param>
+            <param-name>RemovalUrl</param-name>
+            <param-value>remove</param-value>
+        </init-param>
 		<init-param>
 			<param-name>DisableUrl</param-name>
 			<param-value>disable</param-value>
@@ -150,7 +158,7 @@
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>DisableServlet</servlet-name>
-		<servlet-class>net.link.safeonline.encap.webapp.servlet.DisableServlet</servlet-class>
+		<servlet-class>net.link.safeonline.encap.servlet.DisableServlet</servlet-class>
 		<init-param>
 			<param-name>DeviceExitPath</param-name>
 			<param-value>deviceexit</param-value>
@@ -160,6 +168,18 @@
 		<servlet-name>DisableServlet</servlet-name>
 		<url-pattern>/disable</url-pattern>
 	</servlet-mapping>
+    <servlet>
+        <servlet-name>RemoveServlet</servlet-name>
+        <servlet-class>net.link.safeonline.encap.servlet.RemoveServlet</servlet-class>
+        <init-param>
+            <param-name>DeviceExitPath</param-name>
+            <param-value>deviceexit</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>RemoveServlet</servlet-name>
+        <url-pattern>/remove</url-pattern>
+    </servlet-mapping>
 	<servlet>
 		<servlet-name>Style Servlet</servlet-name>
 		<servlet-class>
