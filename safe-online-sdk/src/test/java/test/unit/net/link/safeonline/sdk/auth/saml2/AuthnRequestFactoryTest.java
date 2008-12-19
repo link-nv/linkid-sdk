@@ -21,8 +21,8 @@ import javax.xml.crypto.dsig.XMLSignature;
 import javax.xml.crypto.dsig.XMLSignatureFactory;
 import javax.xml.crypto.dsig.dom.DOMValidateContext;
 
+import net.link.safeonline.saml.common.Challenge;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
-import net.link.safeonline.sdk.auth.saml2.Challenge;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 

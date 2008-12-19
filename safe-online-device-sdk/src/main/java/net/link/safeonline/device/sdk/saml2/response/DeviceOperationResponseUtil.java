@@ -15,7 +15,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
-import net.link.safeonline.sdk.auth.saml2.DomUtils;
+import net.link.safeonline.saml.common.DomUtils;
 import net.link.safeonline.sdk.auth.saml2.SamlResponseSecurityPolicyResolver;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClient;

@@ -23,7 +23,7 @@ import javax.xml.crypto.dsig.dom.DOMValidateContext;
 import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
 import net.link.safeonline.device.sdk.saml2.request.DeviceOperationRequest;
 import net.link.safeonline.device.sdk.saml2.request.DeviceOperationRequestFactory;
-import net.link.safeonline.sdk.auth.saml2.Challenge;
+import net.link.safeonline.saml.common.Challenge;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 
@@ -35,6 +35,7 @@ import org.apache.xpath.XPathAPI;
 import org.apache.xpath.objects.XObject;
 import org.junit.Test;
 import org.opensaml.common.xml.SAMLConstants;
+import org.opensaml.saml2.core.Issuer;
 import org.opensaml.saml2.core.RequestAbstractType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -95,7 +96,8 @@ public class DeviceOperationRequestFactoryTest {
         assertNotNull(deviceOperationRequestElement);
 
         Element issuerElement = (Element) XPathAPI.selectSingleNode(resultDocument, "/" + SAMLConstants.SAML20P_PREFIX + ":"
-                + DeviceOperationRequest.DEFAULT_ELEMENT_LOCAL_NAME + "/" + SAMLConstants.SAML20_PREFIX + ":Issuer", nsElement);
+                + DeviceOperationRequest.DEFAULT_ELEMENT_LOCAL_NAME + "/" + SAMLConstants.SAML20_PREFIX + ":"
+                + Issuer.DEFAULT_ELEMENT_LOCAL_NAME, nsElement);
         assertNotNull(issuerElement);
         assertEquals(nodeName, issuerElement.getTextContent());
 

@@ -47,7 +47,7 @@ import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.entity.NodeMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
-import net.link.safeonline.sdk.auth.saml2.Challenge;
+import net.link.safeonline.saml.common.Challenge;
 import net.link.safeonline.sdk.ws.sts.TrustDomainType;
 import net.link.safeonline.service.NodeMappingService;
 import net.link.safeonline.service.SubjectService;

@@ -33,8 +33,8 @@ import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.performance.DriverException;
 import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.performance.entity.ScenarioTimingEntity;
+import net.link.safeonline.saml.common.DomUtils;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
-import net.link.safeonline.sdk.auth.saml2.DomUtils;
 import net.link.safeonline.util.performance.ProfileData;
 import net.link.safeonline.util.performance.ProfileDataLockedException;
 

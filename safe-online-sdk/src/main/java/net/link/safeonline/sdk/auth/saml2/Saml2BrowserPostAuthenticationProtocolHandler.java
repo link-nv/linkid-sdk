@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.link.safeonline.saml.common.Challenge;
 import net.link.safeonline.sdk.auth.AuthenticationProtocol;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolContext;
 import net.link.safeonline.sdk.auth.AuthenticationProtocolHandler;

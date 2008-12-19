@@ -5,12 +5,13 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.ws.util;
+package net.link.safeonline.sdk.ws;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.List;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
@@ -25,6 +26,9 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.ws.Binding;
+import javax.xml.ws.BindingProvider;
+import javax.xml.ws.handler.Handler;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
@@ -113,4 +117,21 @@ public class LoggingHandler implements SOAPHandler<SOAPMessageContext> {
         }
         return stringWriter.toString();
     }
+
+    /**
+     * Adds a new loggingg handler to the handler chain of the given JAX-WS port.
+     * 
+     * @param port
+     */
+    public static void addNewHandler(Object port) {
+
+        BindingProvider bindingProvider = (BindingProvider) port;
+        Binding binding = bindingProvider.getBinding();
+        @SuppressWarnings("unchecked")
+        List<Handler> handlerChain = binding.getHandlerChain();
+        Handler<SOAPMessageContext> loggingHandler = new LoggingHandler();
+        handlerChain.add(loggingHandler);
+        binding.setHandlerChain(handlerChain);
+    }
+
 }

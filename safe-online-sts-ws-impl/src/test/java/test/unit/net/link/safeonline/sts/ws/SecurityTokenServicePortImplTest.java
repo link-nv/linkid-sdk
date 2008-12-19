@@ -36,12 +36,13 @@ import net.link.safeonline.device.sdk.saml2.response.DeviceOperationResponseFact
 import net.link.safeonline.model.WSSecurityConfiguration;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.pkix.model.PkiValidator.PkiResult;
+import net.link.safeonline.saml.common.Challenge;
+import net.link.safeonline.saml.common.DomUtils;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseFactory;
-import net.link.safeonline.sdk.auth.saml2.Challenge;
-import net.link.safeonline.sdk.auth.saml2.DomUtils;
 import net.link.safeonline.sdk.auth.saml2.LogoutRequestFactory;
 import net.link.safeonline.sdk.auth.saml2.LogoutResponseFactory;
+import net.link.safeonline.sdk.ws.LoggingHandler;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
 import net.link.safeonline.sdk.ws.WSSecurityConfigurationService;
 import net.link.safeonline.sdk.ws.sts.TrustDomainType;
@@ -56,7 +57,6 @@ import net.link.safeonline.test.util.MBeanActionHandler;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.WebServiceTestUtils;
 import net.link.safeonline.util.ee.IdentityServiceClient;
-import net.link.safeonline.ws.util.LoggingHandler;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

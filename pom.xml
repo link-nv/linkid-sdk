@@ -192,9 +192,9 @@
 		<profile>
 			<id>dist:pilot</id>
 			<properties>
-                <safe-online.distribution>pilot</safe-online.distribution>
+				<safe-online.distribution>pilot</safe-online.distribution>
 
-                <log.level>INFO</log.level>
+				<log.level>INFO</log.level>
 				<debug.mode>false</debug.mode>
 				<safe-online.show.sql>false</safe-online.show.sql>
 				<wicket.configuration>DEPLOYMENT</wicket.configuration>
@@ -435,15 +435,15 @@
 			</modules>
 		</profile>
 
-        <!-- HOST SELECTION PROFILES -->
+		<!-- HOST SELECTION PROFILES -->
 		<!-- Profile for deploying on the Option OLAS server -->
 		<profile>
 			<id>host:option</id>
 			<properties>
 				<safe-online.host.name>option.olas.be</safe-online.host.name>
 
-                <safe-online.data.source.user>olasoption</safe-online.data.source.user>
-                <safe-online.data.source.pass>380464ce4c61ebcc2fb9</safe-online.data.source.pass>
+				<safe-online.data.source.user>olasoption</safe-online.data.source.user>
+				<safe-online.data.source.pass>380464ce4c61ebcc2fb9</safe-online.data.source.pass>
 				<safe-online.jboss.host.port:insecure>8080</safe-online.jboss.host.port:insecure>
 				<safe-online.jboss.host.port:secure>8443</safe-online.jboss.host.port:secure>
 			</properties>
@@ -455,8 +455,8 @@
 			<properties>
 				<safe-online.host.name>demo.olas.be</safe-online.host.name>
 
-                <safe-online.data.source.user>olasdemo</safe-online.data.source.user>
-                <safe-online.data.source.pass>1abb9f16a7ba974a6cf1</safe-online.data.source.pass>
+				<safe-online.data.source.user>olasdemo</safe-online.data.source.user>
+				<safe-online.data.source.pass>1abb9f16a7ba974a6cf1</safe-online.data.source.pass>
 				<safe-online.jboss.host.port:insecure>8080</safe-online.jboss.host.port:insecure>
 				<safe-online.jboss.host.port:secure>8443</safe-online.jboss.host.port:secure>
 			</properties>
@@ -534,7 +534,7 @@
 		<profile>
 			<id>development</id>
 			<properties>
-                <log.level>DEBUG</log.level>
+				<log.level>DEBUG</log.level>
 				<debug.mode>true</debug.mode>
 				<safe-online.show.sql>true</safe-online.show.sql>
 				<safe-online.batch.size>0</safe-online.batch.size>
@@ -565,7 +565,7 @@
 
 	<!-- DEFAULT PROPERTIES -->
 	<properties>
-        <log.level>INFO</log.level>
+		<log.level>INFO</log.level>
 		<debug.mode>false</debug.mode>
 		<safe-online.show.sql>false</safe-online.show.sql>
 		<wicket.configuration>development</wicket.configuration>
@@ -871,6 +871,8 @@
 		<module>safe-online-notification-producer-ws-impl</module>
 		<module>safe-online-notification-subscription-manager-ws</module>
 		<module>safe-online-notification-subscription-manager-ws-impl</module>
+		<module>safe-online-auth-ws</module>
+		<module>safe-online-auth-ws-impl</module>
 
 		<!-- EXTERNAL DEVICES -->
 		<module>safe-online-model-beid-client</module>

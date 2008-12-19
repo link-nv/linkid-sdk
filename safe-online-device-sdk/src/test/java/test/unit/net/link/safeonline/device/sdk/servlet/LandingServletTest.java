@@ -28,7 +28,7 @@ import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
 import net.link.safeonline.device.sdk.saml2.request.DeviceOperationRequestFactory;
 import net.link.safeonline.device.sdk.servlet.LandingServlet;
-import net.link.safeonline.sdk.auth.saml2.Challenge;
+import net.link.safeonline.saml.common.Challenge;
 import net.link.safeonline.sdk.ws.WSSecurityConfigurationService;
 import net.link.safeonline.sts.ws.SecurityTokenServiceConstants;
 import net.link.safeonline.test.util.JndiTestUtils;

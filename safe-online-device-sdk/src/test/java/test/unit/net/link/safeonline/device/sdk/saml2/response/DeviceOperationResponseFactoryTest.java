@@ -26,7 +26,9 @@ import org.apache.xpath.XPathAPI;
 import org.apache.xpath.objects.XObject;
 import org.junit.Test;
 import org.opensaml.common.xml.SAMLConstants;
+import org.opensaml.saml2.core.Issuer;
 import org.opensaml.saml2.core.StatusCode;
+import org.opensaml.saml2.core.StatusResponseType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -75,12 +77,13 @@ public class DeviceOperationResponseFactoryTest {
         assertNotNull(deviceOperationResponseElement);
 
         Node inResponseToNode = XPathAPI.selectSingleNode(resultDocument, "/" + SAMLConstants.SAML20P_PREFIX + ":"
-                + DeviceOperationResponse.DEFAULT_ELEMENT_LOCAL_NAME + "/@InResponseTo", nsElement);
+                + DeviceOperationResponse.DEFAULT_ELEMENT_LOCAL_NAME + "/@" + StatusResponseType.IN_RESPONSE_TO_ATTRIB_NAME, nsElement);
         assertNotNull(inResponseToNode);
         assertEquals(inResponseTo, inResponseToNode.getTextContent());
 
         Node issuerNode = XPathAPI.selectSingleNode(resultDocument, "/" + SAMLConstants.SAML20P_PREFIX + ":"
-                + DeviceOperationResponse.DEFAULT_ELEMENT_LOCAL_NAME + "/" + SAMLConstants.SAML20_PREFIX + ":Issuer", nsElement);
+                + DeviceOperationResponse.DEFAULT_ELEMENT_LOCAL_NAME + "/" + SAMLConstants.SAML20_PREFIX + ":"
+                + Issuer.DEFAULT_ELEMENT_LOCAL_NAME, nsElement);
         assertNotNull(issuerNode);
         assertEquals(issuerName, issuerNode.getTextContent());
 
@@ -97,7 +100,7 @@ public class DeviceOperationResponseFactoryTest {
 
         Node statusNode = XPathAPI.selectSingleNode(resultDocument, "/" + SAMLConstants.SAML20P_PREFIX + ":"
                 + DeviceOperationResponse.DEFAULT_ELEMENT_LOCAL_NAME + "/" + SAMLConstants.SAML20P_PREFIX + ":Status/"
-                + SAMLConstants.SAML20P_PREFIX + ":StatusCode/@Value");
+                + SAMLConstants.SAML20P_PREFIX + ":" + StatusCode.DEFAULT_ELEMENT_LOCAL_NAME + "/@" + StatusCode.VALUE_ATTRIB_NAME);
         assertNotNull(statusNode);
         assertEquals(StatusCode.SUCCESS_URI, statusNode.getTextContent());
 

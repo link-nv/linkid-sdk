@@ -49,7 +49,7 @@ import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.password.PasswordDeviceService;
 import net.link.safeonline.pkix.service.PkiService;
-import net.link.safeonline.sdk.auth.saml2.DomUtils;
+import net.link.safeonline.saml.common.DomUtils;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.CompoundBuilder;
