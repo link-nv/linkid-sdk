@@ -28,21 +28,21 @@ namespace safe_online_sdk_dotnet
 	{
 		private NameIdentifierMappingPortClient client;
 		
-		public IdMappingClientImpl(string location, string testPfxPath, string testPfxPassword, string olasCertPath)
+		public IdMappingClientImpl(string location, string appPfxPath, string appPfxPassword, string olasCertPath)
 		{
+			X509Certificate2 appCertificate = new X509Certificate2(appPfxPath, appPfxPassword);
+			X509Certificate2 olasCertificate = new X509Certificate2(olasCertPath);
+			
 			ServicePointManager.ServerCertificateValidationCallback = 
 				new RemoteCertificateValidationCallback(WCFUtil.AnyCertificateValidationCallback);
 			
 			string address = "https://" + location + "/safe-online-ws/idmapping";
 			EndpointAddress remoteAddress = new EndpointAddress(address);
-
-			this.client = new NameIdentifierMappingPortClient(new OlasBinding(), remoteAddress);
+					
+			this.client = new NameIdentifierMappingPortClient(new OlasBinding(olasCertificate), remoteAddress);
 			
-			X509Certificate2 certificate = new X509Certificate2(testPfxPath, testPfxPassword);
-			this.client.ClientCredentials.ClientCertificate.Certificate = certificate;
-			
-			X509Certificate2 serviceCertificate = new X509Certificate2(olasCertPath);
-			this.client.ClientCredentials.ServiceCertificate.DefaultCertificate = serviceCertificate;
+			this.client.ClientCredentials.ClientCertificate.Certificate = appCertificate;
+			this.client.ClientCredentials.ServiceCertificate.DefaultCertificate = olasCertificate;
 			// To override the validation for our self-signed test certificates
 			this.client.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = X509CertificateValidationMode.None;
 			
@@ -53,7 +53,7 @@ namespace safe_online_sdk_dotnet
 		public string getUserId(String username) {
 			NameIDMappingRequestType request = new NameIDMappingRequestType();
 			NameIDPolicyType nameIDPolicy = new NameIDPolicyType();
-			nameIDPolicy.Format = "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent";
+			nameIDPolicy.Format = Saml2Constants.SAML2_NAMEID_FORMAT_PERSISTENT;
 			request.NameIDPolicy = nameIDPolicy;
 			NameIDType nameId = new NameIDType();
 			nameId.Value = username;
@@ -61,7 +61,7 @@ namespace safe_online_sdk_dotnet
 			Console.WriteLine("get name id: " + username);
 			NameIDMappingResponseType response = this.client.NameIdentifierMappingQuery(request);
 			string statusCode = response.Status.StatusCode.Value;
-			if (!"urn:oasis:names:tc:SAML:2.0:status:Success".Equals(statusCode)) {
+			if (!Saml2Constants.SAML2_STATUS_SUCCESS.Equals(statusCode)) {
 			    return null;	
 			}
 			NameIDType responseNameId = (NameIDType) response.Item;

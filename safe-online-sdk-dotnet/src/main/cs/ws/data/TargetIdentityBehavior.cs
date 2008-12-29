@@ -108,8 +108,8 @@ namespace safe_online_sdk_dotnet
         
         protected override void OnWriteHeaderContents(XmlDictionaryWriter writer, MessageVersion messageVersion)
         {
-        	writer.WriteStartElement("Subject", WCFUtil.SAML_ASSERTION_NAMESPACE);
-        	writer.WriteElementString("NameID", WCFUtil.SAML_ASSERTION_NAMESPACE, targetIdentity);
+        	writer.WriteStartElement("Subject", Saml2Constants.SAML2_ASSERTION_NAMESPACE);
+        	writer.WriteElementString("NameID", Saml2Constants.SAML2_ASSERTION_NAMESPACE, targetIdentity);
         	writer.WriteEndElement();
         }
     } 

@@ -27,22 +27,26 @@ namespace safe_online_sdk_dotnet
 	/// </summary>
 	public class STSClientImpl : STSClient
 	{
+		public readonly static string STATUS_VALID = "http://docs.oasis-open.org/ws-sx/ws-trust/200512/status/valid";
+	
+		public readonly static string STATUS_INVALID = "http://docs.oasis-open.org/ws-sx/ws-trust/200512/status/invalid";
+		
 		private SecurityTokenServicePortClient client;
 		
-		public STSClientImpl(string location, string testPfxPath, string testPfxPassword, string olasCertPath)
+		public STSClientImpl(string location, string appPfxPath, string appPfxPassword, string olasCertPath)
 		{
+			X509Certificate2 appCertificate = new X509Certificate2(appPfxPath, appPfxPassword);
+			X509Certificate2 olasCertificate = new X509Certificate2(olasCertPath);
+
 			ServicePointManager.ServerCertificateValidationCallback = 
 				new RemoteCertificateValidationCallback(WCFUtil.AnyCertificateValidationCallback);
 			string address = "https://" + location + "/safe-online-ws/sts";
 			EndpointAddress remoteAddress = new EndpointAddress(address);
 
-			this.client = new SecurityTokenServicePortClient(new OlasBinding(), remoteAddress);
+			this.client = new SecurityTokenServicePortClient(new OlasBinding(olasCertificate), remoteAddress);
 			
-			X509Certificate2 certificate = new X509Certificate2(testPfxPath, testPfxPassword);
-			this.client.ClientCredentials.ClientCertificate.Certificate = certificate;
-			
-			X509Certificate2 serviceCertificate = new X509Certificate2(olasCertPath);
-			this.client.ClientCredentials.ServiceCertificate.DefaultCertificate = serviceCertificate;
+			this.client.ClientCredentials.ClientCertificate.Certificate = appCertificate;
+			this.client.ClientCredentials.ServiceCertificate.DefaultCertificate = olasCertificate;
 			// To override the validation for our self-signed test certificates
 			this.client.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = X509CertificateValidationMode.None;
 			
@@ -64,8 +68,15 @@ namespace safe_online_sdk_dotnet
 			RequestSecurityTokenResponseType response =  this.client.RequestSecurityToken(requestSecurityToken);
 			XmlElement[] results = response.Any;
 			foreach (XmlElement result in results) {
-				Console.WriteLine("result: {0}", result.InnerXml);
+				if ( result.LocalName.Equals("Status") ) {
+					if ( result.FirstChild.LocalName.Equals("Code")) {
+						if ( result.FirstChild.InnerText.Equals(STATUS_VALID) ) {
+							return true;
+						}
+					}
+				}
 			}
+			Console.WriteLine("Invalid Token");
 			return false;
 		}
 	}

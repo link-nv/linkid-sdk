@@ -41,10 +41,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="src\test\cs\AssemblyInfo.cs" />
-    <Compile Include="src\test\cs\Constants.cs" />
+    <Compile Include="src\test\cs\TestConstants.cs" />
     <Compile Include="src\test\cs\TestAttributeClient.cs" />
     <Compile Include="src\test\cs\Program.cs" />
-    <Compile Include="src\test\cs\KeyStoreUtilTest.cs" />
+    <Compile Include="src\test\cs\TestKeyStoreUtil.cs" />
     <Compile Include="src\test\cs\TestDataClient.cs" />
     <Compile Include="src\test\cs\TestIdMapping.cs" />
     <Compile Include="src\test\cs\TestPingClient.cs" />

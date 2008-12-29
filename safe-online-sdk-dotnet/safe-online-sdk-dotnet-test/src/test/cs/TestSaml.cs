@@ -104,23 +104,23 @@ namespace safe_online_sdk_dotnet.test.cs
         	result = document.OuterXml;
         	Console.WriteLine("result: " + result);
         	
-        	XmlTextWriter xmltw = new XmlTextWriter(Constants.workDir + "\\test.xml", new UTF8Encoding(false));
+        	XmlTextWriter xmltw = new XmlTextWriter(TestConstants.workDir + "\\test.xml", new UTF8Encoding(false));
         	document.WriteTo(xmltw);
         	xmltw.Close();
 		}
 		
 		[Test]
-		public void TestSamlRequestGenerator() {
+		public void TestSaml2Util() {
 			RSACryptoServiceProvider key = new RSACryptoServiceProvider();
 			
-			SamlRequestGenerator testedInstance = new SamlRequestGenerator(key);
+			Saml2Util testedInstance = new Saml2Util(key);
 			
-			string tokenId = "_12345678";
 			string spUrl = "http://service.provider.com";
 			string idpUrl = "http://identity.provider.com";
 			string applicationId = "urn:application:id";
-			string result = testedInstance.generateSamlRequest(tokenId, spUrl, idpUrl, applicationId);
+			string[] devices = new string[] {"test-device-1", "test-device-2"};
 			
+			string result = testedInstance.generateSamlRequest(applicationId,applicationId,null,spUrl,idpUrl,null,false);			
 			Console.WriteLine("result document: " + result);
 			
 			XmlDocument xmlDocument = new XmlDocument();

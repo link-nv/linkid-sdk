@@ -18,7 +18,7 @@ using safe_online_sdk_dotnet_test.test.cs;
 namespace safe_online_sdk_dotnet.test.cs
 {
 	[TestFixture]
-	public class KeyStoreUtilTest
+	public class TestKeyStoreUtil
 	{
 		[Test]
 		public void TestCreateCertificate()
@@ -30,11 +30,25 @@ namespace safe_online_sdk_dotnet.test.cs
 			X509Certificate cert = KeyStoreUtil.CreateCert(RSApubKey, RSAprivKey);
 			Console.WriteLine(cert.ToString());
 			
-			FileStream fs = new FileStream(Constants.testPfxPath, FileMode.CreateNew);
-			KeyStoreUtil.WritePkcs12(RSAprivKey, cert, Constants.testPfxPassword, fs);
+			string pfxPath = TestConstants.testPfxPath;
+			if ( File.Exists(pfxPath)) {
+			    pfxPath += "_test";
+			    if ( File.Exists(pfxPath) ) {
+			    	File.Delete(pfxPath);
+			    }
+			}
+			FileStream fs = new FileStream(pfxPath, FileMode.CreateNew);
+			KeyStoreUtil.WritePkcs12(RSAprivKey, cert, TestConstants.testPfxPassword, fs);
 			fs.Close();
 			
-			FileStream certFileStream = new FileStream(Constants.testCrtPath, FileMode.CreateNew);
+			string crtPath = TestConstants.testCrtPath;
+			if ( File.Exists(crtPath)) {
+			    crtPath += "_test";
+			    if ( File.Exists(crtPath) ) {
+			    	File.Delete(crtPath);
+			    }
+			}			
+			FileStream certFileStream = new FileStream(crtPath, FileMode.CreateNew);
 			byte[] encodedCert = cert.GetEncoded();
 			certFileStream.Write(encodedCert, 0, encodedCert.Length);
 			certFileStream.Close();
@@ -43,7 +57,8 @@ namespace safe_online_sdk_dotnet.test.cs
 		[Test]
 		public void TestLoadKey()
 		{
-			System.Security.Cryptography.X509Certificates.X509Certificate2 certificate = new System.Security.Cryptography.X509Certificates.X509Certificate2(Constants.testPfxPath, Constants.testPfxPassword);
+			System.Security.Cryptography.X509Certificates.X509Certificate2 certificate =
+				new System.Security.Cryptography.X509Certificates.X509Certificate2(TestConstants.testPfxPath, TestConstants.testPfxPassword);
 			RSACryptoServiceProvider key = (RSACryptoServiceProvider) certificate.PrivateKey;
 		}
 	}

@@ -25,7 +25,9 @@ namespace safe_online_sdk_dotnet_test.test.cs
 	/// This will show a basic page with a form and one button.
 	/// This button will generate a SAML v2.0 authentication request and redirect to the OLAS authentication web application.
 	/// When the OLAS authentication process is finished, it will send back the SAML v2.0 authentication response back.
-	/// The server will then extract this response and send it to the OLAS STS Web Service for validation.
+	/// The server will then extract this response and validate it.
+	/// This means sending it to the OLAS STS Web Service for validation of the signature and basic validation.
+	/// Further validation is done by the utility class Saml2Util.
 	/// </summary>
 	
 	[TestFixture]
@@ -35,19 +37,20 @@ namespace safe_online_sdk_dotnet_test.test.cs
 		
 		private RSACryptoServiceProvider key;
 		
-		private SamlRequestGenerator samlRequestGenerator;
+		private Saml2Util saml2Util;
 		
 		[Test]
 		public void StartWebServer()
 		{
-			IPAddress localAddr = IPAddress.Parse(Constants.localhost);
+			IPAddress localAddr = IPAddress.Parse(TestConstants.localhost);
 			this.listener = new TcpListener(localAddr, 8080);
 			this.listener.Start();
 			
-			System.Security.Cryptography.X509Certificates.X509Certificate2 certificate = new System.Security.Cryptography.X509Certificates.X509Certificate2(Constants.testPfxPath, Constants.testPfxPassword);
+			System.Security.Cryptography.X509Certificates.X509Certificate2 certificate = 
+				new System.Security.Cryptography.X509Certificates.X509Certificate2(TestConstants.testPfxPath, TestConstants.testPfxPassword);
 			this.key = (RSACryptoServiceProvider) certificate.PrivateKey;
 			
-			this.samlRequestGenerator = new SamlRequestGenerator(this.key);
+			this.saml2Util = new Saml2Util(this.key);
 			
 			Thread thread = new Thread(new ThreadStart(this.StartListen));
 			thread.Start();
@@ -70,9 +73,9 @@ namespace safe_online_sdk_dotnet_test.test.cs
 				} while (bytes > 0 && socket.Available > 0);
 				Console.WriteLine("received: {0}", sBuffer);
 				if (sBuffer.Substring(0,3) == "GET" ) {
-					string samlRequest = this.samlRequestGenerator.generateSamlRequest("token-id", "http://" 
-						+ Constants.localhost + ":8080", "https://" + Constants.wsLocation + "/olas-auth/entry", "test");
-					string encodedSamlRequest = Convert.ToBase64String(Encoding.ASCII.GetBytes(samlRequest));
+					string encodedSamlRequest = this.saml2Util.generateEncodedSamlRequest("test", "test", null, "http://" 
+						+ TestConstants.localhost + ":8080", "https://" + TestConstants.wsLocation + "/olas-auth/entry", 
+						null, false);
 					byte[] msg = Encoding.ASCII.GetBytes("HTTP/1.0 200 OK" + "\r\n" +
 						"Content-type: text/html" + "\r\n" +
 						"Pragma: no-Cache" + "\r\n" +
@@ -80,7 +83,7 @@ namespace safe_online_sdk_dotnet_test.test.cs
 						"\r\n" +
 						"<html>" + "\r\n" + 
 						"Hello World" + "\r\n" +
-						"<form action=\"http://" + Constants.olasHost + ":8080/olas-auth/entry\" method=\"POST\">" 
+						"<form action=\"http://" + TestConstants.olasHost + ":8080/olas-auth/entry\" method=\"POST\">" 
 						+ "\r\n" + "<input type=\"submit\" value=\"submit\"/>" + "\r\n" +
 						"<input type=\"hidden\" name=\"SAMLRequest\" value=\"" + encodedSamlRequest + "\"/>" + "\r\n" +
 						"</form>" + "\r\n" +
@@ -102,14 +105,15 @@ namespace safe_online_sdk_dotnet_test.test.cs
 						else
 							encodedSamlResponse = sBuffer.Substring(samlResponseBeginIdx, samlResponseEndIdx - samlResponseBeginIdx);
 						Console.WriteLine("encoded saml response is: \"{0}\"", encodedSamlResponse);
-						msg = "Authentication successful";
 						encodedSamlResponse = HttpUtility.UrlDecode(encodedSamlResponse);
-						byte[] samlResponseData = Convert.FromBase64String(encodedSamlResponse);
-						string samlResponse = Encoding.UTF8.GetString(samlResponseData);
-						Console.WriteLine("SAML Response: {0}", samlResponse);
+						AuthenticationProtocolContext context = 
+							this.saml2Util.validateEncodedSamlResponse(encodedSamlResponse, TestConstants.wsLocation,
+							                                           TestConstants.testPfxPath, TestConstants.testPfxPassword,
+							                                           TestConstants.olasCertPath);
+						Console.WriteLine("userId is: \"{0}\"", context.getUserId());
+						Console.WriteLine("authentication device is: \"{0}\"", context.getAuthenticatedDevice());
 						
-						STSClient stsClient = new STSClientImpl(Constants.wsLocation, Constants.testPfxPath, Constants.testPfxPassword, Constants.olasCertPath);
-						stsClient.validateAuthnResponse(samlResponse, TrustDomainType.NODE);
+						msg = "Successfully authenticated user \"" + context.getUserId().ToString() + "\" using device \"" + context.getAuthenticatedDevice() + "\"";
 					}
 					byte[] httpResponse = Encoding.ASCII.GetBytes("HTTP/1.0 200 OK" + "\r\n" +
 						"Content-type: text/html" + "\r\n" +

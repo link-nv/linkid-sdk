@@ -10,6 +10,7 @@ using System.ServiceModel;
 using System.ServiceModel.Channels;
 using System.ServiceModel.Security;
 using System.ServiceModel.Security.Tokens;
+using System.Security.Cryptography.X509Certificates;
 
 namespace safe_online_sdk_dotnet
 {
@@ -22,13 +23,18 @@ namespace safe_online_sdk_dotnet
 	{
 		private BindingElementCollection bindingElements;
 		
-		public OlasBinding() {
+		public OlasBinding(X509Certificate2 olasCertificate) {
+			
+			// Get CN from olas certificate, used to set Dns Identity Claim
+			string[] issuer = olasCertificate.Issuer.Split(',');
+			string cn = issuer[0].Split('=')[1];
+			
 			HttpsTransportBindingElement httpsTransport = new HttpsTransportBindingElement();
 			TextMessageEncodingBindingElement encoding = new TextMessageEncodingBindingElement();
 			encoding.MessageVersion = MessageVersion.Soap11;
 
 			AsymmetricSecurityBindingElement securityBinding = SecurityBindingElement.CreateMutualCertificateDuplexBindingElement();
-			securityBinding.LocalClientSettings.IdentityVerifier = new DnsIdentityVerifier(new DnsEndpointIdentity("SafeOnline Development olas"));
+			securityBinding.LocalClientSettings.IdentityVerifier = new DnsIdentityVerifier(new DnsEndpointIdentity(cn));
 			securityBinding.AllowSerializedSigningTokenOnReply = true;
 			securityBinding.SecurityHeaderLayout = SecurityHeaderLayout.Lax;
 			
@@ -39,7 +45,6 @@ namespace safe_online_sdk_dotnet
 		}
 		
 		public override BindingElementCollection CreateBindingElements() {
-			Console.WriteLine("create binding elements");
 			return this.bindingElements.Clone();
 		}
 		
