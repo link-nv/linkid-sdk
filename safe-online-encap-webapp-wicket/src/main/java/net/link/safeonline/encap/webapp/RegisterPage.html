@@ -10,16 +10,16 @@
 
 	<body>
 
-		<div wicket:id="header_border"></div>
+		<wicket:container wicket:id="header_border"></wicket:container>
 
-		<div wicket:id="content_border">
+		<wicket:container wicket:id="content_border">
 
-			<div wicket:id="sidebar_border">
+			<wicket:container wicket:id="sidebar_border">
 				<p>
 					<wicket:message key="helpRegisterMobile">[Register Encap
 						Help]</wicket:message>
 				</p>
-			</div>
+			</wicket:container>
 
 			<h2>
 				<wicket:message key="mobileRegister">[Register Mobile]</wicket:message>
@@ -52,7 +52,7 @@
 				<div wicket:id="feedback" class="error"></div>
 			</form>
 
-		</div>
+		</wicket:container>
 
 	</body>
 </html>

@@ -10,15 +10,15 @@
 
 	<body>
 
-		<div wicket:id="header_border"></div>
+		<wicket:container wicket:id="header_border"></wicket:container>
 
-		<div wicket:id="content_border">
+		<wicket:container wicket:id="content_border">
 
 			<h2>
 				<wicket:message key="registerANewDevice">[Register A New Device]</wicket:message>
 			</h2>
 
-			<div wicket:id="sidebar_border">
+			<wicket:container wicket:id="sidebar_border">
 
 				<ul>
 					<li>
@@ -32,9 +32,9 @@
 					<wicket:message key="helpRegisterOtpOverSms">[Register OTP over SMS
 						Help]</wicket:message>
 				</p>
-			</div>
+			</wicket:container>
 
-			<div wicket:id="progress">[Progress Panel]</div>
+			<wicket:container wicket:id="progress">[Progress Panel]</wicket:container>
 
 			<form wicket:id="request_otp_form">
 
@@ -91,7 +91,7 @@
 
 			</form>
 
-		</div>
+		</wicket:container>
 
 	</body>
 </html>

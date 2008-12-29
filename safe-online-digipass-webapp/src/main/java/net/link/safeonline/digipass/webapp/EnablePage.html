@@ -10,15 +10,15 @@
 
 	<body>
 
-		<div wicket:id="header_border"></div>
+		<wicket:container wicket:id="header_border"></wicket:container>
 
-		<div wicket:id="content_border">
+		<wicket:container wicket:id="content_border">
 
 			<h1>
 				<span wicket:id="title">[Enable Digipass xxx]</span>
 			</h1>
 
-			<div wicket:id="sidebar_border">
+			<wicket:container wicket:id="sidebar_border">
 
 				<ul>
 					<li>
@@ -31,7 +31,7 @@
 				<p>
 					<wicket:message key="helpDigipassEnable">[Enable Digipass Help]</wicket:message>
 				</p>
-			</div>
+			</wicket:container>
 
 			<form wicket:id="enable_form">
 
@@ -51,7 +51,7 @@
 				<div wicket:id="feedback" class="error"></div>
 			</form>
 
-		</div>
+		</wicket:container>
 
 	</body>
 </html>

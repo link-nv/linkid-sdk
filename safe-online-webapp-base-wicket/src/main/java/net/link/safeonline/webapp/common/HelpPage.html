@@ -10,15 +10,15 @@
 
 	<body>
 
-		<div wicket:id="header_border"></div>
+		<wicket:container wicket:id="header_border"></wicket:container>
 
-		<div wicket:id="content_border">
+		<wicket:container wicket:id="content_border">
 
 			<h1>
 				<wicket:message key="help">[Help]</wicket:message>
 			</h1>
 
-			<div wicket:id="sidebar_border">
+			<wicket:container wicket:id="sidebar_border">
 
 				<ul>
 					<li>
@@ -27,10 +27,10 @@
 						</a>
 					</li>
 				</ul>
-			</div>
+			</wicket:container>
 
 
-			<div wicket:id="create">
+			<wicket:container wicket:id="create">
 				<table>
 					<thead>
 						<tr>
@@ -50,9 +50,9 @@
 						</tr>
 					</tbody>
 				</table>
-			</div>
+			</wicket:container>
 
-			<div wicket:id="ticket_info">
+			<wicket:container wicket:id="ticket_info">
 				<table>
 					<colgroup class="half" />
 					<colgroup />
@@ -109,9 +109,9 @@
 						</tr>
 					</tbody>
 				</table>
-			</div>
+			</wicket:container>
 
-		</div>
+		</wicket:container>
 
 	</body>
 </html>

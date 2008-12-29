@@ -10,11 +10,11 @@
 
 	<body>
 
-		<div wicket:id="header_border"></div>
+		<wicket:container wicket:id="header_border"></wicket:container>
 
-		<div wicket:id="content_border">
+		<wicket:container wicket:id="content_border">
 
-			<div wicket:id="sidebar_border">
+			<wicket:container wicket:id="sidebar_border">
 
 				<ul>
 					<li>
@@ -33,9 +33,9 @@
 					<wicket:message key="helpOtpOverSmsAuthentication">[Authenticate OTP
 						over SMS Help]</wicket:message>
 				</p>
-			</div>
+			</wicket:container>
 
-			<div wicket:id="progress">[Progress Panel]</div>
+			<wicket:container wicket:id="progress">[Progress Panel]</wicket:container>
 
 			<h2 wicket:id="title">[OTP Over SMS Authentication: Authenticating for
 				Application] </h2>
@@ -87,7 +87,7 @@
 
 			</form>
 
-		</div>
+		</wicket:container>
 
 	</body>
 </html>
