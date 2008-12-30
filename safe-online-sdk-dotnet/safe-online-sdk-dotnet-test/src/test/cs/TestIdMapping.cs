@@ -18,7 +18,8 @@ namespace safe_online_sdk_dotnet.test.cs
 		public void TestGetUserId()
 		{
 			IdMappingClient idMappingClient =
-				new IdMappingClientImpl(Constants.wsLocation, Constants.testPfxPath, Constants.testPfxPassword, Constants.olasCertPath);
+				new IdMappingClientImpl(TestConstants.wsLocation, TestConstants.testPfxPath, TestConstants.testPfxPassword, 
+				                        TestConstants.olasCertPath);
 			String userId = idMappingClient.getUserId("admin");
 			Console.WriteLine("admin userId: " + userId);
 		}

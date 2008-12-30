@@ -145,6 +145,8 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
                     AttributeType compoundAttribute = (AttributeType) attributeValue;
                     CompoundBuilder compoundBuilder = new CompoundBuilder(componentType);
 
+                    // XXX: don't we need to add the compound it attribute ? see data-ws
+
                     List<Object> memberAttributes = compoundAttribute.getAttributeValue();
                     for (Object memberAttributeObject : memberAttributes) {
                         AttributeType memberAttribute = (AttributeType) memberAttributeObject;
@@ -291,6 +293,7 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
                 /*
                  * We use the first attribute value to determine the type of the array to be returned.
                  */
+                // XXX: compound attribute not supported correctly !!!!
                 Object firstAttributeValue = attributeValues.get(0);
                 Class<?> componentType = firstAttributeValue.getClass();
                 int size = attributeValues.size();

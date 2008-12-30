@@ -17,7 +17,7 @@ namespace safe_online_sdk_dotnet.test.cs
 		[Test]
 		public void TestPing()
 		{
-			PingClient pingClient = new PingClientImpl(Constants.olasHost + ":8080");
+			PingClient pingClient = new PingClientImpl(TestConstants.olasHost + ":8080");
 			pingClient.ping();
 		}
 	}

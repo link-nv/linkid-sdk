@@ -24,13 +24,11 @@ namespace safe_online_sdk_dotnet
 	{
 		/// <summary>
 		/// SOAP header required by the Liberty ID-WSF Data Service to identity the resource.
-		/// For OLAS this resources is the subject's UUID, which can be acquired using the ID Mapping Service.
+		/// For OLAS this resource is the subject's UUID, which can be acquired using the ID Mapping Service.
 		/// </summary>
 		public static readonly string TARGET_IDENTITY_HEADER_NAME = "TargetIdentity";
 		
 		public static readonly string TARGET_IDENTITY_HEADER_NAMESPACE = "urn:liberty:sb:2005-11";
-		
-		public static readonly string SAML_ASSERTION_NAMESPACE = "urn:oasis:names:tc:SAML:2.0:assertion";
 
 		/// <summary>
 		/// Certificate validation callback to accepts any SSL certificate.

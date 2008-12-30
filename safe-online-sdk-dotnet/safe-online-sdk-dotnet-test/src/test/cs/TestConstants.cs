@@ -9,7 +9,7 @@ using System;
 
 namespace safe_online_sdk_dotnet_test.test.cs
 {
-	public sealed class Constants
+	public sealed class TestConstants
 	{
 		public static readonly string workDir = "C:\\Users\\devel\\Csharp";
 		
@@ -20,7 +20,7 @@ namespace safe_online_sdk_dotnet_test.test.cs
 		public static readonly string testCrtPath = workDir + "\\test.crt";
 		
 		public static readonly string olasCertPath = workDir + "\\olas.crt";
-				
+					
 		public static readonly string olasHost = "sebeco-dev-11";
 		
 		public static readonly string wsLocation = olasHost + ":8443";
@@ -28,8 +28,14 @@ namespace safe_online_sdk_dotnet_test.test.cs
 		public static readonly string localhost = "10.0.2.15";
 		
 		public static readonly string loginAttribute = "urn:net:lin-k:safe-online:attribute:login";
-			
-		private Constants()
+		
+		public static readonly string testMultiStringAttribute = "urn:test:multi:string";
+		public static readonly string testMultiDateAttribute = "urn:test:multi:date";
+		public static readonly string testCompoundAttribute = "urn:test:compound";
+		public static readonly string testSingleStringAttribute = "urn:test:single:string";
+		public static readonly string testSingleDateAttribute = "urn:test:single:date";
+		
+		private TestConstants()
 		{
 		}
 	}

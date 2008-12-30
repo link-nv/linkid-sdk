@@ -349,7 +349,7 @@ public class DataServicePortImpl implements DataServicePort {
             } else {
                 memberValue = memberValues.get(0);
             }
-            compoundMemberValues.put(memberName, memberValue);
+            compoundMemberValues.put(memberName, convertXMLDatatypeToServiceDatatype(memberValue));
         }
         return compoundMemberValues;
     }
