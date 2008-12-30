@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en" lang="en">
+
+    <body>
+        <wicket:extend>
+
+            <h2>Your accounts and recent transactions.</h2>
+
+            <form wicket:id="account">
+                <table>
+                    <caption>Your Account</caption>
+
+                    <colgroup />
+                    <colgroup class="small" />
+                    <colgroup class="tiny" />
+
+                    <tr wicket:id="transactionList">
+                        <td wicket:id="target" />
+                        <td wicket:id="date" />
+                        <th wicket:id="amount" />
+                    </tr>
+                </table>
+
+                <table>
+                    <caption>Manage your Finances</caption>
+
+                    <tfoot>
+	                    <tr>
+	                        <th class="nopad">
+	                            <a wicket:id="newTransaction">New transaction &gt;</a>
+                           </th>
+	                    </tr>
+                    </tfoot>
+                </table>
+            </form>
+
+        </wicket:extend>
+    </body>
+
+</html>

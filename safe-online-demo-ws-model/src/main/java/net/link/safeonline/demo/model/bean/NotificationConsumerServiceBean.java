@@ -25,7 +25,7 @@ import net.link.safeonline.demo.cinema.entity.CinemaUserEntity;
 import net.link.safeonline.demo.cinema.service.TicketService;
 import net.link.safeonline.demo.model.NotificationConsumerService;
 import net.link.safeonline.demo.payment.entity.PaymentEntity;
-import net.link.safeonline.demo.payment.entity.UserEntity;
+import net.link.safeonline.demo.payment.entity.PaymentUserEntity;
 import net.link.safeonline.demo.ticket.entity.Ticket;
 import net.link.safeonline.demo.ticket.entity.User;
 
@@ -57,11 +57,11 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
 
         try {
             InitialContext context = new InitialContext();
-            this.demoBankEntityManager = (EntityManager) context.lookup("java:/DemoBankEntityManager");
-            this.demoCinemaEntityManager = (EntityManager) context.lookup("java:/DemoCinemaEntityManager");
-            this.demoTicketEntityManager = (EntityManager) context.lookup("java:/DemoTicketEntityManager");
-            this.demoPaymentEntityManager = (EntityManager) context.lookup("java:/DemoPaymentEntityManager");
-            this.demoCinemaTicketService = (TicketService) context.lookup(TicketService.JNDI_BINDING);
+            demoBankEntityManager = (EntityManager) context.lookup("java:/DemoBankEntityManager");
+            demoCinemaEntityManager = (EntityManager) context.lookup("java:/DemoCinemaEntityManager");
+            demoTicketEntityManager = (EntityManager) context.lookup("java:/DemoTicketEntityManager");
+            demoPaymentEntityManager = (EntityManager) context.lookup("java:/DemoPaymentEntityManager");
+            demoCinemaTicketService = (TicketService) context.lookup(TicketService.JNDI_BINDING);
         } catch (NamingException e) {
             LOG.error("Naming exception thrown: " + e.getMessage(), e);
         }
@@ -88,7 +88,7 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
         LOG.debug("unsubscribe demo bank user id: " + userId);
 
         try {
-            BankUserEntity user = (BankUserEntity) this.demoBankEntityManager.createNamedQuery(BankUserEntity.getByOlasId).setParameter(
+            BankUserEntity user = (BankUserEntity) demoBankEntityManager.createNamedQuery(BankUserEntity.getByOlasId).setParameter(
                     "olasId", userId).getSingleResult();
             user.setOlasId(null);
             user.setName(InitializationService.digipassUser_Name);
@@ -101,19 +101,19 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
         LOG.debug("remove demo bank user id: " + userId);
 
         try {
-            BankUserEntity user = (BankUserEntity) this.demoBankEntityManager.createNamedQuery(BankUserEntity.getByOlasId).setParameter(
+            BankUserEntity user = (BankUserEntity) demoBankEntityManager.createNamedQuery(BankUserEntity.getByOlasId).setParameter(
                     "olasId", userId).getSingleResult();
             try {
                 @SuppressWarnings("unchecked")
-                List<BankAccountEntity> accounts = this.demoBankEntityManager.createNamedQuery(BankAccountEntity.getByUser).setParameter(
-                        "user", user).getResultList();
+                List<BankAccountEntity> accounts = demoBankEntityManager.createNamedQuery(BankAccountEntity.getByUser).setParameter("user",
+                        user).getResultList();
                 for (BankAccountEntity account : accounts) {
-                    this.demoBankEntityManager.remove(account);
+                    demoBankEntityManager.remove(account);
                 }
             } catch (NoResultException e) {
             }
 
-            this.demoBankEntityManager.remove(user);
+            demoBankEntityManager.remove(user);
         } catch (NoResultException e) {
         }
     }
@@ -122,13 +122,13 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
 
         LOG.debug("remove demo cinema user id: " + userId);
 
-        CinemaUserEntity user = this.demoCinemaEntityManager.find(CinemaUserEntity.class, userId);
+        CinemaUserEntity user = demoCinemaEntityManager.find(CinemaUserEntity.class, userId);
         if (null != user) {
-            Collection<CinemaTicketEntity> tickets = this.demoCinemaTicketService.getTickets(user);
+            Collection<CinemaTicketEntity> tickets = demoCinemaTicketService.getTickets(user);
             for (CinemaTicketEntity ticket : tickets) {
-                this.demoTicketEntityManager.remove(ticket);
+                demoTicketEntityManager.remove(ticket);
             }
-            this.demoCinemaEntityManager.remove(user);
+            demoCinemaEntityManager.remove(user);
         }
     }
 
@@ -136,14 +136,14 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
 
         LOG.debug("remove demo ticket user id: " + userId);
 
-        User user = this.demoTicketEntityManager.find(User.class, userId);
+        User user = demoTicketEntityManager.find(User.class, userId);
         if (null != user) {
             LOG.debug("removing demo ticket user: " + user.getSafeOnlineUserName());
             List<Ticket> tickets = user.getTickets();
             for (Ticket ticket : tickets) {
-                this.demoTicketEntityManager.remove(ticket);
+                demoTicketEntityManager.remove(ticket);
             }
-            this.demoTicketEntityManager.remove(user);
+            demoTicketEntityManager.remove(user);
         }
 
     }
@@ -152,14 +152,14 @@ public class NotificationConsumerServiceBean implements NotificationConsumerServ
 
         LOG.debug("remove demo payment user id: " + userId);
 
-        UserEntity user = this.demoPaymentEntityManager.find(UserEntity.class, userId);
+        PaymentUserEntity user = demoPaymentEntityManager.find(PaymentUserEntity.class, userId);
         if (null != user) {
-            LOG.debug("removing demo payment user: " + user.getSafeOnlineUserName());
+            LOG.debug("removing demo payment user: " + user.getOlasName());
             List<PaymentEntity> payments = user.getPayments();
             for (PaymentEntity payment : payments) {
-                this.demoPaymentEntityManager.remove(payment);
+                demoPaymentEntityManager.remove(payment);
             }
-            this.demoPaymentEntityManager.remove(user);
+            demoPaymentEntityManager.remove(user);
         }
     }
 }

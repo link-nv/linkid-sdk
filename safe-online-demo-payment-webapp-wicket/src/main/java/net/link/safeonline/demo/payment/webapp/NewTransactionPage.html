@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en" lang="en">
+
+    <body>
+        <wicket:extend>
+
+            <h2>Order a new money transaction.</h2>
+
+            <form wicket:id="newTransaction">
+	            <table>
+	                <caption>Specify the details of your transaction</caption>
+
+	                <tbody>
+	                    <tr>
+	                        <th>Source Account:</th>
+	                        <td>
+	                           <span wicket:id="visa">
+	                               <input type="radio">Foo</input>
+	                               <input type="radio">Bar</input>
+                               </span>
+                            </td>
+	                    </tr>
+	                    <tr>
+	                        <th>Target Account:</th>
+	                        <td><input type="text" wicket:id="target" /></td>
+	                    </tr>
+	                    <tr>
+	                        <th>Amount:</th>
+	                        <td><input type="text" wicket:id="amount" /></td>
+	                    </tr>
+	                    <tr>
+	                        <th colspan="2">Description:</th>
+	                    </tr>
+	                    <tr>
+	                        <th colspan="2"><textarea wicket:id="description"></textarea></th>
+	                    </tr>
+	                </tbody>
+
+	                <tfoot>
+	                    <tr>
+	                        <th colspan="2" class="nopad">
+	                            <input type="submit" value="Process &gt;" />
+	                        </th>
+	                    </tr>
+	                </tfoot>
+	            </table>
+            </form>
+
+        </wicket:extend>
+    </body>
+
+</html>

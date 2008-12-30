@@ -8,7 +8,7 @@
 package net.link.safeonline.sdk.exception;
 
 /**
- * Thrown in case the attribute was not found.
+ * Thrown in case the attribute plugin is not available.
  * 
  * @author fcorneli
  * 

@@ -73,18 +73,18 @@ public class NewTransactionPage extends LayoutPage {
 
             super(id);
 
-            add(new TextArea<String>("description", this.description = new Model<String>()));
-            add(new RadioChoice<BankAccountEntity>("source", this.source = new Model<BankAccountEntity>(), getUserService().getAccounts(
+            add(new TextArea<String>("description", description = new Model<String>()));
+            add(new RadioChoice<BankAccountEntity>("source", source = new Model<BankAccountEntity>(), getUserService().getAccounts(
                     BankSession.get().getUser())));
-            add(new TextField<String>("target", this.target = new Model<String>()));
-            add(new TextField<String>("amount", this.amount = new Model<String>()));
+            add(new TextField<String>("target", target = new Model<String>()));
+            add(new TextField<String>("amount", amount = new Model<String>()));
         }
 
         @Override
         protected void onSubmit() {
 
-            if (getTransactionService().createTransaction(this.description.getObject(), this.source.getObject(), this.target.getObject(),
-                    Double.parseDouble(this.amount.getObject())) != null) {
+            if (getTransactionService().createTransaction(description.getObject(), source.getObject(), target.getObject(),
+                    Double.parseDouble(amount.getObject())) != null) {
                 setResponsePage(AccountPage.class);
             }
         }
