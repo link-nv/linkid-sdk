@@ -20,17 +20,16 @@ import javax.xml.ws.wsaddressing.W3CEndpointReference;
 import net.lin_k.safe_online.notification.producer.FilterType;
 import net.lin_k.safe_online.notification.producer.NotificationProducerPort;
 import net.lin_k.safe_online.notification.producer.SubscribeRequest;
+import net.lin_k.safe_online.notification.producer.SubscribeResponse;
+import net.lin_k.safe_online.notification.producer.SubscribeStatusType;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.notification.service.NotificationProducerService;
 import net.link.safeonline.sdk.ws.WSSecurityServerHandler;
+import net.link.safeonline.ws.common.NotificationErrorCode;
 import net.link.safeonline.ws.util.ri.Injection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.oasis_open.docs.wsn.b_2.GetCurrentMessage;
-import org.oasis_open.docs.wsn.b_2.GetCurrentMessageResponse;
-import org.oasis_open.docs.wsn.b_2.SubscribeCreationFailedFaultType;
-import org.oasis_open.docs.wsn.b_2.SubscribeResponse;
 import org.oasis_open.docs.wsn.b_2.TopicExpressionType;
 
 
@@ -48,6 +47,7 @@ public class NotificationProducerPortImpl implements NotificationProducerPort {
     private NotificationProducerService notificationProducerService;
 
 
+    @SuppressWarnings("unchecked")
     public SubscribeResponse subscribe(SubscribeRequest request) {
 
         LOG.debug("subscribe");
@@ -70,27 +70,24 @@ public class NotificationProducerPortImpl implements NotificationProducerPort {
             return createSubscribeCreationFailedResponse();
         }
 
-        return createGenericResponse();
+        return createSuccessResponse();
     }
 
-    private SubscribeResponse createGenericResponse() {
+    private SubscribeResponse createSuccessResponse() {
 
         SubscribeResponse response = new SubscribeResponse();
+        SubscribeStatusType status = new SubscribeStatusType();
+        status.setStatusCode(NotificationErrorCode.SUCCESS.getErrorCode());
+        response.setSubscribeStatus(status);
         return response;
     }
 
     private SubscribeResponse createSubscribeCreationFailedResponse() {
 
-        SubscribeResponse response = createGenericResponse();
-        SubscribeCreationFailedFaultType error = new SubscribeCreationFailedFaultType();
-        response.getAny().add(error);
+        SubscribeResponse response = new SubscribeResponse();
+        SubscribeStatusType status = new SubscribeStatusType();
+        status.setStatusCode(NotificationErrorCode.SUBSCRIPTION_FAILED.getErrorCode());
+        response.setSubscribeStatus(status);
         return response;
-    }
-
-    public GetCurrentMessageResponse getCurrentMessage(GetCurrentMessage request) {
-
-        LOG.debug("getCurrentMessage");
-        // TODO Auto-generated method stub
-        return null;
     }
 }

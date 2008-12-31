@@ -14,15 +14,12 @@ namespace safe_online_sdk_dotnet_test.test.cs
 		public static readonly string workDir = "C:\\Users\\devel\\Csharp";
 		
 		public static readonly string testPfxPath = workDir + "\\test.pfx";
-
 		public static readonly string testPfxPassword = "secret";
-
 		public static readonly string testCrtPath = workDir + "\\test.crt";
 		
 		public static readonly string olasCertPath = workDir + "\\olas.crt";
 					
 		public static readonly string olasHost = "sebeco-dev-11";
-		
 		public static readonly string wsLocation = olasHost + ":8443";
 		
 		public static readonly string localhost = "10.0.2.15";
@@ -35,6 +32,9 @@ namespace safe_online_sdk_dotnet_test.test.cs
 		public static readonly string testSingleStringAttribute = "urn:test:single:string";
 		public static readonly string testSingleDateAttribute = "urn:test:single:date";
 		
+		public static readonly string olasTopicRemoveUser = "urn:net:lin-k:safe-online:topic:user:remove";
+		public static readonly string olasTopicUnsubscribeUser = "urn:net:lin-k:safe-online:topic:user:unsubscribe";
+
 		private TestConstants()
 		{
 		}

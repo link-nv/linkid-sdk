@@ -10,6 +10,7 @@ package test.unit.net.link.safeonline.notification.producer.ws;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.security.KeyPair;
@@ -28,6 +29,7 @@ import net.lin_k.safe_online.notification.producer.FilterType;
 import net.lin_k.safe_online.notification.producer.NotificationProducerPort;
 import net.lin_k.safe_online.notification.producer.NotificationProducerService;
 import net.lin_k.safe_online.notification.producer.SubscribeRequest;
+import net.lin_k.safe_online.notification.producer.SubscribeResponse;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.DeviceAuthenticationService;
@@ -44,6 +46,7 @@ import net.link.safeonline.test.util.JaasTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.WebServiceTestUtils;
+import net.link.safeonline.ws.common.NotificationErrorCode;
 import net.link.safeonline.ws.common.WebServiceConstants;
 import net.link.safeonline.ws.util.ri.InjectionInstanceResolver;
 
@@ -53,7 +56,6 @@ import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.oasis_open.docs.wsn.b_2.SubscribeResponse;
 import org.oasis_open.docs.wsn.b_2.TopicExpressionType;
 
 
@@ -199,6 +201,7 @@ public class NotificationProducerPortImplTest {
 
         // verify
         assertNotNull(response);
+        assertEquals(NotificationErrorCode.SUCCESS.getErrorCode(), response.getSubscribeStatus().getStatusCode());
     }
 
 }
