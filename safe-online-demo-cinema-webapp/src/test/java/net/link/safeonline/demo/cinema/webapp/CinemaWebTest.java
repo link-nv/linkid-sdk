@@ -76,17 +76,17 @@ public class CinemaWebTest extends AbstractWicketTests {
     public void testLogin() {
 
         // LoginPage: Verify.
-        this.wicket.processRequestCycle();
-        this.wicket.assertRenderedPage(LoginPage.class);
-        this.wicket.assertComponent("loginLink", OlasAuthLink.class);
+        wicket.processRequestCycle();
+        wicket.assertRenderedPage(LoginPage.class);
+        wicket.assertComponent("loginLink", OlasAuthLink.class);
 
         // LoginPage: Click to login with digipass.
-        this.wicket.clickLink("loginLink");
+        wicket.clickLink("loginLink");
 
         // TicketPage: Verify && we've logged in successfully.
         assertTrue("Not logged in.", //
-                CinemaSession.isUserSet());
-        this.wicket.assertRenderedPage(TicketPage.class);
+                CinemaSession.get().isUserSet());
+        wicket.assertRenderedPage(TicketPage.class);
     }
 
     /**
@@ -103,17 +103,17 @@ public class CinemaWebTest extends AbstractWicketTests {
         testLogin();
 
         // TicketPage: Verify.
-        this.wicket.assertComponent("user:logout", OlasLogoutLink.class);
+        wicket.assertComponent("user:logout", OlasLogoutLink.class);
 
         // TicketPage: Log out.
-        this.wicket.clickLink("user:logout");
+        wicket.clickLink("user:logout");
 
         // LoginPage: Verify && OLAS user logged out successfully.
         assertFalse("OLAS credentials shouldn't be present.", //
-                LoginManager.isAuthenticated(this.wicket.getServletRequest()));
+                LoginManager.isAuthenticated(wicket.getServletRequest()));
         assertFalse("Shouldn't be logged in.", //
-                CinemaSession.isUserSet());
-        this.wicket.assertRenderedPage(LoginPage.class);
+                CinemaSession.get().isUserSet());
+        wicket.assertRenderedPage(LoginPage.class);
     }
 
     /**
@@ -151,19 +151,19 @@ public class CinemaWebTest extends AbstractWicketTests {
         testLogin();
 
         // TicketPage: Verify.
-        this.wicket.assertPageLink("tickets:new", FilmTheatreSelectionPage.class);
+        wicket.assertPageLink("tickets:new", FilmTheatreSelectionPage.class);
 
         // TicketPage: Click to create new account.
-        this.wicket.clickLink("tickets:new");
+        wicket.clickLink("tickets:new");
 
         // FilmTheatreSelectionPage: Verify.
-        this.wicket.assertRenderedPage(FilmTheatreSelectionPage.class);
-        this.wicket.assertComponent("films", Form.class);
-        this.wicket.assertComponent("films:list", ListView.class);
+        wicket.assertRenderedPage(FilmTheatreSelectionPage.class);
+        wicket.assertComponent("films", Form.class);
+        wicket.assertComponent("films:list", ListView.class);
 
         // FilmTheatreSelectionPage: Find our film.
         @SuppressWarnings("unchecked")
-        ListView<CinemaFilmEntity> films = (ListView<CinemaFilmEntity>) this.wicket.getComponentFromLastRenderedPage("films:list");
+        ListView<CinemaFilmEntity> films = (ListView<CinemaFilmEntity>) wicket.getComponentFromLastRenderedPage("films:list");
         Iterator<? extends ListItem<CinemaFilmEntity>> filmsIt = films.iterator();
 
         String filmLink = null;
@@ -178,20 +178,19 @@ public class CinemaWebTest extends AbstractWicketTests {
         }
         assertNotNull(String.format("film not found: test: %s - sample: %s", testFilmName, films.getList()), //
                 filmLink);
-        this.wicket.assertComponent(filmLink, Link.class);
+        wicket.assertComponent(filmLink, Link.class);
 
         // FilmTheatreSelectionPage: Select our film.
-        this.wicket.clickLink(filmLink);
+        wicket.clickLink(filmLink);
 
         // FilmTheatreSelectionPage: Verify.
-        this.wicket.assertRenderedPage(FilmTheatreSelectionPage.class);
-        this.wicket.assertComponent("theatres", Form.class);
-        this.wicket.assertComponent("theatres:list", ListView.class);
+        wicket.assertRenderedPage(FilmTheatreSelectionPage.class);
+        wicket.assertComponent("theatres", Form.class);
+        wicket.assertComponent("theatres:list", ListView.class);
 
         // FilmTheatreSelectionPage: Find our theatre.
         @SuppressWarnings("unchecked")
-        ListView<CinemaTheatreEntity> theatres = (ListView<CinemaTheatreEntity>) this.wicket
-                                                                                            .getComponentFromLastRenderedPage("theatres:list");
+        ListView<CinemaTheatreEntity> theatres = (ListView<CinemaTheatreEntity>) wicket.getComponentFromLastRenderedPage("theatres:list");
         Iterator<? extends ListItem<CinemaTheatreEntity>> theatresIt = theatres.iterator();
 
         String theatreLink = null;
@@ -206,19 +205,19 @@ public class CinemaWebTest extends AbstractWicketTests {
         }
         assertNotNull(String.format("theatre not found: test: %s - sample: %s", testTheatreName, theatres.getList()), //
                 theatreLink);
-        this.wicket.assertComponent(theatreLink, Link.class);
+        wicket.assertComponent(theatreLink, Link.class);
 
         // FilmTheatreSelectionPage: Select our theatre.
-        this.wicket.clickLink(theatreLink);
+        wicket.clickLink(theatreLink);
 
         // TimeRoomSelectionPage: Verify.
-        this.wicket.assertRenderedPage(TimeRoomSelectionPage.class);
-        this.wicket.assertComponent("times", Form.class);
-        this.wicket.assertComponent("times:list", ListView.class);
+        wicket.assertRenderedPage(TimeRoomSelectionPage.class);
+        wicket.assertComponent("times", Form.class);
+        wicket.assertComponent("times:list", ListView.class);
 
         // TimeRoomSelectionPage: Find our play time.
         @SuppressWarnings("unchecked")
-        ListView<Date> times = (ListView<Date>) this.wicket.getComponentFromLastRenderedPage("times:list");
+        ListView<Date> times = (ListView<Date>) wicket.getComponentFromLastRenderedPage("times:list");
         Iterator<? extends ListItem<Date>> timesIt = times.iterator();
 
         String timeLink = null;
@@ -233,19 +232,19 @@ public class CinemaWebTest extends AbstractWicketTests {
         }
         assertNotNull(String.format("time not found: test: %s - sample: %s", testTime, times.getList()), //
                 timeLink);
-        this.wicket.assertComponent(timeLink, Link.class);
+        wicket.assertComponent(timeLink, Link.class);
 
         // TimeRoomSelectionPage: Select our play time.
-        this.wicket.clickLink(timeLink);
+        wicket.clickLink(timeLink);
 
         // TimeRoomSelectionPage: Verify.
-        this.wicket.assertRenderedPage(TimeRoomSelectionPage.class);
-        this.wicket.assertComponent("rooms", Form.class);
-        this.wicket.assertComponent("rooms:list", ListView.class);
+        wicket.assertRenderedPage(TimeRoomSelectionPage.class);
+        wicket.assertComponent("rooms", Form.class);
+        wicket.assertComponent("rooms:list", ListView.class);
 
         // TimeRoomSelectionPage: Find our room.
         @SuppressWarnings("unchecked")
-        ListView<CinemaRoomEntity> rooms = (ListView<CinemaRoomEntity>) this.wicket.getComponentFromLastRenderedPage("rooms:list");
+        ListView<CinemaRoomEntity> rooms = (ListView<CinemaRoomEntity>) wicket.getComponentFromLastRenderedPage("rooms:list");
         Iterator<? extends ListItem<CinemaRoomEntity>> roomsIt = rooms.iterator();
 
         String roomLink = null;
@@ -260,20 +259,19 @@ public class CinemaWebTest extends AbstractWicketTests {
         }
         assertNotNull(String.format("room not found: test: %s - sample: %s", testRoomName, rooms.getList()), //
                 roomLink);
-        this.wicket.assertComponent(roomLink, Link.class);
+        wicket.assertComponent(roomLink, Link.class);
 
         // TimeRoomSelectionPage: Select our room.
-        this.wicket.clickLink(roomLink);
+        wicket.clickLink(roomLink);
 
         // SeatSelectionPage: Verify.
-        this.wicket.assertRenderedPage(SeatSelectionPage.class);
-        this.wicket.assertComponent("seats", Form.class);
-        this.wicket.assertComponent("seats:rows", ListView.class);
+        wicket.assertRenderedPage(SeatSelectionPage.class);
+        wicket.assertComponent("seats", Form.class);
+        wicket.assertComponent("seats:rows", ListView.class);
 
         // SeatSelectionPage: Find our seat.
         @SuppressWarnings("unchecked")
-        ListView<List<CinemaSeatEntity>> rows = (ListView<List<CinemaSeatEntity>>) this.wicket
-                                                                                              .getComponentFromLastRenderedPage("seats:rows");
+        ListView<List<CinemaSeatEntity>> rows = (ListView<List<CinemaSeatEntity>>) wicket.getComponentFromLastRenderedPage("seats:rows");
         Iterator<? extends ListItem<List<CinemaSeatEntity>>> rowsIt = rows.iterator();
 
         String seatLink = null;
@@ -296,25 +294,25 @@ public class CinemaWebTest extends AbstractWicketTests {
         }
         assertNotNull(String.format("seat not found: test: %d,%d - sample: %s", testSeatX, testSeatY, rows.getList()), //
                 seatLink);
-        this.wicket.assertComponent(seatLink, Link.class);
+        wicket.assertComponent(seatLink, Link.class);
 
         // SeatSelectionPage: Select our seat.
-        this.wicket.clickLink(seatLink);
+        wicket.clickLink(seatLink);
 
         // SeatSelectionPage: Verify && our ticket is complete and ready to be payed.
-        this.wicket.assertComponent("ticket:film", SelectedFilm.class);
-        this.wicket.assertComponent("ticket:theatre", SelectedTheatre.class);
-        this.wicket.assertComponent("ticket:time", SelectedTime.class);
-        this.wicket.assertComponent("ticket:room", SelectedRoom.class);
-        this.wicket.assertComponent("ticket:payment", SelectedPrice.class);
+        wicket.assertComponent("ticket:film", SelectedFilm.class);
+        wicket.assertComponent("ticket:theatre", SelectedTheatre.class);
+        wicket.assertComponent("ticket:time", SelectedTime.class);
+        wicket.assertComponent("ticket:room", SelectedRoom.class);
+        wicket.assertComponent("ticket:payment", SelectedPrice.class);
 
         // - Collect sample data.
-        String sampleTimeString = this.wicket.getComponentFromLastRenderedPage("ticket:time:time").getDefaultModelObjectAsString();
-        String samplePriceString = this.wicket.getComponentFromLastRenderedPage("ticket:payment:price").getDefaultModelObjectAsString();
+        String sampleTimeString = wicket.getComponentFromLastRenderedPage("ticket:time:time").getDefaultModelObjectAsString();
+        String samplePriceString = wicket.getComponentFromLastRenderedPage("ticket:payment:price").getDefaultModelObjectAsString();
         try {
-            String sampleFilmName = this.wicket.getComponentFromLastRenderedPage("ticket:film:name").getDefaultModelObjectAsString();
-            String sampleTheatreName = this.wicket.getComponentFromLastRenderedPage("ticket:theatre:name").getDefaultModelObjectAsString();
-            String sampleRoomName = this.wicket.getComponentFromLastRenderedPage("ticket:room:name").getDefaultModelObjectAsString();
+            String sampleFilmName = wicket.getComponentFromLastRenderedPage("ticket:film:name").getDefaultModelObjectAsString();
+            String sampleTheatreName = wicket.getComponentFromLastRenderedPage("ticket:theatre:name").getDefaultModelObjectAsString();
+            String sampleRoomName = wicket.getComponentFromLastRenderedPage("ticket:room:name").getDefaultModelObjectAsString();
             Number samplePrice = WicketUtil.getCurrencyFormat(CinemaSession.CURRENCY).parse(samplePriceString);
             Date sampleTime = WicketUtil.getDateFormat(Session.get().getLocale()).parse(sampleTimeString);
 
@@ -336,11 +334,11 @@ public class CinemaWebTest extends AbstractWicketTests {
         }
 
         // SeatSelectionPage: Pay for our ticket.
-        this.wicket.assertComponent("ticket:payment:pay", Link.class);
-        this.wicket.clickLink("ticket:payment:pay");
+        wicket.assertComponent("ticket:payment:pay", Link.class);
+        wicket.clickLink("ticket:payment:pay");
 
         // Demo-Payment: Verify && We were redirected to demo-payment; parse out target string and continue to it.
-        String sampleRedirect = this.wicket.getServletResponse().getRedirectLocation();
+        String sampleRedirect = wicket.getServletResponse().getRedirectLocation();
         assertNotNull("Expected a redirect to demo-payment.", //
                 sampleRedirect);
         assertTrue("Expected a target parameter on URL: " + sampleRedirect, //
@@ -350,16 +348,16 @@ public class CinemaWebTest extends AbstractWicketTests {
                 "", sampleTarget);
         // FIXME: Can't figure out how to make wicket take that 'sampleTarget' URL.
         // Manually redirecting to the page in it for now (TicketPage).
-        this.wicket.startPage(TicketPage.class);
-        this.wicket.processRequestCycle();
+        wicket.startPage(TicketPage.class);
+        wicket.processRequestCycle();
 
         // TicketPage: Verify && purchased ticket is created and available.
-        this.wicket.assertRenderedPage(TicketPage.class);
-        this.wicket.assertComponent("tickets", TicketForm.class);
+        wicket.assertRenderedPage(TicketPage.class);
+        wicket.assertComponent("tickets", TicketForm.class);
 
-        this.wicket.dumpPage();
+        wicket.dumpPage();
         @SuppressWarnings("unchecked")
-        ListView<CinemaTicketEntity> tickets = (ListView<CinemaTicketEntity>) this.wicket.getComponentFromLastRenderedPage("tickets:list");
+        ListView<CinemaTicketEntity> tickets = (ListView<CinemaTicketEntity>) wicket.getComponentFromLastRenderedPage("tickets:list");
         assertNotNull("No tickets in ticket history.", //
                 tickets);
         assertTrue(String.format("Expected (exactly) one ticket: sample: %s", tickets.getList()), //

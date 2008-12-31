@@ -22,7 +22,7 @@ public class OlasAuthPage extends LayoutPage {
     public OlasAuthPage() {
 
         // If logged in, let the LoginPage handle where to go.
-        if (WicketUtil.isAuthenticated(getRequest()))
+        if (WicketUtil.isOlasAuthenticated(getRequest()))
             throw new RestartResponseException(LoginPage.class);
 
         // HTML Components.

@@ -15,11 +15,6 @@
  */
 package test.spike.net.link.safeonline;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.junit.Test;
 
 
@@ -36,52 +31,45 @@ import org.junit.Test;
  */
 public class TinyTests {
 
-    @Test
-    public void testFormat() {
+    public static class A extends B {
 
-        String format = "%s %l %s %05d %s";
+        static {
+            System.out.println("static-a");
+        }
 
-        System.out.println("'" + localize(format, "foo", "bar", "foobar", 21378, "end") + "'");
+        {
+            System.out.println("pre-a");
+        }
+
+
+        public A() {
+
+            System.out.println("a");
+        }
+    }
+
+    public static class B {
+
+        static {
+            System.out.println("static-b");
+        }
+
+        {
+            System.out.println("pre-b");
+        }
+
+
+        public B() {
+
+            System.out.println("b");
+        }
     }
 
 
-    // %[argument_index$][flags][width][.precision][t]conversion
-    private static final String formatSpecifier = "%(\\d+\\$)?([-#+ 0,(\\<]*)?(\\d+)?(\\.\\d+)?([tT])?([a-zA-Z%])";
-    private static Pattern      fsPattern       = Pattern.compile(formatSpecifier);
+    @Test
+    public void testInheritingConstructors() {
 
-
-    protected String localize(String format, Object... args) {
-
-        List<Object> localizationData = new ArrayList<Object>(args.length);
-        StringBuffer newFormat = new StringBuffer(format);
-        Matcher specifiers = fsPattern.matcher(format);
-
-        int pos = 0, num = 0;
-        while (specifiers.find(pos)) {
-            if ("l".equalsIgnoreCase(specifiers.group(6))) {
-                if ("L".equals(specifiers.group(6))) {
-                    newFormat.setCharAt(specifiers.end(6) - 1, 'S');
-                } else {
-                    newFormat.setCharAt(specifiers.end(6) - 1, 's');
-                }
-
-                localizationData.add("@" + String.valueOf(args[num]));
-            } else {
-                localizationData.add(args[num]);
-            }
-
-            ++num;
-            pos = specifiers.end();
-        }
-
-        System.err.println("old format: " + format);
-        System.err.println("new format: " + newFormat.toString());
-        System.err.print("old data: ");
-        print(args);
-        System.err.print("new data: ");
-        print(localizationData.toArray());
-
-        return String.format(newFormat.toString(), localizationData.toArray());
+        new A();
     }
 
     void print(Object[] array) {

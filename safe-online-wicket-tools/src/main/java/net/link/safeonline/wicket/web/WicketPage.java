@@ -11,15 +11,17 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.markup.html.WebPage;
 
 
 /**
  * <h2>{@link WicketPage}<br>
- * <sub>[in short] (TODO).</sub></h2>
+ * <sub>An abstract {@link WebPage} that provides some convenience methods for wicket work.</sub></h2>
  * 
  * <p>
- * [description / usage].
+ * The {@link #localize(String, Object...)} method provides easy access to generating localized messages in wicket pages.
  * </p>
  * 
  * <p>
@@ -28,7 +30,9 @@ import org.apache.wicket.markup.html.WebPage;
  * 
  * @author lhunath
  */
-public class WicketPage extends WebPage {
+public abstract class WicketPage extends WebPage {
+
+    protected Log               LOG             = LogFactory.getLog(getClass());
 
     // %[argument_index$][flags][width][.precision][t]conversion
     private static final String formatSpecifier = "%(\\d+\\$)?([-#+ 0,(\\<]*)?(\\d+)?(\\.\\d+)?([tT])?([a-zA-Z%])";

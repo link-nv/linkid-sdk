@@ -13,6 +13,7 @@ import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.wicket.tools.WicketUtil;
+import net.link.safeonline.wicket.web.Authenticated;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.RestartResponseException;
@@ -38,6 +39,7 @@ import org.apache.wicket.protocol.http.WebRequest;
  * 
  * @author mbillemo
  */
+@Authenticated(redirect = LoginPage.class)
 public class NewTransactionPage extends LayoutPage {
 
     private static final long serialVersionUID = 1L;
@@ -49,9 +51,6 @@ public class NewTransactionPage extends LayoutPage {
      * If not logged in, redirects back to the {@link LoginPage}.
      */
     public NewTransactionPage() {
-
-        if (!PaymentSession.isUserSet())
-            throw new RestartResponseException(LoginPage.class);
 
         add(new TransactionForm("newTransaction"));
     }

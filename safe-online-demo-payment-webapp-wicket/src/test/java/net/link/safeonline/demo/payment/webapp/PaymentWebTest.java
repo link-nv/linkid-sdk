@@ -71,7 +71,7 @@ public class PaymentWebTest extends AbstractWicketTests {
 
         // AccountPage: Verify && we've logged in successfully.
         assertTrue("Not logged in.", //
-                PaymentSession.isUserSet());
+                PaymentSession.get().isUserSet());
         wicket.assertRenderedPage(AccountPage.class);
     }
 
@@ -102,7 +102,7 @@ public class PaymentWebTest extends AbstractWicketTests {
         assertFalse("OLAS credentials shouldn't be present.", //
                 LoginManager.isAuthenticated(wicket.getServletRequest()));
         assertFalse("Shouldn't be logged in.", //
-                PaymentSession.isUserSet());
+                PaymentSession.get().isUserSet());
         wicket.assertRenderedPage(LoginPage.class);
     }
 
@@ -227,7 +227,7 @@ public class PaymentWebTest extends AbstractWicketTests {
 
         // NewTransactionPage: Verify && we've logged in successfully and were redirected to the NewTransactionPage.
         assertTrue("Not logged in.", //
-                PaymentSession.isUserSet());
+                PaymentSession.get().isUserSet());
         wicket.assertRenderedPage(NewTransactionPage.class);
         wicket.assertComponent("newTransaction", Form.class);
         FormTester newTransaction = wicket.newFormTester("newTransaction");

@@ -9,10 +9,10 @@ package net.link.safeonline.demo.payment.webapp;
 import java.util.Locale;
 
 import net.link.safeonline.demo.payment.entity.PaymentUserEntity;
+import net.link.safeonline.wicket.web.OLASSession;
 
 import org.apache.wicket.Request;
 import org.apache.wicket.Session;
-import org.apache.wicket.protocol.http.WebSession;
 
 
 /**
@@ -29,7 +29,7 @@ import org.apache.wicket.protocol.http.WebSession;
  * 
  * @author mbillemo
  */
-public class PaymentSession extends WebSession {
+public class PaymentSession extends OLASSession {
 
     private static final long  serialVersionUID = 1L;
     public static final Locale CURRENCY         = Locale.FRANCE;
@@ -51,13 +51,21 @@ public class PaymentSession extends WebSession {
     }
 
     /**
-     * Operates on the current session.
-     * 
-     * @return <code>true</code> if there is a user logged in and has a {@link PaymentUserEntity} set.
+     * {@inheritDoc}
      */
-    public static boolean isUserSet() {
+    @Override
+    public String getUserOlasId() {
 
-        return get().getUser() != null;
+        return isUserSet()? getUser().getOlasId(): null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isUserSet() {
+
+        return getUser() != null;
     }
 
     // SERVICE ------------------------------------------------------

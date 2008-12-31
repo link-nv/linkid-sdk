@@ -1,10 +1,5 @@
 package net.link.safeonline.demo.payment.webapp;
 
-import javax.servlet.ServletException;
-
-import net.link.safeonline.demo.payment.entity.PaymentUserEntity;
-import net.link.safeonline.wicket.tools.WicketUtil;
-
 import org.apache.wicket.Page;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.link.PageLink;
@@ -22,19 +17,8 @@ public class LoginPage extends LayoutPage {
      */
     public LoginPage() {
 
-        // If logged in using OLAS, create/obtain the payment user from the OLAS user.
-        if (WicketUtil.isAuthenticated(getRequest())) {
-            try {
-                PaymentUserEntity user = getUserService().getUser(WicketUtil.getUserId(getRequest()));
-                user = getUserService().updateUser(user, WicketUtil.toServletRequest(getRequest()));
-                PaymentSession.get().setUser(user);
-            } catch (ServletException e) {
-                LOG.error("[BUG] Not really logged in?!", e);
-            }
-        }
-
         // If logged in, send user to the ticket history page.
-        if (PaymentSession.isUserSet())
+        if (PaymentSession.get().isUserSet())
             throw new RestartResponseException(AccountPage.class);
 
         // HTML Components.

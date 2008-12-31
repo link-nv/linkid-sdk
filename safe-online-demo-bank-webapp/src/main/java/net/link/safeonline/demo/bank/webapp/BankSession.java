@@ -9,10 +9,10 @@ package net.link.safeonline.demo.bank.webapp;
 import java.util.Locale;
 
 import net.link.safeonline.demo.bank.entity.BankUserEntity;
+import net.link.safeonline.wicket.web.OLASSession;
 
 import org.apache.wicket.Request;
 import org.apache.wicket.Session;
-import org.apache.wicket.protocol.http.WebSession;
 
 
 /**
@@ -29,7 +29,7 @@ import org.apache.wicket.protocol.http.WebSession;
  * 
  * @author mbillemo
  */
-public class BankSession extends WebSession {
+public class BankSession extends OLASSession {
 
     private static final long  serialVersionUID = 1L;
     public static final Locale CURRENCY         = Locale.FRANCE;
@@ -48,7 +48,25 @@ public class BankSession extends WebSession {
 
     public BankUserEntity getUser() {
 
-        return this.user;
+        return user;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getUserOlasId() {
+
+        return isUserSet()? getUser().getOlasId(): null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isUserSet() {
+
+        return getUser() != null;
     }
 
     /**
@@ -56,7 +74,7 @@ public class BankSession extends WebSession {
      */
     public String getLinkingUser() {
 
-        return this.linkingBankId;
+        return linkingBankId;
     }
 
     /**
@@ -64,17 +82,7 @@ public class BankSession extends WebSession {
      */
     public void setLinkingUser(BankUserEntity user) {
 
-        this.linkingBankId = user == null? null: user.getBankId();
-    }
-
-    /**
-     * Operates on the current session.
-     * 
-     * @return <code>true</code> if there is a user logged in and has a {@link BankUserEntity} set.
-     */
-    public static boolean isUserSet() {
-
-        return get().getUser() != null;
+        linkingBankId = user == null? null: user.getBankId();
     }
 
     /**
@@ -84,7 +92,7 @@ public class BankSession extends WebSession {
      */
     public static boolean isLinking() {
 
-        return isUserSet() && get().getUser().getBankId().equals(get().getLinkingUser());
+        return get().isUserSet() && get().getUser().getBankId().equals(get().getLinkingUser());
     }
 
     // GLOBAL -------------------------------------------------------

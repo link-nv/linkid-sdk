@@ -57,26 +57,26 @@ public class BankWebTest extends AbstractWicketTests {
     public void testDigipassLogin() {
 
         // LoginPage: Verify.
-        this.wicket.assertRenderedPage(LoginPage.class);
-        this.wicket.assertPageLink("digipassLoginLink", DigipassLoginPage.class);
+        wicket.assertRenderedPage(LoginPage.class);
+        wicket.assertPageLink("digipassLoginLink", DigipassLoginPage.class);
 
         // LoginPage: Click to login with digipass.
-        this.wicket.clickLink("digipassLoginLink");
+        wicket.clickLink("digipassLoginLink");
 
         // DigipassLoginPage: Verify.
-        this.wicket.assertRenderedPage(DigipassLoginPage.class);
-        this.wicket.assertComponent("otpForm", Form.class);
+        wicket.assertRenderedPage(DigipassLoginPage.class);
+        wicket.assertComponent("otpForm", Form.class);
 
         // DigipassLoginPage: Log in with our preset digipass user.
-        FormTester otpForm = this.wicket.newFormTester("otpForm");
+        FormTester otpForm = wicket.newFormTester("otpForm");
         otpForm.setValue("bankId", InitializationService.digipassUser_BankId);
         otpForm.setValue("otp", "0");
         otpForm.submit();
 
         // AccountPage: Verify && we've logged in successfully.
         assertTrue("Not logged in.", //
-                BankSession.isUserSet());
-        this.wicket.assertRenderedPage(AccountPage.class);
+                BankSession.get().isUserSet());
+        wicket.assertRenderedPage(AccountPage.class);
     }
 
     /**
@@ -88,24 +88,24 @@ public class BankWebTest extends AbstractWicketTests {
     public void testDigipassLoginFailure() {
 
         // LoginPage: Verify.
-        this.wicket.assertRenderedPage(LoginPage.class);
-        this.wicket.assertPageLink("digipassLoginLink", DigipassLoginPage.class);
+        wicket.assertRenderedPage(LoginPage.class);
+        wicket.assertPageLink("digipassLoginLink", DigipassLoginPage.class);
 
         // LoginPage: Click to login with digipass.
-        this.wicket.clickLink("digipassLoginLink");
+        wicket.clickLink("digipassLoginLink");
 
         // DigipassLoginPage: Verify.
-        this.wicket.assertRenderedPage(DigipassLoginPage.class);
-        this.wicket.assertComponent("otpForm", Form.class);
+        wicket.assertRenderedPage(DigipassLoginPage.class);
+        wicket.assertComponent("otpForm", Form.class);
 
         // DigipassLoginPage: Log in with our preset digipass user.
-        FormTester otpForm = this.wicket.newFormTester("otpForm");
+        FormTester otpForm = wicket.newFormTester("otpForm");
         otpForm.submit();
 
         // DigipassLoginPage: Verify && we didn't make it past this page.
         assertFalse("Shouldn't be logged in.", //
-                BankSession.isUserSet());
-        this.wicket.assertRenderedPage(DigipassLoginPage.class);
+                BankSession.get().isUserSet());
+        wicket.assertRenderedPage(DigipassLoginPage.class);
     }
 
     /**
@@ -117,26 +117,26 @@ public class BankWebTest extends AbstractWicketTests {
     public void testOlasLogin() {
 
         // LoginPage: Verify.
-        this.wicket.processRequestCycle();
-        this.wicket.assertRenderedPage(LoginPage.class);
-        this.wicket.assertPageLink("olasLoginLink", OlasAuthPage.class);
+        wicket.processRequestCycle();
+        wicket.assertRenderedPage(LoginPage.class);
+        wicket.assertPageLink("olasLoginLink", OlasAuthPage.class);
 
         // LoginPage: Click to login with digipass.
-        this.wicket.clickLink("olasLoginLink");
+        wicket.clickLink("olasLoginLink");
 
-        this.wicket.assertComponent("olasFrame", InlineFrame.class);
-        InlineFrame olasFrame = (InlineFrame) this.wicket.getLastRenderedPage().get("olasFrame");
+        wicket.assertComponent("olasFrame", InlineFrame.class);
+        InlineFrame olasFrame = (InlineFrame) wicket.getLastRenderedPage().get("olasFrame");
         try {
             olasFrame.onLinkClicked();
         } catch (AbortException e) {
             RequestCycle.get().request(RequestCycle.get().getRequestTarget());
-            this.wicket.processRequestCycle();
+            wicket.processRequestCycle();
         }
 
         // AccountPage: Verify && we've logged in successfully.
         assertTrue("Not logged in.", //
-                BankSession.isUserSet());
-        this.wicket.assertRenderedPage(AccountPage.class);
+                BankSession.get().isUserSet());
+        wicket.assertRenderedPage(AccountPage.class);
     }
 
     /**
@@ -157,31 +157,31 @@ public class BankWebTest extends AbstractWicketTests {
         testOlasLogin();
 
         // AccountPage: Verify.
-        this.wicket.assertComponent("user:logout", OlasLogoutLink.class);
+        wicket.assertComponent("user:logout", OlasLogoutLink.class);
 
         // AccountPage: Log out.
-        this.wicket.clickLink("user:logout");
+        wicket.clickLink("user:logout");
 
         // LoginPage: Verify && OLAS user logged out successfully.
         assertFalse("OLAS credentials shouldn't be present.", //
-                LoginManager.isAuthenticated(this.wicket.getServletRequest()));
+                LoginManager.isAuthenticated(wicket.getServletRequest()));
         assertFalse("Shouldn't be logged in.", //
-                BankSession.isUserSet());
-        this.wicket.assertRenderedPage(LoginPage.class);
+                BankSession.get().isUserSet());
+        wicket.assertRenderedPage(LoginPage.class);
 
         // Login using Digipass.
         testDigipassLogin();
 
         // AccountPage: Verify.
-        this.wicket.assertComponent("user:logout", OlasLogoutLink.class);
+        wicket.assertComponent("user:logout", OlasLogoutLink.class);
 
         // AccountPage: Log out.
-        this.wicket.clickLink("user:logout");
+        wicket.clickLink("user:logout");
 
         // LoginPage: Verify && Digipass user logged out successfully.
         assertFalse("Shouldn't be logged in.", //
-                BankSession.isUserSet());
-        this.wicket.assertRenderedPage(LoginPage.class);
+                BankSession.get().isUserSet());
+        wicket.assertRenderedPage(LoginPage.class);
     }
 
     /**
@@ -201,29 +201,29 @@ public class BankWebTest extends AbstractWicketTests {
         testOlasLogin();
 
         // AccountPage: Verify.
-        this.wicket.assertPageLink("accounts:newAccount", NewAccountPage.class);
+        wicket.assertPageLink("accounts:newAccount", NewAccountPage.class);
 
         // AccountPage: Click to create new account.
-        this.wicket.clickLink("accounts:newAccount");
+        wicket.clickLink("accounts:newAccount");
 
         // NewAccountPage: Verify.
-        this.wicket.assertRenderedPage(NewAccountPage.class);
-        this.wicket.assertComponent("newAccount", Form.class);
+        wicket.assertRenderedPage(NewAccountPage.class);
+        wicket.assertComponent("newAccount", Form.class);
 
         // NewAccountPage: Create new account.
-        FormTester newAccount = this.wicket.newFormTester("newAccount");
+        FormTester newAccount = wicket.newFormTester("newAccount");
         newAccount.setValue("name", testAccountName);
         newAccount.submit();
 
         // AccountPage: Verify && account created successfully.
-        this.wicket.assertRenderedPage(AccountPage.class);
-        this.wicket.assertComponent("accounts:accountList", ListView.class);
+        wicket.assertRenderedPage(AccountPage.class);
+        wicket.assertComponent("accounts:accountList", ListView.class);
 
         // - Collect sample data.
         List<String> sampleAccountNames = new LinkedList<String>();
         @SuppressWarnings("unchecked")
-        ListView<BankAccountEntity> accountList = (ListView<BankAccountEntity>) this.wicket
-                                                                                           .getComponentFromLastRenderedPage("accounts:accountList");
+        ListView<BankAccountEntity> accountList = (ListView<BankAccountEntity>) wicket
+                                                                                      .getComponentFromLastRenderedPage("accounts:accountList");
         for (BankAccountEntity account : accountList.getList()) {
             sampleAccountNames.add(account.getName());
         }
@@ -255,17 +255,17 @@ public class BankWebTest extends AbstractWicketTests {
         testDigipassLogin();
 
         // AccountPage: Verify.
-        this.wicket.assertPageLink("accounts:newTransaction", NewTransactionPage.class);
+        wicket.assertPageLink("accounts:newTransaction", NewTransactionPage.class);
 
         // AccountPage: Click to create new account.
-        this.wicket.clickLink("accounts:newTransaction");
+        wicket.clickLink("accounts:newTransaction");
 
         // NewTransactionPage: Verify.
-        this.wicket.assertRenderedPage(NewTransactionPage.class);
-        this.wicket.assertComponent("newTransaction", Form.class);
+        wicket.assertRenderedPage(NewTransactionPage.class);
+        wicket.assertComponent("newTransaction", Form.class);
 
         // NewTransactionPage: Create new account.
-        FormTester newTransaction = this.wicket.newFormTester("newTransaction");
+        FormTester newTransaction = wicket.newFormTester("newTransaction");
         newTransaction.setValue("description", testDescription);
         newTransaction.select("source", findSelectIndex(newTransaction, "source", testSourceCode));
         newTransaction.setValue("target", testTargetCode);
@@ -273,13 +273,13 @@ public class BankWebTest extends AbstractWicketTests {
         newTransaction.submit();
 
         // AccountPage: Verify && account created successfully.
-        this.wicket.assertRenderedPage(AccountPage.class);
-        this.wicket.assertComponent("accounts:accountList", ListView.class);
+        wicket.assertRenderedPage(AccountPage.class);
+        wicket.assertComponent("accounts:accountList", ListView.class);
 
         // - Find the account in the accounts list and the transaction in the account.
         @SuppressWarnings("unchecked")
-        ListView<BankAccountEntity> accountList = (ListView<BankAccountEntity>) this.wicket
-                                                                                           .getComponentFromLastRenderedPage("accounts:accountList");
+        ListView<BankAccountEntity> accountList = (ListView<BankAccountEntity>) wicket
+                                                                                      .getComponentFromLastRenderedPage("accounts:accountList");
         ListItem<BankAccountEntity> firstAccount = accountList.iterator().next();
         @SuppressWarnings("unchecked")
         ListView<BankTransactionEntity> transactionList = (ListView<BankTransactionEntity>) firstAccount.get("transactionList");
@@ -334,19 +334,19 @@ public class BankWebTest extends AbstractWicketTests {
         testDigipassLogin();
 
         // AccountPage: Verify.
-        this.wicket.assertComponent("user:pageLink", OlasLoginLink.class);
+        wicket.assertComponent("user:pageLink", OlasLoginLink.class);
 
         // AccountPage: Click to link our account to OLAS.
-        this.wicket.clickLink("user:pageLink");
+        wicket.clickLink("user:pageLink");
 
         // AccountPage: Verify && old accounts still there.
-        this.wicket.assertRenderedPage(AccountPage.class);
+        wicket.assertRenderedPage(AccountPage.class);
 
         // - Collect sample data.
         List<String> sampleAccountCodes = new LinkedList<String>();
         @SuppressWarnings("unchecked")
-        ListView<BankAccountEntity> accountDigipassList = (ListView<BankAccountEntity>) this.wicket
-                                                                                                   .getComponentFromLastRenderedPage("accounts:accountList");
+        ListView<BankAccountEntity> accountDigipassList = (ListView<BankAccountEntity>) wicket
+                                                                                              .getComponentFromLastRenderedPage("accounts:accountList");
         for (BankAccountEntity account : accountDigipassList.getList()) {
             sampleAccountCodes.add(account.getCode());
         }
@@ -356,24 +356,24 @@ public class BankWebTest extends AbstractWicketTests {
                 testAccountCodes.size() == sampleAccountCodes.size() && testAccountCodes.containsAll(sampleAccountCodes));
 
         // AccountPage: Click to log out.
-        this.wicket.clickLink("user:logout");
+        wicket.clickLink("user:logout");
 
         // LoginPage: Verify && logout successful.
         assertFalse("Shouldn't be logged in.", //
-                BankSession.isUserSet());
-        this.wicket.assertRenderedPage(LoginPage.class);
+                BankSession.get().isUserSet());
+        wicket.assertRenderedPage(LoginPage.class);
 
         // Login using OLAS.
         testOlasLogin();
 
         // AccountPage: Verify && digipass user's accounts still there.
-        this.wicket.assertRenderedPage(AccountPage.class);
+        wicket.assertRenderedPage(AccountPage.class);
 
         // - Collect sample data.
         sampleAccountCodes = new LinkedList<String>();
         @SuppressWarnings("unchecked")
-        ListView<BankAccountEntity> accountOLASList = (ListView<BankAccountEntity>) this.wicket
-                                                                                               .getComponentFromLastRenderedPage("accounts:accountList");
+        ListView<BankAccountEntity> accountOLASList = (ListView<BankAccountEntity>) wicket
+                                                                                          .getComponentFromLastRenderedPage("accounts:accountList");
         for (BankAccountEntity account : accountOLASList.getList()) {
             sampleAccountCodes.add(account.getCode());
         }

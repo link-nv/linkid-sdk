@@ -2,9 +2,9 @@ package net.link.safeonline.demo.bank.webapp;
 
 import net.link.safeonline.demo.bank.entity.BankAccountEntity;
 import net.link.safeonline.demo.bank.webapp.NewAccountPage.AccountForm;
+import net.link.safeonline.wicket.web.Authenticated;
 
 import org.apache.wicket.Page;
-import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.RadioChoice;
 import org.apache.wicket.markup.html.form.TextArea;
@@ -26,6 +26,7 @@ import org.apache.wicket.model.Model;
  * 
  * @author mbillemo
  */
+@Authenticated(redirect = LoginPage.class)
 public class NewTransactionPage extends LayoutPage {
 
     private static final long serialVersionUID = 1L;
@@ -37,9 +38,6 @@ public class NewTransactionPage extends LayoutPage {
      * If not logged in, redirects back to the {@link LoginPage}.
      */
     public NewTransactionPage() {
-
-        if (!BankSession.isUserSet())
-            throw new RestartResponseException(LoginPage.class);
 
         add(new TransactionForm("newTransaction"));
     }

@@ -1,7 +1,8 @@
 package net.link.safeonline.demo.bank.webapp;
 
+import net.link.safeonline.wicket.web.Authenticated;
+
 import org.apache.wicket.Page;
-import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.Model;
@@ -21,6 +22,7 @@ import org.apache.wicket.model.Model;
  * 
  * @author mbillemo
  */
+@Authenticated(redirect = LoginPage.class)
 public class NewAccountPage extends LayoutPage {
 
     private static final long serialVersionUID = 1L;
@@ -32,9 +34,6 @@ public class NewAccountPage extends LayoutPage {
      * If not logged in, redirects back to the {@link LoginPage}.
      */
     public NewAccountPage() {
-
-        if (!BankSession.isUserSet())
-            throw new RestartResponseException(LoginPage.class);
 
         add(new AccountForm("newAccount"));
     }
@@ -65,13 +64,13 @@ public class NewAccountPage extends LayoutPage {
 
             super(id);
 
-            add(new TextField<String>("name", this.name = new Model<String>()));
+            add(new TextField<String>("name", name = new Model<String>()));
         }
 
         @Override
         protected void onSubmit() {
 
-            createAccount(this.name.getObject());
+            createAccount(name.getObject());
         }
     }
 

@@ -9,6 +9,7 @@ import net.link.safeonline.demo.cinema.entity.CinemaTheatreEntity;
 import net.link.safeonline.demo.cinema.service.FilmService;
 import net.link.safeonline.demo.cinema.service.TheatreService;
 import net.link.safeonline.wicket.tools.WicketUtil;
+import net.link.safeonline.wicket.web.Authenticated;
 
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
@@ -33,6 +34,7 @@ import org.apache.wicket.markup.html.list.ListView;
  * 
  * @author mbillemo
  */
+@Authenticated(redirect = LoginPage.class)
 public class FilmTheatreSelectionPage extends LayoutPage {
 
     private static final long serialVersionUID = 1L;
@@ -93,9 +95,9 @@ public class FilmTheatreSelectionPage extends LayoutPage {
             // Either get all films or just those that play in selected theatre.
             List<CinemaFilmEntity> data;
             if (CinemaSession.isTheaterSet()) {
-                data = FilmTheatreSelectionPage.this.filmService.getFilmsThatPlayIn(CinemaSession.get().getTheatre());
+                data = filmService.getFilmsThatPlayIn(CinemaSession.get().getTheatre());
             } else {
-                data = FilmTheatreSelectionPage.this.filmService.getAllFilms();
+                data = filmService.getAllFilms();
             }
 
             add(new ListView<CinemaFilmEntity>("list", data) {
@@ -169,9 +171,9 @@ public class FilmTheatreSelectionPage extends LayoutPage {
             // Either get all theatres or just those that play selected film.
             List<CinemaTheatreEntity> data;
             if (CinemaSession.isFilmSet()) {
-                data = FilmTheatreSelectionPage.this.theatreService.getTheatresThatPlay(CinemaSession.get().getFilm());
+                data = theatreService.getTheatresThatPlay(CinemaSession.get().getFilm());
             } else {
-                data = FilmTheatreSelectionPage.this.theatreService.getAllTheatres();
+                data = theatreService.getAllTheatres();
             }
 
             add(new ListView<CinemaTheatreEntity>("list", data) {

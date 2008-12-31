@@ -151,7 +151,7 @@ public abstract class WicketUtil {
     /**
      * @return <code>true</code> if the user is authenticated by the OLAS SDK framework.
      */
-    public static boolean isAuthenticated(Request request) {
+    public static boolean isOlasAuthenticated(Request request) {
 
         return LoginManager.isAuthenticated(toServletRequest(request));
     }
@@ -162,7 +162,7 @@ public abstract class WicketUtil {
      * @throws ServletException
      *             If the user has not yet authenticated.
      */
-    public static String getUserId(Request request)
+    public static String getOlasId(Request request)
             throws ServletException {
 
         return LoginManager.getUserId(toServletRequest(request));
@@ -185,11 +185,11 @@ public abstract class WicketUtil {
      *            Note: This can be <code>null</code> for unit tests - it is not used. {@link DummyAttributeClient} is used instead,
      *            provided you called {@link #setUnitTesting(boolean)}.
      */
-    public static AttributeClient getOLASAttributeService(HttpServletRequest loginRequest, PrivateKeyEntry privateKeyEntry) {
+    public static AttributeClient getOLASAttributeService(HttpServletRequest httpRequest, PrivateKeyEntry privateKeyEntry) {
 
         if (!isUnitTest) {
             // Find the location of the OLAS web services to use.
-            String wsLocation = loginRequest.getSession().getServletContext().getInitParameter(WS_LOCATION);
+            String wsLocation = httpRequest.getSession().getServletContext().getInitParameter(WS_LOCATION);
 
             // Find the key and certificate of the bank application.
             X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
