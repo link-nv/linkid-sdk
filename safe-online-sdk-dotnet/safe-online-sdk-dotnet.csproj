@@ -59,9 +59,18 @@
     <Compile Include="src\main\cs\ws\data\TargetIdentityBehavior.cs" />
     <Compile Include="src\main\cs\ws\DnsIdentityVerifier.cs" />
     <Compile Include="src\main\cs\ws\exception\SubjectNotFoundException.cs" />
+    <Compile Include="src\main\cs\ws\exception\SubscriptionFailedException.cs" />
+    <Compile Include="src\main\cs\ws\exception\SubscriptionNotFoundException.cs" />
     <Compile Include="src\main\cs\ws\idmapping\IdMappingClient.cs" />
     <Compile Include="src\main\cs\ws\idmapping\IdMappingClientImpl.cs" />
     <Compile Include="src\main\cs\ws\LoggingBehavior.cs" />
+    <Compile Include="src\main\cs\ws\notification\NotificationSubscriptionManagerClientImpl.cs" />
+    <Compile Include="src\main\cs\ws\notification\NotificationSubscriptionManagerClient.cs" />
+    <Compile Include="src\main\cs\ws\notification\NotificationProducerClientImpl.cs" />
+    <Compile Include="src\main\cs\ws\notification\NotificationProducerClient.cs" />
+    <Compile Include="src\main\cs\ws\notification\NotificationServiceConstants.cs" />
+    <Compile Include="src\main\cs\ws\notification\NotificationConsumerClientImpl.cs" />
+    <Compile Include="src\main\cs\ws\notification\NotificationConsumerClient.cs" />
     <Compile Include="src\main\cs\ws\OlasBinding.cs" />
     <Compile Include="src\main\cs\ws\ping\PingClient.cs" />
     <Compile Include="src\main\cs\ws\ping\PingClientImpl.cs" />
@@ -90,10 +99,26 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="target\services\SafeOnlineNotificationConsumerWebService.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="target\services\SafeOnlineNotificationProducerWebService.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="target\services\SafeOnlineNotificationSubscriptionManagerWebService.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="src\main\cs\AssemblyInfo.cs" />
-    <None Include="src\main\resources\xenc-schema.xsd" />
-    <None Include="src\main\resources\xmldsig-core-schema.xsd" />
-    <None Include="src\main\resources\ws-addr.xsd" />
+    <None Include="src\main\resources\*" />
+    <None Include="src\main\resources\attrib-ws\*" />
+    <None Include="src\main\resources\data-ws\*" />
+    <None Include="src\main\resources\sts-ws\*" />
+    <None Include="src\main\resources\ping-ws\*" />
+    <None Include="src\main\resources\idmapping-ws\*" />
+    <None Include="src\main\resources\notification-ws\*" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="src" />
@@ -105,6 +130,7 @@
     <Folder Include="src\main\cs\ws\attrib" />
     <Folder Include="src\main\cs\ws\idmapping" />
     <Folder Include="src\main\cs\ws\exception" />
+    <Folder Include="src\main\cs\ws\notification" />
     <Folder Include="src\main\cs\ws\ping" />
     <Folder Include="src\main\cs\ws\sts" />
     <Folder Include="src\main\resources" />
@@ -116,5 +142,8 @@
     <Exec Command="svcutil /namespace:*,StsWSNamespace /directory:target\services src\main\resources\sts-ws\ws-trust-1.3.wsdl src\main\resources\sts-ws\ws-trust-1.3.xsd src\main\resources\ws-addr.xsd src\main\resources\sts-ws\oasis-200401-wss-wssecurity-secext-1.0.xsd src\main\resources\sts-ws\oasis-200401-wss-wssecurity-utility-1.0.xsd" />
     <Exec Command="svcutil /namespace:*,AttributeWSNamespace /directory:target\services src\main\resources\attrib-ws\saml-protocol-2.0.wsdl src\main\resources\saml-schema-protocol-2.0.xsd src\main\resources\saml-schema-assertion-2.0.xsd src\main\resources\xmldsig-core-schema.xsd src\main\resources\xenc-schema.xsd" />
     <Exec Command="svcutil /namespace:*,DataWSNamespace /directory:target\services src\main\resources\data-ws\liberty-idwsf-dst-ref-v2.1-link.wsdl src\main\resources\data-ws\liberty-idwsf-dst-ref-v2.1-safe-online.xsd src\main\resources\data-ws\liberty-idwsf-dst-v2.1.xsd src\main\resources\data-ws\liberty-idwsf-soap-binding-v2.0.xsd src\main\resources\data-ws\liberty-idwsf-utility-v2.0.xsd src\main\resources\data-ws\oasis-sstc-saml-schema-protocol-1.1.xsd src\main\resources\saml-schema-assertion-2.0.xsd src\main\resources\saml-schema-protocol-2.0.xsd src\main\resources\data-ws\wss-util-1.0.xsd src\main\resources\ws-addr.xsd src\main\resources\xmldsig-core-schema.xsd src\main\resources\xenc-schema.xsd" />
+    <Exec Command="svcutil /namespace:*,NotificationConsumerWSNameSpace /directory:target\services src\main\resources\notification-ws\notification-consumer.wsdl src\main\resources\notification-ws\b-2.xsd src\main\resources\notification-ws\bf-2.xsd src\main\resources\ws-addr.xsd src\main\resources\notification-ws\t-1.xsd" />
+    <Exec Command="svcutil /namespace:*,NotificationProducerWSNameSpace /directory:target\services src\main\resources\notification-ws\notification-producer.wsdl src\main\resources\notification-ws\b-2.xsd src\main\resources\notification-ws\bf-2.xsd src\main\resources\ws-addr.xsd src\main\resources\notification-ws\t-1.xsd" />
+    <Exec Command="svcutil /namespace:*,NotificationSubscriptionManagerWSNameSpace /directory:target\services src\main\resources\notification-ws\notification-subscription-manager.wsdl src\main\resources\notification-ws\b-2.xsd src\main\resources\notification-ws\bf-2.xsd src\main\resources\ws-addr.xsd src\main\resources\notification-ws\t-1.xsd" />
   </Target>
 </Project>

@@ -18,18 +18,18 @@ import net.lin_k.safe_online.notification.producer.FilterType;
 import net.lin_k.safe_online.notification.producer.NotificationProducerPort;
 import net.lin_k.safe_online.notification.producer.NotificationProducerService;
 import net.lin_k.safe_online.notification.producer.SubscribeRequest;
+import net.lin_k.safe_online.notification.producer.SubscribeResponse;
 import net.link.safeonline.notification.producer.ws.NotificationProducerServiceFactory;
 import net.link.safeonline.sdk.exception.SubscriptionFailedException;
 import net.link.safeonline.sdk.trust.SafeOnlineTrustManager;
 import net.link.safeonline.sdk.ws.AbstractMessageAccessor;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
+import net.link.safeonline.ws.common.NotificationErrorCode;
 import net.link.safeonline.ws.common.WebServiceConstants;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.oasis_open.docs.wsn.b_2.SubscribeCreationFailedFaultType;
-import org.oasis_open.docs.wsn.b_2.SubscribeResponse;
 import org.oasis_open.docs.wsn.b_2.TopicExpressionType;
 
 import com.sun.xml.ws.client.ClientTransportException;
@@ -118,10 +118,7 @@ public class NotificationProducerClientImpl extends AbstractMessageAccessor impl
     private void checkStatus(SubscribeResponse response)
             throws SubscriptionFailedException {
 
-        for (Object errorObject : response.getAny()) {
-            if (errorObject instanceof SubscribeCreationFailedFaultType) {
-                throw new SubscriptionFailedException();
-            }
-        }
+        if (response.getSubscribeStatus().getStatusCode().equals(NotificationErrorCode.SUBSCRIPTION_FAILED.getErrorCode()))
+            throw new SubscriptionFailedException();
     }
 }

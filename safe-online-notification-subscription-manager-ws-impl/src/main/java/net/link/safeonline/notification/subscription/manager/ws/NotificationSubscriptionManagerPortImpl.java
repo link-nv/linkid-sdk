@@ -51,13 +51,6 @@ public class NotificationSubscriptionManagerPortImpl implements NotificationSubs
     private NotificationProducerService notificationProducerService;
 
 
-    public RenewResponse renew(Renew request) {
-
-        LOG.debug("renew");
-        // TODO Auto-generated method stub
-        return null;
-    }
-
     public UnsubscribeResponse unsubscribe(UnsubscribeRequest request) {
 
         LOG.debug("unsubscribe");

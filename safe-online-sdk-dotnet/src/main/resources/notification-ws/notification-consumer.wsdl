@@ -32,6 +32,7 @@
 					</xsd:element>
 				</xsd:sequence>
 			</xsd:complexType>
+
 			<xsd:element name="NotificationMessage" type="tns:NotificationMessageHolderType" />
 
 			<xsd:element name="Notify">

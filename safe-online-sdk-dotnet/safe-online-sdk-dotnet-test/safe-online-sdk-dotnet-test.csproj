@@ -47,6 +47,7 @@
     <Compile Include="src\test\cs\TestKeyStoreUtil.cs" />
     <Compile Include="src\test\cs\TestDataClient.cs" />
     <Compile Include="src\test\cs\TestIdMapping.cs" />
+    <Compile Include="src\test\cs\TestNotificationClient.cs" />
     <Compile Include="src\test\cs\TestPingClient.cs" />
     <Compile Include="src\test\cs\TestSaml.cs" />
     <Compile Include="src\test\cs\WebServerTest.cs" />

@@ -18,9 +18,10 @@ import java.util.Map;
  * 
  */
 public enum NotificationErrorCode {
-    SUCCESS("urn:net:lin-k:safe-online:topic:user:remove:status:Success"),
-    SUBSCRIPTION_NOT_FOUND("urn:net:lin-k:safe-online:topic:user:remove:status:SubscriptionNotFound"),
-    PERMISSION_DENIED("urn:net:lin-k:safe-online:topic:user:remove:status:PermissionDenied");
+    SUCCESS("urn:net:lin-k:safe-online:notification:status:Success"),
+    SUBSCRIPTION_NOT_FOUND("urn:net:lin-k:safe-online:notification:status:SubscriptionNotFound"),
+    PERMISSION_DENIED("urn:net:lin-k:safe-online:notification:status:PermissionDenied"),
+    SUBSCRIPTION_FAILED("urn:net:lin-k:safe-online:notification:status:SubscriptionFailed");
 
     private final String                                    errorCode;
 
