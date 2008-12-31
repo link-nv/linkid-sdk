@@ -1,8 +1,8 @@
-package net.link.safeonline.demo.bank.webapp;
+package net.link.safeonline.demo.payment.webapp;
 
 import javax.servlet.ServletException;
 
-import net.link.safeonline.demo.bank.entity.BankUserEntity;
+import net.link.safeonline.demo.payment.entity.PaymentUserEntity;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.wicket.Page;
@@ -22,33 +22,23 @@ public class LoginPage extends LayoutPage {
      */
     public LoginPage() {
 
-        // If logged in using OLAS, create/obtain the bank user from the OLAS user.
+        // If logged in using OLAS, create/obtain the payment user from the OLAS user.
         if (WicketUtil.isAuthenticated(getRequest())) {
             try {
-                BankUserEntity user = BankSession.get().getUser();
-                if (BankSession.isLinking()) {
-                    BankSession.get().setLinkingUser(null);
-                    user = getUserService().linkOLASUser(user, WicketUtil.getUserId(getRequest()));
-                } else {
-                    user = getUserService().getOLASUser(WicketUtil.getUserId(getRequest()));
-                }
-
+                PaymentUserEntity user = getUserService().getUser(WicketUtil.getUserId(getRequest()));
                 user = getUserService().updateUser(user, WicketUtil.toServletRequest(getRequest()));
-                BankSession.get().setUser(user);
-            }
-
-            catch (ServletException e) {
+                PaymentSession.get().setUser(user);
+            } catch (ServletException e) {
                 LOG.error("[BUG] Not really logged in?!", e);
             }
         }
 
         // If logged in, send user to the ticket history page.
-        if (BankSession.isUserSet())
+        if (PaymentSession.isUserSet())
             throw new RestartResponseException(AccountPage.class);
 
         // HTML Components.
         add(new PageLink("olasLoginLink", OlasAuthPage.class));
-        add(new PageLink("digipassLoginLink", DigipassLoginPage.class));
     }
 
     /**

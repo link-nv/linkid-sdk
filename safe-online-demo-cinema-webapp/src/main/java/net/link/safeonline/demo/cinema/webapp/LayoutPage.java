@@ -42,7 +42,7 @@ public class LayoutPage extends WebPage {
 
     /**
      * Add components to the layout that are present on every page.
-     * 
+     *
      * This includes the title and the global ticket.
      */
     public LayoutPage() {
@@ -304,7 +304,6 @@ public class LayoutPage extends WebPage {
                         return;
 
                     // Redirect the user to demo-payment
-                    String paymentUsername = CinemaSession.get().getUser().getName();
                     CinemaTicketEntity ticket = CinemaSession.get().getTicket();
                     double paymentPrice = ticket.getPrice();
                     String paymentMessage = String.format("Viewing of %s at %s in %s.", LayoutPage.this.ticketService.getFilmName(ticket),
@@ -314,13 +313,10 @@ public class LayoutPage extends WebPage {
                             new BookmarkablePageRequestTarget(TicketPage.class)).toString());
 
                     try {
-                        String redirectUrl = String.format("%s?user=%s&recipient=%s&amount=%s&message=%s&target=%s",
+                        String redirectUrl = String.format("%s?recipient=%s&amount=%s&message=%s&target=%s",
 
                         // Demo-Payment application.
                                 RequestUtils.toAbsolutePath("../demo-payment/entry.seam"),
-
-                                // Paying user's OLAS name.
-                                URLEncoder.encode(paymentUsername, "UTF-8"),
 
                                 // Payment Recipient.
                                 URLEncoder.encode(CinemaConstants.PAYMENT_RECIPIENT, "UTF-8"),

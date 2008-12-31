@@ -100,7 +100,7 @@ public class TestAuthenticationProtocolHandler implements AuthenticationProtocol
                                        Integer color, Boolean minimal)
             throws IOException, ServletException {
 
-        LOG.info("Initiated Authentication; invoking LoginServlet");
+        LOG.info("Initiated Authentication; invoking LoginServlet with target: " + targetUrl);
 
         new LoginServlet().service(new MockHttpServletRequest(httpRequest, targetUrl, Method.POST), httpResponse);
     }
@@ -122,7 +122,7 @@ public class TestAuthenticationProtocolHandler implements AuthenticationProtocol
     public void initiateLogout(HttpServletRequest request, HttpServletResponse response, String targetUrl, String subjectName)
             throws IOException, ServletException {
 
-        LOG.info("Initiated Logout; invoking LogoutServlet");
+        LOG.info("Initiated Logout; invoking LogoutServlet with target: " + targetUrl);
 
         // OLAS -> SDK logout servlet.
         new LogoutServlet() {

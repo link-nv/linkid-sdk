@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en" lang="en">
+
+    <head>
+        <title wicket:id="pageTitle">
+            [Page Title]
+        </title>
+
+        <link rel="stylesheet" type="text/css" href="css/layout.css" />
+        <link rel="stylesheet" type="text/css" href="css/color.css" />
+        <link rel="stylesheet" type="text/css" href="css/specific.css" />
+    </head>
+
+    <body>
+        <div id="header">
+            <h1 wicket:id="headerTitle">
+                [Header Title]
+            </h1>
+        </div>
+
+        <div id="user" wicket:id="user">
+            <table>
+                <caption>Logged in as:</caption>
+
+                <tbody>
+                    <tr>
+                        <th colspan="2">Name</th>
+                    </tr>
+                    <tr>
+                        <td colspan="2" wicket:id="name" />
+                    </tr>
+                </tbody>
+
+                <tfoot>
+                    <tr>
+                        <th class="nopad"><a wicket:id="pageLink"><span wicket:id="pageLinkString" /></a></th>
+                        <th class="nopad"><a wicket:id="logout">Logout &gt;</a></th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div id="content"><wicket:child /></div>
+
+        <div id="footer">Copyright 2006-2007 Lin.k N.V.</div>
+    </body>
+
+</html>

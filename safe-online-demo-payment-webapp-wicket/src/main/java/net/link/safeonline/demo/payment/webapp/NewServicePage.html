@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en" lang="en">
+
+    <body>
+        <wicket:extend>
+
+            <h2>You are about to complete the following transaction.</h2>
+
+            <form wicket:id="newService">
+	            <table>
+	                <caption>Transaction details</caption>
+
+	                <tbody>
+	                    <tr>
+	                        <th>Target Account:</th>
+	                        <td><span wicket:id="target" /></td>
+	                    </tr>
+	                    <tr>
+	                        <th>Amount:</th>
+	                        <td><span wicket:id="amount" /></td>
+	                    </tr>
+	                    <tr>
+	                        <th colspan="2">Description:</th>
+	                    </tr>
+	                    <tr>
+	                        <th colspan="2"><div class="text box" wicket:id="description" /></th>
+	                    </tr>
+	                </tbody>
+
+	                <tfoot>
+	                    <tr>
+	                        <th colspan="2" class="nopad">
+	                            <input type="submit" value="Authenticate &gt;" />
+	                        </th>
+	                    </tr>
+	                </tfoot>
+	            </table>
+            </form>
+
+        </wicket:extend>
+    </body>
+
+</html>

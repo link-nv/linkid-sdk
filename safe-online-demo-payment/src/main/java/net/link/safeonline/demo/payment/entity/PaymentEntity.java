@@ -7,7 +7,7 @@
 
 package net.link.safeonline.demo.payment.entity;
 
-import static net.link.safeonline.demo.payment.entity.PaymentEntity.QUERY_WHERE_OWNER;
+import static net.link.safeonline.demo.payment.entity.PaymentEntity.getByOwner;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -26,24 +26,29 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "demo_payment")
-@NamedQueries(@NamedQuery(name = QUERY_WHERE_OWNER, query = "SELECT payment FROM PaymentEntity AS payment "
-        + "WHERE payment.owner = :owner " + "ORDER BY payment.paymentDate DESC"))
+@NamedQueries(@NamedQuery(name = getByOwner, query = "SELECT payment FROM PaymentEntity AS payment " + "WHERE payment.owner = :owner "
+        + "ORDER BY payment.paymentDate DESC"))
 public class PaymentEntity implements Serializable {
 
-    private static final long  serialVersionUID  = 1L;
+    private static final long  serialVersionUID = 1L;
 
-    public static final String QUERY_WHERE_OWNER = "ticket.where.owner";
+    public static final String getByOwner       = "ticket.where.owner";
 
+    @Id
+    @GeneratedValue
     private long               id;
 
-    private UserEntity         owner;
+    @ManyToOne
+    private PaymentUserEntity  owner;
 
     private Date               paymentDate;
 
+    @Basic(optional = false)
     private String             recipient;
 
     private String             message;
 
+    @Basic(optional = false)
     private String             visa;
 
     private double             amount;
@@ -54,7 +59,7 @@ public class PaymentEntity implements Serializable {
         // empty
     }
 
-    public PaymentEntity(UserEntity owner, Date paymentDate, String visa, double amount, String recipient, String message) {
+    public PaymentEntity(PaymentUserEntity owner, Date paymentDate, String visa, double amount, String recipient, String message) {
 
         this.owner = owner;
         this.paymentDate = paymentDate;
@@ -64,20 +69,19 @@ public class PaymentEntity implements Serializable {
         this.message = message;
     }
 
-    @ManyToOne
-    public UserEntity getOwner() {
+    public PaymentUserEntity getOwner() {
 
-        return this.owner;
+        return owner;
     }
 
-    public void setOwner(UserEntity owner) {
+    public void setOwner(PaymentUserEntity owner) {
 
         this.owner = owner;
     }
 
     public Date getPaymentDate() {
 
-        return this.paymentDate;
+        return paymentDate;
     }
 
     public void setPaymentDate(Date paymentDate) {
@@ -85,11 +89,9 @@ public class PaymentEntity implements Serializable {
         this.paymentDate = paymentDate;
     }
 
-    @Id
-    @GeneratedValue
     public long getId() {
 
-        return this.id;
+        return id;
     }
 
     public void setId(long id) {
@@ -99,7 +101,7 @@ public class PaymentEntity implements Serializable {
 
     public String getMessage() {
 
-        return this.message;
+        return message;
     }
 
     public void setMessage(String message) {
@@ -107,10 +109,9 @@ public class PaymentEntity implements Serializable {
         this.message = message;
     }
 
-    @Basic(optional = false)
     public String getRecipient() {
 
-        return this.recipient;
+        return recipient;
     }
 
     public void setRecipient(String recipient) {
@@ -118,10 +119,9 @@ public class PaymentEntity implements Serializable {
         this.recipient = recipient;
     }
 
-    @Basic(optional = false)
     public String getVisa() {
 
-        return this.visa;
+        return visa;
     }
 
     public void setVisa(String visa) {
@@ -131,7 +131,7 @@ public class PaymentEntity implements Serializable {
 
     public double getAmount() {
 
-        return this.amount;
+        return amount;
     }
 
     public void setAmount(double amount) {
@@ -139,9 +139,9 @@ public class PaymentEntity implements Serializable {
         this.amount = amount;
     }
 
-    public static Query createQueryWhereOwner(EntityManager entityManager, UserEntity owner) {
+    public static Query createQueryWhereOwner(EntityManager entityManager, PaymentUserEntity owner) {
 
-        Query query = entityManager.createNamedQuery(QUERY_WHERE_OWNER);
+        Query query = entityManager.createNamedQuery(getByOwner);
         query.setParameter("owner", owner);
         return query;
     }
