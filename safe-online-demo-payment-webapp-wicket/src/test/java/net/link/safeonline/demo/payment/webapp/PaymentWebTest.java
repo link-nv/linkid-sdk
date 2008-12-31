@@ -232,7 +232,12 @@ public class PaymentWebTest extends AbstractWicketTests {
         wicket.assertComponent("newTransaction", Form.class);
         FormTester newTransaction = wicket.newFormTester("newTransaction");
         String sampleTransactionTarget = newTransaction.getTextComponentValue("target");
-        String sampleTransactionAmount = newTransaction.getTextComponentValue("amount");
+        String sampleTransactionAmountString = newTransaction.getTextComponentValue("amount");
+        Double sampleTransactionAmount = null;
+        try {
+            sampleTransactionAmount = Double.parseDouble(sampleTransactionAmountString);
+        } catch (NumberFormatException e) {
+        }
         String sampleTransactionDescription = newTransaction.getTextComponentValue("description");
 
         // - Test sample data against our original test data.
@@ -240,7 +245,8 @@ public class PaymentWebTest extends AbstractWicketTests {
                 testDescription.equals(sampleTransactionDescription));
         assertTrue(String.format("target mismatch: test: %s - sample: %s", testTarget, sampleTransactionTarget), //
                 testTarget.equals(sampleTransactionTarget));
-        assertTrue(String.format("amount mismatch: test: %f - sample: %f", testAmount, sampleTransactionAmount), //
+        assertTrue(String.format("amount mismatch: test: %f - sample: %s (%f)", testAmount, sampleTransactionAmountString,
+                sampleTransactionAmount), //
                 testAmount.equals(sampleTransactionAmount));
 
         // NewTransactionPage: Complete the requested transaction.

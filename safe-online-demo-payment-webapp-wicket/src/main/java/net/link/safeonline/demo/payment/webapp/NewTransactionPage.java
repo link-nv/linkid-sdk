@@ -100,7 +100,7 @@ public class NewTransactionPage extends LayoutPage {
 
                 if (PaymentSession.get().getService() != null) {
                     description.setObject(PaymentSession.get().getService().getMessage());
-                    target.setObject(PaymentSession.get().getService().getTarget());
+                    target.setObject(PaymentSession.get().getService().getRecipient());
                     amount.setObject(String.valueOf(PaymentSession.get().getService().getAmount()));
                 }
             }
