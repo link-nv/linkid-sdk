@@ -16,6 +16,7 @@ import net.link.safeonline.wicket.tools.WicketUtil;
 import net.link.safeonline.wicket.web.Authenticated;
 
 import org.apache.wicket.Page;
+import org.apache.wicket.RedirectToUrlException;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.RadioChoice;
@@ -120,8 +121,17 @@ public class NewTransactionPage extends LayoutPage {
         protected void onSubmit() {
 
             if (getTransactionService().createTransaction(PaymentSession.get().getUser(), visa.getObject(), description.getObject(),
-                    target.getObject(), Double.parseDouble(amount.getObject())) != null)
+                    target.getObject(), Double.parseDouble(amount.getObject())) != null) {
+
+                if (PaymentSession.get().getService() != null) {
+                    String targetUrl = PaymentSession.get().getService().getTarget();
+                    PaymentSession.get().stopService();
+
+                    throw new RedirectToUrlException(targetUrl);
+                }
+
                 throw new RestartResponseException(AccountPage.class);
+            }
         }
     }
 

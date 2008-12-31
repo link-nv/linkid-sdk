@@ -75,6 +75,11 @@ public class PaymentSession extends OLASSession {
         service = newService;
     }
 
+    public void stopService() {
+
+        service = null;
+    }
+
     public PaymentService getService() {
 
         return service;
