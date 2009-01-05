@@ -338,7 +338,7 @@ public class LayoutPage extends OlasApplicationPage {
                         String redirectUrl = String.format("%s?recipient=%s&amount=%s&message=%s&target=%s",
 
                         // Demo-Payment application.
-                                RequestUtils.toAbsolutePath("../demo-payment/entry.seam"),
+                                RequestUtils.toAbsolutePath("../demo-payment/service"),
 
                                 // Payment Recipient.
                                 URLEncoder.encode(CinemaConstants.PAYMENT_RECIPIENT, "UTF-8"),
