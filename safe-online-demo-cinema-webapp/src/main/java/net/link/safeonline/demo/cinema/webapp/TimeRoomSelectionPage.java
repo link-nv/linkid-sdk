@@ -13,6 +13,7 @@ import net.link.safeonline.demo.cinema.entity.CinemaShowTimeEntity;
 import net.link.safeonline.demo.cinema.service.FilmService;
 import net.link.safeonline.demo.cinema.service.RoomService;
 import net.link.safeonline.wicket.tools.WicketUtil;
+import net.link.safeonline.wicket.web.Authenticated;
 
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
@@ -36,6 +37,7 @@ import org.apache.wicket.markup.html.list.ListView;
  * 
  * @author mbillemo
  */
+@Authenticated(redirect = LoginPage.class)
 public class TimeRoomSelectionPage extends LayoutPage {
 
     private static final long serialVersionUID = 1L;
@@ -196,8 +198,7 @@ public class TimeRoomSelectionPage extends LayoutPage {
 
             // Either get all rooms TODO: or just those that play the film at
             // the selected time.
-            List<CinemaRoomEntity> data = TimeRoomSelectionPage.this.roomService.getRoomsFor(CinemaSession.get().getTheatre(),
-                    CinemaSession.get().getFilm());
+            List<CinemaRoomEntity> data = roomService.getRoomsFor(CinemaSession.get().getTheatre(), CinemaSession.get().getFilm());
 
             add(new ListView<CinemaRoomEntity>("list", data) {
 

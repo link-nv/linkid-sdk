@@ -1,6 +1,7 @@
 package net.link.safeonline.demo.bank.webapp;
 
 import javax.ejb.EJB;
+import javax.servlet.ServletException;
 
 import net.link.safeonline.demo.bank.entity.BankAccountEntity;
 import net.link.safeonline.demo.bank.entity.BankUserEntity;
@@ -8,23 +9,20 @@ import net.link.safeonline.demo.bank.service.AccountService;
 import net.link.safeonline.demo.bank.service.TransactionService;
 import net.link.safeonline.demo.bank.service.UserService;
 import net.link.safeonline.wicket.tools.WicketUtil;
+import net.link.safeonline.wicket.web.OlasApplicationPage;
 import net.link.safeonline.wicket.web.OlasLogoutLink;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.link.PageLink;
 import org.apache.wicket.model.Model;
 
 
-public abstract class LayoutPage extends WebPage {
+public abstract class LayoutPage extends OlasApplicationPage {
 
     private static final long            serialVersionUID = 1L;
-    Log                                  LOG              = LogFactory.getLog(getClass());
 
     @EJB(mappedName = UserService.JNDI_BINDING)
     transient private UserService        userService;
@@ -41,7 +39,7 @@ public abstract class LayoutPage extends WebPage {
      */
     UserService getUserService() {
 
-        return this.userService;
+        return userService;
     }
 
     /**
@@ -49,7 +47,7 @@ public abstract class LayoutPage extends WebPage {
      */
     AccountService getAccountService() {
 
-        return this.accountService;
+        return accountService;
     }
 
     /**
@@ -57,7 +55,7 @@ public abstract class LayoutPage extends WebPage {
      */
     TransactionService getTransactionService() {
 
-        return this.transactionService;
+        return transactionService;
     }
 
     /**
@@ -71,6 +69,39 @@ public abstract class LayoutPage extends WebPage {
         add(new Label("headerTitle", getHeaderTitle()));
 
         add(new UserInfo("user"));
+
+        // Support linking bank user to olas user.
+        if (BankSession.isLinking() && WicketUtil.isOlasAuthenticated(getRequest())) {
+            try {
+                BankUserEntity user = BankSession.get().getUser();
+                String olasId = WicketUtil.getOlasId(getRequest());
+
+                BankSession.get().setUser(getUserService().linkOLASUser(user, olasId, WicketUtil.toServletRequest(getRequest())));
+                BankSession.get().setLinkingUser(null);
+            }
+
+            catch (ServletException e) {
+                LOG.error("[BUG]", e);
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onOlasAuthenticated() {
+
+        try {
+            String olasId = WicketUtil.getOlasId(getRequest());
+            BankUserEntity user = getUserService().getOLASUser(olasId);
+
+            BankSession.get().setUser(getUserService().updateUser(user, WicketUtil.toServletRequest(getRequest())));
+        }
+
+        catch (ServletException e) {
+            LOG.error("[BUG]", e);
+        }
     }
 
     /**
@@ -86,7 +117,7 @@ public abstract class LayoutPage extends WebPage {
         private Model<String>     amount;
 
         {
-            setVisible(BankSession.isUserSet());
+            setVisible(BankSession.get().isUserSet());
         }
 
 
@@ -105,18 +136,18 @@ public abstract class LayoutPage extends WebPage {
 
             // User information.
             add(new OlasLogoutLink("logout"));
-            add(new Label("name", this.name = new Model<String>()));
-            add(new Label("amount", this.amount = new Model<String>()));
+            add(new Label("name", name = new Model<String>()));
+            add(new Label("amount", amount = new Model<String>()));
 
-            if (BankSession.isUserSet()) {
+            if (BankSession.get().isUserSet()) {
                 double total = 0;
                 BankUserEntity user = BankSession.get().getUser();
                 for (BankAccountEntity account : getUserService().getAccounts(user)) {
                     total += account.getAmount();
                 }
 
-                this.name.setObject(user.getName());
-                this.amount.setObject(WicketUtil.format(BankSession.CURRENCY, total));
+                name.setObject(user.getName());
+                amount.setObject(WicketUtil.format(BankSession.CURRENCY, total));
             }
         }
     }

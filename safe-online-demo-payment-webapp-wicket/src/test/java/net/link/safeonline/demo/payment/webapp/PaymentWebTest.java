@@ -71,7 +71,7 @@ public class PaymentWebTest extends AbstractWicketTests {
 
         // AccountPage: Verify && we've logged in successfully.
         assertTrue("Not logged in.", //
-                PaymentSession.isUserSet());
+                PaymentSession.get().isUserSet());
         wicket.assertRenderedPage(AccountPage.class);
     }
 
@@ -102,7 +102,7 @@ public class PaymentWebTest extends AbstractWicketTests {
         assertFalse("OLAS credentials shouldn't be present.", //
                 LoginManager.isAuthenticated(wicket.getServletRequest()));
         assertFalse("Shouldn't be logged in.", //
-                PaymentSession.isUserSet());
+                PaymentSession.get().isUserSet());
         wicket.assertRenderedPage(LoginPage.class);
     }
 
@@ -227,12 +227,17 @@ public class PaymentWebTest extends AbstractWicketTests {
 
         // NewTransactionPage: Verify && we've logged in successfully and were redirected to the NewTransactionPage.
         assertTrue("Not logged in.", //
-                PaymentSession.isUserSet());
+                PaymentSession.get().isUserSet());
         wicket.assertRenderedPage(NewTransactionPage.class);
         wicket.assertComponent("newTransaction", Form.class);
         FormTester newTransaction = wicket.newFormTester("newTransaction");
         String sampleTransactionTarget = newTransaction.getTextComponentValue("target");
-        String sampleTransactionAmount = newTransaction.getTextComponentValue("amount");
+        String sampleTransactionAmountString = newTransaction.getTextComponentValue("amount");
+        Double sampleTransactionAmount = null;
+        try {
+            sampleTransactionAmount = Double.parseDouble(sampleTransactionAmountString);
+        } catch (NumberFormatException e) {
+        }
         String sampleTransactionDescription = newTransaction.getTextComponentValue("description");
 
         // - Test sample data against our original test data.
@@ -240,7 +245,8 @@ public class PaymentWebTest extends AbstractWicketTests {
                 testDescription.equals(sampleTransactionDescription));
         assertTrue(String.format("target mismatch: test: %s - sample: %s", testTarget, sampleTransactionTarget), //
                 testTarget.equals(sampleTransactionTarget));
-        assertTrue(String.format("amount mismatch: test: %f - sample: %f", testAmount, sampleTransactionAmount), //
+        assertTrue(String.format("amount mismatch: test: %f - sample: %s (%f)", testAmount, sampleTransactionAmountString,
+                sampleTransactionAmount), //
                 testAmount.equals(sampleTransactionAmount));
 
         // NewTransactionPage: Complete the requested transaction.

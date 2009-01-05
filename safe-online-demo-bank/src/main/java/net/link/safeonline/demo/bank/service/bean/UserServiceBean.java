@@ -47,7 +47,7 @@ public class UserServiceBean extends AbstractBankServiceBean implements UserServ
     public BankUserEntity getBankUser(String bankId) {
 
         try {
-            return (BankUserEntity) this.em.createNamedQuery(BankUserEntity.getByBankId).setParameter("bankId", bankId).getSingleResult();
+            return (BankUserEntity) em.createNamedQuery(BankUserEntity.getByBankId).setParameter("bankId", bankId).getSingleResult();
         } catch (NoResultException e) {
             return null;
         }
@@ -59,7 +59,7 @@ public class UserServiceBean extends AbstractBankServiceBean implements UserServ
     public BankUserEntity getOLASUser(String olasId) {
 
         try {
-            return (BankUserEntity) this.em.createNamedQuery(BankUserEntity.getByOlasId).setParameter("olasId", olasId).getSingleResult();
+            return (BankUserEntity) em.createNamedQuery(BankUserEntity.getByOlasId).setParameter("olasId", olasId).getSingleResult();
         }
 
         catch (NoResultException e) {
@@ -73,7 +73,7 @@ public class UserServiceBean extends AbstractBankServiceBean implements UserServ
             }
 
             BankUserEntity userEntity = new BankUserEntity(bankId, olasId, olasId);
-            this.em.persist(userEntity);
+            em.persist(userEntity);
 
             return userEntity;
         }
@@ -82,21 +82,21 @@ public class UserServiceBean extends AbstractBankServiceBean implements UserServ
     /**
      * {@inheritDoc}
      */
-    public BankUserEntity linkOLASUser(BankUserEntity user, String olasId) {
+    public BankUserEntity linkOLASUser(BankUserEntity user, String olasId, HttpServletRequest httpRequest) {
 
         BankUserEntity userEntity = attach(user);
         userEntity.setOlasId(olasId);
 
-        return userEntity;
+        return updateUser(userEntity, httpRequest);
     }
 
     /**
      * {@inheritDoc}
      */
-    public BankUserEntity updateUser(BankUserEntity user, HttpServletRequest loginRequest) {
+    public BankUserEntity updateUser(BankUserEntity user, HttpServletRequest httpRequest) {
 
         try {
-            AttributeClient attributeClient = WicketUtil.getOLASAttributeService(loginRequest, DemoBankKeyStoreUtils.getPrivateKeyEntry());
+            AttributeClient attributeClient = WicketUtil.getOLASAttributeService(httpRequest, DemoBankKeyStoreUtils.getPrivateKeyEntry());
 
             BankUserEntity userEntity = attach(user);
             if (userEntity.getOlasId() == null)
@@ -110,16 +110,16 @@ public class UserServiceBean extends AbstractBankServiceBean implements UserServ
         }
 
         catch (AttributeNotFoundException e) {
-            this.LOG.error("attribute not found: ", e);
+            LOG.error("attribute not found: ", e);
             throw new RuntimeException(e);
         } catch (RequestDeniedException e) {
-            this.LOG.error("request denied: ", e);
+            LOG.error("request denied: ", e);
             throw new RuntimeException(e);
         } catch (WSClientTransportException e) {
-            this.LOG.error("Connection error. Check your SSL setup.", e);
+            LOG.error("Connection error. Check your SSL setup.", e);
             throw new RuntimeException(e);
         } catch (AttributeUnavailableException e) {
-            this.LOG.error("Attribute unavailable", e);
+            LOG.error("Attribute unavailable", e);
             throw new RuntimeException(e);
         }
     }
@@ -130,6 +130,6 @@ public class UserServiceBean extends AbstractBankServiceBean implements UserServ
     @SuppressWarnings("unchecked")
     public List<BankAccountEntity> getAccounts(BankUserEntity user) {
 
-        return this.em.createNamedQuery(BankAccountEntity.getByUser).setParameter("user", attach(user)).getResultList();
+        return em.createNamedQuery(BankAccountEntity.getByUser).setParameter("user", attach(user)).getResultList();
     }
 }

@@ -5,10 +5,10 @@ import java.util.List;
 import net.link.safeonline.demo.bank.entity.BankAccountEntity;
 import net.link.safeonline.demo.bank.entity.BankTransactionEntity;
 import net.link.safeonline.wicket.tools.WicketUtil;
+import net.link.safeonline.wicket.web.Authenticated;
 import net.link.safeonline.wicket.web.OlasLoginLink;
 
 import org.apache.wicket.Page;
-import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
@@ -31,6 +31,7 @@ import org.apache.wicket.markup.html.list.ListView;
  * 
  * @author mbillemo
  */
+@Authenticated(redirect = LoginPage.class)
 public class AccountPage extends LayoutPage {
 
     private static final long serialVersionUID = 1L;
@@ -42,9 +43,6 @@ public class AccountPage extends LayoutPage {
      * If not logged in, redirects back to the {@link LoginPage}.
      */
     public AccountPage() {
-
-        if (!BankSession.isUserSet())
-            throw new RestartResponseException(LoginPage.class);
 
         add(new AccountsForm("accounts"));
     }

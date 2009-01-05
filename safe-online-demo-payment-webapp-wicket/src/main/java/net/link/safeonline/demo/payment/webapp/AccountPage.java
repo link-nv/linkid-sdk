@@ -2,8 +2,8 @@ package net.link.safeonline.demo.payment.webapp;
 
 import net.link.safeonline.demo.payment.entity.PaymentEntity;
 import net.link.safeonline.wicket.tools.WicketUtil;
+import net.link.safeonline.wicket.web.Authenticated;
 
-import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.PageLink;
@@ -25,6 +25,7 @@ import org.apache.wicket.markup.html.list.ListView;
  * 
  * @author mbillemo
  */
+@Authenticated(redirect = LoginPage.class)
 public class AccountPage extends LayoutPage {
 
     private static final long serialVersionUID = 1L;
@@ -36,9 +37,6 @@ public class AccountPage extends LayoutPage {
      * If not logged in, redirects back to the {@link LoginPage}.
      */
     public AccountPage() {
-
-        if (!PaymentSession.isUserSet())
-            throw new RestartResponseException(LoginPage.class);
 
         add(new AccountForm("account"));
     }

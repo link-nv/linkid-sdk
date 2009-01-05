@@ -38,9 +38,7 @@ import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.performance.entity.ProfileDataEntity;
 import net.link.safeonline.performance.entity.ScenarioTimingEntity;
-import net.link.safeonline.performance.scenario.Scenario;
 import net.link.safeonline.performance.scenario.charts.AbstractChart;
-import net.link.safeonline.performance.scenario.charts.Chart;
 import net.link.safeonline.performance.scenario.charts.ScenarioExceptionsChart;
 import net.link.safeonline.performance.scenario.charts.ScenarioSpeedChart;
 
@@ -48,15 +46,15 @@ import net.link.safeonline.performance.scenario.charts.ScenarioSpeedChart;
 /**
  * <h2>{@link ChartsTest}<br>
  * <sub>[in short] (TODO).</sub></h2>
- * 
+ *
  * <p>
  * [description / usage].
  * </p>
- * 
+ *
  * <p>
  * <i>Mar 3, 2008</i>
  * </p>
- * 
+ *
  * @author mbillemo
  */
 public class ChartsTest extends AbstractDataTest {

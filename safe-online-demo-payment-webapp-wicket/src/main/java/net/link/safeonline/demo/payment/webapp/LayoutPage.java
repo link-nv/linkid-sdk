@@ -1,24 +1,26 @@
 package net.link.safeonline.demo.payment.webapp;
 
 import javax.ejb.EJB;
+import javax.servlet.ServletException;
 
 import net.link.safeonline.demo.payment.entity.PaymentUserEntity;
 import net.link.safeonline.demo.payment.service.TransactionService;
 import net.link.safeonline.demo.payment.service.UserService;
+import net.link.safeonline.wicket.tools.WicketUtil;
+import net.link.safeonline.wicket.web.OlasApplicationPage;
 import net.link.safeonline.wicket.web.OlasLogoutLink;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.link.PageLink;
 import org.apache.wicket.model.Model;
 
 
-public abstract class LayoutPage extends WebPage {
+public abstract class LayoutPage extends OlasApplicationPage {
 
     private static final long            serialVersionUID = 1L;
     Log                                  LOG              = LogFactory.getLog(getClass());
@@ -60,6 +62,24 @@ public abstract class LayoutPage extends WebPage {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onOlasAuthenticated() {
+
+        try {
+            String olasId = WicketUtil.getOlasId(getRequest());
+            PaymentUserEntity user = getUserService().getUser(olasId);
+
+            PaymentSession.get().setUser(getUserService().updateUser(user, WicketUtil.toServletRequest(getRequest())));
+        }
+
+        catch (ServletException e) {
+            LOG.error("[BUG]", e);
+        }
+    }
+
+    /**
      * @return The string to use as the title for this page.
      */
     protected abstract String getHeaderTitle();
@@ -71,7 +91,7 @@ public abstract class LayoutPage extends WebPage {
         private Model<String>     name;
 
         {
-            setVisible(PaymentSession.isUserSet());
+            setVisible(PaymentSession.get().isUserSet());
         }
 
 
@@ -92,7 +112,7 @@ public abstract class LayoutPage extends WebPage {
             add(new OlasLogoutLink("logout"));
             add(new Label("name", name = new Model<String>()));
 
-            if (PaymentSession.isUserSet()) {
+            if (PaymentSession.get().isUserSet()) {
                 PaymentUserEntity user = PaymentSession.get().getUser();
                 name.setObject(user.getOlasName());
             }

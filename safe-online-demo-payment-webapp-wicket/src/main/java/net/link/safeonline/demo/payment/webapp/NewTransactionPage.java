@@ -13,8 +13,10 @@ import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.wicket.tools.WicketUtil;
+import net.link.safeonline.wicket.web.Authenticated;
 
 import org.apache.wicket.Page;
+import org.apache.wicket.RedirectToUrlException;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.RadioChoice;
@@ -38,6 +40,7 @@ import org.apache.wicket.protocol.http.WebRequest;
  * 
  * @author mbillemo
  */
+@Authenticated(redirect = LoginPage.class)
 public class NewTransactionPage extends LayoutPage {
 
     private static final long serialVersionUID = 1L;
@@ -49,9 +52,6 @@ public class NewTransactionPage extends LayoutPage {
      * If not logged in, redirects back to the {@link LoginPage}.
      */
     public NewTransactionPage() {
-
-        if (!PaymentSession.isUserSet())
-            throw new RestartResponseException(LoginPage.class);
 
         add(new TransactionForm("newTransaction"));
     }
@@ -101,7 +101,7 @@ public class NewTransactionPage extends LayoutPage {
 
                 if (PaymentSession.get().getService() != null) {
                     description.setObject(PaymentSession.get().getService().getMessage());
-                    target.setObject(PaymentSession.get().getService().getTarget());
+                    target.setObject(PaymentSession.get().getService().getRecipient());
                     amount.setObject(String.valueOf(PaymentSession.get().getService().getAmount()));
                 }
             }
@@ -121,8 +121,17 @@ public class NewTransactionPage extends LayoutPage {
         protected void onSubmit() {
 
             if (getTransactionService().createTransaction(PaymentSession.get().getUser(), visa.getObject(), description.getObject(),
-                    target.getObject(), Double.parseDouble(amount.getObject())) != null)
+                    target.getObject(), Double.parseDouble(amount.getObject())) != null) {
+
+                if (PaymentSession.get().getService() != null) {
+                    String targetUrl = PaymentSession.get().getService().getTarget();
+                    PaymentSession.get().stopService();
+
+                    throw new RedirectToUrlException(targetUrl);
+                }
+
                 throw new RestartResponseException(AccountPage.class);
+            }
         }
     }
 

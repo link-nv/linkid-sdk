@@ -50,12 +50,12 @@ public interface UserService extends BankService {
     /**
      * @return The {@link BankUserEntity} that has been linked to the OLAS account of the given OLAS id.
      */
-    public BankUserEntity linkOLASUser(BankUserEntity user, String olasId);
+    public BankUserEntity linkOLASUser(BankUserEntity user, String olasId, HttpServletRequest httpRequest);
 
     /**
      * Update the given user's attributes from OLAS.
      */
-    public BankUserEntity updateUser(BankUserEntity user, HttpServletRequest loginRequest);
+    public BankUserEntity updateUser(BankUserEntity user, HttpServletRequest httpRequest);
 
     /**
      * @return All accounts that the given user owns.
