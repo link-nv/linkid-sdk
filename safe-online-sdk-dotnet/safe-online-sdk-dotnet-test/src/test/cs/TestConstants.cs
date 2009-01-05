@@ -28,6 +28,8 @@ namespace safe_online_sdk_dotnet_test.test.cs
 		public static readonly string localhost = "10.0.2.15";
 		
 		public static readonly string loginAttribute = "urn:net:lin-k:safe-online:attribute:login";
+
+		public static readonly string testLogin = "admin";
 		
 		public static readonly string testMultiStringAttribute = "urn:test:multi:string";
 		public static readonly string testMultiDateAttribute = "urn:test:multi:date";
