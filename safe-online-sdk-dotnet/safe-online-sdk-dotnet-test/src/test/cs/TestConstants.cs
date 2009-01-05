@@ -13,14 +13,17 @@ namespace safe_online_sdk_dotnet_test.test.cs
 	{
 		public static readonly string workDir = "C:\\Users\\devel\\Csharp";
 		
+		public static readonly string testCrtIssuerName = "test";
+		public static readonly string testApplicationName = "test";
 		public static readonly string testPfxPath = workDir + "\\test.pfx";
 		public static readonly string testPfxPassword = "secret";
 		public static readonly string testCrtPath = workDir + "\\test.crt";
 		
 		public static readonly string olasCertPath = workDir + "\\olas.crt";
 					
-		public static readonly string olasHost = "sebeco-dev-11";
-		public static readonly string wsLocation = olasHost + ":8443";
+		public static readonly string olasHost = "demo.olas.be";
+		public static readonly string wsLocation = olasHost + ":443";
+		public static readonly string olasAuthEntry = "https://" + wsLocation + "/olas-auth/entry";
 		
 		public static readonly string localhost = "10.0.2.15";
 		
