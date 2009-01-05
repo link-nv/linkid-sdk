@@ -73,9 +73,9 @@ namespace safe_online_sdk_dotnet_test.test.cs
 				} while (bytes > 0 && socket.Available > 0);
 				Console.WriteLine("received: {0}", sBuffer);
 				if (sBuffer.Substring(0,3) == "GET" ) {
-					string encodedSamlRequest = this.saml2Util.generateEncodedSamlRequest("test", "test", null, "http://" 
-						+ TestConstants.localhost + ":8080", "https://" + TestConstants.wsLocation + "/olas-auth/entry", 
-						null, false);
+					string encodedSamlRequest = this.saml2Util.generateEncodedSamlRequest(TestConstants.testCrtIssuerName,
+						TestConstants.testApplicationName, null, "http://" + TestConstants.localhost + ":8080", 
+						TestConstants.olasAuthEntry, null, false);
 					byte[] msg = Encoding.ASCII.GetBytes("HTTP/1.0 200 OK" + "\r\n" +
 						"Content-type: text/html" + "\r\n" +
 						"Pragma: no-Cache" + "\r\n" +
@@ -83,7 +83,7 @@ namespace safe_online_sdk_dotnet_test.test.cs
 						"\r\n" +
 						"<html>" + "\r\n" + 
 						"Hello World" + "\r\n" +
-						"<form action=\"http://" + TestConstants.olasHost + ":8080/olas-auth/entry\" method=\"POST\">" 
+						"<form action=\"" + TestConstants.olasAuthEntry + "\" method=\"POST\">" 
 						+ "\r\n" + "<input type=\"submit\" value=\"submit\"/>" + "\r\n" +
 						"<input type=\"hidden\" name=\"SAMLRequest\" value=\"" + encodedSamlRequest + "\"/>" + "\r\n" +
 						"</form>" + "\r\n" +
