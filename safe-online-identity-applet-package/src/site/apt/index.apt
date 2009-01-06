@@ -1,7 +1,0 @@
-SafeOnline Identity Applet Package
-
- This projects packages the identity applet. This is done because:
- 
- * this way the client browser only needs to download one JAR
- 
- * the browser only needs to verify one JAR signature

@@ -906,8 +906,6 @@
 		<module>safe-online-beid-deploy</module>
 		<module>safe-online-beid-keystore</module>
 		<module>safe-online-beid-webapp</module>
-		<module>safe-online-identity-applet</module>
-		<module>safe-online-identity-applet-package</module>
 		<module>safe-online-osgi</module>
 		<module>safe-online-osgi-plugin</module>
 		<module>safe-online-osgi-plugin-template</module>
