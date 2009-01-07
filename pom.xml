@@ -434,6 +434,17 @@
 				<module>safe-online-test</module>
 			</modules>
 		</profile>
+		
+		<!-- Profile that builds the siemens metro web service and Metro WS Stack distribution -->
+		<profile>
+			<id>dep:siemens</id>
+			<modules>
+				<module>siemens-metro-acceptance-ws</module>
+				<module>siemens-metro-acceptance-ws-impl</module>
+				<module>siemens-metro-acceptance-ws-runtime</module>
+				<module>siemens-metro-distribution</module>
+			</modules>
+		</profile>
 
         <!-- HOST SELECTION PROFILES -->
 		<!-- Profile for deploying on the Option OLAS server -->
@@ -924,6 +935,7 @@
 
 		<module>siemens-osgi-acceptance</module>
 		<module>siemens-osgi-sms</module>
+		<module>siemens-osgi-acceptance-metro</module>
 	</modules>
 
 	<!-- DEFAULT BUILD CONFIGURATION -->
