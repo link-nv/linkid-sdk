@@ -1,6 +1,6 @@
 package net.link.safeonline.demo.bank.webapp;
 
-import net.link.safeonline.wicket.web.Authenticated;
+import net.link.safeonline.wicket.web.RequireLogin;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.form.Form;
@@ -22,7 +22,7 @@ import org.apache.wicket.model.Model;
  * 
  * @author mbillemo
  */
-@Authenticated(redirect = LoginPage.class)
+@RequireLogin(loginPage = LoginPage.class)
 public class NewAccountPage extends LayoutPage {
 
     private static final long serialVersionUID = 1L;

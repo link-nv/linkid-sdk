@@ -35,7 +35,6 @@ public class BankSession extends OLASSession {
     public static final Locale CURRENCY         = Locale.FRANCE;
 
     private BankUserEntity     user;
-
     private String             linkingBankId;
 
 
@@ -58,6 +57,17 @@ public class BankSession extends OLASSession {
     public String getUserOlasId() {
 
         return isUserSet()? getUser().getOlasId(): null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean logout() {
+
+        user = null;
+
+        return true;
     }
 
     /**

@@ -63,6 +63,18 @@ public class PaymentSession extends OLASSession {
      * {@inheritDoc}
      */
     @Override
+    public boolean logout() {
+
+        user = null;
+        service = null;
+
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean isUserSet() {
 
         return getUser() != null;

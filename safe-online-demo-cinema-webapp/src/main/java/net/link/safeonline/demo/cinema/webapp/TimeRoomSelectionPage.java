@@ -13,7 +13,7 @@ import net.link.safeonline.demo.cinema.entity.CinemaShowTimeEntity;
 import net.link.safeonline.demo.cinema.service.FilmService;
 import net.link.safeonline.demo.cinema.service.RoomService;
 import net.link.safeonline.wicket.tools.WicketUtil;
-import net.link.safeonline.wicket.web.Authenticated;
+import net.link.safeonline.wicket.web.RequireLogin;
 
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.basic.Label;
@@ -37,7 +37,7 @@ import org.apache.wicket.markup.html.list.ListView;
  * 
  * @author mbillemo
  */
-@Authenticated(redirect = LoginPage.class)
+@RequireLogin(loginPage = LoginPage.class)
 public class TimeRoomSelectionPage extends LayoutPage {
 
     private static final long serialVersionUID = 1L;

@@ -39,6 +39,12 @@ public abstract class OLASSession extends WebSession {
 
     public abstract boolean isUserSet();
 
+    /**
+     * Invoked when an OLAS user has logged into your application that is <b>different from {@link #getUserOlasId()}</b>, OR when
+     * {@link #getUserOlasId()} indicates a user is logged in, but there is no OLAS user currently logged in.
+     */
+    public abstract boolean logout();
+
     // POST AUTHENTICATION REDIRECTION ------------------------------
 
     public Page getPostAuthenticationPage() {

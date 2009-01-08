@@ -30,7 +30,7 @@ import org.apache.wicket.protocol.http.servlet.AbortWithWebErrorCodeException;
  * 
  * <p>
  * We also provide a post-authentication mechanism which is used when users go to a page that requires authentication without being
- * authenticated yet. The user is sent to an authentication page (as defined by {@link Authenticated#redirect()}), and after a successful
+ * authenticated yet. The user is sent to an authentication page (as defined by {@link RequireLogin#loginPage()}), and after a successful
  * authentication the user is sent back to the page he first tried to view. (See {@link #postAuth()})
  * </p>
  * 
@@ -42,21 +42,27 @@ import org.apache.wicket.protocol.http.servlet.AbortWithWebErrorCodeException;
  */
 public abstract class OlasApplicationPage extends WicketPage {
 
-    public OlasApplicationPage() {
-
+    {
         // Check whether OLAS user has changed or been logged out.
         try {
-            if (OLASSession.get().getUserOlasId() != null && OLASSession.get().getUserOlasId() != WicketUtil.getOlasId(getRequest()))
-                throw new ServletException("User changed.");
+            if (getClass().isAnnotationPresent(ForceLogout.class))
+                throw new ServletException("Page " + getClass() + " requires forced logout.");
+
+            String currentOlasId = WicketUtil.getOlasId(getRequest());
+            String wicketOlasId = OLASSession.get().getUserOlasId();
+            if (wicketOlasId != null && !wicketOlasId.equals(currentOlasId))
+                throw new ServletException("User changed from " + wicketOlasId + " into " + currentOlasId);
         }
 
         catch (ServletException e) {
             // If wicket session has an OLAS id and no OLAS user is logged in, or a different one is logged in:
-            // Invalidate session & retry.
-            LOG.debug("wicket session has an OLAS id and no OLAS user is logged in, or a different one is logged in");
+            // Log out the wicket session.
+            LOG.debug("[OlasWicketAuth] Logging out wicket session because: " + e.getMessage());
 
-            OLASSession.get().invalidateNow();
-            throw new RestartResponseException(getClass());
+            if (!OLASSession.get().logout()) {
+                Session.get().invalidateNow();
+                throw new AbortWithWebErrorCodeException(HttpStatus.SC_UNAUTHORIZED);
+            }
         }
 
         // If just logged in using OLAS, let application create/push its user onto wicket session.
@@ -66,21 +72,22 @@ public abstract class OlasApplicationPage extends WicketPage {
         }
 
         // Enforce page requirements for user authentication.
-        if (getClass().isAnnotationPresent(Authenticated.class) && !OLASSession.get().isUserSet()) {
-            Authenticated authAnnotation = getClass().getAnnotation(Authenticated.class);
-            Class<? extends Page> redirect = authAnnotation.redirect();
+        if (getClass().isAnnotationPresent(RequireLogin.class) && !OLASSession.get().isUserSet()) {
+            RequireLogin authAnnotation = getClass().getAnnotation(RequireLogin.class);
+            Class<? extends Page> loginPage = authAnnotation.loginPage();
 
-            if (!redirect.equals(Page.class)) {
-                LOG.debug("auth required; redirecting unauthenticated user to " + redirect + " for authentication.");
+            if (!loginPage.equals(Page.class)) {
+                LOG.debug("[OlasWicketAuth] auth required; redirecting unauthenticated user to " + loginPage + " for authentication.");
 
                 OLASSession.get().setPostAuthenticationPage(this);
-                throw new RestartResponseException(redirect);
+                throw new RestartResponseException(loginPage);
             }
 
-            LOG.debug("auth required; no authentication page specified for redirection: sending HTTP 401.");
+            LOG.debug("[OlasWicketAuth] auth required; no login page specified for redirection: sending HTTP 401.");
             throw new AbortWithWebErrorCodeException(HttpStatus.SC_UNAUTHORIZED);
         }
     }
+
 
     /**
      * If application created user successfully, perform post-authentication.
@@ -102,7 +109,7 @@ public abstract class OlasApplicationPage extends WicketPage {
             Page postAuthPage = OLASSession.get().getPostAuthenticationPage();
 
             if (postAuthPage != null) {
-                LOG.debug("auth completed; triggering post auth, sending user to " + postAuthPage);
+                LOG.debug("[OlasWicketAuth] auth completed; triggering post auth, sending user to " + postAuthPage);
 
                 OLASSession.get().setPostAuthenticationPage(null);
                 throw new RestartResponseException(postAuthPage);

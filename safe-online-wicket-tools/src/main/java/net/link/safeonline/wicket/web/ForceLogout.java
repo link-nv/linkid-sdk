@@ -11,11 +11,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.apache.wicket.Page;
-
 
 /**
- * <h2>{@link Authenticated}<br>
+ * <h2>{@link ForceLogout}<br>
  * <sub>Putting this annotation on a {@link WicketPage} makes sure users can only access it after having authenticated.</sub></h2>
  * 
  * <p>
@@ -30,7 +28,6 @@ import org.apache.wicket.Page;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Authenticated {
+public @interface ForceLogout {
 
-    Class<? extends Page> redirect() default Page.class;
 }

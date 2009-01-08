@@ -8,7 +8,7 @@ import javax.ejb.EJB;
 import net.link.safeonline.demo.cinema.entity.CinemaSeatEntity;
 import net.link.safeonline.demo.cinema.service.RoomService;
 import net.link.safeonline.demo.cinema.service.SeatService;
-import net.link.safeonline.wicket.web.Authenticated;
+import net.link.safeonline.wicket.web.RequireLogin;
 
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.ComponentTag;
@@ -33,7 +33,7 @@ import org.apache.wicket.markup.html.list.ListView;
  * 
  * @author mbillemo
  */
-@Authenticated(redirect = LoginPage.class)
+@RequireLogin(loginPage = LoginPage.class)
 public class SeatSelectionPage extends LayoutPage {
 
     @EJB(mappedName = RoomService.JNDI_BINDING)

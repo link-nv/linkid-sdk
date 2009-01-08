@@ -78,6 +78,21 @@ public class CinemaSession extends OLASSession {
      * {@inheritDoc}
      */
     @Override
+    public boolean logout() {
+
+        user = null;
+        resetFilm();
+        resetTheatre();
+        resetRoom();
+        resetTime();
+
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public boolean isUserSet() {
 
         return getUser() != null;

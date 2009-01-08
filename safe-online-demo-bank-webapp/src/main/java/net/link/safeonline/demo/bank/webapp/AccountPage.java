@@ -5,7 +5,7 @@ import java.util.List;
 import net.link.safeonline.demo.bank.entity.BankAccountEntity;
 import net.link.safeonline.demo.bank.entity.BankTransactionEntity;
 import net.link.safeonline.wicket.tools.WicketUtil;
-import net.link.safeonline.wicket.web.Authenticated;
+import net.link.safeonline.wicket.web.RequireLogin;
 import net.link.safeonline.wicket.web.OlasLoginLink;
 
 import org.apache.wicket.Page;
@@ -31,7 +31,7 @@ import org.apache.wicket.markup.html.list.ListView;
  * 
  * @author mbillemo
  */
-@Authenticated(redirect = LoginPage.class)
+@RequireLogin(loginPage = LoginPage.class)
 public class AccountPage extends LayoutPage {
 
     private static final long serialVersionUID = 1L;

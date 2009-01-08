@@ -2,6 +2,7 @@ package net.link.safeonline.demo.payment.webapp;
 
 import net.link.safeonline.demo.payment.webapp.AccountPage.AccountForm;
 import net.link.safeonline.wicket.tools.WicketUtil;
+import net.link.safeonline.wicket.web.ForceLogout;
 import net.link.safeonline.wicket.web.OlasLoginLink;
 
 import org.apache.wicket.PageParameters;
@@ -29,6 +30,7 @@ import org.apache.wicket.markup.html.link.Link;
  * 
  * @author mbillemo
  */
+@ForceLogout
 public class NewServicePage extends LayoutPage {
 
     private static final long serialVersionUID = 1L;
