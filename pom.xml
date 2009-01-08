@@ -439,7 +439,6 @@
 		<profile>
 			<id>dep:siemens</id>
 			<modules>
-				<module>siemens-metro-acceptance-ws</module>
 				<module>siemens-metro-acceptance-ws-impl</module>
 				<module>siemens-metro-acceptance-ws-runtime</module>
 				<module>siemens-metro-distribution</module>
@@ -935,6 +934,7 @@
 
 		<module>siemens-osgi-acceptance</module>
 		<module>siemens-osgi-sms</module>
+		<module>siemens-metro-acceptance-ws</module>
 		<module>siemens-osgi-acceptance-metro</module>
 	</modules>
 
