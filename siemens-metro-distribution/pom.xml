@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<artifactId>safe-online</artifactId>
+		<groupId>net.lin-k</groupId>
+		<version>1.3-SNAPSHOT</version>
+	</parent>
+
+	<name>Siemens Acceptance Test Metro Web Service Distribution
+	</name>
+	<groupId>net.lin-k.safe-online.siemens
+	</groupId>
+	<artifactId>siemens-metro-distribution
+	</artifactId>
+	<version>1.3-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<build>
+
+		<resources>
+			<resource>
+				<directory>src/main</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+
+		<plugins>
+
+			<!-- 1. Generate SSL server cert for HTTPS. -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>keytool-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>clean</goal>
+							<goal>genkey</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<keystore>${project.build.directory}/files/ssl.jks
+					</keystore>
+					<dname>cn=Siemens-Metro, ou=Development,
+						L=SINT-MARTENS-LATEM, ST=VL, o=LIN.K_NV, c=BE</dname>
+					<keypass>secret</keypass>
+					<keyalg>RSA</keyalg>
+					<storepass>secret</storepass>
+					<alias>safe-online</alias>
+					<verbose>true</verbose>
+				</configuration>
+			</plugin>
+
+			<!-- 2. Expand Maven parameters into our customized config files. -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin
+				</artifactId>
+				<executions>
+					<execution>
+						<id>filter</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>resources</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- 3. Gather all the artifacts that will make up the distribution. -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin
+				</artifactId>
+				<executions>
+
+					<!--
+						Unpack JBoss AS, JBoss WS Metro into /files. maven-assembly-plugin
+						will merge them all together into /jboss.
+					-->
+					<execution>
+						<id>unpack</id>
+						<phase>package</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.jboss</groupId>
+									<artifactId>jboss-as</artifactId>
+									<type>zip</type>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.jboss</groupId>
+									<artifactId>jbossws-metro-deploy-jboss423
+									</artifactId>
+									<type>zip</type>
+								</artifactItem>
+							</artifactItems>
+							<outputDirectory>${project.build.directory}/files
+							</outputDirectory>
+						</configuration>
+					</execution>
+
+					<!--
+						Copy SafeOnline dependencies into /deploy. maven-assembly-plugin
+						will move them to /jboss/server/default/deploy.
+					-->
+					<execution>
+						<id>copy</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<includeTypes>war</includeTypes>
+							<includeGroupIds>net.lin-k.safe-online.siemens
+							</includeGroupIds>
+							<outputDirectory>${project.build.directory}/deploy
+							</outputDirectory>
+						</configuration>
+					</execution>
+
+				</executions>
+			</plugin>
+
+			<!-- 5. Assemble our distribution. -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptors>
+						<descriptor>src/main/assembly/jboss-base.xml
+						</descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<id>package</id>
+						<phase>package</phase>
+						<goals>
+							<goal>attached</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
+
+	<dependencies>
+
+		<!-- OLAS Dependencies -->
+		<dependency>
+			<groupId>net.lin-k.safe-online.siemens
+			</groupId>
+			<artifactId>siemens-metro-acceptance-ws-runtime
+			</artifactId>
+			<version>1.3-SNAPSHOT</version>
+			<type>war</type>
+		</dependency>
+
+		<!-- Specific Dependencies: Distribution -->
+		<dependency>
+			<groupId>org.jboss</groupId>
+			<artifactId>jboss-as</artifactId>
+			<version>4.2.3.GA</version>
+			<scope>provided</scope>
+			<type>zip</type>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss</groupId>
+			<artifactId>jbossws-metro-deploy-jboss423
+			</artifactId>
+			<version>3.0.3.GA</version>
+			<scope>provided</scope>
+			<type>zip</type>
+		</dependency>
+
+	</dependencies>
+
+</project>

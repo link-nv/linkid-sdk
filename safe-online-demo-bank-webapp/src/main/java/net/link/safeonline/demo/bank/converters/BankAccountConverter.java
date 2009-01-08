@@ -40,7 +40,7 @@ import org.apache.wicket.util.convert.IConverter;
  * 
  * @author lhunath
  */
-public class BankAccountConverter implements IConverter<BankAccountEntity> {
+public class BankAccountConverter implements IConverter {
 
     private static final long serialVersionUID = 1L;
     private static final Log  LOG              = LogFactory.getLog(BankAccountEntity.class);
@@ -51,9 +51,9 @@ public class BankAccountConverter implements IConverter<BankAccountEntity> {
     /**
      * {@inheritDoc}
      */
-    public BankAccountEntity convertToObject(String value, Locale locale) {
+    public Object convertToObject(String value, Locale locale) {
 
-        Matcher matcher = this.parser.matcher(value);
+        Matcher matcher = parser.matcher(value);
         if (matcher.matches()) {
             String code = matcher.group(1);
             String name = matcher.group(2);
@@ -74,8 +74,11 @@ public class BankAccountConverter implements IConverter<BankAccountEntity> {
     /**
      * {@inheritDoc}
      */
-    public String convertToString(BankAccountEntity value, Locale locale) {
+    public String convertToString(Object value, Locale locale) {
 
-        return String.format("%s: %s [%s]", value.getCode(), value.getName(), WicketUtil.format(BankSession.CURRENCY, value.getAmount()));
+        BankAccountEntity bankAccount = (BankAccountEntity) value;
+
+        return String.format("%s: %s [%s]", bankAccount.getCode(), bankAccount.getName(), WicketUtil.format(BankSession.CURRENCY,
+                bankAccount.getAmount()));
     }
 }
