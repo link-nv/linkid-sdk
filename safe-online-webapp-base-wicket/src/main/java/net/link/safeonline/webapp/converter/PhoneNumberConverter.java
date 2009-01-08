@@ -30,7 +30,7 @@ import org.apache.wicket.util.convert.IConverter;
  * 
  * @author wvdhaute
  */
-public class PhoneNumberConverter implements IConverter<PhoneNumber> {
+public class PhoneNumberConverter implements IConverter {
 
     private static final long serialVersionUID = 1L;
 
@@ -40,7 +40,7 @@ public class PhoneNumberConverter implements IConverter<PhoneNumber> {
     /**
      * {@inheritDoc}
      */
-    public PhoneNumber convertToObject(String value, Locale locale) {
+    public Object convertToObject(String value, Locale locale) {
 
         if (value == null)
             return null;
@@ -57,11 +57,12 @@ public class PhoneNumberConverter implements IConverter<PhoneNumber> {
     /**
      * {@inheritDoc}
      */
-    public String convertToString(PhoneNumber value, Locale locale) {
+    public String convertToString(Object value, Locale locale) {
 
         LOG.debug("convert " + value + " to String");
+        PhoneNumber number = (PhoneNumber) value;
 
-        return value != null? value.getNumber(): null;
+        return value != null? number.getNumber(): null;
     }
 
 }
