@@ -80,7 +80,7 @@
 		<init-param>
 			<param-name>ServletEndpointUrl</param-name>
 			<param-value>
-				${safe-online.host.auth.basename}/${safe-online.beid.webapp.name}/auth 
+				${safe-online.host.auth.basename}/${safe-online.beid.webapp.name}/_auth 
 			</param-value>
 			<description>Used to wrap the servlet request's request URL for
 				verification of the receiving endpoint with the destination in the
