@@ -12,7 +12,7 @@ import static net.link.safeonline.beid.webapp.BeIdMountPoints.ErrorType.BAD_JAVA
 import static net.link.safeonline.beid.webapp.BeIdMountPoints.ErrorType.BAD_PLATFORM;
 import static net.link.safeonline.beid.webapp.BeIdMountPoints.ErrorType.NO_JAVA;
 import static net.link.safeonline.beid.webapp.BeIdMountPoints.MountPoint.ERROR;
-import static net.link.safeonline.beid.webapp.BeIdMountPoints.MountPoint.IDENTIFICATION;
+import static net.link.safeonline.beid.webapp.BeIdMountPoints.MountPoint.AUTHENTICATION;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
@@ -235,7 +235,7 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 
         String target = (String) session.getAttribute(TARGET_SESSION_ATTRIBUTE);
         if (null == target) {
-            target = IDENTIFICATION.linkFor(PKCS11);
+            target = AUTHENTICATION.linkFor(PKCS11);
         }
         LOG.debug("redirecting to target: " + target);
         response.sendRedirect(target);

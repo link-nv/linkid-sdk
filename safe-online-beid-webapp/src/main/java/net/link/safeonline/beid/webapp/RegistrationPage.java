@@ -49,14 +49,6 @@ public class RegistrationPage extends AppletPage {
         super(parameters, getAppletClass(parameters), getAppletArchive(parameters), 450, 200, "beid", "_identity", "_device_exit",
               "helpdesk", "./help.seam?location=register-beid.seam", "_no_pkcs11");
 
-        LOG.debug("v---------------------------------");
-        LOG.debug("Page Parameters for " + getClass() + ":");
-        LOG.debug(parameters);
-        LOG.debug("isPkcs11? " + isPkcs11(parameters));
-        LOG.debug("applet class: " + getAppletClass(parameters));
-        LOG.debug("applet archive: " + getAppletArchive(parameters));
-        LOG.debug("^---------------------------------");
-
         // Header & Sidebar.
         getHeader();
         getSidebar();

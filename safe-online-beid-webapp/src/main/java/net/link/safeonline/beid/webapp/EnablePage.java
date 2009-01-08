@@ -25,8 +25,8 @@ public class EnablePage extends AppletPage {
 
     public EnablePage(PageParameters parameters) {
 
-        super(parameters, getAppletClass(parameters), getAppletArchive(parameters), 450, 200, "beid", "_authentication",
-              "_authentication_exit", "helpdesk", "./help_auth.seam?location=beid-applet.seam", "_no_pkcs11");
+        super(parameters, getAppletClass(parameters), getAppletArchive(parameters), 450, 200, "beid", "_identity_enable", "_device_exit",
+              "helpdesk", "./help_auth.seam?location=beid-applet.seam", "_no_pkcs11");
 
         // Header & Sidebar.
         getHeader();

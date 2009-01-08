@@ -76,10 +76,9 @@ public class RegistrationPage extends TemplatePage {
 
         super();
 
-        this.protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
-        getHeader(false);
-
+        getHeader();
         getSidebar().add(new Link<String>("help") {
 
             private static final long serialVersionUID = 1L;
@@ -89,13 +88,11 @@ public class RegistrationPage extends TemplatePage {
             public void onClick() {
 
                 setResponsePage(new HelpPage(getPage()));
-
             }
-
         });
 
         ProgressRegistrationPanel progress = new ProgressRegistrationPanel("progress", ProgressRegistrationPanel.stage.register);
-        progress.setVisible(this.protocolContext.getDeviceOperation().equals(DeviceOperationType.NEW_ACCOUNT_REGISTER));
+        progress.setVisible(protocolContext.getDeviceOperation().equals(DeviceOperationType.NEW_ACCOUNT_REGISTER));
         getContent().add(progress);
 
         getContent().add(new RequestOtpForm(REQUEST_OTP_FORM_ID));
@@ -113,8 +110,8 @@ public class RegistrationPage extends TemplatePage {
 
             super(id);
 
-            TextField<PhoneNumber> mobileField = new TextField<PhoneNumber>(MOBILE_FIELD_ID,
-                    RegistrationPage.this.mobile = new Model<PhoneNumber>(), PhoneNumber.class);
+            TextField<PhoneNumber> mobileField = new TextField<PhoneNumber>(MOBILE_FIELD_ID, mobile = new Model<PhoneNumber>(),
+                    PhoneNumber.class);
             mobileField.setRequired(true);
             add(mobileField);
             add(new ErrorComponentFeedbackLabel("mobile_feedback", mobileField));
@@ -127,22 +124,21 @@ public class RegistrationPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    LOG.debug("request otp for mobile " + RegistrationPage.this.mobile);
+                    LOG.debug("request otp for mobile " + mobile);
 
                     try {
-                        RegistrationPage.this.otpOverSmsDeviceService.requestOtp(WicketUtil.getHttpSession(getRequest()),
-                                RegistrationPage.this.mobile.getObject().getNumber());
+                        otpOverSmsDeviceService.requestOtp(WicketUtil.getHttpSession(getRequest()), mobile.getObject().getNumber());
                     } catch (ConnectException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorServiceConnection", this));
-                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: failed to send otp"
-                                + RegistrationPage.this.mobile.getObject(), LogLevelType.ERROR);
-                        RegistrationPage.this.mobile.setObject(null);
+                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: failed to send otp" + mobile.getObject(),
+                                LogLevelType.ERROR);
+                        mobile.setObject(null);
                         return;
                     } catch (SafeOnlineResourceException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorServiceConnection", this));
-                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: failed to send otp"
-                                + RegistrationPage.this.mobile.getObject(), LogLevelType.ERROR);
-                        RegistrationPage.this.mobile.setObject(null);
+                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: failed to send otp" + mobile.getObject(),
+                                LogLevelType.ERROR);
+                        mobile.setObject(null);
                         return;
                     }
 
@@ -158,7 +154,7 @@ public class RegistrationPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    RegistrationPage.this.protocolContext.setSuccess(false);
+                    protocolContext.setSuccess(false);
                     exit();
                 }
 
@@ -176,7 +172,7 @@ public class RegistrationPage extends TemplatePage {
         @Override
         public boolean isVisible() {
 
-            return null == RegistrationPage.this.mobile.getObject();
+            return null == mobile.getObject();
         }
     }
 
@@ -195,16 +191,16 @@ public class RegistrationPage extends TemplatePage {
 
             super(id);
 
-            final TextField<String> otpField = new TextField<String>(OTP_FIELD_ID, this.otp = new Model<String>());
+            final TextField<String> otpField = new TextField<String>(OTP_FIELD_ID, otp = new Model<String>());
             otpField.setRequired(true);
             add(otpField);
             add(new ErrorComponentFeedbackLabel("otp_feedback", otpField));
 
-            final PasswordTextField pin1Field = new PasswordTextField(PIN1_FIELD_ID, this.pin1 = new Model<String>());
+            final PasswordTextField pin1Field = new PasswordTextField(PIN1_FIELD_ID, pin1 = new Model<String>());
             add(pin1Field);
             add(new ErrorComponentFeedbackLabel("pin1_feedback", pin1Field));
 
-            final PasswordTextField pin2Field = new PasswordTextField(PIN2_FIELD_ID, this.pin2 = new Model<String>());
+            final PasswordTextField pin2Field = new PasswordTextField(PIN2_FIELD_ID, pin2 = new Model<String>());
             add(pin2Field);
             add(new ErrorComponentFeedbackLabel("pin2_feedback", pin2Field));
 
@@ -219,20 +215,17 @@ public class RegistrationPage extends TemplatePage {
                 public void onSubmit() {
 
                     try {
-                        boolean verified = RegistrationPage.this.otpOverSmsDeviceService.verifyOtp(WicketUtil.getHttpSession(getRequest()),
-                                VerifyOtpForm.this.otp.getObject());
+                        boolean verified = otpOverSmsDeviceService.verifyOtp(WicketUtil.getHttpSession(getRequest()), otp.getObject());
                         if (!verified) {
                             otpField.error(getLocalizer().getString("authenticationFailedMsg", this));
                             HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(),
-                                    "mobile otp: verification failed for mobile " + RegistrationPage.this.mobile, LogLevelType.ERROR);
+                                    "mobile otp: verification failed for mobile " + mobile, LogLevelType.ERROR);
                             return;
                         }
 
-                        LOG.debug("register mobile " + RegistrationPage.this.mobile + " for "
-                                + RegistrationPage.this.protocolContext.getSubject());
+                        LOG.debug("register mobile " + mobile + " for " + protocolContext.getSubject());
 
-                        RegistrationPage.this.otpOverSmsDeviceService.register(RegistrationPage.this.protocolContext.getSubject(),
-                                RegistrationPage.this.mobile.getObject().getNumber(), VerifyOtpForm.this.pin1.getObject());
+                        otpOverSmsDeviceService.register(protocolContext.getSubject(), mobile.getObject().getNumber(), pin1.getObject());
                     } catch (PermissionDeniedException e) {
                         pin2Field.error(getLocalizer().getString("errorPinNotCorrect", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "register: pin not correct",
@@ -260,7 +253,7 @@ public class RegistrationPage extends TemplatePage {
                         return;
                     }
 
-                    RegistrationPage.this.protocolContext.setSuccess(true);
+                    protocolContext.setSuccess(true);
                     exit();
 
                 }
@@ -275,7 +268,7 @@ public class RegistrationPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    RegistrationPage.this.protocolContext.setSuccess(false);
+                    protocolContext.setSuccess(false);
                     exit();
                 }
 
@@ -292,14 +285,14 @@ public class RegistrationPage extends TemplatePage {
         @Override
         public boolean isVisible() {
 
-            return RegistrationPage.this.mobile.getObject() != null;
+            return mobile.getObject() != null;
         }
     }
 
 
     public void exit() {
 
-        this.protocolContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());
+        protocolContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
         getResponse().redirect("deviceexit");
         setRedirect(false);
     }

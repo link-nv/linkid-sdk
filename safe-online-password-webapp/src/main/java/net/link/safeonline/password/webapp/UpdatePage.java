@@ -17,7 +17,6 @@ import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.model.password.PasswordDeviceService;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
-import net.link.safeonline.webapp.common.HelpPage;
 import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
@@ -30,7 +29,6 @@ import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.validation.EqualPasswordInputValidator;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.Model;
 
 
@@ -65,23 +63,10 @@ public class UpdatePage extends TemplatePage {
 
         super();
 
-        this.protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
-        getHeader(false);
-
-        getSidebar().add(new Link<String>("help") {
-
-            private static final long serialVersionUID = 1L;
-
-
-            @Override
-            public void onClick() {
-
-                setResponsePage(new HelpPage(getPage()));
-
-            }
-
-        });
+        getHeader();
+        getSidebar();
 
         getContent().add(new RegistrationForm(UPDATE_FORM_ID));
     }
@@ -103,15 +88,15 @@ public class UpdatePage extends TemplatePage {
 
             super(id);
 
-            final PasswordTextField oldpasswordField = new PasswordTextField(OLDPASSWORD_FIELD_ID, this.oldpassword = new Model<String>());
+            final PasswordTextField oldpasswordField = new PasswordTextField(OLDPASSWORD_FIELD_ID, oldpassword = new Model<String>());
             add(oldpasswordField);
             add(new ErrorComponentFeedbackLabel("oldpassword_feedback", oldpasswordField));
 
-            final PasswordTextField password1Field = new PasswordTextField(PASSWORD1_FIELD_ID, this.password1 = new Model<String>());
+            final PasswordTextField password1Field = new PasswordTextField(PASSWORD1_FIELD_ID, password1 = new Model<String>());
             add(password1Field);
             add(new ErrorComponentFeedbackLabel("password1_feedback", password1Field));
 
-            final PasswordTextField password2Field = new PasswordTextField(PASSWORD2_FIELD_ID, this.password2 = new Model<String>());
+            final PasswordTextField password2Field = new PasswordTextField(PASSWORD2_FIELD_ID, password2 = new Model<String>());
             add(password2Field);
             add(new ErrorComponentFeedbackLabel("password2_feedback", password2Field));
 
@@ -125,11 +110,10 @@ public class UpdatePage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    LOG.debug("update password for " + UpdatePage.this.protocolContext.getSubject());
+                    LOG.debug("update password for " + protocolContext.getSubject());
 
                     try {
-                        UpdatePage.this.passwordDeviceService.update(UpdatePage.this.protocolContext.getSubject(),
-                                RegistrationForm.this.oldpassword.getObject(), RegistrationForm.this.password1.getObject());
+                        passwordDeviceService.update(protocolContext.getSubject(), oldpassword.getObject(), password1.getObject());
                     } catch (SubjectNotFoundException e) {
                         password1Field.error(getLocalizer().getString("errorSubjectNotFound", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "update: subject not found",
@@ -147,7 +131,7 @@ public class UpdatePage extends TemplatePage {
                         return;
                     }
 
-                    UpdatePage.this.protocolContext.setSuccess(true);
+                    protocolContext.setSuccess(true);
                     exit();
                 }
 
@@ -161,7 +145,7 @@ public class UpdatePage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    UpdatePage.this.protocolContext.setSuccess(false);
+                    protocolContext.setSuccess(false);
                     exit();
                 }
 
@@ -176,7 +160,7 @@ public class UpdatePage extends TemplatePage {
 
     public void exit() {
 
-        this.protocolContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());
+        protocolContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
         getResponse().redirect("deviceexit");
         setRedirect(false);
     }

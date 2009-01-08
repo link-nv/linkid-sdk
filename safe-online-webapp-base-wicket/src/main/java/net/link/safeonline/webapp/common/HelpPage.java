@@ -43,21 +43,14 @@ public class HelpPage extends TemplatePage {
     static final Log           LOG                   = LogFactory.getLog(HelpPage.class);
 
     public static final Long   EMPTY_HELPDESK_ID     = new Long(-1);
-
     public static final String CREATE_FORM_ID        = "create";
-
     public static final String TICKET_INFO_FORM_ID   = "ticket_info";
-
     public static final String CREATE_TICKET_LINK_ID = "createTicket";
-
     public static final String IDENTIFIER_LABEL_ID   = "identifier";
-
     public static final String PHONE_LABEL_ID        = "phone";
-
     public static final String EMAIL_LABEL_ID        = "email";
 
     Page                       returnPage;
-
     Long                       helpdeskId            = EMPTY_HELPDESK_ID;
 
     @EJB(mappedName = HelpdeskContact.JNDI_BINDING)
@@ -107,8 +100,7 @@ public class HelpPage extends TemplatePage {
                 @Override
                 public void onClick() {
 
-                    HelpPage.this.helpdeskId = HelpdeskLogger.persistContext(HelpPage.this.returnPage.getClassRelativePath(),
-                            WicketUtil.getHttpSession(getRequest()));
+                    helpdeskId = HelpdeskLogger.persistContext(returnPage.getClassRelativePath(), WicketUtil.getHttpSession(getRequest()));
 
                 }
 
@@ -121,7 +113,7 @@ public class HelpPage extends TemplatePage {
         @Override
         public boolean isVisible() {
 
-            return HelpPage.this.helpdeskId.equals(EMPTY_HELPDESK_ID);
+            return helpdeskId.equals(EMPTY_HELPDESK_ID);
         }
     }
 
@@ -135,10 +127,8 @@ public class HelpPage extends TemplatePage {
             super(id);
 
             add(new Label(IDENTIFIER_LABEL_ID, new PropertyModel<String>(HelpPage.this, "helpdeskId")));
-
-            add(new Label(PHONE_LABEL_ID, HelpPage.this.contact.getPhone()));
-
-            add(new Label(EMAIL_LABEL_ID, HelpPage.this.contact.getEmail()));
+            add(new Label(PHONE_LABEL_ID, contact.getPhone()));
+            add(new Label(EMAIL_LABEL_ID, contact.getEmail()));
         }
 
         /**
@@ -147,7 +137,7 @@ public class HelpPage extends TemplatePage {
         @Override
         public boolean isVisible() {
 
-            return !HelpPage.this.helpdeskId.equals(EMPTY_HELPDESK_ID);
+            return !helpdeskId.equals(EMPTY_HELPDESK_ID);
         }
     }
 }

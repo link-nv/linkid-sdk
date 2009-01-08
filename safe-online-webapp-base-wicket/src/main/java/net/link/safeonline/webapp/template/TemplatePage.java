@@ -19,9 +19,14 @@ public abstract class TemplatePage extends WicketPage {
     private SidebarBorder      sidebarBorder;
 
 
+    /**
+     * Logout link is <b>DISABLED</b> by default using this method.
+     * 
+     * @see #getHeader(boolean)
+     */
     public HeaderBorder getHeader() {
 
-        return getHeader(true);
+        return getHeader(false);
     }
 
     public HeaderBorder getHeader(boolean logoutEnabled) {
@@ -44,10 +49,20 @@ public abstract class TemplatePage extends WicketPage {
         return contentBorder;
     }
 
+    /**
+     * Help link is <b>ENABLED</b> by default using this method.
+     * 
+     * @see #getHeader(boolean)
+     */
     public SidebarBorder getSidebar() {
 
+        return getSidebar(true);
+    }
+
+    public SidebarBorder getSidebar(boolean showHelp) {
+
         if (null == sidebarBorder) {
-            sidebarBorder = new SidebarBorder(SIDEBAR_ID);
+            sidebarBorder = new SidebarBorder(SIDEBAR_ID, showHelp);
             getContent().add(sidebarBorder);
         }
 

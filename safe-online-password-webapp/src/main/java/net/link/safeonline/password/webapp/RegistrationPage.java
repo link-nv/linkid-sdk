@@ -17,7 +17,6 @@ import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.model.password.PasswordDeviceService;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
-import net.link.safeonline.webapp.common.HelpPage;
 import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.ProgressRegistrationPanel;
@@ -66,37 +65,24 @@ public class RegistrationPage extends TemplatePage {
 
         super();
 
-        this.protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
-        if (null == this.passwordDeviceService) {
-            this.alreadyRegistered = false;
+        if (null == passwordDeviceService) {
+            alreadyRegistered = false;
         } else {
             try {
-                this.alreadyRegistered = this.passwordDeviceService.isPasswordConfigured(this.protocolContext.getSubject());
+                alreadyRegistered = passwordDeviceService.isPasswordConfigured(protocolContext.getSubject());
             } catch (SubjectNotFoundException e) {
                 error(getLocalizer().getString("errorSubjectNotFound", this));
                 return;
             }
         }
 
-        getHeader(false);
-
-        getSidebar().add(new Link<String>("help") {
-
-            private static final long serialVersionUID = 1L;
-
-
-            @Override
-            public void onClick() {
-
-                setResponsePage(new HelpPage(getPage()));
-
-            }
-
-        });
+        getHeader();
+        getSidebar();
 
         ProgressRegistrationPanel progress = new ProgressRegistrationPanel("progress", ProgressRegistrationPanel.stage.register);
-        progress.setVisible(this.protocolContext.getDeviceOperation().equals(DeviceOperationType.NEW_ACCOUNT_REGISTER));
+        progress.setVisible(protocolContext.getDeviceOperation().equals(DeviceOperationType.NEW_ACCOUNT_REGISTER));
         getContent().add(progress);
 
         getContent().add(new Link<String>("already_registered") {
@@ -110,7 +96,7 @@ public class RegistrationPage extends TemplatePage {
             @Override
             public boolean isVisible() {
 
-                return RegistrationPage.this.alreadyRegistered;
+                return alreadyRegistered;
             }
 
             @Override
@@ -139,12 +125,12 @@ public class RegistrationPage extends TemplatePage {
 
             super(id);
 
-            final PasswordTextField password1Field = new PasswordTextField(PASSWORD1_FIELD_ID, this.password1 = new Model<String>());
+            final PasswordTextField password1Field = new PasswordTextField(PASSWORD1_FIELD_ID, password1 = new Model<String>());
 
             add(password1Field);
             add(new ErrorComponentFeedbackLabel("password1_feedback", password1Field));
 
-            final PasswordTextField password2Field = new PasswordTextField(PASSWORD2_FIELD_ID, this.password2 = new Model<String>());
+            final PasswordTextField password2Field = new PasswordTextField(PASSWORD2_FIELD_ID, password2 = new Model<String>());
 
             add(password2Field);
             add(new ErrorComponentFeedbackLabel("password2_feedback", password2Field));
@@ -159,11 +145,10 @@ public class RegistrationPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    LOG.debug("register password for " + RegistrationPage.this.protocolContext.getSubject());
+                    LOG.debug("register password for " + protocolContext.getSubject());
 
                     try {
-                        RegistrationPage.this.passwordDeviceService.register(RegistrationPage.this.protocolContext.getSubject(),
-                                RegistrationForm.this.password1.getObject());
+                        passwordDeviceService.register(protocolContext.getSubject(), password1.getObject());
                     } catch (SubjectNotFoundException e) {
                         password1Field.error(getLocalizer().getString("errorSubjectNotFound", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "register: subject not found",
@@ -176,7 +161,7 @@ public class RegistrationPage extends TemplatePage {
                         return;
                     }
 
-                    RegistrationPage.this.protocolContext.setSuccess(true);
+                    protocolContext.setSuccess(true);
                     exit();
                 }
 
@@ -190,7 +175,7 @@ public class RegistrationPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    RegistrationPage.this.protocolContext.setSuccess(false);
+                    protocolContext.setSuccess(false);
                     exit();
                 }
 
@@ -207,14 +192,14 @@ public class RegistrationPage extends TemplatePage {
         @Override
         public boolean isVisible() {
 
-            return !RegistrationPage.this.alreadyRegistered;
+            return !alreadyRegistered;
         }
     }
 
 
     public void exit() {
 
-        this.protocolContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());
+        protocolContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
         getResponse().redirect("deviceexit");
         setRedirect(false);
     }
