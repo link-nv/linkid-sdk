@@ -47,11 +47,12 @@ for arg in $(getArgs hoMs "$@"); do
 		s) source=1	;;
 	esac
 done
+shift "$(getArgs -c hoMs "$@")"
 
 
 # Run the maven2 eclipse plugin.
 if (( ! noMaven )); then
-	mvn ${offline:+-o} ${source:+-DdownloadJavadocs=true -DdownloadSources=true} eclipse:eclipse \
+	mvn "$@" ${offline:+-o} ${source:+-DdownloadJavadocs=true -DdownloadSources=true} eclipse:eclipse \
 		|| report "Maven eclipse plugin failed." || exit
 fi
 

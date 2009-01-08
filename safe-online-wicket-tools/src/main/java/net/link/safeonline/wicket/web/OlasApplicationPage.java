@@ -53,6 +53,8 @@ public abstract class OlasApplicationPage extends WicketPage {
         catch (ServletException e) {
             // If wicket session has an OLAS id and no OLAS user is logged in, or a different one is logged in:
             // Invalidate session & retry.
+            LOG.debug("wicket session has an OLAS id and no OLAS user is logged in, or a different one is logged in");
+
             OLASSession.get().invalidateNow();
             throw new RestartResponseException(getClass());
         }
@@ -69,10 +71,13 @@ public abstract class OlasApplicationPage extends WicketPage {
             Class<? extends Page> redirect = authAnnotation.redirect();
 
             if (!redirect.equals(Page.class)) {
+                LOG.debug("auth required; redirecting unauthenticated user to " + redirect + " for authentication.");
+
                 OLASSession.get().setPostAuthenticationPage(this);
                 throw new RestartResponseException(redirect);
             }
 
+            LOG.debug("auth required; no authentication page specified for redirection: sending HTTP 401.");
             throw new AbortWithWebErrorCodeException(HttpStatus.SC_UNAUTHORIZED);
         }
     }
@@ -97,8 +102,9 @@ public abstract class OlasApplicationPage extends WicketPage {
             Page postAuthPage = OLASSession.get().getPostAuthenticationPage();
 
             if (postAuthPage != null) {
-                OLASSession.get().setPostAuthenticationPage(null);
+                LOG.debug("auth completed; triggering post auth, sending user to " + postAuthPage);
 
+                OLASSession.get().setPostAuthenticationPage(null);
                 throw new RestartResponseException(postAuthPage);
             }
         }
