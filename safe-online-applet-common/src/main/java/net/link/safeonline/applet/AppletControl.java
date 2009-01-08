@@ -100,7 +100,7 @@ public class AppletControl implements AppletController, SmartCardPinCallback, Sm
             return;
         } catch (MissingSmartCardReaderException e) {
             this.appletView.outputDetailMessage("missing smart card reader");
-            showPath("missing-reader.seam");
+            showPath("error?type=reader");
             this.appletView.outputDetailMessage("Disconnecting from smart card...");
             this.smartCard.close();
             this.smartCard.resetPKCS11Driver();

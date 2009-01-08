@@ -18,25 +18,16 @@ public class HeaderBorder extends Border {
 
     private static final long serialVersionUID = 1L;
 
-    @SuppressWarnings("unused")
-    private Page              page;
 
-    @SuppressWarnings("unused")
-    private boolean           logoutEnabled    = true;
+    public HeaderBorder(final String id, final Page page) {
 
-
-    public HeaderBorder(final String id, Page page) {
-
-        this(id, page, true);
+        this(id, page, false);
 
     }
 
-    public HeaderBorder(final String id, Page page, final boolean logoutEnabled) {
+    public HeaderBorder(final String id, final Page page, final boolean logoutEnabled) {
 
         super(id);
-
-        this.page = page;
-        this.logoutEnabled = logoutEnabled;
 
         // theme.css
         String applicationName = WebApplication.get().getServletContext().getInitParameter("ApplicationName");
@@ -67,7 +58,7 @@ public class HeaderBorder extends Border {
             @Override
             public void onClick() {
 
-                setResponsePage(new LanguagePage(HeaderBorder.this.getPage()));
+                setResponsePage(new LanguagePage(page));
 
             }
         });
@@ -82,15 +73,13 @@ public class HeaderBorder extends Border {
             public void onClick() {
 
                 // TODO Auto-generated method stub
-
             }
 
             @Override
             public boolean isVisible() {
 
-                return null != LoginManager.findUserId(WicketUtil.toServletRequest(getRequest())) && logoutEnabled;
+                return logoutEnabled && null != LoginManager.findUserId(WicketUtil.toServletRequest(getRequest()));
             }
-
         });
     }
 }

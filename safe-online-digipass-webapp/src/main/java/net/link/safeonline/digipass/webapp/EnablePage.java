@@ -17,7 +17,6 @@ import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.model.digipass.DigipassDeviceService;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
-import net.link.safeonline.webapp.common.HelpPage;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.tools.WicketUtil;
@@ -29,7 +28,6 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.Model;
 
 
@@ -55,25 +53,13 @@ public class EnablePage extends TemplatePage {
 
     public EnablePage() {
 
-        this.protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
-        getHeader(false);
-        getSidebar().add(new Link<String>("help") {
-
-            private static final long serialVersionUID = 1L;
-
-
-            @Override
-            public void onClick() {
-
-                setResponsePage(new HelpPage(getPage()));
-
-            }
-
-        });
+        getHeader();
+        getSidebar();
 
         String title = getLocalizer().getString("enable", this) + " " + getLocalizer().getString("digipass", this) + " "
-                + this.protocolContext.getAttribute();
+                + protocolContext.getAttribute();
         getContent().add(new Label("title", title));
         getContent().add(new EnableForm(ENABLE_FORM_ID));
     }
@@ -91,7 +77,7 @@ public class EnablePage extends TemplatePage {
 
             super(id);
 
-            final TextField<String> tokenField = new TextField<String>(TOKEN_FIELD_ID, this.token = new Model<String>());
+            final TextField<String> tokenField = new TextField<String>(TOKEN_FIELD_ID, token = new Model<String>());
             tokenField.setRequired(true);
             add(tokenField);
 
@@ -103,21 +89,21 @@ public class EnablePage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    LOG.debug("enable digipass " + EnablePage.this.protocolContext.getAttribute());
+                    LOG.debug("enable digipass " + protocolContext.getAttribute());
 
                     try {
-                        String userId = EnablePage.this.digipassDeviceService.enable(EnablePage.this.protocolContext.getSubject(),
-                                EnablePage.this.protocolContext.getAttribute(), EnableForm.this.token.getObject());
+                        String userId = digipassDeviceService.enable(protocolContext.getSubject(), protocolContext.getAttribute(),
+                                token.getObject());
                         if (null == userId) {
                             EnableForm.this.error(getLocalizer().getString("authenticationFailedMsg", this));
                             HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: authentication failed: "
-                                    + EnablePage.this.protocolContext.getSubject(), LogLevelType.ERROR);
+                                    + protocolContext.getSubject(), LogLevelType.ERROR);
                             return;
                         }
                     } catch (SubjectNotFoundException e) {
                         EnableForm.this.error(getLocalizer().getString("digipassNotRegistered", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: subject not found for "
-                                + EnablePage.this.protocolContext.getSubject(), LogLevelType.ERROR);
+                                + protocolContext.getSubject(), LogLevelType.ERROR);
                         return;
                     } catch (DeviceNotFoundException e) {
                         EnableForm.this.error(getLocalizer().getString("digipassAuthenticationFailed", this));
@@ -131,7 +117,7 @@ public class EnablePage extends TemplatePage {
                         return;
                     }
 
-                    EnablePage.this.protocolContext.setSuccess(true);
+                    protocolContext.setSuccess(true);
                     exit();
                 }
 
@@ -159,7 +145,7 @@ public class EnablePage extends TemplatePage {
 
     public void exit() {
 
-        this.protocolContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());
+        protocolContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
         getResponse().redirect("deviceexit");
         setRedirect(false);
     }

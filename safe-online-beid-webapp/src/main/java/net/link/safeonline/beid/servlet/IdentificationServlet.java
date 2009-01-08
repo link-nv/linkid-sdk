@@ -7,6 +7,10 @@
 
 package net.link.safeonline.beid.servlet;
 
+import static net.link.safeonline.beid.webapp.BeIdMountPoints.AuthenticationType.PCSC;
+import static net.link.safeonline.beid.webapp.BeIdMountPoints.AuthenticationType.PKCS11;
+import static net.link.safeonline.beid.webapp.BeIdMountPoints.MountPoint.IDENTIFICATION;
+
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -38,12 +42,12 @@ public class IdentificationServlet extends HttpServlet {
 
         String targetParameter = request.getParameter("target");
         if (null == targetParameter) {
-            response.sendRedirect("identification.seam");
+            response.sendRedirect(IDENTIFICATION.linkFor(PKCS11));
         } else {
             LOG.debug("target: " + targetParameter);
             HttpSession session = request.getSession();
             session.setAttribute("target", targetParameter);
-            response.sendRedirect("identification-pcsc.seam");
+            response.sendRedirect(IDENTIFICATION.linkFor(PCSC));
         }
     }
 

@@ -1,39 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
-	version="2.4">
+<!DOCTYPE web-app
+      PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+      "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app>
 	<display-name>Olas Encap Device Web Application</display-name>
-	<security-constraint>
-		<display-name>Restrict Viewing XHTML Documents</display-name>
-		<web-resource-collection>
-			<web-resource-name>XHTML</web-resource-name>
-			<url-pattern>*.xhtml</url-pattern>
-		</web-resource-collection>
-		<auth-constraint>
-		</auth-constraint>
-	</security-constraint>
-	<listener>
-		<listener-class>org.jboss.seam.servlet.SeamListener</listener-class>
-	</listener>
-	<listener>
-		<listener-class>com.sun.faces.config.ConfigureListener</listener-class>
-	</listener>
-	<context-param>
-		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
-		<param-value>client</param-value>
-	</context-param>
-	<context-param>
-		<param-name>javax.faces.DEFAULT_SUFFIX</param-name>
-		<param-value>.xhtml</param-value>
-	</context-param>
-	<context-param>
-		<param-name>facelets.DEVELOPMENT</param-name>
-		<param-value>${debug.mode}</param-value>
-	</context-param>
-	<context-param>
-		<param-name>org.jboss.seam.core.init.debug</param-name>
-		<param-value>${debug.mode}</param-value>
-	</context-param>
+	<servlet>
+		<servlet-name>encapapp</servlet-name>
+		<servlet-class> org.apache.wicket.protocol.http.WicketServlet 
+		</servlet-class>
+		<init-param>
+			<param-name>applicationClassName</param-name>
+			<param-value>
+				net.link.safeonline.encap.webapp.EncapApplication 
+			</param-value>
+		</init-param>
+		<!--
+			<init-param> <param-name>configuration</param-name>
+			<param-value>DEPLOYMENT</param-value> </init-param>
+		-->
+		<context-param>
+			<param-name>configuration</param-name>
+			<param-value>development</param-value>
+		</context-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>encapapp</servlet-name>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
 	<context-param>
 		<param-name>CommercialName</param-name>
 		<param-value>${safe-online.commercial.name}</param-value>
@@ -70,46 +64,17 @@
 			<param-value>client-login</param-value>
 		</init-param>
 	</filter>
-	<filter>
-		<filter-name>Seam Filter</filter-name>
-		<filter-class>org.jboss.seam.servlet.SeamFilter</filter-class>
-	</filter>
-	<filter>
-		<filter-name>MyFacesExtensionsFilter</filter-name>
-		<filter-class>org.apache.myfaces.webapp.filter.ExtensionsFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>MyFacesExtensionsFilter</filter-name>
-		<url-pattern>/faces/myFacesExtensionResource/*</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>MyFacesExtensionsFilter</filter-name>
-		<servlet-name>Faces Servlet</servlet-name>
-	</filter-mapping>
 	<filter-mapping>
 		<filter-name>JAASLoginFilter</filter-name>
-		<url-pattern>*.seam</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>Seam Filter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-	<servlet>
-		<servlet-name>Faces Servlet</servlet-name>
-		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>Faces Servlet</servlet-name>
-		<url-pattern>*.seam</url-pattern>
-	</servlet-mapping>
 	<servlet>
 		<servlet-name>LandingServlet</servlet-name>
 		<servlet-class>
 			net.link.safeonline.device.sdk.auth.servlet.LandingServlet</servlet-class>
 		<init-param>
 			<param-name>AuthenticationUrl</param-name>
-			<param-value>mobile.seam</param-value>
+			<param-value>authentication</param-value>
 		</init-param>
 		<init-param>
 			<param-name>ServletEndpointUrl</param-name>
@@ -122,7 +87,7 @@
 		</init-param>
 		<init-param>
 			<param-name>ErrorPage</param-name>
-			<param-value>protocol-error.seam</param-value>
+			<param-value>protocol-error</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
@@ -135,7 +100,7 @@
 			net.link.safeonline.device.sdk.auth.servlet.ExitServlet</servlet-class>
 		<init-param>
 			<param-name>ErrorPage</param-name>
-			<param-value>protocol-error.seam</param-value>
+			<param-value>protocol-error</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
@@ -145,21 +110,21 @@
 	<servlet>
 		<servlet-name>DeviceLandingServlet</servlet-name>
 		<servlet-class>net.link.safeonline.device.sdk.servlet.LandingServlet</servlet-class>
-		<init-param>
-			<param-name>RegistrationUrl</param-name>
-			<param-value>register-mobile.seam</param-value>
-		</init-param>
-		<init-param>
-			<param-name>RemovalUrl</param-name>
-			<param-value>remove</param-value>
-		</init-param>
+        <init-param>
+            <param-name>RegistrationUrl</param-name>
+            <param-value>registration</param-value>
+        </init-param>
+        <init-param>
+            <param-name>RemovalUrl</param-name>
+            <param-value>remove</param-value>
+        </init-param>
 		<init-param>
 			<param-name>DisableUrl</param-name>
 			<param-value>disable</param-value>
 		</init-param>
 		<init-param>
 			<param-name>EnableUrl</param-name>
-			<param-value>enable-mobile.seam</param-value>
+			<param-value>enable</param-value>
 		</init-param>
 		<init-param>
 			<param-name>ServletEndpointUrl</param-name>
@@ -172,7 +137,7 @@
 		</init-param>
 		<init-param>
 			<param-name>ErrorPage</param-name>
-			<param-value>protocol-error.seam</param-value>
+			<param-value>protocol-error</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
@@ -184,7 +149,7 @@
 		<servlet-class>net.link.safeonline.device.sdk.servlet.ExitServlet</servlet-class>
 		<init-param>
 			<param-name>ErrorPage</param-name>
-			<param-value>protocol-error.seam</param-value>
+			<param-value>protocol-error</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
@@ -203,22 +168,18 @@
 		<servlet-name>DisableServlet</servlet-name>
 		<url-pattern>/disable</url-pattern>
 	</servlet-mapping>
-	<servlet>
-		<servlet-name>RemoveServlet</servlet-name>
-		<servlet-class>net.link.safeonline.encap.servlet.RemoveServlet</servlet-class>
-		<init-param>
-			<param-name>RemovePath</param-name>
-			<param-value>remove-mobile.seam</param-value>
-		</init-param>
-		<init-param>
-			<param-name>DeviceExitPath</param-name>
-			<param-value>deviceexit</param-value>
-		</init-param>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>RemoveServlet</servlet-name>
-		<url-pattern>/remove</url-pattern>
-	</servlet-mapping>
+    <servlet>
+        <servlet-name>RemoveServlet</servlet-name>
+        <servlet-class>net.link.safeonline.encap.servlet.RemoveServlet</servlet-class>
+        <init-param>
+            <param-name>DeviceExitPath</param-name>
+            <param-value>deviceexit</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>RemoveServlet</servlet-name>
+        <url-pattern>/remove</url-pattern>
+    </servlet-mapping>
 	<servlet>
 		<servlet-name>Style Servlet</servlet-name>
 		<servlet-class>

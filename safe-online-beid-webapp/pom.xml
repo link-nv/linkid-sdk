@@ -9,9 +9,9 @@
 		<version>1.3-SNAPSHOT</version>
 	</parent>
 
-	<name>SafeOnline Beid Device Web Application</name>
+	<name>SafeOnline BeId Device Web Application</name>
 	<description>
-        SafeOnline Beid Device Web Application.
+        SafeOnline BeId Device Web Application.
     </description>
 
 	<groupId>net.lin-k.safe-online</groupId>
@@ -20,6 +20,18 @@
 	<packaging>war</packaging>
 
 	<build>
+		<resources>
+			<resource>
+				<filtering>false</filtering>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**</include>
+				</includes>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -35,11 +47,23 @@
 							<targetPath>WEB-INF</targetPath>
 							<filtering>true</filtering>
 						</resource>
+						<resource>
+							<filtering>false</filtering>
+							<directory>${basedir}/src/main/java</directory>
+							<targetPath>WEB-INF/classes</targetPath>
+							<includes>
+								<include>**/*.html</include>
+								<include>**/*.properties</include>
+							</includes>
+							<excludes>
+								<exclude>**/*.java</exclude>
+							</excludes>
+						</resource>
 					</webResources>
 					<overlays>
 						<overlay>
 							<groupId>net.lin-k.safe-online</groupId>
-							<artifactId>safe-online-webapp-base-jsf</artifactId>
+                            <artifactId>safe-online-webapp-base-${safe-online.branding}</artifactId>
 							<excludes>
 								<exclude>WEB-INF/web.xml</exclude>
 							</excludes>
@@ -78,10 +102,10 @@
 										net.lin-k.safe-online
 									</groupId>
 									<artifactId>
-										safe-online-auth-applet-package
+										safe-online-beid-pkcs11-applet-package
 									</artifactId>
 									<destFileName>
-										safe-online-auth-applet-package.jar
+										safe-online-beid-pkcs11-applet-package.jar
 									</destFileName>
 									<outputDirectory>
 										${project.build.directory}/${project.build.finalName}
@@ -92,24 +116,10 @@
 										net.lin-k.safe-online
 									</groupId>
 									<artifactId>
-										safe-online-identity-applet-package
+										safe-online-beid-pcsc-applet-package
 									</artifactId>
 									<destFileName>
-										safe-online-identity-applet-package.jar
-									</destFileName>
-									<outputDirectory>
-										${project.build.directory}/${project.build.finalName}
-									</outputDirectory>
-								</artifactItem>
-								<artifactItem>
-									<groupId>
-										net.lin-k.safe-online
-									</groupId>
-									<artifactId>
-										safe-online-auth-pcsc-applet-package
-									</artifactId>
-									<destFileName>
-										safe-online-auth-pcsc-applet-package.jar
+										safe-online-beid-pcsc-applet-package.jar
 									</destFileName>
 									<outputDirectory>
 										${project.build.directory}/${project.build.finalName}
@@ -155,45 +165,25 @@
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-container-jsf</artifactId>
-			<type>pom</type>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-container-saml</artifactId>
 			<type>pom</type>
-		</dependency>
-
-		<!-- Specific Dependencies: OLAS: Backing Beans -->
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-beid</artifactId>
-			<version>1.3-SNAPSHOT</version>
-			<scope>runtime</scope>
-			<type>ejb</type>
 		</dependency>
 
 		<!-- Specific Dependencies: OLAS: Forced Dependency Transition -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-webapp-base-jsf</artifactId>
+            <artifactId>safe-online-webapp-base-${safe-online.branding}</artifactId>
 			<scope>provided</scope>
 			<type>war</type>
 		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-webapp-base-jsf</artifactId>
-			<version>1.3-SNAPSHOT</version>
-			<type>zip</type>
-		</dependency>
+            <dependency>
+                <groupId>net.lin-k.safe-online</groupId>
+                <artifactId>safe-online-webapp-base-${safe-online.branding}</artifactId>
+                <version>1.3-SNAPSHOT</version>
+                <type>zip</type>
+            </dependency>
 
 		<!-- Specific Dependencies: OLAS -->
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-beid</artifactId>
-			<version>1.3-SNAPSHOT</version>
-            <type>ejb-client</type>
-		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-webapp-common</artifactId>
@@ -206,18 +196,25 @@
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-auth-applet-package</artifactId>
+			<artifactId>safe-online-beid-pkcs11-applet-package</artifactId>
 			<version>1.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-auth-pcsc-applet-package</artifactId>
+			<artifactId>safe-online-beid-pkcs11-applet</artifactId>
+			<version>1.3-SNAPSHOT</version>
+            <scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-beid-pcsc-applet-package</artifactId>
 			<version>1.3-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-identity-applet-package</artifactId>
+			<artifactId>safe-online-beid-pcsc-applet</artifactId>
 			<version>1.3-SNAPSHOT</version>
+            <scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
@@ -234,6 +231,16 @@
 			<artifactId>safe-online-j2ee-util</artifactId>
 			<version>1.3-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-wicket-tools</artifactId>
+			<version>1.3-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-webapp-base-wicket</artifactId>
+			<version>1.3-SNAPSHOT</version>
+		</dependency>
 
 		<!-- Test Dependencies -->
 		<dependency>
@@ -241,6 +248,7 @@
 			<artifactId>safe-online-container-test</artifactId>
 			<type>pom</type>
 		</dependency>
+
 
 	</dependencies>
 
@@ -257,6 +265,7 @@
 					</reportSet>
 				</reportSets>
 			</plugin>
+
 		</plugins>
 	</reporting>
 

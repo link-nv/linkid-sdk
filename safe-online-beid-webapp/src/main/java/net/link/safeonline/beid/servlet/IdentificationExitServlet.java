@@ -84,35 +84,35 @@ public class IdentificationExitServlet extends AbstractInjectionServlet {
     private void invoke(@SuppressWarnings("unused") HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
-        LOG.debug("target: " + this.target);
-        LOG.debug("name: " + this.name);
-        LOG.debug("first name: " + this.firstname);
-        LOG.debug("nationality: " + this.nationality);
-        LOG.debug("sex: " + this.sex);
-        LOG.debug("street: " + this.street);
-        LOG.debug("house number: " + this.houseNr);
-        LOG.debug("city: " + this.city);
-        LOG.debug("zip: " + this.zip);
-        LOG.debug("dob: " + this.dob);
-        LOG.debug("hashed national number: " + this.hashedNationalNumber);
+        LOG.debug("target: " + target);
+        LOG.debug("name: " + name);
+        LOG.debug("first name: " + firstname);
+        LOG.debug("nationality: " + nationality);
+        LOG.debug("sex: " + sex);
+        LOG.debug("street: " + street);
+        LOG.debug("house number: " + houseNr);
+        LOG.debug("city: " + city);
+        LOG.debug("zip: " + zip);
+        LOG.debug("dob: " + dob);
+        LOG.debug("hashed national number: " + hashedNationalNumber);
 
         PrintWriter writer = response.getWriter();
         writer.println("<html>");
         {
-            writer.println("<body onload=\"document.myform.submit();\">");
+            writer.println("<body onload='document.myform.submit();'>");
             {
-                writer.println("<form name=\"myform\" action=\"" + this.target + "\" method=\"POST\">");
+                writer.println("<form name='myform' action='" + target + "' method='POST'>");
                 {
-                    addField(writer, "name", this.name);
-                    addField(writer, "firstname", this.firstname);
-                    addField(writer, "nationality", this.nationality);
-                    addField(writer, "sex", this.sex);
-                    addField(writer, "street", this.street);
-                    addField(writer, "houseNr", this.houseNr);
-                    addField(writer, "city", this.city);
-                    addField(writer, "zip", this.zip);
-                    addField(writer, "dob", this.dob);
-                    addField(writer, "hnnr", this.hashedNationalNumber);
+                    addField(writer, "name", name);
+                    addField(writer, "firstname", firstname);
+                    addField(writer, "nationality", nationality);
+                    addField(writer, "sex", sex);
+                    addField(writer, "street", street);
+                    addField(writer, "houseNr", houseNr);
+                    addField(writer, "city", city);
+                    addField(writer, "zip", zip);
+                    addField(writer, "dob", dob);
+                    addField(writer, "hnnr", hashedNationalNumber);
                 }
                 writer.println("</form>");
             }
@@ -123,6 +123,6 @@ public class IdentificationExitServlet extends AbstractInjectionServlet {
 
     private void addField(PrintWriter writer, String fieldName, String fieldValue) {
 
-        writer.println("<input type=\"hidden\" name=\"" + fieldName + "\" value=\"" + fieldValue + "\"/>");
+        writer.println("<input type='hidden' name='" + fieldName + "' value='" + fieldValue + "' />");
     }
 }

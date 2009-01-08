@@ -6,7 +6,7 @@
         <!--
             function init() {
                 /* Properties from the Browser. */
-                document.getElementById("appName").value = navigator.appName;	
+                document.getElementById("appName").value = navigator.appName;
                 document.getElementById("appVersion").value = navigator.appVersion;
                 document.getElementById("appMinorVersion").value = navigator.appMinorVersion;
                 document.getElementById("appCodeName").value = navigator.appCodeName;
@@ -15,7 +15,7 @@
                 document.getElementById("vendor").value = navigator.vendor;
                 document.getElementById("cpuClass").value = navigator.cpuClass;
                 document.getElementById("javaEnabled").value = navigator.javaEnabled();
-            
+
                 /* Properties from the Java VM. */
                 try {
                     var versionApplet = document.getElementById("versionApplet");
@@ -50,7 +50,7 @@
 
         <p>Please wait while loading the page...</p>
 
-        <form name="dataForm" action="./version" method="post">
+        <form name="dataForm" action="_version" method="post">
             <input type="hidden" name="appName" id="appName" />
             <input type="hidden" name="appVersion" id="appVersion" />
             <input type="hidden" name="appMinorVersion" id="appMinorVersion" />

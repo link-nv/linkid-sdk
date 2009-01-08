@@ -2,43 +2,31 @@
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
 	version="2.4">
-	<display-name>Olas Beid Device Web Application</display-name>
-	<security-constraint>
-		<display-name>Restrict Viewing XHTML Documents</display-name>
-		<web-resource-collection>
-			<web-resource-name>XHTML</web-resource-name>
-			<url-pattern>*.xhtml</url-pattern>
-		</web-resource-collection>
-		<auth-constraint>
-		</auth-constraint>
-	</security-constraint>
-	<listener>
-		<listener-class>org.jboss.seam.servlet.SeamListener</listener-class>
-	</listener>
-	<listener>
-		<listener-class>com.sun.faces.config.ConfigureListener</listener-class>
-	</listener>
-	<!--
-		<listener>
-		<listener-class>net.link.safeonline.webapp.filter.LogHttpSessionListener</listener-class>
-		</listener>
-	-->
-	<context-param>
-		<param-name>javax.faces.STATE_SAVING_METHOD</param-name>
-		<param-value>client</param-value>
-	</context-param>
-	<context-param>
-		<param-name>javax.faces.DEFAULT_SUFFIX</param-name>
-		<param-value>.xhtml</param-value>
-	</context-param>
-	<context-param>
-		<param-name>facelets.DEVELOPMENT</param-name>
-		<param-value>${debug.mode}</param-value>
-	</context-param>
-	<context-param>
-		<param-name>org.jboss.seam.core.init.debug</param-name>
-		<param-value>${debug.mode}</param-value>
-	</context-param>
+	<display-name>Olas BeId Device Web Application</display-name>
+	<servlet>
+		<servlet-name>beidapp</servlet-name>
+		<servlet-class> org.apache.wicket.protocol.http.WicketServlet 
+		</servlet-class>
+		<init-param>
+			<param-name>applicationClassName</param-name>
+			<param-value>
+				net.link.safeonline.beid.webapp.BeIdApplication 
+			</param-value>
+		</init-param>
+		<!--
+			<init-param> <param-name>configuration</param-name>
+			<param-value>DEPLOYMENT</param-value> </init-param>
+		-->
+		<context-param>
+			<param-name>configuration</param-name>
+			<param-value>development</param-value>
+		</context-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>beidapp</servlet-name>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
 	<context-param>
 		<param-name>CommercialName</param-name>
 		<param-value>${safe-online.commercial.name}</param-value>
@@ -65,7 +53,7 @@
 	</context-param>
 	<context-param>
 		<param-name>WsLocation</param-name>
-		<param-value>${safe-online.host.auth.basename}</param-value>
+		<param-value> ${safe-online.host.auth.basename} </param-value>
 	</context-param>
 	<filter>
 		<filter-name>JAASLoginFilter</filter-name>
@@ -75,41 +63,11 @@
 			<param-value>client-login</param-value>
 		</init-param>
 	</filter>
-	<filter>
-		<filter-name>Seam Filter</filter-name>
-		<filter-class>org.jboss.seam.servlet.SeamFilter</filter-class>
-	</filter>
-	<filter>
-		<filter-name>MyFacesExtensionsFilter</filter-name>
-		<filter-class>org.apache.myfaces.webapp.filter.ExtensionsFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>MyFacesExtensionsFilter</filter-name>
-		<url-pattern>/faces/myFacesExtensionResource/*</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>MyFacesExtensionsFilter</filter-name>
-		<servlet-name>Faces Servlet</servlet-name>
-	</filter-mapping>
 	<filter-mapping>
 		<filter-name>JAASLoginFilter</filter-name>
-		<url-pattern>*.seam</url-pattern>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>Seam Filter</filter-name>
-		<url-pattern>*.seam</url-pattern>
+		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 	<servlet>
-		<servlet-name>Faces Servlet</servlet-name>
-		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
-		<load-on-startup>1</load-on-startup>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>Faces Servlet</servlet-name>
-		<url-pattern>*.seam</url-pattern>
-	</servlet-mapping>
-	<servlet>
-		<description>Entry point for authentication.</description>
 		<servlet-name>AuthLandingServlet</servlet-name>
 		<servlet-class>
 			net.link.safeonline.device.sdk.auth.servlet.LandingServlet</servlet-class>
@@ -122,7 +80,7 @@
 		<init-param>
 			<param-name>ServletEndpointUrl</param-name>
 			<param-value>
-				${safe-online.host.auth.basename}/${safe-online.beid.webapp.name}/auth 
+				${safe-online.host.auth.basename}/${safe-online.beid.webapp.name}/_auth 
 			</param-value>
 			<description>Used to wrap the servlet request's request URL for
 				verification of the receiving endpoint with the destination in the
@@ -130,12 +88,12 @@
 		</init-param>
 		<init-param>
 			<param-name>ErrorPage</param-name>
-			<param-value>protocol-error.seam</param-value>
+			<param-value>error?type=protocol</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>AuthLandingServlet</servlet-name>
-		<url-pattern>/auth</url-pattern>
+		<url-pattern>/_auth</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>AuthenticationServlet</servlet-name>
@@ -143,7 +101,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>AuthenticationServlet</servlet-name>
-		<url-pattern>/authentication</url-pattern>
+		<url-pattern>/_authentication</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>ExitServlet</servlet-name>
@@ -151,12 +109,12 @@
 			net.link.safeonline.device.sdk.auth.servlet.ExitServlet</servlet-class>
 		<init-param>
 			<param-name>ErrorPage</param-name>
-			<param-value>protocol-error.seam</param-value>
+			<param-value>error?type=protocol</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>ExitServlet</servlet-name>
-		<url-pattern>/authenticationexit</url-pattern>
+		<url-pattern>/_authentication_exit</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<description>Entry point for device operation service.</description>
@@ -164,24 +122,24 @@
 		<servlet-class>net.link.safeonline.device.sdk.servlet.LandingServlet</servlet-class>
 		<init-param>
 			<param-name>RegistrationUrl</param-name>
-			<param-value>register</param-value>
+			<param-value>_registration</param-value>
 		</init-param>
 		<init-param>
 			<param-name>RemovalUrl</param-name>
-			<param-value>removal</param-value>
+			<param-value>_removal</param-value>
 		</init-param>
 		<init-param>
 			<param-name>DisableUrl</param-name>
-			<param-value>disable</param-value>
+			<param-value>_disabling</param-value>
 		</init-param>
 		<init-param>
 			<param-name>EnableUrl</param-name>
-			<param-value>enable</param-value>
+			<param-value>_enabling</param-value>
 		</init-param>
 		<init-param>
 			<param-name>ServletEndpointUrl</param-name>
 			<param-value>
-				${safe-online.host.auth.basename}/${safe-online.beid.webapp.name}/device 
+				${safe-online.host.auth.basename}/${safe-online.beid.webapp.name}/_device 
 			</param-value>
 			<description>Used to wrap the servlet request's request URL for
 				verification of the receiving endpoint with the destination in the
@@ -189,12 +147,12 @@
 		</init-param>
 		<init-param>
 			<param-name>ErrorPage</param-name>
-			<param-value>protocol-error.seam</param-value>
+			<param-value>error?type=protocol</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>DeviceLandingServlet</servlet-name>
-		<url-pattern>/device</url-pattern>
+		<url-pattern>/_device</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>IdentityServlet</servlet-name>
@@ -202,19 +160,19 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>IdentityServlet</servlet-name>
-		<url-pattern>/identity</url-pattern>
+		<url-pattern>/_identity</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>DeviceExitServlet</servlet-name>
 		<servlet-class>net.link.safeonline.device.sdk.servlet.ExitServlet</servlet-class>
 		<init-param>
 			<param-name>ErrorPage</param-name>
-			<param-value>protocol-error.seam</param-value>
+			<param-value>error?type=protocol</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>DeviceExitServlet</servlet-name>
-		<url-pattern>/deviceexit</url-pattern>
+		<url-pattern>/_device_exit</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>JavaVersionServlet</servlet-name>
@@ -222,7 +180,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>JavaVersionServlet</servlet-name>
-		<url-pattern>/version</url-pattern>
+		<url-pattern>/_version</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>NoPkcs11Servlet</servlet-name>
@@ -230,7 +188,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>NoPkcs11Servlet</servlet-name>
-		<url-pattern>/no-pkcs11</url-pattern>
+		<url-pattern>/_no_pkcs11</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>IdentityEnableServlet</servlet-name>
@@ -238,7 +196,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>IdentityEnableServlet</servlet-name>
-		<url-pattern>/identityenable</url-pattern>
+		<url-pattern>/_identity_enable</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>IdentificationServlet</servlet-name>
@@ -246,7 +204,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>IdentificationServlet</servlet-name>
-		<url-pattern>/identification</url-pattern>
+		<url-pattern>/_identification</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>IdentificationDataServlet</servlet-name>
@@ -255,7 +213,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>IdentificationDataServlet</servlet-name>
-		<url-pattern>/identificationData</url-pattern>
+		<url-pattern>/_identification_data</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>IdentificationExitServlet</servlet-name>
@@ -264,7 +222,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>IdentificationExitServlet</servlet-name>
-		<url-pattern>/identificationExit</url-pattern>
+		<url-pattern>/_identification_exit</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>HelpdeskServlet</servlet-name>
@@ -272,7 +230,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>HelpdeskServlet</servlet-name>
-		<url-pattern>/helpdesk</url-pattern>
+		<url-pattern>/_helpdesk</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>RegisterServlet</servlet-name>
@@ -280,31 +238,31 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>RegisterServlet</servlet-name>
-		<url-pattern>/register</url-pattern>
+		<url-pattern>/_registration</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>RemoveServlet</servlet-name>
 		<servlet-class>net.link.safeonline.beid.servlet.RemoveServlet</servlet-class>
 		<init-param>
 			<param-name>DeviceExitPath</param-name>
-			<param-value>deviceexit</param-value>
+			<param-value>_device_exit</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>RemoveServlet</servlet-name>
-		<url-pattern>/removal</url-pattern>
+		<url-pattern>/_removal</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>DisableServlet</servlet-name>
 		<servlet-class>net.link.safeonline.beid.servlet.DisableServlet</servlet-class>
 		<init-param>
 			<param-name>DeviceExitPath</param-name>
-			<param-value>deviceexit</param-value>
+			<param-value>_device_exit</param-value>
 		</init-param>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>DisableServlet</servlet-name>
-		<url-pattern>/disable</url-pattern>
+		<url-pattern>/_disabling</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>EnableServlet</servlet-name>
@@ -312,7 +270,7 @@
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>EnableServlet</servlet-name>
-		<url-pattern>/enable</url-pattern>
+		<url-pattern>/_enabling</url-pattern>
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>Style Servlet</servlet-name>

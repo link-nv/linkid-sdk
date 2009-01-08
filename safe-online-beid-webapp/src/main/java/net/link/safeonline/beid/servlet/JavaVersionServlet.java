@@ -7,6 +7,13 @@
 
 package net.link.safeonline.beid.servlet;
 
+import static net.link.safeonline.beid.webapp.BeIdMountPoints.AuthenticationType.PKCS11;
+import static net.link.safeonline.beid.webapp.BeIdMountPoints.ErrorType.BAD_JAVA_VERSION;
+import static net.link.safeonline.beid.webapp.BeIdMountPoints.ErrorType.BAD_PLATFORM;
+import static net.link.safeonline.beid.webapp.BeIdMountPoints.ErrorType.NO_JAVA;
+import static net.link.safeonline.beid.webapp.BeIdMountPoints.MountPoint.ERROR;
+import static net.link.safeonline.beid.webapp.BeIdMountPoints.MountPoint.AUTHENTICATION;
+
 import java.io.IOException;
 import java.util.regex.Pattern;
 
@@ -162,38 +169,38 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
             throws IOException, ServletException {
 
         LOG.debug("doPost");
-        LOG.debug("platform: " + this.platformRequestParameter);
-        LOG.debug("java enabled: " + this.javaEnabled);
-        LOG.debug("java version: " + this.javaVersion);
-        LOG.debug("java vendor: " + this.javaVendor);
-        LOG.debug("cpu class: " + this.cpuClass);
-        LOG.debug("user agent: " + this.userAgent);
-        LOG.debug("vendor: " + this.vendor);
-        LOG.debug("app name: " + this.appName);
-        LOG.debug("app version: " + this.appVersion);
-        LOG.debug("app minor version: " + this.appMinorVersion);
-        LOG.debug("app code name: " + this.appCodeName);
-        LOG.debug("has PKCS11: " + this.hasPkcs11);
+        LOG.debug("platform: " + platformRequestParameter);
+        LOG.debug("java enabled: " + javaEnabled);
+        LOG.debug("java version: " + javaVersion);
+        LOG.debug("java vendor: " + javaVendor);
+        LOG.debug("cpu class: " + cpuClass);
+        LOG.debug("user agent: " + userAgent);
+        LOG.debug("vendor: " + vendor);
+        LOG.debug("app name: " + appName);
+        LOG.debug("app version: " + appVersion);
+        LOG.debug("app minor version: " + appMinorVersion);
+        LOG.debug("app code name: " + appCodeName);
+        LOG.debug("has PKCS11: " + hasPkcs11);
 
         boolean checkPlatform = checkPlatform();
         boolean checkJavaEnabled = checkJavaEnabled();
         boolean checkJavaVersion = checkJavaVersion();
 
         if (false == checkPlatform) {
-            response.sendRedirect("./unsupported-platform.seam");
+            response.sendRedirect(ERROR.linkFor(BAD_PLATFORM));
             return;
         }
         if (false == checkJavaEnabled) {
-            response.sendRedirect("./java-disabled.seam");
+            response.sendRedirect(ERROR.linkFor(NO_JAVA));
             return;
         }
         if (false == checkJavaVersion) {
-            response.sendRedirect("./java-version.seam");
+            response.sendRedirect(ERROR.linkFor(BAD_JAVA_VERSION));
             return;
         }
 
         HttpSession session = request.getSession();
-        if ("true".equals(this.hasPkcs11)) {
+        if (Boolean.parseBoolean(hasPkcs11)) {
             String pkcs11target = (String) session.getAttribute(PKCS11_TARGET_SESSION_ATTRIBUTE);
             if (null != pkcs11target) {
                 LOG.debug("redirect to target: " + pkcs11target);
@@ -206,7 +213,7 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
          * Else no PKCS#11 driver available.
          */
 
-        switch (this.sessionJavaVersion) {
+        switch (sessionJavaVersion) {
             case JAVA_1_5:
                 String target15 = (String) session.getAttribute(TARGET15_SESSION_ATTRIBUTE);
                 if (null != target15) {
@@ -228,7 +235,7 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 
         String target = (String) session.getAttribute(TARGET_SESSION_ATTRIBUTE);
         if (null == target) {
-            target = "./beid-applet.seam";
+            target = AUTHENTICATION.linkFor(PKCS11);
         }
         LOG.debug("redirecting to target: " + target);
         response.sendRedirect(target);
@@ -237,16 +244,15 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
     private boolean checkJavaVersion()
             throws ServletException {
 
-        if (null == this.javaVersion) {
+        if (null == javaVersion)
             throw new ServletException("javaVersion request parameter is required");
-        }
-        boolean result = Pattern.matches(JAVA_VERSION_REG_EXPR, this.javaVersion);
+        boolean result = Pattern.matches(JAVA_VERSION_REG_EXPR, javaVersion);
         LOG.debug("java version check result: " + result);
-        boolean java15 = Pattern.matches(JAVA_1_5_VERSION_REG_EXPR, this.javaVersion);
+        boolean java15 = Pattern.matches(JAVA_1_5_VERSION_REG_EXPR, javaVersion);
         if (java15) {
-            this.sessionJavaVersion = JAVA_VERSION.JAVA_1_5;
+            sessionJavaVersion = JAVA_VERSION.JAVA_1_5;
         } else {
-            this.sessionJavaVersion = JAVA_VERSION.JAVA_1_6;
+            sessionJavaVersion = JAVA_VERSION.JAVA_1_6;
         }
         return result;
     }
@@ -254,10 +260,9 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
     private boolean checkJavaEnabled()
             throws ServletException {
 
-        if (null == this.javaEnabled) {
+        if (null == javaEnabled)
             throw new ServletException("javaEnabled request parameter required");
-        }
-        if (false == Boolean.TRUE.toString().equals(this.javaEnabled))
+        if (false == Boolean.TRUE.toString().equals(javaEnabled))
             return false;
         return true;
     }
@@ -265,18 +270,17 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
     private boolean checkPlatform()
             throws ServletException {
 
-        if (null == this.platformRequestParameter) {
+        if (null == platformRequestParameter)
             throw new ServletException("platform request parameter required");
-        }
-        String platformStr = this.platformRequestParameter.toLowerCase();
+        String platformStr = platformRequestParameter.toLowerCase();
         if (platformStr.indexOf("win") != -1) {
-            this.platform = PLATFORM.WINDOWS;
+            platform = PLATFORM.WINDOWS;
         } else if (platformStr.indexOf("linux") != -1) {
-            this.platform = PLATFORM.LINUX;
+            platform = PLATFORM.LINUX;
         } else if (platformStr.indexOf("mac") != -1) {
-            this.platform = PLATFORM.MAC;
+            platform = PLATFORM.MAC;
         } else {
-            this.platform = PLATFORM.UNSUPPORTED;
+            platform = PLATFORM.UNSUPPORTED;
             return false;
         }
         return true;

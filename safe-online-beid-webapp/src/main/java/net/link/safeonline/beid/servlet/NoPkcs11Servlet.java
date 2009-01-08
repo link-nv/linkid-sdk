@@ -7,6 +7,11 @@
 
 package net.link.safeonline.beid.servlet;
 
+import static net.link.safeonline.beid.webapp.BeIdMountPoints.AuthenticationType.PCSC;
+import static net.link.safeonline.beid.webapp.BeIdMountPoints.ErrorType.NO_MIDDLEWARE;
+import static net.link.safeonline.beid.webapp.BeIdMountPoints.MountPoint.AUTHENTICATION;
+import static net.link.safeonline.beid.webapp.BeIdMountPoints.MountPoint.ERROR;
+
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -54,11 +59,11 @@ public class NoPkcs11Servlet extends AbstractInjectionServlet {
     private void invoke(@SuppressWarnings("unused") HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
-        LOG.debug("java version: " + this.javaVersion);
-        if (this.javaVersion == JAVA_VERSION.JAVA_1_5) {
-            response.sendRedirect("./missing-middleware.seam");
+        LOG.debug("java version: " + javaVersion);
+        if (javaVersion == JAVA_VERSION.JAVA_1_6) {
+            response.sendRedirect(AUTHENTICATION.linkFor(PCSC));
         } else {
-            response.sendRedirect("./beid-pcsc.seam");
+            response.sendRedirect(ERROR.linkFor(NO_MIDDLEWARE));
         }
     }
 }

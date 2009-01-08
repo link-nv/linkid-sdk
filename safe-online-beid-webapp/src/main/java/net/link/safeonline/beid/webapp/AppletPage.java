@@ -1,0 +1,139 @@
+/*
+ * SafeOnline project.
+ *
+ * Copyright 2006-2009 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+package net.link.safeonline.beid.webapp;
+
+import java.applet.Applet;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+
+import net.link.safeonline.device.sdk.AuthenticationContext;
+import net.link.safeonline.device.sdk.ProtocolContext;
+import net.link.safeonline.device.sdk.auth.saml2.DeviceManager;
+import net.link.safeonline.device.sdk.saml2.DeviceOperationManager;
+import net.link.safeonline.webapp.template.TemplatePage;
+import net.link.safeonline.wicket.tools.WicketUtil;
+
+import org.apache.wicket.PageParameters;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.util.template.PackagedTextTemplate;
+import org.apache.wicket.util.template.TextTemplate;
+
+
+/**
+ * <h2>{@link AppletPage}<br>
+ * <sub>[in short] (TODO).</sub></h2>
+ * 
+ * <p>
+ * [description / usage].
+ * </p>
+ * 
+ * <p>
+ * <i>Jan 5, 2009</i>
+ * </p>
+ * 
+ * @author lhunath
+ */
+public abstract class AppletPage extends TemplatePage {
+
+    protected ProtocolContext       protocolContext;
+    protected AuthenticationContext authenticationContext;
+
+
+    public AppletPage(PageParameters parameters, Class<? extends Applet> code, String archive, int width, int height,
+                      String smartCardConfig, String servletPath, String targetPath, String helpdeskEventPath, String helpPath,
+                      String noPkcs11Path) {
+
+        authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest(getRequest()).getSession());
+        protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+
+        LOG.debug("v-----------------------------");
+        LOG.debug("AppletPage Session Attributes:");
+        Enumeration<?> en = WicketUtil.getHttpSession(getRequest()).getAttributeNames();
+        while (en.hasMoreElements()) {
+            String n = en.nextElement().toString();
+            LOG.debug(n + " = " + WicketUtil.getHttpSession(getRequest()).getAttribute(n));
+        }
+        LOG.debug("^-----------------------------");
+
+        String operation = null;
+        String language = getLocale().getLanguage();
+        String javaVersion = isPkcs11(parameters)? "1.5": "1.6";
+        String sessionId = WicketUtil.getHttpSession(getRequest()).getId();
+        String userId = protocolContext == null? null: protocolContext.getSubject();
+        Object applicationId = WicketUtil.getHttpSession(getRequest()).getAttribute(DeviceManager.APPLICATION_ID_SESSION_ATTRIBUTE);
+        try {
+            operation = DeviceOperationManager.getOperation(WicketUtil.getHttpSession(getRequest()));
+        } catch (ServletException e) {
+            // No operation found.
+        }
+
+        Map<String, Object> variables = new HashMap<String, Object>();
+        variables.put("name", code.getSimpleName());
+        variables.put("code", code.getCanonicalName().concat(".class"));
+        variables.put("archive", archive);
+        variables.put("width", width);
+        variables.put("height", height);
+        variables.put("smartCardConfig", smartCardConfig);
+        variables.put("servletPath", servletPath);
+        variables.put("targetPath", targetPath);
+        variables.put("helpdeskEventPath", helpdeskEventPath);
+        variables.put("helpPath", helpPath);
+        variables.put("noPkcs11Path", noPkcs11Path);
+        variables.put("sessionId", sessionId);
+        variables.put("applicationId", applicationId);
+        variables.put("userId", userId);
+        variables.put("operation", operation);
+        variables.put("language", language);
+        variables.put("javaVersion", javaVersion);
+
+        TextTemplate deployJavaApplet = new PackagedTextTemplate(getClass(), "deployJavaApplet.js");
+        Label deployJavaAppletLabel = new Label("deployJavaApplet", deployJavaApplet.asString(variables));
+        deployJavaAppletLabel.setEscapeModelStrings(false);
+        getContent().add(deployJavaAppletLabel);
+
+        getContent().add(new Label("title", getPageTitle()));
+        getContent().add(new Link<String>("cancel") {
+
+            private static final long serialVersionUID = 1L;
+
+            {
+                setVisible(isCancelVisible());
+            }
+
+
+            @Override
+            public void onClick() {
+
+                cancel();
+            }
+        });
+    }
+
+    protected static boolean isPkcs11(PageParameters parameters) {
+
+        return "pkcs11".equalsIgnoreCase(parameters.getString(BeIdMountPoints.MountPoint.TYPE_PARAMETER));
+    }
+
+    /**
+     * @return A title for the current page.
+     */
+    protected abstract String getPageTitle();
+
+    /**
+     * @return <code>true</code> to show the cancel button on this page.
+     */
+    protected abstract boolean isCancelVisible();
+
+    /**
+     * The cancel button was pressed.
+     */
+    protected abstract void cancel();
+}

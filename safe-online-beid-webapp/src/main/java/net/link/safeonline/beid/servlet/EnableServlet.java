@@ -7,6 +7,12 @@
 
 package net.link.safeonline.beid.servlet;
 
+import static net.link.safeonline.beid.webapp.BeIdMountPoints.AuthenticationType.PCSC;
+import static net.link.safeonline.beid.webapp.BeIdMountPoints.AuthenticationType.PKCS11;
+import static net.link.safeonline.beid.webapp.BeIdMountPoints.ErrorType.NO_MIDDLEWARE;
+import static net.link.safeonline.beid.webapp.BeIdMountPoints.MountPoint.ENABLE;
+import static net.link.safeonline.beid.webapp.BeIdMountPoints.MountPoint.ERROR;
+
 import java.io.IOException;
 
 import javax.servlet.ServletException;
@@ -44,9 +50,9 @@ public class EnableServlet extends HttpServlet {
 
         LOG.debug("prepareJavaVersionCheck");
         HttpSession session = req.getSession();
-        JavaVersionServlet.setPkcs11Target("enable-beid.seam", session);
-        JavaVersionServlet.setJava15NoPkcs11Target("missing-middleware.seam", session);
-        JavaVersionServlet.setJava16NoPkcs11Target("enable-beid-pcsc.seam", session);
+        JavaVersionServlet.setPkcs11Target(ENABLE.linkFor(PKCS11), session);
+        JavaVersionServlet.setJava15NoPkcs11Target(ERROR.linkFor(NO_MIDDLEWARE), session);
+        JavaVersionServlet.setJava16NoPkcs11Target(ENABLE.linkFor(PCSC), session);
         LOG.debug("redirecting to beid.html for Java runtime version checking...");
         resp.sendRedirect("beid.html");
     }
