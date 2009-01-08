@@ -32,7 +32,7 @@ public class EncapApplication extends OlasApplication {
 
         mountBookmarkablePage(AUTHENTICATION_MOUNTPOINT, AuthenticationPage.class);
         mountBookmarkablePage(ENABLE_MOUNTPOINT, EnablePage.class);
-        mountBookmarkablePage(REGISTRATION_MOUNTPOINT, RegisterPage.class);
+        mountBookmarkablePage(REGISTRATION_MOUNTPOINT, RegistrationPage.class);
     }
 
     /**

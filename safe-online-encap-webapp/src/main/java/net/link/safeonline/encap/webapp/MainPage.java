@@ -18,7 +18,7 @@ public class MainPage extends TemplatePage {
     public MainPage() {
 
         getHeader();
-        getContent().add(new PageLink(REGISTER_ID, RegisterPage.class));
+        getContent().add(new PageLink(REGISTER_ID, RegistrationPage.class));
         getContent().add(new ExternalLink(REMOVE_ID, REMOVE_SERVLET_PATH));
     }
 }

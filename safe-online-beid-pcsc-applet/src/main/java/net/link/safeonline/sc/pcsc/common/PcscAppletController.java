@@ -77,7 +77,7 @@ public class PcscAppletController implements AppletController, PcscSignerLogger 
         try {
             card = openCard();
         } catch (NoReaderException e) {
-            showPath("missing-reader.seam");
+            showPath("error?type=reader");
             return;
         }
         if (null == card)

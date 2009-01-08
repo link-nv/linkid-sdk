@@ -57,7 +57,7 @@ public class AuthenticationMessages {
      */
     public AuthenticationMessages(Locale locale) {
 
-        messages = ResourceBundle.getBundle("net.link.safeonline.auth.pcsc.AuthenticationMessages", locale);
+        messages = ResourceBundle.getBundle("net.link.safeonline.sc.pcsc.auth.AuthenticationMessages", locale);
     }
 
     /**

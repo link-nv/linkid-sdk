@@ -39,7 +39,7 @@ public class AuthenticationApplet extends AppletBase {
         String applicationId = getParameter("ApplicationId");
 
         Locale locale = getLocale();
-        ResourceBundle messages = ResourceBundle.getBundle("net.link.safeonline.auth.AuthenticationMessages", locale);
+        ResourceBundle messages = ResourceBundle.getBundle("net.link.safeonline.sc.pkcs11.auth.AuthenticationMessages", locale);
 
         outputInfoMessage(InfoLevel.NORMAL, messages.getString("creatingStmt"));
         outputDetailMessage("Session: " + sessionId);

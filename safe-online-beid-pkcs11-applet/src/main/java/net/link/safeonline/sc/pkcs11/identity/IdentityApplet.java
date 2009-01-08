@@ -46,7 +46,7 @@ public class IdentityApplet extends AppletBase {
         String operation = getParameter("Operation");
 
         Locale locale = getLocale();
-        ResourceBundle messages = ResourceBundle.getBundle("net.link.safeonline.identity.IdentityMessages", locale);
+        ResourceBundle messages = ResourceBundle.getBundle("net.link.safeonline.sc.pkcs11.identity.IdentityMessages", locale);
 
         super.outputInfoMessage(InfoLevel.NORMAL, messages.getString("creatingStmt"));
         super.outputDetailMessage("Session ID: " + sessionId);
