@@ -904,7 +904,7 @@
 		<module>safe-online-beid-startup-runtime</module>
 		<module>safe-online-beid-deploy</module>
 		<module>safe-online-beid-keystore</module>
-		<module>safe-online-beid-webapp-wicket</module>
+		<module>safe-online-beid-webapp</module>
 		<module>safe-online-osgi</module>
 		<module>safe-online-osgi-plugin</module>
 		<module>safe-online-osgi-plugin-template</module>
