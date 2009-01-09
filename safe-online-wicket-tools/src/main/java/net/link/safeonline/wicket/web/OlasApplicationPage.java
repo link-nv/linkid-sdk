@@ -43,48 +43,51 @@ import org.apache.wicket.protocol.http.servlet.AbortWithWebErrorCodeException;
 public abstract class OlasApplicationPage extends WicketPage {
 
     {
-        // Check whether OLAS user has changed or been logged out.
         try {
+            // Check whether page requires forced logout.
             if (getClass().isAnnotationPresent(ForceLogout.class))
                 throw new ServletException("Page " + getClass() + " requires forced logout.");
 
+            // Check whether OLAS user has changed or been logged out.
             String currentOlasId = WicketUtil.getOlasId(getRequest());
             String wicketOlasId = OLASSession.get().getUserOlasId();
             if (wicketOlasId != null && !wicketOlasId.equals(currentOlasId))
                 throw new ServletException("User changed from " + wicketOlasId + " into " + currentOlasId);
+
+            // If just logged in using OLAS, let application create/push its user onto wicket session.
+            if (!OLASSession.get().isUserSet() && WicketUtil.isOlasAuthenticated(getRequest())) {
+                onOlasAuthenticated();
+                postAuth();
+            }
         }
 
         catch (ServletException e) {
-            // If wicket session has an OLAS id and no OLAS user is logged in, or a different one is logged in:
             // Log out the wicket session.
             LOG.debug("[OlasWicketAuth] Logging out wicket session because: " + e.getMessage());
-
             if (!OLASSession.get().logout()) {
+                // If application indicates logout failed; invalidate the session.
+
                 Session.get().invalidateNow();
                 throw new AbortWithWebErrorCodeException(HttpStatus.SC_UNAUTHORIZED);
             }
         }
 
-        // If just logged in using OLAS, let application create/push its user onto wicket session.
-        if (!OLASSession.get().isUserSet() && WicketUtil.isOlasAuthenticated(getRequest())) {
-            onOlasAuthenticated();
-            postAuth();
-        }
+        finally {
+            // Enforce page requirements for user authentication.
+            if (getClass().isAnnotationPresent(RequireLogin.class) && !OLASSession.get().isUserSet()) {
+                RequireLogin authAnnotation = getClass().getAnnotation(RequireLogin.class);
+                Class<? extends Page> loginPage = authAnnotation.loginPage();
 
-        // Enforce page requirements for user authentication.
-        if (getClass().isAnnotationPresent(RequireLogin.class) && !OLASSession.get().isUserSet()) {
-            RequireLogin authAnnotation = getClass().getAnnotation(RequireLogin.class);
-            Class<? extends Page> loginPage = authAnnotation.loginPage();
+                if (!loginPage.equals(Page.class)) {
+                    LOG.debug("[OlasWicketAuth] auth required; redirecting unauthenticated user to " + loginPage + " for authentication.");
 
-            if (!loginPage.equals(Page.class)) {
-                LOG.debug("[OlasWicketAuth] auth required; redirecting unauthenticated user to " + loginPage + " for authentication.");
+                    OLASSession.get().setPostAuthenticationPage(this);
+                    throw new RestartResponseException(loginPage);
+                }
 
-                OLASSession.get().setPostAuthenticationPage(this);
-                throw new RestartResponseException(loginPage);
+                LOG.debug("[OlasWicketAuth] auth required; no login page specified for redirection: sending HTTP 401.");
+                throw new AbortWithWebErrorCodeException(HttpStatus.SC_UNAUTHORIZED);
             }
-
-            LOG.debug("[OlasWicketAuth] auth required; no login page specified for redirection: sending HTTP 401.");
-            throw new AbortWithWebErrorCodeException(HttpStatus.SC_UNAUTHORIZED);
         }
     }
 
