@@ -38,7 +38,9 @@ import net.link.safeonline.performance.entity.DriverProfileEntity;
 import net.link.safeonline.performance.entity.ExecutionEntity;
 import net.link.safeonline.performance.entity.ProfileDataEntity;
 import net.link.safeonline.performance.entity.ScenarioTimingEntity;
+import net.link.safeonline.performance.scenario.Scenario;
 import net.link.safeonline.performance.scenario.charts.AbstractChart;
+import net.link.safeonline.performance.scenario.charts.Chart;
 import net.link.safeonline.performance.scenario.charts.ScenarioExceptionsChart;
 import net.link.safeonline.performance.scenario.charts.ScenarioSpeedChart;
 
@@ -46,15 +48,15 @@ import net.link.safeonline.performance.scenario.charts.ScenarioSpeedChart;
 /**
  * <h2>{@link ChartsTest}<br>
  * <sub>[in short] (TODO).</sub></h2>
- *
+ * 
  * <p>
  * [description / usage].
  * </p>
- *
+ * 
  * <p>
  * <i>Mar 3, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ChartsTest extends AbstractDataTest {
@@ -69,8 +71,8 @@ public class ChartsTest extends AbstractDataTest {
     @Override
     protected void configure() {
 
-        this.DB_HOST = "sebeco-dev-12";
-        this.SHOW_SQL = false;
+        DB_HOST = "sebeco-dev-12";
+        SHOW_SQL = false;
     }
 
     /**
@@ -80,7 +82,7 @@ public class ChartsTest extends AbstractDataTest {
 
         // Execution to chart.
         // ExecutionEntity execution = getLatestExecution();
-        ExecutionEntity execution = this.executionService.getExecution(new Date(1204796106 * 1000l));
+        ExecutionEntity execution = executionService.getExecution(new Date(1204796106 * 1000l));
 
         // Chart modules to render.
         Set<Chart> charts = new HashSet<Chart>();
@@ -138,7 +140,7 @@ public class ChartsTest extends AbstractDataTest {
         }
 
         // Retrieve scenario timings recorded during the execution.
-        LinkedList<ScenarioTimingEntity> scenarioTimings = this.scenarioTimingService.getExecutionTimings(execution, DATA_POINTS);
+        LinkedList<ScenarioTimingEntity> scenarioTimings = scenarioTimingService.getExecutionTimings(execution, DATA_POINTS);
         if (!timingCharts.isEmpty()) {
 
             int i = 0, t = scenarioTimings.size();
@@ -149,15 +151,15 @@ public class ChartsTest extends AbstractDataTest {
                     try {
                         chart.processTiming(timing);
                     } catch (Exception e) {
-                        this.LOG.error("Charting Timing Failed:", e);
+                        LOG.error("Charting Timing Failed:", e);
                     }
                 }
 
                 // Show timing completion percentage.
                 if (++i % Math.max(1, t / 100) == 0) {
-                    this.LOG.debug("timing: " + 100 * i / t + "% ..");
+                    LOG.debug("timing: " + 100 * i / t + "% ..");
                 }
-                if (this.datalimit != null && i > this.datalimit) {
+                if (datalimit != null && i > datalimit) {
                     break;
                 }
             }
@@ -173,19 +175,19 @@ public class ChartsTest extends AbstractDataTest {
             // Retrieve data for current profile, paged or not.
             List<ProfileDataEntity> profileData = null;
             List<DriverExceptionEntity> profileErrors = null;
-            if (this.datalimit == null) {
+            if (datalimit == null) {
                 if (!dataCharts.isEmpty()) {
-                    profileData = this.profileDataService.getProfileData(profile, scenarioTimings);
+                    profileData = profileDataService.getProfileData(profile, scenarioTimings);
                 }
                 if (!errorCharts.isEmpty()) {
-                    profileErrors = this.driverExceptionService.getProfileErrors(profile, DATA_POINTS);
+                    profileErrors = driverExceptionService.getProfileErrors(profile, DATA_POINTS);
                 }
             } else {
                 if (!dataCharts.isEmpty()) {
-                    profileData = this.profileDataService.getAllProfileData(profile);
+                    profileData = profileDataService.getAllProfileData(profile);
                 }
                 if (!errorCharts.isEmpty()) {
-                    profileErrors = this.driverExceptionService.getAllProfileErrors(profile);
+                    profileErrors = driverExceptionService.getAllProfileErrors(profile);
                 }
             }
 
@@ -198,15 +200,15 @@ public class ChartsTest extends AbstractDataTest {
                         try {
                             chart.processData(data);
                         } catch (Exception e) {
-                            this.LOG.error("Charting Data Failed:", e);
+                            LOG.error("Charting Data Failed:", e);
                         }
                     }
 
                     // Show data completion percentage.
                     if (++j % Math.max(1, u / 100) == 0) {
-                        this.LOG.debug("data  : " + 100 * i / t + "%, 0%, " + 100 * j / u + "% ..");
+                        LOG.debug("data  : " + 100 * i / t + "%, 0%, " + 100 * j / u + "% ..");
                     }
-                    if (this.datalimit != null && j > this.datalimit) {
+                    if (datalimit != null && j > datalimit) {
                         break;
                     }
                 }
@@ -221,15 +223,15 @@ public class ChartsTest extends AbstractDataTest {
                         try {
                             chart.processError(error);
                         } catch (Exception e) {
-                            this.LOG.error("Charting Error Failed:", e);
+                            LOG.error("Charting Error Failed:", e);
                         }
                     }
 
                     // Show data completion percentage.
                     if (++j % Math.max(1, u / 100) == 0) {
-                        this.LOG.debug("errors: " + 100 * i / t + "%, 50%, " + 100 * j / u + "% ..");
+                        LOG.debug("errors: " + 100 * i / t + "%, 50%, " + 100 * j / u + "% ..");
                     }
-                    if (this.datalimit != null && j > this.datalimit) {
+                    if (datalimit != null && j > datalimit) {
                         break;
                     }
                 }
@@ -237,9 +239,9 @@ public class ChartsTest extends AbstractDataTest {
 
             // Show profile completion percentage.
             if (++i % Math.max(1, t / 100) == 0) {
-                this.LOG.debug(100 * i / t + "%, 100% ..");
+                LOG.debug(100 * i / t + "%, 100% ..");
             }
-            if (this.datalimit != null && i > this.datalimit) {
+            if (datalimit != null && i > datalimit) {
                 break;
             }
         }
@@ -251,7 +253,7 @@ public class ChartsTest extends AbstractDataTest {
             chart.postProcess();
 
             if (++i % Math.max(1, t / 100) == 0) {
-                this.LOG.debug("postp : " + 100 * i / t + "% ..");
+                LOG.debug("postp : " + 100 * i / t + "% ..");
             }
         }
 
@@ -262,7 +264,7 @@ public class ChartsTest extends AbstractDataTest {
             if (image != null) {
                 images.put(chart.getTitle(), image);
             } else {
-                this.LOG.warn("Chart " + chart.getTitle() + " had no data.");
+                LOG.warn("Chart " + chart.getTitle() + " had no data.");
             }
         }
 

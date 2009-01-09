@@ -8,11 +8,11 @@ import javax.smartcardio.CardTerminal;
 import javax.smartcardio.CardTerminals;
 import javax.smartcardio.TerminalFactory;
 
-import net.link.safeonline.auth.pcsc.AuthenticationMessages;
-import net.link.safeonline.auth.pcsc.IdentityFile;
-import net.link.safeonline.auth.pcsc.Pcsc;
-import net.link.safeonline.auth.pcsc.PcscSigner;
-import net.link.safeonline.auth.pcsc.PcscSignerLogger;
+import net.link.safeonline.sc.pcsc.auth.AuthenticationMessages;
+import net.link.safeonline.sc.pcsc.common.IdentityFile;
+import net.link.safeonline.sc.pcsc.common.Pcsc;
+import net.link.safeonline.sc.pcsc.common.PcscSigner;
+import net.link.safeonline.sc.pcsc.common.PcscSignerLogger;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

@@ -41,13 +41,13 @@ import javax.swing.JPasswordField;
 import net.link.safeonline.applet.BeIdIdentityProvider;
 import net.link.safeonline.applet.Pkcs11Signer;
 import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
-import net.link.safeonline.identity.IdentityStatementFactory;
 import net.link.safeonline.p11sc.SmartCard;
 import net.link.safeonline.p11sc.SmartCardConfig;
 import net.link.safeonline.p11sc.SmartCardConfigFactory;
 import net.link.safeonline.p11sc.SmartCardFactory;
 import net.link.safeonline.p11sc.SmartCardPinCallback;
 import net.link.safeonline.p11sc.impl.SmartCardConfigFactoryImpl;
+import net.link.safeonline.sc.pkcs11.identity.IdentityStatementFactory;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
