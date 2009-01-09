@@ -11,7 +11,8 @@ package net.link.safeonline.osgi.exception;
  * <sub>Attribute not found Exception.</sub></h2>
  * 
  * <p>
- * Exception thrown when a requested existing attribute could not be found for a certain user by this OSGi plugin or by OLAS.
+ * Exception thrown when a requested existing attribute could not be found for a certain user by this OSGi plugin or by
+ * OLAS.
  * 
  * </p>
  * 

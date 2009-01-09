@@ -11,8 +11,8 @@ package net.link.safeonline.osgi.exception;
  * <sub>Attribute Unavailable Exception.</sub></h2>
  * 
  * <p>
- * Exception thrown when a requested attribute is not available. Reasons can be that the OSGi plugin responsible for this type is not
- * running.
+ * Exception thrown when a requested attribute is not available. Reasons can be that the OSGi plugin responsible for
+ * this type is not running.
  * </p>
  * 
  * <p>

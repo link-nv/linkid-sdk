@@ -194,8 +194,7 @@ public abstract class RequestUtil {
             throw new ServletException("DOM parsing error");
         }
         Element samlElement = samlDocument.getDocumentElement();
-        SecurityTokenServiceClient stsClient = new SecurityTokenServiceClientImpl(wsLocation, applicationCertificate,
-                applicationPrivateKey);
+        SecurityTokenServiceClient stsClient = new SecurityTokenServiceClientImpl(wsLocation, applicationCertificate, applicationPrivateKey);
         try {
             stsClient.validate(samlElement, trustDomain);
         } catch (RuntimeException e) {

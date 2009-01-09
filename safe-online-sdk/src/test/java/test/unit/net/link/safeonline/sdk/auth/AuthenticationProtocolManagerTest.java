@@ -58,7 +58,8 @@ public class AuthenticationProtocolManagerTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
         this.mockHttpServletRequest = createMock(HttpServletRequest.class);
         this.mockHttpSession = createMock(HttpSession.class);
@@ -70,7 +71,8 @@ public class AuthenticationProtocolManagerTest {
     }
 
     @Test
-    public void saml2ProtocolHandler() throws Exception {
+    public void saml2ProtocolHandler()
+            throws Exception {
 
         // expectations
         expect(this.mockHttpSession.getAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE)).andReturn(null);
@@ -96,7 +98,8 @@ public class AuthenticationProtocolManagerTest {
     }
 
     @Test
-    public void testInitiateAuthenticationWithoutLandingPage() throws Exception {
+    public void testInitiateAuthenticationWithoutLandingPage()
+            throws Exception {
 
         ServletTestManager servletTestManager = new ServletTestManager();
         AuthenticationProtocolHandler mockProtocolHandler = createMock(AuthenticationProtocolHandler.class);
@@ -122,7 +125,8 @@ public class AuthenticationProtocolManagerTest {
     }
 
     @Test
-    public void testInitiateAuthenticationWithLandingPage() throws Exception {
+    public void testInitiateAuthenticationWithLandingPage()
+            throws Exception {
 
         ServletTestManager servletTestManager = new ServletTestManager();
         AuthenticationProtocolHandler mockProtocolHandler = createMock(AuthenticationProtocolHandler.class);
@@ -159,7 +163,8 @@ public class AuthenticationProtocolManagerTest {
 
 
         @Override
-        public void init(ServletConfig config) throws ServletException {
+        public void init(ServletConfig config)
+                throws ServletException {
 
             super.init(config);
             SERVLET_LOG.debug("init: landing page init param: "
@@ -167,7 +172,8 @@ public class AuthenticationProtocolManagerTest {
         }
 
         @Override
-        protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        protected void doGet(HttpServletRequest request, HttpServletResponse response)
+                throws ServletException, IOException {
 
             HttpSession session = request.getSession();
             ServletContext servletContext = session.getServletContext();

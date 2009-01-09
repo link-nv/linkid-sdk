@@ -6,8 +6,6 @@
  */
 package net.link.safeonline.demo.payment.webapp;
 
-
-
 /**
  * <h2>{@link PaymentService}<br>
  * <sub>A Payment Service Request.</sub></h2>

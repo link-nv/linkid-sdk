@@ -40,6 +40,7 @@ public interface OlasAttributeService {
      * @throws SubjectNotFoundException
      */
     public Object getAttribute(String userId, String attributeName)
-            throws AttributeTypeNotFoundException, AttributeNotFoundException, AttributeUnavailableException, SubjectNotFoundException;
+            throws AttributeTypeNotFoundException, AttributeNotFoundException, AttributeUnavailableException,
+            SubjectNotFoundException;
 
 }

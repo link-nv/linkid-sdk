@@ -13,6 +13,7 @@ import javax.xml.namespace.QName;
 
 import sis.mobile.SmsService;
 
+
 public class SmsServiceFactory {
 
     private SmsServiceFactory() {
@@ -20,20 +21,17 @@ public class SmsServiceFactory {
         // empty
     }
 
-
     /**
      * Gives back a new instance of a ping service JAX-WS stub.
      * 
      */
     public static SmsService newInstance() {
 
-        ClassLoader classLoader = Thread.currentThread()
-                .getContextClassLoader();
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         URL wsdlUrl = classLoader.getResource("safe-online-sms.wsdl");
         if (null == wsdlUrl)
             throw new RuntimeException("sms WSDL not found");
-        SmsService service = new SmsService(wsdlUrl, new QName(
-                "urn:sis:mobile", "SmsService"));
+        SmsService service = new SmsService(wsdlUrl, new QName("urn:sis:mobile", "SmsService"));
         return service;
     }
 }

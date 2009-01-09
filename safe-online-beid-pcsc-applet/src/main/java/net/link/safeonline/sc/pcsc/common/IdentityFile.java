@@ -10,7 +10,6 @@ package net.link.safeonline.sc.pcsc.common;
 import java.util.Date;
 
 
-
 public class IdentityFile {
 
     @Tag(1)

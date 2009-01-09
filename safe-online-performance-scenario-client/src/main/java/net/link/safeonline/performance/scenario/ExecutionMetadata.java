@@ -22,7 +22,7 @@ import java.util.Date;
 /**
  * <h2>{@link ExecutionMetadata}<br>
  * <sub>Holds execution metadata for communication between the agent and the scenario.</sub></h2>
- *
+ * 
  * <p>
  * This object can be used by the agent for making a scenario execution request to the {@link ScenarioController}. In this case, use
  * {@link #createRequest(String, Integer, Integer, Date, Long, String, Boolean)} to obtain the object. Only the fields required for making a
@@ -32,11 +32,11 @@ import java.util.Date;
  * use {@link #createResponse(String, String, Integer, Integer, Date, Long, String, Boolean, Double)} . All available fields can be set
  * providing the agent with as much information about the result of the execution as available.
  * </p>
- *
+ * 
  * <p>
  * <i>Feb 19, 2008</i>
  * </p>
- *
+ * 
  * @author mbillemo
  */
 public class ExecutionMetadata {
