@@ -50,11 +50,11 @@ public class AttributeCacheCleanerTaskBean implements Task {
             throws Exception {
 
         long currentTime = System.currentTimeMillis();
-        List<AttributeCacheEntity> attributes = this.attributeCacheDAO.listAttributes();
+        List<AttributeCacheEntity> attributes = attributeCacheDAO.listAttributes();
         for (AttributeCacheEntity attribute : attributes) {
             if (currentTime - attribute.getEntryDate().getTime() > attribute.getAttributeType().getAttributeCacheTimeoutMillis()) {
                 // expired
-                this.attributeCacheDAO.removeAttribute(attribute);
+                attributeCacheDAO.removeAttribute(attribute);
             }
 
         }

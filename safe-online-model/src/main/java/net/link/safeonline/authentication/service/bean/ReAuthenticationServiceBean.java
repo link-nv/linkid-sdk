@@ -63,7 +63,7 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
     @DenyAll
     public Set<DeviceEntity> getAuthenticatedDevices() {
 
-        return this.authenticationDevices;
+        return authenticationDevices;
     }
 
     /**
@@ -78,14 +78,14 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
             throws SubjectMismatchException, PermissionDeniedException {
 
         LOG.debug("set re-auth subject: " + subject.getUserId());
-        SubjectEntity targetSubject = this.subjectManager.getCallerSubject();
+        SubjectEntity targetSubject = subjectManager.getCallerSubject();
         if (targetSubject.equals(subject))
             throw new PermissionDeniedException("target subject is equals source subject");
-        if (null == this.authenticatedSubject) {
-            this.authenticatedSubject = subject;
+        if (null == authenticatedSubject) {
+            authenticatedSubject = subject;
             return;
         }
-        if (!this.authenticatedSubject.equals(subject))
+        if (!authenticatedSubject.equals(subject))
             throw new SubjectMismatchException();
     }
 
@@ -117,8 +117,8 @@ public class ReAuthenticationServiceBean implements ReAuthenticationService {
     public void abort() {
 
         LOG.debug("abort");
-        this.authenticatedSubject = null;
-        this.authenticationDevices = null;
+        authenticatedSubject = null;
+        authenticationDevices = null;
     }
 
 }

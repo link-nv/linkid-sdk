@@ -22,7 +22,7 @@ public class UserProfile extends UserTemplate {
 
     public String getAttributeValue(String attribute) {
 
-        return this.getSafeOnlineAttributeValue(attribute);
+        return getSafeOnlineAttributeValue(attribute);
     }
 
 }

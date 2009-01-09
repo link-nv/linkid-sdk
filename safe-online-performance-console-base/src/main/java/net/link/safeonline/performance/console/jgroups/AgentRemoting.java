@@ -56,19 +56,19 @@ public class AgentRemoting implements Receiver, ChannelListener {
     public AgentRemoting() {
 
         ResourceBundle properties = ResourceBundle.getBundle("console");
-        this.group = properties.getString("jgroups.group");
-        LOG.debug("jgroups.group: " + this.group);
+        group = properties.getString("jgroups.group");
+        LOG.debug("jgroups.group: " + group);
 
-        this.agentStateListeners = new ArrayList<AgentStateListener>();
+        agentStateListeners = new ArrayList<AgentStateListener>();
 
-        if (null == this.channel || !this.channel.isOpen()) {
+        if (null == channel || !channel.isOpen()) {
             URL jgroupsConfig = getClass().getResource("/jgroups.xml");
             if (jgroupsConfig == null)
                 throw new IllegalStateException("The JGroups configuration file cannot be found.");
 
             // Give as much info on why this error happened.
             try {
-                this.channel = new JChannel(jgroupsConfig);
+                channel = new JChannel(jgroupsConfig);
             } catch (ChannelException e) {
                 try {
                     StringBuffer jgroupsConfigData = new StringBuffer();
@@ -88,8 +88,8 @@ public class AgentRemoting implements Receiver, ChannelListener {
             }
         }
 
-        this.channel.addChannelListener(AgentRemoting.this);
-        this.channel.setReceiver(AgentRemoting.this);
+        channel.addChannelListener(AgentRemoting.this);
+        channel.setReceiver(AgentRemoting.this);
 
         Runtime.getRuntime().addShutdownHook(new Thread("JGroups ShutdownHook") {
 
@@ -106,8 +106,8 @@ public class AgentRemoting implements Receiver, ChannelListener {
             public void run() {
 
                 try {
-                    if (!AgentRemoting.this.channel.isConnected()) {
-                        AgentRemoting.this.channel.connect(AgentRemoting.this.group);
+                    if (!channel.isConnected()) {
+                        channel.connect(group);
                     }
                 }
 
@@ -128,7 +128,7 @@ public class AgentRemoting implements Receiver, ChannelListener {
      */
     public void addAgentStateListener(AgentStateListener listener) {
 
-        this.agentStateListeners.add(listener);
+        agentStateListeners.add(listener);
     }
 
     /**
@@ -136,7 +136,7 @@ public class AgentRemoting implements Receiver, ChannelListener {
      */
     public void block() {
 
-        this.channel.blockOk();
+        channel.blockOk();
     }
 
     /**
@@ -144,8 +144,8 @@ public class AgentRemoting implements Receiver, ChannelListener {
      */
     public void channelClosed(Channel c) {
 
-        if (c.equals(this.channel)) {
-            for (AgentStateListener listener : this.agentStateListeners) {
+        if (c.equals(channel)) {
+            for (AgentStateListener listener : agentStateListeners) {
                 listener.channelClosed();
             }
         }
@@ -156,8 +156,8 @@ public class AgentRemoting implements Receiver, ChannelListener {
      */
     public void channelConnected(Channel c) {
 
-        if (c.equals(this.channel)) {
-            for (AgentStateListener listener : this.agentStateListeners) {
+        if (c.equals(channel)) {
+            for (AgentStateListener listener : agentStateListeners) {
                 listener.channelConnected();
             }
         }
@@ -168,8 +168,8 @@ public class AgentRemoting implements Receiver, ChannelListener {
      */
     public void channelDisconnected(Channel c) {
 
-        if (c.equals(this.channel)) {
-            for (AgentStateListener listener : this.agentStateListeners) {
+        if (c.equals(channel)) {
+            for (AgentStateListener listener : agentStateListeners) {
                 listener.channelDisconnected();
             }
         }
@@ -180,7 +180,7 @@ public class AgentRemoting implements Receiver, ChannelListener {
      */
     public void channelReconnected(Address agent) {
 
-        for (AgentStateListener listener : this.agentStateListeners) {
+        for (AgentStateListener listener : agentStateListeners) {
             listener.channelReconnected(agent);
         }
     }
@@ -190,14 +190,14 @@ public class AgentRemoting implements Receiver, ChannelListener {
      */
     public void channelShunned() {
 
-        for (AgentStateListener listener : this.agentStateListeners) {
+        for (AgentStateListener listener : agentStateListeners) {
             listener.channelShunned();
         }
     }
 
     public void close() {
 
-        this.channel.close();
+        channel.close();
     }
 
     /**
@@ -205,10 +205,10 @@ public class AgentRemoting implements Receiver, ChannelListener {
      */
     public List<Address> getMembers() {
 
-        if (this.channel.getView() == null)
+        if (channel.getView() == null)
             return null;
 
-        return Collections.unmodifiableList(this.channel.getView().getMembers());
+        return Collections.unmodifiableList(channel.getView().getMembers());
     }
 
     /**
@@ -216,10 +216,10 @@ public class AgentRemoting implements Receiver, ChannelListener {
      */
     public boolean hasMember(Address member) {
 
-        if (this.channel.getView() == null)
+        if (channel.getView() == null)
             return false;
 
-        return this.channel.getView().containsMember(member);
+        return channel.getView().containsMember(member);
     }
 
     /**
@@ -227,10 +227,10 @@ public class AgentRemoting implements Receiver, ChannelListener {
      */
     public String getGroupName() {
 
-        if (this.channel.getClusterName() == null)
-            return this.group;
+        if (channel.getClusterName() == null)
+            return group;
 
-        return this.channel.getClusterName();
+        return channel.getClusterName();
     }
 
     /**
@@ -238,7 +238,7 @@ public class AgentRemoting implements Receiver, ChannelListener {
      */
     public Address getSelf() {
 
-        return this.channel.getLocalAddress();
+        return channel.getLocalAddress();
     }
 
     /**
@@ -255,7 +255,7 @@ public class AgentRemoting implements Receiver, ChannelListener {
      */
     public boolean isConnected() {
 
-        return this.channel.isConnected();
+        return channel.isConnected();
     }
 
     /**
@@ -268,7 +268,7 @@ public class AgentRemoting implements Receiver, ChannelListener {
 
     public void removeAgentStateListener(AgentStateListener listener) {
 
-        this.agentStateListeners.remove(listener);
+        agentStateListeners.remove(listener);
     }
 
     /**
@@ -284,7 +284,7 @@ public class AgentRemoting implements Receiver, ChannelListener {
      */
     public void suspect(Address suspected_mbr) {
 
-        for (AgentStateListener listener : this.agentStateListeners) {
+        for (AgentStateListener listener : agentStateListeners) {
             listener.agentSuspected(suspected_mbr);
         }
     }
@@ -294,7 +294,7 @@ public class AgentRemoting implements Receiver, ChannelListener {
      */
     public void viewAccepted(View new_view) {
 
-        for (AgentStateListener listener : this.agentStateListeners) {
+        for (AgentStateListener listener : agentStateListeners) {
             listener.membersChanged(new_view.getMembers());
         }
     }

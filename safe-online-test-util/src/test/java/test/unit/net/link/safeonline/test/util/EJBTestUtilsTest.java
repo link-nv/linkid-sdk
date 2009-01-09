@@ -57,7 +57,7 @@ public class EJBTestUtilsTest extends TestCase {
                 throws Throwable {
 
             handlerLOG.debug("invoke");
-            return method.invoke(this.object, args);
+            return method.invoke(object, args);
         }
     }
 
@@ -97,7 +97,7 @@ public class EJBTestUtilsTest extends TestCase {
                 throws Throwable {
 
             interceptorLOG.debug("intercept");
-            return method.invoke(this.object, args);
+            return method.invoke(object, args);
         }
     }
 

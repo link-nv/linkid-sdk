@@ -71,9 +71,9 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         configureDevices();
 
         // Add some initial users.
-        this.users.add(SafeOnlineConstants.ADMIN_LOGIN);
-        this.users.add(SafeOnlineConstants.OWNER_LOGIN);
-        this.applicationOwnersAndLogin.put(SafeOnlineConstants.OWNER_LOGIN, SafeOnlineConstants.OWNER_LOGIN);
+        users.add(SafeOnlineConstants.ADMIN_LOGIN);
+        users.add(SafeOnlineConstants.OWNER_LOGIN);
+        applicationOwnersAndLogin.put(SafeOnlineConstants.OWNER_LOGIN, SafeOnlineConstants.OWNER_LOGIN);
 
         // Add the core applications.
         X509Certificate userCert = (X509Certificate) UserKeyStoreUtils.getPrivateKeyEntry().getCertificate();
@@ -82,19 +82,19 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         X509Certificate helpdeskCert = (X509Certificate) HelpdeskKeyStoreUtils.getPrivateKeyEntry().getCertificate();
 
         try {
-            this.registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, "owner",
+            registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, "owner",
                     "The SafeOnline User Web Application.", new URL(protocol, hostname, hostport, "/" + userWebappName),
                     getLogo("/logo.jpg"), false, false, userCert, false, IdScopeType.USER, true, new URL(protocolssl, hostname,
                             hostportssl, "/" + userWebappName + "/logout")));
-            this.registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME, "owner",
+            registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME, "owner",
                     "The SafeOnline Operator Web Application.", new URL(protocol, hostname, hostport, "/" + operWebappName),
                     getLogo("/logo.jpg"), false, false, operCert, false, IdScopeType.USER, true, new URL(protocolssl, hostname,
                             hostportssl, "/" + operWebappName + "/logout")));
-            this.registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME, "owner",
+            registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME, "owner",
                     "The SafeOnline Application Owner Web Application.", new URL(protocol, hostname, hostport, "/" + ownerWebappName),
                     getLogo("/logo.jpg"), false, false, ownerCert, false, IdScopeType.USER, true, new URL(protocolssl, hostname,
                             hostportssl, "/" + ownerWebappName + "/logout")));
-            this.registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME, "owner",
+            registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME, "owner",
                     "The SafeOnline Helpdesk Web Application.", new URL(protocol, hostname, hostport, "/" + helpdeskWebappName),
                     getLogo("/logo.jpg"), false, false, helpdeskCert, false, IdScopeType.USER, true, new URL(protocolssl, hostname,
                             hostportssl, "/" + helpdeskWebappName + "/logout")));
@@ -102,26 +102,26 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
             throw new EJBException("Malformed Application URL exception: " + e.getMessage());
         }
 
-        this.trustedCertificates.put(userCert, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
-        this.trustedCertificates.put(operCert, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
-        this.trustedCertificates.put(ownerCert, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
-        this.trustedCertificates.put(helpdeskCert, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
+        trustedCertificates.put(userCert, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
+        trustedCertificates.put(operCert, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
+        trustedCertificates.put(ownerCert, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
+        trustedCertificates.put(helpdeskCert, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
 
-        this.subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, "admin",
+        subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, "admin",
                 SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
-        this.subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, "admin",
+        subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, "admin",
                 SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME));
-        this.subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, "admin",
+        subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, "admin",
                 SafeOnlineConstants.SAFE_ONLINE_HELPDESK_APPLICATION_NAME));
 
-        this.subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, "owner",
+        subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, "owner",
                 SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME));
-        this.subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, "owner",
+        subscriptions.add(new Subscription(SubscriptionOwnerType.APPLICATION, "owner",
                 SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME));
 
         // add available notification topics
-        this.notificationTopics.add(SafeOnlineConstants.TOPIC_REMOVE_USER);
-        this.notificationTopics.add(SafeOnlineConstants.TOPIC_UNSUBSCRIBE_USER);
+        notificationTopics.add(SafeOnlineConstants.TOPIC_REMOVE_USER);
+        notificationTopics.add(SafeOnlineConstants.TOPIC_UNSUBSCRIBE_USER);
 
     }
 
@@ -137,30 +137,30 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         IdentityServiceClient identityServiceClient = new IdentityServiceClient();
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
 
-        this.node = new Node(nodeName, sslprotocol, hostname, hostport, hostportssl, authIdentityServiceClient.getCertificate(),
+        node = new Node(nodeName, sslprotocol, hostname, hostport, hostportssl, authIdentityServiceClient.getCertificate(),
                 identityServiceClient.getCertificate());
-        this.trustedCertificates.put(authIdentityServiceClient.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
-        this.trustedCertificates.put(identityServiceClient.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
+        trustedCertificates.put(authIdentityServiceClient.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
+        trustedCertificates.put(identityServiceClient.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
     }
 
     private void configureAttributeTypes() {
 
         AttributeTypeEntity loginAttributeType = new AttributeTypeEntity(SafeOnlineConstants.LOGIN_ATTRIBTUE, DatatypeType.STRING, false,
                 false);
-        this.attributeTypes.add(loginAttributeType);
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(loginAttributeType, Locale.ENGLISH.getLanguage(),
+        attributeTypes.add(loginAttributeType);
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(loginAttributeType, Locale.ENGLISH.getLanguage(),
                 "Login name", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(loginAttributeType, "nl", "Login naam", null));
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(loginAttributeType, "nl", "Login naam", null));
     }
 
     private void configureDevices() {
 
-        this.deviceClasses.add(new DeviceClass(SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
+        deviceClasses.add(new DeviceClass(SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
                 SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS));
-        this.deviceClasses.add(new DeviceClass(SafeOnlineConstants.MOBILE_DEVICE_CLASS,
+        deviceClasses.add(new DeviceClass(SafeOnlineConstants.MOBILE_DEVICE_CLASS,
                 SafeOnlineConstants.MOBILE_DEVICE_AUTH_CONTEXT_CLASS));
-        this.deviceClasses.add(new DeviceClass(SafeOnlineConstants.PKI_DEVICE_CLASS, SafeOnlineConstants.PKI_DEVICE_AUTH_CONTEXT_CLASS));
-        this.deviceClasses.add(new DeviceClass(SafeOnlineConstants.DIGIPASS_DEVICE_CLASS,
+        deviceClasses.add(new DeviceClass(SafeOnlineConstants.PKI_DEVICE_CLASS, SafeOnlineConstants.PKI_DEVICE_AUTH_CONTEXT_CLASS));
+        deviceClasses.add(new DeviceClass(SafeOnlineConstants.DIGIPASS_DEVICE_CLASS,
                 SafeOnlineConstants.DIGIPASS_DEVICE_AUTH_CONTEXT_CLASS));
     }
 

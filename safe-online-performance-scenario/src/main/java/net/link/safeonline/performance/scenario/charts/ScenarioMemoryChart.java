@@ -55,8 +55,8 @@ public class ScenarioMemoryChart extends AbstractChart {
 
         super("Scenario Memory");
 
-        this.olasMemory = new TimeSeries("OLAS", FixedMillisecond.class);
-        this.agentMemory = new TimeSeries("Agent", FixedMillisecond.class);
+        olasMemory = new TimeSeries("OLAS", FixedMillisecond.class);
+        agentMemory = new TimeSeries("Agent", FixedMillisecond.class);
     }
 
     /**
@@ -73,8 +73,8 @@ public class ScenarioMemoryChart extends AbstractChart {
         Long agentMem = data.getScenarioTiming().getStartFreeMem();
         Long olasMem = getMeasurement(data.getMeasurements(), ProfileData.REQUEST_START_FREE);
 
-        this.olasMemory.addOrUpdate(startTime, olasMem);
-        this.agentMemory.addOrUpdate(startTime, agentMem);
+        olasMemory.addOrUpdate(startTime, olasMem);
+        agentMemory.addOrUpdate(startTime, agentMem);
     }
 
     /**
@@ -92,14 +92,14 @@ public class ScenarioMemoryChart extends AbstractChart {
     @Override
     protected XYPlot getPlot() {
 
-        if (this.olasMemory.isEmpty() && this.agentMemory.isEmpty())
+        if (olasMemory.isEmpty() && agentMemory.isEmpty())
             return null;
 
         ValueAxis domainAxis = new DateAxis("Time");
 
         TimeSeriesCollection olasSet, agentSet;
-        olasSet = new TimeSeriesCollection(this.olasMemory);
-        agentSet = new TimeSeriesCollection(this.agentMemory);
+        olasSet = new TimeSeriesCollection(olasMemory);
+        agentSet = new TimeSeriesCollection(agentMemory);
 
         XYPlot olasPlot = new XYPlot(olasSet, domainAxis, new NumberAxis("Available Memory (bytes)"), new XYLineAndShapeRenderer(true,
                 false));

@@ -56,9 +56,9 @@ public class HistoryCleanerTaskBean implements Task {
     public void perform()
             throws Exception {
 
-        long ageInMillis = this.configAgeInMillis;
+        long ageInMillis = configAgeInMillis;
         Date ageLimit = new Date(System.currentTimeMillis() - ageInMillis);
-        this.historyDAO.clearAllHistory(ageLimit);
+        historyDAO.clearAllHistory(ageLimit);
     }
 
 }

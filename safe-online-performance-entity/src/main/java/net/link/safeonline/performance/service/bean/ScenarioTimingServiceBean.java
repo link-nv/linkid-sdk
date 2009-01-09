@@ -52,9 +52,9 @@ public class ScenarioTimingServiceBean extends AbstractProfilingServiceBean impl
     public LinkedList<ScenarioTimingEntity> getExecutionTimings(ExecutionEntity execution, int dataPoints) {
 
         // Find the execution's profile data.
-        Long dataDuration = (Long) this.em.createNamedQuery(ScenarioTimingEntity.getExecutionDuration).setParameter("execution", execution)
+        Long dataDuration = (Long) em.createNamedQuery(ScenarioTimingEntity.getExecutionDuration).setParameter("execution", execution)
                                           .getSingleResult();
-        Long dataStart = (Long) this.em.createNamedQuery(ScenarioTimingEntity.getExecutionStart).setParameter("execution", execution)
+        Long dataStart = (Long) em.createNamedQuery(ScenarioTimingEntity.getExecutionStart).setParameter("execution", execution)
                                        .getSingleResult();
 
         // Bail out of there is no data for this execution.
@@ -68,7 +68,7 @@ public class ScenarioTimingServiceBean extends AbstractProfilingServiceBean impl
         LinkedList<ScenarioTimingEntity> pointData = new LinkedList<ScenarioTimingEntity>();
         for (long point = 0; point * period < dataDuration; ++point) {
             try {
-                pointData.add((ScenarioTimingEntity) this.em.createNamedQuery(ScenarioTimingEntity.createAverage).setParameter("execution",
+                pointData.add((ScenarioTimingEntity) em.createNamedQuery(ScenarioTimingEntity.createAverage).setParameter("execution",
                         execution).setParameter("start", dataStart + point * period).setParameter("stop", dataStart + (point + 1) * period)
                                                             .getSingleResult());
             } catch (NoResultException e) {

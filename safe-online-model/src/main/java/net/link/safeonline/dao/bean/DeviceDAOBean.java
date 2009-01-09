@@ -52,10 +52,10 @@ public class DeviceDAOBean implements DeviceDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, DeviceEntity.QueryInterface.class);
-        this.descriptionQueryObject = QueryObjectFactory
-                                                        .createQueryObject(this.entityManager, DeviceDescriptionEntity.QueryInterface.class);
-        this.propertyQueryObject = QueryObjectFactory.createQueryObject(this.entityManager, DevicePropertyEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, DeviceEntity.QueryInterface.class);
+        descriptionQueryObject = QueryObjectFactory
+                                                        .createQueryObject(entityManager, DeviceDescriptionEntity.QueryInterface.class);
+        propertyQueryObject = QueryObjectFactory.createQueryObject(entityManager, DevicePropertyEntity.QueryInterface.class);
     }
 
     public DeviceEntity addDevice(String name, DeviceClassEntity deviceClass, NodeEntity node, String authenticationPath,
@@ -68,31 +68,31 @@ public class DeviceDAOBean implements DeviceDAO {
         device.setAttributeType(attributeType);
         device.setUserAttributeType(userAttributeType);
         device.setDisableAttributeType(disableAttributeType);
-        this.entityManager.persist(device);
+        entityManager.persist(device);
         return device;
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public List<DeviceEntity> listDevices() {
 
-        List<DeviceEntity> result = this.queryObject.listDevices();
+        List<DeviceEntity> result = queryObject.listDevices();
         return result;
     }
 
     public List<DeviceEntity> listDevices(DeviceClassEntity deviceClass) {
 
-        return this.queryObject.listDevices(deviceClass);
+        return queryObject.listDevices(deviceClass);
     }
 
     public DeviceEntity findDevice(String deviceName) {
 
-        return this.entityManager.find(DeviceEntity.class, deviceName);
+        return entityManager.find(DeviceEntity.class, deviceName);
     }
 
     public DeviceEntity getDevice(String name)
             throws DeviceNotFoundException {
 
-        DeviceEntity device = this.entityManager.find(DeviceEntity.class, name);
+        DeviceEntity device = entityManager.find(DeviceEntity.class, name);
         if (null == device)
             throw new DeviceNotFoundException();
         return device;
@@ -101,18 +101,18 @@ public class DeviceDAOBean implements DeviceDAO {
     public void removeDevice(String deviceName) {
 
         DeviceEntity device = findDevice(deviceName);
-        this.entityManager.remove(device);
-        this.entityManager.flush();
+        entityManager.remove(device);
+        entityManager.flush();
     }
 
     public List<DeviceDescriptionEntity> listDescriptions(DeviceEntity device) {
 
-        return this.descriptionQueryObject.listDescriptions(device);
+        return descriptionQueryObject.listDescriptions(device);
     }
 
     public List<DevicePropertyEntity> listProperties(DeviceEntity device) {
 
-        return this.propertyQueryObject.listProperties(device);
+        return propertyQueryObject.listProperties(device);
     }
 
     public void addDescription(DeviceEntity device, DeviceDescriptionEntity description) {
@@ -125,7 +125,7 @@ public class DeviceDAOBean implements DeviceDAO {
         /*
          * Persist.
          */
-        this.entityManager.persist(description);
+        entityManager.persist(description);
     }
 
     public void removeDescription(DeviceDescriptionEntity description) {
@@ -138,18 +138,18 @@ public class DeviceDAOBean implements DeviceDAO {
         /*
          * Remove from database.
          */
-        this.entityManager.remove(description);
+        entityManager.remove(description);
     }
 
     public void saveDescription(DeviceDescriptionEntity description) {
 
-        this.entityManager.merge(description);
+        entityManager.merge(description);
     }
 
     public DeviceDescriptionEntity getDescription(DeviceDescriptionPK descriptionPK)
             throws DeviceDescriptionNotFoundException {
 
-        DeviceDescriptionEntity description = this.entityManager.find(DeviceDescriptionEntity.class, descriptionPK);
+        DeviceDescriptionEntity description = entityManager.find(DeviceDescriptionEntity.class, descriptionPK);
         if (null == description)
             throw new DeviceDescriptionNotFoundException();
         return description;
@@ -157,7 +157,7 @@ public class DeviceDAOBean implements DeviceDAO {
 
     public DeviceDescriptionEntity findDescription(DeviceDescriptionPK descriptionPK) {
 
-        DeviceDescriptionEntity description = this.entityManager.find(DeviceDescriptionEntity.class, descriptionPK);
+        DeviceDescriptionEntity description = entityManager.find(DeviceDescriptionEntity.class, descriptionPK);
         return description;
     }
 
@@ -171,7 +171,7 @@ public class DeviceDAOBean implements DeviceDAO {
         /*
          * Persist.
          */
-        this.entityManager.persist(property);
+        entityManager.persist(property);
     }
 
     public void removeProperty(DevicePropertyEntity property) {
@@ -184,18 +184,18 @@ public class DeviceDAOBean implements DeviceDAO {
         /*
          * Remove from database.
          */
-        this.entityManager.remove(property);
+        entityManager.remove(property);
     }
 
     public void saveProperty(DevicePropertyEntity property) {
 
-        this.entityManager.merge(property);
+        entityManager.merge(property);
     }
 
     public DevicePropertyEntity getProperty(DevicePropertyPK propertyPK)
             throws DevicePropertyNotFoundException {
 
-        DevicePropertyEntity property = this.entityManager.find(DevicePropertyEntity.class, propertyPK);
+        DevicePropertyEntity property = entityManager.find(DevicePropertyEntity.class, propertyPK);
         if (null == property)
             throw new DevicePropertyNotFoundException();
         return property;
@@ -203,19 +203,19 @@ public class DeviceDAOBean implements DeviceDAO {
 
     public DevicePropertyEntity findProperty(DevicePropertyPK propertyPK) {
 
-        DevicePropertyEntity property = this.entityManager.find(DevicePropertyEntity.class, propertyPK);
+        DevicePropertyEntity property = entityManager.find(DevicePropertyEntity.class, propertyPK);
         return property;
     }
 
     public List<DeviceEntity> listDevices(String authenticationContextClass) {
 
-        return this.queryObject.listDevices(authenticationContextClass);
+        return queryObject.listDevices(authenticationContextClass);
     }
 
     public DeviceEntity getDevice(X509Certificate certificate)
             throws DeviceNotFoundException {
 
-        List<DeviceEntity> devices = this.queryObject.listDevicesWhereCertificateSubject(certificate.getSubjectX500Principal().getName());
+        List<DeviceEntity> devices = queryObject.listDevicesWhereCertificateSubject(certificate.getSubjectX500Principal().getName());
         if (devices.isEmpty())
             throw new DeviceNotFoundException();
         DeviceEntity device = devices.get(0);
@@ -224,7 +224,7 @@ public class DeviceDAOBean implements DeviceDAO {
 
     public DeviceEntity findDevice(X509Certificate certificate) {
 
-        List<DeviceEntity> devices = this.queryObject.listDevicesWhereCertificateSubject(certificate.getSubjectX500Principal().getName());
+        List<DeviceEntity> devices = queryObject.listDevicesWhereCertificateSubject(certificate.getSubjectX500Principal().getName());
         if (devices.isEmpty())
             return null;
         DeviceEntity device = devices.get(0);

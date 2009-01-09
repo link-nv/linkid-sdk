@@ -60,7 +60,7 @@ public class RoomServiceTest extends AbstractCinemaServiceTest {
 
         super.setup();
 
-        this.initializationService.buildEntities();
+        initializationService.buildEntities();
     }
 
     @Test
@@ -89,11 +89,11 @@ public class RoomServiceTest extends AbstractCinemaServiceTest {
         }
 
         // Get rooms.
-        List<CinemaTheatreEntity> theatres = this.theatreService.getAllTheatres();
+        List<CinemaTheatreEntity> theatres = theatreService.getAllTheatres();
         for (CinemaTheatreEntity theatre : theatres) {
-            List<CinemaFilmEntity> films = this.filmService.getFilmsThatPlayIn(theatre);
+            List<CinemaFilmEntity> films = filmService.getFilmsThatPlayIn(theatre);
             for (CinemaFilmEntity film : films) {
-                List<CinemaRoomEntity> rooms = this.roomService.getRoomsFor(theatre, film);
+                List<CinemaRoomEntity> rooms = roomService.getRoomsFor(theatre, film);
 
                 List<String> testRoomNames = testTheatresFilmsRoomNames.get(theatre.getName()).get(film.getName());
                 List<String> sampleRoomNames = new LinkedList<String>();

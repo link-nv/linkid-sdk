@@ -68,7 +68,7 @@ public class TaskSchedulerBean implements TaskScheduler {
     public void timeOut(Timer timer) {
 
         String schedulingName = (String) timer.getInfo();
-        SchedulingEntity scheduling = this.schedulingDAO.findSchedulingByName(schedulingName);
+        SchedulingEntity scheduling = schedulingDAO.findSchedulingByName(schedulingName);
 
         // the scheduling does not exist anymore
         // we just return without setting this timer again
@@ -113,10 +113,10 @@ public class TaskSchedulerBean implements TaskScheduler {
         } catch (Exception e) {
             endDate = new Date(System.currentTimeMillis());
             LOG.debug("Could not get Task: " + taskEntity.getJndiName());
-            this.taskHistoryDAO.addTaskHistoryEntity(taskEntity, e.getMessage(), false, startDate, endDate);
+            taskHistoryDAO.addTaskHistoryEntity(taskEntity, e.getMessage(), false, startDate, endDate);
             return;
         }
-        this.taskHistoryDAO.addTaskHistoryEntity(taskEntity, "", true, startDate, endDate);
+        taskHistoryDAO.addTaskHistoryEntity(taskEntity, "", true, startDate, endDate);
     }
 
     public void performScheduling(SchedulingEntity scheduling) {
@@ -133,9 +133,9 @@ public class TaskSchedulerBean implements TaskScheduler {
     public void postStart() {
 
         // find or create the default scheduling
-        SchedulingEntity defaultScheduling = this.schedulingDAO.findSchedulingByName("default");
+        SchedulingEntity defaultScheduling = schedulingDAO.findSchedulingByName("default");
         if (defaultScheduling == null) {
-            defaultScheduling = this.schedulingDAO.addScheduling("default", this.defaultCronExpression);
+            defaultScheduling = schedulingDAO.addScheduling("default", defaultCronExpression);
             try {
                 setTimer(defaultScheduling);
             } catch (Exception ex) {
@@ -144,7 +144,7 @@ public class TaskSchedulerBean implements TaskScheduler {
 
         // check condition of current scheduling and tasks
         LOG.debug("Checking scheduling and task state");
-        List<SchedulingEntity> schedulings = this.schedulingDAO.listSchedulings();
+        List<SchedulingEntity> schedulings = schedulingDAO.listSchedulings();
         for (SchedulingEntity scheduling : schedulings) {
             LOG.debug("checking scheduling: " + scheduling.getName());
             // check if the task still exists
@@ -155,7 +155,7 @@ public class TaskSchedulerBean implements TaskScheduler {
                     EjbUtils.getEJB(taskEntity.getJndiName(), Task.class);
                 } catch (Exception e) {
                     LOG.debug("Removing task entity: " + taskEntity.getJndiName());
-                    this.taskDAO.removeTaskEntity(taskEntity);
+                    taskDAO.removeTaskEntity(taskEntity);
                 }
             }
 
@@ -179,10 +179,10 @@ public class TaskSchedulerBean implements TaskScheduler {
         for (Entry<String, Task> taskEntry : taskNameMap.entrySet()) {
             String taskJndiName = Task.JNDI_PREFIX + taskEntry.getKey();
             String taskName = taskEntry.getValue().getName();
-            TaskEntity taskEntity = this.taskDAO.findTaskEntity(taskJndiName);
+            TaskEntity taskEntity = taskDAO.findTaskEntity(taskJndiName);
             if (taskEntity == null) {
                 LOG.debug("Found new task: " + taskJndiName);
-                taskEntity = this.taskDAO.addTaskEntity(taskJndiName, taskName, defaultScheduling);
+                taskEntity = taskDAO.addTaskEntity(taskJndiName, taskName, defaultScheduling);
                 defaultScheduling.addTaskEntity(taskEntity);
             }
         }
@@ -234,7 +234,7 @@ public class TaskSchedulerBean implements TaskScheduler {
         do {
             tries--;
             try {
-                timer = this.timerService.createTimer(fireDate, schedulingName);
+                timer = timerService.createTimer(fireDate, schedulingName);
             } catch (Exception e) {
                 LOG.error("error creating timer: " + e.getMessage(), e);
                 LOG.error("trying again...");

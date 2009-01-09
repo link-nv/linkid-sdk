@@ -44,13 +44,13 @@ public class ApplicationOwnerDAOBean implements ApplicationOwnerDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, ApplicationOwnerEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, ApplicationOwnerEntity.QueryInterface.class);
     }
 
     public ApplicationOwnerEntity findApplicationOwner(String name) {
 
         LOG.debug("find app owner: " + name);
-        ApplicationOwnerEntity applicationOwner = this.entityManager.find(ApplicationOwnerEntity.class, name);
+        ApplicationOwnerEntity applicationOwner = entityManager.find(ApplicationOwnerEntity.class, name);
         return applicationOwner;
     }
 
@@ -58,7 +58,7 @@ public class ApplicationOwnerDAOBean implements ApplicationOwnerDAO {
 
         LOG.debug("add application owner: " + name);
         ApplicationOwnerEntity applicationOwner = new ApplicationOwnerEntity(name, admin);
-        this.entityManager.persist(applicationOwner);
+        entityManager.persist(applicationOwner);
         return applicationOwner;
     }
 
@@ -74,7 +74,7 @@ public class ApplicationOwnerDAOBean implements ApplicationOwnerDAO {
 
     public List<ApplicationOwnerEntity> listApplicationOwners() {
 
-        List<ApplicationOwnerEntity> applicationOwners = this.queryObject.listApplicationOwners();
+        List<ApplicationOwnerEntity> applicationOwners = queryObject.listApplicationOwners();
         return applicationOwners;
     }
 
@@ -89,7 +89,7 @@ public class ApplicationOwnerDAOBean implements ApplicationOwnerDAO {
 
     public ApplicationOwnerEntity findApplicationOwner(SubjectEntity adminSubject) {
 
-        ApplicationOwnerEntity applicationOwner = this.queryObject.getApplicationOwner(adminSubject);
+        ApplicationOwnerEntity applicationOwner = queryObject.getApplicationOwner(adminSubject);
         return applicationOwner;
     }
 
@@ -97,7 +97,7 @@ public class ApplicationOwnerDAOBean implements ApplicationOwnerDAO {
 
         LOG.debug("remove application owner: " + name);
         ApplicationOwnerEntity applicationOwner = findApplicationOwner(name);
-        this.entityManager.remove(applicationOwner);
+        entityManager.remove(applicationOwner);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)

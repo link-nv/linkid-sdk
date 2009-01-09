@@ -86,18 +86,18 @@ public class BasicScenario implements Scenario {
         try {
             PerformanceServiceRemote service = (PerformanceServiceRemote) getInitialContext(execution.getHostname()).lookup(
                     PerformanceServiceRemote.JNDI_BINDING);
-            this.applicationKey = new KeyStore.PrivateKeyEntry(service.getPrivateKey(), new Certificate[] { service.getCertificate() });
+            applicationKey = new KeyStore.PrivateKeyEntry(service.getPrivateKey(), new Certificate[] { service.getCertificate() });
         } catch (NamingException e) {
             LOG.error("OLAS couldn't provide performance keys.", e);
         }
-        if (this.applicationKey == null) {
-            this.applicationKey = PerformanceKeyStoreUtils.getPrivateKeyEntry();
+        if (applicationKey == null) {
+            applicationKey = PerformanceKeyStoreUtils.getPrivateKeyEntry();
         }
 
         LOG.debug("building drivers..");
-        this.authDriver = new AuthDriver(execution, agentTime);
-        this.attribDriver = new AttribDriver(execution, agentTime);
-        this.idDriver = new IdMappingDriver(execution, agentTime);
+        authDriver = new AuthDriver(execution, agentTime);
+        attribDriver = new AttribDriver(execution, agentTime);
+        idDriver = new IdMappingDriver(execution, agentTime);
     }
 
     /**
@@ -105,24 +105,21 @@ public class BasicScenario implements Scenario {
      */
     public void run() {
 
-        if (this.applicationKey == null) {
+        if (applicationKey == null)
             throw new IllegalStateException("Performance keys not set up. Perhaps you didn't call prepare?");
-        }
 
         /* Logging in. */
-        String loginUserId = this.authDriver.login(this.applicationKey, applicationName, username, password);
-        if (loginUserId == null) {
+        String loginUserId = authDriver.login(applicationKey, applicationName, username, password);
+        if (loginUserId == null)
             throw new IllegalStateException("Login failed.");
-        }
 
         /* Verifying UUID. */
-        String mappedUserId = this.idDriver.getUserId(this.applicationKey, username);
-        if (!loginUserId.equals(mappedUserId)) {
+        String mappedUserId = idDriver.getUserId(applicationKey, username);
+        if (!loginUserId.equals(mappedUserId))
             throw new IllegalStateException("Login ID doesn't match mapped ID.");
-        }
 
         /* Reading attributes. */
-        this.attribDriver.getAttributes(this.applicationKey, mappedUserId);
+        attribDriver.getAttributes(applicationKey, mappedUserId);
     }
 
     /**

@@ -82,7 +82,7 @@ public class StatisticDataPointEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     public long getId() {
 
-        return this.id;
+        return id;
     }
 
     public void setId(long id) {
@@ -92,7 +92,7 @@ public class StatisticDataPointEntity implements Serializable {
 
     public long getX() {
 
-        return this.x;
+        return x;
     }
 
     public void setX(long x) {
@@ -102,7 +102,7 @@ public class StatisticDataPointEntity implements Serializable {
 
     public long getY() {
 
-        return this.y;
+        return y;
     }
 
     public void setY(long y) {
@@ -112,7 +112,7 @@ public class StatisticDataPointEntity implements Serializable {
 
     public long getZ() {
 
-        return this.z;
+        return z;
     }
 
     public void setZ(long z) {
@@ -122,7 +122,7 @@ public class StatisticDataPointEntity implements Serializable {
 
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -134,7 +134,7 @@ public class StatisticDataPointEntity implements Serializable {
     @JoinColumn(name = "statistic")
     public StatisticEntity getStatistic() {
 
-        return this.statistic;
+        return statistic;
     }
 
     public void setStatistic(StatisticEntity statistic) {
@@ -144,7 +144,7 @@ public class StatisticDataPointEntity implements Serializable {
 
     public Date getCreationTime() {
 
-        return this.creationTime;
+        return creationTime;
     }
 
     public void setCreationTime(Date creationTime) {

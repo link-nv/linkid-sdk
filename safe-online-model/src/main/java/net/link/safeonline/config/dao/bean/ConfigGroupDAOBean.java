@@ -35,34 +35,34 @@ public class ConfigGroupDAOBean implements ConfigGroupDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, ConfigGroupEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, ConfigGroupEntity.QueryInterface.class);
     }
 
     public ConfigGroupEntity addConfigGroup(String name) {
 
         ConfigGroupEntity configGroup = new ConfigGroupEntity(name);
-        this.entityManager.persist(configGroup);
+        entityManager.persist(configGroup);
         return configGroup;
     }
 
     public void removeConfigGroup(ConfigGroupEntity configGroup) {
 
-        this.entityManager.remove(configGroup);
+        entityManager.remove(configGroup);
     }
 
     public void saveConfigGroup(ConfigGroupEntity configGroup) {
 
-        this.entityManager.merge(configGroup);
+        entityManager.merge(configGroup);
     }
 
     public ConfigGroupEntity findConfigGroup(String name) {
 
-        return this.entityManager.find(ConfigGroupEntity.class, name);
+        return entityManager.find(ConfigGroupEntity.class, name);
     }
 
     public List<ConfigGroupEntity> listConfigGroups() {
 
-        List<ConfigGroupEntity> result = this.queryObject.listConfigGroups();
+        List<ConfigGroupEntity> result = queryObject.listConfigGroups();
         return result;
     }
 

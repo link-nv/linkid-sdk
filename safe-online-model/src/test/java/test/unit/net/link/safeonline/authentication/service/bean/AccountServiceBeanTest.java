@@ -41,10 +41,10 @@ public class AccountServiceBeanTest extends TestCase {
 
         super.setUp();
 
-        this.entityTestManager = new EntityTestManager();
-        this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
+        entityTestManager = new EntityTestManager();
+        entityTestManager.setUp(SafeOnlineTestContainer.entities);
 
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
 
         JmxTestUtils jmxTestUtils = new JmxTestUtils();
         jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
@@ -74,14 +74,14 @@ public class AccountServiceBeanTest extends TestCase {
         SystemInitializationStartableBean systemInit = EJBTestUtils.newInstance(SystemInitializationStartableBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager);
         systemInit.postStart();
-        this.entityTestManager.refreshEntityManager();
+        entityTestManager.refreshEntityManager();
     }
 
     @Override
     protected void tearDown()
             throws Exception {
 
-        this.entityTestManager.tearDown();
+        entityTestManager.tearDown();
         super.tearDown();
     }
 
@@ -89,7 +89,7 @@ public class AccountServiceBeanTest extends TestCase {
             throws Exception {
 
         // setup
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
 
         String testLogin = "test-login";
 

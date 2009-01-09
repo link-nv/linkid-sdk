@@ -48,7 +48,7 @@ public class InitializationServiceBean extends AbstractBankServiceBean implement
         BankAccountEntity account;
 
         // Don't bother if Pol already exists.
-        if (this.em.find(BankUserEntity.class, digipassUser_BankId) != null)
+        if (em.find(BankUserEntity.class, digipassUser_BankId) != null)
             return;
 
         // Pol.
@@ -62,10 +62,10 @@ public class InitializationServiceBean extends AbstractBankServiceBean implement
 
         // Persist.
         for (BankUserEntity u : users) {
-            this.em.persist(u);
+            em.persist(u);
         }
         for (BankAccountEntity a : accounts) {
-            this.em.persist(a);
+            em.persist(a);
         }
     }
 }

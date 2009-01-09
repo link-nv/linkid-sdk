@@ -65,15 +65,15 @@ public class EmailBean implements MessageListener {
             LOG.debug("Message received for: " + message.getDestination() + " about: " + message.getSubject());
 
             Properties props = new Properties();
-            props.put("mail.smtp.host", this.emailServer);
-            props.put("mail.smtp.port", this.emailServerPort.toString());
+            props.put("mail.smtp.host", emailServer);
+            props.put("mail.smtp.port", emailServerPort.toString());
             Session session = Session.getInstance(props, null);
 
             MimeMessage mimemsg = new MimeMessage(session);
-            mimemsg.setFrom(new InternetAddress(this.emailSender));
+            mimemsg.setFrom(new InternetAddress(emailSender));
             InternetAddress[] address = { new InternetAddress(message.getDestination()) };
             mimemsg.setRecipients(javax.mail.Message.RecipientType.TO, address);
-            mimemsg.setSubject(this.emailSubjectPrefix + " " + message.getSubject());
+            mimemsg.setSubject(emailSubjectPrefix + " " + message.getSubject());
             mimemsg.setSentDate(new Date());
 
             MimeBodyPart mbp1 = new MimeBodyPart();

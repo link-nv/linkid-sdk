@@ -5,8 +5,8 @@ import java.util.List;
 import net.link.safeonline.demo.bank.entity.BankAccountEntity;
 import net.link.safeonline.demo.bank.entity.BankTransactionEntity;
 import net.link.safeonline.wicket.tools.WicketUtil;
-import net.link.safeonline.wicket.web.RequireLogin;
 import net.link.safeonline.wicket.web.OlasLoginLink;
+import net.link.safeonline.wicket.web.RequireLogin;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.basic.Label;
@@ -119,8 +119,8 @@ public class AccountPage extends LayoutPage {
                 }
             });
 
-            add(new PageLink("newAccount", NewAccountPage.class));
-            add(new PageLink("newTransaction", NewTransactionPage.class));
+            add(new PageLink<NewAccountPage>("newAccount", NewAccountPage.class));
+            add(new PageLink<NewTransactionPage>("newTransaction", NewTransactionPage.class));
         }
 
         @Override

@@ -65,7 +65,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public String getAuthType() {
 
-        return this.base.getAuthType();
+        return base.getAuthType();
     }
 
     /**
@@ -73,7 +73,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public String getContextPath() {
 
-        return this.base.getContextPath();
+        return base.getContextPath();
     }
 
     /**
@@ -81,7 +81,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public Cookie[] getCookies() {
 
-        return this.base.getCookies();
+        return base.getCookies();
     }
 
     /**
@@ -89,7 +89,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public long getDateHeader(String header) {
 
-        return this.base.getDateHeader(header);
+        return base.getDateHeader(header);
     }
 
     /**
@@ -97,7 +97,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public String getHeader(String name) {
 
-        return this.base.getHeader(name);
+        return base.getHeader(name);
     }
 
     /**
@@ -106,7 +106,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
     @SuppressWarnings("unchecked")
     public Enumeration getHeaderNames() {
 
-        return this.base.getHeaderNames();
+        return base.getHeaderNames();
     }
 
     /**
@@ -115,7 +115,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
     @SuppressWarnings("unchecked")
     public Enumeration getHeaders(String name) {
 
-        return this.base.getHeaders(name);
+        return base.getHeaders(name);
     }
 
     /**
@@ -123,7 +123,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public int getIntHeader(String name) {
 
-        return this.base.getIntHeader(name);
+        return base.getIntHeader(name);
     }
 
     /**
@@ -131,7 +131,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public String getMethod() {
 
-        return this.method.name();
+        return method.name();
     }
 
     /**
@@ -139,7 +139,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public String getPathInfo() {
 
-        return this.base.getPathInfo();
+        return base.getPathInfo();
     }
 
     /**
@@ -147,7 +147,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public String getPathTranslated() {
 
-        return this.base.getPathTranslated();
+        return base.getPathTranslated();
     }
 
     /**
@@ -155,7 +155,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public String getQueryString() {
 
-        return this.base.getQueryString();
+        return base.getQueryString();
     }
 
     /**
@@ -163,7 +163,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public String getRemoteUser() {
 
-        return this.base.getRemoteUser();
+        return base.getRemoteUser();
     }
 
     /**
@@ -171,7 +171,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public String getRequestURI() {
 
-        return this.requestURI;
+        return requestURI;
     }
 
     /**
@@ -179,7 +179,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public StringBuffer getRequestURL() {
 
-        return new StringBuffer(this.requestURI);
+        return new StringBuffer(requestURI);
     }
 
     /**
@@ -187,7 +187,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public String getRequestedSessionId() {
 
-        return this.base.getRequestedSessionId();
+        return base.getRequestedSessionId();
     }
 
     /**
@@ -195,7 +195,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public String getServletPath() {
 
-        return this.base.getServletPath();
+        return base.getServletPath();
     }
 
     /**
@@ -203,7 +203,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public HttpSession getSession() {
 
-        return this.base.getSession();
+        return base.getSession();
     }
 
     /**
@@ -211,7 +211,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public HttpSession getSession(boolean create) {
 
-        return this.base.getSession(create);
+        return base.getSession(create);
     }
 
     /**
@@ -219,7 +219,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public Principal getUserPrincipal() {
 
-        return this.base.getUserPrincipal();
+        return base.getUserPrincipal();
     }
 
     /**
@@ -227,7 +227,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public boolean isRequestedSessionIdFromCookie() {
 
-        return this.base.isRequestedSessionIdFromCookie();
+        return base.isRequestedSessionIdFromCookie();
     }
 
     /**
@@ -235,7 +235,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public boolean isRequestedSessionIdFromURL() {
 
-        return this.base.isRequestedSessionIdFromURL();
+        return base.isRequestedSessionIdFromURL();
     }
 
     /**
@@ -243,7 +243,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public boolean isRequestedSessionIdValid() {
 
-        return this.base.isRequestedSessionIdValid();
+        return base.isRequestedSessionIdValid();
     }
 
     /**
@@ -251,7 +251,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public boolean isUserInRole(String role) {
 
-        return this.base.isUserInRole(role);
+        return base.isUserInRole(role);
     }
 
     /**
@@ -259,7 +259,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public Object getAttribute(String name) {
 
-        return this.base.getAttribute(name);
+        return base.getAttribute(name);
     }
 
     /**
@@ -268,7 +268,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
     @SuppressWarnings("unchecked")
     public Enumeration getAttributeNames() {
 
-        return this.base.getAttributeNames();
+        return base.getAttributeNames();
     }
 
     /**
@@ -276,7 +276,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public String getCharacterEncoding() {
 
-        return this.base.getCharacterEncoding();
+        return base.getCharacterEncoding();
     }
 
     /**
@@ -292,7 +292,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public String getContentType() {
 
-        return this.base.getContentType();
+        return base.getContentType();
     }
 
     /**
@@ -309,7 +309,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public String getLocalAddr() {
 
-        return this.base.getLocalAddr();
+        return base.getLocalAddr();
     }
 
     /**
@@ -317,7 +317,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public String getLocalName() {
 
-        return this.base.getLocalName();
+        return base.getLocalName();
     }
 
     /**
@@ -325,7 +325,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public int getLocalPort() {
 
-        return this.base.getLocalPort();
+        return base.getLocalPort();
     }
 
     /**
@@ -333,7 +333,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public Locale getLocale() {
 
-        return this.base.getLocale();
+        return base.getLocale();
     }
 
     /**
@@ -342,7 +342,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
     @SuppressWarnings("unchecked")
     public Enumeration getLocales() {
 
-        return this.base.getLocales();
+        return base.getLocales();
     }
 
     /**
@@ -350,7 +350,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public String getParameter(String name) {
 
-        return this.base.getParameter(name);
+        return base.getParameter(name);
     }
 
     /**
@@ -359,7 +359,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
     @SuppressWarnings("unchecked")
     public Map getParameterMap() {
 
-        return this.base.getParameterMap();
+        return base.getParameterMap();
     }
 
     /**
@@ -368,7 +368,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
     @SuppressWarnings("unchecked")
     public Enumeration getParameterNames() {
 
-        return this.base.getParameterNames();
+        return base.getParameterNames();
     }
 
     /**
@@ -376,7 +376,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public String[] getParameterValues(String name) {
 
-        return this.base.getParameterValues(name);
+        return base.getParameterValues(name);
     }
 
     /**
@@ -384,7 +384,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public String getProtocol() {
 
-        return this.base.getProtocol();
+        return base.getProtocol();
     }
 
     /**
@@ -401,7 +401,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public String getRemoteAddr() {
 
-        return this.base.getRemoteAddr();
+        return base.getRemoteAddr();
     }
 
     /**
@@ -409,7 +409,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public String getRemoteHost() {
 
-        return this.base.getRemoteHost();
+        return base.getRemoteHost();
     }
 
     /**
@@ -417,7 +417,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public int getRemotePort() {
 
-        return this.base.getRemotePort();
+        return base.getRemotePort();
     }
 
     /**
@@ -425,7 +425,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public RequestDispatcher getRequestDispatcher(String name) {
 
-        return this.base.getRequestDispatcher(name);
+        return base.getRequestDispatcher(name);
     }
 
     /**
@@ -433,7 +433,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public String getScheme() {
 
-        return this.base.getScheme();
+        return base.getScheme();
     }
 
     /**
@@ -441,7 +441,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public String getServerName() {
 
-        return this.base.getServerName();
+        return base.getServerName();
     }
 
     /**
@@ -449,7 +449,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public int getServerPort() {
 
-        return this.base.getServerPort();
+        return base.getServerPort();
     }
 
     /**
@@ -457,7 +457,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public boolean isSecure() {
 
-        return this.base.isSecure();
+        return base.isSecure();
     }
 
     /**
@@ -465,7 +465,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public void removeAttribute(String name) {
 
-        this.base.removeAttribute(name);
+        base.removeAttribute(name);
     }
 
     /**
@@ -473,7 +473,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
      */
     public void setAttribute(String name, Object value) {
 
-        this.base.setAttribute(name, value);
+        base.setAttribute(name, value);
     }
 
     /**
@@ -482,7 +482,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
     public void setCharacterEncoding(String encoding)
             throws UnsupportedEncodingException {
 
-        this.base.setCharacterEncoding(encoding);
+        base.setCharacterEncoding(encoding);
     }
 
     /**
@@ -492,7 +492,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
     @SuppressWarnings("deprecation")
     public boolean isRequestedSessionIdFromUrl() {
 
-        return this.base.isRequestedSessionIdFromUrl();
+        return base.isRequestedSessionIdFromUrl();
     }
 
     /**
@@ -502,6 +502,6 @@ public class MockHttpServletRequest implements HttpServletRequest {
     @SuppressWarnings("deprecation")
     public String getRealPath(String name) {
 
-        return this.base.getRealPath(name);
+        return base.getRealPath(name);
     }
 }

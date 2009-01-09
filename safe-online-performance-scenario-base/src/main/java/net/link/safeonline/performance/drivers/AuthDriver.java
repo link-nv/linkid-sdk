@@ -99,14 +99,14 @@ public class AuthDriver extends ProfileDriver {
 
         super(NAME, execution, agentTime);
 
-        this.tidy = new Tidy();
-        this.tidy.setQuiet(true);
-        this.tidy.setShowWarnings(false);
+        tidy = new Tidy();
+        tidy.setQuiet(true);
+        tidy.setShowWarnings(false);
 
         Protocol.registerProtocol("https", new Protocol("https", new MySSLSocketFactory(), 443));
 
         // MultiThreadedHttpConnectionManager manager = new MultiThreadedHttpConnectionManager();
-        this.client = new HttpClient();
+        client = new HttpClient();
     }
 
 
@@ -123,7 +123,7 @@ public class AuthDriver extends ProfileDriver {
 
                 SSLContext sslContext = SSLContext.getInstance("TLS");
                 sslContext.init(null, trustManagers, new SecureRandom());
-                this.sslSocketFactory = sslContext.getSocketFactory();
+                sslSocketFactory = sslContext.getSocketFactory();
             }
 
             catch (GeneralSecurityException e) {
@@ -135,14 +135,14 @@ public class AuthDriver extends ProfileDriver {
                 throws IOException, UnknownHostException {
 
             LOG.debug("createSocket: " + host + ":" + port);
-            return this.sslSocketFactory.createSocket(host, port);
+            return sslSocketFactory.createSocket(host, port);
         }
 
         public Socket createSocket(String host, int port, InetAddress localAddress, int localPort)
                 throws IOException, UnknownHostException {
 
             LOG.debug("createSocket: " + host + ":" + port + ", local: " + localAddress + ":" + localPort);
-            return this.sslSocketFactory.createSocket(host, port, localAddress, localPort);
+            return sslSocketFactory.createSocket(host, port, localAddress, localPort);
         }
 
         public Socket createSocket(String host, int port, InetAddress localAddress, int localPort, HttpConnectionParams params)
@@ -153,7 +153,7 @@ public class AuthDriver extends ProfileDriver {
             if (null != params && params.getConnectionTimeout() != 0)
                 throw new IllegalArgumentException("Timeout is not supported.");
 
-            return this.sslSocketFactory.createSocket(host, port, localAddress, localPort);
+            return sslSocketFactory.createSocket(host, port, localAddress, localPort);
         }
     }
 
@@ -194,7 +194,7 @@ public class AuthDriver extends ProfileDriver {
      */
     public String login(PrivateKeyEntry application, String applicationName, String username, String password) {
 
-        this.iterationDatas = new ArrayList<ProfileData>();
+        iterationDatas = new ArrayList<ProfileData>();
 
         try {
             // Prepare authentication request token.
@@ -258,7 +258,7 @@ public class AuthDriver extends ProfileDriver {
                     }
 
                 if (null == formNode || null == XPathAPI.selectSingleNode(formNode, "//input[@type='hidden' and @name='SAMLResponse']")) {
-                    LOG.error("Unexpected reply:\n" + this.response);
+                    LOG.error("Unexpected reply:\n" + response);
                     throw new DriverException("Expected a SAMLResponse!");
                 }
 
@@ -281,7 +281,7 @@ public class AuthDriver extends ProfileDriver {
             }
 
             catch (NullPointerException e) {
-                LOG.error("Unexpected reply:\n" + this.response, e);
+                LOG.error("Unexpected reply:\n" + response, e);
                 throw e;
             }
         }
@@ -292,7 +292,7 @@ public class AuthDriver extends ProfileDriver {
 
         finally {
             ProfileData iterationData = new ProfileData();
-            for (ProfileData requestData : this.iterationDatas) {
+            for (ProfileData requestData : iterationDatas) {
                 for (Map.Entry<String, Long> measurement : requestData.getMeasurements().entrySet()) {
                     try {
                         String key = measurement.getKey();
@@ -348,14 +348,14 @@ public class AuthDriver extends ProfileDriver {
      */
     private String getJSessionId() {
 
-        if (this.jsessionid == null) {
-            for (Cookie cookie : this.client.getState().getCookies())
+        if (jsessionid == null) {
+            for (Cookie cookie : client.getState().getCookies())
                 if ("JSESSIONID".equals(cookie.getName())) {
-                    this.jsessionid = cookie.getValue();
+                    jsessionid = cookie.getValue();
                 }
         }
 
-        return this.jsessionid;
+        return jsessionid;
     }
 
     /**
@@ -424,7 +424,7 @@ public class AuthDriver extends ProfileDriver {
         try {
             // Optionally add JSessionID cookie and execute method.
             method.addRequestHeader("Cookie", "JSESSIONID=" + getJSessionId());
-            this.client.executeMethod(method);
+            client.executeMethod(method);
 
             // Parse response headers for profile data.
             Map<String, List<String>> requestHeaders = new HashMap<String, List<String>>();
@@ -434,18 +434,18 @@ public class AuthDriver extends ProfileDriver {
 
                 requestHeaders.put(header.getName(), headerValues);
             }
-            this.iterationDatas.add(new ProfileData(requestHeaders));
+            iterationDatas.add(new ProfileData(requestHeaders));
 
             // Remember the last non-null response body for debugging purposes.
             String newResponse = method.getResponseBodyAsString();
             if (null == newResponse || newResponse.trim().length() == 0) {
-                this.response += "\n\nNext response has an empty body!";
+                response += "\n\nNext response has an empty body!";
             } else {
-                this.response = newResponse;
+                response = newResponse;
             }
 
             // Parse response body as DOM and extract form node.
-            Document resultDocument = this.tidy.parseDOM(method.getResponseBodyAsStream(), null);
+            Document resultDocument = tidy.parseDOM(method.getResponseBodyAsStream(), null);
             if (null == resultDocument)
                 return null;
 

@@ -78,11 +78,11 @@ public class PasswordManagerBean implements PasswordManager {
         AttributeTypeEntity passwordDeviceAttributeType;
         AttributeTypeEntity passwordDeviceDisableAttributeType;
         try {
-            passwordHashAttributeType = this.attributeTypeDAO.getAttributeType(PasswordConstants.PASSWORD_HASH_ATTRIBUTE);
-            passwordSeedAttributeType = this.attributeTypeDAO.getAttributeType(PasswordConstants.PASSWORD_SEED_ATTRIBUTE);
-            passwordAlgorithmAttributeType = this.attributeTypeDAO.getAttributeType(PasswordConstants.PASSWORD_ALGORITHM_ATTRIBUTE);
-            passwordDeviceAttributeType = this.attributeTypeDAO.getAttributeType(PasswordConstants.PASSWORD_DEVICE_ATTRIBUTE);
-            passwordDeviceDisableAttributeType = this.attributeTypeDAO
+            passwordHashAttributeType = attributeTypeDAO.getAttributeType(PasswordConstants.PASSWORD_HASH_ATTRIBUTE);
+            passwordSeedAttributeType = attributeTypeDAO.getAttributeType(PasswordConstants.PASSWORD_SEED_ATTRIBUTE);
+            passwordAlgorithmAttributeType = attributeTypeDAO.getAttributeType(PasswordConstants.PASSWORD_ALGORITHM_ATTRIBUTE);
+            passwordDeviceAttributeType = attributeTypeDAO.getAttributeType(PasswordConstants.PASSWORD_DEVICE_ATTRIBUTE);
+            passwordDeviceDisableAttributeType = attributeTypeDAO
                                                                       .getAttributeType(PasswordConstants.PASSWORD_DEVICE_DISABLE_ATTRIBUTE);
         } catch (AttributeTypeNotFoundException e) {
             throw new EJBException("password attribute types not found");
@@ -102,18 +102,18 @@ public class PasswordManagerBean implements PasswordManager {
             passwordAttribute.seed.setStringValue(seed);
             passwordAttribute.algorithm.setStringValue(defaultHashingAlgorithm);
         } catch (DeviceNotFoundException e) {
-            AttributeEntity hashAttribute = this.attributeDAO.addAttribute(passwordHashAttributeType, subject, hashValue);
-            AttributeEntity seedAttribute = this.attributeDAO.addAttribute(passwordSeedAttributeType, subject, seed);
-            AttributeEntity algorithmAttribute = this.attributeDAO.addAttribute(passwordAlgorithmAttributeType, subject,
+            AttributeEntity hashAttribute = attributeDAO.addAttribute(passwordHashAttributeType, subject, hashValue);
+            AttributeEntity seedAttribute = attributeDAO.addAttribute(passwordSeedAttributeType, subject, seed);
+            AttributeEntity algorithmAttribute = attributeDAO.addAttribute(passwordAlgorithmAttributeType, subject,
                     defaultHashingAlgorithm);
-            AttributeEntity disableAttribute = this.attributeDAO.addAttribute(passwordDeviceDisableAttributeType, subject);
+            AttributeEntity disableAttribute = attributeDAO.addAttribute(passwordDeviceDisableAttributeType, subject);
             disableAttribute.setBooleanValue(false);
             List<AttributeEntity> members = new LinkedList<AttributeEntity>();
             members.add(hashAttribute);
             members.add(seedAttribute);
             members.add(algorithmAttribute);
             members.add(disableAttribute);
-            AttributeEntity parentAttribute = this.attributeDAO.addAttribute(passwordDeviceAttributeType, subject);
+            AttributeEntity parentAttribute = attributeDAO.addAttribute(passwordDeviceAttributeType, subject);
             parentAttribute.setMembers(members);
         }
     }
@@ -156,13 +156,13 @@ public class PasswordManagerBean implements PasswordManager {
     private Password getPasswordAttribute(SubjectEntity subject)
             throws DeviceNotFoundException {
 
-        AttributeEntity passwordHashAttribute = this.attributeDAO.findAttribute(PasswordConstants.PASSWORD_HASH_ATTRIBUTE, subject);
-        AttributeEntity passwordSeedAttribute = this.attributeDAO.findAttribute(PasswordConstants.PASSWORD_SEED_ATTRIBUTE, subject);
-        AttributeEntity passwordAlgorithmAttribute = this.attributeDAO.findAttribute(PasswordConstants.PASSWORD_ALGORITHM_ATTRIBUTE,
+        AttributeEntity passwordHashAttribute = attributeDAO.findAttribute(PasswordConstants.PASSWORD_HASH_ATTRIBUTE, subject);
+        AttributeEntity passwordSeedAttribute = attributeDAO.findAttribute(PasswordConstants.PASSWORD_SEED_ATTRIBUTE, subject);
+        AttributeEntity passwordAlgorithmAttribute = attributeDAO.findAttribute(PasswordConstants.PASSWORD_ALGORITHM_ATTRIBUTE,
                 subject);
-        AttributeEntity passwordDisableAttribute = this.attributeDAO.findAttribute(PasswordConstants.PASSWORD_DEVICE_DISABLE_ATTRIBUTE,
+        AttributeEntity passwordDisableAttribute = attributeDAO.findAttribute(PasswordConstants.PASSWORD_DEVICE_DISABLE_ATTRIBUTE,
                 subject);
-        AttributeEntity passwordParentAttribute = this.attributeDAO.findAttribute(PasswordConstants.PASSWORD_DEVICE_ATTRIBUTE, subject);
+        AttributeEntity passwordParentAttribute = attributeDAO.findAttribute(PasswordConstants.PASSWORD_DEVICE_ATTRIBUTE, subject);
         if (null == passwordHashAttribute || null == passwordSeedAttribute || null == passwordAlgorithmAttribute
                 || null == passwordParentAttribute || null == passwordDisableAttribute)
             throw new DeviceNotFoundException();
@@ -190,11 +190,11 @@ public class PasswordManagerBean implements PasswordManager {
             throws DeviceNotFoundException {
 
         Password currentPassword = getPasswordAttribute(subject);
-        this.attributeDAO.removeAttribute(currentPassword.algorithm);
-        this.attributeDAO.removeAttribute(currentPassword.hash);
-        this.attributeDAO.removeAttribute(currentPassword.seed);
-        this.attributeDAO.removeAttribute(currentPassword.parent);
-        this.attributeDAO.removeAttribute(currentPassword.disabled);
+        attributeDAO.removeAttribute(currentPassword.algorithm);
+        attributeDAO.removeAttribute(currentPassword.hash);
+        attributeDAO.removeAttribute(currentPassword.seed);
+        attributeDAO.removeAttribute(currentPassword.parent);
+        attributeDAO.removeAttribute(currentPassword.disabled);
     }
 
     /**

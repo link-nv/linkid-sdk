@@ -93,11 +93,11 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
 
         LOG.debug("subscribe");
 
-        ApplicationEntity application = this.applicationDAO.findApplication(certificate);
+        ApplicationEntity application = applicationDAO.findApplication(certificate);
         if (null != application) {
             subscribe(topic, address, application);
         } else {
-            NodeEntity node = this.nodeDAO.findNodeFromAuthnCertificate(certificate);
+            NodeEntity node = nodeDAO.findNodeFromAuthnCertificate(certificate);
             if (null != node) {
                 subscribe(topic, address, node);
             } else
@@ -108,14 +108,14 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
     public void subscribe(String topic, String address, NodeEntity node) {
 
         LOG.debug("subscribe node " + node.getName() + " to topic: " + topic);
-        NotificationProducerSubscriptionEntity subscription = this.notificationProducerDAO.findSubscription(topic);
+        NotificationProducerSubscriptionEntity subscription = notificationProducerDAO.findSubscription(topic);
         if (null == subscription) {
-            subscription = this.notificationProducerDAO.addSubscription(topic);
+            subscription = notificationProducerDAO.addSubscription(topic);
         }
 
-        EndpointReferenceEntity endpointReference = this.endpointReferenceDAO.findEndpointReference(address, node);
+        EndpointReferenceEntity endpointReference = endpointReferenceDAO.findEndpointReference(address, node);
         if (null == endpointReference) {
-            endpointReference = this.endpointReferenceDAO.addEndpointReference(address, node);
+            endpointReference = endpointReferenceDAO.addEndpointReference(address, node);
         }
         subscription.getConsumers().add(endpointReference);
     }
@@ -123,14 +123,14 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
     public void subscribe(String topic, String address, ApplicationEntity application) {
 
         LOG.debug("subscribe application " + application.getName() + " to topic: " + topic);
-        NotificationProducerSubscriptionEntity subscription = this.notificationProducerDAO.findSubscription(topic);
+        NotificationProducerSubscriptionEntity subscription = notificationProducerDAO.findSubscription(topic);
         if (null == subscription) {
-            subscription = this.notificationProducerDAO.addSubscription(topic);
+            subscription = notificationProducerDAO.addSubscription(topic);
         }
 
-        EndpointReferenceEntity endpointReference = this.endpointReferenceDAO.findEndpointReference(address, application);
+        EndpointReferenceEntity endpointReference = endpointReferenceDAO.findEndpointReference(address, application);
         if (null == endpointReference) {
-            endpointReference = this.endpointReferenceDAO.addEndpointReference(address, application);
+            endpointReference = endpointReferenceDAO.addEndpointReference(address, application);
         }
         subscription.getConsumers().add(endpointReference);
     }
@@ -139,11 +139,11 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
             throws SubscriptionNotFoundException, PermissionDeniedException, EndpointReferenceNotFoundException {
 
         LOG.debug("unsubscribe");
-        ApplicationEntity application = this.applicationDAO.findApplication(certificate);
+        ApplicationEntity application = applicationDAO.findApplication(certificate);
         if (null != application) {
             unsubscribe(topic, address, application);
         } else {
-            NodeEntity node = this.nodeDAO.findNodeFromAuthnCertificate(certificate);
+            NodeEntity node = nodeDAO.findNodeFromAuthnCertificate(certificate);
             if (null != node) {
                 unsubscribe(topic, address, node);
             } else
@@ -155,9 +155,9 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
             throws SubscriptionNotFoundException, EndpointReferenceNotFoundException {
 
         LOG.debug("unsubscribe node " + node.getName() + " from topic " + topic);
-        NotificationProducerSubscriptionEntity subscription = this.notificationProducerDAO.getSubscription(topic);
+        NotificationProducerSubscriptionEntity subscription = notificationProducerDAO.getSubscription(topic);
 
-        EndpointReferenceEntity endpointReference = this.endpointReferenceDAO.getEndpointReference(address, node);
+        EndpointReferenceEntity endpointReference = endpointReferenceDAO.getEndpointReference(address, node);
         subscription.getConsumers().remove(endpointReference);
     }
 
@@ -165,9 +165,9 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
             throws SubscriptionNotFoundException, EndpointReferenceNotFoundException {
 
         LOG.debug("unsubscribe application " + application.getName() + " from topic " + topic);
-        NotificationProducerSubscriptionEntity subscription = this.notificationProducerDAO.getSubscription(topic);
+        NotificationProducerSubscriptionEntity subscription = notificationProducerDAO.getSubscription(topic);
 
-        EndpointReferenceEntity endpointReference = this.endpointReferenceDAO.getEndpointReference(address, application);
+        EndpointReferenceEntity endpointReference = endpointReferenceDAO.getEndpointReference(address, application);
         subscription.getConsumers().remove(endpointReference);
     }
 
@@ -175,7 +175,7 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
             throws MessageHandlerNotFoundException {
 
         LOG.debug("send notification for topic: " + topic);
-        NotificationProducerSubscriptionEntity subscription = this.notificationProducerDAO.findSubscription(topic);
+        NotificationProducerSubscriptionEntity subscription = notificationProducerDAO.findSubscription(topic);
         if (null == subscription) {
             LOG.debug("no subscriptions found for topic: " + topic);
             return;
@@ -205,11 +205,11 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
 
         LOG.debug("push notification message");
         try {
-            Connection connection = this.factory.createConnection();
+            Connection connection = factory.createConnection();
             try {
                 Session session = connection.createSession(true, Session.AUTO_ACKNOWLEDGE);
                 try {
-                    MessageProducer producer = session.createProducer(this.notificationsQueue);
+                    MessageProducer producer = session.createProducer(notificationsQueue);
                     try {
                         Message message = notificationMessage.getJMSMessage(session);
                         producer.send(message);
@@ -224,10 +224,10 @@ public class NotificationProducerServiceBean implements NotificationProducerServ
             }
         } catch (JMSException e) {
             LOG.debug("Failed to push notification message on JMS queue: " + e.getMessage());
-            NotificationMessageEntity notificationMessageEntity = this.notificationMessageDAO.findNotificationMessage(notificationMessage,
+            NotificationMessageEntity notificationMessageEntity = notificationMessageDAO.findNotificationMessage(notificationMessage,
                     consumer);
             if (null == notificationMessageEntity) {
-                this.notificationMessageDAO.addNotificationMessage(notificationMessage, consumer);
+                notificationMessageDAO.addNotificationMessage(notificationMessage, consumer);
             } else {
                 notificationMessageEntity.addAttempt();
             }

@@ -64,7 +64,7 @@ public class ApplicationPoolServiceBean implements ApplicationPoolService, Appli
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public List<ApplicationPoolEntity> listApplicationPools() {
 
-        return this.applicationPoolDAO.listApplicationPools();
+        return applicationPoolDAO.listApplicationPools();
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -77,11 +77,11 @@ public class ApplicationPoolServiceBean implements ApplicationPoolService, Appli
 
         List<ApplicationEntity> applicationList = new LinkedList<ApplicationEntity>();
         for (String applicationName : applicationNameList) {
-            ApplicationEntity application = this.applicationDAO.getApplication(applicationName);
+            ApplicationEntity application = applicationDAO.getApplication(applicationName);
             applicationList.add(application);
         }
 
-        ApplicationPoolEntity applicationPool = this.applicationPoolDAO.addApplicationPool(name, ssoTimeout);
+        ApplicationPoolEntity applicationPool = applicationPoolDAO.addApplicationPool(name, ssoTimeout);
         applicationPool.setApplications(applicationList);
         return applicationPool;
     }
@@ -89,7 +89,7 @@ public class ApplicationPoolServiceBean implements ApplicationPoolService, Appli
     private void checkExistingApplicationPool(String name)
             throws ExistingApplicationPoolException {
 
-        ApplicationPoolEntity existingApplicationPool = this.applicationPoolDAO.findApplicationPool(name);
+        ApplicationPoolEntity existingApplicationPool = applicationPoolDAO.findApplicationPool(name);
         if (null != existingApplicationPool)
             throw new ExistingApplicationPoolException();
     }
@@ -100,19 +100,19 @@ public class ApplicationPoolServiceBean implements ApplicationPoolService, Appli
             throws ApplicationPoolNotFoundException, PermissionDeniedException {
 
         LOG.debug("remove application pool: " + name);
-        ApplicationPoolEntity applicationPool = this.applicationPoolDAO.getApplicationPool(name);
+        ApplicationPoolEntity applicationPool = applicationPoolDAO.getApplicationPool(name);
 
         /*
          * TODO: Remove the application pools from the applications
          */
-        this.applicationPoolDAO.removeApplicationPool(applicationPool);
+        applicationPoolDAO.removeApplicationPool(applicationPool);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public ApplicationPoolEntity getApplicationPool(String applicationPoolName)
             throws ApplicationPoolNotFoundException {
 
-        return this.applicationPoolDAO.getApplicationPool(applicationPoolName);
+        return applicationPoolDAO.getApplicationPool(applicationPoolName);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -120,7 +120,7 @@ public class ApplicationPoolServiceBean implements ApplicationPoolService, Appli
             throws ApplicationPoolNotFoundException {
 
         LOG.debug("set sso timeout for application pool " + applicationPoolName + " to " + ssoTimeout);
-        ApplicationPoolEntity applicationPool = this.applicationPoolDAO.getApplicationPool(applicationPoolName);
+        ApplicationPoolEntity applicationPool = applicationPoolDAO.getApplicationPool(applicationPoolName);
         applicationPool.setSsoTimeout(ssoTimeout);
 
     }
@@ -133,10 +133,10 @@ public class ApplicationPoolServiceBean implements ApplicationPoolService, Appli
             throws ApplicationPoolNotFoundException, ApplicationNotFoundException {
 
         LOG.debug("update application list for application pool: " + applicationPoolName);
-        ApplicationPoolEntity applicationPool = this.applicationPoolDAO.getApplicationPool(applicationPoolName);
+        ApplicationPoolEntity applicationPool = applicationPoolDAO.getApplicationPool(applicationPoolName);
         List<ApplicationEntity> applicationList = new LinkedList<ApplicationEntity>();
         for (String applicationName : applicationNameList) {
-            ApplicationEntity application = this.applicationDAO.getApplication(applicationName);
+            ApplicationEntity application = applicationDAO.getApplication(applicationName);
             applicationList.add(application);
         }
         applicationPool.setApplications(applicationList);

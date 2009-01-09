@@ -64,28 +64,28 @@ public class ConsoleAgent implements Agent {
      */
     public ConsoleAgent(Address agentAddress) {
 
-        this.agentRemoting = ConsoleData.getRemoting();
+        agentRemoting = ConsoleData.getRemoting();
         this.agentAddress = agentAddress;
-        this.autoUpdate = true;
-        this.healthy = true;
+        autoUpdate = true;
+        healthy = true;
 
-        this.scenarioThreads = new HashSet<ScenarioThread>();
-        this.updater = new UpdateAgentState();
-        this.updater.start();
+        scenarioThreads = new HashSet<ScenarioThread>();
+        updater = new UpdateAgentState();
+        updater.start();
     }
 
     /**
 	 */
     public void registerAction(ScenarioThread actionThread) {
 
-        this.scenarioThreads.add(actionThread);
+        scenarioThreads.add(actionThread);
     }
 
     /**
 	 */
     public void unregisterAction(ScenarioThread actionThread) {
 
-        this.scenarioThreads.remove(actionThread);
+        scenarioThreads.remove(actionThread);
     }
 
     /**
@@ -94,7 +94,7 @@ public class ConsoleAgent implements Agent {
     public void shutdown() {
 
         resetTransit();
-        this.updater.shutdown();
+        updater.shutdown();
     }
 
     /**
@@ -112,7 +112,7 @@ public class ConsoleAgent implements Agent {
      */
     public boolean isHealthy() {
 
-        return this.healthy;
+        return healthy;
     }
 
     /**
@@ -132,14 +132,14 @@ public class ConsoleAgent implements Agent {
 
         String transitStr = AgentState.RESET.getTransitioning();
         String stateStr = AgentState.RESET.getTransitioning();
-        if (null != this.transit) {
-            transitStr = this.transit.getTransitioning();
+        if (null != transit) {
+            transitStr = transit.getTransitioning();
         }
-        if (null != this.state) {
-            stateStr = this.state.getState();
+        if (null != state) {
+            stateStr = state.getState();
         }
 
-        return String.format("%s: [%s:%s]", this.agentAddress, stateStr, transitStr);
+        return String.format("%s: [%s:%s]", agentAddress, stateStr, transitStr);
     }
 
     /**
@@ -148,7 +148,7 @@ public class ConsoleAgent implements Agent {
     @Override
     public int hashCode() {
 
-        return this.agentAddress.hashCode();
+        return agentAddress.hashCode();
     }
 
     /**
@@ -162,7 +162,7 @@ public class ConsoleAgent implements Agent {
         if (obj == null || !(obj instanceof ConsoleAgent))
             return false;
 
-        return this.agentAddress.equals(((ConsoleAgent) obj).agentAddress);
+        return agentAddress.equals(((ConsoleAgent) obj).agentAddress);
     }
 
     /**
@@ -170,7 +170,7 @@ public class ConsoleAgent implements Agent {
      */
     public Address getAddress() {
 
-        return this.agentAddress;
+        return agentAddress;
     }
 
     /**
@@ -180,7 +180,7 @@ public class ConsoleAgent implements Agent {
      */
     public AgentState getState() {
 
-        return this.state;
+        return state;
     }
 
     /**
@@ -188,11 +188,11 @@ public class ConsoleAgent implements Agent {
      */
     public void resetTransit() {
 
-        for (ScenarioThread actionThread : this.scenarioThreads) {
+        for (ScenarioThread actionThread : scenarioThreads) {
             actionThread.shutdown();
         }
 
-        this.agentRemoting.resetTransit(this.agentAddress);
+        agentRemoting.resetTransit(agentAddress);
         updateState();
     }
 
@@ -201,7 +201,7 @@ public class ConsoleAgent implements Agent {
      */
     public AgentState getTransit() {
 
-        return this.transit;
+        return transit;
     }
 
     /**
@@ -209,7 +209,7 @@ public class ConsoleAgent implements Agent {
      */
     public boolean isTransitting() {
 
-        return this.transit != null && !AgentState.RESET.equals(this.transit);
+        return transit != null && !AgentState.RESET.equals(transit);
     }
 
     /**
@@ -239,7 +239,7 @@ public class ConsoleAgent implements Agent {
      */
     public Throwable getError() {
 
-        return this.error;
+        return error;
     }
 
     /**
@@ -247,7 +247,7 @@ public class ConsoleAgent implements Agent {
      */
     public ScenarioExecution getCharts(Date startTime) {
 
-        return this.agentRemoting.getCharts(this.agentAddress, startTime);
+        return agentRemoting.getCharts(agentAddress, startTime);
     }
 
     /**
@@ -255,7 +255,7 @@ public class ConsoleAgent implements Agent {
      */
     public Set<ScenarioExecution> getExecutions() {
 
-        return this.executions;
+        return executions;
     }
 
     /**
@@ -263,7 +263,7 @@ public class ConsoleAgent implements Agent {
      */
     public Set<String> getScenarios() {
 
-        return this.scenarios;
+        return scenarios;
     }
 
     public void updateState() {
@@ -273,37 +273,37 @@ public class ConsoleAgent implements Agent {
         }
 
         try {
-            boolean isDeployed = this.state != null && AgentState.UPLOAD.compareTo(this.state) < 0;
+            boolean isDeployed = state != null && AgentState.UPLOAD.compareTo(state) < 0;
 
             synchronized (ConsoleData.lock) {
-                this.transit = notifyOnChange(this.transit, this.agentRemoting.getTransit(this.agentAddress));
+                transit = notifyOnChange(transit, agentRemoting.getTransit(agentAddress));
             }
             synchronized (ConsoleData.lock) {
-                this.state = notifyOnChange(this.state, this.agentRemoting.getState(this.agentAddress));
+                state = notifyOnChange(state, agentRemoting.getState(agentAddress));
             }
             synchronized (ConsoleData.lock) {
-                this.error = notifyOnChange(this.error, this.agentRemoting.getError(this.agentAddress));
+                error = notifyOnChange(error, agentRemoting.getError(agentAddress));
             }
             synchronized (ConsoleData.lock) {
-                this.scenarios = notifyOnChange(this.scenarios, isDeployed? this.agentRemoting.getScenarios(this.agentAddress): null);
+                scenarios = notifyOnChange(scenarios, isDeployed? agentRemoting.getScenarios(agentAddress): null);
             }
             synchronized (ConsoleData.lock) {
-                this.executions = notifyOnChange(this.executions, isDeployed? this.agentRemoting.getExecutions(this.agentAddress): null);
+                executions = notifyOnChange(executions, isDeployed? agentRemoting.getExecutions(agentAddress): null);
             }
         }
 
         catch (IllegalStateException e) {
             LOG.debug(e.getMessage());
-            this.state = notifyOnChange(this.state, null);
-            this.transit = notifyOnChange(this.transit, null);
-            this.error = notifyOnChange(this.error, null);
-            this.scenarios = notifyOnChange(this.scenarios, null);
-            this.executions = notifyOnChange(this.executions, null);
+            state = notifyOnChange(state, null);
+            transit = notifyOnChange(transit, null);
+            error = notifyOnChange(error, null);
+            scenarios = notifyOnChange(scenarios, null);
+            executions = notifyOnChange(executions, null);
         }
 
         catch (NameNotFoundException e) {
-            this.scenarios = notifyOnChange(this.scenarios, null);
-            this.executions = notifyOnChange(this.executions, null);
+            scenarios = notifyOnChange(scenarios, null);
+            executions = notifyOnChange(executions, null);
         }
 
         catch (Throwable e) {
@@ -320,7 +320,7 @@ public class ConsoleAgent implements Agent {
     private <V> V notifyOnChange(V oldValue, V newValue) {
 
         // Don't accept new value when autoUpdate has been disabled.
-        if (Thread.currentThread() instanceof UpdateAgentState && !this.autoUpdate)
+        if (Thread.currentThread() instanceof UpdateAgentState && !autoUpdate)
             return oldValue;
 
         // Equals is broken for non-sorted sets when the order gets shaken up.
@@ -359,7 +359,7 @@ public class ConsoleAgent implements Agent {
 
         protected void shutdown() {
 
-            this.shutdown = true;
+            shutdown = true;
             interrupt();
         }
 
@@ -369,9 +369,9 @@ public class ConsoleAgent implements Agent {
         @Override
         public void run() {
 
-            while (!this.shutdown) {
+            while (!shutdown) {
                 try {
-                    if (ConsoleAgent.this.autoUpdate) {
+                    if (autoUpdate) {
                         updateState();
                     }
 

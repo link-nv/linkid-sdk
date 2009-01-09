@@ -58,25 +58,25 @@ public class AccountMergingDO implements Serializable {
 
     public SubjectEntity getSourceSubject() {
 
-        return this.sourceSubject;
+        return sourceSubject;
     }
 
     public List<DeviceEntity> getNeededProvenDevices() {
 
-        return this.neededProvenDevices;
+        return neededProvenDevices;
     }
 
     public void addNeededProvenDevices(List<DeviceEntity> devices) {
 
-        if (null == this.neededProvenDevices) {
-            this.neededProvenDevices = new LinkedList<DeviceEntity>();
+        if (null == neededProvenDevices) {
+            neededProvenDevices = new LinkedList<DeviceEntity>();
         }
-        this.neededProvenDevices.addAll(devices);
+        neededProvenDevices.addAll(devices);
     }
 
     public List<SubscriptionEntity> getPreservedSubscriptions() {
 
-        return this.preservedSubscriptions;
+        return preservedSubscriptions;
     }
 
     public void setPreservedSubscriptions(List<SubscriptionEntity> preservedSubscriptions) {
@@ -86,50 +86,50 @@ public class AccountMergingDO implements Serializable {
 
     public List<SubscriptionDO> getImportedSubscriptions() {
 
-        return this.importedSubscriptions;
+        return importedSubscriptions;
     }
 
     public void addImportedSubscription(SubscriptionDO importedSubscriptionDO) {
 
-        if (null == this.importedSubscriptions) {
-            this.importedSubscriptions = new LinkedList<SubscriptionDO>();
+        if (null == importedSubscriptions) {
+            importedSubscriptions = new LinkedList<SubscriptionDO>();
         }
-        this.importedSubscriptions.add(importedSubscriptionDO);
+        importedSubscriptions.add(importedSubscriptionDO);
     }
 
     public List<AttributeDO> getPreservedAttributes() {
 
-        return this.preservedAttributes;
+        return preservedAttributes;
     }
 
     public List<AttributeDO> getImportedAttributes() {
 
-        return this.importedAttributes;
+        return importedAttributes;
     }
 
     public List<AttributeDO> getMergedAttributes() {
 
-        return this.mergedAttributes;
+        return mergedAttributes;
     }
 
     public List<AttributeDO> getMergedAttributesToAdd() {
 
-        return this.mergedAttributesToAdd;
+        return mergedAttributesToAdd;
     }
 
     public List<AttributeDO> getVisiblePreservedAttributes() {
 
-        return getVisibleAttributes(this.preservedAttributes);
+        return getVisibleAttributes(preservedAttributes);
     }
 
     public List<AttributeDO> getVisibleImportedAttributes() {
 
-        return getVisibleAttributes(this.importedAttributes);
+        return getVisibleAttributes(importedAttributes);
     }
 
     public List<AttributeDO> getVisibleMergedAttributes() {
 
-        return getVisibleAttributes(this.mergedAttributes);
+        return getVisibleAttributes(mergedAttributes);
     }
 
     private List<AttributeDO> getVisibleAttributes(List<AttributeDO> attributes) {
@@ -145,15 +145,15 @@ public class AccountMergingDO implements Serializable {
 
     public List<ChoosableAttributeDO> getChoosableAttributes() {
 
-        return this.choosableAttributes;
+        return choosableAttributes;
     }
 
     public void addPreservedAttributes(List<AttributeDO> attributes) {
 
-        if (null == this.preservedAttributes) {
-            this.preservedAttributes = new LinkedList<AttributeDO>();
+        if (null == preservedAttributes) {
+            preservedAttributes = new LinkedList<AttributeDO>();
         }
-        this.preservedAttributes.addAll(attributes);
+        preservedAttributes.addAll(attributes);
     }
 
     public void setImportedAttributes(List<AttributeDO> importedAttributes) {
@@ -173,55 +173,55 @@ public class AccountMergingDO implements Serializable {
 
     public void addChoosableAttributes(List<AttributeDO> targetAttributes, List<AttributeDO> sourceAttributes) {
 
-        if (null == this.choosableAttributes) {
-            this.choosableAttributes = new LinkedList<ChoosableAttributeDO>();
+        if (null == choosableAttributes) {
+            choosableAttributes = new LinkedList<ChoosableAttributeDO>();
         }
         Iterator<AttributeDO> targetIt = targetAttributes.iterator();
         Iterator<AttributeDO> sourceIt = sourceAttributes.iterator();
         while (sourceIt.hasNext() && targetIt.hasNext()) {
             ChoosableAttributeDO choosableAttributeDO = new ChoosableAttributeDO(targetIt.next(), sourceIt.next());
-            this.choosableAttributes.add(choosableAttributeDO);
+            choosableAttributes.add(choosableAttributeDO);
         }
     }
 
     public void log() {
 
         LOG.debug("Preserved subscriptions:");
-        for (SubscriptionEntity subscription : this.preservedSubscriptions) {
+        for (SubscriptionEntity subscription : preservedSubscriptions) {
             LOG.debug("  * " + subscription.getApplication().getName());
         }
         LOG.debug("Imported subscriptions:");
-        if (null != this.importedSubscriptions) {
-            for (SubscriptionDO subscription : this.importedSubscriptions) {
+        if (null != importedSubscriptions) {
+            for (SubscriptionDO subscription : importedSubscriptions) {
                 LOG.debug("  * " + subscription.getSubscription().getApplication().getName());
             }
         }
         LOG.debug("Needed proven devices:");
-        if (null != this.neededProvenDevices) {
-            for (DeviceEntity device : this.neededProvenDevices) {
+        if (null != neededProvenDevices) {
+            for (DeviceEntity device : neededProvenDevices) {
                 LOG.debug("  * " + device.getName());
             }
         }
         LOG.debug("Preserved attributes:");
-        for (AttributeDO attribute : this.preservedAttributes) {
+        for (AttributeDO attribute : preservedAttributes) {
             LOG.debug("  * " + attribute.getIndex() + ": " + attribute.getType() + ": " + attribute.getValue());
         }
         LOG.debug("Imported attributes:");
-        for (AttributeDO attribute : this.importedAttributes) {
+        for (AttributeDO attribute : importedAttributes) {
             LOG.debug("  * " + attribute.getIndex() + ": " + attribute.getType() + ": " + attribute.getValue());
         }
         LOG.debug("Merged attributes:");
-        for (AttributeDO attribute : this.mergedAttributes) {
+        for (AttributeDO attribute : mergedAttributes) {
             LOG.debug("  * " + attribute.getIndex() + ": " + attribute.getType() + ": " + attribute.getValue());
         }
         LOG.debug("To-be-added merged attributes:");
-        for (AttributeDO attribute : this.mergedAttributesToAdd) {
+        for (AttributeDO attribute : mergedAttributesToAdd) {
             LOG.debug("  * " + attribute.getIndex() + ": " + attribute.getType() + ": " + attribute.getValue());
         }
 
         LOG.debug("Choosable attributes:");
-        if (null != this.choosableAttributes) {
-            for (ChoosableAttributeDO choosableAttribute : this.choosableAttributes) {
+        if (null != choosableAttributes) {
+            for (ChoosableAttributeDO choosableAttribute : choosableAttributes) {
                 LOG.debug("  * " + choosableAttribute.getSourceAttribute().getIndex() + ": "
                         + choosableAttribute.getSourceAttribute().getType());
                 LOG.debug("    * source: " + choosableAttribute.getSourceAttribute().getIndex() + ": "

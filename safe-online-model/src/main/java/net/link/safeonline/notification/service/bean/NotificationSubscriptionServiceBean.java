@@ -63,7 +63,7 @@ public class NotificationSubscriptionServiceBean implements NotificationSubscrip
     public List<NotificationProducerSubscriptionEntity> listTopics() {
 
         LOG.debug("list topics");
-        return this.notificationProducerDAO.listTopics();
+        return notificationProducerDAO.listTopics();
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -72,10 +72,10 @@ public class NotificationSubscriptionServiceBean implements NotificationSubscrip
 
         LOG.debug("remove subscription " + subscription.getName() + " for topic " + topic);
         if (null != subscription.getApplication()) {
-            this.notificationProducerService.unsubscribe(topic, subscription.getAddress(), subscription.getApplication());
+            notificationProducerService.unsubscribe(topic, subscription.getAddress(), subscription.getApplication());
 
         } else {
-            this.notificationProducerService.unsubscribe(topic, subscription.getAddress(), subscription.getNode());
+            notificationProducerService.unsubscribe(topic, subscription.getAddress(), subscription.getNode());
         }
     }
 
@@ -84,7 +84,7 @@ public class NotificationSubscriptionServiceBean implements NotificationSubscrip
             throws SubscriptionNotFoundException {
 
         LOG.debug("list subscriptions for topic: " + topic);
-        NotificationProducerSubscriptionEntity topicEntity = this.notificationProducerDAO.getSubscription(topic);
+        NotificationProducerSubscriptionEntity topicEntity = notificationProducerDAO.getSubscription(topic);
         return topicEntity.getConsumers();
     }
 
@@ -93,16 +93,16 @@ public class NotificationSubscriptionServiceBean implements NotificationSubscrip
             throws PermissionDeniedException {
 
         LOG.debug("add subscription for topic " + topic + " address=" + address + " consumer=" + consumer);
-        ApplicationEntity application = this.applicationDAO.findApplication(consumer);
+        ApplicationEntity application = applicationDAO.findApplication(consumer);
         if (null == application) {
-            NodeEntity node = this.nodeDAO.findNode(consumer);
+            NodeEntity node = nodeDAO.findNode(consumer);
             if (null == node) {
                 LOG.debug("consumer not found: " + consumer);
                 throw new PermissionDeniedException("Consumer not found", "errorConsumerNotFound");
             }
-            this.notificationProducerService.subscribe(topic, address, node);
+            notificationProducerService.subscribe(topic, address, node);
         } else {
-            this.notificationProducerService.subscribe(topic, address, application);
+            notificationProducerService.subscribe(topic, address, application);
         }
     }
 }

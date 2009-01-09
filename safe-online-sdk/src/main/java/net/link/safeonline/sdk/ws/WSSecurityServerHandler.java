@@ -78,7 +78,7 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
 
         loadDependencies();
         System.setProperty("com.sun.xml.ws.fault.SOAPFaultBuilder.disableCaptureStackTrace", "true");
-        this.wsSecurityConfigurationService = EjbUtils.getEJB(this.wsSecurityConfigurationServiceJndiName,
+        wsSecurityConfigurationService = EjbUtils.getEJB(wsSecurityConfigurationServiceJndiName,
                 WSSecurityConfigurationService.class);
     }
 
@@ -87,7 +87,7 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
         try {
             Context ctx = new javax.naming.InitialContext();
             Context env = (Context) ctx.lookup("java:comp/env");
-            this.wsSecurityConfigurationServiceJndiName = (String) env.lookup("wsSecurityConfigurationServiceJndiName");
+            wsSecurityConfigurationServiceJndiName = (String) env.lookup("wsSecurityConfigurationServiceJndiName");
         } catch (NamingException e) {
             LOG.debug("naming exception: " + e.getMessage());
             throw new RuntimeException("WS Security Configuration JNDI path not specified");
@@ -146,7 +146,7 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
         if (null == certificate)
             throw new RuntimeException("no certificate found on JAX-WS context");
 
-        boolean skipMessageIntegrityCheck = this.wsSecurityConfigurationService.skipMessageIntegrityCheck(certificate);
+        boolean skipMessageIntegrityCheck = wsSecurityConfigurationService.skipMessageIntegrityCheck(certificate);
 
         if (skipMessageIntegrityCheck) {
             WSSecHeader wsSecHeader = new WSSecHeader();
@@ -162,8 +162,8 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
             wsSecHeader.insertSecurityHeader(document);
             WSSecSignature wsSecSignature = new WSSecSignature();
             wsSecSignature.setKeyIdentifierType(WSConstants.BST_DIRECT_REFERENCE);
-            Crypto crypto = new ClientCrypto(this.wsSecurityConfigurationService.getCertificate(),
-                    this.wsSecurityConfigurationService.getPrivateKey());
+            Crypto crypto = new ClientCrypto(wsSecurityConfigurationService.getCertificate(),
+                    wsSecurityConfigurationService.getPrivateKey());
             try {
                 wsSecSignature.prepare(document, crypto, wsSecHeader);
 
@@ -267,7 +267,7 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
         if (false == signedElements.contains(timestampId))
             throw WSSecurityUtil.createSOAPFaultException("Timestamp not signed", "FailedCheck");
         Calendar created = timestamp.getCreated();
-        long maxOffset = this.wsSecurityConfigurationService.getMaximumWsSecurityTimestampOffset();
+        long maxOffset = wsSecurityConfigurationService.getMaximumWsSecurityTimestampOffset();
         DateTime createdDateTime = new DateTime(created);
         Instant createdInstant = createdDateTime.toInstant();
         Instant nowInstant = new DateTime().toInstant();

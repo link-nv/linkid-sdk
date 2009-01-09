@@ -40,7 +40,7 @@ public class SeatServiceBean extends AbstractCinemaServiceBean implements SeatSe
     @SuppressWarnings("unchecked")
     public List<CinemaSeatEntity> getSeatsFor(CinemaRoomEntity room) {
 
-        return this.em.createNamedQuery(CinemaSeatEntity.getFor).setParameter("room", room).getResultList();
+        return em.createNamedQuery(CinemaSeatEntity.getFor).setParameter("room", room).getResultList();
     }
 
     /**
@@ -48,7 +48,7 @@ public class SeatServiceBean extends AbstractCinemaServiceBean implements SeatSe
      */
     public boolean isOccupied(CinemaSeatEntity seat, Date start) {
 
-        return !this.em.createNamedQuery(CinemaSeatOccupationEntity.getFor).setParameter("seat", seat).setParameter("start", start)
+        return !em.createNamedQuery(CinemaSeatOccupationEntity.getFor).setParameter("seat", seat).setParameter("start", start)
                        .getResultList().isEmpty();
     }
 
@@ -72,7 +72,7 @@ public class SeatServiceBean extends AbstractCinemaServiceBean implements SeatSe
         // Check to see if this seat has already been occupied, and if so,
         // whether it was reserved or not.
         try {
-            CinemaSeatOccupationEntity existingOccupation = (CinemaSeatOccupationEntity) this.em.createNamedQuery(
+            CinemaSeatOccupationEntity existingOccupation = (CinemaSeatOccupationEntity) em.createNamedQuery(
                     CinemaSeatOccupationEntity.getFor).setParameter("seat", seatEntity).setParameter("start", start).getSingleResult();
 
             if (existingOccupation.isReserved())
@@ -87,7 +87,7 @@ public class SeatServiceBean extends AbstractCinemaServiceBean implements SeatSe
         // Seat not yet occupied; occupy (but do not yet reserve) it.
         catch (NoResultException e) {
             CinemaSeatOccupationEntity occupation = new CinemaSeatOccupationEntity(seat, start);
-            this.em.persist(occupation);
+            em.persist(occupation);
 
             return occupation;
         }

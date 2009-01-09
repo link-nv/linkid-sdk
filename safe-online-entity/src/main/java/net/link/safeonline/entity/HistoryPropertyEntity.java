@@ -63,13 +63,13 @@ public class HistoryPropertyEntity implements Serializable {
         this.history = history;
         this.name = name;
         this.value = value;
-        this.pk = new HistoryPropertyPK(history.getId(), name);
+        pk = new HistoryPropertyPK(history.getId(), name);
     }
 
     @Column(name = PROPERTY_NAME_COLUMN_NAME, insertable = false, updatable = false)
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -79,7 +79,7 @@ public class HistoryPropertyEntity implements Serializable {
 
     public String getValue() {
 
-        return this.value;
+        return value;
     }
 
     public void setValue(String value) {
@@ -92,7 +92,7 @@ public class HistoryPropertyEntity implements Serializable {
             @AttributeOverride(name = "name", column = @Column(name = PROPERTY_NAME_COLUMN_NAME)) })
     public HistoryPropertyPK getPk() {
 
-        return this.pk;
+        return pk;
     }
 
     public void setPk(HistoryPropertyPK pk) {
@@ -104,7 +104,7 @@ public class HistoryPropertyEntity implements Serializable {
     @JoinColumn(name = ID_COLUMN_NAME, insertable = false, updatable = false)
     public HistoryEntity getHistory() {
 
-        return this.history;
+        return history;
     }
 
     public void setHistory(HistoryEntity history) {
@@ -122,19 +122,19 @@ public class HistoryPropertyEntity implements Serializable {
         if (false == obj instanceof HistoryPropertyEntity)
             return false;
         HistoryPropertyEntity rhs = (HistoryPropertyEntity) obj;
-        return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
+        return new EqualsBuilder().append(pk, rhs.pk).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.pk).toHashCode();
+        return new HashCodeBuilder().append(pk).toHashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("pk", this.pk).append("value", this.value).toString();
+        return new ToStringBuilder(this).append("pk", pk).append("value", value).toString();
     }
 
 

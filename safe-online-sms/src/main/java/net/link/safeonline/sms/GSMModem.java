@@ -25,14 +25,14 @@ public class GSMModem implements SMSC {
 
     public GSMModem(String serialPortName) {
 
-        this.serialComm = new SerialCommunication(serialPortName);
+        serialComm = new SerialCommunication(serialPortName);
     }
 
     public void open()
             throws SMSException {
 
         try {
-            this.serialComm.open();
+            serialComm.open();
         } catch (SerialCommunicationsException e) {
             throw new SMSException();
         }
@@ -40,30 +40,30 @@ public class GSMModem implements SMSC {
 
     public void close() {
 
-        this.serialComm.close();
+        serialComm.close();
     }
 
     public void sendSMS(SMS sms)
             throws SMSException {
 
         try {
-            this.serialComm.write("ATE1 V1\r\n");
-            this.serialComm.read();
-            this.serialComm.read();
-            this.serialComm.read();
-            this.serialComm.write("AT\r\n");
-            this.serialComm.read();
-            this.serialComm.read();
-            this.serialComm.read();
+            serialComm.write("ATE1 V1\r\n");
+            serialComm.read();
+            serialComm.read();
+            serialComm.read();
+            serialComm.write("AT\r\n");
+            serialComm.read();
+            serialComm.read();
+            serialComm.read();
             byte[] msg = sms.getEncoded();
-            this.serialComm.write("AT+CMGS=" + (msg.length - 1) + "\r\n");
-            this.serialComm.read();
-            this.serialComm.read();
-            this.serialComm.write(new String(Hex.encodeHex(msg)));
+            serialComm.write("AT+CMGS=" + (msg.length - 1) + "\r\n");
+            serialComm.read();
+            serialComm.read();
+            serialComm.write(new String(Hex.encodeHex(msg)));
             byte[] ctrlz = { 0x1A };
-            this.serialComm.write(ctrlz);
-            this.serialComm.read();
-            this.serialComm.read();
+            serialComm.write(ctrlz);
+            serialComm.read();
+            serialComm.read();
         } catch (Exception e) {
             LOG.debug("Exception while writing SMS to output stream");
             LOG.debug(e.getMessage());
@@ -81,7 +81,7 @@ public class GSMModem implements SMSC {
 
     public String getSerialPortName() {
 
-        return this.serialComm.getSerialPortName();
+        return serialComm.getSerialPortName();
     }
 
 }

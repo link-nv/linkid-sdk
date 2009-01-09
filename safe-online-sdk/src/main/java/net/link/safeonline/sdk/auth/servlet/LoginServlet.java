@@ -67,8 +67,8 @@ public class LoginServlet extends AbstractInjectionServlet {
          * opensaml is checking the destination field.
          */
         HttpServletRequestEndpointWrapper requestWrapper;
-        if (null != this.servletEndpointUrl) {
-            requestWrapper = new HttpServletRequestEndpointWrapper(request, this.servletEndpointUrl);
+        if (null != servletEndpointUrl) {
+            requestWrapper = new HttpServletRequestEndpointWrapper(request, servletEndpointUrl);
         } else {
             requestWrapper = new HttpServletRequestEndpointWrapper(request, request.getRequestURL().toString());
         }
@@ -81,7 +81,7 @@ public class LoginServlet extends AbstractInjectionServlet {
              */
             String msg = "no protocol handler active";
             LOG.error(msg);
-            redirectToErrorPage(requestWrapper, response, this.errorPage, null, new ErrorMessage(msg));
+            redirectToErrorPage(requestWrapper, response, errorPage, null, new ErrorMessage(msg));
 
             return;
         }
@@ -90,7 +90,7 @@ public class LoginServlet extends AbstractInjectionServlet {
         if (null == authenticationProtocolContext) {
             String msg = "protocol handler could not finalize";
             LOG.error(msg);
-            redirectToErrorPage(requestWrapper, response, this.errorPage, null, new ErrorMessage(msg));
+            redirectToErrorPage(requestWrapper, response, errorPage, null, new ErrorMessage(msg));
             return;
         }
 

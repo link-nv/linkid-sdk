@@ -49,11 +49,11 @@ public abstract class AbstractConfigStartableBean implements Startable {
 
     public void postStart() {
 
-        if (null != this.configurationBeans) {
-            for (Class<?> configurationBean : this.configurationBeans) {
+        if (null != configurationBeans) {
+            for (Class<?> configurationBean : configurationBeans) {
                 try {
                     Object target = configurationBean.newInstance();
-                    this.configurationManager.configure(target);
+                    configurationManager.configure(target);
                 } catch (Exception e) {
                     throw new EJBException("Failed to execute @Configurable", e);
                 }

@@ -34,9 +34,9 @@ public abstract class AbstractDERStatement implements DEREncodable {
 
         DERSequence sequence = new DERSequence();
         sequence.add(tbs);
-        if (null == this.signature)
+        if (null == signature)
             throw new IllegalStateException("set signature value first");
-        DERBitString signatureBitString = new DERBitString(this.signature);
+        DERBitString signatureBitString = new DERBitString(signature);
         sequence.add(signatureBitString);
         return sequence.getEncoded();
     }

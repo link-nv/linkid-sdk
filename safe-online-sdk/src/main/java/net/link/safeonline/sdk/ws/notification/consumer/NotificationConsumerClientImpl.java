@@ -60,25 +60,25 @@ public class NotificationConsumerClientImpl extends AbstractMessageAccessor impl
     public NotificationConsumerClientImpl(String location, X509Certificate clientCertificate, PrivateKey clientPrivateKey) {
 
         NotificationConsumerService consumerService = NotificationConsumerServiceFactory.newInstance();
-        this.port = consumerService.getNotificationConsumerPort();
+        port = consumerService.getNotificationConsumerPort();
         this.location = location;
         setEndpointAddress();
 
-        registerMessageLoggerHandler(this.port);
-        WSSecurityClientHandler.addNewHandler(this.port, clientCertificate, clientPrivateKey);
+        registerMessageLoggerHandler(port);
+        WSSecurityClientHandler.addNewHandler(port, clientCertificate, clientPrivateKey);
     }
 
     private void setEndpointAddress() {
 
-        BindingProvider bindingProvider = (BindingProvider) this.port;
+        BindingProvider bindingProvider = (BindingProvider) port;
 
-        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location);
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location);
     }
 
     public void sendNotification(String topic, String destination, String subject, String content)
             throws WSClientTransportException {
 
-        LOG.debug("send notification to " + this.location + " for topic: " + topic + ", destination:" + destination + ", subject:"
+        LOG.debug("send notification to " + location + " for topic: " + topic + ", destination:" + destination + ", subject:"
                 + subject + ", content:" + content);
 
         TopicExpressionType topicExpression = new TopicExpressionType();
@@ -98,10 +98,10 @@ public class NotificationConsumerClientImpl extends AbstractMessageAccessor impl
         SafeOnlineTrustManager.configureSsl();
 
         try {
-            this.port.notify(notifications);
+            port.notify(notifications);
         } catch (ClientTransportException e) {
             LOG.debug("Failed to send notification");
-            throw new WSClientTransportException(this.location);
+            throw new WSClientTransportException(location);
         }
     }
 }

@@ -45,10 +45,10 @@ public class AttributeTypeServiceBeanTest {
     public void setUp()
             throws Exception {
 
-        this.entityTestManager = new EntityTestManager();
-        this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
-        this.testedInstance = EJBTestUtils.newInstance(AttributeTypeServiceBean.class, SafeOnlineTestContainer.sessionBeans, entityManager,
+        entityTestManager = new EntityTestManager();
+        entityTestManager.setUp(SafeOnlineTestContainer.entities);
+        EntityManager entityManager = entityTestManager.getEntityManager();
+        testedInstance = EJBTestUtils.newInstance(AttributeTypeServiceBean.class, SafeOnlineTestContainer.sessionBeans, entityManager,
                 "test-operator", SafeOnlineRoles.GLOBAL_OPERATOR_ROLE, SafeOnlineRoles.OPERATOR_ROLE);
     }
 
@@ -56,7 +56,7 @@ public class AttributeTypeServiceBeanTest {
     public void tearDown()
             throws Exception {
 
-        this.entityTestManager.tearDown();
+        entityTestManager.tearDown();
     }
 
     @Test
@@ -68,9 +68,9 @@ public class AttributeTypeServiceBeanTest {
         AttributeTypeEntity attributeType = new AttributeTypeEntity(attributeName, DatatypeType.STRING, true, true);
 
         // operate
-        this.testedInstance.add(attributeType);
+        testedInstance.add(attributeType);
 
-        List<AttributeTypeEntity> result = this.testedInstance.listAttributeTypes();
+        List<AttributeTypeEntity> result = testedInstance.listAttributeTypes();
 
         // verify
         assertNotNull(result);
@@ -94,25 +94,25 @@ public class AttributeTypeServiceBeanTest {
         AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(compoundedAttributeTypeName, DatatypeType.STRING, true, true);
 
         // operate
-        this.testedInstance.add(memberAttributeType);
-        this.testedInstance.add(nonMemberAttributeType);
+        testedInstance.add(memberAttributeType);
+        testedInstance.add(nonMemberAttributeType);
 
         /*
          * Next is important in order to emulate correct behaviour of the entities. They should be detached since addMember is setting
          * fields on the detached entities that should not directly be visible in the database itself.
          */
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.commit();
         transaction.begin();
         entityManager.clear();
 
         compoundedAttributeType.addMember(memberAttributeType, 0, true);
-        this.testedInstance.add(compoundedAttributeType);
+        testedInstance.add(compoundedAttributeType);
 
-        List<AttributeTypeEntity> allResult = this.testedInstance.listAttributeTypes();
+        List<AttributeTypeEntity> allResult = testedInstance.listAttributeTypes();
 
-        List<AttributeTypeEntity> availableMemberResult = this.testedInstance.listAvailableMemberAttributeTypes();
+        List<AttributeTypeEntity> availableMemberResult = testedInstance.listAvailableMemberAttributeTypes();
 
         // verify
         assertNotNull(allResult);
@@ -133,9 +133,9 @@ public class AttributeTypeServiceBeanTest {
 
         String compoundedAttributeTypeName = "test-attribute-type-name" + UUID.randomUUID().toString();
         AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(compoundedAttributeTypeName, DatatypeType.STRING, true, true);
-        this.testedInstance.add(memberAttributeType);
+        testedInstance.add(memberAttributeType);
 
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.commit();
         transaction.begin();
@@ -149,10 +149,10 @@ public class AttributeTypeServiceBeanTest {
         compoundedCompoundedAttributeType.addMember(compoundedAttributeType, 0, true);
 
         // operate
-        this.testedInstance.add(compoundedAttributeType);
+        testedInstance.add(compoundedAttributeType);
 
         try {
-            this.testedInstance.add(compoundedCompoundedAttributeType);
+            testedInstance.add(compoundedCompoundedAttributeType);
             fail();
         } catch (AttributeTypeDefinitionException e) {
             // expected
@@ -166,9 +166,9 @@ public class AttributeTypeServiceBeanTest {
         // setup
         String memberAttributeName = "test-member-attribute-type-name-" + UUID.randomUUID().toString();
         AttributeTypeEntity memberAttributeType = new AttributeTypeEntity(memberAttributeName, DatatypeType.STRING, true, true);
-        this.testedInstance.add(memberAttributeType);
+        testedInstance.add(memberAttributeType);
 
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         transaction.commit();
         transaction.begin();

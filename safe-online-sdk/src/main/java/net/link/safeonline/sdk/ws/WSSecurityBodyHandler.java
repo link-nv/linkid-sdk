@@ -50,7 +50,7 @@ public class WSSecurityBodyHandler implements SOAPHandler<SOAPMessageContext> {
     public void postConstructCallback() {
 
         loadDependencies();
-        this.wsSecurityConfigurationService = EjbUtils.getEJB(this.wsSecurityConfigurationServiceJndiName,
+        wsSecurityConfigurationService = EjbUtils.getEJB(wsSecurityConfigurationServiceJndiName,
                 WSSecurityConfigurationService.class);
     }
 
@@ -59,7 +59,7 @@ public class WSSecurityBodyHandler implements SOAPHandler<SOAPMessageContext> {
         try {
             Context ctx = new javax.naming.InitialContext();
             Context env = (Context) ctx.lookup("java:comp/env");
-            this.wsSecurityConfigurationServiceJndiName = (String) env.lookup("wsSecurityConfigurationServiceJndiName");
+            wsSecurityConfigurationServiceJndiName = (String) env.lookup("wsSecurityConfigurationServiceJndiName");
         } catch (NamingException e) {
             LOG.debug("naming exception: " + e.getMessage());
             throw new RuntimeException("WS Security Configuration JNDI path not specified");
@@ -87,11 +87,10 @@ public class WSSecurityBodyHandler implements SOAPHandler<SOAPMessageContext> {
             return true;
 
         X509Certificate certificate = WSSecurityServerHandler.getCertificate(soapMessageContext);
-        if (null == certificate) {
+        if (null == certificate)
             throw new RuntimeException("no certificate found on JAX-WS context");
-        }
 
-        boolean skipMessageIntegrityCheck = this.wsSecurityConfigurationService.skipMessageIntegrityCheck(certificate);
+        boolean skipMessageIntegrityCheck = wsSecurityConfigurationService.skipMessageIntegrityCheck(certificate);
 
         if (true == skipMessageIntegrityCheck) {
             LOG.debug("skipping message integrity check");
@@ -111,13 +110,11 @@ public class WSSecurityBodyHandler implements SOAPHandler<SOAPMessageContext> {
             throw WSSecurityUtil.createSOAPFaultException("error retrieving SOAP Body", "FailedCheck");
         }
         String bodyId = soapBody.getAttributeNS(WSConstants.WSU_NS, "Id");
-        if (null == bodyId || 0 == bodyId.length()) {
+        if (null == bodyId || 0 == bodyId.length())
             throw WSSecurityUtil.createSOAPFaultException("SOAP Body should have a wsu:Id attribute", "FailedCheck");
-        }
         boolean isBodySigned = WSSecurityServerHandler.isSignedElement(bodyId, soapMessageContext);
-        if (false == isBodySigned) {
+        if (false == isBodySigned)
             throw WSSecurityUtil.createSOAPFaultException("SOAP Body was not signed", "FailedCheck");
-        }
 
         return true;
     }

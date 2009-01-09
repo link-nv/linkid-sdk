@@ -57,12 +57,12 @@ public class RegistrationPageTest extends TestCase {
 
         WicketUtil.setUnitTesting(true);
 
-        this.jndiTestUtils = new JndiTestUtils();
-        this.jndiTestUtils.setUp();
+        jndiTestUtils = new JndiTestUtils();
+        jndiTestUtils.setUp();
 
-        this.mockPasswordDeviceService = createMock(PasswordDeviceService.class);
-        this.mockSamlAuthorityService = createMock(SamlAuthorityService.class);
-        this.mockHelpdeskManager = createMock(HelpdeskManager.class);
+        mockPasswordDeviceService = createMock(PasswordDeviceService.class);
+        mockSamlAuthorityService = createMock(SamlAuthorityService.class);
+        mockHelpdeskManager = createMock(HelpdeskManager.class);
 
         // Initialize MBean's
         JmxTestUtils jmxTestUtils = new JmxTestUtils();
@@ -90,7 +90,7 @@ public class RegistrationPageTest extends TestCase {
             }
         });
 
-        this.wicket = new WicketTester(new PasswordTestApplication());
+        wicket = new WicketTester(new PasswordTestApplication());
 
     }
 
@@ -99,7 +99,7 @@ public class RegistrationPageTest extends TestCase {
     public void tearDown()
             throws Exception {
 
-        this.jndiTestUtils.tearDown();
+        jndiTestUtils.tearDown();
     }
 
     @Test
@@ -111,33 +111,33 @@ public class RegistrationPageTest extends TestCase {
         String password = "test-password";
         DummyNameIdentifierMappingClient.setUserId(userId);
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(this.wicket.getServletSession());
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setDeviceOperation(DeviceOperationType.NEW_ACCOUNT_REGISTER);
         protocolContext.setSubject(userId);
 
         // Registration Page: Verify.
-        RegistrationPage registrationPage = (RegistrationPage) this.wicket.startPage(RegistrationPage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RegistrationPage.REGISTRATION_FORM_ID, Form.class);
+        RegistrationPage registrationPage = (RegistrationPage) wicket.startPage(RegistrationPage.class);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RegistrationPage.REGISTRATION_FORM_ID, Form.class);
 
         // setup
-        EJBTestUtils.inject(registrationPage, this.mockPasswordDeviceService);
-        EJBTestUtils.inject(registrationPage, this.mockSamlAuthorityService);
+        EJBTestUtils.inject(registrationPage, mockPasswordDeviceService);
+        EJBTestUtils.inject(registrationPage, mockSamlAuthorityService);
 
         // stubs
-        this.mockPasswordDeviceService.register(userId, password);
-        expect(this.mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
+        mockPasswordDeviceService.register(userId, password);
+        expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
-        replay(this.mockPasswordDeviceService, this.mockSamlAuthorityService);
+        replay(mockPasswordDeviceService, mockSamlAuthorityService);
 
         // operate
-        FormTester registrationForm = this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RegistrationPage.REGISTRATION_FORM_ID);
+        FormTester registrationForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RegistrationPage.REGISTRATION_FORM_ID);
         registrationForm.setValue(RegistrationPage.PASSWORD1_FIELD_ID, password);
         registrationForm.setValue(RegistrationPage.PASSWORD2_FIELD_ID, password);
         registrationForm.submit(RegistrationPage.SAVE_BUTTON_ID);
 
         // verify
-        verify(this.mockPasswordDeviceService, this.mockSamlAuthorityService);
+        verify(mockPasswordDeviceService, mockSamlAuthorityService);
     }
 
     @Test
@@ -149,35 +149,35 @@ public class RegistrationPageTest extends TestCase {
         String password = "test-password";
         DummyNameIdentifierMappingClient.setUserId(userId);
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(this.wicket.getServletSession());
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setDeviceOperation(DeviceOperationType.NEW_ACCOUNT_REGISTER);
         protocolContext.setSubject(userId);
 
         // Registration Page: Verify.
-        RegistrationPage registrationPage = (RegistrationPage) this.wicket.startPage(RegistrationPage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RegistrationPage.REGISTRATION_FORM_ID, Form.class);
+        RegistrationPage registrationPage = (RegistrationPage) wicket.startPage(RegistrationPage.class);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RegistrationPage.REGISTRATION_FORM_ID, Form.class);
 
         // setup
-        EJBTestUtils.inject(registrationPage, this.mockPasswordDeviceService);
-        this.jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, this.mockHelpdeskManager);
+        EJBTestUtils.inject(registrationPage, mockPasswordDeviceService);
+        jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
 
         // stubs
-        expect(this.mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
+        expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
-        replay(this.mockPasswordDeviceService, this.mockHelpdeskManager);
+        replay(mockPasswordDeviceService, mockHelpdeskManager);
 
         // operate
-        FormTester registrationForm = this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RegistrationPage.REGISTRATION_FORM_ID);
+        FormTester registrationForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RegistrationPage.REGISTRATION_FORM_ID);
         registrationForm.setValue(RegistrationPage.PASSWORD1_FIELD_ID, password);
         registrationForm.setValue(RegistrationPage.PASSWORD2_FIELD_ID, "foobar-password");
         registrationForm.submit(RegistrationPage.SAVE_BUTTON_ID);
 
         // verify
-        verify(this.mockPasswordDeviceService, this.mockHelpdeskManager);
+        verify(mockPasswordDeviceService, mockHelpdeskManager);
 
-        this.wicket.assertRenderedPage(RegistrationPage.class);
-        this.wicket.assertErrorMessages(new String[] { RegistrationPage.PASSWORD2_FIELD_ID + ".EqualPasswordInputValidator" });
+        wicket.assertRenderedPage(RegistrationPage.class);
+        wicket.assertErrorMessages(new String[] { RegistrationPage.PASSWORD2_FIELD_ID + ".EqualPasswordInputValidator" });
 
     }
 }

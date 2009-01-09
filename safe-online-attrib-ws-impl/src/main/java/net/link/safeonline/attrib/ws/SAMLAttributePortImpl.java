@@ -110,7 +110,7 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
     public void postConstructCallback() {
 
         try {
-            this.datatypeFactory = DatatypeFactory.newInstance();
+            datatypeFactory = DatatypeFactory.newInstance();
         } catch (DatatypeConfigurationException e) {
             throw new EJBException("datatype config error");
         }
@@ -131,7 +131,7 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
             }
             NameIDType nameId = (NameIDType) value;
             String subjectLogin = nameId.getValue();
-            if (this.certificateDomain.equals(CertificateDomain.APPLICATION)) {
+            if (certificateDomain.equals(CertificateDomain.APPLICATION)) {
                 try {
                     return findUserId(subjectLogin);
                 } catch (ApplicationNotFoundException e) {
@@ -159,12 +159,12 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
         LOG.debug("attribute query");
 
         try {
-            this.certificateDomain = CertificateValidatorHandler.getCertificateDomain(this.context);
+            certificateDomain = CertificateValidatorHandler.getCertificateDomain(context);
         } catch (CertificateDomainException e) {
             ResponseType requestDeniedResponse = createRequestDeniedResponse();
             return requestDeniedResponse;
         }
-        LOG.debug("certificate domain: " + this.certificateDomain.toString());
+        LOG.debug("certificate domain: " + certificateDomain.toString());
 
         String subjectLogin = findSubjectLogin(request);
         if (null == subjectLogin) {
@@ -228,18 +228,18 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
     private Object getAttributeValue(String subjectLogin, String attributeName)
             throws SubjectNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException, AttributeUnavailableException {
 
-        if (this.certificateDomain.equals(CertificateDomain.APPLICATION))
-            return this.attributeService.getConfirmedAttributeValue(subjectLogin, attributeName);
-        if (this.certificateDomain.equals(CertificateDomain.NODE))
-            return this.nodeAttributeService.getAttributeValue(subjectLogin, attributeName);
+        if (certificateDomain.equals(CertificateDomain.APPLICATION))
+            return attributeService.getConfirmedAttributeValue(subjectLogin, attributeName);
+        if (certificateDomain.equals(CertificateDomain.NODE))
+            return nodeAttributeService.getAttributeValue(subjectLogin, attributeName);
         return null;
     }
 
     private Map<String, Object> getAttributeValues(String subjectLogin)
             throws SubjectNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException, AttributeUnavailableException {
 
-        if (this.certificateDomain.equals(CertificateDomain.APPLICATION))
-            return this.attributeService.getConfirmedAttributeValues(subjectLogin);
+        if (certificateDomain.equals(CertificateDomain.APPLICATION))
+            return attributeService.getConfirmedAttributeValues(subjectLogin);
         return null;
     }
 
@@ -346,7 +346,7 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
         assertion.setIssueInstant(currentXmlGregorianCalendar);
 
         NameIDType issuerName = new NameIDType();
-        String samlAuthorityIssuerName = this.samlAuthorityService.getIssuerName();
+        String samlAuthorityIssuerName = samlAuthorityService.getIssuerName();
         issuerName.setValue(samlAuthorityIssuerName);
         assertion.setIssuer(issuerName);
 
@@ -415,7 +415,7 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
         GregorianCalendar gregorianCalendar = new GregorianCalendar();
         Date now = new Date();
         gregorianCalendar.setTime(now);
-        XMLGregorianCalendar currentXmlGregorianCalendar = this.datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
+        XMLGregorianCalendar currentXmlGregorianCalendar = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
         return currentXmlGregorianCalendar;
     }
 }

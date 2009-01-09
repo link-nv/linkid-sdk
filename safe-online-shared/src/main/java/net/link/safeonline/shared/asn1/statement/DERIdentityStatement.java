@@ -65,19 +65,19 @@ public class DERIdentityStatement extends AbstractDERStatement {
         DERSequence tbsSequence = new DERSequence();
         DERInteger version = new DERInteger(VERSION);
         tbsSequence.add(version);
-        DERVisibleString derSessionId = new DERVisibleString(this.sessionId);
+        DERVisibleString derSessionId = new DERVisibleString(sessionId);
         tbsSequence.add(derSessionId);
-        DERVisibleString derUser = new DERVisibleString(this.user);
+        DERVisibleString derUser = new DERVisibleString(user);
         tbsSequence.add(derUser);
-        DERVisibleString derOperation = new DERVisibleString(this.operation);
+        DERVisibleString derOperation = new DERVisibleString(operation);
         tbsSequence.add(derOperation);
-        DERVisibleString derGivenName = new DERVisibleString(this.givenName);
+        DERVisibleString derGivenName = new DERVisibleString(givenName);
         tbsSequence.add(derGivenName);
-        DERVisibleString derSurname = new DERVisibleString(this.surname);
+        DERVisibleString derSurname = new DERVisibleString(surname);
         tbsSequence.add(derSurname);
         DEREncodedData encodedCert;
         try {
-            encodedCert = new DEREncodedData(this.authenticationCertificate.getEncoded());
+            encodedCert = new DEREncodedData(authenticationCertificate.getEncoded());
         } catch (CertificateEncodingException e) {
             throw new RuntimeException("cert encoding error: " + e.getMessage());
         }

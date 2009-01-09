@@ -36,7 +36,7 @@ public class ConfigItemValueDAOBean implements ConfigItemValueDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, ConfigItemValueEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, ConfigItemValueEntity.QueryInterface.class);
     }
 
     public ConfigItemValueEntity addConfigItemValue(ConfigItemEntity configItem, String value) {
@@ -45,7 +45,7 @@ public class ConfigItemValueDAOBean implements ConfigItemValueDAO {
         if (configItem != null) {
             configItem.getValues().add(configItemValue);
         }
-        this.entityManager.persist(configItemValue);
+        entityManager.persist(configItemValue);
         return configItemValue;
     }
 
@@ -61,17 +61,17 @@ public class ConfigItemValueDAOBean implements ConfigItemValueDAO {
         /*
          * Remove from database.
          */
-        this.entityManager.remove(configItemValue);
+        entityManager.remove(configItemValue);
     }
 
     public void saveConfigItemValue(ConfigItemValueEntity configItemValue) {
 
-        this.entityManager.merge(configItemValue);
+        entityManager.merge(configItemValue);
     }
 
     public List<ConfigItemValueEntity> listConfigItemValues(ConfigItemEntity configItem) {
 
-        List<ConfigItemValueEntity> result = this.queryObject.listConfigItemValues(configItem);
+        List<ConfigItemValueEntity> result = queryObject.listConfigItemValues(configItem);
         return result;
     }
 

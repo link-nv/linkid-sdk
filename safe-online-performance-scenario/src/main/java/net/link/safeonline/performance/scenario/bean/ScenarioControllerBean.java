@@ -113,8 +113,8 @@ public class ScenarioControllerBean implements ScenarioController {
     public void execute(Date startTime)
             throws Exception {
 
-        ExecutionEntity execution = this.executionService.getExecution(startTime);
-        ScenarioTimingEntity agentTime = this.executionService.start(execution);
+        ExecutionEntity execution = executionService.getExecution(startTime);
+        ScenarioTimingEntity agentTime = executionService.start(execution);
         agentTime.setStartMemory(getFreeMemory());
 
         Scenario scenario = createScenario(execution.getScenarioName());
@@ -165,7 +165,7 @@ public class ScenarioControllerBean implements ScenarioController {
     public Date prepare(ExecutionMetadata metaData) {
 
         // Create the execution and fill it up with metadata.
-        ExecutionEntity execution = this.executionService.addExecution(metaData.getScenarioName(), metaData.getAgents(),
+        ExecutionEntity execution = executionService.addExecution(metaData.getScenarioName(), metaData.getAgents(),
                 metaData.getWorkers(), metaData.getStartTime(), metaData.getDuration(), metaData.getHostname(), metaData.isSsl());
         createScenario(execution.getScenarioName()).prepare(execution, null);
 
@@ -190,7 +190,7 @@ public class ScenarioControllerBean implements ScenarioController {
      */
     public Set<Date> getExecutions() {
 
-        return this.executionService.getExecutions();
+        return executionService.getExecutions();
     }
 
     /**
@@ -198,7 +198,7 @@ public class ScenarioControllerBean implements ScenarioController {
      */
     public ExecutionMetadata getExecutionMetadata(Date executionId) {
 
-        ExecutionEntity execution = this.executionService.getExecution(executionId);
+        ExecutionEntity execution = executionService.getExecution(executionId);
 
         return ExecutionMetadata.createResponse(execution.getScenarioName(), getDescription(executionId), execution.getAgents(),
                 execution.getWorkers(), execution.getStartTime(), execution.getDuration(), execution.getHostname(), execution.isSsl(),
@@ -218,7 +218,7 @@ public class ScenarioControllerBean implements ScenarioController {
      */
     public String getDescription(Date executionId) {
 
-        ExecutionEntity execution = this.executionService.getExecution(executionId);
+        ExecutionEntity execution = executionService.getExecution(executionId);
         StringBuffer description = new StringBuffer();
 
         for (DriverProfileEntity profile : new TreeSet<DriverProfileEntity>(execution.getProfiles())) {
@@ -243,7 +243,7 @@ public class ScenarioControllerBean implements ScenarioController {
      */
     public Double getProgress(Date executionStartTime) {
 
-        ExecutionEntity execution = this.executionService.getExecution(executionStartTime);
+        ExecutionEntity execution = executionService.getExecution(executionStartTime);
 
         return execution.getChartingProgress();
     }
@@ -256,7 +256,7 @@ public class ScenarioControllerBean implements ScenarioController {
     public Map<String, byte[][]> createCharts(Date executionStartTime) {
 
         boolean ready = false;
-        ExecutionEntity execution = this.executionService.getExecution(executionStartTime);
+        ExecutionEntity execution = executionService.getExecution(executionStartTime);
 
         try {
             // Start the progress.
@@ -294,7 +294,7 @@ public class ScenarioControllerBean implements ScenarioController {
             LOG.debug(" - " + errorCharts.size() + " need(s) errors.");
 
             // Chart scenario timing data.
-            LinkedList<ScenarioTimingEntity> scenarioTimings = this.scenarioTimingService.getExecutionTimings(execution, DATA_POINTS);
+            LinkedList<ScenarioTimingEntity> scenarioTimings = scenarioTimingService.getExecutionTimings(execution, DATA_POINTS);
             if (!timingCharts.isEmpty()) {
                 double total = scenarioTimings.size(), current = 0;
                 LOG.debug(" - Starting timings..");
@@ -323,7 +323,7 @@ public class ScenarioControllerBean implements ScenarioController {
 
                 // Chart data.
                 if (!dataCharts.isEmpty()) {
-                    List<ProfileDataEntity> profileData = this.profileDataService.getProfileData(profile, scenarioTimings);
+                    List<ProfileDataEntity> profileData = profileDataService.getProfileData(profile, scenarioTimings);
                     double total = profileData.size(), current = 0;
                     LOG.debug(" - Starting " + profile.getDriverClassName() + "..");
                     LOG.debug(" - - Total: " + total);
@@ -349,7 +349,7 @@ public class ScenarioControllerBean implements ScenarioController {
                 // Chart errors.
                 LOG.debug(" - - Errors..");
                 if (!errorCharts.isEmpty()) {
-                    List<DriverExceptionEntity> profileErrors = this.driverExceptionService.getProfileErrors(profile, DATA_POINTS);
+                    List<DriverExceptionEntity> profileErrors = driverExceptionService.getProfileErrors(profile, DATA_POINTS);
                     for (DriverExceptionEntity error : profileErrors)
                         if (error != null) {
                             for (Chart chart : errorCharts) {

@@ -86,33 +86,33 @@ public class LogoutExitServletTest {
     public void setUp()
             throws Exception {
 
-        this.jndiTestUtils = new JndiTestUtils();
-        this.jndiTestUtils.setUp();
+        jndiTestUtils = new JndiTestUtils();
+        jndiTestUtils.setUp();
 
-        this.mockAuthenticationService = createMock(AuthenticationService.class);
+        mockAuthenticationService = createMock(AuthenticationService.class);
 
         JmxTestUtils jmxTestUtils = new JmxTestUtils();
         jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
-        this.logoutExitServletTestManager = new ServletTestManager();
+        logoutExitServletTestManager = new ServletTestManager();
         Map<String, String> initParams = new HashMap<String, String>();
-        initParams.put("ServletEndpointUrl", this.servletEndpointUrl);
-        initParams.put("ProtocolErrorUrl", this.protocolErrorUrl);
+        initParams.put("ServletEndpointUrl", servletEndpointUrl);
+        initParams.put("ProtocolErrorUrl", protocolErrorUrl);
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
         initialSessionAttributes.put(ProtocolHandlerManager.PROTOCOL_HANDLER_ID_ATTRIBUTE, Saml2PostProtocolHandler.class.getName());
-        initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE, this.mockAuthenticationService);
+        initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE, mockAuthenticationService);
 
-        this.logoutExitServletTestManager.setUp(LogoutExitServlet.class, initParams, null, null, initialSessionAttributes);
+        logoutExitServletTestManager.setUp(LogoutExitServlet.class, initParams, null, null, initialSessionAttributes);
 
-        this.mockObjects = new Object[] { this.mockAuthenticationService };
+        mockObjects = new Object[] { mockAuthenticationService };
     }
 
     @After
     public void tearDown()
             throws Exception {
 
-        this.logoutExitServletTestManager.tearDown();
-        this.jndiTestUtils.tearDown();
+        logoutExitServletTestManager.tearDown();
+        jndiTestUtils.tearDown();
     }
 
     @Test
@@ -121,7 +121,7 @@ public class LogoutExitServletTest {
 
         // setup
         HttpClient httpClient = new HttpClient();
-        String servletLocation = this.logoutExitServletTestManager.getServletLocation();
+        String servletLocation = logoutExitServletTestManager.getServletLocation();
         PostMethod postMethod = new PostMethod(servletLocation);
 
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
@@ -133,32 +133,32 @@ public class LogoutExitServletTest {
 
         String userId = UUID.randomUUID().toString();
 
-        String samlLogoutResponse = LogoutResponseFactory.createLogoutResponse(this.inResponseTo, applicationName, applicationKeyPair,
-                this.target);
+        String samlLogoutResponse = LogoutResponseFactory.createLogoutResponse(inResponseTo, applicationName, applicationKeyPair,
+                target);
         String encodedSamlLogoutResponse = Base64.encode(samlLogoutResponse.getBytes());
 
         String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, application2Name, applicationKeyPair,
-                this.servletEndpointUrl, null);
+                servletEndpointUrl, null);
         String encodedSamlLogoutRequest = Base64.encode(samlLogoutRequest.getBytes());
 
         NameValuePair[] data = { new NameValuePair("SAMLResponse", encodedSamlLogoutResponse) };
         postMethod.setRequestBody(data);
 
         // expectations
-        expect(this.mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.LOGGING_OUT);
-        expect(this.mockAuthenticationService.handleLogoutResponse((HttpServletRequest) EasyMock.anyObject())).andStubReturn(
+        expect(mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.LOGGING_OUT);
+        expect(mockAuthenticationService.handleLogoutResponse((HttpServletRequest) EasyMock.anyObject())).andStubReturn(
                 applicationName);
-        expect(this.mockAuthenticationService.findSsoApplicationToLogout()).andStubReturn(application2);
-        expect(this.mockAuthenticationService.getLogoutRequest(application2)).andStubReturn(encodedSamlLogoutRequest);
+        expect(mockAuthenticationService.findSsoApplicationToLogout()).andStubReturn(application2);
+        expect(mockAuthenticationService.getLogoutRequest(application2)).andStubReturn(encodedSamlLogoutRequest);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
         int statusCode = httpClient.executeMethod(postMethod);
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
         LOG.debug("status code: " + statusCode);
         String responseBody = postMethod.getResponseBodyAsString();
         LOG.debug("response body: " + responseBody);
@@ -196,7 +196,7 @@ public class LogoutExitServletTest {
 
         // setup
         HttpClient httpClient = new HttpClient();
-        String servletLocation = this.logoutExitServletTestManager.getServletLocation();
+        String servletLocation = logoutExitServletTestManager.getServletLocation();
         GetMethod getMethod = new GetMethod(servletLocation);
 
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
@@ -208,22 +208,22 @@ public class LogoutExitServletTest {
         String userId = UUID.randomUUID().toString();
 
         String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, applicationName, applicationKeyPair,
-                this.servletEndpointUrl, null);
+                servletEndpointUrl, null);
         String encodedSamlLogoutRequest = Base64.encode(samlLogoutRequest.getBytes());
 
         // expectations
-        expect(this.mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.INITIALIZED);
-        expect(this.mockAuthenticationService.findSsoApplicationToLogout()).andStubReturn(application);
-        expect(this.mockAuthenticationService.getLogoutRequest(application)).andStubReturn(encodedSamlLogoutRequest);
+        expect(mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.INITIALIZED);
+        expect(mockAuthenticationService.findSsoApplicationToLogout()).andStubReturn(application);
+        expect(mockAuthenticationService.getLogoutRequest(application)).andStubReturn(encodedSamlLogoutRequest);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
         int statusCode = httpClient.executeMethod(getMethod);
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
         LOG.debug("status code: " + statusCode);
         String responseBody = getMethod.getResponseBodyAsString();
         LOG.debug("response body: " + responseBody);

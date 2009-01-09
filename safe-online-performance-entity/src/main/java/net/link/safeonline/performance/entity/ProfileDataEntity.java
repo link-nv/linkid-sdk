@@ -69,7 +69,7 @@ public class ProfileDataEntity {
 
     public ProfileDataEntity() {
 
-        this.measurements = new HashSet<MeasurementEntity>();
+        measurements = new HashSet<MeasurementEntity>();
     }
 
     public ProfileDataEntity(DriverProfileEntity profile, ScenarioTimingEntity scenarioStart) {
@@ -77,7 +77,7 @@ public class ProfileDataEntity {
         this();
 
         this.profile = profile;
-        this.scenarioTiming = scenarioStart;
+        scenarioTiming = scenarioStart;
     }
 
     /**
@@ -85,7 +85,7 @@ public class ProfileDataEntity {
      */
     public Set<MeasurementEntity> getMeasurements() {
 
-        return this.measurements;
+        return measurements;
     }
 
     /**
@@ -93,7 +93,7 @@ public class ProfileDataEntity {
      */
     public ScenarioTimingEntity getScenarioTiming() {
 
-        return this.scenarioTiming;
+        return scenarioTiming;
     }
 
     /**
@@ -101,7 +101,7 @@ public class ProfileDataEntity {
      */
     public DriverProfileEntity getProfile() {
 
-        return this.profile;
+        return profile;
     }
 
     /**
@@ -110,6 +110,6 @@ public class ProfileDataEntity {
     @Override
     public String toString() {
 
-        return String.format("[PD: %s - ST: %s]", this.measurements, this.scenarioTiming);
+        return String.format("[PD: %s - ST: %s]", measurements, scenarioTiming);
     }
 }

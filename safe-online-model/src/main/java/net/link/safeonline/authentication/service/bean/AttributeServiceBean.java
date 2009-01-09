@@ -87,8 +87,8 @@ public class AttributeServiceBean implements AttributeService, AttributeServiceR
         List<ApplicationIdentityAttributeEntity> confirmedAttributes = getConfirmedIdentityAttributes(subjectLogin);
 
         AttributeTypeEntity attributeType = checkAttributeReadPermission(attributeName, confirmedAttributes);
-        SubjectEntity subject = this.subjectService.getSubject(subjectLogin);
-        return this.proxyAttributeService.findAttributeValue(subject.getUserId(), attributeType.getName());
+        SubjectEntity subject = subjectService.getSubject(subjectLogin);
+        return proxyAttributeService.findAttributeValue(subject.getUserId(), attributeType.getName());
     }
 
     private AttributeTypeEntity checkAttributeReadPermission(String attributeName, List<ApplicationIdentityAttributeEntity> attributes)
@@ -106,13 +106,13 @@ public class AttributeServiceBean implements AttributeService, AttributeServiceR
     private List<ApplicationIdentityAttributeEntity> getConfirmedIdentityAttributes(String subjectLogin)
             throws SubjectNotFoundException, PermissionDeniedException {
 
-        SubjectEntity subject = this.subjectService.getSubject(subjectLogin);
-        ApplicationEntity application = this.applicationManager.getCallerApplication();
+        SubjectEntity subject = subjectService.getSubject(subjectLogin);
+        ApplicationEntity application = applicationManager.getCallerApplication();
 
         /*
          * The subject needs to be subscribed onto this application.
          */
-        SubscriptionEntity subscription = this.subscriptionDAO.findSubscription(subject, application);
+        SubscriptionEntity subscription = subscriptionDAO.findSubscription(subject, application);
         if (null == subscription) {
             LOG.debug("subject is not subscribed");
             throw new PermissionDeniedException("subject is not subscribed");
@@ -129,7 +129,7 @@ public class AttributeServiceBean implements AttributeService, AttributeServiceR
 
         ApplicationIdentityEntity confirmedApplicationIdentity;
         try {
-            confirmedApplicationIdentity = this.applicationIdentityDAO.getApplicationIdentity(application, confirmedIdentityVersion);
+            confirmedApplicationIdentity = applicationIdentityDAO.getApplicationIdentity(application, confirmedIdentityVersion);
         } catch (ApplicationIdentityNotFoundException e) {
             throw new EJBException("application identity not found for version: " + confirmedIdentityVersion);
         }
@@ -152,10 +152,10 @@ public class AttributeServiceBean implements AttributeService, AttributeServiceR
         LOG.debug("get confirmed attributes for subject: " + subjectLogin);
         List<ApplicationIdentityAttributeEntity> confirmedAttributes = getConfirmedIdentityAttributes(subjectLogin);
         Map<String, Object> resultAttributes = new TreeMap<String, Object>();
-        SubjectEntity subject = this.subjectService.getSubject(subjectLogin);
+        SubjectEntity subject = subjectService.getSubject(subjectLogin);
         for (ApplicationIdentityAttributeEntity confirmedAttribute : confirmedAttributes) {
             String attributeName = confirmedAttribute.getAttributeTypeName();
-            Object value = this.proxyAttributeService.findAttributeValue(subject.getUserId(), attributeName);
+            Object value = proxyAttributeService.findAttributeValue(subject.getUserId(), attributeName);
             if (null == value) {
                 continue;
             }

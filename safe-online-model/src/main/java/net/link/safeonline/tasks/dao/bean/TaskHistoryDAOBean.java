@@ -43,7 +43,7 @@ public class TaskHistoryDAOBean implements TaskHistoryDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, TaskHistoryEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, TaskHistoryEntity.QueryInterface.class);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -51,13 +51,13 @@ public class TaskHistoryDAOBean implements TaskHistoryDAO {
 
         TaskHistoryEntity taskHistoryEntity = new TaskHistoryEntity(task, message, result, startDate, endDate);
         task.addTaskHistoryEntity(taskHistoryEntity);
-        this.entityManager.persist(taskHistoryEntity);
+        entityManager.persist(taskHistoryEntity);
         return taskHistoryEntity;
     }
 
     public List<TaskHistoryEntity> listTaskHistory(TaskEntity task) {
 
-        TaskEntity attachedTask = this.entityManager.find(TaskEntity.class, task.getJndiName());
+        TaskEntity attachedTask = entityManager.find(TaskEntity.class, task.getJndiName());
         List<TaskHistoryEntity> taskHistoryList = attachedTask.getTaskHistory();
         for (TaskHistoryEntity history : taskHistoryList) {
             history.getId();
@@ -68,19 +68,19 @@ public class TaskHistoryDAOBean implements TaskHistoryDAO {
     public void clearTaskHistory(TaskEntity task) {
 
         LOG.debug("Clearing history for task entity: " + task.getName());
-        this.queryObject.clearTaskHistory(task);
+        queryObject.clearTaskHistory(task);
     }
 
     public void clearAllTasksHistory() {
 
         LOG.debug("Clearing history for all tasks");
-        this.queryObject.clearAllTasksHistory();
+        queryObject.clearAllTasksHistory();
     }
 
     public void clearAllTasksHistory(long ageInMillis) {
 
         LOG.debug("Clearing history older than " + ageInMillis + "for all tasks");
         Date ageLimit = new Date(System.currentTimeMillis() - ageInMillis);
-        this.queryObject.clearAllTasksHistory(ageLimit);
+        queryObject.clearAllTasksHistory(ageLimit);
     }
 }

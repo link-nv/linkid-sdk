@@ -69,12 +69,12 @@ public class IdentityConfirmationBean extends AbstractExitBean implements Identi
             AttributeTypeNotFoundException, SubscriptionNotFoundException {
 
         LOG.debug("agree");
-        this.identityService.confirmIdentity(this.application);
-        HelpdeskLogger.add("confirmed application identity for " + this.application, LogLevelType.INFO);
+        identityService.confirmIdentity(application);
+        HelpdeskLogger.add("confirmed application identity for " + application, LogLevelType.INFO);
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();
-        List<AttributeDO> missingAttributes = this.identityService.listMissingAttributes(this.application, viewLocale);
+        List<AttributeDO> missingAttributes = identityService.listMissingAttributes(application, viewLocale);
 
         if (false == missingAttributes.isEmpty()) {
             for (AttributeDO missingAttribute : missingAttributes) {
@@ -84,7 +84,7 @@ public class IdentityConfirmationBean extends AbstractExitBean implements Identi
             return "missing-attributes";
         }
 
-        AuthenticationUtils.commitAuthentication(this.facesMessages);
+        AuthenticationUtils.commitAuthentication(facesMessages);
 
         return null;
     }
@@ -104,7 +104,7 @@ public class IdentityConfirmationBean extends AbstractExitBean implements Identi
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();
 
-        List<AttributeDO> confirmationList = this.identityService.listIdentityAttributesToConfirm(this.application, viewLocale);
+        List<AttributeDO> confirmationList = identityService.listIdentityAttributesToConfirm(application, viewLocale);
         LOG.debug("confirmation list: " + confirmationList);
         return confirmationList;
     }
@@ -120,7 +120,7 @@ public class IdentityConfirmationBean extends AbstractExitBean implements Identi
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();
-        List<AttributeDO> missingAttributes = this.identityService.listMissingAttributes(this.application, viewLocale);
+        List<AttributeDO> missingAttributes = identityService.listMissingAttributes(application, viewLocale);
         for (AttributeDO missingAttribute : missingAttributes) {
             if (!missingAttribute.isEditable()) {
                 unavailableList.add(missingAttribute);

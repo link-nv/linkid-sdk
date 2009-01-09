@@ -52,9 +52,8 @@ public class StsDriver extends ProfileDriver {
      */
     public void validate(PrivateKeyEntry applicationKey, Element token, TrustDomainType trustDomain) {
 
-        if (!(applicationKey.getCertificate() instanceof X509Certificate)) {
+        if (!(applicationKey.getCertificate() instanceof X509Certificate))
             throw new IllegalArgumentException("The certificate in the keystore needs to be of X509 format.");
-        }
 
         try {
             SecurityTokenServiceClientImpl service = new SecurityTokenServiceClientImpl(getHost(),

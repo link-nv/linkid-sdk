@@ -98,59 +98,59 @@ public class NotificationProducerPortImplTest {
 
         LOG.debug("setup");
 
-        this.jndiTestUtils = new JndiTestUtils();
-        this.jndiTestUtils.setUp();
-        this.jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
+        jndiTestUtils = new JndiTestUtils();
+        jndiTestUtils.setUp();
+        jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
                 "SafeOnline/WSSecurityConfigurationBean/local");
 
-        this.mockWSSecurityConfigurationService = createMock(WSSecurityConfiguration.class);
-        this.mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
-        this.mockDeviceAuthenticationService = createMock(DeviceAuthenticationService.class);
-        this.mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
-        this.mockPkiValidator = createMock(PkiValidator.class);
-        this.mockNotificationProducerService = createMock(net.link.safeonline.notification.service.NotificationProducerService.class);
+        mockWSSecurityConfigurationService = createMock(WSSecurityConfiguration.class);
+        mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
+        mockDeviceAuthenticationService = createMock(DeviceAuthenticationService.class);
+        mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
+        mockPkiValidator = createMock(PkiValidator.class);
+        mockNotificationProducerService = createMock(net.link.safeonline.notification.service.NotificationProducerService.class);
 
-        this.mockObjects = new Object[] { this.mockWSSecurityConfigurationService, this.mockApplicationAuthenticationService,
-                this.mockDeviceAuthenticationService, this.mockNodeAuthenticationService, this.mockPkiValidator,
-                this.mockNotificationProducerService };
+        mockObjects = new Object[] { mockWSSecurityConfigurationService, mockApplicationAuthenticationService,
+                mockDeviceAuthenticationService, mockNodeAuthenticationService, mockPkiValidator,
+                mockNotificationProducerService };
 
-        this.jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local", this.mockWSSecurityConfigurationService);
-        this.jndiTestUtils
-                          .bindComponent("SafeOnline/ApplicationAuthenticationServiceBean/local", this.mockApplicationAuthenticationService);
-        this.jndiTestUtils.bindComponent("SafeOnline/DeviceAuthenticationServiceBean/local", this.mockDeviceAuthenticationService);
-        this.jndiTestUtils.bindComponent("SafeOnline/NodeAuthenticationServiceBean/local", this.mockNodeAuthenticationService);
-        this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local", this.mockPkiValidator);
-        this.jndiTestUtils.bindComponent("SafeOnline/NotificationProducerServiceBean/local", this.mockNotificationProducerService);
+        jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local", mockWSSecurityConfigurationService);
+        jndiTestUtils
+                          .bindComponent("SafeOnline/ApplicationAuthenticationServiceBean/local", mockApplicationAuthenticationService);
+        jndiTestUtils.bindComponent("SafeOnline/DeviceAuthenticationServiceBean/local", mockDeviceAuthenticationService);
+        jndiTestUtils.bindComponent("SafeOnline/NodeAuthenticationServiceBean/local", mockNodeAuthenticationService);
+        jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local", mockPkiValidator);
+        jndiTestUtils.bindComponent("SafeOnline/NotificationProducerServiceBean/local", mockNotificationProducerService);
 
         // expectations
-        expect(this.mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock.anyObject()))
+        expect(mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock.anyObject()))
                                                                                                                                 .andStubReturn(
                                                                                                                                         PkiResult.VALID);
-        expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
+        expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
 
         JaasTestUtils.initJaasLoginModule(DummyLoginModule.class);
         NotificationProducerPort wsPort = new NotificationProducerPortImpl();
-        this.webServiceTestUtils = new WebServiceTestUtils();
-        this.webServiceTestUtils.setUp(wsPort);
+        webServiceTestUtils = new WebServiceTestUtils();
+        webServiceTestUtils.setUp(wsPort);
         /*
          * Next is required, else the wsPort will get old mocks injected when running multiple tests.
          */
         InjectionInstanceResolver.clearInstanceCache();
         NotificationProducerService service = NotificationProducerServiceFactory.newInstance();
-        this.clientPort = service.getNotificationProducerPort();
-        this.webServiceTestUtils.setEndpointAddress(this.clientPort);
+        clientPort = service.getNotificationProducerPort();
+        webServiceTestUtils.setEndpointAddress(clientPort);
 
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        this.certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
+        certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
 
         KeyPair olasKeyPair = PkiTestUtils.generateKeyPair();
-        this.olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=OLAS");
-        this.olasPrivateKey = olasKeyPair.getPrivate();
+        olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=OLAS");
+        olasPrivateKey = olasKeyPair.getPrivate();
 
-        BindingProvider bindingProvider = (BindingProvider) this.clientPort;
+        BindingProvider bindingProvider = (BindingProvider) clientPort;
         Binding binding = bindingProvider.getBinding();
         List<Handler> handlerChain = binding.getHandlerChain();
-        Handler<SOAPMessageContext> wsSecurityHandler = new WSSecurityClientHandler(this.certificate, keyPair.getPrivate());
+        Handler<SOAPMessageContext> wsSecurityHandler = new WSSecurityClientHandler(certificate, keyPair.getPrivate());
         handlerChain.add(wsSecurityHandler);
         binding.setHandlerChain(handlerChain);
 
@@ -161,8 +161,8 @@ public class NotificationProducerPortImplTest {
             throws Exception {
 
         LOG.debug("tearDown");
-        this.webServiceTestUtils.tearDown();
-        this.jndiTestUtils.tearDown();
+        webServiceTestUtils.tearDown();
+        jndiTestUtils.tearDown();
     }
 
     @Test
@@ -186,18 +186,18 @@ public class NotificationProducerPortImplTest {
         request.setFilter(filter);
 
         // expectations
-        expect(this.mockApplicationAuthenticationService.authenticate(this.certificate)).andReturn("test-application-name");
-        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
-        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
-        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
-        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
-        this.mockNotificationProducerService.subscribe(SafeOnlineConstants.TOPIC_REMOVE_USER, address, this.certificate);
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn("test-application-name");
+        expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
+        expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
+        expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
+        mockNotificationProducerService.subscribe(SafeOnlineConstants.TOPIC_REMOVE_USER, address, certificate);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // execute
-        SubscribeResponse response = this.clientPort.subscribe(request);
+        SubscribeResponse response = clientPort.subscribe(request);
 
         // verify
         assertNotNull(response);

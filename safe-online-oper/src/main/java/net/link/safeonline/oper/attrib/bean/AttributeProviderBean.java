@@ -76,8 +76,8 @@ public class AttributeProviderBean implements AttributeProvider {
     public void attributeProvidersFactory()
             throws AttributeTypeNotFoundException {
 
-        String attributeName = this.selectedAttributeType.getName();
-        this.attributeProviders = this.attributeProviderManagerService.getAttributeProviders(attributeName);
+        String attributeName = selectedAttributeType.getName();
+        attributeProviders = attributeProviderManagerService.getAttributeProviders(attributeName);
     }
 
     @Remove
@@ -91,8 +91,8 @@ public class AttributeProviderBean implements AttributeProvider {
     public String removeProvider()
             throws AttributeTypeNotFoundException, AttributeProviderNotFoundException {
 
-        this.log.debug("removing attribute provider #0", this.selectedAttributeProvider);
-        this.attributeProviderManagerService.removeAttributeProvider(this.selectedAttributeProvider);
+        log.debug("removing attribute provider #0", selectedAttributeProvider);
+        attributeProviderManagerService.removeAttributeProvider(selectedAttributeProvider);
         attributeProvidersFactory();
         return "provider-removed";
     }
@@ -102,15 +102,15 @@ public class AttributeProviderBean implements AttributeProvider {
             throws ExistingAttributeProviderException, ApplicationNotFoundException, AttributeTypeNotFoundException,
             PermissionDeniedException {
 
-        this.log.debug("add application provider: " + this.application);
-        this.attributeProviderManagerService.addAttributeProvider(this.application, this.selectedAttributeType.getName());
+        log.debug("add application provider: " + application);
+        attributeProviderManagerService.addAttributeProvider(application, selectedAttributeType.getName());
         return "success";
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public List<SelectItem> getApplicationList() {
 
-        List<ApplicationEntity> applications = this.applicationService.listApplications();
+        List<ApplicationEntity> applications = applicationService.listApplications();
         List<SelectItem> applicationList = new LinkedList<SelectItem>();
         for (ApplicationEntity currentApplication : applications) {
             applicationList.add(new SelectItem(currentApplication.getName()));
@@ -120,7 +120,7 @@ public class AttributeProviderBean implements AttributeProvider {
 
     public String getApplication() {
 
-        return this.application;
+        return application;
     }
 
     public void setApplication(String application) {

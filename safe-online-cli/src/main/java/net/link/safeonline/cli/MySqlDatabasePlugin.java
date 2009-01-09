@@ -35,7 +35,7 @@ public class MySqlDatabasePlugin implements DatabasePlugin {
             Class<?> driverClass = classLoader.loadClass(DRIVER_CLASS_NAME);
             Object driverInstance = driverClass.newInstance();
             if (driverInstance instanceof Driver) {
-                this.driver = (Driver) driverInstance;
+                driver = (Driver) driverInstance;
                 return true;
             }
             return false;
@@ -52,12 +52,12 @@ public class MySqlDatabasePlugin implements DatabasePlugin {
     public Connection getConnection(String connectionUrl, String user, String password)
             throws SQLException {
 
-        if (null == this.driver)
+        if (null == driver)
             throw new SQLException("need to initialize the database plugin first");
         Properties info = new Properties();
         info.put("user", user);
         info.put("password", password);
-        Connection connection = this.driver.connect(connectionUrl, info);
+        Connection connection = driver.connect(connectionUrl, info);
         return connection;
     }
 

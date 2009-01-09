@@ -74,7 +74,7 @@ public class AllowedDeviceEntity implements Serializable {
     @JoinColumn(name = "application", nullable = false)
     public ApplicationEntity getApplication() {
 
-        return this.application;
+        return application;
     }
 
     public void setApplication(ApplicationEntity application) {
@@ -86,7 +86,7 @@ public class AllowedDeviceEntity implements Serializable {
     @JoinColumn(name = "device", nullable = false)
     public DeviceEntity getDevice() {
 
-        return this.device;
+        return device;
     }
 
     public void setDevice(DeviceEntity device) {
@@ -98,7 +98,7 @@ public class AllowedDeviceEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     public long getId() {
 
-        return this.id;
+        return id;
     }
 
     public void setId(long id) {
@@ -108,7 +108,7 @@ public class AllowedDeviceEntity implements Serializable {
 
     public int getWeight() {
 
-        return this.weight;
+        return weight;
     }
 
     public void setWeight(int weight) {

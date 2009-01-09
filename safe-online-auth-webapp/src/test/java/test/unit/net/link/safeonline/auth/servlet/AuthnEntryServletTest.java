@@ -96,51 +96,51 @@ public class AuthnEntryServletTest {
     public void setUp()
             throws Exception {
 
-        this.jndiTestUtils = new JndiTestUtils();
-        this.jndiTestUtils.setUp();
-        this.mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
-        this.jndiTestUtils
-                          .bindComponent("SafeOnline/ApplicationAuthenticationServiceBean/local", this.mockApplicationAuthenticationService);
-        this.mockPkiValidator = createMock(PkiValidator.class);
-        this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local", this.mockPkiValidator);
+        jndiTestUtils = new JndiTestUtils();
+        jndiTestUtils.setUp();
+        mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
+        jndiTestUtils
+                          .bindComponent("SafeOnline/ApplicationAuthenticationServiceBean/local", mockApplicationAuthenticationService);
+        mockPkiValidator = createMock(PkiValidator.class);
+        jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local", mockPkiValidator);
 
         SamlAuthorityService mockSamlAuthorityService = createMock(SamlAuthorityService.class);
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn("test-issuer-name");
         expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(10 * 60);
-        this.jndiTestUtils.bindComponent("SafeOnline/SamlAuthorityServiceBean/local", mockSamlAuthorityService);
+        jndiTestUtils.bindComponent("SafeOnline/SamlAuthorityServiceBean/local", mockSamlAuthorityService);
 
-        this.mockDevicePolicyService = createMock(DevicePolicyService.class);
-        this.jndiTestUtils.bindComponent("SafeOnline/DevicePolicyServiceBean/local", this.mockDevicePolicyService);
+        mockDevicePolicyService = createMock(DevicePolicyService.class);
+        jndiTestUtils.bindComponent("SafeOnline/DevicePolicyServiceBean/local", mockDevicePolicyService);
 
-        this.mockAuthenticationService = createMock(AuthenticationService.class);
+        mockAuthenticationService = createMock(AuthenticationService.class);
 
         JmxTestUtils jmxTestUtils = new JmxTestUtils();
         jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
-        this.authnEntryServletTestManager = new ServletTestManager();
+        authnEntryServletTestManager = new ServletTestManager();
         Map<String, String> initParams = new HashMap<String, String>();
-        initParams.put("StartUrl", this.startUrl);
-        initParams.put("FirstTimeUrl", this.firstTimeUrl);
-        initParams.put("LoginUrl", this.loginUrl);
-        initParams.put("ServletEndpointUrl", this.servletEndpointUrl);
-        initParams.put("UnsupportedProtocolUrl", this.unsupportedProtocolUrl);
-        initParams.put("ProtocolErrorUrl", this.protocolErrorUrl);
-        initParams.put("CookiePath", this.cookiePath);
+        initParams.put("StartUrl", startUrl);
+        initParams.put("FirstTimeUrl", firstTimeUrl);
+        initParams.put("LoginUrl", loginUrl);
+        initParams.put("ServletEndpointUrl", servletEndpointUrl);
+        initParams.put("UnsupportedProtocolUrl", unsupportedProtocolUrl);
+        initParams.put("ProtocolErrorUrl", protocolErrorUrl);
+        initParams.put("CookiePath", cookiePath);
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
-        initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE, this.mockAuthenticationService);
+        initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE, mockAuthenticationService);
 
-        this.authnEntryServletTestManager.setUp(AuthnEntryServlet.class, initParams, null, null, initialSessionAttributes);
+        authnEntryServletTestManager.setUp(AuthnEntryServlet.class, initParams, null, null, initialSessionAttributes);
 
-        this.mockObjects = new Object[] { this.mockApplicationAuthenticationService, this.mockPkiValidator, mockSamlAuthorityService,
-                this.mockDevicePolicyService, this.mockAuthenticationService };
+        mockObjects = new Object[] { mockApplicationAuthenticationService, mockPkiValidator, mockSamlAuthorityService,
+                mockDevicePolicyService, mockAuthenticationService };
     }
 
     @After
     public void tearDown()
             throws Exception {
 
-        this.authnEntryServletTestManager.tearDown();
-        this.jndiTestUtils.tearDown();
+        authnEntryServletTestManager.tearDown();
+        jndiTestUtils.tearDown();
     }
 
     @Test
@@ -149,7 +149,7 @@ public class AuthnEntryServletTest {
 
         // setup
         HttpClient httpClient = new HttpClient();
-        GetMethod getMethod = new GetMethod(this.authnEntryServletTestManager.getServletLocation());
+        GetMethod getMethod = new GetMethod(authnEntryServletTestManager.getServletLocation());
         /*
          * Here we simulate a user that directly visits the authentication web application.
          */
@@ -163,7 +163,7 @@ public class AuthnEntryServletTest {
         assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
         String location = getMethod.getResponseHeader("Location").getValue();
         LOG.debug("location: " + location);
-        assertTrue(location.endsWith(this.unsupportedProtocolUrl));
+        assertTrue(location.endsWith(unsupportedProtocolUrl));
     }
 
     @Test
@@ -172,14 +172,14 @@ public class AuthnEntryServletTest {
 
         // setup
         HttpClient httpClient = new HttpClient();
-        String servletLocation = this.authnEntryServletTestManager.getServletLocation();
+        String servletLocation = authnEntryServletTestManager.getServletLocation();
         PostMethod postMethod = new PostMethod(servletLocation);
 
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
         String applicationName = "test-application-id";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
-                assertionConsumerService, this.servletEndpointUrl, null, null, false);
+                assertionConsumerService, servletEndpointUrl, null, null, false);
         String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest.getBytes());
 
         NameValuePair[] data = { new NameValuePair("SAMLRequest", encodedSamlAuthnRequest) };
@@ -187,31 +187,31 @@ public class AuthnEntryServletTest {
 
         // expectations
         expect(
-                this.mockAuthenticationService.initialize((Locale) EasyMock.anyObject(), (Integer) EasyMock.anyObject(),
+                mockAuthenticationService.initialize((Locale) EasyMock.anyObject(), (Integer) EasyMock.anyObject(),
                         (Boolean) EasyMock.anyObject(), (AuthnRequest) EasyMock.anyObject())).andStubReturn(
                 new ProtocolContext(applicationName, applicationName, assertionConsumerService, null, null, null, null));
-        expect(this.mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.INITIALIZED);
+        expect(mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.INITIALIZED);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
         int statusCode = httpClient.executeMethod(postMethod);
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
         LOG.debug("status code: " + statusCode);
         LOG.debug("result body: " + postMethod.getResponseBodyAsString());
         assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
         String location = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("location: " + location);
-        assertTrue(location.endsWith(this.firstTimeUrl));
-        String resultApplicationId = (String) this.authnEntryServletTestManager.getSessionAttribute(LoginManager.APPLICATION_ID_ATTRIBUTE);
+        assertTrue(location.endsWith(firstTimeUrl));
+        String resultApplicationId = (String) authnEntryServletTestManager.getSessionAttribute(LoginManager.APPLICATION_ID_ATTRIBUTE);
         assertEquals(applicationName, resultApplicationId);
-        String resultApplicationName = (String) this.authnEntryServletTestManager
+        String resultApplicationName = (String) authnEntryServletTestManager
                                                                                  .getSessionAttribute(LoginManager.APPLICATION_FRIENDLY_NAME_ATTRIBUTE);
         assertEquals(applicationName, resultApplicationName);
-        String target = (String) this.authnEntryServletTestManager.getSessionAttribute(LoginManager.TARGET_ATTRIBUTE);
+        String target = (String) authnEntryServletTestManager.getSessionAttribute(LoginManager.TARGET_ATTRIBUTE);
         assertEquals(assertionConsumerService, target);
     }
 
@@ -221,14 +221,14 @@ public class AuthnEntryServletTest {
 
         // setup
         HttpClient httpClient = new HttpClient();
-        String servletLocation = this.authnEntryServletTestManager.getServletLocation();
+        String servletLocation = authnEntryServletTestManager.getServletLocation();
         PostMethod postMethod = new PostMethod(servletLocation);
 
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
         String applicationName = "test-application-id";
         String assertionConsumerService = "http://test.assertion.consumer.service";
         String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, applicationKeyPair,
-                assertionConsumerService, this.servletEndpointUrl, null, null, true);
+                assertionConsumerService, servletEndpointUrl, null, null, true);
         String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest.getBytes());
 
         String userId = UUID.randomUUID().toString();
@@ -243,40 +243,40 @@ public class AuthnEntryServletTest {
 
         // expectations
         expect(
-                this.mockAuthenticationService.initialize((Locale) EasyMock.anyObject(), (Integer) EasyMock.anyObject(),
+                mockAuthenticationService.initialize((Locale) EasyMock.anyObject(), (Integer) EasyMock.anyObject(),
                         (Boolean) EasyMock.anyObject(), (AuthnRequest) EasyMock.anyObject())).andStubReturn(
                 new ProtocolContext(applicationName, applicationName, assertionConsumerService, null, null, null, null));
-        expect(this.mockAuthenticationService.checkSsoCookie((Cookie) EasyMock.anyObject())).andStubReturn(true);
-        expect(this.mockAuthenticationService.getSsoCookie()).andStubReturn(
+        expect(mockAuthenticationService.checkSsoCookie((Cookie) EasyMock.anyObject())).andStubReturn(true);
+        expect(mockAuthenticationService.getSsoCookie()).andStubReturn(
                 new Cookie(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX + "." + applicationName, "value"));
-        expect(this.mockAuthenticationService.getUserId()).andStubReturn(userId);
-        expect(this.mockAuthenticationService.getAuthenticationDevice()).andStubReturn(device);
-        expect(this.mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.INITIALIZED);
+        expect(mockAuthenticationService.getUserId()).andStubReturn(userId);
+        expect(mockAuthenticationService.getAuthenticationDevice()).andStubReturn(device);
+        expect(mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.INITIALIZED);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
         int statusCode = httpClient.executeMethod(postMethod);
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
         LOG.debug("status code: " + statusCode);
         LOG.debug("result body: " + postMethod.getResponseBodyAsString());
         assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
         String location = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("location: " + location);
-        assertTrue(location.endsWith(this.loginUrl));
-        String resultApplicationId = (String) this.authnEntryServletTestManager.getSessionAttribute(LoginManager.APPLICATION_ID_ATTRIBUTE);
+        assertTrue(location.endsWith(loginUrl));
+        String resultApplicationId = (String) authnEntryServletTestManager.getSessionAttribute(LoginManager.APPLICATION_ID_ATTRIBUTE);
         assertEquals(applicationName, resultApplicationId);
-        String resultApplicationName = (String) this.authnEntryServletTestManager
+        String resultApplicationName = (String) authnEntryServletTestManager
                                                                                  .getSessionAttribute(LoginManager.APPLICATION_FRIENDLY_NAME_ATTRIBUTE);
         assertEquals(applicationName, resultApplicationName);
-        String target = (String) this.authnEntryServletTestManager.getSessionAttribute(LoginManager.TARGET_ATTRIBUTE);
+        String target = (String) authnEntryServletTestManager.getSessionAttribute(LoginManager.TARGET_ATTRIBUTE);
         assertEquals(assertionConsumerService, target);
-        String resultUserId = (String) this.authnEntryServletTestManager.getSessionAttribute(LoginManager.USERID_ATTRIBUTE);
+        String resultUserId = (String) authnEntryServletTestManager.getSessionAttribute(LoginManager.USERID_ATTRIBUTE);
         assertEquals(userId, resultUserId);
-        DeviceEntity resultDevice = (DeviceEntity) this.authnEntryServletTestManager
+        DeviceEntity resultDevice = (DeviceEntity) authnEntryServletTestManager
                                                                                     .getSessionAttribute(LoginManager.AUTHENTICATION_DEVICE_ATTRIBUTE);
         assertEquals(device, resultDevice);
     }

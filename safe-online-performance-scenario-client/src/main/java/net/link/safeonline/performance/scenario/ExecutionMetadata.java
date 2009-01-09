@@ -83,18 +83,18 @@ public class ExecutionMetadata {
         this.startTime = startTime;
         this.duration = duration;
         this.hostname = hostname;
-        this.ssl = useSsl;
+        ssl = useSsl;
         this.speed = speed;
     }
 
     public String getScenarioName() {
 
-        return this.scenarioName;
+        return scenarioName;
     }
 
     public String getScenarioDescription() {
 
-        return this.scenarioDescription;
+        return scenarioDescription;
     }
 
     public void setScenarioName(String scenarioName) {
@@ -104,37 +104,37 @@ public class ExecutionMetadata {
 
     public Integer getAgents() {
 
-        return this.agents;
+        return agents;
     }
 
     public Integer getWorkers() {
 
-        return this.workers;
+        return workers;
     }
 
     public Date getStartTime() {
 
-        return this.startTime;
+        return startTime;
     }
 
     public Long getDuration() {
 
-        return this.duration;
+        return duration;
     }
 
     public String getHostname() {
 
-        return this.hostname;
+        return hostname;
     }
 
     public Boolean isSsl() {
 
-        return this.ssl;
+        return ssl;
     }
 
     public Double getSpeed() {
 
-        return this.speed;
+        return speed;
     }
 
     /**
@@ -144,13 +144,13 @@ public class ExecutionMetadata {
     public String toString() {
 
         String formattedStartTime = null;
-        if (this.startTime != null) {
-            formattedStartTime = new SimpleDateFormat("HH:mm").format(this.startTime);
+        if (startTime != null) {
+            formattedStartTime = new SimpleDateFormat("HH:mm").format(startTime);
         }
 
-        return String.format("%s: [%s] %sx%s (%s min): %s #/s", this.scenarioName == null? "N/A": this.scenarioName.replaceFirst(".*\\.",
-                ""), formattedStartTime == null? "N/A": formattedStartTime, this.agents == null? "N/A": this.agents,
-                this.workers == null? "N/A": this.workers, this.duration == null? "N/A": this.duration / 60000, this.speed == null? "N/A"
-                        : String.format("%.2f", this.speed));
+        return String.format("%s: [%s] %sx%s (%s min): %s #/s", scenarioName == null? "N/A": scenarioName.replaceFirst(".*\\.",
+                ""), formattedStartTime == null? "N/A": formattedStartTime, agents == null? "N/A": agents,
+                workers == null? "N/A": workers, duration == null? "N/A": duration / 60000, speed == null? "N/A"
+                        : String.format("%.2f", speed));
     }
 }

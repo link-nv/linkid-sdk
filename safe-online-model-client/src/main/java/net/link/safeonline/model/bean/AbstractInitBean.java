@@ -249,12 +249,12 @@ public abstract class AbstractInitBean implements Startable {
         public UsageAgreement(String application) {
 
             this.application = application;
-            this.usageAgreementTexts = new HashSet<UsageAgreementText>();
+            usageAgreementTexts = new HashSet<UsageAgreementText>();
         }
 
         public void addUsageAgreementText(UsageAgreementText usageAgreementText) {
 
-            this.usageAgreementTexts.add(usageAgreementText);
+            usageAgreementTexts.add(usageAgreementText);
         }
     }
 
@@ -452,26 +452,26 @@ public abstract class AbstractInitBean implements Startable {
 
     public AbstractInitBean() {
 
-        this.applicationOwnersAndLogin = new HashMap<String, String>();
-        this.attributeTypes = new LinkedList<AttributeTypeEntity>();
-        this.users = new LinkedList<String>();
-        this.registeredApplications = new LinkedList<Application>();
-        this.applicationPools = new LinkedList<ApplicationPool>();
-        this.subscriptions = new LinkedList<Subscription>();
-        this.identities = new LinkedList<Identity>();
-        this.usageAgreements = new LinkedList<UsageAgreement>();
-        this.attributeTypeDescriptions = new LinkedList<AttributeTypeDescriptionEntity>();
-        this.trustedCertificates = new HashMap<X509Certificate, String>();
-        this.attributeProviders = new LinkedList<AttributeProviderEntity>();
-        this.attributes = new LinkedList<AttributeEntity>();
-        this.deviceClasses = new LinkedList<DeviceClass>();
-        this.deviceClassDescriptions = new LinkedList<DeviceClassDescription>();
-        this.devices = new LinkedList<Device>();
-        this.deviceDescriptions = new LinkedList<DeviceDescription>();
-        this.deviceProperties = new LinkedList<DeviceProperty>();
-        this.allowedDevices = new HashMap<String, List<String>>();
-        this.notificationTopics = new LinkedList<String>();
-        this.notificationSubcriptions = new LinkedList<NotificationSubscription>();
+        applicationOwnersAndLogin = new HashMap<String, String>();
+        attributeTypes = new LinkedList<AttributeTypeEntity>();
+        users = new LinkedList<String>();
+        registeredApplications = new LinkedList<Application>();
+        applicationPools = new LinkedList<ApplicationPool>();
+        subscriptions = new LinkedList<Subscription>();
+        identities = new LinkedList<Identity>();
+        usageAgreements = new LinkedList<UsageAgreement>();
+        attributeTypeDescriptions = new LinkedList<AttributeTypeDescriptionEntity>();
+        trustedCertificates = new HashMap<X509Certificate, String>();
+        attributeProviders = new LinkedList<AttributeProviderEntity>();
+        attributes = new LinkedList<AttributeEntity>();
+        deviceClasses = new LinkedList<DeviceClass>();
+        deviceClassDescriptions = new LinkedList<DeviceClassDescription>();
+        devices = new LinkedList<Device>();
+        deviceDescriptions = new LinkedList<DeviceDescription>();
+        deviceProperties = new LinkedList<DeviceProperty>();
+        allowedDevices = new HashMap<String, List<String>>();
+        notificationTopics = new LinkedList<String>();
+        notificationSubcriptions = new LinkedList<NotificationSubscription>();
     }
 
     protected byte[] getLogo(String logoResource) {
@@ -484,7 +484,7 @@ public abstract class AbstractInitBean implements Startable {
                 outBytes.write(inByte);
             }
         } catch (IOException e) {
-            this.LOG.warn("Couldn't successfully read in logo.", e);
+            LOG.warn("Couldn't successfully read in logo.", e);
         }
 
         // For logging purposes: calculate the MD5 of the logo.
@@ -495,9 +495,9 @@ public abstract class AbstractInitBean implements Startable {
                 md5.append(String.format("%02x", b));
             }
         } catch (NoSuchAlgorithmException e) {
-            this.LOG.error("no md5 digest.", e);
+            LOG.error("no md5 digest.", e);
         }
-        this.LOG.debug("Loading logo " + logoResource + " with MD5: " + md5);
+        LOG.debug("Loading logo " + logoResource + " with MD5: " + md5);
 
         return logo;
     }
@@ -505,7 +505,7 @@ public abstract class AbstractInitBean implements Startable {
     public void postStart() {
 
         try {
-            this.LOG.debug("postStart");
+            LOG.debug("postStart");
             initNode();
             initTrustDomains();
             initAttributeTypes();
@@ -529,14 +529,14 @@ public abstract class AbstractInitBean implements Startable {
             initNotificationTopics();
             initNotifications();
         } catch (SafeOnlineException e) {
-            this.LOG.fatal("safeonline exception", e);
+            LOG.fatal("safeonline exception", e);
             throw new EJBException(e);
         }
     }
 
     public void preStop() {
 
-        this.LOG.debug("preStop");
+        LOG.debug("preStop");
     }
 
 
@@ -585,70 +585,70 @@ public abstract class AbstractInitBean implements Startable {
 
     private void initApplicationTrustPoints() {
 
-        for (Map.Entry<X509Certificate, String> certificateEntry : this.trustedCertificates.entrySet()) {
+        for (Map.Entry<X509Certificate, String> certificateEntry : trustedCertificates.entrySet()) {
             addCertificateAsTrustPoint(certificateEntry.getValue(), certificateEntry.getKey());
         }
     }
 
     private void initAttributes() {
 
-        for (AttributeEntity attribute : this.attributes) {
+        for (AttributeEntity attribute : attributes) {
             String attributeTypeName = attribute.getPk().getAttributeType();
             String subjectLogin = attribute.getPk().getSubject();
 
             SubjectEntity subject;
             try {
-                subject = this.subjectService.getSubjectFromUserName(subjectLogin);
+                subject = subjectService.getSubjectFromUserName(subjectLogin);
             } catch (SubjectNotFoundException e) {
                 throw new EJBException("subject not found: " + subjectLogin);
             }
 
-            AttributeEntity existingAttribute = this.attributeDAO.findAttribute(attributeTypeName, subject);
+            AttributeEntity existingAttribute = attributeDAO.findAttribute(attributeTypeName, subject);
             if (null != existingAttribute) {
                 continue;
             }
 
             AttributeTypeEntity attributeType;
             try {
-                attributeType = this.attributeTypeDAO.getAttributeType(attributeTypeName);
+                attributeType = attributeTypeDAO.getAttributeType(attributeTypeName);
             } catch (AttributeTypeNotFoundException e) {
                 throw new EJBException("attribute type not found: " + attributeTypeName);
             }
 
             String stringValue = attribute.getStringValue();
-            AttributeEntity persistentAttribute = this.attributeDAO.addAttribute(attributeType, subject, stringValue);
+            AttributeEntity persistentAttribute = attributeDAO.addAttribute(attributeType, subject, stringValue);
             persistentAttribute.setBooleanValue(attribute.getBooleanValue());
         }
     }
 
     private void initAttributeProviders() {
 
-        for (AttributeProviderEntity attributeProvider : this.attributeProviders) {
+        for (AttributeProviderEntity attributeProvider : attributeProviders) {
             String applicationName = attributeProvider.getApplicationName();
             String attributeName = attributeProvider.getAttributeTypeName();
-            ApplicationEntity application = this.applicationDAO.findApplication(applicationName);
+            ApplicationEntity application = applicationDAO.findApplication(applicationName);
             if (null == application)
                 throw new EJBException("application not found: " + applicationName);
-            AttributeTypeEntity attributeType = this.attributeTypeDAO.findAttributeType(attributeName);
+            AttributeTypeEntity attributeType = attributeTypeDAO.findAttributeType(attributeName);
             if (null == attributeType)
                 throw new EJBException("attribute type not found: " + attributeName);
-            AttributeProviderEntity existingAttributeProvider = this.attributeProviderDAO.findAttributeProvider(application, attributeType);
+            AttributeProviderEntity existingAttributeProvider = attributeProviderDAO.findAttributeProvider(application, attributeType);
             if (null != existingAttributeProvider) {
                 continue;
             }
-            this.attributeProviderDAO.addAttributeProvider(application, attributeType);
+            attributeProviderDAO.addAttributeProvider(application, attributeType);
         }
     }
 
     private void addCertificateAsTrustPoint(String trustDomainName, X509Certificate certificate) {
 
-        TrustDomainEntity trustDomain = this.trustDomainDAO.findTrustDomain(trustDomainName);
+        TrustDomainEntity trustDomain = trustDomainDAO.findTrustDomain(trustDomainName);
         if (null == trustDomain) {
-            this.LOG.fatal("trust domain not found: " + trustDomainName);
+            LOG.fatal("trust domain not found: " + trustDomainName);
             return;
         }
 
-        TrustPointEntity demoTrustPoint = this.trustPointDAO.findTrustPoint(trustDomain, certificate);
+        TrustPointEntity demoTrustPoint = trustPointDAO.findTrustPoint(trustDomain, certificate);
         if (null != demoTrustPoint) {
             try {
                 /*
@@ -656,115 +656,115 @@ public abstract class AbstractInitBean implements Startable {
                  */
                 demoTrustPoint.setEncodedCert(certificate.getEncoded());
             } catch (CertificateEncodingException e) {
-                this.LOG.error("cert encoding error");
+                LOG.error("cert encoding error");
             }
             return;
         }
 
-        this.trustPointDAO.addTrustPoint(trustDomain, certificate);
+        trustPointDAO.addTrustPoint(trustDomain, certificate);
     }
 
     private void initTrustDomains() {
 
-        TrustDomainEntity applicationsTrustDomain = this.trustDomainDAO
+        TrustDomainEntity applicationsTrustDomain = trustDomainDAO
                                                                        .findTrustDomain(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
         if (null != applicationsTrustDomain)
             return;
 
-        applicationsTrustDomain = this.trustDomainDAO.addTrustDomain(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, true);
+        applicationsTrustDomain = trustDomainDAO.addTrustDomain(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, true);
 
-        TrustDomainEntity devicesTrustDomain = this.trustDomainDAO.findTrustDomain(SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
+        TrustDomainEntity devicesTrustDomain = trustDomainDAO.findTrustDomain(SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
         if (null != devicesTrustDomain)
             return;
-        devicesTrustDomain = this.trustDomainDAO.addTrustDomain(SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN, true);
+        devicesTrustDomain = trustDomainDAO.addTrustDomain(SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN, true);
 
-        TrustDomainEntity olasTrustDomain = this.trustDomainDAO.findTrustDomain(SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
+        TrustDomainEntity olasTrustDomain = trustDomainDAO.findTrustDomain(SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
         if (null != olasTrustDomain)
             return;
-        olasTrustDomain = this.trustDomainDAO.addTrustDomain(SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN, true);
+        olasTrustDomain = trustDomainDAO.addTrustDomain(SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN, true);
     }
 
     private void initAttributeTypes() {
 
         NodeEntity location;
         try {
-            location = this.olasDAO.getNode(this.node.name);
+            location = olasDAO.getNode(node.name);
         } catch (NodeNotFoundException e) {
-            throw new EJBException("olas node " + this.node.name + " not found");
+            throw new EJBException("olas node " + node.name + " not found");
         }
-        for (AttributeTypeEntity attributeType : this.attributeTypes) {
-            if (null != this.attributeTypeDAO.findAttributeType(attributeType.getName())) {
+        for (AttributeTypeEntity attributeType : attributeTypes) {
+            if (null != attributeTypeDAO.findAttributeType(attributeType.getName())) {
                 continue;
             }
             attributeType.setLocation(location);
-            this.attributeTypeDAO.addAttributeType(attributeType);
+            attributeTypeDAO.addAttributeType(attributeType);
         }
     }
 
     private void initAttributeTypeDescriptions() {
 
-        for (AttributeTypeDescriptionEntity attributeTypeDescription : this.attributeTypeDescriptions) {
-            AttributeTypeDescriptionEntity existingDescription = this.attributeTypeDAO.findDescription(attributeTypeDescription.getPk());
+        for (AttributeTypeDescriptionEntity attributeTypeDescription : attributeTypeDescriptions) {
+            AttributeTypeDescriptionEntity existingDescription = attributeTypeDAO.findDescription(attributeTypeDescription.getPk());
             if (null != existingDescription) {
                 continue;
             }
             AttributeTypeEntity attributeType;
             try {
-                attributeType = this.attributeTypeDAO.getAttributeType(attributeTypeDescription.getAttributeTypeName());
+                attributeType = attributeTypeDAO.getAttributeType(attributeTypeDescription.getAttributeTypeName());
             } catch (AttributeTypeNotFoundException e) {
                 throw new EJBException("attribute type not found: " + attributeTypeDescription.getAttributeTypeName());
             }
-            this.attributeTypeDAO.addAttributeTypeDescription(attributeType, attributeTypeDescription);
+            attributeTypeDAO.addAttributeTypeDescription(attributeType, attributeTypeDescription);
         }
     }
 
     private void initSubscriptions() {
 
-        for (Subscription subscription : this.subscriptions) {
+        for (Subscription subscription : subscriptions) {
             String login = subscription.user;
             String applicationName = subscription.application;
             SubscriptionOwnerType subscriptionOwnerType = subscription.subscriptionOwnerType;
-            SubjectEntity subject = this.subjectService.findSubjectFromUserName(login);
-            ApplicationEntity application = this.applicationDAO.findApplication(applicationName);
-            SubscriptionEntity subscriptionEntity = this.subscriptionDAO.findSubscription(subject, application);
+            SubjectEntity subject = subjectService.findSubjectFromUserName(login);
+            ApplicationEntity application = applicationDAO.findApplication(applicationName);
+            SubscriptionEntity subscriptionEntity = subscriptionDAO.findSubscription(subject, application);
             if (null != subscriptionEntity) {
                 continue;
             }
-            this.subscriptionDAO.addSubscription(subscriptionOwnerType, subject, application);
+            subscriptionDAO.addSubscription(subscriptionOwnerType, subject, application);
             if (application.getIdScope().equals(IdScopeType.APPLICATION)) {
-                this.applicationScopeIdDAO.addApplicationScopeId(subject, application);
+                applicationScopeIdDAO.addApplicationScopeId(subject, application);
             }
         }
     }
 
     private void initApplicationOwners() {
 
-        for (Map.Entry<String, String> applicationOwnerAndLogin : this.applicationOwnersAndLogin.entrySet()) {
+        for (Map.Entry<String, String> applicationOwnerAndLogin : applicationOwnersAndLogin.entrySet()) {
             String name = applicationOwnerAndLogin.getKey();
             String login = applicationOwnerAndLogin.getValue();
-            if (null != this.applicationOwnerDAO.findApplicationOwner(name)) {
+            if (null != applicationOwnerDAO.findApplicationOwner(name)) {
                 continue;
             }
-            SubjectEntity adminSubject = this.subjectService.findSubjectFromUserName(login);
-            this.applicationOwnerDAO.addApplicationOwner(name, adminSubject);
+            SubjectEntity adminSubject = subjectService.findSubjectFromUserName(login);
+            applicationOwnerDAO.addApplicationOwner(name, adminSubject);
         }
     }
 
     private void initApplications() {
 
-        for (Application application : this.registeredApplications) {
+        for (Application application : registeredApplications) {
             String applicationName = application.name;
-            ApplicationEntity existingApplication = this.applicationDAO.findApplication(applicationName);
+            ApplicationEntity existingApplication = applicationDAO.findApplication(applicationName);
             if (null != existingApplication) {
                 if (null != application.certificate) {
                     existingApplication.setCertificate(application.certificate);
                 }
                 continue;
             }
-            ApplicationOwnerEntity applicationOwner = this.applicationOwnerDAO.findApplicationOwner(application.owner);
+            ApplicationOwnerEntity applicationOwner = applicationOwnerDAO.findApplicationOwner(application.owner);
             long identityVersion = ApplicationIdentityPK.INITIAL_IDENTITY_VERSION;
             long usageAgreementVersion = UsageAgreementPK.EMPTY_USAGE_AGREEMENT_VERSION;
-            ApplicationEntity newApplication = this.applicationDAO.addApplication(applicationName, null, applicationOwner,
+            ApplicationEntity newApplication = applicationDAO.addApplication(applicationName, null, applicationOwner,
                     application.allowUserSubscription, application.removable, application.description, application.applicationUrl,
                     application.applicationLogo, application.certificate, identityVersion, usageAgreementVersion);
             newApplication.setIdentifierMappingAllowed(application.idmappingAccess);
@@ -772,7 +772,7 @@ public abstract class AbstractInitBean implements Startable {
             newApplication.setSsoEnabled(application.ssoEnabled);
             newApplication.setSsoLogoutUrl(application.ssoLogoutUrl);
 
-            this.applicationIdentityDAO.addApplicationIdentity(newApplication, identityVersion);
+            applicationIdentityDAO.addApplicationIdentity(newApplication, identityVersion);
         }
     }
 
@@ -783,18 +783,18 @@ public abstract class AbstractInitBean implements Startable {
 
     private void initApplicationPools() {
 
-        for (ApplicationPool applicationPool : this.applicationPools) {
-            ApplicationPoolEntity existingApplicationPool = this.applicationPoolDAO.findApplicationPool(applicationPool.name);
+        for (ApplicationPool applicationPool : applicationPools) {
+            ApplicationPoolEntity existingApplicationPool = applicationPoolDAO.findApplicationPool(applicationPool.name);
             if (null != existingApplicationPool) {
                 continue;
             }
-            ApplicationPoolEntity newApplicationPool = this.applicationPoolDAO.addApplicationPool(applicationPool.name,
+            ApplicationPoolEntity newApplicationPool = applicationPoolDAO.addApplicationPool(applicationPool.name,
                     applicationPool.timeout);
             List<ApplicationEntity> applications = new LinkedList<ApplicationEntity>();
             for (String applicationName : applicationPool.applications) {
-                ApplicationEntity application = this.applicationDAO.findApplication(applicationName);
+                ApplicationEntity application = applicationDAO.findApplication(applicationName);
                 if (null == application) {
-                    this.LOG.debug("Could not find application: " + applicationName);
+                    LOG.debug("Could not find application: " + applicationName);
                     throw new RuntimeException("Could not find application: " + applicationName);
                 }
                 applications.add(application);
@@ -806,22 +806,22 @@ public abstract class AbstractInitBean implements Startable {
     private void initSubjects()
             throws AttributeTypeNotFoundException {
 
-        for (String login : this.users) {
-            SubjectEntity subject = this.subjectService.findSubjectFromUserName(login);
+        for (String login : users) {
+            SubjectEntity subject = subjectService.findSubjectFromUserName(login);
             if (null != subject) {
                 continue;
             }
-            subject = this.subjectService.addSubject(login);
+            subject = subjectService.addSubject(login);
         }
     }
 
     private void initIdentities() {
 
-        for (Identity identity : this.identities) {
+        for (Identity identity : identities) {
             try {
-                this.applicationIdentityService.updateApplicationIdentity(identity.application, Arrays.asList(identity.identityAttributes));
+                applicationIdentityService.updateApplicationIdentity(identity.application, Arrays.asList(identity.identityAttributes));
             } catch (Exception e) {
-                this.LOG.debug("Could not update application identity");
+                LOG.debug("Could not update application identity");
                 throw new RuntimeException("could not update the application identity: " + e.getMessage(), e);
             }
         }
@@ -829,24 +829,24 @@ public abstract class AbstractInitBean implements Startable {
 
     private void initUsageAgreements() {
 
-        for (UsageAgreement usageAgreement : this.usageAgreements) {
-            ApplicationEntity application = this.applicationDAO.findApplication(usageAgreement.application);
-            UsageAgreementEntity usageAgreementEntity = this.usageAgreementDAO.getUsageAgreement(application,
+        for (UsageAgreement usageAgreement : usageAgreements) {
+            ApplicationEntity application = applicationDAO.findApplication(usageAgreement.application);
+            UsageAgreementEntity usageAgreementEntity = usageAgreementDAO.getUsageAgreement(application,
                     UsageAgreementPK.INITIAL_USAGE_AGREEMENT_VERSION);
             if (usageAgreementEntity == null) {
-                usageAgreementEntity = this.usageAgreementDAO.addUsageAgreement(application,
+                usageAgreementEntity = usageAgreementDAO.addUsageAgreement(application,
                         UsageAgreementPK.INITIAL_USAGE_AGREEMENT_VERSION);
             }
             for (UsageAgreementText usageAgreementText : usageAgreement.usageAgreementTexts) {
-                if (this.usageAgreementDAO.getUsageAgreementText(usageAgreementEntity, usageAgreementText.language) == null) {
-                    this.usageAgreementDAO
+                if (usageAgreementDAO.getUsageAgreementText(usageAgreementEntity, usageAgreementText.language) == null) {
+                    usageAgreementDAO
                                           .addUsageAgreementText(usageAgreementEntity, usageAgreementText.text, usageAgreementText.language);
                 }
             }
             try {
-                this.usageAgreementManager.setUsageAgreement(application, UsageAgreementPK.INITIAL_USAGE_AGREEMENT_VERSION);
+                usageAgreementManager.setUsageAgreement(application, UsageAgreementPK.INITIAL_USAGE_AGREEMENT_VERSION);
             } catch (UsageAgreementNotFoundException e) {
-                this.LOG.debug("could not set usage agreement for application: " + application.getName());
+                LOG.debug("could not set usage agreement for application: " + application.getName());
                 throw new RuntimeException("could not set usage agreement for application: " + application.getName() + " : "
                         + e.getMessage(), e);
             }
@@ -855,29 +855,29 @@ public abstract class AbstractInitBean implements Startable {
 
     private void initDeviceClasses() {
 
-        for (DeviceClass deviceClass : this.deviceClasses) {
-            DeviceClassEntity deviceClassEntity = this.deviceClassDAO.findDeviceClass(deviceClass.name);
+        for (DeviceClass deviceClass : deviceClasses) {
+            DeviceClassEntity deviceClassEntity = deviceClassDAO.findDeviceClass(deviceClass.name);
             if (null == deviceClassEntity) {
-                deviceClassEntity = this.deviceClassDAO.addDeviceClass(deviceClass.name, deviceClass.authenticationContextClass);
+                deviceClassEntity = deviceClassDAO.addDeviceClass(deviceClass.name, deviceClass.authenticationContextClass);
             }
         }
     }
 
     private void initDeviceClassDescriptions() {
 
-        for (DeviceClassDescription deviceClassDescription : this.deviceClassDescriptions) {
-            DeviceClassDescriptionEntity existingDescription = this.deviceClassDAO.findDescription(new DeviceClassDescriptionPK(
+        for (DeviceClassDescription deviceClassDescription : deviceClassDescriptions) {
+            DeviceClassDescriptionEntity existingDescription = deviceClassDAO.findDescription(new DeviceClassDescriptionPK(
                     deviceClassDescription.deviceClassName, deviceClassDescription.language));
             if (null != existingDescription) {
                 continue;
             }
             DeviceClassEntity deviceClass;
             try {
-                deviceClass = this.deviceClassDAO.getDeviceClass(deviceClassDescription.deviceClassName);
+                deviceClass = deviceClassDAO.getDeviceClass(deviceClassDescription.deviceClassName);
             } catch (DeviceClassNotFoundException e) {
                 throw new EJBException("device class not found: " + deviceClassDescription.deviceClassName);
             }
-            this.deviceClassDAO.addDescription(deviceClass, new DeviceClassDescriptionEntity(deviceClass, deviceClassDescription.language,
+            deviceClassDAO.addDescription(deviceClass, new DeviceClassDescriptionEntity(deviceClass, deviceClassDescription.language,
                     deviceClassDescription.description));
         }
     }
@@ -885,18 +885,18 @@ public abstract class AbstractInitBean implements Startable {
     private void initDevices()
             throws DeviceClassNotFoundException, NodeNotFoundException {
 
-        for (Device device : this.devices) {
-            DeviceEntity deviceEntity = this.deviceDAO.findDevice(device.deviceName);
+        for (Device device : devices) {
+            DeviceEntity deviceEntity = deviceDAO.findDevice(device.deviceName);
             if (deviceEntity == null) {
-                DeviceClassEntity deviceClassEntity = this.deviceClassDAO.getDeviceClass(device.deviceClassName);
+                DeviceClassEntity deviceClassEntity = deviceClassDAO.getDeviceClass(device.deviceClassName);
                 NodeEntity olasNode = null;
                 /*
                  * If no node, local device
                  */
                 if (null != device.nodeName) {
-                    olasNode = this.olasDAO.getNode(device.nodeName);
+                    olasNode = olasDAO.getNode(device.nodeName);
                 }
-                deviceEntity = this.deviceDAO.addDevice(device.deviceName, deviceClassEntity, olasNode, device.authenticationPath,
+                deviceEntity = deviceDAO.addDevice(device.deviceName, deviceClassEntity, olasNode, device.authenticationPath,
                         device.registrationPath, device.removalPath, device.updatePath, device.disablePath, device.enablePath,
                         device.certificate, device.deviceAttribute, device.deviceUserAttribute, device.deviceDisableAttribute);
             }
@@ -905,38 +905,38 @@ public abstract class AbstractInitBean implements Startable {
 
     private void initDeviceDescriptions() {
 
-        for (DeviceDescription deviceDescription : this.deviceDescriptions) {
-            DeviceDescriptionEntity existingDescription = this.deviceDAO.findDescription(new DeviceDescriptionPK(
+        for (DeviceDescription deviceDescription : deviceDescriptions) {
+            DeviceDescriptionEntity existingDescription = deviceDAO.findDescription(new DeviceDescriptionPK(
                     deviceDescription.deviceName, deviceDescription.language));
             if (null != existingDescription) {
                 continue;
             }
             DeviceEntity device;
             try {
-                device = this.deviceDAO.getDevice(deviceDescription.deviceName);
+                device = deviceDAO.getDevice(deviceDescription.deviceName);
             } catch (DeviceNotFoundException e) {
                 throw new EJBException("device not found: " + deviceDescription.deviceName);
             }
-            this.deviceDAO.addDescription(device, new DeviceDescriptionEntity(device, deviceDescription.language,
+            deviceDAO.addDescription(device, new DeviceDescriptionEntity(device, deviceDescription.language,
                     deviceDescription.description));
         }
     }
 
     private void initDeviceProperties() {
 
-        for (DeviceProperty deviceProperty : this.deviceProperties) {
-            DevicePropertyEntity existingProperty = this.deviceDAO.findProperty(new DevicePropertyPK(deviceProperty.deviceName,
+        for (DeviceProperty deviceProperty : deviceProperties) {
+            DevicePropertyEntity existingProperty = deviceDAO.findProperty(new DevicePropertyPK(deviceProperty.deviceName,
                     deviceProperty.name));
             if (null != existingProperty) {
                 continue;
             }
             DeviceEntity device;
             try {
-                device = this.deviceDAO.getDevice(deviceProperty.deviceName);
+                device = deviceDAO.getDevice(deviceProperty.deviceName);
             } catch (DeviceNotFoundException e) {
                 throw new EJBException("device not found: " + deviceProperty.deviceName);
             }
-            this.deviceDAO.addProperty(device, new DevicePropertyEntity(device, deviceProperty.name, deviceProperty.value));
+            deviceDAO.addProperty(device, new DevicePropertyEntity(device, deviceProperty.name, deviceProperty.value));
         }
     }
 
@@ -948,15 +948,15 @@ public abstract class AbstractInitBean implements Startable {
     private void initAllowedDevices()
             throws ApplicationNotFoundException, DeviceNotFoundException {
 
-        for (String applicationName : this.allowedDevices.keySet()) {
-            ApplicationEntity application = this.applicationDAO.getApplication(applicationName);
+        for (String applicationName : allowedDevices.keySet()) {
+            ApplicationEntity application = applicationDAO.getApplication(applicationName);
             application.setDeviceRestriction(true);
-            List<String> deviceNames = this.allowedDevices.get(applicationName);
+            List<String> deviceNames = allowedDevices.get(applicationName);
             for (String deviceName : deviceNames) {
-                DeviceEntity device = this.deviceDAO.getDevice(deviceName);
-                AllowedDeviceEntity allowedDevice = this.allowedDeviceDAO.findAllowedDevice(application, device);
+                DeviceEntity device = deviceDAO.getDevice(deviceName);
+                AllowedDeviceEntity allowedDevice = allowedDeviceDAO.findAllowedDevice(application, device);
                 if (null == allowedDevice) {
-                    this.allowedDeviceDAO.addAllowedDevice(application, device, 0);
+                    allowedDeviceDAO.addAllowedDevice(application, device, 0);
                 }
             }
         }
@@ -969,9 +969,9 @@ public abstract class AbstractInitBean implements Startable {
 
     private void initNotificationTopics() {
 
-        for (String topic : this.notificationTopics) {
-            if (null == this.notificationProducerDAO.findSubscription(topic)) {
-                this.notificationProducerDAO.addSubscription(topic);
+        for (String topic : notificationTopics) {
+            if (null == notificationProducerDAO.findSubscription(topic)) {
+                notificationProducerDAO.addSubscription(topic);
             }
         }
     }
@@ -984,8 +984,8 @@ public abstract class AbstractInitBean implements Startable {
     private void initNotifications()
             throws PermissionDeniedException {
 
-        for (NotificationSubscription subscription : this.notificationSubcriptions) {
-            this.notificationProducerService.subscribe(subscription.topic, subscription.address, subscription.certificate);
+        for (NotificationSubscription subscription : notificationSubcriptions) {
+            notificationProducerService.subscribe(subscription.topic, subscription.address, subscription.certificate);
         }
     }
 
@@ -996,12 +996,12 @@ public abstract class AbstractInitBean implements Startable {
 
     private void initNode() {
 
-        if (null == this.node)
+        if (null == node)
             throw new EJBException("No Olas node specified");
-        NodeEntity olasNode = this.olasDAO.findNode(this.node.name);
+        NodeEntity olasNode = olasDAO.findNode(node.name);
         if (null == olasNode) {
-            this.olasDAO.addNode(this.node.name, this.node.protocol, this.node.hostname, this.node.port, this.node.sslPort,
-                    this.node.authnCertificate, this.node.signingCertificate);
+            olasDAO.addNode(node.name, node.protocol, node.hostname, node.port, node.sslPort,
+                    node.authnCertificate, node.signingCertificate);
         }
     }
 }

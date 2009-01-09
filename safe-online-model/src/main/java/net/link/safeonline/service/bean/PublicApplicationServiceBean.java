@@ -47,7 +47,7 @@ public class PublicApplicationServiceBean implements PublicApplicationService {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public PublicApplication findPublicApplication(String applicationName) {
 
-        ApplicationEntity application = this.applicationDAO.findApplication(applicationName);
+        ApplicationEntity application = applicationDAO.findApplication(applicationName);
         if (application == null)
             return null;
 

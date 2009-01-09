@@ -55,7 +55,7 @@ public class SubjectManagerBean implements SubjectManager {
 
         String login = getCallerLogin();
         try {
-            SubjectEntity subject = this.subjectService.getSubject(login);
+            SubjectEntity subject = subjectService.getSubject(login);
             return subject;
         } catch (SubjectNotFoundException e) {
             String msg = "subject not found for called principal: " + login;
@@ -67,7 +67,7 @@ public class SubjectManagerBean implements SubjectManager {
     @RolesAllowed( { SafeOnlineRoles.USER_ROLE, SafeOnlineRoles.OWNER_ROLE })
     public String getCallerLogin() {
 
-        Principal principal = this.context.getCallerPrincipal();
+        Principal principal = context.getCallerPrincipal();
         String login = principal.getName();
         return login;
     }

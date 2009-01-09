@@ -40,9 +40,9 @@ public class DynamicTestMBean implements DynamicMBean {
      */
     public void registerActionHandler(String actionName, MBeanActionHandler action) {
 
-        if (this.actionHandlers.containsKey(actionName))
+        if (actionHandlers.containsKey(actionName))
             throw new IllegalStateException("already registered mbean action: " + actionName);
-        this.actionHandlers.put(actionName, action);
+        actionHandlers.put(actionName, action);
     }
 
     @SuppressWarnings("unused")
@@ -65,7 +65,7 @@ public class DynamicTestMBean implements DynamicMBean {
     public Object invoke(String actionName, Object[] params, @SuppressWarnings("unused") String[] signature) {
 
         LOG.debug("invoked: " + actionName);
-        MBeanActionHandler actionHandler = this.actionHandlers.get(actionName);
+        MBeanActionHandler actionHandler = actionHandlers.get(actionName);
         if (null == actionHandler)
             return null;
         Object result = actionHandler.invoke(params);

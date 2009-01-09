@@ -57,10 +57,10 @@ public class EditTrustDomainBean implements EditTrustDomain {
     public String save()
             throws TrustDomainNotFoundException {
 
-        LOG.debug("saving " + this.selectedTrustDomain);
-        this.selectedTrustDomain.setPerformOcspCheck(this.performOcspCheck);
-        this.selectedTrustDomain.setOcspCacheTimeOutMillis(this.ocspCacheTimeOutMillis);
-        this.pkiService.saveTrustDomain(this.selectedTrustDomain);
+        LOG.debug("saving " + selectedTrustDomain);
+        selectedTrustDomain.setPerformOcspCheck(performOcspCheck);
+        selectedTrustDomain.setOcspCacheTimeOutMillis(ocspCacheTimeOutMillis);
+        pkiService.saveTrustDomain(selectedTrustDomain);
         return "success";
     }
 
@@ -74,7 +74,7 @@ public class EditTrustDomainBean implements EditTrustDomain {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public boolean isPerformOcspCheck() {
 
-        return this.performOcspCheck;
+        return performOcspCheck;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -86,7 +86,7 @@ public class EditTrustDomainBean implements EditTrustDomain {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public long getOcspCacheTimeOutMillis() {
 
-        return this.ocspCacheTimeOutMillis;
+        return ocspCacheTimeOutMillis;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -99,9 +99,9 @@ public class EditTrustDomainBean implements EditTrustDomain {
     @Begin
     public String edit() {
 
-        LOG.debug("view selected trust domain: " + this.selectedTrustDomain);
-        this.performOcspCheck = this.selectedTrustDomain.isPerformOcspCheck();
-        this.ocspCacheTimeOutMillis = this.selectedTrustDomain.getOcspCacheTimeOutMillis();
+        LOG.debug("view selected trust domain: " + selectedTrustDomain);
+        performOcspCheck = selectedTrustDomain.isPerformOcspCheck();
+        ocspCacheTimeOutMillis = selectedTrustDomain.getOcspCacheTimeOutMillis();
         return "edit";
     }
 

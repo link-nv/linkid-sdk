@@ -41,13 +41,13 @@ public class ApplicationPoolDAOBean implements ApplicationPoolDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, ApplicationPoolEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, ApplicationPoolEntity.QueryInterface.class);
     }
 
     public ApplicationPoolEntity findApplicationPool(String applicationPoolName) {
 
         LOG.debug("find application pool: " + applicationPoolName);
-        ApplicationPoolEntity applicationPool = this.entityManager.find(ApplicationPoolEntity.class, applicationPoolName);
+        ApplicationPoolEntity applicationPool = entityManager.find(ApplicationPoolEntity.class, applicationPoolName);
         return applicationPool;
     }
 
@@ -55,13 +55,13 @@ public class ApplicationPoolDAOBean implements ApplicationPoolDAO {
 
         LOG.debug("adding application: " + applicationPoolName);
         ApplicationPoolEntity applicationPool = new ApplicationPoolEntity(applicationPoolName, ssoTimeout);
-        this.entityManager.persist(applicationPool);
+        entityManager.persist(applicationPool);
         return applicationPool;
     }
 
     public List<ApplicationPoolEntity> listApplicationPools() {
 
-        List<ApplicationPoolEntity> applicationPools = this.queryObject.listApplicationPools();
+        List<ApplicationPoolEntity> applicationPools = queryObject.listApplicationPools();
         return applicationPools;
     }
 
@@ -77,12 +77,12 @@ public class ApplicationPoolDAOBean implements ApplicationPoolDAO {
     public void removeApplicationPool(ApplicationPoolEntity applicationPool) {
 
         LOG.debug("remove application pool (DAO): " + applicationPool.getName());
-        this.entityManager.remove(applicationPool);
+        entityManager.remove(applicationPool);
     }
 
     public List<ApplicationPoolEntity> listCommonApplicationPools(ApplicationEntity application1, ApplicationEntity application2) {
 
-        List<ApplicationPoolEntity> applicationPools = this.queryObject.listCommonApplicationPools(application1, application2);
+        List<ApplicationPoolEntity> applicationPools = queryObject.listCommonApplicationPools(application1, application2);
         return applicationPools;
     }
 

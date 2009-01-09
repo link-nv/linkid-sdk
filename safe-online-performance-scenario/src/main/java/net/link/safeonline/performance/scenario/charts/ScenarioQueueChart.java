@@ -54,7 +54,7 @@ public class ScenarioQueueChart extends AbstractChart {
 
         super("JMS Queue Size");
 
-        this.auditQueue = new TimeSeries("Audit", FixedMillisecond.class);
+        auditQueue = new TimeSeries("Audit", FixedMillisecond.class);
     }
 
     /**
@@ -70,7 +70,7 @@ public class ScenarioQueueChart extends AbstractChart {
 
         Long audit = getMeasurement(data.getMeasurements(), ProfileData.AUDIT_SIZE);
 
-        this.auditQueue.addOrUpdate(startTime, audit);
+        auditQueue.addOrUpdate(startTime, audit);
     }
 
     /**
@@ -88,13 +88,13 @@ public class ScenarioQueueChart extends AbstractChart {
     @Override
     protected XYPlot getPlot() {
 
-        if (this.auditQueue.isEmpty())
+        if (auditQueue.isEmpty())
             return null;
 
         ValueAxis domainAxis = new DateAxis("Time");
 
         TimeSeriesCollection auditSet;
-        auditSet = new TimeSeriesCollection(this.auditQueue);
+        auditSet = new TimeSeriesCollection(auditQueue);
 
         XYPlot auditPlot = new XYPlot(auditSet, domainAxis, new NumberAxis("Queue Size (messages)"),
                 new XYLineAndShapeRenderer(true, false));

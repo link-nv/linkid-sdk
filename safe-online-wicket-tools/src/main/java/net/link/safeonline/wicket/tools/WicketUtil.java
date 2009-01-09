@@ -180,7 +180,7 @@ public abstract class WicketUtil {
     /**
      * Retrieve a proxy to the OLAS attribute web service.
      * 
-     * @param loginRequest
+     * @param httpRequest
      *            The request that contains a session with a servlet context that has the WsLocation init parameter set.<br>
      *            Note: This can be <code>null</code> for unit tests - it is not used. {@link DummyAttributeClient} is used instead,
      *            provided you called {@link #setUnitTesting(boolean)}.

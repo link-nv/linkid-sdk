@@ -46,12 +46,12 @@ public class NodeManagerBean implements NodeManager {
     @RolesAllowed(SafeOnlineNodeRoles.NODE_ROLE)
     public NodeEntity getCallerNode() {
 
-        Principal callerPrincipal = this.context.getCallerPrincipal();
+        Principal callerPrincipal = context.getCallerPrincipal();
         String nodeName = callerPrincipal.getName();
         LOG.debug("get caller node: " + nodeName);
         NodeEntity callerNode;
         try {
-            callerNode = this.nodeDAO.getNode(nodeName);
+            callerNode = nodeDAO.getNode(nodeName);
         } catch (NodeNotFoundException e) {
             throw new EJBException("node not found: " + e.getMessage(), e);
         }

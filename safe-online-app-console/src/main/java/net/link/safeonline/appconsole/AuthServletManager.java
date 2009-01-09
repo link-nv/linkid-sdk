@@ -77,23 +77,23 @@ public class AuthServletManager extends Observable {
     public void authenticate(String applicationName, String protocol)
             throws Exception {
 
-        this.server = new Server();
-        this.connector = new SelectChannelConnector();
-        this.connector.setPort(0);
-        this.server.addConnector(this.connector);
+        server = new Server();
+        connector = new SelectChannelConnector();
+        connector.setPort(0);
+        server.addConnector(connector);
 
         SessionManager sessionManager = new HashSessionManager();
         SessionHandler sessionHandler = new SessionHandler(sessionManager);
 
-        this.context = new Context(null, sessionHandler, null, null, null);
-        this.context.setContextPath("/");
-        this.server.addHandler(this.context);
+        context = new Context(null, sessionHandler, null, null, null);
+        context.setContextPath("/");
+        server.addHandler(context);
 
-        this.context.addFilter(LogFilter.class, "/", Handler.DEFAULT);
+        context.addFilter(LogFilter.class, "/", Handler.DEFAULT);
 
-        this.context.addFilter(AuthnResponseFilter.class, "/", Handler.DEFAULT);
+        context.addFilter(AuthnResponseFilter.class, "/", Handler.DEFAULT);
 
-        FilterHolder authenticationFilterHoldder = this.context.addFilter(AuthnRequestFilter.class, "/", Handler.DEFAULT);
+        FilterHolder authenticationFilterHoldder = context.addFilter(AuthnRequestFilter.class, "/", Handler.DEFAULT);
         Map<String, String> filterInitParameters = new HashMap<String, String>();
         filterInitParameters.put("AuthenticationServiceUrl", "http://" + ApplicationConsoleManager.getInstance().getLocation()
                 + ":8080/olas-auth");
@@ -107,7 +107,7 @@ public class AuthServletManager extends Observable {
 
         authenticationFilterHoldder.setInitParameters(filterInitParameters);
 
-        ServletHandler handler = this.context.getServletHandler();
+        ServletHandler handler = context.getServletHandler();
 
         ServletHolder servletHolder = new ServletHolder();
         String servletClassName = ApplicationServlet.class.getName();
@@ -121,9 +121,9 @@ public class AuthServletManager extends Observable {
         servletMapping.setPathSpecs(new String[] { "/*" });
         handler.addServletMapping(servletMapping);
 
-        this.server.start();
+        server.start();
 
-        int port = this.connector.getLocalPort();
+        int port = connector.getLocalPort();
 
         String servletLocation = "http://localhost:" + port + "/";
 
@@ -173,11 +173,11 @@ public class AuthServletManager extends Observable {
 
         LOG.info("Shutting down Jetty ......");
         try {
-            this.connector.stop();
+            connector.stop();
         } catch (Exception e) {
             LOG.error("Failed to shutdown Jetty", e);
         }
-        this.context.setShutdown(true);
+        context.setShutdown(true);
         setChanged();
         notifyObservers(Boolean.TRUE);
     }

@@ -66,7 +66,7 @@ public class BankTransactionEntity implements Serializable, Comparable<BankTrans
      */
     public Integer getId() {
 
-        return this.id;
+        return id;
     }
 
     /**
@@ -74,7 +74,7 @@ public class BankTransactionEntity implements Serializable, Comparable<BankTrans
      */
     public String getDescription() {
 
-        return this.description;
+        return description;
     }
 
     /**
@@ -82,7 +82,7 @@ public class BankTransactionEntity implements Serializable, Comparable<BankTrans
      */
     public BankAccountEntity getSource() {
 
-        return this.source;
+        return source;
     }
 
     /**
@@ -90,7 +90,7 @@ public class BankTransactionEntity implements Serializable, Comparable<BankTrans
      */
     public String getTarget() {
 
-        return this.target;
+        return target;
     }
 
     /**
@@ -98,7 +98,7 @@ public class BankTransactionEntity implements Serializable, Comparable<BankTrans
      */
     public Date getDate() {
 
-        return this.date;
+        return date;
     }
 
     /**
@@ -106,7 +106,7 @@ public class BankTransactionEntity implements Serializable, Comparable<BankTrans
      */
     public Double getAmount() {
 
-        return this.amount;
+        return amount;
     }
 
     // UTILITIES ----------------------------------------------------
@@ -116,6 +116,6 @@ public class BankTransactionEntity implements Serializable, Comparable<BankTrans
      */
     public int compareTo(BankTransactionEntity o) {
 
-        return this.date.compareTo(o.date);
+        return date.compareTo(o.date);
     }
 }

@@ -74,7 +74,7 @@ public class TicketServiceTest extends AbstractCinemaServiceTest {
 
         super.setup();
 
-        this.initializationService.buildEntities();
+        initializationService.buildEntities();
     }
 
     /**
@@ -97,7 +97,7 @@ public class TicketServiceTest extends AbstractCinemaServiceTest {
         // Create a ticket and register it.
         // - Find our film.
         CinemaFilmEntity sampleFilm = null;
-        List<CinemaFilmEntity> sampleFilms = this.filmService.getAllFilms();
+        List<CinemaFilmEntity> sampleFilms = filmService.getAllFilms();
         for (CinemaFilmEntity film : sampleFilms)
             if (testFilmName.equals(film.getName())) {
                 sampleFilm = film;
@@ -107,7 +107,7 @@ public class TicketServiceTest extends AbstractCinemaServiceTest {
                 sampleFilms);
         // - Find our theatre entity.
         CinemaTheatreEntity sampleTheatre = null;
-        List<CinemaTheatreEntity> sampleTheatres = this.theatreService.getTheatresThatPlay(sampleFilm);
+        List<CinemaTheatreEntity> sampleTheatres = theatreService.getTheatresThatPlay(sampleFilm);
         for (CinemaTheatreEntity theatre : sampleTheatres) {
             if (testTheatreName.equals(theatre.getName())) {
                 sampleTheatre = theatre;
@@ -118,7 +118,7 @@ public class TicketServiceTest extends AbstractCinemaServiceTest {
                 sampleTheatre);
         // - Find our room entity.
         CinemaRoomEntity sampleRoom = null;
-        List<CinemaRoomEntity> sampleRooms = this.roomService.getRoomsFor(sampleTheatre, sampleFilm);
+        List<CinemaRoomEntity> sampleRooms = roomService.getRoomsFor(sampleTheatre, sampleFilm);
         for (CinemaRoomEntity room : sampleRooms) {
             if (testRoomName.equals(room.getName())) {
                 sampleRoom = room;
@@ -129,7 +129,7 @@ public class TicketServiceTest extends AbstractCinemaServiceTest {
                 sampleRoom);
         // - Find our seat.
         CinemaSeatEntity sampleSeat = null;
-        List<CinemaSeatEntity> sampleSeats = this.seatService.getSeatsFor(sampleRoom);
+        List<CinemaSeatEntity> sampleSeats = seatService.getSeatsFor(sampleRoom);
         for (CinemaSeatEntity seat : sampleSeats) {
             if (seat.getX() == testSeatX && seat.getY() == testSeatY) {
                 sampleSeat = seat;
@@ -141,27 +141,27 @@ public class TicketServiceTest extends AbstractCinemaServiceTest {
         // - Occupy our seat.
         CinemaSeatOccupationEntity sampleOccupation = null;
         try {
-            sampleOccupation = this.seatService.validate(sampleSeat, testSeatTime);
+            sampleOccupation = seatService.validate(sampleSeat, testSeatTime);
         } catch (IllegalStateException e) {
             throw new AssertionFailedError(String.format("seat not available: %s at %s", sampleSeat, testSeatTime));
         }
 
         // - Create our user.
-        CinemaUserEntity sampleUser = this.userService.getUser(testUserName);
+        CinemaUserEntity sampleUser = userService.getUser(testUserName);
         sampleUser.setNrn(testUserNrn);
 
         // - Create the ticket and reserve it (pay for it)
-        CinemaTicketEntity sampleTicket = this.ticketService.createTicket(sampleUser, sampleFilm, testSeatTime, sampleOccupation);
+        CinemaTicketEntity sampleTicket = ticketService.createTicket(sampleUser, sampleFilm, testSeatTime, sampleOccupation);
         double sampleTicketPrice = sampleTicket.getPrice();
         assertEquals(String.format("price mismatch: test: %s - sample: %s", testTicketPrice, sampleTicketPrice), //
                 testTicketPrice, sampleTicketPrice, 0);
-        this.ticketService.reserve(sampleTicket);
+        ticketService.reserve(sampleTicket);
 
         // Validate && ticket is valid and seat reserved.
         assertTrue("ticket was not valid.", //
-                this.ticketService.isValid(testUserNrn, testSeatTime, testTheatreName, testFilmName));
+                ticketService.isValid(testUserNrn, testSeatTime, testTheatreName, testFilmName));
         try {
-            this.seatService.validate(sampleSeat, testSeatTime);
+            seatService.validate(sampleSeat, testSeatTime);
             throw new AssertionFailedError("ticket's seat was not reserved.");
         } catch (IllegalStateException e) {
             // expected.

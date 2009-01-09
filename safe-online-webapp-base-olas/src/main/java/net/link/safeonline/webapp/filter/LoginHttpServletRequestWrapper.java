@@ -38,13 +38,13 @@ public class LoginHttpServletRequestWrapper extends HttpServletRequestWrapper {
     @Override
     public Principal getUserPrincipal() {
 
-        return this.userPrincipal;
+        return userPrincipal;
     }
 
     @Override
     public boolean isUserInRole(String role) {
 
-        boolean userInRole = this.roles.contains(role);
+        boolean userInRole = roles.contains(role);
         return userInRole;
     }
 }

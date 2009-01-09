@@ -40,49 +40,49 @@ public class SecurityAuditDAOBean implements SecurityAuditDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, SecurityAuditEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, SecurityAuditEntity.QueryInterface.class);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void addSecurityAudit(AuditContextEntity auditContext, SecurityThreatType securityThreat, String targetPrincipal, String message) {
 
         SecurityAuditEntity securityAudit = new SecurityAuditEntity(auditContext, securityThreat, targetPrincipal, message);
-        this.entityManager.persist(securityAudit);
+        entityManager.persist(securityAudit);
     }
 
     public void cleanup(Long id) {
 
-        this.queryObject.deleteRecords(id);
+        queryObject.deleteRecords(id);
     }
 
     public List<SecurityAuditEntity> listRecords(Long id) {
 
-        return this.queryObject.listRecords(id);
+        return queryObject.listRecords(id);
     }
 
     public List<SecurityAuditEntity> listRecordsSince(Date ageLimit) {
 
-        return this.queryObject.listRecordsSince(ageLimit);
+        return queryObject.listRecordsSince(ageLimit);
     }
 
     public List<SecurityAuditEntity> listRecords() {
 
-        return this.queryObject.listRecords();
+        return queryObject.listRecords();
     }
 
     public List<String> listUsers() {
 
-        return this.queryObject.listUsers();
+        return queryObject.listUsers();
     }
 
     public List<SecurityAuditEntity> listRecords(String principal) {
 
-        return this.queryObject.listUserRecords(principal);
+        return queryObject.listUserRecords(principal);
     }
 
     public boolean hasRecords(long id) {
 
-        long count = this.queryObject.countRecords(id);
+        long count = queryObject.countRecords(id);
 
         return 0 != count;
     }

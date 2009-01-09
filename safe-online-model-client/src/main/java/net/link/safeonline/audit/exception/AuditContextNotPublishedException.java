@@ -33,19 +33,19 @@ public class AuditContextNotPublishedException extends SafeOnlineException {
 
     public Long getAuditContextId() {
 
-        return this.auditContextId;
+        return auditContextId;
     }
 
     @Override
     public String getErrorCode() {
 
-        return this.errorCode;
+        return errorCode;
     }
 
     @Override
     public String getMessage() {
 
-        return this.message;
+        return message;
     }
 
 }

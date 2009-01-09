@@ -25,9 +25,9 @@ abstract public class AbstractStatement {
 
     public byte[] generateStatement() {
 
-        byte[] tbs = this.derStatement.getToBeSignedEncoded();
-        byte[] signatureValue = this.signer.sign(tbs);
-        this.derStatement.setSignature(signatureValue);
-        return this.derStatement.getEncoded();
+        byte[] tbs = derStatement.getToBeSignedEncoded();
+        byte[] signatureValue = signer.sign(tbs);
+        derStatement.setSignature(signatureValue);
+        return derStatement.getEncoded();
     }
 }

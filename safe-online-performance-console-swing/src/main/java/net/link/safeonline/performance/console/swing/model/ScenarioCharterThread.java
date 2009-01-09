@@ -37,7 +37,7 @@ public class ScenarioCharterThread extends ScenarioThread {
         super(AgentState.CHART);
 
         this.createPDF = createPDF;
-        this.agentCharts = new HashMap<ConsoleAgent, ScenarioExecution>();
+        agentCharts = new HashMap<ConsoleAgent, ScenarioExecution>();
     }
 
     /**
@@ -46,10 +46,10 @@ public class ScenarioCharterThread extends ScenarioThread {
     @Override
     protected void completed() {
 
-        if (ScenarioCharterThread.this.createPDF) {
-            PDF.generate(this.agentCharts);
+        if (createPDF) {
+            PDF.generate(agentCharts);
         } else {
-            ChartWindow.display(this.agentCharts);
+            ChartWindow.display(agentCharts);
         }
     }
 
@@ -60,6 +60,6 @@ public class ScenarioCharterThread extends ScenarioThread {
     void process(ConsoleAgent agent)
             throws Exception {
 
-        this.agentCharts.put(agent, agent.getCharts(ConsoleData.getSelectedExecution().getStartTime()));
+        agentCharts.put(agent, agent.getCharts(ConsoleData.getSelectedExecution().getStartTime()));
     }
 }

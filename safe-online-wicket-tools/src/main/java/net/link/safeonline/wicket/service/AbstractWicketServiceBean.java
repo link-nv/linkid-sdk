@@ -67,7 +67,7 @@ public abstract class AbstractWicketServiceBean {
                     primaryKey = field.get(entity);
                 } catch (IllegalArgumentException e) {
                 } catch (IllegalAccessException e) {
-                    this.LOG.error("No access to Id annotation of entity.", e);
+                    LOG.error("No access to Id annotation of entity.", e);
                 }
             }
         }

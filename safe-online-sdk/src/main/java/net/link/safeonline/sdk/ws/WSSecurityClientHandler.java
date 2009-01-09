@@ -72,7 +72,7 @@ public class WSSecurityClientHandler implements SOAPHandler<SOAPMessageContext> 
 
         this.certificate = certificate;
         this.privateKey = privateKey;
-        this.skipBodySigning = false;
+        skipBodySigning = false;
     }
 
     public Set<QName> getHeaders() {
@@ -122,7 +122,7 @@ public class WSSecurityClientHandler implements SOAPHandler<SOAPMessageContext> 
         LOG.debug("adding WS-Security SOAP header");
         WSSecSignature wsSecSignature = new WSSecSignature();
         wsSecSignature.setKeyIdentifierType(WSConstants.BST_DIRECT_REFERENCE);
-        Crypto crypto = new ClientCrypto(this.certificate, this.privateKey);
+        Crypto crypto = new ClientCrypto(certificate, privateKey);
         WSSecHeader wsSecHeader = new WSSecHeader();
         wsSecHeader.insertSecurityHeader(document);
         try {
@@ -131,7 +131,7 @@ public class WSSecurityClientHandler implements SOAPHandler<SOAPMessageContext> 
             SOAPConstants soapConstants = WSSecurityUtil.getSOAPConstants(document.getDocumentElement());
 
             Vector<WSEncryptionPart> wsEncryptionParts = new Vector<WSEncryptionPart>();
-            if (false == this.skipBodySigning) {
+            if (false == skipBodySigning) {
                 WSEncryptionPart wsEncryptionPart = new WSEncryptionPart(soapConstants.getBodyQName().getLocalPart(),
                         soapConstants.getEnvelopeURI(), "Content");
                 wsEncryptionParts.add(wsEncryptionPart);
@@ -172,7 +172,7 @@ public class WSSecurityClientHandler implements SOAPHandler<SOAPMessageContext> 
      */
     public boolean isSkipBodySigning() {
 
-        return this.skipBodySigning;
+        return skipBodySigning;
     }
 
     public void setSkipBodySigning(boolean skipBodySigning) {

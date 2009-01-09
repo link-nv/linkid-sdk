@@ -88,15 +88,15 @@ public class ChartsBean implements Charts {
     public void statListFactory()
             throws PermissionDeniedException {
 
-        LOG.debug("selectedApplication: " + this.selectedApplication);
-        this.statList = this.statisticService.getStatistics(this.selectedApplication);
+        LOG.debug("selectedApplication: " + selectedApplication);
+        statList = statisticService.getStatistics(selectedApplication);
     }
 
     @RolesAllowed(OwnerConstants.OWNER_ROLE)
     public String viewStat() {
 
-        this.chartURL = "view.chart?chartname=" + this.selectedStat.getName() + "&domain=" + this.selectedStat.getDomain()
-                + "&applicationname=" + this.selectedApplication.getName();
+        chartURL = "view.chart?chartname=" + selectedStat.getName() + "&domain=" + selectedStat.getDomain()
+                + "&applicationname=" + selectedApplication.getName();
         return "viewstat";
     }
 
@@ -106,9 +106,9 @@ public class ChartsBean implements Charts {
 
         DateTime dt = new DateTime();
         DateTimeFormatter fmt = DateTimeFormat.forPattern("dd-MM-yyyy_HHmmss");
-        String filename = "accounting_" + this.selectedApplication.getName() + "_" + dt.toString(fmt) + ".xls";
+        String filename = "accounting_" + selectedApplication.getName() + "_" + dt.toString(fmt) + ".xls";
 
-        String exportURL = filename + "?applicationname=" + this.selectedApplication.getName();
+        String exportURL = filename + "?applicationname=" + selectedApplication.getName();
 
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext externalContext = context.getExternalContext();
@@ -122,11 +122,11 @@ public class ChartsBean implements Charts {
 
         DateTime dt = new DateTime();
         DateTimeFormatter fmt = DateTimeFormat.forPattern("dd-MM-yyyy_HHmmss");
-        String filename = "accounting_" + this.selectedApplication.getName() + "_" + this.selectedStat.getName() + "_" + dt.toString(fmt)
+        String filename = "accounting_" + selectedApplication.getName() + "_" + selectedStat.getName() + "_" + dt.toString(fmt)
                 + ".xls";
 
-        String exportURL = filename + "?chartname=" + this.selectedStat.getName() + "&domain=" + this.selectedStat.getDomain()
-                + "&applicationname=" + this.selectedApplication.getName();
+        String exportURL = filename + "?chartname=" + selectedStat.getName() + "&domain=" + selectedStat.getDomain()
+                + "&applicationname=" + selectedApplication.getName();
 
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext externalContext = context.getExternalContext();

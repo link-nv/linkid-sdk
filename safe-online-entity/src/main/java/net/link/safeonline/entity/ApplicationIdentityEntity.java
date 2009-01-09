@@ -61,14 +61,14 @@ public class ApplicationIdentityEntity implements Serializable {
 
     public ApplicationIdentityEntity() {
 
-        this.attributes = new HashSet<ApplicationIdentityAttributeEntity>();
+        attributes = new HashSet<ApplicationIdentityAttributeEntity>();
     }
 
     public ApplicationIdentityEntity(ApplicationEntity application, long identityVersion) {
 
-        this.pk = new ApplicationIdentityPK(application.getName(), identityVersion);
+        pk = new ApplicationIdentityPK(application.getName(), identityVersion);
         this.application = application;
-        this.attributes = new HashSet<ApplicationIdentityAttributeEntity>();
+        attributes = new HashSet<ApplicationIdentityAttributeEntity>();
     }
 
 
@@ -82,7 +82,7 @@ public class ApplicationIdentityEntity implements Serializable {
             @AttributeOverride(name = "identityVersion", column = @Column(name = IDENTITY_VERSION_COLUMN_NAME)) })
     public ApplicationIdentityPK getPk() {
 
-        return this.pk;
+        return pk;
     }
 
     public void setPk(ApplicationIdentityPK pk) {
@@ -93,14 +93,14 @@ public class ApplicationIdentityEntity implements Serializable {
     @Transient
     public long getIdentityVersion() {
 
-        return this.pk.getIdentityVersion();
+        return pk.getIdentityVersion();
     }
 
     @ManyToOne(optional = false)
     @JoinColumn(name = APPLICATION_COLUMN_NAME, insertable = false, updatable = false)
     public ApplicationEntity getApplication() {
 
-        return this.application;
+        return application;
     }
 
     public void setApplication(ApplicationEntity application) {
@@ -111,7 +111,7 @@ public class ApplicationIdentityEntity implements Serializable {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "applicationIdentity", cascade = CascadeType.REMOVE)
     public Set<ApplicationIdentityAttributeEntity> getAttributes() {
 
-        return this.attributes;
+        return attributes;
     }
 
     public void setAttributes(Set<ApplicationIdentityAttributeEntity> attributes) {
@@ -123,7 +123,7 @@ public class ApplicationIdentityEntity implements Serializable {
     public List<AttributeTypeEntity> getAttributeTypes() {
 
         List<AttributeTypeEntity> attributeTypes = new LinkedList<AttributeTypeEntity>();
-        for (ApplicationIdentityAttributeEntity attribute : this.getAttributes()) {
+        for (ApplicationIdentityAttributeEntity attribute : getAttributes()) {
             attributeTypes.add(attribute.getAttributeType());
         }
         return attributeTypes;
@@ -133,7 +133,7 @@ public class ApplicationIdentityEntity implements Serializable {
     public List<AttributeTypeEntity> getRequiredAttributeTypes() {
 
         List<AttributeTypeEntity> requiredAttributeTypes = new LinkedList<AttributeTypeEntity>();
-        for (ApplicationIdentityAttributeEntity attribute : this.getAttributes()) {
+        for (ApplicationIdentityAttributeEntity attribute : getAttributes()) {
             /*
              * This could be optimized via an SQL query, though the identity attribute set will always be limited.
              */
@@ -148,7 +148,7 @@ public class ApplicationIdentityEntity implements Serializable {
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.pk).toHashCode();
+        return new HashCodeBuilder().append(pk).toHashCode();
     }
 
     @Override
@@ -161,7 +161,7 @@ public class ApplicationIdentityEntity implements Serializable {
         if (false == obj instanceof ApplicationIdentityEntity)
             return false;
         ApplicationIdentityEntity rhs = (ApplicationIdentityEntity) obj;
-        return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
+        return new EqualsBuilder().append(pk, rhs.pk).isEquals();
     }
 
 

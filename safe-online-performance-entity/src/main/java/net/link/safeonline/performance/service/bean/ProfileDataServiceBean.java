@@ -47,10 +47,10 @@ public class ProfileDataServiceBean extends AbstractProfilingServiceBean impleme
     public ProfileDataEntity addData(DriverProfileEntity profile, ProfileData data, ScenarioTimingEntity agentTime) {
 
         ProfileDataEntity dataEntity = new ProfileDataEntity(profile, agentTime);
-        this.em.persist(dataEntity);
+        em.persist(dataEntity);
 
         for (Map.Entry<String, Long> measurement : data.getMeasurements().entrySet()) {
-            this.em.persist(new MeasurementEntity(dataEntity, measurement.getKey(), measurement.getValue()));
+            em.persist(new MeasurementEntity(dataEntity, measurement.getKey(), measurement.getValue()));
         }
 
         return dataEntity;
@@ -62,7 +62,7 @@ public class ProfileDataServiceBean extends AbstractProfilingServiceBean impleme
     @SuppressWarnings("unchecked")
     public List<ProfileDataEntity> getAllProfileData(DriverProfileEntity profile) {
 
-        return this.em.createNamedQuery(ProfileDataEntity.getByProfile).setParameter("profile", profile).getResultList();
+        return em.createNamedQuery(ProfileDataEntity.getByProfile).setParameter("profile", profile).getResultList();
     }
 
     /**
@@ -84,7 +84,7 @@ public class ProfileDataServiceBean extends AbstractProfilingServiceBean impleme
                 ProfileDataEntity profileDataEntity = new ProfileDataEntity(profile, timing);
                 pointData.add(profileDataEntity);
 
-                List<MeasurementEntity> measurements = this.em.createNamedQuery(ProfileDataEntity.createAverage).setParameter("profile",
+                List<MeasurementEntity> measurements = em.createNamedQuery(ProfileDataEntity.createAverage).setParameter("profile",
                         profile).setParameter("start", dataStart + point * period).setParameter("stop", dataStart + (point + 1) * period)
                                                               .getResultList();
                 for (MeasurementEntity measurement : measurements) {

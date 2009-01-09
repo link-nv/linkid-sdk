@@ -56,7 +56,7 @@ public class DeviceClassEntity implements Serializable {
     @Id
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -66,7 +66,7 @@ public class DeviceClassEntity implements Serializable {
 
     public String getAuthenticationContextClass() {
 
-        return this.authenticationContextClass;
+        return authenticationContextClass;
     }
 
     public void setAuthenticationContextClass(String authenticationContextClass) {
@@ -80,7 +80,7 @@ public class DeviceClassEntity implements Serializable {
     @OneToMany
     public List<DeviceEntity> getDevices() {
 
-        return this.devices;
+        return devices;
     }
 
     public void setDevices(List<DeviceEntity> devices) {
@@ -95,7 +95,7 @@ public class DeviceClassEntity implements Serializable {
     @MapKey(name = "language")
     public Map<String, DeviceClassDescriptionEntity> getDescriptions() {
 
-        return this.descriptions;
+        return descriptions;
     }
 
     public void setDescriptions(Map<String, DeviceClassDescriptionEntity> descriptions) {

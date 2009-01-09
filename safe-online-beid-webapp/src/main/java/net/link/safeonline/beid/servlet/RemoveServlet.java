@@ -78,7 +78,7 @@ public class RemoveServlet extends AbstractInjectionServlet {
         protocolContext.setSuccess(false);
 
         try {
-            this.beIdDeviceService.remove(userId, attribute);
+            beIdDeviceService.remove(userId, attribute);
 
             response.setStatus(HttpServletResponse.SC_OK);
             // notify that disable operation was successful.
@@ -88,18 +88,18 @@ public class RemoveServlet extends AbstractInjectionServlet {
         } catch (SubjectNotFoundException e) {
             String message = "subject " + userId + " not found";
             LOG.error(message, e);
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, message);
+            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, message);
         } catch (DeviceRegistrationNotFoundException e) {
             String message = "device registration \"" + attribute + "\" not found";
             LOG.error(message, e);
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, message);
+            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, message);
         } catch (AttributeTypeNotFoundException e) {
             LOG.error("attribute type not found", e);
         } catch (AttributeNotFoundException e) {
             LOG.error("attribute not found", e);
         }
 
-        response.sendRedirect(this.deviceExitPath);
+        response.sendRedirect(deviceExitPath);
 
     }
 }

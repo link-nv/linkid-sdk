@@ -48,15 +48,14 @@ public enum SamlpSecondLevelErrorCode {
 
     public String getErrorCode() {
 
-        return this.errorCode;
+        return errorCode;
     }
 
     public static SamlpSecondLevelErrorCode getSamlpTopLevelErrorCode(String errorCode) {
 
         SamlpSecondLevelErrorCode samlpSecondLevelErrorCode = errorCodeMap.get(errorCode);
-        if (null == samlpSecondLevelErrorCode) {
+        if (null == samlpSecondLevelErrorCode)
             throw new IllegalArgumentException("unknown SAMLp second-level error code: " + errorCode);
-        }
         return samlpSecondLevelErrorCode;
     }
 }

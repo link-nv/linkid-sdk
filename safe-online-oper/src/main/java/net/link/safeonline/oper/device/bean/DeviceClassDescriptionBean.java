@@ -95,8 +95,8 @@ public class DeviceClassDescriptionBean implements DeviceClassDescription {
     public void deviceClassDescriptionsListFactory()
             throws DeviceClassNotFoundException {
 
-        LOG.debug("device class description list factory for device: " + this.selectedDeviceClass.getName());
-        this.deviceClassDescriptions = this.deviceService.listDeviceClassDescriptions(this.selectedDeviceClass.getName());
+        LOG.debug("device class description list factory for device: " + selectedDeviceClass.getName());
+        deviceClassDescriptions = deviceService.listDeviceClassDescriptions(selectedDeviceClass.getName());
     }
 
     /*
@@ -107,13 +107,13 @@ public class DeviceClassDescriptionBean implements DeviceClassDescription {
     public String add()
             throws ExistingDeviceClassDescriptionException, DeviceClassNotFoundException {
 
-        LOG.debug("add: " + this.language);
+        LOG.debug("add: " + language);
 
         DeviceClassDescriptionEntity newDeviceClassDescription = new DeviceClassDescriptionEntity();
-        DeviceClassDescriptionPK pk = new DeviceClassDescriptionPK(this.selectedDeviceClass.getName(), this.language);
+        DeviceClassDescriptionPK pk = new DeviceClassDescriptionPK(selectedDeviceClass.getName(), language);
         newDeviceClassDescription.setPk(pk);
-        newDeviceClassDescription.setDescription(this.description);
-        this.deviceService.addDeviceClassDescription(newDeviceClassDescription);
+        newDeviceClassDescription.setDescription(description);
+        deviceService.addDeviceClassDescription(newDeviceClassDescription);
         return "success";
     }
 
@@ -121,7 +121,7 @@ public class DeviceClassDescriptionBean implements DeviceClassDescription {
     @Begin
     public String edit() {
 
-        LOG.debug("edit: " + this.selectedDeviceClassDescription);
+        LOG.debug("edit: " + selectedDeviceClassDescription);
         return "edit-desc";
     }
 
@@ -130,8 +130,8 @@ public class DeviceClassDescriptionBean implements DeviceClassDescription {
     public String remove()
             throws DeviceClassDescriptionNotFoundException, DeviceClassNotFoundException {
 
-        LOG.debug("remove: " + this.selectedDeviceClassDescription);
-        this.deviceService.removeDeviceClassDescription(this.selectedDeviceClassDescription);
+        LOG.debug("remove: " + selectedDeviceClassDescription);
+        deviceService.removeDeviceClassDescription(selectedDeviceClassDescription);
         deviceClassDescriptionsListFactory();
         return "removed";
     }
@@ -140,8 +140,8 @@ public class DeviceClassDescriptionBean implements DeviceClassDescription {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String save() {
 
-        LOG.debug("save: " + this.selectedDeviceClassDescription);
-        this.deviceService.saveDeviceClassDescription(this.selectedDeviceClassDescription);
+        LOG.debug("save: " + selectedDeviceClassDescription);
+        deviceService.saveDeviceClassDescription(selectedDeviceClassDescription);
         return "saved";
     }
 
@@ -158,7 +158,7 @@ public class DeviceClassDescriptionBean implements DeviceClassDescription {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getLanguage() {
 
-        return this.language;
+        return language;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -170,7 +170,7 @@ public class DeviceClassDescriptionBean implements DeviceClassDescription {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getDescription() {
 
-        return this.description;
+        return description;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)

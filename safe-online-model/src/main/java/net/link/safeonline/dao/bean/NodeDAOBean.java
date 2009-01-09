@@ -37,26 +37,26 @@ public class NodeDAOBean implements NodeDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, NodeEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, NodeEntity.QueryInterface.class);
     }
 
     public NodeEntity addNode(String name, String protocol, String hostname, int port, int sslPort, X509Certificate authnCertificate,
                               X509Certificate signingCertificate) {
 
         NodeEntity node = new NodeEntity(name, protocol, hostname, port, sslPort, authnCertificate, signingCertificate);
-        this.entityManager.persist(node);
+        entityManager.persist(node);
         return node;
     }
 
     public List<NodeEntity> listNodes() {
 
-        List<NodeEntity> result = this.queryObject.listNodeEntities();
+        List<NodeEntity> result = queryObject.listNodeEntities();
         return result;
     }
 
     public NodeEntity findNode(String name) {
 
-        NodeEntity node = this.entityManager.find(NodeEntity.class, name);
+        NodeEntity node = entityManager.find(NodeEntity.class, name);
         return node;
     }
 
@@ -72,7 +72,7 @@ public class NodeDAOBean implements NodeDAO {
     public NodeEntity getNodeFromAuthnCertificate(X509Certificate authnCertificate)
             throws NodeNotFoundException {
 
-        List<NodeEntity> nodes = this.queryObject.listNodeEntitiesWhereAuthnCertificateSubject(authnCertificate.getSubjectX500Principal()
+        List<NodeEntity> nodes = queryObject.listNodeEntitiesWhereAuthnCertificateSubject(authnCertificate.getSubjectX500Principal()
                                                                                                                .getName());
         if (nodes.isEmpty())
             throw new NodeNotFoundException();
@@ -82,7 +82,7 @@ public class NodeDAOBean implements NodeDAO {
 
     public NodeEntity findNodeFromAuthnCertificate(X509Certificate authnCertificate) {
 
-        List<NodeEntity> nodes = this.queryObject.listNodeEntitiesWhereAuthnCertificateSubject(authnCertificate.getSubjectX500Principal()
+        List<NodeEntity> nodes = queryObject.listNodeEntitiesWhereAuthnCertificateSubject(authnCertificate.getSubjectX500Principal()
                                                                                                                .getName());
         if (nodes.isEmpty())
             return null;
@@ -93,7 +93,7 @@ public class NodeDAOBean implements NodeDAO {
     public NodeEntity getNodeFromSigningCertificate(X509Certificate signingCertificate)
             throws NodeNotFoundException {
 
-        List<NodeEntity> nodes = this.queryObject
+        List<NodeEntity> nodes = queryObject
                                                  .listNodeEntitiesWhereSigningCertificateSubject(signingCertificate
                                                                                                                    .getSubjectX500Principal()
                                                                                                                    .getName());
@@ -105,7 +105,7 @@ public class NodeDAOBean implements NodeDAO {
 
     public NodeEntity findNodeFromSigningCertificate(X509Certificate signingCertificate) {
 
-        List<NodeEntity> nodes = this.queryObject
+        List<NodeEntity> nodes = queryObject
                                                  .listNodeEntitiesWhereSigningCertificateSubject(signingCertificate
                                                                                                                    .getSubjectX500Principal()
                                                                                                                    .getName());
@@ -117,6 +117,6 @@ public class NodeDAOBean implements NodeDAO {
 
     public void removeNode(NodeEntity node) {
 
-        this.entityManager.remove(node);
+        entityManager.remove(node);
     }
 }

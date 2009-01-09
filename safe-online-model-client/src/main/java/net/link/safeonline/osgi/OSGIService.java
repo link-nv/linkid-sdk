@@ -46,23 +46,23 @@ public class OSGIService {
     public Object getService()
             throws SafeOnlineResourceException {
 
-        if (null == this.serviceReferences)
-            throw new SafeOnlineResourceException(ResourceNameType.OSGI, ResourceLevelType.RESOURCE_UNAVAILABLE, this.serviceName);
+        if (null == serviceReferences)
+            throw new SafeOnlineResourceException(ResourceNameType.OSGI, ResourceLevelType.RESOURCE_UNAVAILABLE, serviceName);
 
-        for (ServiceReference serviceReference : this.serviceReferences) {
+        for (ServiceReference serviceReference : serviceReferences) {
             Object service = serviceReference.getBundle().getBundleContext().getService(serviceReference);
-            if (service.getClass().getName().equals(this.serviceName)) {
-                this.selectedServiceReference = serviceReference;
+            if (service.getClass().getName().equals(serviceName)) {
+                selectedServiceReference = serviceReference;
                 return service;
             }
         }
 
-        throw new SafeOnlineResourceException(ResourceNameType.OSGI, ResourceLevelType.RESOURCE_UNAVAILABLE, this.serviceName);
+        throw new SafeOnlineResourceException(ResourceNameType.OSGI, ResourceLevelType.RESOURCE_UNAVAILABLE, serviceName);
 
     }
 
     public void ungetService() {
 
-        this.selectedServiceReference.getBundle().getBundleContext().ungetService(this.selectedServiceReference);
+        selectedServiceReference.getBundle().getBundleContext().ungetService(selectedServiceReference);
     }
 }

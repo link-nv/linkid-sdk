@@ -22,7 +22,7 @@ public class DeviceAttribute implements Serializable {
     public DeviceAttribute(String name) {
 
         this.name = name;
-        this.included = false;
+        included = false;
     }
 
     public DeviceAttribute(String name, boolean included) {
@@ -33,7 +33,7 @@ public class DeviceAttribute implements Serializable {
 
     public boolean isIncluded() {
 
-        return this.included;
+        return included;
     }
 
     public void setIncluded(boolean included) {
@@ -43,7 +43,7 @@ public class DeviceAttribute implements Serializable {
 
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
 }

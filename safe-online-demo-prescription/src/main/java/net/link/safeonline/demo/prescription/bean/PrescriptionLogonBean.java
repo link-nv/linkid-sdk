@@ -38,32 +38,32 @@ public class PrescriptionLogonBean extends AbstractPrescriptionDataClientBean im
 
     public String login() {
 
-        this.log.debug("login");
+        log.debug("login");
         String result = SafeOnlineLoginUtils.login("login");
         return result;
     }
 
     public String logout() {
 
-        this.log.debug("logout");
-        String userId = (String) this.sessionContext.get(LoginManager.USERID_SESSION_ATTRIBUTE);
+        log.debug("logout");
+        String userId = (String) sessionContext.get(LoginManager.USERID_SESSION_ATTRIBUTE);
         SafeOnlineLoginUtils.logout(userId, "main.seam");
         return "success";
     }
 
     public String getUsername() {
 
-        String userId = (String) this.sessionContext.get(LoginManager.USERID_SESSION_ATTRIBUTE);
+        String userId = (String) sessionContext.get(LoginManager.USERID_SESSION_ATTRIBUTE);
         return getUsername(userId);
     }
 
     private void activateRole(String role) {
 
-        String userId = (String) this.sessionContext.get(LoginManager.USERID_SESSION_ATTRIBUTE);
+        String userId = (String) sessionContext.get(LoginManager.USERID_SESSION_ATTRIBUTE);
         SecurityManagerUtils.flushCredentialCache(userId, PrescriptionConstants.SECURITY_DOMAIN);
 
         FacesContext context = FacesContext.getCurrentInstance();
-        this.log.debug("set role: " + role);
+        log.debug("set role: " + role);
         context.getExternalContext().getSessionMap().put("role", role);
     }
 

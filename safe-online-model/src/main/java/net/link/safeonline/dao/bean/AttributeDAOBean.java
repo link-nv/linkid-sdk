@@ -46,14 +46,14 @@ public class AttributeDAOBean implements AttributeDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, AttributeEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, AttributeEntity.QueryInterface.class);
     }
 
     public AttributeEntity addAttribute(AttributeTypeEntity attributeType, SubjectEntity subject, String stringValue) {
 
         LOG.debug("add attribute " + attributeType + " for subject " + subject + " with value: " + stringValue);
         AttributeEntity attribute = new AttributeEntity(attributeType, subject, stringValue);
-        this.entityManager.persist(attribute);
+        entityManager.persist(attribute);
         return attribute;
     }
 
@@ -61,21 +61,21 @@ public class AttributeDAOBean implements AttributeDAO {
 
         LOG.debug("add attribute " + attributeType + " for subject " + subject + " index " + index);
         AttributeEntity attribute = new AttributeEntity(attributeType, subject, index);
-        this.entityManager.persist(attribute);
+        entityManager.persist(attribute);
         return attribute;
     }
 
     public AttributeEntity findAttribute(String attributeTypeName, SubjectEntity subject) {
 
         LOG.debug("find attribute for type  " + attributeTypeName + " and subject " + subject.getUserId());
-        AttributeEntity attribute = this.entityManager.find(AttributeEntity.class, new AttributePK(attributeTypeName, subject.getUserId()));
+        AttributeEntity attribute = entityManager.find(AttributeEntity.class, new AttributePK(attributeTypeName, subject.getUserId()));
         return attribute;
     }
 
     public AttributeEntity findAttribute(String attributeTypeName, SubjectEntity subject, long index) {
 
         LOG.debug("find attribute for type  " + attributeTypeName + " and subject " + subject.getUserId() + " index = " + index);
-        AttributeEntity attribute = this.entityManager.find(AttributeEntity.class, new AttributePK(attributeTypeName, subject.getUserId(),
+        AttributeEntity attribute = entityManager.find(AttributeEntity.class, new AttributePK(attributeTypeName, subject.getUserId(),
                 index));
         return attribute;
     }
@@ -83,14 +83,14 @@ public class AttributeDAOBean implements AttributeDAO {
     public AttributeEntity findAttribute(SubjectEntity subject, AttributeTypeEntity attributeType, long index) {
 
         LOG.debug("find attribute for type  " + attributeType.getName() + " and subject " + subject.getUserId());
-        AttributeEntity attribute = this.entityManager.find(AttributeEntity.class, new AttributePK(attributeType, subject, index));
+        AttributeEntity attribute = entityManager.find(AttributeEntity.class, new AttributePK(attributeType, subject, index));
         return attribute;
     }
 
     public AttributeEntity findAttribute(SubjectEntity subject, String attributeTypeName, long index) {
 
         LOG.debug("find attribute for type  " + attributeTypeName + " and subject " + subject.getUserId());
-        AttributeEntity attribute = this.entityManager.find(AttributeEntity.class, new AttributePK(attributeTypeName, subject.getUserId(),
+        AttributeEntity attribute = entityManager.find(AttributeEntity.class, new AttributePK(attributeTypeName, subject.getUserId(),
                 index));
         return attribute;
     }
@@ -98,7 +98,7 @@ public class AttributeDAOBean implements AttributeDAO {
     public Map<AttributeTypeEntity, List<AttributeEntity>> listAttributes(SubjectEntity subject) {
 
         LOG.debug("get attributes for subject " + subject.getUserId());
-        List<AttributeEntity> attributes = this.queryObject.listAttributes(subject);
+        List<AttributeEntity> attributes = queryObject.listAttributes(subject);
         Map<AttributeTypeEntity, List<AttributeEntity>> result = new HashMap<AttributeTypeEntity, List<AttributeEntity>>();
         for (AttributeEntity attribute : attributes) {
             List<AttributeEntity> list = result.get(attribute.getAttributeType());
@@ -149,14 +149,14 @@ public class AttributeDAOBean implements AttributeDAO {
 
     public AttributeEntity findAttribute(AttributeTypeEntity attributeType, SubjectEntity subject) {
 
-        AttributeEntity attribute = this.entityManager.find(AttributeEntity.class, new AttributePK(attributeType, subject));
+        AttributeEntity attribute = entityManager.find(AttributeEntity.class, new AttributePK(attributeType, subject));
         return attribute;
     }
 
     public AttributeEntity getAttribute(AttributeTypeEntity attributeType, SubjectEntity subject)
             throws AttributeNotFoundException {
 
-        AttributeEntity attribute = this.entityManager.find(AttributeEntity.class, new AttributePK(attributeType, subject));
+        AttributeEntity attribute = entityManager.find(AttributeEntity.class, new AttributePK(attributeType, subject));
         if (null == attribute)
             throw new AttributeNotFoundException();
         return attribute;
@@ -164,7 +164,7 @@ public class AttributeDAOBean implements AttributeDAO {
 
     public List<AttributeEntity> listVisibleAttributes(SubjectEntity subject) {
 
-        List<AttributeEntity> attributes = this.queryObject.listVisibleAttributes(subject);
+        List<AttributeEntity> attributes = queryObject.listVisibleAttributes(subject);
         return attributes;
     }
 
@@ -172,7 +172,7 @@ public class AttributeDAOBean implements AttributeDAO {
             throws AttributeNotFoundException {
 
         AttributePK pk = new AttributePK(attributeType, subject, index);
-        AttributeEntity attribute = this.entityManager.find(AttributeEntity.class, pk);
+        AttributeEntity attribute = entityManager.find(AttributeEntity.class, pk);
         if (null == attribute)
             throw new AttributeNotFoundException();
         return attribute;
@@ -180,13 +180,13 @@ public class AttributeDAOBean implements AttributeDAO {
 
     public void removeAttribute(AttributeEntity attributeEntity) {
 
-        this.entityManager.remove(attributeEntity);
+        entityManager.remove(attributeEntity);
     }
 
     public List<AttributeEntity> listAttributes(SubjectEntity subject, AttributeTypeEntity attributeType) {
 
         LOG.debug("listAttributes for " + subject.getUserId() + " of type " + attributeType.getName());
-        List<AttributeEntity> attributes = this.queryObject.listAttributes(subject, attributeType);
+        List<AttributeEntity> attributes = queryObject.listAttributes(subject, attributeType);
         return attributes;
     }
 
@@ -200,14 +200,14 @@ public class AttributeDAOBean implements AttributeDAO {
         }
 
         AttributeEntity attribute = new AttributeEntity(attributeType, subject, index);
-        this.entityManager.persist(attribute);
+        entityManager.persist(attribute);
         LOG.debug("addAttribute for subject " + subject.getUserId() + " index: " + index);
         return attribute;
     }
 
     private long calcIndex(SubjectEntity subject, AttributeTypeEntity attributeType) {
 
-        List<Long> maxIds = this.queryObject.listMaxIdWhereSubjectAndAttributeType(subject, attributeType);
+        List<Long> maxIds = queryObject.listMaxIdWhereSubjectAndAttributeType(subject, attributeType);
         if (maxIds.isEmpty())
             /*
              * This means that no other multi-valued attribute of the given attribute type existed before.
@@ -224,18 +224,18 @@ public class AttributeDAOBean implements AttributeDAO {
 
     public void removeAttributes(SubjectEntity subject) {
 
-        this.queryObject.deleteAttributes(subject);
+        queryObject.deleteAttributes(subject);
     }
 
     public void removeAttributes(AttributeTypeEntity attributeType) {
 
-        int count = this.queryObject.deleteAttributes(attributeType);
+        int count = queryObject.deleteAttributes(attributeType);
         LOG.debug("number of removed attributes: " + count);
     }
 
     public List<AttributeEntity> listAttributes(String prefix, AttributeTypeEntity attributeType) {
 
         LOG.debug("list attributes of type " + attributeType.getName() + " starting with " + prefix);
-        return this.queryObject.listAttributes(prefix, attributeType);
+        return queryObject.listAttributes(prefix, attributeType);
     }
 }

@@ -38,76 +38,76 @@ public class TaskHistoryDAOBeanTest extends TestCase {
             throws Exception {
 
         super.setUp();
-        this.entityTestManager = new EntityTestManager();
+        entityTestManager = new EntityTestManager();
         /*
          * If you add entities to this list, also add them to safe-online-sql-ddl.
          */
-        this.entityTestManager.setUp(TaskEntity.class, TaskHistoryEntity.class, SchedulingEntity.class);
+        entityTestManager.setUp(TaskEntity.class, TaskHistoryEntity.class, SchedulingEntity.class);
 
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
-        this.taskDAO = EJBTestUtils.newInstance(TaskDAOBean.class, SafeOnlineTestContainer.sessionBeans, entityManager);
-        this.testedInstance = EJBTestUtils.newInstance(TaskHistoryDAOBean.class, SafeOnlineTestContainer.sessionBeans, entityManager);
+        EntityManager entityManager = entityTestManager.getEntityManager();
+        taskDAO = EJBTestUtils.newInstance(TaskDAOBean.class, SafeOnlineTestContainer.sessionBeans, entityManager);
+        testedInstance = EJBTestUtils.newInstance(TaskHistoryDAOBean.class, SafeOnlineTestContainer.sessionBeans, entityManager);
     }
 
     @Override
     protected void tearDown()
             throws Exception {
 
-        this.entityTestManager.tearDown();
+        entityTestManager.tearDown();
         super.tearDown();
     }
 
     public void testTaskHistoryList() {
 
         // Insert first task and history entry
-        TaskEntity task1 = this.taskDAO.addTaskEntity("jndi", "name", null);
+        TaskEntity task1 = taskDAO.addTaskEntity("jndi", "name", null);
         Date startDate = new Date(System.currentTimeMillis());
         Date endDate = new Date(System.currentTimeMillis() + 1000);
-        TaskHistoryEntity taskHistoryEntity1 = this.testedInstance.addTaskHistoryEntity(task1, "", true, startDate, endDate);
+        TaskHistoryEntity taskHistoryEntity1 = testedInstance.addTaskHistoryEntity(task1, "", true, startDate, endDate);
 
         // try to fetch history list from a detached task
         TaskEntity task2 = new TaskEntity("jndi", "name", null);
-        TaskHistoryEntity taskHistoryEntity2 = this.testedInstance.listTaskHistory(task2).get(0);
+        TaskHistoryEntity taskHistoryEntity2 = testedInstance.listTaskHistory(task2).get(0);
         assertEquals(taskHistoryEntity1, taskHistoryEntity2);
     }
 
     public void testTaskHistoryClearing() {
 
         // setup
-        TaskEntity task = this.taskDAO.addTaskEntity("jndi", "name", null);
+        TaskEntity task = taskDAO.addTaskEntity("jndi", "name", null);
         Date startDate = new Date(System.currentTimeMillis());
         Date endDate = new Date(System.currentTimeMillis() + 1000);
-        TaskHistoryEntity taskHistoryEntity = this.testedInstance.addTaskHistoryEntity(task, "", true, startDate, endDate);
+        TaskHistoryEntity taskHistoryEntity = testedInstance.addTaskHistoryEntity(task, "", true, startDate, endDate);
 
-        EntityManager entityManager = this.entityTestManager.refreshEntityManager();
-        this.testedInstance = EJBTestUtils.newInstance(TaskHistoryDAOBean.class, SafeOnlineTestContainer.sessionBeans,
-                this.entityTestManager.getEntityManager());
-        this.taskDAO = EJBTestUtils.newInstance(TaskDAOBean.class, SafeOnlineTestContainer.sessionBeans, entityManager);
+        EntityManager entityManager = entityTestManager.refreshEntityManager();
+        testedInstance = EJBTestUtils.newInstance(TaskHistoryDAOBean.class, SafeOnlineTestContainer.sessionBeans,
+                entityTestManager.getEntityManager());
+        taskDAO = EJBTestUtils.newInstance(TaskDAOBean.class, SafeOnlineTestContainer.sessionBeans, entityManager);
 
         // operate
-        this.testedInstance.clearAllTasksHistory(System.currentTimeMillis());
+        testedInstance.clearAllTasksHistory(System.currentTimeMillis());
 
-        entityManager = this.entityTestManager.refreshEntityManager();
-        this.testedInstance = EJBTestUtils.newInstance(TaskHistoryDAOBean.class, SafeOnlineTestContainer.sessionBeans,
-                this.entityTestManager.getEntityManager());
-        this.taskDAO = EJBTestUtils.newInstance(TaskDAOBean.class, SafeOnlineTestContainer.sessionBeans, entityManager);
+        entityManager = entityTestManager.refreshEntityManager();
+        testedInstance = EJBTestUtils.newInstance(TaskHistoryDAOBean.class, SafeOnlineTestContainer.sessionBeans,
+                entityTestManager.getEntityManager());
+        taskDAO = EJBTestUtils.newInstance(TaskDAOBean.class, SafeOnlineTestContainer.sessionBeans, entityManager);
 
         // verify
-        TaskEntity resultTask = this.taskDAO.findTaskEntity("jndi");
-        TaskHistoryEntity result = this.testedInstance.listTaskHistory(resultTask).get(0);
+        TaskEntity resultTask = taskDAO.findTaskEntity("jndi");
+        TaskHistoryEntity result = testedInstance.listTaskHistory(resultTask).get(0);
         assertEquals(result, taskHistoryEntity);
 
         // operate
-        this.testedInstance.clearAllTasksHistory(0);
+        testedInstance.clearAllTasksHistory(0);
 
-        entityManager = this.entityTestManager.refreshEntityManager();
-        this.testedInstance = EJBTestUtils.newInstance(TaskHistoryDAOBean.class, SafeOnlineTestContainer.sessionBeans,
-                this.entityTestManager.getEntityManager());
-        this.taskDAO = EJBTestUtils.newInstance(TaskDAOBean.class, SafeOnlineTestContainer.sessionBeans, entityManager);
+        entityManager = entityTestManager.refreshEntityManager();
+        testedInstance = EJBTestUtils.newInstance(TaskHistoryDAOBean.class, SafeOnlineTestContainer.sessionBeans,
+                entityTestManager.getEntityManager());
+        taskDAO = EJBTestUtils.newInstance(TaskDAOBean.class, SafeOnlineTestContainer.sessionBeans, entityManager);
 
         // verify
-        resultTask = this.taskDAO.findTaskEntity("jndi");
-        int size = this.testedInstance.listTaskHistory(resultTask).size();
+        resultTask = taskDAO.findTaskEntity("jndi");
+        int size = testedInstance.listTaskHistory(resultTask).size();
         assertEquals(0, size);
     }
 }

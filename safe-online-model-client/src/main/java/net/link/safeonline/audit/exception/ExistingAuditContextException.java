@@ -30,6 +30,6 @@ public class ExistingAuditContextException extends ExistingException {
 
     public long getAuditContextId() {
 
-        return this.auditContextId;
+        return auditContextId;
     }
 }

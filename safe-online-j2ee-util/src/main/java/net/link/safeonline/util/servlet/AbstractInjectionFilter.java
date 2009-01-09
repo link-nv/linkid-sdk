@@ -126,13 +126,13 @@ public abstract class AbstractInjectionFilter implements Filter {
                 throw new ServletException("illegal access: " + e.getMessage(), e);
             }
         }
-        this.configParams = new HashMap<String, String>();
+        configParams = new HashMap<String, String>();
         Enumeration<String> initParamsEnum = config.getInitParameterNames();
         while (initParamsEnum.hasMoreElements()) {
             String paramName = initParamsEnum.nextElement();
             String paramValue = config.getInitParameter(paramName);
             LOG.debug("config param: " + paramName + "=" + paramValue);
-            this.configParams.put(paramName, paramValue);
+            configParams.put(paramName, paramValue);
         }
     }
 
@@ -171,16 +171,16 @@ public abstract class AbstractInjectionFilter implements Filter {
                 throw new ServletException("illegal access: " + e.getMessage(), e);
             }
         }
-        if (null == this.configParams) {
-            this.configParams = new HashMap<String, String>();
+        if (null == configParams) {
+            configParams = new HashMap<String, String>();
         }
         Enumeration<String> initParamsEnum = config.getServletContext().getInitParameterNames();
         while (initParamsEnum.hasMoreElements()) {
             String paramName = initParamsEnum.nextElement();
-            if (null == this.configParams.get(paramName)) {
+            if (null == configParams.get(paramName)) {
                 String paramValue = config.getServletContext().getInitParameter(paramName);
                 LOG.debug("config param: " + paramName + "=" + paramValue);
-                this.configParams.put(paramName, paramValue);
+                configParams.put(paramName, paramValue);
             }
         }
     }

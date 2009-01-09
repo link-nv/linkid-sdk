@@ -49,9 +49,8 @@ public class IdMappingDriver extends ProfileDriver {
      */
     public String getUserId(PrivateKeyEntry applicationKey, String username) {
 
-        if (!(applicationKey.getCertificate() instanceof X509Certificate)) {
+        if (!(applicationKey.getCertificate() instanceof X509Certificate))
             throw new IllegalArgumentException("The certificate in the keystore needs to be of X509 format.");
-        }
 
         try {
             NameIdentifierMappingClientImpl service = new NameIdentifierMappingClientImpl(getHost(),

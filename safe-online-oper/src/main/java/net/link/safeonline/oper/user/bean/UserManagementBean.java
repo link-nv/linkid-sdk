@@ -113,13 +113,13 @@ public class UserManagementBean implements UserManagement {
     @Destroy
     public void destroyCallback() {
 
-        this.log.debug("destroy: " + this);
+        log.debug("destroy: " + this);
     }
 
     @PostConstruct
     public void postConstructCallback() {
 
-        this.log.debug("postConstruct: " + this);
+        log.debug("postConstruct: " + this);
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -128,8 +128,8 @@ public class UserManagementBean implements UserManagement {
     public String search()
             throws SubjectNotFoundException, DeviceNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException {
 
-        this.log.debug("search: #0", this.user);
-        getUserInfo(this.user);
+        log.debug("search: #0", user);
+        getUserInfo(user);
         return "found";
     }
 
@@ -143,17 +143,17 @@ public class UserManagementBean implements UserManagement {
     private void getUserInfo(String username)
             throws SubjectNotFoundException, DeviceNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException {
 
-        SubjectEntity subject = this.subjectService.getSubjectFromUserName(username);
+        SubjectEntity subject = subjectService.getSubjectFromUserName(username);
 
-        this.roles = this.authorizationManagerService.getRoles(username);
-        this.historyList = getHistoryList(subject);
-        this.subscriptionList = this.subscriptionService.listSubscriptions(subject);
-        this.deviceRegistrationList = this.deviceService.getDeviceRegistrations(subject, getViewLocale());
+        roles = authorizationManagerService.getRoles(username);
+        historyList = getHistoryList(subject);
+        subscriptionList = subscriptionService.listSubscriptions(subject);
+        deviceRegistrationList = deviceService.getDeviceRegistrations(subject, getViewLocale());
     }
 
     private List<HistoryMessage> getHistoryList(SubjectEntity subject) {
 
-        List<HistoryEntity> result = this.identityService.listHistory(subject);
+        List<HistoryEntity> result = identityService.listHistory(subject);
 
         List<HistoryMessage> messageList = new LinkedList<HistoryMessage>();
 
@@ -167,8 +167,8 @@ public class UserManagementBean implements UserManagement {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getUser() {
 
-        this.log.debug("get user: #0", this.user);
-        return this.user;
+        log.debug("get user: #0", user);
+        return user;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -182,15 +182,15 @@ public class UserManagementBean implements UserManagement {
     public String save()
             throws SubjectNotFoundException, RoleNotFoundException {
 
-        this.log.debug("save: " + this.user);
-        this.authorizationManagerService.setRoles(this.user, this.roles);
+        log.debug("save: " + user);
+        authorizationManagerService.setRoles(user, roles);
         return "saved";
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String remove() {
 
-        this.log.debug("remove: " + this.user);
+        log.debug("remove: " + user);
         return "remove";
     }
 
@@ -199,9 +199,9 @@ public class UserManagementBean implements UserManagement {
     public String removeConfirm()
             throws SubjectNotFoundException, SubscriptionNotFoundException, MessageHandlerNotFoundException {
 
-        this.log.debug("confirm remove: " + this.user);
-        SubjectEntity subject = this.subjectService.getSubjectFromUserName(this.user);
-        this.accountService.removeAccount(subject);
+        log.debug("confirm remove: " + user);
+        SubjectEntity subject = subjectService.getSubjectFromUserName(user);
+        accountService.removeAccount(subject);
         return "success";
     }
 
@@ -209,7 +209,7 @@ public class UserManagementBean implements UserManagement {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String removeCancel() {
 
-        this.log.debug("cancel remove: " + this.user);
+        log.debug("cancel remove: " + user);
         return "success";
 
     }
@@ -217,14 +217,14 @@ public class UserManagementBean implements UserManagement {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public List<String> getRoles() {
 
-        this.log.debug("get roles: #0", this.roles);
-        return new LinkedList<String>(this.roles);
+        log.debug("get roles: #0", roles);
+        return new LinkedList<String>(roles);
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public void setRoles(List<String> roles) {
 
-        this.log.debug("set roles: #0", roles);
+        log.debug("set roles: #0", roles);
         this.roles = new HashSet<String>(roles);
     }
 
@@ -232,8 +232,8 @@ public class UserManagementBean implements UserManagement {
     @Factory(AVAILABLE_ROLES_LIST_NAME)
     public List<SelectItem> availableRolesFactory() {
 
-        this.log.debug("availableRoles factory");
-        Set<String> availableRoles = this.authorizationManagerService.getAvailableRoles();
+        log.debug("availableRoles factory");
+        Set<String> availableRoles = authorizationManagerService.getAvailableRoles();
         List<SelectItem> availableRolesView = new LinkedList<SelectItem>();
         for (String availableRole : availableRoles) {
             SelectItem availableRoleView = new SelectItem(availableRole);
@@ -248,13 +248,13 @@ public class UserManagementBean implements UserManagement {
         String userPrefix = event.toString();
         if (userPrefix.length() < 3)
             return null;
-        this.log.debug("auto-complete user: #0", userPrefix);
+        log.debug("auto-complete user: #0", userPrefix);
         List<String> filteredUsers;
         try {
-            filteredUsers = this.authorizationManagerService.getUsers(userPrefix);
+            filteredUsers = authorizationManagerService.getUsers(userPrefix);
         } catch (AttributeTypeNotFoundException e) {
-            this.log.debug("login attribute type not found");
-            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFoundSpecific",
+            log.debug("login attribute type not found");
+            facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFoundSpecific",
                     SafeOnlineConstants.LOGIN_ATTRIBTUE);
             return null;
         }
@@ -264,18 +264,18 @@ public class UserManagementBean implements UserManagement {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public List<HistoryMessage> getHistoryList() {
 
-        return this.historyList;
+        return historyList;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public List<SubscriptionEntity> getSubscriptionList() {
 
-        return this.subscriptionList;
+        return subscriptionList;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public List<DeviceRegistrationDO> getDeviceRegistrationList() {
 
-        return this.deviceRegistrationList;
+        return deviceRegistrationList;
     }
 }

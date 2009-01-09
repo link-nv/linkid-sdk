@@ -58,17 +58,17 @@ public class UserRegistrationServiceBean implements UserRegistrationService, Use
     public SubjectEntity registerUser(String login)
             throws ExistingUserException, AttributeTypeNotFoundException, PermissionDeniedException, AttributeUnavailableException {
 
-        SubjectEntity subject = this.subjectService.findSubjectFromUserName(login);
+        SubjectEntity subject = subjectService.findSubjectFromUserName(login);
         if (null == subject)
-            return this.userRegistrationManager.registerUser(login);
+            return userRegistrationManager.registerUser(login);
 
         // For each device configured in OLAS: try to find the device attribute, if so, user was already registered with
         // a valid device so throw an exception
-        List<DeviceEntity> devices = this.devicePolicyService.getDevices();
+        List<DeviceEntity> devices = devicePolicyService.getDevices();
         for (DeviceEntity device : devices) {
             Object attribute;
             try {
-                attribute = this.proxyAttributeService.findAttributeValue(subject.getUserId(), device.getAttributeType().getName());
+                attribute = proxyAttributeService.findAttributeValue(subject.getUserId(), device.getAttributeType().getName());
             } catch (SubjectNotFoundException e) {
                 continue;
             }

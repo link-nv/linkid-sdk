@@ -56,58 +56,58 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.descriptorQueryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+        descriptorQueryObject = QueryObjectFactory.createQueryObject(entityManager,
                 AttributeTypeDescriptionEntity.QueryInterface.class);
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, AttributeTypeEntity.QueryInterface.class);
-        this.compoundedQueryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, AttributeTypeEntity.QueryInterface.class);
+        compoundedQueryObject = QueryObjectFactory.createQueryObject(entityManager,
                 CompoundedAttributeTypeMemberEntity.QueryInterface.class);
     }
 
     public void addAttributeType(AttributeTypeEntity attributeType) {
 
         LOG.debug("add attribute type: " + attributeType.getName());
-        this.entityManager.persist(attributeType);
+        entityManager.persist(attributeType);
     }
 
     public void removeAttributeType(String name) {
 
         LOG.debug("remove attribute type: " + name);
-        AttributeTypeEntity attributeType = this.entityManager.find(AttributeTypeEntity.class, name);
-        this.entityManager.remove(attributeType);
+        AttributeTypeEntity attributeType = entityManager.find(AttributeTypeEntity.class, name);
+        entityManager.remove(attributeType);
     }
 
     public AttributeTypeEntity findAttributeType(String name) {
 
         LOG.debug("find attribute type: " + name);
-        AttributeTypeEntity attributeType = this.entityManager.find(AttributeTypeEntity.class, name);
+        AttributeTypeEntity attributeType = entityManager.find(AttributeTypeEntity.class, name);
         return attributeType;
     }
 
     public List<AttributeTypeEntity> listAttributeTypes() {
 
         LOG.debug("get attribute types");
-        List<AttributeTypeEntity> attributeTypes = this.queryObject.listAttributeTypes();
+        List<AttributeTypeEntity> attributeTypes = queryObject.listAttributeTypes();
         return attributeTypes;
     }
 
     public List<AttributeTypeEntity> listAttributeTypes(NodeEntity node) {
 
         LOG.debug("get attribute types on node " + node.getName());
-        List<AttributeTypeEntity> attributeTypes = this.queryObject.listAttributeTypes(node);
+        List<AttributeTypeEntity> attributeTypes = queryObject.listAttributeTypes(node);
         return attributeTypes;
     }
 
     public List<AttributeTypeEntity> listVisibleAttributeTypes() {
 
         LOG.debug("get user visible attribute types");
-        List<AttributeTypeEntity> attributeTypes = this.queryObject.listVisibleAttributeTypes();
+        List<AttributeTypeEntity> attributeTypes = queryObject.listVisibleAttributeTypes();
         return attributeTypes;
     }
 
     public List<AttributeTypeEntity> listAttributeTypes(DatatypeType datatype) {
 
         LOG.debug("get attribute types of datatype " + datatype);
-        List<AttributeTypeEntity> attributeTypes = this.queryObject.listAttributeTypes(datatype);
+        List<AttributeTypeEntity> attributeTypes = queryObject.listAttributeTypes(datatype);
         return attributeTypes;
     }
 
@@ -123,7 +123,7 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 
     public List<AttributeTypeDescriptionEntity> listDescriptions(AttributeTypeEntity attributeType) {
 
-        List<AttributeTypeDescriptionEntity> descriptions = this.descriptorQueryObject.listDescriptions(attributeType);
+        List<AttributeTypeDescriptionEntity> descriptions = descriptorQueryObject.listDescriptions(attributeType);
         return descriptions;
     }
 
@@ -137,7 +137,7 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
         /*
          * Persist.
          */
-        this.entityManager.persist(newAttributeTypeDescription);
+        entityManager.persist(newAttributeTypeDescription);
     }
 
     public void removeDescription(AttributeTypeDescriptionEntity attributeTypeDescription) {
@@ -150,18 +150,18 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
         /*
          * Remove from database.
          */
-        this.entityManager.remove(attributeTypeDescription);
+        entityManager.remove(attributeTypeDescription);
     }
 
     public void saveDescription(AttributeTypeDescriptionEntity attributeTypeDescription) {
 
-        this.entityManager.merge(attributeTypeDescription);
+        entityManager.merge(attributeTypeDescription);
     }
 
     public AttributeTypeDescriptionEntity getDescription(AttributeTypeDescriptionPK attributeTypeDescriptionPK)
             throws AttributeTypeDescriptionNotFoundException {
 
-        AttributeTypeDescriptionEntity attributeTypeDescription = this.entityManager.find(AttributeTypeDescriptionEntity.class,
+        AttributeTypeDescriptionEntity attributeTypeDescription = entityManager.find(AttributeTypeDescriptionEntity.class,
                 attributeTypeDescriptionPK);
         if (null == attributeTypeDescription)
             throw new AttributeTypeDescriptionNotFoundException();
@@ -171,7 +171,7 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public AttributeTypeDescriptionEntity findDescription(AttributeTypeDescriptionPK attributeTypeDescriptionPK) {
 
-        AttributeTypeDescriptionEntity attributeTypeDescription = this.entityManager.find(AttributeTypeDescriptionEntity.class,
+        AttributeTypeDescriptionEntity attributeTypeDescription = entityManager.find(AttributeTypeDescriptionEntity.class,
                 attributeTypeDescriptionPK);
         return attributeTypeDescription;
     }
@@ -181,15 +181,15 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
         LOG.debug("categorize: " + attributeType.getName());
         Query query;
         if (attributeType.getType().equals(DatatypeType.STRING)) {
-            query = this.queryObject.createQueryCategorizeString(application, attributeType);
+            query = queryObject.createQueryCategorizeString(application, attributeType);
         } else if (attributeType.getType().equals(DatatypeType.BOOLEAN)) {
-            query = this.queryObject.createQueryCategorizeBoolean(application, attributeType);
+            query = queryObject.createQueryCategorizeBoolean(application, attributeType);
         } else if (attributeType.getType().equals(DatatypeType.INTEGER)) {
-            query = this.queryObject.createQueryCategorizeInteger(application, attributeType);
+            query = queryObject.createQueryCategorizeInteger(application, attributeType);
         } else if (attributeType.getType().equals(DatatypeType.DOUBLE)) {
-            query = this.queryObject.createQueryCategorizeDouble(application, attributeType);
+            query = queryObject.createQueryCategorizeDouble(application, attributeType);
         } else if (attributeType.getType().equals(DatatypeType.DATE)) {
-            query = this.queryObject.createQueryCategorizeDate(application, attributeType);
+            query = queryObject.createQueryCategorizeDate(application, attributeType);
         } else
             return null;
         List<?> results = query.getResultList();
@@ -204,7 +204,7 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
     public AttributeTypeEntity getParent(AttributeTypeEntity memberAttributeType)
             throws AttributeTypeNotFoundException {
 
-        AttributeTypeEntity parent = this.compoundedQueryObject.findParentAttribute(memberAttributeType);
+        AttributeTypeEntity parent = compoundedQueryObject.findParentAttribute(memberAttributeType);
         if (null == parent)
             throw new AttributeTypeNotFoundException();
         return parent;
@@ -213,7 +213,7 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
     public CompoundedAttributeTypeMemberEntity getMemberEntry(AttributeTypeEntity memberAttributeType)
             throws AttributeTypeNotFoundException {
 
-        List<CompoundedAttributeTypeMemberEntity> memberEntries = this.compoundedQueryObject.listMemberEntries(memberAttributeType);
+        List<CompoundedAttributeTypeMemberEntity> memberEntries = compoundedQueryObject.listMemberEntries(memberAttributeType);
         if (memberEntries.isEmpty())
             throw new AttributeTypeNotFoundException();
         CompoundedAttributeTypeMemberEntity memberEntry = memberEntries.get(0);
@@ -222,7 +222,7 @@ public class AttributeTypeDAOBean implements AttributeTypeDAO {
 
     public void removeMemberEntries(AttributeTypeEntity parentAttributeType) {
 
-        int count = this.compoundedQueryObject.deleteWhereParent(parentAttributeType);
+        int count = compoundedQueryObject.deleteWhereParent(parentAttributeType);
         LOG.debug("number of removed CompoundedAttributeTypeMemberEntity's: " + count);
     }
 }

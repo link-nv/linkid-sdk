@@ -35,22 +35,22 @@ public class LawyerLogonBean extends AbstractLawyerDataClientBean implements Law
 
     public String login() {
 
-        this.log.debug("login");
+        log.debug("login");
         String result = SafeOnlineLoginUtils.login("login");
         return result;
     }
 
     public String logout() {
 
-        this.log.debug("logout");
-        String userId = (String) this.sessionContext.get(LoginManager.USERID_SESSION_ATTRIBUTE);
+        log.debug("logout");
+        String userId = (String) sessionContext.get(LoginManager.USERID_SESSION_ATTRIBUTE);
         SafeOnlineLoginUtils.logout(userId, "main.seam");
         return "success";
     }
 
     public String getUsername() {
 
-        String userId = (String) this.sessionContext.get(LoginManager.USERID_SESSION_ATTRIBUTE);
+        String userId = (String) sessionContext.get(LoginManager.USERID_SESSION_ATTRIBUTE);
         String username = getUsername(userId);
         return username;
     }

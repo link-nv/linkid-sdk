@@ -41,8 +41,8 @@ public class LawyerStatusManagerBean extends AbstractLawyerDataClientBean implem
     @RolesAllowed( { LawyerConstants.USER_ROLE, LawyerConstants.ADMIN_ROLE })
     public LawyerStatus lawyerStatusFactory() {
 
-        this.log.debug("lawyerStatusFactory");
-        String subjectLogin = this.sessionContext.getCallerPrincipal().getName();
+        log.debug("lawyerStatusFactory");
+        String subjectLogin = sessionContext.getCallerPrincipal().getName();
         LawyerStatus lawyerStatus = getLawyerStatus(subjectLogin);
         if (null == lawyerStatus) {
             lawyerStatus = new LawyerStatus();

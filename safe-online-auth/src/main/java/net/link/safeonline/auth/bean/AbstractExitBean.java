@@ -46,16 +46,16 @@ public class AbstractExitBean {
         try {
             Cookie applicationCookie = (Cookie) facesContext.getExternalContext().getRequestCookieMap().get(
                     SafeOnlineCookies.APPLICATION_COOKIE);
-            PublicApplication application = this.publicApplicationService.findPublicApplication(applicationCookie.getValue());
+            PublicApplication application = publicApplicationService.findPublicApplication(applicationCookie.getValue());
             if (null != application) {
                 if (null != application.getUrl()) {
-                    this.log.debug("found url: " + application.getUrl().toString());
+                    log.debug("found url: " + application.getUrl().toString());
                     return application.getUrl().toString() + "?authenticationTimeout=true";
                 }
             }
             return null;
         } finally {
-            this.log.debug("removing entry and timeout cookie");
+            log.debug("removing entry and timeout cookie");
             HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
             removeCookie(SafeOnlineCookies.TIMEOUT_COOKIE, response);
             removeCookie(SafeOnlineCookies.ENTRY_COOKIE, response);
@@ -65,7 +65,7 @@ public class AbstractExitBean {
 
     private void removeCookie(String name, HttpServletResponse response) {
 
-        this.log.debug("remove cookie: " + name);
+        log.debug("remove cookie: " + name);
         Cookie cookie = new Cookie(name, "");
         cookie.setPath("/");
         cookie.setMaxAge(0);

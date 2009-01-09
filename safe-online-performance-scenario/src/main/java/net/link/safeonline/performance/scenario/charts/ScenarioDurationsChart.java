@@ -71,8 +71,8 @@ public class ScenarioDurationsChart extends AbstractChart {
 
         super("Scenario Duration");
 
-        this.driverSets = new HashMap<String, XYSeries>();
-        this.overhead = new XYSeries("Agent Overhead", true, false);
+        driverSets = new HashMap<String, XYSeries>();
+        overhead = new XYSeries("Agent Overhead", true, false);
     }
 
     /**
@@ -82,7 +82,7 @@ public class ScenarioDurationsChart extends AbstractChart {
     public void processTiming(ScenarioTimingEntity data) {
 
         if (data.getAgentDuration() != null && data.getOlasDuration() != null) {
-            this.overhead.addOrUpdate(data.getStart(), data.getAgentDuration() - data.getOlasDuration());
+            overhead.addOrUpdate(data.getStart(), data.getAgentDuration() - data.getOlasDuration());
         }
     }
 
@@ -127,17 +127,17 @@ public class ScenarioDurationsChart extends AbstractChart {
     @Override
     protected XYPlot getPlot() {
 
-        if (isEmpty(this.driverSets))
+        if (isEmpty(driverSets))
             return null;
 
         ValueAxis domainAxis = new DateAxis("Time");
         NumberAxis valueAxis = new NumberAxis("Duration (ms)");
 
         DefaultTableXYDataset scenarioDuration = new DefaultTableXYDataset();
-        for (XYSeries driverSet : this.driverSets.values()) {
+        for (XYSeries driverSet : driverSets.values()) {
             scenarioDuration.addSeries(driverSet);
         }
-        scenarioDuration.addSeries(this.overhead);
+        scenarioDuration.addSeries(overhead);
 
         return new XYPlot(scenarioDuration, domainAxis, valueAxis, new StackedXYBarRenderer());
     }
@@ -145,10 +145,10 @@ public class ScenarioDurationsChart extends AbstractChart {
     private XYSeries getDriverSet(DriverProfileEntity profile) {
 
         String driverName = profile.getDriverClassName().replaceFirst(".*\\.", "");
-        XYSeries driverSet = this.driverSets.get(driverName);
+        XYSeries driverSet = driverSets.get(driverName);
 
         if (driverSet == null) {
-            this.driverSets.put(driverName, driverSet = new XYSeries(driverName, true, false));
+            driverSets.put(driverName, driverSet = new XYSeries(driverName, true, false));
         }
 
         return driverSet;

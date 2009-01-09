@@ -37,30 +37,30 @@ public class AllowedDeviceDAOBean implements AllowedDeviceDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, AllowedDeviceEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, AllowedDeviceEntity.QueryInterface.class);
     }
 
     public AllowedDeviceEntity addAllowedDevice(ApplicationEntity application, DeviceEntity device, int weight) {
 
         AllowedDeviceEntity allowedDevice = new AllowedDeviceEntity(application, device, weight);
-        this.entityManager.persist(allowedDevice);
+        entityManager.persist(allowedDevice);
         return allowedDevice;
     }
 
     public List<AllowedDeviceEntity> listAllowedDevices(ApplicationEntity application) {
 
-        List<AllowedDeviceEntity> result = this.queryObject.listAllowedDevices(application);
+        List<AllowedDeviceEntity> result = queryObject.listAllowedDevices(application);
         return result;
     }
 
     public void deleteAllowedDevices(ApplicationEntity application) {
 
-        this.queryObject.deleteAllowedDevices(application);
+        queryObject.deleteAllowedDevices(application);
     }
 
     public AllowedDeviceEntity findAllowedDevice(ApplicationEntity application, DeviceEntity device) {
 
-        AllowedDeviceEntity allowedDevice = this.queryObject.find(application, device);
+        AllowedDeviceEntity allowedDevice = queryObject.find(application, device);
         return allowedDevice;
     }
 }

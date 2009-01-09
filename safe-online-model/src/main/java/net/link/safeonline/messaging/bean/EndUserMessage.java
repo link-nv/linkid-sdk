@@ -28,24 +28,24 @@ public class EndUserMessage implements Serializable {
 
     public EndUserMessage(Message JMSMessage) throws JMSException {
 
-        this.destination = JMSMessage.getStringProperty("destination");
-        this.subject = JMSMessage.getStringProperty("subject");
-        this.message = JMSMessage.getStringProperty("messagetext");
+        destination = JMSMessage.getStringProperty("destination");
+        subject = JMSMessage.getStringProperty("subject");
+        message = JMSMessage.getStringProperty("messagetext");
     }
 
     public TextMessage getJMSMessage(Session session)
             throws JMSException {
 
         TextMessage JMSMessage = session.createTextMessage();
-        JMSMessage.setStringProperty("destination", this.destination);
-        JMSMessage.setStringProperty("subject", this.subject);
-        JMSMessage.setStringProperty("messagetext", this.message);
+        JMSMessage.setStringProperty("destination", destination);
+        JMSMessage.setStringProperty("subject", subject);
+        JMSMessage.setStringProperty("messagetext", message);
         return JMSMessage;
     }
 
     public String getDestination() {
 
-        return this.destination;
+        return destination;
     }
 
     public void setDestination(String destination) {
@@ -55,7 +55,7 @@ public class EndUserMessage implements Serializable {
 
     public String getMessage() {
 
-        return this.message;
+        return message;
     }
 
     public void setMessage(String message) {
@@ -65,7 +65,7 @@ public class EndUserMessage implements Serializable {
 
     public String getSubject() {
 
-        return this.subject;
+        return subject;
     }
 
     public void setSubject(String subject) {

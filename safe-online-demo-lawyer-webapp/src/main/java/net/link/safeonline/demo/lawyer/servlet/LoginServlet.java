@@ -67,7 +67,7 @@ public class LoginServlet extends HttpServlet {
 
         LOG.debug("creating dataclient to: " + wsLocation);
 
-        this.dataClient = new DataClientImpl(wsLocation, clientCertificate, clientPrivateKey);
+        dataClient = new DataClientImpl(wsLocation, clientCertificate, clientPrivateKey);
     }
 
     @Override
@@ -90,7 +90,7 @@ public class LoginServlet extends HttpServlet {
 
         Attribute<Boolean> barAdminAttribute;
         try {
-            barAdminAttribute = this.dataClient.getAttributeValue(userId, DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME, Boolean.class);
+            barAdminAttribute = dataClient.getAttributeValue(userId, DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME, Boolean.class);
         } catch (RequestDeniedException e) {
             throw new ServletException("count not retrieve baradmin attribute");
         } catch (SubjectNotFoundException e) {

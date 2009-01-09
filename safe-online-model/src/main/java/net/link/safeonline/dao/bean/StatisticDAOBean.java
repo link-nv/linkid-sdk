@@ -42,19 +42,19 @@ public class StatisticDAOBean implements StatisticDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, StatisticEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, StatisticEntity.QueryInterface.class);
     }
 
     public StatisticEntity addStatistic(String name, String domain, ApplicationEntity application) {
 
         StatisticEntity statistic = new StatisticEntity(name, domain, application, new Date());
-        this.entityManager.persist(statistic);
+        entityManager.persist(statistic);
         return statistic;
     }
 
     public StatisticEntity findStatisticById(long statisticId) {
 
-        StatisticEntity result = this.entityManager.find(StatisticEntity.class, statisticId);
+        StatisticEntity result = entityManager.find(StatisticEntity.class, statisticId);
         return result;
     }
 
@@ -62,8 +62,8 @@ public class StatisticDAOBean implements StatisticDAO {
 
         try {
             if (null == application)
-                return this.queryObject.findStatisticWhereNameAndDomain(name, domain);
-            return this.queryObject.findStatisticWhereNameDomainAndApplication(name, domain, application);
+                return queryObject.findStatisticWhereNameAndDomain(name, domain);
+            return queryObject.findStatisticWhereNameDomainAndApplication(name, domain, application);
         } catch (Exception e) {
             return null;
         }
@@ -81,25 +81,25 @@ public class StatisticDAOBean implements StatisticDAO {
     public List<StatisticEntity> listStatistics(ApplicationEntity application) {
 
         if (null == application)
-            return this.queryObject.listStatistics();
-        return this.queryObject.listStatistics(application);
+            return queryObject.listStatistics();
+        return queryObject.listStatistics(application);
     }
 
     public void removeStatistics(ApplicationEntity application) {
 
         List<StatisticEntity> statistics = listStatistics(application);
         for (StatisticEntity statistic : statistics) {
-            this.statisticDataPointDAO.cleanStatisticDataPoints(statistic);
-            this.entityManager.remove(statistic);
+            statisticDataPointDAO.cleanStatisticDataPoints(statistic);
+            entityManager.remove(statistic);
         }
     }
 
     public void cleanDomain(String domain) {
 
-        List<StatisticEntity> statistics = this.queryObject.listStatistics(domain);
+        List<StatisticEntity> statistics = queryObject.listStatistics(domain);
         for (StatisticEntity statisticEntity : statistics) {
-            this.statisticDataPointDAO.cleanStatisticDataPoints(statisticEntity);
+            statisticDataPointDAO.cleanStatisticDataPoints(statisticEntity);
         }
-        this.queryObject.deleteWhereDomain(domain);
+        queryObject.deleteWhereDomain(domain);
     }
 }

@@ -133,16 +133,16 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
         public void sendRedirect(String location)
                 throws IOException {
 
-            if (null != this.redirectLocation)
+            if (null != redirectLocation)
                 throw new IllegalStateException("cannot send redirect twice");
-            this.redirectLocation = location;
+            redirectLocation = location;
         }
 
         public void commit()
                 throws IOException {
 
-            if (null != this.redirectLocation) {
-                super.sendRedirect(this.redirectLocation);
+            if (null != redirectLocation) {
+                super.sendRedirect(redirectLocation);
             }
         }
     }
@@ -284,13 +284,13 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
                 throw new ServletException("illegal access: " + e.getMessage(), e);
             }
         }
-        this.configParams = new HashMap<String, String>();
+        configParams = new HashMap<String, String>();
         Enumeration<String> initParamsEnum = config.getInitParameterNames();
         while (initParamsEnum.hasMoreElements()) {
             String paramName = initParamsEnum.nextElement();
             String paramValue = config.getInitParameter(paramName);
             LOG.debug("config param: " + paramName + "=" + paramValue);
-            this.configParams.put(paramName, paramValue);
+            configParams.put(paramName, paramValue);
         }
 
     }
@@ -333,10 +333,10 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
         Enumeration<String> initParamsEnum = config.getServletContext().getInitParameterNames();
         while (initParamsEnum.hasMoreElements()) {
             String paramName = initParamsEnum.nextElement();
-            if (null == this.configParams.get(paramName)) {
+            if (null == configParams.get(paramName)) {
                 String paramValue = config.getServletContext().getInitParameter(paramName);
                 LOG.debug("config param: " + paramName + "=" + paramValue);
-                this.configParams.put(paramName, paramValue);
+                configParams.put(paramName, paramValue);
             }
         }
     }

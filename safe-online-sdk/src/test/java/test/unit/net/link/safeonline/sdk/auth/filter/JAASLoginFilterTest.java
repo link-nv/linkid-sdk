@@ -68,14 +68,14 @@ public class JAASLoginFilterTest {
     public void setUp()
             throws Exception {
 
-        this.testedInstance = new JAASLoginFilter();
+        testedInstance = new JAASLoginFilter();
 
-        this.mockHttpServletRequest = createMock(HttpServletRequest.class);
-        this.mockHttpServletResponse = createMock(HttpServletResponse.class);
-        this.mockFilterChain = createMock(FilterChain.class);
-        this.mockHttpSession = createMock(HttpSession.class);
-        expect(this.mockHttpServletRequest.getSession()).andStubReturn(this.mockHttpSession);
-        this.mockFilterConfig = createMock(FilterConfig.class);
+        mockHttpServletRequest = createMock(HttpServletRequest.class);
+        mockHttpServletResponse = createMock(HttpServletResponse.class);
+        mockFilterChain = createMock(FilterChain.class);
+        mockHttpSession = createMock(HttpSession.class);
+        expect(mockHttpServletRequest.getSession()).andStubReturn(mockHttpSession);
+        mockFilterConfig = createMock(FilterConfig.class);
 
         JaasTestUtils.initJaasLoginModule(TestLoginModule.class);
     }
@@ -145,40 +145,40 @@ public class JAASLoginFilterTest {
         String testPasswordAttributeName = "test-password";
 
         // stubs
-        expect(this.mockFilterConfig.getInitParameter(JAASLoginFilter.LOGIN_CONTEXT_PARAM)).andStubReturn("client-login");
+        expect(mockFilterConfig.getInitParameter(JAASLoginFilter.LOGIN_CONTEXT_PARAM)).andStubReturn("client-login");
 
-        expect(this.mockFilterConfig.getInitParameter(JAASLoginFilter.LOGIN_PATH_PARAM)).andStubReturn(null);
-        expect(this.mockFilterConfig.getInitParameterNames()).andStubReturn(Collections.enumeration(new LinkedList<String>()));
+        expect(mockFilterConfig.getInitParameter(JAASLoginFilter.LOGIN_PATH_PARAM)).andStubReturn(null);
+        expect(mockFilterConfig.getInitParameterNames()).andStubReturn(Collections.enumeration(new LinkedList<String>()));
 
-        expect(this.mockHttpSession.getAttribute(LoginManager.USERID_SESSION_ATTRIBUTE)).andStubReturn(UUID.randomUUID().toString());
-        expect(this.mockHttpSession.getAttribute(testPasswordAttributeName)).andStubReturn("test-password");
+        expect(mockHttpSession.getAttribute(LoginManager.USERID_SESSION_ATTRIBUTE)).andStubReturn(UUID.randomUUID().toString());
+        expect(mockHttpSession.getAttribute(testPasswordAttributeName)).andStubReturn("test-password");
 
-        expect(this.mockHttpServletRequest.getRequestURL()).andStubReturn(new StringBuffer("test-url"));
+        expect(mockHttpServletRequest.getRequestURL()).andStubReturn(new StringBuffer("test-url"));
 
-        expect(this.mockHttpServletRequest.getSession(false)).andStubReturn(this.mockHttpSession);
+        expect(mockHttpServletRequest.getSession(false)).andStubReturn(mockHttpSession);
 
-        expect(this.mockHttpSession.getAttribute("FlushJBossCredentialCache")).andStubReturn(null);
+        expect(mockHttpSession.getAttribute("FlushJBossCredentialCache")).andStubReturn(null);
 
         // expectation
-        this.mockHttpServletRequest.setAttribute(EasyMock.eq(JAASLoginFilter.JAAS_LOGIN_CONTEXT_SESSION_ATTRIB), EasyMock.anyObject());
+        mockHttpServletRequest.setAttribute(EasyMock.eq(JAASLoginFilter.JAAS_LOGIN_CONTEXT_SESSION_ATTRIB), EasyMock.anyObject());
         LoginContext mockLoginContext = createMock(LoginContext.class);
-        expect(this.mockHttpServletRequest.getAttribute(JAASLoginFilter.JAAS_LOGIN_CONTEXT_SESSION_ATTRIB)).andStubReturn(mockLoginContext);
+        expect(mockHttpServletRequest.getAttribute(JAASLoginFilter.JAAS_LOGIN_CONTEXT_SESSION_ATTRIB)).andStubReturn(mockLoginContext);
 
         mockLoginContext.logout();
 
-        this.mockFilterChain.doFilter(this.mockHttpServletRequest, this.mockHttpServletResponse);
+        mockFilterChain.doFilter(mockHttpServletRequest, mockHttpServletResponse);
 
         // prepare
-        replay(this.mockHttpServletRequest, this.mockHttpServletResponse, this.mockFilterChain, this.mockHttpSession, this.mockFilterConfig);
+        replay(mockHttpServletRequest, mockHttpServletResponse, mockFilterChain, mockHttpSession, mockFilterConfig);
         replay(mockLoginContext);
 
         // operate
-        this.testedInstance.init(this.mockFilterConfig);
-        this.testedInstance.doFilter(this.mockHttpServletRequest, this.mockHttpServletResponse, this.mockFilterChain);
-        this.testedInstance.destroy();
+        testedInstance.init(mockFilterConfig);
+        testedInstance.doFilter(mockHttpServletRequest, mockHttpServletResponse, mockFilterChain);
+        testedInstance.destroy();
 
         // verify
-        verify(this.mockHttpServletRequest, this.mockHttpServletResponse, this.mockFilterChain, this.mockHttpSession, this.mockFilterConfig);
+        verify(mockHttpServletRequest, mockHttpServletResponse, mockFilterChain, mockHttpSession, mockFilterConfig);
         verify(mockLoginContext);
     }
 }

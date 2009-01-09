@@ -30,7 +30,7 @@ public class TestClassLoader extends ClassLoader {
 
     public TestClassLoader() {
 
-        this.resources = new HashMap<String, List<URL>>();
+        resources = new HashMap<String, List<URL>>();
     }
 
     @Override
@@ -38,7 +38,7 @@ public class TestClassLoader extends ClassLoader {
             throws IOException {
 
         LOG.debug("get resources for resource name: " + name);
-        List<URL> resourceList = this.resources.get(name);
+        List<URL> resourceList = resources.get(name);
         if (null == resourceList)
             return super.getResources(name);
         LOG.debug("found test resources");
@@ -50,7 +50,7 @@ public class TestClassLoader extends ClassLoader {
     public InputStream getResourceAsStream(String name) {
 
         LOG.debug("getResourceAsStream: " + name);
-        List<URL> resourceList = this.resources.get(name);
+        List<URL> resourceList = resources.get(name);
         if (null == resourceList)
             return super.getResourceAsStream(name);
         for (URL resource : resourceList) {
@@ -69,10 +69,10 @@ public class TestClassLoader extends ClassLoader {
 
         if (null == resource)
             throw new IllegalArgumentException("resource is null");
-        List<URL> resourceList = this.resources.get(name);
+        List<URL> resourceList = resources.get(name);
         if (null == resourceList) {
             resourceList = new LinkedList<URL>();
-            this.resources.put(name, resourceList);
+            resources.put(name, resourceList);
         }
         resourceList.add(resource);
     }

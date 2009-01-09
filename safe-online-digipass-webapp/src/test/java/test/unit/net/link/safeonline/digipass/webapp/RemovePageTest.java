@@ -54,7 +54,7 @@ public class RemovePageTest extends TestCase {
 
         WicketUtil.setUnitTesting(true);
 
-        this.mockDigipassDeviceService = createMock(DigipassDeviceService.class);
+        mockDigipassDeviceService = createMock(DigipassDeviceService.class);
 
         // Initialize MBean's
         JmxTestUtils jmxTestUtils = new JmxTestUtils();
@@ -82,8 +82,8 @@ public class RemovePageTest extends TestCase {
             }
         });
 
-        this.wicket = new WicketTester(new DigipassTestApplication());
-        this.wicket.processRequestCycle();
+        wicket = new WicketTester(new DigipassTestApplication());
+        wicket.processRequestCycle();
 
     }
 
@@ -102,60 +102,60 @@ public class RemovePageTest extends TestCase {
         digipassAttributes.add(digipass);
 
         // MainPage: Verify.
-        this.wicket.assertRenderedPage(MainPage.class);
+        wicket.assertRenderedPage(MainPage.class);
 
-        this.wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID, RegisterPage.class);
-        this.wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID, RemovePage.class);
+        wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID, RegisterPage.class);
+        wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID, RemovePage.class);
 
         // MainPage: Click to remove digipass
-        this.wicket.clickLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID);
+        wicket.clickLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID);
 
         // RemovePage: Verify.
-        this.wicket.assertRenderedPage(RemovePage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RemovePage.GET_FORM_ID, Form.class);
-        this.wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + RemovePage.LIST_FORM_ID);
+        wicket.assertRenderedPage(RemovePage.class);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RemovePage.GET_FORM_ID, Form.class);
+        wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + RemovePage.LIST_FORM_ID);
 
         // setup
-        RemovePage removePage = (RemovePage) this.wicket.getLastRenderedPage();
-        EJBTestUtils.inject(removePage, this.mockDigipassDeviceService);
+        RemovePage removePage = (RemovePage) wicket.getLastRenderedPage();
+        EJBTestUtils.inject(removePage, mockDigipassDeviceService);
 
         // stubs
-        expect(this.mockDigipassDeviceService.getDigipasses(userId, removePage.getLocale())).andStubReturn(digipassAttributes);
+        expect(mockDigipassDeviceService.getDigipasses(userId, removePage.getLocale())).andStubReturn(digipassAttributes);
 
         // prepare
-        replay(this.mockDigipassDeviceService);
+        replay(mockDigipassDeviceService);
 
         // RemovePage: retrieve digipass for user
-        FormTester getForm = this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RemovePage.GET_FORM_ID);
+        FormTester getForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RemovePage.GET_FORM_ID);
         getForm.setValue(RemovePage.LOGIN_FIELD_ID, UUID.randomUUID().toString());
         getForm.submit(RemovePage.VIEW_BUTTON_ID);
 
         // verify
-        verify(this.mockDigipassDeviceService);
+        verify(mockDigipassDeviceService);
 
         // RemovePage: Verify
-        this.wicket.assertRenderedPage(RemovePage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RemovePage.LIST_FORM_ID, Form.class);
-        this.wicket.assertListView(TemplatePage.CONTENT_ID + ":" + RemovePage.LIST_FORM_ID + ":" + RemovePage.DIGIPASSS_LIST_ID,
+        wicket.assertRenderedPage(RemovePage.class);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RemovePage.LIST_FORM_ID, Form.class);
+        wicket.assertListView(TemplatePage.CONTENT_ID + ":" + RemovePage.LIST_FORM_ID + ":" + RemovePage.DIGIPASSS_LIST_ID,
                 digipassAttributes);
 
         // setup
-        EasyMock.reset(this.mockDigipassDeviceService);
+        EasyMock.reset(mockDigipassDeviceService);
 
         // stubs
-        this.mockDigipassDeviceService.remove(serialNumber);
+        mockDigipassDeviceService.remove(serialNumber);
 
         // prepare
-        replay(this.mockDigipassDeviceService);
+        replay(mockDigipassDeviceService);
 
         // RemovePage: remove digipass
-        this.wicket.clickLink(TemplatePage.CONTENT_ID + ":" + RemovePage.LIST_FORM_ID + ":" + RemovePage.DIGIPASSS_LIST_ID + ":0:"
+        wicket.clickLink(TemplatePage.CONTENT_ID + ":" + RemovePage.LIST_FORM_ID + ":" + RemovePage.DIGIPASSS_LIST_ID + ":0:"
                 + RemovePage.REMOVE_LINK_ID);
 
         // verify
-        verify(this.mockDigipassDeviceService);
+        verify(mockDigipassDeviceService);
 
-        this.wicket.assertRenderedPage(MainPage.class);
+        wicket.assertRenderedPage(MainPage.class);
     }
 
     @Test
@@ -167,40 +167,40 @@ public class RemovePageTest extends TestCase {
         DummyNameIdentifierMappingClient.setUserId(userId);
 
         // MainPage: Verify.
-        this.wicket.assertRenderedPage(MainPage.class);
+        wicket.assertRenderedPage(MainPage.class);
 
-        this.wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID, RegisterPage.class);
-        this.wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID, RemovePage.class);
+        wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID, RegisterPage.class);
+        wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID, RemovePage.class);
 
         // MainPage: Click to remove digipass
-        this.wicket.clickLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID);
+        wicket.clickLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID);
 
         // RemovePage: Verify.
-        this.wicket.assertRenderedPage(RemovePage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RemovePage.GET_FORM_ID, Form.class);
-        this.wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + RemovePage.LIST_FORM_ID);
+        wicket.assertRenderedPage(RemovePage.class);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RemovePage.GET_FORM_ID, Form.class);
+        wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + RemovePage.LIST_FORM_ID);
 
         // setup
-        RemovePage removePage = (RemovePage) this.wicket.getLastRenderedPage();
-        EJBTestUtils.inject(removePage, this.mockDigipassDeviceService);
+        RemovePage removePage = (RemovePage) wicket.getLastRenderedPage();
+        EJBTestUtils.inject(removePage, mockDigipassDeviceService);
 
         // stubs
-        expect(this.mockDigipassDeviceService.getDigipasses(userId, removePage.getLocale())).andThrow(new SubjectNotFoundException());
+        expect(mockDigipassDeviceService.getDigipasses(userId, removePage.getLocale())).andThrow(new SubjectNotFoundException());
 
         // prepare
-        replay(this.mockDigipassDeviceService);
+        replay(mockDigipassDeviceService);
 
         // RemovePage: retrieve digipass for user
-        FormTester getForm = this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RemovePage.GET_FORM_ID);
+        FormTester getForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RemovePage.GET_FORM_ID);
         getForm.setValue(RemovePage.LOGIN_FIELD_ID, UUID.randomUUID().toString());
         getForm.submit(RemovePage.VIEW_BUTTON_ID);
 
         // verify
-        verify(this.mockDigipassDeviceService);
+        verify(mockDigipassDeviceService);
 
         // RemovePage: Verify
-        this.wicket.assertRenderedPage(RemovePage.class);
-        this.wicket.assertErrorMessages(new String[] { "errorSubjectNotFound" });
+        wicket.assertRenderedPage(RemovePage.class);
+        wicket.assertErrorMessages(new String[] { "errorSubjectNotFound" });
     }
 
     @Test
@@ -212,39 +212,39 @@ public class RemovePageTest extends TestCase {
         DummyNameIdentifierMappingClient.setUserId(userId);
 
         // MainPage: Verify.
-        this.wicket.assertRenderedPage(MainPage.class);
+        wicket.assertRenderedPage(MainPage.class);
 
-        this.wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID, RegisterPage.class);
-        this.wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID, RemovePage.class);
+        wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID, RegisterPage.class);
+        wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID, RemovePage.class);
 
         // MainPage: Click to remove digipass
-        this.wicket.clickLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID);
+        wicket.clickLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID);
 
         // RemovePage: Verify.
-        this.wicket.assertRenderedPage(RemovePage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RemovePage.GET_FORM_ID, Form.class);
-        this.wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + RemovePage.LIST_FORM_ID);
+        wicket.assertRenderedPage(RemovePage.class);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RemovePage.GET_FORM_ID, Form.class);
+        wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + RemovePage.LIST_FORM_ID);
 
         // setup
-        RemovePage removePage = (RemovePage) this.wicket.getLastRenderedPage();
-        EJBTestUtils.inject(removePage, this.mockDigipassDeviceService);
+        RemovePage removePage = (RemovePage) wicket.getLastRenderedPage();
+        EJBTestUtils.inject(removePage, mockDigipassDeviceService);
 
         // stubs
-        expect(this.mockDigipassDeviceService.getDigipasses(userId, removePage.getLocale())).andStubReturn(new LinkedList<AttributeDO>());
+        expect(mockDigipassDeviceService.getDigipasses(userId, removePage.getLocale())).andStubReturn(new LinkedList<AttributeDO>());
 
         // prepare
-        replay(this.mockDigipassDeviceService);
+        replay(mockDigipassDeviceService);
 
         // RemovePage: retrieve digipass for user
-        FormTester getForm = this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RemovePage.GET_FORM_ID);
+        FormTester getForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RemovePage.GET_FORM_ID);
         getForm.setValue(RemovePage.LOGIN_FIELD_ID, UUID.randomUUID().toString());
         getForm.submit(RemovePage.VIEW_BUTTON_ID);
 
         // verify
-        verify(this.mockDigipassDeviceService);
+        verify(mockDigipassDeviceService);
 
         // RemovePage: Verify
-        this.wicket.assertRenderedPage(RemovePage.class);
-        this.wicket.assertErrorMessages(new String[] { "errorNoDeviceRegistrationsFound" });
+        wicket.assertRenderedPage(RemovePage.class);
+        wicket.assertErrorMessages(new String[] { "errorNoDeviceRegistrationsFound" });
     }
 }

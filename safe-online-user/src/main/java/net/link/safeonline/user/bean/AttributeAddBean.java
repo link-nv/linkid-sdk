@@ -74,11 +74,11 @@ public class AttributeAddBean implements AttributeAdd {
 
         LOG.debug("commit");
         try {
-            this.identityService.addAttribute(this.attributeAddContext);
+            identityService.addAttribute(attributeAddContext);
         } catch (PermissionDeniedException e) {
             String msg = "user not allowed to edit value for attribute";
             LOG.error(msg);
-            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorUserNotAllowedToEditAttribute");
+            facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorUserNotAllowedToEditAttribute");
             return null;
         }
         return "success";
@@ -89,6 +89,6 @@ public class AttributeAddBean implements AttributeAdd {
     public void attributeEditContextFactory()
             throws AttributeTypeNotFoundException {
 
-        this.attributeAddContext = this.identityService.getAttributeTemplate(this.selectedAttribute);
+        attributeAddContext = identityService.getAttributeTemplate(selectedAttribute);
     }
 }

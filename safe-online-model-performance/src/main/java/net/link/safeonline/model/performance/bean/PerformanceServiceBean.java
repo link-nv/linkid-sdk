@@ -36,13 +36,13 @@ public class PerformanceServiceBean implements PerformanceServiceRemote {
     public X509Certificate getCertificate() {
 
         LOG.debug("get certificate");
-        return this.certificate;
+        return certificate;
     }
 
     public PrivateKey getPrivateKey() {
 
         LOG.debug("get private key");
-        return this.privateKey;
+        return privateKey;
     }
 
     @PostConstruct
@@ -50,7 +50,7 @@ public class PerformanceServiceBean implements PerformanceServiceRemote {
 
         LOG.debug("post construct callback");
         PrivateKeyEntry perfPrivateKeyEntry = PerformanceKeyStoreUtils.getPrivateKeyEntry();
-        this.privateKey = perfPrivateKeyEntry.getPrivateKey();
-        this.certificate = (X509Certificate) perfPrivateKeyEntry.getCertificate();
+        privateKey = perfPrivateKeyEntry.getPrivateKey();
+        certificate = (X509Certificate) perfPrivateKeyEntry.getCertificate();
     }
 }

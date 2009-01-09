@@ -80,8 +80,8 @@ public class ExecutionEntity {
 
     public ExecutionEntity() {
 
-        this.profiles = new TreeSet<DriverProfileEntity>();
-        this.dirtySpeed = false;
+        profiles = new TreeSet<DriverProfileEntity>();
+        dirtySpeed = false;
     }
 
     public ExecutionEntity(String scenarioName, Integer agents, int workers, Date startTime, long duration, String hostname, Boolean ssl) {
@@ -94,7 +94,7 @@ public class ExecutionEntity {
         this.startTime = startTime;
         this.duration = duration;
         this.hostname = hostname;
-        this.useSsl = ssl;
+        useSsl = ssl;
     }
 
     /**
@@ -102,7 +102,7 @@ public class ExecutionEntity {
      */
     public Double getChartingProgress() {
 
-        return this.chartingProgress;
+        return chartingProgress;
     }
 
     /**
@@ -120,11 +120,11 @@ public class ExecutionEntity {
     @SuppressWarnings("unchecked")
     public Map<String, byte[][]> getCharts() {
 
-        if (this.charts == null)
+        if (charts == null)
             return null;
 
         try {
-            ByteArrayInputStream bytes = new ByteArrayInputStream(this.charts);
+            ByteArrayInputStream bytes = new ByteArrayInputStream(charts);
             ObjectInputStream deserializer = new ObjectInputStream(bytes);
 
             return (Map<String, byte[][]>) deserializer.readObject();
@@ -164,7 +164,7 @@ public class ExecutionEntity {
      */
     public String getScenarioName() {
 
-        return this.scenarioName;
+        return scenarioName;
     }
 
     /**
@@ -172,7 +172,7 @@ public class ExecutionEntity {
      */
     public String getHostname() {
 
-        return this.hostname;
+        return hostname;
     }
 
     /**
@@ -180,7 +180,7 @@ public class ExecutionEntity {
      */
     public Boolean isSsl() {
 
-        return this.useSsl;
+        return useSsl;
     }
 
     /**
@@ -188,7 +188,7 @@ public class ExecutionEntity {
      */
     public Set<DriverProfileEntity> getProfiles() {
 
-        return this.profiles;
+        return profiles;
     }
 
     /**
@@ -196,7 +196,7 @@ public class ExecutionEntity {
      */
     public int getAgents() {
 
-        return this.agents;
+        return agents;
     }
 
     /**
@@ -204,7 +204,7 @@ public class ExecutionEntity {
      */
     public int getWorkers() {
 
-        return this.workers;
+        return workers;
     }
 
     /**
@@ -212,7 +212,7 @@ public class ExecutionEntity {
      */
     public Date getStartTime() {
 
-        return this.startTime;
+        return startTime;
     }
 
     /**
@@ -220,7 +220,7 @@ public class ExecutionEntity {
      */
     public long getDuration() {
 
-        return this.duration;
+        return duration;
     }
 
     /**
@@ -231,14 +231,14 @@ public class ExecutionEntity {
      */
     public Double getSpeed() {
 
-        if (this.dirtySpeed || this.speed == null) {
+        if (dirtySpeed || speed == null) {
             try {
                 ((ExecutionService) new InitialContext().lookup(ExecutionService.JNDI_BINDING)).updateSpeed(this);
             } catch (NamingException e) {
             }
         }
 
-        return this.speed;
+        return speed;
     }
 
     /**
@@ -248,7 +248,7 @@ public class ExecutionEntity {
     public void setSpeed(Double speed) {
 
         this.speed = speed;
-        this.dirtySpeed = false;
+        dirtySpeed = false;
     }
 
     /**
@@ -256,6 +256,6 @@ public class ExecutionEntity {
      */
     public void dirtySpeed() {
 
-        this.dirtySpeed = true;
+        dirtySpeed = true;
     }
 }

@@ -72,12 +72,12 @@ public class ConfigItemEntity implements Serializable {
     public ConfigItemEntity(String name, String valueType, boolean multipleChoice, ConfigGroupEntity configGroup) {
 
         this.name = name;
-        this.values = new LinkedList<ConfigItemValueEntity>();
-        this.valueIndex = 0;
+        values = new LinkedList<ConfigItemValueEntity>();
+        valueIndex = 0;
         this.valueType = valueType;
         this.multipleChoice = multipleChoice;
         this.configGroup = configGroup;
-        this.pk = new ConfigItemPK(configGroup.getName(), name);
+        pk = new ConfigItemPK(configGroup.getName(), name);
     }
 
     @EmbeddedId
@@ -85,7 +85,7 @@ public class ConfigItemEntity implements Serializable {
             @AttributeOverride(name = ConfigItemPK.PK_NAME, column = @Column(name = ITEM_NAME_COLUMN_NAME)) })
     public ConfigItemPK getPk() {
 
-        return this.pk;
+        return pk;
     }
 
     public void setPk(ConfigItemPK pk) {
@@ -97,7 +97,7 @@ public class ConfigItemEntity implements Serializable {
     @JoinColumn(name = GROUP_COLUMN_NAME, insertable = false, updatable = false)
     public ConfigGroupEntity getConfigGroup() {
 
-        return this.configGroup;
+        return configGroup;
     }
 
     public void setConfigGroup(ConfigGroupEntity configGroup) {
@@ -108,7 +108,7 @@ public class ConfigItemEntity implements Serializable {
     @Column(name = ITEM_NAME_COLUMN_NAME, insertable = false, updatable = false)
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -119,7 +119,7 @@ public class ConfigItemEntity implements Serializable {
     @OneToMany(mappedBy = "configItem", fetch = FetchType.EAGER)
     public List<ConfigItemValueEntity> getValues() {
 
-        return this.values;
+        return values;
     }
 
     public void setValues(List<ConfigItemValueEntity> values) {
@@ -130,14 +130,14 @@ public class ConfigItemEntity implements Serializable {
     @Transient
     public String getValue() {
 
-        if (this.values.isEmpty())
+        if (values.isEmpty())
             return null;
 
-        if (null == this.value) {
-            this.value = this.values.get(this.valueIndex).getValue();
+        if (null == value) {
+            value = values.get(valueIndex).getValue();
         }
 
-        return this.value;
+        return value;
     }
 
     @Transient
@@ -148,7 +148,7 @@ public class ConfigItemEntity implements Serializable {
 
     public int getValueIndex() {
 
-        return this.valueIndex;
+        return valueIndex;
     }
 
     public void setValueIndex(int valueIndex) {
@@ -158,7 +158,7 @@ public class ConfigItemEntity implements Serializable {
 
     public String getValueType() {
 
-        return this.valueType;
+        return valueType;
     }
 
     public void setValueType(String valueType) {
@@ -168,7 +168,7 @@ public class ConfigItemEntity implements Serializable {
 
     public boolean isMultipleChoice() {
 
-        return this.multipleChoice;
+        return multipleChoice;
     }
 
     public void setMultipleChoice(boolean multipleChoice) {
@@ -179,7 +179,7 @@ public class ConfigItemEntity implements Serializable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("pk", this.pk).toString();
+        return new ToStringBuilder(this).append("pk", pk).toString();
     }
 
     @Override
@@ -192,13 +192,13 @@ public class ConfigItemEntity implements Serializable {
         if (false == obj instanceof ConfigItemEntity)
             return false;
         ConfigItemEntity rhs = (ConfigItemEntity) obj;
-        return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
+        return new EqualsBuilder().append(pk, rhs.pk).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.pk).toHashCode();
+        return new HashCodeBuilder().append(pk).toHashCode();
     }
 
 

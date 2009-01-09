@@ -59,21 +59,21 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
 
         LOG.debug("authenticate \"" + userId + "\"");
 
-        SubjectEntity subject = this.subjectService.getSubject(userId);
+        SubjectEntity subject = subjectService.getSubject(userId);
 
-        if (this.passwordManager.isDisabled(subject))
+        if (passwordManager.isDisabled(subject))
             throw new DeviceDisabledException();
 
         boolean validationResult = false;
         try {
-            validationResult = this.passwordManager.validatePassword(subject, password);
+            validationResult = passwordManager.validatePassword(subject, password);
         } catch (DeviceNotFoundException e) {
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, subject.getUserId(), "password device not found");
+            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, subject.getUserId(), "password device not found");
             throw e;
         }
 
         if (!validationResult) {
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, subject.getUserId(), "incorrect password");
+            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, subject.getUserId(), "incorrect password");
             return null;
         }
         return subject.getUserId();
@@ -83,14 +83,14 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
             throws SubjectNotFoundException, DeviceNotFoundException {
 
         LOG.debug("register password for \"" + userId + "\"");
-        SubjectEntity subject = this.subjectService.getSubject(userId);
+        SubjectEntity subject = subjectService.getSubject(userId);
         try {
-            this.passwordManager.setPassword(subject, password);
+            passwordManager.setPassword(subject, password);
         } catch (PermissionDeniedException e) {
             throw new EJBException("Not allowed to set password");
         }
 
-        this.historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_REGISTRATION, Collections.singletonMap(
+        historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_REGISTRATION, Collections.singletonMap(
                 SafeOnlineConstants.DEVICE_PROPERTY, PasswordConstants.PASSWORD_DEVICE_ID));
 
     }
@@ -99,11 +99,11 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
             throws DeviceNotFoundException, SubjectNotFoundException {
 
         LOG.debug("remove password for " + userId);
-        SubjectEntity subject = this.subjectService.getSubject(userId);
+        SubjectEntity subject = subjectService.getSubject(userId);
 
-        this.passwordManager.removePassword(subject);
+        passwordManager.removePassword(subject);
 
-        this.historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_REMOVAL, Collections.singletonMap(
+        historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_REMOVAL, Collections.singletonMap(
                 SafeOnlineConstants.DEVICE_PROPERTY, PasswordConstants.PASSWORD_DEVICE_ID));
 
     }
@@ -112,11 +112,11 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
             throws PermissionDeniedException, DeviceNotFoundException, SubjectNotFoundException {
 
         LOG.debug("update password for \"" + userId + "\"");
-        SubjectEntity subject = this.subjectService.getSubject(userId);
+        SubjectEntity subject = subjectService.getSubject(userId);
 
-        this.passwordManager.changePassword(subject, oldPassword, newPassword);
+        passwordManager.changePassword(subject, oldPassword, newPassword);
 
-        this.historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_UPDATE, Collections.singletonMap(
+        historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_UPDATE, Collections.singletonMap(
                 SafeOnlineConstants.DEVICE_PROPERTY, PasswordConstants.PASSWORD_DEVICE_ID));
 
     }
@@ -127,12 +127,12 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
     public void disable(String userId)
             throws DeviceNotFoundException, SubjectNotFoundException {
 
-        SubjectEntity subject = this.subjectService.getSubject(userId);
+        SubjectEntity subject = subjectService.getSubject(userId);
 
         LOG.debug("disable password for \"" + subject.getUserId() + "\"");
-        this.passwordManager.disablePassword(subject, true);
+        passwordManager.disablePassword(subject, true);
 
-        this.historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_DISABLE, Collections.singletonMap(
+        historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_DISABLE, Collections.singletonMap(
                 SafeOnlineConstants.DEVICE_PROPERTY, PasswordConstants.PASSWORD_DEVICE_ID));
     }
 
@@ -142,23 +142,23 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
     public void enable(String userId, String password)
             throws DeviceNotFoundException, SubjectNotFoundException, PermissionDeniedException {
 
-        SubjectEntity subject = this.subjectService.getSubject(userId);
+        SubjectEntity subject = subjectService.getSubject(userId);
 
-        if (!this.passwordManager.validatePassword(subject, password))
+        if (!passwordManager.validatePassword(subject, password))
             throw new PermissionDeniedException("Invalid password");
 
         LOG.debug("enable password for \"" + subject.getUserId() + "\"");
-        this.passwordManager.disablePassword(subject, false);
+        passwordManager.disablePassword(subject, false);
 
-        this.historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_ENABLE, Collections.singletonMap(
+        historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_ENABLE, Collections.singletonMap(
                 SafeOnlineConstants.DEVICE_PROPERTY, PasswordConstants.PASSWORD_DEVICE_ID));
     }
 
     public boolean isPasswordConfigured(String userId)
             throws SubjectNotFoundException {
 
-        SubjectEntity subject = this.subjectService.getSubject(userId);
+        SubjectEntity subject = subjectService.getSubject(userId);
 
-        return this.passwordManager.isPasswordConfigured(subject);
+        return passwordManager.isPasswordConfigured(subject);
     }
 }

@@ -118,20 +118,20 @@ public class AddAttributeBean implements AddAttribute {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getCategory() {
 
-        return this.category;
+        return category;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String next() {
 
-        this.log.debug("next: name #0, category #1", this.name, this.category);
-        return this.category;
+        log.debug("next: name #0, category #1", name, category);
+        return category;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -149,7 +149,7 @@ public class AddAttributeBean implements AddAttribute {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getNode() {
 
-        return this.node;
+        return node;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -161,7 +161,7 @@ public class AddAttributeBean implements AddAttribute {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getPlugin() {
 
-        return this.plugin;
+        return plugin;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -173,7 +173,7 @@ public class AddAttributeBean implements AddAttribute {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getPluginConfiguration() {
 
-        return this.pluginConfiguration;
+        return pluginConfiguration;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -222,7 +222,7 @@ public class AddAttributeBean implements AddAttribute {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public List<SelectItem> nodeFactory() {
 
-        List<NodeEntity> nodeList = this.nodeService.listNodes();
+        List<NodeEntity> nodeList = nodeService.listNodes();
         List<SelectItem> nodes = ConvertorUtil.convert(nodeList, new OlasEntitySelectItemConvertor());
         return nodes;
     }
@@ -232,7 +232,7 @@ public class AddAttributeBean implements AddAttribute {
     public List<SelectItem> pluginFactory() {
 
         List<SelectItem> plugins = new LinkedList<SelectItem>();
-        Object[] pluginServices = this.osgiStartable.getPluginServices();
+        Object[] pluginServices = osgiStartable.getPluginServices();
         if (null == pluginServices)
             return plugins;
         for (Object pluginService : pluginServices) {
@@ -255,7 +255,7 @@ public class AddAttributeBean implements AddAttribute {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getType() {
 
-        return this.type;
+        return type;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -267,14 +267,14 @@ public class AddAttributeBean implements AddAttribute {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String typeNext() {
 
-        this.log.debug("type next");
+        log.debug("type next");
         return "next";
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public boolean isUserVisible() {
 
-        return this.userVisible;
+        return userVisible;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -286,7 +286,7 @@ public class AddAttributeBean implements AddAttribute {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public boolean isUserEditable() {
 
-        return this.userEditable;
+        return userEditable;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -298,11 +298,11 @@ public class AddAttributeBean implements AddAttribute {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public List<AttributeTypeEntity> getSourceMemberAttributes() {
 
-        this.sourceMemberAttributes = this.attributeTypeService.listAvailableMemberAttributeTypes();
-        if (null != this.selectedMemberAttributes) {
-            this.sourceMemberAttributes.removeAll(this.selectedMemberAttributes);
+        sourceMemberAttributes = attributeTypeService.listAvailableMemberAttributeTypes();
+        if (null != selectedMemberAttributes) {
+            sourceMemberAttributes.removeAll(selectedMemberAttributes);
         }
-        return this.sourceMemberAttributes;
+        return sourceMemberAttributes;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -314,15 +314,15 @@ public class AddAttributeBean implements AddAttribute {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public List<AttributeTypeEntity> getTargetMemberAttributes() {
 
-        return this.selectedMemberAttributes;
+        return selectedMemberAttributes;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public void setTargetMemberAttributes(List<AttributeTypeEntity> targetMemberAttributes) {
 
-        this.selectedMemberAttributes = targetMemberAttributes;
-        for (AttributeTypeEntity targetMemberAttribute : this.selectedMemberAttributes) {
-            this.log.debug("set target: " + targetMemberAttribute.getName());
+        selectedMemberAttributes = targetMemberAttributes;
+        for (AttributeTypeEntity targetMemberAttribute : selectedMemberAttributes) {
+            log.debug("set target: " + targetMemberAttribute.getName());
         }
     }
 
@@ -336,47 +336,47 @@ public class AddAttributeBean implements AddAttribute {
     public String add()
             throws NodeNotFoundException, ExistingAttributeTypeException, AttributeTypeNotFoundException, AttributeTypeDefinitionException {
 
-        this.log.debug("add");
+        log.debug("add");
 
         AttributeTypeEntity attributeType = new AttributeTypeEntity();
-        attributeType.setName(this.name);
-        if (compoundType.equals(this.category)) {
+        attributeType.setName(name);
+        if (compoundType.equals(category)) {
             attributeType.setMultivalued(true);
             attributeType.setType(DatatypeType.COMPOUNDED);
         } else {
-            if (multiValuedType.equals(this.category)) {
+            if (multiValuedType.equals(category)) {
                 attributeType.setMultivalued(true);
             }
-            attributeType.setType(DatatypeType.valueOf(this.type));
+            attributeType.setType(DatatypeType.valueOf(type));
         }
-        attributeType.setUserEditable(this.userEditable);
-        attributeType.setUserVisible(this.userVisible);
+        attributeType.setUserEditable(userEditable);
+        attributeType.setUserVisible(userVisible);
 
-        if (this.locationOption.equals(olasAttribute)) {
-            NodeEntity olasNode = this.nodeService.getNode(this.node);
+        if (locationOption.equals(olasAttribute)) {
+            NodeEntity olasNode = nodeService.getNode(node);
             attributeType.setLocation(olasNode);
         } else {
-            attributeType.setPluginName(this.plugin);
-            attributeType.setPluginConfiguration(this.pluginConfiguration);
+            attributeType.setPluginName(plugin);
+            attributeType.setPluginConfiguration(pluginConfiguration);
         }
-        attributeType.setAttributeCacheTimeoutMillis(this.cacheTimeout);
+        attributeType.setAttributeCacheTimeoutMillis(cacheTimeout);
 
-        if (null != this.memberAccessControlAttributes) {
+        if (null != memberAccessControlAttributes) {
             int memberSequence = 0;
-            for (MemberAccessControl memberAccessControlAttribute : this.memberAccessControlAttributes) {
-                this.log.debug("selected member attribute: " + memberAccessControlAttribute.getName());
+            for (MemberAccessControl memberAccessControlAttribute : memberAccessControlAttributes) {
+                log.debug("selected member attribute: " + memberAccessControlAttribute.getName());
                 attributeType.addMember(memberAccessControlAttribute.getAttributeType(), memberSequence,
                         memberAccessControlAttribute.isRequired());
                 memberSequence += 1;
             }
         }
 
-        this.attributeTypeService.add(attributeType);
+        attributeTypeService.add(attributeType);
 
         /*
          * Reload the attribute type list here.
          */
-        this.attributeTypeList = this.attributeTypeService.listAttributeTypes();
+        attributeTypeList = attributeTypeService.listAttributeTypes();
 
         return "success";
     }
@@ -391,7 +391,7 @@ public class AddAttributeBean implements AddAttribute {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String membersNext() {
 
-        this.log.debug("members next");
+        log.debug("members next");
         memberAccessControlAttributesFactory();
         return "next";
     }
@@ -417,12 +417,12 @@ public class AddAttributeBean implements AddAttribute {
 
         public String getName() {
 
-            return this.attributeType.getName();
+            return attributeType.getName();
         }
 
         public boolean isRequired() {
 
-            return this.required;
+            return required;
         }
 
         public void setRequired(boolean required) {
@@ -432,7 +432,7 @@ public class AddAttributeBean implements AddAttribute {
 
         public AttributeTypeEntity getAttributeType() {
 
-            return this.attributeType;
+            return attributeType;
         }
     }
 
@@ -441,26 +441,26 @@ public class AddAttributeBean implements AddAttribute {
     @Factory(MEMBER_ACCESS_CONTROL_ATTRIBUTES)
     public void memberAccessControlAttributesFactory() {
 
-        this.log.debug("memberAccessControlAttributesFactory");
-        this.memberAccessControlAttributes = new LinkedList<MemberAccessControl>();
-        if (null == this.selectedMemberAttributes)
+        log.debug("memberAccessControlAttributesFactory");
+        memberAccessControlAttributes = new LinkedList<MemberAccessControl>();
+        if (null == selectedMemberAttributes)
             return;
-        for (AttributeTypeEntity selectedMemberAttribute : this.selectedMemberAttributes) {
-            this.memberAccessControlAttributes.add(new MemberAccessControl(selectedMemberAttribute));
+        for (AttributeTypeEntity selectedMemberAttribute : selectedMemberAttributes) {
+            memberAccessControlAttributes.add(new MemberAccessControl(selectedMemberAttribute));
         }
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String membersAccessControlNext() {
 
-        this.log.debug("members access control next");
+        log.debug("members access control next");
         return "next";
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getLocationOption() {
 
-        return this.locationOption;
+        return locationOption;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -472,16 +472,16 @@ public class AddAttributeBean implements AddAttribute {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String acNext() {
 
-        this.log.debug("ac next");
+        log.debug("ac next");
         return "next";
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String locationNext() {
 
-        this.log.debug("location next: " + this.locationOption);
+        log.debug("location next: " + locationOption);
         pluginFactory();
-        return this.locationOption;
+        return locationOption;
     }
 
     /**
@@ -490,7 +490,7 @@ public class AddAttributeBean implements AddAttribute {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public Long getCacheTimeout() {
 
-        return this.cacheTimeout;
+        return cacheTimeout;
     }
 
     /**

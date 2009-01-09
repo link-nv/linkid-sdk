@@ -62,10 +62,10 @@ public class AuthenticationServlet extends AbstractInjectionServlet {
             String pin = request.getParameter("pin");
 
             LOG.debug("authenticating imei: " + imei + " with pin: " + pin);
-            String deviceUserId = this.optionDeviceService.authenticate(imei, pin);
+            String deviceUserId = optionDeviceService.authenticate(imei, pin);
 
             authenticationContext.setUserId(deviceUserId);
-            authenticationContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());
+            authenticationContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
 
         } catch (SubjectNotFoundException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

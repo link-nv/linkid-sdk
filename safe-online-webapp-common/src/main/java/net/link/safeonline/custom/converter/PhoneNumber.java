@@ -37,7 +37,7 @@ public class PhoneNumber implements Serializable {
 
     public String getNumber() {
 
-        return this.number;
+        return number;
     }
 
     public void setNumber(String number) {
@@ -51,6 +51,6 @@ public class PhoneNumber implements Serializable {
     @Override
     public String toString() {
 
-        return this.number;
+        return number;
     }
 }

@@ -54,8 +54,8 @@ public class PlayTest extends AbstractDataTest {
     @Override
     protected void configure() {
 
-        this.DB_HOST = "sebeco-dev-12";
-        this.SHOW_SQL = false;
+        DB_HOST = "sebeco-dev-12";
+        SHOW_SQL = false;
     }
 
     /**
@@ -65,14 +65,14 @@ public class PlayTest extends AbstractDataTest {
     public PlayTest() throws Exception {
 
         // ExecutionEntity execution = getLatestExecution();
-        ExecutionEntity execution = this.executionService.getExecution(new Date(1204796106 * 1000l));
+        ExecutionEntity execution = executionService.getExecution(new Date(1204796106 * 1000l));
 
-        DriverProfileEntity profile = this.executionService.getProfiles(execution.getStartTime()).iterator().next();
+        DriverProfileEntity profile = executionService.getProfiles(execution.getStartTime()).iterator().next();
 
         long start = System.currentTimeMillis();
-        long dataDuration = (Long) this.em.createNamedQuery(ProfileDataEntity.getExecutionDuration).setParameter("profile", profile)
+        long dataDuration = (Long) em.createNamedQuery(ProfileDataEntity.getExecutionDuration).setParameter("profile", profile)
                                           .getSingleResult();
-        long dataStart = (Long) this.em.createNamedQuery(ProfileDataEntity.getExecutionStart).setParameter("profile", profile)
+        long dataStart = (Long) em.createNamedQuery(ProfileDataEntity.getExecutionStart).setParameter("profile", profile)
                                        .getSingleResult();
         dataStart = 1204796453397l;
 
@@ -91,7 +91,7 @@ public class PlayTest extends AbstractDataTest {
 
         ScenarioTimingEntity timing;
 
-        List<Object> ttt = this.em.createQuery(
+        List<Object> ttt = em.createQuery(
                 "SELECT t.startTime, t.agentDuration, t.olasDuration" + "    FROM ProfileDataEntity d" + "        JOIN d.scenarioTiming t"
                         + "        JOIN d.measurements m" + "    WHERE d.profile = :profile" + "        AND t.startTime >= :start"
                         + "        AND t.startTime < :stop").setParameter("profile", profile).setParameter("start",
@@ -100,7 +100,7 @@ public class PlayTest extends AbstractDataTest {
         QuickTest.printResults("Timings", ttt);
 
         try {
-            timing = (ScenarioTimingEntity) this.em.createNamedQuery(ScenarioTimingEntity.createAverage).setParameter("execution",
+            timing = (ScenarioTimingEntity) em.createNamedQuery(ScenarioTimingEntity.createAverage).setParameter("execution",
                     profile.getExecution()).setParameter("start", dataStart + point * period).setParameter("stop",
                     dataStart + (point + 1) * period).getSingleResult();
         } catch (NoResultException e) {
@@ -112,7 +112,7 @@ public class PlayTest extends AbstractDataTest {
         // start));
         // start = System.currentTimeMillis();
 
-        ttt = this.em.createQuery(
+        ttt = em.createQuery(
                 "SELECT d.scenarioTiming.startTime, d.scenarioTiming.agentDuration, d.scenarioTiming.olasDuration, m.measurement, m.duration"
                         + "    FROM ProfileDataEntity d          " + "        JOIN d.measurements m         "
                         + "    WHERE d.profile = :profile        " + "        AND d.scenarioTiming.startTime >= :start      "
@@ -122,7 +122,7 @@ public class PlayTest extends AbstractDataTest {
 
         QuickTest.printResults("Data", ttt);
 
-        List<MeasurementEntity> measurements = this.em.createNamedQuery(ProfileDataEntity.createAverage).setParameter("profile", profile)
+        List<MeasurementEntity> measurements = em.createNamedQuery(ProfileDataEntity.createAverage).setParameter("profile", profile)
                                                       .setParameter("start", dataStart + point * period).setParameter("stop",
                                                               dataStart + (point + 1) * period).getResultList();
 

@@ -21,7 +21,7 @@ public class DERInteger implements DEREncodable {
 
     public DERInteger(int value) {
 
-        this.bytes = BigInteger.valueOf(value).toByteArray();
+        bytes = BigInteger.valueOf(value).toByteArray();
     }
 
     public byte[] getEncoded() {
@@ -29,8 +29,8 @@ public class DERInteger implements DEREncodable {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         out.write(INTEGER);
         try {
-            DERUtils.writeLength(this.bytes.length, out);
-            out.write(this.bytes);
+            DERUtils.writeLength(bytes.length, out);
+            out.write(bytes);
         } catch (IOException e) {
             throw new RuntimeException("IO error: " + e.getMessage());
         }

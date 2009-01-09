@@ -71,16 +71,16 @@ public class TaskHistoryEntity implements Serializable {
 
         this.task = task;
         this.message = message;
-        this.executionDate = startDate;
+        executionDate = startDate;
         this.result = result;
-        this.executionTime = endDate.getTime() - startDate.getTime();
+        executionTime = endDate.getTime() - startDate.getTime();
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public long getId() {
 
-        return this.id;
+        return id;
     }
 
     public void setId(long id) {
@@ -90,7 +90,7 @@ public class TaskHistoryEntity implements Serializable {
 
     public Date getExecutionDate() {
 
-        return this.executionDate;
+        return executionDate;
     }
 
     public void setExecutionDate(Date executionDate) {
@@ -100,7 +100,7 @@ public class TaskHistoryEntity implements Serializable {
 
     public long getExecutionTime() {
 
-        return this.executionTime;
+        return executionTime;
     }
 
     public void setExecutionTime(long executionTime) {
@@ -110,7 +110,7 @@ public class TaskHistoryEntity implements Serializable {
 
     public String getMessage() {
 
-        return this.message;
+        return message;
     }
 
     public void setMessage(String message) {
@@ -120,7 +120,7 @@ public class TaskHistoryEntity implements Serializable {
 
     public boolean isResult() {
 
-        return this.result;
+        return result;
     }
 
     public void setResult(boolean result) {
@@ -131,7 +131,7 @@ public class TaskHistoryEntity implements Serializable {
     @ManyToOne
     public TaskEntity getTask() {
 
-        return this.task;
+        return task;
     }
 
     public void setTask(TaskEntity task) {
@@ -142,8 +142,8 @@ public class TaskHistoryEntity implements Serializable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("id", this.id).append("task", this.task.getName()).append("result", this.result).append(
-                "message", this.message).append("date", this.executionDate).append("time", this.executionTime).toString();
+        return new ToStringBuilder(this).append("id", id).append("task", task.getName()).append("result", result).append(
+                "message", message).append("date", executionDate).append("time", executionTime).toString();
     }
 
     @Override
@@ -156,13 +156,13 @@ public class TaskHistoryEntity implements Serializable {
         if (false == obj instanceof TaskHistoryEntity)
             return false;
         TaskHistoryEntity rhs = (TaskHistoryEntity) obj;
-        return new EqualsBuilder().append(this.id, rhs.id).isEquals();
+        return new EqualsBuilder().append(id, rhs.id).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.id).toHashCode();
+        return new HashCodeBuilder().append(id).toHashCode();
     }
 
 

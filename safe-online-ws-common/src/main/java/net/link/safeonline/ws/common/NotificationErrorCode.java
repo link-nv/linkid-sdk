@@ -42,13 +42,13 @@ public enum NotificationErrorCode {
 
     public String getErrorCode() {
 
-        return this.errorCode;
+        return errorCode;
     }
 
     @Override
     public String toString() {
 
-        return this.errorCode;
+        return errorCode;
     }
 
     public static NotificationErrorCode getNotificationErrorCode(String errorCode) {

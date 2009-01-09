@@ -35,15 +35,15 @@ public class TicketServiceBeanTest extends TestCase {
 
         super.setUp();
 
-        this.entityTestManager = new EntityTestManager();
-        this.entityTestManager.setUp(Ticket.class, User.class);
+        entityTestManager = new EntityTestManager();
+        entityTestManager.setUp(Ticket.class, User.class);
     }
 
     @Override
     protected void tearDown()
             throws Exception {
 
-        this.entityTestManager.tearDown();
+        entityTestManager.tearDown();
         super.tearDown();
     }
 
@@ -59,7 +59,7 @@ public class TicketServiceBeanTest extends TestCase {
         Date beginDate = new Date();
         Date endDate = new DateTime(beginDate).plusMonths(1).toDate();
 
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
         TicketService ticketService = EJBTestUtils.newInstance(TicketServiceBean.class, null, entityManager);
 
         User user = new User(testUserId, testUser, testNrn);
@@ -87,7 +87,7 @@ public class TicketServiceBeanTest extends TestCase {
         Date beginDate = now.minusMonths(2).toDate();
         Date endDate = new DateTime(beginDate).plusMonths(1).toDate();
 
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
         TicketService ticketService = EJBTestUtils.newInstance(TicketServiceBean.class, null, entityManager);
 
         User user = new User(testUserId, testUser, testNrn);
@@ -114,7 +114,7 @@ public class TicketServiceBeanTest extends TestCase {
         Date beginDate = new Date();
         Date endDate = new DateTime(beginDate).plusMonths(1).toDate();
 
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
         TicketService ticketService = EJBTestUtils.newInstance(TicketServiceBean.class, null, entityManager);
 
         User user = new User(testUserId, testUser, testNrn);
@@ -139,7 +139,7 @@ public class TicketServiceBeanTest extends TestCase {
         String testUserId = UUID.randomUUID().toString();
         String testUser = "test-user";
 
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
         TicketService ticketService = EJBTestUtils.newInstance(TicketServiceBean.class, null, entityManager);
 
         User user = new User(testUserId, testUser, testNrn);

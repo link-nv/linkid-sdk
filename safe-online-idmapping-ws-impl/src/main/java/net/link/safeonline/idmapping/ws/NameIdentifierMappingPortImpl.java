@@ -110,7 +110,7 @@ public class NameIdentifierMappingPortImpl implements NameIdentifierMappingPort 
 
         CertificateDomain certificateDomain;
         try {
-            certificateDomain = CertificateValidatorHandler.getCertificateDomain(this.context);
+            certificateDomain = CertificateValidatorHandler.getCertificateDomain(context);
         } catch (CertificateDomainException e) {
             LOG.debug("certificate domain exception: " + e.getMessage());
             NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.REQUEST_DENIED);
@@ -120,9 +120,9 @@ public class NameIdentifierMappingPortImpl implements NameIdentifierMappingPort 
         String userId;
         try {
             if (certificateDomain.equals(CertificateDomain.APPLICATION)) {
-                userId = this.applicationIdentifierMappingService.getApplicationUserId(username);
+                userId = applicationIdentifierMappingService.getApplicationUserId(username);
             } else if (certificateDomain.equals(CertificateDomain.NODE)) {
-                userId = this.nodeIdentifierMappingService.getNodeMappingId(username);
+                userId = nodeIdentifierMappingService.getNodeMappingId(username);
             } else {
                 LOG.debug("security domain not supported: " + certificateDomain.toString());
                 NameIDMappingResponseType response = createErrorResponse(SamlpSecondLevelErrorCode.REQUEST_DENIED);
@@ -201,7 +201,7 @@ public class NameIdentifierMappingPortImpl implements NameIdentifierMappingPort 
         GregorianCalendar gregorianCalendar = new GregorianCalendar();
         Date now = new Date();
         gregorianCalendar.setTime(now);
-        XMLGregorianCalendar currentXmlGregorianCalendar = this.datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
+        XMLGregorianCalendar currentXmlGregorianCalendar = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
         return currentXmlGregorianCalendar;
     }
 
@@ -213,7 +213,7 @@ public class NameIdentifierMappingPortImpl implements NameIdentifierMappingPort 
     public void postConstructCallback() {
 
         try {
-            this.datatypeFactory = DatatypeFactory.newInstance();
+            datatypeFactory = DatatypeFactory.newInstance();
         } catch (DatatypeConfigurationException e) {
             throw new EJBException("datatype config error");
         }

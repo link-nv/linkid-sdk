@@ -52,12 +52,12 @@ public class AuthnResponseFilterTest {
     public void setUp()
             throws Exception {
 
-        this.servletTestManager = new ServletTestManager();
+        servletTestManager = new ServletTestManager();
 
-        this.mockProtocolHandler = createMock(AuthenticationProtocolHandler.class);
+        mockProtocolHandler = createMock(AuthenticationProtocolHandler.class);
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
-        initialSessionAttributes.put(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE, this.mockProtocolHandler);
-        this.servletTestManager.setUp(LoginTestServlet.class, AuthnResponseFilter.class, null, initialSessionAttributes);
+        initialSessionAttributes.put(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE, mockProtocolHandler);
+        servletTestManager.setUp(LoginTestServlet.class, AuthnResponseFilter.class, null, initialSessionAttributes);
     }
 
 
@@ -80,7 +80,7 @@ public class AuthnResponseFilterTest {
     public void tearDown()
             throws Exception {
 
-        this.servletTestManager.tearDown();
+        servletTestManager.tearDown();
     }
 
     @Test
@@ -89,21 +89,21 @@ public class AuthnResponseFilterTest {
 
         // setup
         HttpClient httpClient = new HttpClient();
-        GetMethod getMethod = new GetMethod(this.servletTestManager.getServletLocation());
+        GetMethod getMethod = new GetMethod(servletTestManager.getServletLocation());
 
         // expectations
-        expect(this.mockProtocolHandler.finalizeAuthentication((HttpServletRequest) anyObject(), (HttpServletResponse) anyObject()))
+        expect(mockProtocolHandler.finalizeAuthentication((HttpServletRequest) anyObject(), (HttpServletResponse) anyObject()))
                                                                                                                                     .andReturn(
                                                                                                                                             null);
 
         // prepare
-        replay(this.mockProtocolHandler);
+        replay(mockProtocolHandler);
 
         // operate
         int statusCode = httpClient.executeMethod(getMethod);
 
         // verify
-        verify(this.mockProtocolHandler);
+        verify(mockProtocolHandler);
         LOG.debug("status code: " + statusCode);
         assertEquals(HttpStatus.SC_OK, statusCode);
     }
@@ -114,28 +114,28 @@ public class AuthnResponseFilterTest {
 
         // setup
         HttpClient httpClient = new HttpClient();
-        GetMethod getMethod = new GetMethod(this.servletTestManager.getServletLocation());
+        GetMethod getMethod = new GetMethod(servletTestManager.getServletLocation());
 
         // expectations
         String userId = UUID.randomUUID().toString();
         String authenticatedDevice = "test-device";
         AuthenticationProtocolContext authenticationProtocolContext = new AuthenticationProtocolContext(userId, authenticatedDevice);
-        expect(this.mockProtocolHandler.finalizeAuthentication((HttpServletRequest) anyObject(), (HttpServletResponse) anyObject()))
+        expect(mockProtocolHandler.finalizeAuthentication((HttpServletRequest) anyObject(), (HttpServletResponse) anyObject()))
                                                                                                                                     .andReturn(
                                                                                                                                             authenticationProtocolContext);
 
         // prepare
-        replay(this.mockProtocolHandler);
+        replay(mockProtocolHandler);
 
         // operate
         int statusCode = httpClient.executeMethod(getMethod);
 
         // verify
         assertEquals(HttpStatus.SC_OK, statusCode);
-        String resultUserId = (String) this.servletTestManager.getSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
+        String resultUserId = (String) servletTestManager.getSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
         LOG.debug("result userId: " + resultUserId);
         assertEquals(userId, resultUserId);
-        String resultAuthenticatedDevice = (String) this.servletTestManager
+        String resultAuthenticatedDevice = (String) servletTestManager
                                                                            .getSessionAttribute(LoginManager.AUTHENTICATED_DEVICE_SESSION_ATTRIBUTE);
         LOG.debug("result authenticatedDevice: " + resultAuthenticatedDevice);
         assertEquals(authenticatedDevice, resultAuthenticatedDevice);

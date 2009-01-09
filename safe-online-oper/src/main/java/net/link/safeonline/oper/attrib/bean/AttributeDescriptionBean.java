@@ -84,9 +84,9 @@ public class AttributeDescriptionBean implements AttributeDescription {
     public void attributeTypeDescriptionsFactory()
             throws AttributeTypeNotFoundException {
 
-        String attributeTypeName = this.selectedAttributeType.getName();
+        String attributeTypeName = selectedAttributeType.getName();
         LOG.debug("attrib type descr factory: " + attributeTypeName);
-        this.attributeTypeDescriptions = this.attributeTypeService.listDescriptions(attributeTypeName);
+        attributeTypeDescriptions = attributeTypeService.listDescriptions(attributeTypeName);
     }
 
     @Remove
@@ -99,7 +99,7 @@ public class AttributeDescriptionBean implements AttributeDescription {
     @Begin
     public String edit() {
 
-        LOG.debug("edit attribute type description: " + this.selectedAttributeTypeDescription.getLanguage());
+        LOG.debug("edit attribute type description: " + selectedAttributeTypeDescription.getLanguage());
         return "edit";
     }
 
@@ -115,12 +115,12 @@ public class AttributeDescriptionBean implements AttributeDescription {
     public String add()
             throws AttributeTypeNotFoundException {
 
-        LOG.debug("add: " + this.newAttributeTypeDescription);
-        String attributeTypeName = this.selectedAttributeType.getName();
-        String language = this.newAttributeTypeDescription.getLanguage();
+        LOG.debug("add: " + newAttributeTypeDescription);
+        String attributeTypeName = selectedAttributeType.getName();
+        String language = newAttributeTypeDescription.getLanguage();
         AttributeTypeDescriptionPK pk = new AttributeTypeDescriptionPK(attributeTypeName, language);
-        this.newAttributeTypeDescription.setPk(pk);
-        this.attributeTypeService.addDescription(this.newAttributeTypeDescription);
+        newAttributeTypeDescription.setPk(pk);
+        attributeTypeService.addDescription(newAttributeTypeDescription);
         return "success";
     }
 
@@ -129,8 +129,8 @@ public class AttributeDescriptionBean implements AttributeDescription {
     public String removeDescription()
             throws AttributeTypeDescriptionNotFoundException, AttributeTypeNotFoundException {
 
-        LOG.debug("remove: " + this.selectedAttributeTypeDescription);
-        this.attributeTypeService.removeDescription(this.selectedAttributeTypeDescription);
+        LOG.debug("remove: " + selectedAttributeTypeDescription);
+        attributeTypeService.removeDescription(selectedAttributeTypeDescription);
         attributeTypeDescriptionsFactory();
         return "removed";
     }
@@ -139,8 +139,8 @@ public class AttributeDescriptionBean implements AttributeDescription {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String save() {
 
-        LOG.debug("save: " + this.selectedAttributeTypeDescription);
-        this.attributeTypeService.saveDescription(this.selectedAttributeTypeDescription);
+        LOG.debug("save: " + selectedAttributeTypeDescription);
+        attributeTypeService.saveDescription(selectedAttributeTypeDescription);
         return "saved";
     }
 

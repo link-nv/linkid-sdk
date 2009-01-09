@@ -27,7 +27,7 @@ public class SafeOnlineException extends Exception {
      */
     public String getErrorCode() {
 
-        return this.errorCode;
+        return errorCode;
     }
 
     public SafeOnlineException() {

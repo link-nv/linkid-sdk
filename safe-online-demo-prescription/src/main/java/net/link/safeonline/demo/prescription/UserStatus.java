@@ -42,7 +42,7 @@ public class UserStatus implements Serializable {
 
     public boolean isAdmin() {
 
-        return this.admin;
+        return admin;
     }
 
     public void setAdmin(boolean admin) {
@@ -52,7 +52,7 @@ public class UserStatus implements Serializable {
 
     public boolean isCareProvider() {
 
-        return this.careProvider;
+        return careProvider;
     }
 
     public void setCareProvider(boolean careProvider) {
@@ -62,7 +62,7 @@ public class UserStatus implements Serializable {
 
     public boolean isPharmacist() {
 
-        return this.pharmacist;
+        return pharmacist;
     }
 
     public void setPharmacist(boolean pharmacist) {
@@ -72,7 +72,7 @@ public class UserStatus implements Serializable {
 
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -82,7 +82,7 @@ public class UserStatus implements Serializable {
 
     public String getUserId() {
 
-        return this.userId;
+        return userId;
     }
 
     public void setUserId(String userId) {

@@ -82,7 +82,7 @@ public abstract class Page {
 
     public void open() {
 
-        selenium.open(this.page);
+        selenium.open(page);
         waitForPageToLoad();
     }
 
@@ -265,9 +265,8 @@ public abstract class Page {
             selenium.waitForPageToLoad(TIMEOUT);
         } catch (SeleniumException e) {
             LOG.debug("Selenium exception: " + e.getMessage());
-            if (!e.getMessage().startsWith("Timed out after")) {
+            if (!e.getMessage().startsWith("Timed out after"))
                 throw e;
-            }
         }
     }
 }

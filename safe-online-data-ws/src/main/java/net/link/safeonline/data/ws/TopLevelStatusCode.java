@@ -34,7 +34,7 @@ public enum TopLevelStatusCode {
 
     public String getCode() {
 
-        return this.code;
+        return code;
     }
 
 

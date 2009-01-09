@@ -54,7 +54,7 @@ public class DriverException extends Exception {
      */
     public long getOccurredTime() {
 
-        return this.occurredTime;
+        return occurredTime;
     }
 
     /**
@@ -63,6 +63,6 @@ public class DriverException extends Exception {
     @Override
     public String toString() {
 
-        return new Date(this.occurredTime) + ": " + getMessage();
+        return new Date(occurredTime) + ": " + getMessage();
     }
 }

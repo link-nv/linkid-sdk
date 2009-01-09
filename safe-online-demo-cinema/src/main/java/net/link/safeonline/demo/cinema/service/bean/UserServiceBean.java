@@ -46,13 +46,13 @@ public class UserServiceBean extends AbstractCinemaServiceBean implements UserSe
 
         CinemaUserEntity user;
         try {
-            user = (CinemaUserEntity) this.em.createNamedQuery(CinemaUserEntity.getByOlasId).setParameter("olasId", olasId)
+            user = (CinemaUserEntity) em.createNamedQuery(CinemaUserEntity.getByOlasId).setParameter("olasId", olasId)
                                              .getSingleResult();
         }
 
         catch (NoResultException e) {
             user = new CinemaUserEntity(olasId);
-            this.em.persist(user);
+            em.persist(user);
         }
 
         return user;
@@ -87,16 +87,16 @@ public class UserServiceBean extends AbstractCinemaServiceBean implements UserSe
         }
 
         catch (AttributeNotFoundException e) {
-            this.LOG.error("attribute not found: ", e);
+            LOG.error("attribute not found: ", e);
             throw new RuntimeException(e);
         } catch (RequestDeniedException e) {
-            this.LOG.error("request denied: ", e);
+            LOG.error("request denied: ", e);
             throw new RuntimeException(e);
         } catch (WSClientTransportException e) {
-            this.LOG.error("Connection error. Check your SSL setup.", e);
+            LOG.error("Connection error. Check your SSL setup.", e);
             throw new RuntimeException(e);
         } catch (AttributeUnavailableException e) {
-            this.LOG.error("Attribute unavailable", e);
+            LOG.error("Attribute unavailable", e);
             throw new RuntimeException(e);
         }
     }

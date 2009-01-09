@@ -31,20 +31,20 @@ public class SubscriptionDO implements Serializable {
 
     public SubscriptionEntity getSubscription() {
 
-        return this.subscription;
+        return subscription;
     }
 
     public List<DeviceEntity> getAllowedDevices() {
 
-        return this.allowedDevices;
+        return allowedDevices;
     }
 
     public String getDeviceRestrictionList() {
 
-        if (!this.subscription.getApplication().isDeviceRestriction())
+        if (!subscription.getApplication().isDeviceRestriction())
             return null;
         String deviceList = "";
-        for (DeviceEntity allowedDevice : this.allowedDevices) {
+        for (DeviceEntity allowedDevice : allowedDevices) {
             deviceList += allowedDevice.getName() + " ";
         }
         return deviceList;
@@ -52,9 +52,9 @@ public class SubscriptionDO implements Serializable {
 
     public String getApplicationName() {
 
-        if (null != this.subscription.getApplication().getFriendlyName())
-            return this.subscription.getApplication().getFriendlyName();
-        return this.subscription.getApplication().getName();
+        if (null != subscription.getApplication().getFriendlyName())
+            return subscription.getApplication().getFriendlyName();
+        return subscription.getApplication().getName();
 
     }
 }

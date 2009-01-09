@@ -55,14 +55,14 @@ public class NodeIdentifierMappingServiceBean implements NodeIdentifierMappingSe
             throws NodeNotFoundException, SubjectNotFoundException {
 
         LOG.debug("get node mapping id: " + username);
-        NodeEntity node = this.nodeManager.getCallerNode();
-        SubjectEntity subject = this.subjectService.getSubjectFromUserName(username);
-        NodeEntity localNode = this.nodeAuthenticationService.getLocalNode();
+        NodeEntity node = nodeManager.getCallerNode();
+        SubjectEntity subject = subjectService.getSubjectFromUserName(username);
+        NodeEntity localNode = nodeAuthenticationService.getLocalNode();
 
         if (node.equals(localNode))
             return subject.getUserId();
 
-        NodeMappingEntity nodeMapping = this.nodeMappingService.getNodeMapping(subject.getUserId(), node.getName());
+        NodeMappingEntity nodeMapping = nodeMappingService.getNodeMapping(subject.getUserId(), node.getName());
         return nodeMapping.getId();
     }
 }

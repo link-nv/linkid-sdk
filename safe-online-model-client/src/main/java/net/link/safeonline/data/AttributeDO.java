@@ -95,7 +95,7 @@ public class AttributeDO implements Serializable, Cloneable {
      */
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -105,17 +105,17 @@ public class AttributeDO implements Serializable, Cloneable {
 
     public String getStringValue() {
 
-        return this.stringValue;
+        return stringValue;
     }
 
     public void setStringValue(String value) {
 
-        this.stringValue = value;
+        stringValue = value;
     }
 
     public boolean isEditable() {
 
-        return this.editable;
+        return editable;
     }
 
     public void setEditable(boolean editable) {
@@ -125,7 +125,7 @@ public class AttributeDO implements Serializable, Cloneable {
 
     public String getDescription() {
 
-        return this.description;
+        return description;
     }
 
     public void setDescription(String description) {
@@ -142,13 +142,13 @@ public class AttributeDO implements Serializable, Cloneable {
     public String getHumanReadableName() {
 
         String viewName;
-        if (null != this.humanReadableName) {
-            viewName = this.humanReadableName;
+        if (null != humanReadableName) {
+            viewName = humanReadableName;
         } else {
-            viewName = this.name;
+            viewName = name;
         }
-        if (true == this.multivalued) {
-            viewName += " " + (this.index + 1);
+        if (true == multivalued) {
+            viewName += " " + (index + 1);
         }
         return viewName;
     }
@@ -156,10 +156,10 @@ public class AttributeDO implements Serializable, Cloneable {
     public String getRawHumanReadableName() {
 
         String viewName;
-        if (null != this.humanReadableName) {
-            viewName = this.humanReadableName;
+        if (null != humanReadableName) {
+            viewName = humanReadableName;
         } else {
-            viewName = this.name;
+            viewName = name;
         }
         return viewName;
     }
@@ -171,7 +171,7 @@ public class AttributeDO implements Serializable, Cloneable {
 
     public boolean isDataMining() {
 
-        return this.dataMining;
+        return dataMining;
     }
 
     public void setDataMining(boolean dataMining) {
@@ -185,7 +185,7 @@ public class AttributeDO implements Serializable, Cloneable {
      */
     public Boolean getBooleanValue() {
 
-        return this.booleanValue;
+        return booleanValue;
     }
 
     public void setBooleanValue(Boolean booleanValue) {
@@ -195,7 +195,7 @@ public class AttributeDO implements Serializable, Cloneable {
 
     public Date getDateValue() {
 
-        return this.dateValue;
+        return dateValue;
     }
 
     public void setDateValue(Date dateValue) {
@@ -205,7 +205,7 @@ public class AttributeDO implements Serializable, Cloneable {
 
     public Double getDoubleValue() {
 
-        return this.doubleValue;
+        return doubleValue;
     }
 
     public void setDoubleValue(Double doubleValue) {
@@ -215,7 +215,7 @@ public class AttributeDO implements Serializable, Cloneable {
 
     public Integer getIntegerValue() {
 
-        return this.integerValue;
+        return integerValue;
     }
 
     public void setIntegerValue(Integer integerValue) {
@@ -238,20 +238,20 @@ public class AttributeDO implements Serializable, Cloneable {
      */
     public String getValueAsString() {
 
-        switch (this.type) {
+        switch (type) {
             case BOOLEAN:
-                return this.booleanValue.toString();
+                return booleanValue.toString();
             case DATE:
-                return this.dateValue.toString();
+                return dateValue.toString();
             case DOUBLE:
-                return this.doubleValue.toString();
+                return doubleValue.toString();
             case INTEGER:
-                return this.integerValue.toString();
+                return integerValue.toString();
             case STRING:
             case COMPOUNDED:
-                return this.stringValue;
+                return stringValue;
             default:
-                throw new EJBException("unsupported data type: " + this.type);
+                throw new EJBException("unsupported data type: " + type);
         }
     }
 
@@ -262,11 +262,11 @@ public class AttributeDO implements Serializable, Cloneable {
      */
     public void setValue(AttributeDO value) {
 
-        this.booleanValue = value.booleanValue;
-        this.stringValue = value.stringValue;
-        this.integerValue = value.integerValue;
-        this.doubleValue = value.doubleValue;
-        this.dateValue = value.dateValue;
+        booleanValue = value.booleanValue;
+        stringValue = value.stringValue;
+        integerValue = value.integerValue;
+        doubleValue = value.doubleValue;
+        dateValue = value.dateValue;
     }
 
     public void setValue(AttributeEntity attribute) {
@@ -313,7 +313,7 @@ public class AttributeDO implements Serializable, Cloneable {
 
     public DatatypeType getType() {
 
-        return this.type;
+        return type;
     }
 
     public void setType(DatatypeType type) {
@@ -328,7 +328,7 @@ public class AttributeDO implements Serializable, Cloneable {
      */
     public long getIndex() {
 
-        return this.index;
+        return index;
     }
 
     public void setIndex(long index) {
@@ -342,7 +342,7 @@ public class AttributeDO implements Serializable, Cloneable {
      */
     public boolean isMultivalued() {
 
-        return this.multivalued;
+        return multivalued;
     }
 
     public void setMultivalued(boolean multivalued) {
@@ -356,7 +356,7 @@ public class AttributeDO implements Serializable, Cloneable {
      */
     public boolean isCompounded() {
 
-        return this.compounded;
+        return compounded;
     }
 
     public void setCompounded(boolean compounded) {
@@ -370,7 +370,7 @@ public class AttributeDO implements Serializable, Cloneable {
      */
     public boolean isMember() {
 
-        return this.member;
+        return member;
     }
 
     public void setMember(boolean member) {
@@ -384,7 +384,7 @@ public class AttributeDO implements Serializable, Cloneable {
      */
     public boolean isRequired() {
 
-        return this.required;
+        return required;
     }
 
     public void setRequired(boolean required) {
@@ -398,7 +398,7 @@ public class AttributeDO implements Serializable, Cloneable {
      */
     public boolean isUserVisible() {
 
-        return this.userVisible;
+        return userVisible;
     }
 
     public void setUserVisible(boolean userVisible) {
@@ -412,7 +412,7 @@ public class AttributeDO implements Serializable, Cloneable {
      */
     public boolean isUnavailable() {
 
-        return this.unavailable;
+        return unavailable;
     }
 
     public void setUnavailable(boolean unavailable) {
@@ -423,20 +423,20 @@ public class AttributeDO implements Serializable, Cloneable {
     @Override
     public AttributeDO clone() {
 
-        AttributeDO attribute = new AttributeDO(this.name, this.type, this.multivalued, this.index, this.humanReadableName,
-                this.description, this.editable, this.dataMining, this.stringValue, this.booleanValue);
-        attribute.integerValue = this.integerValue;
-        attribute.doubleValue = this.doubleValue;
-        attribute.dateValue = this.dateValue;
+        AttributeDO attribute = new AttributeDO(name, type, multivalued, index, humanReadableName,
+                description, editable, dataMining, stringValue, booleanValue);
+        attribute.integerValue = integerValue;
+        attribute.doubleValue = doubleValue;
+        attribute.dateValue = dateValue;
         return attribute;
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("name", this.name).append("multi-valued",
-                this.multivalued).append("index", this.index).append("string-value", this.stringValue).append("integer-value",
-                this.integerValue).toString();
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("name", name).append("multi-valued",
+                multivalued).append("index", index).append("string-value", stringValue).append("integer-value",
+                integerValue).toString();
     }
 
     /**
@@ -450,22 +450,22 @@ public class AttributeDO implements Serializable, Cloneable {
 
         switch (attributeType.getType()) {
             case STRING:
-                targetAttribute.setStringValue(this.stringValue);
+                targetAttribute.setStringValue(stringValue);
             break;
             case BOOLEAN:
-                targetAttribute.setBooleanValue(this.booleanValue);
+                targetAttribute.setBooleanValue(booleanValue);
             break;
             case INTEGER:
-                targetAttribute.setIntegerValue(this.integerValue);
+                targetAttribute.setIntegerValue(integerValue);
             break;
             case DOUBLE:
-                targetAttribute.setDoubleValue(this.doubleValue);
+                targetAttribute.setDoubleValue(doubleValue);
             break;
             case DATE:
-                targetAttribute.setDateValue(this.dateValue);
+                targetAttribute.setDateValue(dateValue);
             break;
             default:
-                throw new EJBException("datatype not supported: " + this.type);
+                throw new EJBException("datatype not supported: " + type);
         }
     }
 

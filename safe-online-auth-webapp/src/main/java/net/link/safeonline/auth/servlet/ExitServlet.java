@@ -85,7 +85,7 @@ public class ExitServlet extends AbstractInjectionServlet {
             ProtocolHandlerManager.authnResponse(session, response);
         } catch (ProtocolException e) {
             LOG.debug("protocol error: " + e.getMessage());
-            redirectToErrorPage(request, response, this.protocolErrorUrl, null, new ErrorMessage(PROTOCOL_NAME_ATTRIBUTE,
+            redirectToErrorPage(request, response, protocolErrorUrl, null, new ErrorMessage(PROTOCOL_NAME_ATTRIBUTE,
                     e.getProtocolName()), new ErrorMessage(PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
         }
     }

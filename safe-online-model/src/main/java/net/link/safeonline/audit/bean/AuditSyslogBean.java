@@ -73,67 +73,67 @@ public class AuditSyslogBean implements AuditBackend {
     @PostConstruct
     public void init() {
 
-        LOG.debug("init audit syslog bean ( " + this.syslogHost + " )");
-        this.syslog = new TinySyslogger(Facility.valueOf(this.facility), this.syslogHost);
+        LOG.debug("init audit syslog bean ( " + syslogHost + " )");
+        syslog = new TinySyslogger(Facility.valueOf(facility), syslogHost);
     }
 
     @PreDestroy
     public void close() {
 
-        this.syslog.close();
+        syslog.close();
     }
 
     private void logSecurityAudits(Long auditContextId) {
 
-        List<SecurityAuditEntity> securityAuditEntries = this.securityAuditDAO.listRecords(auditContextId);
+        List<SecurityAuditEntity> securityAuditEntries = securityAuditDAO.listRecords(auditContextId);
         for (SecurityAuditEntity e : securityAuditEntries) {
             String msg = String.format("Security audit context %d: principal='%s', message='%s'", e.getAuditContext().getId(),
                     e.getTargetPrincipal(), e.getMessage());
 
             LOG.debug(msg);
-            this.syslog.log(msg);
+            syslog.log(msg);
         }
     }
 
     private void logResourceAudits(Long auditContextId) {
 
-        List<ResourceAuditEntity> resourceAuditEntries = this.resourceAuditDAO.listRecords(auditContextId);
+        List<ResourceAuditEntity> resourceAuditEntries = resourceAuditDAO.listRecords(auditContextId);
         for (ResourceAuditEntity e : resourceAuditEntries) {
             String msg = String.format("Resource audit context %d: resource='%s', type='%s', source='%s', message='%s'",
                     e.getAuditContext().getId(), e.getResourceName(), e.getResourceLevel(), e.getSourceComponent(), e.getMessage());
 
             LOG.debug(msg);
-            this.syslog.log(msg);
+            syslog.log(msg);
         }
     }
 
     private void logAccessAudits(Long auditContextId) {
 
-        List<AccessAuditEntity> accessAuditEntries = this.accessAuditDAO.listRecords(auditContextId);
+        List<AccessAuditEntity> accessAuditEntries = accessAuditDAO.listRecords(auditContextId);
         for (AccessAuditEntity e : accessAuditEntries)
             if (e.getOperationState() != OperationStateType.BEGIN && e.getOperationState() != OperationStateType.NORMAL_END) {
                 String msg = String.format("Access audit context %d: principal='%s', operation='%s', operationState='%s'",
                         e.getAuditContext().getId(), e.getPrincipal(), e.getOperation(), e.getOperationState());
 
                 LOG.debug(msg);
-                this.syslog.log(msg);
+                syslog.log(msg);
             }
     }
 
     private void logAuditAudits(Long auditContextId) {
 
-        List<AuditAuditEntity> auditAuditEntries = this.auditAuditDAO.listRecords(auditContextId);
+        List<AuditAuditEntity> auditAuditEntries = auditAuditDAO.listRecords(auditContextId);
         for (AuditAuditEntity e : auditAuditEntries) {
             String msg = String.format("Audit audit context %d: message='%s'", e.getAuditContext().getId(), e.getMessage());
 
             LOG.debug(msg);
-            this.syslog.log(msg);
+            syslog.log(msg);
         }
     }
 
     public void process(long auditContextId) {
 
-        if (this.syslogHost == null || this.syslogHost.length() == 0) {
+        if (syslogHost == null || syslogHost.length() == 0) {
             LOG.debug("skipping syslog");
             return;
         }

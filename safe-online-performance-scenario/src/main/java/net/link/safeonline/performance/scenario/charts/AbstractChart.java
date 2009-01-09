@@ -82,8 +82,8 @@ public abstract class AbstractChart implements Chart {
     public AbstractChart(String title) {
 
         this.title = title;
-        this.linked = false;
-        this.links = new ArrayList<AbstractChart>();
+        linked = false;
+        links = new ArrayList<AbstractChart>();
     }
 
     /**
@@ -91,7 +91,7 @@ public abstract class AbstractChart implements Chart {
      */
     public String getTitle() {
 
-        return this.title;
+        return title;
     }
 
     /**
@@ -102,11 +102,11 @@ public abstract class AbstractChart implements Chart {
      */
     public void postProcess() {
 
-        this.plot = getPlot();
-        if (this.plot == null)
+        plot = getPlot();
+        if (plot == null)
             return;
-        if (this.plot.getDomainAxis() == null) {
-            this.LOG.warn("Plot for " + getClass().getName() + " has no domain axis!");
+        if (plot.getDomainAxis() == null) {
+            LOG.warn("Plot for " + getClass().getName() + " has no domain axis!");
             return;
         }
 
@@ -115,7 +115,7 @@ public abstract class AbstractChart implements Chart {
             Range range = entry.getValue();
 
             if (charts.contains(this)) {
-                Range plotRange = this.plot.getDomainAxis().getRange();
+                Range plotRange = plot.getDomainAxis().getRange();
                 sharedRangesMap.put(charts, Range.combine(range, plotRange));
 
                 break;
@@ -129,7 +129,7 @@ public abstract class AbstractChart implements Chart {
     public byte[][] render(int dataPoints) {
 
         // Don't render when linked or when no plot was prepared.
-        if (this.linked || this.plot == null)
+        if (linked || plot == null)
             return null;
 
         // Apply the shared range if this chart is in the shared ranges map.
@@ -138,22 +138,22 @@ public abstract class AbstractChart implements Chart {
             Range range = entry.getValue();
 
             if (charts.contains(this)) {
-                this.plot.getDomainAxis().setRange(range);
+                plot.getDomainAxis().setRange(range);
 
                 break;
             }
         }
 
         // Shove all linked charts in one plot.
-        if (!this.links.isEmpty()) {
-            XYPlot basePlot = this.plot;
+        if (!links.isEmpty()) {
+            XYPlot basePlot = plot;
             CombinedDomainXYPlot combinedPlot;
 
-            this.plot = combinedPlot = new CombinedDomainXYPlot(basePlot.getDomainAxis());
+            plot = combinedPlot = new CombinedDomainXYPlot(basePlot.getDomainAxis());
 
             combinedPlot.add(basePlot);
 
-            for (AbstractChart link : this.links) {
+            for (AbstractChart link : links) {
                 XYPlot linkedPlot = link.getPlot();
                 if (linkedPlot != null) {
                     combinedPlot.add(linkedPlot);
@@ -163,7 +163,7 @@ public abstract class AbstractChart implements Chart {
 
         // Not linked, add average markers.
         else {
-            XYDataset set = this.plot.getDataset();
+            XYDataset set = plot.getDataset();
             if (set != null) {
                 for (int i = 0; i < set.getSeriesCount(); ++i) {
                     double sum = 0;
@@ -174,12 +174,12 @@ public abstract class AbstractChart implements Chart {
                     ValueMarker marker = new ValueMarker(sum / set.getItemCount(i));
                     marker.setLabel("Average " + i + "                ");
                     marker.setLabelAnchor(RectangleAnchor.TOP_RIGHT);
-                    this.plot.addRangeMarker(marker);
+                    plot.addRangeMarker(marker);
                 }
             }
         }
 
-        JFreeChart chart = new JFreeChart(this.plot);
+        JFreeChart chart = new JFreeChart(plot);
         return new byte[][] { getImage(chart, dataPoints) };
     }
 
@@ -246,13 +246,13 @@ public abstract class AbstractChart implements Chart {
 
         for (AbstractChart chart : charts) {
             chart.isLinked();
-            this.links.add(chart);
+            links.add(chart);
         }
     }
 
     private void isLinked() {
 
-        this.linked = true;
+        linked = true;
     }
 
     protected Long getMeasurement(Set<MeasurementEntity> measurements, String type)
@@ -262,7 +262,7 @@ public abstract class AbstractChart implements Chart {
             if (type.equals(e.getMeasurement()))
                 return e.getDuration();
 
-        this.LOG.debug("for: " + measurements);
+        LOG.debug("for: " + measurements);
         throw new NoSuchElementException("Element " + type + " could not be found.");
     }
 

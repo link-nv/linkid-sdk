@@ -93,26 +93,26 @@ public class AgentPanel extends JPanel implements MouseListener, AgentStatusList
         DefaultFormBuilder builder = new DefaultFormBuilder(layout, this);
         builder.setDefaultDialogBorder();
 
-        builder.append(this.title = new JLabel(), 3);
-        this.title.setFont(getFont().deriveFont(18f));
+        builder.append(title = new JLabel(), 3);
+        title.setFont(getFont().deriveFont(18f));
         builder.nextLine(2);
 
-        builder.append(this.state = new JLabel(), this.transit = new JLabel());
-        this.state.setFont(getFont().deriveFont(14f));
-        this.transit.setFont(getFont().deriveFont(14f));
+        builder.append(state = new JLabel(), transit = new JLabel());
+        state.setFont(getFont().deriveFont(14f));
+        transit.setFont(getFont().deriveFont(14f));
         builder.nextLine(2);
 
-        builder.append(this.progress = new JProgressBar(0, 1000), 7);
+        builder.append(progress = new JProgressBar(0, 1000), 7);
 
         CellConstraints cc = new CellConstraints();
-        builder.add(this.speedGraph = new TinyGraph(100), cc.xywh(5, 1, 1, 3, "fill, fill"));
-        builder.add(this.speed = new JLabel(), cc.xywh(7, 1, 1, 3, "center, fill"));
-        this.speed.setFont(getFont().deriveFont(24f));
+        builder.add(speedGraph = new TinyGraph(100), cc.xywh(5, 1, 1, 3, "fill, fill"));
+        builder.add(speed = new JLabel(), cc.xywh(7, 1, 1, 3, "center, fill"));
+        speed.setFont(getFont().deriveFont(24f));
 
         setBackground(null);
-        this.progress.setOpaque(false);
-        this.progress.setBorderPainted(false);
-        this.speedGraph.setVisible(false);
+        progress.setOpaque(false);
+        progress.setBorderPainted(false);
+        speedGraph.setVisible(false);
     }
 
     /**
@@ -120,7 +120,7 @@ public class AgentPanel extends JPanel implements MouseListener, AgentStatusList
      */
     public ConsoleAgent getAgent() {
 
-        return this.agent;
+        return agent;
     }
 
     /**
@@ -128,7 +128,7 @@ public class AgentPanel extends JPanel implements MouseListener, AgentStatusList
      */
     public boolean isSelected() {
 
-        return this.selected;
+        return selected;
     }
 
     /**
@@ -142,7 +142,7 @@ public class AgentPanel extends JPanel implements MouseListener, AgentStatusList
         if (o == null || !(o instanceof AgentPanel))
             return false;
 
-        return this.agent.equals(((AgentPanel) o).agent);
+        return agent.equals(((AgentPanel) o).agent);
     }
 
     private void update() {
@@ -152,62 +152,62 @@ public class AgentPanel extends JPanel implements MouseListener, AgentStatusList
          */
         ScenarioExecution selectedExecution = ConsoleData.getSelectedExecution();
         ScenarioExecution lastExecution = null;
-        if (this.agent.getExecutions() != null && !this.agent.getExecutions().isEmpty()) {
-            lastExecution = new TreeSet<ScenarioExecution>(this.agent.getExecutions()).last();
+        if (agent.getExecutions() != null && !agent.getExecutions().isEmpty()) {
+            lastExecution = new TreeSet<ScenarioExecution>(agent.getExecutions()).last();
         }
 
         /* Update all our text values. */
-        this.speed.setText("");
-        if (this.agent.getExecutions() != null && selectedExecution != null) {
-            for (ScenarioExecution execution : this.agent.getExecutions())
+        speed.setText("");
+        if (agent.getExecutions() != null && selectedExecution != null) {
+            for (ScenarioExecution execution : agent.getExecutions())
                 if (execution.equalRequest(selectedExecution)) {
                     if (execution.getSpeed() != null) {
-                        this.speed.setText(String.format("%.2f/s", execution.getSpeed()));
+                        speed.setText(String.format("%.2f/s", execution.getSpeed()));
                     }
 
                     break;
                 }
         }
 
-        if (this.agent.getAddress() != null) {
-            this.title.setText(this.agent.getAddress().toString());
+        if (agent.getAddress() != null) {
+            title.setText(agent.getAddress().toString());
         } else {
-            this.title.setText("[Unknown]");
+            title.setText("[Unknown]");
         }
-        this.title.setForeground(this.state == null? Color.gray: this.agent.isHealthy()? Color.green.darker(): Color.red);
+        title.setForeground(state == null? Color.gray: agent.isHealthy()? Color.green.darker(): Color.red);
 
-        if (this.agent.getState() != null) {
-            this.state.setText(this.agent.getState().getState());
-            this.state.setForeground(this.agent.getState().getColor());
+        if (agent.getState() != null) {
+            state.setText(agent.getState().getState());
+            state.setForeground(agent.getState().getColor());
         } else {
-            this.state.setText("[Unknown]");
-            this.state.setForeground(AgentState.RESET.getColor());
+            state.setText("[Unknown]");
+            state.setForeground(AgentState.RESET.getColor());
         }
 
-        if (this.agent.isTransitting()) {
-            this.transit.setText(this.agent.getTransit().getTransitioning());
-            this.transit.setForeground(this.agent.getTransit().getColor());
+        if (agent.isTransitting()) {
+            transit.setText(agent.getTransit().getTransitioning());
+            transit.setForeground(agent.getTransit().getColor());
         } else {
-            this.transit.setText(AgentState.RESET.getTransitioning());
-            this.transit.setForeground(AgentState.RESET.getColor());
+            transit.setText(AgentState.RESET.getTransitioning());
+            transit.setForeground(AgentState.RESET.getColor());
         }
 
         /* Update the progress bar. */
-        if (!this.agent.isTransitting()) {
-            this.progress.setIndeterminate(false);
-            this.progress.setValue(0);
+        if (!agent.isTransitting()) {
+            progress.setIndeterminate(false);
+            progress.setValue(0);
         } else {
 
             /* Default to indeterminate. */
-            this.progress.setIndeterminate(true);
-            this.speedGraph.setVisible(false);
+            progress.setIndeterminate(true);
+            speedGraph.setVisible(false);
 
             /* If this agent is executing and there is a last execution.. */
-            if (AgentState.EXECUTE.equals(this.agent.getTransit()) && lastExecution != null) {
+            if (AgentState.EXECUTE.equals(agent.getTransit()) && lastExecution != null) {
 
                 /* Update speed graph with last execution's speed. */
-                this.speedGraph.setVisible(true);
-                this.speedGraph.update(lastExecution.getSpeed());
+                speedGraph.setVisible(true);
+                speedGraph.update(lastExecution.getSpeed());
 
                 /* Check how much time is left. */
                 long timeLeft = lastExecution.getStartTime().getTime() + lastExecution.getDuration() - System.currentTimeMillis();
@@ -216,11 +216,11 @@ public class AgentPanel extends JPanel implements MouseListener, AgentStatusList
                 if (timeLeft > 0) {
                     int completion = (int) (1000 - 1000 * timeLeft / lastExecution.getDuration());
 
-                    this.progress.setIndeterminate(false);
-                    this.progress.setValue(completion);
+                    progress.setIndeterminate(false);
+                    progress.setValue(completion);
                 }
             } else {
-                this.speedGraph.reset();
+                speedGraph.reset();
             }
         }
     }
@@ -238,7 +238,7 @@ public class AgentPanel extends JPanel implements MouseListener, AgentStatusList
      */
     public void statusChanged(ConsoleAgent changedAgent) {
 
-        if (this.agent.equals(changedAgent)) {
+        if (agent.equals(changedAgent)) {
             update();
         }
     }
@@ -256,15 +256,15 @@ public class AgentPanel extends JPanel implements MouseListener, AgentStatusList
      */
     public void mouseClicked(MouseEvent e) {
 
-        this.selected = !this.selected;
+        selected = !selected;
 
-        if (this.selected) {
+        if (selected) {
             setBackground(Color.decode("#EEEEFF"));
         } else {
             setBackground(null);
         }
 
-        this.list.fireListSelectionChanged();
+        list.fireListSelectionChanged();
     }
 
     /**

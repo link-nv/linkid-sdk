@@ -48,14 +48,14 @@ public class HelpdeskServiceBean implements HelpdeskService, HelpdeskServiceRemo
     @RolesAllowed(SafeOnlineRoles.HELPDESK_ROLE)
     public List<HelpdeskContextEntity> listContexts() {
 
-        return this.contexts.listContexts();
+        return contexts.listContexts();
 
     }
 
     @RolesAllowed(SafeOnlineRoles.HELPDESK_ROLE)
     public List<HelpdeskEventEntity> listEvents(Long contextId) {
 
-        return this.contexts.listEvents(contextId);
+        return contexts.listEvents(contextId);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -63,19 +63,19 @@ public class HelpdeskServiceBean implements HelpdeskService, HelpdeskServiceRemo
     public void removeLog(Long logId)
             throws HelpdeskContextNotFoundException {
 
-        this.contexts.removeLog(logId);
+        contexts.removeLog(logId);
     }
 
     @RolesAllowed(SafeOnlineRoles.HELPDESK_ROLE)
     public List<HelpdeskContextEntity> listUserContexts(String user) {
 
-        return this.contexts.listUserContexts(user);
+        return contexts.listUserContexts(user);
     }
 
     @RolesAllowed(SafeOnlineRoles.HELPDESK_ROLE)
     public List<String> listUsers() {
 
-        return this.contexts.listUsers();
+        return contexts.listUsers();
     }
 
 }

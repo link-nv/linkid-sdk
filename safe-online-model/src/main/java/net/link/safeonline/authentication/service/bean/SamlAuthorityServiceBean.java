@@ -34,11 +34,11 @@ public class SamlAuthorityServiceBean implements SamlAuthorityService {
 
     public String getIssuerName() {
 
-        return this.issuerName;
+        return issuerName;
     }
 
     public int getAuthnAssertionValidity() {
 
-        return this.authnAssertionValidity;
+        return authnAssertionValidity;
     }
 }

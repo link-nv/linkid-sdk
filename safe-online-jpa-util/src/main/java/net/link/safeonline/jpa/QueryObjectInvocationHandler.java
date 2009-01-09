@@ -62,7 +62,7 @@ public class QueryObjectInvocationHandler implements InvocationHandler {
     private Object update(UpdateMethod updateMethodAnnotation, Method method, Object[] args) {
 
         String namedQueryName = updateMethodAnnotation.value();
-        Query query = this.entityManager.createNamedQuery(namedQueryName);
+        Query query = entityManager.createNamedQuery(namedQueryName);
         setParameters(method, args, query);
 
         Class<?> returnType = method.getReturnType();
@@ -81,7 +81,7 @@ public class QueryObjectInvocationHandler implements InvocationHandler {
             throws Exception {
 
         String namedQueryName = queryMethodAnnotation.value();
-        Query query = this.entityManager.createNamedQuery(namedQueryName);
+        Query query = entityManager.createNamedQuery(namedQueryName);
 
         setParameters(method, args, query);
 

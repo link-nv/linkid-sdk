@@ -52,15 +52,15 @@ public class DemoPaymentTest extends TestCase {
     protected void setUp()
             throws Exception {
 
-        this.acceptanceTestManager = new AcceptanceTestManager();
-        this.acceptanceTestManager.setUp();
+        acceptanceTestManager = new AcceptanceTestManager();
+        acceptanceTestManager.setUp();
     }
 
     @Override
     protected void tearDown()
             throws Exception {
 
-        this.acceptanceTestManager.tearDown();
+        acceptanceTestManager.tearDown();
     }
 
     /**
@@ -79,14 +79,14 @@ public class DemoPaymentTest extends TestCase {
             throws Exception {
 
         // setup
-        this.acceptanceTestManager.setContext("Testing the demo payment.");
+        acceptanceTestManager.setContext("Testing the demo payment.");
 
         String login = UUID.randomUUID().toString();
         String password = "secret";
         String testAttribute = "test-attribute";
 
         // register test user
-        PageUtils.registerUserWithPassword(this.acceptanceTestManager, login, password);
+        PageUtils.registerUserWithPassword(acceptanceTestManager, login, password);
 
         // login test user to demo-ticket webapp
         DemoPaymentMain demoPaymentMain = new DemoPaymentMain();
@@ -107,13 +107,13 @@ public class DemoPaymentTest extends TestCase {
         authMissingAttributes.setAttributeValue(WebappConstants.DEMO_PAYMENT_VISA_LABEL, "0000111122223333");
         authMissingAttributes.save();
 
-        PageUtils.waitForRedirect(this.acceptanceTestManager, DemoPaymentOverview.PAGE_NAME);
+        PageUtils.waitForRedirect(acceptanceTestManager, DemoPaymentOverview.PAGE_NAME);
         DemoPaymentOverview demoPaymentOverview = new DemoPaymentOverview();
         demoPaymentOverview.checkLoggedIn(login);
         demoPaymentOverview.logout();
 
         // add new attribute type
-        OperOverview operOverview = PageUtils.loginOperWithPassword(this.acceptanceTestManager, WebappConstants.OPER_ADMIN, "admin");
+        OperOverview operOverview = PageUtils.loginOperWithPassword(acceptanceTestManager, WebappConstants.OPER_ADMIN, "admin");
         OperAttributes operAttributes = operOverview.gotoAttributes();
         OperAttributeAdd operAttributeAdd = operAttributes.add();
         operAttributeAdd.setName(testAttribute);
@@ -153,13 +153,13 @@ public class DemoPaymentTest extends TestCase {
         authMissingAttributes.setAttributeValue(testAttribute, "value");
         authMissingAttributes.save();
 
-        PageUtils.waitForRedirect(this.acceptanceTestManager, DemoPaymentOverview.PAGE_NAME);
+        PageUtils.waitForRedirect(acceptanceTestManager, DemoPaymentOverview.PAGE_NAME);
         demoPaymentOverview = new DemoPaymentOverview();
         demoPaymentOverview.checkLoggedIn(login);
         demoPaymentOverview.logout();
 
         // remove new attribute from demo payment identity
-        operOverview = PageUtils.loginOperWithPassword(this.acceptanceTestManager, WebappConstants.OPER_ADMIN, "admin");
+        operOverview = PageUtils.loginOperWithPassword(acceptanceTestManager, WebappConstants.OPER_ADMIN, "admin");
         operApplicationsMain = operOverview.gotoApplicationsMain();
         operApplications = operApplicationsMain.gotoApplications();
         operApplicationView = operApplications.viewApplication(DEMO_PAYMENT_APPLICATION_NAME);
@@ -174,7 +174,7 @@ public class DemoPaymentTest extends TestCase {
         operAttributes.logout();
 
         // remove user
-        UserOverview userOverview = PageUtils.loginUserWithPassword(this.acceptanceTestManager, login, password);
+        UserOverview userOverview = PageUtils.loginUserWithPassword(acceptanceTestManager, login, password);
 
         // remove account
         UserAccount userAccount = userOverview.gotoAccount();

@@ -26,15 +26,15 @@ public class EjbUtilsTest extends TestCase {
 
         super.setUp();
 
-        this.jndiTestUtils = new JndiTestUtils();
-        this.jndiTestUtils.setUp();
+        jndiTestUtils = new JndiTestUtils();
+        jndiTestUtils.setUp();
     }
 
     @Override
     protected void tearDown()
             throws Exception {
 
-        this.jndiTestUtils.tearDown();
+        jndiTestUtils.tearDown();
         super.tearDown();
     }
 
@@ -59,7 +59,7 @@ public class EjbUtilsTest extends TestCase {
         String jndiPrefix = "test/prefix/" + getName();
         TestType testObject = new TestType();
         String objectName = "test-object-name";
-        this.jndiTestUtils.bindComponent(jndiPrefix + "/" + objectName, testObject);
+        jndiTestUtils.bindComponent(jndiPrefix + "/" + objectName, testObject);
 
         // operate
         Map<String, TestType> result = EjbUtils.getComponentNames(jndiPrefix, TestType.class);
@@ -90,7 +90,7 @@ public class EjbUtilsTest extends TestCase {
         String jndiPrefix = "test/prefix/" + getName();
         TestType testObject = new TestType();
         String objectName = "test-object-name";
-        this.jndiTestUtils.bindComponent(jndiPrefix + "/" + objectName, testObject);
+        jndiTestUtils.bindComponent(jndiPrefix + "/" + objectName, testObject);
 
         // operate
         List<TestType> result = EjbUtils.getComponents(jndiPrefix, TestType.class);

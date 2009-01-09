@@ -82,10 +82,10 @@ public class AccountMergingServiceBeanTest {
     public void setup()
             throws Exception {
 
-        this.entityTestManager = new EntityTestManager();
-        this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
+        entityTestManager = new EntityTestManager();
+        entityTestManager.setUp(SafeOnlineTestContainer.entities);
 
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
 
         JmxTestUtils jmxTestUtils = new JmxTestUtils();
         jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
@@ -126,7 +126,7 @@ public class AccountMergingServiceBeanTest {
     public void tearDown()
             throws Exception {
 
-        this.entityTestManager.tearDown();
+        entityTestManager.tearDown();
     }
 
     @Test
@@ -142,14 +142,14 @@ public class AccountMergingServiceBeanTest {
         String testTargetSubjectLogin = "test-target-subject-" + UUID.randomUUID().toString();
         String testSourceSubjectLogin = "test-source-subject-" + UUID.randomUUID().toString();
 
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
 
         // create accounts
         Account targetAccount = new Account(testTargetSubjectLogin, entityManager);
         Account sourceAccount = new Account(testSourceSubjectLogin, entityManager);
 
         // create attributes
-        this.attributeTypeService = EJBTestUtils.newInstance(AttributeTypeServiceBean.class, SafeOnlineTestContainer.sessionBeans,
+        attributeTypeService = EJBTestUtils.newInstance(AttributeTypeServiceBean.class, SafeOnlineTestContainer.sessionBeans,
                 entityManager, "test-admin", "global-operator");
         AttributeTypeEntity attributeType1 = addAttributeType("urn::net:lin-k:safe-online:attribute:1", DatatypeType.STRING, true, false);
         AttributeTypeEntity attributeType2 = addAttributeType("urn::net:lin-k:safe-online:attribute:2", DatatypeType.STRING, true, false);
@@ -251,21 +251,21 @@ public class AccountMergingServiceBeanTest {
             this.entityManager = entityManager;
             UserRegistrationService userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,
                     SafeOnlineTestContainer.sessionBeans, this.entityManager);
-            this.subject = userRegistrationService.registerUser(subjectLogin);
+            subject = userRegistrationService.registerUser(subjectLogin);
             SubjectService subjectService = EJBTestUtils.newInstance(SubjectServiceBean.class, SafeOnlineTestContainer.sessionBeans,
                     this.entityManager);
-            this.subject = subjectService.findSubjectFromUserName(subjectLogin);
+            subject = subjectService.findSubjectFromUserName(subjectLogin);
         }
 
         public void addSubscription(Application application)
                 throws Exception {
 
             SubscriptionService subscriptionService = EJBTestUtils.newInstance(SubscriptionServiceBean.class,
-                    SafeOnlineTestContainer.sessionBeans, this.entityManager, this.subject.getUserId(), "user");
+                    SafeOnlineTestContainer.sessionBeans, entityManager, subject.getUserId(), "user");
             subscriptionService.subscribe(application.applicationName);
 
             IdentityService identityService = EJBTestUtils.newInstance(IdentityServiceBean.class, SafeOnlineTestContainer.sessionBeans,
-                    this.entityManager, this.subject.getUserId(), "user");
+                    entityManager, subject.getUserId(), "user");
             identityService.confirmIdentity(application.applicationName);
 
             for (AttributeTypeEntity attributeType : application.attributeTypes) {
@@ -338,7 +338,7 @@ public class AccountMergingServiceBeanTest {
 
         AttributeTypeEntity attributeTypeEntity = new AttributeTypeEntity(attributeName, datatypeType, true, userEditable);
         attributeTypeEntity.setMultivalued(multivalued);
-        this.attributeTypeService.add(attributeTypeEntity);
+        attributeTypeService.add(attributeTypeEntity);
         return attributeTypeEntity;
     }
 

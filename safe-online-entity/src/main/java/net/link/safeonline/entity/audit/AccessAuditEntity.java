@@ -98,14 +98,14 @@ public class AccessAuditEntity implements Serializable {
         this.operation = operation;
         this.operationState = operationState;
         this.principal = principal;
-        this.eventDate = new Date();
+        eventDate = new Date();
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Long getId() {
 
-        return this.id;
+        return id;
     }
 
     public void setId(Long id) {
@@ -116,7 +116,7 @@ public class AccessAuditEntity implements Serializable {
     @ManyToOne
     public AuditContextEntity getAuditContext() {
 
-        return this.auditContext;
+        return auditContext;
     }
 
     public void setAuditContext(AuditContextEntity auditContext) {
@@ -127,7 +127,7 @@ public class AccessAuditEntity implements Serializable {
     @Column(nullable = false)
     public String getOperation() {
 
-        return this.operation;
+        return operation;
     }
 
     public void setOperation(String operation) {
@@ -137,7 +137,7 @@ public class AccessAuditEntity implements Serializable {
 
     public String getPrincipal() {
 
-        return this.principal;
+        return principal;
     }
 
     public void setPrincipal(String principal) {
@@ -148,7 +148,7 @@ public class AccessAuditEntity implements Serializable {
     @Enumerated(EnumType.ORDINAL)
     public OperationStateType getOperationState() {
 
-        return this.operationState;
+        return operationState;
     }
 
     public void setOperationState(OperationStateType operationState) {
@@ -159,7 +159,7 @@ public class AccessAuditEntity implements Serializable {
     @Temporal(value = TemporalType.TIMESTAMP)
     public Date getEventDate() {
 
-        return this.eventDate;
+        return eventDate;
     }
 
     public void setEventDate(Date eventDate) {

@@ -38,7 +38,7 @@ public class InputValidationTest extends TestCase {
 
         super.setUp();
 
-        this.testedInstance = new InputValidation();
+        testedInstance = new InputValidation();
     }
 
 
@@ -94,7 +94,7 @@ public class InputValidationTest extends TestCase {
         InvocationContext invocationContext = new TestInvocationContext(method, "Hello World");
 
         // operate
-        this.testedInstance.inputValidationInterceptor(invocationContext);
+        testedInstance.inputValidationInterceptor(invocationContext);
 
         // verify
         assertTrue(TestValidator.isInvoked());
@@ -121,12 +121,12 @@ public class InputValidationTest extends TestCase {
 
         public Method getMethod() {
 
-            return this.method;
+            return method;
         }
 
         public Object[] getParameters() {
 
-            return this.parameters;
+            return parameters;
         }
 
         public Object getTarget() {

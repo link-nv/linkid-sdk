@@ -48,26 +48,26 @@ public class UserRegistrationManagerBean implements UserRegistrationManager {
 
         LOG.debug("register user: " + login);
         checkExistingUser(login);
-        SubjectEntity newSubject = this.subjectService.addSubject(login);
+        SubjectEntity newSubject = subjectService.addSubject(login);
         ApplicationEntity safeOnlineUserApplication = getSafeOnlineUserApplication();
         /*
          * Make sure the user can at least login into the SafeOnline user web application.
          */
-        this.subscriptionDAO.addSubscription(SubscriptionOwnerType.APPLICATION, newSubject, safeOnlineUserApplication);
+        subscriptionDAO.addSubscription(SubscriptionOwnerType.APPLICATION, newSubject, safeOnlineUserApplication);
         return newSubject;
     }
 
     private void checkExistingUser(String login)
             throws ExistingUserException {
 
-        SubjectEntity existingSubject = this.subjectService.findSubjectFromUserName(login);
+        SubjectEntity existingSubject = subjectService.findSubjectFromUserName(login);
         if (null != existingSubject)
             throw new ExistingUserException();
     }
 
     private ApplicationEntity getSafeOnlineUserApplication() {
 
-        ApplicationEntity safeOnlineUserApplication = this.applicationDAO
+        ApplicationEntity safeOnlineUserApplication = applicationDAO
                                                                          .findApplication(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
         if (null == safeOnlineUserApplication)
             throw new EJBException("SafeOnline user application not found");

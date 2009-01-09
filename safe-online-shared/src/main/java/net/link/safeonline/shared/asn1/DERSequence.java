@@ -34,13 +34,13 @@ public class DERSequence implements DEREncodable {
 
     public void add(DEREncodable element) {
 
-        this.sequence.add(element);
+        sequence.add(element);
     }
 
     public byte[] getEncoded() {
 
         ByteArrayOutputStream body = new ByteArrayOutputStream();
-        for (DEREncodable derEncodable : this.sequence) {
+        for (DEREncodable derEncodable : sequence) {
             try {
                 body.write(derEncodable.getEncoded());
             } catch (IOException e) {

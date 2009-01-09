@@ -62,12 +62,12 @@ public class SubjectServiceBean implements SubjectService, SubjectServiceRemote 
 
         LOG.debug("add subject: " + login);
 
-        String userId = this.idGenerator.generateId();
-        SubjectEntity subject = this.subjectDAO.addSubject(userId);
-        AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(SafeOnlineConstants.LOGIN_ATTRIBTUE);
+        String userId = idGenerator.generateId();
+        SubjectEntity subject = subjectDAO.addSubject(userId);
+        AttributeTypeEntity attributeType = attributeTypeDAO.getAttributeType(SafeOnlineConstants.LOGIN_ATTRIBTUE);
 
-        this.subjectIdentifierDAO.addSubjectIdentifier(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN, login, subject);
-        this.attributeDAO.addAttribute(attributeType, subject, login);
+        subjectIdentifierDAO.addSubjectIdentifier(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN, login, subject);
+        attributeDAO.addAttribute(attributeType, subject, login);
 
         return subject;
     }
@@ -75,27 +75,27 @@ public class SubjectServiceBean implements SubjectService, SubjectServiceRemote 
     public SubjectEntity addSubjectWithoutLogin(String userId) {
 
         LOG.debug("add subject without login attribute: " + userId);
-        return this.subjectDAO.addSubject(userId);
+        return subjectDAO.addSubject(userId);
 
     }
 
     public SubjectEntity findSubject(String userId) {
 
         LOG.debug("find subject user ID: " + userId);
-        return this.subjectDAO.findSubject(userId);
+        return subjectDAO.findSubject(userId);
     }
 
     public SubjectEntity findSubjectFromUserName(String login) {
 
         LOG.debug("find subject login: " + login);
-        return this.subjectIdentifierDAO.findSubject(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN, login);
+        return subjectIdentifierDAO.findSubject(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN, login);
     }
 
     public SubjectEntity getSubject(String userId)
             throws SubjectNotFoundException {
 
         LOG.debug("get subject user id: " + userId);
-        return this.subjectDAO.getSubject(userId);
+        return subjectDAO.getSubject(userId);
     }
 
     /*
@@ -116,12 +116,12 @@ public class SubjectServiceBean implements SubjectService, SubjectServiceRemote 
     public String getSubjectLogin(String userId) {
 
         LOG.debug("get subject user login: " + userId);
-        SubjectEntity subject = this.subjectDAO.findSubject(userId);
+        SubjectEntity subject = subjectDAO.findSubject(userId);
         if (null == subject)
             return null;
 
         try {
-            AttributeEntity loginAttribute = this.attributeDAO.getAttribute(SafeOnlineConstants.LOGIN_ATTRIBTUE, subject);
+            AttributeEntity loginAttribute = attributeDAO.getAttribute(SafeOnlineConstants.LOGIN_ATTRIBTUE, subject);
             return loginAttribute.getStringValue();
         }
 
@@ -136,7 +136,7 @@ public class SubjectServiceBean implements SubjectService, SubjectServiceRemote 
             throws SubjectNotFoundException {
 
         LOG.debug("get subject login: " + login);
-        SubjectEntity subject = this.subjectIdentifierDAO.findSubject(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN, login);
+        SubjectEntity subject = subjectIdentifierDAO.findSubject(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN, login);
         if (null == subject)
             throw new SubjectNotFoundException();
 
@@ -147,8 +147,8 @@ public class SubjectServiceBean implements SubjectService, SubjectServiceRemote 
             throws AttributeTypeNotFoundException {
 
         List<String> userList = new LinkedList<String>();
-        AttributeTypeEntity loginAttributeType = this.attributeTypeDAO.getAttributeType(SafeOnlineConstants.LOGIN_ATTRIBTUE);
-        List<AttributeEntity> loginAttributes = this.attributeDAO.listAttributes(prefix, loginAttributeType);
+        AttributeTypeEntity loginAttributeType = attributeTypeDAO.getAttributeType(SafeOnlineConstants.LOGIN_ATTRIBTUE);
+        List<AttributeEntity> loginAttributes = attributeDAO.listAttributes(prefix, loginAttributeType);
 
         for (AttributeEntity loginAttribute : loginAttributes) {
             userList.add(loginAttribute.getStringValue());

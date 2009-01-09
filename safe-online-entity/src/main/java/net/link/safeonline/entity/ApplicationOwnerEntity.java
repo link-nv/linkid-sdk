@@ -66,7 +66,7 @@ public class ApplicationOwnerEntity implements Serializable {
     @Id
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -77,7 +77,7 @@ public class ApplicationOwnerEntity implements Serializable {
     @OneToOne(optional = false)
     public SubjectEntity getAdmin() {
 
-        return this.admin;
+        return admin;
     }
 
     public void setAdmin(SubjectEntity admin) {
@@ -89,7 +89,7 @@ public class ApplicationOwnerEntity implements Serializable {
     @OrderBy("name")
     public List<ApplicationEntity> getApplications() {
 
-        return this.applications;
+        return applications;
     }
 
     public void setApplications(List<ApplicationEntity> applications) {
@@ -100,7 +100,7 @@ public class ApplicationOwnerEntity implements Serializable {
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.name).toHashCode();
+        return new HashCodeBuilder().append(name).toHashCode();
     }
 
     @Override
@@ -113,13 +113,13 @@ public class ApplicationOwnerEntity implements Serializable {
         if (getClass() != obj.getClass())
             return false;
         final ApplicationOwnerEntity rhs = (ApplicationOwnerEntity) obj;
-        return new EqualsBuilder().append(this.name, rhs.name).isEquals();
+        return new EqualsBuilder().append(name, rhs.name).isEquals();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append(this.name).toString();
+        return new ToStringBuilder(this).append(name).toString();
     }
 
 

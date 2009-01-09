@@ -64,8 +64,8 @@ public class ScenarioTimingEntity implements Comparable<ScenarioTimingEntity> {
 
     public ScenarioTimingEntity() {
 
-        this.agentDuration = 0l;
-        this.startTime = System.currentTimeMillis();
+        agentDuration = 0l;
+        startTime = System.currentTimeMillis();
     }
 
     public ScenarioTimingEntity(ExecutionEntity execution) {
@@ -91,7 +91,7 @@ public class ScenarioTimingEntity implements Comparable<ScenarioTimingEntity> {
      */
     public Long getStart() {
 
-        return this.startTime;
+        return startTime;
     }
 
     /**
@@ -99,10 +99,10 @@ public class ScenarioTimingEntity implements Comparable<ScenarioTimingEntity> {
      */
     public void addOlasTime(long newOlasTime) {
 
-        if (this.olasDuration == null) {
-            this.olasDuration = newOlasTime;
+        if (olasDuration == null) {
+            olasDuration = newOlasTime;
         } else {
-            this.olasDuration += newOlasTime;
+            olasDuration += newOlasTime;
         }
     }
 
@@ -111,7 +111,7 @@ public class ScenarioTimingEntity implements Comparable<ScenarioTimingEntity> {
      */
     public Long getOlasDuration() {
 
-        return this.olasDuration;
+        return olasDuration;
     }
 
     /**
@@ -119,7 +119,7 @@ public class ScenarioTimingEntity implements Comparable<ScenarioTimingEntity> {
      */
     public Long getAgentDuration() {
 
-        return this.agentDuration;
+        return agentDuration;
     }
 
     /**
@@ -127,7 +127,7 @@ public class ScenarioTimingEntity implements Comparable<ScenarioTimingEntity> {
      */
     public void stop() {
 
-        this.agentDuration = System.currentTimeMillis() - this.startTime;
+        agentDuration = System.currentTimeMillis() - startTime;
     }
 
     /**
@@ -135,7 +135,7 @@ public class ScenarioTimingEntity implements Comparable<ScenarioTimingEntity> {
      */
     public int compareTo(ScenarioTimingEntity o) {
 
-        return this.startTime.compareTo(o.startTime);
+        return startTime.compareTo(o.startTime);
     }
 
     /**
@@ -151,7 +151,7 @@ public class ScenarioTimingEntity implements Comparable<ScenarioTimingEntity> {
      */
     public Long getStartFreeMem() {
 
-        return this.startFreeMem;
+        return startFreeMem;
     }
 
     /**
@@ -167,7 +167,7 @@ public class ScenarioTimingEntity implements Comparable<ScenarioTimingEntity> {
      */
     public Long getEndFreeMem() {
 
-        return this.endFreeMem;
+        return endFreeMem;
     }
 
     /**
@@ -175,7 +175,7 @@ public class ScenarioTimingEntity implements Comparable<ScenarioTimingEntity> {
      */
     public ExecutionEntity getExecution() {
 
-        return this.execution;
+        return execution;
     }
 
     /**
@@ -184,7 +184,7 @@ public class ScenarioTimingEntity implements Comparable<ScenarioTimingEntity> {
     @Override
     public String toString() {
 
-        return String.format("ST: %01.2f(%+01.2f) MB, %d(+{o:%d, a:%d})", this.startFreeMem / (1024 * 1024f),
-                (this.endFreeMem - this.startFreeMem) / (1024 * 1024f), this.startTime, this.olasDuration, this.agentDuration);
+        return String.format("ST: %01.2f(%+01.2f) MB, %d(+{o:%d, a:%d})", startFreeMem / (1024 * 1024f),
+                (endFreeMem - startFreeMem) / (1024 * 1024f), startTime, olasDuration, agentDuration);
     }
 }

@@ -40,13 +40,13 @@ public class TrustDomainDAOBean implements TrustDomainDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, TrustDomainEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, TrustDomainEntity.QueryInterface.class);
     }
 
     public List<TrustDomainEntity> listTrustDomains() {
 
         LOG.debug("get trust domains");
-        List<TrustDomainEntity> trustDomains = this.queryObject.listTrustDomains();
+        List<TrustDomainEntity> trustDomains = queryObject.listTrustDomains();
         return trustDomains;
     }
 
@@ -54,7 +54,7 @@ public class TrustDomainDAOBean implements TrustDomainDAO {
 
         LOG.debug("add trust domain: " + name);
         TrustDomainEntity trustDomain = new TrustDomainEntity(name, performOcspCheck);
-        this.entityManager.persist(trustDomain);
+        entityManager.persist(trustDomain);
         return trustDomain;
     }
 
@@ -62,21 +62,21 @@ public class TrustDomainDAOBean implements TrustDomainDAO {
 
         LOG.debug("add trust domain: " + name);
         TrustDomainEntity trustDomain = new TrustDomainEntity(name, performOcspCheck, ocspCacheTimeOutMillis);
-        this.entityManager.persist(trustDomain);
+        entityManager.persist(trustDomain);
         return trustDomain;
     }
 
     public TrustDomainEntity findTrustDomain(String name) {
 
         LOG.debug("find trust domain: " + name);
-        TrustDomainEntity trustDomain = this.queryObject.findTrustDomain(name);
+        TrustDomainEntity trustDomain = queryObject.findTrustDomain(name);
         return trustDomain;
     }
 
     public void removeTrustDomain(TrustDomainEntity trustDomain) {
 
         LOG.debug("remove trust domain: " + trustDomain.getName());
-        this.entityManager.remove(trustDomain);
+        entityManager.remove(trustDomain);
     }
 
     public TrustDomainEntity getTrustDomain(String name)

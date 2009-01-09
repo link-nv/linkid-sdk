@@ -54,25 +54,25 @@ public class ExecutionSettings implements FocusListener, ItemListener, AgentSele
 
     public ExecutionSettings() {
 
-        this.hostname = new JTextField(ConsoleData.getHostname());
-        this.port = new JTextField(String.valueOf(ConsoleData.getPort()));
-        this.workers = new JTextField(String.valueOf(ConsoleData.getWorkers()));
-        this.duration = new JTextField(String.valueOf(ConsoleData.getDuration() / (60 * 1000)));
-        this.useSsl = new JToggleButton("Use SSL", ConsoleData.isSsl());
-        this.scenarioSelection = new JComboBox();
-        this.scenarioSelection.setEnabled(false);
+        hostname = new JTextField(ConsoleData.getHostname());
+        port = new JTextField(String.valueOf(ConsoleData.getPort()));
+        workers = new JTextField(String.valueOf(ConsoleData.getWorkers()));
+        duration = new JTextField(String.valueOf(ConsoleData.getDuration() / (60 * 1000)));
+        useSsl = new JToggleButton("Use SSL", ConsoleData.isSsl());
+        scenarioSelection = new JComboBox();
+        scenarioSelection.setEnabled(false);
 
-        this.hostname.addFocusListener(this);
-        this.port.addFocusListener(this);
-        this.workers.addFocusListener(this);
-        this.duration.addFocusListener(this);
-        this.useSsl.addItemListener(this);
-        this.scenarioSelection.addItemListener(this);
+        hostname.addFocusListener(this);
+        port.addFocusListener(this);
+        workers.addFocusListener(this);
+        duration.addFocusListener(this);
+        useSsl.addItemListener(this);
+        scenarioSelection.addItemListener(this);
 
-        this.hostname.setToolTipText("The IP address or DNS resolvable name of the host that is running OLAS.");
-        this.port.setToolTipText("The port on which OLAS' Application Server is configured to serve SSL.");
-        this.workers.setToolTipText("The amount of simultaneous threads the agents should use for firing scenarios at OLAS.");
-        this.duration.setToolTipText("The amount of time to run the tests for (in milliseconds).");
+        hostname.setToolTipText("The IP address or DNS resolvable name of the host that is running OLAS.");
+        port.setToolTipText("The port on which OLAS' Application Server is configured to serve SSL.");
+        workers.setToolTipText("The amount of simultaneous threads the agents should use for firing scenarios at OLAS.");
+        duration.setToolTipText("The amount of time to run the tests for (in milliseconds).");
 
         ConsoleData.addAgentStatusListener(this);
         ConsoleData.addAgentSelectionListener(this);
@@ -84,17 +84,17 @@ public class ExecutionSettings implements FocusListener, ItemListener, AgentSele
     @SuppressWarnings("unchecked")
     public void itemStateChanged(ItemEvent e) {
 
-        if (this.scenarioSelection.equals(e.getSource())) {
+        if (scenarioSelection.equals(e.getSource())) {
             String scenario = null;
-            if (this.scenarioSelection.getSelectedItem() != null) {
-                scenario = ((ItemRenderer<String>) this.scenarioSelection.getSelectedItem()).getItem();
+            if (scenarioSelection.getSelectedItem() != null) {
+                scenario = ((ItemRenderer<String>) scenarioSelection.getSelectedItem()).getItem();
             }
 
             ConsoleData.setScenarioName(scenario);
         }
 
-        else if (this.useSsl.equals(e.getSource())) {
-            ConsoleData.setSsl(this.useSsl.isSelected());
+        else if (useSsl.equals(e.getSource())) {
+            ConsoleData.setSsl(useSsl.isSelected());
         }
     }
 
@@ -103,15 +103,15 @@ public class ExecutionSettings implements FocusListener, ItemListener, AgentSele
      */
     public void focusLost(FocusEvent e) {
 
-        if (this.hostname.equals(e.getSource())) {
-            ConsoleData.setHostname(this.hostname.getText());
-        } else if (this.port.equals(e.getSource())) {
-            ConsoleData.setPort(Integer.parseInt(this.port.getText()));
-        } else if (this.workers.equals(e.getSource())) {
-            ConsoleData.setWorkers(Integer.parseInt(this.workers.getText()));
-        } else if (this.duration.equals(e.getSource())) {
+        if (hostname.equals(e.getSource())) {
+            ConsoleData.setHostname(hostname.getText());
+        } else if (port.equals(e.getSource())) {
+            ConsoleData.setPort(Integer.parseInt(port.getText()));
+        } else if (workers.equals(e.getSource())) {
+            ConsoleData.setWorkers(Integer.parseInt(workers.getText()));
+        } else if (duration.equals(e.getSource())) {
             try {
-                ConsoleData.setDuration(Long.parseLong(this.duration.getText()) * 60 * 1000);
+                ConsoleData.setDuration(Long.parseLong(duration.getText()) * 60 * 1000);
             } catch (NumberFormatException err) {
             }
         }
@@ -178,7 +178,7 @@ public class ExecutionSettings implements FocusListener, ItemListener, AgentSele
      */
     private void setScenarios(final Set<String> scenarios) {
 
-        final JComboBox box = this.scenarioSelection;
+        final JComboBox box = scenarioSelection;
         SwingUtilities.invokeLater(new Runnable() {
 
             public void run() {
@@ -192,7 +192,7 @@ public class ExecutionSettings implements FocusListener, ItemListener, AgentSele
                         @Override
                         public String toString() {
 
-                            return this.item.replaceFirst(".*\\.", "");
+                            return item.replaceFirst(".*\\.", "");
                         }
                     });
                 }

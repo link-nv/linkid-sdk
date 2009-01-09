@@ -35,10 +35,10 @@ public class BeIdentityExtractorTest extends TestCase {
 
         super.setUp();
 
-        this.testedInstance = new BeIdentityExtractor();
+        testedInstance = new BeIdentityExtractor();
 
-        this.testIdentityDataCollector = new TestIdentityDataCollector();
-        this.testedInstance.init(this.testIdentityDataCollector);
+        testIdentityDataCollector = new TestIdentityDataCollector();
+        testedInstance.init(testIdentityDataCollector);
     }
 
 
@@ -93,20 +93,20 @@ public class BeIdentityExtractorTest extends TestCase {
         LOG.debug("test authentication certificate 2004: " + authCert2004);
 
         // operate
-        this.testedInstance.postPkcs11(authCert2006);
+        testedInstance.postPkcs11(authCert2006);
 
         // verify
-        LOG.debug("given name: " + this.testIdentityDataCollector.givenName);
-        assertEquals("Frank Henri", this.testIdentityDataCollector.givenName);
-        assertEquals("Cornelis", this.testIdentityDataCollector.surname);
-        assertEquals("BE", this.testIdentityDataCollector.countryCode);
+        LOG.debug("given name: " + testIdentityDataCollector.givenName);
+        assertEquals("Frank Henri", testIdentityDataCollector.givenName);
+        assertEquals("Cornelis", testIdentityDataCollector.surname);
+        assertEquals("BE", testIdentityDataCollector.countryCode);
 
         // operate
-        this.testedInstance.postPkcs11(authCert2004);
+        testedInstance.postPkcs11(authCert2004);
 
         // verify
-        LOG.debug("given name: " + this.testIdentityDataCollector.givenName);
-        assertEquals("Griet", this.testIdentityDataCollector.givenName);
-        assertEquals("De Smedt", this.testIdentityDataCollector.surname);
+        LOG.debug("given name: " + testIdentityDataCollector.givenName);
+        assertEquals("Griet", testIdentityDataCollector.givenName);
+        assertEquals("De Smedt", testIdentityDataCollector.surname);
     }
 }

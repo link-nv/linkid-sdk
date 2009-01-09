@@ -30,7 +30,7 @@ public class AuthMain extends Page {
 
     public void selectDevice(String deviceName) {
 
-        this.device = deviceName;
+        device = deviceName;
         clickRadioButton(deviceName);
     }
 
@@ -46,13 +46,13 @@ public class AuthMain extends Page {
     public Page next() {
 
         clickButtonAndWait("next");
-        if (this.device.equals(PasswordConstants.PASSWORD_DEVICE_ID))
+        if (device.equals(PasswordConstants.PASSWORD_DEVICE_ID))
             return new AuthUserNamePassword();
-        else if (this.device.equals(BeIdConstants.BEID_DEVICE_ID))
+        else if (device.equals(BeIdConstants.BEID_DEVICE_ID))
             return null;
-        else if (this.device.equals(EncapConstants.ENCAP_DEVICE_ID))
+        else if (device.equals(EncapConstants.ENCAP_DEVICE_ID))
             return null;
-        else if (this.device.equals(DigipassConstants.DIGIPASS_DEVICE_ID))
+        else if (device.equals(DigipassConstants.DIGIPASS_DEVICE_ID))
             return null;
         return null;
     }

@@ -48,13 +48,13 @@ public class ScenarioExecution implements Serializable, Comparable<ScenarioExecu
         this.startTime = startTime;
         this.duration = duration;
         this.hostname = hostname;
-        this.ssl = useSsl;
+        ssl = useSsl;
         this.speed = speed;
     }
 
     public Map<String, byte[][]> getCharts() {
 
-        return this.charts;
+        return charts;
     }
 
     public void setCharts(Map<String, byte[][]> charts) {
@@ -64,47 +64,47 @@ public class ScenarioExecution implements Serializable, Comparable<ScenarioExecu
 
     public String getHostname() {
 
-        return this.hostname;
+        return hostname;
     }
 
     public Boolean isSsl() {
 
-        return this.ssl;
+        return ssl;
     }
 
     public Double getSpeed() {
 
-        return this.speed;
+        return speed;
     }
 
     public Long getDuration() {
 
-        return this.duration;
+        return duration;
     }
 
     public Integer getWorkers() {
 
-        return this.workers;
+        return workers;
     }
 
     public Integer getAgents() {
 
-        return this.agents;
+        return agents;
     }
 
     public String getScenarioName() {
 
-        return this.scenarioName;
+        return scenarioName;
     }
 
     public String getScenarioDescription() {
 
-        return this.scenarioDescription;
+        return scenarioDescription;
     }
 
     public Date getStartTime() {
 
-        return this.startTime;
+        return startTime;
     }
 
     /**
@@ -114,14 +114,14 @@ public class ScenarioExecution implements Serializable, Comparable<ScenarioExecu
     public String toString() {
 
         String formattedStartTime = null;
-        if (this.startTime != null) {
-            formattedStartTime = new SimpleDateFormat("HH:mm").format(this.startTime);
+        if (startTime != null) {
+            formattedStartTime = new SimpleDateFormat("HH:mm").format(startTime);
         }
 
-        return String.format("%s: [%s] %sx%s (%s min): %s #/s", this.scenarioName == null? "N/A": this.scenarioName.replaceFirst(".*\\.",
-                ""), formattedStartTime == null? "N/A": formattedStartTime, this.agents == null? "N/A": this.agents,
-                this.workers == null? "N/A": this.workers, this.duration == null? "N/A": this.duration / 60000, this.speed == null? "N/A"
-                        : String.format("%.2f", this.speed));
+        return String.format("%s: [%s] %sx%s (%s min): %s #/s", scenarioName == null? "N/A": scenarioName.replaceFirst(".*\\.",
+                ""), formattedStartTime == null? "N/A": formattedStartTime, agents == null? "N/A": agents,
+                workers == null? "N/A": workers, duration == null? "N/A": duration / 60000, speed == null? "N/A"
+                        : String.format("%.2f", speed));
     }
 
     /**
@@ -132,8 +132,8 @@ public class ScenarioExecution implements Serializable, Comparable<ScenarioExecu
     @Override
     public ScenarioExecution clone() {
 
-        return new ScenarioExecution(this.scenarioName, this.scenarioDescription, this.agents, this.workers, this.startTime, this.duration,
-                this.hostname, this.ssl, this.speed);
+        return new ScenarioExecution(scenarioName, scenarioDescription, agents, workers, startTime, duration,
+                hostname, ssl, speed);
     }
 
     /**
@@ -148,7 +148,7 @@ public class ScenarioExecution implements Serializable, Comparable<ScenarioExecu
             return true;
 
         ScenarioExecution other = (ScenarioExecution) o;
-        return this.startTime.equals(other.startTime) && hashCode() == other.hashCode();
+        return startTime.equals(other.startTime) && hashCode() == other.hashCode();
     }
 
     /**
@@ -156,7 +156,7 @@ public class ScenarioExecution implements Serializable, Comparable<ScenarioExecu
      */
     public boolean equalRequest(ScenarioExecution o) {
 
-        return this.startTime.equals(o.startTime);
+        return startTime.equals(o.startTime);
     }
 
     /**
@@ -165,24 +165,24 @@ public class ScenarioExecution implements Serializable, Comparable<ScenarioExecu
     @Override
     public int hashCode() {
 
-        double hashCode = this.startTime.hashCode();
-        if (this.scenarioName != null) {
-            hashCode += this.scenarioName.hashCode();
+        double hashCode = startTime.hashCode();
+        if (scenarioName != null) {
+            hashCode += scenarioName.hashCode();
         }
-        if (this.hostname != null) {
-            hashCode += this.hostname.hashCode();
+        if (hostname != null) {
+            hashCode += hostname.hashCode();
         }
-        if (this.duration != null) {
-            hashCode += this.duration.hashCode();
+        if (duration != null) {
+            hashCode += duration.hashCode();
         }
-        if (this.workers != null) {
-            hashCode += this.workers.hashCode();
+        if (workers != null) {
+            hashCode += workers.hashCode();
         }
-        if (this.agents != null) {
-            hashCode += this.agents.hashCode();
+        if (agents != null) {
+            hashCode += agents.hashCode();
         }
-        if (this.speed != null) {
-            hashCode += this.speed.hashCode();
+        if (speed != null) {
+            hashCode += speed.hashCode();
         }
 
         // Our hash is the integer average of all hashes.
@@ -202,7 +202,7 @@ public class ScenarioExecution implements Serializable, Comparable<ScenarioExecu
      */
     public int compareTo(ScenarioExecution o) {
 
-        int difference = this.startTime.compareTo(o.startTime);
+        int difference = startTime.compareTo(o.startTime);
         if (difference == 0) {
             difference = hashCode() - o.hashCode();
         }

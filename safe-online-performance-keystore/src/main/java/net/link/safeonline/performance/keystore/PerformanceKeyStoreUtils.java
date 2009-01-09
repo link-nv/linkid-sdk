@@ -53,9 +53,8 @@ public class PerformanceKeyStoreUtils {
         String keyStoreResource = "safe-online-performance-keystore.jks";
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         InputStream keyStoreInputStream = classLoader.getResourceAsStream(keyStoreResource);
-        if (null == keyStoreInputStream) {
+        if (null == keyStoreInputStream)
             throw new RuntimeException("keystore not found: " + keyStoreResource);
-        }
 
         KeyStore keyStore;
         try {
@@ -76,14 +75,12 @@ public class PerformanceKeyStoreUtils {
         } catch (KeyStoreException e) {
             throw new RuntimeException("could not get aliases: " + e.getMessage(), e);
         }
-        if (!aliases.hasMoreElements()) {
+        if (!aliases.hasMoreElements())
             throw new RuntimeException("keystore is empty");
-        }
         String alias = aliases.nextElement();
         try {
-            if (!keyStore.isKeyEntry(alias)) {
+            if (!keyStore.isKeyEntry(alias))
                 throw new RuntimeException("not key entry: " + alias);
-            }
         } catch (KeyStoreException e) {
             throw new RuntimeException("key store error: " + e.getMessage(), e);
         }

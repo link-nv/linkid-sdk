@@ -114,19 +114,19 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
          * Wrap the request to use the servlet endpoint url. To prevent failure when behind a reverse proxy or loadbalancer when opensaml is
          * checking the destination field.
          */
-        HttpServletRequestEndpointWrapper authnRequestWrapper = new HttpServletRequestEndpointWrapper(request, this.servletEndpointUrl);
+        HttpServletRequestEndpointWrapper authnRequestWrapper = new HttpServletRequestEndpointWrapper(request, servletEndpointUrl);
 
         ProtocolContext protocolContext;
         try {
             protocolContext = ProtocolHandlerManager.handleRequest(authnRequestWrapper);
         } catch (ProtocolException e) {
-            redirectToErrorPage(request, response, this.protocolErrorUrl, null, new ErrorMessage(PROTOCOL_NAME_ATTRIBUTE,
+            redirectToErrorPage(request, response, protocolErrorUrl, null, new ErrorMessage(PROTOCOL_NAME_ATTRIBUTE,
                     e.getProtocolName()), new ErrorMessage(PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
             return;
         }
 
         if (null == protocolContext) {
-            response.sendRedirect(this.unsupportedProtocolUrl);
+            response.sendRedirect(unsupportedProtocolUrl);
             return;
         }
 
@@ -140,7 +140,7 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
 
         if (null != language) {
             Cookie authLanguageCookie = new Cookie(SafeOnlineCookies.AUTH_LANGUAGE_COOKIE, language.getLanguage());
-            authLanguageCookie.setPath(this.cookiePath);
+            authLanguageCookie.setPath(cookiePath);
             authLanguageCookie.setMaxAge(60 * 60 * 24 * 30 * 6);
             response.addCookie(authLanguageCookie);
         }
@@ -163,7 +163,7 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
         HelpdeskLogger.clear(session);
 
         if (isFirstTime(request, response)) {
-            response.sendRedirect(this.firstTimeUrl);
+            response.sendRedirect(firstTimeUrl);
             return;
         }
 
@@ -184,7 +184,7 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
                             // sign-on applications
                             validSso = true;
                             cookie.setValue(authenticationService.getSsoCookie().getValue());
-                            cookie.setPath(this.cookiePath);
+                            cookie.setPath(cookiePath);
                             response.addCookie(cookie);
                         }
                     } catch (ApplicationNotFoundException e) {
@@ -206,11 +206,11 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
         if (validSso) {
             LoginManager.login(authnRequestWrapper.getSession(), authenticationService.getUserId(),
                     authenticationService.getAuthenticationDevice());
-            response.sendRedirect(this.loginUrl);
+            response.sendRedirect(loginUrl);
             return;
         }
 
-        response.sendRedirect(this.startUrl);
+        response.sendRedirect(startUrl);
 
     }
 
@@ -218,7 +218,7 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
 
         Cookie cookie = new Cookie(name, "");
         cookie.setMaxAge(0);
-        cookie.setPath(this.cookiePath);
+        cookie.setPath(cookiePath);
         response.addCookie(cookie);
     }
 
@@ -250,7 +250,7 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
 
         Cookie defloweredCookie = new Cookie(SafeOnlineCookies.DEFLOWERED_COOKIE, "true");
         defloweredCookie.setMaxAge(60 * 60 * 24 * 30 * 6);
-        defloweredCookie.setPath(this.cookiePath);
+        defloweredCookie.setPath(cookiePath);
         response.addCookie(defloweredCookie);
     }
 }

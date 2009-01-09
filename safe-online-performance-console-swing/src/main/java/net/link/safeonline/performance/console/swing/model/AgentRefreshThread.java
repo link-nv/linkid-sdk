@@ -43,7 +43,7 @@ public class AgentRefreshThread extends ScenarioThread {
     void process(ConsoleAgent agent)
             throws Exception {
 
-        if (this.reset) {
+        if (reset) {
             agent.resetTransit();
         }
 

@@ -45,7 +45,7 @@ public class UsageAgreementPK implements Serializable {
 
     public String getApplication() {
 
-        return this.application;
+        return application;
     }
 
     public void setApplication(String application) {
@@ -56,7 +56,7 @@ public class UsageAgreementPK implements Serializable {
     @Column(name = "version")
     public Long getUsageAgreementVersion() {
 
-        return this.usageAgreementVersion;
+        return usageAgreementVersion;
     }
 
     public void setUsageAgreementVersion(Long usageAgreementVersion) {
@@ -72,21 +72,21 @@ public class UsageAgreementPK implements Serializable {
         if (false == obj instanceof UsageAgreementPK)
             return false;
         UsageAgreementPK rhs = (UsageAgreementPK) obj;
-        return new EqualsBuilder().append(this.application, rhs.application).append(this.usageAgreementVersion, rhs.usageAgreementVersion)
+        return new EqualsBuilder().append(application, rhs.application).append(usageAgreementVersion, rhs.usageAgreementVersion)
                                   .isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.application).append(this.usageAgreementVersion).toHashCode();
+        return new HashCodeBuilder().append(application).append(usageAgreementVersion).toHashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("application", this.application)
-                                        .append("usageAgreementVersion", this.usageAgreementVersion).toString();
+        return new ToStringBuilder(this).append("application", application)
+                                        .append("usageAgreementVersion", usageAgreementVersion).toString();
     }
 
 }

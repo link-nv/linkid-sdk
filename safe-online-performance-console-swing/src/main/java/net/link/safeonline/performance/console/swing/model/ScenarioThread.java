@@ -47,7 +47,7 @@ public abstract class ScenarioThread extends Thread {
         setDaemon(true);
 
         this.state = state;
-        this.scenarioDeployer = ConsoleData.getRemoting();
+        scenarioDeployer = ConsoleData.getRemoting();
     }
 
     /**
@@ -56,19 +56,19 @@ public abstract class ScenarioThread extends Thread {
     @Override
     public void run() {
 
-        this.pool = Executors.newCachedThreadPool();
+        pool = Executors.newCachedThreadPool();
         for (final ConsoleAgent agent : ConsoleData.getSelectedAgents()) {
-            this.pool.submit(new Worker(agent));
+            pool.submit(new Worker(agent));
 
             agent.setError(null);
-            if (this.state != null) {
-                agent.setTransit(this.state);
+            if (state != null) {
+                agent.setTransit(state);
             }
         }
 
         try {
-            this.pool.shutdown();
-            while (!this.pool.awaitTermination(10, TimeUnit.SECONDS)) {
+            pool.shutdown();
+            while (!pool.awaitTermination(10, TimeUnit.SECONDS)) {
                 Thread.yield();
             }
 
@@ -86,7 +86,7 @@ public abstract class ScenarioThread extends Thread {
             return;
 
         interrupt();
-        this.pool.shutdownNow();
+        pool.shutdownNow();
     }
 
     /**
@@ -121,18 +121,18 @@ public abstract class ScenarioThread extends Thread {
          */
         public void run() {
 
-            this.agent.registerAction(ScenarioThread.this);
+            agent.registerAction(ScenarioThread.this);
 
             try {
-                process(this.agent);
+                process(agent);
             }
 
             catch (Exception e) {
-                this.LOG.error("Couldn't perform requested operation on agent.", e);
+                LOG.error("Couldn't perform requested operation on agent.", e);
             }
 
             finally {
-                this.agent.unregisterAction(ScenarioThread.this);
+                agent.unregisterAction(ScenarioThread.this);
             }
         }
     }

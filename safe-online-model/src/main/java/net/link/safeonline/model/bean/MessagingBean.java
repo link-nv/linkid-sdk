@@ -33,9 +33,9 @@ public class MessagingBean implements Messaging {
         EndUserMessage message = new EndUserMessage(to, subject, messageText);
 
         try {
-            Connection connect = this.factory.createConnection();
+            Connection connect = factory.createConnection();
             Session session = connect.createSession(true, 0);
-            MessageProducer producer = session.createProducer(this.emailQueue);
+            MessageProducer producer = session.createProducer(emailQueue);
             producer.send(message.getJMSMessage(session));
             session.close();
             connect.close();

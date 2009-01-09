@@ -38,7 +38,7 @@ public class TheatreServiceBean extends AbstractCinemaServiceBean implements The
     @SuppressWarnings("unchecked")
     public List<CinemaTheatreEntity> getAllTheatres() {
 
-        return this.em.createNamedQuery(CinemaTheatreEntity.getAll).getResultList();
+        return em.createNamedQuery(CinemaTheatreEntity.getAll).getResultList();
     }
 
     /**
@@ -47,6 +47,6 @@ public class TheatreServiceBean extends AbstractCinemaServiceBean implements The
     @SuppressWarnings("unchecked")
     public List<CinemaTheatreEntity> getTheatresThatPlay(CinemaFilmEntity film) {
 
-        return this.em.createNamedQuery(CinemaTheatreEntity.getAllFor).setParameter("film", film).getResultList();
+        return em.createNamedQuery(CinemaTheatreEntity.getAllFor).setParameter("film", film).getResultList();
     }
 }

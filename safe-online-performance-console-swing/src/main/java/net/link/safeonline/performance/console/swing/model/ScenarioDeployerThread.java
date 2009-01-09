@@ -34,6 +34,6 @@ public class ScenarioDeployerThread extends ScenarioThread {
     void process(ConsoleAgent agent)
             throws Exception {
 
-        this.scenarioDeployer.deploy(agent.getAddress());
+        scenarioDeployer.deploy(agent.getAddress());
     }
 }

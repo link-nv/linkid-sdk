@@ -45,7 +45,7 @@ public class ScenarioSpeedCorrelationChart extends AbstractCorrelationChart {
 
         super("Correlation: Scenario Speed - Agent Duration", "Correlation (-1 ~ 1)", period);
 
-        this.activeScenarios = new LinkedList<Long>();
+        activeScenarios = new LinkedList<Long>();
     }
 
     /**
@@ -56,7 +56,7 @@ public class ScenarioSpeedCorrelationChart extends AbstractCorrelationChart {
     @Override
     protected double getCorrelationX(Long startTime) {
 
-        return this.activeScenarios.size();
+        return activeScenarios.size();
     }
 
     /**
@@ -67,7 +67,7 @@ public class ScenarioSpeedCorrelationChart extends AbstractCorrelationChart {
     @Override
     protected double getCorrelationY(Long startTime) {
 
-        ScenarioTimingEntity timing = this.averageTimings.get(startTime);
+        ScenarioTimingEntity timing = averageTimings.get(startTime);
 
         return timing.getAgentDuration() / 1000d;
     }
@@ -88,18 +88,18 @@ public class ScenarioSpeedCorrelationChart extends AbstractCorrelationChart {
     protected Number getMovingAverage() {
 
         // Add the end time of the latest timing to the active scenarios list.
-        Long current = this.averageTimes.getLast();
-        ScenarioTimingEntity timing = this.averageTimings.get(current);
-        this.activeScenarios.offer(current + timing.getAgentDuration());
+        Long current = averageTimes.getLast();
+        ScenarioTimingEntity timing = averageTimings.get(current);
+        activeScenarios.offer(current + timing.getAgentDuration());
 
         // Poll all active scenarios that ended before the start of the current.
-        while (this.activeScenarios.peek() < current) {
-            this.activeScenarios.poll();
+        while (activeScenarios.peek() < current) {
+            activeScenarios.poll();
         }
 
         // Use a static mean for X, not the mean of the current period.
-        if (this.customMeanX == null) {
-            this.customMeanX = (double) timing.getExecution().getWorkers();
+        if (customMeanX == null) {
+            customMeanX = (double) timing.getExecution().getWorkers();
         }
 
         return super.getMovingAverage();

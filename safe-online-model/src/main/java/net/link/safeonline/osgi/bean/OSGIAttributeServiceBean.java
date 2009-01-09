@@ -60,7 +60,7 @@ public class OSGIAttributeServiceBean implements OSGIAttributeService {
         LOG.debug("get attribute " + attributeName + " for user " + userId);
         Object value;
         try {
-            value = this.proxyAttributeService.findAttributeValue(userId, attributeName);
+            value = proxyAttributeService.findAttributeValue(userId, attributeName);
         } catch (PermissionDeniedException e) {
             LOG.debug("permission denied retrieving attribute " + attributeName + " for user " + userId);
             throw new AttributeNotFoundException();

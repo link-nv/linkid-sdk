@@ -86,7 +86,7 @@ public class AccountServiceBean implements AccountService, AccountServiceRemote 
     public void removeAccount()
             throws SubscriptionNotFoundException, MessageHandlerNotFoundException {
 
-        SubjectEntity subject = this.subjectManager.getCallerSubject();
+        SubjectEntity subject = subjectManager.getCallerSubject();
         removeSubject(subject);
     }
 
@@ -102,7 +102,7 @@ public class AccountServiceBean implements AccountService, AccountServiceRemote 
     public void removeAccount(String userId)
             throws SubjectNotFoundException, SubscriptionNotFoundException, MessageHandlerNotFoundException {
 
-        SubjectEntity subject = this.subjectService.getSubject(userId);
+        SubjectEntity subject = subjectService.getSubject(userId);
         removeSubject(subject);
     }
 
@@ -111,14 +111,14 @@ public class AccountServiceBean implements AccountService, AccountServiceRemote 
 
         LOG.debug("remove account: " + subject.getUserId());
 
-        this.notificationProducerService.sendNotification(SafeOnlineConstants.TOPIC_REMOVE_USER, subject.getUserId(), null);
+        notificationProducerService.sendNotification(SafeOnlineConstants.TOPIC_REMOVE_USER, subject.getUserId(), null);
 
-        this.historyDAO.clearAllHistory(subject);
-        this.subscriptionDAO.removeAllSubscriptions(subject);
-        this.applicationScopeIdDAO.removeApplicationScopeIds(subject);
-        this.attributeDAO.removeAttributes(subject);
-        this.subjectIdentifierDAO.removeSubjectIdentifiers(subject);
-        this.nodeMappingDAO.removeNodeMappings(subject);
-        this.subjectDAO.removeSubject(subject);
+        historyDAO.clearAllHistory(subject);
+        subscriptionDAO.removeAllSubscriptions(subject);
+        applicationScopeIdDAO.removeApplicationScopeIds(subject);
+        attributeDAO.removeAttributes(subject);
+        subjectIdentifierDAO.removeSubjectIdentifiers(subject);
+        nodeMappingDAO.removeNodeMappings(subject);
+        subjectDAO.removeSubject(subject);
     }
 }

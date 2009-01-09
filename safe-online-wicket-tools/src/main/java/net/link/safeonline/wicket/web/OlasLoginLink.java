@@ -74,7 +74,7 @@ public class OlasLoginLink extends OlasAuthLink {
     @Override
     protected void delegate(String target, HttpServletRequest request, HttpServletResponse response) {
 
-        SafeOnlineLoginUtils.login(target, Session.exists()? Session.get().getLocale(): request.getLocale(), this.color, this.minimal,
+        SafeOnlineLoginUtils.login(target, Session.exists()? Session.get().getLocale(): request.getLocale(), color, minimal,
                 request, response);
     }
 }

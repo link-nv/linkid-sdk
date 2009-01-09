@@ -75,7 +75,7 @@ public class OtpOverSmsManagerBean implements OtpOverSmsManager {
          * By injecting the attribute DAO of this session bean in the attribute manager we are sure that the attribute manager (a
          * lightweight bean) will live within the same transaction and security context as this identity service EJB3 session bean.
          */
-        this.attributeManager = new AttributeManagerLWBean(this.attributeDAO);
+        attributeManager = new AttributeManagerLWBean(attributeDAO);
     }
 
     public boolean changePin(SubjectEntity subject, String mobile, String oldPin, String newPin)
@@ -116,14 +116,14 @@ public class OtpOverSmsManagerBean implements OtpOverSmsManager {
         AttributeTypeEntity otpOverSmsDeviceAttributeType;
         AttributeTypeEntity otpOverSmsDeviceDisableAttributeType;
         try {
-            mobileAttributeType = this.attributeTypeDAO.getAttributeType(OtpOverSmsConstants.OTPOVERSMS_MOBILE_ATTRIBUTE);
-            pinHashAttributeType = this.attributeTypeDAO.getAttributeType(OtpOverSmsConstants.OTPOVERSMS_PIN_HASH_ATTRIBUTE);
-            pinSeedAttributeType = this.attributeTypeDAO.getAttributeType(OtpOverSmsConstants.OTPOVERSMS_PIN_SEED_ATTRIBUTE);
-            pinAlgorithmAttributeType = this.attributeTypeDAO.getAttributeType(OtpOverSmsConstants.OTPOVERSMS_PIN_ALGORITHM_ATTRIBUTE);
-            pinAttemptsAttributeType = this.attributeTypeDAO.getAttributeType(OtpOverSmsConstants.OTPOVERSMS_PIN_ATTEMPTS_ATTRIBUTE);
+            mobileAttributeType = attributeTypeDAO.getAttributeType(OtpOverSmsConstants.OTPOVERSMS_MOBILE_ATTRIBUTE);
+            pinHashAttributeType = attributeTypeDAO.getAttributeType(OtpOverSmsConstants.OTPOVERSMS_PIN_HASH_ATTRIBUTE);
+            pinSeedAttributeType = attributeTypeDAO.getAttributeType(OtpOverSmsConstants.OTPOVERSMS_PIN_SEED_ATTRIBUTE);
+            pinAlgorithmAttributeType = attributeTypeDAO.getAttributeType(OtpOverSmsConstants.OTPOVERSMS_PIN_ALGORITHM_ATTRIBUTE);
+            pinAttemptsAttributeType = attributeTypeDAO.getAttributeType(OtpOverSmsConstants.OTPOVERSMS_PIN_ATTEMPTS_ATTRIBUTE);
 
-            otpOverSmsDeviceAttributeType = this.attributeTypeDAO.getAttributeType(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ATTRIBUTE);
-            otpOverSmsDeviceDisableAttributeType = this.attributeTypeDAO
+            otpOverSmsDeviceAttributeType = attributeTypeDAO.getAttributeType(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ATTRIBUTE);
+            otpOverSmsDeviceDisableAttributeType = attributeTypeDAO
                                                                         .getAttributeType(OtpOverSmsConstants.OTPOVERSMS_DEVICE_DISABLE_ATTRIBUTE);
         } catch (AttributeTypeNotFoundException e) {
             throw new EJBException("otp over sms attribute types not found");
@@ -137,17 +137,17 @@ public class OtpOverSmsManagerBean implements OtpOverSmsManager {
             throw new EJBException("Could not find the default otp over sms pin hashing algorithm: " + defaultHashingAlgorithm);
         }
 
-        AttributeEntity mobileAttribute = this.attributeDAO.addAttribute(mobileAttributeType, subject);
+        AttributeEntity mobileAttribute = attributeDAO.addAttribute(mobileAttributeType, subject);
         mobileAttribute.setStringValue(mobile);
-        AttributeEntity hashAttribute = this.attributeDAO.addAttribute(pinHashAttributeType, subject);
+        AttributeEntity hashAttribute = attributeDAO.addAttribute(pinHashAttributeType, subject);
         hashAttribute.setStringValue(hashValue);
-        AttributeEntity seedAttribute = this.attributeDAO.addAttribute(pinSeedAttributeType, subject);
+        AttributeEntity seedAttribute = attributeDAO.addAttribute(pinSeedAttributeType, subject);
         seedAttribute.setStringValue(seed);
-        AttributeEntity algorithmAttribute = this.attributeDAO.addAttribute(pinAlgorithmAttributeType, subject);
+        AttributeEntity algorithmAttribute = attributeDAO.addAttribute(pinAlgorithmAttributeType, subject);
         algorithmAttribute.setStringValue(defaultHashingAlgorithm);
-        AttributeEntity attemptsAttribute = this.attributeDAO.addAttribute(pinAttemptsAttributeType, subject);
+        AttributeEntity attemptsAttribute = attributeDAO.addAttribute(pinAttemptsAttributeType, subject);
         attemptsAttribute.setIntegerValue(0);
-        AttributeEntity disableAttribute = this.attributeDAO.addAttribute(otpOverSmsDeviceDisableAttributeType, subject);
+        AttributeEntity disableAttribute = attributeDAO.addAttribute(otpOverSmsDeviceDisableAttributeType, subject);
         disableAttribute.setBooleanValue(false);
         List<AttributeEntity> members = new LinkedList<AttributeEntity>();
         members.add(mobileAttribute);
@@ -155,7 +155,7 @@ public class OtpOverSmsManagerBean implements OtpOverSmsManager {
         members.add(seedAttribute);
         members.add(algorithmAttribute);
         members.add(disableAttribute);
-        AttributeEntity parentAttribute = this.attributeDAO.addAttribute(otpOverSmsDeviceAttributeType, subject);
+        AttributeEntity parentAttribute = attributeDAO.addAttribute(otpOverSmsDeviceAttributeType, subject);
         parentAttribute.setMembers(members);
     }
 
@@ -195,7 +195,7 @@ public class OtpOverSmsManagerBean implements OtpOverSmsManager {
 
         Mobile mobileAttribute = getMobileAttribute(subject, mobile);
         mobileAttribute.attempts.setIntegerValue(mobileAttribute.attempts.getIntegerValue() + 1);
-        if (mobileAttribute.attempts.getIntegerValue() >= this.configAttempts) {
+        if (mobileAttribute.attempts.getIntegerValue() >= configAttempts) {
             mobileAttribute.disabled.setBooleanValue(true);
         }
         LOG.debug("attempts: " + mobileAttribute.attempts.getIntegerValue());
@@ -204,15 +204,15 @@ public class OtpOverSmsManagerBean implements OtpOverSmsManager {
     public void removeMobile(SubjectEntity subject, String mobile)
             throws DeviceNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException {
 
-        AttributeTypeEntity deviceAttributeType = this.attributeTypeDAO.getAttributeType(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ATTRIBUTE);
-        AttributeTypeEntity mobileAttributeType = this.attributeTypeDAO.getAttributeType(OtpOverSmsConstants.OTPOVERSMS_MOBILE_ATTRIBUTE);
+        AttributeTypeEntity deviceAttributeType = attributeTypeDAO.getAttributeType(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ATTRIBUTE);
+        AttributeTypeEntity mobileAttributeType = attributeTypeDAO.getAttributeType(OtpOverSmsConstants.OTPOVERSMS_MOBILE_ATTRIBUTE);
 
-        List<AttributeEntity> deviceAttributes = this.attributeDAO.listAttributes(subject, deviceAttributeType);
+        List<AttributeEntity> deviceAttributes = attributeDAO.listAttributes(subject, deviceAttributeType);
         for (AttributeEntity deviceAttribute : deviceAttributes) {
-            AttributeEntity mobileAttribute = this.attributeDAO.findAttribute(subject, mobileAttributeType,
+            AttributeEntity mobileAttribute = attributeDAO.findAttribute(subject, mobileAttributeType,
                     deviceAttribute.getAttributeIndex());
             if (mobileAttribute.getStringValue().equals(mobile)) {
-                this.attributeManager.removeAttribute(deviceAttributeType, deviceAttribute.getAttributeIndex(), subject);
+                attributeManager.removeAttribute(deviceAttributeType, deviceAttribute.getAttributeIndex(), subject);
                 return;
             }
         }
@@ -268,24 +268,24 @@ public class OtpOverSmsManagerBean implements OtpOverSmsManager {
     private Mobile getMobileAttribute(SubjectEntity subject, String mobile)
             throws DeviceNotFoundException {
 
-        DeviceEntity device = this.deviceDAO.getDevice(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID);
+        DeviceEntity device = deviceDAO.getDevice(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID);
 
-        List<AttributeEntity> deviceAttributes = this.attributeDAO.listAttributes(subject, device.getAttributeType());
+        List<AttributeEntity> deviceAttributes = attributeDAO.listAttributes(subject, device.getAttributeType());
         for (AttributeEntity deviceAttribute : deviceAttributes) {
-            AttributeEntity mobileAttribute = this.attributeDAO.findAttribute(subject, OtpOverSmsConstants.OTPOVERSMS_MOBILE_ATTRIBUTE,
+            AttributeEntity mobileAttribute = attributeDAO.findAttribute(subject, OtpOverSmsConstants.OTPOVERSMS_MOBILE_ATTRIBUTE,
                     deviceAttribute.getAttributeIndex());
             if (null == mobileAttribute)
                 throw new DeviceNotFoundException();
             if (mobileAttribute.getStringValue().equals(mobile)) {
-                AttributeEntity pinHashAttribute = this.attributeDAO.findAttribute(subject,
+                AttributeEntity pinHashAttribute = attributeDAO.findAttribute(subject,
                         OtpOverSmsConstants.OTPOVERSMS_PIN_HASH_ATTRIBUTE, deviceAttribute.getAttributeIndex());
-                AttributeEntity pinSeedAttribute = this.attributeDAO.findAttribute(subject,
+                AttributeEntity pinSeedAttribute = attributeDAO.findAttribute(subject,
                         OtpOverSmsConstants.OTPOVERSMS_PIN_SEED_ATTRIBUTE, deviceAttribute.getAttributeIndex());
-                AttributeEntity pinAlgorithmAttribute = this.attributeDAO.findAttribute(subject,
+                AttributeEntity pinAlgorithmAttribute = attributeDAO.findAttribute(subject,
                         OtpOverSmsConstants.OTPOVERSMS_PIN_ALGORITHM_ATTRIBUTE, deviceAttribute.getAttributeIndex());
-                AttributeEntity pinAttemptsAttribute = this.attributeDAO.findAttribute(subject,
+                AttributeEntity pinAttemptsAttribute = attributeDAO.findAttribute(subject,
                         OtpOverSmsConstants.OTPOVERSMS_PIN_ATTEMPTS_ATTRIBUTE, deviceAttribute.getAttributeIndex());
-                AttributeEntity otpOverSmsDisableAttribute = this.attributeDAO.findAttribute(subject,
+                AttributeEntity otpOverSmsDisableAttribute = attributeDAO.findAttribute(subject,
                         OtpOverSmsConstants.OTPOVERSMS_DEVICE_DISABLE_ATTRIBUTE, deviceAttribute.getAttributeIndex());
                 if (null == pinHashAttribute || null == pinSeedAttribute || null == pinAlgorithmAttribute
                         || null == otpOverSmsDisableAttribute || null == pinAttemptsAttribute)

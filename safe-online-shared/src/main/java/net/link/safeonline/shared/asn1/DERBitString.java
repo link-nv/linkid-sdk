@@ -28,9 +28,9 @@ public class DERBitString implements DEREncodable {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         out.write(BIT_STRING);
         try {
-            DERUtils.writeLength(this.data.length + 1, out);
+            DERUtils.writeLength(data.length + 1, out);
             out.write(0);
-            out.write(this.data);
+            out.write(data);
         } catch (IOException e) {
             throw new RuntimeException("IO error: " + e.getMessage());
         }

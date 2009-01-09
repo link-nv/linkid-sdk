@@ -40,7 +40,7 @@ public class TaskDAOBean implements TaskDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, TaskEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, TaskEntity.QueryInterface.class);
     }
 
     public TaskEntity addTaskEntity(String jndiName, String name, SchedulingEntity scheduling) {
@@ -48,27 +48,27 @@ public class TaskDAOBean implements TaskDAO {
         LOG.debug("Adding task entity: " + name);
 
         TaskEntity taskEntity = new TaskEntity(jndiName, name, scheduling);
-        this.entityManager.persist(taskEntity);
+        entityManager.persist(taskEntity);
         return taskEntity;
     }
 
     public TaskEntity findTaskEntity(String jndiName) {
 
         LOG.debug("find task entity: " + jndiName);
-        TaskEntity result = this.queryObject.findTaskEntity(jndiName);
+        TaskEntity result = queryObject.findTaskEntity(jndiName);
         return result;
     }
 
     public List<TaskEntity> listTaskEntities() {
 
         LOG.debug("Listing task entities");
-        List<TaskEntity> result = this.queryObject.listTaskEntities();
+        List<TaskEntity> result = queryObject.listTaskEntities();
         return result;
     }
 
     public void removeTaskEntity(TaskEntity taskEntity) {
 
         LOG.debug("Removing task entity: " + taskEntity.getName());
-        this.entityManager.remove(taskEntity);
+        entityManager.remove(taskEntity);
     }
 }

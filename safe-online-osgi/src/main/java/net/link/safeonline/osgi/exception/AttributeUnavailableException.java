@@ -35,7 +35,7 @@ public class AttributeUnavailableException extends Exception {
 
     public String getErrorMessage() {
 
-        return this.errorMessage;
+        return errorMessage;
     }
 
 }

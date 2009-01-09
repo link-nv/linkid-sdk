@@ -64,19 +64,19 @@ public class AuditServiceBean implements AuditService {
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public Set<String> listUsers() {
 
-        List<String> accessUsers = this.accessAuditDAO.listUsers();
-        List<String> securityUsers = this.securityAuditDAO.listUsers();
+        List<String> accessUsers = accessAuditDAO.listUsers();
+        List<String> securityUsers = securityAuditDAO.listUsers();
         Set<String> users = new HashSet<String>();
 
         for (String userId : accessUsers) {
-            String user = this.subjectService.getSubjectLogin(userId);
+            String user = subjectService.getSubjectLogin(userId);
             if (null != user) {
                 users.add(user);
             }
         }
 
         for (String userId : securityUsers) {
-            String user = this.subjectService.getSubjectLogin(userId);
+            String user = subjectService.getSubjectLogin(userId);
             if (null != user) {
                 users.add(user);
             }
@@ -88,21 +88,21 @@ public class AuditServiceBean implements AuditService {
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public List<AccessAuditEntity> listAccessAuditRecords(String principal) {
 
-        SubjectEntity subject = this.subjectService.findSubjectFromUserName(principal);
+        SubjectEntity subject = subjectService.findSubjectFromUserName(principal);
         if (null == subject)
             return null;
 
-        return this.accessAuditDAO.listRecords(subject.getUserId());
+        return accessAuditDAO.listRecords(subject.getUserId());
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public List<SecurityAuditEntity> listSecurityAuditRecords(String principal) {
 
-        SubjectEntity subject = this.subjectService.findSubjectFromUserName(principal);
+        SubjectEntity subject = subjectService.findSubjectFromUserName(principal);
         if (null == subject)
             return null;
 
-        return this.securityAuditDAO.listRecords(subject.getUserId());
+        return securityAuditDAO.listRecords(subject.getUserId());
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -112,95 +112,95 @@ public class AuditServiceBean implements AuditService {
         /*
          * We're not using the cascading of hibernate here.
          */
-        this.securityAuditDAO.cleanup(id);
-        this.accessAuditDAO.cleanup(id);
-        this.auditAuditDAO.cleanup(id);
-        this.resourceAuditDAO.cleanup(id);
-        return this.auditContextDAO.removeAuditContext(id);
+        securityAuditDAO.cleanup(id);
+        accessAuditDAO.cleanup(id);
+        auditAuditDAO.cleanup(id);
+        resourceAuditDAO.cleanup(id);
+        return auditContextDAO.removeAuditContext(id);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public List<AuditContextEntity> listContexts() {
 
-        return this.auditContextDAO.listContexts();
+        return auditContextDAO.listContexts();
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public List<AccessAuditEntity> listAccessAuditRecords(Long id) {
 
-        return this.accessAuditDAO.listRecords(id);
+        return accessAuditDAO.listRecords(id);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public List<AuditAuditEntity> listAuditAuditRecords(Long id) {
 
-        return this.auditAuditDAO.listRecords(id);
+        return auditAuditDAO.listRecords(id);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public List<ResourceAuditEntity> listResourceAuditRecords(Long id) {
 
-        return this.resourceAuditDAO.listRecords(id);
+        return resourceAuditDAO.listRecords(id);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public List<SecurityAuditEntity> listSecurityAuditRecords(Long id) {
 
-        return this.securityAuditDAO.listRecords(id);
+        return securityAuditDAO.listRecords(id);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public List<AccessAuditEntity> listAccessAuditRecordsSince(Date ageLimit) {
 
-        return this.accessAuditDAO.listRecordsSince(ageLimit);
+        return accessAuditDAO.listRecordsSince(ageLimit);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public List<AuditAuditEntity> listAuditAuditRecordsSince(Date ageLimit) {
 
-        return this.auditAuditDAO.listRecordsSince(ageLimit);
+        return auditAuditDAO.listRecordsSince(ageLimit);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public List<ResourceAuditEntity> listResourceAuditRecordsSince(Date ageLimit) {
 
-        return this.resourceAuditDAO.listRecordsSince(ageLimit);
+        return resourceAuditDAO.listRecordsSince(ageLimit);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public List<SecurityAuditEntity> listSecurityAuditRecordsSince(Date ageLimit) {
 
-        return this.securityAuditDAO.listRecordsSince(ageLimit);
+        return securityAuditDAO.listRecordsSince(ageLimit);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public AuditContextEntity getAuditContext(Long id)
             throws AuditContextNotFoundException {
 
-        return this.auditContextDAO.getAuditContext(id);
+        return auditContextDAO.getAuditContext(id);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public List<ResourceAuditEntity> listResourceAuditRecords() {
 
-        return this.resourceAuditDAO.listRecords();
+        return resourceAuditDAO.listRecords();
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public List<SecurityAuditEntity> listSecurityAuditRecords() {
 
-        return this.securityAuditDAO.listRecords();
+        return securityAuditDAO.listRecords();
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public List<AuditContextEntity> listLastContexts() {
 
-        return this.auditContextDAO.listLastContexts();
+        return auditContextDAO.listLastContexts();
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public List<AuditAuditEntity> listAuditAuditRecords() {
 
-        return this.auditAuditDAO.listRecords();
+        return auditAuditDAO.listRecords();
     }
 }

@@ -57,7 +57,7 @@ public class ScenarioDriverDurationsChart extends AbstractChart {
 
         super("Scenario Driver Duration");
 
-        this.driverMaps = new HashMap<String, Map<String, XYSeries>>();
+        driverMaps = new HashMap<String, Map<String, XYSeries>>();
     }
 
     /**
@@ -121,7 +121,7 @@ public class ScenarioDriverDurationsChart extends AbstractChart {
         ValueAxis domainAxis = new DateAxis("Time");
         CombinedDomainXYPlot plot = new CombinedDomainXYPlot(domainAxis);
 
-        for (Map.Entry<String, Map<String, XYSeries>> driverSet : this.driverMaps.entrySet()) {
+        for (Map.Entry<String, Map<String, XYSeries>> driverSet : driverMaps.entrySet()) {
             NumberAxis valueAxis = new NumberAxis(driverSet.getKey() + " (ms)");
             DefaultTableXYDataset driverMeasurements = new DefaultTableXYDataset();
 
@@ -137,7 +137,7 @@ public class ScenarioDriverDurationsChart extends AbstractChart {
 
     private boolean isEmpty() {
 
-        for (Map<String, XYSeries> data : this.driverMaps.values())
+        for (Map<String, XYSeries> data : driverMaps.values())
             if (!isEmpty(data))
                 return false;
 
@@ -148,9 +148,9 @@ public class ScenarioDriverDurationsChart extends AbstractChart {
 
         String profile = measurement.getProfileData().getProfile().getDriverClassName().replaceFirst(".*\\.", "");
 
-        Map<String, XYSeries> driverMap = this.driverMaps.get(profile);
+        Map<String, XYSeries> driverMap = driverMaps.get(profile);
         if (driverMap == null) {
-            this.driverMaps.put(profile, driverMap = new HashMap<String, XYSeries>());
+            driverMaps.put(profile, driverMap = new HashMap<String, XYSeries>());
         }
 
         XYSeries measurementSet = driverMap.get(measurement.getMeasurement());

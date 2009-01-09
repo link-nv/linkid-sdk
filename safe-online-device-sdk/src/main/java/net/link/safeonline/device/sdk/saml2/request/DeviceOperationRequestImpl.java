@@ -67,7 +67,7 @@ public class DeviceOperationRequestImpl extends RequestAbstractTypeImpl implemen
      */
     public String getDeviceOperation() {
 
-        return this.deviceOperation;
+        return deviceOperation;
     }
 
     /**
@@ -83,7 +83,7 @@ public class DeviceOperationRequestImpl extends RequestAbstractTypeImpl implemen
      */
     public String getDevice() {
 
-        return this.device;
+        return device;
     }
 
     /**
@@ -107,7 +107,7 @@ public class DeviceOperationRequestImpl extends RequestAbstractTypeImpl implemen
      */
     public String getAuthenticatedDevice() {
 
-        return this.authenticatedDevice;
+        return authenticatedDevice;
     }
 
     /**
@@ -115,7 +115,7 @@ public class DeviceOperationRequestImpl extends RequestAbstractTypeImpl implemen
      */
     public Subject getSubject() {
 
-        return this.subject;
+        return subject;
     }
 
     /**
@@ -131,7 +131,7 @@ public class DeviceOperationRequestImpl extends RequestAbstractTypeImpl implemen
      */
     public String getProtocolBinding() {
 
-        return this.protocolBinding;
+        return protocolBinding;
     }
 
     /**
@@ -147,7 +147,7 @@ public class DeviceOperationRequestImpl extends RequestAbstractTypeImpl implemen
      */
     public String getServiceURL() {
 
-        return this.serviceURL;
+        return serviceURL;
     }
 
     /**
@@ -163,7 +163,7 @@ public class DeviceOperationRequestImpl extends RequestAbstractTypeImpl implemen
      */
     public String getAttribute() {
 
-        return this.attribute;
+        return attribute;
     }
 
     public void setAttribute(String attribute) {
@@ -183,8 +183,8 @@ public class DeviceOperationRequestImpl extends RequestAbstractTypeImpl implemen
             children.addAll(super.getOrderedChildren());
         }
 
-        if (this.subject != null) {
-            children.add(this.subject);
+        if (subject != null) {
+            children.add(subject);
         }
 
         if (children.size() == 0)

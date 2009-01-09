@@ -92,55 +92,55 @@ public class LandingServletTest {
     public void setUp()
             throws Exception {
 
-        this.originalContextClassLoader = Thread.currentThread().getContextClassLoader();
-        this.testClassLoader = new TestClassLoader();
-        Thread.currentThread().setContextClassLoader(this.testClassLoader);
+        originalContextClassLoader = Thread.currentThread().getContextClassLoader();
+        testClassLoader = new TestClassLoader();
+        Thread.currentThread().setContextClassLoader(testClassLoader);
 
-        this.jndiTestUtils = new JndiTestUtils();
-        this.jndiTestUtils.setUp();
-        this.jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
+        jndiTestUtils = new JndiTestUtils();
+        jndiTestUtils.setUp();
+        jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
                 "SafeOnline/WSSecurityConfigurationBean/local");
 
-        this.mockWSSecurityConfigurationService = EasyMock.createMock(WSSecurityConfigurationService.class);
-        this.jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local", this.mockWSSecurityConfigurationService);
-        expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
-        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck((X509Certificate) EasyMock.anyObject())).andStubReturn(
+        mockWSSecurityConfigurationService = EasyMock.createMock(WSSecurityConfigurationService.class);
+        jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local", mockWSSecurityConfigurationService);
+        expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
+        expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck((X509Certificate) EasyMock.anyObject())).andStubReturn(
                 true);
-        replay(this.mockWSSecurityConfigurationService);
+        replay(mockWSSecurityConfigurationService);
 
-        this.webServiceTestUtils = new WebServiceTestUtils();
+        webServiceTestUtils = new WebServiceTestUtils();
         SecurityTokenServicePort port = new SecurityTokenServicePortImpl();
-        this.webServiceTestUtils.setUp(port, "/safe-online-ws/sts");
+        webServiceTestUtils.setUp(port, "/safe-online-ws/sts");
 
-        this.keyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate cert = PkiTestUtils.generateSelfSignedCertificate(this.keyPair, "CN=TestApplication");
+        keyPair = PkiTestUtils.generateKeyPair();
+        X509Certificate cert = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=TestApplication");
         File tmpP12File = File.createTempFile("application-", ".p12");
         tmpP12File.deleteOnExit();
-        PkiTestUtils.persistKey(tmpP12File, this.keyPair.getPrivate(), cert, "secret", "secret");
+        PkiTestUtils.persistKey(tmpP12File, keyPair.getPrivate(), cert, "secret", "secret");
 
         String p12ResourceName = "p12-resource-name.p12";
-        this.testClassLoader.addResource(p12ResourceName, tmpP12File.toURI().toURL());
+        testClassLoader.addResource(p12ResourceName, tmpP12File.toURI().toURL());
 
-        this.servletTestManager = new ServletTestManager();
+        servletTestManager = new ServletTestManager();
         Map<String, String> initParams = new HashMap<String, String>();
-        initParams.put("AuthenticationUrl", this.authenticationUrl);
+        initParams.put("AuthenticationUrl", authenticationUrl);
         initParams.put("KeyStoreResource", p12ResourceName);
         initParams.put("KeyStorePassword", "secret");
-        initParams.put("DeviceName", this.deviceName);
-        initParams.put("ServletEndpointUrl", this.servletEndpointUrl);
-        initParams.put("WsLocation", this.webServiceTestUtils.getLocation());
+        initParams.put("DeviceName", deviceName);
+        initParams.put("ServletEndpointUrl", servletEndpointUrl);
+        initParams.put("WsLocation", webServiceTestUtils.getLocation());
 
-        this.servletTestManager.setUp(LandingServlet.class, initParams, null, null, null);
-        this.location = this.servletTestManager.getServletLocation();
-        this.httpClient = new HttpClient();
+        servletTestManager.setUp(LandingServlet.class, initParams, null, null, null);
+        location = servletTestManager.getServletLocation();
+        httpClient = new HttpClient();
     }
 
     @After
     public void tearDown()
             throws Exception {
 
-        this.servletTestManager.tearDown();
-        Thread.currentThread().setContextClassLoader(this.originalContextClassLoader);
+        servletTestManager.tearDown();
+        Thread.currentThread().setContextClassLoader(originalContextClassLoader);
     }
 
 
@@ -176,33 +176,33 @@ public class LandingServletTest {
             throws Exception {
 
         // setup
-        this.wantedDevices = Collections.singleton(this.deviceName);
-        String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(this.applicationName, this.applicationName, null, this.keyPair,
-                "http://test.authn.service", this.servletEndpointUrl, new Challenge<String>(), this.wantedDevices, false);
+        wantedDevices = Collections.singleton(deviceName);
+        String samlAuthnRequest = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName, null, keyPair,
+                "http://test.authn.service", servletEndpointUrl, new Challenge<String>(), wantedDevices, false);
         String encodedSamlAuthnRequest = Base64.encode(samlAuthnRequest.getBytes());
         NameValuePair[] postData = { new NameValuePair("SAMLRequest", encodedSamlAuthnRequest) };
 
         // operate
-        PostMethod postMethod = new PostMethod(this.location);
+        PostMethod postMethod = new PostMethod(location);
         postMethod.setRequestBody(postData);
-        int statusCode = this.httpClient.executeMethod(postMethod);
+        int statusCode = httpClient.executeMethod(postMethod);
 
         // verify
-        verify(this.mockWSSecurityConfigurationService);
+        verify(mockWSSecurityConfigurationService);
         LOG.debug("status code: " + statusCode);
         assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
         String resultLocation = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("location: " + resultLocation);
-        assertTrue(resultLocation.endsWith(this.authenticationUrl));
-        String resultApplicationId = (String) this.servletTestManager.getSessionAttribute("applicationId");
-        assertEquals(this.applicationName, resultApplicationId);
-        String resultApplicationName = (String) this.servletTestManager.getSessionAttribute("applicationName");
-        assertEquals(this.applicationName, resultApplicationName);
-        AuthenticationContext authenticationContext = (AuthenticationContext) this.servletTestManager
+        assertTrue(resultLocation.endsWith(authenticationUrl));
+        String resultApplicationId = (String) servletTestManager.getSessionAttribute("applicationId");
+        assertEquals(applicationName, resultApplicationId);
+        String resultApplicationName = (String) servletTestManager.getSessionAttribute("applicationName");
+        assertEquals(applicationName, resultApplicationName);
+        AuthenticationContext authenticationContext = (AuthenticationContext) servletTestManager
                                                                                                      .getSessionAttribute(AuthenticationContext.AUTHENTICATION_CONTEXT);
         assertNotNull(authenticationContext);
-        assertEquals(this.applicationName, authenticationContext.getApplication());
-        assertEquals(this.applicationName, authenticationContext.getApplicationFriendlyName());
-        assertEquals(this.wantedDevices, authenticationContext.getWantedDevices());
+        assertEquals(applicationName, authenticationContext.getApplication());
+        assertEquals(applicationName, authenticationContext.getApplicationFriendlyName());
+        assertEquals(wantedDevices, authenticationContext.getWantedDevices());
     }
 }

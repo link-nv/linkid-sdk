@@ -65,7 +65,7 @@ public class ConfirmIdentity extends JFrame {
         this.keyStorePassword = keyStorePassword;
 
         buildWindow();
-        this.setVisible(true);
+        setVisible(true);
         this.setLocation(50, 50);
         this.setSize(400, 300);
     }
@@ -94,9 +94,9 @@ public class ConfirmIdentity extends JFrame {
         certificatePanel.add(sigAlgoField);
         certificatePanel.setBorder(new TitledBorder(CERTIFICATE.getMessage()));
 
-        issuerDNField.setText(((X509Certificate) this.privateKeyEntry.getCertificate()).getIssuerX500Principal().getName());
-        subjectDNField.setText(((X509Certificate) this.privateKeyEntry.getCertificate()).getSubjectX500Principal().getName());
-        sigAlgoField.setText(((X509Certificate) this.privateKeyEntry.getCertificate()).getSigAlgName());
+        issuerDNField.setText(((X509Certificate) privateKeyEntry.getCertificate()).getIssuerX500Principal().getName());
+        subjectDNField.setText(((X509Certificate) privateKeyEntry.getCertificate()).getSubjectX500Principal().getName());
+        sigAlgoField.setText(((X509Certificate) privateKeyEntry.getCertificate()).getSigAlgName());
 
         /*
          * Private key panel
@@ -112,15 +112,15 @@ public class ConfirmIdentity extends JFrame {
         privateKeyPanel.add(keyFormatField);
         privateKeyPanel.setBorder(new TitledBorder(PRIVATE_KEY.getMessage()));
 
-        keyAlgoField.setText(this.privateKeyEntry.getPrivateKey().getAlgorithm());
-        keyFormatField.setText(this.privateKeyEntry.getPrivateKey().getFormat());
+        keyAlgoField.setText(privateKeyEntry.getPrivateKey().getAlgorithm());
+        keyFormatField.setText(privateKeyEntry.getPrivateKey().getFormat());
 
         /*
          * Control panel
          */
         controlPanel.setLayout(new FlowLayout());
-        controlPanel.add(new JButton(this.confirmAction));
-        controlPanel.add(new JButton(this.cancelAction));
+        controlPanel.add(new JButton(confirmAction));
+        controlPanel.add(new JButton(cancelAction));
 
         /*
          * Add all to the parent container
@@ -138,14 +138,14 @@ public class ConfirmIdentity extends JFrame {
 
     void onConfirm() {
 
-        this.consoleManager.setIdentity(this.privateKeyEntry, this.keyStorePath, this.keyStoreType, this.keyStorePassword);
-        this.dispose();
+        consoleManager.setIdentity(privateKeyEntry, keyStorePath, keyStoreType, keyStorePassword);
+        dispose();
     }
 
     void onCancel() {
 
-        this.consoleManager.setIdentity(null, null, null, null);
-        this.dispose();
+        consoleManager.setIdentity(null, null, null, null);
+        dispose();
     }
 
 

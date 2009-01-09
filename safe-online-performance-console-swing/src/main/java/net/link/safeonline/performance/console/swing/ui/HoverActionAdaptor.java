@@ -59,7 +59,7 @@ public abstract class HoverActionAdaptor extends MouseAdapter {
      */
     public HoverActionAdaptor(JComponent... components) {
 
-        this.managedComponents = new HashMap<JComponent, Boolean>();
+        managedComponents = new HashMap<JComponent, Boolean>();
         manage(components);
     }
 
@@ -69,7 +69,7 @@ public abstract class HoverActionAdaptor extends MouseAdapter {
     public void manage(JComponent... components) {
 
         for (JComponent component : components) {
-            this.managedComponents.put(component, true);
+            managedComponents.put(component, true);
 
             component.addMouseListener(this);
             component.setBorder(EMPTY_BORDER);
@@ -82,7 +82,7 @@ public abstract class HoverActionAdaptor extends MouseAdapter {
     public void unmanage(JComponent... components) {
 
         for (JComponent component : components) {
-            this.managedComponents.remove(component);
+            managedComponents.remove(component);
 
             component.removeMouseListener(this);
             component.setBorder(EMPTY_BORDER);
@@ -95,11 +95,10 @@ public abstract class HoverActionAdaptor extends MouseAdapter {
     public void enable(boolean enabled, JComponent... components) {
 
         for (JComponent component : components) {
-            if (!this.managedComponents.containsKey(component)) {
+            if (!managedComponents.containsKey(component))
                 throw new IllegalArgumentException("Given component is not managed!");
-            }
 
-            this.managedComponents.put(component, enabled);
+            managedComponents.put(component, enabled);
 
             if (!enabled) {
                 component.setBorder(EMPTY_BORDER);
@@ -113,7 +112,7 @@ public abstract class HoverActionAdaptor extends MouseAdapter {
     @Override
     public void mouseEntered(MouseEvent e) {
 
-        if (this.managedComponents.containsKey(e.getSource()) && this.managedComponents.get(e.getSource())) {
+        if (managedComponents.containsKey(e.getSource()) && managedComponents.get(e.getSource())) {
             getComponent(e).setBorder(HOVER_BORDER);
         }
     }
@@ -124,7 +123,7 @@ public abstract class HoverActionAdaptor extends MouseAdapter {
     @Override
     public void mouseExited(MouseEvent e) {
 
-        if (this.managedComponents.containsKey(e.getSource()) && this.managedComponents.get(e.getSource())) {
+        if (managedComponents.containsKey(e.getSource()) && managedComponents.get(e.getSource())) {
             getComponent(e).setBorder(EMPTY_BORDER);
         }
     }
@@ -135,7 +134,7 @@ public abstract class HoverActionAdaptor extends MouseAdapter {
     @Override
     public void mousePressed(MouseEvent e) {
 
-        if (this.managedComponents.containsKey(e.getSource()) && this.managedComponents.get(e.getSource())) {
+        if (managedComponents.containsKey(e.getSource()) && managedComponents.get(e.getSource())) {
             getComponent(e).setBorder(PRESS_BORDER);
         }
     }
@@ -146,7 +145,7 @@ public abstract class HoverActionAdaptor extends MouseAdapter {
     @Override
     public void mouseReleased(MouseEvent e) {
 
-        if (this.managedComponents.containsKey(e.getSource()) && this.managedComponents.get(e.getSource()))
+        if (managedComponents.containsKey(e.getSource()) && managedComponents.get(e.getSource()))
             if (getComponent(e).contains(e.getPoint())) {
                 mouseEntered(e);
             } else {
@@ -160,7 +159,7 @@ public abstract class HoverActionAdaptor extends MouseAdapter {
     @Override
     public void mouseClicked(MouseEvent e) {
 
-        if (this.managedComponents.containsKey(e.getSource()) && this.managedComponents.get(e.getSource())) {
+        if (managedComponents.containsKey(e.getSource()) && managedComponents.get(e.getSource())) {
             clicked(getComponent(e));
         }
     }

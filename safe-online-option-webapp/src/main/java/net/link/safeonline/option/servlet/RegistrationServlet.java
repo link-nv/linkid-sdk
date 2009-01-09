@@ -67,7 +67,7 @@ public class RegistrationServlet extends AbstractInjectionServlet {
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(session);
         try {
 
-            protocolContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());
+            protocolContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
             protocolContext.setSuccess(false);
 
             String imei = request.getParameter("imei");
@@ -76,7 +76,7 @@ public class RegistrationServlet extends AbstractInjectionServlet {
             String userId = (String) session.getAttribute("userId");
 
             LOG.debug("registering imei: " + imei + " with pin: " + pin);
-            this.optionDeviceService.register(userId, imei, pin);
+            optionDeviceService.register(userId, imei, pin);
             response.setStatus(HttpServletResponse.SC_OK);
             // notify that registration was successful.
             protocolContext.setSuccess(true);

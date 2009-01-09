@@ -79,7 +79,7 @@ public class DeviceBean implements Device {
 
     public String getSelection() {
 
-        return this.deviceSelection;
+        return deviceSelection;
     }
 
     public void setSelection(String deviceSelection) {
@@ -90,31 +90,31 @@ public class DeviceBean implements Device {
     public String next()
             throws IOException, DeviceNotFoundException {
 
-        this.log.debug("next: " + this.deviceSelection);
-        HelpdeskLogger.add("selected authentication device: " + this.deviceSelection, LogLevelType.INFO);
+        log.debug("next: " + deviceSelection);
+        HelpdeskLogger.add("selected authentication device: " + deviceSelection, LogLevelType.INFO);
 
-        String authenticationPath = this.devicePolicyService.getAuthenticationURL(this.deviceSelection);
-        this.log.debug("authenticationPath: " + authenticationPath);
+        String authenticationPath = devicePolicyService.getAuthenticationURL(deviceSelection);
+        log.debug("authenticationPath: " + authenticationPath);
 
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext externalContext = context.getExternalContext();
         String requestPath = ((HttpServletRequest) externalContext.getRequest()).getRequestURL().toString();
 
-        return AuthenticationUtils.redirectAuthentication(requestPath, authenticationPath, this.deviceSelection);
+        return AuthenticationUtils.redirectAuthentication(requestPath, authenticationPath, deviceSelection);
     }
 
     @Factory("applicationDevices")
     public List<SelectItem> applicationDevicesFactory()
             throws ApplicationNotFoundException, EmptyDevicePolicyException {
 
-        this.log.debug("application devices factory");
+        log.debug("application devices factory");
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();
         List<SelectItem> applicationDevices = new LinkedList<SelectItem>();
 
-        List<DeviceEntity> devicePolicy = this.devicePolicyService.getDevicePolicy(this.application, this.requiredDevicePolicy);
+        List<DeviceEntity> devicePolicy = devicePolicyService.getDevicePolicy(application, requiredDevicePolicy);
         for (DeviceEntity device : devicePolicy) {
-            String deviceName = this.devicePolicyService.getDeviceDescription(device.getName(), viewLocale);
+            String deviceName = devicePolicyService.getDeviceDescription(device.getName(), viewLocale);
             SelectItem applicationDevice = new SelectItem(device.getName(), deviceName);
             applicationDevices.add(applicationDevice);
         }
@@ -124,15 +124,15 @@ public class DeviceBean implements Device {
     @Factory("allDevices")
     public List<SelectItem> allDevicesFactory() {
 
-        this.log.debug("application devices factory");
+        log.debug("application devices factory");
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();
         List<SelectItem> allDevices = new LinkedList<SelectItem>();
 
-        List<DeviceEntity> devices = this.devicePolicyService.getDevices();
+        List<DeviceEntity> devices = devicePolicyService.getDevices();
 
         for (DeviceEntity device : devices) {
-            String deviceName = this.devicePolicyService.getDeviceDescription(device.getName(), viewLocale);
+            String deviceName = devicePolicyService.getDeviceDescription(device.getName(), viewLocale);
             SelectItem allDevice = new SelectItem(device.getName(), deviceName);
             allDevices.add(allDevice);
         }

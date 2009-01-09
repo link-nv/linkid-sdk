@@ -116,8 +116,8 @@ public class TinySyslogger {
         try {
             close();
 
-            this.syslog = new InetSocketAddress(host, port);
-            sockets.put(this.syslog, new DatagramSocket());
+            syslog = new InetSocketAddress(host, port);
+            sockets.put(syslog, new DatagramSocket());
 
             return true;
         }
@@ -134,7 +134,7 @@ public class TinySyslogger {
      */
     public void log(String message) {
 
-        if (!sockets.containsKey(this.syslog)) {
+        if (!sockets.containsKey(syslog)) {
             LOG.error("No syslog socket available; message not sent to syslog:\n" + message);
             return;
         }
@@ -149,15 +149,15 @@ public class TinySyslogger {
         if (bytes.length <= 1029) {
             try {
                 // Prepend the message with the facility and level.
-                bytes = String.format("<%d> %s", this.facility.getId(), message).getBytes();
+                bytes = String.format("<%d> %s", facility.getId(), message).getBytes();
 
                 // Create a packet for the message and dispatch it.
-                DatagramPacket packet = new DatagramPacket(bytes, bytes.length, this.syslog);
-                sockets.get(this.syslog).send(packet);
+                DatagramPacket packet = new DatagramPacket(bytes, bytes.length, syslog);
+                sockets.get(syslog).send(packet);
             }
 
             catch (IOException e) {
-                LOG.error("Couldn't dispatch packet of " + bytes.length + " bytes to syslog at " + this.syslog, e);
+                LOG.error("Couldn't dispatch packet of " + bytes.length + " bytes to syslog at " + syslog, e);
             }
         } else {
             int split = message.length() / 2;
@@ -171,8 +171,8 @@ public class TinySyslogger {
      */
     public void close() {
 
-        if (sockets.containsKey(this.syslog)) {
-            sockets.remove(this.syslog).close();
+        if (sockets.containsKey(syslog)) {
+            sockets.remove(syslog).close();
         }
     }
 
@@ -243,7 +243,7 @@ public class TinySyslogger {
 
         public int getId() {
 
-            return this.id;
+            return id;
         }
     }
 }

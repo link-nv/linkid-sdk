@@ -45,7 +45,7 @@ public class SubscriptionPK implements Serializable {
 
     public String getApplication() {
 
-        return this.application;
+        return application;
     }
 
     public void setApplication(String application) {
@@ -55,7 +55,7 @@ public class SubscriptionPK implements Serializable {
 
     public String getSubject() {
 
-        return this.subject;
+        return subject;
     }
 
     public void setSubject(String subject) {
@@ -71,18 +71,18 @@ public class SubscriptionPK implements Serializable {
         if (false == obj instanceof SubscriptionPK)
             return false;
         SubscriptionPK rhs = (SubscriptionPK) obj;
-        return new EqualsBuilder().append(this.subject, rhs.subject).append(this.application, rhs.application).isEquals();
+        return new EqualsBuilder().append(subject, rhs.subject).append(application, rhs.application).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.subject).append(this.application).toHashCode();
+        return new HashCodeBuilder().append(subject).append(application).toHashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("subject", this.subject).append("application", this.application).toString();
+        return new ToStringBuilder(this).append("subject", subject).append("application", application).toString();
     }
 }

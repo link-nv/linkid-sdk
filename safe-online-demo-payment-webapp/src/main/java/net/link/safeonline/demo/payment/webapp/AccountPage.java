@@ -85,7 +85,7 @@ public class AccountPage extends LayoutPage {
                 }
             });
 
-            add(new PageLink("newTransaction", NewTransactionPage.class));
+            add(new PageLink<NewTransactionPage>("newTransaction", NewTransactionPage.class));
         }
 
         @Override

@@ -100,19 +100,19 @@ public class LogoutEntryServlet extends AbstractInjectionServlet {
          * Wrap the request to use the servlet endpoint url. To prevent failure when behind a reverse proxy or loadbalancer when opensaml is
          * checking the destination field.
          */
-        HttpServletRequestEndpointWrapper logoutRequestWrapper = new HttpServletRequestEndpointWrapper(request, this.servletEndpointUrl);
+        HttpServletRequestEndpointWrapper logoutRequestWrapper = new HttpServletRequestEndpointWrapper(request, servletEndpointUrl);
 
         LogoutProtocolContext logoutProtocolContext;
         try {
             logoutProtocolContext = ProtocolHandlerManager.handleLogoutRequest(logoutRequestWrapper);
         } catch (ProtocolException e) {
-            redirectToErrorPage(request, response, this.protocolErrorUrl, null, new ErrorMessage(PROTOCOL_NAME_ATTRIBUTE,
+            redirectToErrorPage(request, response, protocolErrorUrl, null, new ErrorMessage(PROTOCOL_NAME_ATTRIBUTE,
                     e.getProtocolName()), new ErrorMessage(PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
             return;
         }
 
         if (null == logoutProtocolContext) {
-            response.sendRedirect(this.unsupportedProtocolUrl);
+            response.sendRedirect(unsupportedProtocolUrl);
             return;
         }
 
@@ -148,14 +148,14 @@ public class LogoutEntryServlet extends AbstractInjectionServlet {
             }
         }
 
-        response.sendRedirect(this.logoutExitUrl);
+        response.sendRedirect(logoutExitUrl);
     }
 
     private void removeCookie(String name, HttpServletResponse response) {
 
         Cookie cookie = new Cookie(name, "");
         cookie.setMaxAge(0);
-        cookie.setPath(this.cookiePath);
+        cookie.setPath(cookiePath);
         response.addCookie(cookie);
     }
 }

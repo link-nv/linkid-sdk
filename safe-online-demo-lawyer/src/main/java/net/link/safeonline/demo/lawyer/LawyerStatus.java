@@ -25,22 +25,22 @@ public class LawyerStatus implements Serializable {
 
     public String getBar() {
 
-        return this.bar;
+        return bar;
     }
 
     public boolean isLawyer() {
 
-        return this.lawyer;
+        return lawyer;
     }
 
     public boolean isSuspended() {
 
-        return this.suspended;
+        return suspended;
     }
 
     public boolean isBarAdmin() {
 
-        return this.barAdmin;
+        return barAdmin;
     }
 
     public LawyerStatus() {

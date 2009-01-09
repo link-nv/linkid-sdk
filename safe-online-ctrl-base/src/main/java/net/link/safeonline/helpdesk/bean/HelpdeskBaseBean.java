@@ -52,16 +52,16 @@ public class HelpdeskBaseBean implements HelpdeskBase {
 
     public String createTicket() {
 
-        if (null == this.location) {
+        if (null == location) {
             Map<String, String> params = getFacesContext().getRequestParameterMap();
-            this.location = params.get("location");
-            if (null == this.location) {
-                this.location = getFacesContext().getRequestServletPath();
+            location = params.get("location");
+            if (null == location) {
+                location = getFacesContext().getRequestServletPath();
             }
         }
-        this.LOG.debug("create helpdesk ticket");
-        this.LOG.debug(" - location: " + this.location);
-        this.id = HelpdeskLogger.persistContext(this.location, (HttpSession) getFacesContext().getSession(false));
+        LOG.debug("create helpdesk ticket");
+        LOG.debug(" - location: " + location);
+        id = HelpdeskLogger.persistContext(location, (HttpSession) getFacesContext().getSession(false));
 
         return "create-ticket";
     }
@@ -70,29 +70,29 @@ public class HelpdeskBaseBean implements HelpdeskBase {
     @Destroy
     public void destroyCallback() {
 
-        this.LOG.debug("destroy: #0", this);
+        LOG.debug("destroy: #0", this);
     }
 
     public Long getId() {
 
-        return this.id;
+        return id;
     }
 
     public String getEmail() {
 
-        return this.contact.getEmail();
+        return contact.getEmail();
     }
 
     public String getPhone() {
 
-        return this.contact.getPhone();
+        return contact.getPhone();
     }
 
     public String getDummy() {
 
         Map<String, String> params = getFacesContext().getRequestParameterMap();
-        this.location = params.get("location");
-        this.LOG.debug("helpdesk location: " + this.location);
+        location = params.get("location");
+        LOG.debug("helpdesk location: " + location);
 
         return "";
     }

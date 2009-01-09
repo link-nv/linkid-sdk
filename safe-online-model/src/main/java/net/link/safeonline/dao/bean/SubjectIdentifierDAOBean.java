@@ -41,20 +41,20 @@ public class SubjectIdentifierDAOBean implements SubjectIdentifierDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, SubjectIdentifierEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, SubjectIdentifierEntity.QueryInterface.class);
     }
 
     public void addSubjectIdentifier(String domain, String subjectIdentifier, SubjectEntity subject) {
 
         LOG.debug("add subject identifier");
         SubjectIdentifierEntity subjectIdentifierEntity = new SubjectIdentifierEntity(domain, subjectIdentifier, subject);
-        this.entityManager.persist(subjectIdentifierEntity);
+        entityManager.persist(subjectIdentifierEntity);
     }
 
     public SubjectEntity findSubject(String domain, String subjectIdentifier) {
 
         SubjectIdentifierPK pk = new SubjectIdentifierPK(domain, subjectIdentifier);
-        SubjectIdentifierEntity subjectIdentifierEntity = this.entityManager.find(SubjectIdentifierEntity.class, pk);
+        SubjectIdentifierEntity subjectIdentifierEntity = entityManager.find(SubjectIdentifierEntity.class, pk);
         if (null == subjectIdentifierEntity)
             return null;
         SubjectEntity subject = subjectIdentifierEntity.getSubject();
@@ -63,22 +63,22 @@ public class SubjectIdentifierDAOBean implements SubjectIdentifierDAO {
 
     public List<SubjectIdentifierEntity> getSubjectIdentifiers(SubjectEntity subject) {
 
-        return this.queryObject.getWhereSubject(subject);
+        return queryObject.getWhereSubject(subject);
     }
 
     public void removeOtherSubjectIdentifiers(String domain, String identifier, SubjectEntity subject) {
 
-        int count = this.queryObject.deleteWhereOtherIdentifiers(domain, identifier, subject);
+        int count = queryObject.deleteWhereOtherIdentifiers(domain, identifier, subject);
         LOG.debug("number of removed subject identifiers: " + count);
     }
 
     public void removeSubjectIdentifier(SubjectEntity subject, String domain, String identifier) {
 
-        this.queryObject.deleteWhereIdentifier(subject, domain, identifier);
+        queryObject.deleteWhereIdentifier(subject, domain, identifier);
     }
 
     public void removeSubjectIdentifiers(SubjectEntity subject) {
 
-        this.queryObject.deleteWhereSubject(subject);
+        queryObject.deleteWhereSubject(subject);
     }
 }

@@ -57,7 +57,7 @@ public class DriverProfileEntity implements Comparable<DriverProfileEntity> {
      */
     public String getDriverClassName() {
 
-        return this.driverClassName;
+        return driverClassName;
     }
 
     /**
@@ -65,7 +65,7 @@ public class DriverProfileEntity implements Comparable<DriverProfileEntity> {
      */
     public ExecutionEntity getExecution() {
 
-        return this.execution;
+        return execution;
     }
 
     /**
@@ -73,6 +73,6 @@ public class DriverProfileEntity implements Comparable<DriverProfileEntity> {
      */
     public int compareTo(DriverProfileEntity o) {
 
-        return this.driverClassName.compareTo(o.driverClassName);
+        return driverClassName.compareTo(o.driverClassName);
     }
 }

@@ -55,8 +55,8 @@ public class TinyGraph extends JPanel {
     public TinyGraph(int values) {
 
         this.values = values;
-        this.queue = new TreeMap<Long, Double>();
-        this.times = new TreeSet<Long>();
+        queue = new TreeMap<Long, Double>();
+        times = new TreeSet<Long>();
 
         setBorder(BorderFactory.createLineBorder(Color.gray));
         setBackground(Color.white);
@@ -76,15 +76,15 @@ public class TinyGraph extends JPanel {
         }
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        if (this.times.isEmpty())
+        if (times.isEmpty())
             return;
 
-        Long startTime = this.times.first();
-        Long endTime = this.times.last();
+        Long startTime = times.first();
+        Long endTime = times.last();
 
         Double minValue = Double.MAX_VALUE;
         Double maxValue = 0d;
-        for (Double value : this.queue.values()) {
+        for (Double value : queue.values()) {
             minValue = Math.min(minValue, value);
             maxValue = Math.max(maxValue, value);
         }
@@ -96,9 +96,9 @@ public class TinyGraph extends JPanel {
         double valueToPx = getHeight() / (maxValue - minValue);
 
         Long lastTime = startTime;
-        Double lastValue = this.queue.get(lastTime);
-        for (Long time : this.times) {
-            Double value = this.queue.get(time);
+        Double lastValue = queue.get(lastTime);
+        for (Long time : times) {
+            Double value = queue.get(time);
             int currX = (int) ((time - startTime) * timeToPx);
             int lastX = (int) ((lastTime - startTime) * timeToPx);
             int currY = (int) ((value - minValue) * valueToPx);
@@ -125,15 +125,15 @@ public class TinyGraph extends JPanel {
             return;
 
         long time = System.currentTimeMillis();
-        this.queue.put(time, value);
-        this.times.add(time);
+        queue.put(time, value);
+        times.add(time);
 
         /* Clean up overflow. */
-        while (this.queue.size() > this.values) {
-            Long purgeTime = this.times.first();
+        while (queue.size() > values) {
+            Long purgeTime = times.first();
 
-            this.queue.remove(purgeTime);
-            this.times.remove(purgeTime);
+            queue.remove(purgeTime);
+            times.remove(purgeTime);
         }
 
         repaint();
@@ -144,7 +144,7 @@ public class TinyGraph extends JPanel {
      */
     public void reset() {
 
-        this.queue.clear();
-        this.times.clear();
+        queue.clear();
+        times.clear();
     }
 }

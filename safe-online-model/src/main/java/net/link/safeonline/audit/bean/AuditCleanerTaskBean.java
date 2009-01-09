@@ -55,6 +55,6 @@ public class AuditCleanerTaskBean implements Task {
     public void perform()
             throws Exception {
 
-        this.auditContextDAO.cleanup(this.configAgeInMinutes);
+        auditContextDAO.cleanup(configAgeInMinutes);
     }
 }

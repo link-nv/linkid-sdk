@@ -43,7 +43,7 @@ public class ScenarioUploaderThread extends ScenarioThread {
         try {
             agent.setAutoUpdate(false);
 
-            this.scenarioDeployer.upload(agent.getAddress(), this.application);
+            scenarioDeployer.upload(agent.getAddress(), application);
         }
 
         finally {

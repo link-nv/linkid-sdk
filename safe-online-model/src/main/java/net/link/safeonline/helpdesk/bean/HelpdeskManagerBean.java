@@ -43,7 +43,7 @@ public class HelpdeskManagerBean implements HelpdeskManager {
 
     public Long persist(String location, List<HelpdeskEventEntity> helpdeskEventList) {
 
-        HelpdeskContextEntity context = this.helpdeskContextDAO.createHelpdeskContext(location);
+        HelpdeskContextEntity context = helpdeskContextDAO.createHelpdeskContext(location);
 
         LOG.debug("persist helpdeskcontext ( id=" + context.getId() + " )");
 
@@ -51,7 +51,7 @@ public class HelpdeskManagerBean implements HelpdeskManager {
             helpdeskEvent.setHelpdeskContext(context);
         }
 
-        this.helpdeskEventDAO.persist(helpdeskEventList);
+        helpdeskEventDAO.persist(helpdeskEventList);
         return context.getId();
     }
 
@@ -60,7 +60,7 @@ public class HelpdeskManagerBean implements HelpdeskManager {
      */
     public int getHelpdeskContextLimit() {
 
-        return this.helpdeskContextLimit;
+        return helpdeskContextLimit;
     }
 
 }

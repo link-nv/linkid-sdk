@@ -77,33 +77,33 @@ public class AuthenticationSubscriptionBean extends AbstractExitBean implements 
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();
 
-        if (!this.subscriptionService.isSubscribed(this.applicationId)) {
-            this.log.debug("subscribe to application #0", this.applicationId);
-            this.subscriptionService.subscribe(this.applicationId);
-            HelpdeskLogger.add("subscribed to application: " + this.applicationId, LogLevelType.INFO);
+        if (!subscriptionService.isSubscribed(applicationId)) {
+            log.debug("subscribe to application #0", applicationId);
+            subscriptionService.subscribe(applicationId);
+            HelpdeskLogger.add("subscribed to application: " + applicationId, LogLevelType.INFO);
         }
 
-        if (this.usageAgreementService.requiresUsageAgreementAcceptation(this.applicationId, viewLocale.getLanguage())) {
-            this.log.debug("confirm usage agreement for application #0", this.applicationId);
-            this.usageAgreementService.confirmUsageAgreementVersion(this.applicationId);
-            HelpdeskLogger.add("confirmed usage agreement of application: " + this.applicationId, LogLevelType.INFO);
+        if (usageAgreementService.requiresUsageAgreementAcceptation(applicationId, viewLocale.getLanguage())) {
+            log.debug("confirm usage agreement for application #0", applicationId);
+            usageAgreementService.confirmUsageAgreementVersion(applicationId);
+            HelpdeskLogger.add("confirmed usage agreement of application: " + applicationId, LogLevelType.INFO);
         }
 
         /*
          * After successful subscription we continue the workflow as usual.
          */
 
-        boolean confirmationRequired = this.identityService.isConfirmationRequired(this.applicationId);
-        this.log.debug("confirmation required: " + confirmationRequired);
+        boolean confirmationRequired = identityService.isConfirmationRequired(applicationId);
+        log.debug("confirmation required: " + confirmationRequired);
         if (true == confirmationRequired)
             return "confirmation-required";
 
-        boolean hasMissingAttributes = this.identityService.hasMissingAttributes(this.applicationId);
+        boolean hasMissingAttributes = identityService.hasMissingAttributes(applicationId);
 
         if (true == hasMissingAttributes)
             return "missing-attributes";
 
-        AuthenticationUtils.commitAuthentication(this.facesMessages);
+        AuthenticationUtils.commitAuthentication(facesMessages);
 
         return null;
     }
@@ -114,10 +114,10 @@ public class AuthenticationSubscriptionBean extends AbstractExitBean implements 
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();
         try {
-            return this.usageAgreementService.getUsageAgreementText(this.applicationId, viewLocale.getLanguage());
+            return usageAgreementService.getUsageAgreementText(applicationId, viewLocale.getLanguage());
         } catch (ApplicationNotFoundException e) {
-            this.log.debug("application not found.");
-            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
+            log.debug("application not found.");
+            facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorApplicationNotFound");
             return null;
         }
     }

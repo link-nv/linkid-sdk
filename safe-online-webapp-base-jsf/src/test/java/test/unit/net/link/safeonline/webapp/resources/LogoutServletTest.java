@@ -40,17 +40,17 @@ public class LogoutServletTest extends TestCase {
 
         super.setUp();
 
-        this.servletTestManager = new ServletTestManager();
-        this.servletTestManager.setUp(LogoutServlet.class, Collections.singletonMap("LogoutExitUrl", this.logoutExitUrl), null, null,
+        servletTestManager = new ServletTestManager();
+        servletTestManager.setUp(LogoutServlet.class, Collections.singletonMap("LogoutExitUrl", logoutExitUrl), null, null,
                 Collections.singletonMap(LoginManager.USERID_SESSION_ATTRIBUTE, (Object) UUID.randomUUID().toString()));
-        this.servletLocation = this.servletTestManager.getServletLocation();
+        servletLocation = servletTestManager.getServletLocation();
     }
 
     @Override
     protected void tearDown()
             throws Exception {
 
-        this.servletTestManager.tearDown();
+        servletTestManager.tearDown();
 
         super.tearDown();
     }
@@ -60,7 +60,7 @@ public class LogoutServletTest extends TestCase {
 
         // setup
         HttpClient httpClient = new HttpClient();
-        GetMethod getMethod = new GetMethod(this.servletLocation);
+        GetMethod getMethod = new GetMethod(servletLocation);
         getMethod.setFollowRedirects(false);
 
         // operate
@@ -71,9 +71,9 @@ public class LogoutServletTest extends TestCase {
         assertEquals(HttpServletResponse.SC_MOVED_TEMPORARILY, result);
         String resultLocation = getMethod.getResponseHeader("Location").getValue();
         LOG.debug("location: " + resultLocation);
-        assertTrue(resultLocation.endsWith(this.logoutExitUrl));
+        assertTrue(resultLocation.endsWith(logoutExitUrl));
 
-        String resultUserId = (String) this.servletTestManager.getSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
+        String resultUserId = (String) servletTestManager.getSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
         assertNull(resultUserId);
     }
 }

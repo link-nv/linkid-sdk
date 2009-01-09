@@ -55,15 +55,15 @@ public class ChartWindow extends WindowAdapter {
     private ChartWindow() {
 
         // Tabs.
-        this.agents = new JTabbedPane();
-        this.agents.setBorder(Borders.DLU4_BORDER);
-        this.agents.putClientProperty(Options.EMBEDDED_TABS_KEY, true);
+        agents = new JTabbedPane();
+        agents.setBorder(Borders.DLU4_BORDER);
+        agents.putClientProperty(Options.EMBEDDED_TABS_KEY, true);
 
         // Frame.
-        this.frame = new JFrame("Performance Testing Charts");
-        this.frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        this.frame.setContentPane(this.agents);
-        this.frame.addWindowListener(this);
+        frame = new JFrame("Performance Testing Charts");
+        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        frame.setContentPane(agents);
+        frame.addWindowListener(this);
     }
 
     private void addTab(ConsoleAgent agent, ScenarioExecution scenarioExecution) {
@@ -76,7 +76,7 @@ public class ChartWindow extends WindowAdapter {
         scrollPane.setBackground(agentCharts.getBackground());
         scrollPane.getViewport().setBackground(agentCharts.getBackground());
 
-        this.agents.addTab(tabTitle, scrollPane);
+        agents.addTab(tabTitle, scrollPane);
     }
 
     /**
@@ -85,7 +85,7 @@ public class ChartWindow extends WindowAdapter {
     @Override
     public void windowClosed(WindowEvent e) {
 
-        this.frame = null;
+        frame = null;
         instance = null;
     }
 
@@ -105,10 +105,10 @@ public class ChartWindow extends WindowAdapter {
 
     private void show() {
 
-        this.frame.setPreferredSize(new Dimension(1024, 768));
-        this.frame.pack();
-        this.frame.setLocationRelativeTo(null);
-        this.frame.setVisible(true);
+        frame.setPreferredSize(new Dimension(1024, 768));
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
     }
 
 

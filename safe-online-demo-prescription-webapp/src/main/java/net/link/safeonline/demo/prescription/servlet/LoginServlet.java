@@ -68,7 +68,7 @@ public class LoginServlet extends HttpServlet {
         X509Certificate clientCertificate = (X509Certificate) privateKeyEntry.getCertificate();
         PrivateKey clientPrivateKey = privateKeyEntry.getPrivateKey();
 
-        this.dataClient = new DataClientImpl(wsLocation, clientCertificate, clientPrivateKey);
+        dataClient = new DataClientImpl(wsLocation, clientCertificate, clientPrivateKey);
     }
 
     @Override
@@ -142,7 +142,7 @@ public class LoginServlet extends HttpServlet {
 
         Attribute<Boolean> attribute;
         try {
-            attribute = this.dataClient.getAttributeValue(username, attributeName, Boolean.class);
+            attribute = dataClient.getAttributeValue(username, attributeName, Boolean.class);
         } catch (RequestDeniedException e) {
             throw new ServletException("count not retrieve prescription admin attribute");
         } catch (SubjectNotFoundException e) {

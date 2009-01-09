@@ -35,17 +35,17 @@ public class SafeOnlineResourceException extends SafeOnlineException {
 
     public ResourceLevelType getResourceLevel() {
 
-        return this.resourceLevel;
+        return resourceLevel;
     }
 
     public ResourceNameType getResourceName() {
 
-        return this.resourceName;
+        return resourceName;
     }
 
     public String getSourceComponent() {
 
-        return this.sourceComponent;
+        return sourceComponent;
     }
 
 }

@@ -40,13 +40,13 @@ public class SubjectDAOBean implements SubjectDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, SubjectEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, SubjectEntity.QueryInterface.class);
     }
 
     public SubjectEntity findSubject(String userId) {
 
         LOG.debug("find subject: " + userId);
-        SubjectEntity subject = this.entityManager.find(SubjectEntity.class, userId);
+        SubjectEntity subject = entityManager.find(SubjectEntity.class, userId);
         return subject;
     }
 
@@ -54,7 +54,7 @@ public class SubjectDAOBean implements SubjectDAO {
 
         LOG.debug("add subject: " + userId);
         SubjectEntity subject = new SubjectEntity(userId);
-        this.entityManager.persist(subject);
+        entityManager.persist(subject);
         return subject;
     }
 
@@ -70,12 +70,12 @@ public class SubjectDAOBean implements SubjectDAO {
 
     public void removeSubject(SubjectEntity subject) {
 
-        this.entityManager.remove(subject);
+        entityManager.remove(subject);
     }
 
     public List<String> listUsers() {
 
-        List<String> users = this.queryObject.listUsers();
+        List<String> users = queryObject.listUsers();
         return users;
     }
 }

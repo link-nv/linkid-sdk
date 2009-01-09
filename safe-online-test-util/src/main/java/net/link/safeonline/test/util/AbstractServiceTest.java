@@ -39,14 +39,14 @@ public abstract class AbstractServiceTest {
     public void setup()
             throws Exception {
 
-        this.testEntityManager = new EntityTestManager();
-        this.testEntityManager.setUp(getEntities());
-        this.em = this.testEntityManager.getEntityManager();
+        testEntityManager = new EntityTestManager();
+        testEntityManager.setUp(getEntities());
+        em = testEntityManager.getEntityManager();
 
         for (Field field : getClass().getDeclaredFields())
             if (field.isAnnotationPresent(EJB.class)) {
                 field.setAccessible(true);
-                field.set(this, EJBTestUtils.newInstance(field.getType(), getServices(), this.em));
+                field.set(this, EJBTestUtils.newInstance(field.getType(), getServices(), em));
             }
     }
 
@@ -54,7 +54,7 @@ public abstract class AbstractServiceTest {
     public void tearDown()
             throws Exception {
 
-        this.testEntityManager.tearDown();
+        testEntityManager.tearDown();
     }
 
     /**

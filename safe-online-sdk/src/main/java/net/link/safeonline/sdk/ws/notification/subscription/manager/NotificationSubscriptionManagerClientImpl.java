@@ -66,18 +66,18 @@ public class NotificationSubscriptionManagerClientImpl extends AbstractMessageAc
     public NotificationSubscriptionManagerClientImpl(String location, X509Certificate clientCertificate, PrivateKey clientPrivateKey) {
 
         NotificationSubscriptionManagerService service = NotificationSubscriptionManagerServiceFactory.newInstance();
-        this.port = service.getNotificationSubscriptionManagerPort();
+        port = service.getNotificationSubscriptionManagerPort();
         this.location = location + "/safe-online-ws/subscription";
         setEndpointAddress();
 
-        registerMessageLoggerHandler(this.port);
-        WSSecurityClientHandler.addNewHandler(this.port, clientCertificate, clientPrivateKey);
+        registerMessageLoggerHandler(port);
+        WSSecurityClientHandler.addNewHandler(port, clientCertificate, clientPrivateKey);
     }
 
     private void setEndpointAddress() {
 
-        BindingProvider bindingProvider = (BindingProvider) this.port;
-        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location);
+        BindingProvider bindingProvider = (BindingProvider) port;
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location);
     }
 
     private W3CEndpointReference getEndpointReference(String address) {
@@ -107,9 +107,9 @@ public class NotificationSubscriptionManagerClientImpl extends AbstractMessageAc
 
         UnsubscribeResponse response;
         try {
-            response = this.port.unsubscribe(request);
+            response = port.unsubscribe(request);
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(this.location);
+            throw new WSClientTransportException(location);
         }
 
         checkStatus(response);

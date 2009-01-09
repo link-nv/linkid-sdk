@@ -32,13 +32,13 @@ public class CompoundedAttributeTypeMemberPK implements Serializable {
 
     public CompoundedAttributeTypeMemberPK(AttributeTypeEntity parentAttributeType, AttributeTypeEntity memberAttributeType) {
 
-        this.parent = parentAttributeType.getName();
-        this.member = memberAttributeType.getName();
+        parent = parentAttributeType.getName();
+        member = memberAttributeType.getName();
     }
 
     public String getMember() {
 
-        return this.member;
+        return member;
     }
 
     public void setMember(String member) {
@@ -48,7 +48,7 @@ public class CompoundedAttributeTypeMemberPK implements Serializable {
 
     public String getParent() {
 
-        return this.parent;
+        return parent;
     }
 
     public void setParent(String parent) {
@@ -66,12 +66,12 @@ public class CompoundedAttributeTypeMemberPK implements Serializable {
         if (false == obj instanceof CompoundedAttributeTypeMemberPK)
             return false;
         CompoundedAttributeTypeMemberPK rhs = (CompoundedAttributeTypeMemberPK) obj;
-        return new EqualsBuilder().append(this.parent, rhs.parent).append(this.member, rhs.member).isEquals();
+        return new EqualsBuilder().append(parent, rhs.parent).append(member, rhs.member).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.parent).append(this.member).toHashCode();
+        return new HashCodeBuilder().append(parent).append(member).toHashCode();
     }
 }

@@ -88,10 +88,10 @@ public class TimeoutFilter extends AbstractInjectionFilter {
          * We also signal the JAASLoginFilter that we redirected. Else it will redirect to the login page.
          */
         if (true == hasCookie(SafeOnlineCookies.LOGIN_COOKIE, httpRequest)) {
-            LOG.debug("forwarding to timeout path: " + this.timeoutPath);
+            LOG.debug("forwarding to timeout path: " + timeoutPath);
             removeCookie(SafeOnlineCookies.LOGIN_COOKIE, httpRequest.getContextPath(), httpRequest, httpResponse);
             JAASLoginFilter.setRedirected(httpRequest.getSession());
-            httpResponse.sendRedirect(this.timeoutPath);
+            httpResponse.sendRedirect(timeoutPath);
             return;
         }
         /*

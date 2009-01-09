@@ -122,7 +122,7 @@ public abstract class LayoutPage extends OlasApplicationPage {
 
     Link<?> getPageLink() {
 
-        return new PageLink("pageLink", getPageLinkDestination());
+        return new PageLink<Page>("pageLink", getPageLinkDestination());
     }
 
     /**

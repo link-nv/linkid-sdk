@@ -59,7 +59,7 @@ public class MeasurementEntity {
      */
     public String getMeasurement() {
 
-        return this.measurement;
+        return measurement;
     }
 
     /**
@@ -67,7 +67,7 @@ public class MeasurementEntity {
      */
     public Long getDuration() {
 
-        return this.duration;
+        return duration;
     }
 
     /**
@@ -75,7 +75,7 @@ public class MeasurementEntity {
      */
     public ProfileDataEntity getProfileData() {
 
-        return this.profileData;
+        return profileData;
     }
 
     /**
@@ -92,6 +92,6 @@ public class MeasurementEntity {
     @Override
     public String toString() {
 
-        return String.format("ME: %s=%s", this.measurement, this.duration);
+        return String.format("ME: %s=%s", measurement, duration);
     }
 }

@@ -78,24 +78,24 @@ public class LandingServlet extends AbstractInjectionServlet {
         super.init(config);
 
         InputStream keyStoreInputStream = null;
-        if (null != this.p12KeyStoreResourceName) {
+        if (null != p12KeyStoreResourceName) {
             Thread currentThread = Thread.currentThread();
             ClassLoader classLoader = currentThread.getContextClassLoader();
-            keyStoreInputStream = classLoader.getResourceAsStream(this.p12KeyStoreResourceName);
+            keyStoreInputStream = classLoader.getResourceAsStream(p12KeyStoreResourceName);
             if (null == keyStoreInputStream)
-                throw new UnavailableException("PKCS12 keystore resource not found: " + this.p12KeyStoreResourceName);
-        } else if (null != this.p12KeyStoreFileName) {
+                throw new UnavailableException("PKCS12 keystore resource not found: " + p12KeyStoreResourceName);
+        } else if (null != p12KeyStoreFileName) {
             try {
-                keyStoreInputStream = new FileInputStream(this.p12KeyStoreFileName);
+                keyStoreInputStream = new FileInputStream(p12KeyStoreFileName);
             } catch (FileNotFoundException e) {
-                throw new UnavailableException("PKCS12 keystore resource not found: " + this.p12KeyStoreFileName);
+                throw new UnavailableException("PKCS12 keystore resource not found: " + p12KeyStoreFileName);
             }
         }
         if (null != keyStoreInputStream) {
-            PrivateKeyEntry privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(this.keyStoreType, keyStoreInputStream,
-                    this.keyStorePassword, this.keyStorePassword);
-            this.applicationKeyPair = new KeyPair(privateKeyEntry.getCertificate().getPublicKey(), privateKeyEntry.getPrivateKey());
-            this.applicationCertificate = (X509Certificate) privateKeyEntry.getCertificate();
+            PrivateKeyEntry privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(keyStoreType, keyStoreInputStream,
+                    keyStorePassword, keyStorePassword);
+            applicationKeyPair = new KeyPair(privateKeyEntry.getCertificate().getPublicKey(), privateKeyEntry.getPrivateKey());
+            applicationCertificate = (X509Certificate) privateKeyEntry.getCertificate();
         }
     }
 
@@ -110,8 +110,8 @@ public class LandingServlet extends AbstractInjectionServlet {
          * opensaml is checking the destination field.
          */
         HttpServletRequestEndpointWrapper requestWrapper;
-        if (null != this.servletEndpointUrl) {
-            requestWrapper = new HttpServletRequestEndpointWrapper(request, this.servletEndpointUrl);
+        if (null != servletEndpointUrl) {
+            requestWrapper = new HttpServletRequestEndpointWrapper(request, servletEndpointUrl);
         } else {
             requestWrapper = new HttpServletRequestEndpointWrapper(request, request.getRequestURL().toString());
         }
@@ -143,12 +143,12 @@ public class LandingServlet extends AbstractInjectionServlet {
          */
         try {
             Saml2Handler handler = Saml2Handler.getSaml2Handler(requestWrapper);
-            handler.init(this.configParams, this.applicationCertificate, this.applicationKeyPair);
+            handler.init(configParams, applicationCertificate, applicationKeyPair);
             handler.initAuthentication(requestWrapper);
         } catch (AuthenticationInitializationException e) {
-            redirectToErrorPage(requestWrapper, response, this.errorPage, null, new ErrorMessage(e.getMessage()));
+            redirectToErrorPage(requestWrapper, response, errorPage, null, new ErrorMessage(e.getMessage()));
             return;
         }
-        response.sendRedirect(this.authenticationUrl);
+        response.sendRedirect(authenticationUrl);
     }
 }

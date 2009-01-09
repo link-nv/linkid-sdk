@@ -25,9 +25,9 @@ public class ConnectionManager extends JFrame {
         ImageIcon icon = createImageIcon("/net/link/safeonline/option/connection/manager/images/globetrotter.png",
                 "globetrotter screenshot");
 
-        this.label = new JLabel(icon);
+        label = new JLabel(icon);
 
-        this.add(this.label);
+        this.add(label);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(380, 250);
@@ -37,7 +37,7 @@ public class ConnectionManager extends JFrame {
         try {
             String port = JOptionPane.showInputDialog(this, "The serial port of your Option device:", "Serial port for Option Device.",
                     JOptionPane.QUESTION_MESSAGE, null, null, "/dev/tty.GTM HSDPA Control").toString();
-            this.connectionManagerController = new ConnectionManagerController(port);
+            connectionManagerController = new ConnectionManagerController(port);
         } catch (Exception e) {
             this.add(new JLabel("Exception occurred"));
         }

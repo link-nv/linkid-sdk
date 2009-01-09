@@ -84,9 +84,9 @@ public class ApplicationStyleServlet extends AbstractInjectionServlet {
         velocityProperties.put(Log4JLogChute.RUNTIME_LOG_LOG4J_LOGGER, getClass().getName());
         velocityProperties.put("class.resource.loader.class", "org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
 
-        this.velocity = new VelocityEngine();
+        velocity = new VelocityEngine();
         try {
-            this.velocity.init(velocityProperties);
+            velocity.init(velocityProperties);
         } catch (Exception e) {
             throw new ServletException(e);
         }
@@ -115,8 +115,8 @@ public class ApplicationStyleServlet extends AbstractInjectionServlet {
         // If not yet set, use the default application color.
         if (baseColor == null) {
             try {
-                if (this.applicationColor != null) {
-                    baseColor = Integer.decode(this.applicationColor);
+                if (applicationColor != null) {
+                    baseColor = Integer.decode(applicationColor);
                 }
             } catch (NumberFormatException e) {
             }
@@ -135,7 +135,7 @@ public class ApplicationStyleServlet extends AbstractInjectionServlet {
             velocityContext.put(BRIGHTER, getThemedColor(baseColor, BRIGHTER_FACTOR, BRIGHTER_OFFSET));
 
             response.setContentType("text/css");
-            this.velocity.mergeTemplate("theme.css.vm", velocityContext, responseWriter);
+            velocity.mergeTemplate("theme.css.vm", velocityContext, responseWriter);
         }
 
         catch (Exception e) {

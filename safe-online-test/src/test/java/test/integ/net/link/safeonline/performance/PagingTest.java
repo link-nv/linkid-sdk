@@ -41,11 +41,11 @@ public class PagingTest {
     @Before
     public void setUp() {
 
-        this.entityTestManager = new EntityTestManager();
+        entityTestManager = new EntityTestManager();
 
         try {
-            this.entityTestManager.configureMySql("sebeco-dev-11", 3306, "safeonline", "safeonline", "safeonline", true);
-            this.entityTestManager.setUp(ScenarioTimingEntity.class, ExecutionEntity.class, DriverProfileEntity.class,
+            entityTestManager.configureMySql("sebeco-dev-11", 3306, "safeonline", "safeonline", "safeonline", true);
+            entityTestManager.setUp(ScenarioTimingEntity.class, ExecutionEntity.class, DriverProfileEntity.class,
                     ProfileDataEntity.class, MeasurementEntity.class);
         }
 
@@ -59,8 +59,8 @@ public class PagingTest {
     public void tearDown()
             throws Exception {
 
-        if (this.entityTestManager.getEntityManager() != null) {
-            this.entityTestManager.tearDown();
+        if (entityTestManager.getEntityManager() != null) {
+            entityTestManager.tearDown();
         }
     }
 
@@ -68,14 +68,14 @@ public class PagingTest {
     public void annotationCorrectness()
             throws Exception {
 
-        assertNotNull("JPA annotations incorrect?", this.entityTestManager.getEntityManager());
+        assertNotNull("JPA annotations incorrect?", entityTestManager.getEntityManager());
     }
 
     @Test
     public void testPaging()
             throws Exception {
 
-        EntityManager em = this.entityTestManager.getEntityManager();
+        EntityManager em = entityTestManager.getEntityManager();
 
         String driverName = "Authentication Driver";
         Date startTime = new Date(1203519790000l);
@@ -112,7 +112,7 @@ public class PagingTest {
     public Set<ProfileDataEntity> testPagingOne(DriverProfileEntity profile, int dataPoints)
             throws Exception {
 
-        EntityManager em = this.entityTestManager.getEntityManager();
+        EntityManager em = entityTestManager.getEntityManager();
 
         // Find the driver profile's profile data.
         long dataCount = (Long) em.createQuery("SELECT COUNT(d) FROM ProfileDataEntity d" + "    WHERE d.profile = :profile").setParameter(
@@ -166,7 +166,7 @@ public class PagingTest {
     public Set<ProfileDataEntity> testPagingTwo(DriverProfileEntity profile, int dataPoints)
             throws Exception {
 
-        EntityManager em = this.entityTestManager.getEntityManager();
+        EntityManager em = entityTestManager.getEntityManager();
 
         // Find the driver profile's profile data.
         long dataDuration = (Long) em.createQuery(

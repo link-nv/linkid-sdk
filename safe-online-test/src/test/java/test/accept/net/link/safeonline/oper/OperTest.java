@@ -24,33 +24,33 @@ public class OperTest extends TestCase {
             throws Exception {
 
         super.setUp();
-        this.acceptanceTestManager = new AcceptanceTestManager();
-        this.acceptanceTestManager.setUp();
+        acceptanceTestManager = new AcceptanceTestManager();
+        acceptanceTestManager.setUp();
     }
 
     @Override
     protected void tearDown()
             throws Exception {
 
-        this.acceptanceTestManager.tearDown();
+        acceptanceTestManager.tearDown();
         super.tearDown();
     }
 
     public void testAdminLogonLogout()
             throws Exception {
 
-        this.acceptanceTestManager.setContext("Testing operator webapp admin login logout.");
+        acceptanceTestManager.setContext("Testing operator webapp admin login logout.");
 
-        OperOverview operOverview = PageUtils.loginOperWithPassword(this.acceptanceTestManager, WebappConstants.OPER_ADMIN, "admin");
+        OperOverview operOverview = PageUtils.loginOperWithPassword(acceptanceTestManager, WebappConstants.OPER_ADMIN, "admin");
         operOverview.logout();
     }
 
     public void testAddApplication()
             throws Exception {
 
-        this.acceptanceTestManager.setContext("Testing operator webapp add application.");
+        acceptanceTestManager.setContext("Testing operator webapp add application.");
 
-        OperOverview operOverview = PageUtils.loginOperWithPassword(this.acceptanceTestManager, WebappConstants.OPER_ADMIN, "admin");
+        OperOverview operOverview = PageUtils.loginOperWithPassword(acceptanceTestManager, WebappConstants.OPER_ADMIN, "admin");
         operOverview.logout();
     }
 }

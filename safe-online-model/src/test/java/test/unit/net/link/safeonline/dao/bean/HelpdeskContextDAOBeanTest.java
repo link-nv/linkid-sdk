@@ -29,31 +29,31 @@ public class HelpdeskContextDAOBeanTest extends TestCase {
             throws Exception {
 
         super.setUp();
-        this.entityTestManager = new EntityTestManager();
+        entityTestManager = new EntityTestManager();
         /*
          * If you add entities to this list, also add them to safe-online-sql-ddl.
          */
-        this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
+        entityTestManager.setUp(SafeOnlineTestContainer.entities);
 
-        this.testedInstance = new HelpdeskContextDAOBean();
+        testedInstance = new HelpdeskContextDAOBean();
 
-        EJBTestUtils.inject(this.testedInstance, this.entityTestManager.getEntityManager());
+        EJBTestUtils.inject(testedInstance, entityTestManager.getEntityManager());
 
-        EJBTestUtils.init(this.testedInstance);
+        EJBTestUtils.init(testedInstance);
     }
 
     @Override
     protected void tearDown()
             throws Exception {
 
-        this.entityTestManager.tearDown();
+        entityTestManager.tearDown();
         super.tearDown();
     }
 
     public void testContext() {
 
-        HelpdeskContextEntity context = this.testedInstance.createHelpdeskContext("test-location");
-        List<HelpdeskContextEntity> contexts = this.testedInstance.listContexts();
+        HelpdeskContextEntity context = testedInstance.createHelpdeskContext("test-location");
+        List<HelpdeskContextEntity> contexts = testedInstance.listContexts();
         assertEquals(context.getId(), contexts.get(0).getId());
     }
 

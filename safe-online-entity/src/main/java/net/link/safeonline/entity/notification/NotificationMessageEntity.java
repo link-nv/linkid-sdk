@@ -82,14 +82,14 @@ public class NotificationMessageEntity implements Serializable {
         this.consumer = consumer;
         this.subject = subject;
         this.content = content;
-        this.attempts = 1;
+        attempts = 1;
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public long getId() {
 
-        return this.id;
+        return id;
     }
 
     public void setId(long id) {
@@ -101,7 +101,7 @@ public class NotificationMessageEntity implements Serializable {
     @JoinColumn(name = "consumer")
     public EndpointReferenceEntity getConsumer() {
 
-        return this.consumer;
+        return consumer;
     }
 
     public void setConsumer(EndpointReferenceEntity consumer) {
@@ -111,7 +111,7 @@ public class NotificationMessageEntity implements Serializable {
 
     public String getTopic() {
 
-        return this.topic;
+        return topic;
     }
 
     public void setTopic(String topic) {
@@ -121,7 +121,7 @@ public class NotificationMessageEntity implements Serializable {
 
     public String getSubject() {
 
-        return this.subject;
+        return subject;
 
     }
 
@@ -132,7 +132,7 @@ public class NotificationMessageEntity implements Serializable {
 
     public String getContent() {
 
-        return this.content;
+        return content;
     }
 
     public void setContent(String content) {
@@ -142,7 +142,7 @@ public class NotificationMessageEntity implements Serializable {
 
     public long getAttempts() {
 
-        return this.attempts;
+        return attempts;
     }
 
     public void setAttempts(long attempts) {
@@ -153,7 +153,7 @@ public class NotificationMessageEntity implements Serializable {
     @Transient
     public void addAttempt() {
 
-        this.attempts++;
+        attempts++;
 
     }
 

@@ -102,7 +102,7 @@ public class NotificationBean implements Notification {
     @Destroy
     public void destroyCallback() {
 
-        this.address = null;
+        address = null;
     }
 
     @Factory(OPER_TOPIC_LIST_NAME)
@@ -110,7 +110,7 @@ public class NotificationBean implements Notification {
     public void topicListFactory() {
 
         LOG.debug("topic list factory");
-        this.topicList = this.notificationSubscriptionService.listTopics();
+        topicList = notificationSubscriptionService.listTopics();
     }
 
     @Factory(OPER_SUBSCRIPTION_LIST_NAME)
@@ -118,8 +118,8 @@ public class NotificationBean implements Notification {
     public void subscriptionListFactory()
             throws SubscriptionNotFoundException {
 
-        LOG.debug("subscription list factory for topic: " + this.selectedTopic);
-        this.subscriptionList = this.notificationSubscriptionService.listSubscriptions(this.selectedTopic.getTopic());
+        LOG.debug("subscription list factory for topic: " + selectedTopic);
+        subscriptionList = notificationSubscriptionService.listSubscriptions(selectedTopic.getTopic());
     }
 
     @Factory(OPER_CONSUMERS_LIST_NAME)
@@ -128,11 +128,11 @@ public class NotificationBean implements Notification {
 
         LOG.debug("consumer list factory");
         List<SelectItem> consumerList = new LinkedList<SelectItem>();
-        List<ApplicationEntity> applications = this.applicationService.listApplications();
+        List<ApplicationEntity> applications = applicationService.listApplications();
         for (ApplicationEntity application : applications) {
             consumerList.add(new SelectItem(application.getName()));
         }
-        List<NodeEntity> nodes = this.nodeService.listNodes();
+        List<NodeEntity> nodes = nodeService.listNodes();
         for (NodeEntity node : nodes) {
             consumerList.add(new SelectItem(node.getName()));
         }
@@ -142,7 +142,7 @@ public class NotificationBean implements Notification {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String view() {
 
-        LOG.debug("view subscriptions on topic: " + this.selectedTopic.getTopic());
+        LOG.debug("view subscriptions on topic: " + selectedTopic.getTopic());
         return "view";
     }
 
@@ -156,12 +156,12 @@ public class NotificationBean implements Notification {
     public String addSubscription()
             throws SubscriptionNotFoundException {
 
-        LOG.debug("add subscription for consumer " + this.consumer);
+        LOG.debug("add subscription for consumer " + consumer);
         try {
-            this.notificationSubscriptionService.addSubscription(this.selectedTopic.getTopic(), this.address, this.consumer);
+            notificationSubscriptionService.addSubscription(selectedTopic.getTopic(), address, consumer);
         } catch (PermissionDeniedException e) {
             LOG.debug("permission denied: " + e.getMessage());
-            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), this.consumer);
+            facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), consumer);
             return null;
         }
         subscriptionListFactory();
@@ -172,18 +172,18 @@ public class NotificationBean implements Notification {
     public String remove()
             throws SubscriptionNotFoundException {
 
-        LOG.debug("remove subscription for topic " + this.selectedTopic.getTopic());
+        LOG.debug("remove subscription for topic " + selectedTopic.getTopic());
         try {
-            this.notificationSubscriptionService.removeSubscription(this.selectedTopic.getTopic(), this.selectedSubscription);
+            notificationSubscriptionService.removeSubscription(selectedTopic.getTopic(), selectedSubscription);
         } catch (EndpointReferenceNotFoundException e) {
-            LOG.debug("endpoint not found: " + this.selectedSubscription.getName());
-            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorConsumerNotFound",
-                    this.selectedSubscription.getName());
+            LOG.debug("endpoint not found: " + selectedSubscription.getName());
+            facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorConsumerNotFound",
+                    selectedSubscription.getName());
             return null;
         } catch (PermissionDeniedException e) {
             LOG.debug("permission denied: " + e.getMessage());
-            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, e.getResourceMessage(),
-                    this.selectedSubscription.getName());
+            facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, e.getResourceMessage(),
+                    selectedSubscription.getName());
             return null;
         }
         subscriptionListFactory();
@@ -193,7 +193,7 @@ public class NotificationBean implements Notification {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getAddress() {
 
-        return this.address;
+        return address;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -205,7 +205,7 @@ public class NotificationBean implements Notification {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getConsumer() {
 
-        return this.consumer;
+        return consumer;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)

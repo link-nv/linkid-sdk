@@ -36,11 +36,11 @@ public class PermissionDeniedException extends SafeOnlineException {
 
     public String getResourceMessage() {
 
-        return this.resourceMessage;
+        return resourceMessage;
     }
 
     public Object[] getResourceArgs() {
 
-        return this.resourceArgs;
+        return resourceArgs;
     }
 }

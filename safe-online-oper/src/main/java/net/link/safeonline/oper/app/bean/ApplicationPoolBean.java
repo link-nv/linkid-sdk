@@ -99,7 +99,7 @@ public class ApplicationPoolBean implements ApplicationPool {
     public void destroyCallback() {
 
         LOG.debug("destroy");
-        this.name = null;
+        name = null;
     }
 
     /**
@@ -110,7 +110,7 @@ public class ApplicationPoolBean implements ApplicationPool {
     public void applicationPoolListFactory() {
 
         LOG.debug("application pool list factory");
-        this.operApplicationPoolList = this.applicationPoolService.listApplicationPools();
+        operApplicationPoolList = applicationPoolService.listApplicationPools();
     }
 
     /**
@@ -121,16 +121,16 @@ public class ApplicationPoolBean implements ApplicationPool {
     public void applicationPoolApplicationListFactory() {
 
         LOG.debug("application pool application list factory");
-        this.operApplicationPoolApplicationList = new LinkedList<ApplicationPoolSelection>();
-        List<ApplicationEntity> applications = this.applicationService.listApplications();
+        operApplicationPoolApplicationList = new LinkedList<ApplicationPoolSelection>();
+        List<ApplicationEntity> applications = applicationService.listApplications();
         for (ApplicationEntity application : applications) {
             boolean included = false;
-            if (null != this.selectedApplicationPool) {
-                if (this.selectedApplicationPool.getApplications().contains(application)) {
+            if (null != selectedApplicationPool) {
+                if (selectedApplicationPool.getApplications().contains(application)) {
                     included = true;
                 }
             }
-            this.operApplicationPoolApplicationList.add(new ApplicationPoolSelection(application.getName(), included));
+            operApplicationPoolApplicationList.add(new ApplicationPoolSelection(application.getName(), included));
         }
     }
 
@@ -142,11 +142,11 @@ public class ApplicationPoolBean implements ApplicationPool {
     public void applicationPoolElementsFactory() {
 
         LOG.debug("application pool list elements factory");
-        if (null == this.selectedApplicationPool)
+        if (null == selectedApplicationPool)
             return;
-        this.operApplicationPoolElements = new LinkedList<ApplicationPoolSelection>();
-        for (ApplicationEntity application : this.selectedApplicationPool.getApplications()) {
-            this.operApplicationPoolElements.add(new ApplicationPoolSelection(application.getName(), true));
+        operApplicationPoolElements = new LinkedList<ApplicationPoolSelection>();
+        for (ApplicationEntity application : selectedApplicationPool.getApplications()) {
+            operApplicationPoolElements.add(new ApplicationPoolSelection(application.getName(), true));
         }
     }
 
@@ -156,7 +156,7 @@ public class ApplicationPoolBean implements ApplicationPool {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public List<SelectItem> getApplicationList() {
 
-        List<ApplicationEntity> applications = this.applicationService.listApplications();
+        List<ApplicationEntity> applications = applicationService.listApplications();
         List<SelectItem> applicationList = new LinkedList<SelectItem>();
         for (ApplicationEntity currentApplication : applications) {
             applicationList.add(new SelectItem(currentApplication.getName()));
@@ -170,7 +170,7 @@ public class ApplicationPoolBean implements ApplicationPool {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     /**
@@ -179,7 +179,7 @@ public class ApplicationPoolBean implements ApplicationPool {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public Long getSsoTimeout() {
 
-        return this.ssoTimeout;
+        return ssoTimeout;
     }
 
     /**
@@ -207,13 +207,13 @@ public class ApplicationPoolBean implements ApplicationPool {
     public String remove()
             throws ApplicationPoolNotFoundException {
 
-        String applicationPoolName = this.selectedApplicationPool.getName();
+        String applicationPoolName = selectedApplicationPool.getName();
         LOG.debug("remove application pool: " + applicationPoolName);
         try {
-            this.applicationPoolService.removeApplicationPool(applicationPoolName);
+            applicationPoolService.removeApplicationPool(applicationPoolName);
         } catch (PermissionDeniedException e) {
             LOG.debug("permission denied to remove: " + applicationPoolName);
-            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), e.getResourceArgs());
+            facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), e.getResourceArgs());
             return null;
         }
         applicationPoolListFactory();
@@ -228,20 +228,20 @@ public class ApplicationPoolBean implements ApplicationPool {
     public String save()
             throws ApplicationPoolNotFoundException, ApplicationNotFoundException {
 
-        String applicationPoolName = this.selectedApplicationPool.getName();
+        String applicationPoolName = selectedApplicationPool.getName();
         LOG.debug("save application pool: " + applicationPoolName);
 
-        this.applicationPoolService.setSsoTimeout(applicationPoolName, this.ssoTimeout);
+        applicationPoolService.setSsoTimeout(applicationPoolName, ssoTimeout);
 
         List<String> applicationList = new LinkedList<String>();
-        for (ApplicationPoolSelection application : this.operApplicationPoolApplicationList) {
+        for (ApplicationPoolSelection application : operApplicationPoolApplicationList) {
             if (application.isIncluded()) {
                 applicationList.add(application.getName());
             }
         }
-        this.applicationPoolService.updateApplicationList(applicationPoolName, applicationList);
+        applicationPoolService.updateApplicationList(applicationPoolName, applicationList);
 
-        this.selectedApplicationPool = null;
+        selectedApplicationPool = null;
 
         applicationPoolListFactory();
         return "success";
@@ -256,7 +256,7 @@ public class ApplicationPoolBean implements ApplicationPool {
         /*
          * To set the selected application pool.
          */
-        LOG.debug("view application pool: " + this.selectedApplicationPool.getName());
+        LOG.debug("view application pool: " + selectedApplicationPool.getName());
         return "view";
     }
 
@@ -267,26 +267,26 @@ public class ApplicationPoolBean implements ApplicationPool {
     public String add()
             throws ApplicationPoolNotFoundException, ApplicationNotFoundException {
 
-        LOG.debug("add application pool: " + this.name);
+        LOG.debug("add application pool: " + name);
 
         List<String> applicationList = new LinkedList<String>();
-        for (ApplicationPoolSelection application : this.operApplicationPoolApplicationList) {
+        for (ApplicationPoolSelection application : operApplicationPoolApplicationList) {
             if (application.isIncluded()) {
                 applicationList.add(application.getName());
             }
         }
 
         try {
-            this.applicationPoolService.addApplicationPool(this.name, this.ssoTimeout, applicationList);
+            applicationPoolService.addApplicationPool(name, ssoTimeout, applicationList);
 
         } catch (ExistingApplicationPoolException e) {
-            LOG.debug("application pool already exists: " + this.name);
-            this.facesMessages.addToControlFromResourceBundle("name", FacesMessage.SEVERITY_ERROR, "errorApplicationPoolAlreadyExists",
-                    this.name);
+            LOG.debug("application pool already exists: " + name);
+            facesMessages.addToControlFromResourceBundle("name", FacesMessage.SEVERITY_ERROR, "errorApplicationPoolAlreadyExists",
+                    name);
             return null;
         }
 
-        this.selectedApplicationPool = null;
+        selectedApplicationPool = null;
 
         applicationPoolListFactory();
         return "success";
@@ -301,9 +301,9 @@ public class ApplicationPoolBean implements ApplicationPool {
         /*
          * To set the selected application.
          */
-        LOG.debug("edit application pool: " + this.selectedApplicationPool.getName());
+        LOG.debug("edit application pool: " + selectedApplicationPool.getName());
 
-        this.ssoTimeout = this.selectedApplicationPool.getSsoTimeout();
+        ssoTimeout = selectedApplicationPool.getSsoTimeout();
 
         return "edit";
     }

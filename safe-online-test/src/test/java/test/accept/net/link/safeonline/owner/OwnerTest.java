@@ -24,24 +24,24 @@ public class OwnerTest extends TestCase {
             throws Exception {
 
         super.setUp();
-        this.acceptanceTestManager = new AcceptanceTestManager();
-        this.acceptanceTestManager.setUp();
+        acceptanceTestManager = new AcceptanceTestManager();
+        acceptanceTestManager.setUp();
     }
 
     @Override
     protected void tearDown()
             throws Exception {
 
-        this.acceptanceTestManager.tearDown();
+        acceptanceTestManager.tearDown();
         super.tearDown();
     }
 
     public void testOwnerLogonLogout()
             throws Exception {
 
-        this.acceptanceTestManager.setContext("Testing owner webapp admin login logout");
+        acceptanceTestManager.setContext("Testing owner webapp admin login logout");
 
-        OwnerOverview ownerOverview = PageUtils.loginOwnerWithPassword(this.acceptanceTestManager, WebappConstants.OWNER_ADMIN, "secret");
+        OwnerOverview ownerOverview = PageUtils.loginOwnerWithPassword(acceptanceTestManager, WebappConstants.OWNER_ADMIN, "secret");
         ownerOverview.logout();
     }
 }

@@ -63,19 +63,19 @@ public class SecurityTokenServiceClientImpl extends AbstractMessageAccessor impl
     public SecurityTokenServiceClientImpl(String location, X509Certificate clientCertificate, PrivateKey clientPrivateKey) {
 
         SecurityTokenService service = SecurityTokenServiceFactory.newInstance();
-        this.port = service.getSecurityTokenServicePort();
+        port = service.getSecurityTokenServicePort();
         this.location = location + "/safe-online-ws/sts";
         setEndpointAddress();
 
-        registerMessageLoggerHandler(this.port);
-        WSSecurityClientHandler.addNewHandler(this.port, clientCertificate, clientPrivateKey);
+        registerMessageLoggerHandler(port);
+        WSSecurityClientHandler.addNewHandler(port, clientCertificate, clientPrivateKey);
         LOG.debug("location: " + location);
     }
 
     private void setEndpointAddress() {
 
-        BindingProvider bindingProvider = (BindingProvider) this.port;
-        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location);
+        BindingProvider bindingProvider = (BindingProvider) port;
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location);
     }
 
     public void validate(Element token, TrustDomainType trustDomain)
@@ -99,16 +99,16 @@ public class SecurityTokenServiceClientImpl extends AbstractMessageAccessor impl
 
         RequestSecurityTokenResponseType response;
         try {
-            response = this.port.requestSecurityToken(request);
+            response = port.requestSecurityToken(request);
         } catch (ClientTransportException e) {
             LOG.error("ClientTransportException: " + e.getMessage(), e);
-            throw new WSClientTransportException(this.location);
+            throw new WSClientTransportException(location);
         } catch (Exception e) {
             LOG.error("Exception: " + e.getMessage(), e);
             throw retrieveHeadersFromException(e);
         } finally {
             LOG.debug("finally");
-            retrieveHeadersFromPort(this.port);
+            retrieveHeadersFromPort(port);
             LOG.debug("finally done");
         }
 

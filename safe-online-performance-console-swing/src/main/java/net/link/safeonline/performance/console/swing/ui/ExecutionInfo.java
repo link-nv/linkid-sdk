@@ -86,9 +86,9 @@ public class ExecutionInfo extends JPanel implements ChangeListener, AgentSelect
 
     public ExecutionInfo() {
 
-        this.executions = new ArrayList<ScenarioExecution>();
+        executions = new ArrayList<ScenarioExecution>();
 
-        this.executionSelection = new JSlider(SwingConstants.HORIZONTAL, 0, 0, 0);
+        executionSelection = new JSlider(SwingConstants.HORIZONTAL, 0, 0, 0);
 
         FormLayout layout = new FormLayout("r:0dlu:g, 10dlu, 0dlu:g");
         layout.setColumnGroups(new int[][] { { 1, 3 } });
@@ -100,40 +100,40 @@ public class ExecutionInfo extends JPanel implements ChangeListener, AgentSelect
         UIManager.put("Label.font", originalDefault.deriveFont(20f));
 
         builder.appendSeparator("Completed Executions:");
-        builder.append(this.executionSelection, 3);
+        builder.append(executionSelection, 3);
 
         builder.appendParagraphGapRow();
         builder.nextLine(2);
 
-        builder.append(this.scenarioName = new JLabel(), 3);
+        builder.append(scenarioName = new JLabel(), 3);
 
         builder.appendUnrelatedComponentsGapRow();
         builder.nextLine(2);
 
-        builder.append("Initiated:", this.startTime = new JLabel());
-        builder.append("Agents Used:", this.agents = new JLabel());
-        builder.append("Workers Used:", this.workers = new JLabel());
-        builder.append(this.durationLabel = new JLabel(), this.duration = new JLabel());
-        builder.append("Average Speed:", this.speed = new JLabel());
-        builder.append("OLAS Server Hostname:", this.hostname = new JLabel());
-        builder.append("Transport:", this.transport = new JLabel());
+        builder.append("Initiated:", startTime = new JLabel());
+        builder.append("Agents Used:", agents = new JLabel());
+        builder.append("Workers Used:", workers = new JLabel());
+        builder.append(durationLabel = new JLabel(), duration = new JLabel());
+        builder.append("Average Speed:", speed = new JLabel());
+        builder.append("OLAS Server Hostname:", hostname = new JLabel());
+        builder.append("Transport:", transport = new JLabel());
 
         builder.appendSeparator("Description:");
-        builder.append(this.description = new JEditorPane("text/html", ""), 3);
+        builder.append(description = new JEditorPane("text/html", ""), 3);
 
         UIManager.put("Label.font", originalDefault);
 
-        this.executionSelection.addChangeListener(this);
-        this.executionSelection.setSnapToTicks(true);
-        this.executionSelection.setEnabled(false);
-        this.executionSelection.setOpaque(false);
+        executionSelection.addChangeListener(this);
+        executionSelection.setSnapToTicks(true);
+        executionSelection.setEnabled(false);
+        executionSelection.setOpaque(false);
 
-        this.scenarioName.setHorizontalAlignment(SwingConstants.CENTER);
-        this.scenarioName.setFont(this.scenarioName.getFont().deriveFont(36f));
+        scenarioName.setHorizontalAlignment(SwingConstants.CENTER);
+        scenarioName.setFont(scenarioName.getFont().deriveFont(36f));
 
-        this.description.setEditable(false);
+        description.setEditable(false);
 
-        this.hoverAdaptor = new HoverActionAdaptor(this.duration) {
+        hoverAdaptor = new HoverActionAdaptor(duration) {
 
             @Override
             protected void clicked(JComponent component) {
@@ -153,16 +153,16 @@ public class ExecutionInfo extends JPanel implements ChangeListener, AgentSelect
      */
     public void stateChanged(ChangeEvent e) {
 
-        if (this.executionSelection.equals(e.getSource())) {
+        if (executionSelection.equals(e.getSource())) {
             updateExecutionSelection();
         }
     }
 
     void updateExecutionSelection() {
 
-        synchronized (this.executions) {
-            if (this.executionSelection.getValue() < this.executions.size() && this.executionSelection.getValue() > -1) {
-                setExecution(this.executions.get(this.executionSelection.getValue()));
+        synchronized (executions) {
+            if (executionSelection.getValue() < executions.size() && executionSelection.getValue() > -1) {
+                setExecution(executions.get(executionSelection.getValue()));
             } else {
                 setExecution(null);
             }
@@ -174,28 +174,28 @@ public class ExecutionInfo extends JPanel implements ChangeListener, AgentSelect
         ConsoleData.setExecution(execution);
 
         if (execution == null) {
-            this.executionSelection.setToolTipText("N/A");
-            this.scenarioName.setText("N/A");
-            this.description.setText("<pre>N/A</pre>");
-            this.startTime.setText("N/A");
-            this.agents.setText("N/A");
-            this.workers.setText("N/A");
-            this.duration.setText("N/A");
-            this.speed.setText("N/A");
-            this.hostname.setText("N/A");
-            this.transport.setText("N/A");
+            executionSelection.setToolTipText("N/A");
+            scenarioName.setText("N/A");
+            description.setText("<pre>N/A</pre>");
+            startTime.setText("N/A");
+            agents.setText("N/A");
+            workers.setText("N/A");
+            duration.setText("N/A");
+            speed.setText("N/A");
+            hostname.setText("N/A");
+            transport.setText("N/A");
 
-            this.hoverAdaptor.enable(false, this.duration);
-            this.durationLabel.setText("Duration:");
+            hoverAdaptor.enable(false, duration);
+            durationLabel.setText("Duration:");
         } else {
-            this.executionSelection.setToolTipText(execution.toString());
-            this.scenarioName.setText(execution.getScenarioName() == null? "N/A": execution.getScenarioName().replaceFirst(".*\\.", ""));
+            executionSelection.setToolTipText(execution.toString());
+            scenarioName.setText(execution.getScenarioName() == null? "N/A": execution.getScenarioName().replaceFirst(".*\\.", ""));
 
-            Caret descriptionCaret = this.description.getCaret();
-            descriptionCaret.deinstall(this.description);
-            this.description.setText(execution.getDuration() == null? "<pre>N/A</pre>": execution.getScenarioDescription().replaceAll("\n",
+            Caret descriptionCaret = description.getCaret();
+            descriptionCaret.deinstall(description);
+            description.setText(execution.getDuration() == null? "<pre>N/A</pre>": execution.getScenarioDescription().replaceAll("\n",
                     "<br>"));
-            descriptionCaret.install(this.description);
+            descriptionCaret.install(description);
 
             Double totalSpeed = null;
             if (ConsoleData.getSelectedExecution() != null) {
@@ -216,22 +216,22 @@ public class ExecutionInfo extends JPanel implements ChangeListener, AgentSelect
                 }
             }
 
-            this.startTime.setText(DateFormat.getDateTimeInstance().format(execution.getStartTime()));
-            this.agents.setText(String.format("%s agent%s", execution.getAgents(), execution.getAgents() == 1? "": "s"));
-            this.workers.setText(String.format("%s worker%s", execution.getWorkers(), execution.getWorkers() == 1? "": "s"));
-            this.speed.setText(totalSpeed == null? "N/A": String.format("%.2f scenario%s/s", totalSpeed, totalSpeed == 1? "": "s"));
-            this.hostname.setText(execution.getHostname());
-            this.transport.setText(execution.isSsl() == null? "N/A": execution.isSsl()? "HTTPS": "HTTP");
+            startTime.setText(DateFormat.getDateTimeInstance().format(execution.getStartTime()));
+            agents.setText(String.format("%s agent%s", execution.getAgents(), execution.getAgents() == 1? "": "s"));
+            workers.setText(String.format("%s worker%s", execution.getWorkers(), execution.getWorkers() == 1? "": "s"));
+            speed.setText(totalSpeed == null? "N/A": String.format("%.2f scenario%s/s", totalSpeed, totalSpeed == 1? "": "s"));
+            hostname.setText(execution.getHostname());
+            transport.setText(execution.isSsl() == null? "N/A": execution.isSsl()? "HTTPS": "HTTP");
 
             long timeLeft = execution.getStartTime().getTime() + execution.getDuration() - System.currentTimeMillis();
             if (timeLeft > 0) {
-                this.durationLabel.setText("Time Remaining:");
-                this.duration.setText(formatDuration(timeLeft));
-                this.hoverAdaptor.enable(true, this.duration);
+                durationLabel.setText("Time Remaining:");
+                duration.setText(formatDuration(timeLeft));
+                hoverAdaptor.enable(true, duration);
             } else {
-                this.durationLabel.setText("Duration:");
-                this.duration.setText(formatDuration(execution.getDuration()));
-                this.hoverAdaptor.enable(false, this.duration);
+                durationLabel.setText("Duration:");
+                duration.setText(formatDuration(execution.getDuration()));
+                hoverAdaptor.enable(false, duration);
             }
         }
     }
@@ -286,7 +286,7 @@ public class ExecutionInfo extends JPanel implements ChangeListener, AgentSelect
 
     private void setExecutions(final Set<ScenarioExecution> executions) {
 
-        final JSlider slider = this.executionSelection;
+        final JSlider slider = executionSelection;
         final List<ScenarioExecution> sliderExecutions = this.executions;
 
         int maxValue = Math.max(0, executions.size() - 1);

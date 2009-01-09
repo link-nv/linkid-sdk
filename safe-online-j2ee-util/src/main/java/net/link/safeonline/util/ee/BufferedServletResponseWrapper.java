@@ -44,8 +44,8 @@ public class BufferedServletResponseWrapper extends HttpServletResponseWrapper {
     public BufferedServletResponseWrapper(HttpServletResponse response) {
 
         super(response);
-        this.origResponse = response;
-        this.bufferedServletOutputStream = new BufferedServletOutputStream();
+        origResponse = response;
+        bufferedServletOutputStream = new BufferedServletOutputStream();
     }
 
     /**
@@ -56,22 +56,22 @@ public class BufferedServletResponseWrapper extends HttpServletResponseWrapper {
     public void commit()
             throws IOException {
 
-        if (null != this.writer) {
+        if (null != writer) {
             /*
              * We need to flush the writer first so that the buffered servlet output stream holds all the data.
              */
-            this.writer.flush();
+            writer.flush();
         }
-        byte[] data = this.bufferedServletOutputStream.getData();
+        byte[] data = bufferedServletOutputStream.getData();
         LOG.debug("committing " + data.length + " bytes");
-        IOUtils.write(data, this.origResponse.getOutputStream());
+        IOUtils.write(data, origResponse.getOutputStream());
     }
 
     @Override
     public ServletOutputStream getOutputStream() {
 
         LOG.debug("get output stream");
-        return this.bufferedServletOutputStream;
+        return bufferedServletOutputStream;
     }
 
     @Override
@@ -79,10 +79,10 @@ public class BufferedServletResponseWrapper extends HttpServletResponseWrapper {
             throws IOException {
 
         LOG.debug("get writer");
-        if (null == this.writer) {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(this.bufferedServletOutputStream, getCharacterEncoding());
-            this.writer = new PrintWriter(outputStreamWriter);
+        if (null == writer) {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(bufferedServletOutputStream, getCharacterEncoding());
+            writer = new PrintWriter(outputStreamWriter);
         }
-        return this.writer;
+        return writer;
     }
 }

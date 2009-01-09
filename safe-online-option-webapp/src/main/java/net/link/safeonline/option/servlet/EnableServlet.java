@@ -69,7 +69,7 @@ public class EnableServlet extends AbstractInjectionServlet {
             String userId = DeviceOperationManager.getUserId(request.getSession());
 
             LOG.debug("enable imei: " + imei + " with pin: " + pin);
-            this.optionDeviceService.enable(userId, imei, pin);
+            optionDeviceService.enable(userId, imei, pin);
             response.setStatus(HttpServletResponse.SC_OK);
             // notify that enabling the device was successful.
             protocolContext.setSuccess(true);

@@ -73,12 +73,12 @@ public class AuditContextManager {
             boolean isMainEntry = AuditContextPolicyContextHandler.unlockAuditContext();
 
             if (isMainEntry) {
-                this.auditContextFinalizer.finalizeAuditContext(auditContextId);
+                auditContextFinalizer.finalizeAuditContext(auditContextId);
             }
         }
 
         catch (MissingAuditContextException e) {
-            this.auditAuditDAO.addAuditAudit("missing audit context");
+            auditAuditDAO.addAuditAudit("missing audit context");
         }
     }
 
@@ -100,7 +100,7 @@ public class AuditContextManager {
         try {
             AuditContextPolicyContextHandler.setAndLockAuditContextId(newAuditContextId);
         } catch (ExistingAuditContextException e) {
-            this.auditAuditDAO.addAuditAudit("Couldn't set audit context on thread: already in use; ID: " + e.getAuditContextId());
+            auditAuditDAO.addAuditAudit("Couldn't set audit context on thread: already in use; ID: " + e.getAuditContextId());
         }
     }
 
@@ -111,6 +111,6 @@ public class AuditContextManager {
      */
     private long createNewAuditContext() {
 
-        return this.auditContextDAO.createAuditContext().getId();
+        return auditContextDAO.createAuditContext().getId();
     }
 }

@@ -60,16 +60,16 @@ public class RuntimeService extends ServiceMBeanSupport implements RuntimeServic
         if (null == Security.getProvider(BouncyCastleProvider.PROVIDER_NAME)) {
             LOG.debug("Installing BouncyCastle security provider...");
             Security.addProvider(new BouncyCastleProvider());
-            this.manageBouncyCastleProvider = true;
+            manageBouncyCastleProvider = true;
         }
     }
 
     private void unregisterBouncyCastle() {
 
-        if (this.manageBouncyCastleProvider) {
+        if (manageBouncyCastleProvider) {
             LOG.debug("Removing BouncyCastle security provider...");
             Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME);
-            this.manageBouncyCastleProvider = false;
+            manageBouncyCastleProvider = false;
         }
     }
 

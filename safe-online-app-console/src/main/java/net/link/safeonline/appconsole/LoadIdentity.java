@@ -83,7 +83,7 @@ public class LoadIdentity extends JPanel {
     public LoadIdentity(ApplicationConsole applicationConsole) {
 
         super();
-        this.parent = applicationConsole;
+        parent = applicationConsole;
         init();
     }
 
@@ -104,10 +104,10 @@ public class LoadIdentity extends JPanel {
         JLabel keyStorePwLabel = new JLabel(KEYSTORE_PW.getMessage());
         JLabel keyEntryPasswordLabel = new JLabel(KEYENTRY_PW.getMessage());
 
-        this.keyStoreTypeCombo.addItem("pkcs12");
-        this.keyStoreTypeCombo.addItem("jks");
+        keyStoreTypeCombo.addItem("pkcs12");
+        keyStoreTypeCombo.addItem("jks");
 
-        this.keyStoreField.setBorder(new LineBorder(Color.black));
+        keyStoreField.setBorder(new LineBorder(Color.black));
 
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
@@ -121,10 +121,10 @@ public class LoadIdentity extends JPanel {
 
         gbc.gridx = 1;
         gbc.gridy = 0;
-        gbl.setConstraints(this.keyStoreField, gbc);
-        infoPanel.add(this.keyStoreField, gbc);
+        gbl.setConstraints(keyStoreField, gbc);
+        infoPanel.add(keyStoreField, gbc);
 
-        JButton browseButton = new JButton(this.browseAction);
+        JButton browseButton = new JButton(browseAction);
         gbc.gridx = 2;
         gbc.gridy = 0;
         gbl.setConstraints(browseButton, gbc);
@@ -137,8 +137,8 @@ public class LoadIdentity extends JPanel {
 
         gbc.gridx = 1;
         gbc.gridy = 1;
-        gbl.setConstraints(this.keyStoreTypeCombo, gbc);
-        infoPanel.add(this.keyStoreTypeCombo, gbc);
+        gbl.setConstraints(keyStoreTypeCombo, gbc);
+        infoPanel.add(keyStoreTypeCombo, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 2;
@@ -147,8 +147,8 @@ public class LoadIdentity extends JPanel {
 
         gbc.gridx = 1;
         gbc.gridy = 2;
-        gbl.setConstraints(this.keyStorePasswordField, gbc);
-        infoPanel.add(this.keyStorePasswordField, gbc);
+        gbl.setConstraints(keyStorePasswordField, gbc);
+        infoPanel.add(keyStorePasswordField, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 3;
@@ -157,13 +157,13 @@ public class LoadIdentity extends JPanel {
 
         gbc.gridx = 1;
         gbc.gridy = 3;
-        gbl.setConstraints(this.keyEntryPasswordField, gbc);
-        infoPanel.add(this.keyEntryPasswordField, gbc);
+        gbl.setConstraints(keyEntryPasswordField, gbc);
+        infoPanel.add(keyEntryPasswordField, gbc);
 
-        controlPanel.add(new JButton(this.loadAction));
-        controlPanel.add(new JButton(this.cancelAction));
+        controlPanel.add(new JButton(loadAction));
+        controlPanel.add(new JButton(cancelAction));
 
-        this.setLayout(new BorderLayout());
+        setLayout(new BorderLayout());
         this.add(infoPanel, BorderLayout.CENTER);
         this.add(controlPanel, BorderLayout.SOUTH);
     }
@@ -173,7 +173,7 @@ public class LoadIdentity extends JPanel {
      */
     protected boolean checkInput() {
 
-        if (null == this.keyStoreField.getText() || this.keyStoreField.getText().length() == 0) {
+        if (null == keyStoreField.getText() || keyStoreField.getText().length() == 0) {
             LOG.error("Please select a keystore...");
             JOptionPane.showMessageDialog(this, ERROR_SELECT_KEYSTORE.getMessage(), ERROR_MISSING_FIELDS.getMessage(),
                     JOptionPane.ERROR_MESSAGE);
@@ -186,8 +186,8 @@ public class LoadIdentity extends JPanel {
 
         if (!checkInput())
             return;
-        String keyStorePath = this.keyStoreField.getText();
-        String keyStoreType = (String) this.keyStoreTypeCombo.getSelectedItem();
+        String keyStorePath = keyStoreField.getText();
+        String keyStoreType = (String) keyStoreTypeCombo.getSelectedItem();
         InputStream keyStoreInputStream;
         try {
             keyStoreInputStream = new FileInputStream(keyStorePath);
@@ -196,8 +196,8 @@ public class LoadIdentity extends JPanel {
             JOptionPane.showMessageDialog(this, ERROR_OPEN_KEYSTORE.getMessage(), "", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        char[] keyStorePassword = this.keyStorePasswordField.getPassword().length == 0? null: this.keyStorePasswordField.getPassword();
-        char[] keyEntryPassword = this.keyEntryPasswordField.getPassword().length == 0? null: this.keyEntryPasswordField.getPassword();
+        char[] keyStorePassword = keyStorePasswordField.getPassword().length == 0? null: keyStorePasswordField.getPassword();
+        char[] keyEntryPassword = keyEntryPasswordField.getPassword().length == 0? null: keyEntryPasswordField.getPassword();
 
         PrivateKeyEntry privateKeyEntry;
         try {
@@ -207,7 +207,7 @@ public class LoadIdentity extends JPanel {
             return;
         }
 
-        this.parent.resetContent();
+        parent.resetContent();
 
         new ConfirmIdentity(privateKeyEntry, keyStorePath, keyStoreType, new String(keyStorePassword));
     }
@@ -216,16 +216,16 @@ public class LoadIdentity extends JPanel {
 
         JFileChooser fc = new JFileChooser();
         fc.addChoosableFileFilter(new KeyStoreFilter());
-        fc.showOpenDialog(this.getParent());
+        fc.showOpenDialog(getParent());
         File certFile = fc.getSelectedFile();
         if (certFile != null) {
-            this.keyStoreField.setText(certFile.getAbsolutePath());
+            keyStoreField.setText(certFile.getAbsolutePath());
         }
     }
 
     protected void onCancel() {
 
-        this.parent.resetContent();
+        parent.resetContent();
     }
 
 

@@ -39,16 +39,16 @@ public class QueryObjectFactoryTest {
     public void setUp()
             throws Exception {
 
-        this.entityTestManager = new EntityTestManager();
-        this.entityTestManager.setUp(MyTestEntity.class);
-        this.entityManager = this.entityTestManager.getEntityManager();
+        entityTestManager = new EntityTestManager();
+        entityTestManager.setUp(MyTestEntity.class);
+        entityManager = entityTestManager.getEntityManager();
     }
 
     @After
     public void tearDown()
             throws Exception {
 
-        this.entityTestManager.tearDown();
+        entityTestManager.tearDown();
     }
 
     @Test
@@ -56,7 +56,7 @@ public class QueryObjectFactoryTest {
             throws Exception {
 
         // operate
-        MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+        MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory.createQueryObject(entityManager,
                 MyTestEntity.MyQueryTestInterface.class);
 
         // verify
@@ -68,7 +68,7 @@ public class QueryObjectFactoryTest {
             throws Exception {
 
         // setup
-        MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+        MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory.createQueryObject(entityManager,
                 MyTestEntity.MyQueryTestInterface.class);
 
         // operate
@@ -86,9 +86,9 @@ public class QueryObjectFactoryTest {
         // setup
         String testName = UUID.randomUUID().toString();
         MyTestEntity myTestEntity = new MyTestEntity(testName);
-        this.entityManager.persist(myTestEntity);
+        entityManager.persist(myTestEntity);
 
-        MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+        MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory.createQueryObject(entityManager,
                 MyTestEntity.MyQueryTestInterface.class);
 
         // operate
@@ -107,9 +107,9 @@ public class QueryObjectFactoryTest {
         // setup
         String testName = UUID.randomUUID().toString();
         MyTestEntity myTestEntity = new MyTestEntity(testName);
-        this.entityManager.persist(myTestEntity);
+        entityManager.persist(myTestEntity);
 
-        MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+        MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory.createQueryObject(entityManager,
                 MyTestEntity.MyQueryTestInterface.class);
 
         // operate
@@ -135,9 +135,9 @@ public class QueryObjectFactoryTest {
         // setup
         String testName = UUID.randomUUID().toString();
         MyTestEntity myTestEntity = new MyTestEntity(testName);
-        this.entityManager.persist(myTestEntity);
+        entityManager.persist(myTestEntity);
 
-        MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+        MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory.createQueryObject(entityManager,
                 MyTestEntity.MyQueryTestInterface.class);
 
         // operate
@@ -163,9 +163,9 @@ public class QueryObjectFactoryTest {
         // setup
         String testName = UUID.randomUUID().toString();
         MyTestEntity myTestEntity = new MyTestEntity(testName);
-        this.entityManager.persist(myTestEntity);
+        entityManager.persist(myTestEntity);
 
-        MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+        MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory.createQueryObject(entityManager,
                 MyTestEntity.MyQueryTestInterface.class);
 
         // operate
@@ -189,9 +189,9 @@ public class QueryObjectFactoryTest {
         // setup
         String testName = UUID.randomUUID().toString();
         MyTestEntity myTestEntity = new MyTestEntity(testName);
-        this.entityManager.persist(myTestEntity);
+        entityManager.persist(myTestEntity);
 
-        MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+        MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory.createQueryObject(entityManager,
                 MyTestEntity.MyQueryTestInterface.class);
 
         // operate
@@ -211,7 +211,7 @@ public class QueryObjectFactoryTest {
             throws Exception {
 
         // setup
-        MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+        MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory.createQueryObject(entityManager,
                 MyTestEntity.MyQueryTestInterface.class);
 
         // operate
@@ -226,7 +226,7 @@ public class QueryObjectFactoryTest {
             throws Exception {
 
         // setup
-        MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+        MyTestEntity.MyQueryTestInterface queryObject = QueryObjectFactory.createQueryObject(entityManager,
                 MyTestEntity.MyQueryTestInterface.class);
 
         // operate

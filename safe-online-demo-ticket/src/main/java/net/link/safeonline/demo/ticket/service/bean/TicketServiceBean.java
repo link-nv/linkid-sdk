@@ -40,7 +40,7 @@ public class TicketServiceBean implements TicketService {
 
         LOG.debug("has valid pass: " + nrn + " from " + from + " to " + to);
 
-        Query userQuery = User.createQueryWhereNrn(this.entityManager, nrn);
+        Query userQuery = User.createQueryWhereNrn(entityManager, nrn);
         List<User> users = userQuery.getResultList();
         if (users.isEmpty()) {
             LOG.debug("no matching user found for NRN: " + nrn);
@@ -59,7 +59,7 @@ public class TicketServiceBean implements TicketService {
             LOG.debug("illegal argument: " + e.getMessage());
             return false;
         }
-        Query ticketQuery = Ticket.createQueryWhereOwner(this.entityManager, user);
+        Query ticketQuery = Ticket.createQueryWhereOwner(entityManager, user);
         List<Ticket> tickets = ticketQuery.getResultList();
         if (tickets.isEmpty()) {
             LOG.debug("no passes found for user: " + user.getSafeOnlineUserName());

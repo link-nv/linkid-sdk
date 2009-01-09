@@ -46,7 +46,7 @@ public class DriverProfileServiceBean extends AbstractProfilingServiceBean imple
     public DriverProfileEntity addProfile(String driverClassName, ExecutionEntity execution) {
 
         DriverProfileEntity profile = new DriverProfileEntity(driverClassName, execution);
-        this.em.persist(profile);
+        em.persist(profile);
 
         return profile;
     }
@@ -58,16 +58,16 @@ public class DriverProfileServiceBean extends AbstractProfilingServiceBean imple
     public DriverProfileEntity getProfile(String driverClassName, ExecutionEntity execution) {
 
         try {
-            return (DriverProfileEntity) this.em.createNamedQuery(DriverProfileEntity.findByExecution).setParameter("driverClassName",
+            return (DriverProfileEntity) em.createNamedQuery(DriverProfileEntity.findByExecution).setParameter("driverClassName",
                     driverClassName).setParameter("execution", execution).getSingleResult();
         } catch (NoResultException e) {
-            if (this.ctx == null) {
+            if (ctx == null) {
                 LOG.warn("No EJB3 context found: " + "assuming we're running outside a container.");
 
                 return addProfile(driverClassName, execution);
             }
 
-            return this.ctx.getBusinessObject(DriverProfileService.class).addProfile(driverClassName, execution);
+            return ctx.getBusinessObject(DriverProfileService.class).addProfile(driverClassName, execution);
         }
 
     }

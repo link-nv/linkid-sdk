@@ -54,9 +54,9 @@ public class TaskHistoryCleanerTaskBean implements Task {
     public void perform()
             throws Exception {
 
-        long ageInMillis = this.configAgeInMillis;
+        long ageInMillis = configAgeInMillis;
 
-        this.taskHistoryDAO.clearAllTasksHistory(ageInMillis);
+        taskHistoryDAO.clearAllTasksHistory(ageInMillis);
     }
 
 }

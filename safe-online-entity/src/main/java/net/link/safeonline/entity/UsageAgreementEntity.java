@@ -66,14 +66,14 @@ public class UsageAgreementEntity implements Serializable {
 
     public UsageAgreementEntity() {
 
-        this.usageAgreementTexts = new HashSet<UsageAgreementTextEntity>();
+        usageAgreementTexts = new HashSet<UsageAgreementTextEntity>();
     }
 
     public UsageAgreementEntity(ApplicationEntity application, Long usageAgreementVersion) {
 
-        this.pk = new UsageAgreementPK(application.getName(), usageAgreementVersion);
+        pk = new UsageAgreementPK(application.getName(), usageAgreementVersion);
         this.application = application;
-        this.usageAgreementTexts = new HashSet<UsageAgreementTextEntity>();
+        usageAgreementTexts = new HashSet<UsageAgreementTextEntity>();
     }
 
     @EmbeddedId
@@ -81,7 +81,7 @@ public class UsageAgreementEntity implements Serializable {
             @AttributeOverride(name = "version", column = @Column(name = USAGE_AGREEMENT_VERSION_COLUMN_NAME)) })
     public UsageAgreementPK getPk() {
 
-        return this.pk;
+        return pk;
     }
 
     public void setPk(UsageAgreementPK pk) {
@@ -93,7 +93,7 @@ public class UsageAgreementEntity implements Serializable {
     @OneToMany(fetch = FetchType.EAGER)
     public Set<UsageAgreementTextEntity> getUsageAgreementTexts() {
 
-        return this.usageAgreementTexts;
+        return usageAgreementTexts;
     }
 
     public void setUsageAgreementTexts(Set<UsageAgreementTextEntity> usageAgreementTexts) {
@@ -104,19 +104,19 @@ public class UsageAgreementEntity implements Serializable {
     @Transient
     public Long getUsageAgreementVersion() {
 
-        return this.pk.getUsageAgreementVersion();
+        return pk.getUsageAgreementVersion();
     }
 
     @Transient
     public void setUsageAgreementVersion(Long usageAgreementVersion) {
 
-        this.pk.setUsageAgreementVersion(usageAgreementVersion);
+        pk.setUsageAgreementVersion(usageAgreementVersion);
     }
 
     @Transient
     public UsageAgreementTextEntity getUsageAgreementText(String language) {
 
-        for (UsageAgreementTextEntity usageAgreementText : this.usageAgreementTexts) {
+        for (UsageAgreementTextEntity usageAgreementText : usageAgreementTexts) {
             if (usageAgreementText.getLanguage().equals(language))
                 return usageAgreementText;
         }
@@ -127,7 +127,7 @@ public class UsageAgreementEntity implements Serializable {
     @JoinColumn(name = APPLICATION_COLUMN_NAME, insertable = false, updatable = false)
     public ApplicationEntity getApplication() {
 
-        return this.application;
+        return application;
     }
 
     public void setApplication(ApplicationEntity application) {
@@ -138,7 +138,7 @@ public class UsageAgreementEntity implements Serializable {
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.pk).toHashCode();
+        return new HashCodeBuilder().append(pk).toHashCode();
     }
 
     @Override
@@ -151,7 +151,7 @@ public class UsageAgreementEntity implements Serializable {
         if (false == obj instanceof UsageAgreementEntity)
             return false;
         UsageAgreementEntity rhs = (UsageAgreementEntity) obj;
-        return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
+        return new EqualsBuilder().append(pk, rhs.pk).isEquals();
     }
 
 

@@ -34,7 +34,7 @@ public class ScenarioExecutorThread extends ScenarioThread {
 
         super(AgentState.EXECUTE);
 
-        this.startTime = new Date();
+        startTime = new Date();
     }
 
     /**
@@ -52,8 +52,8 @@ public class ScenarioExecutorThread extends ScenarioThread {
 
         String hostname = String.format("%s:%d", ConsoleData.getHostname(), ConsoleData.getPort());
 
-        this.scenarioDeployer.execute(agent.getAddress(), ConsoleData.getScenarioName(), ConsoleData.getSelectedAgents().size(),
-                ConsoleData.getWorkers(), ConsoleData.getDuration(), hostname, ConsoleData.isSsl(), this.startTime);
+        scenarioDeployer.execute(agent.getAddress(), ConsoleData.getScenarioName(), ConsoleData.getSelectedAgents().size(),
+                ConsoleData.getWorkers(), ConsoleData.getDuration(), hostname, ConsoleData.isSsl(), startTime);
 
     }
 }

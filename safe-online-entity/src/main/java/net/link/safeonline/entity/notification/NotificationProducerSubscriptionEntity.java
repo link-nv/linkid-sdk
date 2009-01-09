@@ -59,13 +59,13 @@ public class NotificationProducerSubscriptionEntity implements Serializable {
     public NotificationProducerSubscriptionEntity(String topic) {
 
         this.topic = topic;
-        this.consumers = new HashSet<EndpointReferenceEntity>();
+        consumers = new HashSet<EndpointReferenceEntity>();
     }
 
     @Id
     public String getTopic() {
 
-        return this.topic;
+        return topic;
     }
 
     public void setTopic(String topic) {
@@ -76,7 +76,7 @@ public class NotificationProducerSubscriptionEntity implements Serializable {
     @ManyToMany(fetch = FetchType.EAGER)
     public Set<EndpointReferenceEntity> getConsumers() {
 
-        return this.consumers;
+        return consumers;
     }
 
     public void setConsumers(Set<EndpointReferenceEntity> consumers) {
@@ -87,7 +87,7 @@ public class NotificationProducerSubscriptionEntity implements Serializable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("topic", this.topic).toString();
+        return new ToStringBuilder(this).append("topic", topic).toString();
     }
 
     @Override
@@ -100,13 +100,13 @@ public class NotificationProducerSubscriptionEntity implements Serializable {
         if (false == obj instanceof NotificationProducerSubscriptionEntity)
             return false;
         NotificationProducerSubscriptionEntity rhs = (NotificationProducerSubscriptionEntity) obj;
-        return new EqualsBuilder().append(this.topic, rhs.topic).isEquals();
+        return new EqualsBuilder().append(topic, rhs.topic).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.topic).toHashCode();
+        return new HashCodeBuilder().append(topic).toHashCode();
     }
 
 

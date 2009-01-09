@@ -51,7 +51,7 @@ public class ExceptionFilter extends AbstractInjectionFilter {
         try {
             chain.doFilter(request, response);
         } catch (Throwable e) {
-            ((HttpServletResponse) response).sendRedirect(this.errorPage);
+            ((HttpServletResponse) response).sendRedirect(errorPage);
         }
     }
 

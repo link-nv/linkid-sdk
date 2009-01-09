@@ -104,11 +104,11 @@ public class CredentialManagerBean implements CredentialManager {
         String statementSessionId = authenticationStatement.getSessionId();
         String statementApplicationId = authenticationStatement.getApplicationId();
 
-        PkiProvider pkiProvider = this.pkiProviderManager.findPkiProvider(certificate);
+        PkiProvider pkiProvider = pkiProviderManager.findPkiProvider(certificate);
         if (null == pkiProvider)
             throw new ArgumentIntegrityException();
         TrustDomainEntity trustDomain = pkiProvider.getTrustDomain();
-        PkiResult validationResult = this.pkiValidator.validateCertificate(trustDomain, certificate);
+        PkiResult validationResult = pkiValidator.validateCertificate(trustDomain, certificate);
         if (PkiResult.REVOKED == validationResult)
             throw new PkiRevokedException();
         else if (PkiResult.SUSPENDED == validationResult)
@@ -121,18 +121,18 @@ public class CredentialManagerBean implements CredentialManager {
             throw new PkiInvalidException();
 
         if (false == sessionId.equals(statementSessionId)) {
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_SESSION_ID_MISMATCH);
+            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_SESSION_ID_MISMATCH);
             throw new ArgumentIntegrityException();
         }
 
         if (false == applicationId.equals(statementApplicationId)) {
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_APPLICATION_ID_MISMATCH);
+            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_APPLICATION_ID_MISMATCH);
             throw new ArgumentIntegrityException();
         }
 
         String identifierDomainName = pkiProvider.getIdentifierDomainName();
         String identifier = pkiProvider.getSubjectIdentifier(certificate);
-        SubjectEntity subject = this.subjectIdentifierDAO.findSubject(identifierDomainName, identifier);
+        SubjectEntity subject = subjectIdentifierDAO.findSubject(identifierDomainName, identifier);
         if (null == subject)
             throw new SubjectNotFoundException();
         if (pkiProvider.isDisabled(subject, certificate))
@@ -165,12 +165,12 @@ public class CredentialManagerBean implements CredentialManager {
         String statementOperation = identityStatement.getOperation();
         String statementUser = identityStatement.getUser();
 
-        PkiProvider pkiProvider = this.pkiProviderManager.findPkiProvider(certificate);
+        PkiProvider pkiProvider = pkiProviderManager.findPkiProvider(certificate);
         if (null == pkiProvider)
             throw new ArgumentIntegrityException();
 
         TrustDomainEntity trustDomain = pkiProvider.getTrustDomain();
-        PkiResult validationResult = this.pkiValidator.validateCertificate(trustDomain, certificate);
+        PkiResult validationResult = pkiValidator.validateCertificate(trustDomain, certificate);
         if (PkiResult.REVOKED == validationResult)
             throw new PkiRevokedException();
         else if (PkiResult.SUSPENDED == validationResult)
@@ -186,15 +186,15 @@ public class CredentialManagerBean implements CredentialManager {
          * Check whether the identity statement properties are ok.
          */
         if (false == userId.equals(statementUser)) {
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_USER_MISMATCH);
+            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_USER_MISMATCH);
             throw new PermissionDeniedException(SECURITY_MESSAGE_USER_MISMATCH);
         }
         if (false == sessionId.equals(statementSessionId)) {
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_SESSION_ID_MISMATCH);
+            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_SESSION_ID_MISMATCH);
             throw new ArgumentIntegrityException();
         }
         if (false == operation.equals(statementOperation)) {
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_OPERATION_MISMATCH);
+            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_OPERATION_MISMATCH);
             throw new ArgumentIntegrityException();
         }
 
@@ -202,19 +202,19 @@ public class CredentialManagerBean implements CredentialManager {
 
         String domain = pkiProvider.getIdentifierDomainName();
         String identifier = pkiProvider.getSubjectIdentifier(certificate);
-        SubjectEntity existingMappedSubject = this.subjectIdentifierDAO.findSubject(domain, identifier);
+        SubjectEntity existingMappedSubject = subjectIdentifierDAO.findSubject(domain, identifier);
         if (null == existingMappedSubject) {
             /*
              * Create new subject if needed
              */
-            subject = this.subjectService.findSubject(userId);
+            subject = subjectService.findSubject(userId);
             if (null == subject) {
-                subject = this.subjectService.addSubjectWithoutLogin(userId);
+                subject = subjectService.addSubjectWithoutLogin(userId);
             }
             /*
              * In this case we register a new subject identifier within the system.
              */
-            this.subjectIdentifierDAO.addSubjectIdentifier(domain, identifier, subject);
+            subjectIdentifierDAO.addSubjectIdentifier(domain, identifier, subject);
         } else {
             /*
              * The certificate is already linked to another user.
@@ -239,8 +239,8 @@ public class CredentialManagerBean implements CredentialManager {
             throws AttributeTypeNotFoundException {
 
         String attributeName = pkiProvider.mapAttribute(identityStatementAttribute);
-        AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeName);
-        AttributeEntity attribute = this.attributeDAO.addAttribute(attributeType, subject);
+        AttributeTypeEntity attributeType = attributeTypeDAO.getAttributeType(attributeName);
+        AttributeEntity attribute = attributeDAO.addAttribute(attributeType, subject);
         attribute.setStringValue(value);
         return attribute.getAttributeIndex();
     }
@@ -268,12 +268,12 @@ public class CredentialManagerBean implements CredentialManager {
         String statementOperation = identityStatement.getOperation();
         String statementUser = identityStatement.getUser();
 
-        PkiProvider pkiProvider = this.pkiProviderManager.findPkiProvider(certificate);
+        PkiProvider pkiProvider = pkiProviderManager.findPkiProvider(certificate);
         if (null == pkiProvider)
             throw new ArgumentIntegrityException();
 
         TrustDomainEntity trustDomain = pkiProvider.getTrustDomain();
-        PkiResult validationResult = this.pkiValidator.validateCertificate(trustDomain, certificate);
+        PkiResult validationResult = pkiValidator.validateCertificate(trustDomain, certificate);
         if (PkiResult.REVOKED == validationResult)
             throw new PkiRevokedException();
         else if (PkiResult.SUSPENDED == validationResult)
@@ -289,21 +289,21 @@ public class CredentialManagerBean implements CredentialManager {
          * Check whether the identity statement properties are ok.
          */
         if (false == userId.equals(statementUser)) {
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_USER_MISMATCH);
+            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_USER_MISMATCH);
             throw new PermissionDeniedException(SECURITY_MESSAGE_USER_MISMATCH);
         }
         if (false == sessionId.equals(statementSessionId)) {
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_SESSION_ID_MISMATCH);
+            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_SESSION_ID_MISMATCH);
             throw new ArgumentIntegrityException();
         }
         if (false == operation.equals(statementOperation)) {
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_OPERATION_MISMATCH);
+            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_OPERATION_MISMATCH);
             throw new ArgumentIntegrityException();
         }
 
         String domain = pkiProvider.getIdentifierDomainName();
         String identifier = pkiProvider.getSubjectIdentifier(certificate);
-        SubjectEntity existingMappedSubject = this.subjectIdentifierDAO.findSubject(domain, identifier);
+        SubjectEntity existingMappedSubject = subjectIdentifierDAO.findSubject(domain, identifier);
 
         pkiProvider.enable(existingMappedSubject, certificate);
     }

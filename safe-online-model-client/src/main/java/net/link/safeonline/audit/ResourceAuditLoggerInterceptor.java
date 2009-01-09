@@ -35,7 +35,7 @@ public class ResourceAuditLoggerInterceptor {
         }
 
         catch (SafeOnlineResourceException e) {
-            this.resourceAuditLogger.addResourceAudit(e.getResourceName(), e.getResourceLevel(), e.getSourceComponent(), e.getMessage());
+            resourceAuditLogger.addResourceAudit(e.getResourceName(), e.getResourceLevel(), e.getSourceComponent(), e.getMessage());
             throw e;
         }
     }

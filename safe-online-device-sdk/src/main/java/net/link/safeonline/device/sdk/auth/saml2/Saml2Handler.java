@@ -85,8 +85,8 @@ public class Saml2Handler implements Serializable {
 
     private Saml2Handler(HttpServletRequest request) {
 
-        this.session = request.getSession();
-        this.session.setAttribute(SAML2_HANDLER, this);
+        session = request.getSession();
+        session.setAttribute(SAML2_HANDLER, this);
     }
 
     public static Saml2Handler getSaml2Handler(HttpServletRequest request) {
@@ -107,11 +107,11 @@ public class Saml2Handler implements Serializable {
     public void init(Map<String, String> configParams, X509Certificate newApplicationCertificate, KeyPair newApplicationKeyPair)
             throws AuthenticationInitializationException {
 
-        this.wsLocation = configParams.get("WsLocation");
-        this.issuer = configParams.get("DeviceName");
-        this.applicationCertificate = newApplicationCertificate;
-        this.applicationKeyPair = newApplicationKeyPair;
-        if (null == this.wsLocation)
+        wsLocation = configParams.get("WsLocation");
+        issuer = configParams.get("DeviceName");
+        applicationCertificate = newApplicationCertificate;
+        applicationKeyPair = newApplicationKeyPair;
+        if (null == wsLocation)
             throw new AuthenticationInitializationException("Missing WS Location ( \"WsLocation\" )");
     }
 
@@ -120,8 +120,8 @@ public class Saml2Handler implements Serializable {
 
         AuthnRequest samlAuthnRequest;
         try {
-            samlAuthnRequest = RequestUtil.validateAuthnRequest(request, this.wsLocation, this.applicationCertificate,
-                    this.applicationKeyPair.getPrivate(), TrustDomainType.NODE);
+            samlAuthnRequest = RequestUtil.validateAuthnRequest(request, wsLocation, applicationCertificate,
+                    applicationKeyPair.getPrivate(), TrustDomainType.NODE);
         } catch (ServletException e) {
             throw new AuthenticationInitializationException(e.getMessage());
         }
@@ -166,7 +166,7 @@ public class Saml2Handler implements Serializable {
         authenticationContext.setNodeName(nodeName);
         authenticationContext.setInResponseTo(samlAuthnRequestId);
         authenticationContext.setTargetUrl(assertionConsumerService);
-        authenticationContext.setIssuer(this.issuer);
+        authenticationContext.setIssuer(issuer);
 
         DeviceManager.setApplicationId(application, request);
         DeviceManager.setApplicationName(applicationFriendlyName, request);
@@ -192,20 +192,20 @@ public class Saml2Handler implements Serializable {
             /*
              * Authentication must have failed
              */
-            samlResponseToken = AuthnResponseFactory.createAuthResponseFailed(inResponseTo, issuerName, this.applicationKeyPair, target);
+            samlResponseToken = AuthnResponseFactory.createAuthResponseFailed(inResponseTo, issuerName, applicationKeyPair, target);
         } else if (null == userId && null != usedDevice) {
             /*
              * Authentication failed and user requested to try another device.
              */
             samlResponseToken = AuthnResponseFactory.createAuthResponseRequestRegistration(inResponseTo, issuerName,
-                    this.applicationKeyPair, target);
+                    applicationKeyPair, target);
 
         } else {
             /*
              * Authentication was successful
              */
             samlResponseToken = AuthnResponseFactory.createAuthResponse(inResponseTo, applicationId, issuerName, userId, usedDevice,
-                    this.applicationKeyPair, validity, target);
+                    applicationKeyPair, validity, target);
         }
 
         String encodedSamlResponseToken = Base64.encode(samlResponseToken.getBytes());

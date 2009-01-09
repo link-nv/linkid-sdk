@@ -104,7 +104,7 @@ public class PkiValidatorBean implements PkiValidator {
      */
     private List<TrustPointEntity> buildTrustPointPath(TrustDomainEntity trustDomain, X509Certificate certificate) {
 
-        List<TrustPointEntity> trustPoints = this.trustPointDAO.listTrustPoints(trustDomain);
+        List<TrustPointEntity> trustPoints = trustPointDAO.listTrustPoints(trustDomain);
         HashMap<TrustPointPK, TrustPointEntity> trustPointMap = new HashMap<TrustPointPK, TrustPointEntity>();
         for (TrustPointEntity trustPoint : trustPoints) {
             trustPointMap.put(trustPoint.getPk(), trustPoint);
@@ -202,7 +202,7 @@ public class PkiValidatorBean implements PkiValidator {
             return PkiResult.INVALID;
         if (true == performOcspCheck) {
             LOG.debug("performing OCSP check");
-            return convertOcspResult(this.cachedOcspValidator.performCachedOcspCheck(trustDomain, certificate, issuerCertificate));
+            return convertOcspResult(cachedOcspValidator.performCachedOcspCheck(trustDomain, certificate, issuerCertificate));
         }
 
         return PkiResult.VALID;
@@ -279,7 +279,7 @@ public class PkiValidatorBean implements PkiValidator {
     public PkiResult validateCertificate(String trustDomainName, X509Certificate certificate)
             throws TrustDomainNotFoundException {
 
-        TrustDomainEntity trustDomain = this.trustDomainDAO.getTrustDomain(trustDomainName);
+        TrustDomainEntity trustDomain = trustDomainDAO.getTrustDomain(trustDomainName);
         return validateCertificate(trustDomain, certificate);
     }
 }

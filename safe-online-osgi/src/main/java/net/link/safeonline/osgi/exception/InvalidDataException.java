@@ -34,7 +34,7 @@ public class InvalidDataException extends Exception {
 
     public String getErrorMessage() {
 
-        return this.errorMessage;
+        return errorMessage;
     }
 
 }

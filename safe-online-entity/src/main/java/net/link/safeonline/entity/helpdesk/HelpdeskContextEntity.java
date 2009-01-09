@@ -56,7 +56,7 @@ public class HelpdeskContextEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Long getId() {
 
-        return this.id;
+        return id;
     }
 
     public void setId(Long id) {
@@ -66,7 +66,7 @@ public class HelpdeskContextEntity implements Serializable {
 
     public String getLocation() {
 
-        return this.location;
+        return location;
     }
 
     public void setLocation(String location) {

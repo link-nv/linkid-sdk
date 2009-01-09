@@ -81,7 +81,7 @@ public class DriverExceptionEntity {
      */
     public DriverProfileEntity getProfile() {
 
-        return this.profile;
+        return profile;
     }
 
     /**
@@ -89,7 +89,7 @@ public class DriverExceptionEntity {
      */
     public long getOccurredTime() {
 
-        return this.occurredTime;
+        return occurredTime;
     }
 
     /**
@@ -97,6 +97,6 @@ public class DriverExceptionEntity {
      */
     public String getMessage() {
 
-        return this.message;
+        return message;
     }
 }

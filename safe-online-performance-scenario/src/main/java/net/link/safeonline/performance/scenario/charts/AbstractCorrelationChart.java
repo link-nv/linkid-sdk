@@ -63,12 +63,12 @@ public abstract class AbstractCorrelationChart extends AbstractMovingAverageChar
     protected Number getMovingAverage() {
 
         double sum_sq_x = 0, sum_sq_y = 0, sum_coproduct = 0;
-        double mean_x = this.customMeanX != null? this.customMeanX: getCorrelationX(this.averageTimes.getFirst());
-        double mean_y = this.customMeanY != null? this.customMeanY: getCorrelationY(this.averageTimes.getFirst());
+        double mean_x = customMeanX != null? customMeanX: getCorrelationX(averageTimes.getFirst());
+        double mean_y = customMeanY != null? customMeanY: getCorrelationY(averageTimes.getFirst());
 
         int i = 1;
-        for (Long startTime : this.averageTimes) {
-            if (startTime == this.averageTimes.getFirst()) {
+        for (Long startTime : averageTimes) {
+            if (startTime == averageTimes.getFirst()) {
                 continue;
             }
 
@@ -80,10 +80,10 @@ public abstract class AbstractCorrelationChart extends AbstractMovingAverageChar
             sum_sq_y += delta_y * delta_y * sweep;
             sum_coproduct += delta_x * delta_y * sweep;
 
-            if (this.customMeanX == null) {
+            if (customMeanX == null) {
                 mean_x += delta_x / i;
             }
-            if (this.customMeanY == null) {
+            if (customMeanY == null) {
                 mean_y += delta_y / i;
             }
 

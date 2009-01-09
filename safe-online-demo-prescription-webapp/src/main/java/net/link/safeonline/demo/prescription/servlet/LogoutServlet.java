@@ -61,7 +61,7 @@ public class LogoutServlet extends AbstractInjectionServlet {
 
         request.getSession().setAttribute(net.link.safeonline.sdk.auth.servlet.LogoutServlet.INVALIDATE_SESSION, "true");
 
-        response.sendRedirect(this.logoutExitUrl);
+        response.sendRedirect(logoutExitUrl);
 
     }
 }

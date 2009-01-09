@@ -86,11 +86,11 @@ public class TrustPointBean implements TrustPoint {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public TreeModel getTreeModel() {
 
-        LOG.debug("get tree model for domain: " + this.selectedTrustDomain);
-        String domainName = this.selectedTrustDomain.getName();
+        LOG.debug("get tree model for domain: " + selectedTrustDomain);
+        String domainName = selectedTrustDomain.getName();
         List<TrustPointEntity> trustPoints;
         try {
-            trustPoints = this.pkiService.listTrustPoints(domainName);
+            trustPoints = pkiService.listTrustPoints(domainName);
         } catch (TrustDomainNotFoundException e) {
             LOG.error("trust domain not found");
             TreeNode rootNode = new TreeNodeBase(ROOT_NODE_TYPE, "ERROR: trust domain not found", true);
@@ -125,7 +125,7 @@ public class TrustPointBean implements TrustPoint {
     private byte[] getUpFileContent()
             throws IOException {
 
-        InputStream inputStream = this.upFile.getInputStream();
+        InputStream inputStream = upFile.getInputStream();
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         IOUtils.copy(inputStream, byteArrayOutputStream);
         return byteArrayOutputStream.toByteArray();
@@ -140,23 +140,23 @@ public class TrustPointBean implements TrustPoint {
     public String add()
             throws IOException, TrustDomainNotFoundException, ExistingTrustPointException, CertificateEncodingException {
 
-        String domainName = this.selectedTrustDomain.getName();
+        String domainName = selectedTrustDomain.getName();
         LOG.debug("adding trust point to domain " + domainName);
         byte[] content = getUpFileContent();
-        this.pkiService.addTrustPoint(domainName, content);
+        pkiService.addTrustPoint(domainName, content);
         return "success";
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public UploadedFile getUpFile() {
 
-        return this.upFile;
+        return upFile;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public void setUpFile(UploadedFile uploadedFile) {
 
-        this.upFile = uploadedFile;
+        upFile = uploadedFile;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -186,12 +186,12 @@ public class TrustPointBean implements TrustPoint {
 
         public TrustPointEntity getTrustPoint() {
 
-            return this.trustPoint;
+            return trustPoint;
         }
 
         public BigInteger getSerialNumber() {
 
-            return this.trustPoint.getCertificate().getSerialNumber();
+            return trustPoint.getCertificate().getSerialNumber();
         }
     }
 
@@ -203,7 +203,7 @@ public class TrustPointBean implements TrustPoint {
         TrustPointEntity selectedTrustPoint = (TrustPointEntity) FacesContext.getCurrentInstance().getExternalContext().getSessionMap()
                                                                              .get("selectedTrustPoint");
         LOG.debug("remove trust point: " + selectedTrustPoint);
-        this.pkiService.removeTrustPoint(selectedTrustPoint);
+        pkiService.removeTrustPoint(selectedTrustPoint);
         return "removed";
     }
 }

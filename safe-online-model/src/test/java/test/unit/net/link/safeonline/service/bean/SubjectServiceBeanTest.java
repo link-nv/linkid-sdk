@@ -45,16 +45,16 @@ public class SubjectServiceBeanTest {
     public void setUp()
             throws Exception {
 
-        this.entityTestManager = new EntityTestManager();
-        this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
-        this.testedInstance = EJBTestUtils.newInstance(SubjectServiceBean.class, SafeOnlineTestContainer.sessionBeans, entityManager);
+        entityTestManager = new EntityTestManager();
+        entityTestManager.setUp(SafeOnlineTestContainer.entities);
+        EntityManager entityManager = entityTestManager.getEntityManager();
+        testedInstance = EJBTestUtils.newInstance(SubjectServiceBean.class, SafeOnlineTestContainer.sessionBeans, entityManager);
 
-        this.attributeTypeDAO = new AttributeTypeDAOBean();
-        EJBTestUtils.inject(this.attributeTypeDAO, entityManager);
-        EJBTestUtils.init(this.attributeTypeDAO);
+        attributeTypeDAO = new AttributeTypeDAOBean();
+        EJBTestUtils.inject(attributeTypeDAO, entityManager);
+        EJBTestUtils.init(attributeTypeDAO);
 
-        this.attributeTypeDAO.addAttributeType(new AttributeTypeEntity(SafeOnlineConstants.LOGIN_ATTRIBTUE, DatatypeType.STRING, false,
+        attributeTypeDAO.addAttributeType(new AttributeTypeEntity(SafeOnlineConstants.LOGIN_ATTRIBTUE, DatatypeType.STRING, false,
                 false));
     }
 
@@ -62,7 +62,7 @@ public class SubjectServiceBeanTest {
     public void tearDown()
             throws Exception {
 
-        this.entityTestManager.tearDown();
+        entityTestManager.tearDown();
     }
 
     @Test
@@ -73,7 +73,7 @@ public class SubjectServiceBeanTest {
         String nonExistingSubjectLogin = UUID.randomUUID().toString();
 
         // operate
-        SubjectEntity result = this.testedInstance.findSubject(nonExistingSubjectLogin);
+        SubjectEntity result = testedInstance.findSubject(nonExistingSubjectLogin);
 
         // verify
         assertNull(result);
@@ -87,9 +87,9 @@ public class SubjectServiceBeanTest {
         String subjectLogin = UUID.randomUUID().toString();
 
         // operate
-        this.testedInstance.addSubject(subjectLogin);
-        SubjectEntity resultSubject = this.testedInstance.findSubjectFromUserName(subjectLogin);
-        String resultSubjectLogin = this.testedInstance.getSubjectLogin(resultSubject.getUserId());
+        testedInstance.addSubject(subjectLogin);
+        SubjectEntity resultSubject = testedInstance.findSubjectFromUserName(subjectLogin);
+        String resultSubjectLogin = testedInstance.getSubjectLogin(resultSubject.getUserId());
 
         // verify
         assertEquals(subjectLogin, resultSubjectLogin);

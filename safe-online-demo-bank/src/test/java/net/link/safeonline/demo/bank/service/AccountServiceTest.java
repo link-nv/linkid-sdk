@@ -54,7 +54,7 @@ public class AccountServiceTest extends AbstractBankServiceTest {
 
         super.setup();
 
-        this.initializationService.buildEntities();
+        initializationService.buildEntities();
     }
 
     /**
@@ -67,12 +67,12 @@ public class AccountServiceTest extends AbstractBankServiceTest {
         String testAccountName = "testAccount";
 
         // Create test account.
-        BankUserEntity digipassUser = this.userService.getBankUser(InitializationService.digipassUser_BankId);
-        this.accountService.createAccount(digipassUser, testAccountName);
+        BankUserEntity digipassUser = userService.getBankUser(InitializationService.digipassUser_BankId);
+        accountService.createAccount(digipassUser, testAccountName);
 
         // Verify && account created successfully.
         List<String> sampleAccountNames = new LinkedList<String>();
-        for (BankAccountEntity account : this.userService.getAccounts(digipassUser)) {
+        for (BankAccountEntity account : userService.getAccounts(digipassUser)) {
             sampleAccountNames.add(account.getName());
         }
 

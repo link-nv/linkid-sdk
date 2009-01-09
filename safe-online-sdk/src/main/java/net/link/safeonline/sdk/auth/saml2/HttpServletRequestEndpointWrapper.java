@@ -31,7 +31,7 @@ public class HttpServletRequestEndpointWrapper extends HttpServletRequestWrapper
     @Override
     public StringBuffer getRequestURL() {
 
-        return new StringBuffer(this.requestUrl);
+        return new StringBuffer(requestUrl);
     }
 
 }

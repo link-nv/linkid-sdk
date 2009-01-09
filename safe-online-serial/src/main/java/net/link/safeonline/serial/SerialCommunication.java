@@ -55,35 +55,35 @@ public class SerialCommunication {
 
             CommPortIdentifier portId = (CommPortIdentifier) portList.nextElement();
 
-            if (portId.getName().equals(this.serialPortName)) {
-                LOG.debug("Found port " + this.serialPortName);
+            if (portId.getName().equals(serialPortName)) {
+                LOG.debug("Found port " + serialPortName);
 
                 portFound = true;
 
                 try {
-                    this.serialPort = (SerialPort) portId.open("GSMModem", 2000);
+                    serialPort = (SerialPort) portId.open("GSMModem", 2000);
                 } catch (PortInUseException e) {
                     LOG.debug("Port in use.");
                     throw new SerialCommunicationsException("Port in use.", e);
                 }
 
                 try {
-                    this.outputStream = this.serialPort.getOutputStream();
-                    this.br = new BufferedReader(new InputStreamReader(this.serialPort.getInputStream()));
+                    outputStream = serialPort.getOutputStream();
+                    br = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
                 } catch (IOException e) {
                     LOG.debug("Error opening input or output stream");
                     throw new SerialCommunicationsException("Error opening input or output stream", e);
                 }
 
                 try {
-                    this.serialPort.setSerialPortParams(9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
+                    serialPort.setSerialPortParams(9600, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
                 } catch (UnsupportedCommOperationException e) {
                     LOG.debug("Could not set port parameters");
                     throw new SerialCommunicationsException("Could not set port parameters", e);
                 }
 
                 try {
-                    this.serialPort.notifyOnOutputEmpty(true);
+                    serialPort.notifyOnOutputEmpty(true);
                 } catch (Exception e) {
                     LOG.debug("Error setting event notification");
                     throw new SerialCommunicationsException("Error setting event notification", e);
@@ -93,14 +93,14 @@ public class SerialCommunication {
         }
 
         if (!portFound) {
-            LOG.debug("port " + this.serialPortName + " not found.");
-            throw new SerialCommunicationsException("port " + this.serialPortName + " not found.");
+            LOG.debug("port " + serialPortName + " not found.");
+            throw new SerialCommunicationsException("port " + serialPortName + " not found.");
         }
     }
 
     public void close() {
 
-        this.serialPort.close();
+        serialPort.close();
     }
 
     public void write(String message)
@@ -120,7 +120,7 @@ public class SerialCommunication {
 
         LOG.trace(">> " + new String(message));
         try {
-            this.outputStream.write(message);
+            outputStream.write(message);
         } catch (Exception e) {
             LOG.debug("Exception while writing to serial port");
             throw new SerialCommunicationsException("Exception while writing to serial port", e);
@@ -132,7 +132,7 @@ public class SerialCommunication {
 
         String result = null;
         try {
-            result = this.br.readLine();
+            result = br.readLine();
             LOG.trace("<< " + result);
         } catch (Exception e) {
             LOG.debug("Exception while reading output");
@@ -143,7 +143,7 @@ public class SerialCommunication {
 
     public String getSerialPortName() {
 
-        return this.serialPortName;
+        return serialPortName;
     }
 
     public void setSerialPortName(String serialPortName) {

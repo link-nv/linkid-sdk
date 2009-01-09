@@ -91,7 +91,7 @@ public class SubscriptionsBean implements Subscriptions {
     public void subscriptionListFactory() {
 
         LOG.debug("subscription list factory");
-        this.subscriptionList = this.subscriptionService.listSubscriptions();
+        subscriptionList = subscriptionService.listSubscriptions();
 
     }
 
@@ -99,11 +99,11 @@ public class SubscriptionsBean implements Subscriptions {
     public String viewSubscription()
             throws SubscriptionNotFoundException, ApplicationNotFoundException, ApplicationIdentityNotFoundException {
 
-        String applicationName = this.selectedSubscription.getApplication().getName();
+        String applicationName = selectedSubscription.getApplication().getName();
         LOG.debug("view subscription: " + applicationName);
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();
-        this.confirmedIdentityAttributes = this.identityService.listConfirmedIdentity(applicationName, viewLocale);
+        confirmedIdentityAttributes = identityService.listConfirmedIdentity(applicationName, viewLocale);
         return "view-subscription";
     }
 
@@ -111,12 +111,12 @@ public class SubscriptionsBean implements Subscriptions {
     public String unsubscribe()
             throws SubscriptionNotFoundException, ApplicationNotFoundException, MessageHandlerNotFoundException {
 
-        LOG.debug("unsubscribe from: " + this.selectedSubscription.getApplication().getName());
-        String applicationName = this.selectedSubscription.getApplication().getName();
+        LOG.debug("unsubscribe from: " + selectedSubscription.getApplication().getName());
+        String applicationName = selectedSubscription.getApplication().getName();
         try {
-            this.subscriptionService.unsubscribe(applicationName);
+            subscriptionService.unsubscribe(applicationName);
         } catch (PermissionDeniedException e) {
-            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorUserMayNotUnsubscribeFrom", applicationName);
+            facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorUserMayNotUnsubscribeFrom", applicationName);
             return null;
         }
         subscriptionListFactory();
@@ -135,10 +135,10 @@ public class SubscriptionsBean implements Subscriptions {
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();
-        if (null == this.selectedSubscription)
+        if (null == selectedSubscription)
             return null;
-        return this.usageAgreementService.getUsageAgreementText(this.selectedSubscription.getApplication().getName(),
-                viewLocale.getLanguage(), this.selectedSubscription.getConfirmedUsageAgreementVersion());
+        return usageAgreementService.getUsageAgreementText(selectedSubscription.getApplication().getName(),
+                viewLocale.getLanguage(), selectedSubscription.getConfirmedUsageAgreementVersion());
     }
 
     @RolesAllowed(UserConstants.USER_ROLE)
@@ -146,8 +146,8 @@ public class SubscriptionsBean implements Subscriptions {
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();
-        SubjectEntity subject = this.subjectManager.getCallerSubject();
-        return this.usageAgreementService
+        SubjectEntity subject = subjectManager.getCallerSubject();
+        return usageAgreementService
                                          .getGlobalUsageAgreementText(viewLocale.getLanguage(), subject.getConfirmedUsageAgreementVersion());
     }
 }

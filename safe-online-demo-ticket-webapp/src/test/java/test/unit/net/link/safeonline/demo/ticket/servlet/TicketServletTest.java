@@ -49,23 +49,23 @@ public class TicketServletTest extends TestCase {
 
         super.setUp();
 
-        this.jndiTestUtils = new JndiTestUtils();
-        this.jndiTestUtils.setUp();
-        this.mockTicketService = createMock(TicketService.class);
-        this.jndiTestUtils.bindComponent(TicketService.JNDI_BINDING, this.mockTicketService);
+        jndiTestUtils = new JndiTestUtils();
+        jndiTestUtils.setUp();
+        mockTicketService = createMock(TicketService.class);
+        jndiTestUtils.bindComponent(TicketService.JNDI_BINDING, mockTicketService);
 
-        this.servletTestManager = new ServletTestManager();
-        this.servletTestManager.setUp(TicketServlet.class);
+        servletTestManager = new ServletTestManager();
+        servletTestManager.setUp(TicketServlet.class);
 
-        this.servletLocation = this.servletTestManager.getServletLocation();
+        servletLocation = servletTestManager.getServletLocation();
     }
 
     @Override
     protected void tearDown()
             throws Exception {
 
-        this.servletTestManager.tearDown();
-        this.jndiTestUtils.tearDown();
+        servletTestManager.tearDown();
+        jndiTestUtils.tearDown();
         super.tearDown();
     }
 
@@ -77,22 +77,22 @@ public class TicketServletTest extends TestCase {
         String testFrom = Site.GENT.name();
         String testTo = Site.BRUSSEL.name();
         HttpClient httpClient = new HttpClient();
-        GetMethod getMethod = new GetMethod(this.servletLocation);
+        GetMethod getMethod = new GetMethod(servletLocation);
         getMethod.setQueryString(new NameValuePair[] { new NameValuePair("NRN", testNrn), new NameValuePair("FROM", testFrom),
                 new NameValuePair("TO", testTo) });
 
         // setup
-        expect(this.mockTicketService.hasValidPass(testNrn, testFrom, testTo)).andReturn(true);
+        expect(mockTicketService.hasValidPass(testNrn, testFrom, testTo)).andReturn(true);
 
         // prepare
-        replay(this.mockTicketService);
+        replay(mockTicketService);
 
         // operate
         int result = httpClient.executeMethod(getMethod);
 
         // verify
         LOG.debug("result: " + result);
-        verify(this.mockTicketService);
+        verify(mockTicketService);
         assertEquals(HttpServletResponse.SC_OK, result);
     }
 
@@ -104,22 +104,22 @@ public class TicketServletTest extends TestCase {
         String testFrom = Site.GENT.name();
         String testTo = Site.BRUSSEL.name();
         HttpClient httpClient = new HttpClient();
-        GetMethod getMethod = new GetMethod(this.servletLocation);
+        GetMethod getMethod = new GetMethod(servletLocation);
         getMethod.setQueryString(new NameValuePair[] { new NameValuePair("NRN", testNrn), new NameValuePair("FROM", testFrom),
                 new NameValuePair("TO", testTo) });
 
         // setup
-        expect(this.mockTicketService.hasValidPass(testNrn, testFrom, testTo)).andReturn(false);
+        expect(mockTicketService.hasValidPass(testNrn, testFrom, testTo)).andReturn(false);
 
         // prepare
-        replay(this.mockTicketService);
+        replay(mockTicketService);
 
         // operate
         int result = httpClient.executeMethod(getMethod);
 
         // verify
         LOG.debug("result: " + result);
-        verify(this.mockTicketService);
+        verify(mockTicketService);
         assertEquals(HttpServletResponse.SC_UNAUTHORIZED, result);
     }
 
@@ -128,17 +128,17 @@ public class TicketServletTest extends TestCase {
 
         // setup
         HttpClient httpClient = new HttpClient();
-        GetMethod getMethod = new GetMethod(this.servletLocation);
+        GetMethod getMethod = new GetMethod(servletLocation);
 
         // prepare
-        replay(this.mockTicketService);
+        replay(mockTicketService);
 
         // operate
         int result = httpClient.executeMethod(getMethod);
 
         // verify
         LOG.debug("result: " + result);
-        verify(this.mockTicketService);
+        verify(mockTicketService);
         assertEquals(HttpServletResponse.SC_BAD_REQUEST, result);
     }
 }

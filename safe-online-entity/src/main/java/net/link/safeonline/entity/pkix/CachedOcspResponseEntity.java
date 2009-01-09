@@ -79,14 +79,14 @@ public class CachedOcspResponseEntity implements Serializable {
         this.key = key;
         this.result = result;
         this.trustDomain = trustDomain;
-        this.entryDate = new Date(System.currentTimeMillis());
+        entryDate = new Date(System.currentTimeMillis());
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public long getId() {
 
-        return this.id;
+        return id;
     }
 
     public void setId(long id) {
@@ -97,7 +97,7 @@ public class CachedOcspResponseEntity implements Serializable {
     @Column(unique = true, nullable = false, length = KEY_SIZE, name = "kkey")
     public String getKey() {
 
-        return this.key;
+        return key;
     }
 
     public void setKey(String key) {
@@ -107,7 +107,7 @@ public class CachedOcspResponseEntity implements Serializable {
 
     public CachedOcspResultType getResult() {
 
-        return this.result;
+        return result;
     }
 
     public void setResult(CachedOcspResultType result) {
@@ -118,7 +118,7 @@ public class CachedOcspResponseEntity implements Serializable {
     @ManyToOne
     public TrustDomainEntity getTrustDomain() {
 
-        return this.trustDomain;
+        return trustDomain;
     }
 
     public void setTrustDomain(TrustDomainEntity trustDomain) {
@@ -128,7 +128,7 @@ public class CachedOcspResponseEntity implements Serializable {
 
     public Date getEntryDate() {
 
-        return this.entryDate;
+        return entryDate;
     }
 
     public void setEntryDate(Date entryDate) {
@@ -139,8 +139,8 @@ public class CachedOcspResponseEntity implements Serializable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("id", this.id).append("key", this.key).append("result", this.result).append("entry date",
-                this.entryDate).toString();
+        return new ToStringBuilder(this).append("id", id).append("key", key).append("result", result).append("entry date",
+                entryDate).toString();
     }
 
     @Override
@@ -153,13 +153,13 @@ public class CachedOcspResponseEntity implements Serializable {
         if (false == obj instanceof CachedOcspResponseEntity)
             return false;
         CachedOcspResponseEntity rhs = (CachedOcspResponseEntity) obj;
-        return new EqualsBuilder().append(this.key, rhs.key).isEquals();
+        return new EqualsBuilder().append(key, rhs.key).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.key).toHashCode();
+        return new HashCodeBuilder().append(key).toHashCode();
     }
 
 

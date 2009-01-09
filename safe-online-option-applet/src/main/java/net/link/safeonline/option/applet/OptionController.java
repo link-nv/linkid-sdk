@@ -63,10 +63,10 @@ public class OptionController implements AppletController {
      */
     public void init(AppletView av, RuntimeContext rc, StatementProvider statementProvider) {
 
-        this.appletView = av;
-        this.runtimeContext = rc;
-        Locale locale = this.runtimeContext.getLocale();
-        this.messages = new OptionMessages(locale);
+        appletView = av;
+        runtimeContext = rc;
+        Locale locale = runtimeContext.getLocale();
+        messages = new OptionMessages(locale);
     }
 
     /**
@@ -74,7 +74,7 @@ public class OptionController implements AppletController {
      */
     public void run() {
 
-        this.appletView.outputInfoMessage(InfoLevel.NORMAL, this.messages.getString(KEY.START));
+        appletView.outputInfoMessage(InfoLevel.NORMAL, messages.getString(KEY.START));
 
         // if (null == this.port) {
         // try {
@@ -98,48 +98,48 @@ public class OptionController implements AppletController {
         // return;
         // }
 
-        this.appletView.outputDetailMessage("Found datacard  with IMEI: " + IMEI);
+        appletView.outputDetailMessage("Found datacard  with IMEI: " + IMEI);
 
-        this.appletView.outputInfoMessage(InfoLevel.NORMAL, this.messages.getString(KEY.PIN));
-        this.appletView.outputDetailMessage("Reading PIN code");
+        appletView.outputInfoMessage(InfoLevel.NORMAL, messages.getString(KEY.PIN));
+        appletView.outputDetailMessage("Reading PIN code");
 
-        PinDialog pinDialog = new PinDialog(this.messages.getString(KEY.ENTER_PIN));
+        PinDialog pinDialog = new PinDialog(messages.getString(KEY.ENTER_PIN));
         String pin = pinDialog.getPin();
 
-        this.appletView.outputInfoMessage(InfoLevel.NORMAL, this.messages.getString(KEY.SENDING));
-        this.appletView.outputDetailMessage("Sending data");
+        appletView.outputInfoMessage(InfoLevel.NORMAL, messages.getString(KEY.SENDING));
+        appletView.outputDetailMessage("Sending data");
         PostResult result = null;
         try {
             result = postData(IMEI, pin);
         } catch (Exception e) {
-            this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages.getString(KEY.ERROR));
-            this.appletView.outputDetailMessage("Could not send login data to server");
+            appletView.outputInfoMessage(InfoLevel.ERROR, messages.getString(KEY.ERROR));
+            appletView.outputDetailMessage("Could not send login data to server");
             return;
         }
 
         if (SharedConstants.PERMISSION_DENIED_ERROR.equals(result.getMessage())) {
-            this.appletView.outputDetailMessage("PERMISSION DENIED. YOUR DATACARD MIGHT BE IN USE BY ANOTHER USER");
-            this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages.getString(KEY.PERMISSION_DENIED));
+            appletView.outputDetailMessage("PERMISSION DENIED. YOUR DATACARD MIGHT BE IN USE BY ANOTHER USER");
+            appletView.outputInfoMessage(InfoLevel.ERROR, messages.getString(KEY.PERMISSION_DENIED));
             return;
         }
         if (SharedConstants.SUBSCRIPTION_NOT_FOUND_ERROR.equals(result.getMessage())) {
-            this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages.getString(KEY.NOT_SUBSCRIBED));
+            appletView.outputInfoMessage(InfoLevel.ERROR, messages.getString(KEY.NOT_SUBSCRIBED));
             return;
         }
         if (SharedConstants.SUBJECT_NOT_FOUND_ERROR.equals(result.getMessage())) {
-            this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages.getString(KEY.DATACARD_NOT_REGISTERED));
-            this.appletView.outputDetailMessage(this.messages.getString(KEY.DATACARD_NOT_REGISTERED));
-            this.appletView.outputDetailMessage("Please login with another authentication device first.");
+            appletView.outputInfoMessage(InfoLevel.ERROR, messages.getString(KEY.DATACARD_NOT_REGISTERED));
+            appletView.outputDetailMessage(messages.getString(KEY.DATACARD_NOT_REGISTERED));
+            appletView.outputDetailMessage("Please login with another authentication device first.");
             return;
         }
         if (SharedConstants.DEVICE_DISABLED_ERROR.equals(result.getMessage())) {
-            this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages.getString(KEY.DATACARD_DISABLED));
-            this.appletView.outputDetailMessage(this.messages.getString(KEY.DATACARD_DISABLED));
-            this.appletView.outputDetailMessage("Your Option Data Card has been disabled");
+            appletView.outputInfoMessage(InfoLevel.ERROR, messages.getString(KEY.DATACARD_DISABLED));
+            appletView.outputDetailMessage(messages.getString(KEY.DATACARD_DISABLED));
+            appletView.outputDetailMessage("Your Option Data Card has been disabled");
             return;
         }
 
-        this.appletView.outputInfoMessage(InfoLevel.NORMAL, this.messages.getString(KEY.DONE));
+        appletView.outputInfoMessage(InfoLevel.NORMAL, messages.getString(KEY.DONE));
 
         showDocument("TargetPath");
     }
@@ -147,8 +147,8 @@ public class OptionController implements AppletController {
     private PostResult postData(String IMEI, String pin)
             throws IOException {
 
-        URL documentBase = this.runtimeContext.getDocumentBase();
-        String servletPath = this.runtimeContext.getParameter("ServletPath");
+        URL documentBase = runtimeContext.getDocumentBase();
+        String servletPath = runtimeContext.getParameter("ServletPath");
         URL url = AppletControl.transformUrl(documentBase, servletPath);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
@@ -169,18 +169,18 @@ public class OptionController implements AppletController {
 
     private void showDocument(String runtimeParameter) {
 
-        URL documentBase = this.runtimeContext.getDocumentBase();
-        String path = this.runtimeContext.getParameter(runtimeParameter);
+        URL documentBase = runtimeContext.getDocumentBase();
+        String path = runtimeContext.getParameter(runtimeParameter);
         if (null == path) {
-            this.appletView.outputDetailMessage("runtime parameter not set: " + runtimeParameter);
+            appletView.outputDetailMessage("runtime parameter not set: " + runtimeParameter);
             return;
         }
 
         path += "?cacheid=" + Math.random() * 1000000;
-        this.appletView.outputDetailMessage("redirecting to: " + path);
+        appletView.outputDetailMessage("redirecting to: " + path);
 
         URL url = transformUrl(documentBase, path);
-        this.runtimeContext.showDocument(url);
+        runtimeContext.showDocument(url);
     }
 
     public static URL transformUrl(URL documentBase, String targetPath) {
@@ -212,20 +212,20 @@ public class OptionController implements AppletController {
 
         public PostResult(HttpURLConnection connection) throws IOException {
 
-            this.responseCode = connection.getResponseCode();
-            if (200 != this.responseCode) {
-                this.message = connection.getHeaderField(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER);
+            responseCode = connection.getResponseCode();
+            if (200 != responseCode) {
+                message = connection.getHeaderField(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER);
             }
         }
 
         public int getResponseCode() {
 
-            return this.responseCode;
+            return responseCode;
         }
 
         public String getMessage() {
 
-            return this.message;
+            return message;
         }
 
     }

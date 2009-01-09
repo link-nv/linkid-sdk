@@ -50,7 +50,7 @@ public enum SecondLevelStatusCode {
 
     public String getCode() {
 
-        return this.code;
+        return code;
     }
 
 

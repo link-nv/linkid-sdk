@@ -44,25 +44,25 @@ public class PinDialog extends JDialog implements ActionListener, DocumentListen
         super((Frame) null, "PIN", true);
         JLabel promptLabel = new JLabel("PIN:");
 
-        this.passwordField = new JPasswordField(4);
-        this.passwordField.setEchoChar('*');
-        this.passwordField.getDocument().addDocumentListener(this);
-        this.passwordField.addKeyListener(this);
+        passwordField = new JPasswordField(4);
+        passwordField.setEchoChar('*');
+        passwordField.getDocument().addDocumentListener(this);
+        passwordField.addKeyListener(this);
 
         JPanel passwordPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         passwordPanel.add(promptLabel);
         passwordPanel.add(Box.createHorizontalStrut(5));
-        passwordPanel.add(this.passwordField);
+        passwordPanel.add(passwordField);
         passwordPanel.add(Box.createHorizontalGlue());
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        this.okButton = new JButton("OK");
-        this.okButton.addActionListener(this);
-        this.okButton.setEnabled(false);
-        buttonPanel.add(this.okButton);
-        this.cancelButton = new JButton("Cancel");
-        this.cancelButton.addActionListener(this);
-        buttonPanel.add(this.cancelButton);
+        okButton = new JButton("OK");
+        okButton.addActionListener(this);
+        okButton.setEnabled(false);
+        buttonPanel.add(okButton);
+        cancelButton = new JButton("Cancel");
+        cancelButton.addActionListener(this);
+        buttonPanel.add(cancelButton);
 
         JPanel contentPanel = new JPanel() {
 
@@ -86,7 +86,7 @@ public class PinDialog extends JDialog implements ActionListener, DocumentListen
             @Override
             public void componentShown(ComponentEvent e) {
 
-                PinDialog.this.passwordField.requestFocusInWindow();
+                passwordField.requestFocusInWindow();
             }
         });
 
@@ -97,9 +97,9 @@ public class PinDialog extends JDialog implements ActionListener, DocumentListen
         pack();
         setLocationRelativeTo(null);
         setVisible(true);
-        if (false == this.okClicked)
+        if (false == okClicked)
             return null;
-        String pin = new String(this.passwordField.getPassword());
+        String pin = new String(passwordField.getPassword());
         return pin;
     }
 
@@ -110,10 +110,10 @@ public class PinDialog extends JDialog implements ActionListener, DocumentListen
     public void actionPerformed(ActionEvent e) {
 
         Object source = e.getSource();
-        if (this.okButton == source) {
-            this.okClicked = true;
+        if (okButton == source) {
+            okClicked = true;
             dispose();
-        } else if (this.cancelButton == source) {
+        } else if (cancelButton == source) {
             dispose();
         }
     }
@@ -124,19 +124,19 @@ public class PinDialog extends JDialog implements ActionListener, DocumentListen
 
     public void insertUpdate(DocumentEvent e) {
 
-        this.okButton.setEnabled(this.passwordField.getPassword().length == 4);
+        okButton.setEnabled(passwordField.getPassword().length == 4);
     }
 
     public void removeUpdate(DocumentEvent e) {
 
-        this.okButton.setEnabled(this.passwordField.getPassword().length == 4);
+        okButton.setEnabled(passwordField.getPassword().length == 4);
     }
 
     public void keyPressed(KeyEvent e) {
 
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-            if (this.passwordField.getPassword().length == 4) {
-                this.okClicked = true;
+            if (passwordField.getPassword().length == 4) {
+                okClicked = true;
                 dispose();
             }
         }

@@ -83,7 +83,7 @@ public class MissingAttributesBean implements MissingAttributes {
         LOG.debug("missing attribute list factory");
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();
-        this.missingAttributeList = this.identityService.listMissingAttributes(this.application, viewLocale);
+        missingAttributeList = identityService.listMissingAttributes(application, viewLocale);
     }
 
     @Factory(OPTIONAL_ATTRIBUTE_LIST)
@@ -95,49 +95,49 @@ public class MissingAttributesBean implements MissingAttributes {
         LOG.debug("optional attribute list factory");
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();
-        this.optionalAttributeList = this.identityService.listOptionalAttributes(this.application, viewLocale);
+        optionalAttributeList = identityService.listOptionalAttributes(application, viewLocale);
     }
 
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
     public String save() {
 
         LOG.debug("save");
-        for (AttributeDO attribute : this.missingAttributeList) {
+        for (AttributeDO attribute : missingAttributeList) {
             LOG.debug("required attribute to save: " + attribute);
             try {
-                this.identityService.saveAttribute(attribute);
+                identityService.saveAttribute(attribute);
             } catch (PermissionDeniedException e) {
                 LOG.debug("permission denied for attribute: " + attribute.getName());
-                this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorPermissionDeniedForAttribute",
+                facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorPermissionDeniedForAttribute",
                         attribute.getName());
                 return null;
             } catch (AttributeTypeNotFoundException e) {
                 LOG.debug("attribute type not found: " + attribute.getName());
-                this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFoundSpecific",
+                facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFoundSpecific",
                         attribute.getName());
                 return null;
             }
         }
-        for (AttributeDO attribute : this.optionalAttributeList) {
+        for (AttributeDO attribute : optionalAttributeList) {
             LOG.debug("optional attribute to save: " + attribute);
             try {
-                this.identityService.saveAttribute(attribute);
+                identityService.saveAttribute(attribute);
             } catch (PermissionDeniedException e) {
                 LOG.debug("permission denied for attribute: " + attribute.getName());
-                this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorPermissionDeniedForAttribute",
+                facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorPermissionDeniedForAttribute",
                         attribute.getName());
                 return null;
             } catch (AttributeTypeNotFoundException e) {
                 LOG.debug("attribute type not found: " + attribute.getName());
-                this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFoundSpecific",
+                facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFoundSpecific",
                         attribute.getName());
                 return null;
             }
         }
 
-        HelpdeskLogger.add("missing attributes saved for application: " + this.application, LogLevelType.INFO);
+        HelpdeskLogger.add("missing attributes saved for application: " + application, LogLevelType.INFO);
 
-        AuthenticationUtils.commitAuthentication(this.facesMessages);
+        AuthenticationUtils.commitAuthentication(facesMessages);
 
         return null;
     }

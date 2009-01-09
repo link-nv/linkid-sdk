@@ -50,7 +50,7 @@ public abstract class OlasAuthLink extends Link<Object> {
         super(id);
 
         if (target != null) {
-            this.requestTarget = RequestCycle.get().urlFor(target, null).toString();
+            requestTarget = RequestCycle.get().urlFor(target, null).toString();
         }
     }
 
@@ -69,7 +69,7 @@ public abstract class OlasAuthLink extends Link<Object> {
                 HttpServletResponse response = ((WebResponse) requestCycle.getResponse()).getHttpServletResponse();
 
                 // Where do we go to after the whole operation?
-                String realTarget = OlasAuthLink.this.requestTarget;
+                String realTarget = requestTarget;
                 if (realTarget == null) {
                     realTarget = request.getServletPath();
                 }

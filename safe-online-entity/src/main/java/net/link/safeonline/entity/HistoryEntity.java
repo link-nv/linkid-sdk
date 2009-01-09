@@ -81,14 +81,14 @@ public class HistoryEntity implements Serializable {
         this.subject = subject;
         this.event = event;
         this.when = when;
-        this.properties = new HashMap<String, HistoryPropertyEntity>();
+        properties = new HashMap<String, HistoryPropertyEntity>();
 
     }
 
     @ManyToOne(optional = false)
     public SubjectEntity getSubject() {
 
-        return this.subject;
+        return subject;
     }
 
     public void setSubject(SubjectEntity subject) {
@@ -100,7 +100,7 @@ public class HistoryEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     public long getId() {
 
-        return this.id;
+        return id;
     }
 
     public void setId(long id) {
@@ -111,7 +111,7 @@ public class HistoryEntity implements Serializable {
     @Column(name = "histevent", nullable = false)
     public HistoryEventType getEvent() {
 
-        return this.event;
+        return event;
     }
 
     public void setEvent(HistoryEventType event) {
@@ -123,7 +123,7 @@ public class HistoryEntity implements Serializable {
     @Temporal(value = TemporalType.TIMESTAMP)
     public Date getWhen() {
 
-        return this.when;
+        return when;
     }
 
     public void setWhen(Date when) {
@@ -135,7 +135,7 @@ public class HistoryEntity implements Serializable {
     @MapKey(name = "name")
     public Map<String, HistoryPropertyEntity> getProperties() {
 
-        return this.properties;
+        return properties;
     }
 
     public void setProperties(Map<String, HistoryPropertyEntity> properties) {
@@ -151,7 +151,7 @@ public class HistoryEntity implements Serializable {
         if (false == obj instanceof HistoryEntity)
             return false;
         HistoryEntity rhs = (HistoryEntity) obj;
-        return new EqualsBuilder().append(this.id, rhs.id).isEquals();
+        return new EqualsBuilder().append(id, rhs.id).isEquals();
     }
 
 

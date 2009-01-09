@@ -80,11 +80,11 @@ public class JAASLoginFilter implements Filter {
 
     public void init(FilterConfig config) {
 
-        this.loginContextName = getInitParameter(config, LOGIN_CONTEXT_PARAM, DEFAULT_LOGIN_CONTEXT);
-        LOG.debug("JAAS login context: " + this.loginContextName);
-        this.loginPath = getInitParameter(config, LOGIN_PATH_PARAM, null);
-        LOG.debug("LoginPath: " + this.loginPath);
-        this.unauthenticatedPaths = getUnauthenticatedPaths(config);
+        loginContextName = getInitParameter(config, LOGIN_CONTEXT_PARAM, DEFAULT_LOGIN_CONTEXT);
+        LOG.debug("JAAS login context: " + loginContextName);
+        loginPath = getInitParameter(config, LOGIN_PATH_PARAM, null);
+        LOG.debug("LoginPath: " + loginPath);
+        unauthenticatedPaths = getUnauthenticatedPaths(config);
     }
 
     private String getInitParameter(FilterConfig config, String param, String defaultValue) {
@@ -144,18 +144,18 @@ public class JAASLoginFilter implements Filter {
                 return true;
             }
             String requestPath = request.getContextPath() + request.getServletPath();
-            if (null != this.loginPath && !this.loginPath.equals(requestPath) && !this.unauthenticatedPaths.contains(requestPath)) {
-                LOG.debug("redirect to " + this.loginPath);
+            if (null != loginPath && !loginPath.equals(requestPath) && !unauthenticatedPaths.contains(requestPath)) {
+                LOG.debug("redirect to " + loginPath);
                 session.setAttribute(REDIRECTED_SESSION_ATTRIBUTE, true);
-                response.sendRedirect(this.loginPath);
+                response.sendRedirect(loginPath);
                 return false;
             }
             return true;
         }
         UsernamePasswordHandler handler = new UsernamePasswordHandler(userId, null);
         try {
-            LoginContext loginContext = new LoginContext(this.loginContextName, handler);
-            LOG.debug("login to " + this.loginContextName + " with " + userId + " for " + request.getRequestURL());
+            LoginContext loginContext = new LoginContext(loginContextName, handler);
+            LOG.debug("login to " + loginContextName + " with " + userId + " for " + request.getRequestURL());
             loginContext.login();
             request.setAttribute(JAAS_LOGIN_CONTEXT_SESSION_ATTRIB, loginContext);
         } catch (LoginException e) {

@@ -70,7 +70,7 @@ public class TrustDomainBean implements TrustDomain {
     public void trustDomainListFactory() {
 
         LOG.debug("application list factory");
-        this.trustDomainList = this.pkiService.listTrustDomains();
+        trustDomainList = pkiService.listTrustDomains();
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -82,10 +82,10 @@ public class TrustDomainBean implements TrustDomain {
         /*
          * this.pkiService.addTrustDomain(this.name, this.performOcspCheck, this.ocspCacheTimeOutMillis);
          */
-        String name = this.newTrustDomain.getName();
-        boolean performOcspCheck = this.newTrustDomain.isPerformOcspCheck();
-        long ocspCacheTimeOutMillis = this.newTrustDomain.getOcspCacheTimeOutMillis();
-        this.pkiService.addTrustDomain(name, performOcspCheck, ocspCacheTimeOutMillis);
+        String name = newTrustDomain.getName();
+        boolean performOcspCheck = newTrustDomain.isPerformOcspCheck();
+        long ocspCacheTimeOutMillis = newTrustDomain.getOcspCacheTimeOutMillis();
+        pkiService.addTrustDomain(name, performOcspCheck, ocspCacheTimeOutMillis);
         return "success";
     }
 
@@ -99,7 +99,7 @@ public class TrustDomainBean implements TrustDomain {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String view() {
 
-        LOG.debug("view selected trust domain: " + this.selectedTrustDomain);
+        LOG.debug("view selected trust domain: " + selectedTrustDomain);
         return "view";
     }
 
@@ -107,8 +107,8 @@ public class TrustDomainBean implements TrustDomain {
     public String removeTrustDomain()
             throws TrustDomainNotFoundException {
 
-        LOG.debug("remove trust domain: " + this.selectedTrustDomain);
-        this.pkiService.removeTrustDomain(this.selectedTrustDomain.getName());
+        LOG.debug("remove trust domain: " + selectedTrustDomain);
+        pkiService.removeTrustDomain(selectedTrustDomain.getName());
         trustDomainListFactory();
         return "removed";
     }
@@ -117,15 +117,15 @@ public class TrustDomainBean implements TrustDomain {
     public String clearOcspCache() {
 
         LOG.debug("Clearing OCSP cache for all trust domains");
-        this.pkiService.clearOcspCache();
+        pkiService.clearOcspCache();
         return "clear-cache";
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String clearOcspCachePerTrustDomain() {
 
-        LOG.debug("Clearing OCSP cache for trust domain: " + this.selectedTrustDomain.getName());
-        this.pkiService.clearOcspCachePerTrustDomain(this.selectedTrustDomain);
+        LOG.debug("Clearing OCSP cache for trust domain: " + selectedTrustDomain.getName());
+        pkiService.clearOcspCachePerTrustDomain(selectedTrustDomain);
         return "clear-cache";
     }
 

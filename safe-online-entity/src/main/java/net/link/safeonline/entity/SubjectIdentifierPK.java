@@ -38,7 +38,7 @@ public class SubjectIdentifierPK implements Serializable {
 
     public String getDomain() {
 
-        return this.domain;
+        return domain;
     }
 
     public void setDomain(String domain) {
@@ -48,7 +48,7 @@ public class SubjectIdentifierPK implements Serializable {
 
     public String getIdentifier() {
 
-        return this.identifier;
+        return identifier;
     }
 
     public void setIdentifier(String identifier) {
@@ -66,12 +66,12 @@ public class SubjectIdentifierPK implements Serializable {
         if (false == obj instanceof SubjectIdentifierPK)
             return false;
         SubjectIdentifierPK rhs = (SubjectIdentifierPK) obj;
-        return new EqualsBuilder().append(this.domain, rhs.domain).append(this.identifier, rhs.identifier).isEquals();
+        return new EqualsBuilder().append(domain, rhs.domain).append(identifier, rhs.identifier).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.domain).append(this.identifier).toHashCode();
+        return new HashCodeBuilder().append(domain).append(identifier).toHashCode();
     }
 }

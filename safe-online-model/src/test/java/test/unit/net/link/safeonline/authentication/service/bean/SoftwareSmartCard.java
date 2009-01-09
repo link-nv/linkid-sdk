@@ -34,8 +34,8 @@ public class SoftwareSmartCard implements SmartCard {
 
         this.keyPair = keyPair;
         this.certificate = certificate;
-        this.surname = UUID.randomUUID().toString();
-        this.givenName = UUID.randomUUID().toString();
+        surname = UUID.randomUUID().toString();
+        givenName = UUID.randomUUID().toString();
     }
 
     public void close() {
@@ -44,12 +44,12 @@ public class SoftwareSmartCard implements SmartCard {
 
     public X509Certificate getAuthenticationCertificate() {
 
-        return this.certificate;
+        return certificate;
     }
 
     public PrivateKey getAuthenticationPrivateKey() {
 
-        return this.keyPair.getPrivate();
+        return keyPair.getPrivate();
     }
 
     public String getCity() {
@@ -64,7 +64,7 @@ public class SoftwareSmartCard implements SmartCard {
 
     public String getGivenName() {
 
-        return this.givenName;
+        return givenName;
     }
 
     public String getPostalCode() {
@@ -89,7 +89,7 @@ public class SoftwareSmartCard implements SmartCard {
 
     public String getSurname() {
 
-        return this.surname;
+        return surname;
     }
 
     public void init(@SuppressWarnings("unused") List<SmartCardConfig> smartCardConfigs, SmartCardInteraction smartCardInteraction) {

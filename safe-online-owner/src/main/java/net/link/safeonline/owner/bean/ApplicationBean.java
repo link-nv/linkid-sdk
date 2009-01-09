@@ -143,32 +143,32 @@ public class ApplicationBean implements Application {
             throws ApplicationOwnerNotFoundException {
 
         LOG.debug("application list factory");
-        this.ownerApplicationList = this.applicationService.getOwnedApplications();
+        ownerApplicationList = applicationService.getOwnedApplications();
     }
 
     @RolesAllowed(OwnerConstants.OWNER_ROLE)
     @Factory("allowedDevices")
     public void allowedDevices() {
 
-        if (this.selectedApplication == null)
+        if (selectedApplication == null)
             return;
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();
 
-        List<DeviceEntity> deviceList = this.deviceService.listDevices();
-        List<AllowedDeviceEntity> allowedDeviceList = this.deviceService.listAllowedDevices(this.selectedApplication);
+        List<DeviceEntity> deviceList = deviceService.listDevices();
+        List<AllowedDeviceEntity> allowedDeviceList = deviceService.listAllowedDevices(selectedApplication);
 
-        this.allowedDevices = new ArrayList<DeviceEntry>();
+        allowedDevices = new ArrayList<DeviceEntry>();
 
         boolean defaultValue = false;
 
         for (DeviceEntity deviceEntity : deviceList) {
-            String deviceDescription = this.devicePolicyService.getDeviceDescription(deviceEntity.getName(), viewLocale);
-            this.allowedDevices.add(new DeviceEntry(deviceEntity, deviceDescription, defaultValue, 0));
+            String deviceDescription = devicePolicyService.getDeviceDescription(deviceEntity.getName(), viewLocale);
+            allowedDevices.add(new DeviceEntry(deviceEntity, deviceDescription, defaultValue, 0));
         }
 
         for (AllowedDeviceEntity allowedDevice : allowedDeviceList) {
-            for (DeviceEntry deviceEntry : this.allowedDevices) {
+            for (DeviceEntry deviceEntry : allowedDevices) {
                 if (deviceEntry.getDevice().equals(allowedDevice.getDevice())) {
                     deviceEntry.setAllowed(true);
                     deviceEntry.setWeight(allowedDevice.getWeight());
@@ -182,10 +182,10 @@ public class ApplicationBean implements Application {
     public void usageAgreementListFactory()
             throws ApplicationNotFoundException, PermissionDeniedException {
 
-        if (null == this.selectedApplication)
+        if (null == selectedApplication)
             return;
         LOG.debug("usage agreement list factory");
-        this.selectedApplicationUsageAgreements = this.usageAgreementService.getUsageAgreements(this.selectedApplication.getName());
+        selectedApplicationUsageAgreements = usageAgreementService.getUsageAgreements(selectedApplication.getName());
     }
 
     /*
@@ -195,17 +195,17 @@ public class ApplicationBean implements Application {
     public String view()
             throws ApplicationNotFoundException, PermissionDeniedException, ApplicationIdentityNotFoundException {
 
-        String applicationName = this.selectedApplication.getName();
+        String applicationName = selectedApplication.getName();
         LOG.debug("view: " + applicationName);
-        this.numberOfSubscriptions = this.subscriptionService.getNumberOfSubscriptions(applicationName);
-        this.selectedApplicationIdentity = this.applicationService.getCurrentApplicationIdentity(applicationName);
+        numberOfSubscriptions = subscriptionService.getNumberOfSubscriptions(applicationName);
+        selectedApplicationIdentity = applicationService.getCurrentApplicationIdentity(applicationName);
         return "view-application";
     }
 
     @RolesAllowed(OwnerConstants.OWNER_ROLE)
     public String edit() {
 
-        LOG.debug("edit: " + this.selectedApplication.getName());
+        LOG.debug("edit: " + selectedApplication.getName());
         return "edit-application";
     }
 
@@ -213,24 +213,24 @@ public class ApplicationBean implements Application {
     public String save()
             throws ApplicationNotFoundException, PermissionDeniedException {
 
-        String applicationName = this.selectedApplication.getName();
-        String applicationDescription = this.selectedApplication.getDescription();
-        boolean deviceRestriction = this.selectedApplication.isDeviceRestriction();
+        String applicationName = selectedApplication.getName();
+        String applicationDescription = selectedApplication.getDescription();
+        boolean deviceRestriction = selectedApplication.isDeviceRestriction();
         LOG.debug("save: " + applicationName);
         LOG.debug("description: " + applicationDescription);
 
         List<AllowedDeviceEntity> allowedDeviceList = new ArrayList<AllowedDeviceEntity>();
-        for (DeviceEntry deviceEntry : this.allowedDevices) {
+        for (DeviceEntry deviceEntry : allowedDevices) {
             if (deviceEntry.isAllowed() == true) {
-                AllowedDeviceEntity device = new AllowedDeviceEntity(this.selectedApplication, deviceEntry.getDevice(),
+                AllowedDeviceEntity device = new AllowedDeviceEntity(selectedApplication, deviceEntry.getDevice(),
                         deviceEntry.getWeight());
                 allowedDeviceList.add(device);
             }
         }
 
-        this.applicationService.setApplicationDescription(applicationName, applicationDescription);
-        this.applicationService.setApplicationDeviceRestriction(applicationName, deviceRestriction);
-        this.deviceService.setAllowedDevices(this.selectedApplication, allowedDeviceList);
+        applicationService.setApplicationDescription(applicationName, applicationDescription);
+        applicationService.setApplicationDeviceRestriction(applicationName, deviceRestriction);
+        deviceService.setAllowedDevices(selectedApplication, allowedDeviceList);
         return "saved";
     }
 
@@ -243,8 +243,8 @@ public class ApplicationBean implements Application {
     @RolesAllowed(OwnerConstants.OWNER_ROLE)
     public String viewUsageAgreement() {
 
-        LOG.debug("view usage agreement for application: " + this.selectedApplication.getName() + ", version="
-                + this.selectedUsageAgreement.getUsageAgreementVersion());
+        LOG.debug("view usage agreement for application: " + selectedApplication.getName() + ", version="
+                + selectedUsageAgreement.getUsageAgreementVersion());
         return "view-usage-agreement";
     }
 
@@ -252,9 +252,9 @@ public class ApplicationBean implements Application {
     public String editUsageAgreement()
             throws ApplicationNotFoundException, PermissionDeniedException {
 
-        LOG.debug("edit usage agreement for application: " + this.selectedApplication.getName());
-        this.draftUsageAgreement = this.usageAgreementService.getDraftUsageAgreement(this.selectedApplication.getName());
-        this.currentUsageAgreement = this.usageAgreementService.getCurrentUsageAgreement(this.selectedApplication.getName());
+        LOG.debug("edit usage agreement for application: " + selectedApplication.getName());
+        draftUsageAgreement = usageAgreementService.getDraftUsageAgreement(selectedApplication.getName());
+        currentUsageAgreement = usageAgreementService.getCurrentUsageAgreement(selectedApplication.getName());
         return "edit-usage-agreement";
     }
 }

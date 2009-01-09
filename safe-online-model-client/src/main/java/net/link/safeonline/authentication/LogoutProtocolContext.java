@@ -37,11 +37,11 @@ public class LogoutProtocolContext {
 
     public String getApplicationId() {
 
-        return this.applicationId;
+        return applicationId;
     }
 
     public String getTarget() {
 
-        return this.target;
+        return target;
     }
 }

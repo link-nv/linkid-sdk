@@ -70,14 +70,14 @@ public class LogoutExitServlet extends AbstractInjectionServlet {
          * Wrap the request to use the servlet endpoint url. To prevent failure when behind a reverse proxy or loadbalancer when opensaml is
          * checking the destination field.
          */
-        HttpServletRequestEndpointWrapper logoutRequestWrapper = new HttpServletRequestEndpointWrapper(request, this.servletEndpointUrl);
+        HttpServletRequestEndpointWrapper logoutRequestWrapper = new HttpServletRequestEndpointWrapper(request, servletEndpointUrl);
 
         LOG.debug("handle logout response");
         String loggedOutApplication;
         try {
             loggedOutApplication = ProtocolHandlerManager.handleLogoutResponse(logoutRequestWrapper);
         } catch (ProtocolException e) {
-            redirectToErrorPage(request, response, this.protocolErrorUrl, null, new ErrorMessage(PROTOCOL_NAME_ATTRIBUTE,
+            redirectToErrorPage(request, response, protocolErrorUrl, null, new ErrorMessage(PROTOCOL_NAME_ATTRIBUTE,
                     e.getProtocolName()), new ErrorMessage(PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
             return;
         }
@@ -115,7 +115,7 @@ public class LogoutExitServlet extends AbstractInjectionServlet {
             try {
                 ProtocolHandlerManager.logoutResponse(partialLogout, target, request.getSession(), response);
             } catch (ProtocolException e) {
-                redirectToErrorPage(request, response, this.protocolErrorUrl, null, new ErrorMessage(PROTOCOL_NAME_ATTRIBUTE,
+                redirectToErrorPage(request, response, protocolErrorUrl, null, new ErrorMessage(PROTOCOL_NAME_ATTRIBUTE,
                         e.getProtocolName()), new ErrorMessage(PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
                 return;
             }
@@ -126,7 +126,7 @@ public class LogoutExitServlet extends AbstractInjectionServlet {
             try {
                 ProtocolHandlerManager.logoutRequest(application, request.getSession(), response);
             } catch (ProtocolException e) {
-                redirectToErrorPage(request, response, this.protocolErrorUrl, null, new ErrorMessage(PROTOCOL_NAME_ATTRIBUTE,
+                redirectToErrorPage(request, response, protocolErrorUrl, null, new ErrorMessage(PROTOCOL_NAME_ATTRIBUTE,
                         e.getProtocolName()), new ErrorMessage(PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
                 return;
             }

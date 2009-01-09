@@ -53,7 +53,7 @@ public class ApplicationIdentityAttributeEntity implements Serializable {
         String applicationName = applicationIdentity.getApplication().getName();
         long identityVersion = applicationIdentity.getIdentityVersion();
         String attributeTypeName = attributeType.getName();
-        this.pk = new ApplicationIdentityAttributePK(applicationName, identityVersion, attributeTypeName);
+        pk = new ApplicationIdentityAttributePK(applicationName, identityVersion, attributeTypeName);
         this.attributeType = attributeType;
         this.required = required;
         this.dataMining = dataMining;
@@ -65,7 +65,7 @@ public class ApplicationIdentityAttributeEntity implements Serializable {
             @AttributeOverride(name = "attributeTypeName", column = @Column(name = ATTRIBUTE_TYPE_NAME)) })
     public ApplicationIdentityAttributePK getPk() {
 
-        return this.pk;
+        return pk;
     }
 
     public void setPk(ApplicationIdentityAttributePK pk) {
@@ -75,7 +75,7 @@ public class ApplicationIdentityAttributeEntity implements Serializable {
 
     public boolean isRequired() {
 
-        return this.required;
+        return required;
     }
 
     public void setRequired(boolean required) {
@@ -89,7 +89,7 @@ public class ApplicationIdentityAttributeEntity implements Serializable {
             @JoinColumn(name = IDENTITY_VERSION_NAME, insertable = false, updatable = false, referencedColumnName = ApplicationIdentityEntity.IDENTITY_VERSION_COLUMN_NAME) })
     public ApplicationIdentityEntity getApplicationIdentity() {
 
-        return this.applicationIdentity;
+        return applicationIdentity;
     }
 
     public void setApplicationIdentity(ApplicationIdentityEntity applicationIdentity) {
@@ -101,7 +101,7 @@ public class ApplicationIdentityAttributeEntity implements Serializable {
     @JoinColumn(name = ATTRIBUTE_TYPE_NAME, insertable = false, updatable = false)
     public AttributeTypeEntity getAttributeType() {
 
-        return this.attributeType;
+        return attributeType;
     }
 
     public void setAttributeType(AttributeTypeEntity attributeType) {
@@ -112,19 +112,19 @@ public class ApplicationIdentityAttributeEntity implements Serializable {
     @Transient
     public String getApplicationName() {
 
-        return this.pk.getApplication();
+        return pk.getApplication();
     }
 
     @Transient
     public long getIdentityVersion() {
 
-        return this.pk.getIdentityVersion();
+        return pk.getIdentityVersion();
     }
 
     @Transient
     public String getAttributeTypeName() {
 
-        return this.pk.getAttributeTypeName();
+        return pk.getAttributeTypeName();
     }
 
     @Override
@@ -137,18 +137,18 @@ public class ApplicationIdentityAttributeEntity implements Serializable {
         if (false == obj instanceof ApplicationIdentityAttributeEntity)
             return false;
         ApplicationIdentityAttributeEntity rhs = (ApplicationIdentityAttributeEntity) obj;
-        return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
+        return new EqualsBuilder().append(pk, rhs.pk).isEquals();
     }
 
     public boolean equivalent(ApplicationIdentityAttributeEntity attr) {
 
-        if (!this.getApplicationName().equals(attr.getApplicationName()))
+        if (!getApplicationName().equals(attr.getApplicationName()))
             return false;
-        if (!this.getAttributeTypeName().equals(attr.getAttributeTypeName()))
+        if (!getAttributeTypeName().equals(attr.getAttributeTypeName()))
             return false;
-        if (this.isDataMining() != attr.isDataMining())
+        if (isDataMining() != attr.isDataMining())
             return false;
-        if (this.isRequired() != attr.isRequired())
+        if (isRequired() != attr.isRequired())
             return false;
         return true;
     }
@@ -156,12 +156,12 @@ public class ApplicationIdentityAttributeEntity implements Serializable {
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.pk).toHashCode();
+        return new HashCodeBuilder().append(pk).toHashCode();
     }
 
     public boolean isDataMining() {
 
-        return this.dataMining;
+        return dataMining;
     }
 
     public void setDataMining(boolean dataMining) {
@@ -172,7 +172,7 @@ public class ApplicationIdentityAttributeEntity implements Serializable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("pk", this.pk).append("required", this.required)
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("pk", pk).append("required", required)
                                                                           .toString();
     }
 }

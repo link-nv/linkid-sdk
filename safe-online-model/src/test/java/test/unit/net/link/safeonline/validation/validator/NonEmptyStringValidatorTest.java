@@ -41,11 +41,11 @@ public class NonEmptyStringValidatorTest extends TestCase {
 
         super.setUp();
 
-        this.testedInstance = new NonEmptyStringValidator();
+        testedInstance = new NonEmptyStringValidator();
 
-        this.mockValidatorResult = createMock(ValidatorResult.class);
+        mockValidatorResult = createMock(ValidatorResult.class);
 
-        this.nonEmptyStringSampleAnnotation = (NonEmptyString) NonEmptyStringValidatorTest.class.getDeclaredMethod("sampleFunc",
+        nonEmptyStringSampleAnnotation = (NonEmptyString) NonEmptyStringValidatorTest.class.getDeclaredMethod("sampleFunc",
                 String.class).getParameterAnnotations()[0][0];
     }
 
@@ -56,16 +56,16 @@ public class NonEmptyStringValidatorTest extends TestCase {
         String sampleString = null;
 
         // expectations
-        this.mockValidatorResult.addResult(EasyMock.matches(".*sample.*"));
+        mockValidatorResult.addResult(EasyMock.matches(".*sample.*"));
 
         // prepare
-        replay(this.mockValidatorResult);
+        replay(mockValidatorResult);
 
         // operate
-        this.testedInstance.validate(sampleString, 1, this.nonEmptyStringSampleAnnotation, this.mockValidatorResult);
+        testedInstance.validate(sampleString, 1, nonEmptyStringSampleAnnotation, mockValidatorResult);
 
         // verify
-        verify(this.mockValidatorResult);
+        verify(mockValidatorResult);
     }
 
     public void testEmptyStringIsInvalid()
@@ -75,15 +75,15 @@ public class NonEmptyStringValidatorTest extends TestCase {
         String sampleString = "";
 
         // expectations
-        this.mockValidatorResult.addResult(EasyMock.matches(".*sample.*"));
+        mockValidatorResult.addResult(EasyMock.matches(".*sample.*"));
 
         // prepare
-        replay(this.mockValidatorResult);
+        replay(mockValidatorResult);
 
         // operate
-        this.testedInstance.validate(sampleString, 1, this.nonEmptyStringSampleAnnotation, this.mockValidatorResult);
+        testedInstance.validate(sampleString, 1, nonEmptyStringSampleAnnotation, mockValidatorResult);
 
         // verify
-        verify(this.mockValidatorResult);
+        verify(mockValidatorResult);
     }
 }

@@ -36,49 +36,49 @@ public class HistoryDAOBeanTest extends TestCase {
             throws Exception {
 
         super.setUp();
-        this.entityTestManager = new EntityTestManager();
+        entityTestManager = new EntityTestManager();
         /*
          * If you add entities to this list, also add them to safe-online-sql-ddl.
          */
-        this.entityTestManager.setUp(HistoryEntity.class, HistoryPropertyEntity.class, SubjectEntity.class);
+        entityTestManager.setUp(HistoryEntity.class, HistoryPropertyEntity.class, SubjectEntity.class);
 
-        this.testedInstance = new HistoryDAOBean();
-        this.subjectDAO = new SubjectDAOBean();
+        testedInstance = new HistoryDAOBean();
+        subjectDAO = new SubjectDAOBean();
 
-        EJBTestUtils.inject(this.testedInstance, this.entityTestManager.getEntityManager());
-        EJBTestUtils.inject(this.subjectDAO, this.entityTestManager.getEntityManager());
+        EJBTestUtils.inject(testedInstance, entityTestManager.getEntityManager());
+        EJBTestUtils.inject(subjectDAO, entityTestManager.getEntityManager());
 
-        EJBTestUtils.init(this.testedInstance);
+        EJBTestUtils.init(testedInstance);
     }
 
     @Override
     protected void tearDown()
             throws Exception {
 
-        this.entityTestManager.tearDown();
+        entityTestManager.tearDown();
         super.tearDown();
     }
 
     public void testHistoryDAO() {
 
-        SubjectEntity subject = this.subjectDAO.addSubject("testsubject");
+        SubjectEntity subject = subjectDAO.addSubject("testsubject");
 
         Map<String, String> historyProperties = new HashMap<String, String>();
         historyProperties.put(SafeOnlineConstants.APPLICATION_PROPERTY, "test-application");
         historyProperties.put(SafeOnlineConstants.DEVICE_PROPERTY, "test-device");
-        HistoryEntity history = this.testedInstance.addHistoryEntry(subject, HistoryEventType.LOGIN_SUCCESS, historyProperties);
+        HistoryEntity history = testedInstance.addHistoryEntry(subject, HistoryEventType.LOGIN_SUCCESS, historyProperties);
 
-        this.entityTestManager.getEntityManager().getTransaction().commit();
-        this.entityTestManager.getEntityManager().getTransaction().begin();
+        entityTestManager.getEntityManager().getTransaction().commit();
+        entityTestManager.getEntityManager().getTransaction().begin();
 
-        HistoryEntity resultHistory = this.entityTestManager.getEntityManager().find(HistoryEntity.class, history.getId());
+        HistoryEntity resultHistory = entityTestManager.getEntityManager().find(HistoryEntity.class, history.getId());
         assertEquals(history, resultHistory);
 
-        this.testedInstance.clearAllHistory(subject);
+        testedInstance.clearAllHistory(subject);
 
-        this.entityTestManager.refreshEntityManager();
+        entityTestManager.refreshEntityManager();
 
-        resultHistory = this.entityTestManager.getEntityManager().find(HistoryEntity.class, history.getId());
+        resultHistory = entityTestManager.getEntityManager().find(HistoryEntity.class, history.getId());
         assertNull(resultHistory);
     }
 }

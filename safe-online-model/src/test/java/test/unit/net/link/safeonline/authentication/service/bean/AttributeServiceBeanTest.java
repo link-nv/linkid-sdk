@@ -76,10 +76,10 @@ public class AttributeServiceBeanTest {
     public void setUp()
             throws Exception {
 
-        this.entityTestManager = new EntityTestManager();
-        this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
+        entityTestManager = new EntityTestManager();
+        entityTestManager.setUp(SafeOnlineTestContainer.entities);
 
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
 
         JmxTestUtils jmxTestUtils = new JmxTestUtils();
         jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
@@ -120,7 +120,7 @@ public class AttributeServiceBeanTest {
     public void tearDown()
             throws Exception {
 
-        this.entityTestManager.tearDown();
+        entityTestManager.tearDown();
     }
 
     @Test
@@ -132,7 +132,7 @@ public class AttributeServiceBeanTest {
         String testAttributeName = UUID.randomUUID().toString();
         String testApplicationName = UUID.randomUUID().toString();
 
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
 
         UserRegistrationService userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager);
@@ -174,7 +174,7 @@ public class AttributeServiceBeanTest {
         String testAttributeName = UUID.randomUUID().toString();
         String testApplicationName = UUID.randomUUID().toString();
 
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
 
         UserRegistrationService userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager);
@@ -221,7 +221,7 @@ public class AttributeServiceBeanTest {
         String testApplicationName = UUID.randomUUID().toString();
         String testAttributeValue = UUID.randomUUID().toString();
 
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
 
         UserRegistrationService userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager);
@@ -276,7 +276,7 @@ public class AttributeServiceBeanTest {
         String testApplicationName = UUID.randomUUID().toString();
         Boolean testAttributeValue = Boolean.TRUE;
 
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
 
         UserRegistrationService userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager);
@@ -332,7 +332,7 @@ public class AttributeServiceBeanTest {
         String testAttributeValue = UUID.randomUUID().toString();
         String unconfirmedAttributeName = UUID.randomUUID().toString();
 
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
 
         UserRegistrationService userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager);
@@ -389,7 +389,7 @@ public class AttributeServiceBeanTest {
         String testApplicationName = UUID.randomUUID().toString();
         String testAttributeValue = UUID.randomUUID().toString();
 
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
 
         UserRegistrationService userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager);
@@ -446,7 +446,7 @@ public class AttributeServiceBeanTest {
         String testAttributeValue1 = UUID.randomUUID().toString();
         String testAttributeValue2 = UUID.randomUUID().toString();
 
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
 
         // register test user
         UserRegistrationService userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,
@@ -526,7 +526,7 @@ public class AttributeServiceBeanTest {
         String firstMemberName = "member-0-name";
         String secondMemberName = "member-1-name";
 
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
 
         // register test user
         UserRegistrationService userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,
@@ -549,7 +549,7 @@ public class AttributeServiceBeanTest {
         secondAttributeType.setMultivalued(true);
         attributeTypeService.add(secondAttributeType);
 
-        this.entityTestManager.newTransaction();
+        entityTestManager.newTransaction();
 
         AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(compoundName, DatatypeType.COMPOUNDED, true, true);
         compoundedAttributeType.setMultivalued(true);
@@ -589,7 +589,7 @@ public class AttributeServiceBeanTest {
         attribute.setIndex(1);
         identityService.saveAttribute(attribute);
 
-        this.entityTestManager.newTransaction();
+        entityTestManager.newTransaction();
 
         AttributeService attributeService = EJBTestUtils.newInstance(AttributeServiceBean.class, SafeOnlineTestContainer.sessionBeans,
                 entityManager, testApplicationName, SafeOnlineApplicationRoles.APPLICATION_ROLE);

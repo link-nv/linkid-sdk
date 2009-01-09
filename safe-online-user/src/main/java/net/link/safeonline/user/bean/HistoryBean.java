@@ -40,7 +40,7 @@ public class HistoryBean implements History {
     @RolesAllowed(UserConstants.USER_ROLE)
     public List<HistoryMessage> getList() {
 
-        List<HistoryEntity> result = this.identityService.listHistory();
+        List<HistoryEntity> result = identityService.listHistory();
 
         List<HistoryMessage> messageList = new LinkedList<HistoryMessage>();
 

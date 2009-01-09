@@ -65,7 +65,7 @@ public class DriverExceptionServiceBean extends AbstractProfilingServiceBean imp
 
         // Create the exception entity.
         DriverExceptionEntity exceptionEntity = new DriverExceptionEntity(profile, exception.getOccurredTime(), message);
-        this.em.persist(exceptionEntity);
+        em.persist(exceptionEntity);
 
         return exceptionEntity;
     }
@@ -76,7 +76,7 @@ public class DriverExceptionServiceBean extends AbstractProfilingServiceBean imp
     @SuppressWarnings("unchecked")
     public List<DriverExceptionEntity> getAllProfileErrors(DriverProfileEntity profile) {
 
-        return this.em.createNamedQuery(DriverExceptionEntity.getByProfile).setParameter("profile", profile).getResultList();
+        return em.createNamedQuery(DriverExceptionEntity.getByProfile).setParameter("profile", profile).getResultList();
     }
 
     /**
@@ -86,9 +86,9 @@ public class DriverExceptionServiceBean extends AbstractProfilingServiceBean imp
     public List<DriverExceptionEntity> getProfileErrors(DriverProfileEntity profile, int dataPoints) {
 
         // Find the driver profile's profile data.
-        Long dataDuration = (Long) this.em.createNamedQuery(DriverExceptionEntity.getExecutionDuration).setParameter("profile", profile)
+        Long dataDuration = (Long) em.createNamedQuery(DriverExceptionEntity.getExecutionDuration).setParameter("profile", profile)
                                           .getSingleResult();
-        Long dataStart = (Long) this.em.createNamedQuery(DriverExceptionEntity.getExecutionStart).setParameter("profile", profile)
+        Long dataStart = (Long) em.createNamedQuery(DriverExceptionEntity.getExecutionStart).setParameter("profile", profile)
                                        .getSingleResult();
 
         // Bail out of there are no errors for this profile.
@@ -99,7 +99,7 @@ public class DriverExceptionServiceBean extends AbstractProfilingServiceBean imp
 
         List<DriverExceptionEntity> pointData = new ArrayList<DriverExceptionEntity>();
         for (long point = 0; point * period < dataDuration; ++point) {
-            pointData.addAll(this.em.createNamedQuery(DriverExceptionEntity.createAverage).setParameter("profile", profile).setParameter(
+            pointData.addAll(em.createNamedQuery(DriverExceptionEntity.createAverage).setParameter("profile", profile).setParameter(
                     "start", dataStart + point * period).setParameter("stop", dataStart + (point + 1) * period).getResultList());
         }
 

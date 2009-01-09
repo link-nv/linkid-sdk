@@ -33,12 +33,12 @@ public class AuthenticationStatementStructure extends AbstractStatementStructure
 
     public String getSessionId() {
 
-        return this.sessionId;
+        return sessionId;
     }
 
     public String getApplicationId() {
 
-        return this.applicationId;
+        return applicationId;
     }
 
     @Override
@@ -51,18 +51,18 @@ public class AuthenticationStatementStructure extends AbstractStatementStructure
         if (DERAuthenticationStatement.VERSION != version.getValue().intValue())
             throw new DecodingException();
         DERVisibleString derSessionId = DERVisibleString.getInstance(tbsSequence.getObjectAt(DERAuthenticationStatement.TBS_SESSION_IDX));
-        this.sessionId = derSessionId.getString();
+        sessionId = derSessionId.getString();
         DERVisibleString derApplicationId = DERVisibleString
                                                             .getInstance(tbsSequence
                                                                                     .getObjectAt(DERAuthenticationStatement.TBS_APPLICATION_IDX));
-        this.applicationId = derApplicationId.getString();
+        applicationId = derApplicationId.getString();
         ASN1Sequence derAuthCert = ASN1Sequence.getInstance(tbsSequence.getObjectAt(DERAuthenticationStatement.TBS_AUTH_CERT_IDX));
-        this.authCert = decodeCertificate(derAuthCert.getDEREncoded());
+        authCert = decodeCertificate(derAuthCert.getDEREncoded());
     }
 
     @Override
     protected X509Certificate getCertificate() {
 
-        return this.authCert;
+        return authCert;
     }
 }

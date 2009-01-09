@@ -89,7 +89,7 @@ public class DevicesBean implements Devices {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.credentialCacheFlushRequired = false;
+        credentialCacheFlushRequired = false;
     }
 
 
@@ -117,7 +117,7 @@ public class DevicesBean implements Devices {
     public void destroyCallback() {
 
         LOG.debug("destroy callback");
-        if (this.credentialCacheFlushRequired) {
+        if (credentialCacheFlushRequired) {
             /*
              * We will set a HTTP session attribute to communicate to the JAAS Login Filter that the credential cache for the caller
              * principal needs to be flushed.
@@ -141,7 +141,7 @@ public class DevicesBean implements Devices {
                 throw new EJBException("JACC policy context error: " + e.getMessage());
             }
         }
-        this.credentialCacheFlushRequired = false;
+        credentialCacheFlushRequired = false;
     }
 
     private Locale getViewLocale() {
@@ -158,9 +158,9 @@ public class DevicesBean implements Devices {
 
         Locale locale = getViewLocale();
         LOG.debug("device registrations factory");
-        SubjectEntity subject = this.subjectManager.getCallerSubject();
-        this.deviceRegistrations = this.deviceService.getDeviceRegistrations(subject, locale);
-        return this.deviceRegistrations;
+        SubjectEntity subject = subjectManager.getCallerSubject();
+        deviceRegistrations = deviceService.getDeviceRegistrations(subject, locale);
+        return deviceRegistrations;
     }
 
     @RolesAllowed(UserConstants.USER_ROLE)
@@ -169,25 +169,25 @@ public class DevicesBean implements Devices {
             throws SubjectNotFoundException, DeviceNotFoundException {
 
         Locale locale = getViewLocale();
-        this.devices = new LinkedList<DeviceEntry>();
-        List<DeviceEntity> deviceList = this.devicePolicyService.getDevices();
+        devices = new LinkedList<DeviceEntry>();
+        List<DeviceEntity> deviceList = devicePolicyService.getDevices();
         for (DeviceEntity device : deviceList) {
-            String deviceDescription = this.devicePolicyService.getDeviceDescription(device.getName(), locale);
-            this.devices.add(new DeviceEntry(device, deviceDescription));
+            String deviceDescription = devicePolicyService.getDeviceDescription(device.getName(), locale);
+            devices.add(new DeviceEntry(device, deviceDescription));
         }
-        return this.devices;
+        return devices;
     }
 
     @RolesAllowed(UserConstants.USER_ROLE)
     public String register()
             throws DeviceNotFoundException, IOException {
 
-        LOG.debug("register device: " + this.selectedDevice.getFriendlyName());
-        String userId = this.subjectManager.getCallerSubject().getUserId();
+        LOG.debug("register device: " + selectedDevice.getFriendlyName());
+        String userId = subjectManager.getCallerSubject().getUserId();
 
-        String registrationURL = this.devicePolicyService.getRegistrationURL(this.selectedDevice.getDevice().getName());
-        DeviceOperationUtils.redirect(registrationURL, DeviceOperationType.REGISTER, this.selectedDevice.getDevice().getName(),
-                this.authenticatedDevice, userId, null);
+        String registrationURL = devicePolicyService.getRegistrationURL(selectedDevice.getDevice().getName());
+        DeviceOperationUtils.redirect(registrationURL, DeviceOperationType.REGISTER, selectedDevice.getDevice().getName(),
+                authenticatedDevice, userId, null);
         return null;
     }
 
@@ -196,24 +196,24 @@ public class DevicesBean implements Devices {
             throws DeviceNotFoundException, IOException {
 
         if (!deviceRemovalDisablingAllowed()) {
-            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
+            facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
             return null;
         }
-        LOG.debug("remove device: " + this.selectedDeviceRegistration.getFriendlyName());
-        String userId = this.subjectManager.getCallerSubject().getUserId();
-        String removalURL = this.selectedDeviceRegistration.getDevice().getRemovalURL();
+        LOG.debug("remove device: " + selectedDeviceRegistration.getFriendlyName());
+        String userId = subjectManager.getCallerSubject().getUserId();
+        String removalURL = selectedDeviceRegistration.getDevice().getRemovalURL();
 
-        DeviceOperationUtils.redirect(removalURL, DeviceOperationType.REMOVE, this.selectedDeviceRegistration.getDevice().getName(),
-                this.authenticatedDevice, userId, this.selectedDeviceRegistration.getAttribute());
+        DeviceOperationUtils.redirect(removalURL, DeviceOperationType.REMOVE, selectedDeviceRegistration.getDevice().getName(),
+                authenticatedDevice, userId, selectedDeviceRegistration.getAttribute());
         return null;
     }
 
     private boolean deviceRemovalDisablingAllowed() {
 
-        if (this.deviceRegistrations.size() == 1)
+        if (deviceRegistrations.size() == 1)
             return false;
 
-        for (DeviceRegistrationDO deviceRegistration : this.deviceRegistrations) {
+        for (DeviceRegistrationDO deviceRegistration : deviceRegistrations) {
             if (!deviceRegistration.isDisabled())
                 return true;
         }
@@ -225,12 +225,12 @@ public class DevicesBean implements Devices {
     public String updateDevice()
             throws DeviceNotFoundException, IOException {
 
-        LOG.debug("update device: " + this.selectedDeviceRegistration.getFriendlyName());
-        String userId = this.subjectManager.getCallerSubject().getUserId();
-        String updateURL = this.selectedDeviceRegistration.getDevice().getUpdateURL();
+        LOG.debug("update device: " + selectedDeviceRegistration.getFriendlyName());
+        String userId = subjectManager.getCallerSubject().getUserId();
+        String updateURL = selectedDeviceRegistration.getDevice().getUpdateURL();
 
-        DeviceOperationUtils.redirect(updateURL, DeviceOperationType.UPDATE, this.selectedDeviceRegistration.getDevice().getName(),
-                this.authenticatedDevice, userId, this.selectedDeviceRegistration.getAttribute());
+        DeviceOperationUtils.redirect(updateURL, DeviceOperationType.UPDATE, selectedDeviceRegistration.getDevice().getName(),
+                authenticatedDevice, userId, selectedDeviceRegistration.getAttribute());
         return null;
     }
 
@@ -240,16 +240,16 @@ public class DevicesBean implements Devices {
             AttributeTypeNotFoundException {
 
         if (!deviceRemovalDisablingAllowed()) {
-            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
+            facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorPermissionDenied");
             return null;
         }
 
-        LOG.debug("disable device: " + this.selectedDeviceRegistration.getFriendlyName());
-        String userId = this.subjectManager.getCallerSubject().getUserId();
+        LOG.debug("disable device: " + selectedDeviceRegistration.getFriendlyName());
+        String userId = subjectManager.getCallerSubject().getUserId();
 
-        DeviceOperationUtils.redirect(this.selectedDeviceRegistration.getDevice().getDisableURL(), DeviceOperationType.DISABLE,
-                this.selectedDeviceRegistration.getDevice().getName(), this.authenticatedDevice, userId,
-                this.selectedDeviceRegistration.getAttribute());
+        DeviceOperationUtils.redirect(selectedDeviceRegistration.getDevice().getDisableURL(), DeviceOperationType.DISABLE,
+                selectedDeviceRegistration.getDevice().getName(), authenticatedDevice, userId,
+                selectedDeviceRegistration.getAttribute());
         return null;
     }
 
@@ -257,12 +257,12 @@ public class DevicesBean implements Devices {
     public String enableDevice()
             throws DeviceNotFoundException, IOException, SubjectNotFoundException, AttributeTypeNotFoundException {
 
-        LOG.debug("enable device: " + this.selectedDeviceRegistration.getFriendlyName());
-        String userId = this.subjectManager.getCallerSubject().getUserId();
+        LOG.debug("enable device: " + selectedDeviceRegistration.getFriendlyName());
+        String userId = subjectManager.getCallerSubject().getUserId();
 
-        DeviceOperationUtils.redirect(this.selectedDeviceRegistration.getDevice().getEnableURL(), DeviceOperationType.ENABLE,
-                this.selectedDeviceRegistration.getDevice().getName(), this.authenticatedDevice, userId,
-                this.selectedDeviceRegistration.getAttribute());
+        DeviceOperationUtils.redirect(selectedDeviceRegistration.getDevice().getEnableURL(), DeviceOperationType.ENABLE,
+                selectedDeviceRegistration.getDevice().getName(), authenticatedDevice, userId,
+                selectedDeviceRegistration.getAttribute());
         return null;
     }
 }

@@ -89,8 +89,8 @@ public class SubscriptionServiceBean implements SubscriptionService, Subscriptio
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
     public List<SubscriptionEntity> listSubscriptions() {
 
-        SubjectEntity subject = this.subjectManager.getCallerSubject();
-        List<SubscriptionEntity> subscriptions = this.subscriptionDAO.listSubsciptions(subject);
+        SubjectEntity subject = subjectManager.getCallerSubject();
+        List<SubscriptionEntity> subscriptions = subscriptionDAO.listSubsciptions(subject);
         return subscriptions;
     }
 
@@ -98,7 +98,7 @@ public class SubscriptionServiceBean implements SubscriptionService, Subscriptio
     public List<SubscriptionEntity> listSubscriptions(SubjectEntity subject)
             throws SubjectNotFoundException {
 
-        return this.subscriptionDAO.listSubsciptions(subject);
+        return subscriptionDAO.listSubsciptions(subject);
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
@@ -110,12 +110,12 @@ public class SubscriptionServiceBean implements SubscriptionService, Subscriptio
         subject.subscribe(application);
 
         if (application.getEntity().getIdScope().equals(IdScopeType.APPLICATION)) {
-            if (null == this.applicationScopeIdDAO.findApplicationScopeId(subject.getSubjectEntity(), application.getEntity())) {
-                this.applicationScopeIdDAO.addApplicationScopeId(subject.getSubjectEntity(), application.getEntity());
+            if (null == applicationScopeIdDAO.findApplicationScopeId(subject.getSubjectEntity(), application.getEntity())) {
+                applicationScopeIdDAO.addApplicationScopeId(subject.getSubjectEntity(), application.getEntity());
             }
         }
 
-        this.historyDAO.addHistoryEntry(subject.getSubjectEntity(), HistoryEventType.SUBSCRIPTION_ADD, Collections.singletonMap(
+        historyDAO.addHistoryEntry(subject.getSubjectEntity(), HistoryEventType.SUBSCRIPTION_ADD, Collections.singletonMap(
                 SafeOnlineConstants.APPLICATION_PROPERTY, applicationName));
     }
 
@@ -126,13 +126,13 @@ public class SubscriptionServiceBean implements SubscriptionService, Subscriptio
         Subject subject = SubjectFactory.getCallerSubject(this);
         Application application = ApplicationFactory.getApplication(this, applicationName);
 
-        this.notificationProducerService.sendNotification(SafeOnlineConstants.TOPIC_UNSUBSCRIBE_USER, subject.getSubjectEntity()
+        notificationProducerService.sendNotification(SafeOnlineConstants.TOPIC_UNSUBSCRIBE_USER, subject.getSubjectEntity()
                                                                                                              .getUserId(),
                 application.getEntity().getName());
 
         subject.unsubscribe(application);
 
-        this.historyDAO.addHistoryEntry(subject.getSubjectEntity(), HistoryEventType.SUBSCRIPTION_REMOVE, Collections.singletonMap(
+        historyDAO.addHistoryEntry(subject.getSubjectEntity(), HistoryEventType.SUBSCRIPTION_REMOVE, Collections.singletonMap(
                 SafeOnlineConstants.APPLICATION_PROPERTY, applicationName));
     }
 
@@ -141,22 +141,22 @@ public class SubscriptionServiceBean implements SubscriptionService, Subscriptio
             throws ApplicationNotFoundException, PermissionDeniedException {
 
         LOG.debug("get number of subscriptions for application: " + applicationName);
-        ApplicationEntity application = this.applicationDAO.getApplication(applicationName);
+        ApplicationEntity application = applicationDAO.getApplication(applicationName);
 
         checkReadPermission(application);
 
-        long count = this.subscriptionDAO.getNumberOfSubscriptions(application);
+        long count = subscriptionDAO.getNumberOfSubscriptions(application);
         return count;
     }
 
     private void checkReadPermission(ApplicationEntity application)
             throws PermissionDeniedException {
 
-        if (this.sessionContext.isCallerInRole(SafeOnlineRoles.OPERATOR_ROLE))
+        if (sessionContext.isCallerInRole(SafeOnlineRoles.OPERATOR_ROLE))
             return;
         ApplicationOwnerEntity applicationOwner = application.getApplicationOwner();
         SubjectEntity expectedSubject = applicationOwner.getAdmin();
-        SubjectEntity actualSubject = this.subjectManager.getCallerSubject();
+        SubjectEntity actualSubject = subjectManager.getCallerSubject();
         if (false == expectedSubject.equals(actualSubject))
             throw new PermissionDeniedException("application owner admin mismatch");
     }
@@ -173,16 +173,16 @@ public class SubscriptionServiceBean implements SubscriptionService, Subscriptio
 
     public SubjectManager getSubjectManager() {
 
-        return this.subjectManager;
+        return subjectManager;
     }
 
     public ApplicationDAO getApplicationDAO() {
 
-        return this.applicationDAO;
+        return applicationDAO;
     }
 
     public SubscriptionDAO getSubscriptionDAO() {
 
-        return this.subscriptionDAO;
+        return subscriptionDAO;
     }
 }

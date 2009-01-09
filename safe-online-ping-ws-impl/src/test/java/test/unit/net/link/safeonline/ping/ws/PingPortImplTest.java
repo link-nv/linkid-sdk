@@ -43,16 +43,16 @@ public class PingPortImplTest {
     public void setUp()
             throws Exception {
 
-        this.webServiceTestUtils = new WebServiceTestUtils();
+        webServiceTestUtils = new WebServiceTestUtils();
         PingPortImpl port = new PingPortImpl();
-        this.webServiceTestUtils.setUp(port);
+        webServiceTestUtils.setUp(port);
     }
 
     @After
     public void tearDown()
             throws Exception {
 
-        this.webServiceTestUtils.tearDown();
+        webServiceTestUtils.tearDown();
     }
 
     @Test
@@ -82,7 +82,7 @@ public class PingPortImplTest {
     private void setEndpointAddress(PingPort port) {
 
         BindingProvider bindingProvider = (BindingProvider) port;
-        String location = this.webServiceTestUtils.getEndpointAddress();
+        String location = webServiceTestUtils.getEndpointAddress();
         LOG.debug("location: " + location);
         bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location);
     }

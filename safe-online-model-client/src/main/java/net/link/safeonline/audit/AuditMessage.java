@@ -23,7 +23,7 @@ public class AuditMessage implements Serializable {
 
     public Long getAuditContextId() {
 
-        return this.auditContextId;
+        return auditContextId;
     }
 
     public void setAuditContextId(Long auditContextId) {
@@ -38,14 +38,14 @@ public class AuditMessage implements Serializable {
 
     public AuditMessage(Message message) throws JMSException {
 
-        this.auditContextId = message.getLongProperty("auditContextId");
+        auditContextId = message.getLongProperty("auditContextId");
     }
 
     public Message getJMSMessage(Session session)
             throws JMSException {
 
         Message message = session.createMessage();
-        message.setLongProperty("auditContextId", this.auditContextId);
+        message.setLongProperty("auditContextId", auditContextId);
 
         return message;
     }

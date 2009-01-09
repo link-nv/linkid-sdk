@@ -55,10 +55,10 @@ public class CertificateMapperHandler implements SOAPHandler<SOAPMessageContext>
     public void postConstructCallback() {
 
         System.setProperty("com.sun.xml.ws.fault.SOAPFaultBuilder.disableCaptureStackTrace", "true");
-        this.applicationAuthenticationService = EjbUtils.getEJB(ApplicationAuthenticationService.JNDI_BINDING,
+        applicationAuthenticationService = EjbUtils.getEJB(ApplicationAuthenticationService.JNDI_BINDING,
                 ApplicationAuthenticationService.class);
-        this.deviceAuthenticationService = EjbUtils.getEJB(DeviceAuthenticationService.JNDI_BINDING, DeviceAuthenticationService.class);
-        this.nodeAuthenticationService = EjbUtils.getEJB(NodeAuthenticationService.JNDI_BINDING, NodeAuthenticationService.class);
+        deviceAuthenticationService = EjbUtils.getEJB(DeviceAuthenticationService.JNDI_BINDING, DeviceAuthenticationService.class);
+        nodeAuthenticationService = EjbUtils.getEJB(NodeAuthenticationService.JNDI_BINDING, NodeAuthenticationService.class);
     }
 
     public Set<QName> getHeaders() {
@@ -99,7 +99,7 @@ public class CertificateMapperHandler implements SOAPHandler<SOAPMessageContext>
         if (CertificateValidatorHandler.isDeviceCertificate(context)) {
             String deviceName;
             try {
-                deviceName = this.deviceAuthenticationService.authenticate(certificate);
+                deviceName = deviceAuthenticationService.authenticate(certificate);
             } catch (DeviceNotFoundException e) {
                 throw WSSecurityUtil.createSOAPFaultException("unknown device", "FailedAuthentication");
             }
@@ -111,7 +111,7 @@ public class CertificateMapperHandler implements SOAPHandler<SOAPMessageContext>
             String applicationId;
 
             try {
-                applicationId = this.applicationAuthenticationService.authenticate(certificate);
+                applicationId = applicationAuthenticationService.authenticate(certificate);
             } catch (ApplicationNotFoundException e) {
                 throw WSSecurityUtil.createSOAPFaultException("unknown application", "FailedAuthentication");
             }
@@ -121,7 +121,7 @@ public class CertificateMapperHandler implements SOAPHandler<SOAPMessageContext>
         if (CertificateValidatorHandler.isOlasCertificate(context)) {
             String nodeName;
             try {
-                nodeName = this.nodeAuthenticationService.authenticate(certificate);
+                nodeName = nodeAuthenticationService.authenticate(certificate);
             } catch (NodeNotFoundException e) {
                 throw WSSecurityUtil.createSOAPFaultException("unknown node", "FailedAuthentication");
             }

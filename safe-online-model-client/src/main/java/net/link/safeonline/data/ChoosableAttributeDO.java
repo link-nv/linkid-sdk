@@ -31,28 +31,28 @@ public class ChoosableAttributeDO {
     public ChoosableAttributeDO(AttributeDO targetAttribute, AttributeDO sourceAttribute) {
 
         this.targetAttribute = targetAttribute;
-        this.sourceSelected = false;
+        sourceSelected = false;
         this.sourceAttribute = sourceAttribute;
     }
 
     public AttributeDO getTargetAttribute() {
 
-        return this.targetAttribute;
+        return targetAttribute;
     }
 
     public AttributeDO getSourceAttribute() {
 
-        return this.sourceAttribute;
+        return sourceAttribute;
     }
 
     public boolean isSourceSelected() {
 
-        return this.sourceSelected;
+        return sourceSelected;
     }
 
     public void setSourceSelected(boolean sourceSelected) {
 
         this.sourceSelected = sourceSelected;
-        LOG.debug("attribute: " + this.targetAttribute.getName() + " : set source : " + this.sourceSelected);
+        LOG.debug("attribute: " + targetAttribute.getName() + " : set source : " + this.sourceSelected);
     }
 }

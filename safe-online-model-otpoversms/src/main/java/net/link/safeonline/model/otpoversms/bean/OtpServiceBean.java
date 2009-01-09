@@ -55,13 +55,13 @@ public class OtpServiceBean implements OtpService, OtpServiceRemote {
     public void requestOtp(String mobile)
             throws ConnectException, SafeOnlineResourceException {
 
-        LOG.debug("request otp for mobile " + mobile + " using sms service: " + this.smsServiceName);
+        LOG.debug("request otp for mobile " + mobile + " using sms service: " + smsServiceName);
 
         SecureRandom random = new SecureRandom();
-        this.expectedOtp = Integer.toString(Math.abs(random.nextInt()));
+        expectedOtp = Integer.toString(Math.abs(random.nextInt()));
 
-        OSGIService osgiService = this.osgiStartable.getService(this.smsServiceName, OSGIServiceType.SMS_SERVICE);
-        ((SmsService) osgiService.getService()).sendSms(mobile, this.expectedOtp);
+        OSGIService osgiService = osgiStartable.getService(smsServiceName, OSGIServiceType.SMS_SERVICE);
+        ((SmsService) osgiService.getService()).sendSms(mobile, expectedOtp);
         osgiService.ungetService();
     }
 
@@ -72,7 +72,7 @@ public class OtpServiceBean implements OtpService, OtpServiceRemote {
 
         LOG.debug("verify otp " + otp);
 
-        return this.expectedOtp.equals(otp);
+        return expectedOtp.equals(otp);
     }
 
 }

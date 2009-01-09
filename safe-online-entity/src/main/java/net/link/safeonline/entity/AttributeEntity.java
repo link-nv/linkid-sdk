@@ -124,15 +124,15 @@ public class AttributeEntity implements Serializable {
         this.stringValue = stringValue;
         this.attributeType = attributeType;
         this.subject = subject;
-        this.pk = new AttributePK(attributeType.getName(), subject.getUserId());
+        pk = new AttributePK(attributeType.getName(), subject.getUserId());
     }
 
     public AttributeEntity(AttributeTypeEntity attributeType, SubjectEntity subject, long attributeIdx) {
 
         this.attributeType = attributeType;
         this.subject = subject;
-        this.attributeIndex = attributeIdx;
-        this.pk = new AttributePK(attributeType, subject, attributeIdx);
+        attributeIndex = attributeIdx;
+        pk = new AttributePK(attributeType, subject, attributeIdx);
     }
 
 
@@ -145,7 +145,7 @@ public class AttributeEntity implements Serializable {
             @AttributeOverride(name = "attributeIndex", column = @Column(name = ATTRIBUTE_INDEX_COLUMN_NAME)) })
     public AttributePK getPk() {
 
-        return this.pk;
+        return pk;
     }
 
     public void setPk(AttributePK pk) {
@@ -161,7 +161,7 @@ public class AttributeEntity implements Serializable {
     @JoinColumn(name = ATTRIBUTE_TYPE_COLUMN_NAME, insertable = false, updatable = false)
     public AttributeTypeEntity getAttributeType() {
 
-        return this.attributeType;
+        return attributeType;
     }
 
     public void setAttributeType(AttributeTypeEntity attributeType) {
@@ -177,7 +177,7 @@ public class AttributeEntity implements Serializable {
     @JoinColumn(name = SUBJECT_COLUMN_NAME, insertable = false, updatable = false)
     public SubjectEntity getSubject() {
 
-        return this.subject;
+        return subject;
     }
 
     public void setSubject(SubjectEntity subject) {
@@ -192,7 +192,7 @@ public class AttributeEntity implements Serializable {
     @Column(name = ATTRIBUTE_INDEX_COLUMN_NAME, insertable = false, updatable = false)
     public long getAttributeIndex() {
 
-        return this.attributeIndex;
+        return attributeIndex;
     }
 
     public void setAttributeIndex(long attributeIndex) {
@@ -202,7 +202,7 @@ public class AttributeEntity implements Serializable {
 
     public String getStringValue() {
 
-        return this.stringValue;
+        return stringValue;
     }
 
     public void setStringValue(String stringValue) {
@@ -212,7 +212,7 @@ public class AttributeEntity implements Serializable {
 
     public Boolean getBooleanValue() {
 
-        return this.booleanValue;
+        return booleanValue;
     }
 
     public void setBooleanValue(Boolean booleanValue) {
@@ -223,7 +223,7 @@ public class AttributeEntity implements Serializable {
     @Temporal(TemporalType.DATE)
     public Date getDateValue() {
 
-        return this.dateValue;
+        return dateValue;
     }
 
     public void setDateValue(Date dateValue) {
@@ -233,7 +233,7 @@ public class AttributeEntity implements Serializable {
 
     public Double getDoubleValue() {
 
-        return this.doubleValue;
+        return doubleValue;
     }
 
     public void setDoubleValue(Double doubleValue) {
@@ -243,7 +243,7 @@ public class AttributeEntity implements Serializable {
 
     public Integer getIntegerValue() {
 
-        return this.integerValue;
+        return integerValue;
     }
 
     public void setIntegerValue(Integer integerValue) {
@@ -263,10 +263,10 @@ public class AttributeEntity implements Serializable {
     @Transient
     public List<AttributeEntity> getMembers() {
 
-        if (null == this.members) {
-            this.members = new LinkedList<AttributeEntity>();
+        if (null == members) {
+            members = new LinkedList<AttributeEntity>();
         }
-        return this.members;
+        return members;
     }
 
     public void setMembers(List<AttributeEntity> members) {
@@ -281,7 +281,7 @@ public class AttributeEntity implements Serializable {
     @Transient
     public Object getValue() {
 
-        DatatypeType datatype = this.attributeType.getType();
+        DatatypeType datatype = attributeType.getType();
         switch (datatype) {
             case STRING:
                 return getStringValue();
@@ -301,7 +301,7 @@ public class AttributeEntity implements Serializable {
     @Transient
     public void setValue(Object value) {
 
-        DatatypeType datatype = this.attributeType.getType();
+        DatatypeType datatype = attributeType.getType();
         switch (datatype) {
             case STRING:
                 setStringValue((String) value);
@@ -326,7 +326,7 @@ public class AttributeEntity implements Serializable {
     @Transient
     public boolean isEmpty() {
 
-        DatatypeType datatype = this.attributeType.getType();
+        DatatypeType datatype = attributeType.getType();
         switch (datatype) {
             case STRING:
                 String value = getStringValue();
@@ -349,11 +349,11 @@ public class AttributeEntity implements Serializable {
     @Transient
     public void clearValues() {
 
-        this.booleanValue = null;
-        this.dateValue = null;
-        this.doubleValue = null;
-        this.integerValue = null;
-        this.stringValue = null;
+        booleanValue = null;
+        dateValue = null;
+        doubleValue = null;
+        integerValue = null;
+        stringValue = null;
     }
 
     @Override
@@ -366,19 +366,19 @@ public class AttributeEntity implements Serializable {
         if (false == obj instanceof AttributeEntity)
             return false;
         AttributeEntity rhs = (AttributeEntity) obj;
-        return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
+        return new EqualsBuilder().append(pk, rhs.pk).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.pk).toHashCode();
+        return new HashCodeBuilder().append(pk).toHashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("pk", this.pk).toString();
+        return new ToStringBuilder(this).append("pk", pk).toString();
     }
 
 

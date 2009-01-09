@@ -56,7 +56,7 @@ public class ScenarioExceptionsChart extends AbstractChart {
 
         super("Scenario Errors");
 
-        this.errorMaps = new HashMap<String, Map<String, TimeSeries>>();
+        errorMaps = new HashMap<String, Map<String, TimeSeries>>();
     }
 
     /**
@@ -93,7 +93,7 @@ public class ScenarioExceptionsChart extends AbstractChart {
         ValueAxis domainAxis = new DateAxis("Time");
         CombinedDomainXYPlot errorPlot = new CombinedDomainXYPlot(domainAxis);
 
-        for (Map.Entry<String, Map<String, TimeSeries>> driver : this.errorMaps.entrySet()) {
+        for (Map.Entry<String, Map<String, TimeSeries>> driver : errorMaps.entrySet()) {
 
             TimeSeriesCollection errorCollection = new TimeSeriesCollection();
             for (TimeSeries errorSet : driver.getValue().values()) {
@@ -108,7 +108,7 @@ public class ScenarioExceptionsChart extends AbstractChart {
 
     private boolean isEmpty() {
 
-        for (Map<String, TimeSeries> data : this.errorMaps.values())
+        for (Map<String, TimeSeries> data : errorMaps.values())
             if (!isEmpty(data))
                 return false;
 
@@ -119,9 +119,9 @@ public class ScenarioExceptionsChart extends AbstractChart {
 
         String profile = error.getProfile().getDriverClassName().replaceFirst(".*\\.", "");
 
-        Map<String, TimeSeries> driverMap = this.errorMaps.get(profile);
+        Map<String, TimeSeries> driverMap = errorMaps.get(profile);
         if (driverMap == null) {
-            this.errorMaps.put(profile, driverMap = new HashMap<String, TimeSeries>());
+            errorMaps.put(profile, driverMap = new HashMap<String, TimeSeries>());
         }
 
         TimeSeries errorSet = driverMap.get(error.getMessage());

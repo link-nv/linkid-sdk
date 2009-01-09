@@ -62,7 +62,7 @@ public class UserIdMappingServiceBean implements UserIdMappingService {
     public String getApplicationUserId(String applicationName, String userId)
             throws ApplicationNotFoundException, SubscriptionNotFoundException {
 
-        ApplicationEntity application = this.applicationDAO.getApplication(applicationName);
+        ApplicationEntity application = applicationDAO.getApplication(applicationName);
         IdScopeType idScope = application.getIdScope();
         if (IdScopeType.USER == idScope)
             return userId;
@@ -74,10 +74,10 @@ public class UserIdMappingServiceBean implements UserIdMappingService {
 
     private String getApplicationScopeId(ApplicationEntity application, String userId) {
 
-        SubjectEntity subject = this.subjectService.findSubject(userId);
-        ApplicationScopeIdEntity subjectApplicationScopeId = this.applicationScopeIdDAO.findApplicationScopeId(subject, application);
+        SubjectEntity subject = subjectService.findSubject(userId);
+        ApplicationScopeIdEntity subjectApplicationScopeId = applicationScopeIdDAO.findApplicationScopeId(subject, application);
         if (null == subjectApplicationScopeId) {
-            subjectApplicationScopeId = this.applicationScopeIdDAO.addApplicationScopeId(subject, application);
+            subjectApplicationScopeId = applicationScopeIdDAO.addApplicationScopeId(subject, application);
         }
         return subjectApplicationScopeId.getId();
     }
@@ -85,11 +85,11 @@ public class UserIdMappingServiceBean implements UserIdMappingService {
     private String getSubscriptionScopeId(ApplicationEntity application, String userId)
             throws SubscriptionNotFoundException {
 
-        SubjectEntity subject = this.subjectService.findSubject(userId);
-        SubscriptionEntity subscription = this.subscriptionDAO.findSubscription(subject, application);
+        SubjectEntity subject = subjectService.findSubject(userId);
+        SubscriptionEntity subscription = subscriptionDAO.findSubscription(subject, application);
         if (null == subscription) {
-            this.subscriptionDAO.addSubscription(SubscriptionOwnerType.APPLICATION, subject, application);
-            subscription = this.subscriptionDAO.getSubscription(subject, application);
+            subscriptionDAO.addSubscription(SubscriptionOwnerType.APPLICATION, subject, application);
+            subscription = subscriptionDAO.getSubscription(subject, application);
         }
         return subscription.getSubscriptionUserId();
     }
@@ -98,7 +98,7 @@ public class UserIdMappingServiceBean implements UserIdMappingService {
             throws ApplicationNotFoundException {
 
         LOG.debug("findUserId: " + applicationName + ", " + applicationUserId);
-        ApplicationEntity application = this.applicationDAO.getApplication(applicationName);
+        ApplicationEntity application = applicationDAO.getApplication(applicationName);
         IdScopeType idScope = application.getIdScope();
         if (IdScopeType.USER == idScope)
             return applicationUserId;
@@ -111,7 +111,7 @@ public class UserIdMappingServiceBean implements UserIdMappingService {
     private String findUserIdFromSubscriptionScope(String applicationUserId) {
 
         LOG.debug("getUserIdFromSubscriptionScope: " + applicationUserId);
-        SubscriptionEntity subscription = this.subscriptionDAO.findSubscription(applicationUserId);
+        SubscriptionEntity subscription = subscriptionDAO.findSubscription(applicationUserId);
         if (null == subscription)
             return null;
         return subscription.getSubject().getUserId();
@@ -120,7 +120,7 @@ public class UserIdMappingServiceBean implements UserIdMappingService {
     private String findUserIdFromApplicationScope(String applicationUserId) {
 
         LOG.debug("getUserIdFromApplicationScope: " + applicationUserId);
-        ApplicationScopeIdEntity applicationScopeId = this.applicationScopeIdDAO.findApplicationScopeId(applicationUserId);
+        ApplicationScopeIdEntity applicationScopeId = applicationScopeIdDAO.findApplicationScopeId(applicationUserId);
         if (null == applicationScopeId)
             return null;
         return applicationScopeId.getSubject().getUserId();

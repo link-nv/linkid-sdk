@@ -52,7 +52,7 @@ public class CinemaTheatreEntity implements Serializable {
      */
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     /**
@@ -60,7 +60,7 @@ public class CinemaTheatreEntity implements Serializable {
      */
     public String getAddress() {
 
-        return this.address;
+        return address;
     }
 
     /**
@@ -68,6 +68,6 @@ public class CinemaTheatreEntity implements Serializable {
      */
     public long getId() {
 
-        return this.id;
+        return id;
     }
 }

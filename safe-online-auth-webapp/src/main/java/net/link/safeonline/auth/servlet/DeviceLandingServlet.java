@@ -65,7 +65,7 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
          * Wrap the request to use the servlet endpoint url. To prevent failure when behind a reverse proxy or loadbalancer when opensaml is
          * checking the destination field.
          */
-        HttpServletRequestEndpointWrapper requestWrapper = new HttpServletRequestEndpointWrapper(request, this.servletEndpointUrl);
+        HttpServletRequestEndpointWrapper requestWrapper = new HttpServletRequestEndpointWrapper(request, servletEndpointUrl);
 
         /*
          * Authenticate
@@ -75,19 +75,19 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
         try {
             userId = authenticationService.authenticate(requestWrapper);
         } catch (NodeNotFoundException e) {
-            redirectToErrorPage(requestWrapper, response, this.deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(
+            redirectToErrorPage(requestWrapper, response, deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(
                     DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
             return;
         } catch (NodeMappingNotFoundException e) {
-            redirectToErrorPage(requestWrapper, response, this.deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(
+            redirectToErrorPage(requestWrapper, response, deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(
                     DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorDeviceRegistrationNotFound"));
             return;
         } catch (DeviceNotFoundException e) {
-            redirectToErrorPage(requestWrapper, response, this.deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(
+            redirectToErrorPage(requestWrapper, response, deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(
                     DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
             return;
         } catch (SubjectNotFoundException e) {
-            redirectToErrorPage(requestWrapper, response, this.deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(
+            redirectToErrorPage(requestWrapper, response, deviceErrorUrl, RESOURCE_BASE, new ErrorMessage(
                     DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorDeviceRegistrationNotFound"));
             return;
         }
@@ -97,7 +97,7 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
              */
             HelpdeskLogger.add(requestWrapper.getSession(), "authentication failed, request to try another device", LogLevelType.ERROR);
 
-            response.sendRedirect(this.tryAnotherDeviceUrl);
+            response.sendRedirect(tryAnotherDeviceUrl);
         } else if (null == userId) {
             /*
              * Authentication failed, redirect to start page
@@ -121,7 +121,7 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
                 response.addCookie(authenticationService.getSsoCookie());
             }
 
-            response.sendRedirect(this.loginUrl);
+            response.sendRedirect(loginUrl);
         }
     }
 }

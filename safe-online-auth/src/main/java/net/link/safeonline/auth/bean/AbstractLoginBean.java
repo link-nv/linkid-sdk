@@ -61,7 +61,7 @@ public class AbstractLoginBean {
 
     protected void clearUserId() {
 
-        this.userId = null;
+        userId = null;
     }
 
     /**
@@ -69,8 +69,8 @@ public class AbstractLoginBean {
      */
     protected void login(String inputUsername, String inputAuthenticationDevice, Cookie ssoCookie) {
 
-        this.log.debug("login using: " + inputUsername + " via device: " + inputAuthenticationDevice);
-        this.userId = this.subjectService.findSubjectFromUserName(inputUsername).getUserId();
+        log.debug("login using: " + inputUsername + " via device: " + inputAuthenticationDevice);
+        userId = subjectService.findSubjectFromUserName(inputUsername).getUserId();
         relogin(inputAuthenticationDevice, ssoCookie);
     }
 
@@ -81,7 +81,7 @@ public class AbstractLoginBean {
      */
     protected void relogin(String inputAuthenticationDevice, Cookie ssoCookie) {
 
-        this.authenticationDevice = this.deviceDAO.findDevice(inputAuthenticationDevice);
+        authenticationDevice = deviceDAO.findDevice(inputAuthenticationDevice);
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext externalContext = context.getExternalContext();
         if (null != ssoCookie) {
@@ -90,12 +90,12 @@ public class AbstractLoginBean {
         }
 
         String redirectUrl = "../login";
-        this.log.debug("redirecting to: " + redirectUrl);
+        log.debug("redirecting to: " + redirectUrl);
         try {
             externalContext.redirect(redirectUrl);
         } catch (IOException e) {
-            this.log.debug("IO error: " + e.getMessage());
-            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorIO");
+            log.debug("IO error: " + e.getMessage());
+            facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorIO");
             return;
         }
     }

@@ -66,12 +66,12 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
          * Wrap the request to use the servlet endpoint url. To prevent failure when behind a reverse proxy or loadbalancer when opensaml is
          * checking the destination field.
          */
-        HttpServletRequestEndpointWrapper requestWrapper = new HttpServletRequestEndpointWrapper(request, this.servletEndpointUrl);
+        HttpServletRequestEndpointWrapper requestWrapper = new HttpServletRequestEndpointWrapper(request, servletEndpointUrl);
 
         DeviceOperationService deviceOperationService = (DeviceOperationService) requestWrapper.getSession().getAttribute(
                 DeviceOperationService.DEVICE_OPERATION_SERVICE_ATTRIBUTE);
         if (null == deviceOperationService) {
-            redirectToErrorPage(requestWrapper, response, this.errorPage, this.resourceBundleName, new ErrorMessage(
+            redirectToErrorPage(requestWrapper, response, errorPage, resourceBundleName, new ErrorMessage(
                     DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
             return;
         }
@@ -79,19 +79,19 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
         try {
             deviceOperationService.finalize(requestWrapper);
         } catch (NodeNotFoundException e) {
-            redirectToErrorPage(requestWrapper, response, this.errorPage, this.resourceBundleName, new ErrorMessage(
+            redirectToErrorPage(requestWrapper, response, errorPage, resourceBundleName, new ErrorMessage(
                     DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
             return;
         } catch (NodeMappingNotFoundException e) {
-            redirectToErrorPage(requestWrapper, response, this.errorPage, this.resourceBundleName, new ErrorMessage(
+            redirectToErrorPage(requestWrapper, response, errorPage, resourceBundleName, new ErrorMessage(
                     DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorDeviceRegistrationNotFound"));
             return;
         } catch (DeviceNotFoundException e) {
-            redirectToErrorPage(requestWrapper, response, this.errorPage, this.resourceBundleName, new ErrorMessage(
+            redirectToErrorPage(requestWrapper, response, errorPage, resourceBundleName, new ErrorMessage(
                     DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
             return;
         } catch (SubjectNotFoundException e) {
-            redirectToErrorPage(requestWrapper, response, this.errorPage, this.resourceBundleName, new ErrorMessage(
+            redirectToErrorPage(requestWrapper, response, errorPage, resourceBundleName, new ErrorMessage(
                     DEVICE_ERROR_MESSAGE_ATTRIBUTE, "errorProtocolHandlerFinalization"));
             return;
         }
@@ -99,6 +99,6 @@ public class DeviceLandingServlet extends AbstractInjectionServlet {
         // remove the device operation service from the HttpSession
         requestWrapper.getSession().removeAttribute(DeviceOperationService.DEVICE_OPERATION_SERVICE_ATTRIBUTE);
 
-        response.sendRedirect(this.devicesPage);
+        response.sendRedirect(devicesPage);
     }
 }

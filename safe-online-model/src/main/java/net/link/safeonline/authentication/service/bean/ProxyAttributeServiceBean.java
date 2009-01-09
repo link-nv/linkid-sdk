@@ -93,9 +93,9 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
 
         LOG.debug("find attribute " + attributeName + " for " + userId);
 
-        AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeName);
+        AttributeTypeEntity attributeType = attributeTypeDAO.getAttributeType(attributeName);
 
-        SubjectEntity subject = this.subjectService.getSubject(userId);
+        SubjectEntity subject = subjectService.getSubject(userId);
 
         if (attributeType.isLocal())
             return findLocalAttribute(subject, attributeType);
@@ -117,7 +117,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
             return value;
         } catch (NodeNotFoundException e) {
             String message = "node " + attributeType.getName() + " not found attribute " + attributeName;
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, message);
+            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, message);
             throw new PermissionDeniedException(message);
         }
     }
@@ -140,7 +140,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                 case STRING: {
                     String[] values = (String[]) value;
                     for (int idx = 0; idx < values.length; idx++) {
-                        AttributeCacheEntity attribute = this.attributeCacheDAO.addAttribute(attributeType, subject, idx);
+                        AttributeCacheEntity attribute = attributeCacheDAO.addAttribute(attributeType, subject, idx);
                         attribute.setStringValue(values[idx]);
                     }
                     return;
@@ -148,7 +148,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                 case BOOLEAN: {
                     Boolean[] values = (Boolean[]) value;
                     for (int idx = 0; idx < values.length; idx++) {
-                        AttributeCacheEntity attribute = this.attributeCacheDAO.addAttribute(attributeType, subject, idx);
+                        AttributeCacheEntity attribute = attributeCacheDAO.addAttribute(attributeType, subject, idx);
                         attribute.setBooleanValue(values[idx]);
                     }
                     return;
@@ -156,7 +156,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                 case INTEGER: {
                     Integer[] values = (Integer[]) value;
                     for (int idx = 0; idx < values.length; idx++) {
-                        AttributeCacheEntity attribute = this.attributeCacheDAO.addAttribute(attributeType, subject, idx);
+                        AttributeCacheEntity attribute = attributeCacheDAO.addAttribute(attributeType, subject, idx);
                         attribute.setIntegerValue(values[idx]);
                     }
                     return;
@@ -164,7 +164,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                 case DOUBLE: {
                     Double[] values = (Double[]) value;
                     for (int idx = 0; idx < values.length; idx++) {
-                        AttributeCacheEntity attribute = this.attributeCacheDAO.addAttribute(attributeType, subject, idx);
+                        AttributeCacheEntity attribute = attributeCacheDAO.addAttribute(attributeType, subject, idx);
                         attribute.setDoubleValue(values[idx]);
                     }
                     return;
@@ -172,7 +172,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                 case DATE: {
                     Date[] values = (Date[]) value;
                     for (int idx = 0; idx < values.length; idx++) {
-                        AttributeCacheEntity attribute = this.attributeCacheDAO.addAttribute(attributeType, subject, idx);
+                        AttributeCacheEntity attribute = attributeCacheDAO.addAttribute(attributeType, subject, idx);
                         attribute.setDateValue(values[idx]);
                     }
                     return;
@@ -180,17 +180,17 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                 case COMPOUNDED: {
                     Map[] values = (Map[]) value;
                     for (int idx = 0; idx < values.length; idx++) {
-                        AttributeCacheEntity compoundAttribute = this.attributeCacheDAO.addAttribute(attributeType, subject, idx);
+                        AttributeCacheEntity compoundAttribute = attributeCacheDAO.addAttribute(attributeType, subject, idx);
                         List<AttributeCacheEntity> memberAttributes = new LinkedList<AttributeCacheEntity>();
                         for (CompoundedAttributeTypeMemberEntity member : attributeType.getMembers()) {
                             AttributeTypeEntity memberAttributeType = member.getMember();
                             Object memberValue = values[idx].get(memberAttributeType.getName());
                             // check member attribute cache entry present, if so update entry date
-                            AttributeCacheEntity memberAttribute = this.attributeCacheDAO.findAttribute(subject, memberAttributeType, idx);
+                            AttributeCacheEntity memberAttribute = attributeCacheDAO.findAttribute(subject, memberAttributeType, idx);
                             if (null != memberAttribute) {
                                 memberAttribute.setEntryDate(new Date(System.currentTimeMillis()));
                             } else {
-                                memberAttribute = this.attributeCacheDAO.addAttribute(memberAttributeType, subject, idx);
+                                memberAttribute = attributeCacheDAO.addAttribute(memberAttributeType, subject, idx);
                             }
                             if (null != memberValue) {
                                 memberAttribute.setValue(memberValue);
@@ -209,7 +209,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
         /*
          * Single-valued attribute.
          */
-        AttributeCacheEntity attribute = this.attributeCacheDAO.addAttribute(attributeType, subject, 0);
+        AttributeCacheEntity attribute = attributeCacheDAO.addAttribute(attributeType, subject, 0);
         attribute.setValue(value);
     }
 
@@ -227,7 +227,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
 
         LOG.debug("find external attribute " + attributeType.getName() + " for " + subject.getUserId());
         try {
-            OSGIService osgiService = this.osgiStartable.getService(attributeType.getPluginName(), OSGIServiceType.PLUGIN_SERVICE);
+            OSGIService osgiService = osgiStartable.getService(attributeType.getPluginName(), OSGIServiceType.PLUGIN_SERVICE);
             PluginAttributeService pluginAttributeService = (PluginAttributeService) osgiService.getService();
             Object value = pluginAttributeService.getAttribute(subject.getUserId(), attributeType.getName(),
                     attributeType.getPluginConfiguration());
@@ -290,7 +290,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
         LOG.debug("find local attribute " + attributeType.getName() + " for " + subject.getUserId());
 
         // filter out the empty attributes
-        List<AttributeEntity> attributes = this.attributeDAO.listAttributes(subject, attributeType);
+        List<AttributeEntity> attributes = attributeDAO.listAttributes(subject, attributeType);
         List<AttributeEntity> nonEmptyAttributes = new LinkedList<AttributeEntity>();
         for (AttributeEntity attribute : attributes)
             if (attribute.getAttributeType().isCompounded()) {
@@ -319,7 +319,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
         LOG.debug("find cached attribute " + attributeType.getName() + " for " + subject.getUserId());
         long currentTime = System.currentTimeMillis();
 
-        List<AttributeCacheEntity> attributes = this.attributeCacheDAO.listAttributes(subject, attributeType);
+        List<AttributeCacheEntity> attributes = attributeCacheDAO.listAttributes(subject, attributeType);
         if (null == attributes || attributes.isEmpty())
             return null;
 
@@ -327,20 +327,20 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
         for (int idx = 0; idx < attributes.size(); idx++) {
             if (currentTime - attributes.get(idx).getEntryDate().getTime() > attributeType.getAttributeCacheTimeoutMillis()) {
                 // expired
-                this.attributeCacheDAO.removeAttributes(subject, attributeType);
+                attributeCacheDAO.removeAttributes(subject, attributeType);
                 return null;
             }
             if (attributeType.isCompounded()) {
                 for (CompoundedAttributeTypeMemberEntity member : attributeType.getMembers()) {
                     AttributeTypeEntity memberAttributeType = member.getMember();
-                    AttributeCacheEntity memberAttribute = this.attributeCacheDAO.findAttribute(subject, memberAttributeType, idx);
+                    AttributeCacheEntity memberAttribute = attributeCacheDAO.findAttribute(subject, memberAttributeType, idx);
                     if (null == memberAttribute) {
-                        this.attributeCacheDAO.removeAttributes(subject, attributeType);
+                        attributeCacheDAO.removeAttributes(subject, attributeType);
                         return null;
                     }
                     if (currentTime - memberAttribute.getEntryDate().getTime() > memberAttributeType.getAttributeCacheTimeoutMillis()) {
                         // expired
-                        this.attributeCacheDAO.removeAttributes(subject, attributeType);
+                        attributeCacheDAO.removeAttributes(subject, attributeType);
                         return null;
                     }
 
@@ -379,7 +379,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
 
         LOG.debug("find remote attribute " + attributeType.getName() + " for " + subject.getUserId());
 
-        NodeMappingEntity nodeMapping = this.nodeMappingService.getNodeMapping(subject.getUserId(), attributeType.getLocation().getName());
+        NodeMappingEntity nodeMapping = nodeMappingService.getNodeMapping(subject.getUserId(), attributeType.getLocation().getName());
 
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
         AttributeClient attributeClient = new AttributeClientImpl(attributeType.getLocation().getLocation(),
@@ -441,7 +441,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
         }
 
         catch (WSClientTransportException e) {
-            this.resourceAuditLogger.addResourceAudit(ResourceNameType.WS, ResourceLevelType.RESOURCE_UNAVAILABLE, e.getLocation(),
+            resourceAuditLogger.addResourceAudit(ResourceNameType.WS, ResourceLevelType.RESOURCE_UNAVAILABLE, e.getLocation(),
                     "Failed to get attribute value of type " + attributeType.getName() + " for subject " + subject.getUserId());
             throw new PermissionDeniedException(e.getMessage());
         } catch (RequestDeniedException e) {
@@ -502,7 +502,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                     for (CompoundedAttributeTypeMemberEntity member : attributeType.getMembers()) {
                         AttributeTypeEntity memberAttributeType = member.getMember();
                         for (int idx = 0; idx < attributes.size(); idx++) {
-                            AttributeEntity attribute = this.attributeDAO.findAttribute(subject, memberAttributeType, idx);
+                            AttributeEntity attribute = attributeDAO.findAttribute(subject, memberAttributeType, idx);
                             Map<String, Object> memberMap = values[idx];
                             if (null == memberMap) {
                                 memberMap = new HashMap<String, Object>();
@@ -583,7 +583,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
                     for (CompoundedAttributeTypeMemberEntity member : attributeType.getMembers()) {
                         AttributeTypeEntity memberAttributeType = member.getMember();
                         for (int idx = 0; idx < attributes.size(); idx++) {
-                            AttributeCacheEntity attribute = this.attributeCacheDAO.findAttribute(subject, memberAttributeType, idx);
+                            AttributeCacheEntity attribute = attributeCacheDAO.findAttribute(subject, memberAttributeType, idx);
                             Map<String, Object> memberMap = values[idx];
                             if (null == memberMap) {
                                 memberMap = new HashMap<String, Object>();

@@ -97,7 +97,7 @@ public class TicketPage extends LayoutPage {
                 }
             });
 
-            add(new PageLink("new", FilmTheatreSelectionPage.class));
+            add(new PageLink<FilmTheatreSelectionPage>("new", FilmTheatreSelectionPage.class));
         }
 
         @Override

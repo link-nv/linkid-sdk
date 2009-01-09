@@ -43,10 +43,10 @@ public class AgentsList extends JPanel implements AgentStateListener {
     public AgentsList() {
 
         FormLayout formLayout = new FormLayout("f:p:g");
-        this.builder = new DefaultFormBuilder(formLayout, this);
+        builder = new DefaultFormBuilder(formLayout, this);
         setBackground(Color.white);
 
-        this.agentPanels = new HashSet<AgentPanel>();
+        agentPanels = new HashSet<AgentPanel>();
 
         ConsoleData.getAgentDiscoverer().addAgentStateListener(this);
     }
@@ -75,9 +75,9 @@ public class AgentsList extends JPanel implements AgentStateListener {
 
         AgentPanel panel = new AgentPanel(this, agent);
 
-        this.agentPanels.add(panel);
-        this.builder.appendRow("p");
-        this.builder.append(panel);
+        agentPanels.add(panel);
+        builder.appendRow("p");
+        builder.append(panel);
         validate();
     }
 
@@ -91,7 +91,7 @@ public class AgentsList extends JPanel implements AgentStateListener {
             return;
         }
 
-        this.agentPanels.remove(panel);
+        agentPanels.remove(panel);
         remove(panel);
         validate();
 
@@ -100,7 +100,7 @@ public class AgentsList extends JPanel implements AgentStateListener {
 
     private AgentPanel findPanel(ConsoleAgent agent) {
 
-        for (AgentPanel panel : this.agentPanels)
+        for (AgentPanel panel : agentPanels)
             if (panel.getAgent().equals(agent))
                 return panel;
 
@@ -160,7 +160,7 @@ public class AgentsList extends JPanel implements AgentStateListener {
     public void fireListSelectionChanged() {
 
         Set<ConsoleAgent> selectedAgents = new HashSet<ConsoleAgent>();
-        for (AgentPanel panel : this.agentPanels)
+        for (AgentPanel panel : agentPanels)
             if (panel.isSelected()) {
                 selectedAgents.add(panel.getAgent());
             }

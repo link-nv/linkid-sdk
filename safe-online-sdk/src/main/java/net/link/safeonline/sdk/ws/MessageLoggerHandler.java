@@ -40,7 +40,7 @@ public class MessageLoggerHandler implements SOAPHandler<SOAPMessageContext> {
 
     public MessageLoggerHandler() {
 
-        this.captureMessages = true;
+        captureMessages = true;
     }
 
     /**
@@ -60,7 +60,7 @@ public class MessageLoggerHandler implements SOAPHandler<SOAPMessageContext> {
      */
     public boolean isCaptureMessages() {
 
-        return this.captureMessages;
+        return captureMessages;
     }
 
     public Set<QName> getHeaders() {
@@ -79,7 +79,7 @@ public class MessageLoggerHandler implements SOAPHandler<SOAPMessageContext> {
 
     public boolean handleMessage(SOAPMessageContext soapMessageContext) {
 
-        if (false == this.captureMessages)
+        if (false == captureMessages)
             /*
              * Nothing to do.
              */
@@ -93,9 +93,9 @@ public class MessageLoggerHandler implements SOAPHandler<SOAPMessageContext> {
             SOAPPart soapPart = soapMessage.getSOAPPart();
 
             if (outboundProperty) {
-                this.outboundMessage = soapPart;
+                outboundMessage = soapPart;
             } else {
-                this.inboundMessage = soapPart;
+                inboundMessage = soapPart;
             }
         } catch (Exception e) {
             LOG.debug("exception caught: " + e.getMessage(), e);
@@ -106,11 +106,11 @@ public class MessageLoggerHandler implements SOAPHandler<SOAPMessageContext> {
 
     public Document getInboundMessage() {
 
-        return this.inboundMessage;
+        return inboundMessage;
     }
 
     public Document getOutboundMessage() {
 
-        return this.outboundMessage;
+        return outboundMessage;
     }
 }

@@ -31,7 +31,7 @@ public class BeIdPkiProviderTest extends TestCase {
 
         super.setUp();
 
-        this.testedInstance = new BeIdPkiProviderBean();
+        testedInstance = new BeIdPkiProviderBean();
     }
 
     public void testAcceptBeIDCertificate()
@@ -41,7 +41,7 @@ public class BeIdPkiProviderTest extends TestCase {
         X509Certificate certificate = PkiTestUtils.loadCertificateFromResource("/fcorneli-auth.crt");
 
         // operate
-        boolean result = this.testedInstance.accept(certificate);
+        boolean result = testedInstance.accept(certificate);
 
         // verify
         LOG.debug("certificate: " + certificate);
@@ -57,7 +57,7 @@ public class BeIdPkiProviderTest extends TestCase {
         X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
 
         // operate
-        boolean result = this.testedInstance.accept(certificate);
+        boolean result = testedInstance.accept(certificate);
 
         // verify
         assertFalse(result);
@@ -71,7 +71,7 @@ public class BeIdPkiProviderTest extends TestCase {
         X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
 
         // operate
-        String result = this.testedInstance.getSubjectIdentifier(certificate);
+        String result = testedInstance.getSubjectIdentifier(certificate);
 
         // verify
         assertNotNull(result);

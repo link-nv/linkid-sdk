@@ -52,7 +52,7 @@ public class ExecutionServiceBean extends AbstractProfilingServiceBean implement
                                         String hostname, Boolean useSsl) {
 
         ExecutionEntity execution = new ExecutionEntity(scenarioName, agents, workers, startTime, duration, hostname, useSsl);
-        this.em.persist(execution);
+        em.persist(execution);
 
         return execution;
     }
@@ -64,7 +64,7 @@ public class ExecutionServiceBean extends AbstractProfilingServiceBean implement
     public Set<Date> getExecutions() {
 
         Set<Date> executionIds = new HashSet<Date>();
-        List<ExecutionEntity> executions = this.em.createNamedQuery(ExecutionEntity.findAll).getResultList();
+        List<ExecutionEntity> executions = em.createNamedQuery(ExecutionEntity.findAll).getResultList();
 
         for (ExecutionEntity execution : executions) {
             executionIds.add(execution.getStartTime());
@@ -79,7 +79,7 @@ public class ExecutionServiceBean extends AbstractProfilingServiceBean implement
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public ExecutionEntity getExecution(Date startTime) {
 
-        return (ExecutionEntity) this.em.createNamedQuery(ExecutionEntity.findById).setParameter("startTime", startTime).getSingleResult();
+        return (ExecutionEntity) em.createNamedQuery(ExecutionEntity.findById).setParameter("startTime", startTime).getSingleResult();
     }
 
     /**
@@ -87,10 +87,10 @@ public class ExecutionServiceBean extends AbstractProfilingServiceBean implement
      */
     public Set<DriverProfileEntity> getProfiles(Date startTime) {
 
-        if (this.ctx == null)
+        if (ctx == null)
             return getExecution(startTime).getProfiles();
 
-        return this.ctx.getBusinessObject(ExecutionService.class).getExecution(startTime).getProfiles();
+        return ctx.getBusinessObject(ExecutionService.class).getExecution(startTime).getProfiles();
     }
 
     /**
@@ -100,7 +100,7 @@ public class ExecutionServiceBean extends AbstractProfilingServiceBean implement
     public ScenarioTimingEntity start(ExecutionEntity execution) {
 
         ScenarioTimingEntity startTimeEntity = new ScenarioTimingEntity(execution);
-        this.em.persist(startTimeEntity);
+        em.persist(startTimeEntity);
 
         return startTimeEntity;
     }
@@ -110,7 +110,7 @@ public class ExecutionServiceBean extends AbstractProfilingServiceBean implement
      */
     public void updateSpeed(ExecutionEntity execution) {
 
-        execution.setSpeed((Double) this.em.createNamedQuery(ExecutionEntity.calcSpeed).setParameter("execution", execution)
+        execution.setSpeed((Double) em.createNamedQuery(ExecutionEntity.calcSpeed).setParameter("execution", execution)
                                            .getSingleResult());
     }
 }

@@ -59,8 +59,8 @@ public class SafeOnlineLoginModule implements LoginModule {
 
         LOG.debug("abort");
 
-        this.authenticatedPrincipal = null;
-        this.roles = null;
+        authenticatedPrincipal = null;
+        roles = null;
 
         return true;
     }
@@ -70,24 +70,23 @@ public class SafeOnlineLoginModule implements LoginModule {
 
         LOG.debug("commit");
 
-        Set<Principal> principals = this.subject.getPrincipals();
-        if (null == this.authenticatedPrincipal) {
+        Set<Principal> principals = subject.getPrincipals();
+        if (null == authenticatedPrincipal)
             throw new LoginException("authenticated principal should be not null");
-        }
         // authenticate
-        principals.add(this.authenticatedPrincipal);
+        principals.add(authenticatedPrincipal);
 
         // make JBoss happy
         Group callerPrincipalGroup = getGroup("CallerPrincipal", principals);
-        callerPrincipalGroup.addMember(this.authenticatedPrincipal);
+        callerPrincipalGroup.addMember(authenticatedPrincipal);
 
         // authorize
         Group rolesGroup = getGroup("Roles", principals);
 
-        if (null == this.roles)
+        if (null == roles)
             return true;
 
-        for (String role : this.roles) {
+        for (String role : roles) {
             rolesGroup.addMember(new SimplePrincipal(role));
         }
 
@@ -111,13 +110,13 @@ public class SafeOnlineLoginModule implements LoginModule {
 
         LOG.debug("initialize");
 
-        this.authorizationServiceJndiName = getOptionValue(options, OPTION_AUTHORIZATION_SERVICE_JNDI_NAME,
+        authorizationServiceJndiName = getOptionValue(options, OPTION_AUTHORIZATION_SERVICE_JNDI_NAME,
                 DEFAULT_AUTHORIZATION_SERVICE_JNDI_NAME);
 
-        this.subject = newSubject;
-        this.callbackHandler = newCallbackHandler;
-        LOG.debug("subject class: " + this.subject.getClass().getName());
-        LOG.debug("callback handler class: " + this.callbackHandler.getClass().getName());
+        subject = newSubject;
+        callbackHandler = newCallbackHandler;
+        LOG.debug("subject class: " + subject.getClass().getName());
+        LOG.debug("callback handler class: " + callbackHandler.getClass().getName());
     }
 
     private Group getGroup(String groupName, Set<Principal> principals) {
@@ -148,7 +147,7 @@ public class SafeOnlineLoginModule implements LoginModule {
         Callback[] callbacks = new Callback[] { nameCallback };
 
         try {
-            this.callbackHandler.handle(callbacks);
+            callbackHandler.handle(callbacks);
         } catch (IOException e) {
             String msg = "IO error: " + e.getMessage();
             LOG.error(msg);
@@ -161,20 +160,19 @@ public class SafeOnlineLoginModule implements LoginModule {
 
         String userId = nameCallback.getName();
         LOG.debug("userId: " + userId);
-        if (null == userId) {
+        if (null == userId)
             throw new LoginException("userId is null");
-        }
 
         // authenticate
         // TODO: authenticate here again via SAML assertion
         LOG.debug("authenticated");
 
-        this.authenticatedPrincipal = new SimplePrincipal(userId);
+        authenticatedPrincipal = new SimplePrincipal(userId);
 
         // authorize
         AuthorizationService authorizationService = getAuthorizationService();
 
-        this.roles = authorizationService.getRoles(userId);
+        roles = authorizationService.getRoles(userId);
 
         return true;
     }
@@ -183,7 +181,7 @@ public class SafeOnlineLoginModule implements LoginModule {
             throws LoginException {
 
         try {
-            AuthorizationService authorizationService = EjbUtils.getEJB(this.authorizationServiceJndiName, AuthorizationService.class);
+            AuthorizationService authorizationService = EjbUtils.getEJB(authorizationServiceJndiName, AuthorizationService.class);
             return authorizationService;
         } catch (RuntimeException e) {
             throw new LoginException("JNDI lookup error: " + e.getMessage());
@@ -194,21 +192,19 @@ public class SafeOnlineLoginModule implements LoginModule {
             throws LoginException {
 
         LOG.debug("logout");
-        Set<Principal> principals = this.subject.getPrincipals();
-        if (null == this.authenticatedPrincipal) {
+        Set<Principal> principals = subject.getPrincipals();
+        if (null == authenticatedPrincipal)
             throw new LoginException("authenticated principal should not be null");
-        }
-        boolean result = principals.remove(this.authenticatedPrincipal);
-        if (!result) {
+        boolean result = principals.remove(authenticatedPrincipal);
+        if (!result)
             throw new LoginException("could not remove authenticated principal");
-        }
         /*
          * Despite the fact that JBoss AbstractServerLoginModule is not removing the roles on the subject, we clear here all data on the
          * subject.
          */
-        this.subject.getPrincipals().clear();
-        this.subject.getPublicCredentials().clear();
-        this.subject.getPrivateCredentials().clear();
+        subject.getPrincipals().clear();
+        subject.getPublicCredentials().clear();
+        subject.getPrivateCredentials().clear();
         return true;
     }
 }

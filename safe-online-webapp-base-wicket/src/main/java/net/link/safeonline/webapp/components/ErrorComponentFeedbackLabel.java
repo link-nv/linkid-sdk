@@ -66,11 +66,11 @@ public class ErrorComponentFeedbackLabel extends Label {
         super.onBeforeRender();
 
         setDefaultModel(null);
-        if (this.component.getFeedbackMessage() != null) {
-            if (this.text != null) {
-                setDefaultModel(this.text);
+        if (component.getFeedbackMessage() != null) {
+            if (text != null) {
+                setDefaultModel(text);
             } else {
-                setDefaultModel(new Model<Serializable>(this.component.getFeedbackMessage().getMessage()));
+                setDefaultModel(new Model<Serializable>(component.getFeedbackMessage().getMessage()));
             }
         } else {
             setDefaultModel(null);
@@ -80,7 +80,7 @@ public class ErrorComponentFeedbackLabel extends Label {
     @Override
     public boolean isVisible() {
 
-        if (this.component.getFeedbackMessage() != null && this.component.getFeedbackMessage().getLevel() == FeedbackMessage.ERROR)
+        if (component.getFeedbackMessage() != null && component.getFeedbackMessage().getLevel() == FeedbackMessage.ERROR)
             return true;
         return false;
     }

@@ -39,47 +39,47 @@ public class AuditAuditDAOBean implements AuditAuditDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, AuditAuditEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, AuditAuditEntity.QueryInterface.class);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void addAuditAudit(AuditContextEntity auditContext, String message) {
 
         AuditAuditEntity auditAudit = new AuditAuditEntity(auditContext, message);
-        this.entityManager.persist(auditAudit);
+        entityManager.persist(auditAudit);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void addAuditAudit(String message) {
 
         AuditAuditEntity auditAudit = new AuditAuditEntity(message);
-        this.entityManager.persist(auditAudit);
+        entityManager.persist(auditAudit);
     }
 
     public void cleanup(Long id) {
 
-        this.queryObject.deleteRecords(id);
+        queryObject.deleteRecords(id);
     }
 
     public List<AuditAuditEntity> listRecords(Long id) {
 
-        return this.queryObject.listRecords(id);
+        return queryObject.listRecords(id);
     }
 
     public List<AuditAuditEntity> listRecordsSince(Date ageLimit) {
 
-        return this.queryObject.listRecordsSince(ageLimit);
+        return queryObject.listRecordsSince(ageLimit);
     }
 
     public boolean hasRecords(long id) {
 
-        long count = this.queryObject.countRecords(id);
+        long count = queryObject.countRecords(id);
 
         return 0 != count;
     }
 
     public List<AuditAuditEntity> listRecords() {
 
-        return this.queryObject.listRecords();
+        return queryObject.listRecords();
     }
 }

@@ -46,12 +46,12 @@ public class DeviceManagerBean implements DeviceManager {
     @RolesAllowed(SafeOnlineDeviceRoles.DEVICE_ROLE)
     public DeviceEntity getCallerDevice() {
 
-        Principal callerPrincipal = this.context.getCallerPrincipal();
+        Principal callerPrincipal = context.getCallerPrincipal();
         String deviceName = callerPrincipal.getName();
         LOG.debug("get caller device: " + deviceName);
         DeviceEntity callerDevice;
         try {
-            callerDevice = this.deviceDAO.getDevice(deviceName);
+            callerDevice = deviceDAO.getDevice(deviceName);
         } catch (DeviceNotFoundException e) {
             throw new EJBException("device not found: " + e.getMessage(), e);
         }

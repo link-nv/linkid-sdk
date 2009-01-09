@@ -52,7 +52,7 @@ public class AuthenticationContext implements Serializable {
 
     public Set<String> getWantedDevices() {
 
-        return this.wantedDevices;
+        return wantedDevices;
     }
 
     public void setWantedDevices(Set<String> wantedDevices) {
@@ -62,7 +62,7 @@ public class AuthenticationContext implements Serializable {
 
     public String getUsedDevice() {
 
-        return this.usedDevice;
+        return usedDevice;
     }
 
     public void setUsedDevice(String usedDevice) {
@@ -72,7 +72,7 @@ public class AuthenticationContext implements Serializable {
 
     public String getUserId() {
 
-        return this.userId;
+        return userId;
     }
 
     public void setUserId(String userId) {
@@ -82,7 +82,7 @@ public class AuthenticationContext implements Serializable {
 
     public String getNodeName() {
 
-        return this.nodeName;
+        return nodeName;
     }
 
     public void setNodeName(String nodeName) {
@@ -92,7 +92,7 @@ public class AuthenticationContext implements Serializable {
 
     public String getApplication() {
 
-        return this.application;
+        return application;
     }
 
     public void setApplication(String application) {
@@ -102,7 +102,7 @@ public class AuthenticationContext implements Serializable {
 
     public String getIssuer() {
 
-        return this.issuer;
+        return issuer;
     }
 
     public void setIssuer(String issuer) {
@@ -112,7 +112,7 @@ public class AuthenticationContext implements Serializable {
 
     public int getValidity() {
 
-        return this.validity;
+        return validity;
     }
 
     public void setValidity(int validity) {
@@ -122,7 +122,7 @@ public class AuthenticationContext implements Serializable {
 
     public String getInResponseTo() {
 
-        return this.inResponseTo;
+        return inResponseTo;
     }
 
     public void setInResponseTo(String inResponseTo) {
@@ -132,7 +132,7 @@ public class AuthenticationContext implements Serializable {
 
     public String getTargetUrl() {
 
-        return this.targetUrl;
+        return targetUrl;
     }
 
     public void setTargetUrl(String targetUrl) {
@@ -147,6 +147,6 @@ public class AuthenticationContext implements Serializable {
 
     public String getApplicationFriendlyName() {
 
-        return this.applicationFriendlyName;
+        return applicationFriendlyName;
     }
 }

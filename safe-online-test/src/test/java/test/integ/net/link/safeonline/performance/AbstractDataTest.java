@@ -59,24 +59,24 @@ public abstract class AbstractDataTest {
     {
         configure();
 
-        this.entityTestManager = new EntityTestManager();
+        entityTestManager = new EntityTestManager();
 
         try {
-            this.entityTestManager.configureMySql(this.DB_HOST, this.DB_PORT, this.DB_NAME, this.DB_USER, this.DB_PASS, this.SHOW_SQL);
-            this.entityTestManager.setUp(this.entities);
+            entityTestManager.configureMySql(DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASS, SHOW_SQL);
+            entityTestManager.setUp(entities);
 
-            this.em = this.entityTestManager.getEntityManager();
-            AbstractProfilingServiceBean.setDefaultEntityManager(this.em);
+            em = entityTestManager.getEntityManager();
+            AbstractProfilingServiceBean.setDefaultEntityManager(em);
 
-            this.executionService = new ExecutionServiceBean();
-            this.profileDataService = new ProfileDataServiceBean();
-            this.driverExceptionService = new DriverExceptionServiceBean();
-            this.driverProfileService = new DriverProfileServiceBean();
-            this.scenarioTimingService = new ScenarioTimingServiceBean();
+            executionService = new ExecutionServiceBean();
+            profileDataService = new ProfileDataServiceBean();
+            driverExceptionService = new DriverExceptionServiceBean();
+            driverProfileService = new DriverProfileServiceBean();
+            scenarioTimingService = new ScenarioTimingServiceBean();
         }
 
         catch (Exception e) {
-            this.LOG.fatal("JPA annotations incorrect: " + e.getMessage(), e);
+            LOG.fatal("JPA annotations incorrect: " + e.getMessage(), e);
             throw new RuntimeException("JPA annotations incorrect: " + e.getMessage(), e);
         }
     }
@@ -87,9 +87,9 @@ public abstract class AbstractDataTest {
      */
     public ExecutionEntity getLatestExecution() {
 
-        Date executionId = new TreeSet<Date>(this.executionService.getExecutions()).last();
+        Date executionId = new TreeSet<Date>(executionService.getExecutions()).last();
 
-        return this.executionService.getExecution(executionId);
+        return executionService.getExecution(executionId);
     }
 
     /**
@@ -99,8 +99,8 @@ public abstract class AbstractDataTest {
     protected void finalize()
             throws Throwable {
 
-        if (this.entityTestManager.getEntityManager() != null) {
-            this.entityTestManager.tearDown();
+        if (entityTestManager.getEntityManager() != null) {
+            entityTestManager.tearDown();
         }
     }
 

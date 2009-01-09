@@ -38,7 +38,7 @@ public class DeviceClassDescriptionPK implements Serializable {
 
     public String getDeviceClassName() {
 
-        return this.deviceClassName;
+        return deviceClassName;
     }
 
     public void setDeviceClassName(String deviceClassName) {
@@ -48,7 +48,7 @@ public class DeviceClassDescriptionPK implements Serializable {
 
     public String getLanguage() {
 
-        return this.language;
+        return language;
     }
 
     public void setLanguage(String language) {
@@ -64,18 +64,18 @@ public class DeviceClassDescriptionPK implements Serializable {
         if (false == obj instanceof DeviceClassDescriptionPK)
             return false;
         DeviceClassDescriptionPK rhs = (DeviceClassDescriptionPK) obj;
-        return new EqualsBuilder().append(this.deviceClassName, rhs.deviceClassName).append(this.language, rhs.language).isEquals();
+        return new EqualsBuilder().append(deviceClassName, rhs.deviceClassName).append(language, rhs.language).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.deviceClassName).append(this.language).toHashCode();
+        return new HashCodeBuilder().append(deviceClassName).append(language).toHashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("deviceClassName", this.deviceClassName).append("language", this.language).toString();
+        return new ToStringBuilder(this).append("deviceClassName", deviceClassName).append("language", language).toString();
     }
 }

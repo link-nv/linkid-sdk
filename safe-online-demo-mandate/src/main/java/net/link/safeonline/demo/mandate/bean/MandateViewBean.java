@@ -65,23 +65,23 @@ public class MandateViewBean extends AbstractMandateDataClientBean implements Ma
     @RolesAllowed(MandateConstants.ADMIN_ROLE)
     public void mandatesFactory() {
 
-        this.log.debug("mandates factory for user: #0", this.mandateUser);
+        log.debug("mandates factory for user: #0", mandateUser);
 
         NameIdentifierMappingClient mappingClient = super.getMappingClient();
         String mandateUserId;
         try {
-            mandateUserId = mappingClient.getUserId(this.mandateUser);
+            mandateUserId = mappingClient.getUserId(mandateUser);
         } catch (SubjectNotFoundException e) {
-            this.facesMessages.addToControl("name", "subject not found");
-            this.mandates = new Mandate[] {};
+            facesMessages.addToControl("name", "subject not found");
+            mandates = new Mandate[] {};
             return;
         } catch (RequestDeniedException e) {
-            this.facesMessages.add("request denied");
-            this.mandates = new Mandate[] {};
+            facesMessages.add("request denied");
+            mandates = new Mandate[] {};
             return;
         } catch (WSClientTransportException e) {
-            this.facesMessages.add("connection failed");
-            this.mandates = new Mandate[] {};
+            facesMessages.add("connection failed");
+            mandates = new Mandate[] {};
             return;
         }
 
@@ -90,17 +90,17 @@ public class MandateViewBean extends AbstractMandateDataClientBean implements Ma
         try {
             mandateAttribute = dataClient.getAttributeValue(mandateUserId, DemoConstants.MANDATE_ATTRIBUTE_NAME, Mandate[].class);
         } catch (WSClientTransportException e) {
-            this.facesMessages.add("connection error: " + e.getMessage());
+            facesMessages.add("connection error: " + e.getMessage());
         } catch (RequestDeniedException e) {
-            this.facesMessages.add("request denied");
+            facesMessages.add("request denied");
         } catch (SubjectNotFoundException e) {
-            this.facesMessages.addToControl("name", "subject not found");
+            facesMessages.addToControl("name", "subject not found");
         }
 
         if (null != mandateAttribute) {
-            this.mandates = mandateAttribute.getValue();
+            mandates = mandateAttribute.getValue();
         } else {
-            this.mandates = new Mandate[] {};
+            mandates = new Mandate[] {};
         }
     }
 
@@ -108,26 +108,26 @@ public class MandateViewBean extends AbstractMandateDataClientBean implements Ma
     @Factory(USER_MANDATES)
     public void userMandatesFactory() {
 
-        Principal callerPrincipal = this.context.getCallerPrincipal();
+        Principal callerPrincipal = context.getCallerPrincipal();
         String username = callerPrincipal.getName();
-        this.log.debug("user mandates factory for user #0", username);
+        log.debug("user mandates factory for user #0", username);
 
         DataClient dataClient = getDataClient();
         Attribute<Mandate[]> mandateAttribute = null;
         try {
             mandateAttribute = dataClient.getAttributeValue(username, DemoConstants.MANDATE_ATTRIBUTE_NAME, Mandate[].class);
         } catch (WSClientTransportException e) {
-            this.facesMessages.add("connection error: " + e.getMessage());
+            facesMessages.add("connection error: " + e.getMessage());
         } catch (RequestDeniedException e) {
-            this.facesMessages.add("request denied");
+            facesMessages.add("request denied");
         } catch (SubjectNotFoundException e) {
-            this.facesMessages.addToControl("name", "subject not found");
+            facesMessages.addToControl("name", "subject not found");
         }
 
         if (null != mandateAttribute) {
-            this.userMandates = mandateAttribute.getValue();
+            userMandates = mandateAttribute.getValue();
         } else {
-            this.userMandates = new Mandate[] {};
+            userMandates = new Mandate[] {};
         }
     }
 }

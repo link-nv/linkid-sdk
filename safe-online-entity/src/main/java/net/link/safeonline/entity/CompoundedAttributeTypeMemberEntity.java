@@ -75,7 +75,7 @@ public class CompoundedAttributeTypeMemberEntity implements Serializable {
         this.member = member;
         this.memberSequence = memberSequence;
         this.required = required;
-        this.pk = new CompoundedAttributeTypeMemberPK(this.parent, this.member);
+        pk = new CompoundedAttributeTypeMemberPK(this.parent, this.member);
     }
 
     @EmbeddedId
@@ -83,7 +83,7 @@ public class CompoundedAttributeTypeMemberEntity implements Serializable {
             @AttributeOverride(name = "member", column = @Column(name = MEMBER_COLUMN_NAME)) })
     public CompoundedAttributeTypeMemberPK getPk() {
 
-        return this.pk;
+        return pk;
     }
 
     public void setPk(CompoundedAttributeTypeMemberPK pk) {
@@ -99,7 +99,7 @@ public class CompoundedAttributeTypeMemberEntity implements Serializable {
     @JoinColumn(name = PARENT_COLUMN_NAME, insertable = false, updatable = false)
     public AttributeTypeEntity getParent() {
 
-        return this.parent;
+        return parent;
     }
 
     public void setParent(AttributeTypeEntity parent) {
@@ -116,7 +116,7 @@ public class CompoundedAttributeTypeMemberEntity implements Serializable {
     @Index(name = "memberIndex")
     public AttributeTypeEntity getMember() {
 
-        return this.member;
+        return member;
     }
 
     public void setMember(AttributeTypeEntity member) {
@@ -131,7 +131,7 @@ public class CompoundedAttributeTypeMemberEntity implements Serializable {
     @Column(name = MEMBER_SEQUENCE_COLUMN_NAME)
     public int getMemberSequence() {
 
-        return this.memberSequence;
+        return memberSequence;
     }
 
     public void setMemberSequence(int memberSequence) {
@@ -145,7 +145,7 @@ public class CompoundedAttributeTypeMemberEntity implements Serializable {
      */
     public boolean isRequired() {
 
-        return this.required;
+        return required;
     }
 
     public void setRequired(boolean required) {
@@ -163,13 +163,13 @@ public class CompoundedAttributeTypeMemberEntity implements Serializable {
         if (false == obj instanceof CompoundedAttributeTypeMemberEntity)
             return false;
         CompoundedAttributeTypeMemberEntity rhs = (CompoundedAttributeTypeMemberEntity) obj;
-        return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
+        return new EqualsBuilder().append(pk, rhs.pk).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.pk).toHashCode();
+        return new HashCodeBuilder().append(pk).toHashCode();
     }
 
 

@@ -24,19 +24,19 @@ public class SmartCardConfigImplTest extends TestCase {
 
         super.setUp();
 
-        this.testAlias = "test-alias-" + getName();
+        testAlias = "test-alias-" + getName();
 
-        this.testedInstance = new SmartCardConfigImpl(this.testAlias);
+        testedInstance = new SmartCardConfigImpl(testAlias);
     }
 
     public void testGetAlias()
             throws Exception {
 
         // operate
-        String result = this.testedInstance.getCardAlias();
+        String result = testedInstance.getCardAlias();
 
         // verify
-        assertEquals(this.testAlias, result);
+        assertEquals(testAlias, result);
     }
 
     public void testSetAuthAndSignKeyAliases()
@@ -47,10 +47,10 @@ public class SmartCardConfigImplTest extends TestCase {
         String signKeyAlias = "test-sign-alias";
 
         // operate
-        this.testedInstance.setAuthenticationKeyAlias(authKeyAlias);
-        this.testedInstance.setSignatureKeyAlias(signKeyAlias);
-        String authResult = this.testedInstance.getAuthenticationKeyAlias();
-        String signResult = this.testedInstance.getSignatureKeyAlias();
+        testedInstance.setAuthenticationKeyAlias(authKeyAlias);
+        testedInstance.setSignatureKeyAlias(signKeyAlias);
+        String authResult = testedInstance.getAuthenticationKeyAlias();
+        String signResult = testedInstance.getSignatureKeyAlias();
 
         // verify
         assertEquals(authKeyAlias, authResult);

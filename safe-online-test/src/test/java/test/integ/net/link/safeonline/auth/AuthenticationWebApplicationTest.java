@@ -174,7 +174,7 @@ public class AuthenticationWebApplicationTest {
                 TrustManager trustManager = new MyTrustManager();
                 TrustManager[] trustManagers = { trustManager };
                 sslContext.init(null, trustManagers, secureRandom);
-                this.sslSocketFactory = sslContext.getSocketFactory();
+                sslSocketFactory = sslContext.getSocketFactory();
             } catch (NoSuchAlgorithmException e) {
                 throw new DriverException("no such algo");
             } catch (KeyManagementException e) {
@@ -201,7 +201,7 @@ public class AuthenticationWebApplicationTest {
 
             LOG.debug("createSocket: " + host + ":" + port + ", local: " + localAddress + ":" + localPort + ", params: " + params);
 
-            Socket socket = this.sslSocketFactory.createSocket(host, port, localAddress, localPort);
+            Socket socket = sslSocketFactory.createSocket(host, port, localAddress, localPort);
             return socket;
         }
     }
@@ -217,18 +217,14 @@ public class AuthenticationWebApplicationTest {
         public void checkServerTrusted(X509Certificate[] chain, String authType)
                 throws CertificateException {
 
-            if (null == chain) {
+            if (null == chain)
                 throw new CertificateException("null certificate chain");
-            }
-            if (0 == chain.length) {
+            if (0 == chain.length)
                 throw new CertificateException("empty certificate chain");
-            }
-            if (null == authType) {
+            if (null == authType)
                 throw new CertificateException("null authentication type");
-            }
-            if (0 == authType.length()) {
+            if (0 == authType.length())
                 throw new CertificateException("empty authentication type");
-            }
             LOG.debug("server certificate: " + chain[0].getSubjectDN());
         }
 

@@ -25,7 +25,7 @@ public class SafeOnlineSecurityException extends SafeOnlineException {
     public SafeOnlineSecurityException(SecurityThreatType securityThreat) {
 
         this.securityThreat = securityThreat;
-        this.targetPrincipal = null;
+        targetPrincipal = null;
     }
 
     public SafeOnlineSecurityException(SecurityThreatType securityThreat, String targetPrincipal) {
@@ -36,12 +36,12 @@ public class SafeOnlineSecurityException extends SafeOnlineException {
 
     public SecurityThreatType getSecurityThreat() {
 
-        return this.securityThreat;
+        return securityThreat;
     }
 
     public String getTargetPrincipal() {
 
-        return this.targetPrincipal;
+        return targetPrincipal;
     }
 
 }

@@ -66,7 +66,7 @@ public class AuthorizationServiceBean implements AuthorizationService, Authoriza
 
         LOG.debug("get roles for userId: " + userId);
         try {
-            SubjectEntity subject = this.subjectService.getSubject(userId);
+            SubjectEntity subject = subjectService.getSubject(userId);
 
             /*
              * For now we base the authorization on made subscriptions. Of course, later on we could let this decision depend on explicit
@@ -76,7 +76,7 @@ public class AuthorizationServiceBean implements AuthorizationService, Authoriza
 
             addRoleIfSubscribed(SafeOnlineRoles.OWNER_ROLE, subject, SafeOnlineConstants.SAFE_ONLINE_OWNER_APPLICATION_NAME, roles);
 
-            if (true == this.isGlobalOperator) {
+            if (true == isGlobalOperator) {
                 LOG.debug("assigning global operator role");
                 addRoleIfSubscribed(SafeOnlineRoles.GLOBAL_OPERATOR_ROLE, subject,
                         SafeOnlineConstants.SAFE_ONLINE_OPERATOR_APPLICATION_NAME, roles);
@@ -96,8 +96,8 @@ public class AuthorizationServiceBean implements AuthorizationService, Authoriza
     private void addRoleIfSubscribed(String roleToAdd, SubjectEntity subject, String applicationName, Set<String> roles) {
 
         try {
-            ApplicationEntity application = this.applicationDAO.getApplication(applicationName);
-            SubscriptionEntity subscription = this.subscriptionDAO.findSubscription(subject, application);
+            ApplicationEntity application = applicationDAO.getApplication(applicationName);
+            SubscriptionEntity subscription = subscriptionDAO.findSubscription(subject, application);
             if (null == subscription)
                 return;
 

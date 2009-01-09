@@ -70,7 +70,7 @@ public class ChartServlet extends AbstractInjectionServlet {
             throws StatisticNotFoundException {
 
         LOG.debug("finding statistic: " + chartName + " for application: " + applicationName);
-        JFreeChart chart = this.statisticService.getChart(chartName, domainName, applicationName);
+        JFreeChart chart = statisticService.getChart(chartName, domainName, applicationName);
 
         byte[] result = null;
 

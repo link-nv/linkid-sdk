@@ -22,8 +22,8 @@ public class LoginPage extends LayoutPage {
             throw new RestartResponseException(AccountPage.class);
 
         // HTML Components.
-        add(new PageLink("olasLoginLink", OlasAuthPage.class));
-        add(new PageLink("digipassLoginLink", DigipassLoginPage.class));
+        add(new PageLink<OlasAuthPage>("olasLoginLink", OlasAuthPage.class));
+        add(new PageLink<DigipassLoginPage>("digipassLoginLink", DigipassLoginPage.class));
     }
 
     /**

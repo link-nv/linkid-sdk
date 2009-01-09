@@ -46,54 +46,54 @@ public class WebServiceTestUtils {
     public void setUp(Object webServicePort)
             throws Exception {
 
-        this.endpoint = Endpoint.create(webServicePort);
+        endpoint = Endpoint.create(webServicePort);
 
-        this.httpServer = HttpServer.create();
-        this.port = getFreePort();
-        LOG.debug("using port: " + this.port);
-        this.httpServer.bind(new InetSocketAddress(this.port), 1);
-        this.executorService = Executors.newFixedThreadPool(1);
-        this.httpServer.setExecutor(this.executorService);
-        this.httpServer.start();
+        httpServer = HttpServer.create();
+        port = getFreePort();
+        LOG.debug("using port: " + port);
+        httpServer.bind(new InetSocketAddress(port), 1);
+        executorService = Executors.newFixedThreadPool(1);
+        httpServer.setExecutor(executorService);
+        httpServer.start();
 
-        HttpContext httpContext = this.httpServer.createContext(this.context);
-        this.endpoint.publish(httpContext);
+        HttpContext httpContext = httpServer.createContext(context);
+        endpoint.publish(httpContext);
     }
 
     public void setUp(Object webServicePort, String context)
             throws Exception {
 
-        this.endpoint = Endpoint.create(webServicePort);
+        endpoint = Endpoint.create(webServicePort);
 
-        this.httpServer = HttpServer.create();
-        this.port = getFreePort();
-        LOG.debug("using port: " + this.port);
-        this.httpServer.bind(new InetSocketAddress(this.port), 1);
-        this.executorService = Executors.newFixedThreadPool(1);
-        this.httpServer.setExecutor(this.executorService);
-        this.httpServer.start();
+        httpServer = HttpServer.create();
+        port = getFreePort();
+        LOG.debug("using port: " + port);
+        httpServer.bind(new InetSocketAddress(port), 1);
+        executorService = Executors.newFixedThreadPool(1);
+        httpServer.setExecutor(executorService);
+        httpServer.start();
 
-        HttpContext httpContext = this.httpServer.createContext(context);
-        this.endpoint.publish(httpContext);
+        HttpContext httpContext = httpServer.createContext(context);
+        endpoint.publish(httpContext);
     }
 
     public String getEndpointAddress() {
 
-        String endpointAddress = "http://localhost:" + this.port + this.context;
+        String endpointAddress = "http://localhost:" + port + context;
         return endpointAddress;
     }
 
     public String getLocation() {
 
-        return "http://localhost:" + this.port;
+        return "http://localhost:" + port;
     }
 
     public void tearDown()
             throws Exception {
 
-        this.endpoint.stop();
-        this.httpServer.stop(1);
-        this.executorService.shutdown();
+        endpoint.stop();
+        httpServer.stop(1);
+        executorService.shutdown();
     }
 
     public void setEndpointAddress(Object webServiceClientPort) {

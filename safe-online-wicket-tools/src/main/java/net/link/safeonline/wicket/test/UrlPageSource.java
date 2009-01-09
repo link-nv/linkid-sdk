@@ -44,6 +44,6 @@ public class UrlPageSource implements ITestPageSource {
      */
     public Page getTestPage() {
 
-        throw new RedirectToUrlException(this.url);
+        throw new RedirectToUrlException(url);
     }
 }

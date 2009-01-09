@@ -40,7 +40,7 @@ public class NotificationProducerDAOBean implements NotificationProducerDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+        queryObject = QueryObjectFactory.createQueryObject(entityManager,
                 NotificationProducerSubscriptionEntity.QueryInterface.class);
     }
 
@@ -48,14 +48,14 @@ public class NotificationProducerDAOBean implements NotificationProducerDAO {
 
         LOG.debug("add subscription for topic " + topic);
         NotificationProducerSubscriptionEntity subscription = new NotificationProducerSubscriptionEntity(topic);
-        this.entityManager.persist(subscription);
+        entityManager.persist(subscription);
         return subscription;
     }
 
     public NotificationProducerSubscriptionEntity findSubscription(String topic) {
 
         LOG.debug("find subscription: " + topic);
-        return this.entityManager.find(NotificationProducerSubscriptionEntity.class, topic);
+        return entityManager.find(NotificationProducerSubscriptionEntity.class, topic);
     }
 
     public NotificationProducerSubscriptionEntity getSubscription(String topic)
@@ -71,7 +71,7 @@ public class NotificationProducerDAOBean implements NotificationProducerDAO {
     public List<NotificationProducerSubscriptionEntity> listTopics() {
 
         LOG.debug("list topics");
-        return this.queryObject.listTopics();
+        return queryObject.listTopics();
     }
 
 }

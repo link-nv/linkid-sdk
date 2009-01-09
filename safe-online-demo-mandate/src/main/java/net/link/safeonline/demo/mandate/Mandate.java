@@ -26,7 +26,7 @@ public class Mandate {
     @CompoundId
     public String getAttributeId() {
 
-        return this.attributeId;
+        return attributeId;
     }
 
     public void setAttributeId(String attributeId) {
@@ -37,7 +37,7 @@ public class Mandate {
     @CompoundMember(DemoConstants.MANDATE_COMPANY_ATTRIBUTE_NAME)
     public String getCompanyName() {
 
-        return this.companyName;
+        return companyName;
     }
 
     public void setCompanyName(String companyName) {
@@ -48,7 +48,7 @@ public class Mandate {
     @CompoundMember(DemoConstants.MANDATE_TITLE_ATTRIBUTE_NAME)
     public String getTitle() {
 
-        return this.title;
+        return title;
     }
 
     public void setTitle(String title) {

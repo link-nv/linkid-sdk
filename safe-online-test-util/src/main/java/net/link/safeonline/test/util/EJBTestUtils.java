@@ -307,7 +307,7 @@ public final class EJBTestUtils {
                 throws Throwable {
 
             checkSessionBean();
-            Class<?> clazz = this.object.getClass();
+            Class<?> clazz = object.getClass();
             checkSecurity(clazz, method);
             injectDependencies(clazz);
             injectEntityManager(clazz);
@@ -316,7 +316,7 @@ public final class EJBTestUtils {
             manageTransaction(method);
             try {
                 method.setAccessible(true);
-                Object result = method.invoke(this.object, args);
+                Object result = method.invoke(object, args);
                 return result;
             } catch (InvocationTargetException e) {
                 throw e.getTargetException();
@@ -331,7 +331,7 @@ public final class EJBTestUtils {
             TransactionAttributeType transactionAttributeType = transactionAttributeAnnotation.value();
             switch (transactionAttributeType) {
                 case REQUIRES_NEW:
-                    EntityTransaction entityTransaction = this.entityManager.getTransaction();
+                    EntityTransaction entityTransaction = entityManager.getTransaction();
                     /*
                      * The following is not 100% correct, but will do for most of the tests.
                      */
@@ -352,7 +352,7 @@ public final class EJBTestUtils {
                 return;
             // LOG.debug("security domain: " +
             // securityDomainAnnotation.value());
-            Principal callerPrincipal = this.sessionContext.getCallerPrincipal();
+            Principal callerPrincipal = sessionContext.getCallerPrincipal();
             if (null == callerPrincipal)
                 throw new EJBException("caller principal should not be null");
             // LOG.debug("caller principal: " + callerPrincipal.getName());
@@ -363,7 +363,7 @@ public final class EJBTestUtils {
             // LOG.debug("number of roles: " + roles.length);
             for (String role : roles) {
                 // LOG.debug("checking role: " + role);
-                if (true == this.sessionContext.isCallerInRole(role))
+                if (true == sessionContext.isCallerInRole(role))
                     return;
             }
             StringBuffer message = new StringBuffer();
@@ -378,7 +378,7 @@ public final class EJBTestUtils {
         @SuppressWarnings("unchecked")
         private void checkSessionBean() {
 
-            Class clazz = this.object.getClass();
+            Class clazz = object.getClass();
             Stateless statelessAnnotation = (Stateless) clazz.getAnnotation(Stateless.class);
             Stateful statefulAnnotation = (Stateful) clazz.getAnnotation(Stateful.class);
             if (null == statelessAnnotation && statefulAnnotation == null)
@@ -398,7 +398,7 @@ public final class EJBTestUtils {
                 }
                 Class<?> fieldType = field.getType();
                 if (true == SessionContext.class.isAssignableFrom(fieldType)) {
-                    setField(field, this.sessionContext);
+                    setField(field, sessionContext);
                     continue;
                 }
                 if (true == TimerService.class.isAssignableFrom(fieldType)) {
@@ -470,7 +470,7 @@ public final class EJBTestUtils {
                     throw new EJBException("interface cannot have both @Local and @Remote annotation");
 
                 Class beanType = getBeanType(fieldType);
-                Object bean = EJBTestUtils.newInstance(beanType, this.container, this.entityManager, this.sessionContext);
+                Object bean = EJBTestUtils.newInstance(beanType, container, entityManager, sessionContext);
                 setField(field, bean);
             }
         }
@@ -479,7 +479,7 @@ public final class EJBTestUtils {
 
             field.setAccessible(true);
             try {
-                field.set(this.object, value);
+                field.set(object, value);
             } catch (IllegalArgumentException e) {
                 throw new EJBException("illegal argument error");
             } catch (IllegalAccessException e) {
@@ -501,14 +501,14 @@ public final class EJBTestUtils {
                 Class<?> fieldType = field.getType();
                 if (false == EntityManager.class.isAssignableFrom(fieldType))
                     throw new EJBException("field type not correct");
-                setField(field, this.entityManager);
+                setField(field, entityManager);
             }
         }
 
         @SuppressWarnings("unchecked")
         private Class getBeanType(Class interfaceType) {
 
-            for (Class containerClass : this.container) {
+            for (Class containerClass : container) {
                 if (false == interfaceType.isAssignableFrom(containerClass)) {
                     continue;
                 }
@@ -526,8 +526,8 @@ public final class EJBTestUtils {
 
         public TestPolicyContextHandler(Principal principal, String... roles) {
 
-            this.subject = new Subject();
-            Set<Principal> principals = this.subject.getPrincipals();
+            subject = new Subject();
+            Set<Principal> principals = subject.getPrincipals();
             if (null != principal) {
                 principals.add(principal);
             }
@@ -543,7 +543,7 @@ public final class EJBTestUtils {
         @SuppressWarnings("unused")
         public Object getContext(String key, Object data) {
 
-            return this.subject;
+            return subject;
         }
 
         public String[] getKeys() {
@@ -569,14 +569,14 @@ public final class EJBTestUtils {
         public TestSessionContext(String principalName, String... roles) {
 
             if (null != principalName) {
-                this.principal = new SimplePrincipal(principalName);
+                principal = new SimplePrincipal(principalName);
                 this.roles = roles;
             } else {
-                this.principal = null;
+                principal = null;
                 this.roles = null;
             }
 
-            TestPolicyContextHandler testPolicyContextHandler = new TestPolicyContextHandler(this.principal, this.roles);
+            TestPolicyContextHandler testPolicyContextHandler = new TestPolicyContextHandler(principal, this.roles);
             try {
                 PolicyContext.registerHandler("javax.security.auth.Subject.container", testPolicyContextHandler, true);
             } catch (PolicyContextException e) {
@@ -616,9 +616,9 @@ public final class EJBTestUtils {
 
         public Principal getCallerPrincipal() {
 
-            if (null == this.principal)
+            if (null == principal)
                 throw new EJBException("caller principal not set");
-            return this.principal;
+            return principal;
         }
 
         public EJBHome getEJBHome() {
@@ -662,9 +662,9 @@ public final class EJBTestUtils {
 
         public boolean isCallerInRole(String expectedRole) {
 
-            if (null == this.roles)
+            if (null == roles)
                 return false;
-            for (String role : this.roles) {
+            for (String role : roles) {
                 if (true == role.equals(expectedRole))
                     return true;
             }

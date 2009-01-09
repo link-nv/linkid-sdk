@@ -75,24 +75,24 @@ public abstract class AbstractWicketTests {
         DummyNameIdentifierMappingClient.setUserId(getOLASUserId());
 
         // Set up an HSQL entity manager.
-        this.entityTestManager = new EntityTestManager();
+        entityTestManager = new EntityTestManager();
         Class<?>[] serviceBeans = getServiceBeans();
         try {
-            this.entityTestManager.setUp(getEntities());
+            entityTestManager.setUp(getEntities());
         } catch (Exception err) {
-            this.LOG.error("Couldn't set up entity manager", err);
+            LOG.error("Couldn't set up entity manager", err);
             throw new IllegalStateException(err);
         }
 
         // Perform injections on our service beans.
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
         for (Class<?> beanClass : serviceBeans) {
             DummyJndi.register(beanClass, EJBTestUtils.newInstance(beanClass, serviceBeans, entityManager));
         }
 
         // Initialize our dummy web container and set our dummy authentication protocol as the one to use.
-        this.wicket = new WicketTester(getApplication());
-        MockServletContext wicketContext = (MockServletContext) this.wicket.getServletSession().getServletContext();
+        wicket = new WicketTester(getApplication());
+        MockServletContext wicketContext = (MockServletContext) wicket.getServletSession().getServletContext();
         wicketContext.addInitParameter(AuthenticationProtocolManager.LOGOUT_LANDING_PAGE_INIT_PARAM, "");
         wicketContext.addInitParameter(AuthenticationProtocolManager.LANDING_PAGE_INIT_PARAM, "");
         wicketContext.addInitParameter(SafeOnlineLoginUtils.LOGOUT_SERVICE_URL_INIT_PARAM, "");
@@ -100,14 +100,14 @@ public abstract class AbstractWicketTests {
         wicketContext.addInitParameter(SafeOnlineLoginUtils.AUTH_SERVICE_URL_INIT_PARAM, "");
         wicketContext.addInitParameter(SafeOnlineLoginUtils.APPLICATION_NAME_INIT_PARAM, getClass().toString());
         wicketContext.addInitParameter(SafeOnlineLoginUtils.AUTHN_PROTOCOL_INIT_PARAM, AuthenticationProtocol.UNIT_TEST.name());
-        this.wicket.processRequestCycle();
+        wicket.processRequestCycle();
     }
 
     @After
     public void tearDown()
             throws Exception {
 
-        this.entityTestManager.tearDown();
+        entityTestManager.tearDown();
     }
 
     /**
@@ -128,7 +128,7 @@ public abstract class AbstractWicketTests {
             }
 
             else {
-                Locale currentLocale = this.wicket.getServletRequest().getLocale();
+                Locale currentLocale = wicket.getServletRequest().getLocale();
                 IConverter converter = choiceComponent.getConverter(value.getClass());
                 String stringValue = converter.convertToString(value, currentLocale);
 

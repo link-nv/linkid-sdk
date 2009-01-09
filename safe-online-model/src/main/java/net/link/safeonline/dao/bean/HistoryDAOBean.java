@@ -48,8 +48,8 @@ public class HistoryDAOBean implements HistoryDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, HistoryEntity.QueryInterface.class);
-        this.propertyQueryObject = QueryObjectFactory.createQueryObject(this.entityManager, HistoryPropertyEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, HistoryEntity.QueryInterface.class);
+        propertyQueryObject = QueryObjectFactory.createQueryObject(entityManager, HistoryPropertyEntity.QueryInterface.class);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -57,9 +57,9 @@ public class HistoryDAOBean implements HistoryDAO {
 
         LOG.debug("add history entry: " + when + "; subject: " + subject.getUserId() + "; event: " + event);
         HistoryEntity history = new HistoryEntity(when, subject, event);
-        this.entityManager.persist(history);
-        this.entityManager.flush();
-        this.entityManager.refresh(history);
+        entityManager.persist(history);
+        entityManager.flush();
+        entityManager.refresh(history);
         if (null != properties) {
             for (Map.Entry<String, String> property : properties.entrySet()) {
                 HistoryPropertyEntity propertyEntity = new HistoryPropertyEntity(history, property.getKey(), property.getValue());
@@ -70,7 +70,7 @@ public class HistoryDAOBean implements HistoryDAO {
                 /*
                  * Persist
                  */
-                this.entityManager.persist(propertyEntity);
+                entityManager.persist(propertyEntity);
             }
         }
         return history;
@@ -91,7 +91,7 @@ public class HistoryDAOBean implements HistoryDAO {
     public List<HistoryEntity> getHistory(SubjectEntity subject) {
 
         LOG.debug("get history for entity: " + subject.getUserId());
-        List<HistoryEntity> result = this.queryObject.getHistory(subject);
+        List<HistoryEntity> result = queryObject.getHistory(subject);
         return result;
     }
 
@@ -100,17 +100,17 @@ public class HistoryDAOBean implements HistoryDAO {
         LOG.debug("clearing subject history entries older than: " + ageLimit);
 
         // remove all history properties
-        List<HistoryEntity> histories = this.queryObject.getHistory(ageLimit);
+        List<HistoryEntity> histories = queryObject.getHistory(ageLimit);
         for (HistoryEntity history : histories) {
-            List<HistoryPropertyEntity> historyProperties = this.propertyQueryObject.listProperties(history);
+            List<HistoryPropertyEntity> historyProperties = propertyQueryObject.listProperties(history);
             for (HistoryPropertyEntity historyProperty : historyProperties) {
                 removeProperty(historyProperty);
             }
         }
 
-        this.entityManager.flush();
+        entityManager.flush();
 
-        this.queryObject.deleteWhereOlder(ageLimit);
+        queryObject.deleteWhereOlder(ageLimit);
     }
 
     public void clearAllHistory(SubjectEntity subject) {
@@ -118,15 +118,15 @@ public class HistoryDAOBean implements HistoryDAO {
         // remove all history properties
         List<HistoryEntity> histories = getHistory(subject);
         for (HistoryEntity history : histories) {
-            List<HistoryPropertyEntity> historyProperties = this.propertyQueryObject.listProperties(history);
+            List<HistoryPropertyEntity> historyProperties = propertyQueryObject.listProperties(history);
             for (HistoryPropertyEntity historyProperty : historyProperties) {
                 removeProperty(historyProperty);
             }
         }
 
-        this.entityManager.flush();
+        entityManager.flush();
 
-        this.queryObject.deleteAll(subject);
+        queryObject.deleteAll(subject);
     }
 
     private void removeProperty(HistoryPropertyEntity property) {
@@ -139,7 +139,7 @@ public class HistoryDAOBean implements HistoryDAO {
         /*
          * Remove from database.
          */
-        this.entityManager.remove(property);
+        entityManager.remove(property);
     }
 
 }

@@ -67,9 +67,9 @@ public class JaasTestUtils {
         @Override
         public void run() {
 
-            LOG.debug("cleanup JAAS config file: " + this.jaasConfigFile);
-            if (false == this.jaasConfigFile.delete()) {
-                this.jaasConfigFile.deleteOnExit();
+            LOG.debug("cleanup JAAS config file: " + jaasConfigFile);
+            if (false == jaasConfigFile.delete()) {
+                jaasConfigFile.deleteOnExit();
             }
         }
     }

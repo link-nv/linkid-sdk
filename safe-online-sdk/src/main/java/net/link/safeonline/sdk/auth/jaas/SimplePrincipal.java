@@ -34,7 +34,7 @@ public class SimplePrincipal implements Principal {
 
     public String getName() {
 
-        return this.userId;
+        return userId;
     }
 
     @Override
@@ -48,12 +48,12 @@ public class SimplePrincipal implements Principal {
         if (!(obj instanceof Principal))
             return false;
         Principal rhs = (Principal) obj;
-        return this.userId.equals(rhs.getName());
+        return userId.equals(rhs.getName());
     }
 
     @Override
     public String toString() {
 
-        return "Principal: " + this.userId;
+        return "Principal: " + userId;
     }
 }

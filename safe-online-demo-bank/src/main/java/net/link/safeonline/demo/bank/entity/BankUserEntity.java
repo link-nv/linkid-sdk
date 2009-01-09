@@ -59,7 +59,7 @@ public class BankUserEntity implements Serializable {
      */
     public String getBankId() {
 
-        return this.bankId;
+        return bankId;
     }
 
     /**
@@ -76,7 +76,7 @@ public class BankUserEntity implements Serializable {
      */
     public String getOlasId() {
 
-        return this.olasId;
+        return olasId;
     }
 
     /**
@@ -93,6 +93,6 @@ public class BankUserEntity implements Serializable {
      */
     public String getName() {
 
-        return this.name;
+        return name;
     }
 }

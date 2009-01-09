@@ -90,7 +90,7 @@ public class IdentityBean implements Identity {
 
         LOG.debug("attributeListFactory");
         Locale viewLocale = getViewLocale();
-        this.attributeList = this.identityService.listAttributes(viewLocale);
+        attributeList = identityService.listAttributes(viewLocale);
     }
 
     private Locale getViewLocale() {
@@ -103,14 +103,14 @@ public class IdentityBean implements Identity {
     @RolesAllowed(UserConstants.USER_ROLE)
     public String edit() {
 
-        LOG.debug("edit attribute: " + this.selectedAttribute.getName());
+        LOG.debug("edit attribute: " + selectedAttribute.getName());
         return "edit";
     }
 
     @RolesAllowed(UserConstants.USER_ROLE)
     public String add() {
 
-        LOG.debug("add attribute of type: " + this.selectedAttribute.getName());
+        LOG.debug("add attribute of type: " + selectedAttribute.getName());
         return "add";
     }
 
@@ -119,13 +119,13 @@ public class IdentityBean implements Identity {
             throws AttributeTypeNotFoundException, PermissionDeniedException, AttributeNotFoundException,
             ApplicationIdentityNotFoundException {
 
-        LOG.debug("remove attribute: " + this.selectedAttribute);
+        LOG.debug("remove attribute: " + selectedAttribute);
         try {
-            this.identityService.removeAttribute(this.selectedAttribute);
+            identityService.removeAttribute(selectedAttribute);
         } catch (PermissionDeniedException e) {
             String msg = "user not allowed to remove the attribute";
             LOG.error(msg);
-            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorUserNotAllowedToRemoveAttribute");
+            facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorUserNotAllowedToRemoveAttribute");
             return null;
         }
         attributeListFactory();
@@ -138,7 +138,7 @@ public class IdentityBean implements Identity {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ExternalContext externalContext = facesContext.getExternalContext();
         String userId = externalContext.getUserPrincipal().getName();
-        String username = this.subjectService.getSubjectLogin(userId);
+        String username = subjectService.getSubjectLogin(userId);
         return username;
     }
 }

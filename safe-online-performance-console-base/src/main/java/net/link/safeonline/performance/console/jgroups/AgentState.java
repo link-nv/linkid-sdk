@@ -54,16 +54,16 @@ public enum AgentState {
 
     public String getState() {
 
-        return this.state;
+        return state;
     }
 
     public String getTransitioning() {
 
-        return this.transitioning;
+        return transitioning;
     }
 
     public Color getColor() {
 
-        return this.color;
+        return color;
     }
 }

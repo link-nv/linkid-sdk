@@ -102,7 +102,7 @@ public class ProfileData {
 
     public ProfileData() {
 
-        this.measurements = new HashMap<String, Long>();
+        measurements = new HashMap<String, Long>();
     }
 
     /**
@@ -151,7 +151,7 @@ public class ProfileData {
         // in the arrays.
         for (int i = 0; i < headers.size(); ++i)
             if (null != methods[i]) {
-                this.measurements.put(methods[i], timings[i]);
+                measurements.put(methods[i], timings[i]);
             }
     }
 
@@ -164,19 +164,17 @@ public class ProfileData {
     public synchronized void addMeasurement(String method, Long value)
             throws ProfileDataLockedException {
 
-        if (this.locked) {
+        if (locked)
             throw new ProfileDataLockedException();
-        }
-        this.measurements.put(method, value);
+        measurements.put(method, value);
     }
 
     public void clear()
             throws ProfileDataLockedException {
 
-        if (this.locked) {
+        if (locked)
             throw new ProfileDataLockedException();
-        }
-        this.measurements.clear();
+        measurements.clear();
     }
 
     /**
@@ -187,9 +185,9 @@ public class ProfileData {
         Map<String, String> headers = new HashMap<String, String>();
         int entry = 0;
 
-        for (String measurement : this.measurements.keySet()) {
+        for (String measurement : measurements.keySet()) {
             headers.put(METHODSIG_HEADER + entry, measurement);
-            headers.put(DURATION_HEADER + entry, this.measurements.get(measurement).toString());
+            headers.put(DURATION_HEADER + entry, measurements.get(measurement).toString());
 
             entry++;
         }
@@ -199,27 +197,26 @@ public class ProfileData {
 
     public Map<String, Long> getMeasurements() {
 
-        return Collections.unmodifiableMap(this.measurements);
+        return Collections.unmodifiableMap(measurements);
     }
 
     public long getMeasurement(String key) {
 
-        Long measurement = this.measurements.get(key);
+        Long measurement = measurements.get(key);
         return measurement == null? 0: measurement;
     }
 
     public boolean isLocked() {
 
-        return this.locked;
+        return locked;
     }
 
     public void lock()
             throws ProfileDataLockedException {
 
-        if (this.locked) {
+        if (locked)
             throw new ProfileDataLockedException();
-        }
-        this.locked = true;
+        locked = true;
     }
 
     /**
@@ -231,7 +228,7 @@ public class ProfileData {
         StringBuffer result = new StringBuffer();
 
         result.append("Measurements:\n");
-        for (Map.Entry<String, Long> measurement : this.measurements.entrySet()) {
+        for (Map.Entry<String, Long> measurement : measurements.entrySet()) {
             result.append(measurement.getKey());
             result.append(":  ");
             result.append(measurement.getValue());
@@ -243,6 +240,6 @@ public class ProfileData {
 
     public void unlock() {
 
-        this.locked = false;
+        locked = false;
     }
 }

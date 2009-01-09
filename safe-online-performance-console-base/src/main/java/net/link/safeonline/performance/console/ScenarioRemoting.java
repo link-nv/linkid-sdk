@@ -58,7 +58,7 @@ public class ScenarioRemoting {
     public ScenarioRemoting() {
 
         try {
-            this.agentService = new ObjectName("safeonline.performance:name=AgentService");
+            agentService = new ObjectName("safeonline.performance:name=AgentService");
         }
 
         catch (MalformedObjectNameException e) {
@@ -101,7 +101,7 @@ public class ScenarioRemoting {
             MBeanServerConnection rmi = (MBeanServerConnection) context.lookup("jmx/rmi/RMIAdaptor");
 
             connections.put(Thread.currentThread(), rmi);
-            return rmi.invoke(this.agentService, methodName, arguments, argumentTypes);
+            return rmi.invoke(agentService, methodName, arguments, argumentTypes);
         }
 
         catch (IOException e) {
@@ -245,9 +245,8 @@ public class ScenarioRemoting {
         try {
             return (Set<ScenarioExecution>) invokeFor(agent, "getExecutions", new Object[] {}, new String[] {});
         } catch (MBeanException e) {
-            if (e.getCause() instanceof NamingException) {
+            if (e.getCause() instanceof NamingException)
                 throw (NamingException) e.getCause();
-            }
 
             LOG.error("Server error during execution retrieval!", e);
 

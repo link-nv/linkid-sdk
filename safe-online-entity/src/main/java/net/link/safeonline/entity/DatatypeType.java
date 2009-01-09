@@ -23,8 +23,8 @@ public enum DatatypeType {
 
     private DatatypeType() {
 
-        this.friendlyName = name();
-        this.primitive = false;
+        friendlyName = name();
+        primitive = false;
     }
 
     private DatatypeType(String friendlyName, boolean primitive) {
@@ -35,11 +35,11 @@ public enum DatatypeType {
 
     public String getFriendlyName() {
 
-        return this.friendlyName;
+        return friendlyName;
     }
 
     public boolean isPrimitive() {
 
-        return this.primitive;
+        return primitive;
     }
 }

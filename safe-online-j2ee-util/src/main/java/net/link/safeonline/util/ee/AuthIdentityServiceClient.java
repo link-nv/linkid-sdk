@@ -43,10 +43,10 @@ public class AuthIdentityServiceClient {
      */
     public AuthIdentityServiceClient() {
 
-        this.server = MBeanServerLocator.locateJBoss();
-        LOG.debug("MBean Server class: " + this.server.getClass().getName());
+        server = MBeanServerLocator.locateJBoss();
+        LOG.debug("MBean Server class: " + server.getClass().getName());
         try {
-            this.authIdentityServiceName = new ObjectName(AUTH_IDENTITY_SERVICE);
+            authIdentityServiceName = new ObjectName(AUTH_IDENTITY_SERVICE);
         } catch (MalformedObjectNameException e) {
             throw new RuntimeException("object name error: " + e.getMessage());
         }
@@ -62,7 +62,7 @@ public class AuthIdentityServiceClient {
         String[] signature = {};
         PrivateKey privateKey;
         try {
-            privateKey = (PrivateKey) this.server.invoke(this.authIdentityServiceName, "getPrivateKey", params, signature);
+            privateKey = (PrivateKey) server.invoke(authIdentityServiceName, "getPrivateKey", params, signature);
         } catch (Exception e) {
             throw new RuntimeException("invoke error: " + e.getMessage(), e);
         }
@@ -79,7 +79,7 @@ public class AuthIdentityServiceClient {
         String[] signature = {};
         PublicKey publicKey;
         try {
-            publicKey = (PublicKey) this.server.invoke(this.authIdentityServiceName, "getPublicKey", params, signature);
+            publicKey = (PublicKey) server.invoke(authIdentityServiceName, "getPublicKey", params, signature);
         } catch (Exception e) {
             throw new RuntimeException("invoke error: " + e.getMessage(), e);
         }
@@ -96,7 +96,7 @@ public class AuthIdentityServiceClient {
         String[] signature = {};
         X509Certificate certificate;
         try {
-            certificate = (X509Certificate) this.server.invoke(this.authIdentityServiceName, "getCertificate", params, signature);
+            certificate = (X509Certificate) server.invoke(authIdentityServiceName, "getCertificate", params, signature);
         } catch (Exception e) {
             throw new RuntimeException("invoke error: " + e.getMessage(), e);
         }

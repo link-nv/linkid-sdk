@@ -15,6 +15,15 @@
  */
 package test.spike.net.link.safeonline;
 
+import org.apache.wicket.Page;
+import org.apache.wicket.Request;
+import org.apache.wicket.Response;
+import org.apache.wicket.RestartResponseException;
+import org.apache.wicket.Session;
+import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.protocol.http.WebSession;
+import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Test;
 
 
@@ -31,45 +40,75 @@ import org.junit.Test;
  */
 public class TinyTests {
 
-    public static class A extends B {
+    public static class MyApp extends WebApplication {
 
-        static {
-            System.out.println("static-a");
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public Class<? extends Page> getHomePage() {
+
+            return MyPage.class;
         }
 
-        {
-            System.out.println("pre-a");
-        }
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public Session newSession(Request request, Response response) {
 
-
-        public A() {
-
-            System.out.println("a");
+            return new MySession(request);
         }
     }
 
-    public static class B {
+    public static class MySession extends WebSession {
 
-        static {
-            System.out.println("static-b");
+        public MySession(Request request) {
+
+            super(request);
         }
 
-        {
-            System.out.println("pre-b");
+        public static MySession get() {
+
+            return (MySession) Session.get();
         }
 
 
-        public B() {
+        private static final long serialVersionUID = 1L;
+        private String            name;
 
-            System.out.println("b");
+
+        public void setName(String name) {
+
+            this.name = name;
+        }
+
+        public String getName() {
+
+            return name;
+        }
+    }
+
+    public static class MyPage extends WebPage {
+
+        public MyPage() {
+
+            if (MySession.get().getName() != null) {
+                Session.get().invalidateNow();
+                throw new RestartResponseException(getClass());
+            }
         }
     }
 
 
     @Test
-    public void testInheritingConstructors() {
+    public void wicketTest() {
 
-        new A();
+        WicketTester wicket = new WicketTester(new MyApp());
+        wicket.processRequestCycle();
+
+        MySession.get().setName("foo");
+        wicket.processRequestCycle();
     }
 
     void print(Object[] array) {

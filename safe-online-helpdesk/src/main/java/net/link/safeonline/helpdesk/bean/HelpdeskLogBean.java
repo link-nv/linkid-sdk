@@ -114,8 +114,8 @@ public class HelpdeskLogBean implements HelpdeskLog {
     public void helpdeskContextListFactory() {
 
         LOG.debug("helpdesk context list factory");
-        this.selectedUserContext = null;
-        this.helpdeskContextList = this.helpdeskService.listContexts();
+        selectedUserContext = null;
+        helpdeskContextList = helpdeskService.listContexts();
     }
 
     @Factory(HELPDESK_LOG_LIST_NAME)
@@ -123,18 +123,18 @@ public class HelpdeskLogBean implements HelpdeskLog {
     public void helpdeskLogListFactory() {
 
         Long id;
-        if (null != this.searchId) {
-            id = this.searchId;
-            this.searchId = null;
-        } else if (null == this.selectedContext) {
-            id = this.selectedUserContext.getId();
-            this.context = this.selectedUserContext;
+        if (null != searchId) {
+            id = searchId;
+            searchId = null;
+        } else if (null == selectedContext) {
+            id = selectedUserContext.getId();
+            context = selectedUserContext;
         } else {
-            id = this.selectedContext.getId();
-            this.context = this.selectedContext;
+            id = selectedContext.getId();
+            context = selectedContext;
         }
         LOG.debug("helpdesk log list factory ( id=" + id + " )");
-        this.helpdeskLogList = this.helpdeskService.listEvents(id);
+        helpdeskLogList = helpdeskService.listEvents(id);
     }
 
     @Factory(HELPDESK_USER_LIST_NAME)
@@ -142,8 +142,8 @@ public class HelpdeskLogBean implements HelpdeskLog {
     public void helpdeskUserListFactory() {
 
         LOG.debug("helpdesk user list factory");
-        this.helpdeskUserList = this.helpdeskService.listUsers();
-        this.selectedContext = null;
+        helpdeskUserList = helpdeskService.listUsers();
+        selectedContext = null;
     }
 
     @Factory(HELPDESK_USER_CONTEXT_LIST_NAME)
@@ -151,14 +151,14 @@ public class HelpdeskLogBean implements HelpdeskLog {
     public void helpdeskUserContextListFactory() {
 
         String user;
-        if (null != this.searchUserName) {
-            user = this.searchUserName;
-            this.searchUserName = null;
+        if (null != searchUserName) {
+            user = searchUserName;
+            searchUserName = null;
         } else {
-            user = this.selectedUser;
+            user = selectedUser;
         }
         LOG.debug("helpdesk user context list factory (" + user + ")");
-        this.helpdeskUserContextList = this.helpdeskService.listUserContexts(user);
+        helpdeskUserContextList = helpdeskService.listUserContexts(user);
     }
 
     /*
@@ -167,10 +167,10 @@ public class HelpdeskLogBean implements HelpdeskLog {
     @RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)
     public String view() {
 
-        if (null == this.selectedContext) {
-            LOG.debug("view log: " + this.selectedUserContext.getId());
+        if (null == selectedContext) {
+            LOG.debug("view log: " + selectedUserContext.getId());
         } else {
-            LOG.debug("view log: " + this.selectedContext.getId());
+            LOG.debug("view log: " + selectedContext.getId());
         }
         return "view";
     }
@@ -179,15 +179,15 @@ public class HelpdeskLogBean implements HelpdeskLog {
     public String removeLog() {
 
         Long id;
-        if (null == this.selectedContext) {
-            id = this.selectedUserContext.getId();
+        if (null == selectedContext) {
+            id = selectedUserContext.getId();
         } else {
-            id = this.selectedContext.getId();
+            id = selectedContext.getId();
         }
         LOG.debug("remove log: " + id);
 
-        this.helpdeskService.removeLog(id);
-        if (null == this.selectedContext) {
+        helpdeskService.removeLog(id);
+        if (null == selectedContext) {
             helpdeskContextListFactory();
         } else {
             helpdeskUserContextListFactory();
@@ -198,17 +198,17 @@ public class HelpdeskLogBean implements HelpdeskLog {
     @RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)
     public String viewUser() {
 
-        LOG.debug("view user \"" + this.selectedUser + "\"'s logs");
+        LOG.debug("view user \"" + selectedUser + "\"'s logs");
         return "viewUser";
     }
 
     @RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)
     public String search() {
 
-        LOG.debug("search id " + this.searchId);
-        this.helpdeskContextList = this.helpdeskService.listContexts();
-        for (HelpdeskContextEntity currentContext : this.helpdeskContextList) {
-            if (currentContext.getId().equals(this.searchId))
+        LOG.debug("search id " + searchId);
+        helpdeskContextList = helpdeskService.listContexts();
+        for (HelpdeskContextEntity currentContext : helpdeskContextList) {
+            if (currentContext.getId().equals(searchId))
                 return "view";
         }
         return "search-failed";
@@ -217,10 +217,10 @@ public class HelpdeskLogBean implements HelpdeskLog {
     @RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)
     public String searchUser() {
 
-        LOG.debug("search user " + this.searchUserName);
-        this.helpdeskUserList = this.helpdeskService.listUsers();
-        for (String user : this.helpdeskUserList) {
-            if (user.equals(this.searchUserName))
+        LOG.debug("search user " + searchUserName);
+        helpdeskUserList = helpdeskService.listUsers();
+        for (String user : helpdeskUserList) {
+            if (user.equals(searchUserName))
                 return "viewUser";
         }
         return "search-failed";
@@ -235,7 +235,7 @@ public class HelpdeskLogBean implements HelpdeskLog {
 
     public Long getSearchId() {
 
-        return this.searchId;
+        return searchId;
     }
 
     public void setSearchId(Long searchId) {
@@ -245,7 +245,7 @@ public class HelpdeskLogBean implements HelpdeskLog {
 
     public String getSearchUserName() {
 
-        return this.searchUserName;
+        return searchUserName;
     }
 
     public void setSearchUserName(String searchUserName) {
@@ -258,8 +258,8 @@ public class HelpdeskLogBean implements HelpdeskLog {
 
         String idString = event.toString();
         List<String> idList = new LinkedList<String>();
-        this.helpdeskContextList = this.helpdeskService.listContexts();
-        for (HelpdeskContextEntity currentContext : this.helpdeskContextList) {
+        helpdeskContextList = helpdeskService.listContexts();
+        for (HelpdeskContextEntity currentContext : helpdeskContextList) {
             String contextIdString = currentContext.getId().toString();
             if (contextIdString.startsWith(idString)) {
                 idList.add(contextIdString);
@@ -274,8 +274,8 @@ public class HelpdeskLogBean implements HelpdeskLog {
 
         String userString = event.toString();
         List<String> userList = new LinkedList<String>();
-        this.helpdeskUserList = this.helpdeskService.listUsers();
-        for (String user : this.helpdeskUserList) {
+        helpdeskUserList = helpdeskService.listUsers();
+        for (String user : helpdeskUserList) {
             if (user.startsWith(userString)) {
                 userList.add(user);
             }
@@ -293,15 +293,15 @@ public class HelpdeskLogBean implements HelpdeskLog {
 
         Long id = (Long) value;
         LOG.debug("validateId: " + id);
-        this.helpdeskContextList = this.helpdeskService.listContexts();
-        for (HelpdeskContextEntity helpdeskContext : this.helpdeskContextList) {
+        helpdeskContextList = helpdeskService.listContexts();
+        for (HelpdeskContextEntity helpdeskContext : helpdeskContextList) {
             Long contextId = helpdeskContext.getId();
             if (contextId.equals(id))
                 return;
         }
         LOG.debug("id " + id + " not found");
         ((UIInput) toValidate).setValid(false);
-        this.facesMessages.addFromResourceBundle("errorHelpdeskIdNotFound");
+        facesMessages.addFromResourceBundle("errorHelpdeskIdNotFound");
     }
 
     @RolesAllowed(HelpdeskConstants.HELPDESK_ROLE)
@@ -309,10 +309,10 @@ public class HelpdeskLogBean implements HelpdeskLog {
 
         String user = (String) value;
         LOG.debug("validateUser: " + user);
-        this.helpdeskUserList = this.helpdeskService.listUsers();
-        if (!this.helpdeskUserList.contains(user)) {
+        helpdeskUserList = helpdeskService.listUsers();
+        if (!helpdeskUserList.contains(user)) {
             ((UIInput) toValidate).setValid(false);
-            this.facesMessages.addFromResourceBundle("errorHelpdeskUserNotFound");
+            facesMessages.addFromResourceBundle("errorHelpdeskUserNotFound");
         }
     }
 }

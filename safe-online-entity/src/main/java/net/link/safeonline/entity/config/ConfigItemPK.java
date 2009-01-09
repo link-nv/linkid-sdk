@@ -41,7 +41,7 @@ public class ConfigItemPK implements Serializable {
 
     public String getGroupName() {
 
-        return this.groupName;
+        return groupName;
     }
 
     public void setGroupName(String groupName) {
@@ -51,7 +51,7 @@ public class ConfigItemPK implements Serializable {
 
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -67,18 +67,18 @@ public class ConfigItemPK implements Serializable {
         if (false == obj instanceof ConfigItemPK)
             return false;
         ConfigItemPK rhs = (ConfigItemPK) obj;
-        return new EqualsBuilder().append(this.groupName, rhs.groupName).append(this.name, rhs.name).isEquals();
+        return new EqualsBuilder().append(groupName, rhs.groupName).append(name, rhs.name).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.groupName).append(this.name).toHashCode();
+        return new HashCodeBuilder().append(groupName).append(name).toHashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("groupName", this.groupName).append("name", this.name).toString();
+        return new ToStringBuilder(this).append("groupName", groupName).append("name", name).toString();
     }
 }

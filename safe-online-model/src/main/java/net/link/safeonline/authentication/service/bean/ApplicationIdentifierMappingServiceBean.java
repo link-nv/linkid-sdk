@@ -57,11 +57,11 @@ public class ApplicationIdentifierMappingServiceBean implements ApplicationIdent
 
         LOG.debug("getUserId: " + username);
         checkPermission();
-        ApplicationEntity application = this.applicationManager.getCallerApplication();
-        SubjectEntity subject = this.subjectIdentifierDAO.findSubject(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN, username);
+        ApplicationEntity application = applicationManager.getCallerApplication();
+        SubjectEntity subject = subjectIdentifierDAO.findSubject(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN, username);
         if (null == subject)
             throw new SubjectNotFoundException();
-        String userId = this.userIdMappingService.getApplicationUserId(application.getName(), subject.getUserId());
+        String userId = userIdMappingService.getApplicationUserId(application.getName(), subject.getUserId());
         LOG.debug("userId: " + userId);
         return userId;
     }
@@ -69,7 +69,7 @@ public class ApplicationIdentifierMappingServiceBean implements ApplicationIdent
     private void checkPermission()
             throws PermissionDeniedException {
 
-        ApplicationEntity application = this.applicationManager.getCallerApplication();
+        ApplicationEntity application = applicationManager.getCallerApplication();
         boolean allowed = application.isIdentifierMappingAllowed();
         if (false == allowed)
             throw new PermissionDeniedException("application not allowed to use the identifier mapping service");
@@ -80,6 +80,6 @@ public class ApplicationIdentifierMappingServiceBean implements ApplicationIdent
             throws ApplicationNotFoundException {
 
         LOG.debug("getUserId: " + applicationName + ", " + applicationUserId);
-        return this.userIdMappingService.findUserId(applicationName, applicationUserId);
+        return userIdMappingService.findUserId(applicationName, applicationUserId);
     }
 }

@@ -72,38 +72,38 @@ public class NotificationConsumerPortImplTest {
 
         LOG.debug("setup");
 
-        this.jndiTestUtils = new JndiTestUtils();
-        this.jndiTestUtils.setUp();
-        this.jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
+        jndiTestUtils = new JndiTestUtils();
+        jndiTestUtils.setUp();
+        jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
                 "SafeOnlineZDemo/WSSecurityConfigurationBean/local");
 
-        this.mockWSSecurityConfigurationService = createMock(WSSecurityConfigurationService.class);
-        this.mockNotificationConsumerService = createMock(net.link.safeonline.demo.model.NotificationConsumerService.class);
+        mockWSSecurityConfigurationService = createMock(WSSecurityConfigurationService.class);
+        mockNotificationConsumerService = createMock(net.link.safeonline.demo.model.NotificationConsumerService.class);
 
-        this.mockObjects = new Object[] { this.mockWSSecurityConfigurationService, this.mockNotificationConsumerService };
+        mockObjects = new Object[] { mockWSSecurityConfigurationService, mockNotificationConsumerService };
 
-        this.jndiTestUtils.bindComponent("SafeOnlineZDemo/WSSecurityConfigurationBean/local", this.mockWSSecurityConfigurationService);
-        this.jndiTestUtils.bindComponent("SafeOnlineZDemo/NotificationConsumerServiceBean/local", this.mockNotificationConsumerService);
+        jndiTestUtils.bindComponent("SafeOnlineZDemo/WSSecurityConfigurationBean/local", mockWSSecurityConfigurationService);
+        jndiTestUtils.bindComponent("SafeOnlineZDemo/NotificationConsumerServiceBean/local", mockNotificationConsumerService);
 
         // expectations
-        expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
+        expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
 
         JaasTestUtils.initJaasLoginModule(DummyLoginModule.class);
         NotificationConsumerPort wsPort = new NotificationConsumerPortImpl();
-        this.webServiceTestUtils = new WebServiceTestUtils();
-        this.webServiceTestUtils.setUp(wsPort);
+        webServiceTestUtils = new WebServiceTestUtils();
+        webServiceTestUtils.setUp(wsPort);
 
         NotificationConsumerService service = NotificationConsumerServiceFactory.newInstance();
-        this.clientPort = service.getNotificationConsumerPort();
-        this.webServiceTestUtils.setEndpointAddress(this.clientPort);
+        clientPort = service.getNotificationConsumerPort();
+        webServiceTestUtils.setEndpointAddress(clientPort);
 
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        this.certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
+        certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
 
-        BindingProvider bindingProvider = (BindingProvider) this.clientPort;
+        BindingProvider bindingProvider = (BindingProvider) clientPort;
         Binding binding = bindingProvider.getBinding();
         List<Handler> handlerChain = binding.getHandlerChain();
-        Handler<SOAPMessageContext> wsSecurityHandler = new WSSecurityClientHandler(this.certificate, keyPair.getPrivate());
+        Handler<SOAPMessageContext> wsSecurityHandler = new WSSecurityClientHandler(certificate, keyPair.getPrivate());
         handlerChain.add(wsSecurityHandler);
         binding.setHandlerChain(handlerChain);
 
@@ -114,8 +114,8 @@ public class NotificationConsumerPortImplTest {
             throws Exception {
 
         LOG.debug("tearDown");
-        this.webServiceTestUtils.tearDown();
-        this.jndiTestUtils.tearDown();
+        webServiceTestUtils.tearDown();
+        jndiTestUtils.tearDown();
     }
 
     @Test
@@ -144,13 +144,13 @@ public class NotificationConsumerPortImplTest {
         notification.getNotificationMessage().add(notificationMessage);
 
         // expectations
-        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
-        this.mockNotificationConsumerService.handleMessage(SafeOnlineConstants.TOPIC_REMOVE_USER, destination, subject, content);
+        expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
+        mockNotificationConsumerService.handleMessage(SafeOnlineConstants.TOPIC_REMOVE_USER, destination, subject, content);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // execute
-        this.clientPort.notify(notification);
+        clientPort.notify(notification);
     }
 }

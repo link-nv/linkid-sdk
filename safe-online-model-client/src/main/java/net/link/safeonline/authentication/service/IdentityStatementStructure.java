@@ -48,45 +48,45 @@ public class IdentityStatementStructure extends AbstractStatementStructure {
         DERInteger version = DERInteger.getInstance(tbsSequence.getObjectAt(DERIdentityStatement.VERSION_IDX));
         if (version.getValue().intValue() != DERIdentityStatement.VERSION)
             throw new DecodingException();
-        this.sessionId = DERVisibleString.getInstance(tbsSequence.getObjectAt(DERIdentityStatement.SESSION_IDX)).getString();
-        this.user = DERVisibleString.getInstance(tbsSequence.getObjectAt(DERIdentityStatement.USER_IDX)).getString();
-        this.operation = DERVisibleString.getInstance(tbsSequence.getObjectAt(DERIdentityStatement.OPERATION_IDX)).getString();
-        this.givenName = DERVisibleString.getInstance(tbsSequence.getObjectAt(DERIdentityStatement.GIVEN_NAME_IDX)).getString();
-        this.surname = DERVisibleString.getInstance(tbsSequence.getObjectAt(DERIdentityStatement.SURNAME_IDX)).getString();
+        sessionId = DERVisibleString.getInstance(tbsSequence.getObjectAt(DERIdentityStatement.SESSION_IDX)).getString();
+        user = DERVisibleString.getInstance(tbsSequence.getObjectAt(DERIdentityStatement.USER_IDX)).getString();
+        operation = DERVisibleString.getInstance(tbsSequence.getObjectAt(DERIdentityStatement.OPERATION_IDX)).getString();
+        givenName = DERVisibleString.getInstance(tbsSequence.getObjectAt(DERIdentityStatement.GIVEN_NAME_IDX)).getString();
+        surname = DERVisibleString.getInstance(tbsSequence.getObjectAt(DERIdentityStatement.SURNAME_IDX)).getString();
 
         ASN1Sequence derAuthCert = ASN1Sequence.getInstance(tbsSequence.getObjectAt(DERIdentityStatement.AUTH_CERT_IDX));
 
-        this.authCert = decodeCertificate(derAuthCert.getDEREncoded());
+        authCert = decodeCertificate(derAuthCert.getDEREncoded());
     }
 
     public String getGivenName() {
 
-        return this.givenName;
+        return givenName;
     }
 
     public String getSurname() {
 
-        return this.surname;
+        return surname;
     }
 
     public String getUser() {
 
-        return this.user;
+        return user;
     }
 
     public String getSessionId() {
 
-        return this.sessionId;
+        return sessionId;
     }
 
     public String getOperation() {
 
-        return this.operation;
+        return operation;
     }
 
     @Override
     public X509Certificate getCertificate() {
 
-        return this.authCert;
+        return authCert;
     }
 }

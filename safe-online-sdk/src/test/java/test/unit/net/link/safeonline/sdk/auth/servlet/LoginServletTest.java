@@ -53,15 +53,15 @@ public class LoginServletTest {
     public void setUp()
             throws Exception {
 
-        this.servletTestManager = new ServletTestManager();
-        this.servletTestManager.setUp(LoginServlet.class);
+        servletTestManager = new ServletTestManager();
+        servletTestManager.setUp(LoginServlet.class);
     }
 
     @After
     public void tearDown()
             throws Exception {
 
-        this.servletTestManager.tearDown();
+        servletTestManager.tearDown();
     }
 
     @Test
@@ -69,7 +69,7 @@ public class LoginServletTest {
             throws Exception {
 
         // setup
-        String location = this.servletTestManager.getServletLocation();
+        String location = servletTestManager.getServletLocation();
         LOG.debug("servlet location: " + location);
 
         // operate
@@ -97,10 +97,10 @@ public class LoginServletTest {
             throws Exception {
 
         // setup
-        String location = this.servletTestManager.getServletLocation();
+        String location = servletTestManager.getServletLocation();
         LOG.debug("servlet location: " + location);
         AuthenticationProtocolHandler mockAuthenticationProtocolHandler = createMock(AuthenticationProtocolHandler.class);
-        this.servletTestManager.setSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE,
+        servletTestManager.setSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE,
                 mockAuthenticationProtocolHandler);
 
         // expectations
@@ -129,13 +129,13 @@ public class LoginServletTest {
             throws Exception {
 
         // setup
-        String location = this.servletTestManager.getServletLocation();
+        String location = servletTestManager.getServletLocation();
         LOG.debug("servlet location: " + location);
         AuthenticationProtocolHandler mockAuthenticationProtocolHandler = createMock(AuthenticationProtocolHandler.class);
-        this.servletTestManager.setSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE,
+        servletTestManager.setSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE,
                 mockAuthenticationProtocolHandler);
         String target = "http://test.target";
-        this.servletTestManager.setSessionAttribute(AuthenticationProtocolManager.TARGET_ATTRIBUTE, target);
+        servletTestManager.setSessionAttribute(AuthenticationProtocolManager.TARGET_ATTRIBUTE, target);
         String userId = UUID.randomUUID().toString();
         String authenticatedDevice = "test-device";
         AuthenticationProtocolContext authenticationProtocolContext = new AuthenticationProtocolContext(userId, authenticatedDevice);
@@ -160,9 +160,9 @@ public class LoginServletTest {
         assertEquals(HttpServletResponse.SC_MOVED_TEMPORARILY, statusCode);
         String responseBody = getMethod.getResponseBodyAsString();
         LOG.debug("response body: " + responseBody);
-        String resultUserId = (String) this.servletTestManager.getSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
+        String resultUserId = (String) servletTestManager.getSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
         assertEquals(userId, resultUserId);
-        String resultAuthenticatedDevice = (String) this.servletTestManager
+        String resultAuthenticatedDevice = (String) servletTestManager
                                                                            .getSessionAttribute(LoginManager.AUTHENTICATED_DEVICE_SESSION_ATTRIBUTE);
         assertEquals(authenticatedDevice, resultAuthenticatedDevice);
         String resultTarget = getMethod.getResponseHeader("Location").getValue();

@@ -108,16 +108,16 @@ public class ApplicationConsole extends JFrame implements Observer {
     private JMenu                    servicesMenu         = new JMenu(SERVICES.getMessage());
     private JMenu                    utilsMenu            = new JMenu(UTILS.getMessage());
 
-    private JMenuItem                loadIdentityMenuItem = new JMenuItem(this.loadIdAction);
-    private JMenuItem                createP12MenuItem    = new JMenuItem(this.createP12Action);
-    private JMenuItem                extractCertMenuItem  = new JMenuItem(this.extractAction);
-    private JMenuItem                setLocationMenuItem  = new JMenuItem(this.setLocationAction);
-    private JMenuItem                authUserMenuItem     = new JMenuItem(this.authUserAction);
-    private JMenuItem                quitMenuItem         = new JMenuItem(this.quitAction);
+    private JMenuItem                loadIdentityMenuItem = new JMenuItem(loadIdAction);
+    private JMenuItem                createP12MenuItem    = new JMenuItem(createP12Action);
+    private JMenuItem                extractCertMenuItem  = new JMenuItem(extractAction);
+    private JMenuItem                setLocationMenuItem  = new JMenuItem(setLocationAction);
+    private JMenuItem                authUserMenuItem     = new JMenuItem(authUserAction);
+    private JMenuItem                quitMenuItem         = new JMenuItem(quitAction);
 
-    private JMenuItem                attribMenuItem       = new JMenuItem(this.attribAction);
+    private JMenuItem                attribMenuItem       = new JMenuItem(attribAction);
 
-    private JMenuItem[]              servicesMenuItems    = { this.attribMenuItem };
+    private JMenuItem[]              servicesMenuItems    = { attribMenuItem };
 
     /*
      * Non-GUI members
@@ -139,42 +139,42 @@ public class ApplicationConsole extends JFrame implements Observer {
         manageServices();
         setStatus();
 
-        this.viewInboundAction.setEnabled(false);
-        this.viewOutboundAction.setEnabled(false);
-        this.consoleManager.addObserver(this);
+        viewInboundAction.setEnabled(false);
+        viewOutboundAction.setEnabled(false);
+        consoleManager.addObserver(this);
         ApplicationConsoleManager.getInstance().addObserver(this);
 
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(750, 600);
         this.setLocation(50, 50);
-        this.setVisible(true);
+        setVisible(true);
     }
 
     private void buildMenu() {
 
-        this.fileMenu.setMnemonic(KeyEvent.VK_F);
-        this.servicesMenu.setMnemonic(KeyEvent.VK_S);
-        this.utilsMenu.setMnemonic(KeyEvent.VK_U);
+        fileMenu.setMnemonic(KeyEvent.VK_F);
+        servicesMenu.setMnemonic(KeyEvent.VK_S);
+        utilsMenu.setMnemonic(KeyEvent.VK_U);
 
-        this.fileMenu.add(this.loadIdentityMenuItem);
-        this.fileMenu.add(this.setLocationMenuItem);
-        this.fileMenu.addSeparator();
-        this.fileMenu.add(this.authUserMenuItem);
-        this.fileMenu.addSeparator();
-        this.fileMenu.add(this.quitMenuItem);
+        fileMenu.add(loadIdentityMenuItem);
+        fileMenu.add(setLocationMenuItem);
+        fileMenu.addSeparator();
+        fileMenu.add(authUserMenuItem);
+        fileMenu.addSeparator();
+        fileMenu.add(quitMenuItem);
 
-        for (JMenuItem m : this.servicesMenuItems) {
-            this.servicesMenu.add(m);
+        for (JMenuItem m : servicesMenuItems) {
+            servicesMenu.add(m);
         }
 
-        this.utilsMenu.add(this.createP12MenuItem);
-        this.utilsMenu.add(this.extractCertMenuItem);
+        utilsMenu.add(createP12MenuItem);
+        utilsMenu.add(extractCertMenuItem);
 
         JMenuBar menu = new JMenuBar();
-        menu.add(this.fileMenu);
-        menu.add(this.servicesMenu);
-        menu.add(this.utilsMenu);
-        this.setJMenuBar(menu);
+        menu.add(fileMenu);
+        menu.add(servicesMenu);
+        menu.add(utilsMenu);
+        setJMenuBar(menu);
     }
 
     private void buildWindow() {
@@ -182,114 +182,114 @@ public class ApplicationConsole extends JFrame implements Observer {
         buildStatusPanel();
         buildDebugPanel();
 
-        if (this.contentPanel == null) {
-            this.contentPanel = new JPanel();
+        if (contentPanel == null) {
+            contentPanel = new JPanel();
         }
-        JSplitPane bottomPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT, this.debugPanel, this.statusPanel);
+        JSplitPane bottomPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT, debugPanel, statusPanel);
         bottomPanel.setDividerSize(3);
         bottomPanel.setResizeWeight(0.5);
 
-        this.splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, this.contentPanel, bottomPanel);
-        this.splitPane.setResizeWeight(1.0);
-        this.splitPane.setDividerSize(3);
+        splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, contentPanel, bottomPanel);
+        splitPane.setResizeWeight(1.0);
+        splitPane.setDividerSize(3);
 
-        this.add(this.splitPane);
+        this.add(splitPane);
     }
 
     private void buildDebugPanel() {
 
-        this.debugPanel = new JPanel(new FlowLayout());
+        debugPanel = new JPanel(new FlowLayout());
 
         try {
-            this.browserLauncher = new BrowserLauncher();
+            browserLauncher = new BrowserLauncher();
         } catch (BrowserLaunchingInitializingException e) {
             LOG.error("BrowserLaunchingInitializingException thrown ...", e);
         } catch (UnsupportedOperatingSystemException e) {
             LOG.error("UnsupportedOperatingSystemException thrown ...", e);
         }
         @SuppressWarnings("unchecked")
-        List<String> browsers = this.browserLauncher.getBrowserList();
+        List<String> browsers = browserLauncher.getBrowserList();
         for (String browser : browsers) {
-            this.browserCombo.addItem(browser);
+            browserCombo.addItem(browser);
         }
-        JCheckBox captureBox = new JCheckBox(this.captureAction);
+        JCheckBox captureBox = new JCheckBox(captureAction);
         captureBox.setSelected(true);
         JLabel browserLabel = new JLabel("Browser");
 
-        this.debugPanel.add(browserLabel);
-        this.debugPanel.add(this.browserCombo);
-        this.debugPanel.add(captureBox);
-        this.debugPanel.add(new JButton(this.viewInboundAction));
-        this.debugPanel.add(new JButton(this.viewOutboundAction));
+        debugPanel.add(browserLabel);
+        debugPanel.add(browserCombo);
+        debugPanel.add(captureBox);
+        debugPanel.add(new JButton(viewInboundAction));
+        debugPanel.add(new JButton(viewOutboundAction));
     }
 
     private void buildStatusPanel() {
 
         JPanel identityPanel = new JPanel();
-        identityPanel.add(this.identityLabel);
+        identityPanel.add(identityLabel);
 
         JPanel locationPanel = new JPanel();
-        locationPanel.add(this.locationLabel);
+        locationPanel.add(locationLabel);
 
-        this.statusPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, identityPanel, locationPanel);
-        this.statusPanel.setDividerSize(0);
-        this.statusPanel.setResizeWeight(0.5);
+        statusPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, identityPanel, locationPanel);
+        statusPanel.setDividerSize(0);
+        statusPanel.setResizeWeight(0.5);
     }
 
     protected void onAttribService() {
 
-        this.contentPanel = new AttribService(this);
-        this.splitPane.setTopComponent(this.contentPanel);
+        contentPanel = new AttribService(this);
+        splitPane.setTopComponent(contentPanel);
     }
 
     protected void onSetLocation() {
 
-        String location = JOptionPane.showInputDialog(SET_LOCATION.getMessage(), this.consoleManager.getLocation());
+        String location = JOptionPane.showInputDialog(SET_LOCATION.getMessage(), consoleManager.getLocation());
         if (null != location) {
-            this.consoleManager.setLocation(location);
+            consoleManager.setLocation(location);
         }
     }
 
     protected void onExtract() {
 
-        this.contentPanel = new ExtractCertificate(this);
-        this.splitPane.setTopComponent(this.contentPanel);
+        contentPanel = new ExtractCertificate(this);
+        splitPane.setTopComponent(contentPanel);
     }
 
     protected void onCreate() {
 
-        this.contentPanel = new CreateP12(this);
-        this.splitPane.setTopComponent(this.contentPanel);
+        contentPanel = new CreateP12(this);
+        splitPane.setTopComponent(contentPanel);
     }
 
     protected void onLoad() {
 
-        this.contentPanel = new LoadIdentity(this);
-        this.splitPane.setTopComponent(this.contentPanel);
+        contentPanel = new LoadIdentity(this);
+        splitPane.setTopComponent(contentPanel);
     }
 
     protected void onAuthUser() {
 
-        this.contentPanel = new AuthUser(this);
-        this.splitPane.setTopComponent(this.contentPanel);
+        contentPanel = new AuthUser(this);
+        splitPane.setTopComponent(contentPanel);
     }
 
     public void resetContent() {
 
-        this.contentPanel = new JPanel();
-        this.splitPane.setTopComponent(this.contentPanel);
+        contentPanel = new JPanel();
+        splitPane.setTopComponent(contentPanel);
     }
 
     public void setStatus() {
 
-        this.identityLabel.setText(this.consoleManager.getIdentityLabel());
-        this.locationLabel.setText(this.consoleManager.getLocationLabel());
+        identityLabel.setText(consoleManager.getIdentityLabel());
+        locationLabel.setText(consoleManager.getLocationLabel());
     }
 
     private void manageServices() {
 
-        this.attribAction.setEnabled(null != this.consoleManager.getIdentity());
-        this.authUserAction.setEnabled(null != this.consoleManager.getIdentity());
+        attribAction.setEnabled(null != consoleManager.getIdentity());
+        authUserAction.setEnabled(null != consoleManager.getIdentity());
     }
 
     void launchBrowser(Document doc, String prefix) {
@@ -299,7 +299,7 @@ public class ApplicationConsole extends JFrame implements Observer {
         try {
             tmpXmlFile = File.createTempFile(prefix, ".xml");
             FileUtils.writeStringToFile(tmpXmlFile, DomUtils.domToString(doc));
-            this.browserLauncher.openURLinBrowser((String) this.browserCombo.getSelectedItem(), "file://" + tmpXmlFile.getAbsolutePath());
+            browserLauncher.openURLinBrowser((String) browserCombo.getSelectedItem(), "file://" + tmpXmlFile.getAbsolutePath());
         } catch (TransformerException e) {
             LOG.error("Failed to transform SOAP document to plain-text", e);
         } catch (IOException e) {
@@ -312,8 +312,8 @@ public class ApplicationConsole extends JFrame implements Observer {
 
         if (o instanceof ApplicationConsoleManager) {
             if (arg instanceof MessageAccessor) {
-                this.viewInboundAction.setEnabled(true);
-                this.viewOutboundAction.setEnabled(true);
+                viewInboundAction.setEnabled(true);
+                viewOutboundAction.setEnabled(true);
             } else {
                 setStatus();
                 manageServices();
@@ -508,8 +508,8 @@ public class ApplicationConsole extends JFrame implements Observer {
             if (evt.getSource() instanceof JCheckBox) {
                 JCheckBox value = (JCheckBox) evt.getSource();
                 ApplicationConsoleManager.getInstance().setCaptureMessages(value.isSelected());
-                ApplicationConsole.this.viewInboundAction.setEnabled(value.isSelected());
-                ApplicationConsole.this.viewOutboundAction.setEnabled(value.isSelected());
+                viewInboundAction.setEnabled(value.isSelected());
+                viewOutboundAction.setEnabled(value.isSelected());
             }
         }
     }

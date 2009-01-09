@@ -98,11 +98,11 @@ public class Saml2Handler implements Serializable {
     public void init(Map<String, String> configParams, X509Certificate newApplicationCertificate, KeyPair newApplicationKeyPair)
             throws DeviceInitializationException {
 
-        this.wsLocation = configParams.get("WsLocation");
-        this.issuer = configParams.get("DeviceName");
-        this.applicationCertificate = newApplicationCertificate;
-        this.applicationKeyPair = newApplicationKeyPair;
-        if (null == this.wsLocation)
+        wsLocation = configParams.get("WsLocation");
+        issuer = configParams.get("DeviceName");
+        applicationCertificate = newApplicationCertificate;
+        applicationKeyPair = newApplicationKeyPair;
+        if (null == wsLocation)
             throw new DeviceInitializationException("Missing WS Location ( \"WsLocation\" )");
     }
 
@@ -111,8 +111,8 @@ public class Saml2Handler implements Serializable {
 
         DeviceOperationRequest deviceOperationRequest;
         try {
-            deviceOperationRequest = DeviceOperationRequestUtil.validateRequest(request, this.wsLocation, this.applicationCertificate,
-                    this.applicationKeyPair.getPrivate(), TrustDomainType.NODE);
+            deviceOperationRequest = DeviceOperationRequestUtil.validateRequest(request, wsLocation, applicationCertificate,
+                    applicationKeyPair.getPrivate(), TrustDomainType.NODE);
         } catch (ServletException e) {
             throw new DeviceInitializationException(e.getMessage());
         }
@@ -147,7 +147,7 @@ public class Saml2Handler implements Serializable {
         LOG.debug("user id: " + userId);
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(request.getSession());
-        protocolContext.setIssuer(this.issuer);
+        protocolContext.setIssuer(issuer);
         protocolContext.setTargetUrl(serviceURL);
         protocolContext.setInResponseTo(deviceOperationRequestId);
         protocolContext.setDevice(device);
@@ -175,7 +175,7 @@ public class Saml2Handler implements Serializable {
 
         String samlResponseToken = DeviceOperationResponseFactory.createDeviceOperationResponse(inResponseTo,
                 protocolContext.getDeviceOperation(), protocolContext.getIssuer(), protocolContext.getSubject(),
-                protocolContext.getDevice(), this.applicationKeyPair, protocolContext.getValidity(), protocolContext.getTargetUrl());
+                protocolContext.getDevice(), applicationKeyPair, protocolContext.getValidity(), protocolContext.getTargetUrl());
 
         String encodedSamlResponseToken = Base64.encode(samlResponseToken.getBytes());
 
@@ -206,14 +206,14 @@ public class Saml2Handler implements Serializable {
              */
             samlResponseToken = DeviceOperationResponseFactory.createDeviceOperationResponseFailed(inResponseTo,
                     protocolContext.getDeviceOperation(), protocolContext.getIssuer(), protocolContext.getSubject(),
-                    protocolContext.getDevice(), this.applicationKeyPair, protocolContext.getValidity(), protocolContext.getTargetUrl());
+                    protocolContext.getDevice(), applicationKeyPair, protocolContext.getValidity(), protocolContext.getTargetUrl());
         } else {
             /*
              * Device operation was successful
              */
             samlResponseToken = DeviceOperationResponseFactory.createDeviceOperationResponse(inResponseTo,
                     protocolContext.getDeviceOperation(), protocolContext.getIssuer(), protocolContext.getSubject(),
-                    protocolContext.getDevice(), this.applicationKeyPair, protocolContext.getValidity(), protocolContext.getTargetUrl());
+                    protocolContext.getDevice(), applicationKeyPair, protocolContext.getValidity(), protocolContext.getTargetUrl());
         }
 
         String encodedSamlResponseToken = Base64.encode(samlResponseToken.getBytes());

@@ -76,12 +76,12 @@ public abstract class AbstractMovingAverageChart extends AbstractChart {
 
         this.period = period;
         this.rangeAxisName = rangeAxisName;
-        this.averageTimes = new LinkedList<Long>();
-        this.averageSeries = new TimeSeries("Period: " + period + "ms", FixedMillisecond.class);
+        averageTimes = new LinkedList<Long>();
+        averageSeries = new TimeSeries("Period: " + period + "ms", FixedMillisecond.class);
 
-        this.averageTimings = new HashMap<Long, ScenarioTimingEntity>();
-        this.averageData = new HashMap<Long, ProfileDataEntity>();
-        this.averageErrors = new HashMap<Long, DriverExceptionEntity>();
+        averageTimings = new HashMap<Long, ScenarioTimingEntity>();
+        averageData = new HashMap<Long, ProfileDataEntity>();
+        averageErrors = new HashMap<Long, DriverExceptionEntity>();
     }
 
     /**
@@ -97,11 +97,11 @@ public abstract class AbstractMovingAverageChart extends AbstractChart {
 
         long startTime = timing.getStart();
 
-        this.averageTimings.put(startTime, timing);
+        averageTimings.put(startTime, timing);
         Set<Long> polled = doAverage(startTime);
 
         for (Long polledTime : polled) {
-            this.averageTimings.remove(polledTime);
+            averageTimings.remove(polledTime);
         }
     }
 
@@ -113,11 +113,11 @@ public abstract class AbstractMovingAverageChart extends AbstractChart {
 
         long startTime = data.getScenarioTiming().getStart();
 
-        this.averageData.put(startTime, data);
+        averageData.put(startTime, data);
         Set<Long> polled = doAverage(startTime);
 
         for (Long polledTime : polled) {
-            this.averageData.remove(polledTime);
+            averageData.remove(polledTime);
         }
     }
 
@@ -129,11 +129,11 @@ public abstract class AbstractMovingAverageChart extends AbstractChart {
 
         long startTime = error.getOccurredTime();
 
-        this.averageErrors.put(startTime, error);
+        averageErrors.put(startTime, error);
         Set<Long> polled = doAverage(startTime);
 
         for (Long polledTime : polled) {
-            this.averageErrors.remove(polledTime);
+            averageErrors.remove(polledTime);
         }
     }
 
@@ -146,23 +146,23 @@ public abstract class AbstractMovingAverageChart extends AbstractChart {
     protected Set<Long> doAverage(Long currentTime) {
 
         Set<Long> polled = new HashSet<Long>();
-        this.averageTimes.offer(currentTime);
+        averageTimes.offer(currentTime);
 
         // Poll off outdated data (more than a period old).
         Long baseTime;
         while (true) {
-            baseTime = this.averageTimes.peek();
-            if (currentTime - this.period <= baseTime || baseTime > currentTime) {
+            baseTime = averageTimes.peek();
+            if (currentTime - period <= baseTime || baseTime > currentTime) {
                 break;
             }
 
-            this.enoughData = true;
-            polled.add(this.averageTimes.poll());
+            enoughData = true;
+            polled.add(averageTimes.poll());
         }
 
         // Multiply hits by 1000 and divide by period to obtain hits/s.
-        if (this.enoughData) {
-            this.averageSeries.addOrUpdate(new FixedMillisecond(currentTime), getMovingAverage());
+        if (enoughData) {
+            averageSeries.addOrUpdate(new FixedMillisecond(currentTime), getMovingAverage());
         }
 
         return polled;
@@ -174,14 +174,14 @@ public abstract class AbstractMovingAverageChart extends AbstractChart {
     @Override
     protected XYPlot getPlot() {
 
-        if (this.averageSeries.isEmpty())
+        if (averageSeries.isEmpty())
             return null;
 
         ValueAxis domainAxis = new DateAxis("Time");
 
         TimeSeriesCollection speedSet;
-        speedSet = new TimeSeriesCollection(this.averageSeries);
+        speedSet = new TimeSeriesCollection(averageSeries);
 
-        return new XYPlot(speedSet, domainAxis, new NumberAxis(this.rangeAxisName), new XYLineAndShapeRenderer(true, false));
+        return new XYPlot(speedSet, domainAxis, new NumberAxis(rangeAxisName), new XYLineAndShapeRenderer(true, false));
     }
 }

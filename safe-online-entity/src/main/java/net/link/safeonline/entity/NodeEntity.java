@@ -89,17 +89,17 @@ public class NodeEntity implements Serializable {
         this.port = port;
         this.sslPort = sslPort;
         if (null != authnCertificate) {
-            this.authnCertificateSubject = authnCertificate.getSubjectX500Principal().getName();
+            authnCertificateSubject = authnCertificate.getSubjectX500Principal().getName();
         }
         if (null != signingCertificate) {
-            this.signingCertificateSubject = signingCertificate.getSubjectX500Principal().getName();
+            signingCertificateSubject = signingCertificate.getSubjectX500Principal().getName();
         }
     }
 
     @Id
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -109,7 +109,7 @@ public class NodeEntity implements Serializable {
 
     public String getProtocol() {
 
-        return this.protocol;
+        return protocol;
     }
 
     public void setProtocol(String protocol) {
@@ -119,7 +119,7 @@ public class NodeEntity implements Serializable {
 
     public String getHostname() {
 
-        return this.hostname;
+        return hostname;
     }
 
     public void setHostname(String hostname) {
@@ -129,7 +129,7 @@ public class NodeEntity implements Serializable {
 
     public int getPort() {
 
-        return this.port;
+        return port;
     }
 
     public void setPort(int port) {
@@ -139,7 +139,7 @@ public class NodeEntity implements Serializable {
 
     public int getSslPort() {
 
-        return this.sslPort;
+        return sslPort;
     }
 
     public void setSslPort(int sslPort) {
@@ -153,7 +153,7 @@ public class NodeEntity implements Serializable {
     @Transient
     public String getLocation() {
 
-        return String.format("%s://%s:%d", this.protocol, this.hostname, this.protocol.equals("http")? this.port: this.sslPort);
+        return String.format("%s://%s:%d", protocol, hostname, protocol.equals("http")? port: sslPort);
     }
 
     /**
@@ -162,7 +162,7 @@ public class NodeEntity implements Serializable {
     @Transient
     public String getHTTPLocation() {
 
-        return String.format("http://%s:%d", this.hostname, this.port);
+        return String.format("http://%s:%d", hostname, port);
     }
 
     /**
@@ -171,13 +171,13 @@ public class NodeEntity implements Serializable {
     @Transient
     public String getHTTPSLocation() {
 
-        return String.format("https://%s:%d", this.hostname, this.sslPort);
+        return String.format("https://%s:%d", hostname, sslPort);
     }
 
     @Column(unique = true)
     public String getAuthnCertificateSubject() {
 
-        return this.authnCertificateSubject;
+        return authnCertificateSubject;
     }
 
     /**
@@ -207,7 +207,7 @@ public class NodeEntity implements Serializable {
     @Column(unique = true)
     public String getSigningCertificateSubject() {
 
-        return this.signingCertificateSubject;
+        return signingCertificateSubject;
     }
 
     /**
@@ -244,19 +244,19 @@ public class NodeEntity implements Serializable {
         if (false == obj instanceof NodeEntity)
             return false;
         NodeEntity rhs = (NodeEntity) obj;
-        return new EqualsBuilder().append(this.name, rhs.name).isEquals();
+        return new EqualsBuilder().append(name, rhs.name).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.name).toHashCode();
+        return new HashCodeBuilder().append(name).toHashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("name", this.name).toString();
+        return new ToStringBuilder(this).append("name", name).toString();
     }
 
 

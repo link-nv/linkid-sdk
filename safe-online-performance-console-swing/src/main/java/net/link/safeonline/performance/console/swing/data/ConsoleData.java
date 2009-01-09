@@ -386,7 +386,7 @@ public class ConsoleData {
             super("Lock Handler");
 
             setDaemon(true);
-            this.queue = new LinkedBlockingQueue<Runnable>();
+            queue = new LinkedBlockingQueue<Runnable>();
 
             start();
         }
@@ -400,7 +400,7 @@ public class ConsoleData {
             Runnable task;
             while (true) {
                 try {
-                    while ((task = this.queue.poll(Long.MAX_VALUE, TimeUnit.SECONDS)) == null) {
+                    while ((task = queue.poll(Long.MAX_VALUE, TimeUnit.SECONDS)) == null) {
                         Thread.yield();
                     }
 
@@ -417,7 +417,7 @@ public class ConsoleData {
 
         public void queue(Runnable task) {
 
-            this.queue.offer(task);
+            queue.offer(task);
         }
     }
 }

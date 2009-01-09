@@ -32,14 +32,14 @@ public class EncapAdministrationClientImpl implements EncapAdministrationClient 
     public EncapAdministrationClientImpl(String location) throws AxisFault, MalformedURLException {
 
         URL endpointURL = new URL("http://" + location + "/services/mSecBankIdAdministration");
-        this.adminStub = new MSecBankIdAdministrationSoapBindingStub(endpointURL, new Service());
+        adminStub = new MSecBankIdAdministrationSoapBindingStub(endpointURL, new Service());
     }
 
     public boolean lock(String mobile, String orgId)
             throws RemoteException {
 
         LOG.debug("lock mobile: " + mobile);
-        MSecResponse response = this.adminStub.lock(mobile, orgId);
+        MSecResponse response = adminStub.lock(mobile, orgId);
         if (EncapConstants.ENCAP_SUCCES == response.getStatus())
             return true;
         return false;
@@ -49,7 +49,7 @@ public class EncapAdministrationClientImpl implements EncapAdministrationClient 
             throws RemoteException {
 
         LOG.debug("remove mobile: " + mobile);
-        MSecResponse response = this.adminStub.remove(mobile, orgId);
+        MSecResponse response = adminStub.remove(mobile, orgId);
         if (EncapConstants.ENCAP_SUCCES == response.getStatus())
             return true;
         return false;
@@ -59,7 +59,7 @@ public class EncapAdministrationClientImpl implements EncapAdministrationClient 
             throws RemoteException {
 
         LOG.debug("show status mobile: " + mobile);
-        MSecResponse response = this.adminStub.showStatus(mobile, orgId);
+        MSecResponse response = adminStub.showStatus(mobile, orgId);
         return response.getAdditionalInfo();
     }
 
@@ -67,7 +67,7 @@ public class EncapAdministrationClientImpl implements EncapAdministrationClient 
             throws RemoteException {
 
         LOG.debug("unLock mobile: " + mobile);
-        MSecResponse response = this.adminStub.unLock(mobile, orgId);
+        MSecResponse response = adminStub.unLock(mobile, orgId);
         if (EncapConstants.ENCAP_SUCCES == response.getStatus())
             return true;
         return false;

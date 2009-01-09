@@ -51,18 +51,18 @@ public class AuthnRequestFilterTest {
     public void setUp()
             throws Exception {
 
-        this.originalContextClassLoader = Thread.currentThread().getContextClassLoader();
-        this.testClassLoader = new TestClassLoader();
-        Thread.currentThread().setContextClassLoader(this.testClassLoader);
-        this.servletTestManager = new ServletTestManager();
+        originalContextClassLoader = Thread.currentThread().getContextClassLoader();
+        testClassLoader = new TestClassLoader();
+        Thread.currentThread().setContextClassLoader(testClassLoader);
+        servletTestManager = new ServletTestManager();
     }
 
     @After
     public void tearDown()
             throws Exception {
 
-        this.servletTestManager.tearDown();
-        Thread.currentThread().setContextClassLoader(this.originalContextClassLoader);
+        servletTestManager.tearDown();
+        Thread.currentThread().setContextClassLoader(originalContextClassLoader);
     }
 
 
@@ -92,7 +92,7 @@ public class AuthnRequestFilterTest {
         PkiTestUtils.persistKey(tmpP12File, keyPair.getPrivate(), cert, "secret", "secret");
 
         String p12ResourceName = "p12-resource-name.p12";
-        this.testClassLoader.addResource(p12ResourceName, tmpP12File.toURI().toURL());
+        testClassLoader.addResource(p12ResourceName, tmpP12File.toURI().toURL());
 
         Map<String, String> filterInitParameters = new HashMap<String, String>();
         filterInitParameters.put("AuthenticationServiceUrl", "http://authn.service");
@@ -102,9 +102,9 @@ public class AuthnRequestFilterTest {
         filterInitParameters.put("KeyStorePassword", "secret");
         filterInitParameters.put("WsLocation", "https://ws.location");
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
-        this.servletTestManager.setUp(TestServlet.class, AuthnRequestFilter.class, filterInitParameters, initialSessionAttributes);
+        servletTestManager.setUp(TestServlet.class, AuthnRequestFilter.class, filterInitParameters, initialSessionAttributes);
 
-        GetMethod getMethod = new GetMethod(this.servletTestManager.getServletLocation());
+        GetMethod getMethod = new GetMethod(servletTestManager.getServletLocation());
         HttpClient httpClient = new HttpClient();
 
         // operate
@@ -129,7 +129,7 @@ public class AuthnRequestFilterTest {
         PkiTestUtils.persistKey(tmpP12File, keyPair.getPrivate(), cert, "secret", "secret");
 
         String p12ResourceName = "p12-resource-name.p12";
-        this.testClassLoader.addResource(p12ResourceName, tmpP12File.toURI().toURL());
+        testClassLoader.addResource(p12ResourceName, tmpP12File.toURI().toURL());
 
         Map<String, String> filterInitParameters = new HashMap<String, String>();
         filterInitParameters.put("AuthenticationServiceUrl", "http://authn.service");
@@ -140,9 +140,9 @@ public class AuthnRequestFilterTest {
         filterInitParameters.put("Saml2BrowserPostTemplate", "test-saml2-post-binding.vm");
         filterInitParameters.put("WsLocation", "https://ws.location");
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
-        this.servletTestManager.setUp(TestServlet.class, AuthnRequestFilter.class, filterInitParameters, initialSessionAttributes);
+        servletTestManager.setUp(TestServlet.class, AuthnRequestFilter.class, filterInitParameters, initialSessionAttributes);
 
-        GetMethod getMethod = new GetMethod(this.servletTestManager.getServletLocation());
+        GetMethod getMethod = new GetMethod(servletTestManager.getServletLocation());
         HttpClient httpClient = new HttpClient();
 
         // operate

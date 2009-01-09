@@ -76,7 +76,7 @@ public class DisableServlet extends AbstractInjectionServlet {
         protocolContext.setSuccess(false);
 
         try {
-            this.otpOverSmsDeviceService.disable(userId, attribute);
+            otpOverSmsDeviceService.disable(userId, attribute);
 
             response.setStatus(HttpServletResponse.SC_OK);
             // notify that disable operation was successful.
@@ -86,14 +86,14 @@ public class DisableServlet extends AbstractInjectionServlet {
         } catch (SubjectNotFoundException e) {
             String message = "subject " + userId + " not found";
             LOG.error(message, e);
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, message);
+            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, message);
         } catch (DeviceRegistrationNotFoundException e) {
             String message = "device registration \"" + attribute + "\" not found";
             LOG.error(message, e);
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, message);
+            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, message);
         }
 
-        response.sendRedirect(this.deviceExitPath);
+        response.sendRedirect(deviceExitPath);
 
     }
 }

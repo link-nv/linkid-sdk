@@ -21,7 +21,7 @@ public class ErrorMessage {
 
     public ErrorMessage(String message) {
 
-        this.name = "ErrorMessage";
+        name = "ErrorMessage";
         this.message = message;
     }
 
@@ -33,12 +33,12 @@ public class ErrorMessage {
 
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     public String getMessage() {
 
-        return this.message;
+        return message;
     }
 
     public void setMessage(String message) {

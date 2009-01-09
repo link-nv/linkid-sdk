@@ -21,7 +21,7 @@ public class DeviceFinalizationException extends Exception {
     @Override
     public String getMessage() {
 
-        return this.message;
+        return message;
     }
 
 }

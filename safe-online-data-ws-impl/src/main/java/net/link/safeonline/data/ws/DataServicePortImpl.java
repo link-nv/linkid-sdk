@@ -111,7 +111,7 @@ public class DataServicePortImpl implements DataServicePort {
 
         String userId;
         try {
-            userId = TargetIdentityHandler.getTargetIdentity(this.context);
+            userId = TargetIdentityHandler.getTargetIdentity(context);
         } catch (TargetIdentityException e) {
             CreateResponseType failedResponse = createFailedCreateResponse(SecondLevelStatusCode.MISSING_CREDENTIALS);
             return failedResponse;
@@ -129,7 +129,7 @@ public class DataServicePortImpl implements DataServicePort {
             attributeValue = getValueObjectFromAttribute(attribute);
         }
         try {
-            this.attributeProviderService.createAttribute(userId, attributeName, attributeValue);
+            attributeProviderService.createAttribute(userId, attributeName, attributeValue);
         } catch (SubjectNotFoundException e) {
             CreateResponseType failedResponse = createFailedCreateResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "SubjectNotFound");
             return failedResponse;
@@ -182,7 +182,7 @@ public class DataServicePortImpl implements DataServicePort {
 
         String userId;
         try {
-            userId = TargetIdentityHandler.getTargetIdentity(this.context);
+            userId = TargetIdentityHandler.getTargetIdentity(context);
         } catch (TargetIdentityException e) {
             DeleteResponseType failedResponse = createFailedDeleteResponse(SecondLevelStatusCode.MISSING_CREDENTIALS);
             return failedResponse;
@@ -191,9 +191,9 @@ public class DataServicePortImpl implements DataServicePort {
         String attributeId = select.getOtherAttributes().get(WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID);
         try {
             if (null == attributeId) {
-                this.attributeProviderService.removeAttribute(userId, attributeName);
+                attributeProviderService.removeAttribute(userId, attributeName);
             } else {
-                this.attributeProviderService.removeCompoundAttributeRecord(userId, attributeName, attributeId);
+                attributeProviderService.removeCompoundAttributeRecord(userId, attributeName, attributeId);
             }
         } catch (SubjectNotFoundException e) {
             DeleteResponseType failedResponse = createFailedDeleteResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "SubjectNotFound");
@@ -244,7 +244,7 @@ public class DataServicePortImpl implements DataServicePort {
         String attributeName = select.getValue();
         String userId;
         try {
-            userId = TargetIdentityHandler.getTargetIdentity(this.context);
+            userId = TargetIdentityHandler.getTargetIdentity(context);
         } catch (TargetIdentityException e) {
             ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.MISSING_CREDENTIALS);
             return failedResponse;
@@ -284,7 +284,7 @@ public class DataServicePortImpl implements DataServicePort {
             }
             Map<String, Object> memberValues = getCompoundMemberValues(attribute);
             try {
-                this.attributeProviderService.setCompoundAttributeRecord(userId, attributeName, attributeId, memberValues);
+                attributeProviderService.setCompoundAttributeRecord(userId, attributeName, attributeId, memberValues);
             } catch (SubjectNotFoundException e) {
                 ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "SubjectNotFound");
                 return failedResponse;
@@ -306,7 +306,7 @@ public class DataServicePortImpl implements DataServicePort {
             Object attributeValue = getValueObjectFromAttribute(attribute);
 
             try {
-                this.attributeProviderService.setAttribute(userId, attributeName, attributeValue);
+                attributeProviderService.setAttribute(userId, attributeName, attributeValue);
             } catch (SubjectNotFoundException e) {
                 ModifyResponseType failedResponse = createFailedModifyResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "SubjectNotFound");
                 return failedResponse;
@@ -409,7 +409,7 @@ public class DataServicePortImpl implements DataServicePort {
         }
         String userId;
         try {
-            userId = TargetIdentityHandler.getTargetIdentity(this.context);
+            userId = TargetIdentityHandler.getTargetIdentity(context);
         } catch (TargetIdentityException e) {
             QueryResponseType failedResponse = createFailedQueryResponse(SecondLevelStatusCode.MISSING_CREDENTIALS,
                     "no TargetIdentity found");
@@ -419,7 +419,7 @@ public class DataServicePortImpl implements DataServicePort {
         LOG.debug("query user \"" + userId + "\" for attribute " + attributeName);
         List<AttributeEntity> attributeList;
         try {
-            attributeList = this.attributeProviderService.getAttributes(userId, attributeName);
+            attributeList = attributeProviderService.getAttributes(userId, attributeName);
         } catch (AttributeTypeNotFoundException e) {
             QueryResponseType failedResponse = createFailedQueryResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "AttributeTypeNotFound");
             return failedResponse;

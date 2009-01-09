@@ -37,13 +37,13 @@ public class StatisticDataPointDAOBean implements StatisticDataPointDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, StatisticDataPointEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, StatisticDataPointEntity.QueryInterface.class);
     }
 
     public StatisticDataPointEntity addStatisticDataPoint(String name, StatisticEntity statistic, long x, long y, long z) {
 
         StatisticDataPointEntity statisticDataPoint = new StatisticDataPointEntity(name, statistic, new Date(), x, y, z);
-        this.entityManager.persist(statisticDataPoint);
+        entityManager.persist(statisticDataPoint);
         statistic.getStatisticDataPoints().add(statisticDataPoint);
         statistic.setCreationTime(new Date());
         return statisticDataPoint;
@@ -51,7 +51,7 @@ public class StatisticDataPointDAOBean implements StatisticDataPointDAO {
 
     public List<StatisticDataPointEntity> listStatisticDataPoints(String name, StatisticEntity statistic) {
 
-        return this.queryObject.listStatisticDataPoints(name, statistic);
+        return queryObject.listStatisticDataPoints(name, statistic);
     }
 
     public StatisticDataPointEntity findOrAddStatisticDataPoint(String name, StatisticEntity statistic) {
@@ -68,12 +68,12 @@ public class StatisticDataPointDAOBean implements StatisticDataPointDAO {
 
     public void cleanStatisticDataPoints(StatisticEntity statistic) {
 
-        this.queryObject.deleteWhereStatistic(statistic);
+        queryObject.deleteWhereStatistic(statistic);
     }
 
     public void cleanStatisticDataPoints(StatisticEntity statistic, Date ageLimit) {
 
-        this.queryObject.deleteWhereStatisticExpired(statistic, ageLimit);
+        queryObject.deleteWhereStatisticExpired(statistic, ageLimit);
     }
 
 }

@@ -100,13 +100,13 @@ public class ExitServletTest {
     public void setUp()
             throws Exception {
 
-        this.jmxTestUtils = new JmxTestUtils();
+        jmxTestUtils = new JmxTestUtils();
 
-        this.jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
+        jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
         final KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        this.publicKey = keyPair.getPublic();
-        this.jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getPrivateKey", new MBeanActionHandler() {
+        publicKey = keyPair.getPublic();
+        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getPrivateKey", new MBeanActionHandler() {
 
             public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
@@ -114,7 +114,7 @@ public class ExitServletTest {
                 return keyPair.getPrivate();
             }
         });
-        this.jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getPublicKey", new MBeanActionHandler() {
+        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getPublicKey", new MBeanActionHandler() {
 
             public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
@@ -123,51 +123,51 @@ public class ExitServletTest {
             }
         });
 
-        this.jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
+        jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
 
         final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
-        this.authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=test");
-        this.jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate",
+        authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=test");
+        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate",
                 new MBeanActionHandler() {
 
                     public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
                         LOG.debug("returning certificate");
-                        return ExitServletTest.this.authCertificate;
+                        return authCertificate;
                     }
                 });
 
-        this.jndiTestUtils = new JndiTestUtils();
+        jndiTestUtils = new JndiTestUtils();
         int validity = 60 * 10;
 
-        this.mockAuthenticationService = createMock(AuthenticationService.class);
-        expect(this.mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.USER_AUTHENTICATED);
+        mockAuthenticationService = createMock(AuthenticationService.class);
+        expect(mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.USER_AUTHENTICATED);
 
-        this.mockObjects = new Object[] { this.mockAuthenticationService };
-        this.jndiTestUtils.setUp();
+        mockObjects = new Object[] { mockAuthenticationService };
+        jndiTestUtils.setUp();
 
-        this.exitServletTestManager = new ServletTestManager();
+        exitServletTestManager = new ServletTestManager();
         Map<String, String> servletInitParams = new HashMap<String, String>();
-        servletInitParams.put("ProtocolErrorUrl", this.protocolErrorUrl);
+        servletInitParams.put("ProtocolErrorUrl", protocolErrorUrl);
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
 
         DeviceClassEntity deviceClass = new DeviceClassEntity(SafeOnlineConstants.PKI_DEVICE_CLASS,
                 SafeOnlineConstants.PKI_DEVICE_AUTH_CONTEXT_CLASS);
-        this.device = new DeviceEntity(BeIdConstants.BEID_DEVICE_ID, deviceClass, null, null, null, null, null, null, null, null);
+        device = new DeviceEntity(BeIdConstants.BEID_DEVICE_ID, deviceClass, null, null, null, null, null, null, null, null);
 
         initialSessionAttributes.put(ProtocolHandlerManager.PROTOCOL_HANDLER_ID_ATTRIBUTE, Saml2PostProtocolHandler.class.getName());
-        initialSessionAttributes.put(LoginManager.USERID_ATTRIBUTE, this.userid);
-        initialSessionAttributes.put(LoginManager.TARGET_ATTRIBUTE, this.target);
-        initialSessionAttributes.put(LoginManager.APPLICATION_ID_ATTRIBUTE, this.applicationId);
-        initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE, this.mockAuthenticationService);
-        initialSessionAttributes.put(LoginManager.AUTHENTICATION_DEVICE_ATTRIBUTE, this.device);
+        initialSessionAttributes.put(LoginManager.USERID_ATTRIBUTE, userid);
+        initialSessionAttributes.put(LoginManager.TARGET_ATTRIBUTE, target);
+        initialSessionAttributes.put(LoginManager.APPLICATION_ID_ATTRIBUTE, applicationId);
+        initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE, mockAuthenticationService);
+        initialSessionAttributes.put(LoginManager.AUTHENTICATION_DEVICE_ATTRIBUTE, device);
 
-        this.exitServletTestManager.setUp(ExitServlet.class, servletInitParams, null, null, initialSessionAttributes);
+        exitServletTestManager.setUp(ExitServlet.class, servletInitParams, null, null, initialSessionAttributes);
 
-        String samlResponseToken = AuthnResponseFactory.createAuthResponse(this.inResponseTo, this.applicationId, this.applicationId,
-                this.userid, this.device.getAuthenticationContextClass(), keyPair, validity, this.target);
+        String samlResponseToken = AuthnResponseFactory.createAuthResponse(inResponseTo, applicationId, applicationId,
+                userid, device.getAuthenticationContextClass(), keyPair, validity, target);
         String encodedSamlResponseToken = org.apache.xml.security.utils.Base64.encode(samlResponseToken.getBytes());
-        expect(this.mockAuthenticationService.finalizeAuthentication()).andStubReturn(encodedSamlResponseToken);
+        expect(mockAuthenticationService.finalizeAuthentication()).andStubReturn(encodedSamlResponseToken);
 
     }
 
@@ -175,8 +175,8 @@ public class ExitServletTest {
     public void tearDown()
             throws Exception {
 
-        this.exitServletTestManager.tearDown();
-        this.jndiTestUtils.tearDown();
+        exitServletTestManager.tearDown();
+        jndiTestUtils.tearDown();
         // this.jmxTestUtils.tearDown();
     }
 
@@ -186,20 +186,20 @@ public class ExitServletTest {
 
         // setup
         HttpClient httpClient = new HttpClient();
-        GetMethod getMethod = new GetMethod(this.exitServletTestManager.getServletLocation());
+        GetMethod getMethod = new GetMethod(exitServletTestManager.getServletLocation());
         getMethod.setFollowRedirects(false);
 
         // expectations
-        this.mockAuthenticationService.commitAuthentication("en");
+        mockAuthenticationService.commitAuthentication("en");
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
         int statusCode = httpClient.executeMethod(getMethod);
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
         assertEquals(HttpStatus.SC_OK, statusCode);
         String responseBody = getMethod.getResponseBodyAsString();
         LOG.debug("response body: " + responseBody);
@@ -219,7 +219,7 @@ public class ExitServletTest {
         String xmlFilename = tmpFile.getAbsolutePath();
         String pubFilename = FilenameUtils.getFullPath(xmlFilename) + FilenameUtils.getBaseName(xmlFilename) + ".pem";
         PEMWriter writer = new PEMWriter(new FileWriter(pubFilename));
-        writer.writeObject(this.publicKey);
+        writer.writeObject(publicKey);
         writer.close();
 
         Document samlResponseDocument = DomTestUtils.parseDocument(samlResponse);

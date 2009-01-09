@@ -43,7 +43,7 @@ public class JceSigner implements Signer {
             throw new RuntimeException("SHA1withRSA algo not available");
         }
         try {
-            signature.initSign(this.privateKey);
+            signature.initSign(privateKey);
         } catch (InvalidKeyException e) {
             throw new RuntimeException("invalid key: " + e.getMessage());
         }
@@ -59,6 +59,6 @@ public class JceSigner implements Signer {
 
     public X509Certificate getCertificate() {
 
-        return this.certificate;
+        return certificate;
     }
 }
