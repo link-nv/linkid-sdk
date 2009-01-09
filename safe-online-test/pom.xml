@@ -122,13 +122,6 @@
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-identity-applet
-			</artifactId>
-			<version>1.3-SNAPSHOT</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-sms</artifactId>
 			<version>1.3-SNAPSHOT</version>
 			<scope>test</scope>
@@ -192,7 +185,7 @@
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-beid-pkcs11-pcsc-applet</artifactId>
+			<artifactId>safe-online-beid-pkcs11-applet</artifactId>
 			<version>1.3-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
