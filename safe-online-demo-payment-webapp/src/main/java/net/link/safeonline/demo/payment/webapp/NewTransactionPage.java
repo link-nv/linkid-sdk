@@ -94,16 +94,24 @@ public class NewTransactionPage extends LayoutPage {
                 visas = Arrays.asList(attribService.getAttributeValue(user.getOlasId(), DemoConstants.DEMO_VISA_ATTRIBUTE_NAME,
                         String[].class));
 
-                add(new TextArea<String>("description", description = new Model<String>()));
-                add(new RadioChoice<String>("visa", visa = new Model<String>(), visas));
-                add(new TextField<String>("target", target = new Model<String>()));
-                add(new TextField<String>("amount", amount = new Model<String>()));
+                TextArea<String> descriptionField = new TextArea<String>("description", description = new Model<String>());
+                RadioChoice<String> visaField = new RadioChoice<String>("visa", visa = new Model<String>(), visas);
+                visaField.setRequired(true);
+                TextField<String> targetField = new TextField<String>("target", target = new Model<String>());
+                targetField.setRequired(true);
+                TextField<String> amountField = new TextField<String>("amount", amount = new Model<String>());
+                amountField.setRequired(true);
 
                 if (PaymentSession.get().getService() != null) {
                     description.setObject(PaymentSession.get().getService().getMessage());
+                    descriptionField.setEnabled(false);
                     target.setObject(PaymentSession.get().getService().getRecipient());
+                    targetField.setEnabled(false);
                     amount.setObject(String.valueOf(PaymentSession.get().getService().getAmount()));
+                    amountField.setEnabled(false);
                 }
+
+                add(descriptionField, visaField, targetField, amountField);
             }
 
             catch (AttributeNotFoundException e) {

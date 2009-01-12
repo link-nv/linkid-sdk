@@ -110,6 +110,9 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
     private void handleLanding(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        // Create a new session (invalidate an old one, if there is one).
+        HttpSession session = restartSession(request);
+
         /**
          * Wrap the request to use the servlet endpoint url. To prevent failure when behind a reverse proxy or load balancer when OpenSAML
          * is checking the destination field.
@@ -129,9 +132,6 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
             response.sendRedirect(unsupportedProtocolUrl);
             return;
         }
-
-        // Create a new session (invalidate an old one, if there is one).
-        HttpSession session = restartSession(wrappedRequest);
 
         /*
          * Set the language cookie if language was specified in the browser post
