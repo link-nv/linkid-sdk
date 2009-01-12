@@ -17,6 +17,7 @@ import net.link.safeonline.webapp.template.ProgressAuthenticationPanel;
 
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.RedirectToUrlException;
+import org.apache.wicket.markup.html.link.Link;
 
 
 /**
@@ -48,7 +49,17 @@ public class AuthenticationPage extends AppletPage {
 
         // Header & Sidebar.
         getHeader();
-        getSidebar();
+        getSidebar().add(new Link<String>("tryAnotherDevice") {
+
+            private static final long serialVersionUID = 1L;
+
+
+            @Override
+            public void onClick() {
+
+                cancel();
+            }
+        });
 
         // Our content.
         ProgressAuthenticationPanel progress = new ProgressAuthenticationPanel("progress", ProgressAuthenticationPanel.stage.authenticate);

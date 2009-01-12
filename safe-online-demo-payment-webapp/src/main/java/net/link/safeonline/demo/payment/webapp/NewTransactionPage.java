@@ -18,10 +18,12 @@ import net.link.safeonline.wicket.web.RequireLogin;
 import org.apache.wicket.Page;
 import org.apache.wicket.RedirectToUrlException;
 import org.apache.wicket.RestartResponseException;
+import org.apache.wicket.feedback.IFeedbackMessageFilter;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.RadioChoice;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.http.WebRequest;
 
@@ -112,6 +114,7 @@ public class NewTransactionPage extends LayoutPage {
                 }
 
                 add(descriptionField, visaField, targetField, amountField);
+                add(new FeedbackPanel("feedback", IFeedbackMessageFilter.ALL));
             }
 
             catch (AttributeNotFoundException e) {
