@@ -5,6 +5,7 @@ import net.link.safeonline.demo.bank.webapp.NewAccountPage.AccountForm;
 import net.link.safeonline.wicket.web.RequireLogin;
 
 import org.apache.wicket.Page;
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.RadioChoice;
 import org.apache.wicket.markup.html.form.TextArea;
@@ -82,9 +83,8 @@ public class NewTransactionPage extends LayoutPage {
         protected void onSubmit() {
 
             if (getTransactionService().createTransaction(description.getObject(), source.getObject(), target.getObject(),
-                    Double.parseDouble(amount.getObject())) != null) {
-                setResponsePage(AccountPage.class);
-            }
+                    Double.parseDouble(amount.getObject())) != null)
+                throw new RestartResponseException(AccountPage.class);
         }
     }
 

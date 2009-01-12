@@ -125,7 +125,7 @@ public class SeatSelectionPage extends LayoutPage {
                                 public void onClick() {
 
                                     CinemaSession.get().toggleSeat(seat);
-                                    setResponsePage(SeatSelectionPage.class);
+                                    throw new RestartResponseException(SeatSelectionPage.class);
                                 }
 
                                 @Override

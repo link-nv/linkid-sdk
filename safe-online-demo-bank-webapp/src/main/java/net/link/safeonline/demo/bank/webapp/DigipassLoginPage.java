@@ -3,6 +3,7 @@ package net.link.safeonline.demo.bank.webapp;
 import net.link.safeonline.demo.bank.entity.BankUserEntity;
 
 import org.apache.wicket.Page;
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.Model;
@@ -51,8 +52,7 @@ public class DigipassLoginPage extends LayoutPage {
 
                     else {
                         BankSession.get().setUser(user);
-                        setResponsePage(AccountPage.class);
-                        setRedirect(true);
+                        throw new RestartResponseException(AccountPage.class);
                     }
                 }
             }

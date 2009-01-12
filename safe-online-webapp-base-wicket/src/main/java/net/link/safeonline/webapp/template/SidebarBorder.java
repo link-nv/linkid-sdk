@@ -4,6 +4,7 @@ import net.link.safeonline.webapp.common.HelpPage;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.border.Border;
 import org.apache.wicket.markup.html.link.Link;
 
@@ -27,7 +28,7 @@ public class SidebarBorder extends Border {
             @Override
             public void onClick() {
 
-                setResponsePage(new HelpPage(getPage()));
+                throw new RestartResponseException(new HelpPage(getPage()));
             }
 
             /**

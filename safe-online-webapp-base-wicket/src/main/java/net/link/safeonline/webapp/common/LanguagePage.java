@@ -16,6 +16,7 @@ import net.link.safeonline.webapp.template.TemplatePage;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Page;
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.link.Link;
 
 
@@ -56,7 +57,7 @@ public class LanguagePage extends TemplatePage {
             public void onClick() {
 
                 setLanguage("en");
-                setResponsePage(returnPage);
+                throw new RestartResponseException(returnPage);
 
             }
         });
@@ -71,7 +72,7 @@ public class LanguagePage extends TemplatePage {
             public void onClick() {
 
                 setLanguage("nl");
-                setResponsePage(returnPage);
+                throw new RestartResponseException(returnPage);
 
             }
         });

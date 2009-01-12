@@ -25,6 +25,7 @@ import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
@@ -96,12 +97,13 @@ public class RegisterPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    RegisterPage.LOG.debug("register digipas with sn=" + serialNumber + " for user: "
-                            + login);
+                    RegisterPage.LOG.debug("register digipas with sn=" + serialNumber + " for user: " + login);
 
                     try {
                         digipassDeviceService.register(getUserId(), serialNumber.getObject());
-                    } catch (SubjectNotFoundException e) {
+                    }
+
+                    catch (SubjectNotFoundException e) {
                         LOG.debug("subject not found");
                         loginField.error(getLocalizer().getString("errorSubjectNotFound", this));
                         return;
@@ -118,7 +120,8 @@ public class RegisterPage extends TemplatePage {
                         RegisterForm.this.error(getLocalizer().getString("errorAttributeTypeNotFound", this));
                         return;
                     }
-                    setResponsePage(MainPage.class);
+
+                    throw new RestartResponseException(MainPage.class);
                 }
 
             });
@@ -131,7 +134,7 @@ public class RegisterPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    setResponsePage(MainPage.class);
+                    throw new RestartResponseException(MainPage.class);
                 }
 
             };

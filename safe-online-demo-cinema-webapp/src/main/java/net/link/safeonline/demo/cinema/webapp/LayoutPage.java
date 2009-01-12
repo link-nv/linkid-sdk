@@ -21,6 +21,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.RedirectToUrlException;
 import org.apache.wicket.RequestCycle;
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.MarkupStream;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -167,7 +168,7 @@ public class LayoutPage extends OlasApplicationPage {
                 public void onClick() {
 
                     CinemaSession.get().resetFilm();
-                    setResponsePage(FilmTheatreSelectionPage.class);
+                    throw new RestartResponseException(FilmTheatreSelectionPage.class);
                 }
             });
 
@@ -200,7 +201,7 @@ public class LayoutPage extends OlasApplicationPage {
                 public void onClick() {
 
                     CinemaSession.get().resetTheatre();
-                    setResponsePage(FilmTheatreSelectionPage.class);
+                    throw new RestartResponseException(FilmTheatreSelectionPage.class);
                 }
             });
 
@@ -233,7 +234,7 @@ public class LayoutPage extends OlasApplicationPage {
                 public void onClick() {
 
                     CinemaSession.get().resetTime();
-                    setResponsePage(TimeRoomSelectionPage.class);
+                    throw new RestartResponseException(TimeRoomSelectionPage.class);
                 }
             });
 
@@ -266,7 +267,7 @@ public class LayoutPage extends OlasApplicationPage {
                 public void onClick() {
 
                     CinemaSession.get().resetRoom();
-                    setResponsePage(TimeRoomSelectionPage.class);
+                    throw new RestartResponseException(TimeRoomSelectionPage.class);
                 }
             });
 

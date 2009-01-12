@@ -135,7 +135,7 @@ public class TimeRoomSelectionPage extends LayoutPage {
                         public void onClick() {
 
                             CinemaSession.get().setTime(time);
-                            setResponsePage(TimeRoomSelectionPage.class);
+                            throw new RestartResponseException(TimeRoomSelectionPage.class);
                         }
                     });
                 }
@@ -223,7 +223,7 @@ public class TimeRoomSelectionPage extends LayoutPage {
                         public void onClick() {
 
                             CinemaSession.get().setRoom(room);
-                            setResponsePage(TimeRoomSelectionPage.class);
+                            throw new RestartResponseException(TimeRoomSelectionPage.class);
                         }
                     });
                 }

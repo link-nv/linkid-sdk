@@ -24,6 +24,7 @@ import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
@@ -143,7 +144,7 @@ public class RemovePage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    setResponsePage(MainPage.class);
+                    throw new RestartResponseException(MainPage.class);
                 }
 
             };
@@ -224,7 +225,7 @@ public class RemovePage extends TemplatePage {
                                 return;
                             }
 
-                            setResponsePage(MainPage.class);
+                            throw new RestartResponseException(MainPage.class);
 
                         }
                     });

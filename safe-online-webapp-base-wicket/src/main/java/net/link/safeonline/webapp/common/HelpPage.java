@@ -16,6 +16,7 @@ import net.link.safeonline.wicket.tools.WicketUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Page;
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
@@ -72,7 +73,7 @@ public class HelpPage extends TemplatePage {
             @Override
             public void onClick() {
 
-                setResponsePage(returnPage);
+                throw new RestartResponseException(returnPage);
 
             }
 

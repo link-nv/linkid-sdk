@@ -128,7 +128,7 @@ public class FilmTheatreSelectionPage extends LayoutPage {
                         public void onClick() {
 
                             CinemaSession.get().setFilm(film);
-                            setResponsePage(FilmTheatreSelectionPage.class);
+                            throw new RestartResponseException(FilmTheatreSelectionPage.class);
                         }
                     });
                 }
@@ -203,7 +203,7 @@ public class FilmTheatreSelectionPage extends LayoutPage {
                         public void onClick() {
 
                             CinemaSession.get().setTheatre(theatre);
-                            setResponsePage(FilmTheatreSelectionPage.class);
+                            throw new RestartResponseException(FilmTheatreSelectionPage.class);
                         }
                     });
                 }

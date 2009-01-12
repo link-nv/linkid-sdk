@@ -49,10 +49,12 @@ public abstract class OlasApplicationPage extends WicketPage {
                 throw new ServletException("Page " + getClass() + " requires forced logout.");
 
             // Check whether OLAS user has changed or been logged out.
-            String currentOlasId = WicketUtil.getOlasId(getRequest());
             String wicketOlasId = OLASSession.get().getUserOlasId();
-            if (wicketOlasId != null && !wicketOlasId.equals(currentOlasId))
-                throw new ServletException("User changed from " + wicketOlasId + " into " + currentOlasId);
+            if (wicketOlasId != null) {
+                String currentOlasId = WicketUtil.getOlasId(getRequest());
+                if (!wicketOlasId.equals(currentOlasId))
+                    throw new ServletException("User changed from " + wicketOlasId + " into " + currentOlasId);
+            }
 
             // If just logged in using OLAS, let application create/push its user onto wicket session.
             if (!OLASSession.get().isUserSet() && WicketUtil.isOlasAuthenticated(getRequest())) {

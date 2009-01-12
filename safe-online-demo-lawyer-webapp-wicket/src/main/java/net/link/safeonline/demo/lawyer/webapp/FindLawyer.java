@@ -58,12 +58,11 @@ public class FindLawyer extends Layout {
 			lawyer.setAdmin(false);
 			lawyer.setSuspended(false);
 
-			// show edit page
-			setResponsePage(EditLawyer.class);
-
 			// push lawyer to session
 			((LawyerSession) getSession()).setLawyer(lawyer);
 
+			// show edit page
+			throw new RestartResponseException(EditLawyer.class);
 		}
 	}
 

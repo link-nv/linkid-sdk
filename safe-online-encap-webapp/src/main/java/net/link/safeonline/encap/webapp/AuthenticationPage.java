@@ -32,6 +32,7 @@ import net.link.safeonline.wicket.tools.WicketUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.RedirectToUrlException;
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
@@ -293,7 +294,7 @@ public class AuthenticationPage extends TemplatePage {
                                 LogLevelType.ERROR);
                     }
 
-                    setResponsePage(new AuthenticationPage(goal));
+                    throw new RestartResponseException(new AuthenticationPage(goal));
                 }
             };
 

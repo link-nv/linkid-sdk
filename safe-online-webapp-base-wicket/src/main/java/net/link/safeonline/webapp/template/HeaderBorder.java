@@ -5,6 +5,7 @@ import net.link.safeonline.webapp.common.LanguagePage;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.wicket.Page;
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.behavior.SimpleAttributeModifier;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.border.Border;
@@ -58,7 +59,7 @@ public class HeaderBorder extends Border {
             @Override
             public void onClick() {
 
-                setResponsePage(new LanguagePage(page));
+                throw new RestartResponseException(new LanguagePage(page));
 
             }
         });
