@@ -112,6 +112,26 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
         responseWrapper.commit();
     }
 
+    /**
+     * Invalidate the old session, start a new one, and repeat the injection process.
+     * 
+     * @return The new session (Also available via {@link HttpServletRequest#getSession(boolean)}, of course).
+     */
+    protected HttpSession restartSession(HttpServletRequest request)
+            throws ServletException {
+
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        session = request.getSession(true);
+
+        injectRequestParameters(request);
+        injectSessionAttributes(session);
+
+        return session;
+    }
+
 
     /**
      * Injection response wrapper. We use a response wrapper since we want to be able to postpone some actions.
@@ -135,6 +155,7 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
 
             if (null != redirectLocation)
                 throw new IllegalStateException("cannot send redirect twice");
+
             redirectLocation = location;
         }
 

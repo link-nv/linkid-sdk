@@ -108,19 +108,19 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
     }
 
     private void handleLanding(HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
+            throws ServletException, IOException {
 
         /**
-         * Wrap the request to use the servlet endpoint url. To prevent failure when behind a reverse proxy or loadbalancer when opensaml is
-         * checking the destination field.
+         * Wrap the request to use the servlet endpoint url. To prevent failure when behind a reverse proxy or load balancer when OpenSAML
+         * is checking the destination field.
          */
-        HttpServletRequestEndpointWrapper authnRequestWrapper = new HttpServletRequestEndpointWrapper(request, servletEndpointUrl);
+        HttpServletRequestEndpointWrapper wrappedRequest = new HttpServletRequestEndpointWrapper(request, servletEndpointUrl);
 
         ProtocolContext protocolContext;
         try {
-            protocolContext = ProtocolHandlerManager.handleRequest(authnRequestWrapper);
+            protocolContext = ProtocolHandlerManager.handleRequest(wrappedRequest);
         } catch (ProtocolException e) {
-            redirectToErrorPage(request, response, protocolErrorUrl, null, new ErrorMessage(PROTOCOL_NAME_ATTRIBUTE,
+            redirectToErrorPage(wrappedRequest, response, protocolErrorUrl, null, new ErrorMessage(PROTOCOL_NAME_ATTRIBUTE,
                     e.getProtocolName()), new ErrorMessage(PROTOCOL_ERROR_MESSAGE_ATTRIBUTE, e.getMessage()));
             return;
         }
@@ -130,10 +130,12 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
             return;
         }
 
+        // Create a new session (invalidate an old one, if there is one).
+        HttpSession session = restartSession(wrappedRequest);
+
         /*
          * Set the language cookie if language was specified in the browser post
          */
-        HttpSession session = request.getSession();
         Locale language = protocolContext.getLanguage();
         Integer color = protocolContext.getColor();
         Boolean minimal = protocolContext.getMinimal();
@@ -162,7 +164,7 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
          */
         HelpdeskLogger.clear(session);
 
-        if (isFirstTime(request, response)) {
+        if (isFirstTime(wrappedRequest, response)) {
             response.sendRedirect(firstTimeUrl);
             return;
         }
@@ -170,10 +172,8 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
         /*
          * Check Single Sign-On
          */
-        AuthenticationService authenticationService = AuthenticationServiceManager
-                                                                                  .getAuthenticationService(authnRequestWrapper
-                                                                                                                               .getSession());
-        Cookie[] cookies = authnRequestWrapper.getCookies();
+        AuthenticationService authenticationService = AuthenticationServiceManager.getAuthenticationService(wrappedRequest.getSession());
+        Cookie[] cookies = wrappedRequest.getCookies();
         boolean validSso = false;
         if (null != cookies) {
             for (Cookie cookie : cookies) {
@@ -204,7 +204,7 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
             }
         }
         if (validSso) {
-            LoginManager.login(authnRequestWrapper.getSession(), authenticationService.getUserId(),
+            LoginManager.login(wrappedRequest.getSession(), authenticationService.getUserId(),
                     authenticationService.getAuthenticationDevice());
             response.sendRedirect(loginUrl);
             return;
@@ -212,6 +212,19 @@ public class AuthnEntryServlet extends AbstractInjectionServlet {
 
         response.sendRedirect(startUrl);
 
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected HttpSession restartSession(HttpServletRequest request)
+            throws ServletException {
+
+        HttpSession session = super.restartSession(request);
+        AuthenticationServiceManager.bindAuthenticationService(session);
+
+        return session;
     }
 
     private void removeCookie(String name, HttpServletResponse response) {
