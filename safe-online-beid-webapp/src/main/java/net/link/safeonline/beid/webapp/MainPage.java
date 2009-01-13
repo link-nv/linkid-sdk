@@ -13,4 +13,13 @@ public class MainPage extends TemplatePage {
         getHeader();
         getContent();
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getPageTitle() {
+
+        return localize("beid");
+    }
 }

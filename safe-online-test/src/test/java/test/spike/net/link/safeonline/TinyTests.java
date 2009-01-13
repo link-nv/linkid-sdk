@@ -16,13 +16,11 @@
 package test.spike.net.link.safeonline;
 
 import org.apache.wicket.Page;
-import org.apache.wicket.Request;
-import org.apache.wicket.Response;
-import org.apache.wicket.RestartResponseException;
-import org.apache.wicket.Session;
 import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.protocol.http.WebApplication;
-import org.apache.wicket.protocol.http.WebSession;
+import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
 import org.junit.Test;
 
@@ -42,50 +40,10 @@ public class TinyTests {
 
     public static class MyApp extends WebApplication {
 
-        /**
-         * {@inheritDoc}
-         */
         @Override
         public Class<? extends Page> getHomePage() {
 
             return MyPage.class;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public Session newSession(Request request, Response response) {
-
-            return new MySession(request);
-        }
-    }
-
-    public static class MySession extends WebSession {
-
-        public MySession(Request request) {
-
-            super(request);
-        }
-
-        public static MySession get() {
-
-            return (MySession) Session.get();
-        }
-
-
-        private static final long serialVersionUID = 1L;
-        private String            name;
-
-
-        public void setName(String name) {
-
-            this.name = name;
-        }
-
-        public String getName() {
-
-            return name;
         }
     }
 
@@ -93,9 +51,22 @@ public class TinyTests {
 
         public MyPage() {
 
-            if (MySession.get().getName() != null) {
-                Session.get().invalidateNow();
-                throw new RestartResponseException(getClass());
+            add(new MyForm("form"));
+        }
+
+
+        class MyForm extends Form<String> {
+
+            private static final long serialVersionUID = 1L;
+
+
+            public MyForm(String id) {
+
+                super(id);
+
+                TextField<String> f = new TextField<String>("field");
+                f.setRequired(true);
+                add(f);
             }
         }
     }
@@ -107,8 +78,16 @@ public class TinyTests {
         WicketTester wicket = new WicketTester(new MyApp());
         wicket.processRequestCycle();
 
-        MySession.get().setName("foo");
-        wicket.processRequestCycle();
+        FormTester form = wicket.newFormTester("form");
+        form.submit();
+
+        wicket.assertErrorMessages(new String[] { "Field 'field' is required." });
+
+        form = wicket.newFormTester("form");
+        form.setValue("field", "foo");
+        form.submit();
+
+        wicket.assertNoErrorMessage();
     }
 
     void print(Object[] array) {

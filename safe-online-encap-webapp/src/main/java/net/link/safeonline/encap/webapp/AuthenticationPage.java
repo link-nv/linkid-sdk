@@ -65,6 +65,8 @@ public class AuthenticationPage extends TemplatePage {
     ProtocolContext                protocolContext;
     AuthenticationContext          authenticationContext;
 
+    private String                 pageTitle;
+
 
     public enum Goal {
         /** Authenticate a user with the device. */
@@ -116,24 +118,40 @@ public class AuthenticationPage extends TemplatePage {
         String title = null;
         switch (goal) {
             case AUTHENTICATE:
-                title = localize("%l: %l %s", "mobileAuthentication", "authenticatingFor", authenticationContext.getApplication());
+                pageTitle = localize("%l", "mobileAuthentication");
+                title = localize("%l %s", "authenticatingFor", authenticationContext.getApplication());
             break;
 
             case ENABLE_DEVICE:
-                title = localize("%l %l %s", "enable", "mobile", protocolContext.getAttribute());
+                pageTitle = localize("%l", "mobileEnable");
+                title = localize("%l %s", "mobile", protocolContext.getAttribute());
             break;
 
             case REGISTER_DEVICE:
-                title = localize("%l", "registerANewDevice");
+                pageTitle = localize("%l", "registerANewDevice");
             break;
+        }
+        updatePageTitle();
+        Label titleLabel = new Label("title", title);
+        if (title == null) {
+            titleLabel.setVisible(false);
         }
 
         ProgressAuthenticationPanel progress = new ProgressAuthenticationPanel("progress", ProgressAuthenticationPanel.stage.authenticate);
         progress.setVisible(goal.equals(Goal.AUTHENTICATE));
 
         getContent().add(progress);
-        getContent().add(new Label("title", title));
         getContent().add(new AuthenticationForm(AUTHENTICATION_FORM_ID));
+        getContent().add(titleLabel);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getPageTitle() {
+
+        return pageTitle;
     }
 
 

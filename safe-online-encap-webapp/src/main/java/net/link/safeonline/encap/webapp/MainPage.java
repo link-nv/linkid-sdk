@@ -21,4 +21,13 @@ public class MainPage extends TemplatePage {
         getContent().add(new PageLink<RegistrationPage>(REGISTER_ID, RegistrationPage.class));
         getContent().add(new ExternalLink(REMOVE_ID, REMOVE_SERVLET_PATH));
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getPageTitle() {
+
+        return localize("mobile");
+    }
 }

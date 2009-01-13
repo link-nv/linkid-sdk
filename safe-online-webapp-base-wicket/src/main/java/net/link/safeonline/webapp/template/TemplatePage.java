@@ -1,9 +1,14 @@
 package net.link.safeonline.webapp.template;
 
+import javax.servlet.http.HttpSession;
+
+import net.link.safeonline.common.SafeOnlineAppConstants;
+import net.link.safeonline.wicket.tools.WicketUtil;
 import net.link.safeonline.wicket.web.WicketPage;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.behavior.HeaderContributor;
 
 
 public abstract class TemplatePage extends WicketPage {
@@ -18,6 +23,34 @@ public abstract class TemplatePage extends WicketPage {
     private ContentBorder      contentBorder;
     private SidebarBorder      sidebarBorder;
 
+
+    public TemplatePage() {
+
+        // If minimal session attribute is set, add minimal.css style sheet.
+        HttpSession httpSession = WicketUtil.getHttpSession(getRequest());
+        Object minimalAttribute = httpSession.getAttribute(SafeOnlineAppConstants.MINIMAL_ATTRIBUTE);
+        boolean isMinimal = Boolean.parseBoolean(String.valueOf(minimalAttribute));
+        if (isMinimal) {
+            add(HeaderContributor.forCss(TemplatePage.class, "minimal.css"));
+        }
+
+        // Add the <h1>page title</h1> component.
+        contentBorder = new ContentBorder(CONTENT_ID, getPageTitle());
+        add(contentBorder);
+    }
+
+    /**
+     * Call this method after you have programmatically changed the state of the page such that the title needs to be updated.
+     */
+    protected void updatePageTitle() {
+
+        contentBorder.get("pageTitle").setDefaultModelObject(getPageTitle());
+    }
+
+    /**
+     * @return The main title of the page.
+     */
+    protected abstract String getPageTitle();
 
     /**
      * Logout link is <b>DISABLED</b> by default using this method.
@@ -41,11 +74,6 @@ public abstract class TemplatePage extends WicketPage {
 
     public ContentBorder getContent() {
 
-        if (null == contentBorder) {
-            contentBorder = new ContentBorder(CONTENT_ID);
-            add(contentBorder);
-        }
-
         return contentBorder;
     }
 
@@ -63,7 +91,7 @@ public abstract class TemplatePage extends WicketPage {
 
         if (null == sidebarBorder) {
             sidebarBorder = new SidebarBorder(SIDEBAR_ID, showHelp);
-            getContent().add(sidebarBorder);
+            contentBorder.add(sidebarBorder);
         }
 
         return sidebarBorder;

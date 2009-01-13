@@ -1,0 +1,24 @@
+body {
+	background:         transparent !important;
+}
+#c-header {
+	position:           absolute    !important;
+	left:               50%         !important;
+
+    height:             auto        !important;
+    margin-left:        -500px      !important;
+
+    background:         transparent !important;
+}
+#c-header a {
+    color:              #333        !important;
+}
+#header {
+    height:             auto        !important;
+}
+#footer {
+    display:            none        !important;
+}
+#c-sidebox {
+    margin-top:         -2em        !important;
+}

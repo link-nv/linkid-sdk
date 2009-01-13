@@ -92,11 +92,19 @@ public class AuthenticationPage extends TemplatePage {
 
         getContent().add(new ProgressAuthenticationPanel("progress", ProgressAuthenticationPanel.stage.authenticate));
 
-        String title = getLocalizer().getString("otpOverSmsAuthentication", this) + " : "
-                + getLocalizer().getString("authenticatingFor", this) + " " + authenticationContext.getApplication();
+        String title = localize("%l %s", "authenticatingFor", authenticationContext.getApplication());
         getContent().add(new Label("title", title));
         getContent().add(new RequestOtpForm(REQUEST_OTP_FORM_ID));
         getContent().add(new VerifyOtpForm(VERIFY_OTP_FORM_ID));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getPageTitle() {
+
+        return localize("otpOverSmsAuthentication");
     }
 
 

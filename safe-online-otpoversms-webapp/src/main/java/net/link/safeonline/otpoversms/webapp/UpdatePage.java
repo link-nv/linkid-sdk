@@ -82,6 +82,15 @@ public class UpdatePage extends TemplatePage {
         getContent().add(new UpdateForm(UPDATE_FORM_ID));
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getPageTitle() {
+
+        return localize("deviceUpdate");
+    }
+
 
     class RequestOtpForm extends Form<String> {
 

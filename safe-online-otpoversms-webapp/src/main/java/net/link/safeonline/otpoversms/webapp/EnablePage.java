@@ -75,13 +75,20 @@ public class EnablePage extends TemplatePage {
         getHeader();
         getSidebar();
 
-        String title = getLocalizer().getString("enable", this) + " " + getLocalizer().getString("mobile", this) + " "
-                + protocolContext.getAttribute();
+        String title = localize("%l %s", "mobile", protocolContext.getAttribute());
         getContent().add(new Label("title", title));
 
         getContent().add(new RequestOtpForm(REQUEST_OTP_FORM_ID));
         getContent().add(new EnableForm(ENABLE_FORM_ID));
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getPageTitle() {
+
+        return localize("otpOverSmsEnable");
     }
 
 

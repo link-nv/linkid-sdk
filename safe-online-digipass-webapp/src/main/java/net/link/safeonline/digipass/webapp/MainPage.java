@@ -19,4 +19,13 @@ public class MainPage extends TemplatePage {
         getContent().add(new PageLink<RegisterPage>(REGISTER_ID, RegisterPage.class));
         getContent().add(new PageLink<RemovePage>(REMOVE_ID, RemovePage.class));
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getPageTitle() {
+
+        return localize("digipass");
+    }
 }

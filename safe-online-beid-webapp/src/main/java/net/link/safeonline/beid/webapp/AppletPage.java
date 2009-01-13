@@ -99,7 +99,6 @@ public abstract class AppletPage extends TemplatePage {
         deployJavaAppletLabel.setEscapeModelStrings(false);
         getContent().add(deployJavaAppletLabel);
 
-        getContent().add(new Label("title", getPageTitle()));
         getContent().add(new Link<String>("cancel") {
 
             private static final long serialVersionUID = 1L;
@@ -121,11 +120,6 @@ public abstract class AppletPage extends TemplatePage {
 
         return "pkcs11".equalsIgnoreCase(parameters.getString(BeIdMountPoints.MountPoint.TYPE_PARAMETER));
     }
-
-    /**
-     * @return A title for the current page.
-     */
-    protected abstract String getPageTitle();
 
     /**
      * @return <code>true</code> to show the cancel button on this page.

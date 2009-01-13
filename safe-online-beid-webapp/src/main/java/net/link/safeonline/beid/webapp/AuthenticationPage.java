@@ -17,6 +17,7 @@ import net.link.safeonline.webapp.template.ProgressAuthenticationPanel;
 
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.RedirectToUrlException;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 
 
@@ -64,6 +65,16 @@ public class AuthenticationPage extends AppletPage {
         // Our content.
         ProgressAuthenticationPanel progress = new ProgressAuthenticationPanel("progress", ProgressAuthenticationPanel.stage.authenticate);
         getContent().add(progress);
+        getContent().add(new Label("title", localize("%l %s", "authenticatingFor", authenticationContext.getApplicationFriendlyName())));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getPageTitle() {
+
+        return localize("authenticateBeId");
     }
 
     static Class<? extends Applet> getAppletClass(PageParameters parameters) {
@@ -101,14 +112,5 @@ public class AuthenticationPage extends AppletPage {
         authenticationContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
 
         throw new RedirectToUrlException("_authentication_exit");
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected String getPageTitle() {
-
-        return localize("%l: %l %s", "authenticateBeId", "authenticatingFor", authenticationContext.getApplicationFriendlyName());
     }
 }

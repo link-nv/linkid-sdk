@@ -85,7 +85,15 @@ public class RegistrationPage extends TemplatePage {
 
         getContent().add(new RequestOtpForm(REQUEST_OTP_FORM_ID));
         getContent().add(new VerifyOtpForm(VERIFY_OTP_FORM_ID));
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getPageTitle() {
+
+        return localize("registerANewDevice");
     }
 
 

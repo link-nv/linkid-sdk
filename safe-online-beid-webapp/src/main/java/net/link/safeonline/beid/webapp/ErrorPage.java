@@ -119,6 +119,15 @@ public class ErrorPage extends TemplatePage {
         });
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getPageTitle() {
+
+        return localize("error");
+    }
+
     void retry() {
 
         throw new RedirectToUrlException("beid.html");

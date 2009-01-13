@@ -43,8 +43,6 @@ public class LanguagePage extends TemplatePage {
 
     public LanguagePage(final Page returnPage) {
 
-        super();
-
         getHeader();
 
         // english link
@@ -76,6 +74,15 @@ public class LanguagePage extends TemplatePage {
 
             }
         });
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getPageTitle() {
+
+        return localize("chooseLanguage");
     }
 
     protected void setLanguage(String language) {

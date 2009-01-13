@@ -71,6 +71,15 @@ public class RemovePage extends TemplatePage {
         getContent().add(new ListForm("list_form"));
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getPageTitle() {
+
+        return localize("digipassRemove");
+    }
+
 
     class GetForm extends Form<String> {
 

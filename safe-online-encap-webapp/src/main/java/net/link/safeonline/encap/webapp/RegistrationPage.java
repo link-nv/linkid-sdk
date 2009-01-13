@@ -70,6 +70,15 @@ public class RegistrationPage extends TemplatePage {
         getContent().add(new RegisterForm(REGISTER_FORM_ID));
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getPageTitle() {
+
+        return localize("mobileRegister");
+    }
+
 
     class RegisterForm extends Form<String> {
 

@@ -60,8 +60,6 @@ public class HelpPage extends TemplatePage {
 
     public HelpPage(final Page returnPage) {
 
-        super();
-
         this.returnPage = returnPage;
 
         getHeader();
@@ -81,6 +79,15 @@ public class HelpPage extends TemplatePage {
 
         getContent().add(new CreateContainer(CREATE_FORM_ID));
         getContent().add(new TicketInfoContainer(TICKET_INFO_FORM_ID));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getPageTitle() {
+
+        return localize("help");
     }
 
 

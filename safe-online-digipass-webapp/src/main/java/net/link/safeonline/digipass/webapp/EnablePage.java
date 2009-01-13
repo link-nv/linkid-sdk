@@ -58,10 +58,18 @@ public class EnablePage extends TemplatePage {
         getHeader();
         getSidebar();
 
-        String title = getLocalizer().getString("enable", this) + " " + getLocalizer().getString("digipass", this) + " "
-                + protocolContext.getAttribute();
+        String title = localize("%l %s", "digipass", protocolContext.getAttribute());
         getContent().add(new Label("title", title));
         getContent().add(new EnableForm(ENABLE_FORM_ID));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getPageTitle() {
+
+        return localize("digipassEnable");
     }
 
 

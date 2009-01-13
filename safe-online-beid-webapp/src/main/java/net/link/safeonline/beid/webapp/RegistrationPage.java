@@ -58,6 +58,15 @@ public class RegistrationPage extends AppletPage {
         getContent().add(progress);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getPageTitle() {
+
+        return localize("%l", "register");
+    }
+
     static Class<? extends Applet> getAppletClass(PageParameters parameters) {
 
         if (isPkcs11(parameters))
@@ -93,14 +102,5 @@ public class RegistrationPage extends AppletPage {
         protocolContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
 
         throw new RedirectToUrlException("_device_exit");
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected String getPageTitle() {
-
-        return localize("%l", "register");
     }
 }

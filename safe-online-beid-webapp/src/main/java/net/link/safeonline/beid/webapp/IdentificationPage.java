@@ -33,6 +33,15 @@ public class IdentificationPage extends AppletPage {
         getSidebar();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getPageTitle() {
+
+        return localize("%l", "beidIdentification");
+    }
+
     static Class<? extends Applet> getAppletClass(@SuppressWarnings("unused") PageParameters parameters) {
 
         // if (isPkcs11(parameters))
@@ -65,14 +74,5 @@ public class IdentificationPage extends AppletPage {
     protected void cancel() {
 
         // No cancel button.
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected String getPageTitle() {
-
-        return localize("%l", "beidIdentification");
     }
 }

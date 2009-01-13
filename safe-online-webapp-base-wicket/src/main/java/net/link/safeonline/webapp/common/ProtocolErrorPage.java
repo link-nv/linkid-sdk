@@ -42,4 +42,13 @@ public class ProtocolErrorPage extends TemplatePage {
         getContent().add(new Label("errorMessage", errorMessage));
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getPageTitle() {
+
+        return localize("protocolError");
+    }
+
 }

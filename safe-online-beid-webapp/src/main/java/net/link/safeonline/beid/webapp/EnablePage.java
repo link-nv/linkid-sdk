@@ -33,6 +33,15 @@ public class EnablePage extends AppletPage {
         getSidebar();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getPageTitle() {
+
+        return localize("%l", "beidEnable");
+    }
+
     static Class<? extends Applet> getAppletClass(PageParameters parameters) {
 
         if (isPkcs11(parameters))
@@ -65,14 +74,5 @@ public class EnablePage extends AppletPage {
     protected void cancel() {
 
         // No cancel button.
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected String getPageTitle() {
-
-        return localize("%l", "beidEnable");
     }
 }

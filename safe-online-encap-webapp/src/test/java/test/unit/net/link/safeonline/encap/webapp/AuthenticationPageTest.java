@@ -101,6 +101,7 @@ public class AuthenticationPageTest {
                 throw new UnsupportedOperationException();
         }
         wicket.assertRenderedPage(AuthenticationPage.class);
+        wicket.dumpPage();
 
         // Inject EJBs.
         EJBTestUtils.inject(wicket.getLastRenderedPage(), mockEncapDeviceService);

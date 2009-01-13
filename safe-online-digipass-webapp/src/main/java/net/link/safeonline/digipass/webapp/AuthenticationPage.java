@@ -87,12 +87,19 @@ public class AuthenticationPage extends TemplatePage {
 
         getContent().add(new ProgressAuthenticationPanel("progress", ProgressAuthenticationPanel.stage.authenticate));
 
-        String title = getLocalizer().getString("digipassAuthentication", this) + " : "
-                + getLocalizer().getString("authenticatingFor", this) + " " + authenticationContext.getApplication();
+        String title = localize("%l %s", "authenticatingFor", authenticationContext.getApplication());
         getContent().add(new Label("title", title));
 
         getContent().add(new AuthenticationForm(AUTHENTICATION_FORM_ID));
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getPageTitle() {
+
+        return localize("digipassAuthentication");
     }
 
 
