@@ -99,20 +99,20 @@ public class AuthnEntryServletTest {
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
         mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
-        jndiTestUtils
-                          .bindComponent("SafeOnline/ApplicationAuthenticationServiceBean/local", mockApplicationAuthenticationService);
+        jndiTestUtils.bindComponent(ApplicationAuthenticationService.JNDI_BINDING, mockApplicationAuthenticationService);
         mockPkiValidator = createMock(PkiValidator.class);
-        jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local", mockPkiValidator);
+        jndiTestUtils.bindComponent(PkiValidator.JNDI_BINDING, mockPkiValidator);
 
         SamlAuthorityService mockSamlAuthorityService = createMock(SamlAuthorityService.class);
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn("test-issuer-name");
         expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(10 * 60);
-        jndiTestUtils.bindComponent("SafeOnline/SamlAuthorityServiceBean/local", mockSamlAuthorityService);
+        jndiTestUtils.bindComponent(SamlAuthorityService.JNDI_BINDING, mockSamlAuthorityService);
 
         mockDevicePolicyService = createMock(DevicePolicyService.class);
-        jndiTestUtils.bindComponent("SafeOnline/DevicePolicyServiceBean/local", mockDevicePolicyService);
+        jndiTestUtils.bindComponent(DevicePolicyService.JNDI_BINDING, mockDevicePolicyService);
 
         mockAuthenticationService = createMock(AuthenticationService.class);
+        jndiTestUtils.bindComponent(AuthenticationService.JNDI_BINDING, mockAuthenticationService);
 
         JmxTestUtils jmxTestUtils = new JmxTestUtils();
         jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
@@ -209,7 +209,7 @@ public class AuthnEntryServletTest {
         String resultApplicationId = (String) authnEntryServletTestManager.getSessionAttribute(LoginManager.APPLICATION_ID_ATTRIBUTE);
         assertEquals(applicationName, resultApplicationId);
         String resultApplicationName = (String) authnEntryServletTestManager
-                                                                                 .getSessionAttribute(LoginManager.APPLICATION_FRIENDLY_NAME_ATTRIBUTE);
+                                                                            .getSessionAttribute(LoginManager.APPLICATION_FRIENDLY_NAME_ATTRIBUTE);
         assertEquals(applicationName, resultApplicationName);
         String target = (String) authnEntryServletTestManager.getSessionAttribute(LoginManager.TARGET_ATTRIBUTE);
         assertEquals(assertionConsumerService, target);
@@ -270,14 +270,14 @@ public class AuthnEntryServletTest {
         String resultApplicationId = (String) authnEntryServletTestManager.getSessionAttribute(LoginManager.APPLICATION_ID_ATTRIBUTE);
         assertEquals(applicationName, resultApplicationId);
         String resultApplicationName = (String) authnEntryServletTestManager
-                                                                                 .getSessionAttribute(LoginManager.APPLICATION_FRIENDLY_NAME_ATTRIBUTE);
+                                                                            .getSessionAttribute(LoginManager.APPLICATION_FRIENDLY_NAME_ATTRIBUTE);
         assertEquals(applicationName, resultApplicationName);
         String target = (String) authnEntryServletTestManager.getSessionAttribute(LoginManager.TARGET_ATTRIBUTE);
         assertEquals(assertionConsumerService, target);
         String resultUserId = (String) authnEntryServletTestManager.getSessionAttribute(LoginManager.USERID_ATTRIBUTE);
         assertEquals(userId, resultUserId);
         DeviceEntity resultDevice = (DeviceEntity) authnEntryServletTestManager
-                                                                                    .getSessionAttribute(LoginManager.AUTHENTICATION_DEVICE_ATTRIBUTE);
+                                                                               .getSessionAttribute(LoginManager.AUTHENTICATION_DEVICE_ATTRIBUTE);
         assertEquals(device, resultDevice);
     }
 }
