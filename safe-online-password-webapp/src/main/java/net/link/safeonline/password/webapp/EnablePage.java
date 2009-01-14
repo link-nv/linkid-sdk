@@ -60,6 +60,15 @@ public class EnablePage extends TemplatePage {
         getContent().add(new EnableForm(ENABLE_FORM_ID));
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getPageTitle() {
+
+        return localize("usernamePassword");
+    }
+
 
     class EnableForm extends Form<String> {
 

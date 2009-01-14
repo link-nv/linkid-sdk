@@ -63,8 +63,6 @@ public class RegistrationPage extends TemplatePage {
 
     public RegistrationPage() {
 
-        super();
-
         protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
         if (null == passwordDeviceService) {
@@ -90,9 +88,6 @@ public class RegistrationPage extends TemplatePage {
             private static final long serialVersionUID = 1L;
 
 
-            /**
-             * {@inheritDoc}
-             */
             @Override
             public boolean isVisible() {
 
@@ -104,10 +99,18 @@ public class RegistrationPage extends TemplatePage {
 
                 exit();
             }
-
         });
 
         getContent().add(new RegistrationForm(REGISTRATION_FORM_ID));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getPageTitle() {
+
+        return localize("usernamePassword");
     }
 
 

@@ -61,14 +61,21 @@ public class UpdatePage extends TemplatePage {
 
     public UpdatePage() {
 
-        super();
-
         protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
         getHeader();
         getSidebar();
 
         getContent().add(new RegistrationForm(UPDATE_FORM_ID));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getPageTitle() {
+
+        return localize("usernamePassword");
     }
 
 
