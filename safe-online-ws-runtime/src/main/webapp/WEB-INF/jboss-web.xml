@@ -8,6 +8,6 @@
 		java:/jaas/safe-online-application
 	</security-domain>
 
-	<context-root>/safe-online-ws</context-root>
+	<context-root>/${safe-online.ws.webapp.name}</context-root>
 
 </jboss-web>

@@ -68,6 +68,15 @@ public interface DevicePolicyService extends SafeOnlineService {
             throws DeviceNotFoundException;
 
     /**
+     * Returns the authentication WS URL for the specified device.
+     * 
+     * @param deviceName
+     * @throws DeviceNotFoundException
+     */
+    String getAuthenticationWSURL(String deviceName)
+            throws DeviceNotFoundException;
+
+    /**
      * Returns the registration URL for the specified device.
      * 
      * @param deviceName

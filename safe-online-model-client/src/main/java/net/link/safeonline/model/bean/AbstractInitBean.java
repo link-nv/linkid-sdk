@@ -315,6 +315,8 @@ public abstract class AbstractInitBean implements Startable {
 
         final String              authenticationPath;
 
+        final String              authenticationWSPath;
+
         final String              registrationPath;
 
         final String              removalPath;
@@ -332,15 +334,16 @@ public abstract class AbstractInitBean implements Startable {
         final AttributeTypeEntity deviceDisableAttribute;
 
 
-        public Device(String deviceName, String deviceClassName, String nodeName, String authenticationPath, String registrationPath,
-                      String removalPath, String updatePath, String disablePath, String enablePath, X509Certificate certificate,
-                      AttributeTypeEntity deviceAttribute, AttributeTypeEntity deviceUserAttribute,
+        public Device(String deviceName, String deviceClassName, String nodeName, String authenticationPath, String authenticationWSPath,
+                      String registrationPath, String removalPath, String updatePath, String disablePath, String enablePath,
+                      X509Certificate certificate, AttributeTypeEntity deviceAttribute, AttributeTypeEntity deviceUserAttribute,
                       AttributeTypeEntity deviceDisableAttribute) {
 
             this.deviceName = deviceName;
             this.deviceClassName = deviceClassName;
             this.nodeName = nodeName;
             this.authenticationPath = authenticationPath;
+            this.authenticationWSPath = authenticationWSPath;
             this.registrationPath = registrationPath;
             this.removalPath = removalPath;
             this.updatePath = updatePath;
@@ -897,8 +900,9 @@ public abstract class AbstractInitBean implements Startable {
                     olasNode = this.olasDAO.getNode(device.nodeName);
                 }
                 deviceEntity = this.deviceDAO.addDevice(device.deviceName, deviceClassEntity, olasNode, device.authenticationPath,
-                        device.registrationPath, device.removalPath, device.updatePath, device.disablePath, device.enablePath,
-                        device.certificate, device.deviceAttribute, device.deviceUserAttribute, device.deviceDisableAttribute);
+                        device.authenticationWSPath, device.registrationPath, device.removalPath, device.updatePath, device.disablePath,
+                        device.enablePath, device.certificate, device.deviceAttribute, device.deviceUserAttribute,
+                        device.deviceDisableAttribute);
             }
         }
     }

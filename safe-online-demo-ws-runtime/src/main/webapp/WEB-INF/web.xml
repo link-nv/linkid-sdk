@@ -34,6 +34,11 @@
 			SafeOnlineZDemo/WSSecurityConfigurationBean/local
 		</env-entry-value>
 	</env-entry>
+	<env-entry>
+		<env-entry-name>wsSecurityOptionalInboudSignature</env-entry-name>
+		<env-entry-type>java.lang.Boolean</env-entry-type>
+		<env-entry-value>false</env-entry-value>
+	</env-entry>
 
 	<session-config>
 		<session-timeout>5</session-timeout>

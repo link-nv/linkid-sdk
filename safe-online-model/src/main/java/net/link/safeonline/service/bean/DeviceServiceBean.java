@@ -180,9 +180,9 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void addDevice(String name, String deviceClassName, String nodeName, String authenticationPath, String registrationPath,
-                          String removalPath, String updatePath, String disablePath, String enablePath, byte[] encodedCertificate,
-                          String attributeTypeName, String userAttributeTypeName, String disableAttributeTypeName)
+    public void addDevice(String name, String deviceClassName, String nodeName, String authenticationPath, String authenticationWSPath,
+                          String registrationPath, String removalPath, String updatePath, String disablePath, String enablePath,
+                          byte[] encodedCertificate, String attributeTypeName, String userAttributeTypeName, String disableAttributeTypeName)
             throws CertificateEncodingException, DeviceClassNotFoundException, ExistingDeviceException, AttributeTypeNotFoundException,
             NodeNotFoundException, PermissionDeniedException {
 
@@ -215,8 +215,8 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 
         NodeEntity node = this.olasDAO.getNode(nodeName);
 
-        this.deviceDAO.addDevice(name, deviceClass, node, authenticationPath, registrationPath, removalPath, updatePath, disablePath,
-                enablePath, certificate, attributeType, userAttributeType, disableAttributeType);
+        this.deviceDAO.addDevice(name, deviceClass, node, authenticationPath, authenticationWSPath, registrationPath, removalPath,
+                updatePath, disablePath, enablePath, certificate, attributeType, userAttributeType, disableAttributeType);
     }
 
     /**
@@ -360,6 +360,14 @@ public class DeviceServiceBean implements DeviceService, DeviceServiceRemote {
 
         DeviceEntity device = this.deviceDAO.getDevice(deviceName);
         device.setAuthenticationPath(authenticationPath);
+    }
+
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public void updateAuthenticationWSPath(String deviceName, String authenticationWSPath)
+            throws DeviceNotFoundException {
+
+        DeviceEntity device = this.deviceDAO.getDevice(deviceName);
+        device.setAuthenticationWSPath(authenticationWSPath);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)

@@ -101,6 +101,8 @@ public class DeviceBean implements Device {
 
     private String               authenticationPath;
 
+    private String               authenticationWSPath;
+
     private String               registrationPath;
 
     private String               removalPath;
@@ -260,9 +262,9 @@ public class DeviceBean implements Device {
             encodedCertificate = getUpFileContent(this.certificate);
         }
 
-        this.deviceService.addDevice(this.name, this.deviceClass, this.node, this.authenticationPath, this.registrationPath,
-                this.removalPath, this.updatePath, this.disablePath, this.enablePath, encodedCertificate, this.attributeType,
-                this.userAttributeType, this.disableAttributeType);
+        this.deviceService.addDevice(this.name, this.deviceClass, this.node, this.authenticationPath, this.authenticationWSPath,
+                this.registrationPath, this.removalPath, this.updatePath, this.disablePath, this.enablePath, encodedCertificate,
+                this.attributeType, this.userAttributeType, this.disableAttributeType);
         return "success";
     }
 
@@ -288,6 +290,7 @@ public class DeviceBean implements Device {
         LOG.debug("edit device: " + this.selectedDevice.getName());
 
         this.authenticationPath = this.selectedDevice.getAuthenticationPath();
+        this.authenticationWSPath = this.selectedDevice.getAuthenticationWSPath();
         this.registrationPath = this.selectedDevice.getRegistrationPath();
         this.removalPath = this.selectedDevice.getRemovalPath();
         this.disablePath = this.selectedDevice.getDisablePath();
@@ -314,6 +317,9 @@ public class DeviceBean implements Device {
         String deviceName = this.selectedDevice.getName();
 
         this.deviceService.updateAuthenticationPath(deviceName, this.authenticationPath);
+        if (null != this.authenticationWSPath) {
+            this.deviceService.updateAuthenticationWSPath(deviceName, this.authenticationWSPath);
+        }
         if (null != this.registrationPath) {
             this.deviceService.updateRegistrationPath(deviceName, this.registrationPath);
         }
@@ -412,6 +418,18 @@ public class DeviceBean implements Device {
     public void setAuthenticationPath(String authenticationPath) {
 
         this.authenticationPath = authenticationPath;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getAuthenticationWSPath() {
+
+        return this.authenticationWSPath;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setAuthenticationWSPath(String authenticationWSPath) {
+
+        this.authenticationWSPath = authenticationWSPath;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)

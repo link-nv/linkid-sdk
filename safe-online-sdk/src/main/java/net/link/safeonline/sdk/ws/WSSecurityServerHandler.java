@@ -72,6 +72,8 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
 
     private String                         wsSecurityConfigurationServiceJndiName;
 
+    private boolean                        wsSecurityOptionalInboudSignature;
+
 
     @PostConstruct
     public void postConstructCallback() {
@@ -88,9 +90,10 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
             Context ctx = new javax.naming.InitialContext();
             Context env = (Context) ctx.lookup("java:comp/env");
             this.wsSecurityConfigurationServiceJndiName = (String) env.lookup("wsSecurityConfigurationServiceJndiName");
+            this.wsSecurityOptionalInboudSignature = (Boolean) env.lookup("wsSecurityOptionalInboudSignature");
         } catch (NamingException e) {
             LOG.debug("naming exception: " + e.getMessage());
-            throw new RuntimeException("WS Security Configuration JNDI path not specified");
+            throw new RuntimeException("WS Security Configuration JNDI path or \"wsSecurityOptionalInboudSignature\" not specified");
         }
     }
 
@@ -142,11 +145,16 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
 
         LOG.debug("handle outbound document");
 
-        X509Certificate certificate = getCertificate(soapMessageContext);
-        if (null == certificate)
-            throw new RuntimeException("no certificate found on JAX-WS context");
-
-        boolean skipMessageIntegrityCheck = this.wsSecurityConfigurationService.skipMessageIntegrityCheck(certificate);
+        boolean skipMessageIntegrityCheck = false;
+        if (this.wsSecurityOptionalInboudSignature) {
+            LOG.debug("inbound message is set to optional signed");
+            skipMessageIntegrityCheck = false;
+        } else {
+            X509Certificate certificate = getCertificate(soapMessageContext);
+            if (null == certificate)
+                throw new RuntimeException("no certificate found on JAX-WS context");
+            skipMessageIntegrityCheck = this.wsSecurityConfigurationService.skipMessageIntegrityCheck(certificate);
+        }
 
         if (skipMessageIntegrityCheck) {
             WSSecHeader wsSecHeader = new WSSecHeader();
@@ -232,9 +240,14 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
             throw WSSecurityUtil.createSOAPFaultException("The signature or decryption was invalid", "FailedCheck");
         }
         LOG.debug("results: " + wsSecurityEngineResults);
-        if (null == wsSecurityEngineResults)
+        if (null == wsSecurityEngineResults) {
+            if (this.wsSecurityOptionalInboudSignature) {
+                LOG.debug("inbound message is set to optional signed");
+                return;
+            }
             throw WSSecurityUtil.createSOAPFaultException("An error was discovered processing the <wsse:Security> header.",
                     "InvalidSecurity");
+        }
         Timestamp timestamp = null;
         Set<String> signedElements = null;
         for (WSSecurityEngineResult result : wsSecurityEngineResults) {

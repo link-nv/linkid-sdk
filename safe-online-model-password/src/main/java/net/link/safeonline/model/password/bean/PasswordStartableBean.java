@@ -132,6 +132,7 @@ public class PasswordStartableBean extends AbstractInitBean {
         ResourceBundle properties = ResourceBundle.getBundle("password_config");
         String nodeName = properties.getString("olas.node.name");
         String passwordWebappName = properties.getString("password.webapp.name");
+        String passwordAuthWSPath = properties.getString("password.auth.ws.webapp.name");
 
         AttributeTypeEntity passwordHashAttributeType = new AttributeTypeEntity(PasswordConstants.PASSWORD_HASH_ATTRIBUTE,
                 DatatypeType.STRING, false, false);
@@ -176,9 +177,9 @@ public class PasswordStartableBean extends AbstractInitBean {
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordDeviceAttributeType, "nl", "Wachtwoord", null));
 
         this.devices.add(new Device(PasswordConstants.PASSWORD_DEVICE_ID, SafeOnlineConstants.PASSWORD_DEVICE_CLASS, nodeName, "/"
-                + passwordWebappName + "/auth", "/" + passwordWebappName + "/device", "/" + passwordWebappName + "/device", "/"
-                + passwordWebappName + "/device", "/" + passwordWebappName + "/device", "/" + passwordWebappName + "/device", certificate,
-                passwordDeviceAttributeType, null, passwordDeviceDisableAttributeType));
+                + passwordWebappName + "/auth", "/" + passwordAuthWSPath, "/" + passwordWebappName + "/device", "/" + passwordWebappName
+                + "/device", "/" + passwordWebappName + "/device", "/" + passwordWebappName + "/device", "/" + passwordWebappName
+                + "/device", certificate, passwordDeviceAttributeType, null, passwordDeviceDisableAttributeType));
         this.deviceDescriptions.add(new DeviceDescription(PasswordConstants.PASSWORD_DEVICE_ID, "nl", "Paswoord"));
         this.deviceDescriptions.add(new DeviceDescription(PasswordConstants.PASSWORD_DEVICE_ID, Locale.ENGLISH.getLanguage(), "Password"));
         this.trustedCertificates.put(certificate, SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);

@@ -89,6 +89,7 @@ public class WSSecurityServerHandlerTest {
         this.jndiTestUtils.setUp();
         this.jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
                 "SafeOnline/WSSecurityConfigurationBean/local");
+        this.jndiTestUtils.bindComponent("java:comp/env/wsSecurityOptionalInboudSignature", Boolean.FALSE);
 
         this.mockWSSecurityConfigurationService = createMock(WSSecurityConfigurationService.class);
 
@@ -227,6 +228,41 @@ public class WSSecurityServerHandlerTest {
         Set<String> signedElements = (Set<String>) soapMessageContext.get(WSSecurityServerHandler.SIGNED_ELEMENTS_CONTEXT_KEY);
         assertEquals(2, signedElements.size());
         LOG.debug("signed elements: " + signedElements);
+    }
+
+    @Test
+    public void testInboundMessageOptionalSignedNotSigned()
+            throws Exception {
+
+        // setup
+        KeyPair olasKeyPair = PkiTestUtils.generateKeyPair();
+        X509Certificate olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=OLAS");
+
+        MessageFactory messageFactory = MessageFactory.newInstance(SOAPConstants.SOAP_1_1_PROTOCOL);
+        InputStream testSoapMessageInputStream = WSSecurityServerHandlerTest.class.getResourceAsStream("/test-soap-message.xml");
+        assertNotNull(testSoapMessageInputStream);
+
+        SOAPMessage message = messageFactory.createMessage(null, testSoapMessageInputStream);
+
+        SOAPMessageContext soapMessageContext = new TestSOAPMessageContext(message, false);
+
+        this.jndiTestUtils.bindComponent("java:comp/env/wsSecurityOptionalInboudSignature", Boolean.TRUE);
+        this.testedInstance = new WSSecurityServerHandler();
+        this.testedInstance.postConstructCallback();
+
+        // stubs
+        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
+        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
+        expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
+
+        // prepare
+        replay(this.mockObjects);
+
+        // operate
+        this.testedInstance.handleMessage(soapMessageContext);
+
+        // verify
+        verify(this.mockObjects);
     }
 
     @Test

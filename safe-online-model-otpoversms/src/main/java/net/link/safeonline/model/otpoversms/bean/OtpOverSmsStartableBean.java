@@ -131,7 +131,7 @@ public class OtpOverSmsStartableBean extends AbstractInitBean {
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(otpOverSmsDeviceAttributeType, "nl", "GSM Lite", null));
 
         this.devices.add(new Device(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID, SafeOnlineConstants.MOBILE_DEVICE_CLASS, nodeName, "/"
-                + otpOverSmsWebappName + "/auth", "/" + otpOverSmsWebappName + "/device", "/" + otpOverSmsWebappName + "/device", "/"
+                + otpOverSmsWebappName + "/auth", null, "/" + otpOverSmsWebappName + "/device", "/" + otpOverSmsWebappName + "/device", "/"
                 + otpOverSmsWebappName + "/device", "/" + otpOverSmsWebappName + "/device", "/" + otpOverSmsWebappName + "/device",
                 certificate, otpOverSmsDeviceAttributeType, otpOverSmsMobileAttributeType, otpOverSmsDeviceDisableAttributeType));
         this.deviceDescriptions.add(new DeviceDescription(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID, "nl", "GSM Lite"));

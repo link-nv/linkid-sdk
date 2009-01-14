@@ -79,7 +79,7 @@ public class DigipassStartableBean extends AbstractInitBean {
         String digipassWebappName = properties.getString("digipass.webapp.name");
 
         this.devices.add(new Device(DigipassConstants.DIGIPASS_DEVICE_ID, SafeOnlineConstants.DIGIPASS_DEVICE_CLASS, nodeName, "/"
-                + digipassWebappName + "/auth", null, null, null, "/" + digipassWebappName + "/device", "/" + digipassWebappName
+                + digipassWebappName + "/auth", null, null, null, null, "/" + digipassWebappName + "/device", "/" + digipassWebappName
                 + "/device", certificate, digipassDeviceAttributeType, digipassSNAttributeType, digipassDeviceDisableAttributeType));
         this.deviceDescriptions.add(new DeviceDescription(DigipassConstants.DIGIPASS_DEVICE_ID, "nl", "EBank Digipass"));
         this.deviceDescriptions.add(new DeviceDescription(DigipassConstants.DIGIPASS_DEVICE_ID, Locale.ENGLISH.getLanguage(),

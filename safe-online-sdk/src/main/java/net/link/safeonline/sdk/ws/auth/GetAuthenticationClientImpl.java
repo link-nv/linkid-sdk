@@ -45,13 +45,13 @@ public class GetAuthenticationClientImpl extends AbstractMessageAccessor impleme
      * Main constructor.
      * 
      * @param location
-     *            the location (host:port) of the authentication web service.
+     *            the location (host:port/ws-context) of the authentication web service.
      */
     public GetAuthenticationClientImpl(String location) {
 
         GetAuthenticationService getAuthenticationService = GetAuthenticationServiceFactory.newInstance();
         this.port = getAuthenticationService.getGetAuthenticationPort();
-        this.location = location + "/safe-online-ws/get_auth";
+        this.location = location + "/get_auth";
 
         setEndpointAddress();
 
@@ -71,7 +71,7 @@ public class GetAuthenticationClientImpl extends AbstractMessageAccessor impleme
     public W3CEndpointReference getInstance()
             throws WSClientTransportException {
 
-        LOG.debug("get instance of stateful authentication service");
+        LOG.debug("get instance of stateful authentication service at " + this.location);
 
         SafeOnlineTrustManager.configureSsl();
 

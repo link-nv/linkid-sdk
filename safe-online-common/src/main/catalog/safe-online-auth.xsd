@@ -4,11 +4,6 @@
 	xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
 	xmlns:wsa="http://www.w3.org/2005/08/addressing" elementFormDefault="qualified">
 
-	<import namespace="urn:oasis:names:tc:SAML:2.0:protocol"
-		schemaLocation="saml-schema-protocol-2.0.xsd" />
-	<import namespace="http://www.w3.org/2005/08/addressing"
-		schemaLocation="ws-addr-1.0.xsd" />
-
 	<annotation>
 		<documentation>
 			Document identifier: safe-online-auth
@@ -45,6 +40,7 @@
 				</sequence>
 				<attribute name="ApplicationId" type="string" use="required" />
 				<attribute name="DeviceName" type="string" use="required" />
+				<attribute name="Language" type="string" use="required" />
 			</extension>
 		</complexContent>
 	</complexType>
@@ -76,6 +72,7 @@
 						maxOccurs="unbounded" />
 				</sequence>
 				<attribute name="DeviceName" type="string" />
+				<attribute name="UserId" type="string" />
 			</extension>
 		</complexContent>
 	</complexType>
@@ -90,4 +87,75 @@
 				minOccurs="1" maxOccurs="1" />
 		</sequence>
 	</complexType>
+
+	<element name="WSAuthenticationGlobalUsageAgreementRequest"
+		type="tns:WSAuthenticationGlobalUsageAgreementRequestType" />
+	<complexType name="WSAuthenticationGlobalUsageAgreementRequestType">
+		<complexContent>
+			<extension base="samlp:RequestAbstractType" />
+		</complexContent>
+	</complexType>
+
+	<element name="WSAuthenticationGlobalUsageAgreementResponse"
+		type="tns:WSAuthenticationGlobalUsageAgreementResponseType" />
+	<complexType name="WSAuthenticationGlobalUsageAgreementResponseType">
+		<complexContent>
+			<extension base="tns:WSAuthenticationResponseType">
+				<attribute name="GlobalUsageAgreement" type="string" use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<element name="WSAuthenticationGlobalUsageAgreementConfirmation"
+		type="tns:WSAuthenticationGlobalUsageAgreementConfirmationType" />
+	<complexType name="WSAuthenticationGlobalUsageAgreementConfirmationType">
+		<complexContent>
+			<extension base="samlp:RequestAbstractType">
+				<attribute name="Confirmation" type="string" use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<element name="WSAuthenticationUsageAgreementRequest" type="tns:WSAuthenticationUsageAgreementRequestType" />
+	<complexType name="WSAuthenticationUsageAgreementRequestType">
+		<complexContent>
+			<extension base="samlp:RequestAbstractType" />
+		</complexContent>
+	</complexType>
+
+	<element name="WSAuthenticationUsageAgreementResponse" type="tns:WSAuthenticationUsageAgreementResponseType" />
+	<complexType name="WSAuthenticationUsageAgreementResponseType">
+		<complexContent>
+			<extension base="tns:WSAuthenticationResponseType">
+				<attribute name="UsageAgreement" type="string" use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<element name="WSAuthenticationUsageAgreementConfirmation"
+		type="tns:WSAuthenticationUsageAgreementConfirmationType" />
+	<complexType name="WSAuthenticationUsageAgreementConfirmationType">
+		<complexContent>
+			<extension base="samlp:RequestAbstractType">
+				<attribute name="Confirmation" type="string" use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<element name="WSAuthenticationIdentityRequest" type="tns:WSAuthenticationIdentityRequestType" />
+	<complexType name="WSAuthenticationIdentityRequestType">
+		<complexContent>
+			<extension base="samlp:RequestAbstractType"></extension>
+		</complexContent>
+	</complexType>
+
+	<element name="WSAuthenticationIdentityConfirmation" type="tns:WSAuthenticationIdentityConfirmationType" />
+	<complexType name="WSAuthenticationIdentityConfirmationType">
+		<complexContent>
+			<extension base="samlp:RequestAbstractType">
+				<attribute name="Confirmation" type="string" use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+
 </schema>

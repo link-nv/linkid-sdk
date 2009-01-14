@@ -35,7 +35,7 @@ public class GetPasswordAuthenticationPortImpl implements GetAuthenticationPort 
     @WebMethod
     public synchronized AuthenticationGetInstanceResponseType getInstance(AuthenticationGetInstanceRequestType request) {
 
-        LOG.debug("return instance of stateful authentication webservice");
+        LOG.debug("return instance of stateful authentication webservice for password device");
         AuthenticationGetInstanceResponseType response = new AuthenticationGetInstanceResponseType();
         response.setEndpoint(PasswordAuthenticationPortImpl.manager.export(new PasswordAuthenticationPortImpl()));
         return response;

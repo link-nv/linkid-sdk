@@ -65,6 +65,8 @@ public class DeviceEntity implements Serializable {
 
     private String                               authenticationPath;
 
+    private String                               authenticationWSPath;
+
     private String                               registrationPath;
 
     private String                               removalPath;
@@ -94,13 +96,14 @@ public class DeviceEntity implements Serializable {
     }
 
     public DeviceEntity(String name, DeviceClassEntity deviceClass, NodeEntity location, String authenticationPath,
-                        String registrationPath, String removalPath, String updatePath, String disablePath, String enablePath,
-                        X509Certificate certificate) {
+                        String authenticationWSPath, String registrationPath, String removalPath, String updatePath, String disablePath,
+                        String enablePath, X509Certificate certificate) {
 
         this.name = name;
         this.deviceClass = deviceClass;
         this.location = location;
         this.authenticationPath = authenticationPath;
+        this.authenticationWSPath = authenticationWSPath;
         this.registrationPath = registrationPath;
         this.removalPath = removalPath;
         this.updatePath = updatePath;
@@ -229,6 +232,31 @@ public class DeviceEntity implements Serializable {
         if (null == this.location)
             return this.authenticationPath;
         return this.location.getLocation() + this.authenticationPath;
+    }
+
+    /**
+     * Retrieve the local path for web service authentication of this device.
+     */
+    public String getAuthenticationWSPath() {
+
+        return this.authenticationWSPath;
+    }
+
+    public void setAuthenticationWSPath(String authenticationWSPath) {
+
+        this.authenticationWSPath = authenticationWSPath;
+    }
+
+    /**
+     * Returns the full URL for web service authentication of this device.
+     */
+    @Transient
+    public String getAuthenticationWSURL() {
+
+        if (null == this.location)
+            return this.authenticationWSPath;
+        return this.location.getLocation() + this.authenticationWSPath;
+
     }
 
     /**

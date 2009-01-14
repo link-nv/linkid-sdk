@@ -99,6 +99,13 @@ public class DevicePolicyServiceBean implements DevicePolicyService {
         return device.getAuthenticationURL();
     }
 
+    public String getAuthenticationWSURL(String deviceName)
+            throws DeviceNotFoundException {
+
+        DeviceEntity device = this.deviceDAO.getDevice(deviceName);
+        return device.getAuthenticationWSURL();
+    }
+
     public String getRegistrationURL(String deviceName)
             throws DeviceNotFoundException {
 

@@ -43,13 +43,4 @@
 		interface="net.lin_k.safe_online.notification.subscription.manager.NotificationSubscriptionManagerPort"
 		service="{urn:net:lin-k:safe-online:notification:subscription:manager}NotificationSubscriptionManagerService"
 		port="{urn:net:lin-k:safe-online:notification:subscription:manager}NotificationSubscriptionManagerPort" />
-	<endpoint name="SafeOnline-Authentication-WS"
-		implementation="net.link.safeonline.auth.ws.AuthenticationPortImpl"
-		url-pattern="/auth" interface="net.lin_k.safe_online.auth.AuthenticationPort"
-		service="{urn:net:lin-k:safe-online:auth}AuthenticationService" port="{urn:net:lin-k:safe-online:auth}AuthenticationPort" />
-	<endpoint name="SafeOnline-GetAuthentication-WS"
-		implementation="net.link.safeonline.auth.ws.GetAuthenticationPortImpl"
-		url-pattern="/get_auth" interface="net.lin_k.safe_online.auth.GetAuthenticationPort"
-		service="{urn:net:lin-k:safe-online:auth}GetAuthenticationService"
-		port="{urn:net:lin-k:safe-online:auth}GetAuthenticationPort" />
 </endpoints>
