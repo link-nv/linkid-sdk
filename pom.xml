@@ -320,6 +320,7 @@
 				<!-- DEMO CORE -->
 				<module>safe-online-model-demo-client</module>
 				<module>safe-online-model-demo</module>
+                <module>safe-online-demo-sql-ddl</module>
 				<module>safe-online-demo-deploy</module>
 				<module>safe-online-demo-util</module>
 				<module>safe-online-demo-applet</module>
@@ -1603,6 +1604,13 @@
 			<dependency>
 				<groupId>net.lin-k.safe-online</groupId>
 				<artifactId>safe-online-sql-ddl</artifactId>
+				<version>${safe-online.version}</version>
+				<scope>provided</scope>
+				<type>jar</type>
+			</dependency>
+			<dependency>
+				<groupId>net.lin-k.safe-online</groupId>
+				<artifactId>safe-online-demo-sql-ddl</artifactId>
 				<version>${safe-online.version}</version>
 				<scope>provided</scope>
 				<type>jar</type>

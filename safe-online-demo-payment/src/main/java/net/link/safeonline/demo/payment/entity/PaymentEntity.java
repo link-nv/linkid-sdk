@@ -32,7 +32,7 @@ public class PaymentEntity implements Serializable {
 
     private static final long  serialVersionUID = 1L;
 
-    public static final String getByOwner       = "ticket.where.owner";
+    public static final String getByOwner       = "PaymentEntity.getByOwner";
 
     @Id
     @GeneratedValue

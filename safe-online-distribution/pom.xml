@@ -440,7 +440,47 @@
                     <version>1.3-SNAPSHOT</version>
                     <type>zip</type>
                 </dependency>
+
+                <!-- Specific Dependencies: Persistance Provider -->
+                <dependency>
+                    <groupId>net.lin-k.safe-online</groupId>
+                    <artifactId>safe-online-demo-sql-ddl</artifactId>
+                    <version>1.3-SNAPSHOT</version>
+                    <scope>provided</scope>
+                    <type>jar</type>
+                </dependency>
             </dependencies>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+
+                            <!-- Unpack Demo SQL DDL scripts into /files.
+                                 maven-assembly-plugin will merge them all together into /jboss. -->
+                            <execution>
+                                <id>unpack-demo</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <configuration>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>net.lin-k.safe-online</groupId>
+                                            <artifactId>safe-online-demo-sql-ddl</artifactId>
+                                        </artifactItem>
+                                    </artifactItems>
+                                    <outputDirectory>${project.build.directory}/files</outputDirectory>
+                                </configuration>
+                            </execution>
+
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
 
         <profile>
