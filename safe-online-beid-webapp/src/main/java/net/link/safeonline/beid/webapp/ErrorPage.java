@@ -62,33 +62,27 @@ public class ErrorPage extends TemplatePage {
         getHeader();
 
         // Our content.
-        String type = String.valueOf(parameters.getKey(TYPE_PARAMETER));
-
+        String type = parameters.getString(TYPE_PARAMETER);
         String errorTitle = localize("%l", "protocolError");
         String errorMessage = localize("%l", "errorMessage");
         if (BAD_PLATFORM.getTypeValue().equalsIgnoreCase(type)) {
             errorTitle = localize("%l", "platformUnsupported");
             errorMessage = localize("%l", "platformUnsupportedInfo");
-        }
-        if (NO_READER.getTypeValue().equalsIgnoreCase(type)) {
+        } else if (NO_READER.getTypeValue().equalsIgnoreCase(type)) {
             errorTitle = localize("%l", "missingReader");
             errorMessage = localize("%l <a href='%s'>%s</a>", "missingReaderInfo", "http://www.belgeid.be/", "http://www.belgeid.be/");
-        }
-        if (NO_MIDDLEWARE.getTypeValue().equalsIgnoreCase(type)) {
+        } else if (NO_MIDDLEWARE.getTypeValue().equalsIgnoreCase(type)) {
             errorTitle = localize("%l", "missingMiddleware");
             errorMessage = localize("%l <a href='%s'>%s</a>", "missingMiddlewareInfo", "http://www.belgium.be/zip/eid_datacapture_nl.html",
                     "http://www.belgium.be/zip/eid_datacapture_nl.html");
-        }
-        if (BAD_JAVA_VERSION.getTypeValue().equalsIgnoreCase(type)) {
+        } else if (BAD_JAVA_VERSION.getTypeValue().equalsIgnoreCase(type)) {
             errorTitle = localize("%l", "javaVersionError");
             errorMessage = localize("%l <a href='%s'>%s</a>", "javaVersionErrorInfo", "http://www.java.com/getjava/",
                     "http://www.java.com/getjava/");
-        }
-        if (NO_JAVA.getTypeValue().equalsIgnoreCase(type)) {
+        } else if (NO_JAVA.getTypeValue().equalsIgnoreCase(type)) {
             errorTitle = localize("%l", "javaDisabled");
             errorMessage = localize("%l", "javaDisabledInfo");
-        }
-        if (PROTOCOL_VIOLATION.getTypeValue().equalsIgnoreCase(type)) {
+        } else if (PROTOCOL_VIOLATION.getTypeValue().equalsIgnoreCase(type)) {
             errorTitle = localize("%l", "protocolError");
             errorMessage = localize("%l", "protocolErrorInfo");
         }

@@ -108,6 +108,12 @@ initDb() {
 					(( $? )) && exit
 				;;
 
+				SafeOnlineZDemo.ear|safe-online-demo-deploy*.ear)
+					emit "Rebuilding SafeOnline Demo"
+						mysql -h"$host" -P"$port" -u"$user" -p"$pass" "$db" < <(unzip -qc "$ear" mysql-safe-online-demo-ddl.sql)
+					(( $? )) && exit
+				;;
+
 				Dodentocht.ear|dodentocht-deploy*.ear)
 					emit "Rebuilding Dodentocht" --
 						(
@@ -143,6 +149,13 @@ initDb() {
                         driver=ojdbc5-11.1.0.6.0.jar
 						initDbWithCLI "$ear"
 					(( $? )) && exit ;;
+
+				SafeOnlineZDemo.ear|safe-online-demo-deploy*.ear)
+					emit "Rebuilding SafeOnline Demo"
+						LD_LIBRARY_PATH=$ORACLE_HOME/lib:$ORACLE_HOME/client/lib sqlplus "$user/$pass@$db" @<(unzip -qc "$ear" oracle-safe-online-demo-ddl.sql)
+					(( $? )) && exit
+				;;
+
             esac ;;
 
 		*)

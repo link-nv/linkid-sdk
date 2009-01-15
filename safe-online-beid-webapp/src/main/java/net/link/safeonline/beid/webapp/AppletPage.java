@@ -7,7 +7,6 @@
 package net.link.safeonline.beid.webapp;
 
 import java.applet.Applet;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,15 +52,6 @@ public abstract class AppletPage extends TemplatePage {
 
         authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest(getRequest()).getSession());
         protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
-
-        LOG.debug("v-----------------------------");
-        LOG.debug("AppletPage Session Attributes:");
-        Enumeration<?> en = WicketUtil.getHttpSession(getRequest()).getAttributeNames();
-        while (en.hasMoreElements()) {
-            String n = en.nextElement().toString();
-            LOG.debug(n + " = " + WicketUtil.getHttpSession(getRequest()).getAttribute(n));
-        }
-        LOG.debug("^-----------------------------");
 
         String operation = null;
         String language = getLocale().getLanguage();
