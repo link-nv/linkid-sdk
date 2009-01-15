@@ -8,6 +8,7 @@
 package test.integ.net.link.safeonline.ws;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -23,6 +24,7 @@ import static test.integ.net.link.safeonline.IntegrationTestUtils.getUserRegistr
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -47,8 +49,10 @@ import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.password.PasswordConstants;
 import net.link.safeonline.model.password.PasswordDeviceService;
+import net.link.safeonline.sdk.ws.auth.Attribute;
 import net.link.safeonline.sdk.ws.auth.AuthenticationClient;
 import net.link.safeonline.sdk.ws.auth.AuthenticationClientImpl;
+import net.link.safeonline.sdk.ws.auth.DataType;
 import net.link.safeonline.sdk.ws.auth.GetAuthenticationClient;
 import net.link.safeonline.sdk.ws.auth.GetAuthenticationClientImpl;
 import net.link.safeonline.sdk.ws.exception.WSAuthenticationException;
@@ -57,7 +61,6 @@ import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.ws.common.WSAuthenticationErrorCode;
 import oasis.names.tc.saml._2_0.assertion.AssertionType;
-import oasis.names.tc.saml._2_0.assertion.AttributeType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -270,9 +273,29 @@ public class AuthenticationWebServiceTest {
         assertTrue(authenticationSteps.contains(AuthenticationStep.IDENTITY_CONFIRMATION));
 
         // operate: request application identity
-        List<AttributeType> identity = this.authenticationClient.getIdentity();
+        List<Attribute> identity = this.authenticationClient.getIdentity();
         assertNotNull(identity);
         assertEquals(2, identity.size());
+        for (Attribute attribute : identity) {
+            assertFalse(attribute.isOptional());
+            if (attribute.getDataType() == DataType.COMPOUNDED) {
+                assertEquals(testCompoundAttributeName, attribute.getName());
+                assertEquals(2, attribute.getMembers().size());
+                for (Attribute memberAttribute : attribute.getMembers()) {
+                    assertFalse(memberAttribute.isOptional());
+                    if (memberAttribute.getDataType() == DataType.DATE) {
+                        assertEquals(testMultiDateAttributeName, memberAttribute.getName());
+                    } else if (memberAttribute.getDataType() == DataType.STRING) {
+                        assertEquals(testMultiStringAttributeName, memberAttribute.getName());
+                    } else {
+                        fail();
+                    }
+                }
+            } else {
+                assertEquals(testSingleStringAttributeName, attribute.getName());
+                assertEquals(DataType.STRING, attribute.getDataType());
+            }
+        }
 
         // operate: confirm application identity
         userId = this.authenticationClient.confirmIdentity(Confirmation.CONFIRM);
@@ -280,6 +303,41 @@ public class AuthenticationWebServiceTest {
         authenticationSteps = this.authenticationClient.getAuthenticationSteps();
         assertNotNull(authenticationSteps);
         assertTrue(authenticationSteps.contains(AuthenticationStep.MISSING_ATTRIBUTES));
+
+        // operate: request missing attributes
+        List<Attribute> missingAttributes = this.authenticationClient.getMissingAttributes();
+        assertNotNull(missingAttributes);
+        assertEquals(2, missingAttributes.size());
+
+        // fill in missing attributes
+        for (Attribute missingAttribute : missingAttributes) {
+            if (missingAttribute.getName().equals(testSingleStringAttributeName)) {
+                missingAttribute.setValue("test-value");
+            } else {
+                for (Attribute memberAttribute : missingAttribute.getMembers()) {
+                    if (memberAttribute.getName().equals(testMultiDateAttributeName)) {
+                        memberAttribute.setValue(new Date());
+                    } else {
+                        memberAttribute.setValue("test-value");
+                    }
+                }
+            }
+        }
+
+        // operate: save missing attributes
+        userId = this.authenticationClient.saveMissingAttributes(missingAttributes);
+        assertNotNull(userId);
+        AssertionType assertion = this.authenticationClient.getAssertion();
+        assertNotNull(assertion);
+
+        // operate: login again, no further steps should be needed
+        endpoint = this.getAuthenticationClient.getInstance();
+        this.authenticationClient = new AuthenticationClientImpl(endpoint);
+        userId = this.authenticationClient.authenticate(testApplicationName, PasswordConstants.PASSWORD_DEVICE_ID,
+                Locale.ENGLISH.getLanguage(), nameValuePairs, keyPair.getPublic());
+        assertNotNull(userId);
+        assertion = this.authenticationClient.getAssertion();
+        assertNotNull(assertion);
 
         // cleanup
         // login as admin

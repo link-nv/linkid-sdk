@@ -158,4 +158,26 @@
 		</complexContent>
 	</complexType>
 
+	<element name="WSAuthenticationMissingAttributesRequest"
+		type="tns:WSAuthenticationMissingAttributesRequestType" />
+	<complexType name="WSAuthenticationMissingAttributesRequestType">
+		<complexContent>
+			<extension base="samlp:RequestAbstractType"></extension>
+		</complexContent>
+	</complexType>
+
+	<element name="WSAuthenticatingMissingAttributesSaveRequest"
+		type="tns:WSAuthenticationMissingAttributesSaveRequestType" />
+	<complexType name="WSAuthenticationMissingAttributesSaveRequestType">
+		<complexContent>
+			<extension base="samlp:RequestAbstractType">
+				<sequence>
+					<element name="missingAttributes" ref="saml:Attribute"
+						minOccurs="1" maxOccurs="unbounded" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+
 </schema>

@@ -102,6 +102,7 @@ public class NotificationSubscriptionManagerPortImplTest {
         this.jndiTestUtils.setUp();
         this.jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
                 "SafeOnline/WSSecurityConfigurationBean/local");
+        this.jndiTestUtils.bindComponent("java:comp/env/wsSecurityOptionalInboudSignature", false);
 
         this.mockWSSecurityConfigurationService = createMock(WSSecurityConfiguration.class);
         this.mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);

@@ -135,6 +135,7 @@ public class SAMLAttributePortImplTest {
         this.jndiTestUtils.setUp();
         this.jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
                 "SafeOnline/WSSecurityConfigurationBean/local");
+        this.jndiTestUtils.bindComponent("java:comp/env/wsSecurityOptionalInboudSignature", false);
 
         this.mockWSSecurityConfigurationService = createMock(WSSecurityConfigurationService.class);
         this.mockAttributeService = createMock(AttributeService.class);

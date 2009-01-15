@@ -23,6 +23,7 @@ public enum WSAuthenticationErrorCode {
     APPLICATION_NOT_FOUND("urn:net:lin-k:safe-online:ws:auth:status:ApplicationNotFound"),
     APPLICATION_IDENTITY_NOT_FOUND("urn:net:lin-k:safe-online:ws:auth:status:ApplicationIdentityNotFound"),
     ATTRIBUTE_TYPE_NOT_FOUND("urn:net:lin-k:safe-online:ws:auth:status:AttributeTypeNotFound"),
+    ATTRIBUTE_UNAVAILABLE("urn:net:lin-k:safe-online:ws:auth:status:AttributeUnavailable"),
     AUTHENTICATION_FAILED("urn:net:lin-k:safe-online:ws:auth:status:AuthenticationFailed"),
     DEVICE_DISABLED("urn:net:lin-k:safe-online:ws:auth:status:DeviceDisabled"),
     DEVICE_NOT_FOUND("urn:net:lin-k:safe-online:ws:auth:status:DeviceNotFound"),

@@ -36,6 +36,8 @@ import net.lin_k.safe_online.auth.WSAuthenticationGlobalUsageAgreementRequestTyp
 import net.lin_k.safe_online.auth.WSAuthenticationGlobalUsageAgreementResponseType;
 import net.lin_k.safe_online.auth.WSAuthenticationIdentityConfirmationType;
 import net.lin_k.safe_online.auth.WSAuthenticationIdentityRequestType;
+import net.lin_k.safe_online.auth.WSAuthenticationMissingAttributesRequestType;
+import net.lin_k.safe_online.auth.WSAuthenticationMissingAttributesSaveRequestType;
 import net.lin_k.safe_online.auth.WSAuthenticationRequestType;
 import net.lin_k.safe_online.auth.WSAuthenticationResponseType;
 import net.lin_k.safe_online.auth.WSAuthenticationStepType;
@@ -250,7 +252,7 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
     /**
      * {@inheritDoc}
      */
-    public List<AttributeType> getIdentity()
+    public List<Attribute> getIdentity()
             throws RequestDeniedException, WSClientTransportException, WSAuthenticationException {
 
         LOG.debug("get application's identity to be confirmed");
@@ -269,15 +271,15 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
             // either authentication is successful and SAML v2.0 assertion containing subject information is returned, or a SAML v2.0
             // assertion containing an attribute statement is returned.
             if (null == response.getAssertion().get(0).getSubject()) {
-                List<AttributeType> identity = new LinkedList<AttributeType>();
+                List<Attribute> identity = new LinkedList<Attribute>();
                 AttributeStatementType attributeStatement = (AttributeStatementType) response
                                                                                              .getAssertion()
                                                                                              .get(0)
                                                                                              .getStatementOrAuthnStatementOrAuthzDecisionStatement()
                                                                                              .get(0);
                 for (Object attributeOrEncryptedAttribute : attributeStatement.getAttributeOrEncryptedAttribute()) {
-                    AttributeType attribute = (AttributeType) attributeOrEncryptedAttribute;
-                    identity.add(attribute);
+                    AttributeType attributeType = (AttributeType) attributeOrEncryptedAttribute;
+                    identity.add(new Attribute(attributeType));
                 }
                 return identity;
             }
@@ -302,6 +304,74 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
         SafeOnlineTrustManager.configureSsl();
 
         WSAuthenticationResponseType response = getIdentityConfirmationResponse(request);
+
+        checkStatus(response);
+
+        setAssertion(response);
+        if (null != this.assertion)
+            return getSubject();
+
+        setAuthenticationSteps(response);
+
+        return null;
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public List<Attribute> getMissingAttributes()
+            throws RequestDeniedException, WSClientTransportException, WSAuthenticationException {
+
+        LOG.debug("get missing attributes for application");
+
+        WSAuthenticationMissingAttributesRequestType request = getMissingAttributesRequest();
+
+        SafeOnlineTrustManager.configureSsl();
+
+        WSAuthenticationResponseType response = getMissingAttributesResponse(request);
+
+        checkStatus(response);
+        setAssertion(response);
+        setAuthenticationSteps(response);
+
+        if (null != response.getAssertion()) {
+            // either authentication is successful and SAML v2.0 assertion containing subject information is returned, or a SAML v2.0
+            // assertion containing an attribute statement is returned.
+            if (null == response.getAssertion().get(0).getSubject()) {
+                List<Attribute> missingAttributes = new LinkedList<Attribute>();
+                AttributeStatementType attributeStatement = (AttributeStatementType) response
+                                                                                             .getAssertion()
+                                                                                             .get(0)
+                                                                                             .getStatementOrAuthnStatementOrAuthzDecisionStatement()
+                                                                                             .get(0);
+                for (Object attributeOrEncryptedAttribute : attributeStatement.getAttributeOrEncryptedAttribute()) {
+                    AttributeType attributeType = (AttributeType) attributeOrEncryptedAttribute;
+                    missingAttributes.add(new Attribute(attributeType));
+                }
+                return missingAttributes;
+            }
+        }
+
+        setAssertion(response);
+        setAuthenticationSteps(response);
+
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String saveMissingAttributes(List<Attribute> missingAttributes)
+            throws RequestDeniedException, WSClientTransportException, WSAuthenticationException {
+
+        LOG.debug("save missing attributes");
+
+        WSAuthenticationMissingAttributesSaveRequestType request = getMissingAttributesSaveRequest(missingAttributes);
+
+        SafeOnlineTrustManager.configureSsl();
+
+        WSAuthenticationResponseType response = getMissingAttributesSaveResponse(request);
 
         checkStatus(response);
 
@@ -617,6 +687,53 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
             retrieveHeadersFromPort(this.port);
         }
 
+    }
+
+    private WSAuthenticationMissingAttributesRequestType getMissingAttributesRequest() {
+
+        WSAuthenticationMissingAttributesRequestType request = new WSAuthenticationMissingAttributesRequestType();
+        setRequest(request);
+        return request;
+    }
+
+    private WSAuthenticationResponseType getMissingAttributesResponse(WSAuthenticationMissingAttributesRequestType request)
+            throws WSClientTransportException {
+
+        try {
+            return this.port.requestMissingAttributes(request);
+        } catch (ClientTransportException e) {
+            throw new WSClientTransportException(this.endpoint.toString());
+        } catch (Exception e) {
+            throw retrieveHeadersFromException(e);
+        } finally {
+            retrieveHeadersFromPort(this.port);
+        }
+    }
+
+    private WSAuthenticationMissingAttributesSaveRequestType getMissingAttributesSaveRequest(List<Attribute> missingAttributes) {
+
+        WSAuthenticationMissingAttributesSaveRequestType request = new WSAuthenticationMissingAttributesSaveRequestType();
+        setRequest(request);
+
+        for (Attribute missingAttribute : missingAttributes) {
+            request.getAttribute().add(missingAttribute.getAttributeType());
+        }
+
+        return request;
+    }
+
+    private WSAuthenticationResponseType getMissingAttributesSaveResponse(WSAuthenticationMissingAttributesSaveRequestType request)
+            throws WSClientTransportException {
+
+        try {
+            return this.port.saveMissingAttributes(request);
+        } catch (ClientTransportException e) {
+            throw new WSClientTransportException(this.endpoint.toString());
+        } catch (Exception e) {
+            throw retrieveHeadersFromException(e);
+        } finally {
+            retrieveHeadersFromPort(this.port);
+        }
     }
 
     private void setAssertion(WSAuthenticationResponseType response) {

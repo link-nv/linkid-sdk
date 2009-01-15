@@ -64,6 +64,13 @@
 
 	<!-- =================== Missing Attributes ======================= -->
 
+	<message name="AuthenticationMissingAttributesRequestMessage">
+		<part name="request" element="tns:WSAuthenticationMissingAttributesRequest"></part>
+	</message>
+	<message name="AuthenticationMissingAttributesSaveRequestMessage">
+		<part name="request" element="tns:WSAuthenticatingMissingAttributesSaveRequest"></part>
+	</message>
+
 	<!-- ======================= Authentication Ports =================	-->
 
 	<portType name="AuthenticationPort">
@@ -93,6 +100,14 @@
 		</operation>
 		<operation name="confirmIdentity">
 			<input message="tns:AuthenticationIdentityConfirmationMessage"></input>
+			<output message="tns:AuthenticationResponseMessage" />
+		</operation>
+		<operation name="requestMissingAttributes">
+			<input message="tns:AuthenticationMissingAttributesRequestMessage"></input>
+			<output message="tns:AuthenticationResponseMessage" />
+		</operation>
+		<operation name="saveMissingAttributes">
+			<input message="tns:AuthenticationMissingAttributesSaveRequestMessage"></input>
 			<output message="tns:AuthenticationResponseMessage" />
 		</operation>
 	</portType>
@@ -166,6 +181,26 @@
 		</operation>
 		<operation name="confirmIdentity">
 			<soap:operation soapAction="urn:net:lin-k:safe-online:auth:confirmIdentity" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="requestMissingAttributes">
+			<soap:operation
+				soapAction="urn:net:lin-k:safe-online:auth:requestMissingAttributes" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="saveMissingAttributes">
+			<soap:operation
+				soapAction="urn:net:lin-k:safe-online:auth:saveMissingAttributes" />
 			<input>
 				<soap:body use="literal" />
 			</input>

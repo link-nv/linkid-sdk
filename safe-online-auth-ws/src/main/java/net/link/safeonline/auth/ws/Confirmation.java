@@ -58,8 +58,7 @@ public enum Confirmation {
     }
 
 
-    public static Confirmation getUsageAgreementConfirmation(
-            String confirmationValue) {
+    public static Confirmation getConfirmation(String confirmationValue) {
 
         Confirmation confirmation = confirmationMap.get(confirmationValue);
         if (null == confirmation)

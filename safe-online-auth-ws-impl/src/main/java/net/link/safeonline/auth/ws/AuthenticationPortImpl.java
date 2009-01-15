@@ -12,6 +12,7 @@ import java.security.Principal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
@@ -37,6 +38,8 @@ import net.lin_k.safe_online.auth.WSAuthenticationGlobalUsageAgreementRequestTyp
 import net.lin_k.safe_online.auth.WSAuthenticationGlobalUsageAgreementResponseType;
 import net.lin_k.safe_online.auth.WSAuthenticationIdentityConfirmationType;
 import net.lin_k.safe_online.auth.WSAuthenticationIdentityRequestType;
+import net.lin_k.safe_online.auth.WSAuthenticationMissingAttributesRequestType;
+import net.lin_k.safe_online.auth.WSAuthenticationMissingAttributesSaveRequestType;
 import net.lin_k.safe_online.auth.WSAuthenticationRequestType;
 import net.lin_k.safe_online.auth.WSAuthenticationResponseType;
 import net.lin_k.safe_online.auth.WSAuthenticationStepType;
@@ -67,12 +70,14 @@ import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UsageAgreementService;
 import net.link.safeonline.authentication.service.UserIdMappingService;
 import net.link.safeonline.data.AttributeDO;
+import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.entity.NodeMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.saml.common.Saml2SubjectConfirmationMethod;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
+import net.link.safeonline.sdk.ws.auth.DataType;
 import net.link.safeonline.sdk.ws.exception.WSAuthenticationException;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.service.NodeMappingService;
@@ -295,7 +300,7 @@ public class AuthenticationPortImpl implements AuthenticationPort {
             return createAuthenticationResponse(request.getID(), WSAuthenticationErrorCode.NOT_AUTHENTICATED, null);
         }
 
-        Confirmation confirmation = Confirmation.getUsageAgreementConfirmation(request.getConfirmation());
+        Confirmation confirmation = Confirmation.getConfirmation(request.getConfirmation());
         if (Confirmation.REJECT == confirmation)
             return createAuthenticationResponse(request.getID(), WSAuthenticationErrorCode.AUTHENTICATION_FAILED, null);
 
@@ -396,7 +401,7 @@ public class AuthenticationPortImpl implements AuthenticationPort {
             return createAuthenticationResponse(request.getID(), WSAuthenticationErrorCode.NOT_AUTHENTICATED, null);
         }
 
-        Confirmation confirmation = Confirmation.getUsageAgreementConfirmation(request.getConfirmation());
+        Confirmation confirmation = Confirmation.getConfirmation(request.getConfirmation());
         if (Confirmation.REJECT == confirmation)
             return createAuthenticationResponse(request.getID(), WSAuthenticationErrorCode.AUTHENTICATION_FAILED, null);
 
@@ -475,7 +480,8 @@ public class AuthenticationPortImpl implements AuthenticationPort {
 
                 List<AttributeDO> confirmationList = identityService.listIdentityAttributesToConfirm(this.applicationName, new Locale(
                         this.language));
-                AssertionType attributeAssertion = getAttributeAssertion(confirmationList);
+                List<AttributeType> confirmationAttributes = getAttributes(confirmationList, false);
+                AssertionType attributeAssertion = getAttributeAssertion(confirmationAttributes);
                 response.getAssertion().add(attributeAssertion);
 
             } catch (SubscriptionNotFoundException e) {
@@ -510,7 +516,7 @@ public class AuthenticationPortImpl implements AuthenticationPort {
             return createAuthenticationResponse(request.getID(), WSAuthenticationErrorCode.NOT_AUTHENTICATED, null);
         }
 
-        Confirmation confirmation = Confirmation.getUsageAgreementConfirmation(request.getConfirmation());
+        Confirmation confirmation = Confirmation.getConfirmation(request.getConfirmation());
         if (Confirmation.REJECT == confirmation)
             return createAuthenticationResponse(request.getID(), WSAuthenticationErrorCode.AUTHENTICATION_FAILED, null);
 
@@ -548,6 +554,126 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         }
 
         return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public WSAuthenticationResponseType requestMissingAttributes(WSAuthenticationMissingAttributesRequestType request) {
+
+        LOG.debug("request missing attributes for application: " + this.applicationName);
+
+        if (null == this.authenticatedSubject) {
+            LOG.error("user not yet authenticated");
+            return createAuthenticationResponse(request.getID(), WSAuthenticationErrorCode.NOT_AUTHENTICATED, null);
+        }
+
+        WSAuthenticationResponseType response = createAuthenticationResponse(request.getID(), WSAuthenticationErrorCode.SUCCESS, null);
+
+        try {
+            if (!this.hasMissingAttributes) {
+                login(request.getID(), response);
+                return response;
+            }
+
+            // JAAS Login
+            LoginContext loginContext = jaasLogin();
+            try {
+                IdentityService identityService = EjbUtils.getEJB(IdentityService.JNDI_BINDING, IdentityService.class);
+
+                List<AttributeDO> missingAttributeList = identityService.listMissingAttributes(this.applicationName, new Locale(
+                        this.language));
+
+                // first check if all there are non-user-editable attributes missing, if so user cannot authenticate.
+                String unavailableAttributes = "";
+                for (AttributeDO missingAttribute : missingAttributeList) {
+                    if (!missingAttribute.isEditable()) {
+                        unavailableAttributes += missingAttribute.getName() + ", ";
+                    }
+                }
+                if (unavailableAttributes.length() > 0)
+                    throw new WSAuthenticationException(WSAuthenticationErrorCode.ATTRIBUTE_UNAVAILABLE, "Attribute(s) ["
+                            + unavailableAttributes + "] is(are) unavailable");
+
+                // include optional attributes
+                List<AttributeDO> optionalAttributeList = identityService.listOptionalAttributes(this.applicationName, new Locale(
+                        this.language));
+
+                List<AttributeType> missingAttributes = getAttributes(missingAttributeList, false);
+                List<AttributeType> optionalAttributes = getAttributes(optionalAttributeList, true);
+                missingAttributes.addAll(optionalAttributes);
+
+                AssertionType attributeAssertion = getAttributeAssertion(missingAttributes);
+                response.getAssertion().add(attributeAssertion);
+
+            } catch (ApplicationNotFoundException e) {
+                throw new WSAuthenticationException(WSAuthenticationErrorCode.APPLICATION_NOT_FOUND, e.getMessage());
+            } catch (ApplicationIdentityNotFoundException e) {
+                throw new WSAuthenticationException(WSAuthenticationErrorCode.APPLICATION_IDENTITY_NOT_FOUND, e.getMessage());
+            } catch (PermissionDeniedException e) {
+                throw new WSAuthenticationException(WSAuthenticationErrorCode.PERMISSION_DENIED, e.getMessage());
+            } catch (AttributeTypeNotFoundException e) {
+                throw new WSAuthenticationException(WSAuthenticationErrorCode.ATTRIBUTE_TYPE_NOT_FOUND, e.getMessage());
+            } finally {
+                // JAAS Logout
+                jaasLogout(loginContext);
+            }
+
+        } catch (WSAuthenticationException e) {
+            LOG.error("exception: errorCode=" + e.getErrorCode().getErrorCode() + " errorMessage=" + e.getMessage());
+            manager.unexport(this);
+            return createAuthenticationResponse(request.getID(), e.getErrorCode(), e.getMessage());
+        }
+
+        return response;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public WSAuthenticationResponseType saveMissingAttributes(WSAuthenticationMissingAttributesSaveRequestType request) {
+
+        LOG.debug("save missing attributes for: " + this.applicationName);
+
+        if (null == this.authenticatedSubject) {
+            LOG.error("user not yet authenticated");
+            return createAuthenticationResponse(request.getID(), WSAuthenticationErrorCode.NOT_AUTHENTICATED, null);
+        }
+
+        WSAuthenticationResponseType response = createAuthenticationResponse(request.getID(), WSAuthenticationErrorCode.SUCCESS, null);
+
+        try {
+
+            // JAAS Login
+            LoginContext loginContext = jaasLogin();
+            try {
+                IdentityService identityService = EjbUtils.getEJB(IdentityService.JNDI_BINDING, IdentityService.class);
+
+                for (AttributeType attribute : request.getAttribute()) {
+                    LOG.debug("save attribute: " + attribute.getName());
+                    identityService.saveAttribute(attribute);
+                }
+
+            } catch (PermissionDeniedException e) {
+                throw new WSAuthenticationException(WSAuthenticationErrorCode.PERMISSION_DENIED, e.getMessage());
+            } catch (AttributeTypeNotFoundException e) {
+                throw new WSAuthenticationException(WSAuthenticationErrorCode.ATTRIBUTE_TYPE_NOT_FOUND, e.getMessage());
+            } finally {
+                // JAAS Logout
+                jaasLogout(loginContext);
+            }
+
+            login(request.getID(), response);
+
+        } catch (WSAuthenticationException e) {
+            LOG.error("exception: errorCode=" + e.getErrorCode().getErrorCode() + " errorMessage=" + e.getMessage());
+            setStatus(response, e.getErrorCode(), e.getMessage());
+            manager.unexport(this);
+            return response;
+        }
+
+        return response;
+
     }
 
     /**
@@ -1112,12 +1238,8 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         return assertion;
     }
 
-    private AssertionType getAttributeAssertion(List<AttributeDO> attributeList)
+    private AssertionType getAttributeAssertion(List<AttributeType> attributes)
             throws WSAuthenticationException {
-
-        for (AttributeDO attribute : attributeList) {
-            LOG.debug("attribute: " + attribute.getName() + " compound=" + attribute.isCompounded());
-        }
 
         AssertionType assertion = generateBaseAssertion();
 
@@ -1125,6 +1247,17 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         AttributeStatementType attributeStatement = new AttributeStatementType();
         statements.add(attributeStatement);
         List<Object> statementAttributes = attributeStatement.getAttributeOrEncryptedAttribute();
+
+        for (AttributeType attribute : attributes) {
+            statementAttributes.add(attribute);
+        }
+
+        return assertion;
+    }
+
+    private List<AttributeType> getAttributes(List<AttributeDO> attributeList, boolean optional) {
+
+        List<AttributeType> attributes = new LinkedList<AttributeType>();
 
         for (int idx = 0; idx < attributeList.size(); idx++) {
             AttributeDO attribute = attributeList.get(idx);
@@ -1135,6 +1268,8 @@ public class AuthenticationPortImpl implements AuthenticationPort {
             statementAttribute.setFriendlyName(attribute.getHumanReadableName());
             statementAttribute.getOtherAttributes().put(WebServiceConstants.DATAMINING_ATTRIBUTE,
                     new Boolean(attribute.isDataMining()).toString());
+            statementAttribute.getOtherAttributes().put(WebServiceConstants.DATATYPE_ATTRIBUTE, getDataType(attribute).getValue());
+            statementAttribute.getOtherAttributes().put(WebServiceConstants.OPTIONAL_ATTRIBUTE, new Boolean(optional).toString());
 
             List<Object> attributeValues = statementAttribute.getAttributeValue();
 
@@ -1153,13 +1288,34 @@ public class AuthenticationPortImpl implements AuthenticationPort {
                     memberAttributeType.setFriendlyName(memberAttribute.getHumanReadableName());
                     memberAttributeType.getOtherAttributes().put(WebServiceConstants.DATAMINING_ATTRIBUTE,
                             new Boolean(memberAttribute.isDataMining()).toString());
+                    memberAttributeType.getOtherAttributes().put(WebServiceConstants.DATATYPE_ATTRIBUTE,
+                            getDataType(memberAttribute).getValue());
+                    memberAttributeType.getOtherAttributes().put(WebServiceConstants.OPTIONAL_ATTRIBUTE, new Boolean(optional).toString());
+
                     attributeValues.add(memberAttributeType);
                 }
             }
-            statementAttributes.add(statementAttribute);
+            attributes.add(statementAttribute);
         }
+        return attributes;
 
-        return assertion;
+    }
 
+    private DataType getDataType(AttributeDO attribute) {
+
+        if (attribute.getType() == DatatypeType.STRING)
+            return DataType.STRING;
+        else if (attribute.getType() == DatatypeType.BOOLEAN)
+            return DataType.BOOLEAN;
+        else if (attribute.getType() == DatatypeType.DATE)
+            return DataType.DATE;
+        else if (attribute.getType() == DatatypeType.DOUBLE)
+            return DataType.DOUBLE;
+        else if (attribute.getType() == DatatypeType.INTEGER)
+            return DataType.INTEGER;
+        else if (attribute.getType() == DatatypeType.COMPOUNDED)
+            return DataType.COMPOUNDED;
+        else
+            throw new RuntimeException("Unknown datatype " + attribute.getType().getFriendlyName());
     }
 }

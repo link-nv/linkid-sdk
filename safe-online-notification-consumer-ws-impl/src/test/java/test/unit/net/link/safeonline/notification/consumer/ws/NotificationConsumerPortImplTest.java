@@ -92,6 +92,7 @@ public class NotificationConsumerPortImplTest {
         this.jndiTestUtils.setUp();
         this.jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
                 "SafeOnline/WSSecurityConfigurationBean/local");
+        this.jndiTestUtils.bindComponent("java:comp/env/wsSecurityOptionalInboudSignature", false);
 
         this.mockWSSecurityConfigurationService = createMock(WSSecurityConfigurationService.class);
         this.mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);

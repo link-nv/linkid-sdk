@@ -20,7 +20,6 @@ import net.link.safeonline.sdk.ws.MessageAccessor;
 import net.link.safeonline.sdk.ws.exception.WSAuthenticationException;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import oasis.names.tc.saml._2_0.assertion.AssertionType;
-import oasis.names.tc.saml._2_0.assertion.AttributeType;
 
 
 /**
@@ -100,13 +99,13 @@ public interface AuthenticationClient extends MessageAccessor {
             throws RequestDeniedException, WSClientTransportException, WSAuthenticationException;
 
     /**
-     * Returns the application identity to be confirmed. Returns list of SAML v2.0 assertion AttributeType's.
+     * Returns the application identity to be confirmed.
      * 
      * If null, check {@link #getAuthenticationSteps()} for authentication steps to be performed.
      * 
      * If none, check {@link #getAssertion()}.
      */
-    List<AttributeType> getIdentity()
+    List<Attribute> getIdentity()
             throws RequestDeniedException, WSClientTransportException, WSAuthenticationException;
 
     /**
@@ -119,6 +118,34 @@ public interface AuthenticationClient extends MessageAccessor {
      * Returns user ID if complete. The SAML v2.0 assertion is returned by {@link #getAssertion()}.
      */
     String confirmIdentity(Confirmation confirmation)
+            throws RequestDeniedException, WSClientTransportException, WSAuthenticationException;
+
+    /**
+     * Returns the application's misssing attributes.
+     * 
+     * If null, check {@link #getAuthenticationSteps()} for authentication steps to be performed.
+     * 
+     * If none, check {@link #getAssertion()}.
+     * 
+     * @throws WSAuthenticationException
+     * @throws WSClientTransportException
+     * @throws RequestDeniedException
+     */
+    List<Attribute> getMissingAttributes()
+            throws RequestDeniedException, WSClientTransportException, WSAuthenticationException;
+
+    /**
+     * Saves the missing attributes to be provided. * Returns null if authentication is not complete. Check
+     * {@link #getAuthenticationSteps()} for the list of required additional authentication steps or
+     * {@link #getDeviceAuthenticationInformation()} if authentication for the specified device required additional information.
+     * 
+     * Returns user ID if complete. The SAML v2.0 assertion is returned by {@link #getAssertion()}.
+     * 
+     * @throws WSAuthenticationException
+     * @throws WSClientTransportException
+     * @throws RequestDeniedException
+     */
+    String saveMissingAttributes(List<Attribute> missingAttributes)
             throws RequestDeniedException, WSClientTransportException, WSAuthenticationException;
 
     /**

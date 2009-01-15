@@ -151,6 +151,7 @@ public class DataServicePortImplTest {
         this.jndiTestUtils.setUp();
         this.jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
                 "SafeOnline/WSSecurityConfigurationBean/local");
+        this.jndiTestUtils.bindComponent("java:comp/env/wsSecurityOptionalInboudSignature", false);
 
         this.mockWSSecurityConfigurationService = createMock(WSSecurityConfiguration.class);
         this.jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local", this.mockWSSecurityConfigurationService);
