@@ -83,7 +83,7 @@ public class GetDeviceAuthenticationClientImpl extends AbstractMessageAccessor i
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {
-            retrieveHeadersFromPort(this.port);
+            // retrieveHeadersFromPort(this.port);
         }
 
         return response.getEndpoint();

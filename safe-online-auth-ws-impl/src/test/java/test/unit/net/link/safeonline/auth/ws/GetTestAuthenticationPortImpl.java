@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.password.auth.ws;
+package test.unit.net.link.safeonline.auth.ws;
 
 import javax.jws.WebMethod;
 import javax.jws.WebService;
@@ -13,31 +13,32 @@ import javax.xml.ws.wsaddressing.W3CEndpointReference;
 
 import net.lin_k.safe_online.auth.AuthenticationGetInstanceRequestType;
 import net.lin_k.safe_online.auth.AuthenticationGetInstanceResponseType;
-import net.lin_k.safe_online.auth.GetDeviceAuthenticationPort;
+import net.lin_k.safe_online.auth.GetAuthenticationPort;
+import net.link.safeonline.auth.ws.AuthenticationPortImpl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 
 /**
- * Web service that creates an instance of the stateful authentication web service and returns a {@link W3CEndpointReference} to this
+ * Test Web service that creates an instance of the stateful authentication web service and returns a {@link W3CEndpointReference} to this
  * instance.
  * 
  * @author wvdhaute
  * 
  */
-@WebService(endpointInterface = "net.lin_k.safe_online.auth.GetDeviceAuthenticationPort")
-public class GetPasswordAuthenticationPortImpl implements GetDeviceAuthenticationPort {
+@WebService(endpointInterface = "net.lin_k.safe_online.auth.GetAuthenticationPort")
+public class GetTestAuthenticationPortImpl implements GetAuthenticationPort {
 
-    private static final Log LOG = LogFactory.getLog(GetPasswordAuthenticationPortImpl.class);
+    private static final Log LOG = LogFactory.getLog(GetTestAuthenticationPortImpl.class);
 
 
     @WebMethod
     public synchronized AuthenticationGetInstanceResponseType getInstance(AuthenticationGetInstanceRequestType request) {
 
-        LOG.debug("return instance of stateful authentication webservice for password device");
+        LOG.debug("TEST: return instance of stateful authentication webservice");
         AuthenticationGetInstanceResponseType response = new AuthenticationGetInstanceResponseType();
-        response.setEndpoint(PasswordAuthenticationPortImpl.manager.export(new PasswordAuthenticationPortImpl()));
+        response.setEndpoint(AuthenticationPortImpl.manager.export(new AuthenticationPortImpl(new DeviceTestAuthenticationClientImpl())));
         return response;
 
     }

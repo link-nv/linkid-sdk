@@ -11,119 +11,128 @@ import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.StringWriter;
 import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
-import java.security.interfaces.DSAPublicKey;
-import java.security.interfaces.RSAPublicKey;
-import java.util.Date;
-import java.util.GregorianCalendar;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
+import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
-import javax.xml.datatype.DatatypeConfigurationException;
-import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.ws.Binding;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.Handler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
+import javax.xml.ws.soap.AddressingFeature;
+import javax.xml.ws.wsaddressing.W3CEndpointReference;
 
+import net.lin_k.safe_online.auth.AuthenticationGetInstanceRequestType;
+import net.lin_k.safe_online.auth.AuthenticationGetInstanceResponseType;
 import net.lin_k.safe_online.auth.AuthenticationPort;
 import net.lin_k.safe_online.auth.AuthenticationService;
-import net.lin_k.safe_online.auth.DeviceCredentialsType;
-import net.lin_k.safe_online.auth.NameValuePairType;
+import net.lin_k.safe_online.auth.GetAuthenticationPort;
+import net.lin_k.safe_online.auth.GetAuthenticationService;
+import net.lin_k.safe_online.auth.WSAuthenticationGlobalUsageAgreementConfirmationType;
+import net.lin_k.safe_online.auth.WSAuthenticationGlobalUsageAgreementRequestType;
+import net.lin_k.safe_online.auth.WSAuthenticationGlobalUsageAgreementResponseType;
+import net.lin_k.safe_online.auth.WSAuthenticationIdentityConfirmationType;
+import net.lin_k.safe_online.auth.WSAuthenticationIdentityRequestType;
+import net.lin_k.safe_online.auth.WSAuthenticationMissingAttributesRequestType;
+import net.lin_k.safe_online.auth.WSAuthenticationMissingAttributesSaveRequestType;
 import net.lin_k.safe_online.auth.WSAuthenticationRequestType;
 import net.lin_k.safe_online.auth.WSAuthenticationResponseType;
+import net.lin_k.safe_online.auth.WSAuthenticationUsageAgreementConfirmationType;
+import net.lin_k.safe_online.auth.WSAuthenticationUsageAgreementRequestType;
 import net.link.safeonline.auth.ws.AuthenticationPortImpl;
 import net.link.safeonline.auth.ws.AuthenticationServiceFactory;
+import net.link.safeonline.auth.ws.Confirmation;
+import net.link.safeonline.auth.ws.GetAuthenticationServiceFactory;
 import net.link.safeonline.authentication.service.DevicePolicyService;
+import net.link.safeonline.authentication.service.IdentityService;
+import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
+import net.link.safeonline.authentication.service.SubscriptionService;
+import net.link.safeonline.authentication.service.UsageAgreementService;
+import net.link.safeonline.authentication.service.UserIdMappingService;
+import net.link.safeonline.entity.DeviceClassEntity;
+import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.NodeEntity;
+import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.WSSecurityConfiguration;
 import net.link.safeonline.pkix.model.PkiValidator;
+import net.link.safeonline.saml.common.Saml2SubjectConfirmationMethod;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
 import net.link.safeonline.sdk.ws.WSSecurityConfigurationService;
+import net.link.safeonline.sdk.ws.auth.AuthenticationUtil;
+import net.link.safeonline.service.NodeMappingService;
+import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.test.util.DummyLoginModule;
 import net.link.safeonline.test.util.JaasTestUtils;
+import net.link.safeonline.test.util.JmxTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
+import net.link.safeonline.test.util.MBeanActionHandler;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.WebServiceTestUtils;
-import net.link.safeonline.ws.util.ri.InjectionInstanceResolver;
+import net.link.safeonline.util.ee.AuthIdentityServiceClient;
+import net.link.safeonline.ws.common.WSAuthenticationErrorCode;
+import oasis.names.tc.saml._2_0.assertion.AssertionType;
+import oasis.names.tc.saml._2_0.assertion.AuthnStatementType;
 import oasis.names.tc.saml._2_0.assertion.NameIDType;
-import oasis.names.tc.saml._2_0.protocol.RequestAbstractType;
+import oasis.names.tc.saml._2_0.assertion.SubjectConfirmationType;
+import oasis.names.tc.saml._2_0.assertion.SubjectType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.opensaml.common.SAMLVersion;
-import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
-import org.w3._2000._09.xmldsig_.DSAKeyValueType;
 import org.w3._2000._09.xmldsig_.KeyInfoType;
-import org.w3._2000._09.xmldsig_.RSAKeyValueType;
-
-import com.sun.xml.ws.developer.StatefulWebServiceManager;
 
 
 public class AuthenticationPortImplTest {
 
-    private static final Log                              LOG               = LogFactory.getLog(AuthenticationPortImplTest.class);
+    private static final Log               LOG               = LogFactory.getLog(AuthenticationPortImplTest.class);
 
-    private WebServiceTestUtils                           webServiceTestUtils;
+    private WebServiceTestUtils            webServiceTestUtils;
 
-    private AuthenticationPort                            clientPort;
+    private WebServiceTestUtils            getWebServiceTestUtils;
 
-    private JndiTestUtils                                 jndiTestUtils;
+    private AuthenticationPort             clientPort;
 
-    private WSSecurityConfigurationService                mockWSSecurityConfigurationService;
+    private JndiTestUtils                  jndiTestUtils;
 
-    private PkiValidator                                  mockPkiValidator;
+    private WSSecurityConfigurationService mockWSSecurityConfigurationService;
+    private PkiValidator                   mockPkiValidator;
+    private SamlAuthorityService           mockSamlAuthorityService;
+    private DevicePolicyService            mockDevicePolicyService;
+    private NodeAuthenticationService      mockNodeAuthenticationService;
+    private NodeMappingService             mockNodeMappingService;
+    private SubjectService                 mockSubjectService;
+    private UsageAgreementService          mockUsageAgreementService;
+    private SubscriptionService            mockSubscriptionService;
+    private IdentityService                mockIdentityService;
+    private UserIdMappingService           mockUserIdMappingService;
 
-    private SamlAuthorityService                          mockSamlAuthorityService;
+    private Object[]                       mockObjects;
 
-    private DevicePolicyService                           mockDevicePolicyService;
+    private PublicKey                      testpublicKey;
 
-    private StatefulWebServiceManager<AuthenticationPort> mockStatefulWebServiceManager;
+    private X509Certificate                olasCertificate;
 
-    private Object[]                                      mockObjects;
+    private PrivateKey                     olasPrivateKey;
 
-    private X509Certificate                               certificate;
+    private String                         testApplicationId = "test-application-name";
 
-    private PublicKey                                     publicKey;
-
-    private X509Certificate                               olasCertificate;
-
-    private PrivateKey                                    olasPrivateKey;
-
-    private String                                        testSubjectLogin;
-
-    private String                                        testSubjectId;
-
-    private String                                        testApplicationId = "test-application-name";
-
-    private String                                        testDeviceName    = "test-device-name";
-
-
-    class TimeoutCallback implements StatefulWebServiceManager.Callback<AuthenticationPort> {
-
-        /**
-         * {@inheritDoc}
-         */
-        public void onTimeout(AuthenticationPort timedOutObject, StatefulWebServiceManager<AuthenticationPort> serviceManager) {
-
-            // XXX: notify stateful device ws of timeout ?
-        }
-
-    }
+    private String                         testIssuerName    = "test-issuer-name";
 
 
     @SuppressWarnings("unchecked")
@@ -133,8 +142,22 @@ public class AuthenticationPortImplTest {
 
         LOG.debug("setup");
 
-        this.testSubjectLogin = "test-subject-login-" + UUID.randomUUID().toString();
-        this.testSubjectId = UUID.randomUUID().toString();
+        // setup JMX
+        JmxTestUtils jmxTestUtils = new JmxTestUtils();
+        jmxTestUtils.setUp("jboss.security:service=JaasSecurityManager");
+        jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
+
+        final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
+        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
+
+            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
+
+                return authCertificate;
+            }
+        });
+
+        JaasTestUtils.initJaasLoginModule(DummyLoginModule.class);
 
         this.jndiTestUtils = new JndiTestUtils();
         this.jndiTestUtils.setUp();
@@ -146,37 +169,53 @@ public class AuthenticationPortImplTest {
         this.mockPkiValidator = createMock(PkiValidator.class);
         this.mockSamlAuthorityService = createMock(SamlAuthorityService.class);
         this.mockDevicePolicyService = createMock(DevicePolicyService.class);
-        this.mockStatefulWebServiceManager = createMock(StatefulWebServiceManager.class);
+        this.mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
+        this.mockNodeMappingService = createMock(NodeMappingService.class);
+        this.mockSubjectService = createMock(SubjectService.class);
+        this.mockUsageAgreementService = createMock(UsageAgreementService.class);
+        this.mockSubscriptionService = createMock(SubscriptionService.class);
+        this.mockIdentityService = createMock(IdentityService.class);
+        this.mockUserIdMappingService = createMock(UserIdMappingService.class);
 
         this.mockObjects = new Object[] { this.mockWSSecurityConfigurationService, this.mockPkiValidator, this.mockSamlAuthorityService,
-                this.mockDevicePolicyService, this.mockStatefulWebServiceManager };
+                this.mockDevicePolicyService, this.mockNodeAuthenticationService, this.mockNodeMappingService, this.mockSubjectService,
+                this.mockUsageAgreementService, this.mockSubscriptionService, this.mockIdentityService, this.mockUserIdMappingService };
 
         this.jndiTestUtils.bindComponent(WSSecurityConfiguration.JNDI_BINDING, this.mockWSSecurityConfigurationService);
         this.jndiTestUtils.bindComponent(PkiValidator.JNDI_BINDING, this.mockPkiValidator);
         this.jndiTestUtils.bindComponent(SamlAuthorityService.JNDI_BINDING, this.mockSamlAuthorityService);
         this.jndiTestUtils.bindComponent(DevicePolicyService.JNDI_BINDING, this.mockDevicePolicyService);
+        this.jndiTestUtils.bindComponent(NodeAuthenticationService.JNDI_BINDING, this.mockNodeAuthenticationService);
+        this.jndiTestUtils.bindComponent(NodeMappingService.JNDI_BINDING, this.mockNodeMappingService);
+        this.jndiTestUtils.bindComponent(SubjectService.JNDI_BINDING, this.mockSubjectService);
+        this.jndiTestUtils.bindComponent(UsageAgreementService.JNDI_BINDING, this.mockUsageAgreementService);
+        this.jndiTestUtils.bindComponent(SubscriptionService.JNDI_BINDING, this.mockSubscriptionService);
+        this.jndiTestUtils.bindComponent(IdentityService.JNDI_BINDING, this.mockIdentityService);
+        this.jndiTestUtils.bindComponent(UserIdMappingService.JNDI_BINDING, this.mockUserIdMappingService);
 
-        JaasTestUtils.initJaasLoginModule(DummyLoginModule.class);
-
-        // set StatefulWebServiceManager
-        AuthenticationPortImpl.manager = this.mockStatefulWebServiceManager;
-        this.mockStatefulWebServiceManager.setTimeout(1000 * 60 * 30, new TimeoutCallback());
-
+        // Init Authentication Port
         AuthenticationPort wsPort = new AuthenticationPortImpl();
         this.webServiceTestUtils = new WebServiceTestUtils();
         this.webServiceTestUtils.setUp(wsPort);
 
-        /*
-         * Next is required, else the wsPort will get old mocks injected when running multiple tests.
-         */
-        InjectionInstanceResolver.clearInstanceCache();
+        // Get stateful Authentication Port instance
+        this.getWebServiceTestUtils = new WebServiceTestUtils();
+        GetAuthenticationService getService = GetAuthenticationServiceFactory.newInstance();
+        // Use Test implementation of get authentication port, will set the device authentication client to the test device authentication
+        // client
+        GetAuthenticationPort wsGetPort = new GetTestAuthenticationPortImpl();
+        this.getWebServiceTestUtils.setUp(wsGetPort);
+        GetAuthenticationPort getPort = getService.getGetAuthenticationPort();
+        this.getWebServiceTestUtils.setEndpointAddress(getPort);
+        AuthenticationGetInstanceResponseType response = getPort.getInstance(new AuthenticationGetInstanceRequestType());
+        W3CEndpointReference endpoint = response.getEndpoint();
+
         AuthenticationService service = AuthenticationServiceFactory.newInstance();
-        this.clientPort = service.getAuthenticationPort();
+        this.clientPort = service.getPort(endpoint, AuthenticationPort.class, new AddressingFeature(true));
         this.webServiceTestUtils.setEndpointAddress(this.clientPort);
 
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        this.certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
-        this.publicKey = keyPair.getPublic();
+        this.testpublicKey = keyPair.getPublic();
 
         KeyPair olasKeyPair = PkiTestUtils.generateKeyPair();
         this.olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=OLAS");
@@ -204,32 +243,40 @@ public class AuthenticationPortImplTest {
             throws Exception {
 
         // setup
-        String testIssuerName = "test-issuer-name";
+        NodeEntity localNode = new NodeEntity();
+        DeviceClassEntity testDeviceClass = new DeviceClassEntity("test-device-class", "test-device-auth-context-class");
+        DeviceEntity testDevice = new DeviceEntity(DeviceTestAuthenticationClientImpl.testDeviceName, testDeviceClass, localNode, null,
+                null, null, null, null, null, null, null);
+        SubjectEntity testSubject = new SubjectEntity(DeviceTestAuthenticationClientImpl.testUserId);
 
-        WSAuthenticationRequestType request = new WSAuthenticationRequestType();
-        setRequest(request);
+        // setup
+        Map<String, String> nameValuePairs = new HashMap<String, String>();
+        nameValuePairs.put("foo", "bar");
 
-        // Issuer
-        NameIDType issuerName = new NameIDType();
-        issuerName.setValue(this.testApplicationId);
-        request.setIssuer(issuerName);
-
-        request.setApplicationId(this.testApplicationId);
-        request.setDeviceName(this.testDeviceName);
-        request.setLanguage(Locale.ENGLISH.getLanguage());
-
-        DeviceCredentialsType deviceCredentialsType = new DeviceCredentialsType();
-        NameValuePairType nameValuePair = new NameValuePairType();
-        nameValuePair.setName("foo");
-        nameValuePair.setValue("bar");
-        deviceCredentialsType.getNameValuePair().add(nameValuePair);
-        request.setDeviceCredentials(deviceCredentialsType);
-
-        request.setKeyInfo(getKeyInfo());
+        WSAuthenticationRequestType request = AuthenticationUtil.getAuthenticationRequest(this.testApplicationId,
+                DeviceTestAuthenticationClientImpl.testDeviceName, Locale.ENGLISH.getLanguage(), nameValuePairs, this.testpublicKey);
 
         // expectations
-        expect(this.mockDevicePolicyService.getAuthenticationWSURL(this.testDeviceName)).andStubReturn("foo");
-        expect(this.mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
+        expect(this.mockDevicePolicyService.getAuthenticationWSURL(DeviceTestAuthenticationClientImpl.testDeviceName)).andStubReturn("foo");
+        expect(this.mockSamlAuthorityService.getIssuerName()).andStubReturn(this.testIssuerName);
+        expect(this.mockNodeAuthenticationService.getLocalNode()).andStubReturn(localNode);
+        expect(this.mockDevicePolicyService.getDevice(DeviceTestAuthenticationClientImpl.testDeviceName)).andStubReturn(testDevice);
+        expect(this.mockSubjectService.getSubject(DeviceTestAuthenticationClientImpl.testUserId)).andStubReturn(testSubject);
+        expect(this.mockDevicePolicyService.getDevicePolicy(this.testApplicationId, null)).andStubReturn(
+                Collections.singletonList(testDevice));
+        expect(this.mockUsageAgreementService.requiresGlobalUsageAgreementAcceptation(Locale.ENGLISH.getLanguage())).andStubReturn(false);
+        expect(this.mockSubscriptionService.isSubscribed(this.testApplicationId)).andStubReturn(true);
+        expect(this.mockUsageAgreementService.requiresUsageAgreementAcceptation(this.testApplicationId, Locale.ENGLISH.getLanguage()))
+                                                                                                                                      .andStubReturn(
+                                                                                                                                              false);
+        expect(this.mockIdentityService.isConfirmationRequired(this.testApplicationId)).andStubReturn(false);
+        expect(this.mockIdentityService.hasMissingAttributes(this.testApplicationId)).andStubReturn(false);
+        expect(this.mockUserIdMappingService.getApplicationUserId(this.testApplicationId, DeviceTestAuthenticationClientImpl.testUserId))
+                                                                                                                                         .andStubReturn(
+                                                                                                                                                 DeviceTestAuthenticationClientImpl.testUserId);
+        expect(this.mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
+        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
+        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
 
         // prepare
         replay(this.mockObjects);
@@ -241,6 +288,261 @@ public class AuthenticationPortImplTest {
         verify(this.mockObjects);
         assertNotNull(response);
 
+        assertEquals(WSAuthenticationErrorCode.SUCCESS.getErrorCode(), response.getStatus().getStatusCode().getValue());
+
+        assertEquals(DeviceTestAuthenticationClientImpl.testDeviceName, response.getDeviceName());
+        assertEquals(DeviceTestAuthenticationClientImpl.testUserId, response.getUserId());
+
+        List<AssertionType> resultAssertions = response.getAssertion();
+        assertEquals(1, resultAssertions.size());
+        AssertionType resultAssertion = resultAssertions.get(0);
+        SubjectType resultSubject = resultAssertion.getSubject();
+        List<JAXBElement<?>> resultSubjectContent = resultSubject.getContent();
+        assertEquals(2, resultSubjectContent.size());
+        for (JAXBElement<?> element : resultSubjectContent) {
+            if (element.getValue() instanceof NameIDType) {
+                NameIDType resultSubjectName = (NameIDType) element.getValue();
+                assertEquals(DeviceTestAuthenticationClientImpl.testUserId, resultSubjectName.getValue());
+            } else {
+                SubjectConfirmationType resultSubjectConfirmation = (SubjectConfirmationType) element.getValue();
+                assertEquals(Saml2SubjectConfirmationMethod.HOLDER_OF_KEY.getMethodURI(), resultSubjectConfirmation.getMethod());
+                assertEquals(1, resultSubjectConfirmation.getSubjectConfirmationData().getContent().size());
+                assertEquals(KeyInfoType.class, ((JAXBElement<?>) resultSubjectConfirmation.getSubjectConfirmationData().getContent()
+                                                                                           .get(0)).getValue().getClass());
+            }
+        }
+        assertEquals(1, resultAssertion.getStatementOrAuthnStatementOrAuthzDecisionStatement().size());
+        AuthnStatementType resultAuthnStatement = (AuthnStatementType) resultAssertion
+                                                                                      .getStatementOrAuthnStatementOrAuthzDecisionStatement()
+                                                                                      .get(0);
+        assertEquals(1, resultAuthnStatement.getAuthnContext().getContent().size());
+        String resultDeviceName = (String) resultAuthnStatement.getAuthnContext().getContent().get(0).getValue();
+        assertEquals(DeviceTestAuthenticationClientImpl.testDeviceName, resultDeviceName);
+
+        outputAuthenticationResponse(response);
+    }
+
+    @Test
+    public void testRequestGlobalUsageAgreementNotAuthenticated()
+            throws Exception {
+
+        // setup
+        WSAuthenticationGlobalUsageAgreementRequestType request = AuthenticationUtil.getGlobalUsageAgreementRequest();
+
+        // expectations
+        expect(this.mockSamlAuthorityService.getIssuerName()).andStubReturn(this.testIssuerName);
+        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
+        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
+
+        // prepare
+        replay(this.mockObjects);
+
+        // operate
+        WSAuthenticationGlobalUsageAgreementResponseType response = this.clientPort.requestGlobalUsageAgreement(request);
+
+        // verify
+        verify(this.mockObjects);
+        assertNotNull(response);
+
+        assertEquals(WSAuthenticationErrorCode.NOT_AUTHENTICATED.getErrorCode(), response.getStatus().getStatusCode().getValue());
+
+        outputAuthenticationResponse(response);
+    }
+
+    @Test
+    public void testConfirmGlobalUsageAgreementNotAuthenticated()
+            throws Exception {
+
+        // setup
+        WSAuthenticationGlobalUsageAgreementConfirmationType request = AuthenticationUtil
+                                                                                         .getGlobalUsageAgreementConfirmationRequest(Confirmation.CONFIRM);
+
+        // expectations
+        expect(this.mockSamlAuthorityService.getIssuerName()).andStubReturn(this.testIssuerName);
+        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
+        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
+
+        // prepare
+        replay(this.mockObjects);
+
+        // operate
+        WSAuthenticationResponseType response = this.clientPort.confirmGlobalUsageAgreement(request);
+
+        // verify
+        verify(this.mockObjects);
+        assertNotNull(response);
+
+        assertEquals(WSAuthenticationErrorCode.NOT_AUTHENTICATED.getErrorCode(), response.getStatus().getStatusCode().getValue());
+
+        outputAuthenticationResponse(response);
+    }
+
+    @Test
+    public void testRequestUsageAgreementNotAuthenticated()
+            throws Exception {
+
+        // setup
+        WSAuthenticationUsageAgreementRequestType request = AuthenticationUtil.getUsageAgreementRequest();
+
+        // expectations
+        expect(this.mockSamlAuthorityService.getIssuerName()).andStubReturn(this.testIssuerName);
+        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
+        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
+
+        // prepare
+        replay(this.mockObjects);
+
+        // operate
+        WSAuthenticationResponseType response = this.clientPort.requestUsageAgreement(request);
+
+        // verify
+        verify(this.mockObjects);
+        assertNotNull(response);
+
+        assertEquals(WSAuthenticationErrorCode.NOT_AUTHENTICATED.getErrorCode(), response.getStatus().getStatusCode().getValue());
+
+        outputAuthenticationResponse(response);
+    }
+
+    @Test
+    public void testConfirmUsageAgreementNotAuthenticated()
+            throws Exception {
+
+        // setup
+        WSAuthenticationUsageAgreementConfirmationType request = AuthenticationUtil
+                                                                                   .getUsageAgreementConfirmationRequest(Confirmation.CONFIRM);
+
+        // expectations
+        expect(this.mockSamlAuthorityService.getIssuerName()).andStubReturn(this.testIssuerName);
+        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
+        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
+
+        // prepare
+        replay(this.mockObjects);
+
+        // operate
+        WSAuthenticationResponseType response = this.clientPort.confirmUsageAgreement(request);
+
+        // verify
+        verify(this.mockObjects);
+        assertNotNull(response);
+
+        assertEquals(WSAuthenticationErrorCode.NOT_AUTHENTICATED.getErrorCode(), response.getStatus().getStatusCode().getValue());
+
+        outputAuthenticationResponse(response);
+    }
+
+    @Test
+    public void testRequestIdentityConfirmationNotAuthenticated()
+            throws Exception {
+
+        // setup
+        WSAuthenticationIdentityRequestType request = AuthenticationUtil.getIdentityRequest();
+
+        // expectations
+        expect(this.mockSamlAuthorityService.getIssuerName()).andStubReturn(this.testIssuerName);
+        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
+        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
+
+        // prepare
+        replay(this.mockObjects);
+
+        // operate
+        WSAuthenticationResponseType response = this.clientPort.requestIdentity(request);
+
+        // verify
+        verify(this.mockObjects);
+        assertNotNull(response);
+
+        assertEquals(WSAuthenticationErrorCode.NOT_AUTHENTICATED.getErrorCode(), response.getStatus().getStatusCode().getValue());
+
+        outputAuthenticationResponse(response);
+    }
+
+    @Test
+    public void testConfirmIdentityNotAuthenticated()
+            throws Exception {
+
+        // setup
+        WSAuthenticationIdentityConfirmationType request = AuthenticationUtil.getIdentityConfirmationRequest(Confirmation.CONFIRM);
+
+        // expectations
+        expect(this.mockSamlAuthorityService.getIssuerName()).andStubReturn(this.testIssuerName);
+        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
+        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
+
+        // prepare
+        replay(this.mockObjects);
+
+        // operate
+        WSAuthenticationResponseType response = this.clientPort.confirmIdentity(request);
+
+        // verify
+        verify(this.mockObjects);
+        assertNotNull(response);
+
+        assertEquals(WSAuthenticationErrorCode.NOT_AUTHENTICATED.getErrorCode(), response.getStatus().getStatusCode().getValue());
+
+        outputAuthenticationResponse(response);
+    }
+
+    @Test
+    public void testRequestMissingAttributesNotAuthenticated()
+            throws Exception {
+
+        // setup
+        WSAuthenticationMissingAttributesRequestType request = AuthenticationUtil.getMissingAttributesRequest();
+
+        // expectations
+        expect(this.mockSamlAuthorityService.getIssuerName()).andStubReturn(this.testIssuerName);
+        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
+        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
+
+        // prepare
+        replay(this.mockObjects);
+
+        // operate
+        WSAuthenticationResponseType response = this.clientPort.requestMissingAttributes(request);
+
+        // verify
+        verify(this.mockObjects);
+        assertNotNull(response);
+
+        assertEquals(WSAuthenticationErrorCode.NOT_AUTHENTICATED.getErrorCode(), response.getStatus().getStatusCode().getValue());
+
+        outputAuthenticationResponse(response);
+    }
+
+    @Test
+    public void testSaveMissingAttributesNotAuthenticated()
+            throws Exception {
+
+        // setup
+        WSAuthenticationMissingAttributesSaveRequestType request = AuthenticationUtil.getMissingAttributesSaveRequest(null);
+
+        // expectations
+        expect(this.mockSamlAuthorityService.getIssuerName()).andStubReturn(this.testIssuerName);
+        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
+        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
+
+        // prepare
+        replay(this.mockObjects);
+
+        // operate
+        WSAuthenticationResponseType response = this.clientPort.saveMissingAttributes(request);
+
+        // verify
+        verify(this.mockObjects);
+        assertNotNull(response);
+
+        assertEquals(WSAuthenticationErrorCode.NOT_AUTHENTICATED.getErrorCode(), response.getStatus().getStatusCode().getValue());
+
+        outputAuthenticationResponse(response);
+    }
+
+    private void outputAuthenticationResponse(WSAuthenticationResponseType response)
+            throws Exception {
+
         JAXBContext context = JAXBContext.newInstance(net.lin_k.safe_online.auth.ObjectFactory.class);
         Marshaller marshaller = context.createMarshaller();
         StringWriter stringWriter = new StringWriter();
@@ -250,65 +552,4 @@ public class AuthenticationPortImplTest {
 
     }
 
-    private void setRequest(RequestAbstractType request) {
-
-        SecureRandomIdentifierGenerator idGenerator;
-        try {
-            idGenerator = new SecureRandomIdentifierGenerator();
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException("secure random init error: " + e.getMessage(), e);
-        }
-        String id = idGenerator.generateIdentifier();
-        XMLGregorianCalendar now = getCurrentXmlGregorianCalendar();
-
-        request.setID(id);
-        request.setVersion(SAMLVersion.VERSION_20.toString());
-        request.setIssueInstant(now);
-    }
-
-    private XMLGregorianCalendar getCurrentXmlGregorianCalendar() {
-
-        DatatypeFactory datatypeFactory;
-        try {
-            datatypeFactory = DatatypeFactory.newInstance();
-        } catch (DatatypeConfigurationException e) {
-            LOG.error("datatype configuration exception", e);
-            throw new RuntimeException("datatype configuration exception: " + e.getMessage());
-        }
-
-        GregorianCalendar gregorianCalendar = new GregorianCalendar();
-        Date now = new Date();
-        gregorianCalendar.setTime(now);
-        XMLGregorianCalendar currentXmlGregorianCalendar = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
-        return currentXmlGregorianCalendar;
-    }
-
-    /**
-     * Converts public key to XML DSig KeyInfoType
-     * 
-     */
-    private KeyInfoType getKeyInfo() {
-
-        KeyInfoType keyInfo = new KeyInfoType();
-        org.w3._2000._09.xmldsig_.ObjectFactory dsigObjectFactory = new org.w3._2000._09.xmldsig_.ObjectFactory();
-
-        if (this.publicKey instanceof RSAPublicKey) {
-            RSAPublicKey rsaPublicKey = (RSAPublicKey) this.publicKey;
-            RSAKeyValueType rsaKeyValue = new RSAKeyValueType();
-            rsaKeyValue.setModulus(rsaPublicKey.getModulus().toByteArray());
-            rsaKeyValue.setExponent(rsaPublicKey.getPublicExponent().toByteArray());
-            keyInfo.getContent().add(dsigObjectFactory.createRSAKeyValue(rsaKeyValue));
-        } else if (this.publicKey instanceof DSAPublicKey) {
-            DSAPublicKey dsaPublicKey = (DSAPublicKey) this.publicKey;
-            DSAKeyValueType dsaKeyValue = new DSAKeyValueType();
-            dsaKeyValue.setY(dsaPublicKey.getY().toByteArray());
-            dsaKeyValue.setG(dsaPublicKey.getParams().getG().toByteArray());
-            dsaKeyValue.setP(dsaPublicKey.getParams().getP().toByteArray());
-            dsaKeyValue.setQ(dsaPublicKey.getParams().getQ().toByteArray());
-            keyInfo.getContent().add(dsaKeyValue);
-        } else
-            throw new IllegalArgumentException("Only RSAPublicKey and DSAPublicKey are supported");
-
-        return keyInfo;
-    }
 }

@@ -166,7 +166,15 @@ public class AuthenticationPortImpl implements AuthenticationPort {
     public AuthenticationPortImpl() {
 
         // XXX: make this configurable ..., time is in ms
-        manager.setTimeout(1000 * 60 * 30, new TimeoutCallback());
+        if (null != manager) {
+            manager.setTimeout(1000 * 60 * 30, new TimeoutCallback());
+        }
+    }
+
+    public AuthenticationPortImpl(DeviceAuthenticationClient deviceAuthenticationClient) {
+
+        this();
+        this.deviceAuthenticationClient = deviceAuthenticationClient;
     }
 
 
@@ -198,6 +206,7 @@ public class AuthenticationPortImpl implements AuthenticationPort {
 
         this.language = request.getLanguage();
         this.applicationName = request.getApplicationId();
+        this.keyInfo = request.getKeyInfo();
 
         // proxy request to specified device
         WSAuthenticationResponseType response;
@@ -824,7 +833,6 @@ public class AuthenticationPortImpl implements AuthenticationPort {
 
         this.deviceAuthenticationClient = new DeviceAuthenticationClientImpl(getDeviceAuthenticationClient.getInstance(),
                 authIdentityServiceClient.getCertificate(), authIdentityServiceClient.getPrivateKey());
-
     }
 
     /**
