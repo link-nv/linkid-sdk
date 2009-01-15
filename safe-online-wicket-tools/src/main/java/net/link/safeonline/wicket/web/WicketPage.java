@@ -32,7 +32,7 @@ import org.apache.wicket.markup.html.WebPage;
  */
 public abstract class WicketPage extends WebPage {
 
-    protected Log               LOG             = LogFactory.getLog(getClass());
+    public final Log            LOG             = LogFactory.getLog(getClass());
 
     // %[argument_index$][flags][width][.precision][t]conversion
     private static final String formatSpecifier = "%(\\d+\\$)?([-#+ 0,(\\<]*)?(\\d+)?(\\.\\d+)?([tT])?([a-zA-Z%])";

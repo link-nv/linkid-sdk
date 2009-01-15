@@ -10,8 +10,6 @@ import net.link.safeonline.wicket.tools.WicketUtil;
 import net.link.safeonline.wicket.web.OlasApplicationPage;
 import net.link.safeonline.wicket.web.OlasLogoutLink;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -23,7 +21,6 @@ import org.apache.wicket.model.Model;
 public abstract class LayoutPage extends OlasApplicationPage {
 
     private static final long            serialVersionUID = 1L;
-    Log                                  LOG              = LogFactory.getLog(getClass());
 
     @EJB(mappedName = UserService.JNDI_BINDING)
     transient private UserService        userService;

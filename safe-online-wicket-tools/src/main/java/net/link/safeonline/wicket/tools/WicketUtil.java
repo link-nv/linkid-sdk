@@ -22,6 +22,7 @@ import javax.servlet.http.HttpSession;
 import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
+import net.link.safeonline.sdk.ws.data.DataClientImpl;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
 import net.link.safeonline.wicket.javaee.DummyAnnotJavaEEInjector;
@@ -175,6 +176,31 @@ public abstract class WicketUtil {
     public static void setUnitTesting(boolean unitTesting) {
 
         isUnitTest = unitTesting;
+    }
+
+    /**
+     * Retrieve a proxy to the OLAS attribute web service.
+     * 
+     * @param httpRequest
+     *            The request that contains a session with a servlet context that has the WsLocation init parameter set.<br>
+     *            Note: This can be <code>null</code> for unit tests - it is not used. {@link DummyAttributeClient} is used instead,
+     *            provided you called {@link #setUnitTesting(boolean)}.
+     */
+    public static DataClientImpl getOLASDataService(HttpServletRequest httpRequest, PrivateKeyEntry privateKeyEntry) {
+
+        if (!isUnitTest) {
+            // Find the location of the OLAS web services to use.
+            String wsLocation = httpRequest.getSession().getServletContext().getInitParameter(WS_LOCATION);
+
+            // Find the key and certificate of the bank application.
+            X509Certificate certificate = (X509Certificate) privateKeyEntry.getCertificate();
+            PrivateKey privateKey = privateKeyEntry.getPrivateKey();
+
+            // Create the attribute service client.
+            return new DataClientImpl(wsLocation, certificate, privateKey);
+        }
+
+        return null;// TODO: new DummyAttributeClient();
     }
 
     /**

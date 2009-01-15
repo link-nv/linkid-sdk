@@ -11,6 +11,7 @@ import org.apache.wicket.protocol.http.WebApplication;
 
 public class PaymentApplication extends WebApplication {
 
+    public static final String ADMIN_MOUNTPOINT   = "admin";
     public static final String SERVICE_MOUNTPOINT = "service";
 
 
@@ -21,6 +22,7 @@ public class PaymentApplication extends WebApplication {
         WicketUtil.addInjector(this);
 
         mountBookmarkablePage(SERVICE_MOUNTPOINT, NewServicePage.class);
+        mountBookmarkablePage(ADMIN_MOUNTPOINT, AdminPage.class);
     }
 
     /**
