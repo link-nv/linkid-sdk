@@ -22,7 +22,7 @@ import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
-import net.link.safeonline.beid.keystore.BeidKeyStoreUtils;
+import net.link.safeonline.beid.keystore.BeIdKeyStore;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
@@ -126,7 +126,7 @@ public class BeIdStartableBean extends AbstractInitBean {
                 null));
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(beidDeviceAttributeType, "nl", "BeID", null));
 
-        X509Certificate certificate = (X509Certificate) BeidKeyStoreUtils.getPrivateKeyEntry().getCertificate();
+        X509Certificate certificate = (X509Certificate) BeIdKeyStore.getPrivateKeyEntry().getCertificate();
         trustedCertificates.put(certificate, SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
 
         ResourceBundle properties = ResourceBundle.getBundle("beid_config");

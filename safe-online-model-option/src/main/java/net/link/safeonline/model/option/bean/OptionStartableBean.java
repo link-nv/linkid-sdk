@@ -20,7 +20,7 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.model.bean.AbstractInitBean;
 import net.link.safeonline.model.option.OptionConstants;
-import net.link.safeonline.option.keystore.OptionKeyStoreUtils;
+import net.link.safeonline.option.keystore.OptionKeyStore;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.IdentityServiceClient;
 
@@ -88,7 +88,7 @@ public class OptionStartableBean extends AbstractInitBean {
                 "Option", null));
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(optionDeviceAttributeType, "nl", "Option", null));
 
-        X509Certificate certificate = (X509Certificate) OptionKeyStoreUtils.getPrivateKeyEntry().getCertificate();
+        X509Certificate certificate = (X509Certificate) OptionKeyStore.getPrivateKeyEntry().getCertificate();
 
         ResourceBundle properties = ResourceBundle.getBundle("option_config");
         String nodeName = properties.getString("olas.node.name");

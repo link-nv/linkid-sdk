@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.link.safeonline.demo.payment.entity.PaymentUserEntity;
-import net.link.safeonline.demo.payment.keystore.DemoPaymentKeyStoreUtils;
+import net.link.safeonline.demo.payment.keystore.DemoPaymentKeyStore;
 import net.link.safeonline.demo.payment.webapp.AccountPage.AccountForm;
 import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
@@ -12,7 +12,7 @@ import net.link.safeonline.sdk.exception.AttributeUnavailableException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
-import net.link.safeonline.wicket.tools.WicketUtil;
+import net.link.safeonline.wicket.service.OlasService;
 import net.link.safeonline.wicket.web.RequireLogin;
 
 import org.apache.wicket.Page;
@@ -23,7 +23,6 @@ import org.apache.wicket.markup.html.form.RadioChoice;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.protocol.http.WebRequest;
 
 
 /**
@@ -44,6 +43,9 @@ import org.apache.wicket.protocol.http.WebRequest;
 public class NewTransactionPage extends LayoutPage {
 
     private static final long serialVersionUID = 1L;
+
+    @OlasService(keyStore = DemoPaymentKeyStore.class)
+    transient AttributeClient attribService;
 
 
     /**
@@ -88,8 +90,6 @@ public class NewTransactionPage extends LayoutPage {
             try {
                 PaymentUserEntity user = PaymentSession.get().getUser();
 
-                AttributeClient attribService = WicketUtil.getOLASAttributeService(((WebRequest) getRequest()).getHttpServletRequest(),
-                        DemoPaymentKeyStoreUtils.getPrivateKeyEntry());
                 List<String> visas;
                 visas = Arrays.asList(attribService.getAttributeValue(user.getOlasId(), DemoConstants.DEMO_VISA_ATTRIBUTE_NAME,
                         String[].class));

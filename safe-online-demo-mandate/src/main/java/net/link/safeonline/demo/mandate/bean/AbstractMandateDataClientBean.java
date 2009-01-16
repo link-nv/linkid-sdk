@@ -20,7 +20,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import net.link.safeonline.demo.mandate.AbstractMandateDataClient;
-import net.link.safeonline.demo.mandate.keystore.DemoMandateKeyStoreUtils;
+import net.link.safeonline.demo.mandate.keystore.DemoMandateKeyStore;
 import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.AttributeUnavailableException;
@@ -74,7 +74,7 @@ public abstract class AbstractMandateDataClientBean implements AbstractMandateDa
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext externalContext = context.getExternalContext();
         wsLocation = externalContext.getInitParameter("WsLocation");
-        PrivateKeyEntry privateKeyEntry = DemoMandateKeyStoreUtils.getPrivateKeyEntry();
+        PrivateKeyEntry privateKeyEntry = DemoMandateKeyStore.getPrivateKeyEntry();
         certificate = (X509Certificate) privateKeyEntry.getCertificate();
         privateKey = privateKeyEntry.getPrivateKey();
         postActivateCallback();

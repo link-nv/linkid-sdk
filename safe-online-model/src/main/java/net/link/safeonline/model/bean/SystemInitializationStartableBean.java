@@ -24,10 +24,10 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubscriptionOwnerType;
-import net.link.safeonline.helpdesk.keystore.HelpdeskKeyStoreUtils;
-import net.link.safeonline.oper.keystore.OperKeyStoreUtils;
-import net.link.safeonline.owner.keystore.OwnerKeyStoreUtils;
-import net.link.safeonline.user.keystore.UserKeyStoreUtils;
+import net.link.safeonline.helpdesk.keystore.HelpdeskKeyStore;
+import net.link.safeonline.oper.keystore.OperKeyStore;
+import net.link.safeonline.owner.keystore.OwnerKeyStore;
+import net.link.safeonline.user.keystore.UserKeyStore;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.IdentityServiceClient;
 
@@ -76,10 +76,10 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         applicationOwnersAndLogin.put(SafeOnlineConstants.OWNER_LOGIN, SafeOnlineConstants.OWNER_LOGIN);
 
         // Add the core applications.
-        X509Certificate userCert = (X509Certificate) UserKeyStoreUtils.getPrivateKeyEntry().getCertificate();
-        X509Certificate operCert = (X509Certificate) OperKeyStoreUtils.getPrivateKeyEntry().getCertificate();
-        X509Certificate ownerCert = (X509Certificate) OwnerKeyStoreUtils.getPrivateKeyEntry().getCertificate();
-        X509Certificate helpdeskCert = (X509Certificate) HelpdeskKeyStoreUtils.getPrivateKeyEntry().getCertificate();
+        X509Certificate userCert = (X509Certificate) UserKeyStore.getPrivateKeyEntry().getCertificate();
+        X509Certificate operCert = (X509Certificate) OperKeyStore.getPrivateKeyEntry().getCertificate();
+        X509Certificate ownerCert = (X509Certificate) OwnerKeyStore.getPrivateKeyEntry().getCertificate();
+        X509Certificate helpdeskCert = (X509Certificate) HelpdeskKeyStore.getPrivateKeyEntry().getCertificate();
 
         try {
             registeredApplications.add(new Application(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, "owner",

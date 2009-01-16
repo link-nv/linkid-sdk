@@ -16,7 +16,7 @@ import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
-import net.link.safeonline.encap.keystore.EncapKeyStoreUtils;
+import net.link.safeonline.encap.keystore.EncapKeyStore;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
@@ -71,7 +71,7 @@ public class EncapStartableBean extends AbstractInitBean {
                 "Encap", null));
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(encapDeviceAttributeType, "nl", "Encap", null));
 
-        X509Certificate certificate = (X509Certificate) EncapKeyStoreUtils.getPrivateKeyEntry().getCertificate();
+        X509Certificate certificate = (X509Certificate) EncapKeyStore.getPrivateKeyEntry().getCertificate();
 
         ResourceBundle properties = ResourceBundle.getBundle("encap_config");
         String nodeName = properties.getString("olas.node.name");

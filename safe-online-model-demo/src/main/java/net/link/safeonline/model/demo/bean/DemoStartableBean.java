@@ -26,14 +26,14 @@ import net.link.safeonline.Startable;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
-import net.link.safeonline.demo.bank.keystore.DemoBankKeyStoreUtils;
-import net.link.safeonline.demo.cinema.keystore.DemoCinemaKeyStoreUtils;
-import net.link.safeonline.demo.keystore.DemoKeyStoreUtil;
-import net.link.safeonline.demo.lawyer.keystore.DemoLawyerKeyStoreUtils;
-import net.link.safeonline.demo.mandate.keystore.DemoMandateKeyStoreUtils;
-import net.link.safeonline.demo.payment.keystore.DemoPaymentKeyStoreUtils;
-import net.link.safeonline.demo.prescription.keystore.DemoPrescriptionKeyStoreUtils;
-import net.link.safeonline.demo.ticket.keystore.DemoTicketKeyStoreUtils;
+import net.link.safeonline.demo.bank.keystore.DemoBankKeyStore;
+import net.link.safeonline.demo.cinema.keystore.DemoCinemaKeyStore;
+import net.link.safeonline.demo.keystore.DemoKeyStore;
+import net.link.safeonline.demo.lawyer.keystore.DemoLawyerKeyStore;
+import net.link.safeonline.demo.mandate.keystore.DemoMandateKeyStore;
+import net.link.safeonline.demo.payment.keystore.DemoPaymentKeyStore;
+import net.link.safeonline.demo.prescription.keystore.DemoPrescriptionKeyStore;
+import net.link.safeonline.demo.ticket.keystore.DemoTicketKeyStore;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributePK;
 import net.link.safeonline.entity.AttributeProviderEntity;
@@ -160,7 +160,7 @@ public class DemoStartableBean extends AbstractInitBean {
 
         configureNode();
 
-        PrivateKeyEntry demoPrivateKeyEntry = DemoKeyStoreUtil.getPrivateKeyEntry();
+        PrivateKeyEntry demoPrivateKeyEntry = DemoKeyStore.getPrivateKeyEntry();
         X509Certificate demoCertificate = (X509Certificate) demoPrivateKeyEntry.getCertificate();
         try {
             registeredApplications.add(new Application(DEMO_APPLICATION_NAME, "owner", null, new URL(protocol, hostname, hostport, "/"
@@ -225,7 +225,7 @@ public class DemoStartableBean extends AbstractInitBean {
 
     private void configMandateDemo() {
 
-        PrivateKeyEntry demoMandatePrivateKeyEntry = DemoMandateKeyStoreUtils.getPrivateKeyEntry();
+        PrivateKeyEntry demoMandatePrivateKeyEntry = DemoMandateKeyStore.getPrivateKeyEntry();
         X509Certificate demoMandateCertificate = (X509Certificate) demoMandatePrivateKeyEntry.getCertificate();
 
         /*
@@ -308,7 +308,7 @@ public class DemoStartableBean extends AbstractInitBean {
 
     private void configTicketDemo() {
 
-        PrivateKeyEntry demoTicketPrivateKeyEntry = DemoTicketKeyStoreUtils.getPrivateKeyEntry();
+        PrivateKeyEntry demoTicketPrivateKeyEntry = DemoTicketKeyStore.getPrivateKeyEntry();
         X509Certificate demoTicketCertificate = (X509Certificate) demoTicketPrivateKeyEntry.getCertificate();
 
         trustedCertificates.put(demoTicketCertificate, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
@@ -347,7 +347,7 @@ public class DemoStartableBean extends AbstractInitBean {
 
     private void configBankDemo() {
 
-        PrivateKeyEntry demoBankPrivateKeyEntry = DemoBankKeyStoreUtils.getPrivateKeyEntry();
+        PrivateKeyEntry demoBankPrivateKeyEntry = DemoBankKeyStore.getPrivateKeyEntry();
         X509Certificate demoBankCertificate = (X509Certificate) demoBankPrivateKeyEntry.getCertificate();
 
         trustedCertificates.put(demoBankCertificate, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
@@ -386,7 +386,7 @@ public class DemoStartableBean extends AbstractInitBean {
 
     private void configCinemaDemo() {
 
-        PrivateKeyEntry demoCinemaPrivateKeyEntry = DemoCinemaKeyStoreUtils.getPrivateKeyEntry();
+        PrivateKeyEntry demoCinemaPrivateKeyEntry = DemoCinemaKeyStore.getPrivateKeyEntry();
         X509Certificate demoCinemaCertificate = (X509Certificate) demoCinemaPrivateKeyEntry.getCertificate();
 
         trustedCertificates.put(demoCinemaCertificate, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
@@ -434,7 +434,7 @@ public class DemoStartableBean extends AbstractInitBean {
         /*
          * Register the payment and ticket demo application within SafeOnline.
          */
-        PrivateKeyEntry demoPaymentPrivateKeyEntry = DemoPaymentKeyStoreUtils.getPrivateKeyEntry();
+        PrivateKeyEntry demoPaymentPrivateKeyEntry = DemoPaymentKeyStore.getPrivateKeyEntry();
         X509Certificate demoPaymentCertificate = (X509Certificate) demoPaymentPrivateKeyEntry.getCertificate();
 
         try {
@@ -510,7 +510,7 @@ public class DemoStartableBean extends AbstractInitBean {
         /*
          * Register the prescription demo application within SafeOnline.
          */
-        PrivateKeyEntry demoPrescriptionPrivateKeyEntry = DemoPrescriptionKeyStoreUtils.getPrivateKeyEntry();
+        PrivateKeyEntry demoPrescriptionPrivateKeyEntry = DemoPrescriptionKeyStore.getPrivateKeyEntry();
         X509Certificate demoPrescriptionCertificate = (X509Certificate) demoPrescriptionPrivateKeyEntry.getCertificate();
         trustedCertificates.put(demoPrescriptionCertificate, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
         try {
@@ -582,7 +582,7 @@ public class DemoStartableBean extends AbstractInitBean {
 
     private void configLawyerDemo() {
 
-        PrivateKeyEntry demoLawyerPrivateKeyEntry = DemoLawyerKeyStoreUtils.getPrivateKeyEntry();
+        PrivateKeyEntry demoLawyerPrivateKeyEntry = DemoLawyerKeyStore.getPrivateKeyEntry();
         X509Certificate demoLawyerCertificate = (X509Certificate) demoLawyerPrivateKeyEntry.getCertificate();
         try {
             registeredApplications.add(new Application(DEMO_LAWYER_APPLICATION_NAME, "owner", null, new URL(protocol, hostname, hostport,

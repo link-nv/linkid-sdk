@@ -20,7 +20,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 import net.link.safeonline.demo.prescription.AbstractPrescriptionDataClient;
-import net.link.safeonline.demo.prescription.keystore.DemoPrescriptionKeyStoreUtils;
+import net.link.safeonline.demo.prescription.keystore.DemoPrescriptionKeyStore;
 import net.link.safeonline.model.demo.DemoConstants;
 import net.link.safeonline.sdk.exception.AttributeNotFoundException;
 import net.link.safeonline.sdk.exception.AttributeUnavailableException;
@@ -74,7 +74,7 @@ public abstract class AbstractPrescriptionDataClientBean implements AbstractPres
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext externalContext = context.getExternalContext();
         wsLocation = externalContext.getInitParameter("WsLocation");
-        PrivateKeyEntry privateKeyEntry = DemoPrescriptionKeyStoreUtils.getPrivateKeyEntry();
+        PrivateKeyEntry privateKeyEntry = DemoPrescriptionKeyStore.getPrivateKeyEntry();
         certificate = (X509Certificate) privateKeyEntry.getCertificate();
         privateKey = privateKeyEntry.getPrivateKey();
         postActivateCallback();

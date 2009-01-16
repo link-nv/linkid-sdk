@@ -11,16 +11,16 @@ import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.data.AttributeDO;
+import net.link.safeonline.digipass.keystore.DigipassKeyStore;
 import net.link.safeonline.model.digipass.DigipassDeviceService;
 import net.link.safeonline.model.digipass.DigipassException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
-import net.link.safeonline.wicket.tools.WicketUtil;
+import net.link.safeonline.wicket.service.OlasService;
 
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
@@ -37,26 +37,31 @@ import org.apache.wicket.model.PropertyModel;
 
 public class RemovePage extends TemplatePage {
 
-    private static final long       serialVersionUID   = 1L;
+    private static final long             serialVersionUID   = 1L;
 
-    public static final String      GET_FORM_ID        = "get_form";
+    public static final String            GET_FORM_ID        = "get_form";
 
-    public static final String      LIST_FORM_ID       = "list_form";
+    public static final String            LIST_FORM_ID       = "list_form";
 
-    public static final String      LOGIN_FIELD_ID     = "login";
+    public static final String            LOGIN_FIELD_ID     = "login";
 
-    public static final String      VIEW_BUTTON_ID     = "view";
+    public static final String            VIEW_BUTTON_ID     = "view";
 
-    public static final String      CANCEL_BUTTON_ID   = "cancel";
+    public static final String            CANCEL_BUTTON_ID   = "cancel";
 
-    public static final String      DIGIPASS_LIST_ID   = "digipassList";
+    public static final String            DIGIPASSS_LIST_ID  = "digipassList";
 
-    public static final String      REMOVE_LINK_ID     = "remove";
+    public static final String            DIGIPASS_LIST_ID   = "digipassList";
+
+    public static final String            REMOVE_LINK_ID     = "remove";
 
     @EJB(mappedName = DigipassDeviceService.JNDI_BINDING)
-    transient DigipassDeviceService digipassDeviceService;
+    transient DigipassDeviceService       digipassDeviceService;
 
-    List<AttributeDO>               digipassAttributes = new LinkedList<AttributeDO>();
+    @OlasService(keyStore = DigipassKeyStore.class)
+    transient NameIdentifierMappingClient idMappingClient;
+
+    List<AttributeDO>                     digipassAttributes = new LinkedList<AttributeDO>();
 
 
     public RemovePage() {
@@ -175,14 +180,8 @@ public class RemovePage extends TemplatePage {
         protected String getUserId()
                 throws SubjectNotFoundException, PermissionDeniedException {
 
-            AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-
-            NameIdentifierMappingClient idMappingClient = WicketUtil.getOLASIdMappingService(WicketUtil.toServletRequest(getRequest()),
-                    authIdentityServiceClient.getPrivateKey(), authIdentityServiceClient.getCertificate());
-
-            String userId;
             try {
-                userId = idMappingClient.getUserId(login.getObject());
+                return idMappingClient.getUserId(login.getObject());
             } catch (net.link.safeonline.sdk.exception.SubjectNotFoundException e) {
                 LOG.error("subject not found: " + login);
                 throw new SubjectNotFoundException();
@@ -193,7 +192,6 @@ public class RemovePage extends TemplatePage {
                 LOG.error("failed to contact web service: " + e.getMessage());
                 throw new PermissionDeniedException(e.getMessage());
             }
-            return userId;
         }
     }
 

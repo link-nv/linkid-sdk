@@ -16,7 +16,7 @@ import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
-import net.link.safeonline.digipass.keystore.DigipassKeyStoreUtils;
+import net.link.safeonline.digipass.keystore.DigipassKeyStore;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
@@ -71,7 +71,7 @@ public class DigipassStartableBean extends AbstractInitBean {
                 "Digipass", null));
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(digipassDeviceAttributeType, "nl", "Digipass", null));
 
-        X509Certificate certificate = (X509Certificate) DigipassKeyStoreUtils.getPrivateKeyEntry().getCertificate();
+        X509Certificate certificate = (X509Certificate) DigipassKeyStore.getPrivateKeyEntry().getCertificate();
 
         ResourceBundle properties = ResourceBundle.getBundle("digipass_config");
         String nodeName = properties.getString("olas.node.name");

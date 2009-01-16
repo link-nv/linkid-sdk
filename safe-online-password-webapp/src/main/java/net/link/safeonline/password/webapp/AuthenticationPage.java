@@ -20,9 +20,7 @@ import net.link.safeonline.model.password.PasswordConstants;
 import net.link.safeonline.model.password.PasswordDeviceService;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
-import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.ProgressAuthenticationPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
@@ -184,14 +182,8 @@ public class AuthenticationPage extends TemplatePage {
         protected String getUserId()
                 throws SubjectNotFoundException, PermissionDeniedException {
 
-            AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-
-            NameIdentifierMappingClient idMappingClient = WicketUtil.getOLASIdMappingService(WicketUtil.toServletRequest(getRequest()),
-                    authIdentityServiceClient.getPrivateKey(), authIdentityServiceClient.getCertificate());
-
-            String userId;
             try {
-                userId = idMappingClient.getUserId(login.getObject());
+                return idMappingClient.getUserId(login.getObject());
             } catch (net.link.safeonline.sdk.exception.SubjectNotFoundException e) {
                 LOG.error("subject not found: " + login);
                 throw new SubjectNotFoundException();
@@ -202,7 +194,6 @@ public class AuthenticationPage extends TemplatePage {
                 LOG.error("failed to contact web service: " + e.getMessage());
                 throw new PermissionDeniedException(e.getMessage());
             }
-            return userId;
         }
     }
 

@@ -31,7 +31,7 @@ import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.model.bean.AbstractInitBean;
 import net.link.safeonline.model.password.PasswordManager;
 import net.link.safeonline.model.performance.PerformanceConstants;
-import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
+import net.link.safeonline.performance.keystore.PerformanceKeyStore;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.IdentityServiceClient;
@@ -94,7 +94,7 @@ public class PerformanceStartableBean extends AbstractInitBean {
         /*
          * Obtain the performance application identity.
          */
-        PrivateKeyEntry perfPrivateKeyEntry = PerformanceKeyStoreUtils.getPrivateKeyEntry();
+        PrivateKeyEntry perfPrivateKeyEntry = PerformanceKeyStore.getPrivateKeyEntry();
         X509Certificate perfCertificate = (X509Certificate) perfPrivateKeyEntry.getCertificate();
 
         /*

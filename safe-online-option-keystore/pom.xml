@@ -48,4 +48,15 @@
 		</plugins>
 	</build>
 
+	<dependencies>
+
+        <!-- Specific Dependencies: OLAS -->
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-keystore-util</artifactId>
+			<version>1.3-SNAPSHOT</version>
+		</dependency>
+
+	</dependencies>
+
 </project>

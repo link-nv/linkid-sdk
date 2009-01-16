@@ -21,7 +21,7 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.model.bean.AbstractInitBean;
 import net.link.safeonline.model.otpoversms.OtpOverSmsConstants;
-import net.link.safeonline.otpoversms.keystore.OtpOverSmsKeyStoreUtils;
+import net.link.safeonline.otpoversms.keystore.OtpOverSmsKeyStore;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.IdentityServiceClient;
 
@@ -62,7 +62,7 @@ public class OtpOverSmsStartableBean extends AbstractInitBean {
 
     private void configureDevice() {
 
-        X509Certificate certificate = (X509Certificate) OtpOverSmsKeyStoreUtils.getPrivateKeyEntry().getCertificate();
+        X509Certificate certificate = (X509Certificate) OtpOverSmsKeyStore.getPrivateKeyEntry().getCertificate();
 
         ResourceBundle properties = ResourceBundle.getBundle("otpoversms_config");
         String nodeName = properties.getString("olas.node.name");

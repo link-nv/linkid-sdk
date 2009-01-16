@@ -322,7 +322,6 @@
 				<module>safe-online-model-demo</module>
                 <module>safe-online-demo-sql-ddl</module>
 				<module>safe-online-demo-deploy</module>
-				<module>safe-online-demo-util</module>
 				<module>safe-online-demo-applet</module>
 				<module>safe-online-demo-webapp</module>
 				<module>safe-online-demo-startup-runtime</module>
@@ -848,6 +847,7 @@
 		<module>safe-online-sql-ddl</module>
 		<module>safe-online-common</module>
 		<module>safe-online-shared</module>
+		<module>safe-online-keystore-util</module>
 		<module>safe-online-keystore</module>
 		<module>safe-online-app-console</module>
 		<module>safe-online-jpa-util</module>

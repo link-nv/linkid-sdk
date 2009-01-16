@@ -29,7 +29,7 @@ import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.bean.AbstractInitBean;
 import net.link.safeonline.model.password.PasswordConstants;
 import net.link.safeonline.model.password.PasswordManager;
-import net.link.safeonline.password.keystore.PasswordKeyStoreUtils;
+import net.link.safeonline.password.keystore.PasswordKeyStore;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.IdentityServiceClient;
@@ -127,7 +127,7 @@ public class PasswordStartableBean extends AbstractInitBean {
 
     private void configureDevice() {
 
-        X509Certificate certificate = (X509Certificate) PasswordKeyStoreUtils.getPrivateKeyEntry().getCertificate();
+        X509Certificate certificate = (X509Certificate) PasswordKeyStore.getPrivateKeyEntry().getCertificate();
 
         ResourceBundle properties = ResourceBundle.getBundle("password_config");
         String nodeName = properties.getString("olas.node.name");
