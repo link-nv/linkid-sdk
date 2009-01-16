@@ -44,6 +44,34 @@ public class UserServiceBean extends AbstractBankServiceBean implements UserServ
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
+    public List<BankUserEntity> getUsers() {
+
+        return em.createNamedQuery(BankUserEntity.getAll).getResultList();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public BankUserEntity addUser(String bankId, String userName) {
+
+        BankUserEntity userEntity = new BankUserEntity(bankId, userName);
+        em.persist(userEntity);
+
+        return userEntity;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void removeUser(BankUserEntity user) {
+
+        em.remove(attach(user));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public BankUserEntity getBankUser(String bankId) {
 
         try {
@@ -88,6 +116,14 @@ public class UserServiceBean extends AbstractBankServiceBean implements UserServ
         userEntity.setOlasId(olasId);
 
         return updateUser(userEntity, httpRequest);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void unlinkOLASUser(BankUserEntity user) {
+
+        attach(user).setOlasId(null);
     }
 
     /**

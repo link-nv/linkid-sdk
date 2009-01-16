@@ -108,7 +108,7 @@ public class AdminPage extends LayoutPage {
             super.onBeforeRender();
 
             juniorField.setVisible(junior.getObject() != null);
-            if (name.getObject() == null) {
+            if (junior.getObject() == null) {
                 submitButton.setModelObject("Search &gt;");
                 nameField.setEnabled(true);
             } else {

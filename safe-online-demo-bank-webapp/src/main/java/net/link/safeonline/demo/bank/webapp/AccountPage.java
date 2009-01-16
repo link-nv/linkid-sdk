@@ -5,7 +5,6 @@ import java.util.List;
 import net.link.safeonline.demo.bank.entity.BankAccountEntity;
 import net.link.safeonline.demo.bank.entity.BankTransactionEntity;
 import net.link.safeonline.wicket.tools.WicketUtil;
-import net.link.safeonline.wicket.web.OlasLoginLink;
 import net.link.safeonline.wicket.web.RequireLogin;
 
 import org.apache.wicket.Page;
@@ -145,7 +144,7 @@ public class AccountPage extends LayoutPage {
     @Override
     Link<?> getPageLink() {
 
-        return new OlasLoginLink("pageLink") {
+        return new PageLink<OlasAuthPage>("pageLink", OlasAuthPage.class) {
 
             private static final long serialVersionUID = 1L;
 

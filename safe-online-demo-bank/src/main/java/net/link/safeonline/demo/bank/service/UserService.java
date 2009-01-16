@@ -36,6 +36,24 @@ public interface UserService extends BankService {
 
 
     /**
+     * @return A list of all known {@link BankUserEntity}s.
+     */
+    public List<BankUserEntity> getUsers();
+
+    /**
+     * Create a new user with the given bank ID, and the given username. This user has no OLAS account. To create users with an OLAS
+     * account, see {@link #getOLASUser(String)}.
+     * 
+     * @return The {@link BankUserEntity} that was created.
+     */
+    public BankUserEntity addUser(String bankId, String userName);
+
+    /**
+     * Remove the given bank user entity permanently.
+     */
+    public void removeUser(BankUserEntity user);
+
+    /**
      * @return The {@link BankUserEntity} with the given Bank ID, or <code>null</code> if no such ID is known by the bank.
      */
     public BankUserEntity getBankUser(String bankId);
@@ -51,6 +69,11 @@ public interface UserService extends BankService {
      * @return The {@link BankUserEntity} that has been linked to the OLAS account of the given OLAS id.
      */
     public BankUserEntity linkOLASUser(BankUserEntity user, String olasId, HttpServletRequest httpRequest);
+
+    /**
+     * Remove the OLAS userId from the given user entity so that it is no longer linked to an OLAS account.
+     */
+    public void unlinkOLASUser(BankUserEntity user);
 
     /**
      * Update the given user's attributes from OLAS.

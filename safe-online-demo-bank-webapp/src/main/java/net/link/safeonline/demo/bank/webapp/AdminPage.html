@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en" lang="en">
+
+<body>
+<wicket:extend>
+
+	<h2>User administration.</h2>
+
+	<form wicket:id="adminForm">
+	<table>
+		<caption>User Properties</caption>
+
+		<wicket:enclosure>
+			<thead>
+				<tr>
+					<th>Errors:</th>
+					<td><span wicket:id="feedback" /></td>
+				</tr>
+			</thead>
+		</wicket:enclosure>
+
+		<tbody>
+			<tr>
+				<th>Bank Id:</th>
+				<td><input wicket:id="bankId" /></td>
+			</tr>
+
+			<wicket:enclosure child="bankIds">
+				<tr>
+					<th colspan="2">All Registered Bank Ids:</th>
+					<td colspan="2" wicket:id="bankIds">
+					    <span wicket:id="bankId" />
+					</td>
+				</tr>
+			</wicket:enclosure>
+
+			<wicket:enclosure>
+				<tr>
+					<th>User Name:</th>
+					<td><input wicket:id="name" /></td>
+				</tr>
+			</wicket:enclosure>
+
+			<wicket:enclosure child="linked">
+				<tr>
+					<th>Linked?</th>
+					<td><input wicket:id="linked" type="checkbox" /></td>
+				</tr>
+                <tr>
+                    <th>Delete?</th>
+                    <td><input wicket:id="delete" type="checkbox" /></td>
+                </tr>
+			</wicket:enclosure>
+		</tbody>
+
+		<tfoot>
+			<tr>
+				<th colspan="2" class="nopad">
+				    <input wicket:id="submit" type="submit" value="Search &gt;" />
+				</th>
+			</tr>
+		</tfoot>
+	</table>
+	</form>
+
+</wicket:extend>
+</body>
+
+</html>

@@ -17,12 +17,14 @@ import javax.persistence.NamedQuery;
 
 
 @Entity
-@NamedQueries( { @NamedQuery(name = BankUserEntity.getByBankId, query = "SELECT u FROM BankUserEntity u WHERE u.bankId = :bankId"),
+@NamedQueries( { @NamedQuery(name = BankUserEntity.getAll, query = "SELECT u FROM BankUserEntity u"),
+        @NamedQuery(name = BankUserEntity.getByBankId, query = "SELECT u FROM BankUserEntity u WHERE u.bankId = :bankId"),
         @NamedQuery(name = BankUserEntity.getByOlasId, query = "SELECT u FROM BankUserEntity u WHERE u.olasId = :olasId") })
 public class BankUserEntity implements Serializable {
 
     private static final long  serialVersionUID = 1L;
 
+    public static final String getAll           = "BankUserEntity.getAll";
     public static final String getByBankId      = "BankUserEntity.getByBankId";
     public static final String getByOlasId      = "BankUserEntity.getByOlasId";
 

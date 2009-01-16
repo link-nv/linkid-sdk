@@ -15,8 +15,13 @@ import org.apache.wicket.util.convert.ConverterLocator;
 
 public class BankApplication extends WebApplication {
 
+    public static final String ADMIN_MOUNTPOINT = "admin";
+
+
     @Override
     protected void init() {
+
+        mountBookmarkablePage(ADMIN_MOUNTPOINT, AdminPage.class);
 
         // Java EE annotations injector.
         WicketUtil.addInjector(this);
