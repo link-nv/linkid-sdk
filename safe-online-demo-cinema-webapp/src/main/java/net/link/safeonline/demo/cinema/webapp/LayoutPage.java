@@ -5,7 +5,6 @@ import java.net.URLEncoder;
 import java.util.Date;
 
 import javax.ejb.EJB;
-import javax.servlet.ServletException;
 
 import net.link.safeonline.demo.cinema.CinemaConstants;
 import net.link.safeonline.demo.cinema.entity.CinemaTicketEntity;
@@ -17,8 +16,6 @@ import net.link.safeonline.wicket.tools.WicketUtil;
 import net.link.safeonline.wicket.web.OlasApplicationPage;
 import net.link.safeonline.wicket.web.OlasLogoutLink;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.RedirectToUrlException;
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.RestartResponseException;
@@ -37,8 +34,6 @@ import org.apache.wicket.request.target.component.BookmarkablePageRequestTarget;
 public class LayoutPage extends OlasApplicationPage {
 
     private static final long serialVersionUID = 1L;
-
-    Log                       LOG              = LogFactory.getLog(getClass());
 
     @EJB(mappedName = TicketService.JNDI_BINDING)
     transient TicketService   ticketService;
@@ -66,16 +61,10 @@ public class LayoutPage extends OlasApplicationPage {
     @Override
     protected void onOlasAuthenticated() {
 
-        try {
-            String olasId = WicketUtil.getOlasId(getRequest());
-            CinemaUserEntity user = userService.getUser(olasId);
+        String olasId = WicketUtil.findOlasId(getRequest());
+        CinemaUserEntity user = userService.getUser(olasId);
 
-            CinemaSession.get().setUser(userService.updateUser(user, WicketUtil.toServletRequest(getRequest())));
-        }
-
-        catch (ServletException e) {
-            LOG.error("[BUG]", e);
-        }
+        CinemaSession.get().setUser(userService.updateUser(user, WicketUtil.toServletRequest(getRequest())));
     }
 
 

@@ -14,8 +14,6 @@ import javax.ejb.EJB;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.webapp.template.ProgressRegistrationPanel;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.RedirectToUrlException;
 
@@ -37,8 +35,6 @@ import org.apache.wicket.RedirectToUrlException;
 public class RegistrationPage extends AppletPage {
 
     private static final long      serialVersionUID = 1L;
-
-    static final Log               LOG              = LogFactory.getLog(RegistrationPage.class);
 
     @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
     transient SamlAuthorityService samlAuthorityService;

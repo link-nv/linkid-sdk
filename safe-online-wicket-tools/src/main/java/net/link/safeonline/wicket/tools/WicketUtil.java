@@ -15,7 +15,6 @@ import java.util.Date;
 import java.util.Locale;
 
 import javax.ejb.EJB;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -158,15 +157,12 @@ public abstract class WicketUtil {
     }
 
     /**
-     * @return The OLAS userId that the current user has authenticated himself with.
-     * 
-     * @throws ServletException
-     *             If the user has not yet authenticated.
+     * @return The OLAS userId that the current user has authenticated himself with or <code>null</code> if the user isn't authenticated yet
+     *         (through OLAS).
      */
-    public static String getOlasId(Request request)
-            throws ServletException {
+    public static String findOlasId(Request request) {
 
-        return LoginManager.getUserId(toServletRequest(request));
+        return LoginManager.findUserId(toServletRequest(request));
     }
 
     /**

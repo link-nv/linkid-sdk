@@ -1,7 +1,6 @@
 package net.link.safeonline.demo.bank.webapp;
 
 import javax.ejb.EJB;
-import javax.servlet.ServletException;
 
 import net.link.safeonline.demo.bank.entity.BankAccountEntity;
 import net.link.safeonline.demo.bank.entity.BankUserEntity;
@@ -72,17 +71,11 @@ public abstract class LayoutPage extends OlasApplicationPage {
 
         // Support linking bank user to olas user.
         if (BankSession.isLinking() && WicketUtil.isOlasAuthenticated(getRequest())) {
-            try {
-                BankUserEntity user = BankSession.get().getUser();
-                String olasId = WicketUtil.getOlasId(getRequest());
+            BankUserEntity user = BankSession.get().getUser();
+            String olasId = WicketUtil.findOlasId(getRequest());
 
-                BankSession.get().setUser(getUserService().linkOLASUser(user, olasId, WicketUtil.toServletRequest(getRequest())));
-                BankSession.get().setLinkingUser(null);
-            }
-
-            catch (ServletException e) {
-                LOG.error("[BUG]", e);
-            }
+            BankSession.get().setUser(getUserService().linkOLASUser(user, olasId, WicketUtil.toServletRequest(getRequest())));
+            BankSession.get().setLinkingUser(null);
         }
     }
 
@@ -92,16 +85,10 @@ public abstract class LayoutPage extends OlasApplicationPage {
     @Override
     protected void onOlasAuthenticated() {
 
-        try {
-            String olasId = WicketUtil.getOlasId(getRequest());
-            BankUserEntity user = getUserService().getOLASUser(olasId);
+        String olasId = WicketUtil.findOlasId(getRequest());
+        BankUserEntity user = getUserService().getOLASUser(olasId);
 
-            BankSession.get().setUser(getUserService().updateUser(user, WicketUtil.toServletRequest(getRequest())));
-        }
-
-        catch (ServletException e) {
-            LOG.error("[BUG]", e);
-        }
+        BankSession.get().setUser(getUserService().updateUser(user, WicketUtil.toServletRequest(getRequest())));
     }
 
     /**

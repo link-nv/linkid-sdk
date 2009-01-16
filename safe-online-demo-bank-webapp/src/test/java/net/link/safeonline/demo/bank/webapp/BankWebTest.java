@@ -320,9 +320,13 @@ public class BankWebTest extends AbstractWicketTests {
      * <br>
      * Log out.<br>
      * <br>
-     * Log in using OLAS.<br>
+     * Log in using OLAS && verify same account.<br>
      * <br>
-     * We end up on the {@link AccountPage}.
+     * Log out.<br>
+     * <br>
+     * Log in using Digipass && verify same account.<br>
+     * <br>
+     * Log out.<br>
      */
     @Test
     public void testLinking() {
@@ -345,9 +349,9 @@ public class BankWebTest extends AbstractWicketTests {
         // - Collect sample data.
         List<String> sampleAccountCodes = new LinkedList<String>();
         @SuppressWarnings("unchecked")
-        ListView<BankAccountEntity> accountDigipassList = (ListView<BankAccountEntity>) wicket
-                                                                                              .getComponentFromLastRenderedPage("accounts:accountList");
-        for (BankAccountEntity account : accountDigipassList.getList()) {
+        ListView<BankAccountEntity> accountOrigList = (ListView<BankAccountEntity>) wicket
+                                                                                          .getComponentFromLastRenderedPage("accounts:accountList");
+        for (BankAccountEntity account : accountOrigList.getList()) {
             sampleAccountCodes.add(account.getCode());
         }
 
@@ -381,6 +385,41 @@ public class BankWebTest extends AbstractWicketTests {
         // - Test sample data against our original test data.
         assertTrue(String.format("accounts not found: test: %s - sample: %s", testAccountCodes, sampleAccountCodes), //
                 testAccountCodes.size() == sampleAccountCodes.size() && testAccountCodes.containsAll(sampleAccountCodes));
+
+        // AccountPage: Click to log out.
+        wicket.clickLink("user:logout");
+
+        // LoginPage: Verify && logout successful.
+        assertFalse("Shouldn't be logged in.", //
+                BankSession.get().isUserSet());
+        wicket.assertRenderedPage(LoginPage.class);
+
+        // Login using Digipass.
+        testDigipassLogin();
+
+        // AccountPage: Verify && digipass user's accounts still there.
+        wicket.assertRenderedPage(AccountPage.class);
+
+        // - Collect sample data.
+        sampleAccountCodes = new LinkedList<String>();
+        @SuppressWarnings("unchecked")
+        ListView<BankAccountEntity> accountDigipassList = (ListView<BankAccountEntity>) wicket
+                                                                                              .getComponentFromLastRenderedPage("accounts:accountList");
+        for (BankAccountEntity account : accountDigipassList.getList()) {
+            sampleAccountCodes.add(account.getCode());
+        }
+
+        // - Test sample data against our original test data.
+        assertTrue(String.format("accounts not found: test: %s - sample: %s", testAccountCodes, sampleAccountCodes), //
+                testAccountCodes.size() == sampleAccountCodes.size() && testAccountCodes.containsAll(sampleAccountCodes));
+
+        // AccountPage: Click to log out.
+        wicket.clickLink("user:logout");
+
+        // LoginPage: Verify && logout successful.
+        assertFalse("Shouldn't be logged in.", //
+                BankSession.get().isUserSet());
+        wicket.assertRenderedPage(LoginPage.class);
     }
 
     /**

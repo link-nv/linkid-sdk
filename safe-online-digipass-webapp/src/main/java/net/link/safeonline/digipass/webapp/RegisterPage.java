@@ -23,8 +23,6 @@ import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.form.Button;
@@ -37,8 +35,6 @@ import org.apache.wicket.validation.validator.StringValidator;
 public class RegisterPage extends TemplatePage {
 
     private static final long       serialVersionUID      = 1L;
-
-    static final Log                LOG                   = LogFactory.getLog(RegisterPage.class);
 
     public static final String      REGISTER_FORM_ID      = "register_form";
 
@@ -106,7 +102,7 @@ public class RegisterPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    RegisterPage.LOG.debug("register digipas with sn=" + serialNumber + " for user: " + login);
+                    LOG.debug("register digipas with sn=" + serialNumber + " for user: " + login);
 
                     try {
                         digipassDeviceService.register(getUserId(), serialNumber.getObject());

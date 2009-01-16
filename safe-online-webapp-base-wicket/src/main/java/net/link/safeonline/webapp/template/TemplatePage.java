@@ -6,8 +6,6 @@ import net.link.safeonline.common.SafeOnlineAppConstants;
 import net.link.safeonline.wicket.tools.WicketUtil;
 import net.link.safeonline.wicket.web.WicketPage;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.behavior.HeaderContributor;
 
 
@@ -16,8 +14,6 @@ public abstract class TemplatePage extends WicketPage {
     public static final String HEADER_ID  = "header_border";
     public static final String CONTENT_ID = "content_border";
     public static final String SIDEBAR_ID = "sidebar_border";
-
-    protected final Log        LOG        = LogFactory.getLog(getClass());
 
     private HeaderBorder       headerBorder;
     private ContentBorder      contentBorder;

@@ -23,8 +23,6 @@ import net.link.safeonline.webapp.template.ProgressRegistrationPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
@@ -37,8 +35,6 @@ import org.apache.wicket.model.Model;
 public class RegistrationPage extends TemplatePage {
 
     private static final long       serialVersionUID     = 1L;
-
-    static final Log                LOG                  = LogFactory.getLog(RegistrationPage.class);
 
     public static final String      REGISTRATION_FORM_ID = "registration_form";
 

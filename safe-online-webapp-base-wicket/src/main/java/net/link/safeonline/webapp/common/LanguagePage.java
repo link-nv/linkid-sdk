@@ -13,8 +13,6 @@ import javax.servlet.http.Cookie;
 import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.webapp.template.TemplatePage;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.Page;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.link.Link;
@@ -37,8 +35,6 @@ import org.apache.wicket.markup.html.link.Link;
 public class LanguagePage extends TemplatePage {
 
     private static final long serialVersionUID = 1L;
-
-    static final Log          LOG              = LogFactory.getLog(LanguagePage.class);
 
 
     public LanguagePage(final Page returnPage) {

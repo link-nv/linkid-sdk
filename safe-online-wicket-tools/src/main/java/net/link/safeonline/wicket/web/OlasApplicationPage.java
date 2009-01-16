@@ -6,8 +6,6 @@
  */
 package net.link.safeonline.wicket.web;
 
-import javax.servlet.ServletException;
-
 import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.commons.httpclient.HttpStatus;
@@ -46,24 +44,34 @@ public abstract class OlasApplicationPage extends WicketPage {
         try {
             // Check whether page requires forced logout.
             if (getClass().isAnnotationPresent(ForceLogout.class))
-                throw new ServletException("Page " + getClass() + " requires forced logout.");
+                throw new IllegalStateException("Page " + getClass() + " requires forced logout.");
 
-            // Check whether OLAS user has changed or been logged out.
+            // Check whether OLAS user has changed.
             String wicketOlasId = OLASSession.get().getUserOlasId();
-            if (wicketOlasId != null) {
-                String currentOlasId = WicketUtil.getOlasId(getRequest());
-                if (!wicketOlasId.equals(currentOlasId))
-                    throw new ServletException("User changed from " + wicketOlasId + " into " + currentOlasId);
+            if (WicketUtil.isOlasAuthenticated(getRequest())) {
+                if (wicketOlasId != null) {
+                    String currentOlasId = WicketUtil.findOlasId(getRequest());
+                    if (!wicketOlasId.equals(currentOlasId))
+                        throw new IllegalStateException("User changed from " + wicketOlasId + " into " + currentOlasId);
+                }
+
+                // If just logged in using OLAS, let application create/push its user onto wicket session.
+                if (!OLASSession.get().isUserSet()) {
+                    onOlasAuthenticated();
+                    postAuth();
+                }
             }
 
-            // If just logged in using OLAS, let application create/push its user onto wicket session.
-            if (!OLASSession.get().isUserSet() && WicketUtil.isOlasAuthenticated(getRequest())) {
-                onOlasAuthenticated();
-                postAuth();
+            else if (wicketOlasId != null) {
+                // No OLAS user on session, but wicket session says an OLAS user is logged in..
+                // Either the application allowed an OLAS user to login without using OLAS (eg. demo-bank),
+                // or the OLAS user logged itself out but the wicket session wasn't cleaned up properly.
+                // In this latter case, the logged out user's privileges leak to the next user.
+                // (TODO) Not sure what to do. (SOS-373)
             }
         }
 
-        catch (ServletException e) {
+        catch (IllegalStateException e) {
             // Log out the wicket session.
             LOG.debug("[OlasWicketAuth] Logging out wicket session because: " + e.getMessage());
             if (!OLASSession.get().logout()) {
@@ -83,7 +91,7 @@ public abstract class OlasApplicationPage extends WicketPage {
                 if (!loginPage.equals(Page.class)) {
                     LOG.debug("[OlasWicketAuth] auth required; redirecting unauthenticated user to " + loginPage + " for authentication.");
 
-                    OLASSession.get().setPostAuthenticationPage(this);
+                    OLASSession.get().setPostAuthenticationPage(getClass());
                     throw new RestartResponseException(loginPage);
                 }
 
@@ -111,7 +119,7 @@ public abstract class OlasApplicationPage extends WicketPage {
     protected void postAuth() {
 
         if (OLASSession.get().isUserSet()) {
-            Page postAuthPage = OLASSession.get().getPostAuthenticationPage();
+            Class<? extends Page> postAuthPage = OLASSession.get().getPostAuthenticationPage();
 
             if (postAuthPage != null) {
                 LOG.debug("[OlasWicketAuth] auth completed; triggering post auth, sending user to " + postAuthPage);

@@ -29,8 +29,8 @@ import org.apache.wicket.protocol.http.WebSession;
  */
 public abstract class OLASSession extends WebSession {
 
-    private static final long serialVersionUID = 1L;
-    private Page              postAuthenticationPage;
+    private static final long     serialVersionUID = 1L;
+    private Class<? extends Page> postAuthenticationPage;
 
 
     // USER ---------------------------------------------------------
@@ -47,12 +47,12 @@ public abstract class OLASSession extends WebSession {
 
     // POST AUTHENTICATION REDIRECTION ------------------------------
 
-    public Page getPostAuthenticationPage() {
+    public Class<? extends Page> getPostAuthenticationPage() {
 
         return postAuthenticationPage;
     }
 
-    public void setPostAuthenticationPage(Page postAuthenticationPage) {
+    public void setPostAuthenticationPage(Class<? extends Page> postAuthenticationPage) {
 
         this.postAuthenticationPage = postAuthenticationPage;
     }

@@ -29,8 +29,6 @@ import net.link.safeonline.webapp.template.ProgressAuthenticationPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.RedirectToUrlException;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
@@ -45,8 +43,6 @@ import org.apache.wicket.model.Model;
 public class AuthenticationPage extends TemplatePage {
 
     private static final long      serialVersionUID       = 1L;
-
-    static final Log               LOG                    = LogFactory.getLog(AuthenticationPage.class);
 
     public static final String     AUTHENTICATION_FORM_ID = "authentication_form";
     public static final String     MOBILE_FIELD_ID        = "mobile";

@@ -1,7 +1,6 @@
 package net.link.safeonline.demo.payment.webapp;
 
 import javax.ejb.EJB;
-import javax.servlet.ServletException;
 
 import net.link.safeonline.demo.payment.entity.PaymentUserEntity;
 import net.link.safeonline.demo.payment.service.TransactionService;
@@ -64,16 +63,10 @@ public abstract class LayoutPage extends OlasApplicationPage {
     @Override
     protected void onOlasAuthenticated() {
 
-        try {
-            String olasId = WicketUtil.getOlasId(getRequest());
-            PaymentUserEntity user = getUserService().getUser(olasId);
+        String olasId = WicketUtil.findOlasId(getRequest());
+        PaymentUserEntity user = getUserService().getUser(olasId);
 
-            PaymentSession.get().setUser(getUserService().updateUser(user, WicketUtil.toServletRequest(getRequest())));
-        }
-
-        catch (ServletException e) {
-            LOG.error("[BUG]", e);
-        }
+        PaymentSession.get().setUser(getUserService().updateUser(user, WicketUtil.toServletRequest(getRequest())));
     }
 
     /**
