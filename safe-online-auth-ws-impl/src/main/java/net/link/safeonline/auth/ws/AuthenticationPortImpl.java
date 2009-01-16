@@ -751,7 +751,11 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         }
 
         // No further steps needed, generate assertion
-        AssertionType assertion = generateAssertion(id);
+        String applicationUserId = getApplicationUserId();
+
+        response.setUserId(applicationUserId);
+        response.setDeviceName(this.authenticatedDevice.getName());
+        AssertionType assertion = generateAssertion(id, applicationUserId);
         response.getAssertion().add(assertion);
         manager.unexport(this);
     }
@@ -1177,13 +1181,13 @@ public class AuthenticationPortImpl implements AuthenticationPort {
 
     /**
      * Generate SAML v2.0 assertion.
+     * 
+     * @param applicationUserId
      */
-    private AssertionType generateAssertion(String id)
+    private AssertionType generateAssertion(String id, String applicationUserId)
             throws WSAuthenticationException {
 
         AssertionType assertion = generateBaseAssertion();
-
-        String applicationUserId = getApplicationUserId();
 
         DatatypeFactory datatypeFactory;
         try {
@@ -1266,6 +1270,9 @@ public class AuthenticationPortImpl implements AuthenticationPort {
     private List<AttributeType> getAttributes(List<AttributeDO> attributeList, boolean optional) {
 
         List<AttributeType> attributes = new LinkedList<AttributeType>();
+
+        if (null == attributeList)
+            return attributes;
 
         for (int idx = 0; idx < attributeList.size(); idx++) {
             AttributeDO attribute = attributeList.get(idx);

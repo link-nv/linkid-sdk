@@ -50,7 +50,7 @@ public class Attribute {
         this.name = attributeType.getName();
         this.friendlyName = attributeType.getFriendlyName();
         this.dataType = DataType.getDataType(attributeType.getOtherAttributes().get(WebServiceConstants.DATATYPE_ATTRIBUTE));
-        this.anonymous = Boolean.valueOf(attributeType.getOtherAttributes().get(WebServiceConstants.DATAMINING_ATTRIBUTE));
+        this.anonymous = !Boolean.valueOf(attributeType.getOtherAttributes().get(WebServiceConstants.DATAMINING_ATTRIBUTE));
         this.optional = Boolean.valueOf(attributeType.getOtherAttributes().get(WebServiceConstants.OPTIONAL_ATTRIBUTE));
 
         if (null == attributeType.getAttributeValue() || attributeType.getAttributeValue().isEmpty()) {

@@ -65,6 +65,8 @@ public class PasswordAuthenticationPortImpl implements DeviceAuthenticationPort 
 
     public static StatefulWebServiceManager<DeviceAuthenticationPort> manager;
 
+    private NameIdentifierMappingClient                               idMappingClient;
+
     private String                                                    wsLocation;
 
 
@@ -85,7 +87,15 @@ public class PasswordAuthenticationPortImpl implements DeviceAuthenticationPort 
     public PasswordAuthenticationPortImpl() {
 
         // XXX: make this configurable ..., time is in ms
-        manager.setTimeout(1000 * 60 * 30, new TimeoutCallback());
+        if (null != manager) {
+            manager.setTimeout(1000 * 60 * 30, new TimeoutCallback());
+        }
+    }
+
+    public PasswordAuthenticationPortImpl(NameIdentifierMappingClient idMappingClient) {
+
+        this();
+        this.idMappingClient = idMappingClient;
     }
 
 
@@ -183,12 +193,14 @@ public class PasswordAuthenticationPortImpl implements DeviceAuthenticationPort 
 
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
 
-        NameIdentifierMappingClient idMappingClient = new NameIdentifierMappingClientImpl(this.wsLocation,
-                authIdentityServiceClient.getCertificate(), authIdentityServiceClient.getPrivateKey());
+        if (null == this.idMappingClient) {
+            this.idMappingClient = new NameIdentifierMappingClientImpl(this.wsLocation, authIdentityServiceClient.getCertificate(),
+                    authIdentityServiceClient.getPrivateKey());
+        }
 
         String userId;
         try {
-            userId = idMappingClient.getUserId(loginName);
+            userId = this.idMappingClient.getUserId(loginName);
         } catch (net.link.safeonline.sdk.exception.SubjectNotFoundException e) {
             LOG.error("subject not found: " + loginName);
             throw new SubjectNotFoundException();
