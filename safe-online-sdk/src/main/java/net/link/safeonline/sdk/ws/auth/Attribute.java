@@ -100,6 +100,14 @@ public class Attribute {
     }
 
     /**
+     * Returns whether this attribute is compound.
+     */
+    public boolean isCompounded() {
+
+        return this.dataType.equals(DataType.COMPOUNDED);
+    }
+
+    /**
      * Returns whether this attribute is anonymous or not.
      */
     public boolean isAnonymous() {

@@ -32,6 +32,8 @@ import net.lin_k.safe_online.auth.WSAuthenticationRequestType;
 import net.lin_k.safe_online.auth.WSAuthenticationUsageAgreementConfirmationType;
 import net.lin_k.safe_online.auth.WSAuthenticationUsageAgreementRequestType;
 import net.link.safeonline.auth.ws.Confirmation;
+import net.link.safeonline.sdk.ws.exception.WSAuthenticationException;
+import net.link.safeonline.ws.common.WSAuthenticationErrorCode;
 import oasis.names.tc.saml._2_0.assertion.NameIDType;
 import oasis.names.tc.saml._2_0.protocol.RequestAbstractType;
 
@@ -156,13 +158,19 @@ public class AuthenticationUtil {
         return request;
     }
 
-    public static WSAuthenticationMissingAttributesSaveRequestType getMissingAttributesSaveRequest(List<Attribute> missingAttributes) {
+    public static WSAuthenticationMissingAttributesSaveRequestType getMissingAttributesSaveRequest(List<Attribute> missingAttributes)
+            throws WSAuthenticationException {
 
         WSAuthenticationMissingAttributesSaveRequestType request = new WSAuthenticationMissingAttributesSaveRequestType();
         setRequest(request);
 
         if (null != missingAttributes) {
             for (Attribute missingAttribute : missingAttributes) {
+                if (!missingAttribute.isOptional() && !missingAttribute.isCompounded()) {
+                    if (null == missingAttribute.getValue())
+                        throw new WSAuthenticationException(WSAuthenticationErrorCode.MISSING_ATTRIBUTE_VALUE_IS_NULL,
+                                missingAttribute.getFriendlyName());
+                }
                 request.getAttribute().add(missingAttribute.getAttributeType());
             }
         }

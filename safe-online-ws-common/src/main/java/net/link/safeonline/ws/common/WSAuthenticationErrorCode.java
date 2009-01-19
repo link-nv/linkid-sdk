@@ -30,6 +30,7 @@ public enum WSAuthenticationErrorCode {
     EMPTY_DEVICE_POLICY("urn:net:lin-k:safe-online:ws:auth:status:EmptyDevicePolicy"),
     INSUFFICIENT_CREDENTIALS("urn:net:lin-k:safe-online:ws:auth:status:InsufficientCredentials"),
     INSUFFICIENT_DEVICE("urn:net:lin-k:safe-online:ws:auth:status:InsufficientDevice"),
+    MISSING_ATTRIBUTE_VALUE_IS_NULL("urn:net:lin-k:safe-online:ws:auth:status:MissingAttributeValueIsNull"),
     NODE_MAPPING_NOT_FOUND("urn:net:lin-k:safe-online:ws:auth:status:NodeMappingNotFound"),
     NODE_NOT_FOUND("urn:net:lin-k:safe-online:ws:auth:status:NodeNotFound"),
     NOT_AUTHENTICATED("urn:net:lin-k:safe-online:ws:auth:status:NotAuthenticated"),

@@ -14,8 +14,10 @@
 			<xsd:complexType name="FilterType">
 				<xsd:sequence>
 					<xsd:element ref="wsnt:Topic" minOccurs="0" maxOccurs="1" />
-					<xsd:any namespace="##other" processContents="lax"
-						minOccurs="0" maxOccurs="unbounded" />
+					<!--
+						xsd:any namespace="##other" processContents="lax" minOccurs="0"
+						maxOccurs="unbounded" /
+					-->
 				</xsd:sequence>
 			</xsd:complexType>
 			<xsd:element name="SubscribeRequest">

@@ -7,17 +7,19 @@
 
 package net.link.safeonline.siemens.acceptance.ws.auth.console;
 
+import java.security.InvalidAlgorithmParameterException;
+import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
 import java.util.Observable;
 
+import net.link.safeonline.sdk.KeyStoreUtils;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
-import net.link.safeonline.sdk.ws.MessageAccessor;
 import net.link.safeonline.sdk.ws.auth.AuthenticationClient;
 import net.link.safeonline.sdk.ws.auth.AuthenticationClientImpl;
 import net.link.safeonline.sdk.ws.auth.GetAuthenticationClient;
 import net.link.safeonline.sdk.ws.auth.GetAuthenticationClientImpl;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
-
-import org.w3c.dom.Document;
 
 
 /**
@@ -30,17 +32,15 @@ public class AcceptanceConsoleManager extends Observable {
 
     private static AcceptanceConsoleManager manager         = null;
 
-    private String                          location        = "localhost";
+    private String                          location        = "https://localhost:8443/safe-online-auth-ws";
 
     private String                          application     = "olas-user";
 
-    private AuthenticationClient            authenticationClient;
+    private boolean                         generateKeyPair = true;
 
-    /*
-     * For SOAP message viewing
-     */
-    private boolean                         captureMessages = true;
-    private MessageAccessor                 messageAccessor = null;
+    private KeyPair                         keyPair;
+
+    private AuthenticationClient            authenticationClient;
 
 
     public static AcceptanceConsoleManager getInstance() {
@@ -95,31 +95,23 @@ public class AcceptanceConsoleManager extends Observable {
         return this.application;
     }
 
-    public void setMessageAccessor(MessageAccessor messageAccessor) {
+    public boolean getGenerateKeyPair() {
 
-        this.messageAccessor = messageAccessor;
-        if (this.captureMessages) {
-            setChanged();
-            notifyObservers(messageAccessor);
+        return this.generateKeyPair;
+    }
+
+    public void setGenerateKeyPair(boolean generateKeyPair) {
+
+        this.generateKeyPair = generateKeyPair;
+    }
+
+    public PublicKey getPublicKey()
+            throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+
+        if (this.generateKeyPair) {
+            this.keyPair = KeyStoreUtils.generateKeyPair();
+            return this.keyPair.getPublic();
         }
-    }
-
-    public void setCaptureMessages(boolean captureMessages) {
-
-        this.captureMessages = captureMessages;
-    }
-
-    public Document getInboundMessage() {
-
-        if (!this.captureMessages)
-            return null;
-        return this.messageAccessor.getInboundMessage();
-    }
-
-    public Document getOutboundMessage() {
-
-        if (!this.captureMessages)
-            return null;
-        return this.messageAccessor.getOutboundMessage();
+        return null;
     }
 }

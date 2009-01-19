@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package net.link.safeonline.siemens.acceptance.ws.auth.console;
+package net.link.safeonline.siemens.acceptance.ws.auth.console.device;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
@@ -23,6 +23,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+
+import net.link.safeonline.siemens.acceptance.ws.auth.console.AcceptanceConsole;
 
 
 /**

@@ -29,7 +29,6 @@ import net.lin_k.safe_online.auth.WSAuthenticationMissingAttributesRequestType;
 import net.lin_k.safe_online.auth.WSAuthenticationMissingAttributesSaveRequestType;
 import net.lin_k.safe_online.auth.WSAuthenticationRequestType;
 import net.lin_k.safe_online.auth.WSAuthenticationResponseType;
-import net.lin_k.safe_online.auth.WSAuthenticationStepType;
 import net.lin_k.safe_online.auth.WSAuthenticationUsageAgreementConfirmationType;
 import net.lin_k.safe_online.auth.WSAuthenticationUsageAgreementRequestType;
 import net.lin_k.safe_online.auth.WSAuthenticationUsageAgreementResponseType;
@@ -75,7 +74,7 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
 
     private DeviceAuthenticationInformationType deviceAuthenticationInformation;
 
-    private List<AuthenticationStep>            authenticationSteps;
+    private AuthenticationStep                  authenticationStep;
 
 
     /**
@@ -388,9 +387,9 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
     /**
      * {@inheritDoc}
      */
-    public List<AuthenticationStep> getAuthenticationSteps() {
+    public AuthenticationStep getAuthenticationStep() {
 
-        return this.authenticationSteps;
+        return this.authenticationStep;
     }
 
     private String getSubject() {
@@ -570,15 +569,12 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
 
     private void setAuthenticationSteps(WSAuthenticationResponseType response) {
 
-        if (null == response.getWSAuthenticationStep()) {
-            this.authenticationSteps = null;
+        if (null == response.getAuthenticationStep()) {
+            this.authenticationStep = null;
             return;
         }
 
-        this.authenticationSteps = new LinkedList<AuthenticationStep>();
-        for (WSAuthenticationStepType wsAuthenticationStep : response.getWSAuthenticationStep()) {
-            this.authenticationSteps.add(AuthenticationStep.getAuthenticationStep(wsAuthenticationStep.getAuthenticationStep()));
-        }
+        this.authenticationStep = AuthenticationStep.getAuthenticationStep(response.getAuthenticationStep());
 
     }
 }

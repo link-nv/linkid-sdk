@@ -7,16 +7,15 @@
 
 package net.link.safeonline.siemens.acceptance.ws.auth.console;
 
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -26,11 +25,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
-import net.link.safeonline.sdk.ws.MessageAccessor;
+import net.link.safeonline.auth.ws.Confirmation;
+import net.link.safeonline.sdk.ws.auth.Attribute;
+import net.link.safeonline.siemens.acceptance.ws.auth.console.device.PasswordAuthentication;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.w3c.dom.Document;
 
 
 /**
@@ -41,49 +41,48 @@ import org.w3c.dom.Document;
  */
 public class AcceptanceConsole extends JFrame implements Observer {
 
-    private static final long       serialVersionUID     = 1L;
+    private static final long       serialVersionUID        = 1L;
 
-    static final Log                LOG                  = LogFactory.getLog(AcceptanceConsole.class);
+    static final Log                LOG                     = LogFactory.getLog(AcceptanceConsole.class);
 
     /*
      * Actions
      */
-    private Action                  authPasswordAction   = new AuthPasswordAction("Password");
+    private Action                  authPasswordAction      = new AuthPasswordAction("Password ...");
 
-    private Action                  setLocationAction    = new SetLocationAction("Set Location");
-    private Action                  setApplicationAction = new SetApplicationAction("Set Application");
+    private Action                  setLocationAction       = new SetLocationAction("Set Location ...");
+    private Action                  setApplicationAction    = new SetApplicationAction("Set Application ...");
+    private Action                  generateKeyPairAction   = new GenerateKeyPairAction("Generate Keypair ...");
 
-    private Action                  captureAction        = new CaptureAction("Capture WS Messages");
-    Action                          viewInboundAction    = new ViewInboundAction("View Inbound Message");
-    Action                          viewOutboundAction   = new ViewOutboundAction("View Outbound Message");
-
-    private Action                  quitAction           = new QuitAction("Quit");
+    private Action                  quitAction              = new QuitAction("Quit");
 
     /*
      * GUI components
      */
-    private JPanel                  contentPanel         = null;
-    private JPanel                  debugPanel           = null;
-    private JSplitPane              splitPane            = null;
-    private JSplitPane              statusPanel          = null;
+    private JPanel                  contentPanel            = null;
+    private JSplitPane              splitPane               = null;
+    private JSplitPane              statusPanel             = null;
 
-    private JLabel                  locationLabel        = new JLabel();
+    private JLabel                  locationLabel           = new JLabel();
+    private JLabel                  applicationLabel        = new JLabel();
 
     /*
      * Menus
      */
-    private JMenu                   authMenu             = new JMenu("OLAS WS Authentication");
+    private JMenu                   authMenu                = new JMenu("OLAS WS Authentication");
 
-    private JMenuItem               passwordMenuItem     = new JMenuItem(this.authPasswordAction);
+    private JMenuItem               passwordMenuItem        = new JMenuItem(this.authPasswordAction);
 
-    private JMenuItem               setLocationMenuItem  = new JMenuItem(this.setLocationAction);
+    private JMenuItem               setApplicationMenuItem  = new JMenuItem(this.setApplicationAction);
+    private JMenuItem               setLocationMenuItem     = new JMenuItem(this.setLocationAction);
+    private JCheckBoxMenuItem       generateKeyPairMenuItem = new JCheckBoxMenuItem(this.generateKeyPairAction);
 
-    private JMenuItem               quitMenuItem         = new JMenuItem(this.quitAction);
+    private JMenuItem               quitMenuItem            = new JMenuItem(this.quitAction);
 
     /*
      * Non-GUI members
      */
-    public AcceptanceConsoleManager consoleManager       = AcceptanceConsoleManager.getInstance();
+    public AcceptanceConsoleManager consoleManager          = AcceptanceConsoleManager.getInstance();
 
 
     /**
@@ -96,8 +95,6 @@ public class AcceptanceConsole extends JFrame implements Observer {
         buildMenu();
         buildWindow();
 
-        this.viewInboundAction.setEnabled(false);
-        this.viewOutboundAction.setEnabled(false);
         this.consoleManager.addObserver(this);
         AcceptanceConsoleManager.getInstance().addObserver(this);
 
@@ -109,12 +106,15 @@ public class AcceptanceConsole extends JFrame implements Observer {
 
     private void buildMenu() {
 
+        this.generateKeyPairMenuItem.setSelected(this.consoleManager.getGenerateKeyPair());
+
         this.authMenu.setMnemonic(KeyEvent.VK_A);
 
         this.authMenu.add(this.passwordMenuItem);
         this.authMenu.addSeparator();
         this.authMenu.add(this.setLocationMenuItem);
-        this.authMenu.add(this.setApplicationAction);
+        this.authMenu.add(this.setApplicationMenuItem);
+        this.authMenu.add(this.generateKeyPairMenuItem);
         this.authMenu.addSeparator();
         this.authMenu.add(this.quitMenuItem);
 
@@ -126,37 +126,32 @@ public class AcceptanceConsole extends JFrame implements Observer {
     private void buildWindow() {
 
         buildStatusPanel();
-        buildDebugPanel();
 
         if (this.contentPanel == null) {
             this.contentPanel = new JPanel();
         }
-        JSplitPane bottomPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT, this.debugPanel, this.statusPanel);
-        bottomPanel.setDividerSize(3);
-        bottomPanel.setResizeWeight(0.5);
 
-        this.splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, this.contentPanel, bottomPanel);
+        this.splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, this.contentPanel, this.statusPanel);
         this.splitPane.setResizeWeight(1.0);
         this.splitPane.setDividerSize(3);
 
         this.add(this.splitPane);
     }
 
-    private void buildDebugPanel() {
-
-        this.debugPanel = new JPanel(new FlowLayout());
-
-        JCheckBox captureBox = new JCheckBox(this.captureAction);
-        captureBox.setSelected(true);
-
-        this.debugPanel.add(captureBox);
-        this.debugPanel.add(new JButton(this.viewInboundAction));
-        this.debugPanel.add(new JButton(this.viewOutboundAction));
-    }
-
     private void buildStatusPanel() {
 
-        this.statusPanel.add(this.locationLabel);
+        setStatus();
+
+        JPanel applicationPanel = new JPanel();
+        applicationPanel.add(this.applicationLabel);
+
+        JPanel locationPanel = new JPanel();
+        locationPanel.add(this.locationLabel);
+
+        this.statusPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, applicationPanel, locationPanel);
+        this.statusPanel.setDividerSize(0);
+        this.statusPanel.setResizeWeight(0.5);
+
     }
 
     public void resetContent() {
@@ -168,10 +163,82 @@ public class AcceptanceConsole extends JFrame implements Observer {
 
     public void login(String deviceName, Object deviceCredentials) {
 
-        // this.contentPanel = new LoginPanel();
+        this.contentPanel = new LoginPanel(this, "Authenticating ...");
         this.splitPane.setTopComponent(this.contentPanel);
 
         AuthenticationUtils.getInstance().authenticate(deviceName, deviceCredentials);
+
+    }
+
+    public void requestGlobalUsageAgreement() {
+
+        this.contentPanel = new GlobalUsageAgreementPanel(this);
+        this.splitPane.setTopComponent(this.contentPanel);
+
+        AuthenticationUtils.getInstance().requestGlobalUsageAgreement();
+
+    }
+
+    public void confirmGlobalUsageAgreement(Confirmation confirmation) {
+
+        this.contentPanel = new LoginPanel(this, "Confirming / Rejecting global usage agreement ...");
+        this.splitPane.setTopComponent(this.contentPanel);
+
+        AuthenticationUtils.getInstance().confirmGlobalUsageAgreement(confirmation);
+
+    }
+
+    public void requestUsageAgreement() {
+
+        this.contentPanel = new UsageAgreementPanel(this);
+        this.splitPane.setTopComponent(this.contentPanel);
+
+        AuthenticationUtils.getInstance().requestUsageAgreement();
+
+    }
+
+    public void confirmUsageAgreement(Confirmation confirmation) {
+
+        this.contentPanel = new LoginPanel(this, "Confirming / Rejecting usage agreement ...");
+        this.splitPane.setTopComponent(this.contentPanel);
+
+        AuthenticationUtils.getInstance().confirmUsageAgreement(confirmation);
+
+    }
+
+    public void getIdentity() {
+
+        this.contentPanel = new IdentityConfirmationPanel(this);
+        this.splitPane.setTopComponent(this.contentPanel);
+
+        AuthenticationUtils.getInstance().getIdentity();
+
+    }
+
+    public void confirmIdentity(Confirmation confirmation) {
+
+        this.contentPanel = new LoginPanel(this, "Confirming / Reject application's identity");
+        this.splitPane.setTopComponent(this.contentPanel);
+
+        AuthenticationUtils.getInstance().confirmIdentity(confirmation);
+
+    }
+
+    public void getMissingAttributes() {
+
+        this.contentPanel = new MissingAttributesPanel(this);
+        this.splitPane.setTopComponent(this.contentPanel);
+
+        AuthenticationUtils.getInstance().getMissingAttributes();
+
+    }
+
+    public void saveMissingAttributes(List<Attribute> missingAttributes) {
+
+        this.contentPanel = new LoginPanel(this, "Saving missing attributes");
+        this.splitPane.setTopComponent(this.contentPanel);
+
+        AuthenticationUtils.getInstance().saveMissingAttributes(missingAttributes);
 
     }
 
@@ -179,6 +246,7 @@ public class AcceptanceConsole extends JFrame implements Observer {
 
         resetAuthentication();
         this.contentPanel = new PasswordAuthentication(this);
+        this.splitPane.setTopComponent(this.contentPanel);
     }
 
     private void resetAuthentication() {
@@ -189,6 +257,7 @@ public class AcceptanceConsole extends JFrame implements Observer {
     public void setStatus() {
 
         this.locationLabel.setText("Location: " + this.consoleManager.getLocation());
+        this.applicationLabel.setText("Application: " + this.consoleManager.getApplication());
     }
 
     protected void onSetLocation() {
@@ -207,15 +276,17 @@ public class AcceptanceConsole extends JFrame implements Observer {
         }
     }
 
+    protected void onGenerateKeyPair() {
+
+        this.consoleManager.setGenerateKeyPair(!this.consoleManager.getGenerateKeyPair());
+        this.generateKeyPairMenuItem.setSelected(this.consoleManager.getGenerateKeyPair());
+
+    }
+
     public void update(Observable o, Object arg) {
 
         if (o instanceof AcceptanceConsoleManager) {
-            if (arg instanceof MessageAccessor) {
-                this.viewInboundAction.setEnabled(true);
-                this.viewOutboundAction.setEnabled(true);
-            } else {
-                setStatus();
-            }
+            setStatus();
         }
     }
 
@@ -261,69 +332,6 @@ public class AcceptanceConsole extends JFrame implements Observer {
         }
     }
 
-    public class ViewInboundAction extends AbstractAction {
-
-        private static final long serialVersionUID = 1L;
-
-
-        public ViewInboundAction(String name) {
-
-            putValue(NAME, name);
-            putValue(SHORT_DESCRIPTION, name);
-            putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_I));
-        }
-
-        public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
-
-            Document inboundSoap = AcceptanceConsoleManager.getInstance().getInboundMessage();
-            // TODO: show popup
-            // launchBrowser(inboundSoap, "inbound_soap");
-        }
-    }
-
-    public class ViewOutboundAction extends AbstractAction {
-
-        private static final long serialVersionUID = 1L;
-
-
-        public ViewOutboundAction(String name) {
-
-            putValue(NAME, name);
-            putValue(SHORT_DESCRIPTION, name);
-            putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_O));
-        }
-
-        public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
-
-            Document outboundSoap = AcceptanceConsoleManager.getInstance().getOutboundMessage();
-            // TODO: show popup
-            // launchBrowser(outboundSoap, "outbound_soap");
-        }
-    }
-
-    public class CaptureAction extends AbstractAction {
-
-        private static final long serialVersionUID = 1L;
-
-
-        public CaptureAction(String name) {
-
-            putValue(NAME, name);
-            putValue(SHORT_DESCRIPTION, name);
-            putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_C));
-        }
-
-        public void actionPerformed(ActionEvent evt) {
-
-            if (evt.getSource() instanceof JCheckBox) {
-                JCheckBox value = (JCheckBox) evt.getSource();
-                AcceptanceConsoleManager.getInstance().setCaptureMessages(value.isSelected());
-                AcceptanceConsole.this.viewInboundAction.setEnabled(value.isSelected());
-                AcceptanceConsole.this.viewOutboundAction.setEnabled(value.isSelected());
-            }
-        }
-    }
-
     public class SetLocationAction extends AbstractAction {
 
         private static final long serialVersionUID = 1L;
@@ -357,6 +365,24 @@ public class AcceptanceConsole extends JFrame implements Observer {
         public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
             onSetApplication();
+        }
+    }
+
+    public class GenerateKeyPairAction extends AbstractAction {
+
+        private static final long serialVersionUID = 1L;
+
+
+        public GenerateKeyPairAction(String name) {
+
+            putValue(NAME, name);
+            putValue(SHORT_DESCRIPTION, name);
+            putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_G));
+        }
+
+        public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
+
+            onGenerateKeyPair();
         }
     }
 

@@ -574,10 +574,8 @@ public class AuthenticationPortImplTest {
         verify(this.mockObjects);
         assertNotNull(response);
         assertTrue(response.getAssertion().isEmpty());
-        assertNotNull(response.getWSAuthenticationStep());
-        assertEquals(1, response.getWSAuthenticationStep().size());
-        assertEquals(AuthenticationStep.GLOBAL_USAGE_AGREEMENT.getValue(), response.getWSAuthenticationStep().get(0)
-                                                                                   .getAuthenticationStep());
+        assertNotNull(response.getAuthenticationStep());
+        assertEquals(AuthenticationStep.GLOBAL_USAGE_AGREEMENT.getValue(), response.getAuthenticationStep());
         assertEquals(WSAuthenticationErrorCode.SUCCESS.getErrorCode(), response.getStatus().getStatusCode().getValue());
 
         outputAuthenticationResponse(response);
@@ -698,10 +696,8 @@ public class AuthenticationPortImplTest {
         verify(this.mockObjects);
         assertNotNull(response);
         assertTrue(response.getAssertion().isEmpty());
-        assertNotNull(response.getWSAuthenticationStep());
-        assertEquals(1, response.getWSAuthenticationStep().size());
-        assertEquals(AuthenticationStep.GLOBAL_USAGE_AGREEMENT.getValue(), response.getWSAuthenticationStep().get(0)
-                                                                                   .getAuthenticationStep());
+        assertNotNull(response.getAuthenticationStep());
+        assertEquals(AuthenticationStep.GLOBAL_USAGE_AGREEMENT.getValue(), response.getAuthenticationStep());
         assertEquals(WSAuthenticationErrorCode.SUCCESS.getErrorCode(), response.getStatus().getStatusCode().getValue());
 
         outputAuthenticationResponse(response);
@@ -767,9 +763,8 @@ public class AuthenticationPortImplTest {
         verify(this.mockObjects);
         assertNotNull(response);
         assertTrue(response.getAssertion().isEmpty());
-        assertNotNull(response.getWSAuthenticationStep());
-        assertEquals(1, response.getWSAuthenticationStep().size());
-        assertEquals(AuthenticationStep.USAGE_AGREEMENT.getValue(), response.getWSAuthenticationStep().get(0).getAuthenticationStep());
+        assertNotNull(response.getAuthenticationStep());
+        assertEquals(AuthenticationStep.USAGE_AGREEMENT.getValue(), response.getAuthenticationStep());
         assertEquals(WSAuthenticationErrorCode.SUCCESS.getErrorCode(), response.getStatus().getStatusCode().getValue());
 
         outputAuthenticationResponse(globalUsageAgreementResponse);
@@ -838,9 +833,8 @@ public class AuthenticationPortImplTest {
         verify(this.mockObjects);
         assertNotNull(response);
         assertTrue(response.getAssertion().isEmpty());
-        assertNotNull(response.getWSAuthenticationStep());
-        assertEquals(1, response.getWSAuthenticationStep().size());
-        assertEquals(AuthenticationStep.IDENTITY_CONFIRMATION.getValue(), response.getWSAuthenticationStep().get(0).getAuthenticationStep());
+        assertNotNull(response.getAuthenticationStep());
+        assertEquals(AuthenticationStep.IDENTITY_CONFIRMATION.getValue(), response.getAuthenticationStep());
         assertEquals(WSAuthenticationErrorCode.SUCCESS.getErrorCode(), response.getStatus().getStatusCode().getValue());
 
         outputAuthenticationResponse(usageAgreementResponse);
@@ -928,9 +922,8 @@ public class AuthenticationPortImplTest {
         verify(this.mockObjects);
         assertNotNull(response);
         assertTrue(response.getAssertion().isEmpty());
-        assertNotNull(response.getWSAuthenticationStep());
-        assertEquals(1, response.getWSAuthenticationStep().size());
-        assertEquals(AuthenticationStep.MISSING_ATTRIBUTES.getValue(), response.getWSAuthenticationStep().get(0).getAuthenticationStep());
+        assertNotNull(response.getAuthenticationStep());
+        assertEquals(AuthenticationStep.MISSING_ATTRIBUTES.getValue(), response.getAuthenticationStep());
         assertEquals(WSAuthenticationErrorCode.SUCCESS.getErrorCode(), response.getStatus().getStatusCode().getValue());
 
         outputAuthenticationResponse(response);

@@ -54,18 +54,11 @@
 		</sequence>
 	</complexType>
 
-	<element name="WSAuthenticationStep" type="tns:WSAuthenticationStepType" />
-	<complexType name="WSAuthenticationStepType">
-		<attribute name="AuthenticationStep" type="string" use="required" />
-	</complexType>
-
 	<element name="WSAuthenticationResponse" type="tns:WSAuthenticationResponseType" />
 	<complexType name="WSAuthenticationResponseType">
 		<complexContent>
 			<extension base="samlp:StatusResponseType">
 				<sequence>
-					<element name="authenticationSteps" ref="tns:WSAuthenticationStep"
-						minOccurs="0" maxOccurs="unbounded" />
 					<element ref="tns:DeviceAuthenticationInformation"
 						minOccurs="0" maxOccurs="1" />
 					<element name="assertions" ref="saml:Assertion" minOccurs="0"
@@ -73,6 +66,7 @@
 				</sequence>
 				<attribute name="DeviceName" type="string" />
 				<attribute name="UserId" type="string" />
+				<attribute name="AuthenticationStep" type="string" />
 			</extension>
 		</complexContent>
 	</complexType>

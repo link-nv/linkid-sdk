@@ -33,7 +33,7 @@ public interface AuthenticationClient extends MessageAccessor {
     /**
      * Authenticates for the specified application, using the specified device, given the specified device credentials.
      * 
-     * Returns null if authentication is not complete. Check {@link #getAuthenticationSteps()} for the list of required additional
+     * Returns null if authentication is not complete. Check {@link #getAuthenticationStep()} for the list of required additional
      * authentication steps or {@link #getDeviceAuthenticationInformation()} if authentication for the specified device required additional
      * information.
      * 
@@ -56,7 +56,7 @@ public interface AuthenticationClient extends MessageAccessor {
     /**
      * Returns the global usage agreement to be confirmed or null if not needed.
      * 
-     * If null, check {@link #getAuthenticationSteps()} for authentication steps to be performed.
+     * If null, check {@link #getAuthenticationStep()} for authentication steps to be performed.
      * 
      * If none, check {@link #getAssertion()}.
      */
@@ -66,7 +66,7 @@ public interface AuthenticationClient extends MessageAccessor {
     /**
      * Confirms or rejects the global usage agreement.
      * 
-     * Returns null if authentication is not complete. Check {@link #getAuthenticationSteps()} for the list of required additional
+     * Returns null if authentication is not complete. Check {@link #getAuthenticationStep()} for the list of required additional
      * authentication steps or {@link #getDeviceAuthenticationInformation()} if authentication for the specified device required additional
      * information.
      * 
@@ -79,7 +79,7 @@ public interface AuthenticationClient extends MessageAccessor {
      * Returns the application usage agreement to be confirmed or null if not needed. Or an empty string if no usage agreement exists but
      * subscription is required.
      * 
-     * If null, check {@link #getAuthenticationSteps()} for authentication steps to be performed.
+     * If null, check {@link #getAuthenticationStep()} for authentication steps to be performed.
      * 
      * If none, check {@link #getAssertion()}.
      */
@@ -89,7 +89,7 @@ public interface AuthenticationClient extends MessageAccessor {
     /**
      * Confirms or rejects the application usage agreement / subscribes to the application.
      * 
-     * Returns null if authentication is not complete. Check {@link #getAuthenticationSteps()} for the list of required additional
+     * Returns null if authentication is not complete. Check {@link #getAuthenticationStep()} for the list of required additional
      * authentication steps or {@link #getDeviceAuthenticationInformation()} if authentication for the specified device required additional
      * information.
      * 
@@ -101,7 +101,7 @@ public interface AuthenticationClient extends MessageAccessor {
     /**
      * Returns the application identity to be confirmed.
      * 
-     * If null, check {@link #getAuthenticationSteps()} for authentication steps to be performed.
+     * If null, check {@link #getAuthenticationStep()} for authentication steps to be performed.
      * 
      * If none, check {@link #getAssertion()}.
      */
@@ -111,7 +111,7 @@ public interface AuthenticationClient extends MessageAccessor {
     /**
      * Confirms or rejects the application's identity.
      * 
-     * * Returns null if authentication is not complete. Check {@link #getAuthenticationSteps()} for the list of required additional
+     * * Returns null if authentication is not complete. Check {@link #getAuthenticationStep()} for the list of required additional
      * authentication steps or {@link #getDeviceAuthenticationInformation()} if authentication for the specified device required additional
      * information.
      * 
@@ -123,7 +123,7 @@ public interface AuthenticationClient extends MessageAccessor {
     /**
      * Returns the application's misssing attributes.
      * 
-     * If null, check {@link #getAuthenticationSteps()} for authentication steps to be performed.
+     * If null, check {@link #getAuthenticationStep()} for authentication steps to be performed.
      * 
      * If none, check {@link #getAssertion()}.
      * 
@@ -135,9 +135,9 @@ public interface AuthenticationClient extends MessageAccessor {
             throws RequestDeniedException, WSClientTransportException, WSAuthenticationException;
 
     /**
-     * Saves the missing attributes to be provided. * Returns null if authentication is not complete. Check
-     * {@link #getAuthenticationSteps()} for the list of required additional authentication steps or
-     * {@link #getDeviceAuthenticationInformation()} if authentication for the specified device required additional information.
+     * Saves the missing attributes to be provided. * Returns null if authentication is not complete. Check {@link #getAuthenticationStep()}
+     * for the list of required additional authentication steps or {@link #getDeviceAuthenticationInformation()} if authentication for the
+     * specified device required additional information.
      * 
      * Returns user ID if complete. The SAML v2.0 assertion is returned by {@link #getAssertion()}.
      * 
@@ -159,7 +159,7 @@ public interface AuthenticationClient extends MessageAccessor {
     DeviceAuthenticationInformationType getDeviceAuthenticationInformation();
 
     /**
-     * Returns list of authentication steps to be performed.
+     * Returns next authentication step.
      */
-    List<AuthenticationStep> getAuthenticationSteps();
+    AuthenticationStep getAuthenticationStep();
 }

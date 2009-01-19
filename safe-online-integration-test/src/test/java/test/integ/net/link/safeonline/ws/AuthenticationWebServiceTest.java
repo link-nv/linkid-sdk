@@ -11,7 +11,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getAccountService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getApplicationService;
@@ -246,9 +245,9 @@ public class AuthenticationWebServiceTest {
         String userId = this.authenticationClient.authenticate(testApplicationName, PasswordConstants.PASSWORD_DEVICE_ID,
                 Locale.ENGLISH.getLanguage(), nameValuePairs, keyPair.getPublic());
         assertNull(userId);
-        List<AuthenticationStep> authenticationSteps = this.authenticationClient.getAuthenticationSteps();
-        assertNotNull(authenticationSteps);
-        assertTrue(authenticationSteps.contains(AuthenticationStep.GLOBAL_USAGE_AGREEMENT));
+        AuthenticationStep authenticationStep = this.authenticationClient.getAuthenticationStep();
+        assertNotNull(authenticationStep);
+        assertEquals(authenticationStep, AuthenticationStep.GLOBAL_USAGE_AGREEMENT);
 
         // operate: request global usage agreement
         String globalUsageAgreement = this.authenticationClient.getGlobalUsageAgreement();
@@ -257,9 +256,9 @@ public class AuthenticationWebServiceTest {
         // operate: confirm global usage agreement
         userId = this.authenticationClient.confirmGlobalUsageAgreement(Confirmation.CONFIRM);
         assertNull(userId);
-        authenticationSteps = this.authenticationClient.getAuthenticationSteps();
-        assertNotNull(authenticationSteps);
-        assertTrue(authenticationSteps.contains(AuthenticationStep.USAGE_AGREEMENT));
+        authenticationStep = this.authenticationClient.getAuthenticationStep();
+        assertNotNull(authenticationStep);
+        assertEquals(authenticationStep, AuthenticationStep.USAGE_AGREEMENT);
 
         // operate: request application usage agreement
         String usageAgreement = this.authenticationClient.getUsageAgreement();
@@ -268,9 +267,9 @@ public class AuthenticationWebServiceTest {
         // operate: confirm usage agreement
         userId = this.authenticationClient.confirmUsageAgreement(Confirmation.CONFIRM);
         assertNull(userId);
-        authenticationSteps = this.authenticationClient.getAuthenticationSteps();
-        assertNotNull(authenticationSteps);
-        assertTrue(authenticationSteps.contains(AuthenticationStep.IDENTITY_CONFIRMATION));
+        authenticationStep = this.authenticationClient.getAuthenticationStep();
+        assertNotNull(authenticationStep);
+        assertEquals(authenticationStep, AuthenticationStep.IDENTITY_CONFIRMATION);
 
         // operate: request application identity
         List<Attribute> identity = this.authenticationClient.getIdentity();
@@ -300,9 +299,9 @@ public class AuthenticationWebServiceTest {
         // operate: confirm application identity
         userId = this.authenticationClient.confirmIdentity(Confirmation.CONFIRM);
         assertNull(userId);
-        authenticationSteps = this.authenticationClient.getAuthenticationSteps();
-        assertNotNull(authenticationSteps);
-        assertTrue(authenticationSteps.contains(AuthenticationStep.MISSING_ATTRIBUTES));
+        authenticationStep = this.authenticationClient.getAuthenticationStep();
+        assertNotNull(authenticationStep);
+        assertEquals(authenticationStep, AuthenticationStep.MISSING_ATTRIBUTES);
 
         // operate: request missing attributes
         List<Attribute> missingAttributes = this.authenticationClient.getMissingAttributes();

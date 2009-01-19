@@ -42,7 +42,6 @@ import net.lin_k.safe_online.auth.WSAuthenticationMissingAttributesRequestType;
 import net.lin_k.safe_online.auth.WSAuthenticationMissingAttributesSaveRequestType;
 import net.lin_k.safe_online.auth.WSAuthenticationRequestType;
 import net.lin_k.safe_online.auth.WSAuthenticationResponseType;
-import net.lin_k.safe_online.auth.WSAuthenticationStepType;
 import net.lin_k.safe_online.auth.WSAuthenticationUsageAgreementConfirmationType;
 import net.lin_k.safe_online.auth.WSAuthenticationUsageAgreementRequestType;
 import net.lin_k.safe_online.auth.WSAuthenticationUsageAgreementResponseType;
@@ -720,28 +719,28 @@ public class AuthenticationPortImpl implements AuthenticationPort {
             // perform global usage agreement check
             performGlobalUsageAgreementCheck();
             if (true == this.globalConfirmationRequired) {
-                addAuthenticationStep(response, AuthenticationStep.GLOBAL_USAGE_AGREEMENT);
+                response.setAuthenticationStep(AuthenticationStep.GLOBAL_USAGE_AGREEMENT.getValue());
                 return;
             }
 
             // perform subscription check
             performSubscriptionCheck();
             if (true == this.subscriptionRequired) {
-                addAuthenticationStep(response, AuthenticationStep.USAGE_AGREEMENT);
+                response.setAuthenticationStep(AuthenticationStep.USAGE_AGREEMENT.getValue());
                 return;
             }
 
             // perform identity confirmation check
             performConfirmationCheck();
             if (true == this.confirmationRequired) {
-                addAuthenticationStep(response, AuthenticationStep.IDENTITY_CONFIRMATION);
+                response.setAuthenticationStep(AuthenticationStep.IDENTITY_CONFIRMATION.getValue());
                 return;
             }
 
             // perform missing attributes check
             performMissingAttributesCheck();
             if (true == this.hasMissingAttributes) {
-                addAuthenticationStep(response, AuthenticationStep.MISSING_ATTRIBUTES);
+                response.setAuthenticationStep(AuthenticationStep.MISSING_ATTRIBUTES.getValue());
                 return;
             }
 
@@ -1030,16 +1029,6 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         status.setStatusCode(statusCode);
         status.setStatusMessage(message);
         response.setStatus(status);
-    }
-
-    /**
-     * Add specified authenticated step to the response.
-     */
-    private void addAuthenticationStep(WSAuthenticationResponseType response, AuthenticationStep authenticationStep) {
-
-        WSAuthenticationStepType globalUsageAgreementStep = new WSAuthenticationStepType();
-        globalUsageAgreementStep.setAuthenticationStep(authenticationStep.getValue());
-        response.getWSAuthenticationStep().add(globalUsageAgreementStep);
     }
 
     /**
