@@ -31,9 +31,16 @@
 			<wicket:enclosure child="bankIds">
 				<tr>
 					<th colspan="2">All Registered Bank Ids:</th>
-					<td colspan="2" wicket:id="bankIds">
-					    <span wicket:id="bankId" />
-					</td>
+				</tr>
+				<tr wicket:id="bankIds">
+					<th>
+					    <a wicket:id="select">
+					        <span wicket:id="bankId" />
+					    </a>
+					</th>
+                    <td>
+                        <span wicket:id="name" />
+                    </td>
 				</tr>
 			</wicket:enclosure>
 

@@ -1,14 +1,12 @@
 package net.link.safeonline.demo.bank.webapp;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import net.link.safeonline.demo.bank.entity.BankUserEntity;
 import net.link.safeonline.demo.bank.webapp.NewAccountPage.AccountForm;
 import net.link.safeonline.wicket.web.ForceLogout;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.feedback.IFeedbackMessageFilter;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
@@ -60,7 +58,7 @@ public class AdminPage extends LayoutPage {
         private static final long serialVersionUID = 1L;
 
         Model<String>             bankId;
-        ListView<BankUserEntity>  bankIds;
+        ListView<BankUserEntity>  bankIdsList;
 
         Model<String>             name;
         Model<Boolean>            linked;
@@ -81,17 +79,15 @@ public class AdminPage extends LayoutPage {
 
             add(bankIdField = new TextField<String>("bankId", bankId = new Model<String>()));
 
-            add(bankIds = new ListView<BankUserEntity>("bankIds", new LinkedList<BankUserEntity>()) {
+            add(bankIdsList = new ListView<BankUserEntity>("bankIds", getUserService().getUsers()) {
 
                 private static final long serialVersionUID = 1L;
 
 
                 @Override
-                protected void onBeforeRender() {
+                public boolean isVisible() {
 
-                    super.onBeforeRender();
-
-                    setVisible(bankIdField.isEnabled() && !getList().isEmpty());
+                    return !getList().isEmpty();
                 }
 
                 @Override
@@ -100,6 +96,11 @@ public class AdminPage extends LayoutPage {
                     item.add(new Link<String>("select") {
 
                         private static final long serialVersionUID = 1L;
+
+                        {
+                            add(new Label("bankId", item.getModelObject().getBankId()));
+                            add(new Label("name", item.getModelObject().getName()));
+                        }
 
 
                         @Override
@@ -133,30 +134,32 @@ public class AdminPage extends LayoutPage {
         @Override
         protected void onBeforeRender() {
 
-            super.onBeforeRender();
-
             // Decide what submit text to show.
             if (bankIdField.isEnabled()) {
-                // Reload the list of users in the BankIds list.
-                List<BankUserEntity> users = getUserService().getUsers();
-                bankIds.setList(users);
+                bankIdsList.setVisibilityAllowed(true);
 
                 submitButton.setModelObject("Search &gt;");
             }
 
-            else if (nameField.isVisible()) {
-                submitButton.setModelObject("Create &gt;");
-            }
+            else {
+                bankIdsList.setVisibilityAllowed(false);
 
-            else if (linkedField.isVisible()) {
-                if (linkedField.isEnabled()) {
-                    submitButton.setModelObject("Apply &gt;");
-                } else {
-                    submitButton.setModelObject("Return &lt;");
+                if (nameField.isVisible()) {
+                    submitButton.setModelObject("Create &gt;");
+                }
+
+                else if (linkedField.isVisible()) {
+                    if (linkedField.isEnabled()) {
+                        submitButton.setModelObject("Apply &gt;");
+                    } else {
+                        submitButton.setModelObject("Return &lt;");
+                    }
                 }
             }
 
             feedbackPanel.setVisible(feedbackPanel.anyMessage());
+
+            super.onBeforeRender();
         }
 
         @Override
@@ -215,6 +218,9 @@ public class AdminPage extends LayoutPage {
                 nameField.setVisible(false);
                 linkedField.setVisible(false);
                 deleteField.setVisible(false);
+
+                bankIdField.setEnabled(true);
+                bankIdsList.setList(getUserService().getUsers());
             }
         }
     }

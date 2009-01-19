@@ -462,14 +462,16 @@
 		<profile>
 			<id>host:demo</id>
 			<properties>
+                <safe-online.distribution>base</safe-online.distribution>
 				<safe-online.host.name>demo.olas.be</safe-online.host.name>
-		                <safe-online.data.source.user>olasdemo</safe-online.data.source.user>
-		                <safe-online.data.source.pass>1abb9f16a7ba974a6cf1</safe-online.data.source.pass>
-				<safe-online.jboss.host.port:insecure>8080</safe-online.jboss.host.port:insecure>
-				<safe-online.jboss.host.port:secure>8443</safe-online.jboss.host.port:secure>
-				<safe-online.distribution>base</safe-online.distribution>
-				<safe-online.host.port:insecure>80</safe-online.host.port:insecure>
-                                <safe-online.host.port:secure>443</safe-online.host.port:secure>
+
+                <safe-online.data.source.user>olasdemo</safe-online.data.source.user>
+                <safe-online.data.source.pass>1abb9f16a7ba974a6cf1</safe-online.data.source.pass>
+
+                <safe-online.jboss.host.port:insecure>8080</safe-online.jboss.host.port:insecure>
+                <safe-online.jboss.host.port:secure>8443</safe-online.jboss.host.port:secure>
+                <safe-online.host.port:insecure>80</safe-online.host.port:insecure>
+                <safe-online.host.port:secure>443</safe-online.host.port:secure>
 			</properties>
 		</profile>
 
@@ -537,6 +539,17 @@
 			<id>host:wim</id>
 			<properties>
 				<safe-online.host.name>192.168.5.103</safe-online.host.name>
+			</properties>
+		</profile>
+
+
+        <!-- CONFIGURATION PROFILES -->
+        <!-- Profile that uses insecure transport for secure traffic to reduce transport overhead -->
+		<profile>
+			<id>http</id>
+			<properties>
+				<safe-online.host.protocol:secure>${safe-online.host.protocol:insecure}</safe-online.host.protocol:secure>
+				<safe-online.host.port:secure>${safe-online.host.port:insecure}</safe-online.host.port:secure>
 			</properties>
 		</profile>
 
