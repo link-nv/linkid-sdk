@@ -67,7 +67,7 @@ public class AuthenticationPage extends TemplatePage {
         authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest(getRequest()).getSession());
 
         getHeader();
-        getSidebar().add(new Link<String>("tryAnotherDevice") {
+        getSidebar(localize("helpDigipassAuthentication")).add(new Link<String>("tryAnotherDevice") {
 
             private static final long serialVersionUID = 1L;
 

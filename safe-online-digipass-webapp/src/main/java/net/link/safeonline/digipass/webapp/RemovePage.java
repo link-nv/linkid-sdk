@@ -62,7 +62,7 @@ public class RemovePage extends TemplatePage {
     public RemovePage() {
 
         getHeader();
-        getSidebar();
+        getSidebar(localize("helpRemoveDigipass"));
         getContent().add(new GetForm("get_form"));
         getContent().add(new ListForm("list_form"));
     }

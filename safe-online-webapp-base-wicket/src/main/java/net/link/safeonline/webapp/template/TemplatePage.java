@@ -78,15 +78,15 @@ public abstract class TemplatePage extends WicketPage {
      * 
      * @see #getHeader(boolean)
      */
-    public SidebarBorder getSidebar() {
+    public SidebarBorder getSidebar(String helpMessage) {
 
-        return getSidebar(true);
+        return getSidebar(helpMessage, true);
     }
 
-    public SidebarBorder getSidebar(boolean showHelp) {
+    public SidebarBorder getSidebar(String helpMessage, boolean showHelpdeskLink) {
 
         if (null == sidebarBorder) {
-            sidebarBorder = new SidebarBorder(SIDEBAR_ID, showHelp);
+            sidebarBorder = new SidebarBorder(SIDEBAR_ID, helpMessage, showHelpdeskLink);
             contentBorder.add(sidebarBorder);
         }
 

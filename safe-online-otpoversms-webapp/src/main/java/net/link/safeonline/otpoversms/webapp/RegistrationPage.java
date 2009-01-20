@@ -73,7 +73,7 @@ public class RegistrationPage extends TemplatePage {
         protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
         getHeader();
-        getSidebar();
+        getSidebar(localize("helpRegisterOtpOverSms"));
 
         ProgressRegistrationPanel progress = new ProgressRegistrationPanel("progress", ProgressRegistrationPanel.stage.register);
         progress.setVisible(protocolContext.getDeviceOperation().equals(DeviceOperationType.NEW_ACCOUNT_REGISTER));

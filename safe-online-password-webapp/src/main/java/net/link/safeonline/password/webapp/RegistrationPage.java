@@ -73,7 +73,7 @@ public class RegistrationPage extends TemplatePage {
         }
 
         getHeader();
-        getSidebar();
+        getSidebar(localize("helpRegisterPassword"));
 
         ProgressRegistrationPanel progress = new ProgressRegistrationPanel("progress", ProgressRegistrationPanel.stage.register);
         progress.setVisible(protocolContext.getDeviceOperation().equals(DeviceOperationType.NEW_ACCOUNT_REGISTER));

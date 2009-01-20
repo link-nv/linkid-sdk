@@ -62,7 +62,7 @@ public class RegistrationPage extends TemplatePage {
         protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
         getHeader();
-        getSidebar();
+        getSidebar(localize("helpRegisterMobile"));
         getContent().add(new RegisterForm(REGISTER_FORM_ID));
     }
 

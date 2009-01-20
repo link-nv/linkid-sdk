@@ -53,7 +53,7 @@ public class RegisterPage extends TemplatePage {
     public RegisterPage() {
 
         getHeader();
-        getSidebar();
+        getSidebar(localize("helpRegisterDigipass"));
         getContent().add(new RegisterForm(REGISTER_FORM_ID));
     }
 

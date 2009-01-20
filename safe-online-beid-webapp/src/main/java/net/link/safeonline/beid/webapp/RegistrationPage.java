@@ -47,7 +47,7 @@ public class RegistrationPage extends AppletPage {
 
         // Header & Sidebar.
         getHeader();
-        getSidebar();
+        getSidebar(localize("helpExtractIdentity"));
 
         // Our content.
         ProgressRegistrationPanel progress = new ProgressRegistrationPanel("progress", ProgressRegistrationPanel.stage.register);

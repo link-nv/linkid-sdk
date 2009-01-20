@@ -73,7 +73,7 @@ public class AuthenticationPage extends TemplatePage {
         authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.getHttpSession(getRequest()));
 
         getHeader();
-        getSidebar().add(new Link<String>("tryAnotherDevice") {
+        getSidebar(localize("helpOtpOverSmsAuthentication")).add(new Link<String>("tryAnotherDevice") {
 
             private static final long serialVersionUID = 1L;
 

@@ -60,7 +60,7 @@ public class UpdatePage extends TemplatePage {
         protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
         getHeader();
-        getSidebar();
+        getSidebar(localize("helpPasswordChange"));
 
         getContent().add(new RegistrationForm(UPDATE_FORM_ID));
     }

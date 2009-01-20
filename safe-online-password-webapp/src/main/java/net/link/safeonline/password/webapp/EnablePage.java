@@ -52,7 +52,7 @@ public class EnablePage extends TemplatePage {
         protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
         getHeader();
-        getSidebar();
+        getSidebar(localize("helpPasswordEnable"));
         getContent().add(new EnableForm(ENABLE_FORM_ID));
     }
 

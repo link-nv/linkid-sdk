@@ -59,7 +59,7 @@ public class HelpPage extends TemplatePage {
         this.returnPage = returnPage;
 
         getHeader();
-        getSidebar().add(new Link<String>("back") {
+        getSidebar("", false).add(new Link<String>("back") {
 
             private static final long serialVersionUID = 1L;
 

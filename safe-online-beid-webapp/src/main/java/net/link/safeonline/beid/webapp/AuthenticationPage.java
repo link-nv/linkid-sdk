@@ -50,7 +50,7 @@ public class AuthenticationPage extends AppletPage {
 
         // Header & Sidebar.
         getHeader();
-        getSidebar().add(new Link<String>("tryAnotherDevice") {
+        getSidebar(localize("helpBeid")).add(new Link<String>("tryAnotherDevice") {
 
             private static final long serialVersionUID = 1L;
 

@@ -30,7 +30,7 @@ public class IdentificationPage extends AppletPage {
 
         // Header & Sidebar.
         getHeader();
-        getSidebar();
+        getSidebar(localize("helpEnableIdentity"));
     }
 
     /**

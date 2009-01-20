@@ -30,7 +30,7 @@ public class EnablePage extends AppletPage {
 
         // Header & Sidebar.
         getHeader();
-        getSidebar();
+        getSidebar(localize("helpBeid"));
     }
 
     /**

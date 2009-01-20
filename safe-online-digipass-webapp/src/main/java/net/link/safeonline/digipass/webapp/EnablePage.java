@@ -52,7 +52,7 @@ public class EnablePage extends TemplatePage {
         protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
         getHeader();
-        getSidebar();
+        getSidebar(localize("helpDigipassEnable"));
 
         String title = localize("%l %s", "digipass", protocolContext.getAttribute());
         getContent().add(new Label("title", title));

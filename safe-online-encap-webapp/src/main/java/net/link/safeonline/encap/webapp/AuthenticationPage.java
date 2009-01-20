@@ -93,7 +93,7 @@ public class AuthenticationPage extends TemplatePage {
 
         // Header & Sidebar.
         getHeader();
-        getSidebar().add(new Link<String>("tryAnotherDevice") {
+        getSidebar(localize("helpMobileAuthentication")).add(new Link<String>("tryAnotherDevice") {
 
             private static final long serialVersionUID = 1L;
 

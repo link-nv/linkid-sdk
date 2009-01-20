@@ -72,7 +72,7 @@ public class UpdatePage extends TemplatePage {
         protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
         getHeader();
-        getSidebar();
+        getSidebar(localize("helpOtpOverSmsPinChange"));
 
         getContent().add(new RequestOtpForm(REQUEST_OTP_FORM_ID));
         getContent().add(new UpdateForm(UPDATE_FORM_ID));

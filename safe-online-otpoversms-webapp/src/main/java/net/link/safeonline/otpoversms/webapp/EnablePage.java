@@ -69,7 +69,7 @@ public class EnablePage extends TemplatePage {
         protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
         getHeader();
-        getSidebar();
+        getSidebar(localize("helpOtpOverSmsEnable"));
 
         String title = localize("%l %s", "mobile", protocolContext.getAttribute());
         getContent().add(new Label("title", title));
