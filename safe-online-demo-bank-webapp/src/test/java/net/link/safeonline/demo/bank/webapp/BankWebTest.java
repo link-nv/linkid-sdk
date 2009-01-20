@@ -22,7 +22,6 @@ import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.wicket.javaee.DummyJndi;
 import net.link.safeonline.wicket.test.AbstractWicketTests;
 import net.link.safeonline.wicket.tools.WicketUtil;
-import net.link.safeonline.wicket.web.OlasLoginLink;
 import net.link.safeonline.wicket.web.OlasLogoutLink;
 
 import org.apache.wicket.AbortException;
@@ -338,7 +337,7 @@ public class BankWebTest extends AbstractWicketTests {
         testDigipassLogin();
 
         // AccountPage: Verify.
-        wicket.assertComponent("user:pageLink", OlasLoginLink.class);
+        wicket.assertPageLink("user:pageLink", OlasAuthPage.class);
 
         // AccountPage: Click to link our account to OLAS.
         wicket.clickLink("user:pageLink");

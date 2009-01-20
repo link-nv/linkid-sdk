@@ -60,7 +60,10 @@ public abstract class AbstractWicketTests {
     @BeforeClass
     public static void init() {
 
-        AuthenticationProtocolManager.registerProtocolHandler(TestAuthenticationProtocolHandler.class);
+        if (!AuthenticationProtocolManager.isProtocolHandlerRegistered(TestAuthenticationProtocolHandler.class)) {
+            AuthenticationProtocolManager.registerProtocolHandler(TestAuthenticationProtocolHandler.class);
+        }
+
         WicketUtil.setUnitTesting(true);
     }
 
