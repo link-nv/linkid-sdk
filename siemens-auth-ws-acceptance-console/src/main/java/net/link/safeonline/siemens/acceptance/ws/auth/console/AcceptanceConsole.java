@@ -32,6 +32,7 @@ import javax.swing.JSplitPane;
 import net.lin_k.safe_online.auth.DeviceAuthenticationInformationType;
 import net.link.safeonline.auth.ws.Confirmation;
 import net.link.safeonline.sdk.ws.auth.Attribute;
+import net.link.safeonline.siemens.acceptance.ws.auth.console.device.EncapAuthentication;
 import net.link.safeonline.siemens.acceptance.ws.auth.console.device.OtpOverSmsAuthentication;
 import net.link.safeonline.siemens.acceptance.ws.auth.console.device.PasswordAuthentication;
 
@@ -54,12 +55,14 @@ public class AcceptanceConsole extends JFrame implements Observer {
 
     public static final String                                                   PASSWORD_DEVICE_NAME     = "password";
     public static final String                                                   OTP_OVER_SMS_DEVICE_NAME = "OtpOverSms";
+    public static final String                                                   ENCAP_DEVICE_NAME        = "encap";
 
     private static final Map<String, Class<? extends DeviceAuthenticationPanel>> devicePanelMap           = new HashMap<String, Class<? extends DeviceAuthenticationPanel>>();
 
     static {
         registerDevicePanel(OTP_OVER_SMS_DEVICE_NAME, OtpOverSmsAuthentication.class);
         registerDevicePanel(PASSWORD_DEVICE_NAME, PasswordAuthentication.class);
+        registerDevicePanel(ENCAP_DEVICE_NAME, EncapAuthentication.class);
     }
 
 
@@ -132,6 +135,7 @@ public class AcceptanceConsole extends JFrame implements Observer {
 
         this.authMenu.add(new AuthenticationAction(PASSWORD_DEVICE_NAME));
         this.authMenu.add(new AuthenticationAction(OTP_OVER_SMS_DEVICE_NAME));
+        this.authMenu.add(new AuthenticationAction(ENCAP_DEVICE_NAME));
         this.authMenu.addSeparator();
         this.authMenu.add(this.setLocationMenuItem);
         this.authMenu.add(this.setApplicationMenuItem);

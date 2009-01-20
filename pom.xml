@@ -612,6 +612,7 @@
 		<safe-online.beid.webapp.name>olas-beid</safe-online.beid.webapp.name>
 		<safe-online.digipass.webapp.name>olas-digipass</safe-online.digipass.webapp.name>
 		<safe-online.encap.webapp.name>olas-encap</safe-online.encap.webapp.name>
+		<safe-online.encap.auth.ws.webapp.name>olas-encap-auth-ws</safe-online.encap.auth.ws.webapp.name>
 		<safe-online.password.webapp.name>olas-password</safe-online.password.webapp.name>
 		<safe-online.password.auth.ws.webapp.name>olas-password-auth-ws</safe-online.password.auth.ws.webapp.name>
 
@@ -898,6 +899,8 @@
 		<module>safe-online-encap-webapp</module>
 		<module>safe-online-encap</module>
 		<module>safe-online-encap-startup-runtime</module>
+		<module>safe-online-encap-auth-ws-impl</module>
+		<module>safe-online-encap-auth-ws-runtime</module>
 		<module>safe-online-encap-deploy</module>
 		<module>safe-online-digipass-startup-runtime</module>
 		<module>safe-online-digipass-deploy</module>
