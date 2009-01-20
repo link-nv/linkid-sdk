@@ -184,24 +184,26 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
     private void injectRequestParameters(HttpServletRequest request)
             throws ServletException {
 
-        Field[] fields = this.getClass().getDeclaredFields();
-        for (Field field : fields) {
-            RequestParameter requestParameterAnnotation = field.getAnnotation(RequestParameter.class);
-            if (null == requestParameterAnnotation) {
-                continue;
-            }
-            String requestParameterName = requestParameterAnnotation.value();
-            String value = request.getParameter(requestParameterName);
-            if (null == value) {
-                continue;
-            }
-            field.setAccessible(true);
-            try {
-                field.set(this, value);
-            } catch (IllegalArgumentException e) {
-                throw new ServletException("illegal argument: " + e.getMessage(), e);
-            } catch (IllegalAccessException e) {
-                throw new ServletException("illegal access: " + e.getMessage(), e);
+        for (Class<?> type = getClass(); type != Object.class; type = type.getSuperclass()) {
+            Field[] fields = type.getDeclaredFields();
+            for (Field field : fields) {
+                RequestParameter requestParameterAnnotation = field.getAnnotation(RequestParameter.class);
+                if (null == requestParameterAnnotation) {
+                    continue;
+                }
+                String requestParameterName = requestParameterAnnotation.value();
+                String value = request.getParameter(requestParameterName);
+                if (null == value) {
+                    continue;
+                }
+                field.setAccessible(true);
+                try {
+                    field.set(this, value);
+                } catch (IllegalArgumentException e) {
+                    throw new ServletException("illegal argument: " + e.getMessage(), e);
+                } catch (IllegalAccessException e) {
+                    throw new ServletException("illegal access: " + e.getMessage(), e);
+                }
             }
         }
     }
@@ -209,25 +211,27 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
     private void injectSessionAttributes(HttpSession session)
             throws ServletException {
 
-        Field[] fields = this.getClass().getDeclaredFields();
-        for (Field field : fields) {
-            In inAnnotation = field.getAnnotation(In.class);
-            if (null == inAnnotation) {
-                continue;
-            }
-            String inName = inAnnotation.value();
-            Object value = session.getAttribute(inName);
-            if (inAnnotation.required()) {
-                if (null == value)
-                    throw new ServletException("missing required session attribute: " + inName);
-            }
-            field.setAccessible(true);
-            try {
-                field.set(this, value);
-            } catch (IllegalArgumentException e) {
-                throw new ServletException("illegal argument: " + e.getMessage(), e);
-            } catch (IllegalAccessException e) {
-                throw new ServletException("illegal access: " + e.getMessage(), e);
+        for (Class<?> type = getClass(); type != Object.class; type = type.getSuperclass()) {
+            Field[] fields = type.getDeclaredFields();
+            for (Field field : fields) {
+                In inAnnotation = field.getAnnotation(In.class);
+                if (null == inAnnotation) {
+                    continue;
+                }
+                String inName = inAnnotation.value();
+                Object value = session.getAttribute(inName);
+                if (inAnnotation.required()) {
+                    if (null == value)
+                        throw new ServletException("missing required session attribute: " + inName);
+                }
+                field.setAccessible(true);
+                try {
+                    field.set(this, value);
+                } catch (IllegalArgumentException e) {
+                    throw new ServletException("illegal argument: " + e.getMessage(), e);
+                } catch (IllegalAccessException e) {
+                    throw new ServletException("illegal access: " + e.getMessage(), e);
+                }
             }
         }
     }
@@ -236,32 +240,35 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
     private void injectEjbs()
             throws ServletException {
 
-        Field[] fields = this.getClass().getDeclaredFields();
-        for (Field field : fields) {
-            EJB ejb = field.getAnnotation(EJB.class);
-            if (null == ejb) {
-                continue;
-            }
-            String mappedName = ejb.mappedName();
-            if (null == mappedName)
-                throw new ServletException(String.format("field %s.%s's @EJB requires mappedName attribute", getClass(), field));
-            LOG.debug("injecting: " + mappedName);
-            Class type = field.getType();
-            if (false == type.isInterface())
-                throw new ServletException(String.format("field %s.%s's type should be an interface", getClass(), field));
-            try {
-                Object ejbRef = EjbUtils.getEJB(mappedName, type);
-                field.setAccessible(true);
-                try {
-                    field.set(this, ejbRef);
-                } catch (IllegalArgumentException e) {
-                    throw new ServletException(String.format("while injecting into %s:", getClass()), e);
-                } catch (IllegalAccessException e) {
-                    throw new ServletException(String.format("while injecting into %s:", getClass()), e);
+        for (Class<?> type = getClass(); type != Object.class; type = type.getSuperclass()) {
+            Field[] fields = type.getDeclaredFields();
+            for (Field field : fields) {
+                EJB ejb = field.getAnnotation(EJB.class);
+                if (null == ejb) {
+                    continue;
                 }
-            } catch (RuntimeException e) {
-                throw new ServletException(
-                        String.format("couldn't resolve EJB named: %s (while injecting into %s)", mappedName, getClass()), e);
+                String mappedName = ejb.mappedName();
+                if (null == mappedName)
+                    throw new ServletException(String.format("field %s.%s's @EJB requires mappedName attribute", getClass(), field));
+                LOG.debug("injecting: " + mappedName);
+
+                Class fieldType = field.getType();
+                if (false == fieldType.isInterface())
+                    throw new ServletException(String.format("field %s.%s's type should be an interface", getClass(), field));
+                try {
+                    Object ejbRef = EjbUtils.getEJB(mappedName, fieldType);
+                    field.setAccessible(true);
+                    try {
+                        field.set(this, ejbRef);
+                    } catch (IllegalArgumentException e) {
+                        throw new ServletException(String.format("while injecting into %s:", getClass()), e);
+                    } catch (IllegalAccessException e) {
+                        throw new ServletException(String.format("while injecting into %s:", getClass()), e);
+                    }
+                } catch (RuntimeException e) {
+                    throw new ServletException(String.format("couldn't resolve EJB named: %s (while injecting into %s)", mappedName,
+                            getClass()), e);
+                }
             }
         }
     }
@@ -270,94 +277,97 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
     private void initInitParameters(ServletConfig config)
             throws ServletException {
 
-        Field[] fields = this.getClass().getDeclaredFields();
-        for (Field field : fields) {
-            Init initAnnotation = field.getAnnotation(Init.class);
-            if (null == initAnnotation) {
-                continue;
-            }
-            String name = initAnnotation.name();
-            if (null == name)
-                throw new ServletException("@Init name attribute required");
-            LOG.debug("init: " + name);
-            String defaultValue = initAnnotation.defaultValue();
-            boolean optional = initAnnotation.optional();
-            boolean checkContext = initAnnotation.checkContext();
-
-            String value = config.getInitParameter(name);
-            if (null == value && checkContext) {
-                value = config.getServletContext().getInitParameter(name);
-            }
-            if (null == value) {
-                if (Init.NOT_SPECIFIED.equals(defaultValue) && !optional)
-                    throw new UnavailableException("missing init parameter: " + name);
-                if (Init.NOT_SPECIFIED.equals(defaultValue)) {
-                    defaultValue = null;
+        for (Class<?> type = getClass(); type != Object.class; type = type.getSuperclass()) {
+            Field[] fields = type.getDeclaredFields();
+            for (Field field : fields) {
+                Init initAnnotation = field.getAnnotation(Init.class);
+                if (null == initAnnotation) {
+                    continue;
                 }
-                value = defaultValue;
-            }
-            field.setAccessible(true);
-            try {
-                field.set(this, value);
-            } catch (IllegalArgumentException e) {
-                throw new ServletException("illegal argument: " + e.getMessage(), e);
-            } catch (IllegalAccessException e) {
-                throw new ServletException("illegal access: " + e.getMessage(), e);
-            }
-        }
-        configParams = new HashMap<String, String>();
-        Enumeration<String> initParamsEnum = config.getInitParameterNames();
-        while (initParamsEnum.hasMoreElements()) {
-            String paramName = initParamsEnum.nextElement();
-            String paramValue = config.getInitParameter(paramName);
-            LOG.debug("config param: " + paramName + "=" + paramValue);
-            configParams.put(paramName, paramValue);
-        }
+                String name = initAnnotation.name();
+                if (null == name)
+                    throw new ServletException("@Init name attribute required");
+                LOG.debug("init: " + name);
+                String defaultValue = initAnnotation.defaultValue();
+                boolean optional = initAnnotation.optional();
+                boolean checkContext = initAnnotation.checkContext();
 
+                String value = config.getInitParameter(name);
+                if (null == value && checkContext) {
+                    value = config.getServletContext().getInitParameter(name);
+                }
+                if (null == value) {
+                    if (Init.NOT_SPECIFIED.equals(defaultValue) && !optional)
+                        throw new UnavailableException("missing init parameter: " + name);
+                    if (Init.NOT_SPECIFIED.equals(defaultValue)) {
+                        defaultValue = null;
+                    }
+                    value = defaultValue;
+                }
+                field.setAccessible(true);
+                try {
+                    field.set(this, value);
+                } catch (IllegalArgumentException e) {
+                    throw new ServletException("illegal argument: " + e.getMessage(), e);
+                } catch (IllegalAccessException e) {
+                    throw new ServletException("illegal access: " + e.getMessage(), e);
+                }
+            }
+            configParams = new HashMap<String, String>();
+            Enumeration<String> initParamsEnum = config.getInitParameterNames();
+            while (initParamsEnum.hasMoreElements()) {
+                String paramName = initParamsEnum.nextElement();
+                String paramValue = config.getInitParameter(paramName);
+                LOG.debug("config param: " + paramName + "=" + paramValue);
+                configParams.put(paramName, paramValue);
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")
     private void initContextParameters(ServletConfig config)
             throws ServletException {
 
-        Field[] fields = this.getClass().getDeclaredFields();
-        for (Field field : fields) {
-            Context contextAnnotation = field.getAnnotation(Context.class);
-            if (null == contextAnnotation) {
-                continue;
-            }
-            String name = contextAnnotation.name();
-            if (null == name)
-                throw new ServletException("@Context name attribute required");
-            LOG.debug("init: " + name);
-            String defaultValue = contextAnnotation.defaultValue();
-            boolean optional = contextAnnotation.optional();
-
-            String value = config.getServletContext().getInitParameter(name);
-            if (null == value) {
-                if (Context.NOT_SPECIFIED.equals(defaultValue) && !optional)
-                    throw new UnavailableException("missing init parameter: " + name);
-                if (Context.NOT_SPECIFIED.equals(defaultValue)) {
-                    defaultValue = null;
+        for (Class<?> type = getClass(); type != Object.class; type = type.getSuperclass()) {
+            Field[] fields = type.getDeclaredFields();
+            for (Field field : fields) {
+                Context contextAnnotation = field.getAnnotation(Context.class);
+                if (null == contextAnnotation) {
+                    continue;
                 }
-                value = defaultValue;
+                String name = contextAnnotation.name();
+                if (null == name)
+                    throw new ServletException("@Context name attribute required");
+                LOG.debug("init: " + name);
+                String defaultValue = contextAnnotation.defaultValue();
+                boolean optional = contextAnnotation.optional();
+
+                String value = config.getServletContext().getInitParameter(name);
+                if (null == value) {
+                    if (Context.NOT_SPECIFIED.equals(defaultValue) && !optional)
+                        throw new UnavailableException("missing init parameter: " + name);
+                    if (Context.NOT_SPECIFIED.equals(defaultValue)) {
+                        defaultValue = null;
+                    }
+                    value = defaultValue;
+                }
+                field.setAccessible(true);
+                try {
+                    field.set(this, value);
+                } catch (IllegalArgumentException e) {
+                    throw new ServletException("illegal argument: " + e.getMessage(), e);
+                } catch (IllegalAccessException e) {
+                    throw new ServletException("illegal access: " + e.getMessage(), e);
+                }
             }
-            field.setAccessible(true);
-            try {
-                field.set(this, value);
-            } catch (IllegalArgumentException e) {
-                throw new ServletException("illegal argument: " + e.getMessage(), e);
-            } catch (IllegalAccessException e) {
-                throw new ServletException("illegal access: " + e.getMessage(), e);
-            }
-        }
-        Enumeration<String> initParamsEnum = config.getServletContext().getInitParameterNames();
-        while (initParamsEnum.hasMoreElements()) {
-            String paramName = initParamsEnum.nextElement();
-            if (null == configParams.get(paramName)) {
-                String paramValue = config.getServletContext().getInitParameter(paramName);
-                LOG.debug("config param: " + paramName + "=" + paramValue);
-                configParams.put(paramName, paramValue);
+            Enumeration<String> initParamsEnum = config.getServletContext().getInitParameterNames();
+            while (initParamsEnum.hasMoreElements()) {
+                String paramName = initParamsEnum.nextElement();
+                if (null == configParams.get(paramName)) {
+                    String paramValue = config.getServletContext().getInitParameter(paramName);
+                    LOG.debug("config param: " + paramName + "=" + paramValue);
+                    configParams.put(paramName, paramValue);
+                }
             }
         }
     }
@@ -365,26 +375,28 @@ public abstract class AbstractInjectionServlet extends HttpServlet {
     private void outjectSessionAttributes(HttpSession session)
             throws ServletException {
 
-        Field[] fields = this.getClass().getDeclaredFields();
-        for (Field field : fields) {
-            Out outAnnotation = field.getAnnotation(Out.class);
-            if (null == outAnnotation) {
-                continue;
+        for (Class<?> type = getClass(); type != Object.class; type = type.getSuperclass()) {
+            Field[] fields = type.getDeclaredFields();
+            for (Field field : fields) {
+                Out outAnnotation = field.getAnnotation(Out.class);
+                if (null == outAnnotation) {
+                    continue;
+                }
+                String outName = outAnnotation.value();
+                field.setAccessible(true);
+                Object value;
+                try {
+                    value = field.get(this);
+                    if (value == null && outAnnotation.required())
+                        throw new ServletException("missing required session attribute: " + outName);
+                } catch (IllegalArgumentException e) {
+                    throw new ServletException("illegal argument: " + e.getMessage(), e);
+                } catch (IllegalAccessException e) {
+                    throw new ServletException("illegal access: " + e.getMessage(), e);
+                }
+                LOG.debug("outjecting to session attribute: " + outName);
+                session.setAttribute(outName, value);
             }
-            String outName = outAnnotation.value();
-            field.setAccessible(true);
-            Object value;
-            try {
-                value = field.get(this);
-                if (value == null && outAnnotation.required())
-                    throw new ServletException("missing required session attribute: " + outName);
-            } catch (IllegalArgumentException e) {
-                throw new ServletException("illegal argument: " + e.getMessage(), e);
-            } catch (IllegalAccessException e) {
-                throw new ServletException("illegal access: " + e.getMessage(), e);
-            }
-            LOG.debug("outjecting to session attribute: " + outName);
-            session.setAttribute(outName, value);
         }
     }
 

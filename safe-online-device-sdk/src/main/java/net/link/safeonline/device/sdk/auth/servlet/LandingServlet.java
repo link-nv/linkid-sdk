@@ -46,29 +46,29 @@ public class LandingServlet extends AbstractInjectionServlet {
     private static final Log  LOG              = LogFactory.getLog(LandingServlet.class);
 
     @Init(name = "AuthenticationUrl")
-    private String            authenticationUrl;
+    protected String          authenticationUrl;
 
     @Init(name = "ServletEndpointUrl", optional = true)
-    private String            servletEndpointUrl;
+    protected String          servletEndpointUrl;
 
     @Context(name = "KeyStoreResource", optional = true)
-    private String            p12KeyStoreResourceName;
+    protected String          p12KeyStoreResourceName;
 
     @Context(name = "KeyStoreFile", optional = true)
-    private String            p12KeyStoreFileName;
+    protected String          p12KeyStoreFileName;
 
     @Context(name = "KeyStorePassword", optional = true)
-    private String            keyStorePassword;
+    protected String          keyStorePassword;
 
     @Context(name = "KeyStoreType", defaultValue = "pkcs12")
-    private String            keyStoreType;
+    protected String          keyStoreType;
 
     @Init(name = "ErrorPage", optional = true)
-    private String            errorPage;
+    protected String          errorPage;
 
-    private KeyPair           applicationKeyPair;
+    protected KeyPair         applicationKeyPair;
 
-    private X509Certificate   applicationCertificate;
+    protected X509Certificate applicationCertificate;
 
 
     @Override
@@ -92,8 +92,8 @@ public class LandingServlet extends AbstractInjectionServlet {
             }
         }
         if (null != keyStoreInputStream) {
-            PrivateKeyEntry privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(keyStoreType, keyStoreInputStream,
-                    keyStorePassword, keyStorePassword);
+            PrivateKeyEntry privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(keyStoreType, keyStoreInputStream, keyStorePassword,
+                    keyStorePassword);
             applicationKeyPair = new KeyPair(privateKeyEntry.getCertificate().getPublicKey(), privateKeyEntry.getPrivateKey());
             applicationCertificate = (X509Certificate) privateKeyEntry.getCertificate();
         }

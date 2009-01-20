@@ -7,12 +7,11 @@
 
 package net.link.safeonline.beid.servlet;
 
-import static net.link.safeonline.beid.webapp.BeIdMountPoints.AuthenticationType.PKCS11;
 import static net.link.safeonline.beid.webapp.BeIdMountPoints.ErrorType.BAD_JAVA_VERSION;
 import static net.link.safeonline.beid.webapp.BeIdMountPoints.ErrorType.BAD_PLATFORM;
 import static net.link.safeonline.beid.webapp.BeIdMountPoints.ErrorType.NO_JAVA;
+import static net.link.safeonline.beid.webapp.BeIdMountPoints.ErrorType.PROTOCOL_VIOLATION;
 import static net.link.safeonline.beid.webapp.BeIdMountPoints.MountPoint.ERROR;
-import static net.link.safeonline.beid.webapp.BeIdMountPoints.MountPoint.AUTHENTICATION;
 
 import java.io.IOException;
 import java.util.regex.Pattern;
@@ -39,21 +38,19 @@ import org.apache.commons.logging.LogFactory;
  */
 public class JavaVersionServlet extends AbstractInjectionServlet {
 
-    private static final long  serialVersionUID                = 1L;
+    private static final long   serialVersionUID                = 1L;
 
-    private static final Log   LOG                             = LogFactory.getLog(JavaVersionServlet.class);
+    private static final Log    LOG                             = LogFactory.getLog(JavaVersionServlet.class);
 
-    public static final String TARGET_SESSION_ATTRIBUTE        = JavaVersionServlet.class.getName() + ".target";
+    private static final String TARGET15_SESSION_ATTRIBUTE      = JavaVersionServlet.class.getName() + ".target15";
 
-    public static final String TARGET15_SESSION_ATTRIBUTE      = JavaVersionServlet.class.getName() + ".target15";
+    private static final String TARGET16_SESSION_ATTRIBUTE      = JavaVersionServlet.class.getName() + ".target16";
 
-    public static final String TARGET16_SESSION_ATTRIBUTE      = JavaVersionServlet.class.getName() + ".target16";
+    private static final String PKCS11_TARGET_SESSION_ATTRIBUTE = JavaVersionServlet.class.getName() + ".pkcs11target";
 
-    public static final String PKCS11_TARGET_SESSION_ATTRIBUTE = JavaVersionServlet.class.getName() + ".pkcs11target";
+    private static final String JAVA_VERSION_REG_EXPR           = "^1\\.(5|6).*";
 
-    public static final String JAVA_VERSION_REG_EXPR           = "^1\\.(5|6).*";
-
-    public static final String JAVA_1_5_VERSION_REG_EXPR       = "^1\\.5.*";
+    private static final String JAVA_1_5_VERSION_REG_EXPR       = "^1\\.5.*";
 
 
     /**
@@ -233,12 +230,8 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
             default:
         }
 
-        String target = (String) session.getAttribute(TARGET_SESSION_ATTRIBUTE);
-        if (null == target) {
-            target = AUTHENTICATION.linkFor(PKCS11);
-        }
-        LOG.debug("redirecting to target: " + target);
-        response.sendRedirect(target);
+        LOG.error("Java Version Servlet has no redirection target set.");
+        response.sendRedirect(ERROR.linkFor(PROTOCOL_VIOLATION));
     }
 
     private boolean checkJavaVersion()

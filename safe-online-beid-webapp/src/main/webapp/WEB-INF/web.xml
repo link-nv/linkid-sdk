@@ -69,8 +69,7 @@
 	</filter-mapping>
 	<servlet>
 		<servlet-name>AuthLandingServlet</servlet-name>
-		<servlet-class>
-			net.link.safeonline.device.sdk.auth.servlet.LandingServlet</servlet-class>
+		<servlet-class>net.link.safeonline.beid.servlet.AuthLandingServlet</servlet-class>
 		<init-param>
 			<param-name>AuthenticationUrl</param-name>
 			<param-value>beid.html</param-value>
