@@ -22,6 +22,8 @@ public abstract class TemplatePage extends WicketPage {
 
     public TemplatePage() {
 
+        add(HeaderContributor.forJavaScript(TemplatePage.class, "functions.js"));
+
         // If minimal session attribute is set, add minimal.css style sheet.
         HttpSession httpSession = WicketUtil.getHttpSession(getRequest());
         Object minimalAttribute = httpSession.getAttribute(SafeOnlineAppConstants.MINIMAL_ATTRIBUTE);

@@ -70,14 +70,26 @@ public class AuthenticationProtocolManager {
 
         if (null == handlerClass)
             throw new RuntimeException("null for handler class");
+        if (isProtocolHandlerRegistered(handlerClass))
+            throw new RuntimeException("already registered a protocol handler for " + handlerClass);
+
         SupportedAuthenticationProtocol supportedAuthenticationProtocolAnnotation = handlerClass
                                                                                                 .getAnnotation(SupportedAuthenticationProtocol.class);
         if (null == supportedAuthenticationProtocolAnnotation)
             throw new RuntimeException("missing @SupportedAuthenticationProtocol on protocol handler implementation class");
         AuthenticationProtocol authenticationProtocol = supportedAuthenticationProtocolAnnotation.value();
-        if (handlerClasses.containsKey(authenticationProtocol))
-            throw new RuntimeException("already registered a protocol handler for " + authenticationProtocol);
         handlerClasses.put(authenticationProtocol, handlerClass);
+    }
+
+    /**
+     * @return <code>true</code> if the given {@link AuthenticationProtocolHandler} is already registered.
+     */
+    public static boolean isProtocolHandlerRegistered(Class<? extends AuthenticationProtocolHandler> handlerClass) {
+
+        SupportedAuthenticationProtocol supportedAuthenticationProtocolAnnotation = handlerClass
+                                                                                                .getAnnotation(SupportedAuthenticationProtocol.class);
+
+        return handlerClasses.containsKey(supportedAuthenticationProtocolAnnotation.value());
     }
 
     /**
