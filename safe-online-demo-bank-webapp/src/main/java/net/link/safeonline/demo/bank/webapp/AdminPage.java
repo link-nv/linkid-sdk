@@ -99,7 +99,6 @@ public class AdminPage extends LayoutPage {
 
                         {
                             add(new Label("bankId", item.getModelObject().getBankId()));
-                            add(new Label("name", item.getModelObject().getName()));
                         }
 
 
@@ -110,6 +109,7 @@ public class AdminPage extends LayoutPage {
                             onSubmit();
                         }
                     });
+                    item.add(new Label("name", item.getModelObject().getName()));
                 }
             });
 
