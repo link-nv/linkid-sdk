@@ -46,6 +46,7 @@ import net.link.safeonline.authentication.service.ApplicationAuthenticationServi
 import net.link.safeonline.authentication.service.DeviceAuthenticationService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
+import net.link.safeonline.authentication.service.WSAuthenticationService;
 import net.link.safeonline.device.auth.ws.DeviceAuthenticationServiceFactory;
 import net.link.safeonline.device.auth.ws.GetDeviceAuthenticationServiceFactory;
 import net.link.safeonline.model.WSSecurityConfiguration;
@@ -98,6 +99,8 @@ public class PasswordAuthenticationPortImplTest {
 
     private SamlAuthorityService             mockSamlAuthorityService;
 
+    private WSAuthenticationService          mockWSAuthenticationService;
+
     private PasswordDeviceService            mockPasswordDeviceServce;
 
     private Object[]                         mockObjects;
@@ -141,8 +144,7 @@ public class PasswordAuthenticationPortImplTest {
 
         this.jndiTestUtils = new JndiTestUtils();
         this.jndiTestUtils.setUp();
-        this.jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
-                "SafeOnline/WSSecurityConfigurationBean/local");
+        this.jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName", WSSecurityConfiguration.JNDI_BINDING);
         this.jndiTestUtils.bindComponent("java:comp/env/wsSecurityOptionalInboudSignature", false);
         this.jndiTestUtils.bindComponent("java:comp/env/wsLocation", "wsLocation");
 
@@ -152,6 +154,7 @@ public class PasswordAuthenticationPortImplTest {
         this.mockDeviceAuthenticationService = createMock(DeviceAuthenticationService.class);
         this.mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
         this.mockSamlAuthorityService = createMock(SamlAuthorityService.class);
+        this.mockWSAuthenticationService = createMock(WSAuthenticationService.class);
         this.mockPasswordDeviceServce = createMock(PasswordDeviceService.class);
 
         this.mockObjects = new Object[] { this.mockWSSecurityConfigurationService, this.mockPkiValidator,
@@ -163,6 +166,7 @@ public class PasswordAuthenticationPortImplTest {
         this.jndiTestUtils.bindComponent(DeviceAuthenticationService.JNDI_BINDING, this.mockDeviceAuthenticationService);
         this.jndiTestUtils.bindComponent(NodeAuthenticationService.JNDI_BINDING, this.mockNodeAuthenticationService);
         this.jndiTestUtils.bindComponent(SamlAuthorityService.JNDI_BINDING, this.mockSamlAuthorityService);
+        this.jndiTestUtils.bindComponent(WSAuthenticationService.JNDI_BINDING, this.mockWSAuthenticationService);
         this.jndiTestUtils.bindComponent(PasswordDeviceService.JNDI_BINDING, this.mockPasswordDeviceServce);
 
         expect(this.mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock.anyObject()))
@@ -170,6 +174,8 @@ public class PasswordAuthenticationPortImplTest {
                                                                                                                                         PkiResult.VALID);
 
         expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
+        expect(this.mockWSAuthenticationService.getAuthenticationTimeout()).andStubReturn(60 * 30);
+        replay(this.mockWSAuthenticationService);
 
         JaasTestUtils.initJaasLoginModule(DummyLoginModule.class);
 

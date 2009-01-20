@@ -14,6 +14,7 @@ import net.link.safeonline.Startable;
 import net.link.safeonline.audit.bean.AuditCleanerTaskBean;
 import net.link.safeonline.audit.bean.AuditSyslogBean;
 import net.link.safeonline.authentication.service.bean.SamlAuthorityServiceBean;
+import net.link.safeonline.authentication.service.bean.WSAuthenticationServiceBean;
 import net.link.safeonline.helpdesk.bean.HelpdeskCleanerTaskBean;
 import net.link.safeonline.helpdesk.bean.HelpdeskManagerBean;
 import net.link.safeonline.messaging.bean.EmailBean;
@@ -42,7 +43,8 @@ public class ConfigStartableBean extends AbstractConfigStartableBean {
         this.configurationBeans = new Class[] { AuditCleanerTaskBean.class, AuditSyslogBean.class, SamlAuthorityServiceBean.class,
                 WSSecurityConfigurationBean.class, HelpdeskCleanerTaskBean.class, HelpdeskManagerBean.class, EmailBean.class,
                 ClockDriftDetectorTaskBean.class, HelpdeskContactBean.class, HistoryCleanerTaskBean.class, IdGeneratorBean.class,
-                UsageStatisticTaskBean.class, NotificationMessageQueueTaskBean.class, TaskHistoryCleanerTaskBean.class };
+                UsageStatisticTaskBean.class, NotificationMessageQueueTaskBean.class, TaskHistoryCleanerTaskBean.class,
+                WSAuthenticationServiceBean.class };
 
     }
 

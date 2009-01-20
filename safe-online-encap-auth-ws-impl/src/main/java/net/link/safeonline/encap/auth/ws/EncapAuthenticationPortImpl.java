@@ -24,6 +24,7 @@ import net.link.safeonline.authentication.exception.MobileAuthenticationExceptio
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
+import net.link.safeonline.authentication.service.WSAuthenticationService;
 import net.link.safeonline.device.auth.ws.util.DeviceAuthenticationPortUtil;
 import net.link.safeonline.model.encap.EncapConstants;
 import net.link.safeonline.model.encap.EncapDeviceService;
@@ -73,9 +74,10 @@ public class EncapAuthenticationPortImpl implements DeviceAuthenticationPort {
 
     public EncapAuthenticationPortImpl() {
 
-        // XXX: make this configurable ..., time is in ms
         if (null != manager) {
-            manager.setTimeout(1000 * 60 * 30, new TimeoutCallback());
+            WSAuthenticationService wsAuthenticationService = EjbUtils.getEJB(WSAuthenticationService.JNDI_BINDING,
+                    WSAuthenticationService.class);
+            manager.setTimeout(1000 * wsAuthenticationService.getAuthenticationTimeout(), new TimeoutCallback());
         }
     }
 

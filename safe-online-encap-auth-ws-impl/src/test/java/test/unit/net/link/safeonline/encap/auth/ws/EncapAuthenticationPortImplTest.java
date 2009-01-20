@@ -50,6 +50,7 @@ import net.link.safeonline.authentication.service.ApplicationAuthenticationServi
 import net.link.safeonline.authentication.service.DeviceAuthenticationService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
+import net.link.safeonline.authentication.service.WSAuthenticationService;
 import net.link.safeonline.device.auth.ws.DeviceAuthenticationServiceFactory;
 import net.link.safeonline.device.auth.ws.GetDeviceAuthenticationServiceFactory;
 import net.link.safeonline.encap.auth.ws.EncapAuthenticationPortImpl;
@@ -102,6 +103,8 @@ public class EncapAuthenticationPortImplTest {
     private NodeAuthenticationService        mockNodeAuthenticationService;
 
     private SamlAuthorityService             mockSamlAuthorityService;
+
+    private WSAuthenticationService          mockWSAuthenticationService;
 
     private EncapDeviceService               mockEncapDeviceServce;
 
@@ -156,6 +159,7 @@ public class EncapAuthenticationPortImplTest {
         this.mockDeviceAuthenticationService = createMock(DeviceAuthenticationService.class);
         this.mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
         this.mockSamlAuthorityService = createMock(SamlAuthorityService.class);
+        this.mockWSAuthenticationService = createMock(WSAuthenticationService.class);
         this.mockEncapDeviceServce = createMock(EncapDeviceService.class);
 
         this.mockObjects = new Object[] { this.mockWSSecurityConfigurationService, this.mockPkiValidator,
@@ -167,12 +171,15 @@ public class EncapAuthenticationPortImplTest {
         this.jndiTestUtils.bindComponent(DeviceAuthenticationService.JNDI_BINDING, this.mockDeviceAuthenticationService);
         this.jndiTestUtils.bindComponent(NodeAuthenticationService.JNDI_BINDING, this.mockNodeAuthenticationService);
         this.jndiTestUtils.bindComponent(SamlAuthorityService.JNDI_BINDING, this.mockSamlAuthorityService);
+        this.jndiTestUtils.bindComponent(WSAuthenticationService.JNDI_BINDING, this.mockWSAuthenticationService);
         this.jndiTestUtils.bindComponent(EncapDeviceService.JNDI_BINDING, this.mockEncapDeviceServce);
 
         expect(this.mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock.anyObject()))
                                                                                                                                 .andStubReturn(
                                                                                                                                         PkiResult.VALID);
         expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
+        expect(this.mockWSAuthenticationService.getAuthenticationTimeout()).andStubReturn(60 * 30);
+        replay(this.mockWSAuthenticationService);
 
         JaasTestUtils.initJaasLoginModule(DummyLoginModule.class);
 

@@ -72,6 +72,7 @@ import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UsageAgreementService;
 import net.link.safeonline.authentication.service.UserIdMappingService;
+import net.link.safeonline.authentication.service.WSAuthenticationService;
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.DeviceClassEntity;
@@ -128,6 +129,7 @@ public class AuthenticationPortImplTest {
     private WSSecurityConfigurationService mockWSSecurityConfigurationService;
     private PkiValidator                   mockPkiValidator;
     private SamlAuthorityService           mockSamlAuthorityService;
+    private WSAuthenticationService        mockWSAuthenticationService;
     private DevicePolicyService            mockDevicePolicyService;
     private NodeAuthenticationService      mockNodeAuthenticationService;
     private NodeMappingService             mockNodeMappingService;
@@ -190,6 +192,7 @@ public class AuthenticationPortImplTest {
         this.mockWSSecurityConfigurationService = createMock(WSSecurityConfigurationService.class);
         this.mockPkiValidator = createMock(PkiValidator.class);
         this.mockSamlAuthorityService = createMock(SamlAuthorityService.class);
+        this.mockWSAuthenticationService = createMock(WSAuthenticationService.class);
         this.mockDevicePolicyService = createMock(DevicePolicyService.class);
         this.mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
         this.mockNodeMappingService = createMock(NodeMappingService.class);
@@ -206,6 +209,7 @@ public class AuthenticationPortImplTest {
         this.jndiTestUtils.bindComponent(WSSecurityConfiguration.JNDI_BINDING, this.mockWSSecurityConfigurationService);
         this.jndiTestUtils.bindComponent(PkiValidator.JNDI_BINDING, this.mockPkiValidator);
         this.jndiTestUtils.bindComponent(SamlAuthorityService.JNDI_BINDING, this.mockSamlAuthorityService);
+        this.jndiTestUtils.bindComponent(WSAuthenticationService.JNDI_BINDING, this.mockWSAuthenticationService);
         this.jndiTestUtils.bindComponent(DevicePolicyService.JNDI_BINDING, this.mockDevicePolicyService);
         this.jndiTestUtils.bindComponent(NodeAuthenticationService.JNDI_BINDING, this.mockNodeAuthenticationService);
         this.jndiTestUtils.bindComponent(NodeMappingService.JNDI_BINDING, this.mockNodeMappingService);
@@ -214,6 +218,9 @@ public class AuthenticationPortImplTest {
         this.jndiTestUtils.bindComponent(SubscriptionService.JNDI_BINDING, this.mockSubscriptionService);
         this.jndiTestUtils.bindComponent(IdentityService.JNDI_BINDING, this.mockIdentityService);
         this.jndiTestUtils.bindComponent(UserIdMappingService.JNDI_BINDING, this.mockUserIdMappingService);
+
+        expect(this.mockWSAuthenticationService.getAuthenticationTimeout()).andStubReturn(60 * 30);
+        replay(this.mockWSAuthenticationService);
 
         // Init Authentication Port
         AuthenticationPort wsPort = new AuthenticationPortImpl();

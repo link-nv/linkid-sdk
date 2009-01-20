@@ -68,6 +68,7 @@ import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UsageAgreementService;
 import net.link.safeonline.authentication.service.UserIdMappingService;
+import net.link.safeonline.authentication.service.WSAuthenticationService;
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.DeviceEntity;
@@ -164,9 +165,10 @@ public class AuthenticationPortImpl implements AuthenticationPort {
 
     public AuthenticationPortImpl() {
 
-        // XXX: make this configurable ..., time is in ms
         if (null != manager) {
-            manager.setTimeout(1000 * 60 * 30, new TimeoutCallback());
+            WSAuthenticationService wsAuthenticationService = EjbUtils.getEJB(WSAuthenticationService.JNDI_BINDING,
+                    WSAuthenticationService.class);
+            manager.setTimeout(1000 * wsAuthenticationService.getAuthenticationTimeout(), new TimeoutCallback());
         }
     }
 
