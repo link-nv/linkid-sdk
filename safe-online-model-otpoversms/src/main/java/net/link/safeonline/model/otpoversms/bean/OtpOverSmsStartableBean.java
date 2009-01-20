@@ -67,6 +67,7 @@ public class OtpOverSmsStartableBean extends AbstractInitBean {
         ResourceBundle properties = ResourceBundle.getBundle("otpoversms_config");
         String nodeName = properties.getString("olas.node.name");
         String otpOverSmsWebappName = properties.getString("otpoversms.webapp.name");
+        String otpOverSmsAuthWSPath = properties.getString("otpoversms.auth.ws.webapp.name");
 
         AttributeTypeEntity otpOverSmsMobileAttributeType = new AttributeTypeEntity(OtpOverSmsConstants.OTPOVERSMS_MOBILE_ATTRIBUTE,
                 DatatypeType.STRING, true, false);
@@ -131,9 +132,10 @@ public class OtpOverSmsStartableBean extends AbstractInitBean {
         this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(otpOverSmsDeviceAttributeType, "nl", "GSM Lite", null));
 
         this.devices.add(new Device(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID, SafeOnlineConstants.MOBILE_DEVICE_CLASS, nodeName, "/"
-                + otpOverSmsWebappName + "/auth", null, "/" + otpOverSmsWebappName + "/device", "/" + otpOverSmsWebappName + "/device", "/"
-                + otpOverSmsWebappName + "/device", "/" + otpOverSmsWebappName + "/device", "/" + otpOverSmsWebappName + "/device",
-                certificate, otpOverSmsDeviceAttributeType, otpOverSmsMobileAttributeType, otpOverSmsDeviceDisableAttributeType));
+                + otpOverSmsWebappName + "/auth", "/" + otpOverSmsAuthWSPath, "/" + otpOverSmsWebappName + "/device", "/"
+                + otpOverSmsWebappName + "/device", "/" + otpOverSmsWebappName + "/device", "/" + otpOverSmsWebappName + "/device", "/"
+                + otpOverSmsWebappName + "/device", certificate, otpOverSmsDeviceAttributeType, otpOverSmsMobileAttributeType,
+                otpOverSmsDeviceDisableAttributeType));
         this.deviceDescriptions.add(new DeviceDescription(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID, "nl", "GSM Lite"));
         this.deviceDescriptions.add(new DeviceDescription(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID, Locale.ENGLISH.getLanguage(),
                 "Mobile Lite"));

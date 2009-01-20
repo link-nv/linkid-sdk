@@ -22,6 +22,7 @@ public enum WSAuthenticationErrorCode {
     ALREADY_SUBSCRIBED("urn:net:lin-k:safe-online:ws:auth:status:AlreadySubscribed"),
     APPLICATION_NOT_FOUND("urn:net:lin-k:safe-online:ws:auth:status:ApplicationNotFound"),
     APPLICATION_IDENTITY_NOT_FOUND("urn:net:lin-k:safe-online:ws:auth:status:ApplicationIdentityNotFound"),
+    ATTRIBUTE_NOT_FOUND("urn:net:lin-k:safe-online:ws:auth:status:AttributeNotFound"),
     ATTRIBUTE_TYPE_NOT_FOUND("urn:net:lin-k:safe-online:ws:auth:status:AttributeTypeNotFound"),
     ATTRIBUTE_UNAVAILABLE("urn:net:lin-k:safe-online:ws:auth:status:AttributeUnavailable"),
     AUTHENTICATION_FAILED("urn:net:lin-k:safe-online:ws:auth:status:AuthenticationFailed"),

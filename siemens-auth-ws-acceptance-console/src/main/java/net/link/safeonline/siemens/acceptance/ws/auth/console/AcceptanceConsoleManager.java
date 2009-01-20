@@ -42,6 +42,8 @@ public class AcceptanceConsoleManager extends Observable {
 
     private AuthenticationClient            authenticationClient;
 
+    private String                          deviceName;
+
 
     public static AcceptanceConsoleManager getInstance() {
 
@@ -113,5 +115,15 @@ public class AcceptanceConsoleManager extends Observable {
             return this.keyPair.getPublic();
         }
         return null;
+    }
+
+    public void setDeviceName(String deviceName) {
+
+        this.deviceName = deviceName;
+    }
+
+    public String getDeviceName() {
+
+        return this.deviceName;
     }
 }

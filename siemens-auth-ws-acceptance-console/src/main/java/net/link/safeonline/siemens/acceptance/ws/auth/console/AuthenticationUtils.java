@@ -12,6 +12,7 @@ import java.util.Locale;
 import java.util.Observable;
 import java.util.concurrent.ExecutionException;
 
+import net.lin_k.safe_online.auth.DeviceAuthenticationInformationType;
 import net.link.safeonline.auth.ws.Confirmation;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.auth.Attribute;
@@ -79,6 +80,13 @@ public class AuthenticationUtils extends Observable {
                     if (null == get()) {
                         if (null != AuthenticationUtils.this.consoleManager.getAuthenticationClient().getAuthenticationStep()) {
                             notifyObservers(AuthenticationUtils.this.consoleManager.getAuthenticationClient().getAuthenticationStep());
+                        } else if (null != AuthenticationUtils.this.consoleManager.getAuthenticationClient()
+                                                                                  .getDeviceAuthenticationInformation()) {
+                            notifyObservers(AuthenticationUtils.this.consoleManager.getAuthenticationClient()
+                                                                                   .getDeviceAuthenticationInformation());
+                        } else {
+                            // no additional device information given but the specific device needs further authentication steps
+                            notifyObservers(new DeviceAuthenticationInformationType());
                         }
                     } else {
                         notifyObservers(get());

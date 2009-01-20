@@ -51,7 +51,13 @@ public interface OtpOverSmsDeviceService extends OtpOverSmsService {
     void requestOtp(HttpSession httpSession, String mobile)
             throws ConnectException, SafeOnlineResourceException;
 
+    OtpService requestOtp(String mobile)
+            throws ConnectException, SafeOnlineResourceException;
+
     boolean verifyOtp(HttpSession httpSession, String mobile, String otp)
+            throws SubjectNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException, DeviceDisabledException;
+
+    boolean verifyOtp(OtpService otpService, String mobile, String otp)
             throws SubjectNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException, DeviceDisabledException;
 
     boolean verifyOtp(HttpSession httpSession, String otp);

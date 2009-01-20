@@ -9,7 +9,11 @@ package net.link.safeonline.siemens.acceptance.ws.auth.console;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -25,8 +29,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
+import net.lin_k.safe_online.auth.DeviceAuthenticationInformationType;
 import net.link.safeonline.auth.ws.Confirmation;
 import net.link.safeonline.sdk.ws.auth.Attribute;
+import net.link.safeonline.siemens.acceptance.ws.auth.console.device.OtpOverSmsAuthentication;
 import net.link.safeonline.siemens.acceptance.ws.auth.console.device.PasswordAuthentication;
 
 import org.apache.commons.logging.Log;
@@ -41,15 +47,31 @@ import org.apache.commons.logging.LogFactory;
  */
 public class AcceptanceConsole extends JFrame implements Observer {
 
-    private static final long       serialVersionUID        = 1L;
+    private static final long                                                    serialVersionUID         = 1L;
 
-    static final Log                LOG                     = LogFactory.getLog(AcceptanceConsole.class);
+    static final Log                                                             LOG                      = LogFactory
+                                                                                                                      .getLog(AcceptanceConsole.class);
+
+    public static final String                                                   PASSWORD_DEVICE_NAME     = "password";
+    public static final String                                                   OTP_OVER_SMS_DEVICE_NAME = "OtpOverSms";
+
+    private static final Map<String, Class<? extends DeviceAuthenticationPanel>> devicePanelMap           = new HashMap<String, Class<? extends DeviceAuthenticationPanel>>();
+
+    static {
+        registerDevicePanel(OTP_OVER_SMS_DEVICE_NAME, OtpOverSmsAuthentication.class);
+        registerDevicePanel(PASSWORD_DEVICE_NAME, PasswordAuthentication.class);
+    }
+
+
+    private static void registerDevicePanel(String deviceName, Class<? extends DeviceAuthenticationPanel> deviceAuthenticationPanelClass) {
+
+        devicePanelMap.put(deviceName, deviceAuthenticationPanelClass);
+    }
+
 
     /*
      * Actions
      */
-    private Action                  authPasswordAction      = new AuthPasswordAction("Password ...");
-
     private Action                  setLocationAction       = new SetLocationAction("Set Location ...");
     private Action                  setApplicationAction    = new SetApplicationAction("Set Application ...");
     private Action                  generateKeyPairAction   = new GenerateKeyPairAction("Generate Keypair ...");
@@ -70,8 +92,6 @@ public class AcceptanceConsole extends JFrame implements Observer {
      * Menus
      */
     private JMenu                   authMenu                = new JMenu("OLAS WS Authentication");
-
-    private JMenuItem               passwordMenuItem        = new JMenuItem(this.authPasswordAction);
 
     private JMenuItem               setApplicationMenuItem  = new JMenuItem(this.setApplicationAction);
     private JMenuItem               setLocationMenuItem     = new JMenuItem(this.setLocationAction);
@@ -110,7 +130,8 @@ public class AcceptanceConsole extends JFrame implements Observer {
 
         this.authMenu.setMnemonic(KeyEvent.VK_A);
 
-        this.authMenu.add(this.passwordMenuItem);
+        this.authMenu.add(new AuthenticationAction(PASSWORD_DEVICE_NAME));
+        this.authMenu.add(new AuthenticationAction(OTP_OVER_SMS_DEVICE_NAME));
         this.authMenu.addSeparator();
         this.authMenu.add(this.setLocationMenuItem);
         this.authMenu.add(this.setApplicationMenuItem);
@@ -163,11 +184,12 @@ public class AcceptanceConsole extends JFrame implements Observer {
 
     public void login(String deviceName, Object deviceCredentials) {
 
+        this.consoleManager.setDeviceName(deviceName);
+
         this.contentPanel = new LoginPanel(this, "Authenticating ...");
         this.splitPane.setTopComponent(this.contentPanel);
 
         AuthenticationUtils.getInstance().authenticate(deviceName, deviceCredentials);
-
     }
 
     public void requestGlobalUsageAgreement() {
@@ -242,10 +264,53 @@ public class AcceptanceConsole extends JFrame implements Observer {
 
     }
 
-    protected void onAuthPassword() {
+    protected void onAuthenticate(String deviceName) {
 
         resetAuthentication();
-        this.contentPanel = new PasswordAuthentication(this);
+
+        try {
+            Class<? extends DeviceAuthenticationPanel> devicePanelClass = devicePanelMap.get(deviceName);
+            Constructor<? extends DeviceAuthenticationPanel> constructor = devicePanelClass.getConstructor(new Class[] { String.class,
+                    AcceptanceConsole.class });
+            this.contentPanel = constructor.newInstance(deviceName, this);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException(e);
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (SecurityException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+
+        this.splitPane.setTopComponent(this.contentPanel);
+    }
+
+    protected void onAuthenticateFurther(DeviceAuthenticationInformationType deviceAuthenticationInformation) {
+
+        try {
+            Class<? extends DeviceAuthenticationPanel> devicePanelClass = devicePanelMap.get(this.consoleManager.getDeviceName());
+            Constructor<? extends DeviceAuthenticationPanel> constructor = devicePanelClass.getConstructor(new Class[] { String.class,
+                    AcceptanceConsole.class, DeviceAuthenticationInformationType.class });
+            this.contentPanel = constructor.newInstance(this.consoleManager.getDeviceName(), this, deviceAuthenticationInformation);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException(e);
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (SecurityException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+
         this.splitPane.setTopComponent(this.contentPanel);
     }
 
@@ -295,21 +360,24 @@ public class AcceptanceConsole extends JFrame implements Observer {
      * 
      * Action classes
      */
-    public class AuthPasswordAction extends AbstractAction {
+    public class AuthenticationAction extends AbstractAction {
 
         private static final long serialVersionUID = 1L;
 
+        private String            deviceName;
 
-        public AuthPasswordAction(String name) {
 
-            putValue(NAME, name);
-            putValue(SHORT_DESCRIPTION, name);
-            putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_P));
+        public AuthenticationAction(String deviceName) {
+
+            this.deviceName = deviceName;
+            putValue(NAME, "Authenticate " + this.deviceName);
+            putValue(SHORT_DESCRIPTION, "OLAS WS Authentication using device " + this.deviceName);
+            putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_O));
         }
 
         public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
-            onAuthPassword();
+            onAuthenticate(this.deviceName);
         }
     }
 

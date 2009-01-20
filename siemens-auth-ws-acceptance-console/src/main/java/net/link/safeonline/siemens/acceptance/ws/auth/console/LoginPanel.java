@@ -23,6 +23,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
+import net.lin_k.safe_online.auth.DeviceAuthenticationInformationType;
 import net.link.safeonline.auth.ws.AuthenticationStep;
 
 
@@ -125,6 +126,9 @@ public class LoginPanel extends JPanel implements Observer {
             } else {
                 this.infoLabel.setText("Additional authentication step: " + authenticationStep.getValue());
             }
+        } else if (arg instanceof DeviceAuthenticationInformationType) {
+            DeviceAuthenticationInformationType deviceAuthenticationInformation = (DeviceAuthenticationInformationType) arg;
+            this.parent.onAuthenticateFurther(deviceAuthenticationInformation);
         } else if (arg instanceof String) {
             // success
             this.infoLabel.setText("Successfully authenticated user " + (String) arg);
