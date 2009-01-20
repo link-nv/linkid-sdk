@@ -65,12 +65,11 @@ public class ApplicationLogoServlet extends AbstractInjectionServlet {
 
         boolean logoWritten = false;
         String applicationName = request.getParameter("applicationName");
-        if (null == applicationName) {
+        if (null == applicationName)
             throw new IllegalArgumentException("The application name must be provided.");
-        }
 
         try {
-            PublicApplication application = this.publicApplicationService.findPublicApplication(applicationName);
+            PublicApplication application = publicApplicationService.findPublicApplication(applicationName);
             if (application == null) {
                 LOG.debug("No application found by name of " + applicationName);
                 return;
@@ -89,10 +88,9 @@ public class ApplicationLogoServlet extends AbstractInjectionServlet {
             // don't show the logo; it is probably malicious code.
             String noMime = request.getParameter("nomime");
             if (!mime.startsWith("image/"))
-                if (noMime == null) {
+                if (noMime == null)
                     throw new IllegalStateException("Application logo for " + applicationName + " is not an image (it is " + mime
                             + "); refusing to show.");
-                }
 
             response.setContentType(magic.getMimeType());
             response.getOutputStream().write(logo);

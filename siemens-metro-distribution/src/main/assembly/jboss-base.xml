@@ -1,0 +1,139 @@
+<?xml version="1.0"?>
+<assembly xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/assembly-1.0.0.xsd">
+
+
+	<!-- ================== -->
+	<!-- BASE CONFIGURATION -->
+	<!-- ================== -->
+
+	<files>
+
+		<!--
+			Link's HTTPS certificate -> /jboss/server/default/conf
+		-->
+		<file>
+			<source>target/files/ssl.jks</source>
+			<outputDirectory>jboss/server/default/conf
+			</outputDirectory>
+		</file>
+
+		<!--
+			jaxws-rt.jar needs to be in /jboss/server/default/lib
+		 -->
+		<file>
+			<source>
+				target/files/jboss423/server/default/deploy/jbossws.sar/jaxws-rt.jar
+			</source>
+			<outputDirectory>jboss/server/default/lib
+			</outputDirectory>
+		</file>
+
+	</files>
+
+	<fileSets>
+
+		<fileSet>
+			<directory>target/files/jboss-4.2.3.GA
+			</directory>
+			<outputDirectory>jboss</outputDirectory>
+			<excludes>
+				<exclude>server/all/**</exclude>
+				<exclude>server/minimal/**</exclude>
+				<exclude>docs/**</exclude>
+				<!--  Following excludes for JBossWS Metro WS Stack -->
+				<exclude>client/FastInfoset.jar</exclude>
+				<exclude>client/jboss-jaxrpc.jar</exclude>
+				<exclude>client/jboss-jaxws-ext.jar
+				</exclude>
+				<exclude>client/jboss-jaxws.jar</exclude>
+				<exclude>client/jboss-saaj.jar</exclude>
+				<exclude>client/jbossws-client.jar
+				</exclude>
+				<exclude>client/jbossws-jboss42.jar
+				</exclude>
+				<exclude>client/jettison.jar</exclude>
+				<exclude>client/policy.jar</exclude>
+				<exclude>lib/jaxb-api.jar</exclude>
+				<exclude>lib/jaxb-impl.jar</exclude>
+				<exclude>
+					server/default/deploy/jbossws.sar/META-INF/standard-jaxrpc-client-config.xml
+				</exclude>
+				<exclude>
+					server/default/deploy/jbossws.sar/META-INF/standard-jaxrpc-endpoint-config.xml
+				</exclude>
+				<exclude>
+					server/default/deploy/jbossws.sar/META-INF/standard-jaxws-client-config.xml
+				</exclude>
+				<exclude>
+					server/default/deploy/jbossws.sar/META-INF/standard-jaxws-endpoint-config.xml
+				</exclude>
+				<exclude>server/default/deploy/jbossws.sar/jboss-jaxb-intros.jar
+				</exclude>
+				<exclude>server/default/deploy/jbossws.sar/jbossws-context.war/**
+				</exclude>
+				<exclude>server/default/deploy/jbossws.sar/jbossws-core.jar
+				</exclude>
+				<exclude>server/default/deploy/jbossws.sar/jettison.jar
+				</exclude>
+				<exclude>server/default/deploy/jbossws.sar/policy.jar
+				</exclude>
+				<exclude>server/default/lib/jboss-jaxrpc.jar
+				</exclude>
+				<exclude>server/default/lib/jboss-jaxws-ext.jar
+				</exclude>
+				<exclude>server/default/lib/jboss-jaxws.jar
+				</exclude>
+				<exclude>server/default/lib/jboss-saaj.jar
+				</exclude>
+				<exclude>server/default/lib/jbossws-jboss42.jar
+				</exclude>
+			</excludes>
+		</fileSet>
+
+		<fileSet>
+			<directory>target/files/jboss-4.2.3.GA
+			</directory>
+			<outputDirectory>jboss</outputDirectory>
+			<includes>
+				<include>bin/run.sh</include>
+				<include>bin/shutdown.sh</include>
+			</includes>
+			<fileMode>0500</fileMode>
+		</fileSet>
+
+
+		<!--
+			External JBossWS Metro WS Stack
+		-->
+		<fileSet>
+			<directory>target/files/jboss423
+			</directory>
+			<outputDirectory>jboss</outputDirectory>
+		</fileSet>
+
+		<!--
+			This artifact's EAR dependencies -> /jboss/server/default/lib
+		-->
+		<fileSet>
+			<directory>target/deploy</directory>
+			<outputDirectory>jboss/server/default/deploy
+			</outputDirectory>
+		</fileSet>
+
+		<!--
+			This artifact's non-EAR dependencies -> jboss/server/default/lib
+		-->
+		<fileSet>
+			<directory>target/dependency</directory>
+			<outputDirectory>jboss/server/default/lib
+			</outputDirectory>
+		</fileSet>
+
+	</fileSets>
+
+	<formats>
+		<format>zip</format>
+	</formats>
+
+</assembly>

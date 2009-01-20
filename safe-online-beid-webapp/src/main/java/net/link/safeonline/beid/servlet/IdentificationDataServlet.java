@@ -116,23 +116,23 @@ public class IdentificationDataServlet extends AbstractInjectionServlet {
 
     private void invoke(@SuppressWarnings("unused") HttpServletRequest request, @SuppressWarnings("unused") HttpServletResponse response) {
 
-        LOG.debug("name: " + this.name);
-        LOG.debug("first name: " + this.firstName);
-        LOG.debug("dob: " + this.dob);
-        LOG.debug("nationality: " + this.nationality);
-        LOG.debug("sex: " + this.sex);
-        LOG.debug("street: " + this.street);
-        LOG.debug("city: " + this.city);
-        LOG.debug("zip: " + this.zip);
+        LOG.debug("name: " + name);
+        LOG.debug("first name: " + firstName);
+        LOG.debug("dob: " + dob);
+        LOG.debug("nationality: " + nationality);
+        LOG.debug("sex: " + sex);
+        LOG.debug("street: " + street);
+        LOG.debug("city: " + city);
+        LOG.debug("zip: " + zip);
 
-        this.hashedNationalNumber = DigestUtils.shaHex(this.nationalNumber + NATIONAL_NUMBER_SEED);
-        LOG.debug("hashed national number: " + this.hashedNationalNumber);
+        hashedNationalNumber = DigestUtils.shaHex(nationalNumber + NATIONAL_NUMBER_SEED);
+        LOG.debug("hashed national number: " + hashedNationalNumber);
 
-        int digitIdx = getFirstDigitIndex(this.street);
-        this.outStreet = this.street.substring(0, digitIdx).trim();
-        this.houseNumber = this.street.substring(digitIdx);
-        LOG.debug("street: " + this.outStreet);
-        LOG.debug("house number: " + this.houseNumber);
+        int digitIdx = getFirstDigitIndex(street);
+        outStreet = street.substring(0, digitIdx).trim();
+        houseNumber = street.substring(digitIdx);
+        LOG.debug("street: " + outStreet);
+        LOG.debug("house number: " + houseNumber);
     }
 
     private int getFirstDigitIndex(String str) {

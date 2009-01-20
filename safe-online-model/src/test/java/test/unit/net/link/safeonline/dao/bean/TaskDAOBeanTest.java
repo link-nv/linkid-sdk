@@ -30,36 +30,36 @@ public class TaskDAOBeanTest extends TestCase {
             throws Exception {
 
         super.setUp();
-        this.entityTestManager = new EntityTestManager();
+        entityTestManager = new EntityTestManager();
         /*
          * If you add entities to this list, also add them to safe-online-sql-ddl.
          */
-        this.entityTestManager.setUp(TaskEntity.class, SchedulingEntity.class, TaskHistoryEntity.class);
+        entityTestManager.setUp(TaskEntity.class, SchedulingEntity.class, TaskHistoryEntity.class);
 
-        this.testedInstance = new TaskDAOBean();
+        testedInstance = new TaskDAOBean();
 
-        EJBTestUtils.inject(this.testedInstance, this.entityTestManager.getEntityManager());
-        EJBTestUtils.init(this.testedInstance);
+        EJBTestUtils.inject(testedInstance, entityTestManager.getEntityManager());
+        EJBTestUtils.init(testedInstance);
     }
 
     @Override
     protected void tearDown()
             throws Exception {
 
-        this.entityTestManager.tearDown();
+        entityTestManager.tearDown();
         super.tearDown();
     }
 
     public void testTaskDAO() {
 
-        TaskEntity taskEntity = this.testedInstance.addTaskEntity("testTask", "Test Task", null);
+        TaskEntity taskEntity = testedInstance.addTaskEntity("testTask", "Test Task", null);
         assertNotNull(taskEntity);
-        TaskEntity resultEntity = this.testedInstance.findTaskEntity("testTask");
+        TaskEntity resultEntity = testedInstance.findTaskEntity("testTask");
         assertEquals(taskEntity, resultEntity);
-        List<TaskEntity> taskEntities = this.testedInstance.listTaskEntities();
+        List<TaskEntity> taskEntities = testedInstance.listTaskEntities();
         assertEquals(taskEntity, taskEntities.get(0));
-        this.testedInstance.removeTaskEntity(taskEntity);
-        taskEntity = this.testedInstance.findTaskEntity("testTask");
+        testedInstance.removeTaskEntity(taskEntity);
+        taskEntity = testedInstance.findTaskEntity("testTask");
         assertNull(taskEntity);
     }
 

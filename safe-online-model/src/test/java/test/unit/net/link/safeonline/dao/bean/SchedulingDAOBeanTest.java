@@ -30,36 +30,36 @@ public class SchedulingDAOBeanTest extends TestCase {
             throws Exception {
 
         super.setUp();
-        this.entityTestManager = new EntityTestManager();
+        entityTestManager = new EntityTestManager();
         /*
          * If you add entities to this list, also add them to safe-online-sql-ddl.
          */
-        this.entityTestManager.setUp(TaskEntity.class, SchedulingEntity.class, TaskHistoryEntity.class);
+        entityTestManager.setUp(TaskEntity.class, SchedulingEntity.class, TaskHistoryEntity.class);
 
-        this.testedInstance = new SchedulingDAOBean();
+        testedInstance = new SchedulingDAOBean();
 
-        EJBTestUtils.inject(this.testedInstance, this.entityTestManager.getEntityManager());
+        EJBTestUtils.inject(testedInstance, entityTestManager.getEntityManager());
 
-        EJBTestUtils.init(this.testedInstance);
+        EJBTestUtils.init(testedInstance);
     }
 
     @Override
     protected void tearDown()
             throws Exception {
 
-        this.entityTestManager.tearDown();
+        entityTestManager.tearDown();
         super.tearDown();
     }
 
     public void testSchedulingDAO() {
 
-        SchedulingEntity scheduling = this.testedInstance.addScheduling("test scheduling", "0 0 3 * * ?");
-        SchedulingEntity resultScheduling = this.testedInstance.findSchedulingByName("test scheduling");
+        SchedulingEntity scheduling = testedInstance.addScheduling("test scheduling", "0 0 3 * * ?");
+        SchedulingEntity resultScheduling = testedInstance.findSchedulingByName("test scheduling");
         assertEquals(scheduling, resultScheduling);
-        List<SchedulingEntity> schedulingEntities = this.testedInstance.listSchedulings();
+        List<SchedulingEntity> schedulingEntities = testedInstance.listSchedulings();
         assertEquals(scheduling, schedulingEntities.get(0));
-        this.testedInstance.removeScheduling("test scheduling");
-        resultScheduling = this.testedInstance.findSchedulingByName("test scheduling");
+        testedInstance.removeScheduling("test scheduling");
+        resultScheduling = testedInstance.findSchedulingByName("test scheduling");
         assertNull(resultScheduling);
     }
 

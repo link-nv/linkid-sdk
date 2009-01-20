@@ -22,22 +22,22 @@ public class DemoPaymentSearchResult extends Page {
 
     public void setJunior(boolean junior) {
 
-        this.setCheckBox("junior", junior);
+        setCheckBox("junior", junior);
     }
 
     public boolean getJunior() {
 
-        return this.isCheckedCheckBox("junior");
+        return isCheckedCheckBox("junior");
     }
 
     public void setPaymentAdmin(boolean admin) {
 
-        this.setCheckBox("paymentadmin", admin);
+        setCheckBox("paymentadmin", admin);
     }
 
     public boolean getPaymentAdmin() {
 
-        return this.isCheckedCheckBox("paymentadmin");
+        return isCheckedCheckBox("paymentadmin");
     }
 
     public void save() {

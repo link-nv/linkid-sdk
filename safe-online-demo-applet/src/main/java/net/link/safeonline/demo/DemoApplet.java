@@ -25,7 +25,7 @@ public class DemoApplet extends JApplet {
 
         outputArea.append("Hello World\n");
 
-        String sessionId = this.getParameter("sessionid");
+        String sessionId = getParameter("sessionid");
         outputArea.append("session id: " + sessionId + "\n");
 
     }

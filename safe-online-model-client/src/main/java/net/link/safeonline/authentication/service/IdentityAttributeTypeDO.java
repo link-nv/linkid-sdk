@@ -57,7 +57,7 @@ public class IdentityAttributeTypeDO implements Serializable {
      */
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -71,12 +71,12 @@ public class IdentityAttributeTypeDO implements Serializable {
      */
     public boolean isRequired() {
 
-        return this.required;
+        return required;
     }
 
     public void setRequired(boolean editable) {
 
-        this.required = editable;
+        required = editable;
     }
 
     /**
@@ -85,7 +85,7 @@ public class IdentityAttributeTypeDO implements Serializable {
      */
     public boolean isDataMining() {
 
-        return this.dataMining;
+        return dataMining;
     }
 
     public void setDataMining(boolean dataMining) {

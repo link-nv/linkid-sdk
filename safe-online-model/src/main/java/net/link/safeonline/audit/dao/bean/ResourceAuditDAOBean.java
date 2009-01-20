@@ -41,7 +41,7 @@ public class ResourceAuditDAOBean implements ResourceAuditDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, ResourceAuditEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, ResourceAuditEntity.QueryInterface.class);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -49,32 +49,32 @@ public class ResourceAuditDAOBean implements ResourceAuditDAO {
                                  String sourceComponent, String message) {
 
         ResourceAuditEntity resourceAudit = new ResourceAuditEntity(auditContext, resourceName, resourceLevel, sourceComponent, message);
-        this.entityManager.persist(resourceAudit);
+        entityManager.persist(resourceAudit);
     }
 
     public void cleanup(Long id) {
 
-        this.queryObject.deleteRecords(id);
+        queryObject.deleteRecords(id);
     }
 
     public List<ResourceAuditEntity> listRecords(Long id) {
 
-        return this.queryObject.listRecords(id);
+        return queryObject.listRecords(id);
     }
 
     public List<ResourceAuditEntity> listRecordsSince(Date ageLimit) {
 
-        return this.queryObject.listRecordsSince(ageLimit);
+        return queryObject.listRecordsSince(ageLimit);
     }
 
     public List<ResourceAuditEntity> listRecords() {
 
-        return this.queryObject.listRecords();
+        return queryObject.listRecords();
     }
 
     public boolean hasRecords(long id) {
 
-        long count = this.queryObject.countRecords(id);
+        long count = queryObject.countRecords(id);
 
         return 0 != count;
     }

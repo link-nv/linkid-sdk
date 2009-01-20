@@ -78,13 +78,13 @@ public class RegisterPage extends TemplatePage {
 
             super(id);
 
-            final TextField<String> loginField = new TextField<String>(LOGIN_FIELD_ID, this.login = new Model<String>());
+            final TextField<String> loginField = new TextField<String>(LOGIN_FIELD_ID, login = new Model<String>());
             loginField.setRequired(true);
 
             add(loginField);
             add(new ErrorComponentFeedbackLabel("login_feedback", loginField));
 
-            final TextField serialNumberField = new TextField(SERIALNUMBER_FIELD_ID, this.serialNumber = new Model<String>());
+            final TextField serialNumberField = new TextField(SERIALNUMBER_FIELD_ID, serialNumber = new Model<String>());
             serialNumberField.setRequired(true);
             serialNumberField.add(StringValidator.lengthBetween(8, 12));
 
@@ -99,11 +99,11 @@ public class RegisterPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    RegisterPage.LOG.debug("register digipas with sn=" + RegisterForm.this.serialNumber + " for user: "
-                            + RegisterForm.this.login);
+                    RegisterPage.LOG.debug("register digipas with sn=" + serialNumber + " for user: "
+                            + login);
 
                     try {
-                        RegisterPage.this.encapDeviceService.register(getUserId(), RegisterForm.this.serialNumber.getObject());
+                        encapDeviceService.register(getUserId(), serialNumber.getObject());
                     } catch (SubjectNotFoundException e) {
                         LOG.debug("subject not found");
                         loginField.error(getLocalizer().getString("errorSubjectNotFound", this));
@@ -153,9 +153,9 @@ public class RegisterPage extends TemplatePage {
 
             String userId;
             try {
-                userId = idMappingClient.getUserId(this.login.getObject());
+                userId = idMappingClient.getUserId(login.getObject());
             } catch (net.link.safeonline.sdk.exception.SubjectNotFoundException e) {
-                LOG.error("subject not found: " + this.login);
+                LOG.error("subject not found: " + login);
                 throw new SubjectNotFoundException();
             } catch (RequestDeniedException e) {
                 LOG.error("request denied: " + e.getMessage());

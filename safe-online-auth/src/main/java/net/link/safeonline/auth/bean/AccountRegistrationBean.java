@@ -78,12 +78,12 @@ public class AccountRegistrationBean extends AbstractLoginBean implements Accoun
     @Destroy
     public void destroyCallback() {
 
-        this.log.debug("destroy");
+        log.debug("destroy");
     }
 
     public String getLogin() {
 
-        return this.login;
+        return login;
     }
 
     public void setLogin(String login) {
@@ -98,46 +98,46 @@ public class AccountRegistrationBean extends AbstractLoginBean implements Accoun
     public String loginNext()
             throws ExistingUserException, AttributeTypeNotFoundException, PermissionDeniedException, AttributeUnavailableException {
 
-        this.log.debug("loginNext");
+        log.debug("loginNext");
 
-        HelpdeskLogger.add("account creation: login=" + this.login, LogLevelType.INFO);
+        HelpdeskLogger.add("account creation: login=" + login, LogLevelType.INFO);
 
-        this.log.debug("valid captcha: " + this.validCaptcha);
-        this.log.debug("given captcha: " + this.givenCaptcha);
+        log.debug("valid captcha: " + validCaptcha);
+        log.debug("given captcha: " + givenCaptcha);
 
-        if (null == this.validCaptcha) {
-            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorNoCaptcha");
+        if (null == validCaptcha) {
+            facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorNoCaptcha");
             return null;
         }
 
-        if (!this.validCaptcha.equals(this.givenCaptcha)) {
-            this.facesMessages.addToControlFromResourceBundle("captcha", FacesMessage.SEVERITY_ERROR, "errorInvalidCaptcha");
-            this.givenCaptcha = null;
+        if (!validCaptcha.equals(givenCaptcha)) {
+            facesMessages.addToControlFromResourceBundle("captcha", FacesMessage.SEVERITY_ERROR, "errorInvalidCaptcha");
+            givenCaptcha = null;
             return null;
         }
 
-        SubjectEntity subject = this.userRegistrationService.registerUser(this.login);
+        SubjectEntity subject = userRegistrationService.registerUser(login);
 
-        this.userId = subject.getUserId();
+        userId = subject.getUserId();
         return "next";
     }
 
     public String deviceNext()
             throws DeviceNotFoundException, IOException {
 
-        this.log.debug("deviceNext: " + this.device);
+        log.debug("deviceNext: " + device);
 
-        HelpdeskLogger.add("account creation: register device: " + this.device, LogLevelType.INFO);
+        HelpdeskLogger.add("account creation: register device: " + device, LogLevelType.INFO);
 
-        String registrationURL = this.devicePolicyService.getRegistrationURL(this.device);
+        String registrationURL = devicePolicyService.getRegistrationURL(device);
 
-        AuthenticationUtils.redirect(registrationURL, this.device, this.userId);
+        AuthenticationUtils.redirect(registrationURL, device, userId);
         return null;
     }
 
     public String getDevice() {
 
-        return this.device;
+        return device;
     }
 
     public void setDevice(String device) {
@@ -147,7 +147,7 @@ public class AccountRegistrationBean extends AbstractLoginBean implements Accoun
 
     public String getGivenCaptcha() {
 
-        return this.givenCaptcha;
+        return givenCaptcha;
     }
 
     public void setGivenCaptcha(String givenCaptcha) {
@@ -162,22 +162,22 @@ public class AccountRegistrationBean extends AbstractLoginBean implements Accoun
 
     public String getUsername() {
 
-        return this.subjectService.getSubjectLogin(this.userId);
+        return subjectService.getSubjectLogin(userId);
     }
 
     @Factory("allDevicesAccountRegistration")
     public List<SelectItem> allDevicesFactory()
             throws ApplicationNotFoundException, EmptyDevicePolicyException {
 
-        this.log.debug("all devices factory");
+        log.debug("all devices factory");
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();
         List<SelectItem> allDevices = new LinkedList<SelectItem>();
 
-        List<DeviceEntity> devices = this.devicePolicyService.getDevices();
+        List<DeviceEntity> devices = devicePolicyService.getDevices();
 
         for (DeviceEntity deviceEntity : devices) {
-            String deviceName = this.devicePolicyService.getDeviceDescription(deviceEntity.getName(), viewLocale);
+            String deviceName = devicePolicyService.getDeviceDescription(deviceEntity.getName(), viewLocale);
             SelectItem allDevice = new SelectItem(deviceEntity.getName(), deviceName);
             allDevice.setDisabled(!deviceEntity.isRegistrable());
             allDevices.add(allDevice);

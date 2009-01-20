@@ -56,7 +56,7 @@ public class CinemaSeatEntity implements Serializable {
      */
     public CinemaRoomEntity getRoom() {
 
-        return this.room;
+        return room;
     }
 
     /**
@@ -64,7 +64,7 @@ public class CinemaSeatEntity implements Serializable {
      */
     public int getX() {
 
-        return this.x;
+        return x;
     }
 
     /**
@@ -72,7 +72,7 @@ public class CinemaSeatEntity implements Serializable {
      */
     public int getY() {
 
-        return this.y;
+        return y;
     }
 
     /**
@@ -80,7 +80,7 @@ public class CinemaSeatEntity implements Serializable {
      */
     public long getId() {
 
-        return this.id;
+        return id;
     }
 
     /**
@@ -95,7 +95,7 @@ public class CinemaSeatEntity implements Serializable {
             return true;
 
         CinemaSeatEntity other = (CinemaSeatEntity) obj;
-        return this.x == other.x && this.y == other.y && this.room.getId() == other.room.getId();
+        return x == other.x && y == other.y && room.getId() == other.room.getId();
     }
 
     /**
@@ -104,6 +104,6 @@ public class CinemaSeatEntity implements Serializable {
     @Override
     public String toString() {
 
-        return String.format("{id: %d - room %d: %d, %d}", this.id, this.room.getId(), this.x, this.y);
+        return String.format("{id: %d - room %d: %d, %d}", id, room.getId(), x, y);
     }
 }

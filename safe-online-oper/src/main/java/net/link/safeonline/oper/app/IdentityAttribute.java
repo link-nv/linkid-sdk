@@ -25,7 +25,7 @@ public class IdentityAttribute implements Serializable {
 
     public boolean isDataMining() {
 
-        return this.dataMining;
+        return dataMining;
     }
 
     public void setDataMining(boolean dataMining) {
@@ -36,8 +36,8 @@ public class IdentityAttribute implements Serializable {
     public IdentityAttribute(String name) {
 
         this.name = name;
-        this.included = false;
-        this.required = false;
+        included = false;
+        required = false;
     }
 
     public IdentityAttribute(String name, boolean included, boolean required, boolean dataMining) {
@@ -50,7 +50,7 @@ public class IdentityAttribute implements Serializable {
 
     public boolean isIncluded() {
 
-        return this.included;
+        return included;
     }
 
     public void setIncluded(boolean included) {
@@ -60,7 +60,7 @@ public class IdentityAttribute implements Serializable {
 
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -70,7 +70,7 @@ public class IdentityAttribute implements Serializable {
 
     public boolean isRequired() {
 
-        return this.required;
+        return required;
     }
 
     public void setRequired(boolean required) {

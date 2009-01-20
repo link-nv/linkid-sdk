@@ -91,7 +91,7 @@ public class DeviceClassBean implements DeviceClass {
     public void deviceClassListFactory() {
 
         LOG.debug("device class list factory");
-        this.deviceClassList = this.deviceService.listDeviceClasses();
+        deviceClassList = deviceService.listDeviceClasses();
     }
 
     /*
@@ -100,13 +100,13 @@ public class DeviceClassBean implements DeviceClass {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String add() {
 
-        LOG.debug("add device class: " + this.name);
+        LOG.debug("add device class: " + name);
         try {
-            this.deviceService.addDeviceClass(this.name, this.authenticationContextClass);
+            deviceService.addDeviceClass(name, authenticationContextClass);
         } catch (ExistingDeviceClassException e) {
-            LOG.debug("device class already exists: " + this.name);
-            this.facesMessages.addToControlFromResourceBundle("name", FacesMessage.SEVERITY_ERROR, "errorDeviceClassAlreadyExists",
-                    this.name);
+            LOG.debug("device class already exists: " + name);
+            facesMessages.addToControlFromResourceBundle("name", FacesMessage.SEVERITY_ERROR, "errorDeviceClassAlreadyExists",
+                    name);
             return null;
         }
         return "success";
@@ -115,12 +115,12 @@ public class DeviceClassBean implements DeviceClass {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String remove() {
 
-        LOG.debug("remove device class: " + this.selectedDeviceClass.getName());
+        LOG.debug("remove device class: " + selectedDeviceClass.getName());
         try {
-            this.deviceService.removeDeviceClass(this.selectedDeviceClass.getName());
+            deviceService.removeDeviceClass(selectedDeviceClass.getName());
         } catch (PermissionDeniedException e) {
             LOG.debug("permission denied: " + e.getMessage());
-            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), e.getResourceArgs());
+            facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), e.getResourceArgs());
             return null;
         }
         deviceClassListFactory();
@@ -130,15 +130,15 @@ public class DeviceClassBean implements DeviceClass {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String view() {
 
-        LOG.debug("view device class: " + this.selectedDeviceClass.getName());
+        LOG.debug("view device class: " + selectedDeviceClass.getName());
         return "view";
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String edit() {
 
-        LOG.debug("edit device class: " + this.selectedDeviceClass.getName());
-        this.authenticationContextClass = this.selectedDeviceClass.getAuthenticationContextClass();
+        LOG.debug("edit device class: " + selectedDeviceClass.getName());
+        authenticationContextClass = selectedDeviceClass.getAuthenticationContextClass();
         return "edit";
     }
 
@@ -146,10 +146,10 @@ public class DeviceClassBean implements DeviceClass {
     public String save()
             throws DeviceClassNotFoundException {
 
-        LOG.debug("save device class: " + this.selectedDeviceClass.getName());
-        String deviceClassName = this.selectedDeviceClass.getName();
-        this.deviceService.updateAuthenticationContextClass(deviceClassName, this.authenticationContextClass);
-        this.selectedDeviceClass = this.deviceService.getDeviceClass(deviceClassName);
+        LOG.debug("save device class: " + selectedDeviceClass.getName());
+        String deviceClassName = selectedDeviceClass.getName();
+        deviceService.updateAuthenticationContextClass(deviceClassName, authenticationContextClass);
+        selectedDeviceClass = deviceService.getDeviceClass(deviceClassName);
         return "success";
     }
 
@@ -159,7 +159,7 @@ public class DeviceClassBean implements DeviceClass {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -171,7 +171,7 @@ public class DeviceClassBean implements DeviceClass {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getAuthenticationContextClass() {
 
-        return this.authenticationContextClass;
+        return authenticationContextClass;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)

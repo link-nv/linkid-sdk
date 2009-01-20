@@ -53,15 +53,15 @@ public class EnablePageTest extends TestCase {
 
         WicketUtil.setUnitTesting(true);
 
-        this.jndiTestUtils = new JndiTestUtils();
-        this.jndiTestUtils.setUp();
+        jndiTestUtils = new JndiTestUtils();
+        jndiTestUtils.setUp();
 
-        this.mockOtpOverSmsDeviceService = createMock(OtpOverSmsDeviceService.class);
-        this.mockSamlAuthorityService = createMock(SamlAuthorityService.class);
-        this.mockHelpdeskManager = createMock(HelpdeskManager.class);
-        this.mockSecurityAuditLogger = createMock(SecurityAuditLogger.class);
+        mockOtpOverSmsDeviceService = createMock(OtpOverSmsDeviceService.class);
+        mockSamlAuthorityService = createMock(SamlAuthorityService.class);
+        mockHelpdeskManager = createMock(HelpdeskManager.class);
+        mockSecurityAuditLogger = createMock(SecurityAuditLogger.class);
 
-        this.wicket = new WicketTester(new OtpOverSmsTestApplication());
+        wicket = new WicketTester(new OtpOverSmsTestApplication());
 
     }
 
@@ -70,7 +70,7 @@ public class EnablePageTest extends TestCase {
     public void tearDown()
             throws Exception {
 
-        this.jndiTestUtils.tearDown();
+        jndiTestUtils.tearDown();
     }
 
     @Test
@@ -83,57 +83,57 @@ public class EnablePageTest extends TestCase {
         String otp = UUID.randomUUID().toString();
         String pin = "0000";
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(this.wicket.getServletSession());
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setSubject(userId);
         protocolContext.setAttribute(mobile);
 
         // verify
-        EnablePage enablePage = (EnablePage) this.wicket.startPage(EnablePage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + EnablePage.REQUEST_OTP_FORM_ID, Form.class);
-        this.wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID);
+        EnablePage enablePage = (EnablePage) wicket.startPage(EnablePage.class);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + EnablePage.REQUEST_OTP_FORM_ID, Form.class);
+        wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID);
 
         // setup
-        EJBTestUtils.inject(enablePage, this.mockOtpOverSmsDeviceService);
-        EJBTestUtils.inject(enablePage, this.mockSamlAuthorityService);
+        EJBTestUtils.inject(enablePage, mockOtpOverSmsDeviceService);
+        EJBTestUtils.inject(enablePage, mockSamlAuthorityService);
 
         // stubs
-        this.mockOtpOverSmsDeviceService.requestOtp(this.wicket.getServletSession(), mobile);
+        mockOtpOverSmsDeviceService.requestOtp(wicket.getServletSession(), mobile);
 
         // prepare
-        replay(this.mockOtpOverSmsDeviceService);
+        replay(mockOtpOverSmsDeviceService);
 
         // operate
-        FormTester requestOtpForm = this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + EnablePage.REQUEST_OTP_FORM_ID);
+        FormTester requestOtpForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + EnablePage.REQUEST_OTP_FORM_ID);
         requestOtpForm.setValue(EnablePage.MOBILE_FIELD_ID, mobile);
         requestOtpForm.submit(EnablePage.REQUEST_OTP_BUTTON_ID);
 
         // verify
-        verify(this.mockOtpOverSmsDeviceService);
+        verify(mockOtpOverSmsDeviceService);
 
         // verify
-        enablePage = (EnablePage) this.wicket.getLastRenderedPage();
-        this.wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + EnablePage.REQUEST_OTP_FORM_ID);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID, Form.class);
+        enablePage = (EnablePage) wicket.getLastRenderedPage();
+        wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + EnablePage.REQUEST_OTP_FORM_ID);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID, Form.class);
 
         // setup
-        EasyMock.reset(this.mockOtpOverSmsDeviceService);
+        EasyMock.reset(mockOtpOverSmsDeviceService);
 
         // stubs
-        expect(this.mockOtpOverSmsDeviceService.verifyOtp(this.wicket.getServletSession(), otp)).andStubReturn(true);
-        expect(this.mockOtpOverSmsDeviceService.enable(userId, mobile, pin)).andStubReturn(true);
-        expect(this.mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
+        expect(mockOtpOverSmsDeviceService.verifyOtp(wicket.getServletSession(), otp)).andStubReturn(true);
+        expect(mockOtpOverSmsDeviceService.enable(userId, mobile, pin)).andStubReturn(true);
+        expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
-        replay(this.mockOtpOverSmsDeviceService, this.mockSamlAuthorityService);
+        replay(mockOtpOverSmsDeviceService, mockSamlAuthorityService);
 
         // operate
-        FormTester enableForm = this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID);
+        FormTester enableForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID);
         enableForm.setValue(EnablePage.OTP_FIELD_ID, otp);
         enableForm.setValue(EnablePage.PIN_FIELD_ID, pin);
         enableForm.submit(EnablePage.ENABLE_BUTTON_ID);
 
         // verify
-        verify(this.mockOtpOverSmsDeviceService, this.mockSamlAuthorityService);
+        verify(mockOtpOverSmsDeviceService, mockSamlAuthorityService);
     }
 
     @Test
@@ -144,39 +144,39 @@ public class EnablePageTest extends TestCase {
         String userId = UUID.randomUUID().toString();
         String mobile = "+32494575697";
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(this.wicket.getServletSession());
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setSubject(userId);
         protocolContext.setAttribute(mobile);
 
         // verify
-        EnablePage enablePage = (EnablePage) this.wicket.startPage(EnablePage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + EnablePage.REQUEST_OTP_FORM_ID, Form.class);
-        this.wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID);
+        EnablePage enablePage = (EnablePage) wicket.startPage(EnablePage.class);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + EnablePage.REQUEST_OTP_FORM_ID, Form.class);
+        wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID);
 
         // setup
-        EJBTestUtils.inject(enablePage, this.mockOtpOverSmsDeviceService);
-        this.jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, this.mockHelpdeskManager);
-        this.jndiTestUtils.bindComponent(SecurityAuditLogger.JNDI_BINDING, this.mockSecurityAuditLogger);
+        EJBTestUtils.inject(enablePage, mockOtpOverSmsDeviceService);
+        jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
+        jndiTestUtils.bindComponent(SecurityAuditLogger.JNDI_BINDING, mockSecurityAuditLogger);
 
         // stubs
-        this.mockOtpOverSmsDeviceService.requestOtp(this.wicket.getServletSession(), mobile);
+        mockOtpOverSmsDeviceService.requestOtp(wicket.getServletSession(), mobile);
         org.easymock.EasyMock.expectLastCall().andThrow(new ConnectException());
-        expect(this.mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
+        expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
-        replay(this.mockOtpOverSmsDeviceService, this.mockHelpdeskManager, this.mockSecurityAuditLogger);
+        replay(mockOtpOverSmsDeviceService, mockHelpdeskManager, mockSecurityAuditLogger);
 
         // operate
-        FormTester requestOtpForm = this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + EnablePage.REQUEST_OTP_FORM_ID);
+        FormTester requestOtpForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + EnablePage.REQUEST_OTP_FORM_ID);
         requestOtpForm.setValue(EnablePage.MOBILE_FIELD_ID, mobile);
         requestOtpForm.submit(EnablePage.REQUEST_OTP_BUTTON_ID);
 
         // verify
-        verify(this.mockOtpOverSmsDeviceService, this.mockHelpdeskManager, this.mockSecurityAuditLogger);
+        verify(mockOtpOverSmsDeviceService, mockHelpdeskManager, mockSecurityAuditLogger);
 
         // verify
-        this.wicket.assertRenderedPage(EnablePage.class);
-        this.wicket.assertErrorMessages(new String[] { "errorServiceConnection" });
+        wicket.assertRenderedPage(EnablePage.class);
+        wicket.assertErrorMessages(new String[] { "errorServiceConnection" });
     }
 
     @Test
@@ -189,59 +189,59 @@ public class EnablePageTest extends TestCase {
         String otp = UUID.randomUUID().toString();
         String pin = "0000";
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(this.wicket.getServletSession());
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setSubject(userId);
         protocolContext.setAttribute(mobile);
 
         // verify
-        EnablePage enablePage = (EnablePage) this.wicket.startPage(EnablePage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + EnablePage.REQUEST_OTP_FORM_ID, Form.class);
-        this.wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID);
+        EnablePage enablePage = (EnablePage) wicket.startPage(EnablePage.class);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + EnablePage.REQUEST_OTP_FORM_ID, Form.class);
+        wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID);
 
         // setup
-        EJBTestUtils.inject(enablePage, this.mockOtpOverSmsDeviceService);
+        EJBTestUtils.inject(enablePage, mockOtpOverSmsDeviceService);
 
         // stubs
-        this.mockOtpOverSmsDeviceService.requestOtp(this.wicket.getServletSession(), mobile);
+        mockOtpOverSmsDeviceService.requestOtp(wicket.getServletSession(), mobile);
 
         // prepare
-        replay(this.mockOtpOverSmsDeviceService);
+        replay(mockOtpOverSmsDeviceService);
 
         // operate
-        FormTester requestOtpForm = this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + EnablePage.REQUEST_OTP_FORM_ID);
+        FormTester requestOtpForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + EnablePage.REQUEST_OTP_FORM_ID);
         requestOtpForm.setValue(EnablePage.MOBILE_FIELD_ID, mobile);
         requestOtpForm.submit(EnablePage.REQUEST_OTP_BUTTON_ID);
 
         // verify
-        verify(this.mockOtpOverSmsDeviceService);
+        verify(mockOtpOverSmsDeviceService);
 
         // verify
-        enablePage = (EnablePage) this.wicket.getLastRenderedPage();
-        this.wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + EnablePage.REQUEST_OTP_FORM_ID);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID, Form.class);
+        enablePage = (EnablePage) wicket.getLastRenderedPage();
+        wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + EnablePage.REQUEST_OTP_FORM_ID);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID, Form.class);
 
         // setup
-        EasyMock.reset(this.mockOtpOverSmsDeviceService);
-        this.jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, this.mockHelpdeskManager);
+        EasyMock.reset(mockOtpOverSmsDeviceService);
+        jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
 
         // stubs
-        expect(this.mockOtpOverSmsDeviceService.verifyOtp(this.wicket.getServletSession(), otp)).andStubReturn(false);
-        expect(this.mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
+        expect(mockOtpOverSmsDeviceService.verifyOtp(wicket.getServletSession(), otp)).andStubReturn(false);
+        expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
-        replay(this.mockOtpOverSmsDeviceService, this.mockHelpdeskManager);
+        replay(mockOtpOverSmsDeviceService, mockHelpdeskManager);
 
         // operate
-        FormTester enableForm = this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID);
+        FormTester enableForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID);
         enableForm.setValue(EnablePage.OTP_FIELD_ID, otp);
         enableForm.setValue(EnablePage.PIN_FIELD_ID, pin);
         enableForm.submit(EnablePage.ENABLE_BUTTON_ID);
 
         // verify
-        verify(this.mockOtpOverSmsDeviceService, this.mockHelpdeskManager);
+        verify(mockOtpOverSmsDeviceService, mockHelpdeskManager);
 
-        this.wicket.assertRenderedPage(EnablePage.class);
-        this.wicket.assertErrorMessages(new String[] { "authenticationFailedMsg" });
+        wicket.assertRenderedPage(EnablePage.class);
+        wicket.assertErrorMessages(new String[] { "authenticationFailedMsg" });
     }
 
     @Test
@@ -254,58 +254,58 @@ public class EnablePageTest extends TestCase {
         String otp = UUID.randomUUID().toString();
         String pin = "0000";
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(this.wicket.getServletSession());
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setSubject(userId);
         protocolContext.setAttribute(mobile);
 
         // verify
-        EnablePage enablePage = (EnablePage) this.wicket.startPage(EnablePage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + EnablePage.REQUEST_OTP_FORM_ID, Form.class);
-        this.wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID);
+        EnablePage enablePage = (EnablePage) wicket.startPage(EnablePage.class);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + EnablePage.REQUEST_OTP_FORM_ID, Form.class);
+        wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID);
 
         // setup
-        EJBTestUtils.inject(enablePage, this.mockOtpOverSmsDeviceService);
+        EJBTestUtils.inject(enablePage, mockOtpOverSmsDeviceService);
 
         // stubs
-        this.mockOtpOverSmsDeviceService.requestOtp(this.wicket.getServletSession(), mobile);
+        mockOtpOverSmsDeviceService.requestOtp(wicket.getServletSession(), mobile);
 
         // prepare
-        replay(this.mockOtpOverSmsDeviceService);
+        replay(mockOtpOverSmsDeviceService);
 
         // operate
-        FormTester requestOtpForm = this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + EnablePage.REQUEST_OTP_FORM_ID);
+        FormTester requestOtpForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + EnablePage.REQUEST_OTP_FORM_ID);
         requestOtpForm.setValue(EnablePage.MOBILE_FIELD_ID, mobile);
         requestOtpForm.submit(EnablePage.REQUEST_OTP_BUTTON_ID);
 
         // verify
-        verify(this.mockOtpOverSmsDeviceService);
+        verify(mockOtpOverSmsDeviceService);
 
         // verify
-        enablePage = (EnablePage) this.wicket.getLastRenderedPage();
-        this.wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + EnablePage.REQUEST_OTP_FORM_ID);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID, Form.class);
+        enablePage = (EnablePage) wicket.getLastRenderedPage();
+        wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + EnablePage.REQUEST_OTP_FORM_ID);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID, Form.class);
 
         // setup
-        EasyMock.reset(this.mockOtpOverSmsDeviceService);
-        this.jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, this.mockHelpdeskManager);
+        EasyMock.reset(mockOtpOverSmsDeviceService);
+        jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
 
         // stubs
-        expect(this.mockOtpOverSmsDeviceService.verifyOtp(this.wicket.getServletSession(), otp)).andStubReturn(true);
-        expect(this.mockOtpOverSmsDeviceService.enable(userId, mobile, pin)).andStubReturn(false);
-        expect(this.mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
+        expect(mockOtpOverSmsDeviceService.verifyOtp(wicket.getServletSession(), otp)).andStubReturn(true);
+        expect(mockOtpOverSmsDeviceService.enable(userId, mobile, pin)).andStubReturn(false);
+        expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
-        replay(this.mockOtpOverSmsDeviceService, this.mockHelpdeskManager);
+        replay(mockOtpOverSmsDeviceService, mockHelpdeskManager);
         // operate
-        FormTester enableForm = this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID);
+        FormTester enableForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID);
         enableForm.setValue(EnablePage.OTP_FIELD_ID, otp);
         enableForm.setValue(EnablePage.PIN_FIELD_ID, pin);
         enableForm.submit(EnablePage.ENABLE_BUTTON_ID);
 
         // verify
-        verify(this.mockOtpOverSmsDeviceService, this.mockHelpdeskManager);
+        verify(mockOtpOverSmsDeviceService, mockHelpdeskManager);
 
-        this.wicket.assertRenderedPage(EnablePage.class);
-        this.wicket.assertErrorMessages(new String[] { "errorPinNotCorrect" });
+        wicket.assertRenderedPage(EnablePage.class);
+        wicket.assertErrorMessages(new String[] { "errorPinNotCorrect" });
     }
 }

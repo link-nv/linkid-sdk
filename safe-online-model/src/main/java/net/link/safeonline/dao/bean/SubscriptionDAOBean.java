@@ -50,24 +50,24 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, SubscriptionEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, SubscriptionEntity.QueryInterface.class);
     }
 
     public SubscriptionEntity findSubscription(SubjectEntity subject, ApplicationEntity application) {
 
         LOG.debug("find subscription for: " + subject.getUserId() + " to " + application.getName());
         SubscriptionPK subscriptionPK = new SubscriptionPK(subject, application);
-        SubscriptionEntity subscription = this.entityManager.find(SubscriptionEntity.class, subscriptionPK);
+        SubscriptionEntity subscription = entityManager.find(SubscriptionEntity.class, subscriptionPK);
         return subscription;
     }
 
     public void addSubscription(SubscriptionOwnerType subscriptionOwnerType, SubjectEntity subject, ApplicationEntity application) {
 
-        String subscriptionUserId = this.idGenerator.generateId();
+        String subscriptionUserId = idGenerator.generateId();
         LOG.debug("add subscription for " + subject.getUserId() + " to " + application.getName() + "  subscriptionUserId = "
                 + subscriptionUserId);
         SubscriptionEntity subscription = new SubscriptionEntity(subscriptionOwnerType, subject, subscriptionUserId, application);
-        this.entityManager.persist(subscription);
+        entityManager.persist(subscription);
     }
 
     public void addSubscription(SubscriptionOwnerType subscriptionOwnerType, SubjectEntity subject, ApplicationEntity application,
@@ -76,13 +76,13 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
         LOG.debug("add subscription for " + subject.getUserId() + " to " + application.getName() + "  subscriptionUserId = "
                 + subscriptionUserId);
         SubscriptionEntity subscription = new SubscriptionEntity(subscriptionOwnerType, subject, subscriptionUserId, application);
-        this.entityManager.persist(subscription);
+        entityManager.persist(subscription);
     }
 
     public List<SubscriptionEntity> listSubsciptions(SubjectEntity subject) {
 
         LOG.debug("get subscriptions for subject: " + subject.getUserId());
-        List<SubscriptionEntity> subscriptions = this.queryObject.listSubsciptions(subject);
+        List<SubscriptionEntity> subscriptions = queryObject.listSubsciptions(subject);
         return subscriptions;
     }
 
@@ -92,26 +92,26 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
         SubscriptionEntity subscription = findSubscription(subject, application);
         if (null == subscription)
             throw new SubscriptionNotFoundException();
-        this.entityManager.remove(subscription);
+        entityManager.remove(subscription);
     }
 
     public long getNumberOfSubscriptions(ApplicationEntity application) {
 
-        long countResult = this.queryObject.getNumberOfSubscriptions(application);
+        long countResult = queryObject.getNumberOfSubscriptions(application);
         return countResult;
     }
 
     public List<SubscriptionEntity> listSubscriptions(ApplicationEntity application) {
 
         LOG.debug("get subscriptions for application: " + application.getName());
-        List<SubscriptionEntity> subscriptions = this.queryObject.listSubscriptions(application);
+        List<SubscriptionEntity> subscriptions = queryObject.listSubscriptions(application);
         return subscriptions;
     }
 
     public void removeSubscription(SubscriptionEntity subscriptionEntity) {
 
         LOG.debug("remove subscription: " + subscriptionEntity);
-        this.entityManager.remove(subscriptionEntity);
+        entityManager.remove(subscriptionEntity);
     }
 
     public SubscriptionEntity getSubscription(SubjectEntity subject, ApplicationEntity application)
@@ -125,7 +125,7 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 
     public long getActiveNumberOfSubscriptions(ApplicationEntity application, Date activeLimit) {
 
-        return this.queryObject.getNumberOfActiveSubscriptions(application, activeLimit);
+        return queryObject.getNumberOfActiveSubscriptions(application, activeLimit);
     }
 
     public void loggedIn(SubscriptionEntity subscription) {
@@ -135,12 +135,12 @@ public class SubscriptionDAOBean implements SubscriptionDAO {
 
     public void removeAllSubscriptions(SubjectEntity subject) {
 
-        this.queryObject.deleteAll(subject);
+        queryObject.deleteAll(subject);
     }
 
     public SubscriptionEntity findSubscription(String subscriptionUserId) {
 
         LOG.debug("get subscriptions for : " + subscriptionUserId);
-        return this.queryObject.findSubscription(subscriptionUserId);
+        return queryObject.findSubscription(subscriptionUserId);
     }
 }

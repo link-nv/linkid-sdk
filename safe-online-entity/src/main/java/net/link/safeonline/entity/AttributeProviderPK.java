@@ -39,13 +39,13 @@ public class AttributeProviderPK implements Serializable {
 
     public AttributeProviderPK(ApplicationEntity application, AttributeTypeEntity attributeType) {
 
-        this.applicationName = application.getName();
-        this.attributeTypeName = attributeType.getName();
+        applicationName = application.getName();
+        attributeTypeName = attributeType.getName();
     }
 
     public String getApplicationName() {
 
-        return this.applicationName;
+        return applicationName;
     }
 
     public void setApplicationName(String applicationName) {
@@ -55,7 +55,7 @@ public class AttributeProviderPK implements Serializable {
 
     public String getAttributeTypeName() {
 
-        return this.attributeTypeName;
+        return attributeTypeName;
     }
 
     public void setAttributeTypeName(String attributeTypeName) {
@@ -73,20 +73,20 @@ public class AttributeProviderPK implements Serializable {
         if (false == obj instanceof AttributeProviderPK)
             return false;
         AttributeProviderPK rhs = (AttributeProviderPK) obj;
-        return new EqualsBuilder().append(this.applicationName, rhs.applicationName).append(this.attributeTypeName, rhs.attributeTypeName)
+        return new EqualsBuilder().append(applicationName, rhs.applicationName).append(attributeTypeName, rhs.attributeTypeName)
                                   .isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.applicationName).append(this.attributeTypeName).toHashCode();
+        return new HashCodeBuilder().append(applicationName).append(attributeTypeName).toHashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("application", this.applicationName).append("attribute type", this.attributeTypeName)
+        return new ToStringBuilder(this).append("application", applicationName).append("attribute type", attributeTypeName)
                                         .toString();
     }
 }

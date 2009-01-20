@@ -279,17 +279,17 @@ public class OcspValidatorBean implements OcspValidator {
             responseCode = connection.getResponseCode();
         } catch (ConnectException e) {
             LOG.debug("OCSP Responder is down");
-            this.resourceAuditLogger.addResourceAudit(ResourceNameType.OCSP, ResourceLevelType.RESOURCE_UNAVAILABLE, ocspUrl.getPath(),
+            resourceAuditLogger.addResourceAudit(ResourceNameType.OCSP, ResourceLevelType.RESOURCE_UNAVAILABLE, ocspUrl.getPath(),
                     "OCSP Responder is down");
             return null;
         } catch (UnknownHostException e) {
             LOG.debug("unknown OCSP responder: " + ocspUrl.getPath());
-            this.resourceAuditLogger.addResourceAudit(ResourceNameType.OCSP, ResourceLevelType.RESOURCE_UNKNOWN, ocspUrl.getPath(),
+            resourceAuditLogger.addResourceAudit(ResourceNameType.OCSP, ResourceLevelType.RESOURCE_UNKNOWN, ocspUrl.getPath(),
                     "unknown OCSP Responder");
             return null;
         } catch (IOException e) {
             LOG.debug("IO exception type: " + e.getClass().getName());
-            this.resourceAuditLogger.addResourceAudit(ResourceNameType.OCSP, ResourceLevelType.RESOURCE_UNKNOWN, ocspUrl.getPath(),
+            resourceAuditLogger.addResourceAudit(ResourceNameType.OCSP, ResourceLevelType.RESOURCE_UNKNOWN, ocspUrl.getPath(),
                     "IO exception type: " + e.getClass().getName());
             throw new RuntimeException("I/O error: " + e.getMessage(), e);
         }

@@ -70,7 +70,7 @@ public class SchedulingEntity implements Serializable {
 
     public SchedulingEntity(String name, String cronExpression, TimerHandle timerHandle) {
 
-        this.tasks = new LinkedList<TaskEntity>();
+        tasks = new LinkedList<TaskEntity>();
         this.name = name;
         this.cronExpression = cronExpression;
         this.timerHandle = timerHandle;
@@ -78,7 +78,7 @@ public class SchedulingEntity implements Serializable {
 
     public String getCronExpression() {
 
-        return this.cronExpression;
+        return cronExpression;
     }
 
     public void setCronExpression(String cronExpression) {
@@ -89,7 +89,7 @@ public class SchedulingEntity implements Serializable {
     @Lob
     public TimerHandle getTimerHandle() {
 
-        return this.timerHandle;
+        return timerHandle;
     }
 
     public void setTimerHandle(TimerHandle timerHandle) {
@@ -100,18 +100,18 @@ public class SchedulingEntity implements Serializable {
     @OneToMany(mappedBy = "scheduling", fetch = FetchType.EAGER)
     public List<TaskEntity> getTasks() {
 
-        return this.tasks;
+        return tasks;
     }
 
     public void setTasks(List<TaskEntity> taskEntities) {
 
-        this.tasks = taskEntities;
+        tasks = taskEntities;
     }
 
     @Id
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -121,7 +121,7 @@ public class SchedulingEntity implements Serializable {
 
     public Date getFireDate() {
 
-        return this.fireDate;
+        return fireDate;
     }
 
     public void setFireDate(Date fireDate) {
@@ -131,13 +131,13 @@ public class SchedulingEntity implements Serializable {
 
     public void addTaskEntity(TaskEntity taskEntity) {
 
-        this.tasks.add(taskEntity);
+        tasks.add(taskEntity);
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("name", this.name).append("cronExpression", this.cronExpression).toString();
+        return new ToStringBuilder(this).append("name", name).append("cronExpression", cronExpression).toString();
     }
 
     @Override
@@ -150,13 +150,13 @@ public class SchedulingEntity implements Serializable {
         if (false == obj instanceof SchedulingEntity)
             return false;
         SchedulingEntity rhs = (SchedulingEntity) obj;
-        return new EqualsBuilder().append(this.name, rhs.name).isEquals();
+        return new EqualsBuilder().append(name, rhs.name).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.name).toHashCode();
+        return new HashCodeBuilder().append(name).toHashCode();
     }
 
 

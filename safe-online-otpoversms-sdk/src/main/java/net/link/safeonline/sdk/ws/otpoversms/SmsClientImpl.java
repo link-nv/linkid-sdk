@@ -33,9 +33,9 @@ public class SmsClientImpl implements SmsClient {
     public SmsClientImpl(String location) {
 
         SmsService smsService = SmsServiceFactory.newInstance();
-        this.smsPort = smsService.getSmsPort();
+        smsPort = smsService.getSmsPort();
 
-        BindingProvider bindingProvider = (BindingProvider) this.smsPort;
+        BindingProvider bindingProvider = (BindingProvider) smsPort;
         bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location);
     }
 
@@ -46,7 +46,7 @@ public class SmsClientImpl implements SmsClient {
             throws ConnectException {
 
         try {
-            this.smsPort.sendSms(to, message);
+            smsPort.sendSms(to, message);
         } catch (ClientTransportException e) {
             throw new ConnectException(e.getMessage());
         } catch (SmsPortTypeSendSmsGenericFaultFaultMessage e) {

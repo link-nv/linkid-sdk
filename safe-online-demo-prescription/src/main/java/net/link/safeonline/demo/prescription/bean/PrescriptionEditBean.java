@@ -47,23 +47,23 @@ public class PrescriptionEditBean extends AbstractPrescriptionDataClientBean imp
     public String persist() {
 
         try {
-            createOrUpdateAttribute(DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME, Boolean.valueOf(this.userStatus.isAdmin()),
+            createOrUpdateAttribute(DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME, Boolean.valueOf(userStatus.isAdmin()),
                     Boolean.class);
             createOrUpdateAttribute(DemoConstants.PRESCRIPTION_CARE_PROVIDER_ATTRIBUTE_NAME,
-                    Boolean.valueOf(this.userStatus.isCareProvider()), Boolean.class);
-            createOrUpdateAttribute(DemoConstants.PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME, Boolean.valueOf(this.userStatus.isPharmacist()),
+                    Boolean.valueOf(userStatus.isCareProvider()), Boolean.class);
+            createOrUpdateAttribute(DemoConstants.PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME, Boolean.valueOf(userStatus.isPharmacist()),
                     Boolean.class);
         } catch (WSClientTransportException e) {
-            this.facesMessages.add("connection error");
+            facesMessages.add("connection error");
             return null;
         } catch (RequestDeniedException e) {
-            this.facesMessages.add("request denied");
+            facesMessages.add("request denied");
             return null;
         } catch (SubjectNotFoundException e) {
-            this.facesMessages.add("subject not found: " + this.userStatus.getName());
+            facesMessages.add("subject not found: " + userStatus.getName());
             return null;
         } catch (AttributeNotFoundException e) {
-            this.facesMessages.add("attribute not found");
+            facesMessages.add("attribute not found");
             return null;
         }
         return "success";
@@ -73,12 +73,12 @@ public class PrescriptionEditBean extends AbstractPrescriptionDataClientBean imp
             throws WSClientTransportException, RequestDeniedException, SubjectNotFoundException, AttributeNotFoundException {
 
         DataClient dataClient = getDataClient();
-        String userId = this.userStatus.getUserId();
+        String userId = userStatus.getUserId();
         if (null == dataClient.getAttributeValue(userId, attributeName, expectedClass)) {
-            this.log.debug("create attribute #0 for #1", attributeName, userId);
+            log.debug("create attribute #0 for #1", attributeName, userId);
             dataClient.createAttribute(userId, attributeName, attributeValue);
         } else {
-            this.log.debug("set attribute #0 for #1", attributeName, userId);
+            log.debug("set attribute #0 for #1", attributeName, userId);
             dataClient.setAttributeValue(userId, attributeName, attributeValue);
         }
     }

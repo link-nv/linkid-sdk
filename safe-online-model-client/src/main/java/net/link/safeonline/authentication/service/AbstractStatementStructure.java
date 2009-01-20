@@ -53,12 +53,12 @@ abstract public class AbstractStatementStructure {
         }
         ASN1Sequence tbsSequence = ASN1Sequence.getInstance(sequence.getObjectAt(AbstractDERStatement.TBS_IDX));
 
-        this.toBeSignedData = tbsSequence.getDEREncoded();
+        toBeSignedData = tbsSequence.getDEREncoded();
 
         decode(tbsSequence);
 
         DERBitString derSignature = DERBitString.getInstance(sequence.getObjectAt(AbstractDERStatement.SIGNATURE_IDX));
-        this.signature = derSignature.getBytes();
+        signature = derSignature.getBytes();
     }
 
     protected abstract void decode(ASN1Sequence tbsSequence)
@@ -68,12 +68,12 @@ abstract public class AbstractStatementStructure {
 
     public byte[] getSignature() {
 
-        return this.signature;
+        return signature;
     }
 
     public byte[] getToBeSignedData() {
 
-        return this.toBeSignedData;
+        return toBeSignedData;
     }
 
     protected X509Certificate decodeCertificate(byte[] certificate)

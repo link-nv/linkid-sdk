@@ -42,7 +42,7 @@ public class UsageAgreementTextPK implements Serializable {
 
     public String getOwner() {
 
-        return this.owner;
+        return owner;
     }
 
     public void setOwner(String owner) {
@@ -53,7 +53,7 @@ public class UsageAgreementTextPK implements Serializable {
     @Column(name = "version")
     public Long getUsageAgreementVersion() {
 
-        return this.usageAgreementVersion;
+        return usageAgreementVersion;
     }
 
     public void setUsageAgreementVersion(Long usageAgreementVersion) {
@@ -63,7 +63,7 @@ public class UsageAgreementTextPK implements Serializable {
 
     public String getLanguage() {
 
-        return this.language;
+        return language;
     }
 
     public void setLanguage(String language) {
@@ -79,19 +79,19 @@ public class UsageAgreementTextPK implements Serializable {
         if (false == obj instanceof UsageAgreementTextPK)
             return false;
         UsageAgreementTextPK rhs = (UsageAgreementTextPK) obj;
-        return new EqualsBuilder().append(this.usageAgreementVersion, rhs.usageAgreementVersion).append(this.owner, rhs.owner).append(
-                this.language, rhs.language).isEquals();
+        return new EqualsBuilder().append(usageAgreementVersion, rhs.usageAgreementVersion).append(owner, rhs.owner).append(
+                language, rhs.language).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.owner).append(this.usageAgreementVersion).append(this.language).toHashCode();
+        return new HashCodeBuilder().append(owner).append(usageAgreementVersion).append(language).toHashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append(this.owner).append(this.usageAgreementVersion.toString()).append(this.language).toString();
+        return new ToStringBuilder(this).append(owner).append(usageAgreementVersion.toString()).append(language).toString();
     }
 }

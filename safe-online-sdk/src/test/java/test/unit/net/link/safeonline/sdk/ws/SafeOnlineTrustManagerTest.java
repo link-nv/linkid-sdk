@@ -150,7 +150,7 @@ public class SafeOnlineTrustManagerTest {
 
             LOG.debug("getCertificateChain: " + alias);
             if (SERVER_ALIAS.equals(alias))
-                return new X509Certificate[] { this.certificate };
+                return new X509Certificate[] { certificate };
             return null;
         }
 
@@ -164,10 +164,10 @@ public class SafeOnlineTrustManagerTest {
 
             LOG.debug("getPrivateKey: " + alias);
             if (SERVER_ALIAS.equals(alias)) {
-                PrivateKey privateKey = this.keyPair.getPrivate();
+                PrivateKey privateKey = keyPair.getPrivate();
                 if (null == privateKey)
                     throw new SecurityException("no private key");
-                return this.keyPair.getPrivate();
+                return keyPair.getPrivate();
             }
             return null;
         }

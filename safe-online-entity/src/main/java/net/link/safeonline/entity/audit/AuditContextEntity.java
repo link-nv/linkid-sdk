@@ -61,14 +61,14 @@ public class AuditContextEntity implements Serializable {
 
     public AuditContextEntity() {
 
-        this.creationTime = new Date();
+        creationTime = new Date();
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Long getId() {
 
-        return this.id;
+        return id;
     }
 
     public void setId(Long id) {
@@ -79,18 +79,18 @@ public class AuditContextEntity implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     public Date getCreationTime() {
 
-        return this.creationTime;
+        return creationTime;
     }
 
     public void setCreationTime(Date time) {
 
-        this.creationTime = time;
+        creationTime = time;
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("id", this.id).toString();
+        return new ToStringBuilder(this).append("id", id).toString();
     }
 
 

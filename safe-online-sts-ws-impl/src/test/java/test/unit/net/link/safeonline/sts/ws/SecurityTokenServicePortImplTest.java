@@ -116,78 +116,78 @@ public class SecurityTokenServicePortImplTest {
     public void setUp()
             throws Exception {
 
-        this.jmxTestUtils = new JmxTestUtils();
-        this.jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
+        jmxTestUtils = new JmxTestUtils();
+        jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
-        this.keyPair = PkiTestUtils.generateKeyPair();
-        this.privateKey = this.keyPair.getPrivate();
-        this.publicKey = this.keyPair.getPublic();
-        this.certificate = PkiTestUtils.generateSelfSignedCertificate(this.keyPair, "CN=TestApplication");
+        keyPair = PkiTestUtils.generateKeyPair();
+        privateKey = keyPair.getPrivate();
+        publicKey = keyPair.getPublic();
+        certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=TestApplication");
 
         KeyPair olasKeyPair = PkiTestUtils.generateKeyPair();
-        this.olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=OLAS");
-        this.olasPrivateKey = olasKeyPair.getPrivate();
+        olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=OLAS");
+        olasPrivateKey = olasKeyPair.getPrivate();
 
-        this.jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getPrivateKey", new MBeanActionHandler() {
+        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getPrivateKey", new MBeanActionHandler() {
 
             public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
                 LOG.debug("returning private key");
-                return SecurityTokenServicePortImplTest.this.privateKey;
+                return privateKey;
             }
         });
-        this.jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getPublicKey", new MBeanActionHandler() {
+        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getPublicKey", new MBeanActionHandler() {
 
             public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
                 LOG.debug("returning public key");
-                return SecurityTokenServicePortImplTest.this.publicKey;
+                return publicKey;
             }
         });
 
-        this.jndiTestUtils = new JndiTestUtils();
-        this.jndiTestUtils.setUp();
-        this.jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
+        jndiTestUtils = new JndiTestUtils();
+        jndiTestUtils.setUp();
+        jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
                 "SafeOnline/WSSecurityConfigurationBean/local");
-        this.jndiTestUtils.bindComponent("java:comp/env/wsSecurityOptionalInboudSignature", false);
+        jndiTestUtils.bindComponent("java:comp/env/wsSecurityOptionalInboudSignature", false);
 
-        this.mockWSSecurityConfigurationService = createMock(WSSecurityConfiguration.class);
-        this.mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
-        this.mockDeviceAuthenticationService = createMock(DeviceAuthenticationService.class);
-        this.mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
-        this.mockPkiValidator = createMock(PkiValidator.class);
+        mockWSSecurityConfigurationService = createMock(WSSecurityConfiguration.class);
+        mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
+        mockDeviceAuthenticationService = createMock(DeviceAuthenticationService.class);
+        mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
+        mockPkiValidator = createMock(PkiValidator.class);
 
-        this.mockObjects = new Object[] { this.mockWSSecurityConfigurationService, this.mockApplicationAuthenticationService,
-                this.mockDeviceAuthenticationService, this.mockNodeAuthenticationService, this.mockPkiValidator };
+        mockObjects = new Object[] { mockWSSecurityConfigurationService, mockApplicationAuthenticationService,
+                mockDeviceAuthenticationService, mockNodeAuthenticationService, mockPkiValidator };
 
-        this.jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local", this.mockWSSecurityConfigurationService);
-        this.jndiTestUtils
-                          .bindComponent("SafeOnline/ApplicationAuthenticationServiceBean/local", this.mockApplicationAuthenticationService);
-        this.jndiTestUtils.bindComponent("SafeOnline/DeviceAuthenticationServiceBean/local", this.mockDeviceAuthenticationService);
-        this.jndiTestUtils.bindComponent("SafeOnline/NodeAuthenticationServiceBean/local", this.mockNodeAuthenticationService);
-        this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local", this.mockPkiValidator);
+        jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local", mockWSSecurityConfigurationService);
+        jndiTestUtils
+                          .bindComponent("SafeOnline/ApplicationAuthenticationServiceBean/local", mockApplicationAuthenticationService);
+        jndiTestUtils.bindComponent("SafeOnline/DeviceAuthenticationServiceBean/local", mockDeviceAuthenticationService);
+        jndiTestUtils.bindComponent("SafeOnline/NodeAuthenticationServiceBean/local", mockNodeAuthenticationService);
+        jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local", mockPkiValidator);
 
-        this.webServiceTestUtils = new WebServiceTestUtils();
+        webServiceTestUtils = new WebServiceTestUtils();
 
         SecurityTokenServicePort port = new SecurityTokenServicePortImpl();
-        this.webServiceTestUtils.setUp(port);
+        webServiceTestUtils.setUp(port);
 
         String testNodeName = "test-node-name";
-        expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
-        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, this.certificate))
+        expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate))
                                                                                                                                       .andStubReturn(
                                                                                                                                               PkiResult.INVALID);
-        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN, this.certificate))
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN, certificate))
                                                                                                                                  .andStubReturn(
                                                                                                                                          PkiResult.INVALID);
-        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN, this.certificate))
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN, certificate))
                                                                                                                               .andStubReturn(
                                                                                                                                       PkiResult.VALID);
-        expect(this.mockNodeAuthenticationService.authenticate(this.certificate)).andStubReturn(testNodeName);
-        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
-        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(this.certificate)).andReturn(false);
-        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(this.olasCertificate);
-        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(this.olasPrivateKey);
+        expect(mockNodeAuthenticationService.authenticate(certificate)).andStubReturn(testNodeName);
+        expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
+        expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
+        expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
 
         JaasTestUtils.initJaasLoginModule(DummyLoginModule.class);
     }
@@ -196,8 +196,8 @@ public class SecurityTokenServicePortImplTest {
     public void tearDown()
             throws Exception {
 
-        this.webServiceTestUtils.tearDown();
-        this.jndiTestUtils.tearDown();
+        webServiceTestUtils.tearDown();
+        jndiTestUtils.tearDown();
     }
 
     @BeforeClass
@@ -226,19 +226,19 @@ public class SecurityTokenServicePortImplTest {
         SecurityTokenService service = SecurityTokenServiceFactory.newInstance();
         SecurityTokenServicePort port = service.getSecurityTokenServicePort();
         BindingProvider bindingProvider = (BindingProvider) port;
-        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.webServiceTestUtils.getEndpointAddress());
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, webServiceTestUtils.getEndpointAddress());
         List<Handler> handlers = bindingProvider.getBinding().getHandlerChain();
-        handlers.add(new WSSecurityClientHandler(this.certificate, this.privateKey));
+        handlers.add(new WSSecurityClientHandler(certificate, privateKey));
         handlers.add(new LoggingHandler());
         handlers.add(new SignatureVerificationTestHandler());
 
         bindingProvider.getBinding().setHandlerChain(handlers);
 
-        expect(this.mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(
-                Collections.singletonList(this.certificate));
+        expect(mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(
+                Collections.singletonList(certificate));
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
         ObjectFactory objectFactory = new ObjectFactory();
@@ -258,7 +258,7 @@ public class SecurityTokenServicePortImplTest {
         RequestSecurityTokenResponseType response = port.requestSecurityToken(request);
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
         assertNotNull(response);
         StatusType status = null;
         List<Object> results = response.getAny();
@@ -286,19 +286,19 @@ public class SecurityTokenServicePortImplTest {
         SecurityTokenService service = SecurityTokenServiceFactory.newInstance();
         SecurityTokenServicePort port = service.getSecurityTokenServicePort();
         BindingProvider bindingProvider = (BindingProvider) port;
-        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.webServiceTestUtils.getEndpointAddress());
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, webServiceTestUtils.getEndpointAddress());
         List<Handler> handlers = bindingProvider.getBinding().getHandlerChain();
-        handlers.add(new WSSecurityClientHandler(this.certificate, this.privateKey));
+        handlers.add(new WSSecurityClientHandler(certificate, privateKey));
         handlers.add(new LoggingHandler());
         handlers.add(new SignatureVerificationTestHandler());
 
         bindingProvider.getBinding().setHandlerChain(handlers);
 
-        expect(this.mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(
-                Collections.singletonList(this.certificate));
+        expect(mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(
+                Collections.singletonList(certificate));
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
         ObjectFactory objectFactory = new ObjectFactory();
@@ -317,7 +317,7 @@ public class SecurityTokenServicePortImplTest {
         RequestSecurityTokenResponseType response = port.requestSecurityToken(request);
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
         assertNotNull(response);
         StatusType status = null;
         List<Object> results = response.getAny();
@@ -345,19 +345,19 @@ public class SecurityTokenServicePortImplTest {
         SecurityTokenService service = SecurityTokenServiceFactory.newInstance();
         SecurityTokenServicePort port = service.getSecurityTokenServicePort();
         BindingProvider bindingProvider = (BindingProvider) port;
-        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.webServiceTestUtils.getEndpointAddress());
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, webServiceTestUtils.getEndpointAddress());
         List<Handler> handlers = bindingProvider.getBinding().getHandlerChain();
-        handlers.add(new WSSecurityClientHandler(this.certificate, this.privateKey));
+        handlers.add(new WSSecurityClientHandler(certificate, privateKey));
         handlers.add(new LoggingHandler());
         handlers.add(new SignatureVerificationTestHandler());
 
         bindingProvider.getBinding().setHandlerChain(handlers);
 
-        expect(this.mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(
-                Collections.singletonList(this.certificate));
+        expect(mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(
+                Collections.singletonList(certificate));
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
         ObjectFactory objectFactory = new ObjectFactory();
@@ -376,7 +376,7 @@ public class SecurityTokenServicePortImplTest {
         RequestSecurityTokenResponseType response = port.requestSecurityToken(request);
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
         assertNotNull(response);
         StatusType status = null;
         List<Object> results = response.getAny();
@@ -404,19 +404,19 @@ public class SecurityTokenServicePortImplTest {
         SecurityTokenService service = SecurityTokenServiceFactory.newInstance();
         SecurityTokenServicePort port = service.getSecurityTokenServicePort();
         BindingProvider bindingProvider = (BindingProvider) port;
-        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.webServiceTestUtils.getEndpointAddress());
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, webServiceTestUtils.getEndpointAddress());
         List<Handler> handlers = bindingProvider.getBinding().getHandlerChain();
-        handlers.add(new WSSecurityClientHandler(this.certificate, this.privateKey));
+        handlers.add(new WSSecurityClientHandler(certificate, privateKey));
         handlers.add(new LoggingHandler());
         handlers.add(new SignatureVerificationTestHandler());
 
         bindingProvider.getBinding().setHandlerChain(handlers);
 
-        expect(this.mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(
-                Collections.singletonList(this.certificate));
+        expect(mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(
+                Collections.singletonList(certificate));
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
         ObjectFactory objectFactory = new ObjectFactory();
@@ -435,7 +435,7 @@ public class SecurityTokenServicePortImplTest {
         RequestSecurityTokenResponseType response = port.requestSecurityToken(request);
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
         assertNotNull(response);
         StatusType status = null;
         List<Object> results = response.getAny();
@@ -463,19 +463,19 @@ public class SecurityTokenServicePortImplTest {
         SecurityTokenService service = SecurityTokenServiceFactory.newInstance();
         SecurityTokenServicePort port = service.getSecurityTokenServicePort();
         BindingProvider bindingProvider = (BindingProvider) port;
-        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.webServiceTestUtils.getEndpointAddress());
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, webServiceTestUtils.getEndpointAddress());
         List<Handler> handlers = bindingProvider.getBinding().getHandlerChain();
-        handlers.add(new WSSecurityClientHandler(this.certificate, this.privateKey));
+        handlers.add(new WSSecurityClientHandler(certificate, privateKey));
         handlers.add(new LoggingHandler());
         handlers.add(new SignatureVerificationTestHandler());
 
         bindingProvider.getBinding().setHandlerChain(handlers);
 
-        expect(this.mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(
-                Collections.singletonList(this.certificate));
+        expect(mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(
+                Collections.singletonList(certificate));
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
         ObjectFactory objectFactory = new ObjectFactory();
@@ -495,7 +495,7 @@ public class SecurityTokenServicePortImplTest {
         RequestSecurityTokenResponseType response = port.requestSecurityToken(request);
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
         assertNotNull(response);
         StatusType status = null;
         List<Object> results = response.getAny();
@@ -523,19 +523,19 @@ public class SecurityTokenServicePortImplTest {
         SecurityTokenService service = SecurityTokenServiceFactory.newInstance();
         SecurityTokenServicePort port = service.getSecurityTokenServicePort();
         BindingProvider bindingProvider = (BindingProvider) port;
-        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.webServiceTestUtils.getEndpointAddress());
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, webServiceTestUtils.getEndpointAddress());
         List<Handler> handlers = bindingProvider.getBinding().getHandlerChain();
-        handlers.add(new WSSecurityClientHandler(this.certificate, this.privateKey));
+        handlers.add(new WSSecurityClientHandler(certificate, privateKey));
         handlers.add(new LoggingHandler());
         handlers.add(new SignatureVerificationTestHandler());
 
         bindingProvider.getBinding().setHandlerChain(handlers);
 
-        expect(this.mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(
-                Collections.singletonList(this.certificate));
+        expect(mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(
+                Collections.singletonList(certificate));
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
         ObjectFactory objectFactory = new ObjectFactory();
@@ -554,7 +554,7 @@ public class SecurityTokenServicePortImplTest {
         RequestSecurityTokenResponseType response = port.requestSecurityToken(request);
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
         assertNotNull(response);
         StatusType status = null;
         List<Object> results = response.getAny();
@@ -576,7 +576,7 @@ public class SecurityTokenServicePortImplTest {
             throws Exception {
 
         Challenge<String> challenge = new Challenge<String>();
-        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(issuerName, applicationName, applicationName, this.keyPair,
+        String encodedAuthnRequest = AuthnRequestFactory.createAuthnRequest(issuerName, applicationName, applicationName, keyPair,
                 assertionConsumerServiceURL, destinationURL, challenge, Collections.singleton("test-device-name"), false);
         Document doc = DomUtils.parseDocument(encodedAuthnRequest);
         return doc.getDocumentElement();
@@ -586,7 +586,7 @@ public class SecurityTokenServicePortImplTest {
             throws Exception {
 
         String encodedAuthnResponse = AuthnResponseFactory.createAuthResponse(inResponseTo, issuerName, issuerName, subjectName,
-                SafeOnlineConstants.PKI_DEVICE_AUTH_CONTEXT_CLASS, this.keyPair, validity, target);
+                SafeOnlineConstants.PKI_DEVICE_AUTH_CONTEXT_CLASS, keyPair, validity, target);
         Document doc = DomUtils.parseDocument(encodedAuthnResponse);
         return doc.getDocumentElement();
     }
@@ -595,7 +595,7 @@ public class SecurityTokenServicePortImplTest {
             throws Exception {
 
         Challenge<String> challenge = new Challenge<String>();
-        String encodedLogoutRequest = LogoutRequestFactory.createLogoutRequest(subjectName, issuerName, this.keyPair, destinationURL,
+        String encodedLogoutRequest = LogoutRequestFactory.createLogoutRequest(subjectName, issuerName, keyPair, destinationURL,
                 challenge);
         Document doc = DomUtils.parseDocument(encodedLogoutRequest);
         return doc.getDocumentElement();
@@ -604,7 +604,7 @@ public class SecurityTokenServicePortImplTest {
     private Element createLogoutResponse(String inResponseTo, String issuerName, String target)
             throws Exception {
 
-        String encodedLogoutResponse = LogoutResponseFactory.createLogoutResponse(inResponseTo, issuerName, this.keyPair, target);
+        String encodedLogoutResponse = LogoutResponseFactory.createLogoutResponse(inResponseTo, issuerName, keyPair, target);
         Document doc = DomUtils.parseDocument(encodedLogoutResponse);
         return doc.getDocumentElement();
     }
@@ -615,7 +615,7 @@ public class SecurityTokenServicePortImplTest {
         Challenge<String> challenge = new Challenge<String>();
         String device = "test-device";
         String authenticatedDevice = "test-authenticated-device";
-        String encodedRequest = DeviceOperationRequestFactory.createDeviceOperationRequest(issuerName, subjectName, this.keyPair,
+        String encodedRequest = DeviceOperationRequestFactory.createDeviceOperationRequest(issuerName, subjectName, keyPair,
                 serviceURL, destinationURL, DeviceOperationType.REGISTER, challenge, device, authenticatedDevice, null);
         Document doc = DomUtils.parseDocument(encodedRequest);
         return doc.getDocumentElement();
@@ -626,7 +626,7 @@ public class SecurityTokenServicePortImplTest {
 
         String device = "test-device";
         String encodedResponse = DeviceOperationResponseFactory.createDeviceOperationResponse(inResponseTo, DeviceOperationType.REGISTER,
-                issuerName, subjectName, device, this.keyPair, validity, target);
+                issuerName, subjectName, device, keyPair, validity, target);
         Document doc = DomUtils.parseDocument(encodedResponse);
         return doc.getDocumentElement();
     }

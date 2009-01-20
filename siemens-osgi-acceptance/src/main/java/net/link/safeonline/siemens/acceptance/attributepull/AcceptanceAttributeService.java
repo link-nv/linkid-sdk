@@ -65,8 +65,8 @@ public class AcceptanceAttributeService implements PluginAttributeService {
 
         System.out.println("AcceptanceAttributeService constructor");
         InputStream keyStoreInputStream = this.getClass().getClassLoader().getResourceAsStream(keystore);
-        this.privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(keystoreType, keyStoreInputStream, password, password);
-        this.certificate = (X509Certificate) this.privateKeyEntry.getCertificate();
+        privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(keystoreType, keyStoreInputStream, password, password);
+        certificate = (X509Certificate) privateKeyEntry.getCertificate();
 
         this.bundleContext = bundleContext;
     }
@@ -79,11 +79,11 @@ public class AcceptanceAttributeService implements PluginAttributeService {
 
         // fetch the through the OSGi attribute service
         String osgiValue = null;
-        ServiceReference serviceReference = this.bundleContext.getServiceReference(OlasAttributeService.class.getName());
+        ServiceReference serviceReference = bundleContext.getServiceReference(OlasAttributeService.class.getName());
         if (null != serviceReference) {
-            OlasAttributeService attributeService = (OlasAttributeService) this.bundleContext.getService(serviceReference);
+            OlasAttributeService attributeService = (OlasAttributeService) bundleContext.getService(serviceReference);
             osgiValue = (String) attributeService.getAttribute(userId, targetName);
-            this.bundleContext.ungetService(serviceReference);
+            bundleContext.ungetService(serviceReference);
             System.out.println("osgi: found attribute: " + osgiValue);
         }
 
@@ -95,7 +95,7 @@ public class AcceptanceAttributeService implements PluginAttributeService {
             // using Thread.currentThread.getContextClassLoader which returns the classloader of JBoss.
             Thread.currentThread().setContextClassLoader(this.getClass().getClassLoader());
 
-            AttributeClient attributeClient = new AttributeClientImpl(location, this.certificate, this.privateKeyEntry.getPrivateKey());
+            AttributeClient attributeClient = new AttributeClientImpl(location, certificate, privateKeyEntry.getPrivateKey());
             HashMap<String, Object> attributes = new HashMap<String, Object>();
             attributes.put(targetName, (Object) null);
             attributeClient.getAttributeValues(userId, attributes);

@@ -78,7 +78,7 @@ public class RemovalServlet extends AbstractInjectionServlet {
         protocolContext.setSuccess(false);
 
         try {
-            this.otpOverSmsDeviceService.remove(userId, mobile);
+            otpOverSmsDeviceService.remove(userId, mobile);
 
             response.setStatus(HttpServletResponse.SC_OK);
             // notify that remove operation was successful.
@@ -88,7 +88,7 @@ public class RemovalServlet extends AbstractInjectionServlet {
         } catch (SubjectNotFoundException e) {
             String message = "subject " + userId + " not found";
             LOG.error(message, e);
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, message);
+            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, message);
         } catch (AttributeTypeNotFoundException e) {
             LOG.error("attribute type not found", e);
         } catch (AttributeNotFoundException e) {
@@ -97,7 +97,7 @@ public class RemovalServlet extends AbstractInjectionServlet {
             LOG.error("device disabled", e);
         }
 
-        response.sendRedirect(this.deviceExitPath);
+        response.sendRedirect(deviceExitPath);
 
     }
 }

@@ -75,7 +75,7 @@ public class UpdatePage extends TemplatePage {
 
         super();
 
-        this.protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
         addHeader(this, false);
 
@@ -109,7 +109,7 @@ public class UpdatePage extends TemplatePage {
             super(id);
 
             final TextField<PhoneNumber> mobileField = new TextField<PhoneNumber>(MOBILE_FIELD_ID, new Model<PhoneNumber>(new PhoneNumber(
-                    UpdatePage.this.protocolContext.getAttribute())), PhoneNumber.class);
+                    protocolContext.getAttribute())), PhoneNumber.class);
             mobileField.setEnabled(false);
             mobileField.setRequired(true);
             add(mobileField);
@@ -123,47 +123,47 @@ public class UpdatePage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    LOG.debug("check mobile: " + UpdatePage.this.protocolContext.getAttribute());
+                    LOG.debug("check mobile: " + protocolContext.getAttribute());
                     try {
-                        UpdatePage.this.otpOverSmsDeviceService.checkMobile(UpdatePage.this.protocolContext.getAttribute());
+                        otpOverSmsDeviceService.checkMobile(protocolContext.getAttribute());
                     } catch (SubjectNotFoundException e) {
                         mobileField.error(getLocalizer().getString("mobileNotRegistered", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: subject not found for "
-                                + UpdatePage.this.protocolContext.getAttribute(), LogLevelType.ERROR);
+                                + protocolContext.getAttribute(), LogLevelType.ERROR);
                         return;
                     } catch (DeviceDisabledException e) {
                         mobileField.error(getLocalizer().getString("mobileDisabled", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: mobile "
-                                + UpdatePage.this.protocolContext.getAttribute() + " disabled", LogLevelType.ERROR);
+                                + protocolContext.getAttribute() + " disabled", LogLevelType.ERROR);
                         return;
                     } catch (AttributeTypeNotFoundException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorAttributeTypeNotFound", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: attribute type not found for "
-                                + UpdatePage.this.protocolContext.getAttribute(), LogLevelType.ERROR);
+                                + protocolContext.getAttribute(), LogLevelType.ERROR);
                         return;
                     } catch (AttributeNotFoundException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorAttributeNotFound", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: attribute not found for "
-                                + UpdatePage.this.protocolContext.getAttribute(), LogLevelType.ERROR);
+                                + protocolContext.getAttribute(), LogLevelType.ERROR);
                         return;
                     }
 
-                    LOG.debug("request OTP for mobile: " + UpdatePage.this.protocolContext.getAttribute());
+                    LOG.debug("request OTP for mobile: " + protocolContext.getAttribute());
                     try {
-                        UpdatePage.this.otpOverSmsDeviceService.requestOtp(WicketUtil.getHttpSession(getRequest()),
-                                UpdatePage.this.protocolContext.getAttribute());
+                        otpOverSmsDeviceService.requestOtp(WicketUtil.getHttpSession(getRequest()),
+                                protocolContext.getAttribute());
                     } catch (ConnectException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorServiceConnection", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: failed to send otp to "
-                                + UpdatePage.this.protocolContext.getAttribute(), LogLevelType.ERROR);
+                                + protocolContext.getAttribute(), LogLevelType.ERROR);
                         return;
                     } catch (SafeOnlineResourceException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorServiceConnection", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: failed to send otp to "
-                                + UpdatePage.this.protocolContext.getAttribute(), LogLevelType.ERROR);
+                                + protocolContext.getAttribute(), LogLevelType.ERROR);
                         return;
                     }
-                    UpdatePage.this.requested = true;
+                    requested = true;
 
                 }
 
@@ -194,7 +194,7 @@ public class UpdatePage extends TemplatePage {
         @Override
         public boolean isVisible() {
 
-            return !UpdatePage.this.requested;
+            return !requested;
         }
     }
 
@@ -216,20 +216,20 @@ public class UpdatePage extends TemplatePage {
 
             super(id);
 
-            final TextField<String> otpField = new TextField<String>(OTP_FIELD_ID, this.otp = new Model<String>());
+            final TextField<String> otpField = new TextField<String>(OTP_FIELD_ID, otp = new Model<String>());
             otpField.setRequired(true);
             add(otpField);
             add(new ErrorComponentFeedbackLabel("otp_feedback", otpField));
 
-            final PasswordTextField oldpinField = new PasswordTextField(OLDPIN_FIELD_ID, this.oldPin = new Model<String>());
+            final PasswordTextField oldpinField = new PasswordTextField(OLDPIN_FIELD_ID, oldPin = new Model<String>());
             add(oldpinField);
             add(new ErrorComponentFeedbackLabel("oldpin_feedback", oldpinField));
 
-            final PasswordTextField password1Field = new PasswordTextField(PIN1_FIELD_ID, this.pin1 = new Model<String>());
+            final PasswordTextField password1Field = new PasswordTextField(PIN1_FIELD_ID, pin1 = new Model<String>());
             add(password1Field);
             add(new ErrorComponentFeedbackLabel("pin1_feedback", password1Field));
 
-            final PasswordTextField password2Field = new PasswordTextField(PIN2_FIELD_ID, this.pin2 = new Model<String>());
+            final PasswordTextField password2Field = new PasswordTextField(PIN2_FIELD_ID, pin2 = new Model<String>());
             add(password2Field);
             add(new ErrorComponentFeedbackLabel("pin2_feedback", password2Field));
 
@@ -245,45 +245,45 @@ public class UpdatePage extends TemplatePage {
 
                     boolean verified;
                     try {
-                        verified = UpdatePage.this.otpOverSmsDeviceService.verifyOtp(WicketUtil.getHttpSession(getRequest()),
-                                UpdatePage.this.protocolContext.getAttribute(), UpdateForm.this.otp.getObject());
+                        verified = otpOverSmsDeviceService.verifyOtp(WicketUtil.getHttpSession(getRequest()),
+                                protocolContext.getAttribute(), otp.getObject());
                     } catch (SubjectNotFoundException e) {
                         UpdateForm.this.error(getLocalizer().getString("errorSubjectNotFound", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "subject not found: "
-                                + UpdatePage.this.protocolContext.getAttribute(), LogLevelType.ERROR);
+                                + protocolContext.getAttribute(), LogLevelType.ERROR);
                         return;
                     } catch (AttributeTypeNotFoundException e) {
                         UpdateForm.this.error(getLocalizer().getString("errorAttributeTypeNotFound", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: attribute type not found for "
-                                + UpdatePage.this.protocolContext.getAttribute(), LogLevelType.ERROR);
+                                + protocolContext.getAttribute(), LogLevelType.ERROR);
                         return;
                     } catch (AttributeNotFoundException e) {
                         UpdateForm.this.error(getLocalizer().getString("errorAttributeNotFound", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: attribute not found for "
-                                + UpdatePage.this.protocolContext.getAttribute(), LogLevelType.ERROR);
+                                + protocolContext.getAttribute(), LogLevelType.ERROR);
                         return;
                     } catch (DeviceDisabledException e) {
                         UpdateForm.this.error(getLocalizer().getString("mobileDisabled", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: mobile "
-                                + UpdatePage.this.protocolContext.getAttribute() + " disabled", LogLevelType.ERROR);
+                                + protocolContext.getAttribute() + " disabled", LogLevelType.ERROR);
                         return;
                     }
                     if (!verified) {
                         otpField.error(getLocalizer().getString("authenticationFailedMsg", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(),
-                                "mobile otp: verification failed for mobile " + UpdatePage.this.protocolContext.getAttribute(),
+                                "mobile otp: verification failed for mobile " + protocolContext.getAttribute(),
                                 LogLevelType.ERROR);
                         return;
                     }
 
-                    LOG.debug("update pin for " + UpdatePage.this.protocolContext.getSubject() + " for mobile "
-                            + UpdatePage.this.protocolContext.getAttribute());
+                    LOG.debug("update pin for " + protocolContext.getSubject() + " for mobile "
+                            + protocolContext.getAttribute());
 
                     boolean result;
                     try {
-                        result = UpdatePage.this.otpOverSmsDeviceService.update(UpdatePage.this.protocolContext.getSubject(),
-                                UpdatePage.this.protocolContext.getAttribute(), UpdateForm.this.oldPin.getObject(),
-                                UpdateForm.this.pin1.getObject());
+                        result = otpOverSmsDeviceService.update(protocolContext.getSubject(),
+                                protocolContext.getAttribute(), oldPin.getObject(),
+                                pin1.getObject());
                     } catch (SubjectNotFoundException e) {
                         password1Field.error(getLocalizer().getString("errorSubjectNotFound", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "update: subject not found",
@@ -297,17 +297,17 @@ public class UpdatePage extends TemplatePage {
                     } catch (DeviceDisabledException e) {
                         password1Field.error(getLocalizer().getString("mobileDisabled", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: mobile "
-                                + UpdatePage.this.protocolContext.getAttribute() + " disabled", LogLevelType.ERROR);
+                                + protocolContext.getAttribute() + " disabled", LogLevelType.ERROR);
                         return;
                     } catch (AttributeTypeNotFoundException e) {
                         UpdateForm.this.error(getLocalizer().getString("errorAttributeTypeNotFound", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: attribute type not found for "
-                                + UpdatePage.this.protocolContext.getAttribute(), LogLevelType.ERROR);
+                                + protocolContext.getAttribute(), LogLevelType.ERROR);
                         return;
                     } catch (AttributeNotFoundException e) {
                         UpdateForm.this.error(getLocalizer().getString("errorAttributeNotFound", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: attribute not found for "
-                                + UpdatePage.this.protocolContext.getAttribute(), LogLevelType.ERROR);
+                                + protocolContext.getAttribute(), LogLevelType.ERROR);
                         return;
                     }
 
@@ -319,7 +319,7 @@ public class UpdatePage extends TemplatePage {
 
                     }
 
-                    UpdatePage.this.protocolContext.setSuccess(true);
+                    protocolContext.setSuccess(true);
                     exit();
                 }
 
@@ -333,7 +333,7 @@ public class UpdatePage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    UpdatePage.this.protocolContext.setSuccess(false);
+                    protocolContext.setSuccess(false);
                     exit();
                 }
 
@@ -350,7 +350,7 @@ public class UpdatePage extends TemplatePage {
         @Override
         public boolean isVisible() {
 
-            return UpdatePage.this.requested;
+            return requested;
         }
 
     }
@@ -358,7 +358,7 @@ public class UpdatePage extends TemplatePage {
 
     public void exit() {
 
-        this.protocolContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());
+        protocolContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
         getResponse().redirect("deviceexit");
         setRedirect(false);
     }

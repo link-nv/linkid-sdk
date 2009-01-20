@@ -60,14 +60,14 @@ public class AuditContextDAOBean implements AuditContextDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, AuditContextEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, AuditContextEntity.QueryInterface.class);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public AuditContextEntity createAuditContext() {
 
         AuditContextEntity auditContext = new AuditContextEntity();
-        this.entityManager.persist(auditContext);
+        entityManager.persist(auditContext);
 
         LOG.debug("created audit context: " + auditContext.getId());
         return auditContext;
@@ -82,7 +82,7 @@ public class AuditContextDAOBean implements AuditContextDAO {
          * 
          * (FIXME: What's wrong with a REQUIRED? -mbillemo)
          */
-        AuditContextEntity auditContext = this.entityManager.find(AuditContextEntity.class, auditContextId);
+        AuditContextEntity auditContext = entityManager.find(AuditContextEntity.class, auditContextId);
         if (null == auditContext)
             throw new AuditContextNotFoundException();
 
@@ -94,34 +94,34 @@ public class AuditContextDAOBean implements AuditContextDAO {
         Date ageLimit = new Date(System.currentTimeMillis() - ageInMinutes * 60 * 1000);
         LOG.debug("Cleaning audit contexts older then " + ageLimit);
 
-        List<AuditContextEntity> contexts = this.queryObject.listContextsOlderThen(ageLimit);
+        List<AuditContextEntity> contexts = queryObject.listContextsOlderThen(ageLimit);
         for (AuditContextEntity context : contexts) {
             LOG.debug("Cleaning context " + context.getId());
 
-            this.auditAuditDAO.cleanup(context.getId());
-            this.accessAuditDAO.cleanup(context.getId());
-            this.securityAuditDAO.cleanup(context.getId());
-            this.resourceAuditDAO.cleanup(context.getId());
-            this.entityManager.remove(context);
+            auditAuditDAO.cleanup(context.getId());
+            accessAuditDAO.cleanup(context.getId());
+            securityAuditDAO.cleanup(context.getId());
+            resourceAuditDAO.cleanup(context.getId());
+            entityManager.remove(context);
         }
     }
 
     public List<AuditContextEntity> listContexts() {
 
-        return this.queryObject.listContexts();
+        return queryObject.listContexts();
     }
 
     public boolean removeAuditContext(Long auditContextId)
             throws AuditContextNotFoundException {
 
         AuditContextEntity auditContext = getAuditContext(auditContextId);
-        this.entityManager.remove(auditContext);
+        entityManager.remove(auditContext);
 
         return true;
     }
 
     public List<AuditContextEntity> listLastContexts() {
 
-        return this.queryObject.listLastContexts();
+        return queryObject.listLastContexts();
     }
 }

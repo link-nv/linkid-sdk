@@ -38,6 +38,6 @@ public abstract class AbstractBankServiceBean extends AbstractWicketServiceBean 
     @Override
     protected EntityManager getEntityManager() {
 
-        return this.em;
+        return em;
     }
 }

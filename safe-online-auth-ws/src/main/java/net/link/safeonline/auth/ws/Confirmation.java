@@ -47,14 +47,14 @@ public enum Confirmation {
 
     public String getValue() {
 
-        return this.value;
+        return value;
     }
 
 
     @Override
     public String toString() {
 
-        return this.value;
+        return value;
     }
 
 

@@ -27,7 +27,7 @@ public class ApplicationPoolSelection implements Serializable {
 
     public boolean isIncluded() {
 
-        return this.included;
+        return included;
     }
 
     public void setIncluded(boolean included) {
@@ -37,7 +37,7 @@ public class ApplicationPoolSelection implements Serializable {
 
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {

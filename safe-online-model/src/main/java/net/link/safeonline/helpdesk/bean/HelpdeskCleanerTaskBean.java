@@ -62,14 +62,14 @@ public class HelpdeskCleanerTaskBean implements Task {
     public void perform()
             throws Exception {
 
-        long infoAgeInMinutes = this.configInfoAgeInMinutes;
-        long errorAgeInMinutes = this.configErrorAgeInMinutes;
+        long infoAgeInMinutes = configInfoAgeInMinutes;
+        long errorAgeInMinutes = configErrorAgeInMinutes;
 
-        this.helpdeskEventDAO.clearEvents(infoAgeInMinutes, LogLevelType.INFO);
-        this.helpdeskEventDAO.clearEvents(errorAgeInMinutes, LogLevelType.ERROR);
+        helpdeskEventDAO.clearEvents(infoAgeInMinutes, LogLevelType.INFO);
+        helpdeskEventDAO.clearEvents(errorAgeInMinutes, LogLevelType.ERROR);
 
         // cleanup contexts with no events attached to it
-        this.helpdeskContextDAO.cleanup();
+        helpdeskContextDAO.cleanup();
     }
 
 }

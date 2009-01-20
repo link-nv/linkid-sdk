@@ -21,7 +21,7 @@ public class User implements Serializable {
 
     public List<String> getRoles() {
 
-        return this.roles;
+        return roles;
     }
 
     public void setRoles(List<String> roles) {
@@ -31,7 +31,7 @@ public class User implements Serializable {
 
     public String getUserId() {
 
-        return this.userId;
+        return userId;
     }
 
     public void setUserId(String userId) {
@@ -46,7 +46,7 @@ public class User implements Serializable {
         if (roleList.size() == 0)
             return true;
 
-        for (String hasRole : this.roles) {
+        for (String hasRole : roles) {
             for (String needRole : roleList) {
                 if (hasRole.equals(needRole))
                     return true;
@@ -57,7 +57,7 @@ public class User implements Serializable {
 
     public boolean has(String role) {
 
-        for (String hasRole : this.roles) {
+        for (String hasRole : roles) {
             if (hasRole.equals(role))
                 return true;
         }

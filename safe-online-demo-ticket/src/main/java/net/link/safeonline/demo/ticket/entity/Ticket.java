@@ -53,7 +53,7 @@ public class Ticket implements Serializable {
 
         public String getName() {
 
-            return this.name;
+            return name;
         }
     }
 
@@ -91,7 +91,7 @@ public class Ticket implements Serializable {
     @Enumerated(EnumType.STRING)
     public Site getDestination() {
 
-        return this.destination;
+        return destination;
     }
 
     public void setDestination(Site destination) {
@@ -102,7 +102,7 @@ public class Ticket implements Serializable {
     @ManyToOne
     public User getOwner() {
 
-        return this.owner;
+        return owner;
     }
 
     public void setOwner(User owner) {
@@ -113,7 +113,7 @@ public class Ticket implements Serializable {
     @Enumerated(EnumType.STRING)
     public Site getStart() {
 
-        return this.start;
+        return start;
     }
 
     public void setStart(Site start) {
@@ -123,7 +123,7 @@ public class Ticket implements Serializable {
 
     public Date getValidFrom() {
 
-        return this.validFrom;
+        return validFrom;
     }
 
     public void setValidFrom(Date validFrom) {
@@ -133,7 +133,7 @@ public class Ticket implements Serializable {
 
     public Date getValidTo() {
 
-        return this.validTo;
+        return validTo;
     }
 
     public void setValidTo(Date validTo) {
@@ -143,7 +143,7 @@ public class Ticket implements Serializable {
 
     public boolean isBiDirectional() {
 
-        return this.biDirectional;
+        return biDirectional;
     }
 
     public void setBiDirectional(boolean biDirectional) {
@@ -155,7 +155,7 @@ public class Ticket implements Serializable {
     @GeneratedValue
     public long getId() {
 
-        return this.id;
+        return id;
     }
 
     public void setId(long id) {

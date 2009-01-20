@@ -34,7 +34,7 @@ public class EncapActivationClientImpl implements EncapActivationClient {
     public EncapActivationClientImpl(String location) throws AxisFault, MalformedURLException {
 
         URL endpointURL = new URL("http://" + location + "/services/mSecBankIdActivation");
-        this.activationStub = new MSecBankIdActivationSoapBindingStub(endpointURL, new Service());
+        activationStub = new MSecBankIdActivationSoapBindingStub(endpointURL, new Service());
     }
 
     public String activate(String mobile, String orgId, String userId)
@@ -42,7 +42,7 @@ public class EncapActivationClientImpl implements EncapActivationClient {
 
         LOG.debug("activate: " + mobile + ", " + orgId + ", " + userId);
 
-        ActivationInitResponse response = this.activationStub.activate(mobile, orgId, userId);
+        ActivationInitResponse response = activationStub.activate(mobile, orgId, userId);
 
         LOG.debug("activation result: " + response.getStatus());
         LOG.debug("activation info: " + response.getAdditionalInfo());
@@ -61,7 +61,7 @@ public class EncapActivationClientImpl implements EncapActivationClient {
             throws RemoteException {
 
         LOG.debug("cancel session: " + sessionId);
-        MSecResponse response = this.activationStub.cancelSession(sessionId);
+        MSecResponse response = activationStub.cancelSession(sessionId);
         if (EncapConstants.ENCAP_SUCCES == response.getStatus())
             return true;
         return false;

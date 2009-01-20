@@ -27,7 +27,7 @@ public class PrescriptionMedicinePK implements Serializable {
 
     public long getId() {
 
-        return this.id;
+        return id;
     }
 
     public void setId(long id) {
@@ -37,7 +37,7 @@ public class PrescriptionMedicinePK implements Serializable {
 
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -66,12 +66,12 @@ public class PrescriptionMedicinePK implements Serializable {
         if (false == obj instanceof PrescriptionMedicinePK)
             return false;
         PrescriptionMedicinePK rhs = (PrescriptionMedicinePK) obj;
-        return new EqualsBuilder().append(this.id, rhs.id).append(this.name, rhs.name).isEquals();
+        return new EqualsBuilder().append(id, rhs.id).append(name, rhs.name).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.id).append(this.name).toHashCode();
+        return new HashCodeBuilder().append(id).append(name).toHashCode();
     }
 }

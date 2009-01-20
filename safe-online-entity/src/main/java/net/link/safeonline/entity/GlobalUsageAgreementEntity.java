@@ -53,20 +53,20 @@ public class GlobalUsageAgreementEntity implements Serializable {
 
     public GlobalUsageAgreementEntity() {
 
-        this.usageAgreementTexts = new HashSet<UsageAgreementTextEntity>();
+        usageAgreementTexts = new HashSet<UsageAgreementTextEntity>();
     }
 
     public GlobalUsageAgreementEntity(Long usageAgreementVersion) {
 
         this.usageAgreementVersion = usageAgreementVersion;
-        this.usageAgreementTexts = new HashSet<UsageAgreementTextEntity>();
+        usageAgreementTexts = new HashSet<UsageAgreementTextEntity>();
     }
 
     @Column(name = "texts")
     @OneToMany(fetch = FetchType.EAGER)
     public Set<UsageAgreementTextEntity> getUsageAgreementTexts() {
 
-        return this.usageAgreementTexts;
+        return usageAgreementTexts;
     }
 
     public void setUsageAgreementTexts(Set<UsageAgreementTextEntity> usageAgreementTexts) {
@@ -78,7 +78,7 @@ public class GlobalUsageAgreementEntity implements Serializable {
     @Id
     public Long getUsageAgreementVersion() {
 
-        return this.usageAgreementVersion;
+        return usageAgreementVersion;
     }
 
     public void setUsageAgreementVersion(Long usageAgreementVersion) {
@@ -89,7 +89,7 @@ public class GlobalUsageAgreementEntity implements Serializable {
     @Transient
     public UsageAgreementTextEntity getUsageAgreementText(String language) {
 
-        for (UsageAgreementTextEntity usageAgreementText : this.usageAgreementTexts) {
+        for (UsageAgreementTextEntity usageAgreementText : usageAgreementTexts) {
             if (usageAgreementText.getLanguage().equals(language))
                 return usageAgreementText;
         }

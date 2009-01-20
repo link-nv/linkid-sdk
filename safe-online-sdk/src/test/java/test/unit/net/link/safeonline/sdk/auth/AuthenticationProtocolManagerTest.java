@@ -58,26 +58,28 @@ public class AuthenticationProtocolManagerTest {
 
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp()
+            throws Exception {
 
-        this.mockHttpServletRequest = createMock(HttpServletRequest.class);
-        this.mockHttpSession = createMock(HttpSession.class);
+        mockHttpServletRequest = createMock(HttpServletRequest.class);
+        mockHttpSession = createMock(HttpSession.class);
 
-        this.mockObjects = new Object[] { this.mockHttpServletRequest, this.mockHttpSession };
+        mockObjects = new Object[] { mockHttpServletRequest, mockHttpSession };
 
         // stubs
-        expect(this.mockHttpServletRequest.getSession()).andStubReturn(this.mockHttpSession);
+        expect(mockHttpServletRequest.getSession()).andStubReturn(mockHttpSession);
     }
 
     @Test
-    public void saml2ProtocolHandler() throws Exception {
+    public void saml2ProtocolHandler()
+            throws Exception {
 
         // expectations
-        expect(this.mockHttpSession.getAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE)).andReturn(null);
-        this.mockHttpSession.setAttribute(eq(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE), anyObject());
+        expect(mockHttpSession.getAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE)).andReturn(null);
+        mockHttpSession.setAttribute(eq(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE), anyObject());
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
         Map<String, String> configParams = Collections.singletonMap("WsLocation", "https://ws.location");
@@ -88,15 +90,16 @@ public class AuthenticationProtocolManagerTest {
                                                                                                                 "application-id", null,
                                                                                                                 null, null, false,
                                                                                                                 configParams,
-                                                                                                                this.mockHttpServletRequest);
+                                                                                                                mockHttpServletRequest);
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
         assertNotNull(saml2AuthenticationProtocolHandler);
     }
 
     @Test
-    public void testInitiateAuthenticationWithoutLandingPage() throws Exception {
+    public void testInitiateAuthenticationWithoutLandingPage()
+            throws Exception {
 
         ServletTestManager servletTestManager = new ServletTestManager();
         AuthenticationProtocolHandler mockProtocolHandler = createMock(AuthenticationProtocolHandler.class);
@@ -122,7 +125,8 @@ public class AuthenticationProtocolManagerTest {
     }
 
     @Test
-    public void testInitiateAuthenticationWithLandingPage() throws Exception {
+    public void testInitiateAuthenticationWithLandingPage()
+            throws Exception {
 
         ServletTestManager servletTestManager = new ServletTestManager();
         AuthenticationProtocolHandler mockProtocolHandler = createMock(AuthenticationProtocolHandler.class);
@@ -159,7 +163,8 @@ public class AuthenticationProtocolManagerTest {
 
 
         @Override
-        public void init(ServletConfig config) throws ServletException {
+        public void init(ServletConfig config)
+                throws ServletException {
 
             super.init(config);
             SERVLET_LOG.debug("init: landing page init param: "
@@ -167,7 +172,8 @@ public class AuthenticationProtocolManagerTest {
         }
 
         @Override
-        protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        protected void doGet(HttpServletRequest request, HttpServletResponse response)
+                throws ServletException, IOException {
 
             HttpSession session = request.getSession();
             ServletContext servletContext = session.getServletContext();

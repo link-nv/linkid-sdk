@@ -74,7 +74,7 @@ public class CinemaTicketEntity implements Serializable {
      */
     public long getId() {
 
-        return this.id;
+        return id;
     }
 
     /**
@@ -82,7 +82,7 @@ public class CinemaTicketEntity implements Serializable {
      */
     public CinemaUserEntity getOwner() {
 
-        return this.owner;
+        return owner;
     }
 
     /**
@@ -90,7 +90,7 @@ public class CinemaTicketEntity implements Serializable {
      */
     public CinemaFilmEntity getFilm() {
 
-        return this.film;
+        return film;
     }
 
     /**
@@ -98,7 +98,7 @@ public class CinemaTicketEntity implements Serializable {
      */
     public long getTime() {
 
-        return this.time;
+        return time;
     }
 
     /**
@@ -106,7 +106,7 @@ public class CinemaTicketEntity implements Serializable {
      */
     public CinemaSeatOccupationEntity getOccupation() {
 
-        return this.occupation;
+        return occupation;
     }
 
     /**
@@ -123,6 +123,6 @@ public class CinemaTicketEntity implements Serializable {
      */
     public double getPrice() {
 
-        return this.price;
+        return price;
     }
 }

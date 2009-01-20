@@ -47,20 +47,20 @@ public class TimeoutFilterTest {
     public void setUp()
             throws Exception {
 
-        this.servletTestManager = new ServletTestManager();
+        servletTestManager = new ServletTestManager();
         Map<String, String> filterInitParameters = new HashMap<String, String>();
         filterInitParameters.put("TimeoutPath", "timeout");
         filterInitParameters.put("LoginSessionAttribute", LoginManager.USERID_SESSION_ATTRIBUTE);
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
         initialSessionAttributes.put(LoginManager.USERID_SESSION_ATTRIBUTE, UUID.randomUUID().toString());
-        this.servletTestManager.setUp(TestServlet.class, TimeoutFilter.class, filterInitParameters, initialSessionAttributes);
+        servletTestManager.setUp(TestServlet.class, TimeoutFilter.class, filterInitParameters, initialSessionAttributes);
     }
 
     @After
     public void tearDown()
             throws Exception {
 
-        this.servletTestManager.tearDown();
+        servletTestManager.tearDown();
     }
 
 
@@ -93,7 +93,7 @@ public class TimeoutFilterTest {
 
         // setup
         HttpClient httpClient = new HttpClient();
-        GetMethod getMethod = new GetMethod(this.servletTestManager.getServletLocation());
+        GetMethod getMethod = new GetMethod(servletTestManager.getServletLocation());
         int statusCode;
         String body;
 

@@ -38,7 +38,7 @@ public class DummyAnnotJavaEEInjector extends AnnotJavaEEInjector {
     @Override
     protected void initFactory(IJndiNamingStrategy namingStrategy) {
 
-        this.factory = new JavaEEProxyFieldValueFactory(namingStrategy) {
+        factory = new JavaEEProxyFieldValueFactory(namingStrategy) {
 
             /**
              * {@inheritDoc}
@@ -65,7 +65,7 @@ public class DummyAnnotJavaEEInjector extends AnnotJavaEEInjector {
             protected IProxyTargetLocator getProxyTargetLocator(Field field) {
 
                 if (field.isAnnotationPresent(EJB.class))
-                    return new DummyJavaEEBeanLocator(field.getAnnotation(EJB.class).name(), field.getType(), this.namingStrategy);
+                    return new DummyJavaEEBeanLocator(field.getAnnotation(EJB.class).name(), field.getType(), namingStrategy);
 
                 if (field.isAnnotationPresent(PersistenceUnit.class))
                     return new EntityManagerFactoryLocator(field.getAnnotation(PersistenceUnit.class).unitName());

@@ -71,7 +71,7 @@ public class LoginValve extends ValveBase {
             }
         }
 
-        Valve valve = this.getNext();
+        Valve valve = getNext();
         if (null != valve) {
             valve.invoke(request, response);
         }

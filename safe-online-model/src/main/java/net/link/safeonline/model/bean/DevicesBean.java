@@ -34,20 +34,20 @@ public class DevicesBean implements Devices {
 
     public List<AllowedDeviceEntity> listAllowedDevices(ApplicationEntity application) {
 
-        return this.allowedDeviceDAO.listAllowedDevices(application);
+        return allowedDeviceDAO.listAllowedDevices(application);
     }
 
     public List<DeviceEntity> listDevices() {
 
-        return this.deviceDAO.listDevices();
+        return deviceDAO.listDevices();
     }
 
     public void setAllowedDevices(ApplicationEntity application, List<AllowedDeviceEntity> allowedDevices) {
 
-        this.allowedDeviceDAO.deleteAllowedDevices(application);
+        allowedDeviceDAO.deleteAllowedDevices(application);
         if (allowedDevices != null) {
             for (AllowedDeviceEntity allowedDevice : allowedDevices) {
-                this.allowedDeviceDAO.addAllowedDevice(application, allowedDevice.getDevice(), allowedDevice.getWeight());
+                allowedDeviceDAO.addAllowedDevice(application, allowedDevice.getDevice(), allowedDevice.getWeight());
             }
         }
     }

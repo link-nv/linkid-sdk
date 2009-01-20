@@ -44,10 +44,10 @@ public class IdentityServiceClient {
      */
     public IdentityServiceClient() {
 
-        this.server = MBeanServerLocator.locateJBoss();
-        LOG.debug("MBean Server class: " + this.server.getClass().getName());
+        server = MBeanServerLocator.locateJBoss();
+        LOG.debug("MBean Server class: " + server.getClass().getName());
         try {
-            this.identityServiceName = new ObjectName(IDENTITY_SERVICE);
+            identityServiceName = new ObjectName(IDENTITY_SERVICE);
         } catch (MalformedObjectNameException e) {
             throw new RuntimeException("object name error: " + e.getMessage());
         }
@@ -63,7 +63,7 @@ public class IdentityServiceClient {
         String[] signature = {};
         PrivateKey privateKey;
         try {
-            privateKey = (PrivateKey) this.server.invoke(this.identityServiceName, "getPrivateKey", params, signature);
+            privateKey = (PrivateKey) server.invoke(identityServiceName, "getPrivateKey", params, signature);
         } catch (Exception e) {
             throw new RuntimeException("invoke error: " + e.getMessage(), e);
         }
@@ -80,7 +80,7 @@ public class IdentityServiceClient {
         String[] signature = {};
         PublicKey publicKey;
         try {
-            publicKey = (PublicKey) this.server.invoke(this.identityServiceName, "getPublicKey", params, signature);
+            publicKey = (PublicKey) server.invoke(identityServiceName, "getPublicKey", params, signature);
         } catch (Exception e) {
             throw new RuntimeException("invoke error: " + e.getMessage(), e);
         }
@@ -97,7 +97,7 @@ public class IdentityServiceClient {
         String[] signature = {};
         X509Certificate certificate;
         try {
-            certificate = (X509Certificate) this.server.invoke(this.identityServiceName, "getCertificate", params, signature);
+            certificate = (X509Certificate) server.invoke(identityServiceName, "getCertificate", params, signature);
         } catch (Exception e) {
             throw new RuntimeException("invoke error: " + e.getMessage(), e);
         }
@@ -114,7 +114,7 @@ public class IdentityServiceClient {
         String[] signature = {};
         SecretKey secretKey;
         try {
-            secretKey = (SecretKey) this.server.invoke(this.identityServiceName, "getSsoKey", params, signature);
+            secretKey = (SecretKey) server.invoke(identityServiceName, "getSsoKey", params, signature);
         } catch (Exception e) {
             throw new RuntimeException("invoke error: " + e.getMessage(), e);
         }

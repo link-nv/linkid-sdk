@@ -85,22 +85,22 @@ public class ClockDriftDetectorTaskBean implements Task {
         TimeInfo timeInfo;
         try {
             NTPUDPClient client = new NTPUDPClient();
-            client.setDefaultTimeout(this.timeout);
+            client.setDefaultTimeout(timeout);
             client.open();
-            InetAddress ntpServerAddress = InetAddress.getByName(this.ntpServerName);
+            InetAddress ntpServerAddress = InetAddress.getByName(ntpServerName);
             LOG.debug("NTP server: " + ntpServerAddress);
             timeInfo = client.getTime(ntpServerAddress);
             client.close();
             timeInfo.computeDetails();
             Long offset = timeInfo.getOffset();
             LOG.debug("clock offset (ms): " + offset);
-            if (Math.abs(offset) > this.maxClockOffset) {
+            if (Math.abs(offset) > maxClockOffset) {
                 LOG.warn("maximum clock offset reached");
-                this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DISRUPTION, "Maximum clock offset reached of " + offset
+                securityAuditLogger.addSecurityAudit(SecurityThreatType.DISRUPTION, "Maximum clock offset reached of " + offset
                         + " milliseconds against NTP Server: " + ntpServerAddress);
             }
         } catch (SocketException e) {
-            this.resourceAuditLogger.addResourceAudit(ResourceNameType.NTP, ResourceLevelType.RESOURCE_UNAVAILABLE, this.ntpServerName,
+            resourceAuditLogger.addResourceAudit(ResourceNameType.NTP, ResourceLevelType.RESOURCE_UNAVAILABLE, ntpServerName,
                     "Error contacting NTP server");
         }
 

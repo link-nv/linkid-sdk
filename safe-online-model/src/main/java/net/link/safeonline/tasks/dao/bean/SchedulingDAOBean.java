@@ -40,7 +40,7 @@ public class SchedulingDAOBean implements SchedulingDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, SchedulingEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, SchedulingEntity.QueryInterface.class);
     }
 
     public SchedulingEntity addScheduling(String name, String cronExpression) {
@@ -48,7 +48,7 @@ public class SchedulingDAOBean implements SchedulingDAO {
         LOG.debug("Adding SchedulingEntity: " + name + " at " + cronExpression);
 
         SchedulingEntity schedulingEntity = new SchedulingEntity(name, cronExpression, null);
-        this.entityManager.persist(schedulingEntity);
+        entityManager.persist(schedulingEntity);
         return schedulingEntity;
     }
 
@@ -56,28 +56,28 @@ public class SchedulingDAOBean implements SchedulingDAO {
 
         LOG.debug("Removing SchedulingEntity: " + name);
 
-        SchedulingEntity schedulingEntity = this.entityManager.find(SchedulingEntity.class, name);
-        this.entityManager.remove(schedulingEntity);
+        SchedulingEntity schedulingEntity = entityManager.find(SchedulingEntity.class, name);
+        entityManager.remove(schedulingEntity);
     }
 
     public SchedulingEntity findSchedulingByName(String name) {
 
         LOG.debug("Looking for scheduling by name: " + name);
-        SchedulingEntity result = this.queryObject.findSchedulingByName(name);
+        SchedulingEntity result = queryObject.findSchedulingByName(name);
         return result;
     }
 
     public SchedulingEntity findSchedulingByTimerHandle(TimerHandle timerHandle) {
 
         LOG.debug("Looking for scheduling by timer handle: " + timerHandle);
-        SchedulingEntity result = this.queryObject.findSchedulingByTimerHandle(timerHandle);
+        SchedulingEntity result = queryObject.findSchedulingByTimerHandle(timerHandle);
         return result;
     }
 
     public List<SchedulingEntity> listSchedulings() {
 
         LOG.debug("Listing schedulings");
-        List<SchedulingEntity> result = this.queryObject.listSchedulings();
+        List<SchedulingEntity> result = queryObject.listSchedulings();
         return result;
     }
 

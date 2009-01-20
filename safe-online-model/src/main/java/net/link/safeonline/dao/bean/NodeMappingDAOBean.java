@@ -46,31 +46,31 @@ public class NodeMappingDAOBean implements NodeMappingDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, NodeMappingEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, NodeMappingEntity.QueryInterface.class);
     }
 
     public NodeMappingEntity addNodeMapping(SubjectEntity subject, NodeEntity node) {
 
-        String uuid = this.idGenerator.generateId();
+        String uuid = idGenerator.generateId();
         LOG.debug("add node mapping: subject=" + subject.getUserId() + " uuid=" + uuid + " node=" + node.getName());
         NodeMappingEntity registeredNode = new NodeMappingEntity(subject, uuid, node);
-        this.entityManager.persist(registeredNode);
+        entityManager.persist(registeredNode);
         return registeredNode;
     }
 
     public NodeMappingEntity findNodeMapping(SubjectEntity subject, NodeEntity node) {
 
-        return this.queryObject.findNodeMapping(subject, node);
+        return queryObject.findNodeMapping(subject, node);
     }
 
     public List<NodeMappingEntity> listNodeMappings(SubjectEntity subject) {
 
-        return this.queryObject.listNodeMappings(subject);
+        return queryObject.listNodeMappings(subject);
     }
 
     public NodeMappingEntity findNodeMapping(String id) {
 
-        return this.entityManager.find(NodeMappingEntity.class, id);
+        return entityManager.find(NodeMappingEntity.class, id);
     }
 
     public NodeMappingEntity getNodeMapping(String id)
@@ -84,11 +84,11 @@ public class NodeMappingDAOBean implements NodeMappingDAO {
 
     public void removeNodeMappings(SubjectEntity subject) {
 
-        this.queryObject.deleteAll(subject);
+        queryObject.deleteAll(subject);
     }
 
     public List<NodeMappingEntity> listNodeMappings(NodeEntity node) {
 
-        return this.queryObject.listNodeMappings(node);
+        return queryObject.listNodeMappings(node);
     }
 }

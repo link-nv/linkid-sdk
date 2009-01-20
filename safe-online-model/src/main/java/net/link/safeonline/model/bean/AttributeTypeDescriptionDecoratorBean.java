@@ -51,7 +51,7 @@ public class AttributeTypeDescriptionDecoratorBean implements AttributeTypeDescr
             String humanReadableName = null;
             String description = null;
             if (null != language) {
-                AttributeTypeDescriptionEntity attributeTypeDescription = this.attributeTypeDAO
+                AttributeTypeDescriptionEntity attributeTypeDescription = attributeTypeDAO
                                                                                                .findDescription(new AttributeTypeDescriptionPK(
                                                                                                        name, language));
                 if (null != attributeTypeDescription) {
@@ -69,7 +69,7 @@ public class AttributeTypeDescriptionDecoratorBean implements AttributeTypeDescr
                     humanReadableName = null;
                     description = null;
                     if (null != language) {
-                        AttributeTypeDescriptionEntity attributeTypeDescription = this.attributeTypeDAO
+                        AttributeTypeDescriptionEntity attributeTypeDescription = attributeTypeDAO
                                                                                                        .findDescription(new AttributeTypeDescriptionPK(
                                                                                                                memberType.getName(),
                                                                                                                language));

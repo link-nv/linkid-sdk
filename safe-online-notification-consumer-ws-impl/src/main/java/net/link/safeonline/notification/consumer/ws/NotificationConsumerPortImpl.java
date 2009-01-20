@@ -46,7 +46,7 @@ public class NotificationConsumerPortImpl implements NotificationConsumerPort {
                 String topicString = (String) topic;
                 LOG.debug("topic: " + topicString + " destination: " + notification.getMessage().getDestination() + " subject: "
                         + notification.getMessage().getSubject() + " content: " + notification.getMessage().getContent());
-                this.notificationConsumerService.handleMessage(topicString, notification.getMessage().getDestination(),
+                notificationConsumerService.handleMessage(topicString, notification.getMessage().getDestination(),
                         notification.getMessage().getSubject(), notification.getMessage().getContent());
             }
         }

@@ -40,33 +40,33 @@ public class DeviceClassDAOBean implements DeviceClassDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, DeviceClassEntity.QueryInterface.class);
-        this.descriptionQueryObject = QueryObjectFactory.createQueryObject(this.entityManager,
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, DeviceClassEntity.QueryInterface.class);
+        descriptionQueryObject = QueryObjectFactory.createQueryObject(entityManager,
                 DeviceClassDescriptionEntity.QueryInterface.class);
     }
 
     public DeviceClassEntity addDeviceClass(String name, String authenticationContextClass) {
 
         DeviceClassEntity deviceClass = new DeviceClassEntity(name, authenticationContextClass);
-        this.entityManager.persist(deviceClass);
+        entityManager.persist(deviceClass);
         return deviceClass;
     }
 
     public void removeDeviceClass(String name) {
 
         DeviceClassEntity deviceClass = findDeviceClass(name);
-        this.entityManager.remove(deviceClass);
+        entityManager.remove(deviceClass);
     }
 
     public DeviceClassEntity findDeviceClass(String deviceClassName) {
 
-        return this.entityManager.find(DeviceClassEntity.class, deviceClassName);
+        return entityManager.find(DeviceClassEntity.class, deviceClassName);
     }
 
     public DeviceClassEntity getDeviceClass(String deviceClassName)
             throws DeviceClassNotFoundException {
 
-        DeviceClassEntity deviceClass = this.entityManager.find(DeviceClassEntity.class, deviceClassName);
+        DeviceClassEntity deviceClass = entityManager.find(DeviceClassEntity.class, deviceClassName);
         if (null == deviceClass)
             throw new DeviceClassNotFoundException();
         return deviceClass;
@@ -74,12 +74,12 @@ public class DeviceClassDAOBean implements DeviceClassDAO {
 
     public List<DeviceClassEntity> listDeviceClasses() {
 
-        return this.queryObject.listDeviceClasses();
+        return queryObject.listDeviceClasses();
     }
 
     public List<DeviceClassDescriptionEntity> listDescriptions(DeviceClassEntity deviceClass) {
 
-        return this.descriptionQueryObject.listDescriptions(deviceClass);
+        return descriptionQueryObject.listDescriptions(deviceClass);
     }
 
     public void addDescription(DeviceClassEntity deviceClass, DeviceClassDescriptionEntity description) {
@@ -92,7 +92,7 @@ public class DeviceClassDAOBean implements DeviceClassDAO {
         /*
          * Persist.
          */
-        this.entityManager.persist(description);
+        entityManager.persist(description);
     }
 
     public void removeDescription(DeviceClassDescriptionEntity description) {
@@ -105,18 +105,18 @@ public class DeviceClassDAOBean implements DeviceClassDAO {
         /*
          * Remove from database.
          */
-        this.entityManager.remove(description);
+        entityManager.remove(description);
     }
 
     public void saveDescription(DeviceClassDescriptionEntity description) {
 
-        this.entityManager.merge(description);
+        entityManager.merge(description);
     }
 
     public DeviceClassDescriptionEntity getDescription(DeviceClassDescriptionPK descriptionPK)
             throws DeviceClassDescriptionNotFoundException {
 
-        DeviceClassDescriptionEntity description = this.entityManager.find(DeviceClassDescriptionEntity.class, descriptionPK);
+        DeviceClassDescriptionEntity description = entityManager.find(DeviceClassDescriptionEntity.class, descriptionPK);
         if (null == description)
             throw new DeviceClassDescriptionNotFoundException();
         return description;
@@ -124,7 +124,7 @@ public class DeviceClassDAOBean implements DeviceClassDAO {
 
     public DeviceClassDescriptionEntity findDescription(DeviceClassDescriptionPK descriptionPK) {
 
-        DeviceClassDescriptionEntity description = this.entityManager.find(DeviceClassDescriptionEntity.class, descriptionPK);
+        DeviceClassDescriptionEntity description = entityManager.find(DeviceClassDescriptionEntity.class, descriptionPK);
         return description;
     }
 

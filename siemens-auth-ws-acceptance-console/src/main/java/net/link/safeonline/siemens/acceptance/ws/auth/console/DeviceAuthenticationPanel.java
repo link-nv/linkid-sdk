@@ -44,7 +44,7 @@ public abstract class DeviceAuthenticationPanel extends JPanel {
 
         this.deviceName = deviceName;
         this.parent = parent;
-        this.initial = true;
+        initial = true;
     }
 
     public DeviceAuthenticationPanel(String deviceName, AcceptanceConsole parent,
@@ -53,17 +53,17 @@ public abstract class DeviceAuthenticationPanel extends JPanel {
         this.deviceName = deviceName;
         this.deviceAuthenticationInformation = deviceAuthenticationInformation;
         this.parent = parent;
-        this.initial = false;
+        initial = false;
     }
 
     public void authenticate(Map<String, String> deviceCredentials) {
 
-        this.parent.login(this.deviceName, deviceCredentials);
+        parent.login(deviceName, deviceCredentials);
     }
 
     public void cancel() {
 
-        this.parent.resetContent();
+        parent.resetContent();
     }
 
 }

@@ -72,74 +72,74 @@ public class PaymentServiceProcessBean extends AbstractPaymentDataClientBean imp
     public String getUsername() {
 
         String username = getUsername(getUserId());
-        this.log.debug("username #0", username);
+        log.debug("username #0", username);
         return username;
     }
 
     private String getUserId() {
 
-        Principal principal = this.sessionContext.getCallerPrincipal();
+        Principal principal = sessionContext.getCallerPrincipal();
         return principal.getName();
     }
 
     public String authenticate() {
 
-        this.log.debug("authenticate");
+        log.debug("authenticate");
         String result = SafeOnlineLoginUtils.login("cards.seam");
         return result;
     }
 
     public String commit() {
 
-        this.log.debug("commit");
+        log.debug("commit");
         String username = getUsername();
         if (null == username) {
-            this.facesMessages.add("username is null. user not authenticated");
+            facesMessages.add("username is null. user not authenticated");
             return null;
         }
-        if (false == this.user.equals(username)) {
-            this.facesMessages.add("authenticated user != requested user");
+        if (false == user.equals(username)) {
+            facesMessages.add("authenticated user != requested user");
             return null;
         }
-        UserEntity targetUser = this.entityManager.find(UserEntity.class, getUserId());
+        UserEntity targetUser = entityManager.find(UserEntity.class, getUserId());
         if (targetUser == null) {
             targetUser = new UserEntity(getUserId(), username);
-            this.entityManager.persist(targetUser);
+            entityManager.persist(targetUser);
         }
 
         Date paymentDate = new Date();
         PaymentEntity newPayment = new PaymentEntity();
-        newPayment.setRecipient(this.recipient);
-        newPayment.setAmount(this.amount);
-        newPayment.setMessage(this.message);
+        newPayment.setRecipient(recipient);
+        newPayment.setAmount(amount);
+        newPayment.setMessage(message);
         newPayment.setPaymentDate(paymentDate);
-        newPayment.setVisa(this.visa);
+        newPayment.setVisa(visa);
         newPayment.setOwner(targetUser);
 
-        this.entityManager.persist(newPayment);
+        entityManager.persist(newPayment);
 
-        this.visaNumber = this.visa;
+        visaNumber = visa;
 
         return "success";
     }
 
     public String done() {
 
-        this.log.debug("done. redirect to #0", this.target);
+        log.debug("done. redirect to #0", target);
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext externalContext = context.getExternalContext();
         Session.getInstance().invalidate();
         try {
-            externalContext.redirect(this.target);
+            externalContext.redirect(target);
         } catch (IOException e) {
-            this.facesMessages.add("redirect error");
+            facesMessages.add("redirect error");
         }
         return null;
     }
 
     public String getVisa() {
 
-        return this.visa;
+        return visa;
     }
 
     public void setVisa(String visa) {

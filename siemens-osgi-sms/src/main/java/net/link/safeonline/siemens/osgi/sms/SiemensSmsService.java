@@ -50,7 +50,7 @@ public class SiemensSmsService implements SmsService {
         if (null != serviceReference) {
             System.out.println("OLAS Configuration service found");
             OlasConfigurationService configurationService = (OlasConfigurationService) this.bundleContext.getService(serviceReference);
-            configurationService.initConfigurationValue(this.groupName, this.itemName, this.location);
+            configurationService.initConfigurationValue(groupName, itemName, location);
             this.bundleContext.ungetService(serviceReference);
         }
 
@@ -82,11 +82,11 @@ public class SiemensSmsService implements SmsService {
 
     private String getLocation() {
 
-        ServiceReference serviceReference = this.bundleContext.getServiceReference(OlasConfigurationService.class.getName());
+        ServiceReference serviceReference = bundleContext.getServiceReference(OlasConfigurationService.class.getName());
         if (null != serviceReference) {
-            OlasConfigurationService configurationService = (OlasConfigurationService) this.bundleContext.getService(serviceReference);
-            String value = (String) configurationService.getConfigurationValue(this.groupName, this.itemName, this.location);
-            this.bundleContext.ungetService(serviceReference);
+            OlasConfigurationService configurationService = (OlasConfigurationService) bundleContext.getService(serviceReference);
+            String value = (String) configurationService.getConfigurationValue(groupName, itemName, location);
+            bundleContext.ungetService(serviceReference);
             return value;
         }
 

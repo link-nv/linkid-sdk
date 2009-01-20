@@ -28,29 +28,29 @@ public class HelpdeskContextsBean implements HelpdeskContexts {
 
     public List<HelpdeskContextEntity> listContexts() {
 
-        return this.helpdeskContextDAO.listContexts();
+        return helpdeskContextDAO.listContexts();
     }
 
     public List<HelpdeskEventEntity> listEvents(Long contextId) {
 
-        return this.helpdeskEventDAO.listEvents(contextId);
+        return helpdeskEventDAO.listEvents(contextId);
     }
 
     public void removeLog(Long logId)
             throws HelpdeskContextNotFoundException {
 
-        this.helpdeskEventDAO.removeEvents(logId);
-        this.helpdeskContextDAO.removeContext(logId);
+        helpdeskEventDAO.removeEvents(logId);
+        helpdeskContextDAO.removeContext(logId);
     }
 
     public List<HelpdeskContextEntity> listUserContexts(String user) {
 
-        return this.helpdeskEventDAO.listUserContexts(user);
+        return helpdeskEventDAO.listUserContexts(user);
     }
 
     public List<String> listUsers() {
 
-        return this.helpdeskEventDAO.listUsers();
+        return helpdeskEventDAO.listUsers();
     }
 
 }

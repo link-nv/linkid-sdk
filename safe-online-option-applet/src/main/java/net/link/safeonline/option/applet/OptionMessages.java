@@ -42,7 +42,7 @@ public class OptionMessages {
 
         public String getKey() {
 
-            return this.key;
+            return key;
         }
     }
 
@@ -57,7 +57,7 @@ public class OptionMessages {
      */
     public OptionMessages(Locale locale) {
 
-        this.messages = ResourceBundle.getBundle("net.link.safeonline.option.applet.OptionMessages", locale);
+        messages = ResourceBundle.getBundle("net.link.safeonline.option.applet.OptionMessages", locale);
     }
 
     /**
@@ -65,6 +65,6 @@ public class OptionMessages {
      */
     public String getString(KEY key) {
 
-        return this.messages.getString(key.getKey());
+        return messages.getString(key.getKey());
     }
 }

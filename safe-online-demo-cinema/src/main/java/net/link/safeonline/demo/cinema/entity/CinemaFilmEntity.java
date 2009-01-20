@@ -51,7 +51,7 @@ public class CinemaFilmEntity implements Serializable {
 
     public CinemaFilmEntity() {
 
-        this.times = new HashSet<CinemaShowTimeEntity>();
+        times = new HashSet<CinemaShowTimeEntity>();
     }
 
     /**
@@ -72,7 +72,7 @@ public class CinemaFilmEntity implements Serializable {
      */
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     /**
@@ -80,7 +80,7 @@ public class CinemaFilmEntity implements Serializable {
      */
     public String getDescription() {
 
-        return this.description;
+        return description;
     }
 
     /**
@@ -88,7 +88,7 @@ public class CinemaFilmEntity implements Serializable {
      */
     public long getDuration() {
 
-        return this.duration;
+        return duration;
     }
 
     /**
@@ -96,7 +96,7 @@ public class CinemaFilmEntity implements Serializable {
      */
     public long getPrice() {
 
-        return this.price;
+        return price;
     }
 
     /**
@@ -104,7 +104,7 @@ public class CinemaFilmEntity implements Serializable {
      */
     public Collection<CinemaShowTimeEntity> getTimes() {
 
-        return this.times;
+        return times;
     }
 
     /**
@@ -112,7 +112,7 @@ public class CinemaFilmEntity implements Serializable {
      */
     public Date getStartTime() {
 
-        return this.startTime;
+        return startTime;
     }
 
     /**
@@ -120,7 +120,7 @@ public class CinemaFilmEntity implements Serializable {
      */
     public Date getEndTime() {
 
-        return this.endTime;
+        return endTime;
     }
 
     /**
@@ -128,6 +128,6 @@ public class CinemaFilmEntity implements Serializable {
      */
     public long getId() {
 
-        return this.id;
+        return id;
     }
 }

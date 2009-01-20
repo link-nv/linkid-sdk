@@ -109,9 +109,9 @@ public class AttributeCacheEntity implements Serializable {
 
         this.attributeType = attributeType;
         this.subject = subject;
-        this.attributeIndex = attributeIdx;
-        this.pk = new AttributePK(attributeType, subject, attributeIdx);
-        this.entryDate = new Date(System.currentTimeMillis());
+        attributeIndex = attributeIdx;
+        pk = new AttributePK(attributeType, subject, attributeIdx);
+        entryDate = new Date(System.currentTimeMillis());
     }
 
     @EmbeddedId
@@ -120,7 +120,7 @@ public class AttributeCacheEntity implements Serializable {
             @AttributeOverride(name = "attributeIndex", column = @Column(name = ATTRIBUTE_INDEX_COLUMN_NAME)) })
     public AttributePK getPk() {
 
-        return this.pk;
+        return pk;
     }
 
     public void setPk(AttributePK pk) {
@@ -132,7 +132,7 @@ public class AttributeCacheEntity implements Serializable {
     @JoinColumn(name = ATTRIBUTE_TYPE_COLUMN_NAME, insertable = false, updatable = false)
     public AttributeTypeEntity getAttributeType() {
 
-        return this.attributeType;
+        return attributeType;
     }
 
     public void setAttributeType(AttributeTypeEntity attributeType) {
@@ -144,7 +144,7 @@ public class AttributeCacheEntity implements Serializable {
     @JoinColumn(name = SUBJECT_COLUMN_NAME, insertable = false, updatable = false)
     public SubjectEntity getSubject() {
 
-        return this.subject;
+        return subject;
     }
 
     public void setSubject(SubjectEntity subject) {
@@ -154,7 +154,7 @@ public class AttributeCacheEntity implements Serializable {
 
     public Date getEntryDate() {
 
-        return this.entryDate;
+        return entryDate;
     }
 
     public void setEntryDate(Date entryDate) {
@@ -169,7 +169,7 @@ public class AttributeCacheEntity implements Serializable {
     @Column(name = ATTRIBUTE_INDEX_COLUMN_NAME, insertable = false, updatable = false)
     public long getAttributeIndex() {
 
-        return this.attributeIndex;
+        return attributeIndex;
     }
 
     public void setAttributeIndex(long attributeIndex) {
@@ -179,7 +179,7 @@ public class AttributeCacheEntity implements Serializable {
 
     public String getStringValue() {
 
-        return this.stringValue;
+        return stringValue;
     }
 
     public void setStringValue(String stringValue) {
@@ -189,7 +189,7 @@ public class AttributeCacheEntity implements Serializable {
 
     public Boolean getBooleanValue() {
 
-        return this.booleanValue;
+        return booleanValue;
     }
 
     public void setBooleanValue(Boolean booleanValue) {
@@ -200,7 +200,7 @@ public class AttributeCacheEntity implements Serializable {
     @Temporal(TemporalType.DATE)
     public Date getDateValue() {
 
-        return this.dateValue;
+        return dateValue;
     }
 
     public void setDateValue(Date dateValue) {
@@ -210,7 +210,7 @@ public class AttributeCacheEntity implements Serializable {
 
     public Double getDoubleValue() {
 
-        return this.doubleValue;
+        return doubleValue;
     }
 
     public void setDoubleValue(Double doubleValue) {
@@ -220,7 +220,7 @@ public class AttributeCacheEntity implements Serializable {
 
     public Integer getIntegerValue() {
 
-        return this.integerValue;
+        return integerValue;
     }
 
     public void setIntegerValue(Integer integerValue) {
@@ -240,10 +240,10 @@ public class AttributeCacheEntity implements Serializable {
     @Transient
     public List<AttributeCacheEntity> getMembers() {
 
-        if (null == this.members) {
-            this.members = new LinkedList<AttributeCacheEntity>();
+        if (null == members) {
+            members = new LinkedList<AttributeCacheEntity>();
         }
-        return this.members;
+        return members;
     }
 
     public void setMembers(List<AttributeCacheEntity> members) {
@@ -258,7 +258,7 @@ public class AttributeCacheEntity implements Serializable {
     @Transient
     public Object getValue() {
 
-        DatatypeType datatype = this.attributeType.getType();
+        DatatypeType datatype = attributeType.getType();
         switch (datatype) {
             case STRING:
                 return getStringValue();
@@ -278,7 +278,7 @@ public class AttributeCacheEntity implements Serializable {
     @Transient
     public void setValue(Object value) {
 
-        DatatypeType datatype = this.attributeType.getType();
+        DatatypeType datatype = attributeType.getType();
         switch (datatype) {
             case STRING:
                 setStringValue((String) value);
@@ -303,7 +303,7 @@ public class AttributeCacheEntity implements Serializable {
     @Transient
     public boolean isEmpty() {
 
-        DatatypeType datatype = this.attributeType.getType();
+        DatatypeType datatype = attributeType.getType();
         switch (datatype) {
             case STRING:
                 String value = getStringValue();
@@ -326,11 +326,11 @@ public class AttributeCacheEntity implements Serializable {
     @Transient
     public void clearValues() {
 
-        this.booleanValue = null;
-        this.dateValue = null;
-        this.doubleValue = null;
-        this.integerValue = null;
-        this.stringValue = null;
+        booleanValue = null;
+        dateValue = null;
+        doubleValue = null;
+        integerValue = null;
+        stringValue = null;
     }
 
     @Override
@@ -343,19 +343,19 @@ public class AttributeCacheEntity implements Serializable {
         if (false == obj instanceof AttributeCacheEntity)
             return false;
         AttributeCacheEntity rhs = (AttributeCacheEntity) obj;
-        return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
+        return new EqualsBuilder().append(pk, rhs.pk).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.pk).toHashCode();
+        return new HashCodeBuilder().append(pk).toHashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("pk", this.pk).append("entry date", this.entryDate).toString();
+        return new ToStringBuilder(this).append("pk", pk).append("entry date", entryDate).toString();
     }
 
 

@@ -35,11 +35,11 @@ public class SmartCardConfigFactoryImplTest extends TestCase {
         super.setUp();
 
         Thread currentThread = Thread.currentThread();
-        this.originalClassLoader = currentThread.getContextClassLoader();
-        this.testClassLoader = new TestClassLoader();
-        currentThread.setContextClassLoader(this.testClassLoader);
+        originalClassLoader = currentThread.getContextClassLoader();
+        testClassLoader = new TestClassLoader();
+        currentThread.setContextClassLoader(testClassLoader);
 
-        this.testedInstance = new SmartCardConfigFactoryImpl();
+        testedInstance = new SmartCardConfigFactoryImpl();
     }
 
     @Override
@@ -47,7 +47,7 @@ public class SmartCardConfigFactoryImplTest extends TestCase {
             throws Exception {
 
         Thread currentThread = Thread.currentThread();
-        currentThread.setContextClassLoader(this.originalClassLoader);
+        currentThread.setContextClassLoader(originalClassLoader);
 
         super.tearDown();
     }
@@ -56,7 +56,7 @@ public class SmartCardConfigFactoryImplTest extends TestCase {
             throws Exception {
 
         // operate
-        List<SmartCardConfig> results = this.testedInstance.getSmartCardConfigs();
+        List<SmartCardConfig> results = testedInstance.getSmartCardConfigs();
 
         // verify
         assertNotNull(results);
@@ -69,10 +69,10 @@ public class SmartCardConfigFactoryImplTest extends TestCase {
         // setup
         URL testConfigResource = SmartCardConfigFactoryImpl.class.getResource("/test-safe-online-pkcs11-sc-config.properties");
 
-        this.testClassLoader.addResource("META-INF/safe-online-pkcs11-sc-config.properties", testConfigResource);
+        testClassLoader.addResource("META-INF/safe-online-pkcs11-sc-config.properties", testConfigResource);
 
         // operate
-        List<SmartCardConfig> results = this.testedInstance.getSmartCardConfigs();
+        List<SmartCardConfig> results = testedInstance.getSmartCardConfigs();
 
         // verify
         assertNotNull(results);

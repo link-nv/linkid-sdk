@@ -33,9 +33,9 @@ public class PingClientImpl extends AbstractMessageAccessor implements PingClien
     public PingClientImpl(String location) {
 
         PingService pingService = PingServiceFactory.newInstance();
-        this.pingPort = pingService.getPingPort();
+        pingPort = pingService.getPingPort();
 
-        BindingProvider bindingProvider = (BindingProvider) this.pingPort;
+        BindingProvider bindingProvider = (BindingProvider) pingPort;
         bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location + "/safe-online-ws/ping");
     }
 
@@ -44,13 +44,13 @@ public class PingClientImpl extends AbstractMessageAccessor implements PingClien
 
         Request request = new Request();
         try {
-            this.pingPort.pingOperation(request);
+            pingPort.pingOperation(request);
         } catch (ClientTransportException e) {
             throw new ConnectException(e.getMessage());
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {
-            retrieveHeadersFromPort(this.pingPort);
+            retrieveHeadersFromPort(pingPort);
         }
     }
 }

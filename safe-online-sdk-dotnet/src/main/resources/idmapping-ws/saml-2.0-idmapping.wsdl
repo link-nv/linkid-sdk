@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	targetNamespace="urn:oasis:names:tc:SAML:2.0:protocol"
+	xmlns:tns="urn:oasis:names:tc:SAML:2.0:protocol"
+	xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
+	name="SafeOnlineNameIdentifierMappingWebService">
+	<types>
+		<schema xmlns="http://www.w3.org/2001/XMLSchema"
+			xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+			<import namespace="urn:oasis:names:tc:SAML:2.0:protocol"
+				schemaLocation="saml-schema-protocol-2.0.xsd" />
+		</schema>
+	</types>
+	<message name="NameIDMappingRequestMessage">
+		<part name="request" element="samlp:NameIDMappingRequest" />
+	</message>
+	<message name="NameIDMappingResponseMessage">
+		<part name="response" element="samlp:NameIDMappingResponse" />
+	</message>
+	<portType name="NameIdentifierMappingPort">
+		<operation name="NameIdentifierMappingQuery">
+			<input message="tns:NameIDMappingRequestMessage" />
+			<output message="tns:NameIDMappingResponseMessage" />
+		</operation>
+	</portType>
+	<binding name="NameIdentifierMappingBinding"
+		type="tns:NameIdentifierMappingPort">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="NameIdentifierMappingQuery">
+			<soap:operation
+				soapAction="http://www.oasis-open.org/committees/security" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<service name="NameIdentifierMappingService">
+		<port name="NameIdentifierMappingPort"
+			binding="tns:NameIdentifierMappingBinding">
+			<soap:address
+				location="http://localhost:8080/safe-online-ws/idmapping/" />
+		</port>
+	</service>
+</definitions>

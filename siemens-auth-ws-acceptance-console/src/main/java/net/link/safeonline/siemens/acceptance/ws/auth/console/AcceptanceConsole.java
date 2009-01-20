@@ -96,11 +96,11 @@ public class AcceptanceConsole extends JFrame implements Observer {
      */
     private JMenu                   authMenu                = new JMenu("OLAS WS Authentication");
 
-    private JMenuItem               setApplicationMenuItem  = new JMenuItem(this.setApplicationAction);
-    private JMenuItem               setLocationMenuItem     = new JMenuItem(this.setLocationAction);
-    private JCheckBoxMenuItem       generateKeyPairMenuItem = new JCheckBoxMenuItem(this.generateKeyPairAction);
+    private JMenuItem               setApplicationMenuItem  = new JMenuItem(setApplicationAction);
+    private JMenuItem               setLocationMenuItem     = new JMenuItem(setLocationAction);
+    private JCheckBoxMenuItem       generateKeyPairMenuItem = new JCheckBoxMenuItem(generateKeyPairAction);
 
-    private JMenuItem               quitMenuItem            = new JMenuItem(this.quitAction);
+    private JMenuItem               quitMenuItem            = new JMenuItem(quitAction);
 
     /*
      * Non-GUI members
@@ -118,7 +118,7 @@ public class AcceptanceConsole extends JFrame implements Observer {
         buildMenu();
         buildWindow();
 
-        this.consoleManager.addObserver(this);
+        consoleManager.addObserver(this);
         AcceptanceConsoleManager.getInstance().addObserver(this);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -129,22 +129,22 @@ public class AcceptanceConsole extends JFrame implements Observer {
 
     private void buildMenu() {
 
-        this.generateKeyPairMenuItem.setSelected(this.consoleManager.getGenerateKeyPair());
+        generateKeyPairMenuItem.setSelected(consoleManager.getGenerateKeyPair());
 
-        this.authMenu.setMnemonic(KeyEvent.VK_A);
+        authMenu.setMnemonic(KeyEvent.VK_A);
 
-        this.authMenu.add(new AuthenticationAction(PASSWORD_DEVICE_NAME));
-        this.authMenu.add(new AuthenticationAction(OTP_OVER_SMS_DEVICE_NAME));
-        this.authMenu.add(new AuthenticationAction(ENCAP_DEVICE_NAME));
-        this.authMenu.addSeparator();
-        this.authMenu.add(this.setLocationMenuItem);
-        this.authMenu.add(this.setApplicationMenuItem);
-        this.authMenu.add(this.generateKeyPairMenuItem);
-        this.authMenu.addSeparator();
-        this.authMenu.add(this.quitMenuItem);
+        authMenu.add(new AuthenticationAction(PASSWORD_DEVICE_NAME));
+        authMenu.add(new AuthenticationAction(OTP_OVER_SMS_DEVICE_NAME));
+        authMenu.add(new AuthenticationAction(ENCAP_DEVICE_NAME));
+        authMenu.addSeparator();
+        authMenu.add(setLocationMenuItem);
+        authMenu.add(setApplicationMenuItem);
+        authMenu.add(generateKeyPairMenuItem);
+        authMenu.addSeparator();
+        authMenu.add(quitMenuItem);
 
         JMenuBar menu = new JMenuBar();
-        menu.add(this.authMenu);
+        menu.add(authMenu);
         setJMenuBar(menu);
     }
 
@@ -152,15 +152,15 @@ public class AcceptanceConsole extends JFrame implements Observer {
 
         buildStatusPanel();
 
-        if (this.contentPanel == null) {
-            this.contentPanel = new JPanel();
+        if (contentPanel == null) {
+            contentPanel = new JPanel();
         }
 
-        this.splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, this.contentPanel, this.statusPanel);
-        this.splitPane.setResizeWeight(1.0);
-        this.splitPane.setDividerSize(3);
+        splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, contentPanel, statusPanel);
+        splitPane.setResizeWeight(1.0);
+        splitPane.setDividerSize(3);
 
-        this.add(this.splitPane);
+        this.add(splitPane);
     }
 
     private void buildStatusPanel() {
@@ -168,38 +168,38 @@ public class AcceptanceConsole extends JFrame implements Observer {
         setStatus();
 
         JPanel applicationPanel = new JPanel();
-        applicationPanel.add(this.applicationLabel);
+        applicationPanel.add(applicationLabel);
 
         JPanel locationPanel = new JPanel();
-        locationPanel.add(this.locationLabel);
+        locationPanel.add(locationLabel);
 
-        this.statusPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, applicationPanel, locationPanel);
-        this.statusPanel.setDividerSize(0);
-        this.statusPanel.setResizeWeight(0.5);
+        statusPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, applicationPanel, locationPanel);
+        statusPanel.setDividerSize(0);
+        statusPanel.setResizeWeight(0.5);
 
     }
 
     public void resetContent() {
 
-        this.contentPanel = new JPanel();
-        this.splitPane.setTopComponent(this.contentPanel);
+        contentPanel = new JPanel();
+        splitPane.setTopComponent(contentPanel);
         resetAuthentication();
     }
 
     public void login(String deviceName, Object deviceCredentials) {
 
-        this.consoleManager.setDeviceName(deviceName);
+        consoleManager.setDeviceName(deviceName);
 
-        this.contentPanel = new LoginPanel(this, "Authenticating ...");
-        this.splitPane.setTopComponent(this.contentPanel);
+        contentPanel = new LoginPanel(this, "Authenticating ...");
+        splitPane.setTopComponent(contentPanel);
 
         AuthenticationUtils.getInstance().authenticate(deviceName, deviceCredentials);
     }
 
     public void requestGlobalUsageAgreement() {
 
-        this.contentPanel = new GlobalUsageAgreementPanel(this);
-        this.splitPane.setTopComponent(this.contentPanel);
+        contentPanel = new GlobalUsageAgreementPanel(this);
+        splitPane.setTopComponent(contentPanel);
 
         AuthenticationUtils.getInstance().requestGlobalUsageAgreement();
 
@@ -207,8 +207,8 @@ public class AcceptanceConsole extends JFrame implements Observer {
 
     public void confirmGlobalUsageAgreement(Confirmation confirmation) {
 
-        this.contentPanel = new LoginPanel(this, "Confirming / Rejecting global usage agreement ...");
-        this.splitPane.setTopComponent(this.contentPanel);
+        contentPanel = new LoginPanel(this, "Confirming / Rejecting global usage agreement ...");
+        splitPane.setTopComponent(contentPanel);
 
         AuthenticationUtils.getInstance().confirmGlobalUsageAgreement(confirmation);
 
@@ -216,8 +216,8 @@ public class AcceptanceConsole extends JFrame implements Observer {
 
     public void requestUsageAgreement() {
 
-        this.contentPanel = new UsageAgreementPanel(this);
-        this.splitPane.setTopComponent(this.contentPanel);
+        contentPanel = new UsageAgreementPanel(this);
+        splitPane.setTopComponent(contentPanel);
 
         AuthenticationUtils.getInstance().requestUsageAgreement();
 
@@ -225,8 +225,8 @@ public class AcceptanceConsole extends JFrame implements Observer {
 
     public void confirmUsageAgreement(Confirmation confirmation) {
 
-        this.contentPanel = new LoginPanel(this, "Confirming / Rejecting usage agreement ...");
-        this.splitPane.setTopComponent(this.contentPanel);
+        contentPanel = new LoginPanel(this, "Confirming / Rejecting usage agreement ...");
+        splitPane.setTopComponent(contentPanel);
 
         AuthenticationUtils.getInstance().confirmUsageAgreement(confirmation);
 
@@ -234,8 +234,8 @@ public class AcceptanceConsole extends JFrame implements Observer {
 
     public void getIdentity() {
 
-        this.contentPanel = new IdentityConfirmationPanel(this);
-        this.splitPane.setTopComponent(this.contentPanel);
+        contentPanel = new IdentityConfirmationPanel(this);
+        splitPane.setTopComponent(contentPanel);
 
         AuthenticationUtils.getInstance().getIdentity();
 
@@ -243,8 +243,8 @@ public class AcceptanceConsole extends JFrame implements Observer {
 
     public void confirmIdentity(Confirmation confirmation) {
 
-        this.contentPanel = new LoginPanel(this, "Confirming / Reject application's identity");
-        this.splitPane.setTopComponent(this.contentPanel);
+        contentPanel = new LoginPanel(this, "Confirming / Reject application's identity");
+        splitPane.setTopComponent(contentPanel);
 
         AuthenticationUtils.getInstance().confirmIdentity(confirmation);
 
@@ -252,8 +252,8 @@ public class AcceptanceConsole extends JFrame implements Observer {
 
     public void getMissingAttributes() {
 
-        this.contentPanel = new MissingAttributesPanel(this);
-        this.splitPane.setTopComponent(this.contentPanel);
+        contentPanel = new MissingAttributesPanel(this);
+        splitPane.setTopComponent(contentPanel);
 
         AuthenticationUtils.getInstance().getMissingAttributes();
 
@@ -261,8 +261,8 @@ public class AcceptanceConsole extends JFrame implements Observer {
 
     public void saveMissingAttributes(List<Attribute> missingAttributes) {
 
-        this.contentPanel = new LoginPanel(this, "Saving missing attributes");
-        this.splitPane.setTopComponent(this.contentPanel);
+        contentPanel = new LoginPanel(this, "Saving missing attributes");
+        splitPane.setTopComponent(contentPanel);
 
         AuthenticationUtils.getInstance().saveMissingAttributes(missingAttributes);
 
@@ -276,7 +276,7 @@ public class AcceptanceConsole extends JFrame implements Observer {
             Class<? extends DeviceAuthenticationPanel> devicePanelClass = devicePanelMap.get(deviceName);
             Constructor<? extends DeviceAuthenticationPanel> constructor = devicePanelClass.getConstructor(new Class[] { String.class,
                     AcceptanceConsole.class });
-            this.contentPanel = constructor.newInstance(deviceName, this);
+            contentPanel = constructor.newInstance(deviceName, this);
         } catch (IllegalArgumentException e) {
             throw new RuntimeException(e);
         } catch (InstantiationException e) {
@@ -291,16 +291,16 @@ public class AcceptanceConsole extends JFrame implements Observer {
             throw new RuntimeException(e);
         }
 
-        this.splitPane.setTopComponent(this.contentPanel);
+        splitPane.setTopComponent(contentPanel);
     }
 
     protected void onAuthenticateFurther(DeviceAuthenticationInformationType deviceAuthenticationInformation) {
 
         try {
-            Class<? extends DeviceAuthenticationPanel> devicePanelClass = devicePanelMap.get(this.consoleManager.getDeviceName());
+            Class<? extends DeviceAuthenticationPanel> devicePanelClass = devicePanelMap.get(consoleManager.getDeviceName());
             Constructor<? extends DeviceAuthenticationPanel> constructor = devicePanelClass.getConstructor(new Class[] { String.class,
                     AcceptanceConsole.class, DeviceAuthenticationInformationType.class });
-            this.contentPanel = constructor.newInstance(this.consoleManager.getDeviceName(), this, deviceAuthenticationInformation);
+            contentPanel = constructor.newInstance(consoleManager.getDeviceName(), this, deviceAuthenticationInformation);
         } catch (IllegalArgumentException e) {
             throw new RuntimeException(e);
         } catch (InstantiationException e) {
@@ -315,40 +315,40 @@ public class AcceptanceConsole extends JFrame implements Observer {
             throw new RuntimeException(e);
         }
 
-        this.splitPane.setTopComponent(this.contentPanel);
+        splitPane.setTopComponent(contentPanel);
     }
 
     private void resetAuthentication() {
 
-        this.consoleManager.resetAuthenticationClient();
+        consoleManager.resetAuthenticationClient();
     }
 
     public void setStatus() {
 
-        this.locationLabel.setText("Location: " + this.consoleManager.getLocation());
-        this.applicationLabel.setText("Application: " + this.consoleManager.getApplication());
+        locationLabel.setText("Location: " + consoleManager.getLocation());
+        applicationLabel.setText("Application: " + consoleManager.getApplication());
     }
 
     protected void onSetLocation() {
 
-        String location = JOptionPane.showInputDialog("Set OLAS Authentication WS Location", this.consoleManager.getLocation());
+        String location = JOptionPane.showInputDialog("Set OLAS Authentication WS Location", consoleManager.getLocation());
         if (null != location) {
-            this.consoleManager.setLocation(location);
+            consoleManager.setLocation(location);
         }
     }
 
     protected void onSetApplication() {
 
-        String application = JOptionPane.showInputDialog("Set Application to authenticate against", this.consoleManager.getApplication());
+        String application = JOptionPane.showInputDialog("Set Application to authenticate against", consoleManager.getApplication());
         if (null != application) {
-            this.consoleManager.setApplication(application);
+            consoleManager.setApplication(application);
         }
     }
 
     protected void onGenerateKeyPair() {
 
-        this.consoleManager.setGenerateKeyPair(!this.consoleManager.getGenerateKeyPair());
-        this.generateKeyPairMenuItem.setSelected(this.consoleManager.getGenerateKeyPair());
+        consoleManager.setGenerateKeyPair(!consoleManager.getGenerateKeyPair());
+        generateKeyPairMenuItem.setSelected(consoleManager.getGenerateKeyPair());
 
     }
 
@@ -381,7 +381,7 @@ public class AcceptanceConsole extends JFrame implements Observer {
 
         public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
-            onAuthenticate(this.deviceName);
+            onAuthenticate(deviceName);
         }
     }
 

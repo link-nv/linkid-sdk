@@ -59,7 +59,7 @@ public class EnablePage extends TemplatePage {
 
         super();
 
-        this.protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
         addHeader(this, false);
 
@@ -78,7 +78,7 @@ public class EnablePage extends TemplatePage {
         });
 
         String title = getLocalizer().getString("enable", this) + " " + getLocalizer().getString("encap", this) + " "
-                + this.protocolContext.getAttribute();
+                + protocolContext.getAttribute();
         getContent().add(new Label("title", title));
 
         getContent().add(new EnableForm(ENABLE_FORM_ID));
@@ -99,9 +99,9 @@ public class EnablePage extends TemplatePage {
 
             super(id);
 
-            add(new Label(CHALLENGE_ID, this.challenge = new Model<String>()));
+            add(new Label(CHALLENGE_ID, challenge = new Model<String>()));
 
-            final TextField<String> tokenField = new TextField<String>(TOKEN_FIELD_ID, this.token = new Model<String>());
+            final TextField<String> tokenField = new TextField<String>(TOKEN_FIELD_ID, token = new Model<String>());
             tokenField.setRequired(true);
             add(tokenField);
 
@@ -113,23 +113,23 @@ public class EnablePage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    LOG.debug("enable encap " + EnablePage.this.protocolContext.getAttribute());
+                    LOG.debug("enable encap " + protocolContext.getAttribute());
 
                     try {
-                        if (!EnablePage.this.encapDeviceService.authenticateEncap(EnableForm.this.challenge.getObject(),
-                                EnableForm.this.token.getObject())) {
+                        if (!encapDeviceService.authenticateEncap(challenge.getObject(),
+                                token.getObject())) {
                             EnableForm.this.error(getLocalizer().getString("authenticationFailedMsg", this));
                             HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: authentication failed: "
-                                    + EnablePage.this.protocolContext.getSubject(), LogLevelType.ERROR);
+                                    + protocolContext.getSubject(), LogLevelType.ERROR);
                             return;
                         }
 
-                        EnablePage.this.encapDeviceService.enable(EnablePage.this.protocolContext.getSubject(),
-                                EnablePage.this.protocolContext.getAttribute());
+                        encapDeviceService.enable(protocolContext.getSubject(),
+                                protocolContext.getAttribute());
                     } catch (SubjectNotFoundException e) {
                         EnableForm.this.error(getLocalizer().getString("encapNotRegistered", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: subject not found for "
-                                + EnablePage.this.protocolContext.getSubject(), LogLevelType.ERROR);
+                                + protocolContext.getSubject(), LogLevelType.ERROR);
                         return;
                     } catch (DeviceNotFoundException e) {
                         EnableForm.this.error(getLocalizer().getString("encapAuthenticationFailed", this));
@@ -148,7 +148,7 @@ public class EnablePage extends TemplatePage {
                         return;
                     }
 
-                    EnablePage.this.protocolContext.setSuccess(true);
+                    protocolContext.setSuccess(true);
                     exit();
                 }
 
@@ -176,7 +176,7 @@ public class EnablePage extends TemplatePage {
 
     public void exit() {
 
-        this.protocolContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());
+        protocolContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
         getResponse().redirect("deviceexit");
         setRedirect(false);
     }

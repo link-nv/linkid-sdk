@@ -48,7 +48,7 @@ public class BankSession extends WebSession {
 
     public BankUserEntity getUser() {
 
-        return this.user;
+        return user;
     }
 
     /**
@@ -56,7 +56,7 @@ public class BankSession extends WebSession {
      */
     public String getLinkingUser() {
 
-        return this.linkingBankId;
+        return linkingBankId;
     }
 
     /**
@@ -64,7 +64,7 @@ public class BankSession extends WebSession {
      */
     public void setLinkingUser(BankUserEntity user) {
 
-        this.linkingBankId = user == null? null: user.getBankId();
+        linkingBankId = user == null? null: user.getBankId();
     }
 
     /**

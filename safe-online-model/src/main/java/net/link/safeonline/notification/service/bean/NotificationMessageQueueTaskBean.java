@@ -62,12 +62,12 @@ public class NotificationMessageQueueTaskBean implements Task {
     public void perform()
             throws Exception {
 
-        List<NotificationMessageEntity> notifications = this.notificationMessageDAO.listNotificationMessages();
+        List<NotificationMessageEntity> notifications = notificationMessageDAO.listNotificationMessages();
         for (NotificationMessageEntity notification : notifications) {
-            if (notification.getAttempts() >= this.configAttempts) {
-                this.notificationMessageDAO.removeNotificationMessage(notification);
+            if (notification.getAttempts() >= configAttempts) {
+                notificationMessageDAO.removeNotificationMessage(notification);
             } else {
-                this.notificationProducerService.sendNotification(notification);
+                notificationProducerService.sendNotification(notification);
             }
         }
 

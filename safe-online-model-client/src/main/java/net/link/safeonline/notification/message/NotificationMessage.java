@@ -53,47 +53,47 @@ public class NotificationMessage implements Serializable {
 
     public NotificationMessage(Message message) throws JMSException {
 
-        this.topic = message.getStringProperty("topic");
-        this.destination = message.getStringProperty("destination");
-        this.subject = message.getStringProperty("subject");
-        this.content = message.getStringProperty("content");
-        this.consumerId = message.getLongProperty("consumerId");
+        topic = message.getStringProperty("topic");
+        destination = message.getStringProperty("destination");
+        subject = message.getStringProperty("subject");
+        content = message.getStringProperty("content");
+        consumerId = message.getLongProperty("consumerId");
     }
 
     public Message getJMSMessage(Session session)
             throws JMSException {
 
         Message message = session.createMessage();
-        message.setStringProperty("topic", this.topic);
-        message.setStringProperty("destination", this.destination);
-        message.setStringProperty("subject", this.subject);
-        message.setStringProperty("content", this.content);
-        message.setLongProperty("consumerId", this.consumerId);
+        message.setStringProperty("topic", topic);
+        message.setStringProperty("destination", destination);
+        message.setStringProperty("subject", subject);
+        message.setStringProperty("content", content);
+        message.setLongProperty("consumerId", consumerId);
         return message;
     }
 
     public String getTopic() {
 
-        return this.topic;
+        return topic;
     }
 
     public String getDestination() {
 
-        return this.destination;
+        return destination;
     }
 
     public String getSubject() {
 
-        return this.subject;
+        return subject;
     }
 
     public String getContent() {
 
-        return this.content;
+        return content;
     }
 
     public long getConsumerId() {
 
-        return this.consumerId;
+        return consumerId;
     }
 }

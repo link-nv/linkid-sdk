@@ -151,14 +151,14 @@ public class DeviceBean implements Device {
     public void deviceListFactory() {
 
         LOG.debug("device list factory");
-        this.deviceList = this.deviceService.listDevices();
+        deviceList = deviceService.listDevices();
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     @Factory(OPER_DEVICE_CLASS_LIST_NAME)
     public List<SelectItem> deviceClassesFactory() {
 
-        List<DeviceClassEntity> deviceClassesList = this.deviceService.listDeviceClasses();
+        List<DeviceClassEntity> deviceClassesList = deviceService.listDeviceClasses();
         List<SelectItem> deviceClasses = ConvertorUtil.convert(deviceClassesList, new DeviceClassSelectItemConvertor());
         return deviceClasses;
     }
@@ -178,7 +178,7 @@ public class DeviceBean implements Device {
     @Factory(OPER_DEVICE_ATTRIBUTE_TYPE_LIST_NAME)
     public List<SelectItem> attributeTypesFactory() {
 
-        List<AttributeTypeEntity> attributeTypesList = this.attributeTypeService.listAttributeTypes();
+        List<AttributeTypeEntity> attributeTypesList = attributeTypeService.listAttributeTypes();
         List<SelectItem> attributeTypes = ConvertorUtil.convert(attributeTypesList, new AttributeTypeSelectItemConvertor());
         return attributeTypes;
     }
@@ -187,7 +187,7 @@ public class DeviceBean implements Device {
     @Factory(OPER_DEVICE_USER_ATTRIBUTE_TYPE_LIST_NAME)
     public List<SelectItem> userAttributeTypesFactory() {
 
-        List<AttributeTypeEntity> attributeTypesList = this.attributeTypeService.listAttributeTypes();
+        List<AttributeTypeEntity> attributeTypesList = attributeTypeService.listAttributeTypes();
         List<SelectItem> attributeTypes = ConvertorUtil.convert(attributeTypesList, new AttributeTypeSelectItemConvertor());
         attributeTypes.add(0, new SelectItem(null, ""));
         return attributeTypes;
@@ -198,7 +198,7 @@ public class DeviceBean implements Device {
     @Factory(OPER_DEVICE_DISABLE_ATTRIBUTE_TYPE_LIST_NAME)
     public List<SelectItem> disableAttributeTypesFactory() {
 
-        List<AttributeTypeEntity> attributeTypesList = this.attributeTypeService.listAttributeTypes(DatatypeType.BOOLEAN);
+        List<AttributeTypeEntity> attributeTypesList = attributeTypeService.listAttributeTypes(DatatypeType.BOOLEAN);
         List<SelectItem> attributeTypes = ConvertorUtil.convert(attributeTypesList, new AttributeTypeSelectItemConvertor());
         attributeTypes.add(0, new SelectItem(null, ""));
         return attributeTypes;
@@ -220,7 +220,7 @@ public class DeviceBean implements Device {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public List<SelectItem> nodeFactory() {
 
-        List<NodeEntity> nodeList = this.nodeService.listNodes();
+        List<NodeEntity> nodeList = nodeService.listNodes();
         List<SelectItem> nodes = ConvertorUtil.convert(nodeList, new OlasEntitySelectItemConvertor());
         return nodes;
     }
@@ -255,16 +255,16 @@ public class DeviceBean implements Device {
             throws ExistingDeviceException, CertificateEncodingException, DeviceClassNotFoundException, AttributeTypeNotFoundException,
             NodeNotFoundException, IOException, PermissionDeniedException {
 
-        LOG.debug("add device: " + this.name);
+        LOG.debug("add device: " + name);
 
         byte[] encodedCertificate = null;
-        if (null != this.certificate) {
-            encodedCertificate = getUpFileContent(this.certificate);
+        if (null != certificate) {
+            encodedCertificate = getUpFileContent(certificate);
         }
 
-        this.deviceService.addDevice(this.name, this.deviceClass, this.node, this.authenticationPath, this.authenticationWSPath,
-                this.registrationPath, this.removalPath, this.updatePath, this.disablePath, this.enablePath, encodedCertificate,
-                this.attributeType, this.userAttributeType, this.disableAttributeType);
+        deviceService.addDevice(name, deviceClass, node, authenticationPath, authenticationWSPath,
+                registrationPath, removalPath, updatePath, disablePath, enablePath, encodedCertificate,
+                attributeType, userAttributeType, disableAttributeType);
         return "success";
     }
 
@@ -272,12 +272,12 @@ public class DeviceBean implements Device {
     public String remove()
             throws DeviceNotFoundException, DeviceDescriptionNotFoundException, DevicePropertyNotFoundException {
 
-        LOG.debug("remove device: " + this.selectedDevice.getName());
+        LOG.debug("remove device: " + selectedDevice.getName());
         try {
-            this.deviceService.removeDevice(this.selectedDevice.getName());
+            deviceService.removeDevice(selectedDevice.getName());
         } catch (PermissionDeniedException e) {
             LOG.debug("permission denied: " + e.getMessage());
-            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), e.getResourceArgs());
+            facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), e.getResourceArgs());
             return null;
         }
         deviceListFactory();
@@ -287,22 +287,22 @@ public class DeviceBean implements Device {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String edit() {
 
-        LOG.debug("edit device: " + this.selectedDevice.getName());
+        LOG.debug("edit device: " + selectedDevice.getName());
 
-        this.authenticationPath = this.selectedDevice.getAuthenticationPath();
-        this.authenticationWSPath = this.selectedDevice.getAuthenticationWSPath();
-        this.registrationPath = this.selectedDevice.getRegistrationPath();
-        this.removalPath = this.selectedDevice.getRemovalPath();
-        this.disablePath = this.selectedDevice.getDisablePath();
-        this.enablePath = this.selectedDevice.getEnablePath();
-        if (null != this.selectedDevice.getAttributeType()) {
-            this.attributeType = this.selectedDevice.getAttributeType().getName();
+        authenticationPath = selectedDevice.getAuthenticationPath();
+        authenticationWSPath = selectedDevice.getAuthenticationWSPath();
+        registrationPath = selectedDevice.getRegistrationPath();
+        removalPath = selectedDevice.getRemovalPath();
+        disablePath = selectedDevice.getDisablePath();
+        enablePath = selectedDevice.getEnablePath();
+        if (null != selectedDevice.getAttributeType()) {
+            attributeType = selectedDevice.getAttributeType().getName();
         }
-        if (null != this.selectedDevice.getUserAttributeType()) {
-            this.userAttributeType = this.selectedDevice.getUserAttributeType().getName();
+        if (null != selectedDevice.getUserAttributeType()) {
+            userAttributeType = selectedDevice.getUserAttributeType().getName();
         }
-        if (null != this.selectedDevice.getDisableAttributeType()) {
-            this.disableAttributeType = this.selectedDevice.getDisableAttributeType().getName();
+        if (null != selectedDevice.getDisableAttributeType()) {
+            disableAttributeType = selectedDevice.getDisableAttributeType().getName();
         }
 
         return "edit";
@@ -313,59 +313,59 @@ public class DeviceBean implements Device {
             throws DeviceNotFoundException, CertificateEncodingException, IOException, AttributeTypeNotFoundException,
             PermissionDeniedException {
 
-        LOG.debug("save device: " + this.selectedDevice.getName());
-        String deviceName = this.selectedDevice.getName();
+        LOG.debug("save device: " + selectedDevice.getName());
+        String deviceName = selectedDevice.getName();
 
-        this.deviceService.updateAuthenticationPath(deviceName, this.authenticationPath);
-        if (null != this.authenticationWSPath) {
-            this.deviceService.updateAuthenticationWSPath(deviceName, this.authenticationWSPath);
+        deviceService.updateAuthenticationPath(deviceName, authenticationPath);
+        if (null != authenticationWSPath) {
+            deviceService.updateAuthenticationWSPath(deviceName, authenticationWSPath);
         }
-        if (null != this.registrationPath) {
-            this.deviceService.updateRegistrationPath(deviceName, this.registrationPath);
+        if (null != registrationPath) {
+            deviceService.updateRegistrationPath(deviceName, registrationPath);
         }
-        if (null != this.removalPath) {
-            this.deviceService.updateRemovalPath(deviceName, this.removalPath);
+        if (null != removalPath) {
+            deviceService.updateRemovalPath(deviceName, removalPath);
         }
-        if (null != this.updatePath) {
-            this.deviceService.updateUpdatePath(deviceName, this.updatePath);
+        if (null != updatePath) {
+            deviceService.updateUpdatePath(deviceName, updatePath);
         }
-        if (null != this.disablePath) {
-            this.deviceService.updateDisablePath(deviceName, this.disablePath);
+        if (null != disablePath) {
+            deviceService.updateDisablePath(deviceName, disablePath);
         }
-        if (null != this.enablePath) {
-            this.deviceService.updateEnablePath(deviceName, this.enablePath);
+        if (null != enablePath) {
+            deviceService.updateEnablePath(deviceName, enablePath);
         }
 
-        if (null != this.certificate) {
+        if (null != certificate) {
             LOG.debug("updating device certificate");
-            this.deviceService.updateDeviceCertificate(deviceName, getUpFileContent(this.certificate));
+            deviceService.updateDeviceCertificate(deviceName, getUpFileContent(certificate));
         }
 
-        if (null != this.attributeType) {
+        if (null != attributeType) {
             LOG.debug("updating attribute type");
-            this.deviceService.updateAttributeType(deviceName, this.attributeType);
+            deviceService.updateAttributeType(deviceName, attributeType);
         }
 
-        if (null != this.userAttributeType) {
+        if (null != userAttributeType) {
             LOG.debug("updating user attribute type");
-            this.deviceService.updateUserAttributeType(deviceName, this.userAttributeType);
+            deviceService.updateUserAttributeType(deviceName, userAttributeType);
         }
-        if (null != this.disableAttributeType) {
+        if (null != disableAttributeType) {
             LOG.debug("updating disable attribute type");
-            this.deviceService.updateDisableAttributeType(deviceName, this.disableAttributeType);
+            deviceService.updateDisableAttributeType(deviceName, disableAttributeType);
         }
 
         /*
          * Refresh the device
          */
-        this.selectedDevice = this.deviceService.getDevice(deviceName);
+        selectedDevice = deviceService.getDevice(deviceName);
         return "success";
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String view() {
 
-        LOG.debug("view device: " + this.selectedDevice.getName());
+        LOG.debug("view device: " + selectedDevice.getName());
         return "view";
     }
 
@@ -375,7 +375,7 @@ public class DeviceBean implements Device {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -387,7 +387,7 @@ public class DeviceBean implements Device {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getDeviceClass() {
 
-        return this.deviceClass;
+        return deviceClass;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -399,7 +399,7 @@ public class DeviceBean implements Device {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getNode() {
 
-        return this.node;
+        return node;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -411,7 +411,7 @@ public class DeviceBean implements Device {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getAuthenticationPath() {
 
-        return this.authenticationPath;
+        return authenticationPath;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -423,7 +423,7 @@ public class DeviceBean implements Device {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getAuthenticationWSPath() {
 
-        return this.authenticationWSPath;
+        return authenticationWSPath;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -435,7 +435,7 @@ public class DeviceBean implements Device {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getRegistrationPath() {
 
-        return this.registrationPath;
+        return registrationPath;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -447,7 +447,7 @@ public class DeviceBean implements Device {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getRemovalPath() {
 
-        return this.removalPath;
+        return removalPath;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -459,7 +459,7 @@ public class DeviceBean implements Device {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getUpdatePath() {
 
-        return this.updatePath;
+        return updatePath;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -471,7 +471,7 @@ public class DeviceBean implements Device {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getDisablePath() {
 
-        return this.disablePath;
+        return disablePath;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -483,7 +483,7 @@ public class DeviceBean implements Device {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getEnablePath() {
 
-        return this.enablePath;
+        return enablePath;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -495,7 +495,7 @@ public class DeviceBean implements Device {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public UploadedFile getCertificate() {
 
-        return this.certificate;
+        return certificate;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -507,7 +507,7 @@ public class DeviceBean implements Device {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getAttributeType() {
 
-        return this.attributeType;
+        return attributeType;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -519,7 +519,7 @@ public class DeviceBean implements Device {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getUserAttributeType() {
 
-        return this.userAttributeType;
+        return userAttributeType;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -531,7 +531,7 @@ public class DeviceBean implements Device {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getDisableAttributeType() {
 
-        return this.disableAttributeType;
+        return disableAttributeType;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)

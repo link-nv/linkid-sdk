@@ -68,11 +68,11 @@ public class ServicesUtils extends Observable {
      */
     NameIdentifierMappingClient getNameIdentifierMappingClient() {
 
-        if (null == this.nameClient) {
-            this.nameClient = new NameIdentifierMappingClientImpl(this.consoleManager.getLocation(),
-                    (X509Certificate) this.consoleManager.getIdentity().getCertificate(), this.consoleManager.getIdentity().getPrivateKey());
+        if (null == nameClient) {
+            nameClient = new NameIdentifierMappingClientImpl(consoleManager.getLocation(),
+                    (X509Certificate) consoleManager.getIdentity().getCertificate(), consoleManager.getIdentity().getPrivateKey());
         }
-        return this.nameClient;
+        return nameClient;
     }
 
     public String getUserId(String username)
@@ -87,13 +87,13 @@ public class ServicesUtils extends Observable {
      */
     AttributeClient getAttributeClient() {
 
-        if (null == this.attributeClient) {
-            this.attributeClient = new AttributeClientImpl(this.consoleManager.getLocation(),
-                    (X509Certificate) this.consoleManager.getIdentity().getCertificate(), this.consoleManager.getIdentity().getPrivateKey());
+        if (null == attributeClient) {
+            attributeClient = new AttributeClientImpl(consoleManager.getLocation(),
+                    (X509Certificate) consoleManager.getIdentity().getCertificate(), consoleManager.getIdentity().getPrivateKey());
         }
 
-        this.consoleManager.setMessageAccessor(this.attributeClient);
-        return this.attributeClient;
+        consoleManager.setMessageAccessor(attributeClient);
+        return attributeClient;
     }
 
     public void getAttributes(final String user) {
@@ -140,14 +140,14 @@ public class ServicesUtils extends Observable {
      */
     DataClient getDataClient() {
 
-        if (null == this.dataClient) {
-            this.dataClient = new DataClientImpl(this.consoleManager.getLocation(), (X509Certificate) this.consoleManager.getIdentity()
+        if (null == dataClient) {
+            dataClient = new DataClientImpl(consoleManager.getLocation(), (X509Certificate) consoleManager.getIdentity()
                                                                                                                          .getCertificate(),
-                    this.consoleManager.getIdentity().getPrivateKey());
+                    consoleManager.getIdentity().getPrivateKey());
         }
 
-        this.consoleManager.setMessageAccessor(this.dataClient);
-        return this.dataClient;
+        consoleManager.setMessageAccessor(dataClient);
+        return dataClient;
     }
 
     public void setAttributeValue(final String userName, final String attributeName, final Object attributeValue) {

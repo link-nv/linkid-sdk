@@ -47,7 +47,7 @@ public class CachedOcspValidatorBean implements CachedOcspValidator {
 
         OcspResult ocspResult;
 
-        URI ocspURI = this.ocspValidator.getOcspUri(certificate);
+        URI ocspURI = ocspValidator.getOcspUri(certificate);
         if (null == ocspURI)
             return OcspResult.GOOD;
 
@@ -55,20 +55,20 @@ public class CachedOcspValidatorBean implements CachedOcspValidator {
 
         if (key == null) {
             LOG.debug("Unable to generate cache key, skipping cache");
-            ocspResult = this.ocspValidator.verifyOcspStatus(ocspURI, certificate, issuerCertificate);
+            ocspResult = ocspValidator.verifyOcspStatus(ocspURI, certificate, issuerCertificate);
             return ocspResult;
         }
 
         // Cache lookup
-        CachedOcspResponseEntity cachedOcspResponse = this.cachedOcspResponseDAO.findCachedOcspResponse(key);
+        CachedOcspResponseEntity cachedOcspResponse = cachedOcspResponseDAO.findCachedOcspResponse(key);
 
         // The response is not cached
         if (cachedOcspResponse == null) {
             LOG.debug("No cache entry found for key: " + key);
-            ocspResult = this.ocspValidator.verifyOcspStatus(ocspURI, certificate, issuerCertificate);
+            ocspResult = ocspValidator.verifyOcspStatus(ocspURI, certificate, issuerCertificate);
             CachedOcspResultType result = convertOcspResult(ocspResult);
             if (cacheResult(ocspResult)) {
-                this.cachedOcspResponseDAO.addCachedOcspResponse(key, result, trustDomain);
+                cachedOcspResponseDAO.addCachedOcspResponse(key, result, trustDomain);
                 LOG.debug("OCSP response cached for key: " + key);
             }
             return ocspResult;
@@ -87,14 +87,14 @@ public class CachedOcspValidatorBean implements CachedOcspValidator {
         LOG.debug("trust domain timeout: " + trustDomain.getOcspCacheTimeOutMillis());
         if (timediff > trustDomain.getOcspCacheTimeOutMillis()) {
             LOG.debug("Cache entry expired for key: " + key);
-            ocspResult = this.ocspValidator.verifyOcspStatus(ocspURI, certificate, issuerCertificate);
+            ocspResult = ocspValidator.verifyOcspStatus(ocspURI, certificate, issuerCertificate);
             CachedOcspResultType result = convertOcspResult(ocspResult);
             if (cacheResult(ocspResult)) {
                 cachedOcspResponse.setEntryDate(new Date(System.currentTimeMillis()));
                 cachedOcspResponse.setResult(result);
                 LOG.debug("OCSP response updated for key: " + key);
             } else {
-                this.cachedOcspResponseDAO.removeCachedOcspResponse(cachedOcspResponse);
+                cachedOcspResponseDAO.removeCachedOcspResponse(cachedOcspResponse);
                 LOG.debug("Cache entry removed");
             }
             return ocspResult;

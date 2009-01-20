@@ -50,7 +50,7 @@ public class OSGIConfigurationServiceBean implements OSGIConfigurationService {
      */
     public Object getConfigurationValue(String group, String name) {
 
-        return this.configurationManager.getConfigurationValue(group, name);
+        return configurationManager.getConfigurationValue(group, name);
     }
 
     /**
@@ -61,7 +61,7 @@ public class OSGIConfigurationServiceBean implements OSGIConfigurationService {
         LOG.debug("init configuration value: group=" + group + " name=" + name + " value=" + value.toString());
 
         if (null == getConfigurationValue(group, name)) {
-            this.configurationManager.addConfigurationValue(group, name, false, value);
+            configurationManager.addConfigurationValue(group, name, false, value);
         }
 
     }

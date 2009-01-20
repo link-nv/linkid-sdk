@@ -42,31 +42,31 @@ public class PcscSigner extends Pcsc implements Signer {
         try {
             return getAuthenticationCertificate();
         } catch (Exception e) {
-            this.logger.log("getCert error: " + e.getMessage());
+            logger.log("getCert error: " + e.getMessage());
             throw new RuntimeException("getCert error");
         }
     }
 
     public byte[] sign(byte[] data) {
 
-        PinDialog pinDialog = new PinDialog(this.messages.getString(KEY.ENTER_PIN));
+        PinDialog pinDialog = new PinDialog(messages.getString(KEY.ENTER_PIN));
         String pin = pinDialog.getPin();
         if (null == pin) {
-            this.logger.log("PIN canceled");
+            logger.log("PIN canceled");
             throw new RuntimeException("PIN canceled");
         }
         byte[] signatureValue;
         try {
-            this.logger.log("signing...");
+            logger.log("signing...");
             signatureValue = super.sign(data, pin);
         } catch (CardException e) {
-            this.logger.log("card error: " + e.getMessage());
+            logger.log("card error: " + e.getMessage());
             throw new RuntimeException("card error: " + e.getMessage(), e);
         } catch (IOException e) {
-            this.logger.log("IO error: " + e.getMessage());
+            logger.log("IO error: " + e.getMessage());
             throw new RuntimeException("IO error: " + e.getMessage(), e);
         } catch (Exception e) {
-            this.logger.log("sign error: " + e.getMessage());
+            logger.log("sign error: " + e.getMessage());
             throw new RuntimeException("sign error: " + e.getMessage(), e);
         }
         return signatureValue;

@@ -62,9 +62,9 @@ public class StatisticServiceBeanTest extends TestCase {
         JmxTestUtils jmxTestUtils = new JmxTestUtils();
         jmxTestUtils.setUp("jboss.security:service=JaasSecurityManager");
 
-        this.entityTestManager = new EntityTestManager();
-        this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        entityTestManager = new EntityTestManager();
+        entityTestManager.setUp(SafeOnlineTestContainer.entities);
+        EntityManager entityManager = entityTestManager.getEntityManager();
 
         jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
 
@@ -93,14 +93,14 @@ public class StatisticServiceBeanTest extends TestCase {
         Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class, SafeOnlineTestContainer.sessionBeans,
                 entityManager);
         systemStartable.postStart();
-        this.entityTestManager.refreshEntityManager();
+        entityTestManager.refreshEntityManager();
     }
 
     @Override
     public void tearDown()
             throws Exception {
 
-        this.entityTestManager.tearDown();
+        entityTestManager.tearDown();
         super.tearDown();
     }
 
@@ -108,7 +108,7 @@ public class StatisticServiceBeanTest extends TestCase {
             throws Exception {
 
         // setup
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
 
         String testChartName = "test-chart-name-" + UUID.randomUUID().toString();
         String testDomain = "test-domain-" + UUID.randomUUID().toString();
@@ -158,7 +158,7 @@ public class StatisticServiceBeanTest extends TestCase {
             throws Exception {
 
         // setup
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
 
         String testChartName = "test-chart-name";
         String testDomain = "test-domain-" + UUID.randomUUID().toString();

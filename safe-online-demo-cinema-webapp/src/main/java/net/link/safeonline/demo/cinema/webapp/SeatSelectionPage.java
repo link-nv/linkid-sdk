@@ -80,7 +80,7 @@ public class SeatSelectionPage extends LayoutPage {
 
             // Create a grid of seat occupations.
             List<List<CinemaSeatEntity>> rows = new ArrayList<List<CinemaSeatEntity>>();
-            List<CinemaSeatEntity> seats = SeatSelectionPage.this.seatService.getSeatsFor(CinemaSession.get().getRoom());
+            List<CinemaSeatEntity> seats = seatService.getSeatsFor(CinemaSession.get().getRoom());
             for (CinemaSeatEntity seat : seats) {
                 // Add empty rows.
                 while (rows.size() < seat.getY()) {
@@ -131,7 +131,7 @@ public class SeatSelectionPage extends LayoutPage {
 
                                     super.onComponentTag(tag);
 
-                                    if (SeatSelectionPage.this.seatService.isOccupied(seat, CinemaSession.get().getTime())) {
+                                    if (seatService.isOccupied(seat, CinemaSession.get().getTime())) {
                                         tag.put("class", "disabled");
                                     }
                                     if (CinemaSession.isOccupied(seat)) {

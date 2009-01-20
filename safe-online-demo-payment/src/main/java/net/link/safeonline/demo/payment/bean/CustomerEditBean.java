@@ -46,21 +46,21 @@ public class CustomerEditBean extends AbstractPaymentDataClientBean implements C
 
     public String persist() {
 
-        this.log.debug("---------------------------------------- save #0 -----------------------------", this.name);
+        log.debug("---------------------------------------- save #0 -----------------------------", name);
 
         try {
-            createOrUpdateAttribute(DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, Boolean.valueOf(this.customerStatus.isJunior()));
+            createOrUpdateAttribute(DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, Boolean.valueOf(customerStatus.isJunior()));
         } catch (WSClientTransportException e) {
-            this.facesMessages.add("connection error");
+            facesMessages.add("connection error");
             return null;
         } catch (RequestDeniedException e) {
-            this.facesMessages.add("request denied");
+            facesMessages.add("request denied");
             return null;
         } catch (SubjectNotFoundException e) {
-            this.facesMessages.add("subject not found: " + this.name);
+            facesMessages.add("subject not found: " + name);
             return null;
         } catch (AttributeNotFoundException e) {
-            this.facesMessages.add("attribute not found");
+            facesMessages.add("attribute not found");
             return null;
         }
         return "success";
@@ -70,12 +70,12 @@ public class CustomerEditBean extends AbstractPaymentDataClientBean implements C
             throws WSClientTransportException, RequestDeniedException, SubjectNotFoundException, AttributeNotFoundException {
 
         DataClient dataClient = getDataClient();
-        if (null == dataClient.getAttributeValue(this.customerStatus.getUserId(), attributeName, attributeValue.getClass())) {
-            this.log.debug("create attribute #0 for #1", attributeName, this.name);
-            dataClient.createAttribute(this.customerStatus.getUserId(), attributeName, attributeValue);
+        if (null == dataClient.getAttributeValue(customerStatus.getUserId(), attributeName, attributeValue.getClass())) {
+            log.debug("create attribute #0 for #1", attributeName, name);
+            dataClient.createAttribute(customerStatus.getUserId(), attributeName, attributeValue);
         } else {
-            this.log.debug("set attribute #0 for #1", attributeName, this.name);
-            dataClient.setAttributeValue(this.customerStatus.getUserId(), attributeName, attributeValue);
+            log.debug("set attribute #0 for #1", attributeName, name);
+            dataClient.setAttributeValue(customerStatus.getUserId(), attributeName, attributeValue);
         }
     }
 }

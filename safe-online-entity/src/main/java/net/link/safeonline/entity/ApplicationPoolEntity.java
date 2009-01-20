@@ -61,13 +61,13 @@ public class ApplicationPoolEntity implements Serializable {
 
         this.name = name;
         this.ssoTimeout = ssoTimeout;
-        this.applications = new LinkedList<ApplicationEntity>();
+        applications = new LinkedList<ApplicationEntity>();
     }
 
     @Id
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -80,7 +80,7 @@ public class ApplicationPoolEntity implements Serializable {
      */
     public long getSsoTimeout() {
 
-        return this.ssoTimeout;
+        return ssoTimeout;
     }
 
     public void setSsoTimeout(long ssoTimeout) {
@@ -92,7 +92,7 @@ public class ApplicationPoolEntity implements Serializable {
     @OrderBy("name")
     public List<ApplicationEntity> getApplications() {
 
-        return this.applications;
+        return applications;
     }
 
     public void setApplications(List<ApplicationEntity> applications) {
@@ -103,7 +103,7 @@ public class ApplicationPoolEntity implements Serializable {
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.name).toHashCode();
+        return new HashCodeBuilder().append(name).toHashCode();
     }
 
     @Override
@@ -116,13 +116,13 @@ public class ApplicationPoolEntity implements Serializable {
         if (getClass() != obj.getClass())
             return false;
         final ApplicationPoolEntity rhs = (ApplicationPoolEntity) obj;
-        return new EqualsBuilder().append(this.name, rhs.name).isEquals();
+        return new EqualsBuilder().append(name, rhs.name).isEquals();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append(this.name).toString();
+        return new ToStringBuilder(this).append(name).toString();
     }
 
 

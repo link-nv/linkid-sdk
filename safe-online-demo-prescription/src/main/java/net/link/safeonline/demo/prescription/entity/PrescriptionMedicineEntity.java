@@ -44,7 +44,7 @@ public class PrescriptionMedicineEntity implements Serializable {
             @AttributeOverride(name = "name", column = @Column(name = NAME_COLUMN_NAME)) })
     public PrescriptionMedicinePK getPk() {
 
-        return this.pk;
+        return pk;
     }
 
     public void setPk(PrescriptionMedicinePK pk) {
@@ -55,7 +55,7 @@ public class PrescriptionMedicineEntity implements Serializable {
     @Column(name = NAME_COLUMN_NAME, insertable = false, updatable = false)
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -67,7 +67,7 @@ public class PrescriptionMedicineEntity implements Serializable {
     @JoinColumn(name = ID_COLUMN_NAME, insertable = false, updatable = false)
     public PrescriptionEntity getPrescription() {
 
-        return this.prescription;
+        return prescription;
     }
 
     public void setPrescription(PrescriptionEntity prescription) {
@@ -85,13 +85,13 @@ public class PrescriptionMedicineEntity implements Serializable {
         if (false == obj instanceof PrescriptionMedicineEntity)
             return false;
         PrescriptionMedicineEntity rhs = (PrescriptionMedicineEntity) obj;
-        return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
+        return new EqualsBuilder().append(pk, rhs.pk).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.pk).toHashCode();
+        return new HashCodeBuilder().append(pk).toHashCode();
     }
 
     public PrescriptionMedicineEntity() {
@@ -103,6 +103,6 @@ public class PrescriptionMedicineEntity implements Serializable {
 
         this.prescription = prescription;
         this.name = name;
-        this.pk = new PrescriptionMedicinePK(this.prescription.getId(), this.name);
+        pk = new PrescriptionMedicinePK(this.prescription.getId(), this.name);
     }
 }

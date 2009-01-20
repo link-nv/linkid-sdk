@@ -67,7 +67,7 @@ public class PaymentEntity implements Serializable {
     @ManyToOne
     public UserEntity getOwner() {
 
-        return this.owner;
+        return owner;
     }
 
     public void setOwner(UserEntity owner) {
@@ -77,7 +77,7 @@ public class PaymentEntity implements Serializable {
 
     public Date getPaymentDate() {
 
-        return this.paymentDate;
+        return paymentDate;
     }
 
     public void setPaymentDate(Date paymentDate) {
@@ -89,7 +89,7 @@ public class PaymentEntity implements Serializable {
     @GeneratedValue
     public long getId() {
 
-        return this.id;
+        return id;
     }
 
     public void setId(long id) {
@@ -99,7 +99,7 @@ public class PaymentEntity implements Serializable {
 
     public String getMessage() {
 
-        return this.message;
+        return message;
     }
 
     public void setMessage(String message) {
@@ -110,7 +110,7 @@ public class PaymentEntity implements Serializable {
     @Basic(optional = false)
     public String getRecipient() {
 
-        return this.recipient;
+        return recipient;
     }
 
     public void setRecipient(String recipient) {
@@ -121,7 +121,7 @@ public class PaymentEntity implements Serializable {
     @Basic(optional = false)
     public String getVisa() {
 
-        return this.visa;
+        return visa;
     }
 
     public void setVisa(String visa) {
@@ -131,7 +131,7 @@ public class PaymentEntity implements Serializable {
 
     public double getAmount() {
 
-        return this.amount;
+        return amount;
     }
 
     public void setAmount(double amount) {

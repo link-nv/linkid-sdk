@@ -53,19 +53,19 @@ public class DevicePolicyServiceBean implements DevicePolicyService {
             throws ApplicationNotFoundException, EmptyDevicePolicyException {
 
         LOG.debug("get device policy for application: " + applicationId);
-        ApplicationEntity application = this.applicationDAO.getApplication(applicationId);
+        ApplicationEntity application = applicationDAO.getApplication(applicationId);
         boolean deviceRestriction = application.isDeviceRestriction();
         List<DeviceEntity> devicePolicy = new LinkedList<DeviceEntity>();
         if (deviceRestriction) {
             /*
              * In this case we use the explicit allowed device list.
              */
-            List<AllowedDeviceEntity> allowedDevices = this.devices.listAllowedDevices(application);
+            List<AllowedDeviceEntity> allowedDevices = devices.listAllowedDevices(application);
             for (AllowedDeviceEntity allowedDevice : allowedDevices) {
                 devicePolicy.add(allowedDevice.getDevice());
             }
         } else {
-            devicePolicy = this.devices.listDevices();
+            devicePolicy = devices.listDevices();
         }
         if (null != requiredDevicePolicy) {
             devicePolicy.retainAll(requiredDevicePolicy);
@@ -78,14 +78,14 @@ public class DevicePolicyServiceBean implements DevicePolicyService {
     public List<DeviceEntity> getDevices() {
 
         LOG.debug("get devices");
-        return this.devices.listDevices();
+        return devices.listDevices();
     }
 
     public String getDeviceDescription(String deviceName, Locale locale) {
 
         if (null == locale)
             return deviceName;
-        DeviceDescriptionEntity deviceDescription = this.deviceDAO
+        DeviceDescriptionEntity deviceDescription = deviceDAO
                                                                   .findDescription(new DeviceDescriptionPK(deviceName, locale.getLanguage()));
         if (null == deviceDescription)
             return deviceName;
@@ -95,49 +95,49 @@ public class DevicePolicyServiceBean implements DevicePolicyService {
     public String getAuthenticationURL(String deviceName)
             throws DeviceNotFoundException {
 
-        DeviceEntity device = this.deviceDAO.getDevice(deviceName);
+        DeviceEntity device = deviceDAO.getDevice(deviceName);
         return device.getAuthenticationURL();
     }
 
     public String getAuthenticationWSURL(String deviceName)
             throws DeviceNotFoundException {
 
-        DeviceEntity device = this.deviceDAO.getDevice(deviceName);
+        DeviceEntity device = deviceDAO.getDevice(deviceName);
         return device.getAuthenticationWSURL();
     }
 
     public String getRegistrationURL(String deviceName)
             throws DeviceNotFoundException {
 
-        DeviceEntity device = this.deviceDAO.getDevice(deviceName);
+        DeviceEntity device = deviceDAO.getDevice(deviceName);
         return device.getRegistrationURL();
     }
 
     public String getRemovalURL(String deviceName)
             throws DeviceNotFoundException {
 
-        DeviceEntity device = this.deviceDAO.getDevice(deviceName);
+        DeviceEntity device = deviceDAO.getDevice(deviceName);
         return device.getRemovalURL();
     }
 
     public String getUpdateURL(String deviceName)
             throws DeviceNotFoundException {
 
-        DeviceEntity device = this.deviceDAO.getDevice(deviceName);
+        DeviceEntity device = deviceDAO.getDevice(deviceName);
         return device.getUpdateURL();
     }
 
     public String getDisableURL(String deviceName)
             throws DeviceNotFoundException {
 
-        DeviceEntity device = this.deviceDAO.getDevice(deviceName);
+        DeviceEntity device = deviceDAO.getDevice(deviceName);
         return device.getDisableURL();
     }
 
     public List<DeviceEntity> listDevices(String authenticationContextClass) {
 
         List<DeviceEntity> authndevices = new LinkedList<DeviceEntity>();
-        List<DeviceEntity> allDevices = this.deviceDAO.listDevices();
+        List<DeviceEntity> allDevices = deviceDAO.listDevices();
         for (DeviceEntity device : allDevices) {
             if (device.getAuthenticationContextClass().equals(authenticationContextClass)) {
                 authndevices.add(device);
@@ -148,12 +148,12 @@ public class DevicePolicyServiceBean implements DevicePolicyService {
 
         // if none found return all devices with
         // deviceClass.authenticationContextClass = authenticationContextClass
-        return this.deviceDAO.listDevices(authenticationContextClass);
+        return deviceDAO.listDevices(authenticationContextClass);
     }
 
     public DeviceEntity getDevice(String deviceName)
             throws DeviceNotFoundException {
 
-        return this.deviceDAO.getDevice(deviceName);
+        return deviceDAO.getDevice(deviceName);
     }
 }

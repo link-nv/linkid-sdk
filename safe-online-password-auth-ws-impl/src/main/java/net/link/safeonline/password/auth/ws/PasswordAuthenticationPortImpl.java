@@ -77,7 +77,7 @@ public class PasswordAuthenticationPortImpl implements DeviceAuthenticationPort 
         try {
             Context ctx = new javax.naming.InitialContext();
             Context env = (Context) ctx.lookup("java:comp/env");
-            this.wsLocation = (String) env.lookup("wsLocation");
+            wsLocation = (String) env.lookup("wsLocation");
         } catch (NamingException e) {
             LOG.debug("naming exception: " + e.getMessage());
             throw new RuntimeException("\"wsLocation\" not specified");
@@ -195,14 +195,14 @@ public class PasswordAuthenticationPortImpl implements DeviceAuthenticationPort 
 
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
 
-        if (null == this.idMappingClient) {
-            this.idMappingClient = new NameIdentifierMappingClientImpl(this.wsLocation, authIdentityServiceClient.getCertificate(),
+        if (null == idMappingClient) {
+            idMappingClient = new NameIdentifierMappingClientImpl(wsLocation, authIdentityServiceClient.getCertificate(),
                     authIdentityServiceClient.getPrivateKey());
         }
 
         String userId;
         try {
-            userId = this.idMappingClient.getUserId(loginName);
+            userId = idMappingClient.getUserId(loginName);
         } catch (net.link.safeonline.sdk.exception.SubjectNotFoundException e) {
             LOG.error("subject not found: " + loginName);
             throw new SubjectNotFoundException();

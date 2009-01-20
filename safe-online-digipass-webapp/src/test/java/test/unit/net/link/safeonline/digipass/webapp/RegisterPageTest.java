@@ -49,7 +49,7 @@ public class RegisterPageTest extends TestCase {
 
         WicketUtil.setUnitTesting(true);
 
-        this.mockDigipassDeviceService = createMock(DigipassDeviceService.class);
+        mockDigipassDeviceService = createMock(DigipassDeviceService.class);
 
         // Initialize MBean's
         JmxTestUtils jmxTestUtils = new JmxTestUtils();
@@ -77,8 +77,8 @@ public class RegisterPageTest extends TestCase {
             }
         });
 
-        this.wicket = new WicketTester(new DigipassTestApplication());
-        this.wicket.processRequestCycle();
+        wicket = new WicketTester(new DigipassTestApplication());
+        wicket.processRequestCycle();
 
     }
 
@@ -92,38 +92,38 @@ public class RegisterPageTest extends TestCase {
         DummyNameIdentifierMappingClient.setUserId(userId);
 
         // MainPage: Verify.
-        this.wicket.assertRenderedPage(MainPage.class);
+        wicket.assertRenderedPage(MainPage.class);
 
-        this.wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID, RegisterPage.class);
-        this.wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID, RemovePage.class);
+        wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID, RegisterPage.class);
+        wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID, RemovePage.class);
 
         // MainPage: Click to register digipass
-        this.wicket.clickLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID);
+        wicket.clickLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID);
 
         // RegisterPage: Verify.
-        this.wicket.assertRenderedPage(RegisterPage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RegisterPage.REGISTER_FORM_ID, Form.class);
+        wicket.assertRenderedPage(RegisterPage.class);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RegisterPage.REGISTER_FORM_ID, Form.class);
 
         // setup
-        RegisterPage registerPage = (RegisterPage) this.wicket.getLastRenderedPage();
-        EJBTestUtils.inject(registerPage, this.mockDigipassDeviceService);
+        RegisterPage registerPage = (RegisterPage) wicket.getLastRenderedPage();
+        EJBTestUtils.inject(registerPage, mockDigipassDeviceService);
 
         // stubs
-        expect(this.mockDigipassDeviceService.register(userId, serialNumber)).andStubReturn(userId);
+        expect(mockDigipassDeviceService.register(userId, serialNumber)).andStubReturn(userId);
 
         // prepare
-        replay(this.mockDigipassDeviceService);
+        replay(mockDigipassDeviceService);
 
         // RegisterPage: Register digipass for user
-        FormTester registerForm = this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RegisterPage.REGISTER_FORM_ID);
+        FormTester registerForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RegisterPage.REGISTER_FORM_ID);
         registerForm.setValue(RegisterPage.LOGIN_FIELD_ID, UUID.randomUUID().toString());
         registerForm.setValue(RegisterPage.SERIALNUMBER_FIELD_ID, serialNumber);
         registerForm.submit(RegisterPage.REGISTER_BUTTON_ID);
 
         // verify
-        verify(this.mockDigipassDeviceService);
+        verify(mockDigipassDeviceService);
 
-        this.wicket.assertRenderedPage(MainPage.class);
+        wicket.assertRenderedPage(MainPage.class);
     }
 
     @Test
@@ -136,39 +136,39 @@ public class RegisterPageTest extends TestCase {
         DummyNameIdentifierMappingClient.setUserId(userId);
 
         // MainPage: Verify.
-        this.wicket.assertRenderedPage(MainPage.class);
+        wicket.assertRenderedPage(MainPage.class);
 
-        this.wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID, RegisterPage.class);
-        this.wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID, RemovePage.class);
+        wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID, RegisterPage.class);
+        wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID, RemovePage.class);
 
         // MainPage: Click to register digipass
-        this.wicket.clickLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID);
+        wicket.clickLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID);
 
         // RegisterPage: Verify.
-        this.wicket.assertRenderedPage(RegisterPage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RegisterPage.REGISTER_FORM_ID, Form.class);
+        wicket.assertRenderedPage(RegisterPage.class);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RegisterPage.REGISTER_FORM_ID, Form.class);
 
         // Setup
-        RegisterPage registerPage = (RegisterPage) this.wicket.getLastRenderedPage();
-        EJBTestUtils.inject(registerPage, this.mockDigipassDeviceService);
+        RegisterPage registerPage = (RegisterPage) wicket.getLastRenderedPage();
+        EJBTestUtils.inject(registerPage, mockDigipassDeviceService);
 
         // Stubs
-        expect(this.mockDigipassDeviceService.register(userId, serialNumber)).andThrow(new SubjectNotFoundException());
+        expect(mockDigipassDeviceService.register(userId, serialNumber)).andThrow(new SubjectNotFoundException());
 
         // Prepare
-        replay(this.mockDigipassDeviceService);
+        replay(mockDigipassDeviceService);
 
         // RegisterPage: Register digipass for user
-        FormTester registerForm = this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RegisterPage.REGISTER_FORM_ID);
+        FormTester registerForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RegisterPage.REGISTER_FORM_ID);
         registerForm.setValue(RegisterPage.LOGIN_FIELD_ID, UUID.randomUUID().toString());
         registerForm.setValue(RegisterPage.SERIALNUMBER_FIELD_ID, serialNumber);
         registerForm.submit(RegisterPage.REGISTER_BUTTON_ID);
 
         // verify
-        verify(this.mockDigipassDeviceService);
+        verify(mockDigipassDeviceService);
 
-        this.wicket.assertRenderedPage(RegisterPage.class);
-        this.wicket.assertErrorMessages(new String[] { "errorSubjectNotFound" });
+        wicket.assertRenderedPage(RegisterPage.class);
+        wicket.assertErrorMessages(new String[] { "errorSubjectNotFound" });
     }
 
     @Test
@@ -181,38 +181,38 @@ public class RegisterPageTest extends TestCase {
         DummyNameIdentifierMappingClient.setUserId(userId);
 
         // MainPage: Verify.
-        this.wicket.assertRenderedPage(MainPage.class);
+        wicket.assertRenderedPage(MainPage.class);
 
-        this.wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID, RegisterPage.class);
-        this.wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID, RemovePage.class);
+        wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID, RegisterPage.class);
+        wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID, RemovePage.class);
 
         // MainPage: Click to register digipass
-        this.wicket.clickLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID);
+        wicket.clickLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID);
 
         // RegisterPage: Verify.
-        this.wicket.assertRenderedPage(RegisterPage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RegisterPage.REGISTER_FORM_ID, Form.class);
+        wicket.assertRenderedPage(RegisterPage.class);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RegisterPage.REGISTER_FORM_ID, Form.class);
 
         // Setup
-        RegisterPage registerPage = (RegisterPage) this.wicket.getLastRenderedPage();
-        EJBTestUtils.inject(registerPage, this.mockDigipassDeviceService);
+        RegisterPage registerPage = (RegisterPage) wicket.getLastRenderedPage();
+        EJBTestUtils.inject(registerPage, mockDigipassDeviceService);
 
         // Stubs
-        expect(this.mockDigipassDeviceService.register(userId, serialNumber)).andThrow(new ArgumentIntegrityException());
+        expect(mockDigipassDeviceService.register(userId, serialNumber)).andThrow(new ArgumentIntegrityException());
 
         // Prepare
-        replay(this.mockDigipassDeviceService);
+        replay(mockDigipassDeviceService);
 
         // RegisterPage: Register digipass for user
-        FormTester registerForm = this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RegisterPage.REGISTER_FORM_ID);
+        FormTester registerForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RegisterPage.REGISTER_FORM_ID);
         registerForm.setValue(RegisterPage.LOGIN_FIELD_ID, UUID.randomUUID().toString());
         registerForm.setValue(RegisterPage.SERIALNUMBER_FIELD_ID, serialNumber);
         registerForm.submit(RegisterPage.REGISTER_BUTTON_ID);
 
         // verify
-        verify(this.mockDigipassDeviceService);
+        verify(mockDigipassDeviceService);
 
-        this.wicket.assertRenderedPage(RegisterPage.class);
-        this.wicket.assertErrorMessages(new String[] { "errorDigipassRegistered" });
+        wicket.assertRenderedPage(RegisterPage.class);
+        wicket.assertErrorMessages(new String[] { "errorDigipassRegistered" });
     }
 }

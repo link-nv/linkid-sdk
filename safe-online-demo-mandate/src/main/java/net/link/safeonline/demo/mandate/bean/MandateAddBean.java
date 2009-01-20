@@ -50,28 +50,28 @@ public class MandateAddBean extends AbstractMandateDataClientBean implements Man
     @RolesAllowed(MandateConstants.ADMIN_ROLE)
     public String add() {
 
-        this.log.debug("add new mandate for user #0", this.mandateUser);
+        log.debug("add new mandate for user #0", mandateUser);
 
         NameIdentifierMappingClient mappingClient = getMappingClient();
         String mandateUserId;
         try {
-            mandateUserId = mappingClient.getUserId(this.mandateUser);
+            mandateUserId = mappingClient.getUserId(mandateUser);
         } catch (SubjectNotFoundException e) {
-            this.facesMessages.add("subject not found");
+            facesMessages.add("subject not found");
             return null;
         } catch (RequestDeniedException e) {
-            this.facesMessages.add("request denied");
+            facesMessages.add("request denied");
             return null;
         } catch (WSClientTransportException e) {
-            this.facesMessages.add("connection failed");
+            facesMessages.add("connection failed");
             return null;
         }
 
         DataClient dataClient = getDataClient();
         try {
-            dataClient.createAttribute(mandateUserId, DemoConstants.MANDATE_ATTRIBUTE_NAME, this.newMandate);
+            dataClient.createAttribute(mandateUserId, DemoConstants.MANDATE_ATTRIBUTE_NAME, newMandate);
         } catch (WSClientTransportException e) {
-            this.facesMessages.add("connection error");
+            facesMessages.add("connection error");
             return null;
         }
 

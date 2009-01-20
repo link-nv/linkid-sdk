@@ -171,7 +171,7 @@ public class ErrorMessageInterceptor {
 
     private boolean handleError(Exception e) {
 
-        for (ErrorHandle error : this.defaultErrors) {
+        for (ErrorHandle error : defaultErrors) {
             if (e.getClass().equals(error.exceptionClass)) {
                 if (null == error.fieldId) {
                     FacesMessages.instance().addFromResourceBundle(FacesMessage.SEVERITY_ERROR, error.messageId);

@@ -26,20 +26,20 @@ public class BufferedServletOutputStream extends ServletOutputStream {
 
     public BufferedServletOutputStream() {
 
-        this.buffer = new ByteArrayOutputStream();
+        buffer = new ByteArrayOutputStream();
     }
 
     @Override
     public void write(int b) {
 
-        this.buffer.write(b);
+        buffer.write(b);
     }
 
     @Override
     public void close()
             throws IOException {
 
-        this.buffer.close();
+        buffer.close();
         super.close();
     }
 
@@ -47,20 +47,20 @@ public class BufferedServletOutputStream extends ServletOutputStream {
     public void flush()
             throws IOException {
 
-        this.buffer.flush();
+        buffer.flush();
     }
 
     @Override
     public void write(byte[] b, int off, int len) {
 
-        this.buffer.write(b, off, len);
+        buffer.write(b, off, len);
     }
 
     @Override
     public void write(byte[] b)
             throws IOException {
 
-        this.buffer.write(b);
+        buffer.write(b);
     }
 
     /**
@@ -69,7 +69,7 @@ public class BufferedServletOutputStream extends ServletOutputStream {
      */
     public byte[] getData() {
 
-        byte[] data = this.buffer.toByteArray();
+        byte[] data = buffer.toByteArray();
         return data;
     }
 }

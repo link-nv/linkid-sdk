@@ -90,13 +90,11 @@ public class AuthenticationServiceManager implements HttpSessionListener {
     public static AuthenticationService getAuthenticationService(HttpSession session) {
 
         AuthenticationService authenticationService = (AuthenticationService) session.getAttribute(AUTH_SERVICE_ATTRIBUTE);
-        if (null == authenticationService) {
+        if (null == authenticationService)
             throw new IllegalStateException("authentication service instance not present");
-        }
-        if (authenticationService.getAuthenticationState().equals(AuthenticationState.COMMITTED)) {
+        if (authenticationService.getAuthenticationState().equals(AuthenticationState.COMMITTED))
             throw new IllegalStateException(
                     "authentication process is already committed, cannot use the authentication service directly anymore.");
-        }
         return authenticationService;
     }
 
@@ -115,9 +113,8 @@ public class AuthenticationServiceManager implements HttpSessionListener {
             throws NodeNotFoundException, SubscriptionNotFoundException, ApplicationNotFoundException {
 
         AuthenticationService authenticationService = (AuthenticationService) session.getAttribute(AUTH_SERVICE_ATTRIBUTE);
-        if (null == authenticationService) {
+        if (null == authenticationService)
             throw new IllegalStateException("authentication service instance not present");
-        }
         try {
             return authenticationService.finalizeAuthentication();
         } finally {
@@ -143,9 +140,8 @@ public class AuthenticationServiceManager implements HttpSessionListener {
             throws NodeNotFoundException {
 
         AuthenticationService authenticationService = (AuthenticationService) session.getAttribute(AUTH_SERVICE_ATTRIBUTE);
-        if (null == authenticationService) {
+        if (null == authenticationService)
             throw new IllegalStateException("authentication service instance not present");
-        }
         try {
             return authenticationService.finalizeLogout(partialLogout);
         } finally {
@@ -165,9 +161,8 @@ public class AuthenticationServiceManager implements HttpSessionListener {
     public static void abort(HttpSession session) {
 
         AuthenticationService authenticationService = (AuthenticationService) session.getAttribute(AUTH_SERVICE_ATTRIBUTE);
-        if (null == authenticationService) {
+        if (null == authenticationService)
             throw new IllegalStateException("authentication service instance not present");
-        }
         try {
             authenticationService.abort();
         } finally {

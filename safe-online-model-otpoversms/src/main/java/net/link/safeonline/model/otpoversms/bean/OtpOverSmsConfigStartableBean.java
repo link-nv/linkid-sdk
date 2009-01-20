@@ -27,7 +27,7 @@ public class OtpOverSmsConfigStartableBean extends AbstractConfigStartableBean {
 
     public OtpOverSmsConfigStartableBean() {
 
-        this.configurationBeans = new Class[] { OtpServiceBean.class, OtpOverSmsManagerBean.class };
+        configurationBeans = new Class[] { OtpServiceBean.class, OtpOverSmsManagerBean.class };
     }
 
     /**

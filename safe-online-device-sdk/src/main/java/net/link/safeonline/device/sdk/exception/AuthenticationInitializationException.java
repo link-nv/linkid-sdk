@@ -21,7 +21,7 @@ public class AuthenticationInitializationException extends Exception {
     @Override
     public String getMessage() {
 
-        return this.message;
+        return message;
     }
 
 }

@@ -28,16 +28,16 @@ public abstract class AbstractMenuAction implements Runnable {
     @Override
     public String toString() {
 
-        return "[" + Character.toUpperCase(this.activationChar) + "] " + this.description;
+        return "[" + Character.toUpperCase(activationChar) + "] " + description;
     }
 
     public char getActivationChar() {
 
-        return this.activationChar;
+        return activationChar;
     }
 
     public String getDescription() {
 
-        return this.description;
+        return description;
     }
 }

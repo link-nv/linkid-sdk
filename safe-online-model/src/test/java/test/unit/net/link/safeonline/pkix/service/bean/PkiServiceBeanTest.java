@@ -44,9 +44,9 @@ public class PkiServiceBeanTest extends TestCase {
 
         super.setUp();
 
-        this.entityTestManager = new EntityTestManager();
-        this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        entityTestManager = new EntityTestManager();
+        entityTestManager.setUp(SafeOnlineTestContainer.entities);
+        EntityManager entityManager = entityTestManager.getEntityManager();
 
         JmxTestUtils jmxTestUtils = new JmxTestUtils();
         jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
@@ -76,21 +76,21 @@ public class PkiServiceBeanTest extends TestCase {
         Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class, SafeOnlineTestContainer.sessionBeans,
                 entityManager);
         systemStartable.postStart();
-        this.entityTestManager.refreshEntityManager();
+        entityTestManager.refreshEntityManager();
     }
 
     @Override
     protected void tearDown()
             throws Exception {
 
-        this.entityTestManager.tearDown();
+        entityTestManager.tearDown();
         super.tearDown();
     }
 
     public void testAddRemoveTrustDomain()
             throws Exception {
 
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
         PkiService pkiService = EJBTestUtils.newInstance(PkiServiceBean.class, SafeOnlineTestContainer.sessionBeans, entityManager,
                 "test-operator", SafeOnlineRoles.OPERATOR_ROLE);
 
@@ -109,7 +109,7 @@ public class PkiServiceBeanTest extends TestCase {
     public void testAddTrustPointWithFakeCertificateThrowsException()
             throws Exception {
 
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
         PkiService pkiService = EJBTestUtils.newInstance(PkiServiceBean.class, SafeOnlineTestContainer.sessionBeans, entityManager,
                 "test-operator", SafeOnlineRoles.OPERATOR_ROLE);
 
@@ -126,7 +126,7 @@ public class PkiServiceBeanTest extends TestCase {
             throws Exception {
 
         // setup
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
         X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
 

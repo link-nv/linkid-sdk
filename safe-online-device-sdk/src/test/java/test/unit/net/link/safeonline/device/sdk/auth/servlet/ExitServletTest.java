@@ -49,18 +49,18 @@ public class ExitServletTest {
     public void setUp()
             throws Exception {
 
-        this.servletTestManager = new ServletTestManager();
+        servletTestManager = new ServletTestManager();
 
-        this.servletTestManager.setUp(ExitServlet.class);
-        this.location = this.servletTestManager.getServletLocation();
-        this.httpClient = new HttpClient();
+        servletTestManager.setUp(ExitServlet.class);
+        location = servletTestManager.getServletLocation();
+        httpClient = new HttpClient();
     }
 
     @After
     public void tearDown()
             throws Exception {
 
-        this.servletTestManager.tearDown();
+        servletTestManager.tearDown();
     }
 
     @Test
@@ -70,8 +70,8 @@ public class ExitServletTest {
         // setup
 
         // operate
-        GetMethod getMethod = new GetMethod(this.location);
-        int statusCode = this.httpClient.executeMethod(getMethod);
+        GetMethod getMethod = new GetMethod(location);
+        int statusCode = httpClient.executeMethod(getMethod);
 
         // verify
         LOG.debug("status code: " + statusCode);

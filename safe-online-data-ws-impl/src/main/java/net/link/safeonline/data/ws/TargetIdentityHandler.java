@@ -75,7 +75,7 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
     public void postConstructCallback() {
 
         loadDependencies();
-        this.wsSecurityConfigurationService = EjbUtils.getEJB(this.wsSecurityConfigurationServiceJndiName,
+        wsSecurityConfigurationService = EjbUtils.getEJB(wsSecurityConfigurationServiceJndiName,
                 WSSecurityConfigurationService.class);
     }
 
@@ -84,7 +84,7 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
         try {
             Context ctx = new javax.naming.InitialContext();
             Context env = (Context) ctx.lookup("java:comp/env");
-            this.wsSecurityConfigurationServiceJndiName = (String) env.lookup("wsSecurityConfigurationServiceJndiName");
+            wsSecurityConfigurationServiceJndiName = (String) env.lookup("wsSecurityConfigurationServiceJndiName");
         } catch (NamingException e) {
             LOG.debug("naming exception: " + e.getMessage());
             throw new RuntimeException("WS Security Configuration JNDI path not specified");
@@ -157,7 +157,7 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
         if (null == certificate)
             throw new RuntimeException("no certificate found on JAX-WS context");
 
-        boolean skipMessageIntegrityCheck = this.wsSecurityConfigurationService.skipMessageIntegrityCheck(certificate);
+        boolean skipMessageIntegrityCheck = wsSecurityConfigurationService.skipMessageIntegrityCheck(certificate);
 
         if (!skipMessageIntegrityCheck) {
             /*

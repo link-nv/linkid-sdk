@@ -63,21 +63,21 @@ public class NotificationProducerClientImpl extends AbstractMessageAccessor impl
     public NotificationProducerClientImpl(String location, X509Certificate clientCertificate, PrivateKey clientPrivateKey) {
 
         NotificationProducerService service = NotificationProducerServiceFactory.newInstance();
-        this.port = service.getNotificationProducerPort();
+        port = service.getNotificationProducerPort();
         this.location = location + "/safe-online-ws/producer";
         setEndpointAddress();
 
         LOG.debug("endpoint: " + this.location);
 
-        registerMessageLoggerHandler(this.port);
-        WSSecurityClientHandler.addNewHandler(this.port, clientCertificate, clientPrivateKey);
+        registerMessageLoggerHandler(port);
+        WSSecurityClientHandler.addNewHandler(port, clientCertificate, clientPrivateKey);
     }
 
     private void setEndpointAddress() {
 
-        BindingProvider bindingProvider = (BindingProvider) this.port;
+        BindingProvider bindingProvider = (BindingProvider) port;
 
-        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location);
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location);
     }
 
     private W3CEndpointReference getEndpointReference(String address) {
@@ -107,9 +107,9 @@ public class NotificationProducerClientImpl extends AbstractMessageAccessor impl
 
         SubscribeResponse response;
         try {
-            response = this.port.subscribe(request);
+            response = port.subscribe(request);
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(this.location);
+            throw new WSClientTransportException(location);
         }
 
         checkStatus(response);
@@ -119,9 +119,8 @@ public class NotificationProducerClientImpl extends AbstractMessageAccessor impl
             throws SubscriptionFailedException {
 
         for (Object errorObject : response.getAny()) {
-            if (errorObject instanceof SubscribeCreationFailedFaultType) {
+            if (errorObject instanceof SubscribeCreationFailedFaultType)
                 throw new SubscriptionFailedException();
-            }
         }
     }
 }

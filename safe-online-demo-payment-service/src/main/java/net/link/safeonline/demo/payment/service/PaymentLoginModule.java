@@ -29,8 +29,6 @@ import net.link.safeonline.sdk.auth.filter.LoginManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.security.SimpleGroup;
-import org.jboss.security.SimplePrincipal;
 
 
 /**
@@ -56,8 +54,8 @@ public class PaymentLoginModule implements LoginModule {
     public void initialize(Subject inSubject, CallbackHandler inCallbackHandler, Map<String, ?> sharedState, Map<String, ?> options) {
 
         LOG.debug("initialize");
-        this.subject = inSubject;
-        this.callbackHandler = inCallbackHandler;
+        subject = inSubject;
+        callbackHandler = inCallbackHandler;
     }
 
     public boolean login()
@@ -78,7 +76,7 @@ public class PaymentLoginModule implements LoginModule {
         Callback[] callbacks = new Callback[] { nameCallback };
 
         try {
-            this.callbackHandler.handle(callbacks);
+            callbackHandler.handle(callbacks);
         } catch (IOException e) {
             throw new LoginException("IO error: " + e.getMessage());
         } catch (UnsupportedCallbackException e) {
@@ -92,11 +90,11 @@ public class PaymentLoginModule implements LoginModule {
             throw new LoginException("JAAS login userId should equal session userId");
 
         // authentication
-        this.authenticatedPrincipal = new SimplePrincipal(sessionUserId);
+        authenticatedPrincipal = new SimplePrincipal(sessionUserId);
 
         // authorization
         String inRole = (String) httpSession.getAttribute("role");
-        this.role = inRole;
+        role = inRole;
 
         return true;
     }
@@ -104,9 +102,9 @@ public class PaymentLoginModule implements LoginModule {
     public boolean commit()
             throws LoginException {
 
-        Set<Principal> principals = this.subject.getPrincipals();
-        principals.add(this.authenticatedPrincipal);
-        setRole(principals, this.role);
+        Set<Principal> principals = subject.getPrincipals();
+        principals.add(authenticatedPrincipal);
+        setRole(principals, role);
         return true;
     }
 
@@ -140,17 +138,17 @@ public class PaymentLoginModule implements LoginModule {
     public boolean abort()
             throws LoginException {
 
-        this.authenticatedPrincipal = null;
-        this.role = null;
+        authenticatedPrincipal = null;
+        role = null;
         return true;
     }
 
     public boolean logout()
             throws LoginException {
 
-        this.subject.getPrincipals().clear();
-        this.subject.getPublicCredentials().clear();
-        this.subject.getPrivateCredentials().clear();
+        subject.getPrincipals().clear();
+        subject.getPublicCredentials().clear();
+        subject.getPrivateCredentials().clear();
         return true;
     }
 }

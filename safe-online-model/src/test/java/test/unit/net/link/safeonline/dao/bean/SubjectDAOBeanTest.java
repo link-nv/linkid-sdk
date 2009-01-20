@@ -36,17 +36,17 @@ public class SubjectDAOBeanTest extends TestCase {
 
         super.setUp();
 
-        this.entityTestManager = new EntityTestManager();
-        this.entityTestManager.setUp(SubjectEntity.class);
+        entityTestManager = new EntityTestManager();
+        entityTestManager.setUp(SubjectEntity.class);
 
-        this.testedInstance = this.entityTestManager.newInstance(SubjectDAOBean.class);
+        testedInstance = entityTestManager.newInstance(SubjectDAOBean.class);
     }
 
     @Override
     protected void tearDown()
             throws Exception {
 
-        this.entityTestManager.tearDown();
+        entityTestManager.tearDown();
         super.tearDown();
     }
 
@@ -57,7 +57,7 @@ public class SubjectDAOBeanTest extends TestCase {
         String nonExistingSubjectLogin = UUID.randomUUID().toString();
 
         // operate
-        SubjectEntity result = this.testedInstance.findSubject(nonExistingSubjectLogin);
+        SubjectEntity result = testedInstance.findSubject(nonExistingSubjectLogin);
 
         // verify
         assertNull(result);
@@ -70,8 +70,8 @@ public class SubjectDAOBeanTest extends TestCase {
         String subjectLogin = UUID.randomUUID().toString();
 
         // operate
-        this.testedInstance.addSubject(subjectLogin);
-        SubjectEntity resultSubject = this.testedInstance.getSubject(subjectLogin);
+        testedInstance.addSubject(subjectLogin);
+        SubjectEntity resultSubject = testedInstance.getSubject(subjectLogin);
 
         // verify
         assertEquals(subjectLogin, resultSubject.getUserId());
@@ -84,11 +84,11 @@ public class SubjectDAOBeanTest extends TestCase {
         String subjectLogin = UUID.randomUUID().toString();
 
         // operate
-        this.testedInstance.addSubject(subjectLogin);
+        testedInstance.addSubject(subjectLogin);
 
         // operate & verify
         try {
-            this.testedInstance.addSubject(subjectLogin);
+            testedInstance.addSubject(subjectLogin);
             fail();
         } catch (RollbackException e) {
             // expected

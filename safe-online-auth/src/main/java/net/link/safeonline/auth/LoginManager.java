@@ -49,12 +49,10 @@ public class LoginManager {
 
     public static void login(HttpSession session, String userId, DeviceEntity device) {
 
-        if (null == userId) {
+        if (null == userId)
             throw new IllegalArgumentException("userId is null");
-        }
-        if (null == device) {
+        if (null == device)
             throw new IllegalArgumentException("device is null");
-        }
         session.setAttribute(USERID_ATTRIBUTE, userId);
         setAuthenticationDevice(session, device);
     }
@@ -87,18 +85,16 @@ public class LoginManager {
     public static String getUserId(HttpSession session) {
 
         String userId = findUserId(session);
-        if (null == userId) {
+        if (null == userId)
             throw new IllegalStateException("userId session attribute is not present");
-        }
         return userId;
     }
 
     public static DeviceEntity getAuthenticationDevice(HttpSession session) {
 
         DeviceEntity authenticationDevice = findAuthenticationDevice(session);
-        if (null == authenticationDevice) {
+        if (null == authenticationDevice)
             throw new IllegalStateException("authenticationDevice session attribute is not present");
-        }
         return authenticationDevice;
     }
 
@@ -122,9 +118,8 @@ public class LoginManager {
 
     public static void setApplication(HttpSession session, String applicationId) {
 
-        if (null == applicationId) {
+        if (null == applicationId)
             throw new IllegalArgumentException("application is null");
-        }
         session.setAttribute(APPLICATION_ID_ATTRIBUTE, applicationId);
     }
 
@@ -136,17 +131,15 @@ public class LoginManager {
 
     public static void setApplicationFriendlyName(HttpSession session, String applicationFriendlyName) {
 
-        if (null == applicationFriendlyName) {
+        if (null == applicationFriendlyName)
             throw new IllegalArgumentException("applicationFriendlyName is null");
-        }
         session.setAttribute(APPLICATION_FRIENDLY_NAME_ATTRIBUTE, applicationFriendlyName);
     }
 
     public static void setTarget(HttpSession session, String target) {
 
-        if (null == target) {
+        if (null == target)
             throw new IllegalArgumentException("target is null");
-        }
         session.setAttribute(TARGET_ATTRIBUTE, target);
     }
 
@@ -178,9 +171,8 @@ public class LoginManager {
     public static String getTarget(HttpSession session) {
 
         String target = (String) session.getAttribute(TARGET_ATTRIBUTE);
-        if (null == target) {
+        if (null == target)
             throw new IllegalStateException(TARGET_ATTRIBUTE + " session attribute not present");
-        }
         return target;
     }
 }

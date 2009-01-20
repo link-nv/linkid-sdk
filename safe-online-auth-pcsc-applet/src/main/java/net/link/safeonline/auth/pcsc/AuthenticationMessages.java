@@ -42,7 +42,7 @@ public class AuthenticationMessages {
 
         public String getKey() {
 
-            return this.key;
+            return key;
         }
     }
 
@@ -57,7 +57,7 @@ public class AuthenticationMessages {
      */
     public AuthenticationMessages(Locale locale) {
 
-        this.messages = ResourceBundle.getBundle("net.link.safeonline.auth.pcsc.AuthenticationMessages", locale);
+        messages = ResourceBundle.getBundle("net.link.safeonline.auth.pcsc.AuthenticationMessages", locale);
     }
 
     /**
@@ -65,6 +65,6 @@ public class AuthenticationMessages {
      */
     public String getString(KEY key) {
 
-        return this.messages.getString(key.getKey());
+        return messages.getString(key.getKey());
     }
 }

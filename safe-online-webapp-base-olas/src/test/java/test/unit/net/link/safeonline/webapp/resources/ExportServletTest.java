@@ -58,25 +58,25 @@ public class ExportServletTest extends TestCase {
 
         super.setUp();
 
-        this.mockStatisticService = createMock(StatisticService.class);
+        mockStatisticService = createMock(StatisticService.class);
 
-        this.jndiTestUtils = new JndiTestUtils();
-        this.jndiTestUtils.setUp();
-        this.jndiTestUtils.bindComponent("SafeOnline/StatisticServiceBean/local", this.mockStatisticService);
+        jndiTestUtils = new JndiTestUtils();
+        jndiTestUtils.setUp();
+        jndiTestUtils.bindComponent("SafeOnline/StatisticServiceBean/local", mockStatisticService);
 
-        this.servletTestManager = new ServletTestManager();
-        this.servletTestManager.setUp(ExportServlet.class);
-        this.servletLocation = this.servletTestManager.getServletLocation();
+        servletTestManager = new ServletTestManager();
+        servletTestManager.setUp(ExportServlet.class);
+        servletLocation = servletTestManager.getServletLocation();
 
-        this.mockObjects = new Object[] { this.mockStatisticService };
+        mockObjects = new Object[] { mockStatisticService };
     }
 
     @Override
     protected void tearDown()
             throws Exception {
 
-        this.servletTestManager.tearDown();
-        this.jndiTestUtils.tearDown();
+        servletTestManager.tearDown();
+        jndiTestUtils.tearDown();
 
         super.tearDown();
     }
@@ -86,7 +86,7 @@ public class ExportServletTest extends TestCase {
 
         // setup
         HttpClient httpClient = new HttpClient();
-        GetMethod getMethod = new GetMethod(this.servletLocation);
+        GetMethod getMethod = new GetMethod(servletLocation);
         String testChartName = "test-chart-name-" + getName();
         String testDomain = "test-domain-" + getName();
         String testApplicationName = "test-application-name-" + getName();
@@ -103,17 +103,17 @@ public class ExportServletTest extends TestCase {
         HSSFWorkbook workbook = new HSSFWorkbook();
 
         // stubs
-        expect(this.mockStatisticService.exportStatistic(testChartName, testDomain, testApplicationName)).andStubReturn(workbook);
+        expect(mockStatisticService.exportStatistic(testChartName, testDomain, testApplicationName)).andStubReturn(workbook);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
         int result = httpClient.executeMethod(getMethod);
 
         // verify
         LOG.debug("result: " + result);
-        verify(this.mockObjects);
+        verify(mockObjects);
         assertEquals(HttpServletResponse.SC_OK, result);
         String resultContentType = getMethod.getResponseHeader("Content-Type").getValue();
         LOG.debug("result content-type: " + resultContentType);

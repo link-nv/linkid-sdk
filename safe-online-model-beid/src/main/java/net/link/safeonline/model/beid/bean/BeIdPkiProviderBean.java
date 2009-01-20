@@ -93,7 +93,7 @@ public class BeIdPkiProviderBean implements PkiProvider {
          * By injecting the attribute DAO of this session bean in the attribute manager we are sure that the attribute manager (a
          * lightweight bean) will live within the same transaction and security context as this identity service EJB3 session bean.
          */
-        this.attributeManager = new AttributeManagerLWBean(this.attributeDAO);
+        attributeManager = new AttributeManagerLWBean(attributeDAO);
     }
 
     public boolean accept(X509Certificate certificate) {
@@ -113,14 +113,14 @@ public class BeIdPkiProviderBean implements PkiProvider {
     public TrustDomainEntity getTrustDomain()
             throws TrustDomainNotFoundException {
 
-        TrustDomainEntity trustDomain = this.trustDomainDAO.getTrustDomain(TRUST_DOMAIN_NAME);
+        TrustDomainEntity trustDomain = trustDomainDAO.getTrustDomain(TRUST_DOMAIN_NAME);
         return trustDomain;
     }
 
     public PkiProvider getReference() {
 
         LOG.debug("get reference");
-        PkiProvider reference = this.context.getBusinessObject(PkiProvider.class);
+        PkiProvider reference = context.getBusinessObject(PkiProvider.class);
         return reference;
     }
 
@@ -170,11 +170,11 @@ public class BeIdPkiProviderBean implements PkiProvider {
 
         AttributeTypeEntity attributeType;
         try {
-            attributeType = this.attributeTypeDAO.getAttributeType(attributeName);
+            attributeType = attributeTypeDAO.getAttributeType(attributeName);
         } catch (AttributeTypeNotFoundException e) {
             throw new EJBException("attribute type not found");
         }
-        AttributeEntity attribute = this.attributeDAO.addAttribute(attributeType, subject);
+        AttributeEntity attribute = attributeDAO.addAttribute(attributeType, subject);
         attribute.setStringValue(value);
     }
 
@@ -203,34 +203,34 @@ public class BeIdPkiProviderBean implements PkiProvider {
     public void storeDeviceAttribute(SubjectEntity subject, long index)
             throws DeviceNotFoundException, AttributeNotFoundException {
 
-        DeviceEntity device = this.deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
+        DeviceEntity device = deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
         AttributeTypeEntity deviceAttributeType = device.getAttributeType();
         AttributeTypeEntity deviceUserAttributeType = device.getUserAttributeType();
         AttributeTypeEntity deviceDisableAttributeType = device.getDisableAttributeType();
 
-        AttributeEntity givenNameAttribute = this.attributeDAO.getAttribute(BeIdConstants.GIVENNAME_ATTRIBUTE, subject, index);
-        AttributeEntity surNameAttribute = this.attributeDAO.getAttribute(BeIdConstants.SURNAME_ATTRIBUTE, subject, index);
-        AttributeEntity deviceUserAttribute = this.attributeDAO.findAttribute(subject, deviceUserAttributeType, index);
+        AttributeEntity givenNameAttribute = attributeDAO.getAttribute(BeIdConstants.GIVENNAME_ATTRIBUTE, subject, index);
+        AttributeEntity surNameAttribute = attributeDAO.getAttribute(BeIdConstants.SURNAME_ATTRIBUTE, subject, index);
+        AttributeEntity deviceUserAttribute = attributeDAO.findAttribute(subject, deviceUserAttributeType, index);
         if (null == deviceUserAttribute) {
             String userAttributeValue = getUserAttributeValue(givenNameAttribute, surNameAttribute);
-            deviceUserAttribute = this.attributeDAO.addAttribute(deviceUserAttributeType, subject, index);
+            deviceUserAttribute = attributeDAO.addAttribute(deviceUserAttributeType, subject, index);
             deviceUserAttribute.setStringValue(userAttributeValue);
         }
-        AttributeEntity deviceDisableAttribute = this.attributeDAO.findAttribute(subject, deviceDisableAttributeType, index);
+        AttributeEntity deviceDisableAttribute = attributeDAO.findAttribute(subject, deviceDisableAttributeType, index);
         if (null == deviceDisableAttribute) {
-            deviceDisableAttribute = this.attributeDAO.addAttribute(deviceDisableAttributeType, subject, index);
+            deviceDisableAttribute = attributeDAO.addAttribute(deviceDisableAttributeType, subject, index);
             deviceDisableAttribute.setBooleanValue(false);
         }
 
-        AttributeEntity deviceAttribute = this.attributeDAO.findAttribute(subject, deviceAttributeType, index);
+        AttributeEntity deviceAttribute = attributeDAO.findAttribute(subject, deviceAttributeType, index);
         if (null == deviceAttribute) {
-            deviceAttribute = this.attributeDAO.addAttribute(deviceAttributeType, subject, index);
+            deviceAttribute = attributeDAO.addAttribute(deviceAttributeType, subject, index);
             deviceAttribute.setStringValue(UUID.randomUUID().toString());
             List<AttributeEntity> deviceAttributeMembers = new LinkedList<AttributeEntity>();
             deviceAttributeMembers.add(givenNameAttribute);
             deviceAttributeMembers.add(surNameAttribute);
-            deviceAttributeMembers.add(this.attributeDAO.getAttribute(BeIdConstants.NRN_ATTRIBUTE, subject, index));
-            deviceAttributeMembers.add(this.attributeDAO.getAttribute(BeIdConstants.IDENTIFIER_ATTRIBUTE, subject, index));
+            deviceAttributeMembers.add(attributeDAO.getAttribute(BeIdConstants.NRN_ATTRIBUTE, subject, index));
+            deviceAttributeMembers.add(attributeDAO.getAttribute(BeIdConstants.IDENTIFIER_ATTRIBUTE, subject, index));
             deviceAttributeMembers.add(deviceUserAttribute);
             deviceAttributeMembers.add(deviceDisableAttribute);
             deviceAttribute.setMembers(deviceAttributeMembers);
@@ -240,17 +240,17 @@ public class BeIdPkiProviderBean implements PkiProvider {
     public boolean isDisabled(SubjectEntity subject, X509Certificate certificate)
             throws DeviceNotFoundException {
 
-        DeviceEntity device = this.deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
+        DeviceEntity device = deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
         String subjectName = getSubjectName(certificate);
         String nrn = getAttributeFromSubjectName(subjectName, "SERIALNUMBER");
         AttributeTypeEntity deviceAttributeType = device.getAttributeType();
-        List<AttributeEntity> attributes = this.attributeDAO.listAttributes(subject, deviceAttributeType);
+        List<AttributeEntity> attributes = attributeDAO.listAttributes(subject, deviceAttributeType);
         LOG.debug("check if device is enabled (nrn=" + nrn + ")");
         for (AttributeEntity attribute : attributes) {
-            AttributeEntity nrnAttribute = this.attributeDAO.findAttribute(subject, BeIdConstants.NRN_ATTRIBUTE,
+            AttributeEntity nrnAttribute = attributeDAO.findAttribute(subject, BeIdConstants.NRN_ATTRIBUTE,
                     attribute.getAttributeIndex());
             if (nrnAttribute.getStringValue().equals(nrn)) {
-                AttributeEntity disabledAttribute = this.attributeDAO.findAttribute(subject, BeIdConstants.BEID_DEVICE_DISABLE_ATTRIBUTE,
+                AttributeEntity disabledAttribute = attributeDAO.findAttribute(subject, BeIdConstants.BEID_DEVICE_DISABLE_ATTRIBUTE,
                         attribute.getAttributeIndex());
                 return disabledAttribute.getBooleanValue();
             }
@@ -261,8 +261,8 @@ public class BeIdPkiProviderBean implements PkiProvider {
     public List<AttributeEntity> listDeviceAttributes(SubjectEntity subject)
             throws DeviceNotFoundException {
 
-        DeviceEntity device = this.deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
-        return this.attributeDAO.listAttributes(subject, device.getAttributeType());
+        DeviceEntity device = deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
+        return attributeDAO.listAttributes(subject, device.getAttributeType());
     }
 
     /**
@@ -271,18 +271,18 @@ public class BeIdPkiProviderBean implements PkiProvider {
     public void disable(String userId, String attribute)
             throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException {
 
-        DeviceEntity device = this.deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
-        SubjectEntity subject = this.subjectService.getSubject(userId);
+        DeviceEntity device = deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
+        SubjectEntity subject = subjectService.getSubject(userId);
 
-        List<AttributeEntity> deviceAttributes = this.attributeDAO.listAttributes(subject, device.getAttributeType());
+        List<AttributeEntity> deviceAttributes = attributeDAO.listAttributes(subject, device.getAttributeType());
         for (AttributeEntity deviceAttribute : deviceAttributes) {
-            AttributeEntity givenNameAttribute = this.attributeDAO.findAttribute(subject, BeIdConstants.GIVENNAME_ATTRIBUTE,
+            AttributeEntity givenNameAttribute = attributeDAO.findAttribute(subject, BeIdConstants.GIVENNAME_ATTRIBUTE,
                     deviceAttribute.getAttributeIndex());
-            AttributeEntity surNameAttribute = this.attributeDAO.findAttribute(subject, BeIdConstants.SURNAME_ATTRIBUTE,
+            AttributeEntity surNameAttribute = attributeDAO.findAttribute(subject, BeIdConstants.SURNAME_ATTRIBUTE,
                     deviceAttribute.getAttributeIndex());
             String deviceUserAttribute = getUserAttributeValue(givenNameAttribute, surNameAttribute);
             if (deviceUserAttribute.equals(attribute)) {
-                AttributeEntity disableAttribute = this.attributeDAO.findAttribute(subject, device.getDisableAttributeType(),
+                AttributeEntity disableAttribute = attributeDAO.findAttribute(subject, device.getDisableAttributeType(),
                         deviceAttribute.getAttributeIndex());
                 disableAttribute.setBooleanValue(true);
                 return;
@@ -299,17 +299,17 @@ public class BeIdPkiProviderBean implements PkiProvider {
             throws DeviceNotFoundException, PermissionDeniedException, AttributeNotFoundException, AttributeTypeNotFoundException,
             DeviceRegistrationNotFoundException {
 
-        DeviceEntity device = this.deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
+        DeviceEntity device = deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
         String subjectName = getSubjectName(certificate);
         String nrn = getAttributeFromSubjectName(subjectName, "SERIALNUMBER");
         AttributeTypeEntity deviceAttributeType = device.getAttributeType();
-        List<AttributeEntity> attributes = this.attributeDAO.listAttributes(subject, deviceAttributeType);
+        List<AttributeEntity> attributes = attributeDAO.listAttributes(subject, deviceAttributeType);
         LOG.debug("enable device registration: nrn=" + nrn);
         for (AttributeEntity attribute : attributes) {
-            AttributeEntity nrnAttribute = this.attributeDAO.findAttribute(subject, BeIdConstants.NRN_ATTRIBUTE,
+            AttributeEntity nrnAttribute = attributeDAO.findAttribute(subject, BeIdConstants.NRN_ATTRIBUTE,
                     attribute.getAttributeIndex());
             if (nrnAttribute.getStringValue().equals(nrn)) {
-                AttributeEntity disableAttribute = this.attributeDAO.findAttribute(subject, device.getDisableAttributeType(),
+                AttributeEntity disableAttribute = attributeDAO.findAttribute(subject, device.getDisableAttributeType(),
                         attribute.getAttributeIndex());
                 disableAttribute.setBooleanValue(false);
                 return;
@@ -326,22 +326,22 @@ public class BeIdPkiProviderBean implements PkiProvider {
             throws SubjectNotFoundException, DeviceNotFoundException, AttributeTypeNotFoundException, DeviceRegistrationNotFoundException,
             AttributeNotFoundException {
 
-        DeviceEntity device = this.deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
-        SubjectEntity subject = this.subjectService.getSubject(userId);
+        DeviceEntity device = deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
+        SubjectEntity subject = subjectService.getSubject(userId);
 
-        List<AttributeEntity> deviceAttributes = this.attributeDAO.listAttributes(subject, device.getAttributeType());
+        List<AttributeEntity> deviceAttributes = attributeDAO.listAttributes(subject, device.getAttributeType());
         for (AttributeEntity deviceAttribute : deviceAttributes) {
-            AttributeEntity givenNameAttribute = this.attributeDAO.findAttribute(subject, BeIdConstants.GIVENNAME_ATTRIBUTE,
+            AttributeEntity givenNameAttribute = attributeDAO.findAttribute(subject, BeIdConstants.GIVENNAME_ATTRIBUTE,
                     deviceAttribute.getAttributeIndex());
-            AttributeEntity surNameAttribute = this.attributeDAO.findAttribute(subject, BeIdConstants.SURNAME_ATTRIBUTE,
+            AttributeEntity surNameAttribute = attributeDAO.findAttribute(subject, BeIdConstants.SURNAME_ATTRIBUTE,
                     deviceAttribute.getAttributeIndex());
             String deviceUserAttribute = getUserAttributeValue(givenNameAttribute, surNameAttribute);
             if (deviceUserAttribute.equals(attribute)) {
-                AttributeTypeEntity identifierAttributeType = this.attributeTypeDAO.getAttributeType(BeIdConstants.IDENTIFIER_ATTRIBUTE);
-                AttributeEntity identifierAttribute = this.attributeDAO.findAttribute(subject, identifierAttributeType,
+                AttributeTypeEntity identifierAttributeType = attributeTypeDAO.getAttributeType(BeIdConstants.IDENTIFIER_ATTRIBUTE);
+                AttributeEntity identifierAttribute = attributeDAO.findAttribute(subject, identifierAttributeType,
                         deviceAttribute.getAttributeIndex());
-                this.subjectIdentifierDAO.removeSubjectIdentifier(subject, getIdentifierDomainName(), identifierAttribute.getStringValue());
-                this.attributeManager.removeAttribute(device.getAttributeType(), deviceAttribute.getAttributeIndex(), subject);
+                subjectIdentifierDAO.removeSubjectIdentifier(subject, getIdentifierDomainName(), identifierAttribute.getStringValue());
+                attributeManager.removeAttribute(device.getAttributeType(), deviceAttribute.getAttributeIndex(), subject);
                 return;
             }
         }

@@ -54,7 +54,7 @@ public class RemovePageTest extends TestCase {
 
         WicketUtil.setUnitTesting(true);
 
-        this.mockEncapDeviceService = createMock(EncapDeviceService.class);
+        mockEncapDeviceService = createMock(EncapDeviceService.class);
 
         // Initialize MBean's
         JmxTestUtils jmxTestUtils = new JmxTestUtils();
@@ -82,8 +82,8 @@ public class RemovePageTest extends TestCase {
             }
         });
 
-        this.wicket = new WicketTester(new EncapTestApplication());
-        this.wicket.processRequestCycle();
+        wicket = new WicketTester(new EncapTestApplication());
+        wicket.processRequestCycle();
 
     }
 
@@ -102,60 +102,60 @@ public class RemovePageTest extends TestCase {
         encapAttributes.add(encap);
 
         // MainPage: Verify.
-        this.wicket.assertRenderedPage(MainPage.class);
+        wicket.assertRenderedPage(MainPage.class);
 
-        this.wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID, RegisterPage.class);
-        this.wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID, RemovePage.class);
+        wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID, RegisterPage.class);
+        wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID, RemovePage.class);
 
         // MainPage: Click to remove encap
-        this.wicket.clickLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID);
+        wicket.clickLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID);
 
         // RemovePage: Verify.
-        this.wicket.assertRenderedPage(RemovePage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RemovePage.GET_FORM_ID, Form.class);
-        this.wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + RemovePage.LIST_FORM_ID);
+        wicket.assertRenderedPage(RemovePage.class);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RemovePage.GET_FORM_ID, Form.class);
+        wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + RemovePage.LIST_FORM_ID);
 
         // setup
-        RemovePage removePage = (RemovePage) this.wicket.getLastRenderedPage();
-        EJBTestUtils.inject(removePage, this.mockEncapDeviceService);
+        RemovePage removePage = (RemovePage) wicket.getLastRenderedPage();
+        EJBTestUtils.inject(removePage, mockEncapDeviceService);
 
         // stubs
-        expect(this.mockEncapDeviceService.getEncapes(userId, removePage.getLocale())).andStubReturn(encapAttributes);
+        expect(mockEncapDeviceService.getEncapes(userId, removePage.getLocale())).andStubReturn(encapAttributes);
 
         // prepare
-        replay(this.mockEncapDeviceService);
+        replay(mockEncapDeviceService);
 
         // RemovePage: retrieve encap for user
-        FormTester getForm = this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RemovePage.GET_FORM_ID);
+        FormTester getForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RemovePage.GET_FORM_ID);
         getForm.setValue(RemovePage.LOGIN_FIELD_ID, UUID.randomUUID().toString());
         getForm.submit(RemovePage.VIEW_BUTTON_ID);
 
         // verify
-        verify(this.mockEncapDeviceService);
+        verify(mockEncapDeviceService);
 
         // RemovePage: Verify
-        this.wicket.assertRenderedPage(RemovePage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RemovePage.LIST_FORM_ID, Form.class);
-        this.wicket.assertListView(TemplatePage.CONTENT_ID + ":" + RemovePage.LIST_FORM_ID + ":" + RemovePage.ENCAPS_LIST_ID,
+        wicket.assertRenderedPage(RemovePage.class);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RemovePage.LIST_FORM_ID, Form.class);
+        wicket.assertListView(TemplatePage.CONTENT_ID + ":" + RemovePage.LIST_FORM_ID + ":" + RemovePage.ENCAPS_LIST_ID,
                 encapAttributes);
 
         // setup
-        EasyMock.reset(this.mockEncapDeviceService);
+        EasyMock.reset(mockEncapDeviceService);
 
         // stubs
-        this.mockEncapDeviceService.remove(serialNumber);
+        mockEncapDeviceService.remove(serialNumber);
 
         // prepare
-        replay(this.mockEncapDeviceService);
+        replay(mockEncapDeviceService);
 
         // RemovePage: remove encap
-        this.wicket.clickLink(TemplatePage.CONTENT_ID + ":" + RemovePage.LIST_FORM_ID + ":" + RemovePage.ENCAPS_LIST_ID + ":0:"
+        wicket.clickLink(TemplatePage.CONTENT_ID + ":" + RemovePage.LIST_FORM_ID + ":" + RemovePage.ENCAPS_LIST_ID + ":0:"
                 + RemovePage.REMOVE_LINK_ID);
 
         // verify
-        verify(this.mockEncapDeviceService);
+        verify(mockEncapDeviceService);
 
-        this.wicket.assertRenderedPage(MainPage.class);
+        wicket.assertRenderedPage(MainPage.class);
     }
 
     @Test
@@ -167,40 +167,40 @@ public class RemovePageTest extends TestCase {
         DummyNameIdentifierMappingClient.setUserId(userId);
 
         // MainPage: Verify.
-        this.wicket.assertRenderedPage(MainPage.class);
+        wicket.assertRenderedPage(MainPage.class);
 
-        this.wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID, RegisterPage.class);
-        this.wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID, RemovePage.class);
+        wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID, RegisterPage.class);
+        wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID, RemovePage.class);
 
         // MainPage: Click to remove encap
-        this.wicket.clickLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID);
+        wicket.clickLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID);
 
         // RemovePage: Verify.
-        this.wicket.assertRenderedPage(RemovePage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RemovePage.GET_FORM_ID, Form.class);
-        this.wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + RemovePage.LIST_FORM_ID);
+        wicket.assertRenderedPage(RemovePage.class);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RemovePage.GET_FORM_ID, Form.class);
+        wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + RemovePage.LIST_FORM_ID);
 
         // setup
-        RemovePage removePage = (RemovePage) this.wicket.getLastRenderedPage();
-        EJBTestUtils.inject(removePage, this.mockEncapDeviceService);
+        RemovePage removePage = (RemovePage) wicket.getLastRenderedPage();
+        EJBTestUtils.inject(removePage, mockEncapDeviceService);
 
         // stubs
-        expect(this.mockEncapDeviceService.getEncapes(userId, removePage.getLocale())).andThrow(new SubjectNotFoundException());
+        expect(mockEncapDeviceService.getEncapes(userId, removePage.getLocale())).andThrow(new SubjectNotFoundException());
 
         // prepare
-        replay(this.mockEncapDeviceService);
+        replay(mockEncapDeviceService);
 
         // RemovePage: retrieve encap for user
-        FormTester getForm = this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RemovePage.GET_FORM_ID);
+        FormTester getForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RemovePage.GET_FORM_ID);
         getForm.setValue(RemovePage.LOGIN_FIELD_ID, UUID.randomUUID().toString());
         getForm.submit(RemovePage.VIEW_BUTTON_ID);
 
         // verify
-        verify(this.mockEncapDeviceService);
+        verify(mockEncapDeviceService);
 
         // RemovePage: Verify
-        this.wicket.assertRenderedPage(RemovePage.class);
-        this.wicket.assertErrorMessages(new String[] { "errorSubjectNotFound" });
+        wicket.assertRenderedPage(RemovePage.class);
+        wicket.assertErrorMessages(new String[] { "errorSubjectNotFound" });
     }
 
     @Test
@@ -212,39 +212,39 @@ public class RemovePageTest extends TestCase {
         DummyNameIdentifierMappingClient.setUserId(userId);
 
         // MainPage: Verify.
-        this.wicket.assertRenderedPage(MainPage.class);
+        wicket.assertRenderedPage(MainPage.class);
 
-        this.wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID, RegisterPage.class);
-        this.wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID, RemovePage.class);
+        wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID, RegisterPage.class);
+        wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID, RemovePage.class);
 
         // MainPage: Click to remove encap
-        this.wicket.clickLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID);
+        wicket.clickLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID);
 
         // RemovePage: Verify.
-        this.wicket.assertRenderedPage(RemovePage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RemovePage.GET_FORM_ID, Form.class);
-        this.wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + RemovePage.LIST_FORM_ID);
+        wicket.assertRenderedPage(RemovePage.class);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RemovePage.GET_FORM_ID, Form.class);
+        wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + RemovePage.LIST_FORM_ID);
 
         // setup
-        RemovePage removePage = (RemovePage) this.wicket.getLastRenderedPage();
-        EJBTestUtils.inject(removePage, this.mockEncapDeviceService);
+        RemovePage removePage = (RemovePage) wicket.getLastRenderedPage();
+        EJBTestUtils.inject(removePage, mockEncapDeviceService);
 
         // stubs
-        expect(this.mockEncapDeviceService.getEncapes(userId, removePage.getLocale())).andStubReturn(new LinkedList<AttributeDO>());
+        expect(mockEncapDeviceService.getEncapes(userId, removePage.getLocale())).andStubReturn(new LinkedList<AttributeDO>());
 
         // prepare
-        replay(this.mockEncapDeviceService);
+        replay(mockEncapDeviceService);
 
         // RemovePage: retrieve encap for user
-        FormTester getForm = this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RemovePage.GET_FORM_ID);
+        FormTester getForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RemovePage.GET_FORM_ID);
         getForm.setValue(RemovePage.LOGIN_FIELD_ID, UUID.randomUUID().toString());
         getForm.submit(RemovePage.VIEW_BUTTON_ID);
 
         // verify
-        verify(this.mockEncapDeviceService);
+        verify(mockEncapDeviceService);
 
         // RemovePage: Verify
-        this.wicket.assertRenderedPage(RemovePage.class);
-        this.wicket.assertErrorMessages(new String[] { "errorNoDeviceRegistrationsFound" });
+        wicket.assertRenderedPage(RemovePage.class);
+        wicket.assertErrorMessages(new String[] { "errorNoDeviceRegistrationsFound" });
     }
 }

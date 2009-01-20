@@ -76,21 +76,21 @@ public class OSGIHostActivator implements BundleActivator, ServiceListener, Seri
         context.addServiceListener(this);
 
         // Initialize a service tracker for the plugin attribute service
-        this.pluginAttributeServiceTracker = new ServiceTracker(context, PluginAttributeService.class.getName(), null);
-        this.pluginAttributeServiceTracker.open();
+        pluginAttributeServiceTracker = new ServiceTracker(context, PluginAttributeService.class.getName(), null);
+        pluginAttributeServiceTracker.open();
 
         // Initialize a service tracker for the sms service
-        this.smsServiceTracker = new ServiceTracker(context, SmsService.class.getName(), null);
-        this.smsServiceTracker.open();
+        smsServiceTracker = new ServiceTracker(context, SmsService.class.getName(), null);
+        smsServiceTracker.open();
 
         // Initialize olas attribute service
         OlasAttributeServiceFactory attribtueServiceFactory = new OlasAttributeServiceFactory();
-        this.olasAttributeServiceRegistration = context
+        olasAttributeServiceRegistration = context
                                                        .registerService(OlasAttributeService.class.getName(), attribtueServiceFactory, null);
 
         // Initialize olas configuration service
         OlasConfigurationServiceFactory configurationServiceFactory = new OlasConfigurationServiceFactory();
-        this.olasConfigurationServiceRegistration = context.registerService(OlasConfigurationService.class.getName(),
+        olasConfigurationServiceRegistration = context.registerService(OlasConfigurationService.class.getName(),
                 configurationServiceFactory, null);
 
     }
@@ -100,10 +100,10 @@ public class OSGIHostActivator implements BundleActivator, ServiceListener, Seri
      */
     public void stop(BundleContext context) {
 
-        this.pluginAttributeServiceTracker.close();
-        this.smsServiceTracker.close();
-        this.olasAttributeServiceRegistration.unregister();
-        this.olasConfigurationServiceRegistration.unregister();
+        pluginAttributeServiceTracker.close();
+        smsServiceTracker.close();
+        olasAttributeServiceRegistration.unregister();
+        olasConfigurationServiceRegistration.unregister();
 
     }
 
@@ -144,22 +144,22 @@ public class OSGIHostActivator implements BundleActivator, ServiceListener, Seri
 
     public ServiceReference[] getPluginServiceReferences() {
 
-        return this.pluginAttributeServiceTracker.getServiceReferences();
+        return pluginAttributeServiceTracker.getServiceReferences();
     }
 
     public ServiceReference[] getSmsServiceReferences() {
 
-        return this.smsServiceTracker.getServiceReferences();
+        return smsServiceTracker.getServiceReferences();
     }
 
     public Object[] getPluginServices() {
 
-        return this.pluginAttributeServiceTracker.getServices();
+        return pluginAttributeServiceTracker.getServices();
     }
 
     public Object[] getSmsServices() {
 
-        return this.smsServiceTracker.getServices();
+        return smsServiceTracker.getServices();
     }
 
 }

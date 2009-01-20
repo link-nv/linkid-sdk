@@ -51,13 +51,13 @@ public class LoginPanel extends JPanel implements Observer {
     private JProgressBar      progressBar      = new JProgressBar();
 
     private Action            exitAction       = new ExitAction("Exit");
-    private JButton           exitButton       = new JButton(this.exitAction);
+    private JButton           exitButton       = new JButton(exitAction);
 
 
     public LoginPanel(AcceptanceConsole parent, String message) {
 
         this.parent = parent;
-        this.infoLabel = new JLabel(message);
+        infoLabel = new JLabel(message);
 
         AuthenticationUtils.getInstance().addObserver(this);
         buildWindow();
@@ -68,8 +68,8 @@ public class LoginPanel extends JPanel implements Observer {
      */
     private void buildWindow() {
 
-        this.progressBar.setIndeterminate(true);
-        this.exitButton.setEnabled(false);
+        progressBar.setIndeterminate(true);
+        exitButton.setEnabled(false);
 
         JPanel infoPanel = new JPanel();
         JPanel controlPanel = new JPanel();
@@ -85,15 +85,15 @@ public class LoginPanel extends JPanel implements Observer {
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbl.setConstraints(this.infoLabel, gbc);
-        infoPanel.add(this.infoLabel, gbc);
+        gbl.setConstraints(infoLabel, gbc);
+        infoPanel.add(infoLabel, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
-        gbl.setConstraints(this.progressBar, gbc);
-        infoPanel.add(this.progressBar, gbc);
+        gbl.setConstraints(progressBar, gbc);
+        infoPanel.add(progressBar, gbc);
 
-        controlPanel.add(this.exitButton);
+        controlPanel.add(exitButton);
 
         setLayout(new BorderLayout());
         this.add(infoPanel, BorderLayout.CENTER);
@@ -107,31 +107,31 @@ public class LoginPanel extends JPanel implements Observer {
     public void update(Observable o, Object arg) {
 
         setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-        this.exitButton.setEnabled(true);
-        this.progressBar.setVisible(false);
+        exitButton.setEnabled(true);
+        progressBar.setVisible(false);
 
         if (arg instanceof AuthenticationError) {
             AuthenticationError error = (AuthenticationError) arg;
-            this.infoLabel.setText("Authentication failed: " + error.getCode().getErrorCode() + " message=" + error.getMessage());
+            infoLabel.setText("Authentication failed: " + error.getCode().getErrorCode() + " message=" + error.getMessage());
         } else if (arg instanceof AuthenticationStep) {
             AuthenticationStep authenticationStep = (AuthenticationStep) arg;
             if (authenticationStep.equals(AuthenticationStep.GLOBAL_USAGE_AGREEMENT)) {
-                this.parent.requestGlobalUsageAgreement();
+                parent.requestGlobalUsageAgreement();
             } else if (authenticationStep.equals(AuthenticationStep.USAGE_AGREEMENT)) {
-                this.parent.requestUsageAgreement();
+                parent.requestUsageAgreement();
             } else if (authenticationStep.equals(AuthenticationStep.IDENTITY_CONFIRMATION)) {
-                this.parent.getIdentity();
+                parent.getIdentity();
             } else if (authenticationStep.equals(AuthenticationStep.MISSING_ATTRIBUTES)) {
-                this.parent.getMissingAttributes();
+                parent.getMissingAttributes();
             } else {
-                this.infoLabel.setText("Additional authentication step: " + authenticationStep.getValue());
+                infoLabel.setText("Additional authentication step: " + authenticationStep.getValue());
             }
         } else if (arg instanceof DeviceAuthenticationInformationType) {
             DeviceAuthenticationInformationType deviceAuthenticationInformation = (DeviceAuthenticationInformationType) arg;
-            this.parent.onAuthenticateFurther(deviceAuthenticationInformation);
+            parent.onAuthenticateFurther(deviceAuthenticationInformation);
         } else if (arg instanceof String) {
             // success
-            this.infoLabel.setText("Successfully authenticated user " + (String) arg);
+            infoLabel.setText("Successfully authenticated user " + (String) arg);
         }
 
     }
@@ -151,7 +151,7 @@ public class LoginPanel extends JPanel implements Observer {
 
         public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
-            LoginPanel.this.parent.resetContent();
+            parent.resetContent();
         }
     }
 

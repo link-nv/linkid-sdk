@@ -48,7 +48,7 @@ public class ApplicationAuthenticationServiceBean implements ApplicationAuthenti
     public String authenticate(X509Certificate certificate)
             throws ApplicationNotFoundException {
 
-        ApplicationEntity application = this.applicationDAO.getApplication(certificate);
+        ApplicationEntity application = applicationDAO.getApplication(certificate);
         String applicationName = application.getName();
         LOG.debug("authenticated application: " + applicationName);
         return applicationName;
@@ -58,8 +58,8 @@ public class ApplicationAuthenticationServiceBean implements ApplicationAuthenti
             throws ApplicationNotFoundException {
 
         LOG.debug("get certificates for application Id: " + applicationId);
-        ApplicationEntity application = this.applicationDAO.getApplication(applicationId);
-        List<TrustPointEntity> trustPoints = this.trustPointDAO.listTrustPoints(application.getCertificateSubject());
+        ApplicationEntity application = applicationDAO.getApplication(applicationId);
+        List<TrustPointEntity> trustPoints = trustPointDAO.listTrustPoints(application.getCertificateSubject());
         List<X509Certificate> certificates = new LinkedList<X509Certificate>();
         for (TrustPointEntity trustPoint : trustPoints) {
             certificates.add(trustPoint.getCertificate());
@@ -71,7 +71,7 @@ public class ApplicationAuthenticationServiceBean implements ApplicationAuthenti
     public boolean skipMessageIntegrityCheck(String applicationId)
             throws ApplicationNotFoundException {
 
-        ApplicationEntity application = this.applicationDAO.getApplication(applicationId);
+        ApplicationEntity application = applicationDAO.getApplication(applicationId);
         boolean skipMessageIntegrityCheck = application.isSkipMessageIntegrityCheck();
         return skipMessageIntegrityCheck;
     }

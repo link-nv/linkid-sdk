@@ -49,7 +49,7 @@ public class RoomServiceBean extends AbstractCinemaServiceBean implements RoomSe
     @SuppressWarnings("unchecked")
     public List<CinemaRoomEntity> getRoomsFor(CinemaTheatreEntity theatre, CinemaFilmEntity film) {
 
-        return this.em.createNamedQuery(CinemaRoomEntity.getFor).setParameter("theatre", theatre).setParameter("film", film)
+        return em.createNamedQuery(CinemaRoomEntity.getFor).setParameter("theatre", theatre).setParameter("film", film)
                       .getResultList();
     }
 
@@ -59,7 +59,7 @@ public class RoomServiceBean extends AbstractCinemaServiceBean implements RoomSe
     public int getColumns(CinemaRoomEntity room) {
 
         int maxColumn = 0;
-        for (CinemaSeatEntity seat : this.seatService.getSeatsFor(room)) {
+        for (CinemaSeatEntity seat : seatService.getSeatsFor(room)) {
             maxColumn = Math.max(maxColumn, seat.getX());
         }
 
@@ -72,7 +72,7 @@ public class RoomServiceBean extends AbstractCinemaServiceBean implements RoomSe
     public int getRows(CinemaRoomEntity room) {
 
         int maxRow = 0;
-        for (CinemaSeatEntity seat : this.seatService.getSeatsFor(room)) {
+        for (CinemaSeatEntity seat : seatService.getSeatsFor(room)) {
             maxRow = Math.max(maxRow, seat.getY());
         }
 

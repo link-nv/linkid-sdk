@@ -85,26 +85,26 @@ public class WSSecurityServerHandlerTest {
     public void setUp()
             throws Exception {
 
-        this.jndiTestUtils = new JndiTestUtils();
-        this.jndiTestUtils.setUp();
-        this.jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
+        jndiTestUtils = new JndiTestUtils();
+        jndiTestUtils.setUp();
+        jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
                 "SafeOnline/WSSecurityConfigurationBean/local");
-        this.jndiTestUtils.bindComponent("java:comp/env/wsSecurityOptionalInboudSignature", Boolean.FALSE);
+        jndiTestUtils.bindComponent("java:comp/env/wsSecurityOptionalInboudSignature", Boolean.FALSE);
 
-        this.mockWSSecurityConfigurationService = createMock(WSSecurityConfigurationService.class);
+        mockWSSecurityConfigurationService = createMock(WSSecurityConfigurationService.class);
 
-        this.jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local", this.mockWSSecurityConfigurationService);
-        this.testedInstance = new WSSecurityServerHandler();
-        this.testedInstance.postConstructCallback();
+        jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local", mockWSSecurityConfigurationService);
+        testedInstance = new WSSecurityServerHandler();
+        testedInstance.postConstructCallback();
 
-        this.mockObjects = new Object[] { this.mockWSSecurityConfigurationService };
+        mockObjects = new Object[] { mockWSSecurityConfigurationService };
     }
 
     @After
     public void tearDown()
             throws Exception {
 
-        this.jndiTestUtils.tearDown();
+        jndiTestUtils.tearDown();
     }
 
     @Test
@@ -121,16 +121,16 @@ public class WSSecurityServerHandlerTest {
         SOAPMessageContext soapMessageContext = new TestSOAPMessageContext(message, false);
 
         // stubs
-        expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
+        expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
-        this.testedInstance.handleMessage(soapMessageContext);
+        testedInstance.handleMessage(soapMessageContext);
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
         X509Certificate resultCertificate = WSSecurityServerHandler.getCertificate(soapMessageContext);
         assertNotNull(resultCertificate);
         assertTrue(WSSecurityServerHandler.isSignedElement("id-21414356", soapMessageContext));
@@ -156,19 +156,19 @@ public class WSSecurityServerHandlerTest {
         soapMessageContext.setScope(WSSecurityServerHandler.CERTIFICATE_PROPERTY, Scope.APPLICATION);
 
         // stubs
-        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andStubReturn(true);
+        expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andStubReturn(true);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
-        this.testedInstance.handleMessage(soapMessageContext);
+        testedInstance.handleMessage(soapMessageContext);
 
         // verify
         SOAPMessage resultMessage = soapMessageContext.getMessage();
         SOAPPart resultSoapPart = resultMessage.getSOAPPart();
         LOG.debug("result SOAP part: " + DomTestUtils.domToString(resultSoapPart));
-        verify(this.mockObjects);
+        verify(mockObjects);
         Element nsElement = resultSoapPart.createElement("nsElement");
         nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:soap", "http://schemas.xmlsoap.org/soap/envelope/");
         nsElement.setAttributeNS(Constants.NamespaceSpecNS, "xmlns:wsse",
@@ -202,16 +202,16 @@ public class WSSecurityServerHandlerTest {
         soapMessageContext.setScope(WSSecurityServerHandler.CERTIFICATE_PROPERTY, Scope.APPLICATION);
 
         // stubs
-        expect(this.mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andStubReturn(false);
-        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
-        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
-        expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
+        expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andStubReturn(false);
+        expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
+        expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
-        this.testedInstance.handleMessage(soapMessageContext);
+        testedInstance.handleMessage(soapMessageContext);
 
         // verify signed message
         SOAPMessage signedMessage = soapMessageContext.getMessage();
@@ -219,10 +219,10 @@ public class WSSecurityServerHandlerTest {
         LOG.debug("signed SOAP part:" + DomTestUtils.domToString(signedSoapPart));
         soapMessageContext.put(MessageContext.MESSAGE_OUTBOUND_PROPERTY, false);
 
-        this.testedInstance.handleMessage(soapMessageContext);
+        testedInstance.handleMessage(soapMessageContext);
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
         X509Certificate resultCertificate = WSSecurityServerHandler.getCertificate(soapMessageContext);
         assertNotNull(resultCertificate);
         Set<String> signedElements = (Set<String>) soapMessageContext.get(WSSecurityServerHandler.SIGNED_ELEMENTS_CONTEXT_KEY);
@@ -246,23 +246,23 @@ public class WSSecurityServerHandlerTest {
 
         SOAPMessageContext soapMessageContext = new TestSOAPMessageContext(message, false);
 
-        this.jndiTestUtils.bindComponent("java:comp/env/wsSecurityOptionalInboudSignature", Boolean.TRUE);
-        this.testedInstance = new WSSecurityServerHandler();
-        this.testedInstance.postConstructCallback();
+        jndiTestUtils.bindComponent("java:comp/env/wsSecurityOptionalInboudSignature", Boolean.TRUE);
+        testedInstance = new WSSecurityServerHandler();
+        testedInstance.postConstructCallback();
 
         // stubs
-        expect(this.mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
-        expect(this.mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
-        expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
+        expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
+        expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
-        this.testedInstance.handleMessage(soapMessageContext);
+        testedInstance.handleMessage(soapMessageContext);
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
     }
 
     @Test
@@ -280,15 +280,15 @@ public class WSSecurityServerHandlerTest {
         SOAPMessageContext soapMessageContext = new TestSOAPMessageContext(message, false);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate & verify
         try {
-            this.testedInstance.handleMessage(soapMessageContext);
+            testedInstance.handleMessage(soapMessageContext);
             fail();
         } catch (RuntimeException e) {
             // expected
-            verify(this.mockObjects);
+            verify(mockObjects);
         }
     }
 
@@ -352,10 +352,10 @@ public class WSSecurityServerHandlerTest {
         LOG.debug("document: " + DomTestUtils.domToString(document));
 
         // stubs
-        expect(this.mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
+        expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
         MessageFactory messageFactory = MessageFactory.newInstance(SOAPConstants.SOAP_1_1_PROTOCOL);
@@ -370,13 +370,13 @@ public class WSSecurityServerHandlerTest {
 
         // operate & verify
         try {
-            this.testedInstance.handleMessage(soapMessageContext);
+            testedInstance.handleMessage(soapMessageContext);
             fail();
         } catch (RuntimeException e) {
             LOG.debug("expected exception: ", e);
             assertEquals("Timestamp not signed", e.getMessage());
             // expected
-            verify(this.mockObjects);
+            verify(mockObjects);
         }
     }
 

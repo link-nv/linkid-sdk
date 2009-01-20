@@ -34,22 +34,22 @@ public class DeviceRegistrationDO {
 
     public DeviceEntity getDevice() {
 
-        return this.device;
+        return device;
     }
 
     public String getFriendlyName() {
 
-        return this.friendlyName;
+        return friendlyName;
     }
 
     public AttributeDO getAttribute() {
 
-        return this.attribute;
+        return attribute;
     }
 
     public boolean isDisabled() {
 
-        return this.disabled;
+        return disabled;
     }
 
     public void setDisabled(boolean disabled) {
@@ -59,7 +59,7 @@ public class DeviceRegistrationDO {
 
     public long getAttributeIndex() {
 
-        return this.attributeIndex;
+        return attributeIndex;
     }
 
 }

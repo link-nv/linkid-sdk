@@ -58,7 +58,7 @@ public class AuthenticationPage extends TemplatePage {
 
     public AuthenticationPage() {
 
-        this.authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest(getRequest()).getSession());
+        authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest(getRequest()).getSession());
 
         // Header & Sidebar.
         addHeader(this);
@@ -70,14 +70,14 @@ public class AuthenticationPage extends TemplatePage {
             @Override
             public void onClick() {
 
-                AuthenticationPage.this.authenticationContext.setUsedDevice(EncapConstants.ENCAP_DEVICE_ID);
+                authenticationContext.setUsedDevice(EncapConstants.ENCAP_DEVICE_ID);
                 exit();
             }
         });
 
         // Our content.
         String title = String.format("%s: %s %s", getLocalizer().getString("encapAuthentication", this), getLocalizer().getString(
-                "authenticatingFor", this), this.authenticationContext.getApplication());
+                "authenticatingFor", this), authenticationContext.getApplication());
         getContent().add(new Label("title", title));
         getContent().add(new ProgressAuthenticationPanel("progress", ProgressAuthenticationPanel.stage.authenticate));
         getContent().add(new AuthenticationForm(AUTHENTICATION_FORM_ID));
@@ -98,10 +98,10 @@ public class AuthenticationPage extends TemplatePage {
 
             super(id);
 
-            final TextField<String> mobileField = new TextField<String>(LOGIN_NAME_FIELD_ID, this.mobile = new Model<String>());
+            final TextField<String> mobileField = new TextField<String>(LOGIN_NAME_FIELD_ID, mobile = new Model<String>());
             mobileField.setRequired(true);
 
-            final TextField<String> tokenField = new TextField<String>(TOKEN_FIELD_ID, this.otp = new Model<String>());
+            final TextField<String> tokenField = new TextField<String>(TOKEN_FIELD_ID, otp = new Model<String>());
             tokenField.setRequired(true);
 
             Button login = new Button(LOGIN_BUTTON_ID) {
@@ -112,33 +112,33 @@ public class AuthenticationPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    LOG.debug("mobile: " + AuthenticationForm.this.mobile);
+                    LOG.debug("mobile: " + mobile);
 
                     try {
-                        String userId = AuthenticationPage.this.encapDeviceService.authenticate(AuthenticationForm.this.mobile.getObject(),
-                                AuthenticationForm.this.challenge.getObject(), AuthenticationForm.this.otp.getObject());
+                        String userId = encapDeviceService.authenticate(mobile.getObject(),
+                                challenge.getObject(), otp.getObject());
 
                         if (null == userId) {
                             AuthenticationForm.this.error(getLocalizer().getString("authenticationFailedMsg", this));
                             HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "mobile failed: "
-                                    + AuthenticationForm.this.mobile, LogLevelType.ERROR);
+                                    + mobile, LogLevelType.ERROR);
                             return;
                         }
                         login(userId);
                     } catch (MobileException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("encapServiceFailed", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "mobile: " + e.getMessage() + " for "
-                                + AuthenticationForm.this.mobile, LogLevelType.ERROR);
+                                + mobile, LogLevelType.ERROR);
                         return;
                     } catch (MobileAuthenticationException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("encapAuthenticationFailed", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "mobile: " + e.getMessage() + " for "
-                                + AuthenticationForm.this.mobile, LogLevelType.ERROR);
+                                + mobile, LogLevelType.ERROR);
                         return;
                     } catch (SubjectNotFoundException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("encapNotRegistered", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "mobile: subject not found for "
-                                + AuthenticationForm.this.mobile, LogLevelType.ERROR);
+                                + mobile, LogLevelType.ERROR);
                         return;
                     }
                     HelpdeskLogger.clear(WicketUtil.toServletRequest(getRequest()).getSession());
@@ -160,7 +160,7 @@ public class AuthenticationPage extends TemplatePage {
             };
             cancel.setDefaultFormProcessing(false);
 
-            add(new Label(CHALLENGE_ID, this.challenge = new Model<String>()));
+            add(new Label(CHALLENGE_ID, challenge = new Model<String>()));
             add(mobileField);
             add(tokenField);
             add(login);
@@ -172,10 +172,10 @@ public class AuthenticationPage extends TemplatePage {
 
     public void login(String userId) {
 
-        this.authenticationContext.setUserId(userId);
-        this.authenticationContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());
-        this.authenticationContext.setIssuer(net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID);
-        this.authenticationContext.setUsedDevice(net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID);
+        authenticationContext.setUserId(userId);
+        authenticationContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
+        authenticationContext.setIssuer(net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID);
+        authenticationContext.setUsedDevice(net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID);
 
         exit();
 

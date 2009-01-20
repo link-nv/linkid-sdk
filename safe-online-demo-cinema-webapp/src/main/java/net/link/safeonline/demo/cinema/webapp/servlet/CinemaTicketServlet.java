@@ -47,7 +47,7 @@ public class CinemaTicketServlet extends HttpServlet {
         LOG.debug("init");
         super.init(config);
 
-        this.ticketService = EjbUtils.getEJB(TicketService.JNDI_BINDING, TicketService.class);
+        ticketService = EjbUtils.getEJB(TicketService.JNDI_BINDING, TicketService.class);
     }
 
     @Override
@@ -90,9 +90,9 @@ public class CinemaTicketServlet extends HttpServlet {
         if (film == null) {
             List<CinemaTicketEntity> tickets;
             if (theatre == null) {
-                tickets = this.ticketService.getTickets(nrn, date);
+                tickets = ticketService.getTickets(nrn, date);
             } else {
-                tickets = this.ticketService.getTickets(nrn, date, theatre);
+                tickets = ticketService.getTickets(nrn, date, theatre);
             }
 
             // Feed the log.
@@ -105,7 +105,7 @@ public class CinemaTicketServlet extends HttpServlet {
 
         // Check whether there is a ticket for user at time in theatre for film.
         else {
-            if (!this.ticketService.isValid(nrn, date, theatre, film)) {
+            if (!ticketService.isValid(nrn, date, theatre, film)) {
                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "The user has no tickets for this time and day.");
             }
         }

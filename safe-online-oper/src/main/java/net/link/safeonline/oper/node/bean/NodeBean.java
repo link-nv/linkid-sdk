@@ -98,11 +98,11 @@ public class NodeBean implements Node {
     @Destroy
     public void destroyCallback() {
 
-        this.name = null;
-        this.protocol = null;
-        this.hostname = null;
-        this.authnUpFile = null;
-        this.signingUpFile = null;
+        name = null;
+        protocol = null;
+        hostname = null;
+        authnUpFile = null;
+        signingUpFile = null;
     }
 
     @Factory(OPER_NODE_LIST_NAME)
@@ -110,7 +110,7 @@ public class NodeBean implements Node {
     public void nodeListFactory() {
 
         LOG.debug("node list factory");
-        this.operNodeList = this.nodeService.listNodes();
+        operNodeList = nodeService.listNodes();
     }
 
     @Factory(OPER_PROTOCOL_LIST_NAME)
@@ -128,26 +128,26 @@ public class NodeBean implements Node {
     public String add()
             throws CertificateEncodingException, IOException {
 
-        LOG.debug("add olas node: " + this.name);
+        LOG.debug("add olas node: " + name);
 
         try {
             byte[] encodedAuthnCertificate;
-            if (null != this.authnUpFile) {
-                encodedAuthnCertificate = getUpFileContent(this.authnUpFile);
+            if (null != authnUpFile) {
+                encodedAuthnCertificate = getUpFileContent(authnUpFile);
             } else {
                 encodedAuthnCertificate = null;
             }
             byte[] encodedSigningCertificate;
-            if (null != this.signingUpFile) {
-                encodedSigningCertificate = getUpFileContent(this.signingUpFile);
+            if (null != signingUpFile) {
+                encodedSigningCertificate = getUpFileContent(signingUpFile);
             } else {
                 encodedSigningCertificate = null;
             }
-            this.nodeService.addNode(this.name, this.protocol, this.hostname, this.port, this.sslPort, encodedAuthnCertificate,
+            nodeService.addNode(name, protocol, hostname, port, sslPort, encodedAuthnCertificate,
                     encodedSigningCertificate);
         } catch (ExistingNodeException e) {
-            LOG.debug("node already exists: " + this.name);
-            this.facesMessages.addToControlFromResourceBundle("name", FacesMessage.SEVERITY_ERROR, "errorNodeAlreadyExists", this.name);
+            LOG.debug("node already exists: " + name);
+            facesMessages.addToControlFromResourceBundle("name", FacesMessage.SEVERITY_ERROR, "errorNodeAlreadyExists", name);
             return null;
         }
         nodeListFactory();
@@ -157,30 +157,30 @@ public class NodeBean implements Node {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public UploadedFile getAuthnUpFile() {
 
-        return this.authnUpFile;
+        return authnUpFile;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public void setAuthnUpFile(UploadedFile uploadedFile) {
 
-        this.authnUpFile = uploadedFile;
+        authnUpFile = uploadedFile;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public UploadedFile getSigningUpFile() {
 
-        return this.signingUpFile;
+        return signingUpFile;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public void setSigningUpFile(UploadedFile uploadedFile) {
 
-        this.signingUpFile = uploadedFile;
+        signingUpFile = uploadedFile;
     }
 
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -190,7 +190,7 @@ public class NodeBean implements Node {
 
     public String getProtocol() {
 
-        return this.protocol;
+        return protocol;
     }
 
     public void setProtocol(String protocol) {
@@ -200,7 +200,7 @@ public class NodeBean implements Node {
 
     public String getHostname() {
 
-        return this.hostname;
+        return hostname;
     }
 
     public void setHostname(String hostname) {
@@ -210,7 +210,7 @@ public class NodeBean implements Node {
 
     public int getPort() {
 
-        return this.port;
+        return port;
     }
 
     public void setPort(int port) {
@@ -220,7 +220,7 @@ public class NodeBean implements Node {
 
     public int getSslPort() {
 
-        return this.sslPort;
+        return sslPort;
     }
 
     public void setSslPort(int sslPort) {
@@ -232,13 +232,13 @@ public class NodeBean implements Node {
     public String remove()
             throws NodeNotFoundException {
 
-        String nodeName = this.selectedNode.getName();
+        String nodeName = selectedNode.getName();
         LOG.debug("remove node: " + nodeName);
         try {
-            this.nodeService.removeNode(nodeName);
+            nodeService.removeNode(nodeName);
         } catch (PermissionDeniedException e) {
             LOG.debug("permission denied to remove: " + nodeName);
-            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), e.getResourceArgs());
+            facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), e.getResourceArgs());
             return null;
         }
         nodeListFactory();
@@ -258,24 +258,24 @@ public class NodeBean implements Node {
     public String save()
             throws CertificateEncodingException, NodeNotFoundException, IOException, GenericJDBCException {
 
-        String nodeName = this.selectedNode.getName();
+        String nodeName = selectedNode.getName();
         LOG.debug("save node: " + nodeName);
 
-        if (null != this.authnUpFile) {
+        if (null != authnUpFile) {
             LOG.debug("updating node authentication certificate");
-            this.nodeService.updateAuthnCertificate(nodeName, getUpFileContent(this.authnUpFile));
+            nodeService.updateAuthnCertificate(nodeName, getUpFileContent(authnUpFile));
         }
 
-        if (null != this.signingUpFile) {
+        if (null != signingUpFile) {
             LOG.debug("updating node signing certificate");
-            this.nodeService.updateSigningCertificate(nodeName, getUpFileContent(this.signingUpFile));
+            nodeService.updateSigningCertificate(nodeName, getUpFileContent(signingUpFile));
         }
-        this.nodeService.updateLocation(nodeName, this.protocol, this.hostname, this.port, this.sslPort);
+        nodeService.updateLocation(nodeName, protocol, hostname, port, sslPort);
 
         /*
          * Refresh the selected application.
          */
-        this.selectedNode = this.nodeService.getNode(nodeName);
+        selectedNode = nodeService.getNode(nodeName);
 
         nodeListFactory();
         return "success";
@@ -287,7 +287,7 @@ public class NodeBean implements Node {
         /*
          * To set the selected node.
          */
-        LOG.debug("view node: " + this.selectedNode.getName());
+        LOG.debug("view node: " + selectedNode.getName());
         return "view";
     }
 
@@ -297,12 +297,12 @@ public class NodeBean implements Node {
         /*
          * To set the selected application.
          */
-        LOG.debug("edit application: " + this.selectedNode.getName());
+        LOG.debug("edit application: " + selectedNode.getName());
 
-        this.protocol = this.selectedNode.getProtocol();
-        this.hostname = this.selectedNode.getHostname();
-        this.port = this.selectedNode.getPort();
-        this.sslPort = this.selectedNode.getSslPort();
+        protocol = selectedNode.getProtocol();
+        hostname = selectedNode.getHostname();
+        port = selectedNode.getPort();
+        sslPort = selectedNode.getSslPort();
         return "edit";
     }
 }

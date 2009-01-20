@@ -44,14 +44,14 @@ public class CachedOcspValidatorBeanTest extends TestCase {
 
         super.setUp();
 
-        this.testedInstance = new CachedOcspValidatorBean();
+        testedInstance = new CachedOcspValidatorBean();
 
-        this.mockOcspValidatorBean = createMock(OcspValidator.class);
-        this.mockCachedOcspResponseDAOBean = createMock(CachedOcspResponseDAO.class);
+        mockOcspValidatorBean = createMock(OcspValidator.class);
+        mockCachedOcspResponseDAOBean = createMock(CachedOcspResponseDAO.class);
 
-        EJBTestUtils.inject(this.testedInstance, this.mockOcspValidatorBean);
-        EJBTestUtils.inject(this.testedInstance, this.mockCachedOcspResponseDAOBean);
-        EJBTestUtils.init(this.testedInstance);
+        EJBTestUtils.inject(testedInstance, mockOcspValidatorBean);
+        EJBTestUtils.inject(testedInstance, mockCachedOcspResponseDAOBean);
+        EJBTestUtils.init(testedInstance);
     }
 
     @Override
@@ -73,28 +73,28 @@ public class CachedOcspValidatorBeanTest extends TestCase {
         TrustDomainEntity trustDomain = new TrustDomainEntity("test-domain", true, 3600000);
 
         // stubs call 1
-        expect(this.mockOcspValidatorBean.getOcspUri(certificate)).andReturn(ocspUri);
-        expect(this.mockCachedOcspResponseDAOBean.findCachedOcspResponse((String) anyObject())).andReturn(null);
-        expect(this.mockOcspValidatorBean.verifyOcspStatus(ocspUri, certificate, certificate)).andReturn(OcspResult.GOOD);
+        expect(mockOcspValidatorBean.getOcspUri(certificate)).andReturn(ocspUri);
+        expect(mockCachedOcspResponseDAOBean.findCachedOcspResponse((String) anyObject())).andReturn(null);
+        expect(mockOcspValidatorBean.verifyOcspStatus(ocspUri, certificate, certificate)).andReturn(OcspResult.GOOD);
         expect(
-                this.mockCachedOcspResponseDAOBean.addCachedOcspResponse((String) anyObject(), (CachedOcspResultType) anyObject(),
+                mockCachedOcspResponseDAOBean.addCachedOcspResponse((String) anyObject(), (CachedOcspResultType) anyObject(),
                         (TrustDomainEntity) anyObject())).andReturn(cachedOcspResponse);
 
         // stubs call 2
-        expect(this.mockOcspValidatorBean.getOcspUri(certificate)).andReturn(ocspUri);
-        expect(this.mockCachedOcspResponseDAOBean.findCachedOcspResponse((String) anyObject())).andReturn(cachedOcspResponse);
+        expect(mockOcspValidatorBean.getOcspUri(certificate)).andReturn(ocspUri);
+        expect(mockCachedOcspResponseDAOBean.findCachedOcspResponse((String) anyObject())).andReturn(cachedOcspResponse);
 
         // prepare
-        replay(this.mockCachedOcspResponseDAOBean);
-        replay(this.mockOcspValidatorBean);
+        replay(mockCachedOcspResponseDAOBean);
+        replay(mockOcspValidatorBean);
 
         // operate
-        OcspResult firstLookup = this.testedInstance.performCachedOcspCheck(trustDomain, certificate, certificate);
-        OcspResult secondLookup = this.testedInstance.performCachedOcspCheck(trustDomain, certificate, certificate);
+        OcspResult firstLookup = testedInstance.performCachedOcspCheck(trustDomain, certificate, certificate);
+        OcspResult secondLookup = testedInstance.performCachedOcspCheck(trustDomain, certificate, certificate);
 
         // verify
-        verify(this.mockCachedOcspResponseDAOBean);
-        verify(this.mockOcspValidatorBean);
+        verify(mockCachedOcspResponseDAOBean);
+        verify(mockOcspValidatorBean);
         assertEquals(OcspResult.GOOD, firstLookup);
         assertEquals(OcspResult.GOOD, secondLookup);
     }
@@ -111,28 +111,28 @@ public class CachedOcspValidatorBeanTest extends TestCase {
         TrustDomainEntity trustDomain = new TrustDomainEntity("test-domain", true, 3600000);
 
         // stubs call 1
-        expect(this.mockOcspValidatorBean.getOcspUri(certificate)).andReturn(ocspUri);
-        expect(this.mockCachedOcspResponseDAOBean.findCachedOcspResponse((String) anyObject())).andReturn(null);
-        expect(this.mockOcspValidatorBean.verifyOcspStatus(ocspUri, certificate, certificate)).andReturn(OcspResult.REVOKED);
+        expect(mockOcspValidatorBean.getOcspUri(certificate)).andReturn(ocspUri);
+        expect(mockCachedOcspResponseDAOBean.findCachedOcspResponse((String) anyObject())).andReturn(null);
+        expect(mockOcspValidatorBean.verifyOcspStatus(ocspUri, certificate, certificate)).andReturn(OcspResult.REVOKED);
         expect(
-                this.mockCachedOcspResponseDAOBean.addCachedOcspResponse((String) anyObject(), (CachedOcspResultType) anyObject(),
+                mockCachedOcspResponseDAOBean.addCachedOcspResponse((String) anyObject(), (CachedOcspResultType) anyObject(),
                         (TrustDomainEntity) anyObject())).andReturn(cachedOcspResponse);
 
         // stubs call 2
-        expect(this.mockOcspValidatorBean.getOcspUri(certificate)).andReturn(ocspUri);
-        expect(this.mockCachedOcspResponseDAOBean.findCachedOcspResponse((String) anyObject())).andReturn(cachedOcspResponse);
+        expect(mockOcspValidatorBean.getOcspUri(certificate)).andReturn(ocspUri);
+        expect(mockCachedOcspResponseDAOBean.findCachedOcspResponse((String) anyObject())).andReturn(cachedOcspResponse);
 
         // prepare
-        replay(this.mockCachedOcspResponseDAOBean);
-        replay(this.mockOcspValidatorBean);
+        replay(mockCachedOcspResponseDAOBean);
+        replay(mockOcspValidatorBean);
 
         // operate
-        OcspResult firstLookup = this.testedInstance.performCachedOcspCheck(trustDomain, certificate, certificate);
-        OcspResult secondLookup = this.testedInstance.performCachedOcspCheck(trustDomain, certificate, certificate);
+        OcspResult firstLookup = testedInstance.performCachedOcspCheck(trustDomain, certificate, certificate);
+        OcspResult secondLookup = testedInstance.performCachedOcspCheck(trustDomain, certificate, certificate);
 
         // verify
-        verify(this.mockCachedOcspResponseDAOBean);
-        verify(this.mockOcspValidatorBean);
+        verify(mockCachedOcspResponseDAOBean);
+        verify(mockOcspValidatorBean);
         assertEquals(OcspResult.REVOKED, firstLookup);
         assertEquals(OcspResult.REVOKED, secondLookup);
     }
@@ -145,26 +145,26 @@ public class CachedOcspValidatorBeanTest extends TestCase {
         X509Certificate certificate = PkiTestUtils.generateTestSelfSignedCert(ocspUri);
 
         // stubs call 1
-        expect(this.mockOcspValidatorBean.getOcspUri(certificate)).andReturn(ocspUri);
-        expect(this.mockCachedOcspResponseDAOBean.findCachedOcspResponse((String) anyObject())).andReturn(null);
-        expect(this.mockOcspValidatorBean.verifyOcspStatus(ocspUri, certificate, certificate)).andReturn(OcspResult.FAILED);
+        expect(mockOcspValidatorBean.getOcspUri(certificate)).andReturn(ocspUri);
+        expect(mockCachedOcspResponseDAOBean.findCachedOcspResponse((String) anyObject())).andReturn(null);
+        expect(mockOcspValidatorBean.verifyOcspStatus(ocspUri, certificate, certificate)).andReturn(OcspResult.FAILED);
 
         // stubs call 2
-        expect(this.mockOcspValidatorBean.getOcspUri(certificate)).andReturn(ocspUri);
-        expect(this.mockCachedOcspResponseDAOBean.findCachedOcspResponse((String) anyObject())).andReturn(null);
-        expect(this.mockOcspValidatorBean.verifyOcspStatus(ocspUri, certificate, certificate)).andReturn(OcspResult.FAILED);
+        expect(mockOcspValidatorBean.getOcspUri(certificate)).andReturn(ocspUri);
+        expect(mockCachedOcspResponseDAOBean.findCachedOcspResponse((String) anyObject())).andReturn(null);
+        expect(mockOcspValidatorBean.verifyOcspStatus(ocspUri, certificate, certificate)).andReturn(OcspResult.FAILED);
 
         // prepare
-        replay(this.mockCachedOcspResponseDAOBean);
-        replay(this.mockOcspValidatorBean);
+        replay(mockCachedOcspResponseDAOBean);
+        replay(mockOcspValidatorBean);
 
         // operate
-        OcspResult firstLookup = this.testedInstance.performCachedOcspCheck(null, certificate, certificate);
-        OcspResult secondLookup = this.testedInstance.performCachedOcspCheck(null, certificate, certificate);
+        OcspResult firstLookup = testedInstance.performCachedOcspCheck(null, certificate, certificate);
+        OcspResult secondLookup = testedInstance.performCachedOcspCheck(null, certificate, certificate);
 
         // verify
-        verify(this.mockCachedOcspResponseDAOBean);
-        verify(this.mockOcspValidatorBean);
+        verify(mockCachedOcspResponseDAOBean);
+        verify(mockOcspValidatorBean);
         assertEquals(OcspResult.FAILED, firstLookup);
         assertEquals(OcspResult.FAILED, secondLookup);
     }
@@ -182,29 +182,29 @@ public class CachedOcspValidatorBeanTest extends TestCase {
         TrustDomainEntity trustDomain = new TrustDomainEntity("test-domain", true, 3600000);
 
         // stubs call 1
-        expect(this.mockOcspValidatorBean.getOcspUri(certificate)).andReturn(ocspUri);
-        expect(this.mockCachedOcspResponseDAOBean.findCachedOcspResponse((String) anyObject())).andReturn(null);
-        expect(this.mockOcspValidatorBean.verifyOcspStatus(ocspUri, certificate, certificate)).andReturn(OcspResult.GOOD);
+        expect(mockOcspValidatorBean.getOcspUri(certificate)).andReturn(ocspUri);
+        expect(mockCachedOcspResponseDAOBean.findCachedOcspResponse((String) anyObject())).andReturn(null);
+        expect(mockOcspValidatorBean.verifyOcspStatus(ocspUri, certificate, certificate)).andReturn(OcspResult.GOOD);
         expect(
-                this.mockCachedOcspResponseDAOBean.addCachedOcspResponse((String) anyObject(), (CachedOcspResultType) anyObject(),
+                mockCachedOcspResponseDAOBean.addCachedOcspResponse((String) anyObject(), (CachedOcspResultType) anyObject(),
                         (TrustDomainEntity) anyObject())).andReturn(cachedOcspResponse);
 
         // stubs call 2
-        expect(this.mockOcspValidatorBean.getOcspUri(certificate)).andReturn(ocspUri);
-        expect(this.mockCachedOcspResponseDAOBean.findCachedOcspResponse((String) anyObject())).andReturn(cachedOcspResponse);
-        expect(this.mockOcspValidatorBean.verifyOcspStatus(ocspUri, certificate, certificate)).andReturn(OcspResult.GOOD);
+        expect(mockOcspValidatorBean.getOcspUri(certificate)).andReturn(ocspUri);
+        expect(mockCachedOcspResponseDAOBean.findCachedOcspResponse((String) anyObject())).andReturn(cachedOcspResponse);
+        expect(mockOcspValidatorBean.verifyOcspStatus(ocspUri, certificate, certificate)).andReturn(OcspResult.GOOD);
 
         // prepare
-        replay(this.mockCachedOcspResponseDAOBean);
-        replay(this.mockOcspValidatorBean);
+        replay(mockCachedOcspResponseDAOBean);
+        replay(mockOcspValidatorBean);
 
         // operate
-        OcspResult firstLookup = this.testedInstance.performCachedOcspCheck(trustDomain, certificate, certificate);
-        OcspResult secondLookup = this.testedInstance.performCachedOcspCheck(trustDomain, certificate, certificate);
+        OcspResult firstLookup = testedInstance.performCachedOcspCheck(trustDomain, certificate, certificate);
+        OcspResult secondLookup = testedInstance.performCachedOcspCheck(trustDomain, certificate, certificate);
 
         // verify
-        verify(this.mockCachedOcspResponseDAOBean);
-        verify(this.mockOcspValidatorBean);
+        verify(mockCachedOcspResponseDAOBean);
+        verify(mockOcspValidatorBean);
         assertEquals(OcspResult.GOOD, firstLookup);
         assertEquals(OcspResult.GOOD, secondLookup);
     }
@@ -222,29 +222,29 @@ public class CachedOcspValidatorBeanTest extends TestCase {
         TrustDomainEntity trustDomain = new TrustDomainEntity("test-domain", true, 3600000);
 
         // stubs call 1
-        expect(this.mockOcspValidatorBean.getOcspUri(certificate)).andReturn(ocspUri);
-        expect(this.mockCachedOcspResponseDAOBean.findCachedOcspResponse((String) anyObject())).andReturn(null);
-        expect(this.mockOcspValidatorBean.verifyOcspStatus(ocspUri, certificate, certificate)).andReturn(OcspResult.REVOKED);
+        expect(mockOcspValidatorBean.getOcspUri(certificate)).andReturn(ocspUri);
+        expect(mockCachedOcspResponseDAOBean.findCachedOcspResponse((String) anyObject())).andReturn(null);
+        expect(mockOcspValidatorBean.verifyOcspStatus(ocspUri, certificate, certificate)).andReturn(OcspResult.REVOKED);
         expect(
-                this.mockCachedOcspResponseDAOBean.addCachedOcspResponse((String) anyObject(), (CachedOcspResultType) anyObject(),
+                mockCachedOcspResponseDAOBean.addCachedOcspResponse((String) anyObject(), (CachedOcspResultType) anyObject(),
                         (TrustDomainEntity) anyObject())).andReturn(cachedOcspResponse);
 
         // stubs call 2
-        expect(this.mockOcspValidatorBean.getOcspUri(certificate)).andReturn(ocspUri);
-        expect(this.mockCachedOcspResponseDAOBean.findCachedOcspResponse((String) anyObject())).andReturn(cachedOcspResponse);
-        expect(this.mockOcspValidatorBean.verifyOcspStatus(ocspUri, certificate, certificate)).andReturn(OcspResult.REVOKED);
+        expect(mockOcspValidatorBean.getOcspUri(certificate)).andReturn(ocspUri);
+        expect(mockCachedOcspResponseDAOBean.findCachedOcspResponse((String) anyObject())).andReturn(cachedOcspResponse);
+        expect(mockOcspValidatorBean.verifyOcspStatus(ocspUri, certificate, certificate)).andReturn(OcspResult.REVOKED);
 
         // prepare
-        replay(this.mockCachedOcspResponseDAOBean);
-        replay(this.mockOcspValidatorBean);
+        replay(mockCachedOcspResponseDAOBean);
+        replay(mockOcspValidatorBean);
 
         // operate
-        OcspResult firstLookup = this.testedInstance.performCachedOcspCheck(trustDomain, certificate, certificate);
-        OcspResult secondLookup = this.testedInstance.performCachedOcspCheck(trustDomain, certificate, certificate);
+        OcspResult firstLookup = testedInstance.performCachedOcspCheck(trustDomain, certificate, certificate);
+        OcspResult secondLookup = testedInstance.performCachedOcspCheck(trustDomain, certificate, certificate);
 
         // verify
-        verify(this.mockCachedOcspResponseDAOBean);
-        verify(this.mockOcspValidatorBean);
+        verify(mockCachedOcspResponseDAOBean);
+        verify(mockOcspValidatorBean);
         assertEquals(OcspResult.REVOKED, firstLookup);
         assertEquals(OcspResult.REVOKED, secondLookup);
     }

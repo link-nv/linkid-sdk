@@ -40,7 +40,7 @@ public class Application {
     public void checkUserSubscriptionPermission()
             throws PermissionDeniedException {
 
-        if (false == this.entity.isAllowUserSubscription())
+        if (false == entity.isAllowUserSubscription())
             throw new PermissionDeniedException("user not allowed to subscribe");
     }
 
@@ -50,6 +50,6 @@ public class Application {
      */
     public ApplicationEntity getEntity() {
 
-        return this.entity;
+        return entity;
     }
 }

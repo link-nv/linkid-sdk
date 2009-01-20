@@ -39,8 +39,8 @@ public class JmxTestUtils {
 
     public JmxTestUtils() {
 
-        this.dynamicTestMBeans = new HashMap<String, DynamicTestMBean>();
-        this.mbeanNames = new LinkedList<ObjectName>();
+        dynamicTestMBeans = new HashMap<String, DynamicTestMBean>();
+        mbeanNames = new LinkedList<ObjectName>();
     }
 
     /**
@@ -57,21 +57,21 @@ public class JmxTestUtils {
             throws MalformedObjectNameException, NullPointerException, InstanceAlreadyExistsException, MBeanRegistrationException,
             NotCompliantMBeanException {
 
-        if (null == this.mbeanServer) {
-            this.mbeanServer = getMBeanServer();
+        if (null == mbeanServer) {
+            mbeanServer = getMBeanServer();
         }
         ObjectName mbeanObjectName = new ObjectName(mbeanName);
         DynamicTestMBean dynamicTestMBean = new DynamicTestMBean();
-        this.mbeanServer.registerMBean(dynamicTestMBean, mbeanObjectName);
-        this.dynamicTestMBeans.put(mbeanName, dynamicTestMBean);
-        this.mbeanNames.add(mbeanObjectName);
+        mbeanServer.registerMBean(dynamicTestMBean, mbeanObjectName);
+        dynamicTestMBeans.put(mbeanName, dynamicTestMBean);
+        mbeanNames.add(mbeanObjectName);
     }
 
     public void tearDown()
             throws InstanceNotFoundException, MBeanRegistrationException {
 
-        for (ObjectName mbeanName : this.mbeanNames) {
-            this.mbeanServer.unregisterMBean(mbeanName);
+        for (ObjectName mbeanName : mbeanNames) {
+            mbeanServer.unregisterMBean(mbeanName);
         }
     }
 
@@ -90,7 +90,7 @@ public class JmxTestUtils {
      */
     public void registerActionHandler(String mbeanName, String actionName, MBeanActionHandler actionHandler) {
 
-        DynamicTestMBean dynamicTestMBean = this.dynamicTestMBeans.get(mbeanName);
+        DynamicTestMBean dynamicTestMBean = dynamicTestMBeans.get(mbeanName);
         dynamicTestMBean.registerActionHandler(actionName, actionHandler);
     }
 }

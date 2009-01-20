@@ -59,7 +59,7 @@ public class ConfigurationBean implements Configuration {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public void configGroupListFactory() {
 
-        this.configGroupList = this.configurationService.listConfigGroups();
+        configGroupList = configurationService.listConfigGroups();
     }
 
     @Remove
@@ -72,7 +72,7 @@ public class ConfigurationBean implements Configuration {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String save() {
 
-        this.configurationService.saveConfiguration(this.configGroupList);
+        configurationService.saveConfiguration(configGroupList);
         return "saved";
     }
 
@@ -85,7 +85,7 @@ public class ConfigurationBean implements Configuration {
         List<SelectItem> values = new LinkedList<SelectItem>();
 
         LOG.debug("list config item values for item " + configItem.getName());
-        List<ConfigItemValueEntity> configItemValues = this.configurationService.listConfigItemValues(configItem);
+        List<ConfigItemValueEntity> configItemValues = configurationService.listConfigItemValues(configItem);
 
         for (ConfigItemValueEntity value : configItemValues) {
             LOG.debug("add value: " + value.getValue());

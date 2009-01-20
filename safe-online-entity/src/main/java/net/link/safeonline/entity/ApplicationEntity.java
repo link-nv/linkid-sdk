@@ -106,7 +106,7 @@ public class ApplicationEntity implements Serializable {
 
     public boolean isDeviceRestriction() {
 
-        return this.deviceRestriction;
+        return deviceRestriction;
     }
 
     public void setDeviceRestriction(boolean deviceRestriction) {
@@ -146,16 +146,16 @@ public class ApplicationEntity implements Serializable {
         this.allowUserSubscription = allowUserSubscription;
         this.removable = removable;
         this.deviceRestriction = deviceRestriction;
-        this.currentApplicationIdentity = identityVersion;
-        this.currentApplicationUsageAgreement = usageAgreementVersion;
+        currentApplicationIdentity = identityVersion;
+        currentApplicationUsageAgreement = usageAgreementVersion;
         if (null != certificate) {
-            this.certificateSubject = certificate.getSubjectX500Principal().getName();
+            certificateSubject = certificate.getSubjectX500Principal().getName();
         }
     }
 
     public String getDescription() {
 
-        return this.description;
+        return description;
     }
 
     public void setDescription(String description) {
@@ -171,7 +171,7 @@ public class ApplicationEntity implements Serializable {
     @Column(name = "name")
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -186,7 +186,7 @@ public class ApplicationEntity implements Serializable {
     @Column(name = "friendlyName")
     public String getFriendlyName() {
 
-        return this.friendlyName;
+        return friendlyName;
     }
 
     public void setFriendlyName(String friendlyName) {
@@ -199,7 +199,7 @@ public class ApplicationEntity implements Serializable {
      */
     public URL getApplicationUrl() {
 
-        return this.applicationUrl;
+        return applicationUrl;
     }
 
     /**
@@ -217,7 +217,7 @@ public class ApplicationEntity implements Serializable {
     @Column(length = 10 * 1024, nullable = true)
     public byte[] getApplicationLogo() {
 
-        return this.applicationLogo;
+        return applicationLogo;
     }
 
     /**
@@ -235,7 +235,7 @@ public class ApplicationEntity implements Serializable {
      */
     public boolean isAllowUserSubscription() {
 
-        return this.allowUserSubscription;
+        return allowUserSubscription;
     }
 
     public void setAllowUserSubscription(boolean allowUserSubscription) {
@@ -251,7 +251,7 @@ public class ApplicationEntity implements Serializable {
      */
     public boolean isRemovable() {
 
-        return this.removable;
+        return removable;
     }
 
     public void setRemovable(boolean removable) {
@@ -267,7 +267,7 @@ public class ApplicationEntity implements Serializable {
     @ManyToOne(optional = false)
     public ApplicationOwnerEntity getApplicationOwner() {
 
-        return this.applicationOwner;
+        return applicationOwner;
     }
 
     public void setApplicationOwner(ApplicationOwnerEntity applicationOwner) {
@@ -282,7 +282,7 @@ public class ApplicationEntity implements Serializable {
      */
     public long getCurrentApplicationIdentity() {
 
-        return this.currentApplicationIdentity;
+        return currentApplicationIdentity;
     }
 
     public void setCurrentApplicationIdentity(long currentApplicationIdentity) {
@@ -298,7 +298,7 @@ public class ApplicationEntity implements Serializable {
     @Column(name = "currentUsageAg")
     public long getCurrentApplicationUsageAgreement() {
 
-        return this.currentApplicationUsageAgreement;
+        return currentApplicationUsageAgreement;
     }
 
     public void setCurrentApplicationUsageAgreement(long currentApplicationUsageAgreement) {
@@ -314,7 +314,7 @@ public class ApplicationEntity implements Serializable {
     @Column(unique = true)
     public String getCertificateSubject() {
 
-        return this.certificateSubject;
+        return certificateSubject;
     }
 
     /**
@@ -346,7 +346,7 @@ public class ApplicationEntity implements Serializable {
      */
     public boolean isIdentifierMappingAllowed() {
 
-        return this.identifierMappingAllowed;
+        return identifierMappingAllowed;
     }
 
     public void setIdentifierMappingAllowed(boolean identifierMappingAllowed) {
@@ -360,7 +360,7 @@ public class ApplicationEntity implements Serializable {
      */
     public IdScopeType getIdScope() {
 
-        return this.idScope;
+        return idScope;
     }
 
     public void setIdScope(IdScopeType idScope) {
@@ -375,7 +375,7 @@ public class ApplicationEntity implements Serializable {
      */
     public boolean isSkipMessageIntegrityCheck() {
 
-        return this.skipMessageIntegrityCheck;
+        return skipMessageIntegrityCheck;
     }
 
     public void setSkipMessageIntegrityCheck(boolean skipMessageIntegrityCheck) {
@@ -388,7 +388,7 @@ public class ApplicationEntity implements Serializable {
      */
     public boolean isSsoEnabled() {
 
-        return this.ssoEnabled;
+        return ssoEnabled;
     }
 
     public void setSsoEnabled(boolean ssoEnabled) {
@@ -399,7 +399,7 @@ public class ApplicationEntity implements Serializable {
     @ManyToMany(mappedBy = "applications")
     public List<ApplicationPoolEntity> getApplicationPools() {
 
-        return this.applicationPools;
+        return applicationPools;
     }
 
     public void setApplicationPools(List<ApplicationPoolEntity> applicationPools) {
@@ -412,7 +412,7 @@ public class ApplicationEntity implements Serializable {
      */
     public URL getSsoLogoutUrl() {
 
-        return this.ssoLogoutUrl;
+        return ssoLogoutUrl;
     }
 
     /**
@@ -431,15 +431,15 @@ public class ApplicationEntity implements Serializable {
         if (false == obj instanceof ApplicationEntity)
             return false;
         ApplicationEntity rhs = (ApplicationEntity) obj;
-        return new EqualsBuilder().append(this.name, rhs.name).isEquals();
+        return new EqualsBuilder().append(name, rhs.name).isEquals();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("name", this.name).append("description", this.description)
-                                                                    .append("allowUserSubscription", this.allowUserSubscription).append(
-                                                                            "removable", this.removable).toString();
+        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("name", name).append("description", description)
+                                                                    .append("allowUserSubscription", allowUserSubscription).append(
+                                                                            "removable", removable).toString();
     }
 
 

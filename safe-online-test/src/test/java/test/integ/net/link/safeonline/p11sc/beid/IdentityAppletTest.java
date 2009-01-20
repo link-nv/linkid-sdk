@@ -52,12 +52,12 @@ public class IdentityAppletTest extends TestCase {
 
         public TestAppletStub() {
 
-            this.parameters = new HashMap<String, String>();
+            parameters = new HashMap<String, String>();
         }
 
         public void setParameter(String name, String value) {
 
-            this.parameters.put(name, value);
+            parameters.put(name, value);
         }
 
         @SuppressWarnings("unused")
@@ -84,7 +84,7 @@ public class IdentityAppletTest extends TestCase {
         public String getParameter(String name) {
 
             LOG.debug("get parameter: " + name);
-            String value = this.parameters.get(name);
+            String value = parameters.get(name);
             if (null == value)
                 throw new IllegalStateException("parameter not set: " + name);
             return value;

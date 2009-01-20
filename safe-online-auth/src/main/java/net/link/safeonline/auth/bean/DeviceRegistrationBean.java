@@ -61,32 +61,32 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements DeviceR
     private Set<DeviceEntity>   requiredDevicePolicy;
 
     @EJB(mappedName = DevicePolicyService.JNDI_BINDING)
-    private DevicePolicyService   devicePolicyService;
+    private DevicePolicyService devicePolicyService;
 
 
     @Remove
     @Destroy
     public void destroyCallback() {
 
-        this.log.debug("destroy");
-        this.device = null;
+        log.debug("destroy");
+        device = null;
     }
 
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
     public String deviceNext()
             throws IOException, DeviceNotFoundException {
 
-        this.log.debug("deviceNext: " + this.device);
+        log.debug("deviceNext: " + device);
 
-        String registrationURL = this.devicePolicyService.getRegistrationURL(this.device);
-        AuthenticationUtils.redirect(registrationURL, this.device, this.userId);
+        String registrationURL = devicePolicyService.getRegistrationURL(device);
+        AuthenticationUtils.redirect(registrationURL, device, userId);
         return null;
     }
 
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
     public String getDevice() {
 
-        return this.device;
+        return device;
     }
 
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
@@ -98,7 +98,7 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements DeviceR
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
     public String getUsername() {
 
-        return this.subjectService.getSubjectLogin(this.userId);
+        return subjectService.getSubjectLogin(userId);
     }
 
     @RolesAllowed(AuthenticationConstants.USER_ROLE)
@@ -106,16 +106,16 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements DeviceR
     public List<SelectItem> applicationDevicesFactory()
             throws ApplicationNotFoundException, EmptyDevicePolicyException {
 
-        this.log.debug("application devices factory");
+        log.debug("application devices factory");
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();
         List<SelectItem> applicationDevices = new LinkedList<SelectItem>();
 
-        List<DeviceEntity> devicePolicy = this.devicePolicyService.getDevicePolicy(this.application, this.requiredDevicePolicy);
+        List<DeviceEntity> devicePolicy = devicePolicyService.getDevicePolicy(application, requiredDevicePolicy);
         for (DeviceEntity deviceEntity : devicePolicy) {
-            String deviceName = this.devicePolicyService.getDeviceDescription(deviceEntity.getName(), viewLocale);
+            String deviceName = devicePolicyService.getDeviceDescription(deviceEntity.getName(), viewLocale);
             SelectItem applicationDevice = new SelectItem(deviceEntity.getName(), deviceName);
-            this.log.debug("device " + deviceName + ": " + deviceEntity.isRegistrable() + " (path=" + deviceEntity.getRegistrationPath());
+            log.debug("device " + deviceName + ": " + deviceEntity.isRegistrable() + " (path=" + deviceEntity.getRegistrationPath());
             applicationDevice.setDisabled(!deviceEntity.isRegistrable());
             applicationDevices.add(applicationDevice);
         }

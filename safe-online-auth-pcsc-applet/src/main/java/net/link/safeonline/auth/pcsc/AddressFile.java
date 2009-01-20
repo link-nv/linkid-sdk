@@ -21,16 +21,16 @@ public class AddressFile {
 
     public String getStreetAndNumber() {
 
-        return this.streetAndNumber;
+        return streetAndNumber;
     }
 
     public String getZip() {
 
-        return this.zip;
+        return zip;
     }
 
     public String getMunicipality() {
 
-        return this.municipality;
+        return municipality;
     }
 }

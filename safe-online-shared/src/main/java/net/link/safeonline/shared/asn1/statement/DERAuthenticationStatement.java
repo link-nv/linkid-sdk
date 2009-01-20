@@ -49,13 +49,13 @@ public class DERAuthenticationStatement extends AbstractDERStatement {
         DERSequence tbsSequence = new DERSequence();
         DERInteger version = new DERInteger(VERSION);
         tbsSequence.add(version);
-        DERVisibleString session = new DERVisibleString(this.sessionId);
+        DERVisibleString session = new DERVisibleString(sessionId);
         tbsSequence.add(session);
-        DERVisibleString application = new DERVisibleString(this.applicationId);
+        DERVisibleString application = new DERVisibleString(applicationId);
         tbsSequence.add(application);
         DEREncodedData encodedCert;
         try {
-            encodedCert = new DEREncodedData(this.authenticationCertificate.getEncoded());
+            encodedCert = new DEREncodedData(authenticationCertificate.getEncoded());
         } catch (CertificateEncodingException e) {
             throw new RuntimeException("cert encoding error: " + e.getMessage());
         }

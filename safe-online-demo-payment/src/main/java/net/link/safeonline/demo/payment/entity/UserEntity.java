@@ -38,7 +38,7 @@ public class UserEntity implements Serializable {
 
     public UserEntity(String safeOnlineUserId, String safeOnlineUserName) {
 
-        this.payments = new ArrayList<PaymentEntity>();
+        payments = new ArrayList<PaymentEntity>();
         this.safeOnlineUserId = safeOnlineUserId;
         this.safeOnlineUserName = safeOnlineUserName;
     }
@@ -46,7 +46,7 @@ public class UserEntity implements Serializable {
     @Id
     public String getSafeOnlineUserId() {
 
-        return this.safeOnlineUserId;
+        return safeOnlineUserId;
     }
 
     public void setSafeOnlineUserId(String safeOnlineUserId) {
@@ -56,7 +56,7 @@ public class UserEntity implements Serializable {
 
     public String getSafeOnlineUserName() {
 
-        return this.safeOnlineUserName;
+        return safeOnlineUserName;
     }
 
     public void setSafeOnlineUserName(String safeOnlineUserName) {
@@ -67,7 +67,7 @@ public class UserEntity implements Serializable {
     @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
     public List<PaymentEntity> getPayments() {
 
-        return this.payments;
+        return payments;
     }
 
     public void setPayments(List<PaymentEntity> payments) {

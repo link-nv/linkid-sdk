@@ -29,11 +29,11 @@ public class BeIdIdentityProvider implements IdentityProvider {
 
     public String getGivenName() {
 
-        return this.smartCard.getGivenName();
+        return smartCard.getGivenName();
     }
 
     public String getSurname() {
 
-        return this.smartCard.getSurname();
+        return smartCard.getSurname();
     }
 }

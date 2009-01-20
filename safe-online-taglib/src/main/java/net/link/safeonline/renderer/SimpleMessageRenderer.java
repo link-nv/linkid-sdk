@@ -26,7 +26,7 @@ public class SimpleMessageRenderer extends HtmlBasicRenderer {
 
     public SimpleMessageRenderer() {
 
-        this.omRenderer = new OutputMessageRenderer();
+        omRenderer = new OutputMessageRenderer();
 
     }
 
@@ -42,7 +42,7 @@ public class SimpleMessageRenderer extends HtmlBasicRenderer {
             throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID,
                     "component"));
         if (component instanceof UIOutput) {
-            this.omRenderer.encodeBegin(context, component);
+            omRenderer.encodeBegin(context, component);
             return;
         }
 
@@ -58,7 +58,7 @@ public class SimpleMessageRenderer extends HtmlBasicRenderer {
             throw new NullPointerException(MessageUtils.getExceptionMessageString(MessageUtils.NULL_PARAMETERS_ERROR_MESSAGE_ID,
                     "component"));
         if (component instanceof UIOutput) {
-            this.omRenderer.encodeChildren(context, component);
+            omRenderer.encodeChildren(context, component);
             return;
         }
 
@@ -80,7 +80,7 @@ public class SimpleMessageRenderer extends HtmlBasicRenderer {
                     "component"));
 
         if (component instanceof UIOutput) {
-            this.omRenderer.encodeEnd(context, component);
+            omRenderer.encodeEnd(context, component);
             return;
         }
         if (logger.isLoggable(Level.FINER)) {

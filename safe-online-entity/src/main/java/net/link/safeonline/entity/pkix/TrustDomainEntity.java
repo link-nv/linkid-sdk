@@ -75,7 +75,7 @@ public class TrustDomainEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     public long getId() {
 
-        return this.id;
+        return id;
     }
 
     public void setId(long id) {
@@ -86,7 +86,7 @@ public class TrustDomainEntity implements Serializable {
     @Column(unique = true, nullable = false, length = NAME_SIZE)
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -101,7 +101,7 @@ public class TrustDomainEntity implements Serializable {
      */
     public boolean isPerformOcspCheck() {
 
-        return this.performOcspCheck;
+        return performOcspCheck;
     }
 
     public void setPerformOcspCheck(boolean performOcspCheck) {
@@ -115,7 +115,7 @@ public class TrustDomainEntity implements Serializable {
      */
     public long getOcspCacheTimeOutMillis() {
 
-        return this.ocspCacheTimeOutMillis;
+        return ocspCacheTimeOutMillis;
     }
 
     public void setOcspCacheTimeOutMillis(long ocspCacheTimeOutMillis) {
@@ -126,7 +126,7 @@ public class TrustDomainEntity implements Serializable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("id", this.id).append("name", this.name).toString();
+        return new ToStringBuilder(this).append("id", id).append("name", name).toString();
     }
 
     @Override
@@ -139,13 +139,13 @@ public class TrustDomainEntity implements Serializable {
         if (false == obj instanceof TrustDomainEntity)
             return false;
         TrustDomainEntity rhs = (TrustDomainEntity) obj;
-        return new EqualsBuilder().append(this.name, rhs.name).isEquals();
+        return new EqualsBuilder().append(name, rhs.name).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.name).toHashCode();
+        return new HashCodeBuilder().append(name).toHashCode();
     }
 
 

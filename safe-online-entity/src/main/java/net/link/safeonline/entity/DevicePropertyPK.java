@@ -38,7 +38,7 @@ public class DevicePropertyPK implements Serializable {
 
     public String getDeviceName() {
 
-        return this.deviceName;
+        return deviceName;
     }
 
     public void setDeviceName(String deviceName) {
@@ -48,7 +48,7 @@ public class DevicePropertyPK implements Serializable {
 
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -64,18 +64,18 @@ public class DevicePropertyPK implements Serializable {
         if (false == obj instanceof DevicePropertyPK)
             return false;
         DevicePropertyPK rhs = (DevicePropertyPK) obj;
-        return new EqualsBuilder().append(this.deviceName, rhs.deviceName).append(this.name, rhs.name).isEquals();
+        return new EqualsBuilder().append(deviceName, rhs.deviceName).append(name, rhs.name).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.deviceName).append(this.name).toHashCode();
+        return new HashCodeBuilder().append(deviceName).append(name).toHashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("deviceName", this.deviceName).append("name", this.name).toString();
+        return new ToStringBuilder(this).append("deviceName", deviceName).append("name", name).toString();
     }
 }

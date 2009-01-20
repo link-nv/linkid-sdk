@@ -96,13 +96,13 @@ public class TicketBuyBean extends AbstractTicketDataClientBean implements Ticke
 
         public String getName() {
 
-            return this.name;
+            return name;
         }
 
         public Date getEndDate(Date beginDate) {
 
             DateTime begin = new DateTime(beginDate);
-            DateTime endDate = begin.plus(this.period);
+            DateTime endDate = begin.plus(period);
             return endDate.toDate();
         }
     }
@@ -125,7 +125,7 @@ public class TicketBuyBean extends AbstractTicketDataClientBean implements Ticke
 
     public String getFrom() {
 
-        return this.from;
+        return from;
     }
 
     public void setFrom(String from) {
@@ -135,7 +135,7 @@ public class TicketBuyBean extends AbstractTicketDataClientBean implements Ticke
 
     public String getTo() {
 
-        return this.to;
+        return to;
     }
 
     public void setTo(String to) {
@@ -145,7 +145,7 @@ public class TicketBuyBean extends AbstractTicketDataClientBean implements Ticke
 
     public String getValidUntil() {
 
-        return this.validUntil;
+        return validUntil;
     }
 
     public void setValidUntil(String validUntil) {
@@ -155,7 +155,7 @@ public class TicketBuyBean extends AbstractTicketDataClientBean implements Ticke
 
     public boolean getReturnTicket() {
 
-        return this.returnTicket;
+        return returnTicket;
     }
 
     public void setReturnTicket(boolean returnTicket) {
@@ -166,13 +166,13 @@ public class TicketBuyBean extends AbstractTicketDataClientBean implements Ticke
     private String getUsername() {
 
         String username = getUsername(getUserId());
-        this.log.debug("username #0", username);
+        log.debug("username #0", username);
         return username;
     }
 
     private String getUserId() {
 
-        Principal principal = this.sessionContext.getCallerPrincipal();
+        Principal principal = sessionContext.getCallerPrincipal();
         return principal.getName();
     }
 
@@ -199,41 +199,41 @@ public class TicketBuyBean extends AbstractTicketDataClientBean implements Ticke
     @RolesAllowed("user")
     public String checkOut() {
 
-        this.ticketPrice = 100;
-        this.juniorReduction = 0;
+        ticketPrice = 100;
+        juniorReduction = 0;
         String userId = getUserId();
         try {
-            this.nrn = getAttributeClient().getAttributeValue(userId, "urn:net:lin-k:safe-online:attribute:beid:nrn", String[].class)[0];
+            nrn = getAttributeClient().getAttributeValue(userId, "urn:net:lin-k:safe-online:attribute:beid:nrn", String[].class)[0];
             Boolean juniorValue = getAttributeClient()
                                                       .getAttributeValue(userId, DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, Boolean.class);
             if (juniorValue != null && juniorValue.booleanValue() == true) {
-                this.juniorReduction = 10;
+                juniorReduction = 10;
             }
         } catch (AttributeNotFoundException e) {
             String msg = "attribute not found: " + e.getMessage();
-            this.log.debug(msg);
-            this.facesMessages.add(msg);
+            log.debug(msg);
+            facesMessages.add(msg);
             return null;
         } catch (RequestDeniedException e) {
             String msg = "request denied";
-            this.log.debug(msg);
-            this.facesMessages.add(msg);
+            log.debug(msg);
+            facesMessages.add(msg);
             return null;
         } catch (WSClientTransportException e) {
             String msg = "Connection error. Check your SSL setup.";
-            this.log.debug(msg);
-            this.facesMessages.add(msg);
+            log.debug(msg);
+            facesMessages.add(msg);
             return null;
         } catch (Exception e) {
             String msg = "Error occurred: " + e.getMessage();
-            this.log.debug(msg, e);
-            this.log.debug("exception type: " + e.getClass().getName());
-            this.facesMessages.add(msg);
+            log.debug(msg, e);
+            log.debug("exception type: " + e.getClass().getName());
+            facesMessages.add(msg);
             return null;
         }
-        TicketPeriod valid = TicketPeriod.valueOf(this.validUntil);
-        this.startDate = new Date();
-        this.endDate = valid.getEndDate(this.startDate);
+        TicketPeriod valid = TicketPeriod.valueOf(validUntil);
+        startDate = new Date();
+        endDate = valid.getEndDate(startDate);
         return "checkout";
     }
 
@@ -242,15 +242,15 @@ public class TicketBuyBean extends AbstractTicketDataClientBean implements Ticke
     // conversation begin via pages.xml
     public String confirm() {
 
-        User user = this.entityManager.find(User.class, getUserId());
+        User user = entityManager.find(User.class, getUserId());
         if (user == null) {
-            user = new User(getUserId(), this.getUsername(), this.nrn);
-            this.entityManager.persist(user);
+            user = new User(getUserId(), this.getUsername(), nrn);
+            entityManager.persist(user);
         }
-        user.setNrn(this.nrn);
-        Ticket ticket = new Ticket(user, Site.valueOf(this.from), Site.valueOf(this.to), this.startDate, this.endDate, this.returnTicket);
+        user.setNrn(nrn);
+        Ticket ticket = new Ticket(user, Site.valueOf(from), Site.valueOf(to), startDate, endDate, returnTicket);
         user.getTickets().add(ticket);
-        this.entityManager.persist(ticket);
+        entityManager.persist(ticket);
 
         redirectToPaymentService(ticket);
 
@@ -265,20 +265,20 @@ public class TicketBuyBean extends AbstractTicketDataClientBean implements Ticke
         String user = getUsername();
         String recipient = "De Lijn";
         String message = "Ticket " + ticket.getId();
-        String target = "http://" + this.demoHostName + ":" + this.demoHostPort + "/demo-ticket/list.seam";
+        String target = "http://" + demoHostName + ":" + demoHostPort + "/demo-ticket/list.seam";
         HttpServletResponse httpServletResponse = (HttpServletResponse) externalContext.getResponse();
         target = httpServletResponse.encodeRedirectURL(target);
 
         String redirectUrl;
         try {
-            redirectUrl = "http://" + this.demoHostName + ":" + this.demoHostPort + "/demo-payment/entry.seam?user="
+            redirectUrl = "http://" + demoHostName + ":" + demoHostPort + "/demo-payment/entry.seam?user="
                     + URLEncoder.encode(user, "UTF-8") + "&recipient=" + URLEncoder.encode(recipient, "UTF-8") + "&amount="
-                    + URLEncoder.encode(Double.toString(this.ticketPrice - this.juniorReduction), "UTF-8") + "&message="
+                    + URLEncoder.encode(Double.toString(ticketPrice - juniorReduction), "UTF-8") + "&message="
                     + URLEncoder.encode(message, "UTF-8") + "&target=" + URLEncoder.encode(target, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             String msg = "URL encoding error";
-            this.log.debug(msg);
-            this.facesMessages.add(msg);
+            log.debug(msg);
+            facesMessages.add(msg);
             return;
         }
 
@@ -286,8 +286,8 @@ public class TicketBuyBean extends AbstractTicketDataClientBean implements Ticke
             externalContext.redirect(redirectUrl);
         } catch (IOException e) {
             String msg = "IO redirect error";
-            this.log.debug(msg);
-            this.facesMessages.add(msg);
+            log.debug(msg);
+            facesMessages.add(msg);
             return;
         }
     }

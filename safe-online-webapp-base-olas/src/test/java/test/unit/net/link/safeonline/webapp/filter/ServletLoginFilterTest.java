@@ -55,17 +55,17 @@ public class ServletLoginFilterTest extends TestCase {
 
         super.setUp();
 
-        this.jndiTestUtils = new JndiTestUtils();
-        this.jndiTestUtils.setUp();
-        this.mockAuthorizationService = createMock(AuthorizationService.class);
-        this.jndiTestUtils.bindComponent("SafeOnline/AuthorizationServiceBean/local", this.mockAuthorizationService);
+        jndiTestUtils = new JndiTestUtils();
+        jndiTestUtils.setUp();
+        mockAuthorizationService = createMock(AuthorizationService.class);
+        jndiTestUtils.bindComponent("SafeOnline/AuthorizationServiceBean/local", mockAuthorizationService);
 
-        this.userId = UUID.randomUUID().toString();
+        userId = UUID.randomUUID().toString();
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
-        initialSessionAttributes.put(LoginManager.USERID_SESSION_ATTRIBUTE, this.userId);
+        initialSessionAttributes.put(LoginManager.USERID_SESSION_ATTRIBUTE, userId);
 
-        this.servletTestManager = new ServletTestManager();
-        this.servletTestManager.setUp(ServletLoginFilterTestServlet.class, ServletLoginFilter.class, null, initialSessionAttributes);
+        servletTestManager = new ServletTestManager();
+        servletTestManager.setUp(ServletLoginFilterTestServlet.class, ServletLoginFilter.class, null, initialSessionAttributes);
 
         ServletLoginFilterTestServlet.reset();
     }
@@ -74,8 +74,8 @@ public class ServletLoginFilterTest extends TestCase {
     protected void tearDown()
             throws Exception {
 
-        this.servletTestManager.tearDown();
-        this.jndiTestUtils.tearDown();
+        servletTestManager.tearDown();
+        jndiTestUtils.tearDown();
 
         super.tearDown();
     }
@@ -88,22 +88,22 @@ public class ServletLoginFilterTest extends TestCase {
         ServletLoginFilterTestServlet.addExpectedRole(testExpectedRole);
 
         HttpClient httpClient = new HttpClient();
-        GetMethod getMethod = new GetMethod(this.servletTestManager.getServletLocation());
+        GetMethod getMethod = new GetMethod(servletTestManager.getServletLocation());
 
         // stubs
-        expect(this.mockAuthorizationService.getRoles(this.userId)).andStubReturn(Collections.singleton(testExpectedRole));
-        replay(this.mockAuthorizationService);
+        expect(mockAuthorizationService.getRoles(userId)).andStubReturn(Collections.singleton(testExpectedRole));
+        replay(mockAuthorizationService);
 
         // operate
         int statusCode = httpClient.executeMethod(getMethod);
 
         // verify
-        verify(this.mockAuthorizationService);
+        verify(mockAuthorizationService);
         assertEquals(HttpStatus.SC_OK, statusCode);
         assertTrue(ServletLoginFilterTestServlet.isInvoked());
         LOG.debug("last user principal: " + ServletLoginFilterTestServlet.getLastUserPrincipal());
         assertNotNull(ServletLoginFilterTestServlet.getLastUserPrincipal());
-        assertEquals(this.userId, ServletLoginFilterTestServlet.getLastUserPrincipal().getName());
+        assertEquals(userId, ServletLoginFilterTestServlet.getLastUserPrincipal().getName());
         assertTrue(ServletLoginFilterTestServlet.isExpectedRolePresent(testExpectedRole));
         assertFalse(ServletLoginFilterTestServlet.isExpectedRolePresent(testExpectedRole + "-not-expected"));
     }

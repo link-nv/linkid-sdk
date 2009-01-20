@@ -38,7 +38,7 @@ public class UserEntity implements Serializable {
     @Id
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -48,7 +48,7 @@ public class UserEntity implements Serializable {
 
     public boolean isAdmin() {
 
-        return this.admin;
+        return admin;
     }
 
     public void setAdmin(boolean admin) {

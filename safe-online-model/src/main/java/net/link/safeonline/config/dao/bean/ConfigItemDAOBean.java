@@ -37,7 +37,7 @@ public class ConfigItemDAOBean implements ConfigItemDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, ConfigItemEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, ConfigItemEntity.QueryInterface.class);
     }
 
     public ConfigItemEntity addConfigItem(String name, String valueType, boolean multipleChoice, ConfigGroupEntity configGroup) {
@@ -46,28 +46,28 @@ public class ConfigItemDAOBean implements ConfigItemDAO {
         if (configGroup != null) {
             configGroup.getConfigItems().add(configItem);
         }
-        this.entityManager.persist(configItem);
+        entityManager.persist(configItem);
         return configItem;
     }
 
     public void removeConfigItem(ConfigItemEntity configItem) {
 
-        this.entityManager.remove(configItem);
+        entityManager.remove(configItem);
     }
 
     public void saveConfigItem(ConfigItemEntity configItem) {
 
-        this.entityManager.merge(configItem);
+        entityManager.merge(configItem);
     }
 
     public ConfigItemEntity findConfigItem(String groupName, String name) {
 
-        return this.entityManager.find(ConfigItemEntity.class, new ConfigItemPK(groupName, name));
+        return entityManager.find(ConfigItemEntity.class, new ConfigItemPK(groupName, name));
     }
 
     public List<ConfigItemEntity> listConfigItems() {
 
-        List<ConfigItemEntity> result = this.queryObject.listConfigItems();
+        List<ConfigItemEntity> result = queryObject.listConfigItems();
         return result;
     }
 }

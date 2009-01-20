@@ -53,8 +53,8 @@ public class AuditPrincipalBean implements AuditPrincipal {
     public String getName() {
 
         String name;
-        if (!this.principal.equals(OperatorConstants.UNKNOWN_PRINCIPAL)) {
-            name = this.subjectService.getSubjectLogin(this.principal);
+        if (!principal.equals(OperatorConstants.UNKNOWN_PRINCIPAL)) {
+            name = subjectService.getSubjectLogin(principal);
         } else {
             name = OperatorConstants.UNKNOWN_PRINCIPAL;
         }

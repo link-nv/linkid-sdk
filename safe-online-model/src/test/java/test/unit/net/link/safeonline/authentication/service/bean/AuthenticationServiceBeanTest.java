@@ -153,53 +153,53 @@ public class AuthenticationServiceBeanTest {
     public void setUp()
             throws Exception {
 
-        this.testedInstance = new AuthenticationServiceBean();
+        testedInstance = new AuthenticationServiceBean();
 
-        this.mockSubjectService = createMock(SubjectService.class);
-        EJBTestUtils.inject(this.testedInstance, this.mockSubjectService);
+        mockSubjectService = createMock(SubjectService.class);
+        EJBTestUtils.inject(testedInstance, mockSubjectService);
 
-        this.mockApplicationDAO = createMock(ApplicationDAO.class);
-        EJBTestUtils.inject(this.testedInstance, this.mockApplicationDAO);
+        mockApplicationDAO = createMock(ApplicationDAO.class);
+        EJBTestUtils.inject(testedInstance, mockApplicationDAO);
 
-        this.mockSubscriptionDAO = createMock(SubscriptionDAO.class);
-        EJBTestUtils.inject(this.testedInstance, this.mockSubscriptionDAO);
+        mockSubscriptionDAO = createMock(SubscriptionDAO.class);
+        EJBTestUtils.inject(testedInstance, mockSubscriptionDAO);
 
-        this.mockHistoryDAO = createMock(HistoryDAO.class);
-        EJBTestUtils.inject(this.testedInstance, this.mockHistoryDAO);
+        mockHistoryDAO = createMock(HistoryDAO.class);
+        EJBTestUtils.inject(testedInstance, mockHistoryDAO);
 
-        this.mockStatisticDAO = createMock(StatisticDAO.class);
-        EJBTestUtils.inject(this.testedInstance, this.mockStatisticDAO);
+        mockStatisticDAO = createMock(StatisticDAO.class);
+        EJBTestUtils.inject(testedInstance, mockStatisticDAO);
 
-        this.mockStatisticDataPointDAO = createMock(StatisticDataPointDAO.class);
-        EJBTestUtils.inject(this.testedInstance, this.mockStatisticDataPointDAO);
+        mockStatisticDataPointDAO = createMock(StatisticDataPointDAO.class);
+        EJBTestUtils.inject(testedInstance, mockStatisticDataPointDAO);
 
-        this.mockDeviceDAO = createMock(DeviceDAO.class);
-        EJBTestUtils.inject(this.testedInstance, this.mockDeviceDAO);
+        mockDeviceDAO = createMock(DeviceDAO.class);
+        EJBTestUtils.inject(testedInstance, mockDeviceDAO);
 
-        this.mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
-        EJBTestUtils.inject(this.testedInstance, this.mockApplicationAuthenticationService);
+        mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
+        EJBTestUtils.inject(testedInstance, mockApplicationAuthenticationService);
 
-        this.mockPkiValidator = createMock(PkiValidator.class);
-        EJBTestUtils.inject(this.testedInstance, this.mockPkiValidator);
+        mockPkiValidator = createMock(PkiValidator.class);
+        EJBTestUtils.inject(testedInstance, mockPkiValidator);
 
-        this.mockDevicePolicyService = createMock(DevicePolicyService.class);
-        EJBTestUtils.inject(this.testedInstance, this.mockDevicePolicyService);
+        mockDevicePolicyService = createMock(DevicePolicyService.class);
+        EJBTestUtils.inject(testedInstance, mockDevicePolicyService);
 
-        this.mockApplicationPoolDAO = createMock(ApplicationPoolDAO.class);
-        EJBTestUtils.inject(this.testedInstance, this.mockApplicationPoolDAO);
+        mockApplicationPoolDAO = createMock(ApplicationPoolDAO.class);
+        EJBTestUtils.inject(testedInstance, mockApplicationPoolDAO);
 
-        this.mockSecurityAuditLogger = createMock(SecurityAuditLogger.class);
-        EJBTestUtils.inject(this.testedInstance, this.mockSecurityAuditLogger);
+        mockSecurityAuditLogger = createMock(SecurityAuditLogger.class);
+        EJBTestUtils.inject(testedInstance, mockSecurityAuditLogger);
 
-        this.mockUserIdMappingService = createMock(UserIdMappingService.class);
-        EJBTestUtils.inject(this.testedInstance, this.mockUserIdMappingService);
+        mockUserIdMappingService = createMock(UserIdMappingService.class);
+        EJBTestUtils.inject(testedInstance, mockUserIdMappingService);
 
-        EJBTestUtils.init(this.testedInstance);
+        EJBTestUtils.init(testedInstance);
 
-        this.mockObjects = new Object[] { this.mockSubjectService, this.mockApplicationDAO, this.mockSubscriptionDAO, this.mockHistoryDAO,
-                this.mockStatisticDAO, this.mockStatisticDataPointDAO, this.mockDeviceDAO, this.mockApplicationAuthenticationService,
-                this.mockPkiValidator, this.mockDevicePolicyService, this.mockApplicationPoolDAO, this.mockSecurityAuditLogger,
-                this.mockUserIdMappingService };
+        mockObjects = new Object[] { mockSubjectService, mockApplicationDAO, mockSubscriptionDAO, mockHistoryDAO,
+                mockStatisticDAO, mockStatisticDataPointDAO, mockDeviceDAO, mockApplicationAuthenticationService,
+                mockPkiValidator, mockDevicePolicyService, mockApplicationPoolDAO, mockSecurityAuditLogger,
+                mockUserIdMappingService };
     }
 
     @After
@@ -224,20 +224,20 @@ public class AuthenticationServiceBeanTest {
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
-        expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
+        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
                 Collections.singletonList(applicationCert));
-        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
                                                                                                                                      .andReturn(
                                                                                                                                              PkiResult.VALID);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
-        ProtocolContext protocolContext = this.testedInstance.initialize(null, null, null, authnRequest);
+        ProtocolContext protocolContext = testedInstance.initialize(null, null, null, authnRequest);
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
 
         assertEquals(applicationName, protocolContext.getApplicationId());
         assertEquals(assertionConsumerService, protocolContext.getTarget());
@@ -261,9 +261,9 @@ public class AuthenticationServiceBeanTest {
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
-        expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
+        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
                 Collections.singletonList(applicationCert));
-        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
                                                                                                                                      .andReturn(
                                                                                                                                              PkiResult.VALID);
 
@@ -272,16 +272,16 @@ public class AuthenticationServiceBeanTest {
                 SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS), null, null, null, null,
                 null, null, null, null, null);
         authnDevices.add(passwordDevice);
-        expect(this.mockDevicePolicyService.listDevices(SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS)).andReturn(authnDevices);
+        expect(mockDevicePolicyService.listDevices(SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS)).andReturn(authnDevices);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
-        ProtocolContext protocolContext = this.testedInstance.initialize(null, null, null, authnRequest);
+        ProtocolContext protocolContext = testedInstance.initialize(null, null, null, authnRequest);
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
 
         assertEquals(applicationName, protocolContext.getApplicationId());
         assertEquals(assertionConsumerService, protocolContext.getTarget());
@@ -307,16 +307,16 @@ public class AuthenticationServiceBeanTest {
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
-        expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(Collections.singletonList(foobarCert));
-        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, foobarCert)).andReturn(
+        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(Collections.singletonList(foobarCert));
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, foobarCert)).andReturn(
                 PkiResult.VALID);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
         try {
-            this.testedInstance.initialize(null, null, null, authnRequest);
+            testedInstance.initialize(null, null, null, authnRequest);
         } catch (AuthenticationInitializationException e) {
             // expected
             return;
@@ -340,18 +340,18 @@ public class AuthenticationServiceBeanTest {
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
-        expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
+        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
                 Collections.singletonList(applicationCert));
-        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
                                                                                                                                      .andReturn(
                                                                                                                                              PkiResult.INVALID);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
         try {
-            this.testedInstance.initialize(null, null, null, authnRequest);
+            testedInstance.initialize(null, null, null, authnRequest);
         } catch (AuthenticationInitializationException e) {
             // expected
             return;
@@ -389,38 +389,38 @@ public class AuthenticationServiceBeanTest {
         Cookie ssoCookie = getSsoCookie(subject, application, device, null);
 
         // expectations
-        expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
+        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
                 Collections.singletonList(applicationCert));
-        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
                                                                                                                                      .andReturn(
                                                                                                                                              PkiResult.VALID);
-        expect(this.mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
-        expect(this.mockSubjectService.findSubject(userId)).andStubReturn(subject);
-        expect(this.mockApplicationDAO.findApplication(applicationName)).andStubReturn(application);
-        expect(this.mockApplicationPoolDAO.listCommonApplicationPools(application, application)).andStubReturn(
+        expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
+        expect(mockSubjectService.findSubject(userId)).andStubReturn(subject);
+        expect(mockApplicationDAO.findApplication(applicationName)).andStubReturn(application);
+        expect(mockApplicationPoolDAO.listCommonApplicationPools(application, application)).andStubReturn(
                 Collections.singletonList(applicationPool));
-        expect(this.mockDeviceDAO.findDevice(passwordDeviceId)).andStubReturn(device);
-        expect(this.mockDevicePolicyService.getDevicePolicy(applicationName, null)).andStubReturn(Collections.singletonList(device));
+        expect(mockDeviceDAO.findDevice(passwordDeviceId)).andStubReturn(device);
+        expect(mockDevicePolicyService.getDevicePolicy(applicationName, null)).andStubReturn(Collections.singletonList(device));
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
-        ProtocolContext protocolContext = this.testedInstance.initialize(null, null, null, authnRequest);
-        boolean result = this.testedInstance.checkSsoCookie(ssoCookie);
+        ProtocolContext protocolContext = testedInstance.initialize(null, null, null, authnRequest);
+        boolean result = testedInstance.checkSsoCookie(ssoCookie);
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
 
         assertTrue(result);
 
         assertEquals(applicationName, protocolContext.getApplicationId());
         assertEquals(assertionConsumerService, protocolContext.getTarget());
-        AuthenticationState resultState = this.testedInstance.getAuthenticationState();
+        AuthenticationState resultState = testedInstance.getAuthenticationState();
         assertEquals(AuthenticationState.USER_AUTHENTICATED, resultState);
-        String resultUserId = this.testedInstance.getUserId();
+        String resultUserId = testedInstance.getUserId();
         assertEquals(userId, resultUserId);
-        DeviceEntity resultDevice = this.testedInstance.getAuthenticationDevice();
+        DeviceEntity resultDevice = testedInstance.getAuthenticationDevice();
         assertEquals(device, resultDevice);
     }
 
@@ -454,28 +454,28 @@ public class AuthenticationServiceBeanTest {
         Cookie ssoCookie = getSsoCookie(subject, application, device, null);
 
         // expectations
-        expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
+        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
                 Collections.singletonList(applicationCert));
-        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
                                                                                                                                      .andReturn(
                                                                                                                                              PkiResult.VALID);
-        expect(this.mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
+        expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
-        ProtocolContext protocolContext = this.testedInstance.initialize(null, null, null, authnRequest);
-        boolean result = this.testedInstance.checkSsoCookie(ssoCookie);
+        ProtocolContext protocolContext = testedInstance.initialize(null, null, null, authnRequest);
+        boolean result = testedInstance.checkSsoCookie(ssoCookie);
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
 
         assertFalse(result);
 
         assertEquals(applicationName, protocolContext.getApplicationId());
         assertEquals(assertionConsumerService, protocolContext.getTarget());
-        AuthenticationState resultState = this.testedInstance.getAuthenticationState();
+        AuthenticationState resultState = testedInstance.getAuthenticationState();
         assertEquals(AuthenticationState.INITIALIZED, resultState);
     }
 
@@ -509,27 +509,27 @@ public class AuthenticationServiceBeanTest {
         Cookie ssoCookie = getSsoCookie(subject, application, device, null);
 
         // expectations
-        expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
+        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
                 Collections.singletonList(applicationCert));
-        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
                                                                                                                                      .andReturn(
                                                                                                                                              PkiResult.VALID);
-        expect(this.mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
+        expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
-        ProtocolContext protocolContext = this.testedInstance.initialize(null, null, null, authnRequest);
-        boolean result = this.testedInstance.checkSsoCookie(ssoCookie);
+        ProtocolContext protocolContext = testedInstance.initialize(null, null, null, authnRequest);
+        boolean result = testedInstance.checkSsoCookie(ssoCookie);
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
 
         assertFalse(result);
         assertEquals(applicationName, protocolContext.getApplicationId());
         assertEquals(assertionConsumerService, protocolContext.getTarget());
-        AuthenticationState resultState = this.testedInstance.getAuthenticationState();
+        AuthenticationState resultState = testedInstance.getAuthenticationState();
         assertEquals(AuthenticationState.INITIALIZED, resultState);
     }
 
@@ -557,25 +557,25 @@ public class AuthenticationServiceBeanTest {
         Cookie ssoCookie = getInvalidSsoCookie(applicationName);
 
         // expectations
-        expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
+        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
                 Collections.singletonList(applicationCert));
-        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
                                                                                                                                      .andReturn(
                                                                                                                                              PkiResult.VALID);
-        expect(this.mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
-        this.mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION,
+        expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
+        mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION,
                 AuthenticationServiceBean.SECURITY_MESSAGE_INVALID_COOKIE);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
-        this.testedInstance.initialize(null, null, null, authnRequest);
+        testedInstance.initialize(null, null, null, authnRequest);
         try {
-            this.testedInstance.checkSsoCookie(ssoCookie);
+            testedInstance.checkSsoCookie(ssoCookie);
         } catch (InvalidCookieException e) {
             // expected
-            verify(this.mockObjects);
+            verify(mockObjects);
             return;
         }
         fail();
@@ -611,26 +611,26 @@ public class AuthenticationServiceBeanTest {
         Cookie ssoCookie = getSsoCookie(invalidSubject, application, device, null);
 
         // expectations
-        expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
+        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
                 Collections.singletonList(applicationCert));
-        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
                                                                                                                                      .andReturn(
                                                                                                                                              PkiResult.VALID);
-        expect(this.mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
-        expect(this.mockSubjectService.findSubject(invalidUser)).andStubReturn(null);
-        this.mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, AuthenticationServiceBean.SECURITY_MESSAGE_INVALID_USER
+        expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
+        expect(mockSubjectService.findSubject(invalidUser)).andStubReturn(null);
+        mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, AuthenticationServiceBean.SECURITY_MESSAGE_INVALID_USER
                 + invalidUser);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
-        this.testedInstance.initialize(null, null, null, authnRequest);
+        testedInstance.initialize(null, null, null, authnRequest);
         try {
-            this.testedInstance.checkSsoCookie(ssoCookie);
+            testedInstance.checkSsoCookie(ssoCookie);
         } catch (InvalidCookieException e) {
             // expected
-            verify(this.mockObjects);
+            verify(mockObjects);
             return;
         }
         fail();
@@ -669,27 +669,27 @@ public class AuthenticationServiceBeanTest {
         Cookie ssoCookie = getSsoCookie(subject, invalidApplication, device, null);
 
         // expectations
-        expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
+        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
                 Collections.singletonList(applicationCert));
-        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
                                                                                                                                      .andReturn(
                                                                                                                                              PkiResult.VALID);
-        expect(this.mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
-        expect(this.mockSubjectService.findSubject(userId)).andStubReturn(subject);
-        expect(this.mockApplicationDAO.findApplication(invalidApplicationName)).andStubReturn(null);
-        this.mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION,
+        expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
+        expect(mockSubjectService.findSubject(userId)).andStubReturn(subject);
+        expect(mockApplicationDAO.findApplication(invalidApplicationName)).andStubReturn(null);
+        mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION,
                 AuthenticationServiceBean.SECURITY_MESSAGE_INVALID_APPLICATION + invalidApplicationName);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
-        this.testedInstance.initialize(null, null, null, authnRequest);
+        testedInstance.initialize(null, null, null, authnRequest);
         try {
-            this.testedInstance.checkSsoCookie(ssoCookie);
+            testedInstance.checkSsoCookie(ssoCookie);
         } catch (InvalidCookieException e) {
             // expected
-            verify(this.mockObjects);
+            verify(mockObjects);
             return;
         }
         fail();
@@ -727,33 +727,33 @@ public class AuthenticationServiceBeanTest {
         Cookie ssoCookie = getSsoCookie(subject, cookieApplication, device, null);
 
         // expectations
-        expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
+        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
                 Collections.singletonList(applicationCert));
-        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
                                                                                                                                      .andReturn(
                                                                                                                                              PkiResult.VALID);
-        expect(this.mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
-        expect(this.mockSubjectService.findSubject(userId)).andStubReturn(subject);
-        expect(this.mockApplicationDAO.findApplication(cookieApplicationName)).andStubReturn(cookieApplication);
-        expect(this.mockDeviceDAO.findDevice(device.getName())).andStubReturn(device);
-        expect(this.mockApplicationPoolDAO.listCommonApplicationPools(application, cookieApplication)).andStubReturn(
+        expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
+        expect(mockSubjectService.findSubject(userId)).andStubReturn(subject);
+        expect(mockApplicationDAO.findApplication(cookieApplicationName)).andStubReturn(cookieApplication);
+        expect(mockDeviceDAO.findDevice(device.getName())).andStubReturn(device);
+        expect(mockApplicationPoolDAO.listCommonApplicationPools(application, cookieApplication)).andStubReturn(
                 new LinkedList<ApplicationPoolEntity>());
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
-        ProtocolContext protocolContext = this.testedInstance.initialize(null, null, null, authnRequest);
-        boolean result = this.testedInstance.checkSsoCookie(ssoCookie);
+        ProtocolContext protocolContext = testedInstance.initialize(null, null, null, authnRequest);
+        boolean result = testedInstance.checkSsoCookie(ssoCookie);
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
 
         assertFalse(result);
 
         assertEquals(applicationName, protocolContext.getApplicationId());
         assertEquals(assertionConsumerService, protocolContext.getTarget());
-        AuthenticationState resultState = this.testedInstance.getAuthenticationState();
+        AuthenticationState resultState = testedInstance.getAuthenticationState();
         assertEquals(AuthenticationState.INITIALIZED, resultState);
     }
 
@@ -819,34 +819,34 @@ public class AuthenticationServiceBeanTest {
         Cookie ssoCookie = getSsoCookie(subject, application1, device, Collections.singletonList(application2));
 
         // expectations
-        expect(this.mockApplicationAuthenticationService.getCertificates(application3Name)).andReturn(
+        expect(mockApplicationAuthenticationService.getCertificates(application3Name)).andReturn(
                 Collections.singletonList(applicationCert));
-        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
                                                                                                                                      .andReturn(
                                                                                                                                              PkiResult.VALID);
-        expect(this.mockApplicationDAO.getApplication(application3Name)).andStubReturn(application3);
-        expect(this.mockSubjectService.findSubject(userId)).andStubReturn(subject);
-        expect(this.mockApplicationDAO.findApplication(application1Name)).andStubReturn(application1);
-        expect(this.mockApplicationDAO.findApplication(application2Name)).andStubReturn(application2);
-        expect(this.mockDeviceDAO.findDevice(device.getName())).andStubReturn(device);
-        expect(this.mockApplicationPoolDAO.listCommonApplicationPools(application3, application1)).andStubReturn(
+        expect(mockApplicationDAO.getApplication(application3Name)).andStubReturn(application3);
+        expect(mockSubjectService.findSubject(userId)).andStubReturn(subject);
+        expect(mockApplicationDAO.findApplication(application1Name)).andStubReturn(application1);
+        expect(mockApplicationDAO.findApplication(application2Name)).andStubReturn(application2);
+        expect(mockDeviceDAO.findDevice(device.getName())).andStubReturn(device);
+        expect(mockApplicationPoolDAO.listCommonApplicationPools(application3, application1)).andStubReturn(
                 new LinkedList<ApplicationPoolEntity>());
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
-        ProtocolContext protocolContext = this.testedInstance.initialize(null, null, null, authnRequest);
-        boolean result = this.testedInstance.checkSsoCookie(ssoCookie);
+        ProtocolContext protocolContext = testedInstance.initialize(null, null, null, authnRequest);
+        boolean result = testedInstance.checkSsoCookie(ssoCookie);
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
 
         assertFalse(result);
 
         assertEquals(application3Name, protocolContext.getApplicationId());
         assertEquals(assertionConsumerService, protocolContext.getTarget());
-        AuthenticationState resultState = this.testedInstance.getAuthenticationState();
+        AuthenticationState resultState = testedInstance.getAuthenticationState();
         assertEquals(AuthenticationState.INITIALIZED, resultState);
     }
 
@@ -881,30 +881,30 @@ public class AuthenticationServiceBeanTest {
         Cookie ssoCookie = getSsoCookie(subject, application, invalidDevice, null);
 
         // expectations
-        expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
+        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
                 Collections.singletonList(applicationCert));
-        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
                                                                                                                                      .andReturn(
                                                                                                                                              PkiResult.VALID);
-        expect(this.mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
-        expect(this.mockSubjectService.findSubject(userId)).andStubReturn(subject);
-        expect(this.mockApplicationDAO.findApplication(applicationName)).andStubReturn(application);
-        expect(this.mockApplicationPoolDAO.listCommonApplicationPools(application, application)).andStubReturn(
+        expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
+        expect(mockSubjectService.findSubject(userId)).andStubReturn(subject);
+        expect(mockApplicationDAO.findApplication(applicationName)).andStubReturn(application);
+        expect(mockApplicationPoolDAO.listCommonApplicationPools(application, application)).andStubReturn(
                 Collections.singletonList(applicationPool));
-        expect(this.mockDeviceDAO.findDevice(invalidDeviceName)).andStubReturn(null);
-        this.mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION,
+        expect(mockDeviceDAO.findDevice(invalidDeviceName)).andStubReturn(null);
+        mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION,
                 AuthenticationServiceBean.SECURITY_MESSAGE_INVALID_DEVICE + invalidDeviceName);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
-        this.testedInstance.initialize(null, null, null, authnRequest);
+        testedInstance.initialize(null, null, null, authnRequest);
         try {
-            this.testedInstance.checkSsoCookie(ssoCookie);
+            testedInstance.checkSsoCookie(ssoCookie);
         } catch (InvalidCookieException e) {
             // expected
-            verify(this.mockObjects);
+            verify(mockObjects);
             return;
         }
         fail();
@@ -940,34 +940,34 @@ public class AuthenticationServiceBeanTest {
         Cookie ssoCookie = getSsoCookie(subject, application, device, null);
 
         // expectations
-        expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
+        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
                 Collections.singletonList(applicationCert));
-        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
                                                                                                                                      .andReturn(
                                                                                                                                              PkiResult.VALID);
-        expect(this.mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
-        expect(this.mockSubjectService.findSubject(userId)).andStubReturn(subject);
-        expect(this.mockApplicationDAO.findApplication(applicationName)).andStubReturn(application);
-        expect(this.mockApplicationPoolDAO.listCommonApplicationPools(application, application)).andStubReturn(
+        expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
+        expect(mockSubjectService.findSubject(userId)).andStubReturn(subject);
+        expect(mockApplicationDAO.findApplication(applicationName)).andStubReturn(application);
+        expect(mockApplicationPoolDAO.listCommonApplicationPools(application, application)).andStubReturn(
                 Collections.singletonList(applicationPool));
-        expect(this.mockDeviceDAO.findDevice(passwordDeviceId)).andStubReturn(device);
-        expect(this.mockDevicePolicyService.getDevicePolicy(applicationName, null)).andStubReturn(new LinkedList<DeviceEntity>());
+        expect(mockDeviceDAO.findDevice(passwordDeviceId)).andStubReturn(device);
+        expect(mockDevicePolicyService.getDevicePolicy(applicationName, null)).andStubReturn(new LinkedList<DeviceEntity>());
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
-        ProtocolContext protocolContext = this.testedInstance.initialize(null, null, null, authnRequest);
-        boolean result = this.testedInstance.checkSsoCookie(ssoCookie);
+        ProtocolContext protocolContext = testedInstance.initialize(null, null, null, authnRequest);
+        boolean result = testedInstance.checkSsoCookie(ssoCookie);
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
 
         assertFalse(result);
 
         assertEquals(applicationName, protocolContext.getApplicationId());
         assertEquals(assertionConsumerService, protocolContext.getTarget());
-        AuthenticationState resultState = this.testedInstance.getAuthenticationState();
+        AuthenticationState resultState = testedInstance.getAuthenticationState();
         assertEquals(AuthenticationState.INITIALIZED, resultState);
     }
 
@@ -1001,29 +1001,29 @@ public class AuthenticationServiceBeanTest {
         Cookie ssoCookie = getExpiredSsoCookie(subject, application, device);
 
         // expectations
-        expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
+        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
                 Collections.singletonList(applicationCert));
-        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
                                                                                                                                      .andReturn(
                                                                                                                                              PkiResult.VALID);
-        expect(this.mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
-        expect(this.mockSubjectService.findSubject(userId)).andStubReturn(subject);
-        expect(this.mockApplicationDAO.findApplication(applicationName)).andStubReturn(application);
-        expect(this.mockApplicationPoolDAO.listCommonApplicationPools(application, application)).andStubReturn(
+        expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
+        expect(mockSubjectService.findSubject(userId)).andStubReturn(subject);
+        expect(mockApplicationDAO.findApplication(applicationName)).andStubReturn(application);
+        expect(mockApplicationPoolDAO.listCommonApplicationPools(application, application)).andStubReturn(
                 Collections.singletonList(applicationPool));
-        expect(this.mockDeviceDAO.findDevice(passwordDeviceId)).andStubReturn(device);
-        expect(this.mockDevicePolicyService.getDevicePolicy(applicationName, null)).andStubReturn(Collections.singletonList(device));
+        expect(mockDeviceDAO.findDevice(passwordDeviceId)).andStubReturn(device);
+        expect(mockDevicePolicyService.getDevicePolicy(applicationName, null)).andStubReturn(Collections.singletonList(device));
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
-        this.testedInstance.initialize(null, null, null, authnRequest);
+        testedInstance.initialize(null, null, null, authnRequest);
         try {
-            this.testedInstance.checkSsoCookie(ssoCookie);
+            testedInstance.checkSsoCookie(ssoCookie);
         } catch (InvalidCookieException e) {
             // expected
-            verify(this.mockObjects);
+            verify(mockObjects);
             return;
         }
         fail();
@@ -1119,23 +1119,23 @@ public class AuthenticationServiceBeanTest {
         LogoutRequest logoutRequest = getLogoutRequest(encodedLogoutRequest);
 
         // expectations
-        expect(this.mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
-        expect(this.mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
+        expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
+        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
                 Collections.singletonList(applicationCert));
-        expect(this.mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
                                                                                                                                      .andReturn(
                                                                                                                                              PkiResult.VALID);
-        expect(this.mockUserIdMappingService.findUserId(applicationName, applicationUserId)).andStubReturn(userId);
-        expect(this.mockSubjectService.getSubject(userId)).andStubReturn(subject);
+        expect(mockUserIdMappingService.findUserId(applicationName, applicationUserId)).andStubReturn(userId);
+        expect(mockSubjectService.getSubject(userId)).andStubReturn(subject);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
-        LogoutProtocolContext logoutProtocolContext = this.testedInstance.initialize(logoutRequest);
+        LogoutProtocolContext logoutProtocolContext = testedInstance.initialize(logoutRequest);
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
 
         assertEquals(applicationName, logoutProtocolContext.getApplicationId());
         assertEquals(application.getSsoLogoutUrl().toString(), logoutProtocolContext.getTarget());

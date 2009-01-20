@@ -53,7 +53,7 @@ public class AccountServiceBean extends AbstractBankServiceBean implements Accou
         }
 
         BankAccountEntity account = new BankAccountEntity(attach(user), name, code);
-        this.em.persist(account);
+        em.persist(account);
 
         return account;
     }
@@ -63,6 +63,6 @@ public class AccountServiceBean extends AbstractBankServiceBean implements Accou
      */
     public BankAccountEntity getAccount(String code) {
 
-        return (BankAccountEntity) this.em.createNamedQuery(BankAccountEntity.getByCode).setParameter("code", code).getSingleResult();
+        return (BankAccountEntity) em.createNamedQuery(BankAccountEntity.getByCode).setParameter("code", code).getSingleResult();
     }
 }

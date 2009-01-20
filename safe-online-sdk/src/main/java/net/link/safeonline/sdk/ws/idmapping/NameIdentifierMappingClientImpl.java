@@ -65,19 +65,19 @@ public class NameIdentifierMappingClientImpl extends AbstractMessageAccessor imp
     public NameIdentifierMappingClientImpl(String location, X509Certificate clientCertificate, PrivateKey clientPrivateKey) {
 
         NameIdentifierMappingService service = NameIdentifierMappingServiceFactory.newInstance();
-        this.port = service.getNameIdentifierMappingPort();
+        port = service.getNameIdentifierMappingPort();
         this.location = location + "/safe-online-ws/idmapping";
         setEndpointAddress();
 
-        registerMessageLoggerHandler(this.port);
-        WSSecurityClientHandler.addNewHandler(this.port, clientCertificate, clientPrivateKey);
+        registerMessageLoggerHandler(port);
+        WSSecurityClientHandler.addNewHandler(port, clientCertificate, clientPrivateKey);
     }
 
     private void setEndpointAddress() {
 
-        BindingProvider bindingProvider = (BindingProvider) this.port;
+        BindingProvider bindingProvider = (BindingProvider) port;
 
-        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location);
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location);
     }
 
     public String getUserId(String username)
@@ -97,13 +97,13 @@ public class NameIdentifierMappingClientImpl extends AbstractMessageAccessor imp
 
         NameIDMappingResponseType response;
         try {
-            response = this.port.nameIdentifierMappingQuery(request);
+            response = port.nameIdentifierMappingQuery(request);
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(this.location);
+            throw new WSClientTransportException(location);
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {
-            retrieveHeadersFromPort(this.port);
+            retrieveHeadersFromPort(port);
         }
 
         StatusType status = response.getStatus();
@@ -119,12 +119,10 @@ public class NameIdentifierMappingClientImpl extends AbstractMessageAccessor imp
             if (null != secondStatusCode) {
                 String secondErrorCode = secondStatusCode.getValue();
                 SamlpSecondLevelErrorCode secondLevelErrorCode = SamlpSecondLevelErrorCode.getSamlpTopLevelErrorCode(secondErrorCode);
-                if (SamlpSecondLevelErrorCode.UNKNOWN_PRINCIPAL == secondLevelErrorCode) {
+                if (SamlpSecondLevelErrorCode.UNKNOWN_PRINCIPAL == secondLevelErrorCode)
                     throw new SubjectNotFoundException();
-                }
-                if (SamlpSecondLevelErrorCode.REQUEST_DENIED == secondLevelErrorCode) {
+                if (SamlpSecondLevelErrorCode.REQUEST_DENIED == secondLevelErrorCode)
                     throw new RequestDeniedException();
-                }
                 throw new RuntimeException("error occurred on identifier mapping service: " + secondErrorCode);
             }
         }

@@ -55,10 +55,10 @@ public class MissingAttributesPanel extends JPanel implements Observer {
     JTable                    identityTable    = null;
 
     private Action            saveAction       = new SaveAction("Save");
-    private JButton           saveButton       = new JButton(this.saveAction);
+    private JButton           saveButton       = new JButton(saveAction);
 
     private Action            cancelAction     = new CancelAction("Cancel");
-    private JButton           cancelButton     = new JButton(this.cancelAction);
+    private JButton           cancelButton     = new JButton(cancelAction);
 
 
     public MissingAttributesPanel(AcceptanceConsole parent) {
@@ -74,19 +74,19 @@ public class MissingAttributesPanel extends JPanel implements Observer {
      */
     private void buildWindow() {
 
-        this.saveButton.setEnabled(false);
-        this.cancelButton.setEnabled(false);
+        saveButton.setEnabled(false);
+        cancelButton.setEnabled(false);
 
         JPanel controlPanel = new JPanel();
 
-        this.infoPanel.setLayout(new BorderLayout());
-        this.infoPanel.add(this.infoLabel, BorderLayout.NORTH);
+        infoPanel.setLayout(new BorderLayout());
+        infoPanel.add(infoLabel, BorderLayout.NORTH);
 
-        controlPanel.add(this.saveButton);
-        controlPanel.add(this.cancelButton);
+        controlPanel.add(saveButton);
+        controlPanel.add(cancelButton);
 
         setLayout(new BorderLayout());
-        this.add(this.infoPanel, BorderLayout.CENTER);
+        this.add(infoPanel, BorderLayout.CENTER);
         this.add(controlPanel, BorderLayout.SOUTH);
 
     }
@@ -98,16 +98,16 @@ public class MissingAttributesPanel extends JPanel implements Observer {
     public void update(Observable o, Object arg) {
 
         setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-        this.cancelButton.setEnabled(true);
+        cancelButton.setEnabled(true);
 
         if (arg instanceof AuthenticationError) {
             AuthenticationError error = (AuthenticationError) arg;
-            this.infoLabel.setText("Authentication failed: " + error.getCode().getErrorCode() + " message=" + error.getMessage());
+            infoLabel.setText("Authentication failed: " + error.getCode().getErrorCode() + " message=" + error.getMessage());
         } else if (arg instanceof AuthenticationStep) {
             AuthenticationStep authenticationStep = (AuthenticationStep) arg;
-            this.infoLabel.setText("Additional authentication step: " + authenticationStep.getValue());
+            infoLabel.setText("Additional authentication step: " + authenticationStep.getValue());
         } else if (arg instanceof List<?>) {
-            this.saveButton.setEnabled(true);
+            saveButton.setEnabled(true);
             setMissingAttributes((List<Attribute>) arg);
         }
 
@@ -140,12 +140,12 @@ public class MissingAttributesPanel extends JPanel implements Observer {
         }
 
         // set table
-        this.identityTable = new JTable(new AttributesTableModel(attributeList, true));
-        this.identityTable.getColumnModel().getColumn(1).setMaxWidth(75);
-        this.identityTable.getColumnModel().getColumn(2).setMaxWidth(75);
-        JScrollPane tableScrollPane = new JScrollPane(this.identityTable);
-        this.infoPanel.add(tableScrollPane, BorderLayout.CENTER);
-        this.infoPanel.revalidate();
+        identityTable = new JTable(new AttributesTableModel(attributeList, true));
+        identityTable.getColumnModel().getColumn(1).setMaxWidth(75);
+        identityTable.getColumnModel().getColumn(2).setMaxWidth(75);
+        JScrollPane tableScrollPane = new JScrollPane(identityTable);
+        infoPanel.add(tableScrollPane, BorderLayout.CENTER);
+        infoPanel.revalidate();
     }
 
 
@@ -163,7 +163,7 @@ public class MissingAttributesPanel extends JPanel implements Observer {
 
         public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
-            MissingAttributesPanel.this.parent.resetContent();
+            parent.resetContent();
         }
     }
 
@@ -181,8 +181,8 @@ public class MissingAttributesPanel extends JPanel implements Observer {
 
         public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
-            MissingAttributesPanel.this.parent
-                                              .saveMissingAttributes(((AttributesTableModel) MissingAttributesPanel.this.identityTable
+            parent
+                                              .saveMissingAttributes(((AttributesTableModel) identityTable
                                                                                                                                       .getModel())
                                                                                                                                                   .getAttributes());
         }

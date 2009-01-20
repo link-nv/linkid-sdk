@@ -67,19 +67,19 @@ public class ActionsBean implements Actions {
     public String removeAccount()
             throws SubscriptionNotFoundException, MessageHandlerNotFoundException {
 
-        this.log.debug("remove account");
+        log.debug("remove account");
 
-        this.accountService.removeAccount();
+        accountService.removeAccount();
 
         removeLoginCookie();
-        this.sessionContext.set(LoginManager.USERID_SESSION_ATTRIBUTE, null);
+        sessionContext.set(LoginManager.USERID_SESSION_ATTRIBUTE, null);
         Session.instance().invalidate();
         return "success";
     }
 
     private void removeLoginCookie() {
 
-        this.log.debug("remove login cookie");
+        log.debug("remove login cookie");
         FacesContext facesContext = FacesContext.getCurrentInstance();
         HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
 

@@ -61,13 +61,13 @@ public class TaskEntity implements Serializable {
 
         this.name = name;
         this.jndiName = jndiName;
-        this.scheduling = schedulingEntity;
-        this.taskHistory = new LinkedList<TaskHistoryEntity>();
+        scheduling = schedulingEntity;
+        taskHistory = new LinkedList<TaskHistoryEntity>();
     }
 
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -78,7 +78,7 @@ public class TaskEntity implements Serializable {
     @Id
     public String getJndiName() {
 
-        return this.jndiName;
+        return jndiName;
     }
 
     public void setJndiName(String jndiName) {
@@ -89,18 +89,18 @@ public class TaskEntity implements Serializable {
     @ManyToOne
     public SchedulingEntity getScheduling() {
 
-        return this.scheduling;
+        return scheduling;
     }
 
     public void setScheduling(SchedulingEntity schedulingEntity) {
 
-        this.scheduling = schedulingEntity;
+        scheduling = schedulingEntity;
     }
 
     @OneToMany(mappedBy = "task")
     public List<TaskHistoryEntity> getTaskHistory() {
 
-        return this.taskHistory;
+        return taskHistory;
     }
 
     public void setTaskHistory(List<TaskHistoryEntity> taskHistory) {
@@ -110,14 +110,14 @@ public class TaskEntity implements Serializable {
 
     public void addTaskHistoryEntity(TaskHistoryEntity taskHistoryEntity) {
 
-        this.taskHistory.add(taskHistoryEntity);
+        taskHistory.add(taskHistoryEntity);
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("jndiName", this.jndiName).append("name", this.name).append("schedulingEntity",
-                this.scheduling.getName()).toString();
+        return new ToStringBuilder(this).append("jndiName", jndiName).append("name", name).append("schedulingEntity",
+                scheduling.getName()).toString();
     }
 
     @Override
@@ -130,13 +130,13 @@ public class TaskEntity implements Serializable {
         if (false == obj instanceof TaskEntity)
             return false;
         TaskEntity rhs = (TaskEntity) obj;
-        return new EqualsBuilder().append(this.jndiName, rhs.jndiName).isEquals();
+        return new EqualsBuilder().append(jndiName, rhs.jndiName).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.jndiName).toHashCode();
+        return new HashCodeBuilder().append(jndiName).toHashCode();
     }
 
 

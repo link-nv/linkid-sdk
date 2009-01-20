@@ -40,11 +40,11 @@ public class CustomerSearchBean extends AbstractPaymentDataClientBean implements
 
     public String search() {
 
-        this.log.debug("search: " + this.name);
-        CustomerStatus inCustomerStatus = getCustomerStatus(this.name);
+        log.debug("search: " + name);
+        CustomerStatus inCustomerStatus = getCustomerStatus(name);
         if (null == inCustomerStatus)
             return null;
-        this.customerStatus = inCustomerStatus;
+        customerStatus = inCustomerStatus;
         return "success";
     }
 }

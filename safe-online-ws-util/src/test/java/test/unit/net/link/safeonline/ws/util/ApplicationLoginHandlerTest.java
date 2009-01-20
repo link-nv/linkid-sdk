@@ -48,7 +48,7 @@ public class ApplicationLoginHandlerTest extends TestCase {
 
         super.setUp();
 
-        this.testedInstance = new LoginHandler();
+        testedInstance = new LoginHandler();
     }
 
     @Override
@@ -75,9 +75,9 @@ public class ApplicationLoginHandlerTest extends TestCase {
         JaasTestUtils.initJaasLoginModule(TestLoginModule.class);
 
         // operate
-        this.testedInstance.handleMessage(context);
+        testedInstance.handleMessage(context);
         context.put(MessageContext.MESSAGE_OUTBOUND_PROPERTY, true);
-        this.testedInstance.handleMessage(context);
+        testedInstance.handleMessage(context);
 
         // verify
     }
@@ -103,7 +103,7 @@ public class ApplicationLoginHandlerTest extends TestCase {
         public boolean commit() {
 
             LOG.debug("commit");
-            this.subject.getPrincipals().add(this.authenticatedPrincipal);
+            subject.getPrincipals().add(authenticatedPrincipal);
             return true;
         }
 
@@ -111,8 +111,8 @@ public class ApplicationLoginHandlerTest extends TestCase {
                                @SuppressWarnings("unused") Map<String, ?> sharedState, @SuppressWarnings("unused") Map<String, ?> options) {
 
             LOG.debug("initialize");
-            this.subject = newSubject;
-            this.callbackHandler = newCallbackHandler;
+            subject = newSubject;
+            callbackHandler = newCallbackHandler;
         }
 
         public boolean login()
@@ -122,13 +122,13 @@ public class ApplicationLoginHandlerTest extends TestCase {
             PasswordCallback passwordCallback = new PasswordCallback("X509", false);
             Callback[] callbacks = new Callback[] { passwordCallback };
             try {
-                this.callbackHandler.handle(callbacks);
+                callbackHandler.handle(callbacks);
             } catch (IOException e) {
                 throw new LoginException("IO error: " + e.getMessage());
             } catch (UnsupportedCallbackException e) {
                 throw new LoginException("unsupported callback: " + e.getMessage());
             }
-            this.authenticatedPrincipal = new SimplePrincipal("test");
+            authenticatedPrincipal = new SimplePrincipal("test");
             return true;
         }
 
@@ -136,9 +136,9 @@ public class ApplicationLoginHandlerTest extends TestCase {
                 throws LoginException {
 
             LOG.debug("logout");
-            if (null == this.authenticatedPrincipal)
+            if (null == authenticatedPrincipal)
                 throw new LoginException("no auth principal");
-            boolean result = this.subject.getPrincipals().remove(this.authenticatedPrincipal);
+            boolean result = subject.getPrincipals().remove(authenticatedPrincipal);
             if (false == result)
                 throw new LoginException("subject did not contain auth principal");
             return true;

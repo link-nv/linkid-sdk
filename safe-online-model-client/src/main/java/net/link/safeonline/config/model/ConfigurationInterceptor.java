@@ -55,7 +55,7 @@ public class ConfigurationInterceptor {
         Object target = invocationContext.getTarget();
         LOG.debug("Configuring: " + target.getClass().getName() + " (method: " + getMethodName(invocationContext) + ")");
 
-        this.configurationManager.configure(target);
+        configurationManager.configure(target);
 
         return invocationContext.proceed();
     }

@@ -38,12 +38,12 @@ public class AuthenticationError {
 
     public WSAuthenticationErrorCode getCode() {
 
-        return this.code;
+        return code;
     }
 
     public String getMessage() {
 
-        return this.message;
+        return message;
     }
 
 }

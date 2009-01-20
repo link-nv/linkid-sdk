@@ -90,8 +90,8 @@ public class AttribService extends JPanel implements Observer {
 
     DefaultMutableTreeNode      top                   = new DefaultMutableTreeNode("User Attributes");
     DefaultMutableTreeNode      userNode              = null;
-    JTree                       attributeTree         = new JTree(this.top);
-    DefaultTreeModel            attributeTreeModel    = (DefaultTreeModel) this.attributeTree.getModel();
+    JTree                       attributeTree         = new JTree(top);
+    DefaultTreeModel            attributeTreeModel    = (DefaultTreeModel) attributeTree.getModel();
 
     // JTree popup for deleting attributes
     JPopupMenu                  treePopup             = new JPopupMenu();
@@ -102,8 +102,8 @@ public class AttribService extends JPanel implements Observer {
      */
     public AttribService(ApplicationConsole applicationConsole) {
 
-        this.parent = applicationConsole;
-        this.dateFormat = new SimpleDateFormat(DATE_FORMAT);
+        parent = applicationConsole;
+        dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
         ServicesUtils.getInstance().addObserver(this);
         init();
@@ -117,24 +117,24 @@ public class AttribService extends JPanel implements Observer {
     private void init() {
 
         JPanel infoPanel = new JPanel();
-        JScrollPane treePanel = new JScrollPane(this.attributeTree);
-        this.attributeTree.setEditable(true);
+        JScrollPane treePanel = new JScrollPane(attributeTree);
+        attributeTree.setEditable(true);
         // DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer)
         // attributeTree
         // .getCellRenderer();
         // TreeCellEditor editor = new AttributeCellEditor(attributeTree,
         // renderer);
         // attributeTree.setCellEditor(editor);
-        this.attributeTreeModel.addTreeModelListener(new AttributeTreeModelListener());
+        attributeTreeModel.addTreeModelListener(new AttributeTreeModelListener());
 
         infoPanel.setLayout(new FlowLayout());
-        infoPanel.add(this.userLabel);
-        infoPanel.add(this.userField);
-        JButton getAttributesButton = new JButton(this.getAttributesAction);
+        infoPanel.add(userLabel);
+        infoPanel.add(userField);
+        JButton getAttributesButton = new JButton(getAttributesAction);
         getAttributesButton.setMultiClickThreshhold(1000); // prevent double
         infoPanel.add(getAttributesButton);
-        infoPanel.add(new JButton(this.addAttributeAction));
-        infoPanel.add(new JButton(this.doneAction));
+        infoPanel.add(new JButton(addAttributeAction));
+        infoPanel.add(new JButton(doneAction));
 
         JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, infoPanel, treePanel);
         splitPane.setDividerSize(3);
@@ -147,7 +147,7 @@ public class AttribService extends JPanel implements Observer {
      */
     private void initMenu() {
 
-        this.treePopup.add(new JMenuItem(this.deleteAttributeAction));
+        treePopup.add(new JMenuItem(deleteAttributeAction));
     }
 
     /*
@@ -155,7 +155,7 @@ public class AttribService extends JPanel implements Observer {
      */
     private void registerListeners() {
 
-        this.attributeTree.addMouseListener(new MouseListener() {
+        attributeTree.addMouseListener(new MouseListener() {
 
             public void mouseReleased(@SuppressWarnings("unused") MouseEvent e) {
 
@@ -176,15 +176,15 @@ public class AttribService extends JPanel implements Observer {
             public void mouseClicked(MouseEvent e) {
 
                 if (SwingUtilities.isRightMouseButton(e)) {
-                    AttribService.this.treePath = AttribService.this.attributeTree.getPathForLocation(e.getX(), e.getY());
-                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) AttribService.this.treePath.getLastPathComponent();
+                    treePath = attributeTree.getPathForLocation(e.getX(), e.getY());
+                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) treePath.getLastPathComponent();
                     if (node.getChildCount() == 0)
                         return;
-                    AttribService.this.treePopup.show(AttribService.this.attributeTree, e.getX(), e.getY());
+                    treePopup.show(attributeTree, e.getX(), e.getY());
 
                 }
                 if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() > 1) {
-                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) AttribService.this.attributeTree.getLastSelectedPathComponent();
+                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) attributeTree.getLastSelectedPathComponent();
                     // only leafs(values) are editable
                     if (node.isLeaf()) {
                         editNode(node);
@@ -207,14 +207,14 @@ public class AttribService extends JPanel implements Observer {
             value = getValue(node, newValue);
         }
         node.setUserObject(value);
-        this.attributeTreeModel.nodeChanged(node);
+        attributeTreeModel.nodeChanged(node);
     }
 
     private Object getValue(DefaultMutableTreeNode node, String newValue) {
 
         if (node.getUserObject() instanceof Date) {
             try {
-                return this.dateFormat.parse(newValue);
+                return dateFormat.parse(newValue);
             } catch (ParseException e) {
                 JOptionPane.showMessageDialog(this, "Invalid input, not a valid date ( format=\"" + DATE_FORMAT + "\" )");
                 return null;
@@ -248,7 +248,7 @@ public class AttribService extends JPanel implements Observer {
     public void update(@SuppressWarnings("unused") Observable o, Object arg) {
 
         if (arg instanceof Map) { // from attribute web service
-            addMap(this.userNode, (Map<String, Object>) arg);
+            addMap(userNode, (Map<String, Object>) arg);
         } else if (arg instanceof Boolean) { // from data web service
         } else if (arg instanceof String) { // error from one of both
             JOptionPane.showMessageDialog(this, arg, "Error", JOptionPane.ERROR_MESSAGE);
@@ -261,16 +261,16 @@ public class AttribService extends JPanel implements Observer {
      */
     public void addUser(String user) {
 
-        DefaultMutableTreeNode root = (DefaultMutableTreeNode) this.attributeTreeModel.getRoot();
+        DefaultMutableTreeNode root = (DefaultMutableTreeNode) attributeTreeModel.getRoot();
         for (int i = 0; i < root.getChildCount(); i++) {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) root.getChildAt(i);
             if (node.getUserObject().toString().equals(user)) {
-                this.attributeTreeModel.removeNodeFromParent(node);
+                attributeTreeModel.removeNodeFromParent(node);
             }
         }
-        this.userNode = new DefaultMutableTreeNode(user);
-        this.attributeTreeModel.insertNodeInto(this.userNode, root, root.getChildCount());
-        this.attributeTree.expandRow(0);
+        userNode = new DefaultMutableTreeNode(user);
+        attributeTreeModel.insertNodeInto(userNode, root, root.getChildCount());
+        attributeTree.expandRow(0);
     }
 
     /*
@@ -284,7 +284,7 @@ public class AttribService extends JPanel implements Observer {
             Object attributeValue = data.get(attributeName);
 
             DefaultMutableTreeNode attributeNameNode = new DefaultMutableTreeNode(attributeName);
-            this.attributeTreeModel.insertNodeInto(attributeNameNode, root, root.getChildCount());
+            attributeTreeModel.insertNodeInto(attributeNameNode, root, root.getChildCount());
             if (null == attributeValue) {
                 addSingleValueAttribute(attributeNameNode, "");
             } else if (attributeValue.getClass().isArray()) {
@@ -294,8 +294,8 @@ public class AttribService extends JPanel implements Observer {
             }
 
             // expand complete tree
-            for (int i = 0; i < this.attributeTree.getRowCount(); i++) {
-                this.attributeTree.expandRow(i);
+            for (int i = 0; i < attributeTree.getRowCount(); i++) {
+                attributeTree.expandRow(i);
             }
         }
     }
@@ -312,7 +312,7 @@ public class AttribService extends JPanel implements Observer {
             } else {
                 attributeValueNode = new DefaultMutableTreeNode(attributeValue);
             }
-            this.attributeTreeModel.insertNodeInto(attributeValueNode, attributeNameNode, attributeNameNode.getChildCount());
+            attributeTreeModel.insertNodeInto(attributeValueNode, attributeNameNode, attributeNameNode.getChildCount());
         }
     }
 
@@ -327,7 +327,7 @@ public class AttribService extends JPanel implements Observer {
 
         AttributeType attributeType = (AttributeType) attributeValue;
         DefaultMutableTreeNode attributeCompoundNameNode = new DefaultMutableTreeNode(attributeType.getName());
-        this.attributeTreeModel.insertNodeInto(attributeCompoundNameNode, attributeNameNode, attributeNameNode.getChildCount());
+        attributeTreeModel.insertNodeInto(attributeCompoundNameNode, attributeNameNode, attributeNameNode.getChildCount());
         List<Object> attributeCompoundValues = attributeType.getAttributeValue();
         for (Object attributeCompoundValue : attributeCompoundValues) {
             addSingleValueAttribute(attributeCompoundNameNode, attributeCompoundValue);
@@ -412,9 +412,9 @@ public class AttribService extends JPanel implements Observer {
 
         public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
-            if (null == AttribService.this.userField.getText())
+            if (null == userField.getText())
                 return;
-            String user = AttribService.this.userField.getText();
+            String user = userField.getText();
             setCursor(new Cursor(Cursor.WAIT_CURSOR));
             ServicesUtils.getInstance().getAttributes(user);
             addUser(user);
@@ -434,10 +434,10 @@ public class AttribService extends JPanel implements Observer {
 
         public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
-            if (AttribService.this.treePath == null)
+            if (treePath == null)
                 return;
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) AttribService.this.treePath.getLastPathComponent();
-            String user = AttribService.this.userField.getText();
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) treePath.getLastPathComponent();
+            String user = userField.getText();
             String attributeName = (String) node.getUserObject();
             Object attributeValue = getAttributeValue(node);
             String attributeId = null;
@@ -463,7 +463,7 @@ public class AttribService extends JPanel implements Observer {
 
         public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
-            String user = AttribService.this.userField.getText();
+            String user = userField.getText();
 
             // new AddAttribute(user);
 
@@ -513,7 +513,7 @@ public class AttribService extends JPanel implements Observer {
 
         public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
-            AttribService.this.parent.resetContent();
+            parent.resetContent();
         }
     }
 

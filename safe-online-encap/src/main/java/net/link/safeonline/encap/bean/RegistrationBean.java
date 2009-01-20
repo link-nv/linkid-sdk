@@ -82,23 +82,23 @@ public class RegistrationBean implements Registration {
     @Destroy
     public void destroyCallback() {
 
-        this.log.debug("destroy");
+        log.debug("destroy");
         reset();
     }
 
     private void reset() {
 
-        this.mobile = null;
-        this.mobileActivationCode = null;
-        this.mobileOTP = null;
-        this.challengeId = null;
+        mobile = null;
+        mobileActivationCode = null;
+        mobileOTP = null;
+        challengeId = null;
     }
 
     @End
     public String cancel()
             throws IOException {
 
-        this.protocolContext.setSuccess(false);
+        protocolContext.setSuccess(false);
         exit();
         return null;
     }
@@ -106,9 +106,9 @@ public class RegistrationBean implements Registration {
     private void exit()
             throws IOException {
 
-        this.log.debug("exit");
+        log.debug("exit");
         reset();
-        this.protocolContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());
+        protocolContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ExternalContext externalContext = facesContext.getExternalContext();
@@ -120,7 +120,7 @@ public class RegistrationBean implements Registration {
     public String mobileRegister()
             throws MobileException, MalformedURLException, MobileRegistrationException {
 
-        this.log.debug("register mobile: " + this.mobile);
+        log.debug("register mobile: " + mobile);
         return mobileActivation();
     }
 
@@ -128,7 +128,7 @@ public class RegistrationBean implements Registration {
     public String mobileActivationRetry()
             throws MalformedURLException, MobileException, MobileRegistrationException {
 
-        this.log.debug("mobile retry activation: " + this.mobile);
+        log.debug("mobile retry activation: " + mobile);
         return mobileActivation();
     }
 
@@ -139,22 +139,22 @@ public class RegistrationBean implements Registration {
         ExternalContext externalContext = facesContext.getExternalContext();
         HttpSession session = (HttpSession) externalContext.getSession(true);
         String sessionId = session.getId();
-        this.mobileActivationCode = this.encapDeviceService.register(this.mobile.getNumber(), sessionId);
+        mobileActivationCode = encapDeviceService.register(mobile.getNumber(), sessionId);
         return "";
     }
 
     public String mobileActivationOk() {
 
-        this.log.debug("mobile activation ok: " + this.mobile);
+        log.debug("mobile activation ok: " + mobile);
         return "authenticate";
     }
 
     public String requestOTP()
             throws MalformedURLException, MobileException {
 
-        this.log.debug("request OTP: mobile=" + this.mobile);
-        this.challengeId = this.encapDeviceService.requestOTP(this.mobile.getNumber());
-        this.log.debug("received challengeId: " + this.challengeId);
+        log.debug("request OTP: mobile=" + mobile);
+        challengeId = encapDeviceService.requestOTP(mobile.getNumber());
+        log.debug("received challengeId: " + challengeId);
         return "success";
     }
 
@@ -162,24 +162,24 @@ public class RegistrationBean implements Registration {
     public String authenticate()
             throws IOException, MobileException, SubjectNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException {
 
-        boolean result = this.encapDeviceService.authenticateEncap(this.challengeId, this.mobileOTP);
+        boolean result = encapDeviceService.authenticateEncap(challengeId, mobileOTP);
         if (false == result) {
-            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
+            facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
             return null;
         }
 
         // encap registration and authentication was successful, commit this
         // registration to OLAS.
-        this.encapDeviceService.commitRegistration(this.protocolContext.getSubject(), this.mobile.getNumber());
+        encapDeviceService.commitRegistration(protocolContext.getSubject(), mobile.getNumber());
 
-        this.protocolContext.setSuccess(true);
+        protocolContext.setSuccess(true);
         exit();
         return null;
     }
 
     public PhoneNumber getMobile() {
 
-        return this.mobile;
+        return mobile;
     }
 
     public void setMobile(PhoneNumber mobile) {
@@ -189,17 +189,17 @@ public class RegistrationBean implements Registration {
 
     public String getMobileActivationCode() {
 
-        return this.mobileActivationCode;
+        return mobileActivationCode;
     }
 
     public String getMobileClientLink() {
 
-        return this.mobileManager.getClientDownloadLink();
+        return mobileManager.getClientDownloadLink();
     }
 
     public String getMobileOTP() {
 
-        return this.mobileOTP;
+        return mobileOTP;
     }
 
     public void setMobileOTP(String mobileOTP) {
@@ -209,7 +209,7 @@ public class RegistrationBean implements Registration {
 
     public String getChallengeId() {
 
-        return this.challengeId;
+        return challengeId;
     }
 
 }

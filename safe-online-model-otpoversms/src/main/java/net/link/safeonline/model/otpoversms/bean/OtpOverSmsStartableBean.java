@@ -55,9 +55,9 @@ public class OtpOverSmsStartableBean extends AbstractInitBean {
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
         IdentityServiceClient identityServiceClient = new IdentityServiceClient();
 
-        this.node = new Node(nodeName, protocol, hostname, hostport, hostportssl, authIdentityServiceClient.getCertificate(),
+        node = new Node(nodeName, protocol, hostname, hostport, hostportssl, authIdentityServiceClient.getCertificate(),
                 identityServiceClient.getCertificate());
-        this.trustedCertificates.put(authIdentityServiceClient.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
+        trustedCertificates.put(authIdentityServiceClient.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
     }
 
     private void configureDevice() {
@@ -72,10 +72,10 @@ public class OtpOverSmsStartableBean extends AbstractInitBean {
         AttributeTypeEntity otpOverSmsMobileAttributeType = new AttributeTypeEntity(OtpOverSmsConstants.OTPOVERSMS_MOBILE_ATTRIBUTE,
                 DatatypeType.STRING, true, false);
         otpOverSmsMobileAttributeType.setMultivalued(true);
-        this.attributeTypes.add(otpOverSmsMobileAttributeType);
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(otpOverSmsMobileAttributeType, Locale.ENGLISH.getLanguage(),
+        attributeTypes.add(otpOverSmsMobileAttributeType);
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(otpOverSmsMobileAttributeType, Locale.ENGLISH.getLanguage(),
                 "Mobile", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(otpOverSmsMobileAttributeType, "nl", "Gsm nummer", null));
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(otpOverSmsMobileAttributeType, "nl", "Gsm nummer", null));
 
         AttributeTypeEntity pinHashAttributeType = new AttributeTypeEntity(OtpOverSmsConstants.OTPOVERSMS_PIN_HASH_ATTRIBUTE,
                 DatatypeType.STRING, false, false);
@@ -89,32 +89,32 @@ public class OtpOverSmsStartableBean extends AbstractInitBean {
         AttributeTypeEntity pinAttemptsAttributeType = new AttributeTypeEntity(OtpOverSmsConstants.OTPOVERSMS_PIN_ATTEMPTS_ATTRIBUTE,
                 DatatypeType.INTEGER, false, false);
         pinAttemptsAttributeType.setMultivalued(true);
-        this.attributeTypes.add(pinHashAttributeType);
-        this.attributeTypes.add(pinSeedAttributeType);
-        this.attributeTypes.add(pinAlgorithmAttributeType);
-        this.attributeTypes.add(pinAttemptsAttributeType);
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(pinHashAttributeType, Locale.ENGLISH.getLanguage(),
+        attributeTypes.add(pinHashAttributeType);
+        attributeTypes.add(pinSeedAttributeType);
+        attributeTypes.add(pinAlgorithmAttributeType);
+        attributeTypes.add(pinAttemptsAttributeType);
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(pinHashAttributeType, Locale.ENGLISH.getLanguage(),
                 "Mobile Lite Pin hash", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(pinSeedAttributeType, Locale.ENGLISH.getLanguage(),
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(pinSeedAttributeType, Locale.ENGLISH.getLanguage(),
                 "Mobile Lite Pin hash seed", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(pinAlgorithmAttributeType, Locale.ENGLISH.getLanguage(),
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(pinAlgorithmAttributeType, Locale.ENGLISH.getLanguage(),
                 "Mobile Lite Pin hash algorithm", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(pinAttemptsAttributeType, Locale.ENGLISH.getLanguage(),
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(pinAttemptsAttributeType, Locale.ENGLISH.getLanguage(),
                 "Mobile Lite Pin Attempts", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(pinHashAttributeType, "nl", "GSM lite pin hash", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(pinSeedAttributeType, "nl", "GSM lite hash seed", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(pinAlgorithmAttributeType, "nl",
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(pinHashAttributeType, "nl", "GSM lite pin hash", null));
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(pinSeedAttributeType, "nl", "GSM lite hash seed", null));
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(pinAlgorithmAttributeType, "nl",
                 "GSM lite pin hash algoritme", null));
-        this.attributeTypeDescriptions
+        attributeTypeDescriptions
                                       .add(new AttributeTypeDescriptionEntity(pinAttemptsAttributeType, "nl", "GSM lite pin pogingen", null));
 
         AttributeTypeEntity otpOverSmsDeviceDisableAttributeType = new AttributeTypeEntity(
                 OtpOverSmsConstants.OTPOVERSMS_DEVICE_DISABLE_ATTRIBUTE, DatatypeType.BOOLEAN, false, false);
         otpOverSmsDeviceDisableAttributeType.setMultivalued(true);
-        this.attributeTypes.add(otpOverSmsDeviceDisableAttributeType);
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(otpOverSmsDeviceDisableAttributeType,
+        attributeTypes.add(otpOverSmsDeviceDisableAttributeType);
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(otpOverSmsDeviceDisableAttributeType,
                 Locale.ENGLISH.getLanguage(), "Mobile Lite Disable Attribute", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(otpOverSmsDeviceDisableAttributeType, "nl",
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(otpOverSmsDeviceDisableAttributeType, "nl",
                 "Mobile Lite Disable Attribuut", null));
 
         AttributeTypeEntity otpOverSmsDeviceAttributeType = new AttributeTypeEntity(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ATTRIBUTE,
@@ -126,27 +126,27 @@ public class OtpOverSmsStartableBean extends AbstractInitBean {
         otpOverSmsDeviceAttributeType.addMember(pinAlgorithmAttributeType, 3, true);
         otpOverSmsDeviceAttributeType.addMember(pinAttemptsAttributeType, 4, true);
         otpOverSmsDeviceAttributeType.addMember(otpOverSmsDeviceDisableAttributeType, 5, true);
-        this.attributeTypes.add(otpOverSmsDeviceAttributeType);
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(otpOverSmsDeviceAttributeType, Locale.ENGLISH.getLanguage(),
+        attributeTypes.add(otpOverSmsDeviceAttributeType);
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(otpOverSmsDeviceAttributeType, Locale.ENGLISH.getLanguage(),
                 "Mobile Lite", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(otpOverSmsDeviceAttributeType, "nl", "GSM Lite", null));
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(otpOverSmsDeviceAttributeType, "nl", "GSM Lite", null));
 
-        this.devices.add(new Device(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID, SafeOnlineConstants.MOBILE_DEVICE_CLASS, nodeName, "/"
+        devices.add(new Device(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID, SafeOnlineConstants.MOBILE_DEVICE_CLASS, nodeName, "/"
                 + otpOverSmsWebappName + "/auth", "/" + otpOverSmsAuthWSPath, "/" + otpOverSmsWebappName + "/device", "/"
                 + otpOverSmsWebappName + "/device", "/" + otpOverSmsWebappName + "/device", "/" + otpOverSmsWebappName + "/device", "/"
                 + otpOverSmsWebappName + "/device", certificate, otpOverSmsDeviceAttributeType, otpOverSmsMobileAttributeType,
                 otpOverSmsDeviceDisableAttributeType));
-        this.deviceDescriptions.add(new DeviceDescription(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID, "nl", "GSM Lite"));
-        this.deviceDescriptions.add(new DeviceDescription(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID, Locale.ENGLISH.getLanguage(),
+        deviceDescriptions.add(new DeviceDescription(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID, "nl", "GSM Lite"));
+        deviceDescriptions.add(new DeviceDescription(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID, Locale.ENGLISH.getLanguage(),
                 "Mobile Lite"));
-        this.trustedCertificates.put(certificate, SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
+        trustedCertificates.put(certificate, SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
 
     }
 
     @Override
     public void preStop() {
 
-        this.LOG.debug("pre stop");
+        LOG.debug("pre stop");
     }
 
     @Override

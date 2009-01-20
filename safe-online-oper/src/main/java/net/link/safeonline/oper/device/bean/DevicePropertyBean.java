@@ -95,8 +95,8 @@ public class DevicePropertyBean implements DeviceProperty {
     public void devicePropertiesListFactory()
             throws DeviceNotFoundException {
 
-        LOG.debug("device properties list factory for device: " + this.selectedDevice.getName());
-        this.deviceProperties = this.deviceService.listDeviceProperties(this.selectedDevice.getName());
+        LOG.debug("device properties list factory for device: " + selectedDevice.getName());
+        deviceProperties = deviceService.listDeviceProperties(selectedDevice.getName());
     }
 
     /*
@@ -107,14 +107,14 @@ public class DevicePropertyBean implements DeviceProperty {
     public String add()
             throws ExistingDevicePropertyException, DeviceNotFoundException {
 
-        LOG.debug("add: " + this.name);
+        LOG.debug("add: " + name);
 
         DevicePropertyEntity newDeviceProperty = new DevicePropertyEntity();
-        DevicePropertyPK pk = new DevicePropertyPK(this.selectedDevice.getName(), this.name);
+        DevicePropertyPK pk = new DevicePropertyPK(selectedDevice.getName(), name);
         newDeviceProperty.setPk(pk);
-        newDeviceProperty.setValue(this.value);
+        newDeviceProperty.setValue(value);
 
-        this.deviceService.addDeviceProperty(newDeviceProperty);
+        deviceService.addDeviceProperty(newDeviceProperty);
 
         return "success";
     }
@@ -123,7 +123,7 @@ public class DevicePropertyBean implements DeviceProperty {
     @Begin
     public String edit() {
 
-        LOG.debug("edit: " + this.selectedDeviceProperty);
+        LOG.debug("edit: " + selectedDeviceProperty);
         return "edit-prop";
     }
 
@@ -132,8 +132,8 @@ public class DevicePropertyBean implements DeviceProperty {
     public String remove()
             throws DevicePropertyNotFoundException, DeviceNotFoundException {
 
-        LOG.debug("remove: " + this.selectedDeviceProperty);
-        this.deviceService.removeDeviceProperty(this.selectedDeviceProperty);
+        LOG.debug("remove: " + selectedDeviceProperty);
+        deviceService.removeDeviceProperty(selectedDeviceProperty);
         devicePropertiesListFactory();
         return "removed";
     }
@@ -142,8 +142,8 @@ public class DevicePropertyBean implements DeviceProperty {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String save() {
 
-        LOG.debug("save: " + this.selectedDeviceProperty);
-        this.deviceService.saveDeviceProperty(this.selectedDeviceProperty);
+        LOG.debug("save: " + selectedDeviceProperty);
+        deviceService.saveDeviceProperty(selectedDeviceProperty);
         return "saved";
     }
 
@@ -160,7 +160,7 @@ public class DevicePropertyBean implements DeviceProperty {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -172,7 +172,7 @@ public class DevicePropertyBean implements DeviceProperty {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getValue() {
 
-        return this.value;
+        return value;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)

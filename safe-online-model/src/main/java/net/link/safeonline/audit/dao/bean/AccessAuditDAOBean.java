@@ -44,44 +44,44 @@ public class AccessAuditDAOBean implements AccessAuditDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, AccessAuditEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, AccessAuditEntity.QueryInterface.class);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void addAccessAudit(AuditContextEntity auditContext, String operation, OperationStateType operationState, String principal) {
 
         AccessAuditEntity accessAudit = new AccessAuditEntity(auditContext, operation, operationState, principal);
-        this.entityManager.persist(accessAudit);
+        entityManager.persist(accessAudit);
     }
 
     public void cleanup(Long id) {
 
-        this.queryObject.deleteRecords(id);
+        queryObject.deleteRecords(id);
     }
 
     public List<AccessAuditEntity> listRecords(Long id) {
 
-        return this.queryObject.listRecords(id);
+        return queryObject.listRecords(id);
     }
 
     public List<AccessAuditEntity> listRecordsSince(Date ageLimit) {
 
-        return this.queryObject.listRecordsSince(ageLimit);
+        return queryObject.listRecordsSince(ageLimit);
     }
 
     public List<String> listUsers() {
 
-        return this.queryObject.listUsers();
+        return queryObject.listUsers();
     }
 
     public List<AccessAuditEntity> listRecords(String principal) {
 
-        return this.queryObject.listUserRecords(principal);
+        return queryObject.listUserRecords(principal);
     }
 
     public boolean hasErrorRecords(long id) {
 
-        long count = this.queryObject.countErrorRecords(id);
+        long count = queryObject.countErrorRecords(id);
         LOG.debug("# error records: " + count);
 
         return 0 != count;

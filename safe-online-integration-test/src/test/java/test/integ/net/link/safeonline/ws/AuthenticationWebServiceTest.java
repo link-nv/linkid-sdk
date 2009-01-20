@@ -90,7 +90,7 @@ public class AuthenticationWebServiceTest {
     public void setUp()
             throws Exception {
 
-        this.getAuthenticationClient = new GetAuthenticationClientImpl(wsLocation);
+        getAuthenticationClient = new GetAuthenticationClientImpl(wsLocation);
 
     }
 
@@ -102,23 +102,23 @@ public class AuthenticationWebServiceTest {
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
 
         // operate: get instance of stateful authentication web service
-        W3CEndpointReference endpoint = this.getAuthenticationClient.getInstance();
-        this.authenticationClient = new AuthenticationClientImpl(endpoint);
+        W3CEndpointReference endpoint = getAuthenticationClient.getInstance();
+        authenticationClient = new AuthenticationClientImpl(endpoint);
 
         Map<String, String> nameValuePairs = new HashMap<String, String>();
         nameValuePairs.put(PasswordConstants.PASSWORD_WS_AUTH_LOGIN_ATTRIBUTE, "admin");
         nameValuePairs.put(PasswordConstants.PASSWORD_WS_AUTH_PASSWORD_ATTRIBUTE, "admin");
 
         // operate: authenticate admin user to olas-user application via web service
-        String userId = this.authenticationClient.authenticate(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
+        String userId = authenticationClient.authenticate(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
                 PasswordConstants.PASSWORD_DEVICE_ID, Locale.ENGLISH.getLanguage(), nameValuePairs, keyPair.getPublic());
         assertNotNull(userId);
-        AssertionType assertion = this.authenticationClient.getAssertion();
+        AssertionType assertion = authenticationClient.getAssertion();
         assertNotNull(assertion);
 
         // operate: try authenticate on same instance again, should fail as previous authentication was successful and instance is removed.
         try {
-            this.authenticationClient.authenticate(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
+            authenticationClient.authenticate(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
                     PasswordConstants.PASSWORD_DEVICE_ID, Locale.ENGLISH.getLanguage(), null, keyPair.getPublic());
         } catch (Exception e) {
             // success
@@ -135,8 +135,8 @@ public class AuthenticationWebServiceTest {
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
 
         // operate: get instance of stateful authentication web service
-        W3CEndpointReference endpoint = this.getAuthenticationClient.getInstance();
-        this.authenticationClient = new AuthenticationClientImpl(endpoint);
+        W3CEndpointReference endpoint = getAuthenticationClient.getInstance();
+        authenticationClient = new AuthenticationClientImpl(endpoint);
 
         Map<String, String> nameValuePairs = new HashMap<String, String>();
         nameValuePairs.put(PasswordConstants.PASSWORD_WS_AUTH_LOGIN_ATTRIBUTE, "admin");
@@ -144,13 +144,13 @@ public class AuthenticationWebServiceTest {
 
         // operate: authenticate with wrong password
         try {
-            this.authenticationClient.authenticate(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
+            authenticationClient.authenticate(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
                     PasswordConstants.PASSWORD_DEVICE_ID, Locale.ENGLISH.getLanguage(), nameValuePairs, keyPair.getPublic());
         } catch (WSAuthenticationException e) {
             assertEquals(WSAuthenticationErrorCode.AUTHENTICATION_FAILED, e.getErrorCode());
             // operate: try authenticate on same instance again, should fail, instance should be removed.
             try {
-                this.authenticationClient.authenticate(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
+                authenticationClient.authenticate(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
                         PasswordConstants.PASSWORD_DEVICE_ID, Locale.ENGLISH.getLanguage(), null, keyPair.getPublic());
             } catch (SOAPFaultException e2) {
                 LOG.debug("soap fault: " + e2.getMessage());
@@ -234,45 +234,45 @@ public class AuthenticationWebServiceTest {
                 null);
 
         // operate: get instance of stateful authentication web service
-        W3CEndpointReference endpoint = this.getAuthenticationClient.getInstance();
-        this.authenticationClient = new AuthenticationClientImpl(endpoint);
+        W3CEndpointReference endpoint = getAuthenticationClient.getInstance();
+        authenticationClient = new AuthenticationClientImpl(endpoint);
 
         Map<String, String> nameValuePairs = new HashMap<String, String>();
         nameValuePairs.put(PasswordConstants.PASSWORD_WS_AUTH_LOGIN_ATTRIBUTE, "admin");
         nameValuePairs.put(PasswordConstants.PASSWORD_WS_AUTH_PASSWORD_ATTRIBUTE, "admin");
 
         // operate: authenticate admin user to olas-user application via web service
-        String userId = this.authenticationClient.authenticate(testApplicationName, PasswordConstants.PASSWORD_DEVICE_ID,
+        String userId = authenticationClient.authenticate(testApplicationName, PasswordConstants.PASSWORD_DEVICE_ID,
                 Locale.ENGLISH.getLanguage(), nameValuePairs, keyPair.getPublic());
         assertNull(userId);
-        AuthenticationStep authenticationStep = this.authenticationClient.getAuthenticationStep();
+        AuthenticationStep authenticationStep = authenticationClient.getAuthenticationStep();
         assertNotNull(authenticationStep);
         assertEquals(authenticationStep, AuthenticationStep.GLOBAL_USAGE_AGREEMENT);
 
         // operate: request global usage agreement
-        String globalUsageAgreement = this.authenticationClient.getGlobalUsageAgreement();
+        String globalUsageAgreement = authenticationClient.getGlobalUsageAgreement();
         assertEquals(testGlobalUsageAgreement, globalUsageAgreement);
 
         // operate: confirm global usage agreement
-        userId = this.authenticationClient.confirmGlobalUsageAgreement(Confirmation.CONFIRM);
+        userId = authenticationClient.confirmGlobalUsageAgreement(Confirmation.CONFIRM);
         assertNull(userId);
-        authenticationStep = this.authenticationClient.getAuthenticationStep();
+        authenticationStep = authenticationClient.getAuthenticationStep();
         assertNotNull(authenticationStep);
         assertEquals(authenticationStep, AuthenticationStep.USAGE_AGREEMENT);
 
         // operate: request application usage agreement
-        String usageAgreement = this.authenticationClient.getUsageAgreement();
+        String usageAgreement = authenticationClient.getUsageAgreement();
         assertEquals("", usageAgreement);
 
         // operate: confirm usage agreement
-        userId = this.authenticationClient.confirmUsageAgreement(Confirmation.CONFIRM);
+        userId = authenticationClient.confirmUsageAgreement(Confirmation.CONFIRM);
         assertNull(userId);
-        authenticationStep = this.authenticationClient.getAuthenticationStep();
+        authenticationStep = authenticationClient.getAuthenticationStep();
         assertNotNull(authenticationStep);
         assertEquals(authenticationStep, AuthenticationStep.IDENTITY_CONFIRMATION);
 
         // operate: request application identity
-        List<Attribute> identity = this.authenticationClient.getIdentity();
+        List<Attribute> identity = authenticationClient.getIdentity();
         assertNotNull(identity);
         assertEquals(2, identity.size());
         for (Attribute attribute : identity) {
@@ -297,14 +297,14 @@ public class AuthenticationWebServiceTest {
         }
 
         // operate: confirm application identity
-        userId = this.authenticationClient.confirmIdentity(Confirmation.CONFIRM);
+        userId = authenticationClient.confirmIdentity(Confirmation.CONFIRM);
         assertNull(userId);
-        authenticationStep = this.authenticationClient.getAuthenticationStep();
+        authenticationStep = authenticationClient.getAuthenticationStep();
         assertNotNull(authenticationStep);
         assertEquals(authenticationStep, AuthenticationStep.MISSING_ATTRIBUTES);
 
         // operate: request missing attributes
-        List<Attribute> missingAttributes = this.authenticationClient.getMissingAttributes();
+        List<Attribute> missingAttributes = authenticationClient.getMissingAttributes();
         assertNotNull(missingAttributes);
         assertEquals(2, missingAttributes.size());
 
@@ -324,18 +324,18 @@ public class AuthenticationWebServiceTest {
         }
 
         // operate: save missing attributes
-        userId = this.authenticationClient.saveMissingAttributes(missingAttributes);
+        userId = authenticationClient.saveMissingAttributes(missingAttributes);
         assertNotNull(userId);
-        AssertionType assertion = this.authenticationClient.getAssertion();
+        AssertionType assertion = authenticationClient.getAssertion();
         assertNotNull(assertion);
 
         // operate: login again, no further steps should be needed
-        endpoint = this.getAuthenticationClient.getInstance();
-        this.authenticationClient = new AuthenticationClientImpl(endpoint);
-        userId = this.authenticationClient.authenticate(testApplicationName, PasswordConstants.PASSWORD_DEVICE_ID,
+        endpoint = getAuthenticationClient.getInstance();
+        authenticationClient = new AuthenticationClientImpl(endpoint);
+        userId = authenticationClient.authenticate(testApplicationName, PasswordConstants.PASSWORD_DEVICE_ID,
                 Locale.ENGLISH.getLanguage(), nameValuePairs, keyPair.getPublic());
         assertNotNull(userId);
-        assertion = this.authenticationClient.getAssertion();
+        assertion = authenticationClient.getAssertion();
         assertNotNull(assertion);
 
         // cleanup

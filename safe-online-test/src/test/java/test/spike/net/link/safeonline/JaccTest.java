@@ -79,7 +79,7 @@ public class JaccTest extends TestCase {
         @SuppressWarnings("unused")
         public Object getContext(String key, Object data) {
 
-            return this.subject;
+            return subject;
         }
 
         public String[] getKeys() {

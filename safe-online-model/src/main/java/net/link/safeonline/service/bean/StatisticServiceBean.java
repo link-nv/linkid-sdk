@@ -78,7 +78,7 @@ public class StatisticServiceBean implements StatisticService, StatisticServiceR
         ApplicationEntity application = null;
         if (applicationName != null) {
             LOG.debug("finding application");
-            application = this.applicationDAO.findApplication(applicationName);
+            application = applicationDAO.findApplication(applicationName);
         }
 
         return this.getStatistic(statisticName, statisticDomain, application);
@@ -89,7 +89,7 @@ public class StatisticServiceBean implements StatisticService, StatisticServiceR
             throws StatisticNotFoundException {
 
         LOG.debug("finding statistic");
-        StatisticEntity statistic = this.statisticDAO.findStatisticByNameDomainAndApplication(statisticName, statisticDomain, application);
+        StatisticEntity statistic = statisticDAO.findStatisticByNameDomainAndApplication(statisticName, statisticDomain, application);
         if (statistic == null)
             throw new StatisticNotFoundException();
 
@@ -105,7 +105,7 @@ public class StatisticServiceBean implements StatisticService, StatisticServiceR
     @Interceptors(ApplicationOwnerAccessControlInterceptor.class)
     public List<StatisticEntity> getStatistics(ApplicationEntity application) {
 
-        return this.statisticDAO.listStatistics(application);
+        return statisticDAO.listStatistics(application);
     }
 
     @RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
@@ -200,9 +200,9 @@ public class StatisticServiceBean implements StatisticService, StatisticServiceR
     public HSSFWorkbook exportStatistics(String applicationName)
             throws ApplicationNotFoundException, StatisticNotFoundException {
 
-        ApplicationEntity application = this.applicationDAO.getApplication(applicationName);
+        ApplicationEntity application = applicationDAO.getApplication(applicationName);
 
-        List<StatisticEntity> statistics = this.statisticDAO.listStatistics(application);
+        List<StatisticEntity> statistics = statisticDAO.listStatistics(application);
         HSSFWorkbook workbook = new HSSFWorkbook();
         for (StatisticEntity statistic : statistics) {
             exportStatistic(statistic, workbook);

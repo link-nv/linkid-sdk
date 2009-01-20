@@ -11,7 +11,8 @@ package net.link.safeonline.osgi.exception;
  * <sub>Attribute type not found Exception.</sub></h2>
  * 
  * <p>
- * Exception thrown when a requested attribute's type does not exist in the OSGi plugin or OLAS.
+ * Exception thrown when a requested attribute's type does not exist in the OSGi
+ * plugin or OLAS.
  * </p>
  * 
  * <p>
@@ -22,19 +23,18 @@ package net.link.safeonline.osgi.exception;
  */
 public class AttributeTypeNotFoundException extends Exception {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private final String      errorMessage;
+	private final String errorMessage;
 
+	public AttributeTypeNotFoundException(String errorMessage) {
 
-    public AttributeTypeNotFoundException(String errorMessage) {
+		this.errorMessage = errorMessage;
+	}
 
-        this.errorMessage = errorMessage;
-    }
+	public String getErrorMessage() {
 
-    public String getErrorMessage() {
-
-        return this.errorMessage;
-    }
+		return this.errorMessage;
+	}
 
 }

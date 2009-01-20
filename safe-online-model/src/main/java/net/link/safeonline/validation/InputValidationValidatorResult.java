@@ -22,24 +22,24 @@ public class InputValidationValidatorResult implements ValidatorResult {
 
     InputValidationValidatorResult() {
 
-        this.results = new LinkedList<String>();
+        results = new LinkedList<String>();
     }
 
     public void addResult(String result) {
 
-        this.results.add(result);
+        results.add(result);
     }
 
     boolean isEmpty() {
 
-        return this.results.isEmpty();
+        return results.isEmpty();
     }
 
     @Override
     public String toString() {
 
         StringBuffer buffer = new StringBuffer();
-        for (String result : this.results) {
+        for (String result : results) {
             buffer.append(result);
         }
         return buffer.toString();

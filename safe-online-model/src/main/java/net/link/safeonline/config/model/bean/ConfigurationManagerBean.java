@@ -49,30 +49,30 @@ public class ConfigurationManagerBean implements ConfigurationManager {
 
         String valueType = value.getClass().getName();
 
-        ConfigGroupEntity configGroup = this.configGroupDAO.findConfigGroup(group);
+        ConfigGroupEntity configGroup = configGroupDAO.findConfigGroup(group);
         if (configGroup == null) {
             LOG.debug("Adding configuration group: " + group);
-            configGroup = this.configGroupDAO.addConfigGroup(group);
+            configGroup = configGroupDAO.addConfigGroup(group);
         }
 
-        ConfigItemEntity configItem = this.configItemDAO.findConfigItem(configGroup.getName(), name);
+        ConfigItemEntity configItem = configItemDAO.findConfigItem(configGroup.getName(), name);
         if (configItem == null) {
             LOG.debug("Adding configuration item: " + name);
-            configItem = this.configItemDAO.addConfigItem(name, valueType, multipleChoice, configGroup);
+            configItem = configItemDAO.addConfigItem(name, valueType, multipleChoice, configGroup);
         }
         String stringValue = value.toString();
         LOG.debug("add item value: " + stringValue);
-        this.configItemValueDAO.addConfigItemValue(configItem, stringValue);
+        configItemValueDAO.addConfigItemValue(configItem, stringValue);
 
     }
 
     public Object getConfigurationValue(String group, String name) {
 
-        ConfigGroupEntity configGroup = this.configGroupDAO.findConfigGroup(group);
+        ConfigGroupEntity configGroup = configGroupDAO.findConfigGroup(group);
         if (null == configGroup)
             return null;
 
-        ConfigItemEntity configItem = this.configItemDAO.findConfigItem(configGroup.getName(), name);
+        ConfigItemEntity configItem = configItemDAO.findConfigItem(configGroup.getName(), name);
         if (null == configItem)
             return null;
 
@@ -82,11 +82,11 @@ public class ConfigurationManagerBean implements ConfigurationManager {
 
     public void removeConfigurationValue(String group, String name, Object value) {
 
-        ConfigGroupEntity configGroup = this.configGroupDAO.findConfigGroup(group);
+        ConfigGroupEntity configGroup = configGroupDAO.findConfigGroup(group);
         if (null == configGroup)
             return;
 
-        ConfigItemEntity configItem = this.configItemDAO.findConfigItem(configGroup.getName(), name);
+        ConfigItemEntity configItem = configItemDAO.findConfigItem(configGroup.getName(), name);
         if (null == configItem)
             return;
 
@@ -94,7 +94,7 @@ public class ConfigurationManagerBean implements ConfigurationManager {
         for (ConfigItemValueEntity configItemValue : configItem.getValues()) {
             if (configItemValue.getValue().equals(stringValue)) {
                 LOG.debug("remove item value: " + stringValue);
-                this.configItemValueDAO.removeConfigItemValue(configItemValue);
+                configItemValueDAO.removeConfigItemValue(configItemValue);
             }
         }
     }
@@ -117,10 +117,10 @@ public class ConfigurationManagerBean implements ConfigurationManager {
                 if (!configurable.group().equals(defaultGroup)) {
                     group = configurable.group();
                 }
-                ConfigGroupEntity configGroup = this.configGroupDAO.findConfigGroup(group);
+                ConfigGroupEntity configGroup = configGroupDAO.findConfigGroup(group);
                 if (configGroup == null) {
                     LOG.debug("Adding configuration group: " + group);
-                    configGroup = this.configGroupDAO.addConfigGroup(group);
+                    configGroup = configGroupDAO.addConfigGroup(group);
                 }
 
                 String name = configurable.name();
@@ -130,17 +130,17 @@ public class ConfigurationManagerBean implements ConfigurationManager {
 
                 boolean multipleChoice = configurable.multipleChoice();
 
-                ConfigItemEntity configItem = this.configItemDAO.findConfigItem(configGroup.getName(), name);
+                ConfigItemEntity configItem = configItemDAO.findConfigItem(configGroup.getName(), name);
                 field.setAccessible(true);
                 if (configItem == null) {
                     LOG.debug("Adding configuration item: " + name);
                     String valueType = object.getClass().getName();
                     Object value = field.get(object);
-                    configItem = this.configItemDAO.addConfigItem(name, valueType, multipleChoice, configGroup);
+                    configItem = configItemDAO.addConfigItem(name, valueType, multipleChoice, configGroup);
                     if (null != value) {
                         String stringValue = value.toString();
                         LOG.debug("add item value: " + stringValue);
-                        this.configItemValueDAO.addConfigItemValue(configItem, stringValue);
+                        configItemValueDAO.addConfigItemValue(configItem, stringValue);
                     }
                 } else {
                     configItem.setConfigGroup(configGroup);

@@ -40,16 +40,16 @@ public class DigipassLoginPage extends LayoutPage {
 
             super(id);
 
-            add(new TextField<String>("bankId", this.bankId = new Model<String>()));
-            add(new TextField<String>("otp", this.otp = new Model<String>()));
+            add(new TextField<String>("bankId", bankId = new Model<String>()));
+            add(new TextField<String>("otp", otp = new Model<String>()));
         }
 
         @Override
         protected void onSubmit() {
 
             try {
-                if (Integer.parseInt(this.otp.getObject()) % 2 == 0) {
-                    BankUserEntity user = getUserService().getBankUser(this.bankId.getObject());
+                if (Integer.parseInt(otp.getObject()) % 2 == 0) {
+                    BankUserEntity user = getUserService().getBankUser(bankId.getObject());
                     if (user == null) {
                         error("User was not found.");
                     }

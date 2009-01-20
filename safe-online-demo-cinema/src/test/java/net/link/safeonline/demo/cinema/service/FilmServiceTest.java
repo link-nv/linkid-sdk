@@ -55,7 +55,7 @@ public class FilmServiceTest extends AbstractCinemaServiceTest {
 
         super.setup();
 
-        this.initializationService.buildEntities();
+        initializationService.buildEntities();
     }
 
     /**
@@ -69,7 +69,7 @@ public class FilmServiceTest extends AbstractCinemaServiceTest {
         List<String> testFilmNames = new LinkedList<String>(Arrays.asList(InitializationService.filmNames));
 
         // Get all films.
-        List<CinemaFilmEntity> sampleFilms = this.filmService.getAllFilms();
+        List<CinemaFilmEntity> sampleFilms = filmService.getAllFilms();
 
         // Verify && all films created successfully & accessible.
         int sampleFilmAmount = sampleFilms.size();
@@ -114,10 +114,10 @@ public class FilmServiceTest extends AbstractCinemaServiceTest {
         // Get all films for each theatre.
         Map<String, List<CinemaFilmEntity>> sampleTheatresFilms = new HashMap<String, List<CinemaFilmEntity>>();
         for (String theatreName : testTheatreNames) {
-            CinemaTheatreEntity theatre = (CinemaTheatreEntity) this.em.createQuery(
+            CinemaTheatreEntity theatre = (CinemaTheatreEntity) em.createQuery(
                     "SELECT t FROM CinemaTheatreEntity t WHERE t.name = :name").setParameter("name", theatreName).getSingleResult();
 
-            sampleTheatresFilms.put(theatreName, this.filmService.getFilmsThatPlayIn(theatre));
+            sampleTheatresFilms.put(theatreName, filmService.getFilmsThatPlayIn(theatre));
         }
 
         // Verify && all films for each theatre accessible per theatre.

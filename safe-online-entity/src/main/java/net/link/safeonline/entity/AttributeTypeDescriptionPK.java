@@ -39,7 +39,7 @@ public class AttributeTypeDescriptionPK implements Serializable {
 
     public String getAttributeType() {
 
-        return this.attributeType;
+        return attributeType;
     }
 
     public void setAttributeType(String attributeType) {
@@ -49,7 +49,7 @@ public class AttributeTypeDescriptionPK implements Serializable {
 
     public String getLanguage() {
 
-        return this.language;
+        return language;
     }
 
     public void setLanguage(String language) {
@@ -65,18 +65,18 @@ public class AttributeTypeDescriptionPK implements Serializable {
         if (false == obj instanceof SubscriptionPK)
             return false;
         AttributeTypeDescriptionPK rhs = (AttributeTypeDescriptionPK) obj;
-        return new EqualsBuilder().append(this.language, rhs.language).append(this.attributeType, rhs.attributeType).isEquals();
+        return new EqualsBuilder().append(language, rhs.language).append(attributeType, rhs.attributeType).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.language).append(this.attributeType).toHashCode();
+        return new HashCodeBuilder().append(language).append(attributeType).toHashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("language", this.language).append("attributeType", this.attributeType).toString();
+        return new ToStringBuilder(this).append("language", language).append("attributeType", attributeType).toString();
     }
 }

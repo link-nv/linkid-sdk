@@ -41,7 +41,7 @@ public abstract class LayoutPage extends WebPage {
      */
     UserService getUserService() {
 
-        return this.userService;
+        return userService;
     }
 
     /**
@@ -49,7 +49,7 @@ public abstract class LayoutPage extends WebPage {
      */
     AccountService getAccountService() {
 
-        return this.accountService;
+        return accountService;
     }
 
     /**
@@ -57,7 +57,7 @@ public abstract class LayoutPage extends WebPage {
      */
     TransactionService getTransactionService() {
 
-        return this.transactionService;
+        return transactionService;
     }
 
     /**
@@ -105,8 +105,8 @@ public abstract class LayoutPage extends WebPage {
 
             // User information.
             add(new OlasLogoutLink("logout"));
-            add(new Label("name", this.name = new Model<String>()));
-            add(new Label("amount", this.amount = new Model<String>()));
+            add(new Label("name", name = new Model<String>()));
+            add(new Label("amount", amount = new Model<String>()));
 
             if (BankSession.isUserSet()) {
                 double total = 0;
@@ -115,8 +115,8 @@ public abstract class LayoutPage extends WebPage {
                     total += account.getAmount();
                 }
 
-                this.name.setObject(user.getName());
-                this.amount.setObject(WicketUtil.format(BankSession.CURRENCY, total));
+                name.setObject(user.getName());
+                amount.setObject(WicketUtil.format(BankSession.CURRENCY, total));
             }
         }
     }

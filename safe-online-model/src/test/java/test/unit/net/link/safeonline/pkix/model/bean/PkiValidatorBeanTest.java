@@ -54,15 +54,15 @@ public class PkiValidatorBeanTest extends TestCase {
 
         super.setUp();
 
-        this.testedInstance = new PkiValidatorBean();
+        testedInstance = new PkiValidatorBean();
 
-        this.mockTrustPointDAO = createMock(TrustPointDAO.class);
+        mockTrustPointDAO = createMock(TrustPointDAO.class);
 
-        this.mockCachedOcspValidatorBean = createMock(CachedOcspValidator.class);
+        mockCachedOcspValidatorBean = createMock(CachedOcspValidator.class);
 
-        EJBTestUtils.inject(this.testedInstance, this.mockTrustPointDAO);
-        EJBTestUtils.inject(this.testedInstance, this.mockCachedOcspValidatorBean);
-        EJBTestUtils.init(this.testedInstance);
+        EJBTestUtils.inject(testedInstance, mockTrustPointDAO);
+        EJBTestUtils.inject(testedInstance, mockCachedOcspValidatorBean);
+        EJBTestUtils.init(testedInstance);
     }
 
     public void testValidateCertificateOnEmptyTrustDomainFails()
@@ -76,16 +76,16 @@ public class PkiValidatorBeanTest extends TestCase {
         List<TrustPointEntity> trustPoints = new LinkedList<TrustPointEntity>();
 
         // stubs
-        expect(this.mockTrustPointDAO.listTrustPoints(trustDomain)).andStubReturn(trustPoints);
+        expect(mockTrustPointDAO.listTrustPoints(trustDomain)).andStubReturn(trustPoints);
 
         // prepare
-        replay(this.mockTrustPointDAO);
+        replay(mockTrustPointDAO);
 
         // operate
-        PkiResult result = this.testedInstance.validateCertificate(trustDomain, certificate);
+        PkiResult result = testedInstance.validateCertificate(trustDomain, certificate);
 
         // verify
-        verify(this.mockTrustPointDAO);
+        verify(mockTrustPointDAO);
         assertEquals(PkiResult.INVALID, result);
     }
 
@@ -94,7 +94,7 @@ public class PkiValidatorBeanTest extends TestCase {
 
         // operate & verify
         try {
-            this.testedInstance.validateCertificate(new TrustDomainEntity(), null);
+            testedInstance.validateCertificate(new TrustDomainEntity(), null);
             fail();
         } catch (IllegalArgumentException e) {
             // expected
@@ -116,7 +116,7 @@ public class PkiValidatorBeanTest extends TestCase {
         DateTime notBefore = now.minusDays(1);
         DateTime notAfter = now.plusDays(1);
         X509Certificate certificate = PkiTestUtils.generateCertificate(keyPair.getPublic(), "CN=Test", caKeyPair.getPrivate(),
-                caCertificate, notBefore, notAfter, null, false, false, this.ocspUri);
+                caCertificate, notBefore, notAfter, null, false, false, ocspUri);
 
         String trustDomainName = "test-trust-domain";
         TrustDomainEntity trustDomain = new TrustDomainEntity(trustDomainName, true);
@@ -126,19 +126,19 @@ public class PkiValidatorBeanTest extends TestCase {
         trustPoints.add(caTrustPoint);
 
         // stubs
-        expect(this.mockTrustPointDAO.listTrustPoints(trustDomain)).andStubReturn(trustPoints);
-        expect(this.mockCachedOcspValidatorBean.performCachedOcspCheck(trustDomain, certificate, caCertificate)).andReturn(OcspResult.GOOD);
+        expect(mockTrustPointDAO.listTrustPoints(trustDomain)).andStubReturn(trustPoints);
+        expect(mockCachedOcspValidatorBean.performCachedOcspCheck(trustDomain, certificate, caCertificate)).andReturn(OcspResult.GOOD);
 
         // prepare
-        replay(this.mockTrustPointDAO);
-        replay(this.mockCachedOcspValidatorBean);
+        replay(mockTrustPointDAO);
+        replay(mockCachedOcspValidatorBean);
 
         // operate
-        PkiResult result = this.testedInstance.validateCertificate(trustDomain, certificate);
+        PkiResult result = testedInstance.validateCertificate(trustDomain, certificate);
 
         // verify
-        verify(this.mockTrustPointDAO);
-        verify(this.mockCachedOcspValidatorBean);
+        verify(mockTrustPointDAO);
+        verify(mockCachedOcspValidatorBean);
         assertEquals(PkiResult.VALID, result);
     }
 
@@ -161,20 +161,20 @@ public class PkiValidatorBeanTest extends TestCase {
         trustPoints.add(caTrustPoint);
 
         // stubs
-        expect(this.mockTrustPointDAO.listTrustPoints(trustDomain)).andStubReturn(trustPoints);
-        expect(this.mockCachedOcspValidatorBean.performCachedOcspCheck(trustDomain, caCertificate, caCertificate)).andReturn(
+        expect(mockTrustPointDAO.listTrustPoints(trustDomain)).andStubReturn(trustPoints);
+        expect(mockCachedOcspValidatorBean.performCachedOcspCheck(trustDomain, caCertificate, caCertificate)).andReturn(
                 OcspResult.GOOD);
 
         // prepare
-        replay(this.mockTrustPointDAO);
-        replay(this.mockCachedOcspValidatorBean);
+        replay(mockTrustPointDAO);
+        replay(mockCachedOcspValidatorBean);
 
         // operate
-        PkiResult result = this.testedInstance.validateCertificate(trustDomain, caCertificate);
+        PkiResult result = testedInstance.validateCertificate(trustDomain, caCertificate);
 
         // verify
-        verify(this.mockTrustPointDAO);
-        verify(this.mockCachedOcspValidatorBean);
+        verify(mockTrustPointDAO);
+        verify(mockCachedOcspValidatorBean);
         assertEquals(PkiResult.VALID, result);
     }
 
@@ -193,7 +193,7 @@ public class PkiValidatorBeanTest extends TestCase {
         DateTime notBefore = now.minusDays(1);
         DateTime notAfter = now.plusDays(1);
         X509Certificate certificate = PkiTestUtils.generateCertificate(keyPair.getPublic(), "CN=Test", caKeyPair.getPrivate(),
-                caCertificate, notBefore, notAfter, null, false, false, this.ocspUri);
+                caCertificate, notBefore, notAfter, null, false, false, ocspUri);
 
         String trustDomainName = "test-trust-domain";
         TrustDomainEntity trustDomain = new TrustDomainEntity(trustDomainName, true);
@@ -201,20 +201,20 @@ public class PkiValidatorBeanTest extends TestCase {
         trustPoints.add(new TrustPointEntity(trustDomain, caCertificate));
 
         // stubs
-        expect(this.mockTrustPointDAO.listTrustPoints(trustDomain)).andStubReturn(trustPoints);
-        expect(this.mockCachedOcspValidatorBean.performCachedOcspCheck(trustDomain, certificate, caCertificate)).andReturn(
+        expect(mockTrustPointDAO.listTrustPoints(trustDomain)).andStubReturn(trustPoints);
+        expect(mockCachedOcspValidatorBean.performCachedOcspCheck(trustDomain, certificate, caCertificate)).andReturn(
                 OcspResult.REVOKED);
 
         // prepare
-        replay(this.mockTrustPointDAO);
-        replay(this.mockCachedOcspValidatorBean);
+        replay(mockTrustPointDAO);
+        replay(mockCachedOcspValidatorBean);
 
         // operate
-        PkiResult result = this.testedInstance.validateCertificate(trustDomain, certificate);
+        PkiResult result = testedInstance.validateCertificate(trustDomain, certificate);
 
         // verify
-        verify(this.mockTrustPointDAO);
-        verify(this.mockCachedOcspValidatorBean);
+        verify(mockTrustPointDAO);
+        verify(mockCachedOcspValidatorBean);
         assertEquals(PkiResult.REVOKED, result);
     }
 
@@ -239,7 +239,7 @@ public class PkiValidatorBeanTest extends TestCase {
         DateTime notBefore = now.minusDays(1);
         DateTime notAfter = now.plusDays(1);
         X509Certificate certificate = PkiTestUtils.generateCertificate(keyPair.getPublic(), "CN=Test", interCaKeyPair.getPrivate(),
-                interCaCertificate, notBefore, notAfter, null, false, false, this.ocspUri);
+                interCaCertificate, notBefore, notAfter, null, false, false, ocspUri);
 
         String trustDomainName = "test-trust-domain";
         TrustDomainEntity trustDomain = new TrustDomainEntity(trustDomainName, true);
@@ -248,20 +248,20 @@ public class PkiValidatorBeanTest extends TestCase {
         trustPoints.add(new TrustPointEntity(trustDomain, interCaCertificate));
 
         // stubs
-        expect(this.mockTrustPointDAO.listTrustPoints(trustDomain)).andStubReturn(trustPoints);
-        expect(this.mockCachedOcspValidatorBean.performCachedOcspCheck(trustDomain, certificate, interCaCertificate)).andReturn(
+        expect(mockTrustPointDAO.listTrustPoints(trustDomain)).andStubReturn(trustPoints);
+        expect(mockCachedOcspValidatorBean.performCachedOcspCheck(trustDomain, certificate, interCaCertificate)).andReturn(
                 OcspResult.GOOD);
 
         // prepare
-        replay(this.mockTrustPointDAO);
-        replay(this.mockCachedOcspValidatorBean);
+        replay(mockTrustPointDAO);
+        replay(mockCachedOcspValidatorBean);
 
         // operate
-        PkiResult result = this.testedInstance.validateCertificate(trustDomain, certificate);
+        PkiResult result = testedInstance.validateCertificate(trustDomain, certificate);
 
         // verify
-        verify(this.mockTrustPointDAO);
-        verify(this.mockCachedOcspValidatorBean);
+        verify(mockTrustPointDAO);
+        verify(mockCachedOcspValidatorBean);
         assertEquals(PkiResult.VALID, result);
     }
 
@@ -286,7 +286,7 @@ public class PkiValidatorBeanTest extends TestCase {
         DateTime notBefore = now.minusDays(1);
         DateTime notAfter = now.plusDays(1);
         X509Certificate certificate = PkiTestUtils.generateCertificate(keyPair.getPublic(), "CN=Test", interCaKeyPair.getPrivate(),
-                interCaCertificate, notBefore, notAfter, null, false, false, this.ocspUri);
+                interCaCertificate, notBefore, notAfter, null, false, false, ocspUri);
 
         String trustDomainName = "test-trust-domain";
         TrustDomainEntity trustDomain = new TrustDomainEntity(trustDomainName, true);
@@ -295,20 +295,20 @@ public class PkiValidatorBeanTest extends TestCase {
         trustPoints.add(new TrustPointEntity(trustDomain, interCaCertificate));
 
         // stubs
-        expect(this.mockTrustPointDAO.listTrustPoints(trustDomain)).andStubReturn(trustPoints);
-        expect(this.mockCachedOcspValidatorBean.performCachedOcspCheck(trustDomain, certificate, interCaCertificate)).andStubReturn(
+        expect(mockTrustPointDAO.listTrustPoints(trustDomain)).andStubReturn(trustPoints);
+        expect(mockCachedOcspValidatorBean.performCachedOcspCheck(trustDomain, certificate, interCaCertificate)).andStubReturn(
                 OcspResult.GOOD);
 
         // prepare
-        replay(this.mockTrustPointDAO);
-        replay(this.mockCachedOcspValidatorBean);
+        replay(mockTrustPointDAO);
+        replay(mockCachedOcspValidatorBean);
 
         // operate
-        PkiResult result = this.testedInstance.validateCertificate(trustDomain, certificate);
+        PkiResult result = testedInstance.validateCertificate(trustDomain, certificate);
 
         // verify
-        verify(this.mockTrustPointDAO);
-        verify(this.mockCachedOcspValidatorBean);
+        verify(mockTrustPointDAO);
+        verify(mockCachedOcspValidatorBean);
         assertEquals(PkiResult.INVALID, result);
     }
 
@@ -322,13 +322,13 @@ public class PkiValidatorBeanTest extends TestCase {
         DateTime caNotBefore = now.minusDays(5);
         DateTime caNotAfter = now.plusDays(5);
         X509Certificate caCertificate = PkiTestUtils.generateCertificate(caKeyPair.getPublic(), "CN=TestCA", rootKeyPair.getPrivate(),
-                null, caNotBefore, caNotAfter, null, false, false, this.ocspUri);
+                null, caNotBefore, caNotAfter, null, false, false, ocspUri);
 
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
         DateTime notBefore = now.minusDays(1);
         DateTime notAfter = now.plusDays(1);
         X509Certificate certificate = PkiTestUtils.generateCertificate(keyPair.getPublic(), "CN=Test", caKeyPair.getPrivate(),
-                caCertificate, notBefore, notAfter, null, false, false, this.ocspUri);
+                caCertificate, notBefore, notAfter, null, false, false, ocspUri);
 
         String trustDomainName = "test-trust-domain";
         TrustDomainEntity trustDomain = new TrustDomainEntity(trustDomainName, true);
@@ -336,16 +336,16 @@ public class PkiValidatorBeanTest extends TestCase {
         trustPoints.add(new TrustPointEntity(trustDomain, caCertificate));
 
         // stubs
-        expect(this.mockTrustPointDAO.listTrustPoints(trustDomain)).andStubReturn(trustPoints);
+        expect(mockTrustPointDAO.listTrustPoints(trustDomain)).andStubReturn(trustPoints);
 
         // prepare
-        replay(this.mockTrustPointDAO);
+        replay(mockTrustPointDAO);
 
         // operate
-        PkiResult result = this.testedInstance.validateCertificate(trustDomain, certificate);
+        PkiResult result = testedInstance.validateCertificate(trustDomain, certificate);
 
         // verify
-        verify(this.mockTrustPointDAO);
+        verify(mockTrustPointDAO);
         assertEquals(PkiResult.INVALID, result);
     }
 }

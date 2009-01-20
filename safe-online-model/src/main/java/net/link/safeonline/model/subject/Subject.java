@@ -45,7 +45,7 @@ public class Subject {
 
     public SubjectEntity getSubjectEntity() {
 
-        return this.entity;
+        return entity;
     }
 
     /**
@@ -61,7 +61,7 @@ public class Subject {
         application.checkUserSubscriptionPermission();
         checkAlreadySubscribed(application);
 
-        this.context.getSubscriptionDAO().addSubscription(SubscriptionOwnerType.SUBJECT, this.entity, application.getEntity());
+        context.getSubscriptionDAO().addSubscription(SubscriptionOwnerType.SUBJECT, entity, application.getEntity());
     }
 
     private void checkAlreadySubscribed(Application application)
@@ -81,14 +81,14 @@ public class Subject {
     public void unsubscribe(Application application)
             throws SubscriptionNotFoundException, PermissionDeniedException {
 
-        SubscriptionDAO subscriptionDAO = this.context.getSubscriptionDAO();
+        SubscriptionDAO subscriptionDAO = context.getSubscriptionDAO();
         ApplicationEntity applicationEntity = application.getEntity();
-        SubscriptionEntity subscription = subscriptionDAO.findSubscription(this.entity, applicationEntity);
+        SubscriptionEntity subscription = subscriptionDAO.findSubscription(entity, applicationEntity);
         if (null == subscription)
             throw new SubscriptionNotFoundException();
         if (!SubscriptionOwnerType.SUBJECT.equals(subscription.getSubscriptionOwnerType()))
             throw new PermissionDeniedException("subject cannot unsubscribe");
-        subscriptionDAO.removeSubscription(this.entity, applicationEntity);
+        subscriptionDAO.removeSubscription(entity, applicationEntity);
     }
 
     /**
@@ -98,7 +98,7 @@ public class Subject {
      */
     public boolean isSubscribed(Application application) {
 
-        SubscriptionEntity subscription = this.context.getSubscriptionDAO().findSubscription(this.entity, application.getEntity());
+        SubscriptionEntity subscription = context.getSubscriptionDAO().findSubscription(entity, application.getEntity());
         return null != subscription;
     }
 }

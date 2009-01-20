@@ -61,47 +61,47 @@ public class AttributeTypeDAOBeanTest extends TestCase {
             throws Exception {
 
         super.setUp();
-        this.entityTestManager = new EntityTestManager();
+        entityTestManager = new EntityTestManager();
         /*
          * If you add entities to this list, also add them to safe-online-sql-ddl.
          */
-        this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
+        entityTestManager.setUp(SafeOnlineTestContainer.entities);
         // StatisticDataPointEntity.class,
-        this.testedInstance = new AttributeTypeDAOBean();
-        this.applicationDAO = new ApplicationDAOBean();
-        this.applicationOwnerDAO = new ApplicationOwnerDAOBean();
-        this.subjectDAO = new SubjectDAOBean();
-        this.attributeDAO = new AttributeDAOBean();
-        this.applicationIdentityDAO = new ApplicationIdentityDAOBean();
-        this.subscriptionDAO = new SubscriptionDAOBean();
-        this.idGenerator = new IdGeneratorBean();
-        this.subjectIdentifierDAO = new SubjectIdentifierDAOBean();
+        testedInstance = new AttributeTypeDAOBean();
+        applicationDAO = new ApplicationDAOBean();
+        applicationOwnerDAO = new ApplicationOwnerDAOBean();
+        subjectDAO = new SubjectDAOBean();
+        attributeDAO = new AttributeDAOBean();
+        applicationIdentityDAO = new ApplicationIdentityDAOBean();
+        subscriptionDAO = new SubscriptionDAOBean();
+        idGenerator = new IdGeneratorBean();
+        subjectIdentifierDAO = new SubjectIdentifierDAOBean();
 
-        EJBTestUtils.inject(this.testedInstance, this.entityTestManager.getEntityManager());
-        EJBTestUtils.inject(this.applicationDAO, this.entityTestManager.getEntityManager());
-        EJBTestUtils.inject(this.applicationOwnerDAO, this.entityTestManager.getEntityManager());
-        EJBTestUtils.inject(this.subjectDAO, this.entityTestManager.getEntityManager());
-        EJBTestUtils.inject(this.attributeDAO, this.entityTestManager.getEntityManager());
-        EJBTestUtils.inject(this.applicationIdentityDAO, this.entityTestManager.getEntityManager());
-        EJBTestUtils.inject(this.subscriptionDAO, this.entityTestManager.getEntityManager());
-        EJBTestUtils.inject(this.subscriptionDAO, this.idGenerator);
-        EJBTestUtils.inject(this.subjectIdentifierDAO, this.entityTestManager.getEntityManager());
+        EJBTestUtils.inject(testedInstance, entityTestManager.getEntityManager());
+        EJBTestUtils.inject(applicationDAO, entityTestManager.getEntityManager());
+        EJBTestUtils.inject(applicationOwnerDAO, entityTestManager.getEntityManager());
+        EJBTestUtils.inject(subjectDAO, entityTestManager.getEntityManager());
+        EJBTestUtils.inject(attributeDAO, entityTestManager.getEntityManager());
+        EJBTestUtils.inject(applicationIdentityDAO, entityTestManager.getEntityManager());
+        EJBTestUtils.inject(subscriptionDAO, entityTestManager.getEntityManager());
+        EJBTestUtils.inject(subscriptionDAO, idGenerator);
+        EJBTestUtils.inject(subjectIdentifierDAO, entityTestManager.getEntityManager());
 
-        EJBTestUtils.init(this.testedInstance);
-        EJBTestUtils.init(this.applicationDAO);
-        EJBTestUtils.init(this.applicationOwnerDAO);
-        EJBTestUtils.init(this.subjectDAO);
-        EJBTestUtils.init(this.attributeDAO);
-        EJBTestUtils.init(this.applicationIdentityDAO);
-        EJBTestUtils.init(this.subscriptionDAO);
-        EJBTestUtils.init(this.subjectIdentifierDAO);
+        EJBTestUtils.init(testedInstance);
+        EJBTestUtils.init(applicationDAO);
+        EJBTestUtils.init(applicationOwnerDAO);
+        EJBTestUtils.init(subjectDAO);
+        EJBTestUtils.init(attributeDAO);
+        EJBTestUtils.init(applicationIdentityDAO);
+        EJBTestUtils.init(subscriptionDAO);
+        EJBTestUtils.init(subjectIdentifierDAO);
     }
 
     @Override
     protected void tearDown()
             throws Exception {
 
-        this.entityTestManager.tearDown();
+        entityTestManager.tearDown();
         super.tearDown();
     }
 
@@ -111,40 +111,40 @@ public class AttributeTypeDAOBeanTest extends TestCase {
         // setup users
         String user1name = UUID.randomUUID().toString();
         String user2name = UUID.randomUUID().toString();
-        SubjectEntity user1 = this.subjectDAO.addSubject(user1name);
-        SubjectEntity user2 = this.subjectDAO.addSubject(user2name);
+        SubjectEntity user1 = subjectDAO.addSubject(user1name);
+        SubjectEntity user2 = subjectDAO.addSubject(user2name);
 
         // setup attribute types
         String attributeName = UUID.randomUUID().toString();
         AttributeTypeEntity attributeType = new AttributeTypeEntity(attributeName, DatatypeType.STRING, false, false);
-        this.testedInstance.addAttributeType(attributeType);
+        testedInstance.addAttributeType(attributeType);
 
         // setup attribute
         String attributeValue = UUID.randomUUID().toString();
-        this.attributeDAO.addAttribute(attributeType, user1, attributeValue);
-        this.attributeDAO.addAttribute(attributeType, user2, attributeValue);
+        attributeDAO.addAttribute(attributeType, user1, attributeValue);
+        attributeDAO.addAttribute(attributeType, user2, attributeValue);
 
         // setup application owner
         String ownerName = UUID.randomUUID().toString();
-        this.applicationOwnerDAO.addApplicationOwner(ownerName, user2);
-        ApplicationOwnerEntity owner = this.applicationOwnerDAO.findApplicationOwner(ownerName);
+        applicationOwnerDAO.addApplicationOwner(ownerName, user2);
+        ApplicationOwnerEntity owner = applicationOwnerDAO.findApplicationOwner(ownerName);
 
         // setup application
         String applicationName = UUID.randomUUID().toString();
-        ApplicationEntity application = this.applicationDAO.addApplication(applicationName, null, owner, null, null, null, null);
+        ApplicationEntity application = applicationDAO.addApplication(applicationName, null, owner, null, null, null, null);
 
         // setup application identity
-        this.applicationIdentityDAO.addApplicationIdentity(application, 1);
-        ApplicationIdentityEntity applicationIdentity = this.applicationIdentityDAO.getApplicationIdentity(application, 1);
-        this.applicationIdentityDAO.addApplicationIdentityAttribute(applicationIdentity, attributeType, true, false);
+        applicationIdentityDAO.addApplicationIdentity(application, 1);
+        ApplicationIdentityEntity applicationIdentity = applicationIdentityDAO.getApplicationIdentity(application, 1);
+        applicationIdentityDAO.addApplicationIdentityAttribute(applicationIdentity, attributeType, true, false);
 
         // setup subscription
-        this.subscriptionDAO.addSubscription(SubscriptionOwnerType.SUBJECT, user1, application);
-        SubscriptionEntity subscription = this.subscriptionDAO.findSubscription(user1, application);
+        subscriptionDAO.addSubscription(SubscriptionOwnerType.SUBJECT, user1, application);
+        SubscriptionEntity subscription = subscriptionDAO.findSubscription(user1, application);
         subscription.setConfirmedIdentityVersion(Long.valueOf(1));
 
         // operate
-        Map<Object, Long> result = this.testedInstance.categorize(application, attributeType);
+        Map<Object, Long> result = testedInstance.categorize(application, attributeType);
 
         // verify
         for (Object value : result.keySet())

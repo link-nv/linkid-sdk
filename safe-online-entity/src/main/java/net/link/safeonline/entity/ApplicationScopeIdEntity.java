@@ -74,7 +74,7 @@ public class ApplicationScopeIdEntity implements Serializable {
     @JoinColumn(name = "application", updatable = false)
     public ApplicationEntity getApplication() {
 
-        return this.application;
+        return application;
     }
 
     public void setApplication(ApplicationEntity application) {
@@ -86,7 +86,7 @@ public class ApplicationScopeIdEntity implements Serializable {
     @JoinColumn(name = "subject", updatable = false)
     public SubjectEntity getSubject() {
 
-        return this.subject;
+        return subject;
     }
 
     public void setSubject(SubjectEntity subject) {
@@ -97,7 +97,7 @@ public class ApplicationScopeIdEntity implements Serializable {
     @Id
     public String getId() {
 
-        return this.id;
+        return id;
     }
 
     public void setId(String id) {
@@ -113,14 +113,14 @@ public class ApplicationScopeIdEntity implements Serializable {
         if (false == obj instanceof ApplicationScopeIdEntity)
             return false;
         ApplicationScopeIdEntity rhs = (ApplicationScopeIdEntity) obj;
-        return new EqualsBuilder().append(this.id, rhs.id).isEquals();
+        return new EqualsBuilder().append(id, rhs.id).isEquals();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("subject", this.subject)
-                                                                    .append("application", this.application).append("id", this.id)
+        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("subject", subject)
+                                                                    .append("application", application).append("id", id)
                                                                     .toString();
     }
 

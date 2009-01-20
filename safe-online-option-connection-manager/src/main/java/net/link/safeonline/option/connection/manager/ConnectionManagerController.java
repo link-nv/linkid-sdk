@@ -15,9 +15,9 @@ public class ConnectionManagerController {
 
     public ConnectionManagerController(String port) throws Exception {
 
-        this.optionDevice = new FujiDataCard(port);
+        optionDevice = new FujiDataCard(port);
 
-        Endpoint.publish(ConnectionManagerConstants.URL, new ConnectionManagerServiceImpl(this.optionDevice));
+        Endpoint.publish(ConnectionManagerConstants.URL, new ConnectionManagerServiceImpl(optionDevice));
     }
 
 }

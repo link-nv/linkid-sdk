@@ -36,28 +36,28 @@ public class StatisticDataPointDAOBeanTest extends TestCase {
             throws Exception {
 
         super.setUp();
-        this.entityTestManager = new EntityTestManager();
+        entityTestManager = new EntityTestManager();
         /*
          * If you add entities to this list, also add them to safe-online-sql-ddl.
          */
-        this.entityTestManager.setUp(StatisticEntity.class, StatisticDataPointEntity.class, ApplicationEntity.class,
+        entityTestManager.setUp(StatisticEntity.class, StatisticDataPointEntity.class, ApplicationEntity.class,
                 ApplicationOwnerEntity.class, SubjectEntity.class, ApplicationPoolEntity.class);
         // StatisticDataPointEntity.class,
-        this.testedInstance = new StatisticDataPointDAOBean();
-        this.statisticDAO = new StatisticDAOBean();
+        testedInstance = new StatisticDataPointDAOBean();
+        statisticDAO = new StatisticDAOBean();
 
-        EJBTestUtils.inject(this.testedInstance, this.entityTestManager.getEntityManager());
-        EJBTestUtils.inject(this.statisticDAO, this.entityTestManager.getEntityManager());
+        EJBTestUtils.inject(testedInstance, entityTestManager.getEntityManager());
+        EJBTestUtils.inject(statisticDAO, entityTestManager.getEntityManager());
 
-        EJBTestUtils.init(this.statisticDAO);
-        EJBTestUtils.init(this.testedInstance);
+        EJBTestUtils.init(statisticDAO);
+        EJBTestUtils.init(testedInstance);
     }
 
     @Override
     protected void tearDown()
             throws Exception {
 
-        this.entityTestManager.tearDown();
+        entityTestManager.tearDown();
         super.tearDown();
     }
 
@@ -65,13 +65,13 @@ public class StatisticDataPointDAOBeanTest extends TestCase {
 
         // setup
         Random generator = new Random();
-        StatisticEntity statistic = this.statisticDAO.addStatistic("test", "domain", null);
+        StatisticEntity statistic = statisticDAO.addStatistic("test", "domain", null);
 
         // operate
-        this.testedInstance.addStatisticDataPoint("cat A", statistic, generator.nextInt(), 0, 0);
-        this.testedInstance.addStatisticDataPoint("cat B", statistic, generator.nextInt(), 0, 0);
-        this.testedInstance.cleanStatisticDataPoints(statistic);
-        this.testedInstance.addStatisticDataPoint("cat A", statistic, generator.nextInt(), 0, 0);
-        this.testedInstance.addStatisticDataPoint("cat B", statistic, generator.nextInt(), 0, 0);
+        testedInstance.addStatisticDataPoint("cat A", statistic, generator.nextInt(), 0, 0);
+        testedInstance.addStatisticDataPoint("cat B", statistic, generator.nextInt(), 0, 0);
+        testedInstance.cleanStatisticDataPoints(statistic);
+        testedInstance.addStatisticDataPoint("cat A", statistic, generator.nextInt(), 0, 0);
+        testedInstance.addStatisticDataPoint("cat B", statistic, generator.nextInt(), 0, 0);
     }
 }

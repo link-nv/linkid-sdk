@@ -28,8 +28,8 @@ public class MandateBootstrapListener implements ServletContextListener {
 
         LOG.debug("context initialized");
 
-        this.authorizationService = AuthorizationServiceFactory.newInstance();
-        this.authorizationService.bootstrap();
+        authorizationService = AuthorizationServiceFactory.newInstance();
+        authorizationService.bootstrap();
     }
 
     public void contextDestroyed(ServletContextEvent event) {

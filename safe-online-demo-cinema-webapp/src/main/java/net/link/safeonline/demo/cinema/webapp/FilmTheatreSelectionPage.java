@@ -93,9 +93,9 @@ public class FilmTheatreSelectionPage extends LayoutPage {
             // Either get all films or just those that play in selected theatre.
             List<CinemaFilmEntity> data;
             if (CinemaSession.isTheaterSet()) {
-                data = FilmTheatreSelectionPage.this.filmService.getFilmsThatPlayIn(CinemaSession.get().getTheatre());
+                data = filmService.getFilmsThatPlayIn(CinemaSession.get().getTheatre());
             } else {
-                data = FilmTheatreSelectionPage.this.filmService.getAllFilms();
+                data = filmService.getAllFilms();
             }
 
             add(new ListView<CinemaFilmEntity>("list", data) {
@@ -169,9 +169,9 @@ public class FilmTheatreSelectionPage extends LayoutPage {
             // Either get all theatres or just those that play selected film.
             List<CinemaTheatreEntity> data;
             if (CinemaSession.isFilmSet()) {
-                data = FilmTheatreSelectionPage.this.theatreService.getTheatresThatPlay(CinemaSession.get().getFilm());
+                data = theatreService.getTheatresThatPlay(CinemaSession.get().getFilm());
             } else {
-                data = FilmTheatreSelectionPage.this.theatreService.getAllTheatres();
+                data = theatreService.getAllTheatres();
             }
 
             add(new ListView<CinemaTheatreEntity>("list", data) {

@@ -88,7 +88,7 @@ public class AttributeInputComponent extends UIInput {
         ResponseWriter responseWriter = context.getResponseWriter();
         responseWriter.startElement("span", this);
         responseWriter.writeAttribute("id", clientId, "id");
-        responseWriter.writeAttribute("class", STYLE_CLASS_DEFAULT + " " + this.styleClass, "styleClass");
+        responseWriter.writeAttribute("class", STYLE_CLASS_DEFAULT + " " + styleClass, "styleClass");
 
         AttributeDO attribute = (AttributeDO) getValue();
         DatatypeType type = attribute.getType();
@@ -168,13 +168,11 @@ public class AttributeInputComponent extends UIInput {
     private static void registerRenderer(Class<? extends Renderer> clazz) {
 
         SupportedType supportedType = clazz.getAnnotation(SupportedType.class);
-        if (null == supportedType) {
+        if (null == supportedType)
             throw new RuntimeException("renderer requires SupportedType meta-data annotation");
-        }
         DatatypeType type = supportedType.value();
-        if (renderers.containsKey(type)) {
+        if (renderers.containsKey(type))
             throw new RuntimeException("duplicate renderer entry for type: " + type);
-        }
         try {
             renderers.put(type, clazz.newInstance());
         } catch (Exception e) {
@@ -682,7 +680,7 @@ public class AttributeInputComponent extends UIInput {
 
     public String getStyleClass() {
 
-        return this.styleClass;
+        return styleClass;
     }
 
     public void setStyleClass(String styleClass) {
@@ -692,7 +690,7 @@ public class AttributeInputComponent extends UIInput {
 
     public String getTextStyleClass() {
 
-        return TEXT_STYLE_CLASS_DEFAULT + " " + this.textStyleClass;
+        return TEXT_STYLE_CLASS_DEFAULT + " " + textStyleClass;
     }
 
     public void setTextStyleClass(String textStyleClass) {
@@ -702,7 +700,7 @@ public class AttributeInputComponent extends UIInput {
 
     public String getCheckboxStyleClass() {
 
-        return CHECKBOX_STYLE_CLASS_DEFAULT + " " + this.checkboxStyleClass;
+        return CHECKBOX_STYLE_CLASS_DEFAULT + " " + checkboxStyleClass;
     }
 
     public void setCheckboxStyleClass(String checkboxStyleClass) {

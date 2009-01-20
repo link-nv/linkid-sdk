@@ -36,14 +36,14 @@ public class LanguageSelectionBaseBean implements LanguageSelectionBase {
 
     public String entry() {
 
-        this.sessionContext.set(LAST_PAGE, this.facesContext.getViewRoot().getViewId());
+        sessionContext.set(LAST_PAGE, facesContext.getViewRoot().getViewId());
         return "/language.xhtml";
     }
 
     public String goBack() {
 
-        String result = (String) this.sessionContext.get(LAST_PAGE);
-        this.sessionContext.remove(LAST_PAGE);
+        String result = (String) sessionContext.get(LAST_PAGE);
+        sessionContext.remove(LAST_PAGE);
         return result;
     }
 
@@ -51,10 +51,10 @@ public class LanguageSelectionBaseBean implements LanguageSelectionBase {
 
         String language = event.getComponent().getId();
 
-        this.log.debug("selected language: " + language);
-        this.localeSelector.selectLanguage(language);
+        log.debug("selected language: " + language);
+        localeSelector.selectLanguage(language);
 
-        HttpServletResponse response = (HttpServletResponse) this.facesContext.getExternalContext().getResponse();
+        HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
 
         Cookie languageCookie = new Cookie(getLanguageCookieName(), language);
         languageCookie.setPath("/");

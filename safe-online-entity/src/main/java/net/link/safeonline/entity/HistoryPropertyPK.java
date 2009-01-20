@@ -38,7 +38,7 @@ public class HistoryPropertyPK implements Serializable {
 
     public long getId() {
 
-        return this.id;
+        return id;
     }
 
     public void setId(long id) {
@@ -48,7 +48,7 @@ public class HistoryPropertyPK implements Serializable {
 
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -64,18 +64,18 @@ public class HistoryPropertyPK implements Serializable {
         if (false == obj instanceof HistoryPropertyPK)
             return false;
         HistoryPropertyPK rhs = (HistoryPropertyPK) obj;
-        return new EqualsBuilder().append(this.id, rhs.id).append(this.name, rhs.name).isEquals();
+        return new EqualsBuilder().append(id, rhs.id).append(name, rhs.name).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.id).append(this.name).toHashCode();
+        return new HashCodeBuilder().append(id).append(name).toHashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("id", this.id).append("name", this.name).toString();
+        return new ToStringBuilder(this).append("id", id).append("name", name).toString();
     }
 }

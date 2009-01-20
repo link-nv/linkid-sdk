@@ -21,7 +21,7 @@ public class CustomerStatus implements Serializable {
 
     public boolean isJunior() {
 
-        return this.junior;
+        return junior;
     }
 
     public CustomerStatus() {
@@ -43,7 +43,7 @@ public class CustomerStatus implements Serializable {
 
     public String getUserId() {
 
-        return this.userId;
+        return userId;
     }
 
     public void setUserId(String userId) {

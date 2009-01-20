@@ -27,7 +27,7 @@ public class TemplateAttributeServiceActivator implements BundleActivator {
             throws Exception {
 
         TemplateAttributeServiceFactory helloServiceFactory = new TemplateAttributeServiceFactory();
-        this.templateAttributeServiceRegistration = context.registerService(PluginAttributeService.class.getName(), helloServiceFactory,
+        templateAttributeServiceRegistration = context.registerService(PluginAttributeService.class.getName(), helloServiceFactory,
                 null);
     }
 
@@ -39,6 +39,6 @@ public class TemplateAttributeServiceActivator implements BundleActivator {
     public void stop(BundleContext context)
             throws Exception {
 
-        this.templateAttributeServiceRegistration.unregister();
+        templateAttributeServiceRegistration.unregister();
     }
 }

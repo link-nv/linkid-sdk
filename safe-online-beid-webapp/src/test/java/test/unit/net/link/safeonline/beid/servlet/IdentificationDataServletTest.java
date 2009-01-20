@@ -34,15 +34,15 @@ public class IdentificationDataServletTest {
     public void setUp()
             throws Exception {
 
-        this.servletTestManager = new ServletTestManager();
-        this.servletTestManager.setUp(IdentificationDataServlet.class);
+        servletTestManager = new ServletTestManager();
+        servletTestManager.setUp(IdentificationDataServlet.class);
     }
 
     @After
     public void tearDown()
             throws Exception {
 
-        this.servletTestManager.tearDown();
+        servletTestManager.tearDown();
     }
 
     @Test
@@ -50,7 +50,7 @@ public class IdentificationDataServletTest {
             throws Exception {
 
         HttpClient httpClient = new HttpClient();
-        PostMethod postMethod = new PostMethod(this.servletTestManager.getServletLocation());
+        PostMethod postMethod = new PostMethod(servletTestManager.getServletLocation());
         postMethod.addParameter("name", "Doe");
         postMethod.addParameter("firstname", "John");
         postMethod.addParameter("dob", "01/01/1970");
@@ -66,10 +66,10 @@ public class IdentificationDataServletTest {
         LOG.debug("status code: " + statusCode);
         assertEquals(HttpServletResponse.SC_OK, statusCode);
 
-        String sessionStreet = (String) this.servletTestManager.getSessionAttribute(IdentificationDataServlet.STREET_SESSION_ATTRIBUTE);
+        String sessionStreet = (String) servletTestManager.getSessionAttribute(IdentificationDataServlet.STREET_SESSION_ATTRIBUTE);
         LOG.debug("session street: " + sessionStreet);
         assertEquals("test", sessionStreet);
-        String sessionHouseNr = (String) this.servletTestManager.getSessionAttribute(IdentificationDataServlet.HOUSE_NR_SESSION_ATTRIBUTE);
+        String sessionHouseNr = (String) servletTestManager.getSessionAttribute(IdentificationDataServlet.HOUSE_NR_SESSION_ATTRIBUTE);
         assertEquals("1234 /1", sessionHouseNr);
     }
 }

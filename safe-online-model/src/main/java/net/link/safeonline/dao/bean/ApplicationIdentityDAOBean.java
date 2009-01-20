@@ -44,14 +44,14 @@ public class ApplicationIdentityDAOBean implements ApplicationIdentityDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, ApplicationIdentityEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, ApplicationIdentityEntity.QueryInterface.class);
     }
 
     public ApplicationIdentityEntity addApplicationIdentity(ApplicationEntity application, long identityVersion) {
 
         LOG.debug("add application identity: " + application.getName() + ", version: " + identityVersion);
         ApplicationIdentityEntity applicationIdentity = new ApplicationIdentityEntity(application, identityVersion);
-        this.entityManager.persist(applicationIdentity);
+        entityManager.persist(applicationIdentity);
         return applicationIdentity;
     }
 
@@ -59,7 +59,7 @@ public class ApplicationIdentityDAOBean implements ApplicationIdentityDAO {
             throws ApplicationIdentityNotFoundException {
 
         ApplicationIdentityPK applicationIdentityPK = new ApplicationIdentityPK(application.getName(), identityVersion);
-        ApplicationIdentityEntity applicationIdentity = this.entityManager.find(ApplicationIdentityEntity.class, applicationIdentityPK);
+        ApplicationIdentityEntity applicationIdentity = entityManager.find(ApplicationIdentityEntity.class, applicationIdentityPK);
         if (null == applicationIdentity)
             throw new ApplicationIdentityNotFoundException();
         return applicationIdentity;
@@ -67,13 +67,13 @@ public class ApplicationIdentityDAOBean implements ApplicationIdentityDAO {
 
     public List<ApplicationIdentityEntity> listApplicationIdentities(ApplicationEntity application) {
 
-        List<ApplicationIdentityEntity> applicationIdentities = this.queryObject.listApplicationIdentities(application);
+        List<ApplicationIdentityEntity> applicationIdentities = queryObject.listApplicationIdentities(application);
         return applicationIdentities;
     }
 
     public void removeApplicationIdentity(ApplicationIdentityEntity applicationIdentity) {
 
-        this.entityManager.remove(applicationIdentity);
+        entityManager.remove(applicationIdentity);
     }
 
     public ApplicationIdentityAttributeEntity addApplicationIdentityAttribute(ApplicationIdentityEntity applicationIdentity,
@@ -84,7 +84,7 @@ public class ApplicationIdentityDAOBean implements ApplicationIdentityDAO {
                 + applicationIdentity.getApplication().getName() + "; id version: " + applicationIdentity.getIdentityVersion());
         ApplicationIdentityAttributeEntity applicationIdentityAttribute = new ApplicationIdentityAttributeEntity(applicationIdentity,
                 attributeType, required, dataMining);
-        this.entityManager.persist(applicationIdentityAttribute);
+        entityManager.persist(applicationIdentityAttribute);
         /*
          * Update both sides of the relationship.
          */
@@ -95,11 +95,11 @@ public class ApplicationIdentityDAOBean implements ApplicationIdentityDAO {
     public void removeApplicationIdentityAttribute(ApplicationIdentityAttributeEntity applicationIdentityAttribute) {
 
         applicationIdentityAttribute.getApplicationIdentity().getAttributes().remove(applicationIdentityAttribute);
-        this.entityManager.remove(applicationIdentityAttribute);
+        entityManager.remove(applicationIdentityAttribute);
     }
 
     public List<ApplicationIdentityEntity> listApplicationIdentities() {
 
-        return this.queryObject.listApplicationIdentities();
+        return queryObject.listApplicationIdentities();
     }
 }

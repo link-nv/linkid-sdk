@@ -109,17 +109,17 @@ public class DeviceEntity implements Serializable {
         this.updatePath = updatePath;
         this.disablePath = disablePath;
         this.enablePath = enablePath;
-        this.properties = new HashMap<String, DevicePropertyEntity>();
-        this.descriptions = new HashMap<String, DeviceDescriptionEntity>();
+        properties = new HashMap<String, DevicePropertyEntity>();
+        descriptions = new HashMap<String, DeviceDescriptionEntity>();
         if (null != certificate) {
-            this.certificateSubject = certificate.getSubjectX500Principal().getName();
+            certificateSubject = certificate.getSubjectX500Principal().getName();
         }
     }
 
     @Id
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -134,7 +134,7 @@ public class DeviceEntity implements Serializable {
     @ManyToOne
     public AttributeTypeEntity getAttributeType() {
 
-        return this.attributeType;
+        return attributeType;
     }
 
     public void setAttributeType(AttributeTypeEntity attributeType) {
@@ -149,7 +149,7 @@ public class DeviceEntity implements Serializable {
     @ManyToOne
     public AttributeTypeEntity getUserAttributeType() {
 
-        return this.userAttributeType;
+        return userAttributeType;
     }
 
     public void setUserAttributeType(AttributeTypeEntity userAttributeType) {
@@ -164,7 +164,7 @@ public class DeviceEntity implements Serializable {
     @ManyToOne
     public AttributeTypeEntity getDisableAttributeType() {
 
-        return this.disableAttributeType;
+        return disableAttributeType;
     }
 
     public void setDisableAttributeType(AttributeTypeEntity disableAttributeType) {
@@ -179,7 +179,7 @@ public class DeviceEntity implements Serializable {
     @ManyToOne
     public DeviceClassEntity getDeviceClass() {
 
-        return this.deviceClass;
+        return deviceClass;
     }
 
     public void setDeviceClass(DeviceClassEntity deviceClass) {
@@ -190,7 +190,7 @@ public class DeviceEntity implements Serializable {
     @Transient
     public String getAuthenticationContextClass() {
 
-        return this.deviceClass.getAuthenticationContextClass() + ":" + this.name;
+        return deviceClass.getAuthenticationContextClass() + ":" + name;
     }
 
     /**
@@ -200,7 +200,7 @@ public class DeviceEntity implements Serializable {
     @ManyToOne
     public NodeEntity getLocation() {
 
-        return this.location;
+        return location;
     }
 
     public void setLocation(NodeEntity location) {
@@ -214,7 +214,7 @@ public class DeviceEntity implements Serializable {
      */
     public String getAuthenticationPath() {
 
-        return this.authenticationPath;
+        return authenticationPath;
     }
 
     public void setAuthenticationPath(String authenticationPath) {
@@ -229,9 +229,9 @@ public class DeviceEntity implements Serializable {
     @Transient
     public String getAuthenticationURL() {
 
-        if (null == this.location)
-            return this.authenticationPath;
-        return this.location.getLocation() + this.authenticationPath;
+        if (null == location)
+            return authenticationPath;
+        return location.getLocation() + authenticationPath;
     }
 
     /**
@@ -239,7 +239,7 @@ public class DeviceEntity implements Serializable {
      */
     public String getAuthenticationWSPath() {
 
-        return this.authenticationWSPath;
+        return authenticationWSPath;
     }
 
     public void setAuthenticationWSPath(String authenticationWSPath) {
@@ -253,9 +253,9 @@ public class DeviceEntity implements Serializable {
     @Transient
     public String getAuthenticationWSURL() {
 
-        if (null == this.location)
-            return this.authenticationWSPath;
-        return this.location.getLocation() + this.authenticationWSPath;
+        if (null == location)
+            return authenticationWSPath;
+        return location.getLocation() + authenticationWSPath;
 
     }
 
@@ -265,7 +265,7 @@ public class DeviceEntity implements Serializable {
      */
     public String getRegistrationPath() {
 
-        return this.registrationPath;
+        return registrationPath;
     }
 
     public void setRegistrationPath(String registrationPath) {
@@ -280,9 +280,9 @@ public class DeviceEntity implements Serializable {
     @Transient
     public String getRegistrationURL() {
 
-        if (null == this.location)
-            return this.registrationPath;
-        return this.location.getLocation() + this.registrationPath;
+        if (null == location)
+            return registrationPath;
+        return location.getLocation() + registrationPath;
     }
 
     /**
@@ -292,7 +292,7 @@ public class DeviceEntity implements Serializable {
     @Transient
     public boolean isRegistrable() {
 
-        return null != this.registrationPath && this.registrationPath.length() > 0;
+        return null != registrationPath && registrationPath.length() > 0;
     }
 
     /**
@@ -301,7 +301,7 @@ public class DeviceEntity implements Serializable {
      */
     public String getRemovalPath() {
 
-        return this.removalPath;
+        return removalPath;
     }
 
     public void setRemovalPath(String removalPath) {
@@ -316,9 +316,9 @@ public class DeviceEntity implements Serializable {
     @Transient
     public String getRemovalURL() {
 
-        if (null == this.location)
-            return this.removalPath;
-        return this.location.getLocation() + this.removalPath;
+        if (null == location)
+            return removalPath;
+        return location.getLocation() + removalPath;
     }
 
     /**
@@ -328,7 +328,7 @@ public class DeviceEntity implements Serializable {
     @Transient
     public boolean isRemovable() {
 
-        return null != this.removalPath && this.removalPath.length() > 0;
+        return null != removalPath && removalPath.length() > 0;
     }
 
     /**
@@ -337,7 +337,7 @@ public class DeviceEntity implements Serializable {
      */
     public String getUpdatePath() {
 
-        return this.updatePath;
+        return updatePath;
     }
 
     public void setUpdatePath(String updatePath) {
@@ -352,9 +352,9 @@ public class DeviceEntity implements Serializable {
     @Transient
     public String getUpdateURL() {
 
-        if (null == this.location)
-            return this.updatePath;
-        return this.location.getLocation() + this.updatePath;
+        if (null == location)
+            return updatePath;
+        return location.getLocation() + updatePath;
     }
 
     /**
@@ -364,7 +364,7 @@ public class DeviceEntity implements Serializable {
     @Transient
     public boolean isUpdatable() {
 
-        return null != this.updatePath && this.updatePath.length() > 0;
+        return null != updatePath && updatePath.length() > 0;
     }
 
     /**
@@ -373,7 +373,7 @@ public class DeviceEntity implements Serializable {
      */
     public String getDisablePath() {
 
-        return this.disablePath;
+        return disablePath;
     }
 
     public void setDisablePath(String disablePath) {
@@ -388,9 +388,9 @@ public class DeviceEntity implements Serializable {
     @Transient
     public String getDisableURL() {
 
-        if (null == this.location)
-            return this.disablePath;
-        return this.location.getLocation() + this.disablePath;
+        if (null == location)
+            return disablePath;
+        return location.getLocation() + disablePath;
     }
 
     /**
@@ -400,7 +400,7 @@ public class DeviceEntity implements Serializable {
     @Transient
     public boolean isDisablable() {
 
-        return null != this.disablePath && this.disablePath.length() > 0;
+        return null != disablePath && disablePath.length() > 0;
     }
 
     /**
@@ -409,7 +409,7 @@ public class DeviceEntity implements Serializable {
      */
     public String getEnablePath() {
 
-        return this.enablePath;
+        return enablePath;
     }
 
     public void setEnablePath(String enablePath) {
@@ -424,9 +424,9 @@ public class DeviceEntity implements Serializable {
     @Transient
     public String getEnableURL() {
 
-        if (null == this.location)
-            return this.enablePath;
-        return this.location.getLocation() + this.enablePath;
+        if (null == location)
+            return enablePath;
+        return location.getLocation() + enablePath;
     }
 
     /**
@@ -436,7 +436,7 @@ public class DeviceEntity implements Serializable {
     @Transient
     public boolean isEnablable() {
 
-        return null != this.enablePath && this.enablePath.length() > 0;
+        return null != enablePath && enablePath.length() > 0;
     }
 
     /**
@@ -447,7 +447,7 @@ public class DeviceEntity implements Serializable {
     @Column(unique = true)
     public String getCertificateSubject() {
 
-        return this.certificateSubject;
+        return certificateSubject;
     }
 
     /**
@@ -481,7 +481,7 @@ public class DeviceEntity implements Serializable {
     @MapKey(name = "name")
     public Map<String, DevicePropertyEntity> getProperties() {
 
-        return this.properties;
+        return properties;
     }
 
     public void setProperties(Map<String, DevicePropertyEntity> properties) {
@@ -497,7 +497,7 @@ public class DeviceEntity implements Serializable {
     @MapKey(name = "language")
     public Map<String, DeviceDescriptionEntity> getDescriptions() {
 
-        return this.descriptions;
+        return descriptions;
     }
 
     public void setDescriptions(Map<String, DeviceDescriptionEntity> descriptions) {
@@ -515,19 +515,19 @@ public class DeviceEntity implements Serializable {
         if (false == obj instanceof DeviceEntity)
             return false;
         DeviceEntity rhs = (DeviceEntity) obj;
-        return new EqualsBuilder().append(this.name, rhs.name).isEquals();
+        return new EqualsBuilder().append(name, rhs.name).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.name).toHashCode();
+        return new HashCodeBuilder().append(name).toHashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("name", this.name).toString();
+        return new ToStringBuilder(this).append("name", name).toString();
     }
 
 

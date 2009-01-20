@@ -111,31 +111,31 @@ public class GlobalUsageAgreementBean implements GlobalUsageAgreement {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getLanguage() {
 
-        LOG.debug("get language " + this.language);
-        return this.language;
+        LOG.debug("get language " + language);
+        return language;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public GlobalUsageAgreementEntity getCurrentUsageAgreement() {
 
-        return this.usageAgreementService.getCurrentGlobalUsageAgreement();
+        return usageAgreementService.getCurrentGlobalUsageAgreement();
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public GlobalUsageAgreementEntity getDraftUsageAgreement() {
 
-        return this.usageAgreementService.getDraftGlobalUsageAgreement();
+        return usageAgreementService.getDraftGlobalUsageAgreement();
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getUsageAgreementVersion() {
 
-        this.globalCurrentUsageAgreement = this.usageAgreementService.getCurrentGlobalUsageAgreement();
-        LOG.debug("current: " + this.globalCurrentUsageAgreement);
-        if (null == this.globalCurrentUsageAgreement)
+        globalCurrentUsageAgreement = usageAgreementService.getCurrentGlobalUsageAgreement();
+        LOG.debug("current: " + globalCurrentUsageAgreement);
+        if (null == globalCurrentUsageAgreement)
             return "";
-        LOG.debug("version: " + this.globalCurrentUsageAgreement.getUsageAgreementVersion());
-        return this.globalCurrentUsageAgreement.getUsageAgreementVersion().toString();
+        LOG.debug("version: " + globalCurrentUsageAgreement.getUsageAgreementVersion());
+        return globalCurrentUsageAgreement.getUsageAgreementVersion().toString();
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -162,9 +162,9 @@ public class GlobalUsageAgreementBean implements GlobalUsageAgreement {
     public String releaseDraft() {
 
         LOG.debug("release draft global usage agreement");
-        this.usageAgreementService.updateGlobalUsageAgreement();
-        this.currentUsageAgreementsTextsFactory();
-        this.draftUsageAgreementsTextsFactory();
+        usageAgreementService.updateGlobalUsageAgreement();
+        currentUsageAgreementsTextsFactory();
+        draftUsageAgreementsTextsFactory();
         return "success";
     }
 
@@ -172,28 +172,28 @@ public class GlobalUsageAgreementBean implements GlobalUsageAgreement {
     public String removeDraft() {
 
         LOG.debug("remove draft global usage agreement");
-        this.usageAgreementService.removeDraftGlobalUsageAgreement();
-        this.currentUsageAgreementsTextsFactory();
-        this.draftUsageAgreementsTextsFactory();
+        usageAgreementService.removeDraftGlobalUsageAgreement();
+        currentUsageAgreementsTextsFactory();
+        draftUsageAgreementsTextsFactory();
         return "success";
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String addText() {
 
-        LOG.debug("add draft text: language=" + this.language);
-        this.selectedUsageAgreementText = this.usageAgreementService.createDraftGlobalUsageAgreementText(this.language, "");
-        this.draftUsageAgreementsTextsFactory();
+        LOG.debug("add draft text: language=" + language);
+        selectedUsageAgreementText = usageAgreementService.createDraftGlobalUsageAgreementText(language, "");
+        draftUsageAgreementsTextsFactory();
         return "edittext";
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String saveText() {
 
-        LOG.debug("save text: language=" + this.selectedUsageAgreementText.getLanguage());
-        String text = this.selectedUsageAgreementText.getText();
-        this.usageAgreementService.setDraftGlobalUsageAgreementText(this.selectedUsageAgreementText.getLanguage(), text);
-        this.draftUsageAgreementsTextsFactory();
+        LOG.debug("save text: language=" + selectedUsageAgreementText.getLanguage());
+        String text = selectedUsageAgreementText.getText();
+        usageAgreementService.setDraftGlobalUsageAgreementText(selectedUsageAgreementText.getLanguage(), text);
+        draftUsageAgreementsTextsFactory();
         return "saved";
 
     }
@@ -201,33 +201,33 @@ public class GlobalUsageAgreementBean implements GlobalUsageAgreement {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String viewCurrentText() {
 
-        LOG.debug("view text: language=" + this.selectedCurrentUsageAgreementText.getLanguage());
-        this.selectedUsageAgreementText = this.selectedCurrentUsageAgreementText;
+        LOG.debug("view text: language=" + selectedCurrentUsageAgreementText.getLanguage());
+        selectedUsageAgreementText = selectedCurrentUsageAgreementText;
         return "viewtext";
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String viewDraftText() {
 
-        LOG.debug("view draft text: language=" + this.selectedDraftUsageAgreementText.getLanguage());
-        this.selectedUsageAgreementText = this.selectedDraftUsageAgreementText;
+        LOG.debug("view draft text: language=" + selectedDraftUsageAgreementText.getLanguage());
+        selectedUsageAgreementText = selectedDraftUsageAgreementText;
         return "viewtext";
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String editDraftText() {
 
-        LOG.debug("edit draft usage agreement text: language=" + this.selectedDraftUsageAgreementText.getLanguage());
-        this.selectedUsageAgreementText = this.selectedDraftUsageAgreementText;
+        LOG.debug("edit draft usage agreement text: language=" + selectedDraftUsageAgreementText.getLanguage());
+        selectedUsageAgreementText = selectedDraftUsageAgreementText;
         return "edittext";
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String removeDraftText() {
 
-        LOG.debug("remove draft text: language=" + this.selectedDraftUsageAgreementText.getLanguage());
-        this.usageAgreementService.removeDraftGlobalUsageAgreementText(this.selectedDraftUsageAgreementText.getLanguage());
-        this.draftUsageAgreementsTextsFactory();
+        LOG.debug("remove draft text: language=" + selectedDraftUsageAgreementText.getLanguage());
+        usageAgreementService.removeDraftGlobalUsageAgreementText(selectedDraftUsageAgreementText.getLanguage());
+        draftUsageAgreementsTextsFactory();
         return "removed";
 
     }
@@ -235,12 +235,12 @@ public class GlobalUsageAgreementBean implements GlobalUsageAgreement {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String editCurrentText() {
 
-        LOG.debug("edit current usage agreement text: language=" + this.selectedCurrentUsageAgreementText.getLanguage());
-        GlobalUsageAgreementEntity draftUsageAgreement = this.usageAgreementService.getDraftGlobalUsageAgreement();
+        LOG.debug("edit current usage agreement text: language=" + selectedCurrentUsageAgreementText.getLanguage());
+        GlobalUsageAgreementEntity draftUsageAgreement = usageAgreementService.getDraftGlobalUsageAgreement();
         if (null == draftUsageAgreement) {
-            draftUsageAgreement = this.usageAgreementService.createDraftGlobalUsageAgreement();
+            draftUsageAgreement = usageAgreementService.createDraftGlobalUsageAgreement();
         }
-        this.selectedUsageAgreementText = draftUsageAgreement.getUsageAgreementText(this.selectedCurrentUsageAgreementText.getLanguage());
+        selectedUsageAgreementText = draftUsageAgreement.getUsageAgreementText(selectedCurrentUsageAgreementText.getLanguage());
         return "edittext";
 
     }
@@ -249,7 +249,7 @@ public class GlobalUsageAgreementBean implements GlobalUsageAgreement {
     public String createUsageAgreement() {
 
         LOG.debug("create draft usage agreement");
-        this.globalDraftUsageAgreement = this.usageAgreementService.createDraftGlobalUsageAgreement();
+        globalDraftUsageAgreement = usageAgreementService.createDraftGlobalUsageAgreement();
         return "success";
 
     }
@@ -262,10 +262,10 @@ public class GlobalUsageAgreementBean implements GlobalUsageAgreement {
     public void draftUsageAgreementsTextsFactory() {
 
         LOG.debug("get draft texts");
-        this.globalDraftUsageAgreement = this.usageAgreementService.getDraftGlobalUsageAgreement();
-        if (null == this.globalDraftUsageAgreement)
+        globalDraftUsageAgreement = usageAgreementService.getDraftGlobalUsageAgreement();
+        if (null == globalDraftUsageAgreement)
             return;
-        this.draftUsageAgreementsTexts = this.globalDraftUsageAgreement.getUsageAgreementTexts();
+        draftUsageAgreementsTexts = globalDraftUsageAgreement.getUsageAgreementTexts();
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -273,9 +273,9 @@ public class GlobalUsageAgreementBean implements GlobalUsageAgreement {
     public void currentUsageAgreementsTextsFactory() {
 
         LOG.debug("get current texts");
-        this.globalCurrentUsageAgreement = this.usageAgreementService.getCurrentGlobalUsageAgreement();
-        if (null == this.globalCurrentUsageAgreement)
+        globalCurrentUsageAgreement = usageAgreementService.getCurrentGlobalUsageAgreement();
+        if (null == globalCurrentUsageAgreement)
             return;
-        this.currentUsageAgreementsTexts = this.globalCurrentUsageAgreement.getUsageAgreementTexts();
+        currentUsageAgreementsTexts = globalCurrentUsageAgreement.getUsageAgreementTexts();
     }
 }

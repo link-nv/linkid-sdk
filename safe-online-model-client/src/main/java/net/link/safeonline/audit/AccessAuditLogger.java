@@ -95,7 +95,7 @@ public class AccessAuditLogger {
 
         AuditContextEntity auditContext = findAuditContext();
         if (null != auditContext) {
-            this.securityAuditDAO.addSecurityAudit(auditContext, SecurityThreatType.DECEPTION, principalName, message);
+            securityAuditDAO.addSecurityAudit(auditContext, SecurityThreatType.DECEPTION, principalName, message);
         }
     }
 
@@ -109,7 +109,7 @@ public class AccessAuditLogger {
 
         AuditContextEntity auditContext = findAuditContext();
         if (null != auditContext) {
-            this.accessAuditDAO.addAccessAudit(auditContext, methodName, operationState, principalName);
+            accessAuditDAO.addAccessAudit(auditContext, methodName, operationState, principalName);
         }
     }
 
@@ -119,19 +119,19 @@ public class AccessAuditLogger {
         try {
             auditContextId = (Long) PolicyContext.getContext(AuditContextPolicyContextHandler.AUDIT_CONTEXT_KEY);
         } catch (PolicyContextException e) {
-            this.auditAuditDAO.addAuditAudit("audit context policy context error: " + e.getMessage());
+            auditAuditDAO.addAuditAudit("audit context policy context error: " + e.getMessage());
             return null;
         }
         if (null == auditContextId) {
-            this.auditAuditDAO.addAuditAudit("no audit context available");
+            auditAuditDAO.addAuditAudit("no audit context available");
             return null;
         }
 
         try {
-            AuditContextEntity auditContext = this.auditContextDAO.getAuditContext(auditContextId);
+            AuditContextEntity auditContext = auditContextDAO.getAuditContext(auditContextId);
             return auditContext;
         } catch (AuditContextNotFoundException e) {
-            this.auditAuditDAO.addAuditAudit("audit context not found: " + auditContextId);
+            auditAuditDAO.addAuditAudit("audit context not found: " + auditContextId);
             return null;
         }
     }
@@ -145,7 +145,7 @@ public class AccessAuditLogger {
 
         Principal callerPrincipal;
         try {
-            callerPrincipal = this.sessionContext.getCallerPrincipal();
+            callerPrincipal = sessionContext.getCallerPrincipal();
         } catch (IllegalStateException e) {
             /*
              * Under JBoss we get an IllegalStateException instead of a null principal if there is no identifiable caller principal.

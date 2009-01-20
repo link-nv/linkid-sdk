@@ -128,7 +128,7 @@ public class LoginServlet extends AbstractInjectionServlet {
 
     private boolean performGlobalUsageAgreementCheck(String language) {
 
-        return this.usageAgreementService.requiresGlobalUsageAgreementAcceptation(language);
+        return usageAgreementService.requiresGlobalUsageAgreementAcceptation(language);
     }
 
     private boolean performMissingAttributesCheck()
@@ -136,7 +136,7 @@ public class LoginServlet extends AbstractInjectionServlet {
 
         boolean hasMissingAttributes;
         try {
-            hasMissingAttributes = this.identityService.hasMissingAttributes(this.applicationId);
+            hasMissingAttributes = identityService.hasMissingAttributes(applicationId);
         } catch (ApplicationNotFoundException e) {
             throw new ServletException("application not found");
         } catch (ApplicationIdentityNotFoundException e) {
@@ -154,7 +154,7 @@ public class LoginServlet extends AbstractInjectionServlet {
 
         boolean confirmationRequired;
         try {
-            confirmationRequired = this.identityService.isConfirmationRequired(this.applicationId);
+            confirmationRequired = identityService.isConfirmationRequired(applicationId);
         } catch (SubscriptionNotFoundException e) {
             throw new ServletException("subscription not found");
         } catch (ApplicationNotFoundException e) {
@@ -171,17 +171,17 @@ public class LoginServlet extends AbstractInjectionServlet {
 
         boolean subscriptionRequired;
         try {
-            subscriptionRequired = !this.subscriptionService.isSubscribed(this.applicationId);
+            subscriptionRequired = !subscriptionService.isSubscribed(applicationId);
             if (!subscriptionRequired) {
                 try {
-                    subscriptionRequired = this.usageAgreementService.requiresUsageAgreementAcceptation(this.applicationId, language);
+                    subscriptionRequired = usageAgreementService.requiresUsageAgreementAcceptation(applicationId, language);
                 } catch (SubscriptionNotFoundException e) {
-                    LOG.debug("subscription not found: " + this.applicationId);
+                    LOG.debug("subscription not found: " + applicationId);
                     throw new ServletException("subscription not found");
                 }
             }
         } catch (ApplicationNotFoundException e) {
-            LOG.debug("application not found: " + this.applicationId);
+            LOG.debug("application not found: " + applicationId);
             throw new ServletException("application not found");
         }
         return subscriptionRequired;
@@ -201,13 +201,13 @@ public class LoginServlet extends AbstractInjectionServlet {
         Set<DeviceEntity> requiredDevicePolicy = LoginManager.getRequiredDevices(session);
         List<DeviceEntity> devicePolicy;
         try {
-            devicePolicy = this.devicePolicyService.getDevicePolicy(this.applicationId, requiredDevicePolicy);
+            devicePolicy = devicePolicyService.getDevicePolicy(applicationId, requiredDevicePolicy);
         } catch (ApplicationNotFoundException e) {
-            throw new ServletException("application not found: " + this.applicationId);
+            throw new ServletException("application not found: " + applicationId);
         } catch (EmptyDevicePolicyException e) {
             throw new ServletException("empty device policy");
         }
-        if (devicePolicy.contains(this.device))
+        if (devicePolicy.contains(device))
             return true;
         return false;
     }

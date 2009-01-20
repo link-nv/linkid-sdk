@@ -76,39 +76,39 @@ public class AuthWsHandlersTest {
     public void setUp()
             throws Exception {
 
-        this.jndiTestUtils = new JndiTestUtils();
-        this.jndiTestUtils.setUp();
-        this.jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
+        jndiTestUtils = new JndiTestUtils();
+        jndiTestUtils.setUp();
+        jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
                 "SafeOnline/WSSecurityConfigurationBean/local");
 
-        this.mockWSSecurityConfigurationService = createMock(WSSecurityConfiguration.class);
-        this.jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local", this.mockWSSecurityConfigurationService);
+        mockWSSecurityConfigurationService = createMock(WSSecurityConfiguration.class);
+        jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local", mockWSSecurityConfigurationService);
 
-        this.mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
-        this.jndiTestUtils
-                          .bindComponent("SafeOnline/ApplicationAuthenticationServiceBean/local", this.mockApplicationAuthenticationService);
+        mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
+        jndiTestUtils
+                          .bindComponent("SafeOnline/ApplicationAuthenticationServiceBean/local", mockApplicationAuthenticationService);
 
-        this.mockDeviceAuthenticationService = createMock(DeviceAuthenticationService.class);
-        this.jndiTestUtils.bindComponent("SafeOnline/DeviceAuthenticationServiceBean/local", this.mockDeviceAuthenticationService);
+        mockDeviceAuthenticationService = createMock(DeviceAuthenticationService.class);
+        jndiTestUtils.bindComponent("SafeOnline/DeviceAuthenticationServiceBean/local", mockDeviceAuthenticationService);
 
-        this.mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
-        this.jndiTestUtils.bindComponent("SafeOnline/NodeAuthenticationServiceBean/local", this.mockNodeAuthenticationService);
+        mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
+        jndiTestUtils.bindComponent("SafeOnline/NodeAuthenticationServiceBean/local", mockNodeAuthenticationService);
 
-        this.mockPkiValidator = createMock(PkiValidator.class);
-        this.jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local", this.mockPkiValidator);
+        mockPkiValidator = createMock(PkiValidator.class);
+        jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local", mockPkiValidator);
 
-        this.webServiceTestUtils = new WebServiceTestUtils();
+        webServiceTestUtils = new WebServiceTestUtils();
         TestEndpoint testEndpoint = new TestEndpoint();
-        this.webServiceTestUtils.setUp(testEndpoint);
+        webServiceTestUtils.setUp(testEndpoint);
     }
 
     @After
     public void tearDown()
             throws Exception {
 
-        this.webServiceTestUtils.tearDown();
+        webServiceTestUtils.tearDown();
 
-        this.jndiTestUtils.tearDown();
+        jndiTestUtils.tearDown();
     }
 
 
@@ -158,7 +158,7 @@ public class AuthWsHandlersTest {
 
         public Document getFaultDocument() {
 
-            return this.faultDocument;
+            return faultDocument;
         }
 
         public boolean handleFault(SOAPMessageContext soapContext) {
@@ -169,7 +169,7 @@ public class AuthWsHandlersTest {
 
             SOAPMessage soapMessage = soapContext.getMessage();
             SOAPPart soapPart = soapMessage.getSOAPPart();
-            this.faultDocument = soapPart;
+            faultDocument = soapPart;
 
             return true;
         }
@@ -186,7 +186,7 @@ public class AuthWsHandlersTest {
             throws Exception {
 
         // setup
-        String location = this.webServiceTestUtils.getEndpointAddress();
+        String location = webServiceTestUtils.getEndpointAddress();
 
         TestEndpointService service = new TestEndpointService(new URL(location + "?wsdl"), new QName("urn:test", "TestService"));
         TestEndpointInterface port = service.getPort();

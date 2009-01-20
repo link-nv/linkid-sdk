@@ -72,7 +72,7 @@ public class EnablePage extends TemplatePage {
 
         super();
 
-        this.protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
         addHeader(this, false);
 
@@ -91,7 +91,7 @@ public class EnablePage extends TemplatePage {
         });
 
         String title = getLocalizer().getString("enable", this) + " " + getLocalizer().getString("mobile", this) + " "
-                + this.protocolContext.getAttribute();
+                + protocolContext.getAttribute();
         getContent().add(new Label("title", title));
 
         getContent().add(new RequestOtpForm(REQUEST_OTP_FORM_ID));
@@ -110,7 +110,7 @@ public class EnablePage extends TemplatePage {
             super(id);
 
             final TextField<PhoneNumber> mobileField = new TextField<PhoneNumber>(MOBILE_FIELD_ID, new Model<PhoneNumber>(new PhoneNumber(
-                    EnablePage.this.protocolContext.getAttribute())), PhoneNumber.class);
+                    protocolContext.getAttribute())), PhoneNumber.class);
             mobileField.setEnabled(false);
             mobileField.setRequired(true);
             add(mobileField);
@@ -124,22 +124,22 @@ public class EnablePage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    LOG.debug("request OTP for mobile: " + EnablePage.this.protocolContext.getAttribute());
+                    LOG.debug("request OTP for mobile: " + protocolContext.getAttribute());
                     try {
-                        EnablePage.this.otpOverSmsDeviceService.requestOtp(WicketUtil.getHttpSession(getRequest()),
-                                EnablePage.this.protocolContext.getAttribute());
+                        otpOverSmsDeviceService.requestOtp(WicketUtil.getHttpSession(getRequest()),
+                                protocolContext.getAttribute());
                     } catch (ConnectException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorServiceConnection", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "enable: failed to send otp to "
-                                + EnablePage.this.protocolContext.getAttribute(), LogLevelType.ERROR);
+                                + protocolContext.getAttribute(), LogLevelType.ERROR);
                         return;
                     } catch (SafeOnlineResourceException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorServiceConnection", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "enable: failed to send otp to "
-                                + EnablePage.this.protocolContext.getAttribute(), LogLevelType.ERROR);
+                                + protocolContext.getAttribute(), LogLevelType.ERROR);
                         return;
                     }
-                    EnablePage.this.requested = true;
+                    requested = true;
 
                 }
 
@@ -170,7 +170,7 @@ public class EnablePage extends TemplatePage {
         @Override
         public boolean isVisible() {
 
-            return !EnablePage.this.requested;
+            return !requested;
         }
     }
 
@@ -188,12 +188,12 @@ public class EnablePage extends TemplatePage {
 
             super(id);
 
-            final TextField<String> otpField = new TextField<String>(OTP_FIELD_ID, this.otp = new Model<String>());
+            final TextField<String> otpField = new TextField<String>(OTP_FIELD_ID, otp = new Model<String>());
             otpField.setRequired(true);
             add(otpField);
             add(new ErrorComponentFeedbackLabel("otp_feedback", otpField));
 
-            final PasswordTextField pinField = new PasswordTextField(PIN_FIELD_ID, this.pin = new Model<String>());
+            final PasswordTextField pinField = new PasswordTextField(PIN_FIELD_ID, pin = new Model<String>());
             add(pinField);
             add(new ErrorComponentFeedbackLabel("pin_feedback", pinField));
 
@@ -205,23 +205,23 @@ public class EnablePage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    boolean verified = EnablePage.this.otpOverSmsDeviceService.verifyOtp(WicketUtil.getHttpSession(getRequest()),
-                            EnableForm.this.otp.getObject());
+                    boolean verified = otpOverSmsDeviceService.verifyOtp(WicketUtil.getHttpSession(getRequest()),
+                            otp.getObject());
                     if (!verified) {
                         otpField.error(getLocalizer().getString("authenticationFailedMsg", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(),
-                                "mobile otp: verification failed for mobile " + EnablePage.this.protocolContext.getAttribute(),
+                                "mobile otp: verification failed for mobile " + protocolContext.getAttribute(),
                                 LogLevelType.ERROR);
                         return;
                     }
 
-                    LOG.debug("enable mobile " + EnablePage.this.protocolContext.getAttribute() + " for "
-                            + EnablePage.this.protocolContext.getSubject());
+                    LOG.debug("enable mobile " + protocolContext.getAttribute() + " for "
+                            + protocolContext.getSubject());
 
                     boolean result;
                     try {
-                        result = EnablePage.this.otpOverSmsDeviceService.enable(EnablePage.this.protocolContext.getSubject(),
-                                EnablePage.this.protocolContext.getAttribute(), EnableForm.this.pin.getObject());
+                        result = otpOverSmsDeviceService.enable(protocolContext.getSubject(),
+                                protocolContext.getAttribute(), pin.getObject());
                     } catch (SubjectNotFoundException e) {
                         pinField.error(getLocalizer().getString("errorSubjectNotFound", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: subject not found",
@@ -251,7 +251,7 @@ public class EnablePage extends TemplatePage {
                         return;
                     }
 
-                    EnablePage.this.protocolContext.setSuccess(true);
+                    protocolContext.setSuccess(true);
                     exit();
                 }
 
@@ -265,7 +265,7 @@ public class EnablePage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    EnablePage.this.protocolContext.setSuccess(false);
+                    protocolContext.setSuccess(false);
                     exit();
                 }
 
@@ -282,14 +282,14 @@ public class EnablePage extends TemplatePage {
         @Override
         public boolean isVisible() {
 
-            return EnablePage.this.requested;
+            return requested;
         }
     }
 
 
     public void exit() {
 
-        this.protocolContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());
+        protocolContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
         getResponse().redirect("deviceexit");
         setRedirect(false);
     }

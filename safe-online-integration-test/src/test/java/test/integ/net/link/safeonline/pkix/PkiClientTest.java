@@ -21,28 +21,33 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+
 public class PkiClientTest {
 
-	private static final String OLAS_LOCATION = "localhost:8080";
+    private static final String OLAS_LOCATION = "localhost:8080";
 
-	private static final Log LOG = LogFactory.getLog(PkiClientTest.class);
+    private static final Log    LOG           = LogFactory.getLog(PkiClientTest.class);
 
-	@BeforeClass
-	public static void setUp() {
-		if (null == Security.getProvider(BouncyCastleProvider.PROVIDER_NAME)) {
-			Security.addProvider(new BouncyCastleProvider());
-		}
-	}
 
-	@Test
-	public void testGetCertificate() throws Exception {
-		// operate
-		PkiClient pkiClient = new PkiClientImpl(OLAS_LOCATION);
+    @BeforeClass
+    public static void setUp() {
 
-		X509Certificate certificate = pkiClient.getSigningCertificate();
+        if (null == Security.getProvider(BouncyCastleProvider.PROVIDER_NAME)) {
+            Security.addProvider(new BouncyCastleProvider());
+        }
+    }
 
-		// verify
-		assertNotNull(certificate);
-		LOG.debug("OLAS certificate: " + certificate);
-	}
+    @Test
+    public void testGetCertificate()
+            throws Exception {
+
+        // operate
+        PkiClient pkiClient = new PkiClientImpl(OLAS_LOCATION);
+
+        X509Certificate certificate = pkiClient.getSigningCertificate();
+
+        // verify
+        assertNotNull(certificate);
+        LOG.debug("OLAS certificate: " + certificate);
+    }
 }

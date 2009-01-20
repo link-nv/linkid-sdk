@@ -87,9 +87,9 @@ public class IdentityServiceBeanTest {
     public void setUp()
             throws Exception {
 
-        this.entityTestManager = new EntityTestManager();
-        this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        entityTestManager = new EntityTestManager();
+        entityTestManager.setUp(SafeOnlineTestContainer.entities);
+        EntityManager entityManager = entityTestManager.getEntityManager();
 
         JmxTestUtils jmxTestUtils = new JmxTestUtils();
         jmxTestUtils.setUp("jboss.security:service=JaasSecurityManager");
@@ -127,7 +127,7 @@ public class IdentityServiceBeanTest {
     public void tearDown()
             throws Exception {
 
-        this.entityTestManager.tearDown();
+        entityTestManager.tearDown();
     }
 
     @Test
@@ -138,7 +138,7 @@ public class IdentityServiceBeanTest {
         String login = "test-login";
         String applicationName = "test-application";
         String applicationOwnerLogin = "test-application-owner-login";
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
 
         UserRegistrationServiceBean userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager);
@@ -181,7 +181,7 @@ public class IdentityServiceBeanTest {
         assertTrue(attribsToConfirm.get(1).isDataMining());
 
         identityService.confirmIdentity(applicationName);
-        this.entityTestManager.getEntityManager().flush();
+        entityTestManager.getEntityManager().flush();
         assertFalse(identityService.isConfirmationRequired(applicationName));
 
         attribsToConfirm = identityService.listIdentityAttributesToConfirm(applicationName, Locale.getDefault());
@@ -218,7 +218,7 @@ public class IdentityServiceBeanTest {
         String login = "test-login";
         String applicationName = "test-application";
         String applicationOwnerLogin = "test-application-owner-login";
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
 
         UserRegistrationServiceBean userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager);
@@ -256,7 +256,7 @@ public class IdentityServiceBeanTest {
         assertEquals(1, attribsToConfirm.size());
         assertEquals("test-compounded-type", attribsToConfirm.get(0).getName());
         identityService.confirmIdentity(applicationName);
-        this.entityTestManager.getEntityManager().flush();
+        entityTestManager.getEntityManager().flush();
         assertFalse(identityService.isConfirmationRequired(applicationName));
 
         attribsToConfirm = identityService.listIdentityAttributesToConfirm(applicationName, Locale.getDefault());
@@ -275,7 +275,7 @@ public class IdentityServiceBeanTest {
         String login = "test-login";
         String applicationName = "test-application";
         String applicationOwnerLogin = "test-application-owner-login";
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
 
         UserRegistrationService userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager);
@@ -304,7 +304,7 @@ public class IdentityServiceBeanTest {
 
         // setup
         String login = "test-login";
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
 
         // operate: register the test user
         UserRegistrationService userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,
@@ -365,7 +365,7 @@ public class IdentityServiceBeanTest {
 
         // setup
         String login = "test-login";
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
 
         // operate: register the test user
         UserRegistrationService userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,
@@ -488,7 +488,7 @@ public class IdentityServiceBeanTest {
 
         // setup
         String login = "test-login";
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
 
         // operate: register the test user
         UserRegistrationService userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,
@@ -586,13 +586,13 @@ public class IdentityServiceBeanTest {
         public void init(AttributeTypeDAO attributeTypeDAO, ApplicationIdentityDAO applicationIdentityDAO,
                          ApplicationIdentityEntity applicationIdentity, AttributeDAO attributeDAO, SubjectEntity subject) {
 
-            AttributeTypeEntity requiredAttributeType = new AttributeTypeEntity(this.REQ_ATT_NAME, DatatypeType.STRING, true, true);
+            AttributeTypeEntity requiredAttributeType = new AttributeTypeEntity(REQ_ATT_NAME, DatatypeType.STRING, true, true);
             attributeTypeDAO.addAttributeType(requiredAttributeType);
 
-            AttributeTypeEntity optionalAttributeType = new AttributeTypeEntity(this.OPT_ATT_NAME, DatatypeType.STRING, true, false);
+            AttributeTypeEntity optionalAttributeType = new AttributeTypeEntity(OPT_ATT_NAME, DatatypeType.STRING, true, false);
             attributeTypeDAO.addAttributeType(optionalAttributeType);
 
-            AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(this.COMP_ATT_NAME, DatatypeType.COMPOUNDED, true, true);
+            AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(COMP_ATT_NAME, DatatypeType.COMPOUNDED, true, true);
             compoundedAttributeType.addMember(requiredAttributeType, 0, true);
             compoundedAttributeType.addMember(optionalAttributeType, 1, false);
             attributeTypeDAO.addAttributeType(compoundedAttributeType);
@@ -606,15 +606,15 @@ public class IdentityServiceBeanTest {
             LOG.debug("result attribute: " + result);
             assertEquals(3, result.size());
 
-            assertEquals(this.COMP_ATT_NAME, result.get(0).getName());
+            assertEquals(COMP_ATT_NAME, result.get(0).getName());
             assertTrue(result.get(0).isCompounded());
             assertTrue(result.get(0).isEditable());
 
-            assertEquals(this.REQ_ATT_NAME, result.get(1).getName());
+            assertEquals(REQ_ATT_NAME, result.get(1).getName());
             assertTrue(result.get(1).isMember());
             assertTrue(result.get(1).isEditable());
 
-            assertEquals(this.OPT_ATT_NAME, result.get(2).getName());
+            assertEquals(OPT_ATT_NAME, result.get(2).getName());
             assertTrue(result.get(2).isMember());
             assertFalse(result.get(2).isEditable());
 
@@ -631,13 +631,13 @@ public class IdentityServiceBeanTest {
         public void init(AttributeTypeDAO attributeTypeDAO, ApplicationIdentityDAO applicationIdentityDAO,
                          ApplicationIdentityEntity applicationIdentity, AttributeDAO attributeDAO, SubjectEntity subject) {
 
-            AttributeTypeEntity requiredAttributeType = new AttributeTypeEntity(this.REQ_ATT_NAME, DatatypeType.STRING, true, true);
+            AttributeTypeEntity requiredAttributeType = new AttributeTypeEntity(REQ_ATT_NAME, DatatypeType.STRING, true, true);
             attributeTypeDAO.addAttributeType(requiredAttributeType);
 
-            AttributeTypeEntity optionalAttributeType = new AttributeTypeEntity(this.OPT_ATT_NAME, DatatypeType.STRING, true, true);
+            AttributeTypeEntity optionalAttributeType = new AttributeTypeEntity(OPT_ATT_NAME, DatatypeType.STRING, true, true);
             attributeTypeDAO.addAttributeType(optionalAttributeType);
 
-            AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(this.COMP_ATT_NAME, DatatypeType.COMPOUNDED, true, true);
+            AttributeTypeEntity compoundedAttributeType = new AttributeTypeEntity(COMP_ATT_NAME, DatatypeType.COMPOUNDED, true, true);
             compoundedAttributeType.addMember(requiredAttributeType, 0, true);
             compoundedAttributeType.addMember(optionalAttributeType, 1, false);
             attributeTypeDAO.addAttributeType(compoundedAttributeType);
@@ -701,17 +701,17 @@ public class IdentityServiceBeanTest {
         public void init(AttributeTypeDAO attributeTypeDAO, ApplicationIdentityDAO applicationIdentityDAO,
                          ApplicationIdentityEntity applicationIdentity, AttributeDAO attributeDAO, SubjectEntity subject) {
 
-            this.attributeType = new AttributeTypeEntity("attribute-type-" + UUID.randomUUID().toString(), DatatypeType.STRING, true, true);
-            attributeTypeDAO.addAttributeType(this.attributeType);
+            attributeType = new AttributeTypeEntity("attribute-type-" + UUID.randomUUID().toString(), DatatypeType.STRING, true, true);
+            attributeTypeDAO.addAttributeType(attributeType);
 
-            applicationIdentityDAO.addApplicationIdentityAttribute(applicationIdentity, this.attributeType, true, false);
+            applicationIdentityDAO.addApplicationIdentityAttribute(applicationIdentity, attributeType, true, false);
         }
 
         public void verify(List<AttributeDO> result) {
 
             assertNotNull(result);
             assertEquals(1, result.size());
-            assertEquals(this.attributeType.getName(), result.get(0).getName());
+            assertEquals(attributeType.getName(), result.get(0).getName());
         }
     }
 
@@ -723,12 +723,12 @@ public class IdentityServiceBeanTest {
         public void init(AttributeTypeDAO attributeTypeDAO, ApplicationIdentityDAO applicationIdentityDAO,
                          ApplicationIdentityEntity applicationIdentity, AttributeDAO attributeDAO, SubjectEntity subject) {
 
-            this.attributeType = new AttributeTypeEntity("attribute-type-" + UUID.randomUUID().toString(), DatatypeType.STRING, true, true);
-            attributeTypeDAO.addAttributeType(this.attributeType);
+            attributeType = new AttributeTypeEntity("attribute-type-" + UUID.randomUUID().toString(), DatatypeType.STRING, true, true);
+            attributeTypeDAO.addAttributeType(attributeType);
 
-            applicationIdentityDAO.addApplicationIdentityAttribute(applicationIdentity, this.attributeType, true, false);
+            applicationIdentityDAO.addApplicationIdentityAttribute(applicationIdentity, attributeType, true, false);
 
-            AttributeEntity attribute = attributeDAO.addAttribute(this.attributeType, subject);
+            AttributeEntity attribute = attributeDAO.addAttribute(attributeType, subject);
             attribute.setStringValue("hello world");
         }
 
@@ -758,10 +758,10 @@ public class IdentityServiceBeanTest {
         public void init(AttributeTypeDAO attributeTypeDAO, ApplicationIdentityDAO applicationIdentityDAO,
                          ApplicationIdentityEntity applicationIdentity, AttributeDAO attributeDAO, SubjectEntity subject) {
 
-            this.attributeType = new AttributeTypeEntity("attribute-type-" + UUID.randomUUID().toString(), DatatypeType.STRING, true, true);
-            attributeTypeDAO.addAttributeType(this.attributeType);
+            attributeType = new AttributeTypeEntity("attribute-type-" + UUID.randomUUID().toString(), DatatypeType.STRING, true, true);
+            attributeTypeDAO.addAttributeType(attributeType);
 
-            applicationIdentityDAO.addApplicationIdentityAttribute(applicationIdentity, this.attributeType, false, false);
+            applicationIdentityDAO.addApplicationIdentityAttribute(applicationIdentity, attributeType, false, false);
         }
 
         public void verify(List<AttributeDO> result) {
@@ -788,7 +788,7 @@ public class IdentityServiceBeanTest {
                 throws Exception {
 
             // setup
-            EntityManager entityManager = IdentityServiceBeanTest.this.entityTestManager.getEntityManager();
+            EntityManager entityManager = entityTestManager.getEntityManager();
             String login = "test-login-" + UUID.randomUUID().toString();
             String ownerLogin = "test-subject-login-" + UUID.randomUUID().toString();
 
@@ -835,7 +835,7 @@ public class IdentityServiceBeanTest {
             throws Exception {
 
         // setup
-        EntityManager entityManager = IdentityServiceBeanTest.this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
         String userLogin = "test-user-login-" + UUID.randomUUID().toString();
 
         // register user
@@ -894,7 +894,7 @@ public class IdentityServiceBeanTest {
             throws Exception {
 
         // setup
-        EntityManager entityManager = IdentityServiceBeanTest.this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
         String userLogin = "test-user-login-" + UUID.randomUUID().toString();
 
         // register user
@@ -994,7 +994,7 @@ public class IdentityServiceBeanTest {
 
         // setup
         String login = "test-login";
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
 
         // operate: register the test user
         UserRegistrationService userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,
@@ -1068,7 +1068,7 @@ public class IdentityServiceBeanTest {
 
         // setup
         String login = "test-login";
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
 
         // operate: register the test user
         UserRegistrationService userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,
@@ -1141,7 +1141,7 @@ public class IdentityServiceBeanTest {
 
         // setup
         String login = "test-login";
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
 
         // operate: register the test user
         UserRegistrationService userRegistrationService = EJBTestUtils.newInstance(UserRegistrationServiceBean.class,

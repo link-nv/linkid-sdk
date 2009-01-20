@@ -82,11 +82,11 @@ public class PasswordManagerBeanTest {
     public void setUp()
             throws Exception {
 
-        this.entityTestManager = new EntityTestManager();
+        entityTestManager = new EntityTestManager();
         /*
          * If you add entities to this list, also add them to safe-online-sql-ddl.
          */
-        this.entityTestManager.setUp(SubjectEntity.class, ApplicationEntity.class, ApplicationOwnerEntity.class, AttributeEntity.class,
+        entityTestManager.setUp(SubjectEntity.class, ApplicationEntity.class, ApplicationOwnerEntity.class, AttributeEntity.class,
                 AttributeTypeEntity.class, SubscriptionEntity.class, TrustDomainEntity.class, ApplicationIdentityEntity.class,
                 ConfigGroupEntity.class, ConfigItemEntity.class, ConfigItemValueEntity.class, SchedulingEntity.class, TaskEntity.class,
                 TaskHistoryEntity.class, TrustPointEntity.class, ApplicationIdentityAttributeEntity.class,
@@ -97,30 +97,30 @@ public class PasswordManagerBeanTest {
                 NotificationProducerSubscriptionEntity.class, ApplicationScopeIdEntity.class, AttributeCacheEntity.class,
                 ApplicationPoolEntity.class);
 
-        this.testedInstance = new PasswordManagerBean();
-        this.attributeDAO = new AttributeDAOBean();
-        this.attributeTypeDAO = new AttributeTypeDAOBean();
-        this.subjectDAO = new SubjectDAOBean();
+        testedInstance = new PasswordManagerBean();
+        attributeDAO = new AttributeDAOBean();
+        attributeTypeDAO = new AttributeTypeDAOBean();
+        subjectDAO = new SubjectDAOBean();
 
-        EJBTestUtils.inject(this.attributeDAO, this.entityTestManager.getEntityManager());
-        EJBTestUtils.inject(this.attributeTypeDAO, this.entityTestManager.getEntityManager());
-        EJBTestUtils.inject(this.subjectDAO, this.entityTestManager.getEntityManager());
-        EJBTestUtils.inject(this.testedInstance, this.attributeDAO);
-        EJBTestUtils.inject(this.testedInstance, this.attributeTypeDAO);
+        EJBTestUtils.inject(attributeDAO, entityTestManager.getEntityManager());
+        EJBTestUtils.inject(attributeTypeDAO, entityTestManager.getEntityManager());
+        EJBTestUtils.inject(subjectDAO, entityTestManager.getEntityManager());
+        EJBTestUtils.inject(testedInstance, attributeDAO);
+        EJBTestUtils.inject(testedInstance, attributeTypeDAO);
 
-        EJBTestUtils.init(this.attributeDAO);
-        EJBTestUtils.init(this.attributeTypeDAO);
-        EJBTestUtils.init(this.testedInstance);
+        EJBTestUtils.init(attributeDAO);
+        EJBTestUtils.init(attributeTypeDAO);
+        EJBTestUtils.init(testedInstance);
 
-        this.attributeTypeDAO.addAttributeType(new AttributeTypeEntity(PasswordConstants.PASSWORD_HASH_ATTRIBUTE, DatatypeType.STRING,
+        attributeTypeDAO.addAttributeType(new AttributeTypeEntity(PasswordConstants.PASSWORD_HASH_ATTRIBUTE, DatatypeType.STRING,
                 false, false));
-        this.attributeTypeDAO.addAttributeType(new AttributeTypeEntity(PasswordConstants.PASSWORD_SEED_ATTRIBUTE, DatatypeType.STRING,
+        attributeTypeDAO.addAttributeType(new AttributeTypeEntity(PasswordConstants.PASSWORD_SEED_ATTRIBUTE, DatatypeType.STRING,
                 false, false));
-        this.attributeTypeDAO.addAttributeType(new AttributeTypeEntity(PasswordConstants.PASSWORD_DEVICE_DISABLE_ATTRIBUTE,
+        attributeTypeDAO.addAttributeType(new AttributeTypeEntity(PasswordConstants.PASSWORD_DEVICE_DISABLE_ATTRIBUTE,
                 DatatypeType.BOOLEAN, false, false));
-        this.attributeTypeDAO.addAttributeType(new AttributeTypeEntity(PasswordConstants.PASSWORD_ALGORITHM_ATTRIBUTE, DatatypeType.STRING,
+        attributeTypeDAO.addAttributeType(new AttributeTypeEntity(PasswordConstants.PASSWORD_ALGORITHM_ATTRIBUTE, DatatypeType.STRING,
                 false, false));
-        this.attributeTypeDAO.addAttributeType(new AttributeTypeEntity(PasswordConstants.PASSWORD_DEVICE_ATTRIBUTE,
+        attributeTypeDAO.addAttributeType(new AttributeTypeEntity(PasswordConstants.PASSWORD_DEVICE_ATTRIBUTE,
                 DatatypeType.COMPOUNDED, false, false));
 
     }
@@ -129,7 +129,7 @@ public class PasswordManagerBeanTest {
     public void tearDown()
             throws Exception {
 
-        this.entityTestManager.tearDown();
+        entityTestManager.tearDown();
     }
 
     @Test
@@ -138,18 +138,18 @@ public class PasswordManagerBeanTest {
 
         // prepare
         UUID subjectUUID = UUID.randomUUID();
-        SubjectEntity subject = this.subjectDAO.addSubject(subjectUUID.toString());
+        SubjectEntity subject = subjectDAO.addSubject(subjectUUID.toString());
         String password = "password";
 
         // operate
-        this.testedInstance.setPassword(subject, password);
+        testedInstance.setPassword(subject, password);
 
         // validate
-        boolean validationResult = this.testedInstance.validatePassword(subject, password);
+        boolean validationResult = testedInstance.validatePassword(subject, password);
         assertTrue(validationResult);
 
         try {
-            this.testedInstance.setPassword(subject, password);
+            testedInstance.setPassword(subject, password);
             fail();
         } catch (PermissionDeniedException e) {
             // empty
@@ -163,19 +163,19 @@ public class PasswordManagerBeanTest {
 
         // prepare
         UUID subjectUUID = UUID.randomUUID();
-        SubjectEntity subject = this.subjectDAO.addSubject(subjectUUID.toString());
+        SubjectEntity subject = subjectDAO.addSubject(subjectUUID.toString());
         String password = "password";
         String newPassword = "newpassword";
 
         // operate
-        this.testedInstance.setPassword(subject, password);
-        this.testedInstance.changePassword(subject, password, newPassword);
+        testedInstance.setPassword(subject, password);
+        testedInstance.changePassword(subject, password, newPassword);
 
         // validate
-        boolean validationResult = this.testedInstance.validatePassword(subject, password);
+        boolean validationResult = testedInstance.validatePassword(subject, password);
         assertFalse(validationResult);
 
-        validationResult = this.testedInstance.validatePassword(subject, newPassword);
+        validationResult = testedInstance.validatePassword(subject, newPassword);
         assertTrue(validationResult);
     }
 
@@ -185,14 +185,14 @@ public class PasswordManagerBeanTest {
 
         // prepare
         UUID subjectUUID = UUID.randomUUID();
-        SubjectEntity subject = this.subjectDAO.addSubject(subjectUUID.toString());
+        SubjectEntity subject = subjectDAO.addSubject(subjectUUID.toString());
         String password = "password";
 
         // operate
-        this.testedInstance.setPassword(subject, password);
+        testedInstance.setPassword(subject, password);
 
         // validate
-        boolean validationResult = this.testedInstance.validatePassword(subject, password);
+        boolean validationResult = testedInstance.validatePassword(subject, password);
         assertTrue(validationResult);
     }
 
@@ -202,14 +202,14 @@ public class PasswordManagerBeanTest {
 
         // prepare
         UUID subjectUUID = UUID.randomUUID();
-        SubjectEntity subject = this.subjectDAO.addSubject(subjectUUID.toString());
+        SubjectEntity subject = subjectDAO.addSubject(subjectUUID.toString());
         String password = "password";
 
         // operate
-        this.testedInstance.setPassword(subject, password);
+        testedInstance.setPassword(subject, password);
 
         // validate
-        boolean validationResult = this.testedInstance.isPasswordConfigured(subject);
+        boolean validationResult = testedInstance.isPasswordConfigured(subject);
         assertTrue(validationResult);
     }
 

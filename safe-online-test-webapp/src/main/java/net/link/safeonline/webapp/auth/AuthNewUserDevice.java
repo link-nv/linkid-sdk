@@ -7,7 +7,6 @@
 
 package net.link.safeonline.webapp.auth;
 
-import net.link.safeonline.model.password.PasswordConstants;
 import net.link.safeonline.webapp.Page;
 import net.link.safeonline.webapp.auth.password.AuthRegisterPassword;
 
@@ -26,14 +25,14 @@ public class AuthNewUserDevice extends Page {
 
     public void selectDevice(String deviceName) {
 
-        this.device = deviceName;
-        clickRadioButton(this.device);
+        device = deviceName;
+        clickRadioButton(device);
     }
 
     public Page next() {
 
         clickButtonAndWait("next");
-        if (this.device.equals(PasswordConstants.PASSWORD_DEVICE_ID))
+        if (device.equals(PasswordConstants.PASSWORD_DEVICE_ID))
             return new AuthRegisterPassword();
         return null;
     }

@@ -42,7 +42,7 @@ public class AttributeBean {
 
     public String getSubjectLogin() {
 
-        return this.subjectLogin;
+        return subjectLogin;
     }
 
     public void setSubjectLogin(String subjectLogin) {
@@ -52,7 +52,7 @@ public class AttributeBean {
 
     public String getAttributeName() {
 
-        return this.attributeName;
+        return attributeName;
     }
 
     public void setAttributeName(String attributeName) {
@@ -62,7 +62,7 @@ public class AttributeBean {
 
     public String getAttributeWebServiceLocation() {
 
-        return this.attributeWebServiceLocation;
+        return attributeWebServiceLocation;
     }
 
     public void setAttributeWebServiceLocation(String attributeWebServiceLocation) {
@@ -72,28 +72,28 @@ public class AttributeBean {
 
     public X509Certificate getCertificate() {
 
-        return this.certificate;
+        return certificate;
     }
 
     public PrivateKey getPrivateKey() {
 
-        return this.privateKey;
+        return privateKey;
     }
 
     private void loadCertificate() {
 
         PrivateKeyEntry privateKeyEntry = DemoKeyStoreUtil.getPrivateKeyEntry();
-        this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
-        this.privateKey = privateKeyEntry.getPrivateKey();
+        certificate = (X509Certificate) privateKeyEntry.getCertificate();
+        privateKey = privateKeyEntry.getPrivateKey();
     }
 
     public String getAttributeValue() {
 
-        if (null == this.attributeValue) {
+        if (null == attributeValue) {
             loadCertificate();
-            AttributeClient attributeClient = new AttributeClientImpl(this.attributeWebServiceLocation, this.certificate, this.privateKey);
+            AttributeClient attributeClient = new AttributeClientImpl(attributeWebServiceLocation, certificate, privateKey);
             try {
-                this.attributeValue = attributeClient.getAttributeValue(this.subjectLogin, this.attributeName, String.class);
+                attributeValue = attributeClient.getAttributeValue(subjectLogin, attributeName, String.class);
             } catch (AttributeNotFoundException e) {
                 LOG.error("attribute not found: " + e.getMessage());
                 return "[attribute not found]";
@@ -104,10 +104,10 @@ public class AttributeBean {
                 LOG.error("connection error. check your SSL setup");
                 return "[connection error. check your SSL setup]";
             } catch (AttributeUnavailableException e) {
-                LOG.error("attribute unavailable: " + this.attributeName);
-                return "[attribute unavailable: " + this.attributeName + "]";
+                LOG.error("attribute unavailable: " + attributeName);
+                return "[attribute unavailable: " + attributeName + "]";
             }
         }
-        return this.attributeValue;
+        return attributeValue;
     }
 }

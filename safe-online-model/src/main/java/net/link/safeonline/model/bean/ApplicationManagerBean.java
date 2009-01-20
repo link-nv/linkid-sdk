@@ -46,12 +46,12 @@ public class ApplicationManagerBean implements ApplicationManager {
     @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
     public ApplicationEntity getCallerApplication() {
 
-        Principal callerPrincipal = this.context.getCallerPrincipal();
+        Principal callerPrincipal = context.getCallerPrincipal();
         String applicationName = callerPrincipal.getName();
         LOG.debug("get caller application: " + applicationName);
         ApplicationEntity callerApplication;
         try {
-            callerApplication = this.applicationDAO.getApplication(applicationName);
+            callerApplication = applicationDAO.getApplication(applicationName);
         } catch (ApplicationNotFoundException e) {
             throw new EJBException("application not found: " + e.getMessage(), e);
         }

@@ -90,21 +90,21 @@ public class EndpointReferenceEntity implements Serializable {
 
         this.address = address;
         this.application = application;
-        this.subscriptions = new HashSet<NotificationProducerSubscriptionEntity>();
+        subscriptions = new HashSet<NotificationProducerSubscriptionEntity>();
     }
 
     public EndpointReferenceEntity(String address, NodeEntity node) {
 
         this.address = address;
         this.node = node;
-        this.subscriptions = new HashSet<NotificationProducerSubscriptionEntity>();
+        subscriptions = new HashSet<NotificationProducerSubscriptionEntity>();
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public long getId() {
 
-        return this.id;
+        return id;
     }
 
     public void setId(long id) {
@@ -114,7 +114,7 @@ public class EndpointReferenceEntity implements Serializable {
 
     public String getAddress() {
 
-        return this.address;
+        return address;
     }
 
     public void setAddress(String address) {
@@ -126,7 +126,7 @@ public class EndpointReferenceEntity implements Serializable {
     @JoinColumn(nullable = true)
     public ApplicationEntity getApplication() {
 
-        return this.application;
+        return application;
     }
 
     public void setApplication(ApplicationEntity application) {
@@ -138,7 +138,7 @@ public class EndpointReferenceEntity implements Serializable {
     @JoinColumn(nullable = true)
     public NodeEntity getNode() {
 
-        return this.node;
+        return node;
     }
 
     public void setNode(NodeEntity node) {
@@ -149,7 +149,7 @@ public class EndpointReferenceEntity implements Serializable {
     @ManyToMany(mappedBy = NotificationProducerSubscriptionEntity.CONSUMERS_COLUMN_NAME)
     public Set<NotificationProducerSubscriptionEntity> getSubscriptions() {
 
-        return this.subscriptions;
+        return subscriptions;
     }
 
     public void setSubscriptions(Set<NotificationProducerSubscriptionEntity> subscriptions) {
@@ -160,21 +160,21 @@ public class EndpointReferenceEntity implements Serializable {
     @Transient
     public String getName() {
 
-        if (null != this.application)
-            return this.application.getName();
-        return this.node.getName();
+        if (null != application)
+            return application.getName();
+        return node.getName();
     }
 
     @Override
     public String toString() {
 
         ToStringBuilder builder = new ToStringBuilder(this);
-        builder.append("address", this.address);
-        if (null != this.application) {
-            builder.append("application", this.application.getName());
+        builder.append("address", address);
+        if (null != application) {
+            builder.append("application", application.getName());
         }
-        if (null != this.node) {
-            builder.append("node", this.node.getName());
+        if (null != node) {
+            builder.append("node", node.getName());
         }
         return builder.toString();
     }
@@ -189,19 +189,19 @@ public class EndpointReferenceEntity implements Serializable {
         if (false == obj instanceof EndpointReferenceEntity)
             return false;
         final EndpointReferenceEntity rhs = (EndpointReferenceEntity) obj;
-        return this.id == rhs.id;
+        return id == rhs.id;
     }
 
     @Override
     public int hashCode() {
 
         HashCodeBuilder builder = new HashCodeBuilder();
-        builder.append(this.address);
-        if (null != this.application) {
-            builder.append(this.application);
+        builder.append(address);
+        if (null != application) {
+            builder.append(application);
         }
-        if (null != this.node) {
-            builder.append(this.node);
+        if (null != node) {
+            builder.append(node);
         }
         return builder.toHashCode();
     }

@@ -70,21 +70,21 @@ public class PaymentServiceEntryBean implements PaymentServiceEntry {
 
     public void init() {
 
-        this.log.debug("init; username #0; recipient #1; amount #2", this.user, this.recipient, this.amount);
-        if (null == this.user) {
-            this.facesMessages.add("user request parameter is null");
+        log.debug("init; username #0; recipient #1; amount #2", user, recipient, amount);
+        if (null == user) {
+            facesMessages.add("user request parameter is null");
         }
-        if (null == this.target) {
-            this.facesMessages.add("target request parameter is null");
+        if (null == target) {
+            facesMessages.add("target request parameter is null");
         }
-        if (null == this.recipient) {
-            this.facesMessages.add("recipient request parameter is null");
+        if (null == recipient) {
+            facesMessages.add("recipient request parameter is null");
         }
-        if (null == this.amount) {
-            this.facesMessages.add("amount request parameter is null");
+        if (null == amount) {
+            facesMessages.add("amount request parameter is null");
         }
 
-        this.sessionContext.set("role", PaymentConstants.AUTHENTICATED_ROLE);
+        sessionContext.set("role", PaymentConstants.AUTHENTICATED_ROLE);
 
     }
 }

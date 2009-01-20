@@ -76,35 +76,35 @@ public class LogoutEntryServletTest {
     public void setUp()
             throws Exception {
 
-        this.jndiTestUtils = new JndiTestUtils();
-        this.jndiTestUtils.setUp();
+        jndiTestUtils = new JndiTestUtils();
+        jndiTestUtils.setUp();
 
-        this.mockAuthenticationService = createMock(AuthenticationService.class);
+        mockAuthenticationService = createMock(AuthenticationService.class);
 
         JmxTestUtils jmxTestUtils = new JmxTestUtils();
         jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
-        this.logoutEntryServletTestManager = new ServletTestManager();
+        logoutEntryServletTestManager = new ServletTestManager();
         Map<String, String> initParams = new HashMap<String, String>();
-        initParams.put("LogoutExitUrl", this.logoutExitUrl);
-        initParams.put("ServletEndpointUrl", this.servletEndpointUrl);
-        initParams.put("UnsupportedProtocolUrl", this.unsupportedProtocolUrl);
-        initParams.put("ProtocolErrorUrl", this.protocolErrorUrl);
-        initParams.put("CookiePath", this.cookiePath);
+        initParams.put("LogoutExitUrl", logoutExitUrl);
+        initParams.put("ServletEndpointUrl", servletEndpointUrl);
+        initParams.put("UnsupportedProtocolUrl", unsupportedProtocolUrl);
+        initParams.put("ProtocolErrorUrl", protocolErrorUrl);
+        initParams.put("CookiePath", cookiePath);
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
-        initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE, this.mockAuthenticationService);
+        initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE, mockAuthenticationService);
 
-        this.logoutEntryServletTestManager.setUp(LogoutEntryServlet.class, initParams, null, null, initialSessionAttributes);
+        logoutEntryServletTestManager.setUp(LogoutEntryServlet.class, initParams, null, null, initialSessionAttributes);
 
-        this.mockObjects = new Object[] { this.mockAuthenticationService };
+        mockObjects = new Object[] { mockAuthenticationService };
     }
 
     @After
     public void tearDown()
             throws Exception {
 
-        this.logoutEntryServletTestManager.tearDown();
-        this.jndiTestUtils.tearDown();
+        logoutEntryServletTestManager.tearDown();
+        jndiTestUtils.tearDown();
     }
 
     @Test
@@ -113,7 +113,7 @@ public class LogoutEntryServletTest {
 
         // setup
         HttpClient httpClient = new HttpClient();
-        GetMethod getMethod = new GetMethod(this.logoutEntryServletTestManager.getServletLocation());
+        GetMethod getMethod = new GetMethod(logoutEntryServletTestManager.getServletLocation());
         /*
          * Here we simulate a user that directly visits the authentication web application.
          */
@@ -127,7 +127,7 @@ public class LogoutEntryServletTest {
         assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
         String location = getMethod.getResponseHeader("Location").getValue();
         LOG.debug("location: " + location);
-        assertTrue(location.endsWith(this.unsupportedProtocolUrl));
+        assertTrue(location.endsWith(unsupportedProtocolUrl));
     }
 
     @Test
@@ -136,14 +136,14 @@ public class LogoutEntryServletTest {
 
         // setup
         HttpClient httpClient = new HttpClient();
-        String servletLocation = this.logoutEntryServletTestManager.getServletLocation();
+        String servletLocation = logoutEntryServletTestManager.getServletLocation();
         PostMethod postMethod = new PostMethod(servletLocation);
 
         KeyPair applicationKeyPair = PkiTestUtils.generateKeyPair();
         String applicationName = "test-application-id";
         String userId = UUID.randomUUID().toString();
         String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, applicationName, applicationKeyPair,
-                this.servletEndpointUrl, null);
+                servletEndpointUrl, null);
         String encodedSamlLogoutRequest = Base64.encode(samlLogoutRequest.getBytes());
 
         NameValuePair[] data = { new NameValuePair("SAMLRequest", encodedSamlLogoutRequest) };
@@ -151,24 +151,24 @@ public class LogoutEntryServletTest {
         postMethod.addRequestHeader("Cookie", SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX + "." + applicationName + "=value");
 
         // expectations
-        expect(this.mockAuthenticationService.initialize((LogoutRequest) EasyMock.anyObject())).andStubReturn(
-                new LogoutProtocolContext(applicationName, this.servletEndpointUrl));
-        expect(this.mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.INIT);
-        expect(this.mockAuthenticationService.checkSsoCookieForLogout((Cookie) EasyMock.anyObject())).andStubReturn(true);
+        expect(mockAuthenticationService.initialize((LogoutRequest) EasyMock.anyObject())).andStubReturn(
+                new LogoutProtocolContext(applicationName, servletEndpointUrl));
+        expect(mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.INIT);
+        expect(mockAuthenticationService.checkSsoCookieForLogout((Cookie) EasyMock.anyObject())).andStubReturn(true);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
         int statusCode = httpClient.executeMethod(postMethod);
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
         LOG.debug("status code: " + statusCode);
         LOG.debug("result body: " + postMethod.getResponseBodyAsString());
         assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
         String location = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("location: " + location);
-        assertTrue(location.endsWith(this.logoutExitUrl));
+        assertTrue(location.endsWith(logoutExitUrl));
     }
 }

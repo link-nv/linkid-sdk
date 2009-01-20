@@ -23,7 +23,7 @@ public class ConnectionManagerServiceImpl implements ConnectionManager {
         String IMEI;
 
         try {
-            IMEI = this.optionDevice.getIMEI();
+            IMEI = optionDevice.getIMEI();
         } catch (OptionDeviceException e) {
             return null;
         }

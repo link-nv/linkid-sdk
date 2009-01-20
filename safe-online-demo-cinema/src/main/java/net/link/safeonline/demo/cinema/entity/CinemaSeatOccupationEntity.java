@@ -47,7 +47,7 @@ public class CinemaSeatOccupationEntity implements Serializable {
 
         this.seat = seat;
         this.start = start;
-        this.reserved = false;
+        reserved = false;
     }
 
     /**
@@ -55,7 +55,7 @@ public class CinemaSeatOccupationEntity implements Serializable {
      */
     public CinemaSeatEntity getSeat() {
 
-        return this.seat;
+        return seat;
     }
 
     /**
@@ -63,7 +63,7 @@ public class CinemaSeatOccupationEntity implements Serializable {
      */
     public Date getStart() {
 
-        return this.start;
+        return start;
     }
 
     /**
@@ -71,7 +71,7 @@ public class CinemaSeatOccupationEntity implements Serializable {
      */
     public boolean isReserved() {
 
-        return this.reserved;
+        return reserved;
     }
 
     /**
@@ -83,10 +83,10 @@ public class CinemaSeatOccupationEntity implements Serializable {
     public void reserve()
             throws IllegalStateException {
 
-        if (this.reserved)
-            throw new IllegalStateException("Seat " + this.seat + " is already reserved!");
+        if (reserved)
+            throw new IllegalStateException("Seat " + seat + " is already reserved!");
 
-        this.reserved = true;
+        reserved = true;
     }
 
     /**
@@ -95,7 +95,7 @@ public class CinemaSeatOccupationEntity implements Serializable {
     @Override
     public String toString() {
 
-        return String.format("{Occ: %s - %s}", this.seat, DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
-                this.start));
+        return String.format("{Occ: %s - %s}", seat, DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(
+                start));
     }
 }

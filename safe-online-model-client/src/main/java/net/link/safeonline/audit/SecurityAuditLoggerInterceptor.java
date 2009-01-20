@@ -35,7 +35,7 @@ public class SecurityAuditLoggerInterceptor {
         }
 
         catch (SafeOnlineSecurityException e) {
-            this.securityAuditLogger.addSecurityAudit(e.getSecurityThreat(), e.getTargetPrincipal(), e.getMessage());
+            securityAuditLogger.addSecurityAudit(e.getSecurityThreat(), e.getTargetPrincipal(), e.getMessage());
             throw e;
         }
     }

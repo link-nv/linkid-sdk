@@ -55,9 +55,9 @@ public class ApplicationIdentityManagerBean implements ApplicationIdentityManage
 
         LOG.debug("update application identity for application: " + applicationId);
 
-        ApplicationEntity application = this.applicationDAO.getApplication(applicationId);
+        ApplicationEntity application = applicationDAO.getApplication(applicationId);
         long currentIdentityVersion = application.getCurrentApplicationIdentity();
-        ApplicationIdentityEntity applicationIdentity = this.applicationIdentityDAO.getApplicationIdentity(application,
+        ApplicationIdentityEntity applicationIdentity = applicationIdentityDAO.getApplicationIdentity(application,
                 currentIdentityVersion);
         List<AttributeTypeEntity> currentAttributeTypes = applicationIdentity.getAttributeTypes();
         if (null == currentAttributeTypes) {
@@ -67,7 +67,7 @@ public class ApplicationIdentityManagerBean implements ApplicationIdentityManage
         List<AttributeTypeEntity> newAttributeTypes = new LinkedList<AttributeTypeEntity>();
         for (IdentityAttributeTypeDO newAttribute : newApplicationIdentityAttributes) {
             LOG.debug("new identity attribute: " + newAttribute.getName());
-            AttributeTypeEntity newAttributeType = this.attributeTypeDAO.getAttributeType(newAttribute.getName());
+            AttributeTypeEntity newAttributeType = attributeTypeDAO.getAttributeType(newAttribute.getName());
             newAttributeTypes.add(newAttributeType);
         }
 
@@ -78,12 +78,12 @@ public class ApplicationIdentityManagerBean implements ApplicationIdentityManage
         if (true == requireNewIdentity) {
             long newIdentityVersion = currentIdentityVersion + 1;
             LOG.debug("new identity version: " + newIdentityVersion);
-            applicationIdentity = this.applicationIdentityDAO.addApplicationIdentity(application, newIdentityVersion);
+            applicationIdentity = applicationIdentityDAO.addApplicationIdentity(application, newIdentityVersion);
             for (IdentityAttributeTypeDO attribute : newApplicationIdentityAttributes) {
-                AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attribute.getName());
+                AttributeTypeEntity attributeType = attributeTypeDAO.getAttributeType(attribute.getName());
                 boolean required = attribute.isRequired();
                 boolean dataMining = attribute.isDataMining();
-                this.applicationIdentityDAO.addApplicationIdentityAttribute(applicationIdentity, attributeType, required, dataMining);
+                applicationIdentityDAO.addApplicationIdentityAttribute(applicationIdentity, attributeType, required, dataMining);
             }
             LOG.debug("setting new identity version on application: " + newIdentityVersion);
             application.setCurrentApplicationIdentity(newIdentityVersion);
@@ -121,7 +121,7 @@ public class ApplicationIdentityManagerBean implements ApplicationIdentityManage
         }
 
         for (ApplicationIdentityAttributeEntity toRemoveEntity : toRemove) {
-            this.applicationIdentityDAO.removeApplicationIdentityAttribute(toRemoveEntity);
+            applicationIdentityDAO.removeApplicationIdentityAttribute(toRemoveEntity);
         }
 
         LOG.debug("changing current identity version: " + currentIdentityVersion);

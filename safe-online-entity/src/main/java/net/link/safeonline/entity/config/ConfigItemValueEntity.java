@@ -60,7 +60,7 @@ public class ConfigItemValueEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     public long getId() {
 
-        return this.id;
+        return id;
     }
 
     public void setId(long id) {
@@ -71,7 +71,7 @@ public class ConfigItemValueEntity implements Serializable {
     @ManyToOne
     public ConfigItemEntity getConfigItem() {
 
-        return this.configItem;
+        return configItem;
     }
 
     public void setConfigItem(ConfigItemEntity configItem) {
@@ -81,7 +81,7 @@ public class ConfigItemValueEntity implements Serializable {
 
     public String getValue() {
 
-        return this.value;
+        return value;
     }
 
     public void setValue(String value) {
@@ -92,7 +92,7 @@ public class ConfigItemValueEntity implements Serializable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("id", this.id).append("value", this.value).toString();
+        return new ToStringBuilder(this).append("id", id).append("value", value).toString();
     }
 
     @Override
@@ -105,13 +105,13 @@ public class ConfigItemValueEntity implements Serializable {
         if (false == obj instanceof ConfigItemValueEntity)
             return false;
         ConfigItemValueEntity rhs = (ConfigItemValueEntity) obj;
-        return new EqualsBuilder().append(this.id, rhs.id).isEquals();
+        return new EqualsBuilder().append(id, rhs.id).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.id).append(this.value).toHashCode();
+        return new HashCodeBuilder().append(id).append(value).toHashCode();
     }
 
 

@@ -68,33 +68,33 @@ public class GlobalUsageAgreementConfirmationBean extends AbstractExitBean imple
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();
 
-        this.log.debug("confirm global usage agreement");
-        this.usageAgreementService.confirmGlobalUsageAgreementVersion();
+        log.debug("confirm global usage agreement");
+        usageAgreementService.confirmGlobalUsageAgreementVersion();
         HelpdeskLogger.add("confirmed global usage agreement", LogLevelType.INFO);
 
         /*
          * After successful confirmation we continue the workflow as usual.
          */
-        boolean subscriptionRequired = !this.subscriptionService.isSubscribed(this.applicationId);
+        boolean subscriptionRequired = !subscriptionService.isSubscribed(applicationId);
         if (!subscriptionRequired) {
-            subscriptionRequired = this.usageAgreementService.requiresUsageAgreementAcceptation(this.applicationId,
+            subscriptionRequired = usageAgreementService.requiresUsageAgreementAcceptation(applicationId,
                     viewLocale.getLanguage());
         }
-        this.log.debug("subscription required: " + subscriptionRequired);
+        log.debug("subscription required: " + subscriptionRequired);
         if (true == subscriptionRequired)
             return "subscription-required";
 
-        boolean confirmationRequired = this.identityService.isConfirmationRequired(this.applicationId);
-        this.log.debug("confirmation required: " + confirmationRequired);
+        boolean confirmationRequired = identityService.isConfirmationRequired(applicationId);
+        log.debug("confirmation required: " + confirmationRequired);
         if (true == confirmationRequired)
             return "confirmation-required";
 
-        boolean hasMissingAttributes = this.identityService.hasMissingAttributes(this.applicationId);
+        boolean hasMissingAttributes = identityService.hasMissingAttributes(applicationId);
 
         if (true == hasMissingAttributes)
             return "missing-attributes";
 
-        AuthenticationUtils.commitAuthentication(this.facesMessages);
+        AuthenticationUtils.commitAuthentication(facesMessages);
 
         return null;
     }
@@ -104,7 +104,7 @@ public class GlobalUsageAgreementConfirmationBean extends AbstractExitBean imple
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();
-        return this.usageAgreementService.getGlobalUsageAgreementText(viewLocale.getLanguage());
+        return usageAgreementService.getGlobalUsageAgreementText(viewLocale.getLanguage());
     }
 
     @RolesAllowed(AuthenticationConstants.USER_ROLE)

@@ -78,31 +78,31 @@ public class EnableBean implements Enable {
 
         // need to explicitly lookup this session param as the @In annotation has not been performed ...
         FacesContext facesContext = FacesContext.getCurrentInstance();
-        this.protocolContext = (ProtocolContext) ((HttpSession) facesContext.getExternalContext().getSession(false))
+        protocolContext = (ProtocolContext) ((HttpSession) facesContext.getExternalContext().getSession(false))
                                                                                                                     .getAttribute(ProtocolContext.PROTOCOL_CONTEXT);
-        this.mobile = new PhoneNumber(this.protocolContext.getAttribute());
+        mobile = new PhoneNumber(protocolContext.getAttribute());
     }
 
     @Remove
     @Destroy
     public void destroyCallback() {
 
-        this.log.debug("destroy");
+        log.debug("destroy");
         reset();
     }
 
     private void reset() {
 
-        this.mobile = null;
-        this.mobileOTP = null;
-        this.challengeId = null;
+        mobile = null;
+        mobileOTP = null;
+        challengeId = null;
     }
 
     @End
     public String cancel()
             throws IOException {
 
-        this.protocolContext.setSuccess(false);
+        protocolContext.setSuccess(false);
         exit();
         return null;
     }
@@ -110,9 +110,9 @@ public class EnableBean implements Enable {
     private void exit()
             throws IOException {
 
-        this.log.debug("exit");
+        log.debug("exit");
         reset();
-        this.protocolContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());
+        protocolContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
 
         FacesContext facesContext = FacesContext.getCurrentInstance();
         ExternalContext externalContext = facesContext.getExternalContext();
@@ -123,9 +123,9 @@ public class EnableBean implements Enable {
     public String requestOTP()
             throws MalformedURLException, MobileException {
 
-        this.log.debug("request OTP: mobile=" + this.mobile);
-        this.challengeId = this.encapDeviceService.requestOTP(this.mobile.getNumber());
-        this.log.debug("received challengeId: " + this.challengeId);
+        log.debug("request OTP: mobile=" + mobile);
+        challengeId = encapDeviceService.requestOTP(mobile.getNumber());
+        log.debug("received challengeId: " + challengeId);
         return "success";
     }
 
@@ -134,23 +134,23 @@ public class EnableBean implements Enable {
             throws IOException, MobileException, SubjectNotFoundException, AttributeTypeNotFoundException, PermissionDeniedException,
             AttributeNotFoundException, DeviceNotFoundException, DeviceRegistrationNotFoundException {
 
-        boolean result = this.encapDeviceService.authenticateEncap(this.challengeId, this.mobileOTP);
+        boolean result = encapDeviceService.authenticateEncap(challengeId, mobileOTP);
         if (false == result) {
-            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
+            facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
             return null;
         }
 
         // encap authentication was successful, enabled this registration.
-        this.encapDeviceService.enable(this.protocolContext.getSubject(), this.mobile.getNumber());
+        encapDeviceService.enable(protocolContext.getSubject(), mobile.getNumber());
 
-        this.protocolContext.setSuccess(true);
+        protocolContext.setSuccess(true);
         exit();
         return null;
     }
 
     public PhoneNumber getMobile() {
 
-        return this.mobile;
+        return mobile;
     }
 
     public void setMobile(PhoneNumber mobile) {
@@ -160,7 +160,7 @@ public class EnableBean implements Enable {
 
     public String getMobileOTP() {
 
-        return this.mobileOTP;
+        return mobileOTP;
     }
 
     public void setMobileOTP(String mobileOTP) {
@@ -170,7 +170,7 @@ public class EnableBean implements Enable {
 
     public String getChallengeId() {
 
-        return this.challengeId;
+        return challengeId;
     }
 
 }

@@ -82,7 +82,7 @@ public class AuditAuditEntity implements Serializable {
 
         this.auditContext = auditContext;
         this.message = message;
-        this.eventDate = new Date();
+        eventDate = new Date();
     }
 
     public AuditAuditEntity(String message) {
@@ -94,7 +94,7 @@ public class AuditAuditEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Long getId() {
 
-        return this.id;
+        return id;
     }
 
     public void setId(Long id) {
@@ -105,7 +105,7 @@ public class AuditAuditEntity implements Serializable {
     @ManyToOne
     public AuditContextEntity getAuditContext() {
 
-        return this.auditContext;
+        return auditContext;
     }
 
     public void setAuditContext(AuditContextEntity auditContext) {
@@ -115,7 +115,7 @@ public class AuditAuditEntity implements Serializable {
 
     public String getMessage() {
 
-        return this.message;
+        return message;
     }
 
     public void setMessage(String message) {
@@ -126,7 +126,7 @@ public class AuditAuditEntity implements Serializable {
     @Temporal(value = TemporalType.TIMESTAMP)
     public Date getEventDate() {
 
-        return this.eventDate;
+        return eventDate;
     }
 
     public void setEventDate(Date eventDate) {

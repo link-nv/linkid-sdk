@@ -65,12 +65,12 @@ public class IdentityServlet extends AbstractStatementServlet {
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(session);
         try {
-            protocolContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());
+            protocolContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
             protocolContext.setSuccess(false);
 
             String userId = DeviceOperationManager.getUserId(session);
             String operation = DeviceOperationManager.getOperation(session);
-            this.beIdDeviceService.register(sessionId, userId, operation, statementData);
+            beIdDeviceService.register(sessionId, userId, operation, statementData);
             response.setStatus(HttpServletResponse.SC_OK);
             // notify that registration was successful.
             protocolContext.setSuccess(true);

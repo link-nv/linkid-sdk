@@ -53,7 +53,7 @@ public class BankAccountConverter implements IConverter<BankAccountEntity> {
      */
     public BankAccountEntity convertToObject(String value, Locale locale) {
 
-        Matcher matcher = this.parser.matcher(value);
+        Matcher matcher = parser.matcher(value);
         if (matcher.matches()) {
             String code = matcher.group(1);
             String name = matcher.group(2);

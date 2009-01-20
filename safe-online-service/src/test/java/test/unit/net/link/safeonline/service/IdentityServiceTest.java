@@ -36,10 +36,10 @@ public class IdentityServiceTest {
             throws Exception {
 
         Thread currentThread = Thread.currentThread();
-        this.origClassLoader = currentThread.getContextClassLoader();
+        origClassLoader = currentThread.getContextClassLoader();
 
-        this.testClassLoader = new TestClassLoader();
-        currentThread.setContextClassLoader(this.testClassLoader);
+        testClassLoader = new TestClassLoader();
+        currentThread.setContextClassLoader(testClassLoader);
     }
 
     @After
@@ -47,7 +47,7 @@ public class IdentityServiceTest {
             throws Exception {
 
         Thread currentThread = Thread.currentThread();
-        currentThread.setContextClassLoader(this.origClassLoader);
+        currentThread.setContextClassLoader(origClassLoader);
     }
 
     @Test
@@ -63,7 +63,7 @@ public class IdentityServiceTest {
         String password = "secret";
         PkiTestUtils.persistKey(tmpPkcs12KeyStore, privateKey, certificate, password, password);
         String resourceName = "test-keystore-resource-name";
-        this.testClassLoader.addResource(resourceName, tmpPkcs12KeyStore.toURI().toURL());
+        testClassLoader.addResource(resourceName, tmpPkcs12KeyStore.toURI().toURL());
 
         // operate
         IdentityServiceMBean testedInstance = new IdentityService();

@@ -48,25 +48,25 @@ public class PkiServletTest {
     public void setUp()
             throws Exception {
 
-        this.jmxTestUtils = new JmxTestUtils();
-        this.jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
+        jmxTestUtils = new JmxTestUtils();
+        jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        this.certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
+        certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
 
-        GetCertificateMBeanActionHandler actionHandler = new GetCertificateMBeanActionHandler(this.certificate);
-        this.jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate", actionHandler);
+        GetCertificateMBeanActionHandler actionHandler = new GetCertificateMBeanActionHandler(certificate);
+        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate", actionHandler);
 
-        this.servletTestManager = new ServletTestManager();
-        this.servletTestManager.setUp(PkiServlet.class);
+        servletTestManager = new ServletTestManager();
+        servletTestManager.setUp(PkiServlet.class);
     }
 
     @After
     public void tearDown()
             throws Exception {
 
-        this.servletTestManager.tearDown();
-        this.jmxTestUtils.tearDown();
+        servletTestManager.tearDown();
+        jmxTestUtils.tearDown();
     }
 
 
@@ -82,7 +82,7 @@ public class PkiServletTest {
 
         public Object invoke(Object[] arguments) {
 
-            return this.certificate;
+            return certificate;
         }
     }
 
@@ -92,7 +92,7 @@ public class PkiServletTest {
             throws Exception {
 
         HttpClient httpClient = new HttpClient();
-        GetMethod getMethod = new GetMethod(this.servletTestManager.getServletLocation());
+        GetMethod getMethod = new GetMethod(servletTestManager.getServletLocation());
 
         int statusCode = httpClient.executeMethod(getMethod);
 
@@ -107,6 +107,6 @@ public class PkiServletTest {
         LOG.debug("obj class: " + obj.getClass().getName());
         assertTrue(obj instanceof X509Certificate);
         X509Certificate resultCertificate = (X509Certificate) obj;
-        assertEquals(this.certificate, resultCertificate);
+        assertEquals(certificate, resultCertificate);
     }
 }

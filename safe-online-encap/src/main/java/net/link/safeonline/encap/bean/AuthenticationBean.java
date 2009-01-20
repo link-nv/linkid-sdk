@@ -75,7 +75,7 @@ public class AuthenticationBean implements Authentication {
 
     public String getMobileOTP() {
 
-        return this.mobileOTP;
+        return mobileOTP;
     }
 
     public void setMobileOTP(String mobileOTP) {
@@ -85,7 +85,7 @@ public class AuthenticationBean implements Authentication {
 
     public PhoneNumber getMobile() {
 
-        return this.mobile;
+        return mobile;
     }
 
     public void setMobile(PhoneNumber mobile) {
@@ -95,7 +95,7 @@ public class AuthenticationBean implements Authentication {
 
     public String getChallengeId() {
 
-        return this.challengeId;
+        return challengeId;
     }
 
     public void setChallengeId(String challengeId) {
@@ -107,27 +107,27 @@ public class AuthenticationBean implements Authentication {
     public String login()
             throws MobileAuthenticationException, IOException {
 
-        LOG.debug("login: " + this.mobile);
-        HelpdeskLogger.add("login: " + this.mobile, LogLevelType.INFO);
+        LOG.debug("login: " + mobile);
+        HelpdeskLogger.add("login: " + mobile, LogLevelType.INFO);
         try {
-            String userId = this.encapDeviceService.authenticate(this.mobile.getNumber(), this.challengeId, this.mobileOTP);
+            String userId = encapDeviceService.authenticate(mobile.getNumber(), challengeId, mobileOTP);
             if (null == userId) {
-                this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
-                HelpdeskLogger.add("login failed: " + this.mobile, LogLevelType.ERROR);
+                facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "authenticationFailedMsg");
+                HelpdeskLogger.add("login failed: " + mobile, LogLevelType.ERROR);
                 return null;
             }
             login(userId);
         } catch (SubjectNotFoundException e) {
-            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "mobileNotRegistered");
-            HelpdeskLogger.add("login: subject not found for " + this.mobile, LogLevelType.ERROR);
+            facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "mobileNotRegistered");
+            HelpdeskLogger.add("login: subject not found for " + mobile, LogLevelType.ERROR);
             return null;
         } catch (MalformedURLException e) {
-            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "mobileCommunicationFailed");
+            facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "mobileCommunicationFailed");
             HelpdeskLogger.add("login: encap webservice not available", LogLevelType.ERROR);
             return null;
         } catch (MobileException e) {
-            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "mobileCommunicationFailed");
-            HelpdeskLogger.add("login: failed to contact encap webservice for " + this.mobile, LogLevelType.ERROR);
+            facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "mobileCommunicationFailed");
+            HelpdeskLogger.add("login: failed to contact encap webservice for " + mobile, LogLevelType.ERROR);
             return null;
         }
         HelpdeskLogger.clear();
@@ -138,10 +138,10 @@ public class AuthenticationBean implements Authentication {
     private void login(String userId)
             throws IOException {
 
-        this.authenticationContext.setUserId(userId);
-        this.authenticationContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());
-        this.authenticationContext.setIssuer(net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID);
-        this.authenticationContext.setUsedDevice(net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID);
+        authenticationContext.setUserId(userId);
+        authenticationContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
+        authenticationContext.setIssuer(net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID);
+        authenticationContext.setUsedDevice(net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID);
 
         exit();
     }
@@ -152,22 +152,22 @@ public class AuthenticationBean implements Authentication {
     public String requestOTP()
             throws MalformedURLException, MobileException, AttributeTypeNotFoundException, AttributeNotFoundException {
 
-        LOG.debug("check mobile: " + this.mobile);
+        LOG.debug("check mobile: " + mobile);
         try {
-            this.encapDeviceService.checkMobile(this.mobile.getNumber());
+            encapDeviceService.checkMobile(mobile.getNumber());
         } catch (SubjectNotFoundException e) {
-            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "mobileNotRegistered");
-            HelpdeskLogger.add("login: subject not found for " + this.mobile, LogLevelType.ERROR);
+            facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "mobileNotRegistered");
+            HelpdeskLogger.add("login: subject not found for " + mobile, LogLevelType.ERROR);
             return null;
         } catch (DeviceDisabledException e) {
-            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "mobileDisabled");
-            HelpdeskLogger.add("login: mobile " + this.mobile + " disabled", LogLevelType.ERROR);
+            facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "mobileDisabled");
+            HelpdeskLogger.add("login: mobile " + mobile + " disabled", LogLevelType.ERROR);
             return null;
         }
 
-        LOG.debug("request OTP: mobile=" + this.mobile);
-        this.challengeId = this.encapDeviceService.requestOTP(this.mobile.getNumber());
-        LOG.debug("received challengeId: " + this.challengeId);
+        LOG.debug("request OTP: mobile=" + mobile);
+        challengeId = encapDeviceService.requestOTP(mobile.getNumber());
+        LOG.debug("received challengeId: " + challengeId);
         return "success";
     }
 
@@ -176,9 +176,9 @@ public class AuthenticationBean implements Authentication {
     public String requestNewOTP()
             throws MalformedURLException, MobileException {
 
-        LOG.debug("request new OTP: mobile=" + this.mobile);
-        this.challengeId = this.encapDeviceService.requestOTP(this.mobile.getNumber());
-        LOG.debug("received new challengeId: " + this.challengeId);
+        LOG.debug("request new OTP: mobile=" + mobile);
+        challengeId = encapDeviceService.requestOTP(mobile.getNumber());
+        LOG.debug("received new challengeId: " + challengeId);
         return "success";
 
     }
@@ -193,7 +193,7 @@ public class AuthenticationBean implements Authentication {
     public String tryAnotherDevice()
             throws IOException {
 
-        this.authenticationContext.setUsedDevice(net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID);
+        authenticationContext.setUsedDevice(net.link.safeonline.model.encap.EncapConstants.ENCAP_DEVICE_ID);
         exit();
         return null;
     }
@@ -220,8 +220,8 @@ public class AuthenticationBean implements Authentication {
     public void destroyCallback() {
 
         LOG.debug("destroy");
-        this.mobileOTP = null;
-        this.mobile = null;
+        mobileOTP = null;
+        mobile = null;
     }
 
 }

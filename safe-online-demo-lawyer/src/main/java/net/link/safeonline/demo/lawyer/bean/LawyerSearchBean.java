@@ -49,25 +49,25 @@ public class LawyerSearchBean extends AbstractLawyerDataClientBean implements La
     @RolesAllowed(LawyerConstants.ADMIN_ROLE)
     public String search() {
 
-        this.log.debug("search: " + this.name);
+        log.debug("search: " + name);
         NameIdentifierMappingClient nameClient = getNameIdentifierMappingClient();
         String userId;
         try {
-            userId = nameClient.getUserId(this.name);
+            userId = nameClient.getUserId(name);
         } catch (SubjectNotFoundException e) {
-            this.facesMessages.add("subject not found");
+            facesMessages.add("subject not found");
             return null;
         } catch (RequestDeniedException e) {
-            this.facesMessages.add("request denied");
+            facesMessages.add("request denied");
             return null;
         } catch (WSClientTransportException e) {
-            this.facesMessages.add("connection failed");
+            facesMessages.add("connection failed");
             return null;
         }
         LawyerStatus currentLawyerStatus = getLawyerStatus(userId);
         if (null == currentLawyerStatus)
             return null;
-        this.lawyerStatus = currentLawyerStatus;
+        lawyerStatus = currentLawyerStatus;
         return "success";
     }
 }

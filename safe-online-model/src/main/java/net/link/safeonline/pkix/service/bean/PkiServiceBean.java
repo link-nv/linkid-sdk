@@ -58,7 +58,7 @@ public class PkiServiceBean implements PkiService, PkiServiceRemote {
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public List<TrustDomainEntity> listTrustDomains() {
 
-        List<TrustDomainEntity> trustDomains = this.trustDomainDAO.listTrustDomains();
+        List<TrustDomainEntity> trustDomains = trustDomainDAO.listTrustDomains();
         return trustDomains;
     }
 
@@ -66,54 +66,54 @@ public class PkiServiceBean implements PkiService, PkiServiceRemote {
     public void addTrustDomain(String name, boolean performOcspCheck)
             throws ExistingTrustDomainException {
 
-        TrustDomainEntity existingTrustDomain = this.trustDomainDAO.findTrustDomain(name);
+        TrustDomainEntity existingTrustDomain = trustDomainDAO.findTrustDomain(name);
         if (null != existingTrustDomain)
             throw new ExistingTrustDomainException();
-        this.trustDomainDAO.addTrustDomain(name, performOcspCheck);
+        trustDomainDAO.addTrustDomain(name, performOcspCheck);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public void addTrustDomain(String name, boolean performOcspCheck, long ocspCacheTimeOutMillis)
             throws ExistingTrustDomainException {
 
-        TrustDomainEntity existingTrustDomain = this.trustDomainDAO.findTrustDomain(name);
+        TrustDomainEntity existingTrustDomain = trustDomainDAO.findTrustDomain(name);
         if (null != existingTrustDomain)
             throw new ExistingTrustDomainException();
-        this.trustDomainDAO.addTrustDomain(name, performOcspCheck, ocspCacheTimeOutMillis);
+        trustDomainDAO.addTrustDomain(name, performOcspCheck, ocspCacheTimeOutMillis);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public void removeTrustDomain(String name)
             throws TrustDomainNotFoundException {
 
-        TrustDomainEntity trustDomain = this.trustDomainDAO.getTrustDomain(name);
-        List<TrustPointEntity> trustPoints = this.trustPointDAO.listTrustPoints(trustDomain);
+        TrustDomainEntity trustDomain = trustDomainDAO.getTrustDomain(name);
+        List<TrustPointEntity> trustPoints = trustPointDAO.listTrustPoints(trustDomain);
         for (TrustPointEntity trustPoint : trustPoints) {
-            this.trustPointDAO.removeTrustPoint(trustPoint);
+            trustPointDAO.removeTrustPoint(trustPoint);
         }
-        this.trustDomainDAO.removeTrustDomain(trustDomain);
+        trustDomainDAO.removeTrustDomain(trustDomain);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public void addTrustPoint(String domainName, byte[] encodedCertificate)
             throws TrustDomainNotFoundException, CertificateEncodingException, ExistingTrustPointException {
 
-        TrustDomainEntity trustDomain = this.trustDomainDAO.getTrustDomain(domainName);
+        TrustDomainEntity trustDomain = trustDomainDAO.getTrustDomain(domainName);
         X509Certificate certificate = PkiUtils.decodeCertificate(encodedCertificate);
         String subjectName = certificate.getSubjectX500Principal().toString();
         LOG.debug("subject name: " + subjectName);
-        TrustPointEntity existingTrustPoint = this.trustPointDAO.findTrustPoint(trustDomain, certificate);
+        TrustPointEntity existingTrustPoint = trustPointDAO.findTrustPoint(trustDomain, certificate);
         if (null != existingTrustPoint)
             throw new ExistingTrustPointException();
-        this.trustPointDAO.addTrustPoint(trustDomain, certificate);
+        trustPointDAO.addTrustPoint(trustDomain, certificate);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public List<TrustPointEntity> listTrustPoints(String domainName)
             throws TrustDomainNotFoundException {
 
-        TrustDomainEntity trustDomain = this.trustDomainDAO.getTrustDomain(domainName);
-        List<TrustPointEntity> trustPoints = this.trustPointDAO.listTrustPoints(trustDomain);
+        TrustDomainEntity trustDomain = trustDomainDAO.getTrustDomain(domainName);
+        List<TrustPointEntity> trustPoints = trustPointDAO.listTrustPoints(trustDomain);
         return trustPoints;
     }
 
@@ -121,8 +121,8 @@ public class PkiServiceBean implements PkiService, PkiServiceRemote {
     public void removeTrustPoint(TrustPointEntity trustPoint)
             throws TrustPointNotFoundException {
 
-        TrustPointEntity attachedTrustPoint = this.trustPointDAO.getTrustPoint(trustPoint.getPk());
-        this.trustPointDAO.removeTrustPoint(attachedTrustPoint);
+        TrustPointEntity attachedTrustPoint = trustPointDAO.getTrustPoint(trustPoint.getPk());
+        trustPointDAO.removeTrustPoint(attachedTrustPoint);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -130,7 +130,7 @@ public class PkiServiceBean implements PkiService, PkiServiceRemote {
             throws TrustDomainNotFoundException {
 
         LOG.debug("get trust domain: " + trustDomainName);
-        TrustDomainEntity trustDomain = this.trustDomainDAO.getTrustDomain(trustDomainName);
+        TrustDomainEntity trustDomain = trustDomainDAO.getTrustDomain(trustDomainName);
         return trustDomain;
     }
 
@@ -140,7 +140,7 @@ public class PkiServiceBean implements PkiService, PkiServiceRemote {
 
         LOG.debug("save trust domain: " + trustDomain);
         // TODO: use EntityManager.merge instead
-        TrustDomainEntity attachedTrustDomain = this.trustDomainDAO.getTrustDomain(trustDomain.getName());
+        TrustDomainEntity attachedTrustDomain = trustDomainDAO.getTrustDomain(trustDomain.getName());
         attachedTrustDomain.setPerformOcspCheck(trustDomain.isPerformOcspCheck());
         attachedTrustDomain.setOcspCacheTimeOutMillis(trustDomain.getOcspCacheTimeOutMillis());
     }
@@ -148,12 +148,12 @@ public class PkiServiceBean implements PkiService, PkiServiceRemote {
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public void clearOcspCache() {
 
-        this.cachedOcspResponseDAO.clearOcspCache();
+        cachedOcspResponseDAO.clearOcspCache();
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public void clearOcspCachePerTrustDomain(TrustDomainEntity trustDomain) {
 
-        this.cachedOcspResponseDAO.clearOcspCachePerTrustDomain(trustDomain);
+        cachedOcspResponseDAO.clearOcspCachePerTrustDomain(trustDomain);
     }
 }

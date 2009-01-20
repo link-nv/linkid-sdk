@@ -77,12 +77,12 @@ public class ServletLoginFilter implements Filter {
 
     public AuthorizationService getAuthorizationService() {
 
-        if (this.authorizationService != null)
-            return this.authorizationService;
+        if (authorizationService != null)
+            return authorizationService;
 
         LOG.debug("init authorizationService");
         try {
-            return this.authorizationService = EjbUtils.getEJB(AuthorizationService.JNDI_BINDING, AuthorizationService.class);
+            return authorizationService = EjbUtils.getEJB(AuthorizationService.JNDI_BINDING, AuthorizationService.class);
         } catch (RuntimeException e) {
             LOG.error("authorization service lookup failure", e);
             throw e;

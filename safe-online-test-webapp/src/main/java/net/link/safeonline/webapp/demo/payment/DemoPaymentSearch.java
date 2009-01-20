@@ -22,12 +22,12 @@ public class DemoPaymentSearch extends Page {
 
     public void setName(String name) {
 
-        this.fillInputField("name", name);
+        fillInputField("name", name);
     }
 
     public DemoPaymentSearchResult search() {
 
-        this.clickButtonAndWait("search");
+        clickButtonAndWait("search");
         return new DemoPaymentSearchResult();
     }
 }

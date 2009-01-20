@@ -51,7 +51,7 @@ public class TicketServiceBean extends AbstractCinemaServiceBean implements Tick
     public CinemaTicketEntity createTicket(CinemaUserEntity user, CinemaFilmEntity film, Date time, CinemaSeatOccupationEntity occupation) {
 
         // Occupy our seat.
-        CinemaSeatOccupationEntity ticketOccupation = this.seatService.validate(occupation);
+        CinemaSeatOccupationEntity ticketOccupation = seatService.validate(occupation);
 
         // Create a ticket for them.
         CinemaTicketEntity ticket = new CinemaTicketEntity(user, film, time.getTime(), ticketOccupation);
@@ -66,7 +66,7 @@ public class TicketServiceBean extends AbstractCinemaServiceBean implements Tick
     public CinemaTicketEntity reserve(CinemaTicketEntity ticket) {
 
         ticket.getOccupation().reserve();
-        this.em.persist(ticket);
+        em.persist(ticket);
 
         return ticket;
     }
@@ -90,10 +90,10 @@ public class TicketServiceBean extends AbstractCinemaServiceBean implements Tick
     @SuppressWarnings("unchecked")
     public List<CinemaTicketEntity> getTickets(String nrn, Date time) {
 
-        this.LOG.debug("looking up ticket for {nrn: " + nrn + "} at " + time);
+        LOG.debug("looking up ticket for {nrn: " + nrn + "} at " + time);
         try {
             // NOTE: time parameter is not checked because this is a demo.
-            return this.em.createNamedQuery(CinemaTicketEntity.getByNrn).setParameter("nrn", nrn).getResultList();
+            return em.createNamedQuery(CinemaTicketEntity.getByNrn).setParameter("nrn", nrn).getResultList();
         }
 
         catch (NoResultException e) {
@@ -124,7 +124,7 @@ public class TicketServiceBean extends AbstractCinemaServiceBean implements Tick
             if (ticket.getFilm().getName().equalsIgnoreCase(filmName))
                 return true;
 
-        this.LOG.debug("None for film " + filmName);
+        LOG.debug("None for film " + filmName);
         return false;
     }
 
@@ -135,7 +135,7 @@ public class TicketServiceBean extends AbstractCinemaServiceBean implements Tick
     public List<CinemaTicketEntity> getTickets(CinemaUserEntity user) {
 
         CinemaUserEntity attachedUser = attach(user);
-        return this.em.createNamedQuery(CinemaTicketEntity.getByUser).setParameter("user", attachedUser).getResultList();
+        return em.createNamedQuery(CinemaTicketEntity.getByUser).setParameter("user", attachedUser).getResultList();
     }
 
     /**

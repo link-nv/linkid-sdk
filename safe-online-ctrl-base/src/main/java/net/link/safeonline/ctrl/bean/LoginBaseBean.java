@@ -53,25 +53,25 @@ public class LoginBaseBean implements LoginBase {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.log.debug("post construct: #0", this);
+        log.debug("post construct: #0", this);
     }
 
     @PreDestroy
     public void preDestroyCallback() {
 
-        this.log.debug("pre destroy: #0", this);
+        log.debug("pre destroy: #0", this);
     }
 
     @PostActivate
     public void postActivateCallback() {
 
-        this.log.debug("post activate: #0", this);
+        log.debug("post activate: #0", this);
     }
 
     @PrePassivate
     public void prePassivateCallback() {
 
-        this.log.debug("pre passivate: #0", this);
+        log.debug("pre passivate: #0", this);
     }
 
     public String login() {
@@ -80,13 +80,13 @@ public class LoginBaseBean implements LoginBase {
          * The login cookie is used to help in detecting an application level session timeout.
          */
         addLoginCookie();
-        return SafeOnlineLoginUtils.login("overview.seam", this.localeSelector.getLocale(), null, false);
+        return SafeOnlineLoginUtils.login("overview.seam", localeSelector.getLocale(), null, false);
     }
 
     public String logout() {
 
-        this.log.debug("logout");
-        String userId = (String) this.sessionContext.get(LoginManager.USERID_SESSION_ATTRIBUTE);
+        log.debug("logout");
+        String userId = (String) sessionContext.get(LoginManager.USERID_SESSION_ATTRIBUTE);
         removeLoginCookie();
         SafeOnlineLoginUtils.logout(userId, "main.seam");
         return "success";
@@ -94,7 +94,7 @@ public class LoginBaseBean implements LoginBase {
 
     protected void addLoginCookie() {
 
-        this.log.debug("add login cookie");
+        log.debug("add login cookie");
         FacesContext facesContext = FacesContext.getCurrentInstance();
         HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
 
@@ -105,7 +105,7 @@ public class LoginBaseBean implements LoginBase {
 
     protected void removeLoginCookie() {
 
-        this.log.debug("remove login cookie");
+        log.debug("remove login cookie");
         FacesContext facesContext = FacesContext.getCurrentInstance();
         HttpServletResponse response = (HttpServletResponse) facesContext.getExternalContext().getResponse();
 
@@ -117,16 +117,16 @@ public class LoginBaseBean implements LoginBase {
 
     public String getLoggedInUsername() {
 
-        this.log.debug("get logged in username");
-        String userId = (String) this.sessionContext.get(LoginManager.USERID_SESSION_ATTRIBUTE);
-        String username = this.subjectService.getSubjectLogin(userId);
+        log.debug("get logged in username");
+        String userId = (String) sessionContext.get(LoginManager.USERID_SESSION_ATTRIBUTE);
+        String username = subjectService.getSubjectLogin(userId);
         return username;
     }
 
     public boolean isLoggedIn() {
 
-        this.log.debug("is logged in");
-        String userId = (String) this.sessionContext.get(LoginManager.USERID_SESSION_ATTRIBUTE);
+        log.debug("is logged in");
+        String userId = (String) sessionContext.get(LoginManager.USERID_SESSION_ATTRIBUTE);
         return null != userId;
     }
 
@@ -134,6 +134,6 @@ public class LoginBaseBean implements LoginBase {
     @Destroy
     public void destroyCallback() {
 
-        this.log.debug("destroy: #0", this);
+        log.debug("destroy: #0", this);
     }
 }

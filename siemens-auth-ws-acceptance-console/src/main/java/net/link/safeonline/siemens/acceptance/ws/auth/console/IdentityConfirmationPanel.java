@@ -56,13 +56,13 @@ public class IdentityConfirmationPanel extends JPanel implements Observer {
     private JTable            identityTable    = null;
 
     private Action            confirmAction    = new ConfirmAction("Confirm");
-    private JButton           confirmButton    = new JButton(this.confirmAction);
+    private JButton           confirmButton    = new JButton(confirmAction);
 
     private Action            rejectAction     = new RejectAction("Reject");
-    private JButton           rejectButton     = new JButton(this.rejectAction);
+    private JButton           rejectButton     = new JButton(rejectAction);
 
     private Action            exitAction       = new ExitAction("Exit");
-    private JButton           exitButton       = new JButton(this.exitAction);
+    private JButton           exitButton       = new JButton(exitAction);
 
 
     public IdentityConfirmationPanel(AcceptanceConsole parent) {
@@ -78,21 +78,21 @@ public class IdentityConfirmationPanel extends JPanel implements Observer {
      */
     private void buildWindow() {
 
-        this.confirmButton.setEnabled(false);
-        this.rejectButton.setEnabled(false);
-        this.exitButton.setEnabled(false);
+        confirmButton.setEnabled(false);
+        rejectButton.setEnabled(false);
+        exitButton.setEnabled(false);
 
         JPanel controlPanel = new JPanel();
 
-        this.infoPanel.setLayout(new BorderLayout());
-        this.infoPanel.add(this.infoLabel, BorderLayout.NORTH);
+        infoPanel.setLayout(new BorderLayout());
+        infoPanel.add(infoLabel, BorderLayout.NORTH);
 
-        controlPanel.add(this.confirmButton);
-        controlPanel.add(this.rejectButton);
-        controlPanel.add(this.exitButton);
+        controlPanel.add(confirmButton);
+        controlPanel.add(rejectButton);
+        controlPanel.add(exitButton);
 
         setLayout(new BorderLayout());
-        this.add(this.infoPanel, BorderLayout.CENTER);
+        this.add(infoPanel, BorderLayout.CENTER);
         this.add(controlPanel, BorderLayout.SOUTH);
 
     }
@@ -104,17 +104,17 @@ public class IdentityConfirmationPanel extends JPanel implements Observer {
     public void update(Observable o, Object arg) {
 
         setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-        this.exitButton.setEnabled(true);
+        exitButton.setEnabled(true);
 
         if (arg instanceof AuthenticationError) {
             AuthenticationError error = (AuthenticationError) arg;
-            this.infoLabel.setText("Authentication failed: " + error.getCode().getErrorCode() + " message=" + error.getMessage());
+            infoLabel.setText("Authentication failed: " + error.getCode().getErrorCode() + " message=" + error.getMessage());
         } else if (arg instanceof AuthenticationStep) {
             AuthenticationStep authenticationStep = (AuthenticationStep) arg;
-            this.infoLabel.setText("Additional authentication step: " + authenticationStep.getValue());
+            infoLabel.setText("Additional authentication step: " + authenticationStep.getValue());
         } else if (arg instanceof List<?>) {
-            this.confirmButton.setEnabled(true);
-            this.rejectButton.setEnabled(true);
+            confirmButton.setEnabled(true);
+            rejectButton.setEnabled(true);
             setIdentityTable((List<Attribute>) arg);
         }
 
@@ -147,11 +147,11 @@ public class IdentityConfirmationPanel extends JPanel implements Observer {
         }
 
         // set table
-        this.identityTable = new JTable(new AttributesTableModel(attributeList, false));
-        this.identityTable.getColumnModel().getColumn(1).setMaxWidth(75);
-        JScrollPane tableScrollPane = new JScrollPane(this.identityTable);
-        this.infoPanel.add(tableScrollPane, BorderLayout.CENTER);
-        this.infoPanel.revalidate();
+        identityTable = new JTable(new AttributesTableModel(attributeList, false));
+        identityTable.getColumnModel().getColumn(1).setMaxWidth(75);
+        JScrollPane tableScrollPane = new JScrollPane(identityTable);
+        infoPanel.add(tableScrollPane, BorderLayout.CENTER);
+        infoPanel.revalidate();
     }
 
 
@@ -169,7 +169,7 @@ public class IdentityConfirmationPanel extends JPanel implements Observer {
 
         public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
-            IdentityConfirmationPanel.this.parent.resetContent();
+            parent.resetContent();
         }
     }
 
@@ -187,7 +187,7 @@ public class IdentityConfirmationPanel extends JPanel implements Observer {
 
         public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
-            IdentityConfirmationPanel.this.parent.confirmIdentity(Confirmation.CONFIRM);
+            parent.confirmIdentity(Confirmation.CONFIRM);
         }
     }
 
@@ -205,7 +205,7 @@ public class IdentityConfirmationPanel extends JPanel implements Observer {
 
         public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
-            IdentityConfirmationPanel.this.parent.confirmIdentity(Confirmation.REJECT);
+            parent.confirmIdentity(Confirmation.REJECT);
         }
     }
 

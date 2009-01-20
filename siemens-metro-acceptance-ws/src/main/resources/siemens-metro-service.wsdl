@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="urn:net:lin-k:siemens:metro"
+	xmlns:tns="urn:net:lin-k:siemens:metro" name="SiemensMetroService">
+
+	<types>
+		<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+			targetNamespace="urn:net:lin-k:siemens:metro">
+			<element name="Request">
+				<complexType />
+			</element>
+			<element name="Response">
+				<complexType>
+					<sequence>
+						<element name="Attribute" type="string" minOccurs="0"
+							maxOccurs="1" />
+					</sequence>
+				</complexType>
+			</element>
+		</schema>
+	</types>
+
+	<message name="RequestMessage">
+		<part name="request" element="tns:Request" />
+	</message>
+	<message name="ResponseMessage">
+		<part name="result" element="tns:Response" />
+	</message>
+
+	<portType name="MetroPort">
+		<operation name="getAttribute">
+			<input message="tns:RequestMessage" />
+			<output message="tns:ResponseMessage" />
+		</operation>
+	</portType>
+
+	<binding name="MetroBinding" type="tns:MetroPort">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="getAttribute">
+			<soap:operation soapAction="Metro" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+
+	<service name="MetroService">
+		<port name="MetroPort" binding="tns:MetroBinding">
+			<soap:address location="http://localhost:8080/siemens-ws/metro/" />
+		</port>
+	</service>
+</definitions>

@@ -69,7 +69,7 @@ public class CreateP12 extends JPanel {
 
     public CreateP12(ApplicationConsole applicationConsole) {
 
-        this.parent = applicationConsole;
+        parent = applicationConsole;
         buildWindow();
         handleEvents();
     }
@@ -84,9 +84,9 @@ public class CreateP12 extends JPanel {
         infoPanel.setLayout(gbl);
 
         JLabel keyStoreLabel = new JLabel(KEYSTORE.getMessage());
-        this.keyStoreExt.addItem(".p12");
-        this.keyStoreExt.addItem(".pfx");
-        this.keyStoreExt.setSelectedIndex(0);
+        keyStoreExt.addItem(".p12");
+        keyStoreExt.addItem(".pfx");
+        keyStoreExt.setSelectedIndex(0);
         JLabel keyStorePwLabel = new JLabel(KEYSTORE_PW.getMessage());
         JLabel keyEntryPasswordLabel = new JLabel(KEYENTRY_PW.getMessage());
         JLabel nameLabel = new JLabel(CERT_DN.getMessage());
@@ -103,13 +103,13 @@ public class CreateP12 extends JPanel {
 
         gbc.gridx = 1;
         gbc.gridy = 0;
-        gbl.setConstraints(this.keyStoreField, gbc);
-        infoPanel.add(this.keyStoreField, gbc);
+        gbl.setConstraints(keyStoreField, gbc);
+        infoPanel.add(keyStoreField, gbc);
 
         gbc.gridx = 2;
         gbc.gridy = 0;
-        gbl.setConstraints(this.keyStoreExt, gbc);
-        infoPanel.add(this.keyStoreExt, gbc);
+        gbl.setConstraints(keyStoreExt, gbc);
+        infoPanel.add(keyStoreExt, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -118,8 +118,8 @@ public class CreateP12 extends JPanel {
 
         gbc.gridx = 1;
         gbc.gridy = 1;
-        gbl.setConstraints(this.nameField, gbc);
-        infoPanel.add(this.nameField, gbc);
+        gbl.setConstraints(nameField, gbc);
+        infoPanel.add(nameField, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 2;
@@ -128,8 +128,8 @@ public class CreateP12 extends JPanel {
 
         gbc.gridx = 1;
         gbc.gridy = 2;
-        gbl.setConstraints(this.keyStorePasswordField, gbc);
-        infoPanel.add(this.keyStorePasswordField, gbc);
+        gbl.setConstraints(keyStorePasswordField, gbc);
+        infoPanel.add(keyStorePasswordField, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 3;
@@ -138,20 +138,20 @@ public class CreateP12 extends JPanel {
 
         gbc.gridx = 1;
         gbc.gridy = 3;
-        gbl.setConstraints(this.keyEntryPasswordField, gbc);
-        infoPanel.add(this.keyEntryPasswordField, gbc);
+        gbl.setConstraints(keyEntryPasswordField, gbc);
+        infoPanel.add(keyEntryPasswordField, gbc);
 
-        controlPanel.add(this.createButton);
-        controlPanel.add(this.cancelButton);
+        controlPanel.add(createButton);
+        controlPanel.add(cancelButton);
 
-        this.setLayout(new BorderLayout());
+        setLayout(new BorderLayout());
         this.add(infoPanel, BorderLayout.CENTER);
         this.add(controlPanel, BorderLayout.SOUTH);
     }
 
     private void handleEvents() {
 
-        this.createButton.addActionListener(new ActionListener() {
+        createButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
@@ -161,7 +161,7 @@ public class CreateP12 extends JPanel {
             }
         });
 
-        this.cancelButton.addActionListener(new ActionListener() {
+        cancelButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
@@ -172,13 +172,13 @@ public class CreateP12 extends JPanel {
 
     protected boolean checkInput() {
 
-        if (null == this.keyStoreField.getText() || this.keyStoreField.getText().length() == 0) {
+        if (null == keyStoreField.getText() || keyStoreField.getText().length() == 0) {
             LOG.error("Please provide a keystore name...");
             JOptionPane.showMessageDialog(this, ERROR_MISSING_FIELDS.getMessage(), ERROR_MISSING_FIELDS.getMessage(),
                     JOptionPane.ERROR_MESSAGE);
             return false;
         }
-        if (null == this.nameField.getText() || this.nameField.getText().length() == 0) {
+        if (null == nameField.getText() || nameField.getText().length() == 0) {
             LOG.error("Please provide a distinguished name...");
             JOptionPane.showMessageDialog(this, ERROR_MISSING_FIELDS.getMessage(), ERROR_MISSING_FIELDS.getMessage(),
                     JOptionPane.ERROR_MESSAGE);
@@ -191,10 +191,10 @@ public class CreateP12 extends JPanel {
 
         try {
             // get information
-            String keyStoreName = this.keyStoreField.getText().trim();
-            String certDN = this.nameField.getText().trim();
-            char[] keyStorePassword = this.keyStorePasswordField.getPassword();
-            char[] keyEntryPassword = this.keyEntryPasswordField.getPassword();
+            String keyStoreName = keyStoreField.getText().trim();
+            String certDN = nameField.getText().trim();
+            char[] keyStorePassword = keyStorePasswordField.getPassword();
+            char[] keyEntryPassword = keyEntryPasswordField.getPassword();
 
             // generate keypair
             KeyPair keyPair = KeyStoreUtils.generateKeyPair();
@@ -203,7 +203,7 @@ public class CreateP12 extends JPanel {
             X509Certificate certificate = KeyStoreUtils.generateSelfSignedCertificate(keyPair, "CN=" + certDN);
 
             // persist P12 to keystore in /tmp
-            File pkcs12keyStore = File.createTempFile(keyStoreName, (String) this.keyStoreExt.getSelectedItem());
+            File pkcs12keyStore = File.createTempFile(keyStoreName, (String) keyStoreExt.getSelectedItem());
             KeyStoreUtils.persistKey(pkcs12keyStore, keyPair.getPrivate(), certificate, keyStorePassword, keyEntryPassword);
 
             // load generated identity
@@ -215,8 +215,8 @@ public class CreateP12 extends JPanel {
             LOG.info(msg);
             JOptionPane.showMessageDialog(this, msg);
 
-            this.parent.consoleManager.setIdentity(privateKeyEntry, "", "", "");
-            this.parent.resetContent();
+            parent.consoleManager.setIdentity(privateKeyEntry, "", "", "");
+            parent.resetContent();
 
         } catch (Exception ex) {
             LOG.error("Failed to generate a P12", ex);
@@ -226,6 +226,6 @@ public class CreateP12 extends JPanel {
 
     protected void onCancel() {
 
-        this.parent.resetContent();
+        parent.resetContent();
     }
 }

@@ -63,8 +63,8 @@ public class AttributeProviderManagerServiceBean implements AttributeProviderMan
             throws AttributeTypeNotFoundException {
 
         LOG.debug("get attribute providers for attribute " + attributeName);
-        AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeName);
-        List<AttributeProviderEntity> attributeProviders = this.attributeProviderDAO.listAttributeProviders(attributeType);
+        AttributeTypeEntity attributeType = attributeTypeDAO.getAttributeType(attributeName);
+        List<AttributeProviderEntity> attributeProviders = attributeProviderDAO.listAttributeProviders(attributeType);
         return attributeProviders;
     }
 
@@ -72,11 +72,11 @@ public class AttributeProviderManagerServiceBean implements AttributeProviderMan
     public void removeAttributeProvider(AttributeProviderEntity attributeProvider)
             throws AttributeProviderNotFoundException {
 
-        AttributeProviderEntity attachedEntity = this.attributeProviderDAO.findAttributeProvider(attributeProvider.getApplication(),
+        AttributeProviderEntity attachedEntity = attributeProviderDAO.findAttributeProvider(attributeProvider.getApplication(),
                 attributeProvider.getAttributeType());
         if (null == attachedEntity)
             throw new AttributeProviderNotFoundException();
-        this.attributeProviderDAO.removeAttributeProvider(attachedEntity);
+        attributeProviderDAO.removeAttributeProvider(attachedEntity);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -84,13 +84,13 @@ public class AttributeProviderManagerServiceBean implements AttributeProviderMan
             throws ApplicationNotFoundException, AttributeTypeNotFoundException, ExistingAttributeProviderException,
             PermissionDeniedException {
 
-        ApplicationEntity application = this.applicationDAO.getApplication(applicationName);
-        AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeName);
+        ApplicationEntity application = applicationDAO.getApplication(applicationName);
+        AttributeTypeEntity attributeType = attributeTypeDAO.getAttributeType(attributeName);
         if (!attributeType.isLocal())
             throw new PermissionDeniedException("Cannot set attribute provider on remote attribute");
-        AttributeProviderEntity existingAttributeProvider = this.attributeProviderDAO.findAttributeProvider(application, attributeType);
+        AttributeProviderEntity existingAttributeProvider = attributeProviderDAO.findAttributeProvider(application, attributeType);
         if (null != existingAttributeProvider)
             throw new ExistingAttributeProviderException();
-        this.attributeProviderDAO.addAttributeProvider(application, attributeType);
+        attributeProviderDAO.addAttributeProvider(application, attributeType);
     }
 }

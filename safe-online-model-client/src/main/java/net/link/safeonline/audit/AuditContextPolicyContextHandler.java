@@ -40,7 +40,7 @@ public class AuditContextPolicyContextHandler implements PolicyContextHandler {
 
         public long getAuditContextId() {
 
-            return this.auditContextId;
+            return auditContextId;
         }
 
         public AuditContextInfo(long auditContextId) {
@@ -50,7 +50,7 @@ public class AuditContextPolicyContextHandler implements PolicyContextHandler {
 
         public void lock() {
 
-            this.counter++;
+            counter++;
         }
 
         /**
@@ -58,8 +58,8 @@ public class AuditContextPolicyContextHandler implements PolicyContextHandler {
          */
         public boolean unlock() {
 
-            this.counter--;
-            return 0 == this.counter;
+            counter--;
+            return 0 == counter;
         }
     }
 

@@ -44,7 +44,7 @@ public class AttributeOutputComponent extends UIOutput {
         response.startElement("span", this);
         String clientId = getClientId(context);
         response.writeAttribute("id", clientId, "id");
-        response.writeAttribute("class", STYLE_CLASS_DEFAULT + " " + this.styleClass, "styleClass");
+        response.writeAttribute("class", STYLE_CLASS_DEFAULT + " " + styleClass, "styleClass");
         AttributeDO attribute = (AttributeDO) getValue();
         DatatypeType type = attribute.getType();
         AttributeValueEncoder attributeValueEncoder = getAttributeValueEncoder(type);
@@ -204,13 +204,11 @@ public class AttributeOutputComponent extends UIOutput {
     private static void registerAttributeValueEncoder(Class<? extends AttributeValueEncoder> clazz) {
 
         SupportedType supportedType = clazz.getAnnotation(SupportedType.class);
-        if (null == supportedType) {
+        if (null == supportedType)
             throw new RuntimeException("attribute value encoder requires @SupportedType meta-data annotation");
-        }
         DatatypeType type = supportedType.value();
-        if (attributeValueEncoders.containsKey(type)) {
+        if (attributeValueEncoders.containsKey(type))
             throw new RuntimeException("duplicate attribute value encoder entry for type: " + type);
-        }
         attributeValueEncoders.put(type, clazz);
     }
 
@@ -229,9 +227,8 @@ public class AttributeOutputComponent extends UIOutput {
         if (null != attributeValueEncoder)
             return attributeValueEncoder;
         Class<? extends AttributeValueEncoder> attributeValueEncoderClass = attributeValueEncoders.get(type);
-        if (null == attributeValueEncoderClass) {
+        if (null == attributeValueEncoderClass)
             throw new RuntimeException("unsupported type: " + type);
-        }
         try {
             attributeValueEncoder = attributeValueEncoderClass.newInstance();
         } catch (Exception e) {
@@ -243,7 +240,7 @@ public class AttributeOutputComponent extends UIOutput {
 
     public String getStyleClass() {
 
-        return this.styleClass;
+        return styleClass;
     }
 
     public void setStyleClass(String styleClass) {

@@ -48,7 +48,7 @@ public class PkiServlet extends AbstractInjectionServlet {
 
         super.init(config);
         LOG.debug("init");
-        this.client = new IdentityServiceClient();
+        client = new IdentityServiceClient();
     }
 
     @Override
@@ -56,7 +56,7 @@ public class PkiServlet extends AbstractInjectionServlet {
             throws ServletException, IOException {
 
         LOG.debug("doGet");
-        X509Certificate certificate = this.client.getCertificate();
+        X509Certificate certificate = client.getCertificate();
         String pemCertificate = toPem(certificate);
 
         response.setContentType("text/plain");

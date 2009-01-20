@@ -38,12 +38,12 @@ public class LoginHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
         super(request);
 
-        this.userPrincipal = new SimplePrincipal(userId);
+        userPrincipal = new SimplePrincipal(userId);
     }
 
     @Override
     public Principal getUserPrincipal() {
 
-        return this.userPrincipal;
+        return userPrincipal;
     }
 }

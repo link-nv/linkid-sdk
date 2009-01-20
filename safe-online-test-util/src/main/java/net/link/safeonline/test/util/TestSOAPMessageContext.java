@@ -34,8 +34,8 @@ public class TestSOAPMessageContext implements SOAPMessageContext {
     public TestSOAPMessageContext(SOAPMessage message, boolean outbound) {
 
         this.message = message;
-        this.properties = new HashMap<String, Object>();
-        this.properties.put(MessageContext.MESSAGE_OUTBOUND_PROPERTY, outbound);
+        properties = new HashMap<String, Object>();
+        properties.put(MessageContext.MESSAGE_OUTBOUND_PROPERTY, outbound);
     }
 
     @SuppressWarnings("unused")
@@ -46,7 +46,7 @@ public class TestSOAPMessageContext implements SOAPMessageContext {
 
     public SOAPMessage getMessage() {
 
-        return this.message;
+        return message;
     }
 
     public Set<String> getRoles() {
@@ -94,7 +94,7 @@ public class TestSOAPMessageContext implements SOAPMessageContext {
 
     public Object get(Object key) {
 
-        return this.properties.get(key);
+        return properties.get(key);
     }
 
     public boolean isEmpty() {
@@ -110,7 +110,7 @@ public class TestSOAPMessageContext implements SOAPMessageContext {
     public Object put(String key, Object value) {
 
         LOG.debug("put: " + key);
-        return this.properties.put(key, value);
+        return properties.put(key, value);
     }
 
     @SuppressWarnings("unused")

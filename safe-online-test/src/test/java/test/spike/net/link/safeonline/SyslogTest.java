@@ -9,9 +9,6 @@ package test.spike.net.link.safeonline;
 
 import java.util.Date;
 
-import net.link.safeonline.audit.TinySyslogger;
-import net.link.safeonline.audit.TinySyslogger.Facility;
-
 
 public class SyslogTest {
 

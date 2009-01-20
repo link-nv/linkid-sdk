@@ -43,13 +43,13 @@ public class ApplicationDAOBean implements ApplicationDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, ApplicationEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, ApplicationEntity.QueryInterface.class);
     }
 
     public ApplicationEntity findApplication(String applicationName) {
 
         LOG.debug("find application: " + applicationName);
-        ApplicationEntity application = this.entityManager.find(ApplicationEntity.class, applicationName);
+        ApplicationEntity application = entityManager.find(ApplicationEntity.class, applicationName);
         return application;
     }
 
@@ -60,19 +60,19 @@ public class ApplicationDAOBean implements ApplicationDAO {
         LOG.debug("adding application: " + applicationName);
         ApplicationEntity application = new ApplicationEntity(applicationName, applicationFriendlyName, applicationOwner, description,
                 applicationUrl, applicationLogo, certificate);
-        this.entityManager.persist(application);
+        entityManager.persist(application);
         return application;
     }
 
     public List<ApplicationEntity> listApplications() {
 
-        List<ApplicationEntity> applications = this.queryObject.listApplications();
+        List<ApplicationEntity> applications = queryObject.listApplications();
         return applications;
     }
 
     public List<ApplicationEntity> listUserApplications() {
 
-        List<ApplicationEntity> applications = this.queryObject.listUserApplications();
+        List<ApplicationEntity> applications = queryObject.listUserApplications();
         return applications;
     }
 
@@ -94,27 +94,27 @@ public class ApplicationDAOBean implements ApplicationDAO {
         ApplicationEntity application = new ApplicationEntity(applicationName, applicationFriendlyName, applicationOwner, description,
                 applicationUrl, applicationLogo, allowUserSubscription, removable, certificate, initialIdentityVersion,
                 usageAgreementVersion);
-        this.entityManager.persist(application);
+        entityManager.persist(application);
         return application;
     }
 
     public void removeApplication(ApplicationEntity application) {
 
         LOG.debug("remove application(DAO): " + application.getName());
-        this.entityManager.remove(application);
+        entityManager.remove(application);
     }
 
     public List<ApplicationEntity> listApplications(ApplicationOwnerEntity applicationOwner) {
 
         LOG.debug("get application for application owner: " + applicationOwner.getName());
-        List<ApplicationEntity> applications = this.queryObject.listApplicationsWhereApplicationOwner(applicationOwner);
+        List<ApplicationEntity> applications = queryObject.listApplicationsWhereApplicationOwner(applicationOwner);
         return applications;
     }
 
     public ApplicationEntity getApplication(X509Certificate certificate)
             throws ApplicationNotFoundException {
 
-        List<ApplicationEntity> applications = this.queryObject
+        List<ApplicationEntity> applications = queryObject
                                                                .listApplicationsWhereCertificateSubject(certificate
                                                                                                                    .getSubjectX500Principal()
                                                                                                                    .getName());
@@ -126,7 +126,7 @@ public class ApplicationDAOBean implements ApplicationDAO {
 
     public ApplicationEntity findApplication(X509Certificate certificate) {
 
-        List<ApplicationEntity> applications = this.queryObject
+        List<ApplicationEntity> applications = queryObject
                                                                .listApplicationsWhereCertificateSubject(certificate
                                                                                                                    .getSubjectX500Principal()
                                                                                                                    .getName());

@@ -34,6 +34,6 @@ public enum HistoryEventType {
 
     public String getKey() {
 
-        return this.key;
+        return key;
     }
 }

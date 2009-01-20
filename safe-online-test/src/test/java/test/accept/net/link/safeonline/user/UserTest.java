@@ -27,15 +27,15 @@ public class UserTest extends TestCase {
             throws Exception {
 
         super.setUp();
-        this.acceptanceTestManager = new AcceptanceTestManager();
-        this.acceptanceTestManager.setUp();
+        acceptanceTestManager = new AcceptanceTestManager();
+        acceptanceTestManager.setUp();
     }
 
     @Override
     protected void tearDown()
             throws Exception {
 
-        this.acceptanceTestManager.tearDown();
+        acceptanceTestManager.tearDown();
         super.tearDown();
     }
 

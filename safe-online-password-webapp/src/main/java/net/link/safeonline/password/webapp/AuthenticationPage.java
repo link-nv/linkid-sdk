@@ -70,7 +70,7 @@ public class AuthenticationPage extends TemplatePage {
 
         super();
 
-        this.authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest(getRequest()).getSession());
+        authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest(getRequest()).getSession());
 
         addHeader(this);
 
@@ -96,7 +96,7 @@ public class AuthenticationPage extends TemplatePage {
             @Override
             public void onClick() {
 
-                AuthenticationPage.this.authenticationContext.setUsedDevice(PasswordConstants.PASSWORD_DEVICE_ID);
+                authenticationContext.setUsedDevice(PasswordConstants.PASSWORD_DEVICE_ID);
                 exit();
 
             }
@@ -104,7 +104,7 @@ public class AuthenticationPage extends TemplatePage {
 
         getContent().add(new ProgressAuthenticationPanel("progress", ProgressAuthenticationPanel.stage.authenticate));
 
-        String title = getLocalizer().getString("authenticatingFor", this) + " " + this.authenticationContext.getApplication();
+        String title = getLocalizer().getString("authenticatingFor", this) + " " + authenticationContext.getApplication();
         getContent().add(new Label("title", title));
 
         getContent().add(new AuthenticationForm(AUTHENTICATION_FORM_ID));
@@ -126,12 +126,12 @@ public class AuthenticationPage extends TemplatePage {
 
             super(id);
 
-            final TextField<String> loginField = new TextField<String>(LOGIN_NAME_FIELD_ID, this.login = new Model<String>());
+            final TextField<String> loginField = new TextField<String>(LOGIN_NAME_FIELD_ID, login = new Model<String>());
             loginField.setRequired(true);
 
             add(loginField);
 
-            final PasswordTextField passwordField = new PasswordTextField(PASSWORD_FIELD_ID, this.password = new Model<String>());
+            final PasswordTextField passwordField = new PasswordTextField(PASSWORD_FIELD_ID, password = new Model<String>());
 
             add(passwordField);
 
@@ -143,27 +143,27 @@ public class AuthenticationPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    LOG.debug("login: " + AuthenticationForm.this.login);
+                    LOG.debug("login: " + login);
 
                     try {
-                        String userId = AuthenticationPage.this.passwordDeviceService.authenticate(getUserId(),
-                                AuthenticationForm.this.password.getObject());
+                        String userId = passwordDeviceService.authenticate(getUserId(),
+                                password.getObject());
                         if (null == userId) {
                             AuthenticationForm.this.error(getLocalizer().getString("authenticationFailedMsg", this));
                             HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "login failed: "
-                                    + AuthenticationForm.this.login, LogLevelType.ERROR);
+                                    + login, LogLevelType.ERROR);
                             return;
                         }
                         login(userId);
                     } catch (SubjectNotFoundException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("authenticationFailedMsg", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "login: subject not found for "
-                                + AuthenticationForm.this.login, LogLevelType.ERROR);
+                                + login, LogLevelType.ERROR);
                         return;
                     } catch (PermissionDeniedException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("authenticationFailedMsg", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(),
-                                "Failed to contact OLAS to retrieve device mapping for " + AuthenticationForm.this.login,
+                                "Failed to contact OLAS to retrieve device mapping for " + login,
                                 LogLevelType.ERROR);
                         return;
                     } catch (DeviceNotFoundException e) {
@@ -211,9 +211,9 @@ public class AuthenticationPage extends TemplatePage {
 
             String userId;
             try {
-                userId = idMappingClient.getUserId(this.login.getObject());
+                userId = idMappingClient.getUserId(login.getObject());
             } catch (net.link.safeonline.sdk.exception.SubjectNotFoundException e) {
-                LOG.error("subject not found: " + this.login);
+                LOG.error("subject not found: " + login);
                 throw new SubjectNotFoundException();
             } catch (RequestDeniedException e) {
                 LOG.error("request denied: " + e.getMessage());
@@ -229,10 +229,10 @@ public class AuthenticationPage extends TemplatePage {
 
     public void login(String userId) {
 
-        this.authenticationContext.setUserId(userId);
-        this.authenticationContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());
-        this.authenticationContext.setIssuer(PasswordConstants.PASSWORD_DEVICE_ID);
-        this.authenticationContext.setUsedDevice(PasswordConstants.PASSWORD_DEVICE_ID);
+        authenticationContext.setUserId(userId);
+        authenticationContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
+        authenticationContext.setIssuer(PasswordConstants.PASSWORD_DEVICE_ID);
+        authenticationContext.setUsedDevice(PasswordConstants.PASSWORD_DEVICE_ID);
 
         exit();
 

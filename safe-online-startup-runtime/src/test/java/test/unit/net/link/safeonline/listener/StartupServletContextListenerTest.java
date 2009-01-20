@@ -34,17 +34,17 @@ public class StartupServletContextListenerTest extends TestCase {
 
         super.setUp();
 
-        this.jndiTestUtils = new JndiTestUtils();
-        this.jndiTestUtils.setUp();
+        jndiTestUtils = new JndiTestUtils();
+        jndiTestUtils.setUp();
 
-        this.testedInstance = new StartupServletContextListener();
+        testedInstance = new StartupServletContextListener();
     }
 
     @Override
     protected void tearDown()
             throws Exception {
 
-        this.jndiTestUtils.tearDown();
+        jndiTestUtils.tearDown();
 
         super.tearDown();
     }
@@ -61,8 +61,8 @@ public class StartupServletContextListenerTest extends TestCase {
         ServletContextEvent servletContextEvent = new ServletContextEvent(mockServletContext);
         String testJndiPrefix = "test/jndi/prefix";
 
-        this.jndiTestUtils.bindComponent(testJndiPrefix + "/dontcare", mockDontCareStartable);
-        this.jndiTestUtils.bindComponent(testJndiPrefix + "/bootstrap", mockBootstrapStartable);
+        jndiTestUtils.bindComponent(testJndiPrefix + "/dontcare", mockDontCareStartable);
+        jndiTestUtils.bindComponent(testJndiPrefix + "/bootstrap", mockBootstrapStartable);
 
         // stubs
         expect(mockServletContext.getInitParameter("StartableJndiPrefix")).andStubReturn(testJndiPrefix);
@@ -80,8 +80,8 @@ public class StartupServletContextListenerTest extends TestCase {
         mocksControl.replay();
 
         // operate
-        this.testedInstance.contextInitialized(servletContextEvent);
-        this.testedInstance.contextDestroyed(servletContextEvent);
+        testedInstance.contextInitialized(servletContextEvent);
+        testedInstance.contextDestroyed(servletContextEvent);
 
         // verify
         mocksControl.verify();

@@ -99,9 +99,9 @@ public class DataWebServiceTest {
             throws Exception {
 
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        this.certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
+        certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
 
-        this.dataClient = new DataClientImpl("https://localhost:8443", this.certificate, keyPair.getPrivate());
+        dataClient = new DataClientImpl("https://localhost:8443", certificate, keyPair.getPrivate());
     }
 
     @Test
@@ -132,12 +132,12 @@ public class DataWebServiceTest {
         // operate: register certificate as application trust point
         PkiService pkiService = getPkiService(initialContext);
         IntegrationTestUtils.login(adminUserId, "admin");
-        pkiService.addTrustPoint(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, this.certificate.getEncoded());
+        pkiService.addTrustPoint(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate.getEncoded());
 
         // operate: add application with certificate
         ApplicationService applicationService = getApplicationService(initialContext);
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null,
-                this.certificate.getEncoded(), Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
+                certificate.getEncoded(), Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
                         IntegrationTestUtils.NAME_ATTRIBUTE) }), false, false, false, null);
 
         // operate: subscribe onto the application and confirm identity usage
@@ -148,7 +148,7 @@ public class DataWebServiceTest {
 
         // operate & verify
         try {
-            this.dataClient.getAttributeValue(loginSubject.getUserId(), IntegrationTestUtils.NAME_ATTRIBUTE, String.class);
+            dataClient.getAttributeValue(loginSubject.getUserId(), IntegrationTestUtils.NAME_ATTRIBUTE, String.class);
             fail();
         } catch (RequestDeniedException e) {
             // expected
@@ -159,30 +159,30 @@ public class DataWebServiceTest {
         IntegrationTestUtils.login(adminUserId, "admin");
         attributeProviderManagerService.addAttributeProvider(testApplicationName, IntegrationTestUtils.NAME_ATTRIBUTE);
 
-        Attribute<String> result = this.dataClient.getAttributeValue(loginSubject.getUserId(), IntegrationTestUtils.NAME_ATTRIBUTE,
+        Attribute<String> result = dataClient.getAttributeValue(loginSubject.getUserId(), IntegrationTestUtils.NAME_ATTRIBUTE,
                 String.class);
         LOG.debug("result: " + result);
         assertNull(result);
 
-        this.dataClient.setCaptureMessages(true);
-        this.dataClient.createAttribute(loginSubject.getUserId(), IntegrationTestUtils.NAME_ATTRIBUTE, testName);
+        dataClient.setCaptureMessages(true);
+        dataClient.createAttribute(loginSubject.getUserId(), IntegrationTestUtils.NAME_ATTRIBUTE, testName);
 
         /*
          * Verify the message logger facility.
          */
-        assertNotNull(this.dataClient.getInboundMessage());
-        assertNotNull(this.dataClient.getOutboundMessage());
-        LOG.debug("OUTBOUND message: " + DomUtils.domToString(this.dataClient.getOutboundMessage()));
-        LOG.debug("INBOUND message: " + DomUtils.domToString(this.dataClient.getInboundMessage()));
+        assertNotNull(dataClient.getInboundMessage());
+        assertNotNull(dataClient.getOutboundMessage());
+        LOG.debug("OUTBOUND message: " + DomUtils.domToString(dataClient.getOutboundMessage()));
+        LOG.debug("INBOUND message: " + DomUtils.domToString(dataClient.getInboundMessage()));
 
-        result = this.dataClient.getAttributeValue(loginSubject.getUserId(), IntegrationTestUtils.NAME_ATTRIBUTE, String.class);
+        result = dataClient.getAttributeValue(loginSubject.getUserId(), IntegrationTestUtils.NAME_ATTRIBUTE, String.class);
         LOG.debug("result: " + result);
         assertEquals(IntegrationTestUtils.NAME_ATTRIBUTE, result.getName());
         assertEquals(testName, result.getValue());
 
         // check if we can set a string attribute to null
-        this.dataClient.setAttributeValue(loginSubject.getUserId(), IntegrationTestUtils.NAME_ATTRIBUTE, null);
-        result = this.dataClient.getAttributeValue(loginSubject.getUserId(), IntegrationTestUtils.NAME_ATTRIBUTE, String.class);
+        dataClient.setAttributeValue(loginSubject.getUserId(), IntegrationTestUtils.NAME_ATTRIBUTE, null);
+        result = dataClient.getAttributeValue(loginSubject.getUserId(), IntegrationTestUtils.NAME_ATTRIBUTE, String.class);
         assertNull(result.getValue());
     }
 
@@ -214,7 +214,7 @@ public class DataWebServiceTest {
         // operate: register certificate as application trust point
         PkiService pkiService = getPkiService(initialContext);
         IntegrationTestUtils.login(adminUserId, "admin");
-        pkiService.addTrustPoint(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, this.certificate.getEncoded());
+        pkiService.addTrustPoint(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate.getEncoded());
 
         // operate: add attribute type
         AttributeTypeService attributeTypeService = getAttributeTypeService(initialContext);
@@ -242,7 +242,7 @@ public class DataWebServiceTest {
         // operate: add application with certificate
         ApplicationService applicationService = getApplicationService(initialContext);
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null,
-                this.certificate.getEncoded(), Arrays.asList(new IdentityAttributeTypeDO[] {
+                certificate.getEncoded(), Arrays.asList(new IdentityAttributeTypeDO[] {
                         new IdentityAttributeTypeDO(IntegrationTestUtils.NAME_ATTRIBUTE), new IdentityAttributeTypeDO(TEST_COMP_NAME) }),
                 false, false, false, null);
 
@@ -257,10 +257,10 @@ public class DataWebServiceTest {
         IntegrationTestUtils.login(adminUserId, "admin");
         attributeProviderManagerService.addAttributeProvider(testApplicationName, TEST_COMP_NAME);
 
-        this.dataClient.setCaptureMessages(true);
-        Attribute<CompoundedTestClass[]> result = this.dataClient.getAttributeValue(loginSubject.getUserId(), TEST_COMP_NAME,
+        dataClient.setCaptureMessages(true);
+        Attribute<CompoundedTestClass[]> result = dataClient.getAttributeValue(loginSubject.getUserId(), TEST_COMP_NAME,
                 CompoundedTestClass[].class);
-        LOG.debug("result message: " + DomUtils.domToString(this.dataClient.getInboundMessage()));
+        LOG.debug("result message: " + DomUtils.domToString(dataClient.getInboundMessage()));
         assertNull(result);
 
         // operate: add 2 compounded attribute records
@@ -282,9 +282,9 @@ public class DataWebServiceTest {
         attribute2.setBooleanValue(false);
         identityService.addAttribute(attributes);
 
-        this.dataClient.setCaptureMessages(true);
-        result = this.dataClient.getAttributeValue(loginSubject.getUserId(), TEST_COMP_NAME, CompoundedTestClass[].class);
-        LOG.debug("result message: " + DomUtils.domToString(this.dataClient.getInboundMessage()));
+        dataClient.setCaptureMessages(true);
+        result = dataClient.getAttributeValue(loginSubject.getUserId(), TEST_COMP_NAME, CompoundedTestClass[].class);
+        LOG.debug("result message: " + DomUtils.domToString(dataClient.getInboundMessage()));
 
         assertEquals(TEST_COMP_NAME, result.getName());
 
@@ -301,15 +301,15 @@ public class DataWebServiceTest {
         // operate: write compounded attribute
         CompoundedTestClass newValue = result.getValue()[1];
         newValue.setMember0("hello world");
-        this.dataClient.setCaptureMessages(true);
+        dataClient.setCaptureMessages(true);
         try {
-            this.dataClient.setAttributeValue(loginSubject.getUserId(), TEST_COMP_NAME, newValue);
+            dataClient.setAttributeValue(loginSubject.getUserId(), TEST_COMP_NAME, newValue);
         } finally {
-            LOG.debug("request message: " + DomTestUtils.domToString(this.dataClient.getOutboundMessage()));
+            LOG.debug("request message: " + DomTestUtils.domToString(dataClient.getOutboundMessage()));
         }
 
         // verify
-        result = this.dataClient.getAttributeValue(loginSubject.getUserId(), TEST_COMP_NAME, CompoundedTestClass[].class);
+        result = dataClient.getAttributeValue(loginSubject.getUserId(), TEST_COMP_NAME, CompoundedTestClass[].class);
         assertEquals("hello world", result.getValue()[1].getMember0());
         assertFalse(result.getValue()[1].isMember1());
         assertNotNull(result.getValue()[1].getId());
@@ -318,13 +318,13 @@ public class DataWebServiceTest {
         CompoundedTestClass newCompoundAttribute = new CompoundedTestClass();
         newCompoundAttribute.setMember0("foobar");
         newCompoundAttribute.setMember1(true);
-        this.dataClient.createAttribute(loginSubject.getUserId(), TEST_COMP_NAME, newCompoundAttribute);
+        dataClient.createAttribute(loginSubject.getUserId(), TEST_COMP_NAME, newCompoundAttribute);
 
-        result = this.dataClient.getAttributeValue(loginSubject.getUserId(), TEST_COMP_NAME, CompoundedTestClass[].class);
+        result = dataClient.getAttributeValue(loginSubject.getUserId(), TEST_COMP_NAME, CompoundedTestClass[].class);
         assertEquals(3, result.getValue().length);
 
         // check that the SDK can also retrieve compound attributes via maps.
-        Attribute<Map[]> mapResult = this.dataClient.getAttributeValue(loginSubject.getUserId(), TEST_COMP_NAME, Map[].class);
+        Attribute<Map[]> mapResult = dataClient.getAttributeValue(loginSubject.getUserId(), TEST_COMP_NAME, Map[].class);
         assertEquals(3, mapResult.getValue().length);
 
         assertEquals("foobar", result.getValue()[2].getMember0());
@@ -334,9 +334,9 @@ public class DataWebServiceTest {
         assertEquals(mapResult.getValue()[0].get(CompoundBuilder.ATTRIBUTE_ID_KEY), result.getValue()[0].getId());
 
         // operate: remove a compounded attribute record
-        this.dataClient.removeAttribute(loginSubject.getUserId(), new Attribute(TEST_COMP_NAME, result.getValue()[1]));
+        dataClient.removeAttribute(loginSubject.getUserId(), new Attribute(TEST_COMP_NAME, result.getValue()[1]));
         // verify
-        result = this.dataClient.getAttributeValue(loginSubject.getUserId(), TEST_COMP_NAME, CompoundedTestClass[].class);
+        result = dataClient.getAttributeValue(loginSubject.getUserId(), TEST_COMP_NAME, CompoundedTestClass[].class);
         assertEquals(2, result.getValue().length);
     }
 
@@ -367,7 +367,7 @@ public class DataWebServiceTest {
         // operate: register certificate as application trust point
         PkiService pkiService = getPkiService(initialContext);
         IntegrationTestUtils.login(adminUserId, "admin");
-        pkiService.addTrustPoint(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, this.certificate.getEncoded());
+        pkiService.addTrustPoint(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate.getEncoded());
 
         // operate: add boolean attribute type
         AttributeTypeService attributeTypeService = getAttributeTypeService(initialContext);
@@ -378,7 +378,7 @@ public class DataWebServiceTest {
         // operate: add application with certificate
         ApplicationService applicationService = getApplicationService(initialContext);
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null,
-                this.certificate.getEncoded(), Arrays.asList(new IdentityAttributeTypeDO[] {
+                certificate.getEncoded(), Arrays.asList(new IdentityAttributeTypeDO[] {
                         new IdentityAttributeTypeDO(IntegrationTestUtils.NAME_ATTRIBUTE), new IdentityAttributeTypeDO(attributeName) }),
                 false, false, false, null);
 
@@ -393,32 +393,32 @@ public class DataWebServiceTest {
         IntegrationTestUtils.login(adminUserId, "admin");
         attributeProviderManagerService.addAttributeProvider(testApplicationName, attributeName);
 
-        Attribute<Boolean> result = this.dataClient.getAttributeValue(loginSubject.getUserId(), attributeName, Boolean.class);
+        Attribute<Boolean> result = dataClient.getAttributeValue(loginSubject.getUserId(), attributeName, Boolean.class);
         assertNull(result);
 
         try {
-            this.dataClient.createAttribute(loginSubject.getUserId(), attributeName, "test-value");
+            dataClient.createAttribute(loginSubject.getUserId(), attributeName, "test-value");
             fail();
         } catch (RuntimeException e) {
             // expected: Boolean is required, not a String.
         }
 
         // set boolean attribute value to true + verify
-        this.dataClient.createAttribute(loginSubject.getUserId(), attributeName, Boolean.TRUE);
+        dataClient.createAttribute(loginSubject.getUserId(), attributeName, Boolean.TRUE);
 
-        result = this.dataClient.getAttributeValue(loginSubject.getUserId(), attributeName, Boolean.class);
+        result = dataClient.getAttributeValue(loginSubject.getUserId(), attributeName, Boolean.class);
         LOG.debug("result: " + result.getValue());
         assertEquals(attributeName, result.getName());
         assertEquals(Boolean.TRUE, result.getValue());
 
         // operate & verify: setting boolean attribute to false
-        this.dataClient.setAttributeValue(loginSubject.getUserId(), attributeName, Boolean.FALSE);
-        result = this.dataClient.getAttributeValue(loginSubject.getUserId(), attributeName, Boolean.class);
+        dataClient.setAttributeValue(loginSubject.getUserId(), attributeName, Boolean.FALSE);
+        result = dataClient.getAttributeValue(loginSubject.getUserId(), attributeName, Boolean.class);
         assertEquals(Boolean.FALSE, result.getValue());
 
         // operate & verify: setting boolean attribute to null
-        this.dataClient.setAttributeValue(loginSubject.getUserId(), attributeName, null);
-        result = this.dataClient.getAttributeValue(loginSubject.getUserId(), attributeName, Boolean.class);
+        dataClient.setAttributeValue(loginSubject.getUserId(), attributeName, null);
+        result = dataClient.getAttributeValue(loginSubject.getUserId(), attributeName, Boolean.class);
         assertNull(result.getValue());
     }
 
@@ -449,7 +449,7 @@ public class DataWebServiceTest {
         // operate: register certificate as application trust point
         PkiService pkiService = getPkiService(initialContext);
         IntegrationTestUtils.login(adminUserId, "admin");
-        pkiService.addTrustPoint(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, this.certificate.getEncoded());
+        pkiService.addTrustPoint(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate.getEncoded());
 
         // operate: add date attribute type
         AttributeTypeService attributeTypeService = getAttributeTypeService(initialContext);
@@ -460,7 +460,7 @@ public class DataWebServiceTest {
         // operate: add application with certificate
         ApplicationService applicationService = getApplicationService(initialContext);
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null,
-                this.certificate.getEncoded(), Arrays.asList(new IdentityAttributeTypeDO[] {
+                certificate.getEncoded(), Arrays.asList(new IdentityAttributeTypeDO[] {
                         new IdentityAttributeTypeDO(IntegrationTestUtils.NAME_ATTRIBUTE), new IdentityAttributeTypeDO(attributeName) }),
                 false, false, false, null);
 
@@ -475,11 +475,11 @@ public class DataWebServiceTest {
         IntegrationTestUtils.login(adminUserId, "admin");
         attributeProviderManagerService.addAttributeProvider(testApplicationName, attributeName);
 
-        Attribute<Date> result = this.dataClient.getAttributeValue(loginSubject.getUserId(), attributeName, Date.class);
+        Attribute<Date> result = dataClient.getAttributeValue(loginSubject.getUserId(), attributeName, Date.class);
         assertNull(result);
 
         try {
-            this.dataClient.createAttribute(loginSubject.getUserId(), attributeName, "test-value");
+            dataClient.createAttribute(loginSubject.getUserId(), attributeName, "test-value");
             fail();
         } catch (RuntimeException e) {
             // expected: Date is required, not a String.
@@ -487,16 +487,16 @@ public class DataWebServiceTest {
 
         // set date attribute value + verify
         Date testDate = new DateMidnight().toDate();
-        this.dataClient.createAttribute(loginSubject.getUserId(), attributeName, testDate);
+        dataClient.createAttribute(loginSubject.getUserId(), attributeName, testDate);
 
-        result = this.dataClient.getAttributeValue(loginSubject.getUserId(), attributeName, Date.class);
+        result = dataClient.getAttributeValue(loginSubject.getUserId(), attributeName, Date.class);
         LOG.debug("result: " + result.getValue());
         assertEquals(attributeName, result.getName());
         assertEquals(testDate, result.getValue());
 
         // operate & verify: setting date attribute to null
-        this.dataClient.setAttributeValue(loginSubject.getUserId(), attributeName, null);
-        result = this.dataClient.getAttributeValue(loginSubject.getUserId(), attributeName, Date.class);
+        dataClient.setAttributeValue(loginSubject.getUserId(), attributeName, null);
+        result = dataClient.getAttributeValue(loginSubject.getUserId(), attributeName, Date.class);
         LOG.debug("result value: " + result.getValue());
         assertNull(result.getValue());
     }
@@ -528,7 +528,7 @@ public class DataWebServiceTest {
         // operate: register certificate as application trust point
         PkiService pkiService = getPkiService(initialContext);
         IntegrationTestUtils.login(adminUserId, "admin");
-        pkiService.addTrustPoint(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, this.certificate.getEncoded());
+        pkiService.addTrustPoint(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate.getEncoded());
 
         // operate: add multivalued attribute type
         AttributeTypeService attributeTypeService = getAttributeTypeService(initialContext);
@@ -540,7 +540,7 @@ public class DataWebServiceTest {
         // operate: add application with certificate
         ApplicationService applicationService = getApplicationService(initialContext);
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null,
-                this.certificate.getEncoded(), Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(attributeName) }),
+                certificate.getEncoded(), Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(attributeName) }),
                 false, false, false, null);
 
         // operate: subscribe onto the application and confirm identity usage
@@ -554,11 +554,11 @@ public class DataWebServiceTest {
         IntegrationTestUtils.login(adminUserId, "admin");
         attributeProviderManagerService.addAttributeProvider(testApplicationName, attributeName);
 
-        Attribute<String[]> result = this.dataClient.getAttributeValue(loginSubject.getUserId(), attributeName, String[].class);
+        Attribute<String[]> result = dataClient.getAttributeValue(loginSubject.getUserId(), attributeName, String[].class);
         assertNull(result);
 
         try {
-            this.dataClient.createAttribute(loginSubject.getUserId(), attributeName, Boolean.TRUE);
+            dataClient.createAttribute(loginSubject.getUserId(), attributeName, Boolean.TRUE);
             fail();
         } catch (RuntimeException e) {
             // expected: String is required, not a Boolean.
@@ -566,9 +566,9 @@ public class DataWebServiceTest {
 
         // set attribute value & verify
         String attributeValue1 = "test-attribute-value-1";
-        this.dataClient.createAttribute(loginSubject.getUserId(), attributeName, new String[] { attributeValue1 });
+        dataClient.createAttribute(loginSubject.getUserId(), attributeName, new String[] { attributeValue1 });
 
-        result = this.dataClient.getAttributeValue(loginSubject.getUserId(), attributeName, String[].class);
+        result = dataClient.getAttributeValue(loginSubject.getUserId(), attributeName, String[].class);
         LOG.debug("result: " + result.getValue());
         assertEquals(attributeName, result.getName());
         assertEquals(attributeValue1, result.getValue()[0]);
@@ -579,12 +579,12 @@ public class DataWebServiceTest {
         attribute2.setStringValue(attributeValue2);
         identityService.addAttribute(Collections.singletonList(attribute2));
 
-        this.dataClient.setCaptureMessages(true);
-        result = this.dataClient.getAttributeValue(loginSubject.getUserId(), attributeName, String[].class);
+        dataClient.setCaptureMessages(true);
+        result = dataClient.getAttributeValue(loginSubject.getUserId(), attributeName, String[].class);
         // assertNotNull(result.getValue());
         LOG.debug("result: " + result.getValue());
-        Document resultMessage = this.dataClient.getInboundMessage();
-        LOG.debug("Request SOAP message: " + DomTestUtils.domToString(this.dataClient.getOutboundMessage()));
+        Document resultMessage = dataClient.getInboundMessage();
+        LOG.debug("Request SOAP message: " + DomTestUtils.domToString(dataClient.getOutboundMessage()));
         LOG.debug("Response SOAP message: " + DomTestUtils.domToString(resultMessage));
         LOG.debug("result values: " + result.getValue());
         for (String value : result.getValue()) {
@@ -620,7 +620,7 @@ public class DataWebServiceTest {
         // operate: register certificate as application trust point
         PkiService pkiService = getPkiService(initialContext);
         IntegrationTestUtils.login(adminUserId, "admin");
-        pkiService.addTrustPoint(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, this.certificate.getEncoded());
+        pkiService.addTrustPoint(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate.getEncoded());
 
         // operate: add boolean attribute type
         AttributeTypeService attributeTypeService = getAttributeTypeService(initialContext);
@@ -631,7 +631,7 @@ public class DataWebServiceTest {
         // operate: add application with certificate
         ApplicationService applicationService = getApplicationService(initialContext);
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null,
-                this.certificate.getEncoded(), Arrays.asList(new IdentityAttributeTypeDO[] {
+                certificate.getEncoded(), Arrays.asList(new IdentityAttributeTypeDO[] {
                         new IdentityAttributeTypeDO(IntegrationTestUtils.NAME_ATTRIBUTE), new IdentityAttributeTypeDO(attributeName) }),
                 false, false, false, null);
 
@@ -640,41 +640,41 @@ public class DataWebServiceTest {
         IntegrationTestUtils.login(adminUserId, "admin");
         attributeProviderManagerService.addAttributeProvider(testApplicationName, attributeName);
 
-        Attribute<Boolean> result = this.dataClient.getAttributeValue(loginSubject.getUserId(), attributeName, Boolean.class);
+        Attribute<Boolean> result = dataClient.getAttributeValue(loginSubject.getUserId(), attributeName, Boolean.class);
         assertNull(result);
 
         try {
-            this.dataClient.setAttributeValue(loginSubject.getUserId(), attributeName, Boolean.TRUE);
+            dataClient.setAttributeValue(loginSubject.getUserId(), attributeName, Boolean.TRUE);
             fail();
         } catch (AttributeNotFoundException e) {
             // expected
         }
 
         // operate
-        this.dataClient.createAttribute(loginSubject.getUserId(), attributeName, Boolean.TRUE);
+        dataClient.createAttribute(loginSubject.getUserId(), attributeName, Boolean.TRUE);
 
         // verify
-        result = this.dataClient.getAttributeValue(loginSubject.getUserId(), attributeName, Boolean.class);
+        result = dataClient.getAttributeValue(loginSubject.getUserId(), attributeName, Boolean.class);
         assertNotNull(result);
         assertTrue(result.getValue());
 
         // operate: set value to FALSE
-        this.dataClient.setAttributeValue(loginSubject.getUserId(), attributeName, Boolean.FALSE);
-        result = this.dataClient.getAttributeValue(loginSubject.getUserId(), attributeName, Boolean.class);
+        dataClient.setAttributeValue(loginSubject.getUserId(), attributeName, Boolean.FALSE);
+        result = dataClient.getAttributeValue(loginSubject.getUserId(), attributeName, Boolean.class);
         assertNotNull(result);
         assertFalse(result.getValue());
 
         // operate: set value to NULL
-        this.dataClient.setAttributeValue(loginSubject.getUserId(), attributeName, null);
-        result = this.dataClient.getAttributeValue(loginSubject.getUserId(), attributeName, Boolean.class);
+        dataClient.setAttributeValue(loginSubject.getUserId(), attributeName, null);
+        result = dataClient.getAttributeValue(loginSubject.getUserId(), attributeName, Boolean.class);
         assertNotNull(result);
         assertNull(result.getValue());
 
         // operate: remove the attribute
-        this.dataClient.removeAttribute(loginSubject.getUserId(), result);
+        dataClient.removeAttribute(loginSubject.getUserId(), result);
 
         // verify that the attribute no longer exists
-        result = this.dataClient.getAttributeValue(loginSubject.getUserId(), attributeName, Boolean.class);
+        result = dataClient.getAttributeValue(loginSubject.getUserId(), attributeName, Boolean.class);
         assertNull(result);
     }
 
@@ -703,7 +703,7 @@ public class DataWebServiceTest {
         @CompoundId
         public String getId() {
 
-            return this.id;
+            return id;
         }
 
         public void setId(String id) {
@@ -714,7 +714,7 @@ public class DataWebServiceTest {
         @CompoundMember(TEST_MEMBER_0_NAME)
         public String getMember0() {
 
-            return this.member0;
+            return member0;
         }
 
         public void setMember0(String member0) {
@@ -725,7 +725,7 @@ public class DataWebServiceTest {
         @CompoundMember(TEST_MEMBER_1_NAME)
         public Boolean isMember1() {
 
-            return this.member1;
+            return member1;
         }
 
         public void setMember1(Boolean member1) {
@@ -736,7 +736,7 @@ public class DataWebServiceTest {
         @Override
         public String toString() {
 
-            return new ToStringBuilder(this).append("member0", this.member0).append("member1", this.member1).toString();
+            return new ToStringBuilder(this).append("member0", member0).append("member1", member1).toString();
         }
     }
 }

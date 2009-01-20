@@ -85,7 +85,7 @@ public class HelpdeskEventEntity implements Serializable {
         this.message = message;
         this.principal = principal;
         this.logLevel = logLevel;
-        this.time = new Date();
+        time = new Date();
     }
 
     public HelpdeskEventEntity(HelpdeskContextEntity helpdeskContext, Date time, String message, String principal, LogLevelType logLevel) {
@@ -101,7 +101,7 @@ public class HelpdeskEventEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Long getId() {
 
-        return this.id;
+        return id;
     }
 
     public void setId(Long id) {
@@ -117,13 +117,13 @@ public class HelpdeskEventEntity implements Serializable {
     @ManyToOne
     public HelpdeskContextEntity getHelpdeskContext() {
 
-        return this.helpdeskContext;
+        return helpdeskContext;
     }
 
     @Temporal(value = TemporalType.DATE)
     public Date getTime() {
 
-        return this.time;
+        return time;
     }
 
     public void setTime(Date time) {
@@ -133,7 +133,7 @@ public class HelpdeskEventEntity implements Serializable {
 
     public String getMessage() {
 
-        return this.message;
+        return message;
     }
 
     public void setMessage(String message) {
@@ -143,7 +143,7 @@ public class HelpdeskEventEntity implements Serializable {
 
     public String getPrincipal() {
 
-        return this.principal;
+        return principal;
     }
 
     public void setPrincipal(String principal) {
@@ -154,7 +154,7 @@ public class HelpdeskEventEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     public LogLevelType getLogLevel() {
 
-        return this.logLevel;
+        return logLevel;
     }
 
     public void setLogLevel(LogLevelType logLevel) {

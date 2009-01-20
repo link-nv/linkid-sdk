@@ -56,12 +56,12 @@ public class UpdatePageTest extends TestCase {
 
         WicketUtil.setUnitTesting(true);
 
-        this.jndiTestUtils = new JndiTestUtils();
-        this.jndiTestUtils.setUp();
+        jndiTestUtils = new JndiTestUtils();
+        jndiTestUtils.setUp();
 
-        this.mockPasswordDeviceService = createMock(PasswordDeviceService.class);
-        this.mockSamlAuthorityService = createMock(SamlAuthorityService.class);
-        this.mockHelpdeskManager = createMock(HelpdeskManager.class);
+        mockPasswordDeviceService = createMock(PasswordDeviceService.class);
+        mockSamlAuthorityService = createMock(SamlAuthorityService.class);
+        mockHelpdeskManager = createMock(HelpdeskManager.class);
 
         // Initialize MBean's
         JmxTestUtils jmxTestUtils = new JmxTestUtils();
@@ -89,7 +89,7 @@ public class UpdatePageTest extends TestCase {
             }
         });
 
-        this.wicket = new WicketTester(new PasswordTestApplication());
+        wicket = new WicketTester(new PasswordTestApplication());
 
     }
 
@@ -98,7 +98,7 @@ public class UpdatePageTest extends TestCase {
     public void tearDown()
             throws Exception {
 
-        this.jndiTestUtils.tearDown();
+        jndiTestUtils.tearDown();
     }
 
     @Test
@@ -111,33 +111,33 @@ public class UpdatePageTest extends TestCase {
         String newPassword = "test-new-password";
         DummyNameIdentifierMappingClient.setUserId(userId);
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(this.wicket.getServletSession());
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setSubject(userId);
 
         // Update Page: Verify.
-        UpdatePage updatePage = (UpdatePage) this.wicket.startPage(UpdatePage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + UpdatePage.UPDATE_FORM_ID, Form.class);
+        UpdatePage updatePage = (UpdatePage) wicket.startPage(UpdatePage.class);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + UpdatePage.UPDATE_FORM_ID, Form.class);
 
         // setup
-        EJBTestUtils.inject(updatePage, this.mockPasswordDeviceService);
-        EJBTestUtils.inject(updatePage, this.mockSamlAuthorityService);
+        EJBTestUtils.inject(updatePage, mockPasswordDeviceService);
+        EJBTestUtils.inject(updatePage, mockSamlAuthorityService);
 
         // stubs
-        this.mockPasswordDeviceService.update(userId, oldPassword, newPassword);
-        expect(this.mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
+        mockPasswordDeviceService.update(userId, oldPassword, newPassword);
+        expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
-        replay(this.mockPasswordDeviceService, this.mockSamlAuthorityService);
+        replay(mockPasswordDeviceService, mockSamlAuthorityService);
 
         // operate
-        FormTester updateForm = this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + UpdatePage.UPDATE_FORM_ID);
+        FormTester updateForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + UpdatePage.UPDATE_FORM_ID);
         updateForm.setValue(UpdatePage.OLDPASSWORD_FIELD_ID, oldPassword);
         updateForm.setValue(UpdatePage.PASSWORD1_FIELD_ID, newPassword);
         updateForm.setValue(UpdatePage.PASSWORD2_FIELD_ID, newPassword);
         updateForm.submit(UpdatePage.SAVE_BUTTON_ID);
 
         // verify
-        verify(this.mockPasswordDeviceService, this.mockSamlAuthorityService);
+        verify(mockPasswordDeviceService, mockSamlAuthorityService);
     }
 
     @Test
@@ -150,35 +150,35 @@ public class UpdatePageTest extends TestCase {
         String newPassword = "test-new-password";
         DummyNameIdentifierMappingClient.setUserId(userId);
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(this.wicket.getServletSession());
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setSubject(userId);
 
         // Update Page: Verify.
-        UpdatePage updatePage = (UpdatePage) this.wicket.startPage(UpdatePage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + UpdatePage.UPDATE_FORM_ID, Form.class);
+        UpdatePage updatePage = (UpdatePage) wicket.startPage(UpdatePage.class);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + UpdatePage.UPDATE_FORM_ID, Form.class);
 
         // setup
-        EJBTestUtils.inject(updatePage, this.mockPasswordDeviceService);
-        this.jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, this.mockHelpdeskManager);
+        EJBTestUtils.inject(updatePage, mockPasswordDeviceService);
+        jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
 
         // stubs
-        expect(this.mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
+        expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
-        replay(this.mockPasswordDeviceService, this.mockHelpdeskManager);
+        replay(mockPasswordDeviceService, mockHelpdeskManager);
 
         // operate
-        FormTester updateForm = this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + UpdatePage.UPDATE_FORM_ID);
+        FormTester updateForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + UpdatePage.UPDATE_FORM_ID);
         updateForm.setValue(UpdatePage.OLDPASSWORD_FIELD_ID, oldPassword);
         updateForm.setValue(UpdatePage.PASSWORD1_FIELD_ID, newPassword);
         updateForm.setValue(UpdatePage.PASSWORD2_FIELD_ID, "foobar-password");
         updateForm.submit(UpdatePage.SAVE_BUTTON_ID);
 
         // verify
-        verify(this.mockPasswordDeviceService, this.mockHelpdeskManager);
+        verify(mockPasswordDeviceService, mockHelpdeskManager);
 
-        this.wicket.assertRenderedPage(UpdatePage.class);
-        this.wicket.assertErrorMessages(new String[] { UpdatePage.PASSWORD2_FIELD_ID + ".EqualPasswordInputValidator" });
+        wicket.assertRenderedPage(UpdatePage.class);
+        wicket.assertErrorMessages(new String[] { UpdatePage.PASSWORD2_FIELD_ID + ".EqualPasswordInputValidator" });
 
     }
 }

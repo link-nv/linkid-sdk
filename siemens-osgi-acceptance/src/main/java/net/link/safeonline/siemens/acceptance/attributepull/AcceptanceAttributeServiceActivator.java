@@ -28,7 +28,7 @@ public class AcceptanceAttributeServiceActivator implements BundleActivator {
 
         System.out.println("registering acceptance attribute service");
         AcceptanceAttributeServiceFactory acceptanceAttributeServiceFactory = new AcceptanceAttributeServiceFactory();
-        this.acceptanceAttributeServiceRegistration = context.registerService(PluginAttributeService.class.getName(),
+        acceptanceAttributeServiceRegistration = context.registerService(PluginAttributeService.class.getName(),
                 acceptanceAttributeServiceFactory, null);
     }
 
@@ -41,6 +41,6 @@ public class AcceptanceAttributeServiceActivator implements BundleActivator {
             throws Exception {
 
         System.out.println("unregistering acceptance attribute service");
-        this.acceptanceAttributeServiceRegistration.unregister();
+        acceptanceAttributeServiceRegistration.unregister();
     }
 }

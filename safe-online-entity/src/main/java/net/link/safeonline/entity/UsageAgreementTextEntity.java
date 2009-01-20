@@ -61,21 +61,21 @@ public class UsageAgreementTextEntity implements Serializable {
     public UsageAgreementTextEntity(GlobalUsageAgreementEntity globalUsageAgreement, String text, String language) {
 
         this.text = text;
-        this.pk = new UsageAgreementTextPK(GlobalUsageAgreementEntity.GLOBAL_USAGE_AGREEMENT,
+        pk = new UsageAgreementTextPK(GlobalUsageAgreementEntity.GLOBAL_USAGE_AGREEMENT,
                 globalUsageAgreement.getUsageAgreementVersion(), language);
     }
 
     public UsageAgreementTextEntity(UsageAgreementEntity usageAgreement, String text, String language) {
 
         this.text = text;
-        this.pk = new UsageAgreementTextPK(usageAgreement.getApplication().getName(), usageAgreement.getUsageAgreementVersion(), language);
+        pk = new UsageAgreementTextPK(usageAgreement.getApplication().getName(), usageAgreement.getUsageAgreementVersion(), language);
     }
 
     @Lob
     @Column(length = 1024 * 1024)
     public String getText() {
 
-        return this.text;
+        return text;
     }
 
     public void setText(String text) {
@@ -86,7 +86,7 @@ public class UsageAgreementTextEntity implements Serializable {
     @EmbeddedId
     public UsageAgreementTextPK getPk() {
 
-        return this.pk;
+        return pk;
     }
 
     public void setPk(UsageAgreementTextPK pk) {
@@ -97,25 +97,25 @@ public class UsageAgreementTextEntity implements Serializable {
     @Transient
     public String getLanguage() {
 
-        return this.pk.getLanguage();
+        return pk.getLanguage();
     }
 
     @Transient
     public Long getUsageAgreementVersion() {
 
-        return this.pk.getUsageAgreementVersion();
+        return pk.getUsageAgreementVersion();
     }
 
     @Transient
     public void setUsageAgreementVersion(Long usageAgreementVersion) {
 
-        this.pk.setUsageAgreementVersion(usageAgreementVersion);
+        pk.setUsageAgreementVersion(usageAgreementVersion);
     }
 
     @Transient
     public String getOwner() {
 
-        return this.pk.getOwner();
+        return pk.getOwner();
     }
 
     @Override
@@ -128,19 +128,19 @@ public class UsageAgreementTextEntity implements Serializable {
         if (false == obj instanceof UsageAgreementTextEntity)
             return false;
         UsageAgreementTextEntity rhs = (UsageAgreementTextEntity) obj;
-        return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
+        return new EqualsBuilder().append(pk, rhs.pk).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.pk).toHashCode();
+        return new HashCodeBuilder().append(pk).toHashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("pk", this.pk).append("text", this.text).toString();
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("pk", pk).append("text", text).toString();
     }
 
 

@@ -21,8 +21,6 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import net.link.safeonline.performance.entity.ExecutionEntity;
-
 
 /**
  * <h2>{@link QuickTest}<br>
@@ -43,15 +41,15 @@ public class QuickTest extends AbstractDataTest {
     @Override
     protected void configure() {
 
-        this.DB_HOST = "sebeco-dev-12";
+        DB_HOST = "sebeco-dev-12";
     }
 
     @SuppressWarnings("unchecked")
     public QuickTest() {
 
-        ExecutionEntity execution = this.executionService.getExecution(new Date(1204796106 * 1000l));
+        ExecutionEntity execution = executionService.getExecution(new Date(1204796106 * 1000l));
 
-        Query query = this.em.createQuery("SELECT d.profile.driverName" + "    FROM ProfileDataEntity d"
+        Query query = em.createQuery("SELECT d.profile.driverName" + "    FROM ProfileDataEntity d"
                 + "        JOIN d.scenarioTiming t" + "    WHERE t.execution = :execution" + "        AND t.startTime = :start");
 
         query.setParameter("execution", execution);

@@ -92,47 +92,47 @@ public class CredentialManagerBeanTest extends TestCase {
 
         super.setUp();
 
-        this.testedInstance = new CredentialManagerBean();
+        testedInstance = new CredentialManagerBean();
 
-        this.mockAttributeDAO = createMock(AttributeDAO.class);
-        EJBTestUtils.inject(this.testedInstance, this.mockAttributeDAO);
+        mockAttributeDAO = createMock(AttributeDAO.class);
+        EJBTestUtils.inject(testedInstance, mockAttributeDAO);
 
-        this.mockPkiProviderManager = createMock(PkiProviderManager.class);
-        EJBTestUtils.inject(this.testedInstance, this.mockPkiProviderManager);
+        mockPkiProviderManager = createMock(PkiProviderManager.class);
+        EJBTestUtils.inject(testedInstance, mockPkiProviderManager);
 
-        this.mockPkiValidator = createMock(PkiValidator.class);
-        EJBTestUtils.inject(this.testedInstance, this.mockPkiValidator);
+        mockPkiValidator = createMock(PkiValidator.class);
+        EJBTestUtils.inject(testedInstance, mockPkiValidator);
 
-        this.mockPkiProvider = createMock(PkiProvider.class);
+        mockPkiProvider = createMock(PkiProvider.class);
 
-        this.mockSubjectIdentifierDAO = createMock(SubjectIdentifierDAO.class);
-        EJBTestUtils.inject(this.testedInstance, this.mockSubjectIdentifierDAO);
+        mockSubjectIdentifierDAO = createMock(SubjectIdentifierDAO.class);
+        EJBTestUtils.inject(testedInstance, mockSubjectIdentifierDAO);
 
-        this.mockAttributeTypeDAO = createMock(AttributeTypeDAO.class);
-        EJBTestUtils.inject(this.testedInstance, this.mockAttributeTypeDAO);
+        mockAttributeTypeDAO = createMock(AttributeTypeDAO.class);
+        EJBTestUtils.inject(testedInstance, mockAttributeTypeDAO);
 
-        this.mockSubjectService = createMock(SubjectService.class);
-        EJBTestUtils.inject(this.testedInstance, this.mockSubjectService);
+        mockSubjectService = createMock(SubjectService.class);
+        EJBTestUtils.inject(testedInstance, mockSubjectService);
 
-        this.mockSecurityAuditLogger = createMock(SecurityAuditLogger.class);
-        EJBTestUtils.inject(this.testedInstance, this.mockSecurityAuditLogger);
+        mockSecurityAuditLogger = createMock(SecurityAuditLogger.class);
+        EJBTestUtils.inject(testedInstance, mockSecurityAuditLogger);
 
-        this.mockObjects = new Object[] { this.mockAttributeDAO, this.mockPkiProviderManager, this.mockPkiValidator, this.mockPkiProvider,
-                this.mockSubjectIdentifierDAO, this.mockAttributeTypeDAO, this.mockSubjectService, this.mockSecurityAuditLogger };
+        mockObjects = new Object[] { mockAttributeDAO, mockPkiProviderManager, mockPkiValidator, mockPkiProvider,
+                mockSubjectIdentifierDAO, mockAttributeTypeDAO, mockSubjectService, mockSecurityAuditLogger };
 
-        EJBTestUtils.init(this.testedInstance);
+        EJBTestUtils.init(testedInstance);
 
         // stubs
-        this.testCallerLogin = "test-caller-login-" + getName();
-        this.testSubject = new SubjectEntity(this.testCallerLogin);
+        testCallerLogin = "test-caller-login-" + getName();
+        testSubject = new SubjectEntity(testCallerLogin);
 
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        this.privateKey = keyPair.getPrivate();
-        this.certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
-        this.signer = new JceSigner(this.privateKey, this.certificate);
-        expect(this.mockPkiProviderManager.findPkiProvider(this.certificate)).andStubReturn(this.mockPkiProvider);
+        privateKey = keyPair.getPrivate();
+        certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
+        signer = new JceSigner(privateKey, certificate);
+        expect(mockPkiProviderManager.findPkiProvider(certificate)).andStubReturn(mockPkiProvider);
 
-        this.identityProvider = new IdentityProvider() {
+        identityProvider = new IdentityProvider() {
 
             public String getGivenName() {
 
@@ -160,26 +160,26 @@ public class CredentialManagerBeanTest extends TestCase {
         SubjectEntity subject = new SubjectEntity(userId);
 
         byte[] authenticationStatementData = AuthenticationStatementFactory.createAuthenticationStatement(sessionId, applicationId,
-                this.signer);
+                signer);
         AuthenticationStatement authenticationStatement = new AuthenticationStatement(authenticationStatementData);
 
         // stubs
-        expect(this.mockPkiProviderManager.findPkiProvider(this.certificate)).andStubReturn(this.mockPkiProvider);
-        expect(this.mockPkiProvider.getTrustDomain()).andStubReturn(trustDomain);
-        expect(this.mockPkiValidator.validateCertificate(trustDomain, this.certificate)).andStubReturn(PkiResult.VALID);
-        expect(this.mockPkiProvider.getIdentifierDomainName()).andStubReturn(identifierDomain);
-        expect(this.mockPkiProvider.getSubjectIdentifier(this.certificate)).andStubReturn(identifier);
-        expect(this.mockSubjectIdentifierDAO.findSubject(identifierDomain, identifier)).andStubReturn(subject);
-        expect(this.mockPkiProvider.isDisabled(subject, this.certificate)).andStubReturn(false);
+        expect(mockPkiProviderManager.findPkiProvider(certificate)).andStubReturn(mockPkiProvider);
+        expect(mockPkiProvider.getTrustDomain()).andStubReturn(trustDomain);
+        expect(mockPkiValidator.validateCertificate(trustDomain, certificate)).andStubReturn(PkiResult.VALID);
+        expect(mockPkiProvider.getIdentifierDomainName()).andStubReturn(identifierDomain);
+        expect(mockPkiProvider.getSubjectIdentifier(certificate)).andStubReturn(identifier);
+        expect(mockSubjectIdentifierDAO.findSubject(identifierDomain, identifier)).andStubReturn(subject);
+        expect(mockPkiProvider.isDisabled(subject, certificate)).andStubReturn(false);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
-        String resultUserId = this.testedInstance.authenticate(sessionId, applicationId, authenticationStatement);
+        String resultUserId = testedInstance.authenticate(sessionId, applicationId, authenticationStatement);
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
         assertNotNull(resultUserId);
         assertEquals(userId, resultUserId);
     }
@@ -195,18 +195,18 @@ public class CredentialManagerBeanTest extends TestCase {
         String operation = DeviceOperationType.REGISTER.name();
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
         try {
-            this.testedInstance.mergeIdentityStatement(sessionId, deviceUserId, operation, identityStatement);
+            testedInstance.mergeIdentityStatement(sessionId, deviceUserId, operation, identityStatement);
             fail();
         } catch (ArgumentIntegrityException e) {
             // expected
         }
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
     }
 
     public void testMergeIdentityStatement()
@@ -218,8 +218,8 @@ public class CredentialManagerBeanTest extends TestCase {
         String userId = UUID.randomUUID().toString();
         SubjectEntity subject = new SubjectEntity(userId);
 
-        byte[] identityStatement = IdentityStatementFactory.createIdentityStatement(sessionId, userId, operation, this.signer,
-                this.identityProvider);
+        byte[] identityStatement = IdentityStatementFactory.createIdentityStatement(sessionId, userId, operation, signer,
+                identityProvider);
         TrustDomainEntity trustDomain = new TrustDomainEntity("test-trust-domain", true);
         String surnameAttribute = "test-surname-attribute";
         String givenNameAttribute = "test-given-name-attribute";
@@ -227,47 +227,47 @@ public class CredentialManagerBeanTest extends TestCase {
         String identifier = "test-identifier";
 
         // stubs
-        expect(this.mockPkiProvider.getTrustDomain()).andStubReturn(trustDomain);
+        expect(mockPkiProvider.getTrustDomain()).andStubReturn(trustDomain);
 
-        expect(this.mockPkiValidator.validateCertificate(trustDomain, this.certificate)).andStubReturn(PkiResult.VALID);
+        expect(mockPkiValidator.validateCertificate(trustDomain, certificate)).andStubReturn(PkiResult.VALID);
 
-        expect(this.mockPkiProvider.listDeviceAttributes(subject)).andStubReturn(new LinkedList<AttributeEntity>());
+        expect(mockPkiProvider.listDeviceAttributes(subject)).andStubReturn(new LinkedList<AttributeEntity>());
 
-        expect(this.mockPkiProvider.mapAttribute(IdentityStatementAttributes.SURNAME)).andStubReturn(surnameAttribute);
-        expect(this.mockAttributeDAO.findAttribute(surnameAttribute, this.testSubject)).andStubReturn(null);
+        expect(mockPkiProvider.mapAttribute(IdentityStatementAttributes.SURNAME)).andStubReturn(surnameAttribute);
+        expect(mockAttributeDAO.findAttribute(surnameAttribute, testSubject)).andStubReturn(null);
 
-        expect(this.mockPkiProvider.mapAttribute(IdentityStatementAttributes.GIVEN_NAME)).andStubReturn(givenNameAttribute);
-        expect(this.mockAttributeDAO.findAttribute(givenNameAttribute, this.testSubject)).andStubReturn(null);
-        expect(this.mockPkiProvider.getIdentifierDomainName()).andStubReturn(identifierDomain);
-        expect(this.mockPkiProvider.getSubjectIdentifier(this.certificate)).andStubReturn(identifier);
-        expect(this.mockSubjectIdentifierDAO.findSubject(identifierDomain, identifier)).andStubReturn(null);
-        this.mockPkiProvider.storeAdditionalAttributes(subject, this.certificate);
-        this.mockPkiProvider.storeDeviceAttribute(subject, 0);
+        expect(mockPkiProvider.mapAttribute(IdentityStatementAttributes.GIVEN_NAME)).andStubReturn(givenNameAttribute);
+        expect(mockAttributeDAO.findAttribute(givenNameAttribute, testSubject)).andStubReturn(null);
+        expect(mockPkiProvider.getIdentifierDomainName()).andStubReturn(identifierDomain);
+        expect(mockPkiProvider.getSubjectIdentifier(certificate)).andStubReturn(identifier);
+        expect(mockSubjectIdentifierDAO.findSubject(identifierDomain, identifier)).andStubReturn(null);
+        mockPkiProvider.storeAdditionalAttributes(subject, certificate);
+        mockPkiProvider.storeDeviceAttribute(subject, 0);
 
         AttributeTypeEntity surnameAttributeType = new AttributeTypeEntity();
-        expect(this.mockAttributeTypeDAO.getAttributeType(surnameAttribute)).andStubReturn(surnameAttributeType);
+        expect(mockAttributeTypeDAO.getAttributeType(surnameAttribute)).andStubReturn(surnameAttributeType);
         AttributeTypeEntity givenNameAttributeType = new AttributeTypeEntity();
-        expect(this.mockAttributeTypeDAO.getAttributeType(givenNameAttribute)).andStubReturn(givenNameAttributeType);
+        expect(mockAttributeTypeDAO.getAttributeType(givenNameAttribute)).andStubReturn(givenNameAttributeType);
 
-        expect(this.mockSubjectService.findSubject(userId)).andReturn(null);
-        expect(this.mockSubjectService.addSubjectWithoutLogin(userId)).andReturn(subject);
+        expect(mockSubjectService.findSubject(userId)).andReturn(null);
+        expect(mockSubjectService.addSubjectWithoutLogin(userId)).andReturn(subject);
 
         // expectations
-        expect(this.mockAttributeDAO.addAttribute(surnameAttributeType, subject)).andStubReturn(
+        expect(mockAttributeDAO.addAttribute(surnameAttributeType, subject)).andStubReturn(
                 new AttributeEntity(surnameAttributeType, subject, 0));
-        expect(this.mockAttributeDAO.addAttribute(givenNameAttributeType, subject)).andStubReturn(
+        expect(mockAttributeDAO.addAttribute(givenNameAttributeType, subject)).andStubReturn(
                 new AttributeEntity(givenNameAttributeType, subject, 0));
-        this.mockSubjectIdentifierDAO.addSubjectIdentifier(identifierDomain, identifier, subject);
+        mockSubjectIdentifierDAO.addSubjectIdentifier(identifierDomain, identifier, subject);
         // this.mockSubjectIdentifierDAO.removeOtherSubjectIdentifiers(identifierDomain, identifier, subject);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
-        this.testedInstance.mergeIdentityStatement(sessionId, userId, operation, identityStatement);
+        testedInstance.mergeIdentityStatement(sessionId, userId, operation, identityStatement);
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
     }
 
     public void testMergeIdentityStatementFailsIfAnotherSubjectAlreadyRegisteredTheCert()
@@ -278,8 +278,8 @@ public class CredentialManagerBeanTest extends TestCase {
         String operation = DeviceOperationType.REGISTER.name();
         String userId = UUID.randomUUID().toString();
 
-        byte[] identityStatement = IdentityStatementFactory.createIdentityStatement(sessionId, userId, operation, this.signer,
-                this.identityProvider);
+        byte[] identityStatement = IdentityStatementFactory.createIdentityStatement(sessionId, userId, operation, signer,
+                identityProvider);
         TrustDomainEntity trustDomain = new TrustDomainEntity("test-trust-domain", true);
         String surnameAttribute = "test-surname-attribute";
         String givenNameAttribute = "test-given-name-attribute";
@@ -288,29 +288,29 @@ public class CredentialManagerBeanTest extends TestCase {
         SubjectEntity anotherSubject = new SubjectEntity("another-subject");
 
         // stubs
-        expect(this.mockPkiProvider.getTrustDomain()).andStubReturn(trustDomain);
+        expect(mockPkiProvider.getTrustDomain()).andStubReturn(trustDomain);
 
-        expect(this.mockPkiValidator.validateCertificate(trustDomain, this.certificate)).andStubReturn(PkiResult.VALID);
+        expect(mockPkiValidator.validateCertificate(trustDomain, certificate)).andStubReturn(PkiResult.VALID);
 
-        expect(this.mockPkiProvider.mapAttribute(IdentityStatementAttributes.SURNAME)).andStubReturn(surnameAttribute);
-        expect(this.mockAttributeDAO.findAttribute(surnameAttribute, this.testSubject)).andStubReturn(null);
+        expect(mockPkiProvider.mapAttribute(IdentityStatementAttributes.SURNAME)).andStubReturn(surnameAttribute);
+        expect(mockAttributeDAO.findAttribute(surnameAttribute, testSubject)).andStubReturn(null);
 
-        expect(this.mockPkiProvider.mapAttribute(IdentityStatementAttributes.GIVEN_NAME)).andStubReturn(givenNameAttribute);
-        expect(this.mockAttributeDAO.findAttribute(givenNameAttribute, this.testSubject)).andStubReturn(null);
-        expect(this.mockPkiProvider.getIdentifierDomainName()).andStubReturn(identifierDomain);
-        expect(this.mockPkiProvider.getSubjectIdentifier(this.certificate)).andStubReturn(identifier);
-        expect(this.mockSubjectIdentifierDAO.findSubject(identifierDomain, identifier)).andStubReturn(anotherSubject);
+        expect(mockPkiProvider.mapAttribute(IdentityStatementAttributes.GIVEN_NAME)).andStubReturn(givenNameAttribute);
+        expect(mockAttributeDAO.findAttribute(givenNameAttribute, testSubject)).andStubReturn(null);
+        expect(mockPkiProvider.getIdentifierDomainName()).andStubReturn(identifierDomain);
+        expect(mockPkiProvider.getSubjectIdentifier(certificate)).andStubReturn(identifier);
+        expect(mockSubjectIdentifierDAO.findSubject(identifierDomain, identifier)).andStubReturn(anotherSubject);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate & verify
         try {
-            this.testedInstance.mergeIdentityStatement(sessionId, userId, operation, identityStatement);
+            testedInstance.mergeIdentityStatement(sessionId, userId, operation, identityStatement);
             fail();
         } catch (AlreadyRegisteredException e) {
             // expected
-            verify(this.mockObjects);
+            verify(mockObjects);
         }
     }
 
@@ -321,25 +321,25 @@ public class CredentialManagerBeanTest extends TestCase {
         String sessionId = UUID.randomUUID().toString();
         String operation = DeviceOperationType.REGISTER.name();
         String user = "foobar-test-user";
-        byte[] identityStatement = IdentityStatementFactory.createIdentityStatement(sessionId, user, operation, this.signer,
-                this.identityProvider);
+        byte[] identityStatement = IdentityStatementFactory.createIdentityStatement(sessionId, user, operation, signer,
+                identityProvider);
         TrustDomainEntity trustDomain = new TrustDomainEntity("test-trust-domain", true);
 
         // stubs
-        expect(this.mockPkiProvider.getTrustDomain()).andStubReturn(trustDomain);
-        expect(this.mockPkiValidator.validateCertificate(trustDomain, this.certificate)).andStubReturn(PkiResult.VALID);
-        this.mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, CredentialManagerBean.SECURITY_MESSAGE_USER_MISMATCH);
+        expect(mockPkiProvider.getTrustDomain()).andStubReturn(trustDomain);
+        expect(mockPkiValidator.validateCertificate(trustDomain, certificate)).andStubReturn(PkiResult.VALID);
+        mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, CredentialManagerBean.SECURITY_MESSAGE_USER_MISMATCH);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate & verify
         try {
-            this.testedInstance.mergeIdentityStatement(sessionId, this.testSubject.getUserId(), operation, identityStatement);
+            testedInstance.mergeIdentityStatement(sessionId, testSubject.getUserId(), operation, identityStatement);
             fail();
         } catch (PermissionDeniedException e) {
             // expected
-            verify(this.mockObjects);
+            verify(mockObjects);
         }
     }
 
@@ -351,26 +351,26 @@ public class CredentialManagerBeanTest extends TestCase {
         String wrongSessionId = "wrong-session-id";
         String operation = DeviceOperationType.REGISTER.name();
         String userId = UUID.randomUUID().toString();
-        byte[] identityStatement = IdentityStatementFactory.createIdentityStatement(wrongSessionId, userId, operation, this.signer,
-                this.identityProvider);
+        byte[] identityStatement = IdentityStatementFactory.createIdentityStatement(wrongSessionId, userId, operation, signer,
+                identityProvider);
         TrustDomainEntity trustDomain = new TrustDomainEntity("test-trust-domain", true);
 
         // stubs
-        expect(this.mockPkiProvider.getTrustDomain()).andStubReturn(trustDomain);
-        expect(this.mockPkiValidator.validateCertificate(trustDomain, this.certificate)).andStubReturn(PkiResult.VALID);
-        this.mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION,
+        expect(mockPkiProvider.getTrustDomain()).andStubReturn(trustDomain);
+        expect(mockPkiValidator.validateCertificate(trustDomain, certificate)).andStubReturn(PkiResult.VALID);
+        mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION,
                 CredentialManagerBean.SECURITY_MESSAGE_SESSION_ID_MISMATCH);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate & verify
         try {
-            this.testedInstance.mergeIdentityStatement(sessionId, userId, operation, identityStatement);
+            testedInstance.mergeIdentityStatement(sessionId, userId, operation, identityStatement);
             fail();
         } catch (ArgumentIntegrityException e) {
             // expected
-            verify(this.mockObjects);
+            verify(mockObjects);
         }
     }
 
@@ -382,26 +382,26 @@ public class CredentialManagerBeanTest extends TestCase {
         String operation = DeviceOperationType.REGISTER.name();
         String wrongOperation = "wrong-operation";
         String userId = UUID.randomUUID().toString();
-        byte[] identityStatement = IdentityStatementFactory.createIdentityStatement(sessionId, userId, wrongOperation, this.signer,
-                this.identityProvider);
+        byte[] identityStatement = IdentityStatementFactory.createIdentityStatement(sessionId, userId, wrongOperation, signer,
+                identityProvider);
         TrustDomainEntity trustDomain = new TrustDomainEntity("test-trust-domain", true);
 
         // stubs
-        expect(this.mockPkiProvider.getTrustDomain()).andStubReturn(trustDomain);
-        expect(this.mockPkiValidator.validateCertificate(trustDomain, this.certificate)).andStubReturn(PkiResult.VALID);
-        this.mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION,
+        expect(mockPkiProvider.getTrustDomain()).andStubReturn(trustDomain);
+        expect(mockPkiValidator.validateCertificate(trustDomain, certificate)).andStubReturn(PkiResult.VALID);
+        mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION,
                 CredentialManagerBean.SECURITY_MESSAGE_OPERATION_MISMATCH);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate & verify
         try {
-            this.testedInstance.mergeIdentityStatement(sessionId, userId, operation, identityStatement);
+            testedInstance.mergeIdentityStatement(sessionId, userId, operation, identityStatement);
             fail();
         } catch (ArgumentIntegrityException e) {
             // expected
-            verify(this.mockObjects);
+            verify(mockObjects);
         }
     }
 
@@ -414,26 +414,26 @@ public class CredentialManagerBeanTest extends TestCase {
         String operation = DeviceOperationType.REGISTER.name();
 
         KeyPair otherKeyPair = PkiTestUtils.generateKeyPair();
-        Signer otherSigner = new JceSigner(otherKeyPair.getPrivate(), this.certificate);
+        Signer otherSigner = new JceSigner(otherKeyPair.getPrivate(), certificate);
 
-        IdentityStatement identityStatement = new IdentityStatement(sessionId, userId, operation, this.identityProvider, otherSigner);
+        IdentityStatement identityStatement = new IdentityStatement(sessionId, userId, operation, identityProvider, otherSigner);
         byte[] identityStatementData = identityStatement.generateStatement();
 
         TrustDomainEntity trustDomain = new TrustDomainEntity("test-trust-domain", true);
 
         // stubs
-        expect(this.mockPkiValidator.validateCertificate(trustDomain, this.certificate)).andStubReturn(PkiResult.VALID);
+        expect(mockPkiValidator.validateCertificate(trustDomain, certificate)).andStubReturn(PkiResult.VALID);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate & verify
         try {
-            this.testedInstance.mergeIdentityStatement(sessionId, userId, operation, identityStatementData);
+            testedInstance.mergeIdentityStatement(sessionId, userId, operation, identityStatementData);
             fail();
         } catch (ArgumentIntegrityException e) {
             // expected
-            verify(this.mockObjects);
+            verify(mockObjects);
         }
     }
 
@@ -445,24 +445,24 @@ public class CredentialManagerBeanTest extends TestCase {
         String userId = "test-user";
         String operation = DeviceOperationType.REGISTER.name();
 
-        byte[] identityStatement = IdentityStatementFactory.createIdentityStatement(sessionId, userId, operation, this.signer,
-                this.identityProvider);
+        byte[] identityStatement = IdentityStatementFactory.createIdentityStatement(sessionId, userId, operation, signer,
+                identityProvider);
         TrustDomainEntity trustDomain = new TrustDomainEntity("test-trust-domain", true);
 
         // stubs
-        expect(this.mockPkiProvider.getTrustDomain()).andStubReturn(trustDomain);
-        expect(this.mockPkiValidator.validateCertificate(trustDomain, this.certificate)).andStubReturn(PkiResult.INVALID);
+        expect(mockPkiProvider.getTrustDomain()).andStubReturn(trustDomain);
+        expect(mockPkiValidator.validateCertificate(trustDomain, certificate)).andStubReturn(PkiResult.INVALID);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
         try {
-            this.testedInstance.mergeIdentityStatement(sessionId, userId, operation, identityStatement);
+            testedInstance.mergeIdentityStatement(sessionId, userId, operation, identityStatement);
             fail();
         } catch (PkiInvalidException e) {
             // expected
-            verify(this.mockObjects);
+            verify(mockObjects);
         }
     }
 }

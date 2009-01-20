@@ -81,40 +81,40 @@ public class DeviceRegistrationLandingServletTest {
     public void setUp()
             throws Exception {
 
-        this.jndiTestUtils = new JndiTestUtils();
-        this.jndiTestUtils.setUp();
+        jndiTestUtils = new JndiTestUtils();
+        jndiTestUtils.setUp();
 
-        this.mockAuthenticationService = createMock(AuthenticationService.class);
-        this.mockSubjectService = createMock(SubjectService.class);
-        this.mockHelpdeskManager = createMock(HelpdeskManager.class);
-        this.jndiTestUtils.bindComponent("SafeOnline/SubjectServiceBean/local", this.mockSubjectService);
-        this.jndiTestUtils.bindComponent("SafeOnline/HelpdeskManagerBean/local", this.mockHelpdeskManager);
+        mockAuthenticationService = createMock(AuthenticationService.class);
+        mockSubjectService = createMock(SubjectService.class);
+        mockHelpdeskManager = createMock(HelpdeskManager.class);
+        jndiTestUtils.bindComponent("SafeOnline/SubjectServiceBean/local", mockSubjectService);
+        jndiTestUtils.bindComponent("SafeOnline/HelpdeskManagerBean/local", mockHelpdeskManager);
 
-        this.servletTestManager = new ServletTestManager();
+        servletTestManager = new ServletTestManager();
         Map<String, String> initParams = new HashMap<String, String>();
-        initParams.put("RegisterDeviceUrl", this.registerDeviceUrl);
-        initParams.put("NewUserDeviceUrl", this.newUserDeviceUrl);
-        initParams.put("LoginUrl", this.loginUrl);
-        initParams.put("DeviceErrorUrl", this.deviceErrorUrl);
-        initParams.put("ServletEndpointUrl", this.servletEndpointUrl);
+        initParams.put("RegisterDeviceUrl", registerDeviceUrl);
+        initParams.put("NewUserDeviceUrl", newUserDeviceUrl);
+        initParams.put("LoginUrl", loginUrl);
+        initParams.put("DeviceErrorUrl", deviceErrorUrl);
+        initParams.put("ServletEndpointUrl", servletEndpointUrl);
         Map<String, Object> initialSessionAttributes = new HashMap<String, Object>();
-        initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE, this.mockAuthenticationService);
-        initialSessionAttributes.put(LoginManager.USERID_ATTRIBUTE, this.userId);
+        initialSessionAttributes.put(AuthenticationServiceManager.AUTH_SERVICE_ATTRIBUTE, mockAuthenticationService);
+        initialSessionAttributes.put(LoginManager.USERID_ATTRIBUTE, userId);
 
-        this.servletTestManager.setUp(DeviceRegistrationLandingServlet.class, initParams, null, null, initialSessionAttributes);
-        this.location = this.servletTestManager.getServletLocation();
-        this.httpClient = new HttpClient();
+        servletTestManager.setUp(DeviceRegistrationLandingServlet.class, initParams, null, null, initialSessionAttributes);
+        location = servletTestManager.getServletLocation();
+        httpClient = new HttpClient();
 
-        this.mockObjects = new Object[] { this.mockAuthenticationService, this.mockSubjectService, this.mockHelpdeskManager };
+        mockObjects = new Object[] { mockAuthenticationService, mockSubjectService, mockHelpdeskManager };
 
-        expect(this.mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(50);
+        expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(50);
     }
 
     @After
     public void tearDown()
             throws Exception {
 
-        this.servletTestManager.tearDown();
+        servletTestManager.tearDown();
     }
 
     @Test
@@ -122,10 +122,10 @@ public class DeviceRegistrationLandingServletTest {
             throws Exception {
 
         // setup
-        GetMethod getMethod = new GetMethod(this.location);
+        GetMethod getMethod = new GetMethod(location);
 
         // operate
-        int result = this.httpClient.executeMethod(getMethod);
+        int result = httpClient.executeMethod(getMethod);
 
         // verify
         LOG.debug("result: " + result);
@@ -137,26 +137,26 @@ public class DeviceRegistrationLandingServletTest {
             throws Exception {
 
         // setup
-        PostMethod postMethod = new PostMethod(this.location);
+        PostMethod postMethod = new PostMethod(location);
 
         // expectations
-        expect(this.mockAuthenticationService.register((HttpServletRequest) EasyMock.anyObject())).andStubReturn(null);
-        expect(this.mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.REDIRECTED);
-        expect(this.mockSubjectService.getExceptionSubjectLogin((String) EasyMock.anyObject())).andStubReturn(null);
+        expect(mockAuthenticationService.register((HttpServletRequest) EasyMock.anyObject())).andStubReturn(null);
+        expect(mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.REDIRECTED);
+        expect(mockSubjectService.getExceptionSubjectLogin((String) EasyMock.anyObject())).andStubReturn(null);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
-        int statusCode = this.httpClient.executeMethod(postMethod);
+        int statusCode = httpClient.executeMethod(postMethod);
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
         LOG.debug("status code: " + statusCode);
         assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
         String resultLocation = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("location: " + resultLocation);
-        assertTrue(resultLocation.endsWith(this.newUserDeviceUrl));
+        assertTrue(resultLocation.endsWith(newUserDeviceUrl));
     }
 
     @Test
@@ -164,26 +164,26 @@ public class DeviceRegistrationLandingServletTest {
             throws Exception {
 
         // setup
-        PostMethod postMethod = new PostMethod(this.location);
+        PostMethod postMethod = new PostMethod(location);
 
         // expectations
-        expect(this.mockAuthenticationService.register((HttpServletRequest) EasyMock.anyObject())).andStubReturn(null);
-        expect(this.mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.USER_AUTHENTICATED);
-        expect(this.mockSubjectService.getExceptionSubjectLogin((String) EasyMock.anyObject())).andStubReturn(null);
+        expect(mockAuthenticationService.register((HttpServletRequest) EasyMock.anyObject())).andStubReturn(null);
+        expect(mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.USER_AUTHENTICATED);
+        expect(mockSubjectService.getExceptionSubjectLogin((String) EasyMock.anyObject())).andStubReturn(null);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
-        int statusCode = this.httpClient.executeMethod(postMethod);
+        int statusCode = httpClient.executeMethod(postMethod);
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
         LOG.debug("status code: " + statusCode);
         assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
         String resultLocation = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("location: " + resultLocation);
-        assertTrue(resultLocation.endsWith(this.registerDeviceUrl));
+        assertTrue(resultLocation.endsWith(registerDeviceUrl));
     }
 
     @Test
@@ -193,33 +193,33 @@ public class DeviceRegistrationLandingServletTest {
         // setup
         DeviceEntity device = new DeviceEntity();
 
-        PostMethod postMethod = new PostMethod(this.location);
+        PostMethod postMethod = new PostMethod(location);
 
         // expectations
-        expect(this.mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.REDIRECTED);
-        expect(this.mockAuthenticationService.register((HttpServletRequest) EasyMock.anyObject())).andStubReturn(this.userId);
-        expect(this.mockAuthenticationService.getAuthenticationDevice()).andStubReturn(device);
-        expect(this.mockSubjectService.getExceptionSubjectLogin((String) EasyMock.anyObject())).andStubReturn(null);
-        expect(this.mockAuthenticationService.getSsoCookie()).andStubReturn(null);
+        expect(mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.REDIRECTED);
+        expect(mockAuthenticationService.register((HttpServletRequest) EasyMock.anyObject())).andStubReturn(userId);
+        expect(mockAuthenticationService.getAuthenticationDevice()).andStubReturn(device);
+        expect(mockSubjectService.getExceptionSubjectLogin((String) EasyMock.anyObject())).andStubReturn(null);
+        expect(mockAuthenticationService.getSsoCookie()).andStubReturn(null);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
-        int statusCode = this.httpClient.executeMethod(postMethod);
+        int statusCode = httpClient.executeMethod(postMethod);
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
         LOG.debug("status code: " + statusCode);
         LOG.debug("result body: " + postMethod.getResponseBodyAsString());
         assertEquals(HttpStatus.SC_MOVED_TEMPORARILY, statusCode);
         String resultLocation = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("location: " + resultLocation);
-        assertTrue(resultLocation.endsWith(this.loginUrl));
-        String resultUserId = (String) this.servletTestManager.getSessionAttribute(LoginManager.USERID_ATTRIBUTE);
-        assertEquals(this.userId, resultUserId);
+        assertTrue(resultLocation.endsWith(loginUrl));
+        String resultUserId = (String) servletTestManager.getSessionAttribute(LoginManager.USERID_ATTRIBUTE);
+        assertEquals(userId, resultUserId);
 
-        DeviceEntity resultDevice = (DeviceEntity) this.servletTestManager
+        DeviceEntity resultDevice = (DeviceEntity) servletTestManager
                                                                           .getSessionAttribute(LoginManager.AUTHENTICATION_DEVICE_ATTRIBUTE);
         assertEquals(device, resultDevice);
     }

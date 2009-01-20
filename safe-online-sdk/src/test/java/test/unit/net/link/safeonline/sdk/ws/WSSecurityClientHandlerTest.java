@@ -50,7 +50,7 @@ public class WSSecurityClientHandlerTest {
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
         X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
 
-        this.testedInstance = new WSSecurityClientHandler(certificate, keyPair.getPrivate());
+        testedInstance = new WSSecurityClientHandler(certificate, keyPair.getPrivate());
     }
 
     @Test
@@ -67,7 +67,7 @@ public class WSSecurityClientHandlerTest {
 
         // operate
         WSSecurityClientHandler.addToBeSignedId("test-id", soapMessageContext);
-        this.testedInstance.handleMessage(soapMessageContext);
+        testedInstance.handleMessage(soapMessageContext);
 
         // verify
         SOAPMessage resultMessage = soapMessageContext.getMessage();
@@ -107,8 +107,8 @@ public class WSSecurityClientHandlerTest {
         SOAPMessageContext soapMessageContext = new TestSOAPMessageContext(message, true);
 
         // operate
-        this.testedInstance.setSkipBodySigning(true);
-        this.testedInstance.handleMessage(soapMessageContext);
+        testedInstance.setSkipBodySigning(true);
+        testedInstance.handleMessage(soapMessageContext);
 
         // verify
         SOAPMessage resultMessage = soapMessageContext.getMessage();

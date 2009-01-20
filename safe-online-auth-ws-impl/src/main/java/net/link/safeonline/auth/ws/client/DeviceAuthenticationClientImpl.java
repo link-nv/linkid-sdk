@@ -65,15 +65,15 @@ public class DeviceAuthenticationClientImpl extends AbstractMessageAccessor impl
 
         AuthenticationService authenticationService = AuthenticationServiceFactory.newInstance();
         this.endpoint = endpoint;
-        this.port = authenticationService.getPort(endpoint, AuthenticationPort.class, new AddressingFeature(true));
+        port = authenticationService.getPort(endpoint, AuthenticationPort.class, new AddressingFeature(true));
 
-        registerMessageLoggerHandler(this.port);
+        registerMessageLoggerHandler(port);
 
         // TODO: disable logging when finished
-        LoggingHandler.addNewHandler(this.port);
+        LoggingHandler.addNewHandler(port);
         setCaptureMessages(true);
 
-        WSSecurityClientHandler.addNewHandler(this.port, clientCertificate, clientPrivateKey);
+        WSSecurityClientHandler.addNewHandler(port, clientCertificate, clientPrivateKey);
     }
 
     /**
@@ -95,13 +95,13 @@ public class DeviceAuthenticationClientImpl extends AbstractMessageAccessor impl
             throws WSClientTransportException {
 
         try {
-            return this.port.authenticate(request);
+            return port.authenticate(request);
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(this.endpoint.toString());
+            throw new WSClientTransportException(endpoint.toString());
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {
-            retrieveHeadersFromPort(this.port);
+            retrieveHeadersFromPort(port);
         }
     }
 
@@ -118,7 +118,7 @@ public class DeviceAuthenticationClientImpl extends AbstractMessageAccessor impl
             if (WSAuthenticationErrorCode.REQUEST_DENIED == wsAuthenticationErrorCode)
                 throw new RequestDeniedException();
             else if (WSAuthenticationErrorCode.REQUEST_FAILED == wsAuthenticationErrorCode)
-                throw new WSClientTransportException(this.endpoint.toString());
+                throw new WSClientTransportException(endpoint.toString());
             else
                 throw new WSAuthenticationException(wsAuthenticationErrorCode, status.getStatusMessage());
         }

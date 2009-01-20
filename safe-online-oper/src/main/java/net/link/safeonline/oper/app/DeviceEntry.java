@@ -24,7 +24,7 @@ public class DeviceEntry {
 
     public boolean isAllowed() {
 
-        return this.allowed;
+        return allowed;
     }
 
     public void setAllowed(boolean allowed) {
@@ -34,7 +34,7 @@ public class DeviceEntry {
 
     public DeviceEntity getDevice() {
 
-        return this.device;
+        return device;
     }
 
     public void setDevice(DeviceEntity device) {
@@ -44,7 +44,7 @@ public class DeviceEntry {
 
     public int getWeight() {
 
-        return this.weight;
+        return weight;
     }
 
     public void setWeight(int weight) {
@@ -54,7 +54,7 @@ public class DeviceEntry {
 
     public String getFriendlyName() {
 
-        return this.friendlyName;
+        return friendlyName;
     }
 
     public void setFriendlyName(String friendlyName) {

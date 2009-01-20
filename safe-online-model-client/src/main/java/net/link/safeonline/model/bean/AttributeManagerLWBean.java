@@ -69,8 +69,8 @@ public class AttributeManagerLWBean {
 
         boolean multivalued = attributeType.isMultivalued();
         if (false == multivalued) {
-            AttributeEntity attributeEntity = this.attributeDAO.getAttribute(attributeType, subject);
-            this.attributeDAO.removeAttribute(attributeEntity);
+            AttributeEntity attributeEntity = attributeDAO.getAttribute(attributeType, subject);
+            attributeDAO.removeAttribute(attributeEntity);
             return;
         }
 
@@ -81,9 +81,9 @@ public class AttributeManagerLWBean {
          * Else we're dealing with multi-valued attributes. In this case we're removing all of the multi-valued entries for the given
          * attribute type.
          */
-        List<AttributeEntity> attributes = this.attributeDAO.listAttributes(subject, attributeType);
+        List<AttributeEntity> attributes = attributeDAO.listAttributes(subject, attributeType);
         for (AttributeEntity attribute : attributes) {
-            this.attributeDAO.removeAttribute(attribute);
+            attributeDAO.removeAttribute(attribute);
         }
     }
 
@@ -129,13 +129,13 @@ public class AttributeManagerLWBean {
 
         boolean multivalued = attributeType.isMultivalued();
         if (false == multivalued) {
-            AttributeEntity attributeEntity = this.attributeDAO.getAttribute(attributeType, subject);
-            this.attributeDAO.removeAttribute(attributeEntity);
+            AttributeEntity attributeEntity = attributeDAO.getAttribute(attributeType, subject);
+            attributeDAO.removeAttribute(attributeEntity);
         } else {
             /*
              * In case the attribute to be removed is part of a multivalued attribute we have to resequence the remaining attributes.
              */
-            List<AttributeEntity> attributes = this.attributeDAO.listAttributes(subject, attributeType);
+            List<AttributeEntity> attributes = attributeDAO.listAttributes(subject, attributeType);
             if (attributes.isEmpty()) {
                 if (attributeType.isCompoundMember())
                     /*
@@ -175,7 +175,7 @@ public class AttributeManagerLWBean {
                 removeAttribute.setStringValue(nextAttribute.getStringValue());
                 removeAttribute = nextAttribute;
             }
-            this.attributeDAO.removeAttribute(removeAttribute);
+            attributeDAO.removeAttribute(removeAttribute);
         }
     }
 
@@ -204,16 +204,16 @@ public class AttributeManagerLWBean {
         List<CompoundedAttributeTypeMemberEntity> members = attributeType.getMembers();
         for (CompoundedAttributeTypeMemberEntity member : members) {
             AttributeTypeEntity memberAttributeType = member.getMember();
-            AttributeEntity memberAttribute = this.attributeDAO.findAttribute(subject, memberAttributeType, attributeIdx);
+            AttributeEntity memberAttribute = attributeDAO.findAttribute(subject, memberAttributeType, attributeIdx);
             if (null != memberAttribute) {
                 /*
                  * It's allowed that some (i.e. the optional) member attribute entries are missing.
                  */
-                this.attributeDAO.removeAttribute(memberAttribute);
+                attributeDAO.removeAttribute(memberAttribute);
             }
         }
 
-        this.attributeDAO.removeAttribute(compoundAttribute);
+        attributeDAO.removeAttribute(compoundAttribute);
     }
 
     private AttributeEntity getCompoundAttribute(AttributeTypeEntity attributeType, SubjectEntity subject, String attributeId)
@@ -221,7 +221,7 @@ public class AttributeManagerLWBean {
 
         if (false == attributeType.isCompounded())
             throw new EJBException("not a compounded attribute type");
-        List<AttributeEntity> attributes = this.attributeDAO.listAttributes(subject, attributeType);
+        List<AttributeEntity> attributes = attributeDAO.listAttributes(subject, attributeType);
         for (AttributeEntity attribute : attributes) {
             if (attributeId.equals(attribute.getStringValue()))
                 return attribute;

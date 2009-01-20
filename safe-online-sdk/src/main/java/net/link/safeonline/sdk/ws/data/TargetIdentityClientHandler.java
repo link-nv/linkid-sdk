@@ -110,9 +110,9 @@ public class TargetIdentityClientHandler implements SOAPHandler<SOAPMessageConte
     private void addTargetIdentityHeader(SOAPHeader soapHeader, SOAPMessageContext soapContext)
             throws SOAPException, JAXBException {
 
-        if (null == this.targetIdentity)
+        if (null == targetIdentity)
             throw new IllegalStateException("TargetIdentity is null");
-        LOG.debug("adding TargetIdentity: " + this.targetIdentity);
+        LOG.debug("adding TargetIdentity: " + targetIdentity);
 
         /*
          * Add SOAP Header.
@@ -135,7 +135,7 @@ public class TargetIdentityClientHandler implements SOAPHandler<SOAPMessageConte
         ObjectFactory objectFactory = new ObjectFactory();
         SubjectType subject = objectFactory.createSubjectType();
         NameIDType subjectName = new NameIDType();
-        subjectName.setValue(this.targetIdentity);
+        subjectName.setValue(targetIdentity);
         subject.getContent().add(objectFactory.createNameID(subjectName));
 
         /*

@@ -38,6 +38,6 @@ public abstract class AbstractCinemaServiceBean extends AbstractWicketServiceBea
     @Override
     protected EntityManager getEntityManager() {
 
-        return this.em;
+        return em;
     }
 }

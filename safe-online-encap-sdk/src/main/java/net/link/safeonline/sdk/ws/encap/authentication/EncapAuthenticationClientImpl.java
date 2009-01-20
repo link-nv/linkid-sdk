@@ -35,14 +35,14 @@ public class EncapAuthenticationClientImpl implements EncapAuthenticationClient 
     public EncapAuthenticationClientImpl(String location) throws AxisFault, MalformedURLException {
 
         URL endpointURL = new URL("http://" + location + "/services/mSecBankId");
-        this.authStub = new MSecBankIdSoapBindingStub(endpointURL, new Service());
+        authStub = new MSecBankIdSoapBindingStub(endpointURL, new Service());
     }
 
     public boolean cancelSession(String sessionId)
             throws RemoteException {
 
         LOG.debug("cancel session: " + sessionId);
-        MSecResponse response = this.authStub.cancelSession(sessionId);
+        MSecResponse response = authStub.cancelSession(sessionId);
         if (EncapConstants.ENCAP_SUCCES == response.getStatus())
             return true;
         return false;
@@ -52,7 +52,7 @@ public class EncapAuthenticationClientImpl implements EncapAuthenticationClient 
             throws RemoteException {
 
         LOG.debug("challenge mobile=" + mobile + " orgId=" + orgId);
-        ChallengeResponse response = this.authStub.challenge(mobile, orgId);
+        ChallengeResponse response = authStub.challenge(mobile, orgId);
         LOG.debug("response info: " + response.getAdditionalInfo());
         LOG.debug("response challenge ID: " + response.getChallengeId());
         LOG.debug("response status: " + response.getStatus());
@@ -65,7 +65,7 @@ public class EncapAuthenticationClientImpl implements EncapAuthenticationClient 
             throws RemoteException {
 
         LOG.debug("verify OTP: challengeId=" + challengeId + " OTPValue=" + OTPValue);
-        VerifyResponse response = this.authStub.verifyOTP(challengeId, OTPValue);
+        VerifyResponse response = authStub.verifyOTP(challengeId, OTPValue);
         LOG.debug("response info: " + response.getAdditionalInfo());
         LOG.debug("response status: " + response.getStatus());
         if (EncapConstants.ENCAP_SUCCES == response.getStatus())

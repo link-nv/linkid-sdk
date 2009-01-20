@@ -41,7 +41,7 @@ public class EmailBeanTest {
     public void setUp()
             throws Exception {
 
-        this.testedInstance = new EmailBean();
+        testedInstance = new EmailBean();
 
     }
 
@@ -55,7 +55,7 @@ public class EmailBeanTest {
         SimpleSmtpServer server = SimpleSmtpServer.start(freePort);
         LOG.debug("test SMTP server running");
 
-        ConfigurationTestUtils.configure(this.testedInstance, "Mail server port", freePort);
+        ConfigurationTestUtils.configure(testedInstance, "Mail server port", freePort);
 
         Message message = createMock(Message.class);
         expect(message.getStringProperty("destination")).andReturn("test@test.test");
@@ -64,7 +64,7 @@ public class EmailBeanTest {
         replay(message);
 
         // operate
-        this.testedInstance.onMessage(message);
+        testedInstance.onMessage(message);
 
         server.stop();
 

@@ -58,12 +58,12 @@ public class EnablePageTest extends TestCase {
 
         WicketUtil.setUnitTesting(true);
 
-        this.jndiTestUtils = new JndiTestUtils();
-        this.jndiTestUtils.setUp();
+        jndiTestUtils = new JndiTestUtils();
+        jndiTestUtils.setUp();
 
-        this.mockPasswordDeviceService = createMock(PasswordDeviceService.class);
-        this.mockSamlAuthorityService = createMock(SamlAuthorityService.class);
-        this.mockHelpdeskManager = createMock(HelpdeskManager.class);
+        mockPasswordDeviceService = createMock(PasswordDeviceService.class);
+        mockSamlAuthorityService = createMock(SamlAuthorityService.class);
+        mockHelpdeskManager = createMock(HelpdeskManager.class);
 
         // Initialize MBean's
         JmxTestUtils jmxTestUtils = new JmxTestUtils();
@@ -91,7 +91,7 @@ public class EnablePageTest extends TestCase {
             }
         });
 
-        this.wicket = new WicketTester(new PasswordTestApplication());
+        wicket = new WicketTester(new PasswordTestApplication());
 
     }
 
@@ -100,7 +100,7 @@ public class EnablePageTest extends TestCase {
     public void tearDown()
             throws Exception {
 
-        this.jndiTestUtils.tearDown();
+        jndiTestUtils.tearDown();
     }
 
     @Test
@@ -112,31 +112,31 @@ public class EnablePageTest extends TestCase {
         String password = "test-password";
         DummyNameIdentifierMappingClient.setUserId(userId);
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(this.wicket.getServletSession());
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setSubject(userId);
 
         // Remove Page: Verify.
-        EnablePage removalPage = (EnablePage) this.wicket.startPage(EnablePage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID, Form.class);
+        EnablePage removalPage = (EnablePage) wicket.startPage(EnablePage.class);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID, Form.class);
 
         // setup
-        EJBTestUtils.inject(removalPage, this.mockPasswordDeviceService);
-        EJBTestUtils.inject(removalPage, this.mockSamlAuthorityService);
+        EJBTestUtils.inject(removalPage, mockPasswordDeviceService);
+        EJBTestUtils.inject(removalPage, mockSamlAuthorityService);
 
         // stubs
-        this.mockPasswordDeviceService.enable(userId, password);
-        expect(this.mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
+        mockPasswordDeviceService.enable(userId, password);
+        expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
-        replay(this.mockPasswordDeviceService, this.mockSamlAuthorityService);
+        replay(mockPasswordDeviceService, mockSamlAuthorityService);
 
         // operate
-        FormTester removalForm = this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID);
+        FormTester removalForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID);
         removalForm.setValue(EnablePage.PASSWORD_FIELD_ID, password);
         removalForm.submit(EnablePage.ENABLE_BUTTON_ID);
 
         // verify
-        verify(this.mockPasswordDeviceService, this.mockSamlAuthorityService);
+        verify(mockPasswordDeviceService, mockSamlAuthorityService);
     }
 
     @Test
@@ -148,35 +148,35 @@ public class EnablePageTest extends TestCase {
         String password = "test-password";
         DummyNameIdentifierMappingClient.setUserId(userId);
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(this.wicket.getServletSession());
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setSubject(userId);
 
         // Remove Page: Verify.
-        EnablePage removalPage = (EnablePage) this.wicket.startPage(EnablePage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID, Form.class);
+        EnablePage removalPage = (EnablePage) wicket.startPage(EnablePage.class);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID, Form.class);
 
         // setup
-        EJBTestUtils.inject(removalPage, this.mockPasswordDeviceService);
-        this.jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, this.mockHelpdeskManager);
+        EJBTestUtils.inject(removalPage, mockPasswordDeviceService);
+        jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
 
         // stubs
-        this.mockPasswordDeviceService.enable(userId, password);
+        mockPasswordDeviceService.enable(userId, password);
         expectLastCall().andThrow(new PermissionDeniedException("error"));
-        expect(this.mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
+        expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
-        replay(this.mockPasswordDeviceService, this.mockHelpdeskManager);
+        replay(mockPasswordDeviceService, mockHelpdeskManager);
 
         // operate
-        FormTester removalForm = this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID);
+        FormTester removalForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID);
         removalForm.setValue(EnablePage.PASSWORD_FIELD_ID, password);
         removalForm.submit(EnablePage.ENABLE_BUTTON_ID);
 
         // verify
-        verify(this.mockPasswordDeviceService, this.mockHelpdeskManager);
+        verify(mockPasswordDeviceService, mockHelpdeskManager);
 
-        this.wicket.assertRenderedPage(EnablePage.class);
-        this.wicket.assertErrorMessages(new String[] { "errorPasswordNotCorrect" });
+        wicket.assertRenderedPage(EnablePage.class);
+        wicket.assertErrorMessages(new String[] { "errorPasswordNotCorrect" });
 
     }
 }

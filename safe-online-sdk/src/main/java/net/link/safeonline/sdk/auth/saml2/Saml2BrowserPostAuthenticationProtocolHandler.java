@@ -119,23 +119,23 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
                      X509Certificate inApplicationCertificate, boolean inSsoEnabled, Map<String, String> inConfigParams) {
 
         LOG.debug("init");
-        this.authnServiceUrl = inAuthnServiceUrl;
-        this.applicationName = inApplicationName;
-        this.applicationFriendlyName = inApplicationFriendlyName;
-        this.applicationKeyPair = inApplicationKeyPair;
-        this.applicationCertificate = inApplicationCertificate;
-        this.configParams = inConfigParams;
-        this.challenge = new Challenge<String>();
-        this.ssoEnabled = inSsoEnabled;
-        this.wsLocation = inConfigParams.get("WsLocation");
-        if (null == this.wsLocation)
+        authnServiceUrl = inAuthnServiceUrl;
+        applicationName = inApplicationName;
+        applicationFriendlyName = inApplicationFriendlyName;
+        applicationKeyPair = inApplicationKeyPair;
+        applicationCertificate = inApplicationCertificate;
+        configParams = inConfigParams;
+        challenge = new Challenge<String>();
+        ssoEnabled = inSsoEnabled;
+        wsLocation = inConfigParams.get("WsLocation");
+        if (null == wsLocation)
             throw new RuntimeException("Initialization param \"WsLocation\" not specified.");
     }
 
     @SuppressWarnings("unchecked")
     public Set<String> getDevices(HttpServletRequest httpRequest) {
 
-        String staticDeviceList = this.configParams.get(SAML2_DEVICES_CONFIG_PARAM);
+        String staticDeviceList = configParams.get(SAML2_DEVICES_CONFIG_PARAM);
         HttpSession session = httpRequest.getSession();
         Set<String> runtimeDevices = (Set<String>) session.getAttribute(SAML2_DEVICES_ATTRIBUTE);
         if (null == staticDeviceList && null == runtimeDevices)
@@ -170,21 +170,21 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
 
         LOG.debug("target url: " + targetUrl);
         Set<String> devices = getDevices(httpRequest);
-        String samlRequestToken = AuthnRequestFactory.createAuthnRequest(this.applicationName, this.applicationName,
-                this.applicationFriendlyName, this.applicationKeyPair, targetUrl, this.authnServiceUrl, this.challenge, devices,
-                this.ssoEnabled);
+        String samlRequestToken = AuthnRequestFactory.createAuthnRequest(applicationName, applicationName,
+                applicationFriendlyName, applicationKeyPair, targetUrl, authnServiceUrl, challenge, devices,
+                ssoEnabled);
 
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
 
         String templateResourceName;
-        if (this.configParams.containsKey(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM)) {
-            templateResourceName = this.configParams.get(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM);
+        if (configParams.containsKey(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM)) {
+            templateResourceName = configParams.get(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM);
         } else {
             templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
         }
 
         Locale olasLanguage = language == null? httpRequest.getLocale(): language;
-        RequestUtil.sendRequest(this.authnServiceUrl, encodedSamlRequestToken, olasLanguage, color, minimal, templateResourceName,
+        RequestUtil.sendRequest(authnServiceUrl, encodedSamlRequestToken, olasLanguage, color, minimal, templateResourceName,
                 httpResponse, minimal == null || !minimal);
     }
 
@@ -193,8 +193,8 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
 
         DateTime now = new DateTime();
 
-        Response samlResponse = ResponseUtil.validateResponse(now, httpRequest, this.challenge.getValue(), this.applicationName,
-                this.wsLocation, this.applicationCertificate, this.applicationKeyPair.getPrivate(), TrustDomainType.NODE);
+        Response samlResponse = ResponseUtil.validateResponse(now, httpRequest, challenge.getValue(), applicationName,
+                wsLocation, applicationCertificate, applicationKeyPair.getPrivate(), TrustDomainType.NODE);
         if (null == samlResponse)
             return null;
 
@@ -217,19 +217,19 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
             throws IOException, ServletException {
 
         LOG.debug("target url: " + targetUrl);
-        String samlRequestToken = LogoutRequestFactory.createLogoutRequest(subjectName, this.applicationName, this.applicationKeyPair,
-                this.authnServiceUrl, this.challenge);
+        String samlRequestToken = LogoutRequestFactory.createLogoutRequest(subjectName, applicationName, applicationKeyPair,
+                authnServiceUrl, challenge);
 
         String encodedSamlRequestToken = Base64.encode(samlRequestToken.getBytes());
 
         String templateResourceName;
-        if (this.configParams.containsKey(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM)) {
-            templateResourceName = this.configParams.get(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM);
+        if (configParams.containsKey(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM)) {
+            templateResourceName = configParams.get(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM);
         } else {
             templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
         }
 
-        RequestUtil.sendRequest(this.authnServiceUrl, encodedSamlRequestToken, null, null, null, templateResourceName, httpResponse, true);
+        RequestUtil.sendRequest(authnServiceUrl, encodedSamlRequestToken, null, null, null, templateResourceName, httpResponse, true);
     }
 
     /**
@@ -238,8 +238,8 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
     public boolean finalizeLogout(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
             throws ServletException {
 
-        LogoutResponse samlLogoutResponse = ResponseUtil.validateLogoutResponse(httpRequest, this.challenge.getValue(), this.wsLocation,
-                this.applicationCertificate, this.applicationKeyPair.getPrivate(), TrustDomainType.NODE);
+        LogoutResponse samlLogoutResponse = ResponseUtil.validateLogoutResponse(httpRequest, challenge.getValue(), wsLocation,
+                applicationCertificate, applicationKeyPair.getPrivate(), TrustDomainType.NODE);
 
         if (null == samlLogoutResponse)
             return false;
@@ -256,12 +256,12 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
     public String handleLogoutRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
 
-        LogoutRequest samlLogoutRequest = RequestUtil.validateLogoutRequest(request, this.wsLocation, this.applicationCertificate,
-                this.applicationKeyPair.getPrivate(), TrustDomainType.NODE);
+        LogoutRequest samlLogoutRequest = RequestUtil.validateLogoutRequest(request, wsLocation, applicationCertificate,
+                applicationKeyPair.getPrivate(), TrustDomainType.NODE);
         if (null == samlLogoutRequest)
             return null;
 
-        this.challenge.setValue(samlLogoutRequest.getID());
+        challenge.setValue(samlLogoutRequest.getID());
 
         return samlLogoutRequest.getNameID().getValue();
     }
@@ -272,18 +272,18 @@ public class Saml2BrowserPostAuthenticationProtocolHandler implements Authentica
     public void sendLogoutResponse(boolean success, HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String samlResponseToken = LogoutResponseFactory.createLogoutResponse(this.challenge.getValue(), this.applicationName,
-                this.applicationKeyPair, this.authnServiceUrl);
+        String samlResponseToken = LogoutResponseFactory.createLogoutResponse(challenge.getValue(), applicationName,
+                applicationKeyPair, authnServiceUrl);
 
         String encodedSamlResponseToken = Base64.encode(samlResponseToken.getBytes());
 
         String templateResourceName;
-        if (this.configParams.containsKey(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM)) {
-            templateResourceName = this.configParams.get(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM);
+        if (configParams.containsKey(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM)) {
+            templateResourceName = configParams.get(SAML2_BROWSER_POST_TEMPLATE_CONFIG_PARAM);
         } else {
             templateResourceName = SAML2_POST_BINDING_VM_RESOURCE;
         }
 
-        ResponseUtil.sendResponse(encodedSamlResponseToken, templateResourceName, this.authnServiceUrl, response, true);
+        ResponseUtil.sendResponse(encodedSamlResponseToken, templateResourceName, authnServiceUrl, response, true);
     }
 }

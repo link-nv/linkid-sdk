@@ -54,7 +54,7 @@ public class ConfigGroupEntity implements Serializable {
     public ConfigGroupEntity(String name) {
 
         this.name = name;
-        this.configItems = new HashSet<ConfigItemEntity>();
+        configItems = new HashSet<ConfigItemEntity>();
     }
 
     // This has to be a set as Hibernate does not allow a List of List of entities ... :
@@ -62,7 +62,7 @@ public class ConfigGroupEntity implements Serializable {
     @OneToMany(mappedBy = ConfigItemEntity.GROUP_COLUMN_NAME, fetch = FetchType.EAGER)
     public Set<ConfigItemEntity> getConfigItems() {
 
-        return this.configItems;
+        return configItems;
     }
 
     public void setConfigItems(Set<ConfigItemEntity> configItems) {
@@ -85,7 +85,7 @@ public class ConfigGroupEntity implements Serializable {
     @Id
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -96,7 +96,7 @@ public class ConfigGroupEntity implements Serializable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("name", this.name).toString();
+        return new ToStringBuilder(this).append("name", name).toString();
     }
 
     @Override
@@ -109,13 +109,13 @@ public class ConfigGroupEntity implements Serializable {
         if (false == obj instanceof ConfigGroupEntity)
             return false;
         ConfigGroupEntity rhs = (ConfigGroupEntity) obj;
-        return new EqualsBuilder().append(this.name, rhs.name).isEquals();
+        return new EqualsBuilder().append(name, rhs.name).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.name).toHashCode();
+        return new HashCodeBuilder().append(name).toHashCode();
     }
 
 

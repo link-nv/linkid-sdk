@@ -80,7 +80,7 @@ public class AttributeProviderEntity implements Serializable {
 
         this.application = application;
         this.attributeType = attributeType;
-        this.pk = new AttributeProviderPK(application, attributeType);
+        pk = new AttributeProviderPK(application, attributeType);
     }
 
     @EmbeddedId
@@ -88,7 +88,7 @@ public class AttributeProviderEntity implements Serializable {
             @AttributeOverride(name = "attributeTypeName", column = @Column(name = ATTRIBUTE_TYPE_NAME_COLUMN_NAME)) })
     public AttributeProviderPK getPk() {
 
-        return this.pk;
+        return pk;
     }
 
     public void setPk(AttributeProviderPK pk) {
@@ -100,7 +100,7 @@ public class AttributeProviderEntity implements Serializable {
     @JoinColumn(name = APPLICATION_NAME_COLUMN_NAME, insertable = false, updatable = false)
     public ApplicationEntity getApplication() {
 
-        return this.application;
+        return application;
     }
 
     public void setApplication(ApplicationEntity application) {
@@ -112,7 +112,7 @@ public class AttributeProviderEntity implements Serializable {
     @JoinColumn(name = ATTRIBUTE_TYPE_NAME_COLUMN_NAME, insertable = false, updatable = false)
     public AttributeTypeEntity getAttributeType() {
 
-        return this.attributeType;
+        return attributeType;
     }
 
     public void setAttributeType(AttributeTypeEntity attributeType) {
@@ -123,13 +123,13 @@ public class AttributeProviderEntity implements Serializable {
     @Transient
     public String getApplicationName() {
 
-        return this.pk.getApplicationName();
+        return pk.getApplicationName();
     }
 
     @Transient
     public String getAttributeTypeName() {
 
-        return this.pk.getAttributeTypeName();
+        return pk.getAttributeTypeName();
     }
 
     @Override
@@ -142,13 +142,13 @@ public class AttributeProviderEntity implements Serializable {
         if (false == obj instanceof AttributeProviderEntity)
             return false;
         AttributeProviderEntity rhs = (AttributeProviderEntity) obj;
-        return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
+        return new EqualsBuilder().append(pk, rhs.pk).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.pk).toHashCode();
+        return new HashCodeBuilder().append(pk).toHashCode();
     }
 
 

@@ -74,9 +74,9 @@ public class AuthnResponseFilter extends AbstractInjectionFilter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         AuthenticationProtocolContext authenticationProtocolContext = protocolHandler.finalizeAuthentication(httpRequest, httpResponse);
         if (null != authenticationProtocolContext) {
-            LoginManager.setUserId(authenticationProtocolContext.getUserId(), httpRequest, this.userIdSessionParameter);
+            LoginManager.setUserId(authenticationProtocolContext.getUserId(), httpRequest, userIdSessionParameter);
             LoginManager.setAuthenticatedDevice(authenticationProtocolContext.getAuthenticatedDevice(), httpRequest,
-                    this.authenticatedDeviceSessionParameter);
+                    authenticatedDeviceSessionParameter);
             AuthenticationProtocolManager.cleanupAuthenticationHandler(httpRequest);
             chain.doFilter(request, response);
             return;

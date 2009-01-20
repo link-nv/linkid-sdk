@@ -51,22 +51,22 @@ public class AttributeNameOutputComponent extends UIOutput {
         response.startElement("span", this);
         String clientId = getClientId(context);
         response.writeAttribute("id", clientId, "id");
-        response.writeAttribute("class", STYLE_DEFAULT + " " + this.styleClass, "styleClass");
+        response.writeAttribute("class", STYLE_DEFAULT + " " + styleClass, "styleClass");
         AttributeDO attribute = (AttributeDO) getValue();
         String attributeName = attribute.getHumanReadableName();
         ResourceBundle messages = TaglibUtil.getResourceBundle(context);
         String optionalStr = messages.getString("optional");
-        if (this.optional) {
+        if (optional) {
             attributeName += " ( " + optionalStr + " )";
         }
         if (attribute.isCompounded()) {
             response.startElement("span", null);
-            response.writeAttribute("class", COMPOUNDED_DEFAULT + " " + this.compoundedStyleClass, "compoundedStyleClass");
+            response.writeAttribute("class", COMPOUNDED_DEFAULT + " " + compoundedStyleClass, "compoundedStyleClass");
             response.write(attributeName);
             response.endElement("span");
         } else if (attribute.isMember()) {
             response.startElement("span", null);
-            response.writeAttribute("class", MEMBER_DEFAULT + " " + this.memberStyleClass, "memberStyleClass");
+            response.writeAttribute("class", MEMBER_DEFAULT + " " + memberStyleClass, "memberStyleClass");
             response.write(attributeName);
             response.endElement("span");
         } else {
@@ -84,7 +84,7 @@ public class AttributeNameOutputComponent extends UIOutput {
 
     public String getCompoundedStyleClass() {
 
-        return this.compoundedStyleClass;
+        return compoundedStyleClass;
     }
 
     public void setCompoundedStyleClass(String compoundedStyleClass) {
@@ -94,7 +94,7 @@ public class AttributeNameOutputComponent extends UIOutput {
 
     public String getMemberStyleClass() {
 
-        return this.memberStyleClass;
+        return memberStyleClass;
     }
 
     public void setMemberStyleClass(String memberStyleClass) {
@@ -104,7 +104,7 @@ public class AttributeNameOutputComponent extends UIOutput {
 
     public String getStyleClass() {
 
-        return this.styleClass;
+        return styleClass;
     }
 
     public void setStyleClass(String styleClass) {
@@ -114,7 +114,7 @@ public class AttributeNameOutputComponent extends UIOutput {
 
     public boolean getOptional() {
 
-        return this.optional;
+        return optional;
     }
 
     public void setOptional(boolean optional) {

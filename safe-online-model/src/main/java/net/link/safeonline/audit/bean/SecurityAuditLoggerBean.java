@@ -60,23 +60,23 @@ public class SecurityAuditLoggerBean implements SecurityAuditLogger {
         try {
             Long auditContextId = (Long) PolicyContext.getContext(AuditContextPolicyContextHandler.AUDIT_CONTEXT_KEY);
             if (null == auditContextId) {
-                this.auditAuditDAO.addAuditAudit("no audit context available");
+                auditAuditDAO.addAuditAudit("no audit context available");
                 return;
             }
 
             try {
-                AuditContextEntity auditContext = this.auditContextDAO.getAuditContext(auditContextId);
+                AuditContextEntity auditContext = auditContextDAO.getAuditContext(auditContextId);
 
-                this.securityAuditDAO.addSecurityAudit(auditContext, securityThreat, targetPrincipal, message);
+                securityAuditDAO.addSecurityAudit(auditContext, securityThreat, targetPrincipal, message);
             }
 
             catch (AuditContextNotFoundException e) {
-                this.auditAuditDAO.addAuditAudit("audit context not found: " + auditContextId);
+                auditAuditDAO.addAuditAudit("audit context not found: " + auditContextId);
             }
         }
 
         catch (PolicyContextException e) {
-            this.auditAuditDAO.addAuditAudit("audit context policy context error: " + e.getMessage());
+            auditAuditDAO.addAuditAudit("audit context policy context error: " + e.getMessage());
         }
     }
 

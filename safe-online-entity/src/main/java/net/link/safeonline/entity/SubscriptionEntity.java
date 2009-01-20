@@ -101,8 +101,8 @@ public class SubscriptionEntity implements Serializable {
         this.subject = subject;
         this.subscriptionUserId = subscriptionUserId;
         this.application = application;
-        this.confirmedUsageAgreementVersion = UsageAgreementPK.EMPTY_USAGE_AGREEMENT_VERSION;
-        this.pk = new SubscriptionPK(subject, application);
+        confirmedUsageAgreementVersion = UsageAgreementPK.EMPTY_USAGE_AGREEMENT_VERSION;
+        pk = new SubscriptionPK(subject, application);
     }
 
     @EmbeddedId
@@ -110,7 +110,7 @@ public class SubscriptionEntity implements Serializable {
             @AttributeOverride(name = "subject", column = @Column(name = "subject")) })
     public SubscriptionPK getPk() {
 
-        return this.pk;
+        return pk;
     }
 
     public void setPk(SubscriptionPK pk) {
@@ -122,7 +122,7 @@ public class SubscriptionEntity implements Serializable {
     @JoinColumn(name = "application", insertable = false, updatable = false)
     public ApplicationEntity getApplication() {
 
-        return this.application;
+        return application;
     }
 
     public void setApplication(ApplicationEntity application) {
@@ -134,7 +134,7 @@ public class SubscriptionEntity implements Serializable {
     @JoinColumn(name = "subject", insertable = false, updatable = false)
     public SubjectEntity getSubject() {
 
-        return this.subject;
+        return subject;
     }
 
     public void setSubject(SubjectEntity subject) {
@@ -145,17 +145,17 @@ public class SubscriptionEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     public SubscriptionOwnerType getSubscriptionOwnerType() {
 
-        return this.subscriptionOwnerType;
+        return subscriptionOwnerType;
     }
 
     public void setSubscriptionOwnerType(SubscriptionOwnerType applicationOwnerType) {
 
-        this.subscriptionOwnerType = applicationOwnerType;
+        subscriptionOwnerType = applicationOwnerType;
     }
 
     public Long getConfirmedIdentityVersion() {
 
-        return this.confirmedIdentityVersion;
+        return confirmedIdentityVersion;
     }
 
     public void setConfirmedIdentityVersion(Long confirmedIdentityVersion) {
@@ -166,7 +166,7 @@ public class SubscriptionEntity implements Serializable {
     @Column(name = "confirmedUAVersion")
     public Long getConfirmedUsageAgreementVersion() {
 
-        return this.confirmedUsageAgreementVersion;
+        return confirmedUsageAgreementVersion;
     }
 
     public void setConfirmedUsageAgreementVersion(Long confirmedUsageAgreementVersion) {
@@ -177,7 +177,7 @@ public class SubscriptionEntity implements Serializable {
     @Column(unique = true)
     public String getSubscriptionUserId() {
 
-        return this.subscriptionUserId;
+        return subscriptionUserId;
     }
 
     public void setSubscriptionUserId(String subscriptionUserId) {
@@ -187,7 +187,7 @@ public class SubscriptionEntity implements Serializable {
 
     public Date getLastLogin() {
 
-        return this.lastLogin;
+        return lastLogin;
     }
 
     public void setLastLogin(Date lastLogin) {
@@ -203,13 +203,13 @@ public class SubscriptionEntity implements Serializable {
         if (false == obj instanceof SubscriptionEntity)
             return false;
         SubscriptionEntity rhs = (SubscriptionEntity) obj;
-        return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
+        return new EqualsBuilder().append(pk, rhs.pk).isEquals();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("pk", this.pk).append("ownerType", this.subscriptionOwnerType)
+        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("pk", pk).append("ownerType", subscriptionOwnerType)
                                                                     .toString();
     }
 

@@ -16,25 +16,10 @@ import java.util.Map;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
-import net.link.safeonline.model.performance.PerformanceServiceRemote;
 import net.link.safeonline.performance.drivers.AttribDriver;
 import net.link.safeonline.performance.drivers.AuthDriver;
 import net.link.safeonline.performance.drivers.IdMappingDriver;
-import net.link.safeonline.performance.entity.DriverExceptionEntity;
-import net.link.safeonline.performance.entity.DriverProfileEntity;
-import net.link.safeonline.performance.entity.ExecutionEntity;
-import net.link.safeonline.performance.entity.MeasurementEntity;
-import net.link.safeonline.performance.entity.ProfileDataEntity;
-import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
-import net.link.safeonline.performance.service.DriverExceptionService;
-import net.link.safeonline.performance.service.ExecutionService;
-import net.link.safeonline.performance.service.ProfileDataService;
-import net.link.safeonline.performance.service.bean.AbstractProfilingServiceBean;
-import net.link.safeonline.performance.service.bean.DriverExceptionServiceBean;
-import net.link.safeonline.performance.service.bean.ExecutionServiceBean;
-import net.link.safeonline.performance.service.bean.ProfileDataServiceBean;
-import net.link.safeonline.performance.service.bean.ScenarioTimingServiceBean;
 import net.link.safeonline.test.util.EntityTestManager;
 
 import org.apache.commons.logging.Log;
@@ -93,26 +78,26 @@ public class PerformanceDriverTest {
     @Before
     public void setUp() {
 
-        this.entityTestManager = new EntityTestManager();
+        entityTestManager = new EntityTestManager();
 
         try {
-            this.entityTestManager.setUp(DriverExceptionEntity.class, DriverProfileEntity.class, ExecutionEntity.class,
+            entityTestManager.setUp(DriverExceptionEntity.class, DriverProfileEntity.class, ExecutionEntity.class,
                     MeasurementEntity.class, ProfileDataEntity.class, ScenarioTimingEntity.class);
 
-            AbstractProfilingServiceBean.setDefaultEntityManager(this.entityTestManager.getEntityManager());
+            AbstractProfilingServiceBean.setDefaultEntityManager(entityTestManager.getEntityManager());
 
-            this.executionService = new ExecutionServiceBean();
-            this.profileDataService = new ProfileDataServiceBean();
-            this.scenarioTimingService = new ScenarioTimingServiceBean();
-            this.driverExceptionService = new DriverExceptionServiceBean();
+            executionService = new ExecutionServiceBean();
+            profileDataService = new ProfileDataServiceBean();
+            scenarioTimingService = new ScenarioTimingServiceBean();
+            driverExceptionService = new DriverExceptionServiceBean();
 
-            ExecutionEntity execution = this.executionService.addExecution(getClass().getName(), 1, 1, new Date(), 1l, OLAS_HOSTNAME + ":"
+            ExecutionEntity execution = executionService.addExecution(getClass().getName(), 1, 1, new Date(), 1l, OLAS_HOSTNAME + ":"
                     + OLAS_PORT, OLAS_SSL);
-            ScenarioTimingEntity agentTime = this.executionService.start(execution);
+            ScenarioTimingEntity agentTime = executionService.start(execution);
 
-            this.idDriver = new IdMappingDriver(execution, agentTime);
-            this.attribDriver = new AttribDriver(execution, agentTime);
-            this.authDriver = new AuthDriver(execution, agentTime);
+            idDriver = new IdMappingDriver(execution, agentTime);
+            attribDriver = new AttribDriver(execution, agentTime);
+            authDriver = new AuthDriver(execution, agentTime);
         }
 
         catch (Exception e) {
@@ -125,8 +110,8 @@ public class PerformanceDriverTest {
     public void tearDown()
             throws Exception {
 
-        if (this.entityTestManager.getEntityManager() != null) {
-            this.entityTestManager.tearDown();
+        if (entityTestManager.getEntityManager() != null) {
+            entityTestManager.tearDown();
         }
     }
 
@@ -134,7 +119,7 @@ public class PerformanceDriverTest {
     public void annotationCorrectness()
             throws Exception {
 
-        assertNotNull("JPA annotations incorrect?", this.entityTestManager.getEntityManager());
+        assertNotNull("JPA annotations incorrect?", entityTestManager.getEntityManager());
     }
 
     @Test
@@ -142,7 +127,7 @@ public class PerformanceDriverTest {
             throws Exception {
 
         // User needs to authenticate before we can get to the attributes.
-        String uuid = this.authDriver.login(testApplicationKey, testApplicationName, testUsername, testPassword);
+        String uuid = authDriver.login(testApplicationKey, testApplicationName, testUsername, testPassword);
 
         getAttributes(testApplicationKey, uuid);
     }
@@ -165,10 +150,10 @@ public class PerformanceDriverTest {
             throws Exception {
 
         // Get attributes for given UUID.
-        Map<String, Object> attributes = this.attribDriver.getAttributes(application, uuid);
+        Map<String, Object> attributes = attribDriver.getAttributes(application, uuid);
 
         // State assertions.
-        assertProfile(this.attribDriver.getProfile());
+        assertProfile(attribDriver.getProfile());
         assertTrue(attributes != null && attributes.isEmpty());
 
         return attributes;
@@ -181,10 +166,10 @@ public class PerformanceDriverTest {
     private String getUserId(PrivateKeyEntry application, String username)
             throws Exception {
 
-        String uuid = this.idDriver.getUserId(application, username);
+        String uuid = idDriver.getUserId(application, username);
 
         // State assertions.
-        assertProfile(this.idDriver.getProfile());
+        assertProfile(idDriver.getProfile());
         assertTrue("No UUID returned.", uuid != null && uuid.length() > 0);
 
         return uuid;
@@ -200,10 +185,10 @@ public class PerformanceDriverTest {
             throws Exception {
 
         // Authenticate User.
-        String uuid = this.authDriver.login(applicationKey, applicationName, username, password);
+        String uuid = authDriver.login(applicationKey, applicationName, username, password);
 
         // State assertions.
-        assertProfile(this.authDriver.getProfile());
+        assertProfile(authDriver.getProfile());
         assertTrue("No UUID returned.", uuid != null && uuid.length() > 0);
 
         return uuid;
@@ -212,15 +197,15 @@ public class PerformanceDriverTest {
 
     private void assertProfile(DriverProfileEntity profile) {
 
-        List<DriverExceptionEntity> errors = this.driverExceptionService.getAllProfileErrors(profile);
+        List<DriverExceptionEntity> errors = driverExceptionService.getAllProfileErrors(profile);
         for (DriverExceptionEntity error : errors)
             if (error != null) {
                 System.err.format("At %s the following occured:\n\t%s\n", new Date(error.getOccurredTime()), error.getMessage());
             }
 
         assertTrue("Errors detected.  See stderr.", isEmptyOrOnlyNulls(errors));
-        assertFalse("No profiling data gathered.", isEmptyOrOnlyNulls(this.profileDataService.getProfileData(profile,
-                this.scenarioTimingService.getExecutionTimings(profile.getExecution(), 1))));
+        assertFalse("No profiling data gathered.", isEmptyOrOnlyNulls(profileDataService.getProfileData(profile,
+                scenarioTimingService.getExecutionTimings(profile.getExecution(), 1))));
     }
 
     private static boolean isEmptyOrOnlyNulls(Collection<?> profileDataOrErrors) {

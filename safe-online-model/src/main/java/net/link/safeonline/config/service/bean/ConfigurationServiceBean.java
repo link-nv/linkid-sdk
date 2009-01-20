@@ -52,13 +52,13 @@ public class ConfigurationServiceBean implements ConfigurationService, Configura
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public List<ConfigGroupEntity> listConfigGroups() {
 
-        return this.configGroupDAO.listConfigGroups();
+        return configGroupDAO.listConfigGroups();
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public void saveConfigItem(ConfigItemEntity configItem) {
 
-        this.configItemDAO.saveConfigItem(configItem);
+        configItemDAO.saveConfigItem(configItem);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -68,7 +68,7 @@ public class ConfigurationServiceBean implements ConfigurationService, Configura
             LOG.debug("save group: " + configGroup.getName());
             for (ConfigItemEntity configItem : configGroup.getConfigItems()) {
                 LOG.debug("save item: " + configItem.getName());
-                List<ConfigItemValueEntity> configItemValues = this.configItemValueDAO.listConfigItemValues(configItem);
+                List<ConfigItemValueEntity> configItemValues = configItemValueDAO.listConfigItemValues(configItem);
                 if (configItem.isMultipleChoice()) {
                     LOG.debug("save multiple choice");
                     String selectedValue = configItem.getValue();
@@ -80,7 +80,7 @@ public class ConfigurationServiceBean implements ConfigurationService, Configura
                         }
                         idx++;
                     }
-                    configItem = this.configItemDAO.findConfigItem(configGroup.getName(), configItem.getName());
+                    configItem = configItemDAO.findConfigItem(configGroup.getName(), configItem.getName());
                     configItem.setValueIndex(idx);
 
                 } else {
@@ -114,6 +114,6 @@ public class ConfigurationServiceBean implements ConfigurationService, Configura
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public List<ConfigItemValueEntity> listConfigItemValues(ConfigItemEntity configItem) {
 
-        return this.configItemValueDAO.listConfigItemValues(configItem);
+        return configItemValueDAO.listConfigItemValues(configItem);
     }
 }

@@ -102,7 +102,7 @@ public class EncapAuthenticationPortImpl implements DeviceAuthenticationPort {
 
         LOG.debug("authenticate");
 
-        if (null == this.mobile && null == this.challengeId)
+        if (null == mobile && null == challengeId)
             // step 1, expect mobile attribute, will send OTP after mobile has been verified
             return verifyMobileAndSendOtp(request);
 
@@ -121,11 +121,11 @@ public class EncapAuthenticationPortImpl implements DeviceAuthenticationPort {
         DeviceCredentialsType deviceCredentials = request.getDeviceCredentials();
         for (NameValuePairType nameValuePair : deviceCredentials.getNameValuePair()) {
             if (nameValuePair.getName().equals(EncapConstants.ENCAP_WS_AUTH_MOBILE_ATTRIBUTE)) {
-                this.mobile = nameValuePair.getValue();
+                mobile = nameValuePair.getValue();
             }
         }
 
-        if (null == this.mobile) {
+        if (null == mobile) {
             DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.INSUFFICIENT_CREDENTIALS, "\""
                     + EncapConstants.ENCAP_WS_AUTH_MOBILE_ATTRIBUTE + "\" is not specified");
             manager.unexport(this);
@@ -134,7 +134,7 @@ public class EncapAuthenticationPortImpl implements DeviceAuthenticationPort {
 
         EncapDeviceService encapDeviceService = EjbUtils.getEJB(EncapDeviceService.JNDI_BINDING, EncapDeviceService.class);
         try {
-            encapDeviceService.checkMobile(this.mobile);
+            encapDeviceService.checkMobile(mobile);
         } catch (SubjectNotFoundException e) {
             LOG.error("subject not found: " + e.getMessage(), e);
             DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.SUBJECT_NOT_FOUND, e.getMessage());
@@ -157,9 +157,9 @@ public class EncapAuthenticationPortImpl implements DeviceAuthenticationPort {
             return response;
         }
 
-        LOG.debug("request OTP for mobile: " + this.mobile);
+        LOG.debug("request OTP for mobile: " + mobile);
         try {
-            this.challengeId = encapDeviceService.requestOTP(this.mobile);
+            challengeId = encapDeviceService.requestOTP(mobile);
         } catch (MobileException e) {
             LOG.error("exception while requesting OTP: " + e.getMessage(), e);
             DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.REQUEST_FAILED, e.getMessage());
@@ -197,7 +197,7 @@ public class EncapAuthenticationPortImpl implements DeviceAuthenticationPort {
 
         String userId;
         try {
-            userId = encapDeviceService.authenticate(this.mobile, this.challengeId, otp);
+            userId = encapDeviceService.authenticate(mobile, challengeId, otp);
         } catch (SubjectNotFoundException e) {
             LOG.error("subject not found: " + e.getMessage(), e);
             DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.SUBJECT_NOT_FOUND, e.getMessage());

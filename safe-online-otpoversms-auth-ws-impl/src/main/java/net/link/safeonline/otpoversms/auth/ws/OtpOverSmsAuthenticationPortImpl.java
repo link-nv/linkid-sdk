@@ -105,7 +105,7 @@ public class OtpOverSmsAuthenticationPortImpl implements DeviceAuthenticationPor
 
         LOG.debug("authenticate");
 
-        if (null == this.mobile && null == this.otpService)
+        if (null == mobile && null == otpService)
             // step 1, expect mobile attribute, will send OTP after mobile has been verified
             return verifyMobileAndSendOtp(request);
 
@@ -124,11 +124,11 @@ public class OtpOverSmsAuthenticationPortImpl implements DeviceAuthenticationPor
         DeviceCredentialsType deviceCredentials = request.getDeviceCredentials();
         for (NameValuePairType nameValuePair : deviceCredentials.getNameValuePair()) {
             if (nameValuePair.getName().equals(OtpOverSmsConstants.OTPOVERSMS_WS_AUTH_MOBILE_ATTRIBUTE)) {
-                this.mobile = nameValuePair.getValue();
+                mobile = nameValuePair.getValue();
             }
         }
 
-        if (null == this.mobile) {
+        if (null == mobile) {
             DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.INSUFFICIENT_CREDENTIALS, "\""
                     + OtpOverSmsConstants.OTPOVERSMS_WS_AUTH_MOBILE_ATTRIBUTE + "\" is not specified");
             manager.unexport(this);
@@ -138,7 +138,7 @@ public class OtpOverSmsAuthenticationPortImpl implements DeviceAuthenticationPor
         OtpOverSmsDeviceService otpOverSmsDeviceService = EjbUtils.getEJB(OtpOverSmsDeviceService.JNDI_BINDING,
                 OtpOverSmsDeviceService.class);
         try {
-            otpOverSmsDeviceService.checkMobile(this.mobile);
+            otpOverSmsDeviceService.checkMobile(mobile);
         } catch (SubjectNotFoundException e) {
             LOG.error("subject not found: " + e.getMessage(), e);
             DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.SUBJECT_NOT_FOUND, e.getMessage());
@@ -161,9 +161,9 @@ public class OtpOverSmsAuthenticationPortImpl implements DeviceAuthenticationPor
             return response;
         }
 
-        LOG.debug("request OTP for mobile: " + this.mobile);
+        LOG.debug("request OTP for mobile: " + mobile);
         try {
-            this.otpService = otpOverSmsDeviceService.requestOtp(this.mobile);
+            otpService = otpOverSmsDeviceService.requestOtp(mobile);
         } catch (ConnectException e) {
             LOG.error("connection exception while sending OTP: " + e.getMessage(), e);
             DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.REQUEST_FAILED, e.getMessage());
@@ -211,7 +211,7 @@ public class OtpOverSmsAuthenticationPortImpl implements DeviceAuthenticationPor
 
         boolean verified;
         try {
-            verified = otpOverSmsDeviceService.verifyOtp(this.otpService, this.mobile, otp);
+            verified = otpOverSmsDeviceService.verifyOtp(otpService, mobile, otp);
         } catch (SubjectNotFoundException e) {
             LOG.error("subject not found: " + e.getMessage(), e);
             DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.SUBJECT_NOT_FOUND, e.getMessage());
@@ -243,7 +243,7 @@ public class OtpOverSmsAuthenticationPortImpl implements DeviceAuthenticationPor
 
         String userId;
         try {
-            userId = otpOverSmsDeviceService.authenticate(this.mobile, pin);
+            userId = otpOverSmsDeviceService.authenticate(mobile, pin);
         } catch (SubjectNotFoundException e) {
             LOG.error("subject not found: " + e.getMessage(), e);
             DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.SUBJECT_NOT_FOUND, e.getMessage());

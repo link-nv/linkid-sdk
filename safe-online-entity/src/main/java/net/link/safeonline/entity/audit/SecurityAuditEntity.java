@@ -95,14 +95,14 @@ public class SecurityAuditEntity implements Serializable {
         this.securityThreat = securityThreat;
         this.message = message;
         this.targetPrincipal = targetPrincipal;
-        this.eventDate = new Date();
+        eventDate = new Date();
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Long getId() {
 
-        return this.id;
+        return id;
     }
 
     public void setId(Long id) {
@@ -112,7 +112,7 @@ public class SecurityAuditEntity implements Serializable {
 
     public String getMessage() {
 
-        return this.message;
+        return message;
     }
 
     public void setMessage(String message) {
@@ -123,7 +123,7 @@ public class SecurityAuditEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     public SecurityThreatType getSecurityThreat() {
 
-        return this.securityThreat;
+        return securityThreat;
     }
 
     public void setSecurityThreat(SecurityThreatType securityThreat) {
@@ -134,7 +134,7 @@ public class SecurityAuditEntity implements Serializable {
     @ManyToOne
     public AuditContextEntity getAuditContext() {
 
-        return this.auditContext;
+        return auditContext;
     }
 
     public void setAuditContext(AuditContextEntity auditContext) {
@@ -144,7 +144,7 @@ public class SecurityAuditEntity implements Serializable {
 
     public String getTargetPrincipal() {
 
-        return this.targetPrincipal;
+        return targetPrincipal;
     }
 
     public void setTargetPrincipal(String targetPrincipal) {
@@ -155,7 +155,7 @@ public class SecurityAuditEntity implements Serializable {
     @Temporal(value = TemporalType.TIMESTAMP)
     public Date getEventDate() {
 
-        return this.eventDate;
+        return eventDate;
     }
 
     public void setEventDate(Date eventDate) {

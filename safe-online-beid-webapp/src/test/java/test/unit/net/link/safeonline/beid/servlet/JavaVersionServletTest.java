@@ -40,16 +40,16 @@ public class JavaVersionServletTest {
     public void setUp()
             throws Exception {
 
-        this.servletTestManager = new ServletTestManager();
-        this.servletTestManager.setUp(JavaVersionServlet.class);
-        this.location = this.servletTestManager.getServletLocation();
+        servletTestManager = new ServletTestManager();
+        servletTestManager.setUp(JavaVersionServlet.class);
+        location = servletTestManager.getServletLocation();
     }
 
     @After
     public void tearDown()
             throws Exception {
 
-        this.servletTestManager.tearDown();
+        servletTestManager.tearDown();
     }
 
     @Test
@@ -58,7 +58,7 @@ public class JavaVersionServletTest {
 
         // setup
         HttpClient httpClient = new HttpClient();
-        PostMethod postMethod = new PostMethod(this.location);
+        PostMethod postMethod = new PostMethod(location);
         postMethod.addParameter("platform", "Linux i686");
         postMethod.addParameter("javaEnabled", "true");
         postMethod.addParameter("javaVersion", "1.6.0_04");
@@ -67,10 +67,10 @@ public class JavaVersionServletTest {
         int statusCode = httpClient.executeMethod(postMethod);
         LOG.debug("status code: " + statusCode);
         assertEquals(HttpServletResponse.SC_MOVED_TEMPORARILY, statusCode);
-        assertEquals(JavaVersionServlet.PLATFORM.LINUX, this.servletTestManager.getSessionAttribute("platform"));
+        assertEquals(JavaVersionServlet.PLATFORM.LINUX, servletTestManager.getSessionAttribute("platform"));
         String resultLocation = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("result location: " + resultLocation);
-        assertEquals(this.location + "beid-applet.seam", resultLocation);
+        assertEquals(location + "beid-applet.seam", resultLocation);
     }
 
     @Test
@@ -79,7 +79,7 @@ public class JavaVersionServletTest {
 
         // setup
         HttpClient httpClient = new HttpClient();
-        PostMethod postMethod = new PostMethod(this.location);
+        PostMethod postMethod = new PostMethod(location);
         postMethod.addParameter("platform", "Win32");
         postMethod.addParameter("javaEnabled", "true");
         postMethod.addParameter("javaVersion", "1.6.0_04");
@@ -88,10 +88,10 @@ public class JavaVersionServletTest {
         int statusCode = httpClient.executeMethod(postMethod);
         LOG.debug("status code: " + statusCode);
         assertEquals(HttpServletResponse.SC_MOVED_TEMPORARILY, statusCode);
-        assertEquals(JavaVersionServlet.PLATFORM.WINDOWS, this.servletTestManager.getSessionAttribute("platform"));
+        assertEquals(JavaVersionServlet.PLATFORM.WINDOWS, servletTestManager.getSessionAttribute("platform"));
         String resultLocation = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("result location: " + resultLocation);
-        assertEquals(this.location + "beid-applet.seam", resultLocation);
+        assertEquals(location + "beid-applet.seam", resultLocation);
     }
 
     @Test
@@ -100,7 +100,7 @@ public class JavaVersionServletTest {
 
         // setup
         HttpClient httpClient = new HttpClient();
-        PostMethod postMethod = new PostMethod(this.location);
+        PostMethod postMethod = new PostMethod(location);
         postMethod.addParameter("platform", "MacIntel");
         postMethod.addParameter("javaEnabled", "true");
         postMethod.addParameter("javaVersion", "1.6.0_04");
@@ -109,10 +109,10 @@ public class JavaVersionServletTest {
         int statusCode = httpClient.executeMethod(postMethod);
         LOG.debug("status code: " + statusCode);
         assertEquals(HttpServletResponse.SC_MOVED_TEMPORARILY, statusCode);
-        assertEquals(JavaVersionServlet.PLATFORM.MAC, this.servletTestManager.getSessionAttribute("platform"));
+        assertEquals(JavaVersionServlet.PLATFORM.MAC, servletTestManager.getSessionAttribute("platform"));
         String resultLocation = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("result location: " + resultLocation);
-        assertEquals(this.location + "beid-applet.seam", resultLocation);
+        assertEquals(location + "beid-applet.seam", resultLocation);
     }
 
     @Test
@@ -121,7 +121,7 @@ public class JavaVersionServletTest {
 
         // setup
         HttpClient httpClient = new HttpClient();
-        PostMethod postMethod = new PostMethod(this.location);
+        PostMethod postMethod = new PostMethod(location);
         postMethod.addParameter("platform", "GameBoy");
         postMethod.addParameter("javaEnabled", "true");
         postMethod.addParameter("javaVersion", "1.6.0_04");
@@ -130,10 +130,10 @@ public class JavaVersionServletTest {
         int statusCode = httpClient.executeMethod(postMethod);
         LOG.debug("status code: " + statusCode);
         assertEquals(HttpServletResponse.SC_MOVED_TEMPORARILY, statusCode);
-        assertEquals(JavaVersionServlet.PLATFORM.UNSUPPORTED, this.servletTestManager.getSessionAttribute("platform"));
+        assertEquals(JavaVersionServlet.PLATFORM.UNSUPPORTED, servletTestManager.getSessionAttribute("platform"));
         String resultLocation = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("result location: " + resultLocation);
-        assertEquals(this.location + "unsupported-platform.seam", resultLocation);
+        assertEquals(location + "unsupported-platform.seam", resultLocation);
     }
 
     @Test
@@ -142,7 +142,7 @@ public class JavaVersionServletTest {
 
         // setup
         HttpClient httpClient = new HttpClient();
-        PostMethod postMethod = new PostMethod(this.location);
+        PostMethod postMethod = new PostMethod(location);
         postMethod.addParameter("platform", "Win32");
         postMethod.addParameter("javaEnabled", "false");
         postMethod.addParameter("javaVersion", "1.6.0_04");
@@ -151,10 +151,10 @@ public class JavaVersionServletTest {
         int statusCode = httpClient.executeMethod(postMethod);
         LOG.debug("status code: " + statusCode);
         assertEquals(HttpServletResponse.SC_MOVED_TEMPORARILY, statusCode);
-        assertEquals(JavaVersionServlet.PLATFORM.WINDOWS, this.servletTestManager.getSessionAttribute("platform"));
+        assertEquals(JavaVersionServlet.PLATFORM.WINDOWS, servletTestManager.getSessionAttribute("platform"));
         String resultLocation = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("result location: " + resultLocation);
-        assertEquals(this.location + "java-disabled.seam", resultLocation);
+        assertEquals(location + "java-disabled.seam", resultLocation);
     }
 
     @Test
@@ -163,7 +163,7 @@ public class JavaVersionServletTest {
 
         // setup
         HttpClient httpClient = new HttpClient();
-        PostMethod postMethod = new PostMethod(this.location);
+        PostMethod postMethod = new PostMethod(location);
         postMethod.addParameter("platform", "Win32");
         postMethod.addParameter("javaEnabled", "true");
         postMethod.addParameter("javaVersion", "1.4.1");
@@ -172,10 +172,10 @@ public class JavaVersionServletTest {
         int statusCode = httpClient.executeMethod(postMethod);
         LOG.debug("status code: " + statusCode);
         assertEquals(HttpServletResponse.SC_MOVED_TEMPORARILY, statusCode);
-        assertEquals(JavaVersionServlet.PLATFORM.WINDOWS, this.servletTestManager.getSessionAttribute("platform"));
+        assertEquals(JavaVersionServlet.PLATFORM.WINDOWS, servletTestManager.getSessionAttribute("platform"));
         String resultLocation = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("result location: " + resultLocation);
-        assertEquals(this.location + "java-version.seam", resultLocation);
+        assertEquals(location + "java-version.seam", resultLocation);
     }
 
     @Test

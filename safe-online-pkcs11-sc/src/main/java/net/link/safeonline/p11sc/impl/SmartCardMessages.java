@@ -31,7 +31,7 @@ public class SmartCardMessages {
 
         public String getKey() {
 
-            return this.key;
+            return key;
         }
     }
 
@@ -46,7 +46,7 @@ public class SmartCardMessages {
      */
     public SmartCardMessages(Locale locale) {
 
-        this.messages = ResourceBundle.getBundle("net.link.safeonline.pkcs11.SmartCardMessages", locale);
+        messages = ResourceBundle.getBundle("net.link.safeonline.pkcs11.SmartCardMessages", locale);
     }
 
     /**
@@ -54,6 +54,6 @@ public class SmartCardMessages {
      */
     public String getString(KEY key) {
 
-        return this.messages.getString(key.getKey());
+        return messages.getString(key.getKey());
     }
 }

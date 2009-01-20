@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/"
+	xml:lang="en" lang="en">
+
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+	</head>
+
+	<body>
+
+		<wicket:container wicket:id="header_border"></wicket:container>
+
+		<wicket:container wicket:id="content_border">
+
+			<wicket:container wicket:id="sidebar_border">
+				<p>
+					<wicket:message key="helpRegisterMobile">[Register Encap
+						Help]</wicket:message>
+				</p>
+			</wicket:container>
+
+			<form wicket:id="register_form">
+
+                <wicket:enclosure>
+					<label>
+						<wicket:message key="mobile">[Mobile]</wicket:message>
+					</label>
+					<input wicket:id="mobile" type="text" class="label" />
+				</wicket:enclosure>
+
+				<wicket:enclosure>
+	                <label>
+						<wicket:message key="activationCode">[Activation Code]</wicket:message>
+					</label>
+					<input wicket:id="activation" type="text" class="label" />
+				</wicket:enclosure>
+
+				<label>&nbsp;</label>
+				<input wicket:id="activate" type="submit" value="[Register]"
+                    wicket:message="value:register" class="submit" />
+                <input wicket:id="register" type="submit" value="[Confirm]"
+					wicket:message="value:confirm" class="submit" />
+				<input wicket:id="cancel" type="submit" value="[Cancel]"
+					wicket:message="value:cancelaction" class="submit" />
+
+				<div wicket:id="feedback" class="error"></div>
+			</form>
+
+		</wicket:container>
+
+	</body>
+</html>

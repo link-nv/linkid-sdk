@@ -39,7 +39,7 @@ public class BankAccountEntity implements Serializable {
 
     public BankAccountEntity() {
 
-        this.amount = 0d;
+        amount = 0d;
     }
 
     public BankAccountEntity(BankUserEntity user, String name, String code) {
@@ -56,7 +56,7 @@ public class BankAccountEntity implements Serializable {
      */
     public BankUserEntity getUser() {
 
-        return this.user;
+        return user;
     }
 
     /**
@@ -73,7 +73,7 @@ public class BankAccountEntity implements Serializable {
      */
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     /**
@@ -81,7 +81,7 @@ public class BankAccountEntity implements Serializable {
      */
     public String getCode() {
 
-        return this.code;
+        return code;
     }
 
     /**
@@ -98,6 +98,6 @@ public class BankAccountEntity implements Serializable {
      */
     public Double getAmount() {
 
-        return this.amount;
+        return amount;
     }
 }

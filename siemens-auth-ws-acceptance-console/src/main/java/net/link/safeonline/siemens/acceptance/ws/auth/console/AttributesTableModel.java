@@ -66,40 +66,40 @@ public class AttributesTableModel extends DefaultTableModel {
 
         public int getAttributeIndex() {
 
-            return this.attributeIndex;
+            return attributeIndex;
         }
 
         public int getMemberIndex() {
 
-            return this.memberIndex;
+            return memberIndex;
         }
     }
 
 
     public AttributesTableModel(List<Attribute> attributes, boolean editable) {
 
-        this.dateFormat = new SimpleDateFormat(DATE_FORMAT);
+        dateFormat = new SimpleDateFormat(DATE_FORMAT);
 
         this.attributes = attributes;
         this.editable = editable;
 
         // calculate table size
-        this.rows = attributes.size();
+        rows = attributes.size();
         for (Attribute attribute : attributes) {
             if (attribute.isCompounded()) {
-                this.rows += attribute.getMembers().size();
+                rows += attribute.getMembers().size();
             }
         }
 
         // create table mapping as compound members are nested
-        this.rowMapping = new RowMap[this.rows];
+        rowMapping = new RowMap[rows];
         int mappingIdx = 0;
         for (int i = 0; i < attributes.size(); i++) {
             Attribute attribute = attributes.get(i);
-            this.rowMapping[mappingIdx++] = new RowMap(i, -1);
+            rowMapping[mappingIdx++] = new RowMap(i, -1);
             if (attribute.isCompounded()) {
                 for (int j = 0; j < attribute.getMembers().size(); j++) {
-                    this.rowMapping[mappingIdx++] = new RowMap(i, j);
+                    rowMapping[mappingIdx++] = new RowMap(i, j);
                 }
             }
         }
@@ -107,7 +107,7 @@ public class AttributesTableModel extends DefaultTableModel {
 
     public List<Attribute> getAttributes() {
 
-        return this.attributes;
+        return attributes;
     }
 
     @Override
@@ -126,7 +126,7 @@ public class AttributesTableModel extends DefaultTableModel {
                 attribute.setValue(value);
             } else if (attribute.getDataType().equals(DataType.DATE)) {
                 try {
-                    attribute.setValue(this.dateFormat.parse((String) value));
+                    attribute.setValue(dateFormat.parse((String) value));
                 } catch (ParseException e) {
                     JOptionPane.showMessageDialog(new JFrame(), "Invalid input, not a valid date ( format=\"" + DATE_FORMAT + "\" )",
                             "Error", JOptionPane.ERROR_MESSAGE);
@@ -146,7 +146,7 @@ public class AttributesTableModel extends DefaultTableModel {
     @Override
     public Object getValueAt(int row, int col) {
 
-        if (0 == this.attributes.size())
+        if (0 == attributes.size())
             return null;
 
         Attribute attribute = getAttribute(row);
@@ -162,7 +162,7 @@ public class AttributesTableModel extends DefaultTableModel {
                 if (null == attribute.getValue())
                     return null;
                 if (attribute.getDataType().equals(DataType.DATE))
-                    return this.dateFormat.format((Date) attribute.getValue());
+                    return dateFormat.format((Date) attribute.getValue());
                 return attribute.getValue();
             }
             default:
@@ -173,17 +173,17 @@ public class AttributesTableModel extends DefaultTableModel {
 
     private Attribute getAttribute(int row) {
 
-        if (this.rowMapping[row].getMemberIndex() >= 0)
-            return this.attributes.get(this.rowMapping[row].getAttributeIndex()).getMembers().get(this.rowMapping[row].getMemberIndex());
+        if (rowMapping[row].getMemberIndex() >= 0)
+            return attributes.get(rowMapping[row].getAttributeIndex()).getMembers().get(rowMapping[row].getMemberIndex());
 
-        return this.attributes.get(this.rowMapping[row].getAttributeIndex());
+        return attributes.get(rowMapping[row].getAttributeIndex());
 
     }
 
     @Override
     public int getRowCount() {
 
-        return this.rows;
+        return rows;
     }
 
     @Override
@@ -194,23 +194,23 @@ public class AttributesTableModel extends DefaultTableModel {
 
         if (getAttribute(row).isCompounded())
             return false;
-        return this.editable;
+        return editable;
     }
 
     @Override
     public int getColumnCount() {
 
-        if (this.editable)
-            return this.columnNames.length;
+        if (editable)
+            return columnNames.length;
 
         // not editable table => identity confirmation table => value column not shown
-        return this.columnNames.length - 1;
+        return columnNames.length - 1;
     }
 
     @Override
     public String getColumnName(int col) {
 
-        return this.columnNames[col];
+        return columnNames[col];
     }
 
     @SuppressWarnings("unchecked")

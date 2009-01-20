@@ -69,9 +69,9 @@ public class CinemaShowTimeEntity implements Serializable, Cloneable {
     @Override
     public String toString() {
 
-        return String.format("[M: %s, T: %s, W: %s, T: %s, F: %s, S: %s, S: %s]", timeToStr(this.monStart), timeToStr(this.tueStart),
-                timeToStr(this.wedStart), timeToStr(this.thuStart), timeToStr(this.friStart), timeToStr(this.satStart),
-                timeToStr(this.sunStart));
+        return String.format("[M: %s, T: %s, W: %s, T: %s, F: %s, S: %s, S: %s]", timeToStr(monStart), timeToStr(tueStart),
+                timeToStr(wedStart), timeToStr(thuStart), timeToStr(friStart), timeToStr(satStart),
+                timeToStr(sunStart));
     }
 
     private String timeToStr(Integer time) {
@@ -87,37 +87,37 @@ public class CinemaShowTimeEntity implements Serializable, Cloneable {
 
     public Integer getMonStart() {
 
-        return this.monStart;
+        return monStart;
     }
 
     public Integer getTueStart() {
 
-        return this.tueStart;
+        return tueStart;
     }
 
     public Integer getWedStart() {
 
-        return this.wedStart;
+        return wedStart;
     }
 
     public Integer getThuStart() {
 
-        return this.thuStart;
+        return thuStart;
     }
 
     public Integer getFriStart() {
 
-        return this.friStart;
+        return friStart;
     }
 
     public Integer getSatStart() {
 
-        return this.satStart;
+        return satStart;
     }
 
     public Integer getSunStart() {
 
-        return this.sunStart;
+        return sunStart;
     }
 
     /**
@@ -126,7 +126,7 @@ public class CinemaShowTimeEntity implements Serializable, Cloneable {
     @Override
     public CinemaShowTimeEntity clone() {
 
-        return new CinemaShowTimeEntity(this.monStart, this.tueStart, this.wedStart, this.thuStart, this.friStart, this.satStart,
-                this.sunStart);
+        return new CinemaShowTimeEntity(monStart, tueStart, wedStart, thuStart, friStart, satStart,
+                sunStart);
     }
 }

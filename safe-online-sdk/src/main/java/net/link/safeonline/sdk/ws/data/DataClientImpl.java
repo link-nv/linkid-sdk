@@ -91,44 +91,44 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
 
         DataService dataService = DataServiceFactory.newInstance();
         AddressingFeature addressingFeature = new AddressingFeature();
-        this.port = dataService.getDataServicePort(addressingFeature);
+        port = dataService.getDataServicePort(addressingFeature);
         this.location = location + "/safe-online-ws/data";
 
         setEndpointAddress();
 
-        registerMessageLoggerHandler(this.port);
+        registerMessageLoggerHandler(port);
 
         /*
          * The order of the JAX-WS handlers is important. For outbound messages the TargetIdentity SOAP handler needs to come first since it
          * feeds additional XML Id's to be signed by the WS-Security handler.
          */
-        this.targetIdentityHandler = new TargetIdentityClientHandler();
+        targetIdentityHandler = new TargetIdentityClientHandler();
         initTargetIdentityHandler();
 
-        WSSecurityClientHandler.addNewHandler(this.port, clientCertificate, clientPrivateKey);
+        WSSecurityClientHandler.addNewHandler(port, clientCertificate, clientPrivateKey);
     }
 
     private void initTargetIdentityHandler() {
 
-        BindingProvider bindingProvider = (BindingProvider) this.port;
+        BindingProvider bindingProvider = (BindingProvider) port;
         Binding binding = bindingProvider.getBinding();
         @SuppressWarnings("unchecked")
         List<Handler> handlerChain = binding.getHandlerChain();
-        handlerChain.add(this.targetIdentityHandler);
+        handlerChain.add(targetIdentityHandler);
         binding.setHandlerChain(handlerChain);
     }
 
     private void setEndpointAddress() {
 
-        BindingProvider bindingProvider = (BindingProvider) this.port;
+        BindingProvider bindingProvider = (BindingProvider) port;
 
-        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location);
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location);
     }
 
     public void setAttributeValue(String subjectLogin, String attributeName, Object attributeValue)
             throws WSClientTransportException, AttributeNotFoundException {
 
-        this.targetIdentityHandler.setTargetIdentity(subjectLogin);
+        targetIdentityHandler.setTargetIdentity(subjectLogin);
 
         ModifyType modify = new ModifyType();
         List<ModifyItemType> modifyItems = modify.getModifyItem();
@@ -149,13 +149,13 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
 
         ModifyResponseType modifyResponse;
         try {
-            modifyResponse = this.port.modify(modify);
+            modifyResponse = port.modify(modify);
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(this.location);
+            throw new WSClientTransportException(location);
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {
-            retrieveHeadersFromPort(this.port);
+            retrieveHeadersFromPort(port);
         }
 
         StatusType status = modifyResponse.getStatus();
@@ -186,7 +186,7 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
     public <Type> Attribute<Type> getAttributeValue(String userId, String attributeName, Class<Type> expectedValueClass)
             throws WSClientTransportException, RequestDeniedException, SubjectNotFoundException {
 
-        this.targetIdentityHandler.setTargetIdentity(userId);
+        targetIdentityHandler.setTargetIdentity(userId);
 
         QueryType query = new QueryType();
 
@@ -203,13 +203,13 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
 
         QueryResponseType queryResponse;
         try {
-            queryResponse = this.port.query(query);
+            queryResponse = port.query(query);
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(this.location);
+            throw new WSClientTransportException(location);
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {
-            retrieveHeadersFromPort(this.port);
+            retrieveHeadersFromPort(port);
         }
 
         StatusType status = queryResponse.getStatus();
@@ -218,17 +218,14 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
         switch (topLevelStatusCode) {
             case FAILED:
                 List<StatusType> secondLevelStatuses = status.getStatus();
-                if (0 == secondLevelStatuses.size()) {
+                if (0 == secondLevelStatuses.size())
                     throw new RuntimeException("ID-WSF DST error");
-                }
                 StatusType secondLevelStatus = secondLevelStatuses.get(0);
                 SecondLevelStatusCode secondLevelStatusCode = SecondLevelStatusCode.fromCode(secondLevelStatus.getCode());
-                if (SecondLevelStatusCode.NOT_AUTHORIZED == secondLevelStatusCode) {
+                if (SecondLevelStatusCode.NOT_AUTHORIZED == secondLevelStatusCode)
                     throw new RequestDeniedException();
-                }
-                if (SecondLevelStatusCode.DOES_NOT_EXIST == secondLevelStatusCode) {
+                if (SecondLevelStatusCode.DOES_NOT_EXIST == secondLevelStatusCode)
                     throw new SubjectNotFoundException();
-                }
                 throw new RuntimeException("unknown error occurred");
             case OK:
             break;
@@ -296,10 +293,9 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
 
                     Array.set(values, idx, compoundBuilder.getCompound());
                 } else {
-                    if (false == componentType.isInstance(attributeValue)) {
+                    if (false == componentType.isInstance(attributeValue))
                         throw new IllegalArgumentException("expected type " + componentType.getName() + "; received: "
                                 + attributeValue.getClass().getName());
-                    }
                     Array.set(values, idx, attributeValue);
                 }
             }
@@ -310,10 +306,9 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
         /*
          * Single-valued attribute expected.
          */
-        if (false == expectedValueClass.isInstance(firstAttributeValue)) {
+        if (false == expectedValueClass.isInstance(firstAttributeValue))
             throw new IllegalArgumentException("type mismatch: expected " + expectedValueClass.getName() + "; received: "
                     + firstAttributeValue.getClass().getName());
-        }
         Type value = (Type) firstAttributeValue;
 
         Attribute<Type> dataValue = new Attribute<Type>(name, value);
@@ -335,7 +330,7 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
     public void createAttribute(String userId, String attributeName, Object attributeValue)
             throws WSClientTransportException {
 
-        this.targetIdentityHandler.setTargetIdentity(userId);
+        targetIdentityHandler.setTargetIdentity(userId);
 
         CreateType create = new CreateType();
         List<CreateItemType> createItems = create.getCreateItem();
@@ -351,20 +346,19 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
         createItem.setNewData(newData);
 
         try {
-            CreateResponseType createResponse = this.port.create(create);
+            CreateResponseType createResponse = port.create(create);
             StatusType status = createResponse.getStatus();
             LOG.debug("status: " + status.getCode());
 
             TopLevelStatusCode topLevelStatusCode = TopLevelStatusCode.fromCode(status.getCode());
-            if (TopLevelStatusCode.OK != topLevelStatusCode) {
+            if (TopLevelStatusCode.OK != topLevelStatusCode)
                 throw new RuntimeException("error occurred while creating attribute");
-            }
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(this.location);
+            throw new WSClientTransportException(location);
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {
-            retrieveHeadersFromPort(this.port);
+            retrieveHeadersFromPort(port);
         }
     }
 
@@ -437,13 +431,12 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
         }
         if (null != id) {
             compoundAttribute.getOtherAttributes().put(WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID, id);
-        } else if (false == isNewAttribute) {
+        } else if (false == isNewAttribute)
             /*
              * The @Id property is really required to be able to target the correct compound attribute record within the system. In case
              * we're creating a new compounded attribute record the attribute Id is of no use.
              */
             throw new IllegalArgumentException("Missing @Id property on compound attribute value");
-        }
         return compoundAttribute;
     }
 
@@ -451,7 +444,7 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
             throws WSClientTransportException {
 
         LOG.debug("remove attribute " + attributeName + " for subject " + userIdn);
-        this.targetIdentityHandler.setTargetIdentity(userIdn);
+        targetIdentityHandler.setTargetIdentity(userIdn);
 
         DeleteType delete = new DeleteType();
         List<DeleteItemType> deleteItems = delete.getDeleteItem();
@@ -470,7 +463,7 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
 
         DeleteResponseType deleteResponse;
         try {
-            deleteResponse = this.port.delete(delete);
+            deleteResponse = port.delete(delete);
             StatusType status = deleteResponse.getStatus();
             LOG.debug("status: " + status.getCode());
 
@@ -480,11 +473,11 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
                 throw new RuntimeException("error occurred while removing attribute: " + comment);
             }
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(this.location);
+            throw new WSClientTransportException(location);
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {
-            retrieveHeadersFromPort(this.port);
+            retrieveHeadersFromPort(port);
         }
     }
 

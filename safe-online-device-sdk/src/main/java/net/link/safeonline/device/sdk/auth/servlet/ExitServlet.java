@@ -50,14 +50,14 @@ public class ExitServlet extends AbstractInjectionServlet {
             /*
              * If no protocol handler is active at this point then something must be going wrong here.
              */
-            redirectToErrorPage(request, response, this.errorPage, null, new ErrorMessage("No protocol handler is active"));
+            redirectToErrorPage(request, response, errorPage, null, new ErrorMessage("No protocol handler is active"));
             return;
 
         }
         try {
             handler.finalizeAuthentication(request, response);
         } catch (AuthenticationFinalizationException e) {
-            redirectToErrorPage(request, response, this.errorPage, null, new ErrorMessage(e.getMessage()));
+            redirectToErrorPage(request, response, errorPage, null, new ErrorMessage(e.getMessage()));
         }
     }
 }

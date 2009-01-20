@@ -180,54 +180,54 @@ public class AuthnRequestFilter extends AbstractInjectionFilter {
 
         super.init(config);
         LOG.debug("init");
-        if (null == this.authenticationProtocolString) {
-            this.authenticationProtocol = DEFAULT_AUTHN_PROTOCOL;
+        if (null == authenticationProtocolString) {
+            authenticationProtocol = DEFAULT_AUTHN_PROTOCOL;
         } else {
-            this.authenticationProtocol = AuthenticationProtocol.toAuthenticationProtocol(this.authenticationProtocolString);
+            authenticationProtocol = AuthenticationProtocol.toAuthenticationProtocol(authenticationProtocolString);
         }
-        LOG.debug("authentication protocol: " + this.authenticationProtocol);
+        LOG.debug("authentication protocol: " + authenticationProtocol);
 
-        if (null == this.ssoEnabledString) {
-            this.ssoEnabled = true;
+        if (null == ssoEnabledString) {
+            ssoEnabled = true;
         } else {
-            this.ssoEnabled = Boolean.parseBoolean(this.ssoEnabledString);
+            ssoEnabled = Boolean.parseBoolean(ssoEnabledString);
         }
-        LOG.debug("single sign-on enabled: " + this.ssoEnabled);
+        LOG.debug("single sign-on enabled: " + ssoEnabled);
 
-        if (null == this.skipLandingPageString) {
-            this.skipLandingPage = false;
+        if (null == skipLandingPageString) {
+            skipLandingPage = false;
         } else {
-            this.skipLandingPage = Boolean.parseBoolean(this.skipLandingPageString);
+            skipLandingPage = Boolean.parseBoolean(skipLandingPageString);
         }
 
         // Defaults for color & minimal from web.xml init params.
-        if (this.colorConfig != null && this.colorConfig.length() > 0) {
-            this.authColor = Integer.decode(this.colorConfig);
+        if (colorConfig != null && colorConfig.length() > 0) {
+            authColor = Integer.decode(colorConfig);
         }
-        if (this.minimalConfig != null && this.minimalConfig.length() > 0) {
-            this.authMinimal = Boolean.parseBoolean(this.minimalConfig);
+        if (minimalConfig != null && minimalConfig.length() > 0) {
+            authMinimal = Boolean.parseBoolean(minimalConfig);
         }
 
         InputStream keyStoreInputStream = null;
-        if (null != this.p12KeyStoreResourceName) {
+        if (null != p12KeyStoreResourceName) {
             Thread currentThread = Thread.currentThread();
             ClassLoader classLoader = currentThread.getContextClassLoader();
             LOG.debug("classloader name: " + classLoader.getClass().getName());
-            keyStoreInputStream = classLoader.getResourceAsStream(this.p12KeyStoreResourceName);
+            keyStoreInputStream = classLoader.getResourceAsStream(p12KeyStoreResourceName);
             if (null == keyStoreInputStream)
-                throw new UnavailableException("PKCS12 keystore resource not found: " + this.p12KeyStoreResourceName);
-        } else if (null != this.p12KeyStoreFileName) {
+                throw new UnavailableException("PKCS12 keystore resource not found: " + p12KeyStoreResourceName);
+        } else if (null != p12KeyStoreFileName) {
             try {
-                keyStoreInputStream = new FileInputStream(this.p12KeyStoreFileName);
+                keyStoreInputStream = new FileInputStream(p12KeyStoreFileName);
             } catch (FileNotFoundException e) {
-                throw new UnavailableException("PKCS12 keystore resource not found: " + this.p12KeyStoreFileName);
+                throw new UnavailableException("PKCS12 keystore resource not found: " + p12KeyStoreFileName);
             }
         }
         if (null != keyStoreInputStream) {
-            PrivateKeyEntry privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(this.keyStoreType, keyStoreInputStream,
-                    this.keyStorePassword, this.keyStorePassword);
-            this.applicationKeyPair = new KeyPair(privateKeyEntry.getCertificate().getPublicKey(), privateKeyEntry.getPrivateKey());
-            this.applicationCertificate = (X509Certificate) privateKeyEntry.getCertificate();
+            PrivateKeyEntry privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(keyStoreType, keyStoreInputStream,
+                    keyStorePassword, keyStorePassword);
+            applicationKeyPair = new KeyPair(privateKeyEntry.getCertificate().getPublicKey(), privateKeyEntry.getPrivateKey());
+            applicationCertificate = (X509Certificate) privateKeyEntry.getCertificate();
         }
     }
 
@@ -248,18 +248,18 @@ public class AuthnRequestFilter extends AbstractInjectionFilter {
     private void initiateAuthentication(HttpServletRequest httpRequest, HttpServletResponse httpResponse)
             throws IOException, ServletException {
 
-        AuthenticationProtocolManager.createAuthenticationProtocolHandler(this.authenticationProtocol, this.authenticationServiceUrl,
-                this.applicationName, this.applicationFriendlyName, this.applicationKeyPair, this.applicationCertificate, this.ssoEnabled,
-                this.configParams, httpRequest);
+        AuthenticationProtocolManager.createAuthenticationProtocolHandler(authenticationProtocol, authenticationServiceUrl,
+                applicationName, applicationFriendlyName, applicationKeyPair, applicationCertificate, ssoEnabled,
+                configParams, httpRequest);
 
         /*
          * Use encodeRedirectURL to add parameters to it that should help preserve the session upon return from SafeOnline auth should the
          * browser not support cookies.
          */
-        if (null != this.targetBaseUrl && null != this.target) {
-            this.targetUrl = this.targetBaseUrl + this.target;
-            this.targetUrl = httpResponse.encodeRedirectURL(this.targetUrl);
-            LOG.debug("target url: " + this.targetUrl);
+        if (null != targetBaseUrl && null != target) {
+            targetUrl = targetBaseUrl + target;
+            targetUrl = httpResponse.encodeRedirectURL(targetUrl);
+            LOG.debug("target url: " + targetUrl);
         }
 
         Locale language = null;
@@ -267,8 +267,8 @@ public class AuthnRequestFilter extends AbstractInjectionFilter {
             language = (Locale) httpRequest.getAttribute(LANGUAGE_SESSION_PARAM);
         }
 
-        AuthenticationProtocolManager.initiateAuthentication(httpRequest, httpResponse, this.targetUrl, this.skipLandingPage, language,
-                this.authColor, this.authMinimal);
+        AuthenticationProtocolManager.initiateAuthentication(httpRequest, httpResponse, targetUrl, skipLandingPage, language,
+                authColor, authMinimal);
     }
 
     public void destroy() {

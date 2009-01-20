@@ -98,24 +98,24 @@ public class LandingServlet extends AbstractInjectionServlet {
 
         super.init(config);
         InputStream keyStoreInputStream = null;
-        if (null != this.p12KeyStoreResourceName) {
+        if (null != p12KeyStoreResourceName) {
             Thread currentThread = Thread.currentThread();
             ClassLoader classLoader = currentThread.getContextClassLoader();
-            keyStoreInputStream = classLoader.getResourceAsStream(this.p12KeyStoreResourceName);
+            keyStoreInputStream = classLoader.getResourceAsStream(p12KeyStoreResourceName);
             if (null == keyStoreInputStream)
-                throw new UnavailableException("PKCS12 keystore resource not found: " + this.p12KeyStoreResourceName);
-        } else if (null != this.p12KeyStoreFileName) {
+                throw new UnavailableException("PKCS12 keystore resource not found: " + p12KeyStoreResourceName);
+        } else if (null != p12KeyStoreFileName) {
             try {
-                keyStoreInputStream = new FileInputStream(this.p12KeyStoreFileName);
+                keyStoreInputStream = new FileInputStream(p12KeyStoreFileName);
             } catch (FileNotFoundException e) {
-                throw new UnavailableException("PKCS12 keystore resource not found: " + this.p12KeyStoreFileName);
+                throw new UnavailableException("PKCS12 keystore resource not found: " + p12KeyStoreFileName);
             }
         }
         if (null != keyStoreInputStream) {
-            PrivateKeyEntry privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(this.keyStoreType, keyStoreInputStream,
-                    this.keyStorePassword, this.keyStorePassword);
-            this.applicationKeyPair = new KeyPair(privateKeyEntry.getCertificate().getPublicKey(), privateKeyEntry.getPrivateKey());
-            this.applicationCertificate = (X509Certificate) privateKeyEntry.getCertificate();
+            PrivateKeyEntry privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(keyStoreType, keyStoreInputStream,
+                    keyStorePassword, keyStorePassword);
+            applicationKeyPair = new KeyPair(privateKeyEntry.getCertificate().getPublicKey(), privateKeyEntry.getPrivateKey());
+            applicationCertificate = (X509Certificate) privateKeyEntry.getCertificate();
         }
     }
 
@@ -130,8 +130,8 @@ public class LandingServlet extends AbstractInjectionServlet {
          * opensaml is checking the destination field.
          */
         HttpServletRequestEndpointWrapper requestWrapper;
-        if (null != this.servletEndpointUrl) {
-            requestWrapper = new HttpServletRequestEndpointWrapper(request, this.servletEndpointUrl);
+        if (null != servletEndpointUrl) {
+            requestWrapper = new HttpServletRequestEndpointWrapper(request, servletEndpointUrl);
         } else {
             requestWrapper = new HttpServletRequestEndpointWrapper(request, request.getRequestURL().toString());
         }
@@ -164,44 +164,44 @@ public class LandingServlet extends AbstractInjectionServlet {
         DeviceOperationType deviceOperation;
         try {
             Saml2Handler handler = Saml2Handler.getSaml2Handler(requestWrapper);
-            handler.init(this.configParams, this.applicationCertificate, this.applicationKeyPair);
+            handler.init(configParams, applicationCertificate, applicationKeyPair);
             deviceOperation = handler.initDeviceOperation(requestWrapper);
             if (deviceOperation.equals(DeviceOperationType.REGISTER) || deviceOperation.equals(DeviceOperationType.NEW_ACCOUNT_REGISTER)) {
-                if (null == this.registrationUrl) {
+                if (null == registrationUrl) {
                     handler.abortDeviceOperation(requestWrapper, response);
                 }
-                response.sendRedirect(this.registrationUrl);
+                response.sendRedirect(registrationUrl);
             } else if (deviceOperation.equals(DeviceOperationType.REMOVE)) {
-                if (null == this.removalUrl) {
+                if (null == removalUrl) {
                     handler.abortDeviceOperation(requestWrapper, response);
                 }
-                response.sendRedirect(this.removalUrl);
+                response.sendRedirect(removalUrl);
             } else if (deviceOperation.equals(DeviceOperationType.UPDATE)) {
-                if (null == this.updateUrl) {
+                if (null == updateUrl) {
                     handler.abortDeviceOperation(requestWrapper, response);
                 }
-                response.sendRedirect(this.updateUrl);
+                response.sendRedirect(updateUrl);
             } else if (deviceOperation.equals(DeviceOperationType.DISABLE)) {
-                if (null == this.disableUrl) {
+                if (null == disableUrl) {
                     handler.abortDeviceOperation(requestWrapper, response);
                 }
-                response.sendRedirect(this.disableUrl);
+                response.sendRedirect(disableUrl);
             } else if (deviceOperation.equals(DeviceOperationType.ENABLE)) {
-                if (null == this.enableUrl) {
+                if (null == enableUrl) {
                     handler.abortDeviceOperation(requestWrapper, response);
                 }
-                response.sendRedirect(this.enableUrl);
+                response.sendRedirect(enableUrl);
             } else {
                 handler.abortDeviceOperation(requestWrapper, response);
             }
         } catch (DeviceInitializationException e) {
             LOG.debug("device initialization exception: " + e.getMessage());
-            redirectToErrorPage(requestWrapper, response, this.errorPage, null, new ErrorMessage(e.getMessage()));
+            redirectToErrorPage(requestWrapper, response, errorPage, null, new ErrorMessage(e.getMessage()));
 
             return;
         } catch (DeviceFinalizationException e) {
             LOG.debug("device finalization exception: " + e.getMessage());
-            redirectToErrorPage(requestWrapper, response, this.errorPage, null, new ErrorMessage(e.getMessage()));
+            redirectToErrorPage(requestWrapper, response, errorPage, null, new ErrorMessage(e.getMessage()));
 
             return;
         }

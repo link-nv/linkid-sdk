@@ -40,8 +40,8 @@ public class ApplicationOwnerManagerBean implements ApplicationOwnerManager {
     public ApplicationOwnerEntity getCallerApplicationOwner()
             throws ApplicationOwnerNotFoundException {
 
-        SubjectEntity subject = this.subjectManager.getCallerSubject();
-        ApplicationOwnerEntity applicationOwner = this.applicationOwnerDAO.getApplicationOwner(subject);
+        SubjectEntity subject = subjectManager.getCallerSubject();
+        ApplicationOwnerEntity applicationOwner = applicationOwnerDAO.getApplicationOwner(subject);
         return applicationOwner;
     }
 }

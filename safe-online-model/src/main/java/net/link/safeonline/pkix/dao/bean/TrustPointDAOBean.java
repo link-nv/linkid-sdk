@@ -43,40 +43,40 @@ public class TrustPointDAOBean implements TrustPointDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, TrustPointEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, TrustPointEntity.QueryInterface.class);
     }
 
     public void addTrustPoint(TrustDomainEntity trustDomain, X509Certificate certificate) {
 
         LOG.debug("add trust point to domain: " + trustDomain.getName() + " with subject " + certificate.getSubjectX500Principal());
         TrustPointEntity trustPoint = new TrustPointEntity(trustDomain, certificate);
-        this.entityManager.persist(trustPoint);
+        entityManager.persist(trustPoint);
     }
 
     public List<TrustPointEntity> listTrustPoints(TrustDomainEntity trustDomain) {
 
         LOG.debug("get trust points for domain: " + trustDomain.getName());
-        List<TrustPointEntity> trustPoints = this.queryObject.listTrustPoints(trustDomain);
+        List<TrustPointEntity> trustPoints = queryObject.listTrustPoints(trustDomain);
         return trustPoints;
     }
 
     public void removeTrustPoint(TrustPointEntity trustPoint) {
 
         LOG.debug("remove trust point: " + trustPoint);
-        this.entityManager.remove(trustPoint);
+        entityManager.remove(trustPoint);
     }
 
     public TrustPointEntity findTrustPoint(TrustDomainEntity trustDomain, X509Certificate certificate) {
 
         TrustPointPK pk = new TrustPointPK(trustDomain, certificate);
-        TrustPointEntity trustPoint = this.entityManager.find(TrustPointEntity.class, pk);
+        TrustPointEntity trustPoint = entityManager.find(TrustPointEntity.class, pk);
         return trustPoint;
     }
 
     public TrustPointEntity getTrustPoint(TrustPointPK pk)
             throws TrustPointNotFoundException {
 
-        TrustPointEntity trustPoint = this.entityManager.find(TrustPointEntity.class, pk);
+        TrustPointEntity trustPoint = entityManager.find(TrustPointEntity.class, pk);
         if (null == trustPoint)
             throw new TrustPointNotFoundException();
         return trustPoint;
@@ -85,6 +85,6 @@ public class TrustPointDAOBean implements TrustPointDAO {
     public List<TrustPointEntity> listTrustPoints(String certificateSubject) {
 
         LOG.debug("get trust points with certificate subject: " + certificateSubject);
-        return this.queryObject.listTrustPoints(certificateSubject);
+        return queryObject.listTrustPoints(certificateSubject);
     }
 }

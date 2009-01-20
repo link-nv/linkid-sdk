@@ -72,7 +72,7 @@ public class EncapAuthentication extends DeviceAuthenticationPanel {
         inputPanel.setLayout(gbl);
 
         JLabel mobileOrOtpLabel;
-        if (this.initial) {
+        if (initial) {
             mobileOrOtpLabel = new JLabel("Mobile");
         } else {
             mobileOrOtpLabel = new JLabel("OTP");
@@ -90,11 +90,11 @@ public class EncapAuthentication extends DeviceAuthenticationPanel {
 
         gbc.gridx = 1;
         gbc.gridy = 0;
-        gbl.setConstraints(this.mobileOrOtpField, gbc);
-        inputPanel.add(this.mobileOrOtpField, gbc);
+        gbl.setConstraints(mobileOrOtpField, gbc);
+        inputPanel.add(mobileOrOtpField, gbc);
 
-        controlPanel.add(this.loginButton);
-        controlPanel.add(this.cancelButton);
+        controlPanel.add(loginButton);
+        controlPanel.add(cancelButton);
 
         setLayout(new BorderLayout());
         this.add(inputPanel, BorderLayout.CENTER);
@@ -103,7 +103,7 @@ public class EncapAuthentication extends DeviceAuthenticationPanel {
 
     private void handleEvents() {
 
-        this.loginButton.addActionListener(new ActionListener() {
+        loginButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
@@ -113,7 +113,7 @@ public class EncapAuthentication extends DeviceAuthenticationPanel {
             }
         });
 
-        this.cancelButton.addActionListener(new ActionListener() {
+        cancelButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
@@ -128,10 +128,10 @@ public class EncapAuthentication extends DeviceAuthenticationPanel {
 
         Map<String, String> deviceCredentials = new HashMap<String, String>();
 
-        if (this.initial) {
-            deviceCredentials.put(ENCAP_WS_AUTH_MOBILE_ATTRIBUTE, this.mobileOrOtpField.getText());
+        if (initial) {
+            deviceCredentials.put(ENCAP_WS_AUTH_MOBILE_ATTRIBUTE, mobileOrOtpField.getText());
         } else {
-            deviceCredentials.put(ENCAP_WS_AUTH_OTP_ATTRIBUTE, this.mobileOrOtpField.getText());
+            deviceCredentials.put(ENCAP_WS_AUTH_OTP_ATTRIBUTE, mobileOrOtpField.getText());
         }
 
         authenticate(deviceCredentials);
@@ -140,8 +140,8 @@ public class EncapAuthentication extends DeviceAuthenticationPanel {
 
     protected boolean checkInput() {
 
-        if (null == this.mobileOrOtpField.getText() || this.mobileOrOtpField.getText().length() == 0) {
-            if (this.initial) {
+        if (null == mobileOrOtpField.getText() || mobileOrOtpField.getText().length() == 0) {
+            if (initial) {
                 JOptionPane.showMessageDialog(this, "Please fill in the mobile field", "Error", JOptionPane.ERROR_MESSAGE);
             } else {
                 JOptionPane.showMessageDialog(this, "Please fill in the otp field", "Error", JOptionPane.ERROR_MESSAGE);

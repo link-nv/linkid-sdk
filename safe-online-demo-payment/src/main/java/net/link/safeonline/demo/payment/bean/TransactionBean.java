@@ -67,33 +67,33 @@ public class TransactionBean extends AbstractPaymentDataClientBean implements Tr
 
     private String getUserId() {
 
-        Principal principal = this.sessionContext.getCallerPrincipal();
+        Principal principal = sessionContext.getCallerPrincipal();
         return principal.getName();
     }
 
     private String getUsername() {
 
         String username = getUsername(getUserId());
-        this.log.debug("username #0", username);
+        log.debug("username #0", username);
         return username;
     }
 
     @RolesAllowed(PaymentConstants.AUTHENTICATED_ROLE)
     public String confirm() {
 
-        this.log.debug("confirm");
+        log.debug("confirm");
         LOG.debug("confirm");
-        UserEntity user = this.entityManager.find(UserEntity.class, getUserId());
+        UserEntity user = entityManager.find(UserEntity.class, getUserId());
         if (user == null) {
             user = new UserEntity(getUserId(), getUsername());
-            this.entityManager.persist(user);
+            entityManager.persist(user);
         }
 
         Date paymentDate = new Date();
-        this.newPayment.setPaymentDate(paymentDate);
-        this.newPayment.setOwner(user);
+        newPayment.setPaymentDate(paymentDate);
+        newPayment.setOwner(user);
 
-        this.entityManager.persist(this.newPayment);
+        entityManager.persist(newPayment);
 
         return "confirmed";
     }
@@ -109,30 +109,30 @@ public class TransactionBean extends AbstractPaymentDataClientBean implements Tr
     @RolesAllowed(PaymentConstants.AUTHENTICATED_ROLE)
     public List<SelectItem> visasFactory() {
 
-        this.log.debug("visas factory");
+        log.debug("visas factory");
         String userId = getUserId();
         String[] values;
         try {
             values = getAttributeClient().getAttributeValue(userId, "urn:net:lin-k:safe-online:attribute:visaCardNumber", String[].class);
         } catch (AttributeNotFoundException e) {
             String msg = "attribute not found: " + e.getMessage();
-            this.log.debug(msg);
-            this.facesMessages.add(msg);
+            log.debug(msg);
+            facesMessages.add(msg);
             return new LinkedList<SelectItem>();
         } catch (RequestDeniedException e) {
             String msg = "request denied";
-            this.log.debug(msg);
-            this.facesMessages.add(msg);
+            log.debug(msg);
+            facesMessages.add(msg);
             return new LinkedList<SelectItem>();
         } catch (WSClientTransportException e) {
             String msg = "Connection error. Check your SSL setup.";
-            this.log.debug(msg);
-            this.facesMessages.add(msg);
+            log.debug(msg);
+            facesMessages.add(msg);
             return new LinkedList<SelectItem>();
         } catch (AttributeUnavailableException e) {
             String msg = "Visa Attribute unavailable error.";
-            this.log.debug(msg);
-            this.facesMessages.add(msg);
+            log.debug(msg);
+            facesMessages.add(msg);
             return new LinkedList<SelectItem>();
         }
         List<SelectItem> visas = new LinkedList<SelectItem>();

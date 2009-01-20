@@ -48,6 +48,6 @@ public class ProfiledException extends ServletException {
      */
     public Map<String, String> getHeaders() {
 
-        return Collections.unmodifiableMap(this.headers);
+        return Collections.unmodifiableMap(headers);
     }
 }

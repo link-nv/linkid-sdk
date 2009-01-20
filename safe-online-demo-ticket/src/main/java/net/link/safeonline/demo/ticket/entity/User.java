@@ -45,12 +45,12 @@ public class User implements Serializable {
 
     public User() {
 
-        this.tickets = new ArrayList<Ticket>();
+        tickets = new ArrayList<Ticket>();
     }
 
     public User(String safeOnlineUserId, String safeOnlineUserName, String nrn) {
 
-        this.tickets = new ArrayList<Ticket>();
+        tickets = new ArrayList<Ticket>();
         this.safeOnlineUserId = safeOnlineUserId;
         this.safeOnlineUserName = safeOnlineUserName;
         this.nrn = nrn;
@@ -64,7 +64,7 @@ public class User implements Serializable {
     @Id
     public String getSafeOnlineUserId() {
 
-        return this.safeOnlineUserId;
+        return safeOnlineUserId;
     }
 
     public void setSafeOnlineUserId(String safeOnlineUserId) {
@@ -74,7 +74,7 @@ public class User implements Serializable {
 
     public String getSafeOnlineUserName() {
 
-        return this.safeOnlineUserName;
+        return safeOnlineUserName;
     }
 
     public void setSafeOnlineUserName(String safeOnlineUserName) {
@@ -85,7 +85,7 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "owner", fetch = FetchType.EAGER)
     public List<Ticket> getTickets() {
 
-        return this.tickets;
+        return tickets;
     }
 
     public void setTickets(List<Ticket> tickets) {
@@ -96,7 +96,7 @@ public class User implements Serializable {
     @Column(unique = true)
     public String getNrn() {
 
-        return this.nrn;
+        return nrn;
     }
 
     public void setNrn(String nrn) {

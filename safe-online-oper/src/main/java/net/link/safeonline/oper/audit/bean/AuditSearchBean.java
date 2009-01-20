@@ -155,7 +155,7 @@ public class AuditSearchBean implements AuditSearch {
      */
     public Long getSearchContextId() {
 
-        return this.searchContextId;
+        return searchContextId;
     }
 
     public void setSearchContextId(Long searchContextId) {
@@ -165,7 +165,7 @@ public class AuditSearchBean implements AuditSearch {
 
     public String getSearchAuditUser() {
 
-        return this.searchAuditUser;
+        return searchAuditUser;
     }
 
     public void setSearchAuditUser(String searchAuditUser) {
@@ -175,7 +175,7 @@ public class AuditSearchBean implements AuditSearch {
 
     public Integer getSearchLastTimeDays() {
 
-        return this.searchLastTimeDays;
+        return searchLastTimeDays;
     }
 
     public void setSearchLastTimeDays(Integer searchLastTimeDays) {
@@ -185,7 +185,7 @@ public class AuditSearchBean implements AuditSearch {
 
     public Integer getSearchLastTimeHours() {
 
-        return this.searchLastTimeHours;
+        return searchLastTimeHours;
     }
 
     public void setSearchLastTimeHours(Integer searchLastTimeHours) {
@@ -195,7 +195,7 @@ public class AuditSearchBean implements AuditSearch {
 
     public Integer getSearchLastTimeMinutes() {
 
-        return this.searchLastTimeMinutes;
+        return searchLastTimeMinutes;
     }
 
     public void setSearchLastTimeMinutes(Integer searchLastTimeMinutes) {
@@ -212,22 +212,22 @@ public class AuditSearchBean implements AuditSearch {
     public void auditContextListFactory() {
 
         LOG.debug("Retrieve audit contexts");
-        this.auditContextList = this.auditService.listLastContexts();
+        auditContextList = auditService.listLastContexts();
     }
 
     @Factory(ACCESS_AUDIT_LIST_NAME)
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public void accessAuditRecordListFactory() {
 
-        if (SearchMode.ID == this.searchMode) {
-            LOG.debug("Retrieve access audit records for context " + this.auditContext.getId());
-            this.accessAuditRecordList = this.auditService.listAccessAuditRecords(this.auditContext.getId());
-        } else if (SearchMode.USER == this.searchMode) {
-            LOG.debug("Retrieve access audit records for user " + this.searchAuditUser);
-            this.accessAuditRecordList = this.auditService.listAccessAuditRecords(this.searchAuditUser);
-        } else if (SearchMode.TIME == this.searchMode) {
-            LOG.debug("Retrieve access audit records since " + this.ageLimit);
-            this.accessAuditRecordList = this.auditService.listAccessAuditRecordsSince(this.ageLimit);
+        if (SearchMode.ID == searchMode) {
+            LOG.debug("Retrieve access audit records for context " + auditContext.getId());
+            accessAuditRecordList = auditService.listAccessAuditRecords(auditContext.getId());
+        } else if (SearchMode.USER == searchMode) {
+            LOG.debug("Retrieve access audit records for user " + searchAuditUser);
+            accessAuditRecordList = auditService.listAccessAuditRecords(searchAuditUser);
+        } else if (SearchMode.TIME == searchMode) {
+            LOG.debug("Retrieve access audit records since " + ageLimit);
+            accessAuditRecordList = auditService.listAccessAuditRecordsSince(ageLimit);
 
         }
     }
@@ -236,18 +236,18 @@ public class AuditSearchBean implements AuditSearch {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public void securityAuditRecordListFactory() {
 
-        if (SearchMode.ID == this.searchMode) {
-            LOG.debug("Retrieve security audit records for context " + this.auditContext.getId());
-            this.securityAuditRecordList = this.auditService.listSecurityAuditRecords(this.auditContext.getId());
-        } else if (SearchMode.USER == this.searchMode) {
-            LOG.debug("Retrieve security audit records for user " + this.searchAuditUser);
-            this.securityAuditRecordList = this.auditService.listSecurityAuditRecords(this.searchAuditUser);
-        } else if (SearchMode.TIME == this.searchMode) {
-            LOG.debug("Retrieve security audit records since " + this.ageLimit);
-            this.securityAuditRecordList = this.auditService.listSecurityAuditRecordsSince(this.ageLimit);
-        } else if (SearchMode.ALL == this.searchMode) {
+        if (SearchMode.ID == searchMode) {
+            LOG.debug("Retrieve security audit records for context " + auditContext.getId());
+            securityAuditRecordList = auditService.listSecurityAuditRecords(auditContext.getId());
+        } else if (SearchMode.USER == searchMode) {
+            LOG.debug("Retrieve security audit records for user " + searchAuditUser);
+            securityAuditRecordList = auditService.listSecurityAuditRecords(searchAuditUser);
+        } else if (SearchMode.TIME == searchMode) {
+            LOG.debug("Retrieve security audit records since " + ageLimit);
+            securityAuditRecordList = auditService.listSecurityAuditRecordsSince(ageLimit);
+        } else if (SearchMode.ALL == searchMode) {
             LOG.debug("Show all security audit records");
-            this.securityAuditRecordList = this.auditService.listSecurityAuditRecords();
+            securityAuditRecordList = auditService.listSecurityAuditRecords();
         }
     }
 
@@ -255,15 +255,15 @@ public class AuditSearchBean implements AuditSearch {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public void resourceAuditRecordListFactory() {
 
-        if (SearchMode.ID == this.searchMode) {
-            LOG.debug("Retrieve resource audit records for context " + this.auditContext.getId());
-            this.resourceAuditRecordList = this.auditService.listResourceAuditRecords(this.auditContext.getId());
-        } else if (SearchMode.TIME == this.searchMode) {
-            LOG.debug("Retrieve resource audit records since " + this.ageLimit);
-            this.resourceAuditRecordList = this.auditService.listResourceAuditRecordsSince(this.ageLimit);
-        } else if (SearchMode.ALL == this.searchMode) {
+        if (SearchMode.ID == searchMode) {
+            LOG.debug("Retrieve resource audit records for context " + auditContext.getId());
+            resourceAuditRecordList = auditService.listResourceAuditRecords(auditContext.getId());
+        } else if (SearchMode.TIME == searchMode) {
+            LOG.debug("Retrieve resource audit records since " + ageLimit);
+            resourceAuditRecordList = auditService.listResourceAuditRecordsSince(ageLimit);
+        } else if (SearchMode.ALL == searchMode) {
             LOG.debug("Show all resource audit records");
-            this.resourceAuditRecordList = this.auditService.listResourceAuditRecords();
+            resourceAuditRecordList = auditService.listResourceAuditRecords();
         }
     }
 
@@ -271,15 +271,15 @@ public class AuditSearchBean implements AuditSearch {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public void auditAuditRecordListFactory() {
 
-        if (SearchMode.ID == this.searchMode) {
-            LOG.debug("Retrieve audit audit records for context " + this.auditContext.getId());
-            this.auditAuditRecordList = this.auditService.listAuditAuditRecords(this.auditContext.getId());
-        } else if (SearchMode.TIME == this.searchMode) {
-            LOG.debug("Retrieve audit audit records since " + this.ageLimit);
-            this.auditAuditRecordList = this.auditService.listAuditAuditRecordsSince(this.ageLimit);
-        } else if (SearchMode.ALL == this.searchMode) {
+        if (SearchMode.ID == searchMode) {
+            LOG.debug("Retrieve audit audit records for context " + auditContext.getId());
+            auditAuditRecordList = auditService.listAuditAuditRecords(auditContext.getId());
+        } else if (SearchMode.TIME == searchMode) {
+            LOG.debug("Retrieve audit audit records since " + ageLimit);
+            auditAuditRecordList = auditService.listAuditAuditRecordsSince(ageLimit);
+        } else if (SearchMode.ALL == searchMode) {
             LOG.debug("retrieving all audit audit");
-            this.auditAuditRecordList = this.auditService.listAuditAuditRecords();
+            auditAuditRecordList = auditService.listAuditAuditRecords();
         }
     }
 
@@ -290,7 +290,7 @@ public class AuditSearchBean implements AuditSearch {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String view() {
 
-        LOG.debug("View context " + this.auditContext.getId());
+        LOG.debug("View context " + auditContext.getId());
 
         setMode(SearchMode.ID);
         return "view";
@@ -324,8 +324,8 @@ public class AuditSearchBean implements AuditSearch {
     public String removeContext()
             throws AuditContextNotFoundException {
 
-        LOG.debug("Remove context " + this.auditContext.getId());
-        this.auditService.removeAuditContext(this.auditContext.getId());
+        LOG.debug("Remove context " + auditContext.getId());
+        auditService.removeAuditContext(auditContext.getId());
         auditContextListFactory();
         return "success";
     }
@@ -333,13 +333,13 @@ public class AuditSearchBean implements AuditSearch {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String search() {
 
-        LOG.debug("audit search: id=" + this.searchContextId + " user=" + this.searchAuditUser);
-        if (null != this.searchContextId) {
-            LOG.debug("Search context id " + this.searchContextId);
+        LOG.debug("audit search: id=" + searchContextId + " user=" + searchAuditUser);
+        if (null != searchContextId) {
+            LOG.debug("Search context id " + searchContextId);
             setMode(SearchMode.ID);
             return "search-id";
-        } else if (null != this.searchAuditUser && this.searchAuditUser.length() > 0) {
-            LOG.debug("Search user " + this.searchAuditUser);
+        } else if (null != searchAuditUser && searchAuditUser.length() > 0) {
+            LOG.debug("Search user " + searchAuditUser);
             setMode(SearchMode.USER);
             return "search-user";
         } else {
@@ -352,9 +352,9 @@ public class AuditSearchBean implements AuditSearch {
     public String searchLastTime() {
 
         Long timeLimitInMillis = System.currentTimeMillis()
-                - (this.searchLastTimeMinutes + this.searchLastTimeHours * 60 + this.searchLastTimeDays * 60 * 24) * 60 * 1000;
-        this.ageLimit = new Date(timeLimitInMillis);
-        LOG.debug("Search audit records since " + this.ageLimit);
+                - (searchLastTimeMinutes + searchLastTimeHours * 60 + searchLastTimeDays * 60 * 24) * 60 * 1000;
+        ageLimit = new Date(timeLimitInMillis);
+        LOG.debug("Search audit records since " + ageLimit);
         setMode(SearchMode.TIME);
         return "search-time";
     }
@@ -362,15 +362,15 @@ public class AuditSearchBean implements AuditSearch {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String viewPrincipal() {
 
-        if (null != this.accessAuditEntity) {
-            this.auditPrincipal = this.accessAuditEntity.getPrincipal();
-        } else if (null != this.securityAuditEntity) {
-            this.auditPrincipal = this.securityAuditEntity.getTargetPrincipal();
+        if (null != accessAuditEntity) {
+            auditPrincipal = accessAuditEntity.getPrincipal();
+        } else if (null != securityAuditEntity) {
+            auditPrincipal = securityAuditEntity.getTargetPrincipal();
         }
-        if (null == this.auditPrincipal) {
-            this.auditPrincipal = OperatorConstants.UNKNOWN_PRINCIPAL;
+        if (null == auditPrincipal) {
+            auditPrincipal = OperatorConstants.UNKNOWN_PRINCIPAL;
         }
-        LOG.debug("view principal: " + this.auditPrincipal);
+        LOG.debug("view principal: " + auditPrincipal);
         return "view-principal";
     }
 
@@ -384,14 +384,14 @@ public class AuditSearchBean implements AuditSearch {
         Long id = (Long) value;
         LOG.debug("validateId = " + id);
         try {
-            this.auditContext = this.auditService.getAuditContext(id);
+            auditContext = auditService.getAuditContext(id);
         } catch (AuditContextNotFoundException e) {
             ((UIInput) toValidate).setValid(false);
             String errorMsg = ResourceBundle.instance().getString("errorNoAuditRecordsFound");
             FacesMessage message = new FacesMessage(errorMsg);
             context.addMessage(toValidate.getClientId(context), message);
         }
-        if (null == this.auditContext) {
+        if (null == auditContext) {
             ((UIInput) toValidate).setValid(false);
             String errorMsg = ResourceBundle.instance().getString("errorNoAuditRecordsFound");
             FacesMessage message = new FacesMessage(errorMsg);
@@ -403,7 +403,7 @@ public class AuditSearchBean implements AuditSearch {
     public void validateUser(FacesContext context, UIComponent toValidate, Object value) {
 
         String userName = (String) value;
-        Set<String> users = this.auditService.listUsers();
+        Set<String> users = auditService.listUsers();
         if (!users.contains(userName)) {
             ((UIInput) toValidate).setValid(false);
             String errorMsg = ResourceBundle.instance().getString("errorNoAuditRecordsFound");

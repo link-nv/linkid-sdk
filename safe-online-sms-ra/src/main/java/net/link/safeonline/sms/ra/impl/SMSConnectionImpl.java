@@ -33,12 +33,12 @@ public class SMSConnectionImpl implements SMSConnection {
 
         LOG.debug("Sending SMS");
         try {
-            this.gsmModem.open();
-            this.gsmModem.sendSMS(new SMS(number, message));
+            gsmModem.open();
+            gsmModem.sendSMS(new SMS(number, message));
             LOG.debug("Success");
         } catch (SMSException e) {
             LOG.debug("Could not send SMS");
         }
-        this.gsmModem.close();
+        gsmModem.close();
     }
 }

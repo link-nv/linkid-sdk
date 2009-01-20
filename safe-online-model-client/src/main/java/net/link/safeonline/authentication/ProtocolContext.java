@@ -61,36 +61,36 @@ public class ProtocolContext {
 
     public String getApplicationId() {
 
-        return this.applicationId;
+        return applicationId;
     }
 
     public String getApplicationFriendlyName() {
 
-        return this.applicationFriendlyName;
+        return applicationFriendlyName;
     }
 
     public String getTarget() {
 
-        return this.target;
+        return target;
     }
 
     public Set<DeviceEntity> getRequiredDevices() {
 
-        return this.requiredDevices;
+        return requiredDevices;
     }
 
     public Locale getLanguage() {
 
-        return this.language;
+        return language;
     }
 
     public Integer getColor() {
 
-        return this.color;
+        return color;
     }
 
     public Boolean getMinimal() {
 
-        return this.minimal;
+        return minimal;
     }
 }

@@ -52,7 +52,7 @@ public class UserServiceTest extends AbstractCinemaServiceTest {
 
         super.setup();
 
-        this.initializationService.buildEntities();
+        initializationService.buildEntities();
     }
 
     @Test
@@ -62,7 +62,7 @@ public class UserServiceTest extends AbstractCinemaServiceTest {
         String testUserOlasId = UUIDGenerator.getUUID(), testUserName = "testCinemaUser", testUserNrn = "0123456789";
 
         // Create our user.
-        CinemaUserEntity sampleUser = this.userService.getUser(testUserOlasId);
+        CinemaUserEntity sampleUser = userService.getUser(testUserOlasId);
 
         // Verify && OLAS Id assigned correctly.
         String sampleUserOlasId = sampleUser.getOlasId();
@@ -73,7 +73,7 @@ public class UserServiceTest extends AbstractCinemaServiceTest {
         WicketUtil.setUnitTesting(true);
         DummyAttributeClient.setAttribute(testUserOlasId, BeIdConstants.NRN_ATTRIBUTE, new String[] { testUserNrn });
         DummyAttributeClient.setAttribute(testUserOlasId, DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, testUserName);
-        this.userService.updateUser(sampleUser, null);
+        userService.updateUser(sampleUser, null);
 
         // Verify && attributes assigned correctly.
         String sampleUserName = sampleUser.getName();
@@ -85,7 +85,7 @@ public class UserServiceTest extends AbstractCinemaServiceTest {
 
         // Verify whether ticketService.getUser() returns the correct user.
         CinemaUserEntity testUser = sampleUser;
-        sampleUser = this.userService.getUser(sampleUserOlasId);
+        sampleUser = userService.getUser(sampleUserOlasId);
         assertEquals(String.format("user mismatch: test: %s - sample: %s", testUser, sampleUser), //
                 testUser, sampleUser);
     }

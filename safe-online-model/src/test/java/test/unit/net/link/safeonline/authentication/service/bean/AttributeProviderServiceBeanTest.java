@@ -68,9 +68,9 @@ public class AttributeProviderServiceBeanTest {
         JmxTestUtils jmxTestUtils = new JmxTestUtils();
         jmxTestUtils.setUp("jboss.security:service=JaasSecurityManager");
 
-        this.entityTestManager = new EntityTestManager();
-        this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        entityTestManager = new EntityTestManager();
+        entityTestManager.setUp(SafeOnlineTestContainer.entities);
+        EntityManager entityManager = entityTestManager.getEntityManager();
 
         jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
 
@@ -99,14 +99,14 @@ public class AttributeProviderServiceBeanTest {
         Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class, SafeOnlineTestContainer.sessionBeans,
                 entityManager);
         systemStartable.postStart();
-        this.entityTestManager.refreshEntityManager();
+        entityTestManager.refreshEntityManager();
     }
 
     @After
     public void tearDown()
             throws Exception {
 
-        this.entityTestManager.tearDown();
+        entityTestManager.tearDown();
     }
 
     @Test
@@ -114,7 +114,7 @@ public class AttributeProviderServiceBeanTest {
             throws Exception {
 
         // setup
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
         String testLogin = "test-subject-login";
         String testAttributeName = "test-attribute-name";
         String[] testAttributeValue = { "hello", "world" };
@@ -156,7 +156,7 @@ public class AttributeProviderServiceBeanTest {
             throws Exception {
 
         // setup
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
         String testLogin = "test-subject-login";
         String testAttributeName = "test-attribute-name";
         String value1 = "hello";
@@ -245,7 +245,7 @@ public class AttributeProviderServiceBeanTest {
             throws Exception {
 
         // setup
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        EntityManager entityManager = entityTestManager.getEntityManager();
         String testLogin = "test-subject-login";
         String testAttributeName = "test-attribute-name";
         String testAttributeValue = "test-value";

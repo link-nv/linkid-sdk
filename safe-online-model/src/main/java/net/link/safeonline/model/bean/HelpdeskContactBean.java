@@ -32,7 +32,7 @@ public class HelpdeskContactBean implements HelpdeskContact {
 
     public String getPhone() {
 
-        return this.phone;
+        return phone;
     }
 
     public void setPhone(String phone) {
@@ -42,7 +42,7 @@ public class HelpdeskContactBean implements HelpdeskContact {
 
     public String getEmail() {
 
-        return this.email;
+        return email;
     }
 
     public void setEmail(String email) {

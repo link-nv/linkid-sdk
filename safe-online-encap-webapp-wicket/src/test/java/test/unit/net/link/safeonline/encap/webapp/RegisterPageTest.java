@@ -49,7 +49,7 @@ public class RegisterPageTest extends TestCase {
 
         WicketUtil.setUnitTesting(true);
 
-        this.mockEncapDeviceService = createMock(EncapDeviceService.class);
+        mockEncapDeviceService = createMock(EncapDeviceService.class);
 
         // Initialize MBean's
         JmxTestUtils jmxTestUtils = new JmxTestUtils();
@@ -77,8 +77,8 @@ public class RegisterPageTest extends TestCase {
             }
         });
 
-        this.wicket = new WicketTester(new EncapTestApplication());
-        this.wicket.processRequestCycle();
+        wicket = new WicketTester(new EncapTestApplication());
+        wicket.processRequestCycle();
 
     }
 
@@ -92,38 +92,38 @@ public class RegisterPageTest extends TestCase {
         DummyNameIdentifierMappingClient.setUserId(userId);
 
         // MainPage: Verify.
-        this.wicket.assertRenderedPage(MainPage.class);
+        wicket.assertRenderedPage(MainPage.class);
 
-        this.wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID, RegisterPage.class);
-        this.wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID, RemovePage.class);
+        wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID, RegisterPage.class);
+        wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID, RemovePage.class);
 
         // MainPage: Click to register encap
-        this.wicket.clickLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID);
+        wicket.clickLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID);
 
         // RegisterPage: Verify.
-        this.wicket.assertRenderedPage(RegisterPage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RegisterPage.REGISTER_FORM_ID, Form.class);
+        wicket.assertRenderedPage(RegisterPage.class);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RegisterPage.REGISTER_FORM_ID, Form.class);
 
         // setup
-        RegisterPage registerPage = (RegisterPage) this.wicket.getLastRenderedPage();
-        EJBTestUtils.inject(registerPage, this.mockEncapDeviceService);
+        RegisterPage registerPage = (RegisterPage) wicket.getLastRenderedPage();
+        EJBTestUtils.inject(registerPage, mockEncapDeviceService);
 
         // stubs
-        expect(this.mockEncapDeviceService.register(userId, serialNumber)).andStubReturn(userId);
+        expect(mockEncapDeviceService.register(userId, serialNumber)).andStubReturn(userId);
 
         // prepare
-        replay(this.mockEncapDeviceService);
+        replay(mockEncapDeviceService);
 
         // RegisterPage: Register encap for user
-        FormTester registerForm = this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RegisterPage.REGISTER_FORM_ID);
+        FormTester registerForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RegisterPage.REGISTER_FORM_ID);
         registerForm.setValue(RegisterPage.LOGIN_FIELD_ID, UUID.randomUUID().toString());
         registerForm.setValue(RegisterPage.SERIALNUMBER_FIELD_ID, serialNumber);
         registerForm.submit(RegisterPage.REGISTER_BUTTON_ID);
 
         // verify
-        verify(this.mockEncapDeviceService);
+        verify(mockEncapDeviceService);
 
-        this.wicket.assertRenderedPage(MainPage.class);
+        wicket.assertRenderedPage(MainPage.class);
     }
 
     @Test
@@ -136,39 +136,39 @@ public class RegisterPageTest extends TestCase {
         DummyNameIdentifierMappingClient.setUserId(userId);
 
         // MainPage: Verify.
-        this.wicket.assertRenderedPage(MainPage.class);
+        wicket.assertRenderedPage(MainPage.class);
 
-        this.wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID, RegisterPage.class);
-        this.wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID, RemovePage.class);
+        wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID, RegisterPage.class);
+        wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID, RemovePage.class);
 
         // MainPage: Click to register encap
-        this.wicket.clickLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID);
+        wicket.clickLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID);
 
         // RegisterPage: Verify.
-        this.wicket.assertRenderedPage(RegisterPage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RegisterPage.REGISTER_FORM_ID, Form.class);
+        wicket.assertRenderedPage(RegisterPage.class);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RegisterPage.REGISTER_FORM_ID, Form.class);
 
         // Setup
-        RegisterPage registerPage = (RegisterPage) this.wicket.getLastRenderedPage();
-        EJBTestUtils.inject(registerPage, this.mockEncapDeviceService);
+        RegisterPage registerPage = (RegisterPage) wicket.getLastRenderedPage();
+        EJBTestUtils.inject(registerPage, mockEncapDeviceService);
 
         // Stubs
-        expect(this.mockEncapDeviceService.register(userId, serialNumber)).andThrow(new SubjectNotFoundException());
+        expect(mockEncapDeviceService.register(userId, serialNumber)).andThrow(new SubjectNotFoundException());
 
         // Prepare
-        replay(this.mockEncapDeviceService);
+        replay(mockEncapDeviceService);
 
         // RegisterPage: Register encap for user
-        FormTester registerForm = this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RegisterPage.REGISTER_FORM_ID);
+        FormTester registerForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RegisterPage.REGISTER_FORM_ID);
         registerForm.setValue(RegisterPage.LOGIN_FIELD_ID, UUID.randomUUID().toString());
         registerForm.setValue(RegisterPage.SERIALNUMBER_FIELD_ID, serialNumber);
         registerForm.submit(RegisterPage.REGISTER_BUTTON_ID);
 
         // verify
-        verify(this.mockEncapDeviceService);
+        verify(mockEncapDeviceService);
 
-        this.wicket.assertRenderedPage(RegisterPage.class);
-        this.wicket.assertErrorMessages(new String[] { "errorSubjectNotFound" });
+        wicket.assertRenderedPage(RegisterPage.class);
+        wicket.assertErrorMessages(new String[] { "errorSubjectNotFound" });
     }
 
     @Test
@@ -181,38 +181,38 @@ public class RegisterPageTest extends TestCase {
         DummyNameIdentifierMappingClient.setUserId(userId);
 
         // MainPage: Verify.
-        this.wicket.assertRenderedPage(MainPage.class);
+        wicket.assertRenderedPage(MainPage.class);
 
-        this.wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID, RegisterPage.class);
-        this.wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID, RemovePage.class);
+        wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID, RegisterPage.class);
+        wicket.assertPageLink(TemplatePage.CONTENT_ID + ":" + MainPage.REMOVE_ID, RemovePage.class);
 
         // MainPage: Click to register encap
-        this.wicket.clickLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID);
+        wicket.clickLink(TemplatePage.CONTENT_ID + ":" + MainPage.REGISTER_ID);
 
         // RegisterPage: Verify.
-        this.wicket.assertRenderedPage(RegisterPage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RegisterPage.REGISTER_FORM_ID, Form.class);
+        wicket.assertRenderedPage(RegisterPage.class);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RegisterPage.REGISTER_FORM_ID, Form.class);
 
         // Setup
-        RegisterPage registerPage = (RegisterPage) this.wicket.getLastRenderedPage();
-        EJBTestUtils.inject(registerPage, this.mockEncapDeviceService);
+        RegisterPage registerPage = (RegisterPage) wicket.getLastRenderedPage();
+        EJBTestUtils.inject(registerPage, mockEncapDeviceService);
 
         // Stubs
-        expect(this.mockEncapDeviceService.register(userId, serialNumber)).andThrow(new ArgumentIntegrityException());
+        expect(mockEncapDeviceService.register(userId, serialNumber)).andThrow(new ArgumentIntegrityException());
 
         // Prepare
-        replay(this.mockEncapDeviceService);
+        replay(mockEncapDeviceService);
 
         // RegisterPage: Register encap for user
-        FormTester registerForm = this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RegisterPage.REGISTER_FORM_ID);
+        FormTester registerForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + RegisterPage.REGISTER_FORM_ID);
         registerForm.setValue(RegisterPage.LOGIN_FIELD_ID, UUID.randomUUID().toString());
         registerForm.setValue(RegisterPage.SERIALNUMBER_FIELD_ID, serialNumber);
         registerForm.submit(RegisterPage.REGISTER_BUTTON_ID);
 
         // verify
-        verify(this.mockEncapDeviceService);
+        verify(mockEncapDeviceService);
 
-        this.wicket.assertRenderedPage(RegisterPage.class);
-        this.wicket.assertErrorMessages(new String[] { "errorEncapRegistered" });
+        wicket.assertRenderedPage(RegisterPage.class);
+        wicket.assertErrorMessages(new String[] { "errorEncapRegistered" });
     }
 }

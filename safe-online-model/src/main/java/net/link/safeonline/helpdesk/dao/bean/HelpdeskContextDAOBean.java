@@ -46,13 +46,13 @@ public class HelpdeskContextDAOBean implements HelpdeskContextDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, HelpdeskContextEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, HelpdeskContextEntity.QueryInterface.class);
     }
 
     public HelpdeskContextEntity createHelpdeskContext(String location) {
 
         HelpdeskContextEntity helpdeskContext = new HelpdeskContextEntity(location);
-        this.entityManager.persist(helpdeskContext);
+        entityManager.persist(helpdeskContext);
 
         LOG.debug("created helpdesk context: " + helpdeskContext.getId());
         return helpdeskContext;
@@ -60,17 +60,17 @@ public class HelpdeskContextDAOBean implements HelpdeskContextDAO {
 
     public List<HelpdeskContextEntity> listContexts() {
 
-        return this.queryObject.listContexts();
+        return queryObject.listContexts();
     }
 
     public void cleanup() {
 
         List<HelpdeskContextEntity> contexts = listContexts();
         for (HelpdeskContextEntity context : contexts) {
-            List<HelpdeskEventEntity> events = this.helpdeskEventDAO.listEvents(context.getId());
+            List<HelpdeskEventEntity> events = helpdeskEventDAO.listEvents(context.getId());
             if (events.size() == 0) {
                 LOG.debug("remove empty helpdesk context: " + context.getId());
-                this.entityManager.remove(context);
+                entityManager.remove(context);
             }
         }
     }
@@ -78,10 +78,10 @@ public class HelpdeskContextDAOBean implements HelpdeskContextDAO {
     public void removeContext(Long logId)
             throws HelpdeskContextNotFoundException {
 
-        HelpdeskContextEntity context = this.entityManager.find(HelpdeskContextEntity.class, logId);
+        HelpdeskContextEntity context = entityManager.find(HelpdeskContextEntity.class, logId);
         if (null == context)
             throw new HelpdeskContextNotFoundException();
 
-        this.entityManager.remove(context);
+        entityManager.remove(context);
     }
 }

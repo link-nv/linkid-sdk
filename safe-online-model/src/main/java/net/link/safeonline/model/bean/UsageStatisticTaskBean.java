@@ -76,22 +76,22 @@ public class UsageStatisticTaskBean implements Task {
     public void perform()
             throws Exception {
 
-        List<ApplicationEntity> applicationList = this.applicationDAO.listApplications();
-        Date activeLimit = new Date(System.currentTimeMillis() - this.activeLimitInMillis);
-        Date ageLimit = new Date(System.currentTimeMillis() - this.ageInMillis);
+        List<ApplicationEntity> applicationList = applicationDAO.listApplications();
+        Date activeLimit = new Date(System.currentTimeMillis() - activeLimitInMillis);
+        Date ageLimit = new Date(System.currentTimeMillis() - ageInMillis);
 
         for (ApplicationEntity application : applicationList) {
-            long totalSubscriptions = this.subscriptionDAO.getNumberOfSubscriptions(application);
-            long activeSubscriptions = this.subscriptionDAO.getActiveNumberOfSubscriptions(application, activeLimit);
+            long totalSubscriptions = subscriptionDAO.getNumberOfSubscriptions(application);
+            long activeSubscriptions = subscriptionDAO.getActiveNumberOfSubscriptions(application, activeLimit);
 
-            StatisticEntity statistic = this.statisticDAO.findOrAddStatisticByNameDomainAndApplication(statisticName, statisticDomain,
+            StatisticEntity statistic = statisticDAO.findOrAddStatisticByNameDomainAndApplication(statisticName, statisticDomain,
                     application);
 
-            StatisticDataPointEntity loginCounterDP = this.statisticDataPointDAO.findOrAddStatisticDataPoint(loginCounter, statistic);
+            StatisticDataPointEntity loginCounterDP = statisticDataPointDAO.findOrAddStatisticDataPoint(loginCounter, statistic);
 
-            this.statisticDataPointDAO.addStatisticDataPoint(statisticName, statistic, totalSubscriptions, activeSubscriptions,
+            statisticDataPointDAO.addStatisticDataPoint(statisticName, statistic, totalSubscriptions, activeSubscriptions,
                     loginCounterDP.getX());
-            this.statisticDataPointDAO.cleanStatisticDataPoints(statistic, ageLimit);
+            statisticDataPointDAO.cleanStatisticDataPoints(statistic, ageLimit);
             loginCounterDP.setX(0);
 
         }

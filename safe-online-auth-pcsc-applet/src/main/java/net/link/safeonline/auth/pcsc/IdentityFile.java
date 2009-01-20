@@ -70,86 +70,86 @@ public class IdentityFile {
 
     public String getCardNumber() {
 
-        return this.cardNumber;
+        return cardNumber;
     }
 
     public String getChipNumber() {
 
-        return this.chipNumber;
+        return chipNumber;
     }
 
     public Date getValidityDateBegin() {
 
-        return this.validityDateBegin;
+        return validityDateBegin;
     }
 
     public Date getValidityDateEnd() {
 
-        return this.validityDateEnd;
+        return validityDateEnd;
     }
 
     public String getMunicipal() {
 
-        return this.municipal;
+        return municipal;
     }
 
     public String getNationalNumber() {
 
-        return this.nationalNumber;
+        return nationalNumber;
     }
 
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     public String getFirstName() {
 
-        return this.firstName;
+        return firstName;
     }
 
     public String getMiddleNameLetter() {
 
-        return this.middleNameLetter;
+        return middleNameLetter;
     }
 
     public String getNationality() {
 
-        return this.nationality;
+        return nationality;
     }
 
     public String getBirthLocation() {
 
-        return this.birthLocation;
+        return birthLocation;
     }
 
     public Date getBirthDate() {
 
-        return this.birthDate;
+        return birthDate;
     }
 
     public Sex getSex() {
 
-        return this.sex;
+        return sex;
     }
 
     public String getNobleCondition() {
 
-        return this.nobleCondition;
+        return nobleCondition;
     }
 
     public String getDocumentType() {
 
-        return this.documentType;
+        return documentType;
     }
 
     public String getSpecialStatus() {
 
-        return this.specialStatus;
+        return specialStatus;
     }
 
     public byte[] getHashPhoto() {
 
-        return this.hashPhoto;
+        return hashPhoto;
     }
 }

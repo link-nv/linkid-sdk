@@ -92,15 +92,15 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
 
         AuthenticationService authenticationService = AuthenticationServiceFactory.newInstance();
         this.endpoint = endpoint;
-        this.port = authenticationService.getPort(endpoint, AuthenticationPort.class, new AddressingFeature(true));
+        port = authenticationService.getPort(endpoint, AuthenticationPort.class, new AddressingFeature(true));
 
-        registerMessageLoggerHandler(this.port);
+        registerMessageLoggerHandler(port);
 
         // TODO: disable logging when finished
-        LoggingHandler.addNewHandler(this.port);
+        LoggingHandler.addNewHandler(port);
         setCaptureMessages(true);
 
-        WSSecurityClientHandler.addNewHandler(this.port, clientCertificate, clientPrivateKey);
+        WSSecurityClientHandler.addNewHandler(port, clientCertificate, clientPrivateKey);
     }
 
     /**
@@ -121,7 +121,7 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
         checkStatus(response);
 
         setAssertion(response);
-        if (null != this.assertion)
+        if (null != assertion)
             return getSubject();
 
         setDeviceAuthenticationInformation(response);
@@ -173,7 +173,7 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
         checkStatus(response);
 
         setAssertion(response);
-        if (null != this.assertion)
+        if (null != assertion)
             return getSubject();
 
         setAuthenticationSteps(response);
@@ -224,7 +224,7 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
         checkStatus(response);
 
         setAssertion(response);
-        if (null != this.assertion)
+        if (null != assertion)
             return getSubject();
 
         setAuthenticationSteps(response);
@@ -291,7 +291,7 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
         checkStatus(response);
 
         setAssertion(response);
-        if (null != this.assertion)
+        if (null != assertion)
             return getSubject();
 
         setAuthenticationSteps(response);
@@ -359,7 +359,7 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
         checkStatus(response);
 
         setAssertion(response);
-        if (null != this.assertion)
+        if (null != assertion)
             return getSubject();
 
         setAuthenticationSteps(response);
@@ -373,7 +373,7 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
      */
     public AssertionType getAssertion() {
 
-        return this.assertion;
+        return assertion;
     }
 
     /**
@@ -381,7 +381,7 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
      */
     public DeviceAuthenticationInformationType getDeviceAuthenticationInformation() {
 
-        return this.deviceAuthenticationInformation;
+        return deviceAuthenticationInformation;
     }
 
     /**
@@ -389,12 +389,12 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
      */
     public AuthenticationStep getAuthenticationStep() {
 
-        return this.authenticationStep;
+        return authenticationStep;
     }
 
     private String getSubject() {
 
-        for (JAXBElement<?> object : this.assertion.getSubject().getContent()) {
+        for (JAXBElement<?> object : assertion.getSubject().getContent()) {
             if (object.getDeclaredType().equals(NameIDType.class)) {
                 NameIDType nameIDType = (NameIDType) object.getValue();
                 return nameIDType.getValue();
@@ -408,13 +408,13 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
             throws WSClientTransportException {
 
         try {
-            return this.port.authenticate(request);
+            return port.authenticate(request);
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(this.endpoint.toString());
+            throw new WSClientTransportException(endpoint.toString());
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {
-            retrieveHeadersFromPort(this.port);
+            retrieveHeadersFromPort(port);
         }
     }
 
@@ -431,7 +431,7 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
             if (WSAuthenticationErrorCode.REQUEST_DENIED == wsAuthenticationErrorCode)
                 throw new RequestDeniedException();
             else if (WSAuthenticationErrorCode.REQUEST_FAILED == wsAuthenticationErrorCode)
-                throw new WSClientTransportException(this.endpoint.toString());
+                throw new WSClientTransportException(endpoint.toString());
             else
                 throw new WSAuthenticationException(wsAuthenticationErrorCode, status.getStatusMessage());
         }
@@ -442,13 +442,13 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
             throws WSClientTransportException {
 
         try {
-            return this.port.requestGlobalUsageAgreement(request);
+            return port.requestGlobalUsageAgreement(request);
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(this.endpoint.toString());
+            throw new WSClientTransportException(endpoint.toString());
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {
-            retrieveHeadersFromPort(this.port);
+            retrieveHeadersFromPort(port);
         }
     }
 
@@ -457,13 +457,13 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
             throws WSClientTransportException {
 
         try {
-            return this.port.confirmGlobalUsageAgreement(request);
+            return port.confirmGlobalUsageAgreement(request);
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(this.endpoint.toString());
+            throw new WSClientTransportException(endpoint.toString());
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {
-            retrieveHeadersFromPort(this.port);
+            retrieveHeadersFromPort(port);
         }
 
     }
@@ -472,13 +472,13 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
             throws WSClientTransportException {
 
         try {
-            return this.port.requestUsageAgreement(request);
+            return port.requestUsageAgreement(request);
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(this.endpoint.toString());
+            throw new WSClientTransportException(endpoint.toString());
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {
-            retrieveHeadersFromPort(this.port);
+            retrieveHeadersFromPort(port);
         }
     }
 
@@ -486,13 +486,13 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
             throws WSClientTransportException {
 
         try {
-            return this.port.confirmUsageAgreement(request);
+            return port.confirmUsageAgreement(request);
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(this.endpoint.toString());
+            throw new WSClientTransportException(endpoint.toString());
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {
-            retrieveHeadersFromPort(this.port);
+            retrieveHeadersFromPort(port);
         }
     }
 
@@ -500,13 +500,13 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
             throws WSClientTransportException {
 
         try {
-            return this.port.requestIdentity(request);
+            return port.requestIdentity(request);
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(this.endpoint.toString());
+            throw new WSClientTransportException(endpoint.toString());
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {
-            retrieveHeadersFromPort(this.port);
+            retrieveHeadersFromPort(port);
         }
     }
 
@@ -514,13 +514,13 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
             throws WSClientTransportException {
 
         try {
-            return this.port.confirmIdentity(request);
+            return port.confirmIdentity(request);
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(this.endpoint.toString());
+            throw new WSClientTransportException(endpoint.toString());
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {
-            retrieveHeadersFromPort(this.port);
+            retrieveHeadersFromPort(port);
         }
 
     }
@@ -529,13 +529,13 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
             throws WSClientTransportException {
 
         try {
-            return this.port.requestMissingAttributes(request);
+            return port.requestMissingAttributes(request);
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(this.endpoint.toString());
+            throw new WSClientTransportException(endpoint.toString());
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {
-            retrieveHeadersFromPort(this.port);
+            retrieveHeadersFromPort(port);
         }
     }
 
@@ -543,13 +543,13 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
             throws WSClientTransportException {
 
         try {
-            return this.port.saveMissingAttributes(request);
+            return port.saveMissingAttributes(request);
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(this.endpoint.toString());
+            throw new WSClientTransportException(endpoint.toString());
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {
-            retrieveHeadersFromPort(this.port);
+            retrieveHeadersFromPort(port);
         }
     }
 
@@ -557,24 +557,24 @@ public class AuthenticationClientImpl extends AbstractMessageAccessor implements
 
         if (!response.getAssertion().isEmpty()) {
             if (null != response.getAssertion().get(0).getSubject()) {
-                this.assertion = response.getAssertion().get(0);
+                assertion = response.getAssertion().get(0);
             }
         }
     }
 
     private void setDeviceAuthenticationInformation(WSAuthenticationResponseType response) {
 
-        this.deviceAuthenticationInformation = response.getDeviceAuthenticationInformation();
+        deviceAuthenticationInformation = response.getDeviceAuthenticationInformation();
     }
 
     private void setAuthenticationSteps(WSAuthenticationResponseType response) {
 
         if (null == response.getAuthenticationStep()) {
-            this.authenticationStep = null;
+            authenticationStep = null;
             return;
         }
 
-        this.authenticationStep = AuthenticationStep.getAuthenticationStep(response.getAuthenticationStep());
+        authenticationStep = AuthenticationStep.getAuthenticationStep(response.getAuthenticationStep());
 
     }
 }

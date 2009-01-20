@@ -80,7 +80,7 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
 
         loadDependencies();
         System.setProperty("com.sun.xml.ws.fault.SOAPFaultBuilder.disableCaptureStackTrace", "true");
-        this.wsSecurityConfigurationService = EjbUtils.getEJB(this.wsSecurityConfigurationServiceJndiName,
+        wsSecurityConfigurationService = EjbUtils.getEJB(wsSecurityConfigurationServiceJndiName,
                 WSSecurityConfigurationService.class);
     }
 
@@ -89,8 +89,8 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
         try {
             Context ctx = new javax.naming.InitialContext();
             Context env = (Context) ctx.lookup("java:comp/env");
-            this.wsSecurityConfigurationServiceJndiName = (String) env.lookup("wsSecurityConfigurationServiceJndiName");
-            this.wsSecurityOptionalInboudSignature = (Boolean) env.lookup("wsSecurityOptionalInboudSignature");
+            wsSecurityConfigurationServiceJndiName = (String) env.lookup("wsSecurityConfigurationServiceJndiName");
+            wsSecurityOptionalInboudSignature = (Boolean) env.lookup("wsSecurityOptionalInboudSignature");
         } catch (NamingException e) {
             LOG.debug("naming exception: " + e.getMessage());
             throw new RuntimeException("WS Security Configuration JNDI path or \"wsSecurityOptionalInboudSignature\" not specified");
@@ -146,14 +146,14 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
         LOG.debug("handle outbound document");
 
         boolean skipMessageIntegrityCheck = false;
-        if (this.wsSecurityOptionalInboudSignature) {
+        if (wsSecurityOptionalInboudSignature) {
             LOG.debug("inbound message is set to optional signed");
             skipMessageIntegrityCheck = false;
         } else {
             X509Certificate certificate = getCertificate(soapMessageContext);
             if (null == certificate)
                 throw new RuntimeException("no certificate found on JAX-WS context");
-            skipMessageIntegrityCheck = this.wsSecurityConfigurationService.skipMessageIntegrityCheck(certificate);
+            skipMessageIntegrityCheck = wsSecurityConfigurationService.skipMessageIntegrityCheck(certificate);
         }
 
         if (skipMessageIntegrityCheck) {
@@ -170,8 +170,8 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
             wsSecHeader.insertSecurityHeader(document);
             WSSecSignature wsSecSignature = new WSSecSignature();
             wsSecSignature.setKeyIdentifierType(WSConstants.BST_DIRECT_REFERENCE);
-            Crypto crypto = new ClientCrypto(this.wsSecurityConfigurationService.getCertificate(),
-                    this.wsSecurityConfigurationService.getPrivateKey());
+            Crypto crypto = new ClientCrypto(wsSecurityConfigurationService.getCertificate(),
+                    wsSecurityConfigurationService.getPrivateKey());
             try {
                 wsSecSignature.prepare(document, crypto, wsSecHeader);
 
@@ -241,7 +241,7 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
         }
         LOG.debug("results: " + wsSecurityEngineResults);
         if (null == wsSecurityEngineResults) {
-            if (this.wsSecurityOptionalInboudSignature) {
+            if (wsSecurityOptionalInboudSignature) {
                 LOG.debug("inbound message is set to optional signed");
                 return;
             }
@@ -280,7 +280,7 @@ public class WSSecurityServerHandler implements SOAPHandler<SOAPMessageContext> 
         if (false == signedElements.contains(timestampId))
             throw WSSecurityUtil.createSOAPFaultException("Timestamp not signed", "FailedCheck");
         Calendar created = timestamp.getCreated();
-        long maxOffset = this.wsSecurityConfigurationService.getMaximumWsSecurityTimestampOffset();
+        long maxOffset = wsSecurityConfigurationService.getMaximumWsSecurityTimestampOffset();
         DateTime createdDateTime = new DateTime(created);
         Instant createdInstant = createdDateTime.toInstant();
         Instant nowInstant = new DateTime().toInstant();

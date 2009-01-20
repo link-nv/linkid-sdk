@@ -30,15 +30,15 @@ public class LoginPage extends LayoutPage {
         // If logged in, send user to the ticket history page.
         if (WicketUtil.isAuthenticated(getRequest())) {
             try {
-                CinemaUserEntity user = this.userService.getUser(WicketUtil.getUserId(getRequest()));
-                user = this.userService.updateUser(user, WicketUtil.toServletRequest(getRequest()));
+                CinemaUserEntity user = userService.getUser(WicketUtil.getUserId(getRequest()));
+                user = userService.updateUser(user, WicketUtil.toServletRequest(getRequest()));
                 CinemaSession.get().setUser(user);
 
                 throw new RestartResponseException(TicketPage.class);
             }
 
             catch (ServletException e) {
-                this.LOG.error("LoginManager claimed we were logged in but no user id was available!", e);
+                LOG.error("LoginManager claimed we were logged in but no user id was available!", e);
             }
         }
 

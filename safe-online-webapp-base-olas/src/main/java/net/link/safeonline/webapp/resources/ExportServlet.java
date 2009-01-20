@@ -63,14 +63,14 @@ public class ExportServlet extends AbstractInjectionServlet {
 
         if (null != chartName && null != domainName) {
             try {
-                workbook = this.statisticService.exportStatistic(chartName, domainName, applicationName);
+                workbook = statisticService.exportStatistic(chartName, domainName, applicationName);
             } catch (StatisticNotFoundException e) {
                 LOG.debug("Statistic not found: " + chartName + ", " + domainName + ", " + applicationName);
                 throw new ServletException("Statistic not found: " + e.getMessage());
             }
         } else {
             try {
-                workbook = this.statisticService.exportStatistics(applicationName);
+                workbook = statisticService.exportStatistics(applicationName);
             } catch (ApplicationNotFoundException e) {
                 LOG.debug("application not found: " + applicationName);
                 throw new ServletException(e.getMessage());

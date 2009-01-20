@@ -57,7 +57,7 @@ public class EnablePage extends TemplatePage {
 
         super();
 
-        this.protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
+        protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
         addHeader(this, false);
 
@@ -92,7 +92,7 @@ public class EnablePage extends TemplatePage {
 
             super(id);
 
-            final PasswordTextField passwordField = new PasswordTextField(PASSWORD_FIELD_ID, this.password = new Model<String>());
+            final PasswordTextField passwordField = new PasswordTextField(PASSWORD_FIELD_ID, password = new Model<String>());
             add(passwordField);
             add(new ErrorComponentFeedbackLabel("password_feedback", passwordField));
 
@@ -104,11 +104,11 @@ public class EnablePage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    LOG.debug("enable password for " + EnablePage.this.protocolContext.getSubject());
+                    LOG.debug("enable password for " + protocolContext.getSubject());
 
                     try {
-                        EnablePage.this.passwordDeviceService.enable(EnablePage.this.protocolContext.getSubject(),
-                                EnableForm.this.password.getObject());
+                        passwordDeviceService.enable(protocolContext.getSubject(),
+                                password.getObject());
                     } catch (SubjectNotFoundException e) {
                         passwordField.error(getLocalizer().getString("errorSubjectNotFound", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: subject not found",
@@ -126,7 +126,7 @@ public class EnablePage extends TemplatePage {
                         return;
                     }
 
-                    EnablePage.this.protocolContext.setSuccess(true);
+                    protocolContext.setSuccess(true);
                     exit();
                 }
 
@@ -140,7 +140,7 @@ public class EnablePage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    EnablePage.this.protocolContext.setSuccess(false);
+                    protocolContext.setSuccess(false);
                     exit();
                 }
 
@@ -155,7 +155,7 @@ public class EnablePage extends TemplatePage {
 
     public void exit() {
 
-        this.protocolContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());
+        protocolContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
         getResponse().redirect("deviceexit");
         setRedirect(false);
     }

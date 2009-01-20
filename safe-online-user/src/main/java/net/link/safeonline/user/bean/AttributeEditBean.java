@@ -74,13 +74,13 @@ public class AttributeEditBean implements AttributeEdit {
 
         LOG.debug("save");
         try {
-            for (AttributeDO attribute : this.attributeEditContext) {
-                this.identityService.saveAttribute(attribute);
+            for (AttributeDO attribute : attributeEditContext) {
+                identityService.saveAttribute(attribute);
             }
         } catch (PermissionDeniedException e) {
             String msg = "user not allowed to edit value for attribute";
             LOG.error(msg);
-            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorUserNotAllowedToEditAttribute");
+            facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorUserNotAllowedToEditAttribute");
             return null;
         }
         return "success";
@@ -91,6 +91,6 @@ public class AttributeEditBean implements AttributeEdit {
     public void attributeEditContextFactory()
             throws AttributeTypeNotFoundException {
 
-        this.attributeEditContext = this.identityService.getAttributeEditContext(this.selectedAttribute);
+        attributeEditContext = identityService.getAttributeEditContext(selectedAttribute);
     }
 }

@@ -52,25 +52,25 @@ public class PrescriptionSearchBean extends AbstractPrescriptionDataClientBean i
     @RolesAllowed(PrescriptionConstants.ADMIN_ROLE)
     public String search() {
 
-        this.log.debug("search: " + this.name);
+        log.debug("search: " + name);
 
-        this.userStatus = new UserStatus();
+        userStatus = new UserStatus();
 
         String userId;
         NameIdentifierMappingClient mappingClient = super.getMappingClient();
         try {
-            userId = mappingClient.getUserId(this.name);
+            userId = mappingClient.getUserId(name);
         } catch (SubjectNotFoundException e) {
-            this.log.debug("subject not found: #0", this.name);
-            this.facesMessages.add("subject not found");
+            log.debug("subject not found: #0", name);
+            facesMessages.add("subject not found");
             return null;
         } catch (RequestDeniedException e) {
-            this.log.debug("request denied");
-            this.facesMessages.add("request denied");
+            log.debug("request denied");
+            facesMessages.add("request denied");
             return null;
         } catch (WSClientTransportException e) {
-            this.log.debug("connection failed");
-            this.facesMessages.add("connection failed");
+            log.debug("connection failed");
+            facesMessages.add("connection failed");
             return null;
         }
 
@@ -107,17 +107,17 @@ public class PrescriptionSearchBean extends AbstractPrescriptionDataClientBean i
                 }
             }
         } catch (WSClientTransportException e) {
-            this.facesMessages.add("connection error: " + e.getMessage());
+            facesMessages.add("connection error: " + e.getMessage());
             return null;
         } catch (RequestDeniedException e) {
-            this.facesMessages.add("request denied");
+            facesMessages.add("request denied");
             return null;
         } catch (SubjectNotFoundException e) {
-            this.facesMessages.add("subject not found");
+            facesMessages.add("subject not found");
             return null;
         }
 
-        this.userStatus = new UserStatus(this.name, userId, admin, careProvider, pharmacist);
+        userStatus = new UserStatus(name, userId, admin, careProvider, pharmacist);
 
         return "success";
     }

@@ -115,7 +115,7 @@ public class SecurityTokenServicePortImpl implements SecurityTokenServicePort {
             return response;
         }
 
-        boolean result = TokenValidationHandler.getValidity(this.context);
+        boolean result = TokenValidationHandler.getValidity(context);
         if (false == result) {
             LOG.debug("token signature not valid");
             RequestSecurityTokenResponseType response = createResponse(SecurityTokenServiceConstants.STATUS_INVALID,

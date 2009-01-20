@@ -78,14 +78,14 @@ public class TrustPointEntity implements Serializable {
 
         this.trustDomain = trustDomain;
         this.certificate = certificate;
-        this.issuerName = certificate.getIssuerX500Principal().getName();
+        issuerName = certificate.getIssuerX500Principal().getName();
         try {
-            this.encodedCert = certificate.getEncoded();
+            encodedCert = certificate.getEncoded();
         } catch (CertificateEncodingException e) {
             throw new EJBException("cert encoding error: " + e.getMessage());
         }
-        this.pk = new TrustPointPK(trustDomain, certificate);
-        this.subjectName = this.pk.getSubjectName();
+        pk = new TrustPointPK(trustDomain, certificate);
+        subjectName = pk.getSubjectName();
     }
 
     @EmbeddedId
@@ -94,7 +94,7 @@ public class TrustPointEntity implements Serializable {
             @AttributeOverride(name = "keyId", column = @Column(name = "keyId")) })
     public TrustPointPK getPk() {
 
-        return this.pk;
+        return pk;
     }
 
     public void setPk(TrustPointPK pk) {
@@ -104,7 +104,7 @@ public class TrustPointEntity implements Serializable {
 
     public String getIssuerName() {
 
-        return this.issuerName;
+        return issuerName;
     }
 
     public void setIssuerName(String issuerName) {
@@ -115,7 +115,7 @@ public class TrustPointEntity implements Serializable {
     @Column(name = "subjectName", insertable = false, updatable = false)
     public String getSubjectName() {
 
-        return this.subjectName;
+        return subjectName;
     }
 
     public void setSubjectName(String subjectName) {
@@ -127,7 +127,7 @@ public class TrustPointEntity implements Serializable {
     @Column(length = 4 * 1024)
     public byte[] getEncodedCert() {
 
-        return this.encodedCert;
+        return encodedCert;
     }
 
     public void setEncodedCert(byte[] encodedCert) {
@@ -139,7 +139,7 @@ public class TrustPointEntity implements Serializable {
     @JoinColumn(name = "domain", insertable = false, updatable = false)
     public TrustDomainEntity getTrustDomain() {
 
-        return this.trustDomain;
+        return trustDomain;
     }
 
     public void setTrustDomain(TrustDomainEntity trustDomain) {
@@ -150,16 +150,16 @@ public class TrustPointEntity implements Serializable {
     @Transient
     public X509Certificate getCertificate() {
 
-        if (null != this.certificate)
-            return this.certificate;
+        if (null != certificate)
+            return certificate;
         try {
             CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
-            InputStream inputStream = new ByteArrayInputStream(this.encodedCert);
-            this.certificate = (X509Certificate) certificateFactory.generateCertificate(inputStream);
+            InputStream inputStream = new ByteArrayInputStream(encodedCert);
+            certificate = (X509Certificate) certificateFactory.generateCertificate(inputStream);
         } catch (CertificateException e) {
             throw new EJBException("cert factory error: " + e.getMessage());
         }
-        return this.certificate;
+        return certificate;
     }
 
     @Override
@@ -172,19 +172,19 @@ public class TrustPointEntity implements Serializable {
         if (false == obj instanceof TrustPointEntity)
             return false;
         TrustPointEntity rhs = (TrustPointEntity) obj;
-        return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
+        return new EqualsBuilder().append(pk, rhs.pk).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.pk).toHashCode();
+        return new HashCodeBuilder().append(pk).toHashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("pk", this.pk).toString();
+        return new ToStringBuilder(this).append("pk", pk).toString();
     }
 
 

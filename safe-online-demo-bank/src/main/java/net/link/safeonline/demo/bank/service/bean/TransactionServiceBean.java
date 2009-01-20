@@ -60,14 +60,14 @@ public class TransactionServiceBean extends AbstractBankServiceBean implements T
 
         // Add the money to the target (if it's a bank account owned by us).
         try {
-            BankAccountEntity targetEntity = this.accountService.getAccount(targetCode);
+            BankAccountEntity targetEntity = accountService.getAccount(targetCode);
             targetEntity.setAmount(targetEntity.getAmount() + amount);
         } catch (NoResultException e) {
         }
 
         // Record this transaction.
         BankTransactionEntity transaction = new BankTransactionEntity(description, sourceEntity, targetCode, new Date(), amount);
-        this.em.persist(transaction);
+        em.persist(transaction);
 
         return transaction;
     }
@@ -78,6 +78,6 @@ public class TransactionServiceBean extends AbstractBankServiceBean implements T
     @SuppressWarnings("unchecked")
     public List<BankTransactionEntity> getAllTransactions(BankAccountEntity account) {
 
-        return this.em.createNamedQuery(BankTransactionEntity.getByCode).setParameter("code", attach(account).getCode()).getResultList();
+        return em.createNamedQuery(BankTransactionEntity.getByCode).setParameter("code", attach(account).getCode()).getResultList();
     }
 }

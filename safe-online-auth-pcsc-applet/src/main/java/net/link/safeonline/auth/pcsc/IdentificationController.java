@@ -55,11 +55,11 @@ public class IdentificationController implements AppletController {
 
     public void init(AppletView newAppletView, RuntimeContext newRuntimeContext, StatementProvider statementProvider) {
 
-        this.appletView = newAppletView;
-        this.runtimeContext = newRuntimeContext;
+        appletView = newAppletView;
+        runtimeContext = newRuntimeContext;
 
-        Locale locale = this.runtimeContext.getLocale();
-        this.messages = new AuthenticationMessages(locale);
+        Locale locale = runtimeContext.getLocale();
+        messages = new AuthenticationMessages(locale);
     }
 
     public void abort() {
@@ -68,7 +68,7 @@ public class IdentificationController implements AppletController {
 
     public void run() {
 
-        this.appletView.outputInfoMessage(InfoLevel.NORMAL, this.messages.getString(KEY.START));
+        appletView.outputInfoMessage(InfoLevel.NORMAL, messages.getString(KEY.START));
         Card card = openCard();
         if (null == card)
             return;
@@ -78,23 +78,23 @@ public class IdentificationController implements AppletController {
             try {
                 IdentityFile identityFile = pcsc.getIdentityFile();
                 AddressFile addressFile = pcsc.getAddressFile();
-                this.appletView.outputDetailMessage("name: " + identityFile.getName());
-                this.appletView.outputDetailMessage("first name: " + identityFile.getFirstName());
-                this.appletView.outputDetailMessage("birth date: " + identityFile.getBirthDate());
-                this.appletView.outputDetailMessage("nationality: " + identityFile.getNationality());
-                this.appletView.outputDetailMessage("sex: " + identityFile.getSex());
-                this.appletView.outputDetailMessage("street + number: " + addressFile.getStreetAndNumber());
-                this.appletView.outputDetailMessage("zip: " + addressFile.getZip());
-                this.appletView.outputDetailMessage("municipality: " + addressFile.getMunicipality());
+                appletView.outputDetailMessage("name: " + identityFile.getName());
+                appletView.outputDetailMessage("first name: " + identityFile.getFirstName());
+                appletView.outputDetailMessage("birth date: " + identityFile.getBirthDate());
+                appletView.outputDetailMessage("nationality: " + identityFile.getNationality());
+                appletView.outputDetailMessage("sex: " + identityFile.getSex());
+                appletView.outputDetailMessage("street + number: " + addressFile.getStreetAndNumber());
+                appletView.outputDetailMessage("zip: " + addressFile.getZip());
+                appletView.outputDetailMessage("municipality: " + addressFile.getMunicipality());
                 postData(identityFile, addressFile);
             } catch (Exception e) {
-                this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages.getString(KEY.ERROR));
-                this.appletView.outputDetailMessage("error message: " + e.getMessage());
+                appletView.outputInfoMessage(InfoLevel.ERROR, messages.getString(KEY.ERROR));
+                appletView.outputDetailMessage("error message: " + e.getMessage());
             }
         } finally {
             closeCard(card);
         }
-        this.appletView.outputInfoMessage(InfoLevel.NORMAL, this.messages.getString(KEY.DONE));
+        appletView.outputInfoMessage(InfoLevel.NORMAL, messages.getString(KEY.DONE));
         showDocument("TargetPath");
     }
 
@@ -103,8 +103,8 @@ public class IdentificationController implements AppletController {
         try {
             card.disconnect(false);
         } catch (CardException e) {
-            this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages.getString(KEY.ERROR));
-            this.appletView.outputDetailMessage("error message: " + e.getMessage());
+            appletView.outputInfoMessage(InfoLevel.ERROR, messages.getString(KEY.ERROR));
+            appletView.outputDetailMessage("error message: " + e.getMessage());
         }
     }
 
@@ -116,14 +116,14 @@ public class IdentificationController implements AppletController {
         try {
             terminalList = terminals.list();
             if (0 == terminalList.size()) {
-                this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages.getString(KEY.NO_READER));
+                appletView.outputInfoMessage(InfoLevel.ERROR, messages.getString(KEY.NO_READER));
                 return null;
             }
             for (CardTerminal cardTerminal : terminalList) {
                 if (false == cardTerminal.isCardPresent()) {
-                    this.appletView.outputInfoMessage(InfoLevel.NORMAL, this.messages.getString(KEY.NO_CARD));
+                    appletView.outputInfoMessage(InfoLevel.NORMAL, messages.getString(KEY.NO_CARD));
                     if (false == cardTerminal.waitForCardPresent(0)) {
-                        this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages.getString(KEY.ERROR));
+                        appletView.outputInfoMessage(InfoLevel.ERROR, messages.getString(KEY.ERROR));
                         return null;
                     }
                 }
@@ -136,11 +136,11 @@ public class IdentificationController implements AppletController {
                 }
                 return card;
             }
-            this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages.getString(KEY.NO_BEID));
+            appletView.outputInfoMessage(InfoLevel.ERROR, messages.getString(KEY.NO_BEID));
             return null;
         } catch (CardException e) {
-            this.appletView.outputInfoMessage(InfoLevel.ERROR, this.messages.getString(KEY.ERROR));
-            this.appletView.outputDetailMessage("error message: " + e.getMessage());
+            appletView.outputInfoMessage(InfoLevel.ERROR, messages.getString(KEY.ERROR));
+            appletView.outputDetailMessage("error message: " + e.getMessage());
             return null;
         }
     }
@@ -175,8 +175,8 @@ public class IdentificationController implements AppletController {
     private HttpURLConnection openDataConnection()
             throws IOException {
 
-        URL documentBase = this.runtimeContext.getDocumentBase();
-        String servletPath = this.runtimeContext.getParameter("ServletPath");
+        URL documentBase = runtimeContext.getDocumentBase();
+        String servletPath = runtimeContext.getParameter("ServletPath");
         URL url = AppletControl.transformUrl(documentBase, servletPath);
         HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
         return httpURLConnection;
@@ -184,18 +184,18 @@ public class IdentificationController implements AppletController {
 
     private void showDocument(String runtimeParameter) {
 
-        URL documentBase = this.runtimeContext.getDocumentBase();
-        String path = this.runtimeContext.getParameter(runtimeParameter);
+        URL documentBase = runtimeContext.getDocumentBase();
+        String path = runtimeContext.getParameter(runtimeParameter);
         if (null == path) {
-            this.appletView.outputDetailMessage("runtime parameter not set: " + runtimeParameter);
+            appletView.outputDetailMessage("runtime parameter not set: " + runtimeParameter);
             return;
         }
 
         path += "?cacheid=" + Math.random() * 1000000;
-        this.appletView.outputDetailMessage("redirecting to: " + path);
+        appletView.outputDetailMessage("redirecting to: " + path);
 
         URL url = transformUrl(documentBase, path);
-        this.runtimeContext.showDocument(url);
+        runtimeContext.showDocument(url);
     }
 
     public static URL transformUrl(URL documentBase, String targetPath) {

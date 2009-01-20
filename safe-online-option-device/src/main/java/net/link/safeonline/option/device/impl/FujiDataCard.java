@@ -30,7 +30,7 @@ public class FujiDataCard implements OptionDevice {
      */
     public String getIp() {
 
-        return this.ip;
+        return ip;
     }
 
     /**
@@ -38,7 +38,7 @@ public class FujiDataCard implements OptionDevice {
      */
     public String getGateway() {
 
-        return this.gateway;
+        return gateway;
     }
 
     /**
@@ -46,7 +46,7 @@ public class FujiDataCard implements OptionDevice {
      */
     public String getDns1() {
 
-        return this.dns1;
+        return dns1;
     }
 
     /**
@@ -54,36 +54,36 @@ public class FujiDataCard implements OptionDevice {
      */
     public String getDns2() {
 
-        return this.dns2;
+        return dns2;
     }
 
     public FujiDataCard(String port) throws OptionDeviceException {
 
-        this.serial = new SerialCommunication(port);
+        serial = new SerialCommunication(port);
         initialize();
     }
 
     public void initialize()
             throws OptionDeviceException {
 
-        synchronized (this.serial) {
+        synchronized (serial) {
             try {
-                this.serial.open();
-                this.serial.write("ATE1 V1\r\n");
-                if (!this.serial.read().equals("ATE1 V1")) {
-                    this.serial.close();
+                serial.open();
+                serial.write("ATE1 V1\r\n");
+                if (!serial.read().equals("ATE1 V1")) {
+                    serial.close();
                     throw new OptionDeviceException("Unexpected behaviour from datacard");
                 }
-                if (!this.serial.read().equals("")) {
-                    this.serial.close();
+                if (!serial.read().equals("")) {
+                    serial.close();
                     throw new OptionDeviceException("Unexpected behaviour from datacard");
                 }
-                if (!this.serial.read().equals("OK")) {
-                    this.serial.close();
+                if (!serial.read().equals("OK")) {
+                    serial.close();
                     throw new OptionDeviceException("Unexpected behaviour from datacard");
                 }
             } catch (SerialCommunicationsException e) {
-                this.serial.close();
+                serial.close();
                 throw new OptionDeviceException("Could not open serial port", e);
             }
         }
@@ -92,8 +92,8 @@ public class FujiDataCard implements OptionDevice {
     @Override
     public void finalize() {
 
-        synchronized (this.serial) {
-            this.serial.close();
+        synchronized (serial) {
+            serial.close();
         }
     }
 
@@ -101,24 +101,24 @@ public class FujiDataCard implements OptionDevice {
             throws OptionDeviceException {
 
         logger.debug("Authenticating with PIN code");
-        synchronized (this.serial) {
+        synchronized (serial) {
             try {
-                this.serial.write("AT+CPIN=" + pin + "\r\n");
+                serial.write("AT+CPIN=" + pin + "\r\n");
 
-                if (!this.serial.read().equals("AT+CPIN=" + pin)) {
-                    this.serial.close();
+                if (!serial.read().equals("AT+CPIN=" + pin)) {
+                    serial.close();
                     throw new OptionDeviceException("Unexpected behaviour from datacard");
                 }
 
-                if (!this.serial.read().equals("")) {
-                    this.serial.close();
+                if (!serial.read().equals("")) {
+                    serial.close();
                     throw new OptionDeviceException("Unexpected behaviour from datacard");
                 }
 
-                String response = this.serial.read();
+                String response = serial.read();
 
                 if (!response.equals("OK") && !response.equals("+CME ERROR: operation not allowed")) {
-                    this.serial.close();
+                    serial.close();
                     throw new OptionDeviceException("Unexpected behaviour from datacard");
                 }
 
@@ -155,26 +155,26 @@ public class FujiDataCard implements OptionDevice {
             throws OptionDeviceException {
 
         logger.debug("fetching IMEI");
-        synchronized (this.serial) {
+        synchronized (serial) {
             try {
-                this.serial.write("AT+CGSN\r\n");
+                serial.write("AT+CGSN\r\n");
 
-                if (!this.serial.read().equals("AT+CGSN")) {
-                    this.serial.close();
+                if (!serial.read().equals("AT+CGSN")) {
+                    serial.close();
                     throw new OptionDeviceException("Unexpected behaviour from datacard");
                 }
 
-                if (!this.serial.read().equals("")) {
-                    this.serial.close();
+                if (!serial.read().equals("")) {
+                    serial.close();
                     throw new OptionDeviceException("Unexpected behaviour from datacard");
                 }
-                String output = this.serial.read();
-                if (!this.serial.read().equals("")) {
-                    this.serial.close();
+                String output = serial.read();
+                if (!serial.read().equals("")) {
+                    serial.close();
                     throw new OptionDeviceException("Unexpected behaviour from datacard");
                 }
-                if (!this.serial.read().equals("OK")) {
-                    this.serial.close();
+                if (!serial.read().equals("OK")) {
+                    serial.close();
                     throw new OptionDeviceException("Unexpected behaviour from datacard");
                 }
                 int comma = output.indexOf(',');
@@ -192,24 +192,24 @@ public class FujiDataCard implements OptionDevice {
             throws OptionDeviceException {
 
         logger.debug("Setting APN");
-        synchronized (this.serial) {
+        synchronized (serial) {
             try {
-                this.serial.write("AT+CGDCONT=1,\"IP\",\"" + apn + "\"\r\n");
+                serial.write("AT+CGDCONT=1,\"IP\",\"" + apn + "\"\r\n");
 
-                if (!this.serial.read().equals("AT+CGDCONT=1,\"IP\",\"" + apn + "\"")) {
-                    this.serial.close();
+                if (!serial.read().equals("AT+CGDCONT=1,\"IP\",\"" + apn + "\"")) {
+                    serial.close();
                     throw new OptionDeviceException("Unexpected behaviour from datacard");
                 }
 
-                if (!this.serial.read().equals("")) {
-                    this.serial.close();
+                if (!serial.read().equals("")) {
+                    serial.close();
                     throw new OptionDeviceException("Unexpected behaviour from datacard");
                 }
-                String result = this.serial.read();
+                String result = serial.read();
                 if (result.equals("ERROR"))
                     throw new ConnectionException("Probably already connected");
                 if (!result.equals("OK")) {
-                    this.serial.close();
+                    serial.close();
                     throw new OptionDeviceException("Unexpected behaviour from datacard");
                 }
 
@@ -223,28 +223,28 @@ public class FujiDataCard implements OptionDevice {
             throws OptionDeviceException {
 
         logger.debug("Checking CS network registration");
-        synchronized (this.serial) {
+        synchronized (serial) {
             try {
-                this.serial.write("AT+CREG?\r\n");
+                serial.write("AT+CREG?\r\n");
 
-                if (!this.serial.read().equals("AT+CREG?")) {
-                    this.serial.close();
+                if (!serial.read().equals("AT+CREG?")) {
+                    serial.close();
                     throw new OptionDeviceException("Unexpected behaviour from datacard");
                 }
-                if (!this.serial.read().equals("")) {
-                    this.serial.close();
+                if (!serial.read().equals("")) {
+                    serial.close();
                     throw new OptionDeviceException("Unexpected behaviour from datacard");
                 }
-                if (!this.serial.read().equals("+CREG: 0,1")) {
-                    this.serial.close();
+                if (!serial.read().equals("+CREG: 0,1")) {
+                    serial.close();
                     throw new ConnectionException("Unexpected behaviour from datacard");
                 }
-                if (!this.serial.read().equals("")) {
-                    this.serial.close();
+                if (!serial.read().equals("")) {
+                    serial.close();
                     throw new OptionDeviceException("Unexpected behaviour from datacard");
                 }
-                if (!this.serial.read().equals("OK")) {
-                    this.serial.close();
+                if (!serial.read().equals("OK")) {
+                    serial.close();
                     throw new OptionDeviceException("Unexpected behaviour from datacard");
                 }
 
@@ -258,28 +258,28 @@ public class FujiDataCard implements OptionDevice {
             throws OptionDeviceException {
 
         logger.debug("Checking PS network registration");
-        synchronized (this.serial) {
+        synchronized (serial) {
             try {
-                this.serial.write("AT+CGREG?\r\n");
+                serial.write("AT+CGREG?\r\n");
 
-                if (!this.serial.read().equals("AT+CGREG?")) {
-                    this.serial.close();
+                if (!serial.read().equals("AT+CGREG?")) {
+                    serial.close();
                     throw new OptionDeviceException("Unexpected behaviour from datacard");
                 }
-                if (!this.serial.read().equals("")) {
-                    this.serial.close();
+                if (!serial.read().equals("")) {
+                    serial.close();
                     throw new OptionDeviceException("Unexpected behaviour from datacard");
                 }
-                if (!this.serial.read().equals("+CGREG: 0,1")) {
-                    this.serial.close();
+                if (!serial.read().equals("+CGREG: 0,1")) {
+                    serial.close();
                     throw new ConnectionException("Unexpected behaviour from datacard");
                 }
-                if (!this.serial.read().equals("")) {
-                    this.serial.close();
+                if (!serial.read().equals("")) {
+                    serial.close();
                     throw new OptionDeviceException("Unexpected behaviour from datacard");
                 }
-                if (!this.serial.read().equals("OK")) {
-                    this.serial.close();
+                if (!serial.read().equals("OK")) {
+                    serial.close();
                     throw new OptionDeviceException("Unexpected behaviour from datacard");
                 }
 
@@ -293,28 +293,28 @@ public class FujiDataCard implements OptionDevice {
             throws OptionDeviceException {
 
         logger.debug("Checking PS network registration");
-        synchronized (this.serial) {
+        synchronized (serial) {
             try {
-                this.serial.write("AT+CGACT?\r\n");
+                serial.write("AT+CGACT?\r\n");
 
-                if (!this.serial.read().equals("AT+CGACT?")) {
-                    this.serial.close();
+                if (!serial.read().equals("AT+CGACT?")) {
+                    serial.close();
                     throw new OptionDeviceException("Unexpected behaviour from datacard");
                 }
-                if (!this.serial.read().equals("")) {
-                    this.serial.close();
+                if (!serial.read().equals("")) {
+                    serial.close();
                     throw new OptionDeviceException("Unexpected behaviour from datacard");
                 }
-                if (!this.serial.read().equals("+CGACT: 1,0")) {
-                    this.serial.close();
+                if (!serial.read().equals("+CGACT: 1,0")) {
+                    serial.close();
                     throw new ConnectionException("Unexpected behaviour from datacard");
                 }
-                if (!this.serial.read().equals("")) {
-                    this.serial.close();
+                if (!serial.read().equals("")) {
+                    serial.close();
                     throw new OptionDeviceException("Unexpected behaviour from datacard");
                 }
-                if (!this.serial.read().equals("OK")) {
-                    this.serial.close();
+                if (!serial.read().equals("OK")) {
+                    serial.close();
                     throw new OptionDeviceException("Unexpected behaviour from datacard");
                 }
 
@@ -328,24 +328,24 @@ public class FujiDataCard implements OptionDevice {
             throws OptionDeviceException {
 
         logger.debug("Connecting NDIS style");
-        synchronized (this.serial) {
+        synchronized (serial) {
             try {
-                this.serial.write("AT_OWANCALL=1,1\r\n");
+                serial.write("AT_OWANCALL=1,1\r\n");
 
-                String input = this.serial.read();
+                String input = serial.read();
                 if (!input.equals("AT_OWANCALL=1,1")) {
                     logger.debug(input);
-                    this.serial.close();
+                    serial.close();
                     throw new OptionDeviceException("Unexpected behaviour from datacard");
                 }
 
-                if (!this.serial.read().equals("")) {
-                    this.serial.close();
+                if (!serial.read().equals("")) {
+                    serial.close();
                     throw new OptionDeviceException("Unexpected behaviour from datacard");
                 }
 
-                if (!this.serial.read().equals("OK")) {
-                    this.serial.close();
+                if (!serial.read().equals("OK")) {
+                    serial.close();
                     throw new OptionDeviceException("Unexpected behaviour from datacard");
                 }
 
@@ -359,20 +359,20 @@ public class FujiDataCard implements OptionDevice {
             throws OptionDeviceException {
 
         logger.debug("Disconnecting NDIS style");
-        synchronized (this.serial) {
+        synchronized (serial) {
             try {
-                this.serial.write("AT_OWANCALL=1,0\r\n");
+                serial.write("AT_OWANCALL=1,0\r\n");
 
-                if (!this.serial.read().equals("AT_OWANCALL=1,0")) {
-                    this.serial.close();
+                if (!serial.read().equals("AT_OWANCALL=1,0")) {
+                    serial.close();
                     throw new OptionDeviceException("Unexpected behaviour from datacard");
                 }
-                if (!this.serial.read().equals("")) {
-                    this.serial.close();
+                if (!serial.read().equals("")) {
+                    serial.close();
                     throw new OptionDeviceException("Unexpected behaviour from datacard");
                 }
-                if (!this.serial.read().equals("OK")) {
-                    this.serial.close();
+                if (!serial.read().equals("OK")) {
+                    serial.close();
                     throw new OptionDeviceException("Unexpected behaviour from datacard");
                 }
 
@@ -386,13 +386,13 @@ public class FujiDataCard implements OptionDevice {
             throws OptionDeviceException {
 
         logger.debug("Reading network configuration");
-        synchronized (this.serial) {
+        synchronized (serial) {
             try {
-                this.serial.write("AT_OWANDATA=1\r\n");
+                serial.write("AT_OWANDATA=1\r\n");
 
-                logger.debug(this.serial.read());
-                logger.debug(this.serial.read());
-                logger.debug(this.serial.read());
+                logger.debug(serial.read());
+                logger.debug(serial.read());
+                logger.debug(serial.read());
 
             } catch (SerialCommunicationsException e) {
                 throw new OptionDeviceException("Serial communication error", e);

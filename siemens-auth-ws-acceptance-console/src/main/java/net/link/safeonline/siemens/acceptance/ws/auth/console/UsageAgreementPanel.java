@@ -53,13 +53,13 @@ public class UsageAgreementPanel extends JPanel implements Observer {
     private JTextArea         usageAgreementText = new JTextArea(10, 80);
 
     private Action            confirmAction      = new ConfirmAction("Confirm");
-    private JButton           confirmButton      = new JButton(this.confirmAction);
+    private JButton           confirmButton      = new JButton(confirmAction);
 
     private Action            rejectAction       = new RejectAction("Reject");
-    private JButton           rejectButton       = new JButton(this.rejectAction);
+    private JButton           rejectButton       = new JButton(rejectAction);
 
     private Action            exitAction         = new ExitAction("Exit");
-    private JButton           exitButton         = new JButton(this.exitAction);
+    private JButton           exitButton         = new JButton(exitAction);
 
 
     public UsageAgreementPanel(AcceptanceConsole parent) {
@@ -75,11 +75,11 @@ public class UsageAgreementPanel extends JPanel implements Observer {
      */
     private void buildWindow() {
 
-        this.usageAgreementText.setEditable(false);
+        usageAgreementText.setEditable(false);
 
-        this.confirmButton.setEnabled(false);
-        this.rejectButton.setEnabled(false);
-        this.exitButton.setEnabled(false);
+        confirmButton.setEnabled(false);
+        rejectButton.setEnabled(false);
+        exitButton.setEnabled(false);
 
         JPanel infoPanel = new JPanel();
         JPanel controlPanel = new JPanel();
@@ -95,17 +95,17 @@ public class UsageAgreementPanel extends JPanel implements Observer {
 
         gbc.gridx = 0;
         gbc.gridy = 0;
-        gbl.setConstraints(this.infoLabel, gbc);
-        infoPanel.add(this.infoLabel, gbc);
+        gbl.setConstraints(infoLabel, gbc);
+        infoPanel.add(infoLabel, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
-        gbl.setConstraints(this.usageAgreementText, gbc);
-        infoPanel.add(this.usageAgreementText, gbc);
+        gbl.setConstraints(usageAgreementText, gbc);
+        infoPanel.add(usageAgreementText, gbc);
 
-        controlPanel.add(this.confirmButton);
-        controlPanel.add(this.rejectButton);
-        controlPanel.add(this.exitButton);
+        controlPanel.add(confirmButton);
+        controlPanel.add(rejectButton);
+        controlPanel.add(exitButton);
 
         setLayout(new BorderLayout());
         this.add(infoPanel, BorderLayout.CENTER);
@@ -119,18 +119,18 @@ public class UsageAgreementPanel extends JPanel implements Observer {
     public void update(Observable o, Object arg) {
 
         setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-        this.exitButton.setEnabled(true);
+        exitButton.setEnabled(true);
 
         if (arg instanceof AuthenticationError) {
             AuthenticationError error = (AuthenticationError) arg;
-            this.infoLabel.setText("Authentication failed: " + error.getCode().getErrorCode() + " message=" + error.getMessage());
+            infoLabel.setText("Authentication failed: " + error.getCode().getErrorCode() + " message=" + error.getMessage());
         } else if (arg instanceof AuthenticationStep) {
             AuthenticationStep authenticationStep = (AuthenticationStep) arg;
-            this.infoLabel.setText("Additional authentication step: " + authenticationStep.getValue());
+            infoLabel.setText("Additional authentication step: " + authenticationStep.getValue());
         } else if (arg instanceof String) {
-            this.confirmButton.setEnabled(true);
-            this.rejectButton.setEnabled(true);
-            this.usageAgreementText.setText((String) arg);
+            confirmButton.setEnabled(true);
+            rejectButton.setEnabled(true);
+            usageAgreementText.setText((String) arg);
         }
 
     }
@@ -150,7 +150,7 @@ public class UsageAgreementPanel extends JPanel implements Observer {
 
         public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
-            UsageAgreementPanel.this.parent.resetContent();
+            parent.resetContent();
         }
     }
 
@@ -168,7 +168,7 @@ public class UsageAgreementPanel extends JPanel implements Observer {
 
         public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
-            UsageAgreementPanel.this.parent.confirmUsageAgreement(Confirmation.CONFIRM);
+            parent.confirmUsageAgreement(Confirmation.CONFIRM);
         }
     }
 
@@ -186,7 +186,7 @@ public class UsageAgreementPanel extends JPanel implements Observer {
 
         public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
-            UsageAgreementPanel.this.parent.confirmUsageAgreement(Confirmation.REJECT);
+            parent.confirmUsageAgreement(Confirmation.REJECT);
         }
     }
 

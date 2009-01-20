@@ -74,17 +74,17 @@ public class BeIdStartableBeanTest extends TestCase {
             }
         });
 
-        this.testedInstance = new BeIdStartableBean();
+        testedInstance = new BeIdStartableBean();
 
-        this.mockTrustDomainDAO = createMock(TrustDomainDAO.class);
-        EJBTestUtils.inject(this.testedInstance, this.mockTrustDomainDAO);
+        mockTrustDomainDAO = createMock(TrustDomainDAO.class);
+        EJBTestUtils.inject(testedInstance, mockTrustDomainDAO);
 
-        this.mockTrustPointDAO = createMock(TrustPointDAO.class);
-        EJBTestUtils.inject(this.testedInstance, this.mockTrustPointDAO);
+        mockTrustPointDAO = createMock(TrustPointDAO.class);
+        EJBTestUtils.inject(testedInstance, mockTrustPointDAO);
 
-        EJBTestUtils.init(this.testedInstance);
+        EJBTestUtils.init(testedInstance);
 
-        this.mockObjects = new Object[] { this.mockTrustDomainDAO, this.mockTrustPointDAO };
+        mockObjects = new Object[] { mockTrustDomainDAO, mockTrustPointDAO };
     }
 
     public void testInitTrustDomain()
@@ -94,20 +94,20 @@ public class BeIdStartableBeanTest extends TestCase {
         TrustDomainEntity trustDomain = new TrustDomainEntity(BeIdPkiProviderBean.TRUST_DOMAIN_NAME, true);
 
         // stubs
-        expect(this.mockTrustDomainDAO.findTrustDomain(BeIdPkiProviderBean.TRUST_DOMAIN_NAME)).andStubReturn(null);
+        expect(mockTrustDomainDAO.findTrustDomain(BeIdPkiProviderBean.TRUST_DOMAIN_NAME)).andStubReturn(null);
 
         // expectations
-        expect(this.mockTrustDomainDAO.addTrustDomain(BeIdPkiProviderBean.TRUST_DOMAIN_NAME, true)).andReturn(trustDomain);
-        this.mockTrustPointDAO.addTrustPoint(EasyMock.eq(trustDomain), (X509Certificate) EasyMock.anyObject());
+        expect(mockTrustDomainDAO.addTrustDomain(BeIdPkiProviderBean.TRUST_DOMAIN_NAME, true)).andReturn(trustDomain);
+        mockTrustPointDAO.addTrustPoint(EasyMock.eq(trustDomain), (X509Certificate) EasyMock.anyObject());
         expectLastCall().times(1 + 2 + 1 + 15 + 20 + 1 + 1 + 1 + 1 + 1 + 11);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
-        this.testedInstance.initTrustDomain();
+        testedInstance.initTrustDomain();
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
     }
 }

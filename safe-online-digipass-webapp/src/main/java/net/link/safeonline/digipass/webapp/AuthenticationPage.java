@@ -68,7 +68,7 @@ public class AuthenticationPage extends TemplatePage {
 
         super();
 
-        this.authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest(getRequest()).getSession());
+        authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest(getRequest()).getSession());
 
         addHeader(this);
 
@@ -80,7 +80,7 @@ public class AuthenticationPage extends TemplatePage {
             @Override
             public void onClick() {
 
-                AuthenticationPage.this.authenticationContext.setUsedDevice(DigipassConstants.DIGIPASS_DEVICE_ID);
+                authenticationContext.setUsedDevice(DigipassConstants.DIGIPASS_DEVICE_ID);
                 exit();
 
             }
@@ -89,7 +89,7 @@ public class AuthenticationPage extends TemplatePage {
         getContent().add(new ProgressAuthenticationPanel("progress", ProgressAuthenticationPanel.stage.authenticate));
 
         String title = getLocalizer().getString("digipassAuthentication", this) + " : "
-                + getLocalizer().getString("authenticatingFor", this) + " " + this.authenticationContext.getApplication();
+                + getLocalizer().getString("authenticatingFor", this) + " " + authenticationContext.getApplication();
         getContent().add(new Label("title", title));
 
         getContent().add(new AuthenticationForm(AUTHENTICATION_FORM_ID));
@@ -111,11 +111,11 @@ public class AuthenticationPage extends TemplatePage {
 
             super(id);
 
-            final TextField<String> loginField = new TextField<String>(LOGIN_NAME_FIELD_ID, this.login = new Model<String>());
+            final TextField<String> loginField = new TextField<String>(LOGIN_NAME_FIELD_ID, login = new Model<String>());
             loginField.setRequired(true);
             add(loginField);
 
-            final TextField<String> tokenField = new TextField<String>(TOKEN_FIELD_ID, this.token = new Model<String>());
+            final TextField<String> tokenField = new TextField<String>(TOKEN_FIELD_ID, token = new Model<String>());
             tokenField.setRequired(true);
             add(tokenField);
 
@@ -127,27 +127,27 @@ public class AuthenticationPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    LOG.debug("login: " + AuthenticationForm.this.login);
+                    LOG.debug("login: " + login);
 
                     try {
-                        String userId = AuthenticationPage.this.digipassDeviceService.authenticate(getUserId(),
-                                AuthenticationForm.this.token.getObject());
+                        String userId = digipassDeviceService.authenticate(getUserId(),
+                                token.getObject());
                         if (null == userId) {
                             AuthenticationForm.this.error(getLocalizer().getString("authenticationFailedMsg", this));
                             HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "login failed: "
-                                    + AuthenticationForm.this.login, LogLevelType.ERROR);
+                                    + login, LogLevelType.ERROR);
                             return;
                         }
                         login(userId);
                     } catch (SubjectNotFoundException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("digipassNotRegistered", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "login: subject not found for "
-                                + AuthenticationForm.this.login, LogLevelType.ERROR);
+                                + login, LogLevelType.ERROR);
                         return;
                     } catch (PermissionDeniedException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("digipassAuthenticationFailed", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(),
-                                "Failed to contact OLAS to retrieve device mapping for " + AuthenticationForm.this.login,
+                                "Failed to contact OLAS to retrieve device mapping for " + login,
                                 LogLevelType.ERROR);
                         return;
                     } catch (DeviceNotFoundException e) {
@@ -195,9 +195,9 @@ public class AuthenticationPage extends TemplatePage {
 
             String userId;
             try {
-                userId = idMappingClient.getUserId(this.login.getObject());
+                userId = idMappingClient.getUserId(login.getObject());
             } catch (net.link.safeonline.sdk.exception.SubjectNotFoundException e) {
-                LOG.error("subject not found: " + this.login);
+                LOG.error("subject not found: " + login);
                 throw new SubjectNotFoundException();
             } catch (RequestDeniedException e) {
                 LOG.error("request denied: " + e.getMessage());
@@ -213,10 +213,10 @@ public class AuthenticationPage extends TemplatePage {
 
     public void login(String userId) {
 
-        this.authenticationContext.setUserId(userId);
-        this.authenticationContext.setValidity(this.samlAuthorityService.getAuthnAssertionValidity());
-        this.authenticationContext.setIssuer(net.link.safeonline.model.digipass.DigipassConstants.DIGIPASS_DEVICE_ID);
-        this.authenticationContext.setUsedDevice(net.link.safeonline.model.digipass.DigipassConstants.DIGIPASS_DEVICE_ID);
+        authenticationContext.setUserId(userId);
+        authenticationContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
+        authenticationContext.setIssuer(net.link.safeonline.model.digipass.DigipassConstants.DIGIPASS_DEVICE_ID);
+        authenticationContext.setUsedDevice(net.link.safeonline.model.digipass.DigipassConstants.DIGIPASS_DEVICE_ID);
 
         exit();
 

@@ -62,7 +62,7 @@ public class CinemaSession extends WebSession {
 
     public CinemaUserEntity getUser() {
 
-        return this.user;
+        return user;
     }
 
     /**
@@ -79,7 +79,7 @@ public class CinemaSession extends WebSession {
      */
     public CinemaFilmEntity getFilm() {
 
-        return this.film;
+        return film;
     }
 
     /**
@@ -96,7 +96,7 @@ public class CinemaSession extends WebSession {
      */
     public CinemaTheatreEntity getTheatre() {
 
-        return this.theatre;
+        return theatre;
     }
 
     /**
@@ -122,7 +122,7 @@ public class CinemaSession extends WebSession {
      */
     public Date getTime() {
 
-        return this.time;
+        return time;
     }
 
     /**
@@ -130,7 +130,7 @@ public class CinemaSession extends WebSession {
      */
     public CinemaRoomEntity getRoom() {
 
-        return this.room;
+        return room;
     }
 
     /**
@@ -138,7 +138,7 @@ public class CinemaSession extends WebSession {
      */
     public CinemaSeatOccupationEntity getOccupation() {
 
-        return this.occupation;
+        return occupation;
     }
 
     /**
@@ -156,7 +156,7 @@ public class CinemaSession extends WebSession {
      */
     public CinemaTicketEntity getTicket() {
 
-        return this.ticket;
+        return ticket;
     }
 
     /**
@@ -167,10 +167,10 @@ public class CinemaSession extends WebSession {
      */
     public void toggleSeat(CinemaSeatEntity seat) {
 
-        if (this.occupation != null && this.occupation.getSeat().equals(seat)) {
-            this.occupation = null;
+        if (occupation != null && occupation.getSeat().equals(seat)) {
+            occupation = null;
         } else {
-            this.occupation = new CinemaSeatOccupationEntity(seat, this.time);
+            occupation = new CinemaSeatOccupationEntity(seat, time);
         }
     }
 
@@ -179,12 +179,12 @@ public class CinemaSession extends WebSession {
      */
     public void resetTicket() {
 
-        this.film = null;
-        this.theatre = null;
-        this.room = null;
-        this.time = null;
-        this.occupation = null;
-        this.ticket = null;
+        film = null;
+        theatre = null;
+        room = null;
+        time = null;
+        occupation = null;
+        ticket = null;
     }
 
     /**
@@ -194,12 +194,12 @@ public class CinemaSession extends WebSession {
      */
     public void resetFilm() {
 
-        if (this.film != null) {
-            this.film = null;
-            this.room = null;
-            this.time = null;
-            this.occupation = null;
-            this.ticket = null;
+        if (film != null) {
+            film = null;
+            room = null;
+            time = null;
+            occupation = null;
+            ticket = null;
         }
     }
 
@@ -210,12 +210,12 @@ public class CinemaSession extends WebSession {
      */
     public void resetTheatre() {
 
-        if (this.theatre != null) {
-            this.theatre = null;
-            this.room = null;
-            this.time = null;
-            this.occupation = null;
-            this.ticket = null;
+        if (theatre != null) {
+            theatre = null;
+            room = null;
+            time = null;
+            occupation = null;
+            ticket = null;
         }
     }
 
@@ -226,10 +226,10 @@ public class CinemaSession extends WebSession {
      */
     public void resetRoom() {
 
-        if (this.room != null) {
-            this.room = null;
-            this.occupation = null;
-            this.ticket = null;
+        if (room != null) {
+            room = null;
+            occupation = null;
+            ticket = null;
         }
     }
 
@@ -240,10 +240,10 @@ public class CinemaSession extends WebSession {
      */
     public void resetTime() {
 
-        if (this.time != null) {
-            this.time = null;
-            this.occupation = null;
-            this.ticket = null;
+        if (time != null) {
+            time = null;
+            occupation = null;
+            ticket = null;
         }
     }
 

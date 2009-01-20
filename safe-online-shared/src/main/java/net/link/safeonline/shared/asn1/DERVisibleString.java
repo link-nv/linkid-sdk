@@ -39,7 +39,7 @@ public class DERVisibleString implements DEREncodable {
 
     public byte[] getOctets() {
 
-        char[] cs = this.value.toCharArray();
+        char[] cs = value.toCharArray();
         byte[] bs = new byte[cs.length];
 
         for (int i = 0; i != cs.length; i++) {

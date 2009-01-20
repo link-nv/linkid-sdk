@@ -96,21 +96,21 @@ public class AccountingBean implements Accounting {
     @Destroy
     public void destroyCallback() {
 
-        this.log.debug("destroy: " + this);
+        log.debug("destroy: " + this);
     }
 
     @PostConstruct
     public void postConstructCallback() {
 
-        this.log.debug("postConstruct: " + this);
+        log.debug("postConstruct: " + this);
     }
 
     @Factory(ACCOUNTING_APPLICATION_LIST_NAME)
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public void applicationListFactory() {
 
-        this.log.debug("application list factory");
-        this.applicationList = this.applicationService.listApplications();
+        log.debug("application list factory");
+        applicationList = applicationService.listApplications();
     }
 
     @Factory(ACCOUNTING_STAT_LIST_NAME)
@@ -118,22 +118,22 @@ public class AccountingBean implements Accounting {
     public void statListFactory()
             throws PermissionDeniedException {
 
-        this.log.debug("selectedApplication: " + this.selectedApplication);
-        this.statList = this.statisticService.getStatistics(this.selectedApplication);
+        log.debug("selectedApplication: " + selectedApplication);
+        statList = statisticService.getStatistics(selectedApplication);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public String view() {
 
-        this.log.debug("view accounting information for application: " + this.selectedApplication.getName());
+        log.debug("view accounting information for application: " + selectedApplication.getName());
         return "view";
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public String viewStat() {
 
-        this.chartURL = "view.chart?chartname=" + this.selectedStat.getName() + "&domain=" + this.selectedStat.getDomain()
-                + "&applicationname=" + this.selectedApplication.getName();
+        chartURL = "view.chart?chartname=" + selectedStat.getName() + "&domain=" + selectedStat.getDomain()
+                + "&applicationname=" + selectedApplication.getName();
         return "viewstat";
 
     }
@@ -144,9 +144,9 @@ public class AccountingBean implements Accounting {
 
         DateTime dt = new DateTime();
         DateTimeFormatter fmt = DateTimeFormat.forPattern("dd-MM-yyyy_HHmmss");
-        String filename = "accounting_" + this.selectedApplication.getName() + "_" + dt.toString(fmt) + ".xls";
+        String filename = "accounting_" + selectedApplication.getName() + "_" + dt.toString(fmt) + ".xls";
 
-        String exportURL = filename + "?applicationname=" + this.selectedApplication.getName();
+        String exportURL = filename + "?applicationname=" + selectedApplication.getName();
 
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext externalContext = context.getExternalContext();
@@ -161,11 +161,11 @@ public class AccountingBean implements Accounting {
 
         DateTime dt = new DateTime();
         DateTimeFormatter fmt = DateTimeFormat.forPattern("dd-MM-yyyy_HHmmss");
-        String filename = "accounting_" + this.selectedApplication.getName() + "_" + this.selectedStat.getName() + "_" + dt.toString(fmt)
+        String filename = "accounting_" + selectedApplication.getName() + "_" + selectedStat.getName() + "_" + dt.toString(fmt)
                 + ".xls";
 
-        String exportURL = filename + "?chartname=" + this.selectedStat.getName() + "&domain=" + this.selectedStat.getDomain()
-                + "&applicationname=" + this.selectedApplication.getName();
+        String exportURL = filename + "?chartname=" + selectedStat.getName() + "&domain=" + selectedStat.getDomain()
+                + "&applicationname=" + selectedApplication.getName();
 
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext externalContext = context.getExternalContext();

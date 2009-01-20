@@ -76,16 +76,16 @@ public class PrescriptionFillBean extends AbstractPrescriptionDataClientBean imp
     @Factory(PRESCRIPTIONS)
     public void prescriptionsFactory() {
 
-        Query query = this.entityManager.createQuery("SELECT prescription FROM PrescriptionEntity AS prescription "
+        Query query = entityManager.createQuery("SELECT prescription FROM PrescriptionEntity AS prescription "
                 + "WHERE prescription.patient = :patient AND " + "prescription.filled = FALSE");
-        query.setParameter("patient", this.patient);
-        this.prescriptions = query.getResultList();
+        query.setParameter("patient", patient);
+        prescriptions = query.getResultList();
     }
 
     @RolesAllowed(PrescriptionConstants.PHARMACIST_ROLE)
     public String view() {
 
-        this.log.debug("view: #0", this.selectedPrescription.getId());
+        log.debug("view: #0", selectedPrescription.getId());
         return "view";
     }
 
@@ -97,17 +97,17 @@ public class PrescriptionFillBean extends AbstractPrescriptionDataClientBean imp
     @RolesAllowed(PrescriptionConstants.PHARMACIST_ROLE)
     public String fill() {
 
-        this.log.debug("filling: #0", this.fillPrescription.getId());
-        this.fillPrescription.setFilled(true);
-        Principal pharmacistPrincipal = this.sessionContext.getCallerPrincipal();
+        log.debug("filling: #0", fillPrescription.getId());
+        fillPrescription.setFilled(true);
+        Principal pharmacistPrincipal = sessionContext.getCallerPrincipal();
         String pharmacist = pharmacistPrincipal.getName();
-        this.fillPrescription.setPharmacist(pharmacist);
+        fillPrescription.setPharmacist(pharmacist);
 
         String pharmacistName = super.getUsername(pharmacist);
-        this.fillPrescription.setPharmacistName(pharmacistName);
+        fillPrescription.setPharmacistName(pharmacistName);
 
-        this.fillPrescription.setFilledDate(new Date());
-        this.entityManager.merge(this.fillPrescription);
+        fillPrescription.setFilledDate(new Date());
+        entityManager.merge(fillPrescription);
         return "filled";
     }
 }

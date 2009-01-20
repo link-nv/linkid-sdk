@@ -56,14 +56,14 @@ public class AuditContextFinalizerBean implements AuditContextFinalizer {
 
         LOG.debug("finalizing audit context: " + auditContextId);
         try {
-            Connection connection = this.factory.createConnection();
+            Connection connection = factory.createConnection();
             try {
                 Session session = connection.createSession(true, 0);
                 try {
                     AuditMessage auditMessage = new AuditMessage(auditContextId);
                     Message message = auditMessage.getJMSMessage(session);
 
-                    MessageProducer producer = session.createProducer(this.auditBackendQueue);
+                    MessageProducer producer = session.createProducer(auditBackendQueue);
                     try {
                         producer.send(message);
                     } finally {
@@ -78,7 +78,7 @@ public class AuditContextFinalizerBean implements AuditContextFinalizer {
         }
 
         catch (JMSException e) {
-            this.auditAuditDAO.addAuditAudit("unable to publish audit context " + auditContextId + " - reason: " + e.getMessage()
+            auditAuditDAO.addAuditAudit("unable to publish audit context " + auditContextId + " - reason: " + e.getMessage()
                     + " - errorCode: " + e.getErrorCode());
         }
     }

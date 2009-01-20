@@ -36,7 +36,7 @@ public class PrescriptionEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     public long getId() {
 
-        return this.id;
+        return id;
     }
 
     public void setId(long id) {
@@ -72,8 +72,8 @@ public class PrescriptionEntity implements Serializable {
         this.patientName = patientName;
         this.careProvider = careProvider;
         this.careProviderName = careProviderName;
-        this.filled = false;
-        this.creationDate = new Date();
+        filled = false;
+        creationDate = new Date();
     }
 
     public PrescriptionEntity() {
@@ -83,7 +83,7 @@ public class PrescriptionEntity implements Serializable {
 
     public String getCareProvider() {
 
-        return this.careProvider;
+        return careProvider;
     }
 
     public void setCareProvider(String careProvider) {
@@ -94,7 +94,7 @@ public class PrescriptionEntity implements Serializable {
     @Temporal(value = TemporalType.TIMESTAMP)
     public Date getCreationDate() {
 
-        return this.creationDate;
+        return creationDate;
     }
 
     public void setCreationDate(Date creationDate) {
@@ -104,7 +104,7 @@ public class PrescriptionEntity implements Serializable {
 
     public boolean isFilled() {
 
-        return this.filled;
+        return filled;
     }
 
     public void setFilled(boolean filled) {
@@ -114,7 +114,7 @@ public class PrescriptionEntity implements Serializable {
 
     public String getPatient() {
 
-        return this.patient;
+        return patient;
     }
 
     public void setPatient(String patient) {
@@ -125,7 +125,7 @@ public class PrescriptionEntity implements Serializable {
     @OneToMany(mappedBy = "prescription", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     public List<PrescriptionMedicineEntity> getMedicines() {
 
-        return this.medicines;
+        return medicines;
     }
 
     public void setMedicines(List<PrescriptionMedicineEntity> medicines) {
@@ -135,7 +135,7 @@ public class PrescriptionEntity implements Serializable {
 
     public String getPharmacist() {
 
-        return this.pharmacist;
+        return pharmacist;
     }
 
     public void setPharmacist(String pharmacist) {
@@ -145,7 +145,7 @@ public class PrescriptionEntity implements Serializable {
 
     public String getPharmacistName() {
 
-        return this.pharmacistName;
+        return pharmacistName;
     }
 
     public void setPharmacistName(String pharmacistName) {
@@ -156,7 +156,7 @@ public class PrescriptionEntity implements Serializable {
     @Temporal(value = TemporalType.TIMESTAMP)
     public Date getFilledDate() {
 
-        return this.filledDate;
+        return filledDate;
     }
 
     public void setFilledDate(Date filledDate) {
@@ -166,7 +166,7 @@ public class PrescriptionEntity implements Serializable {
 
     public String getPatientName() {
 
-        return this.patientName;
+        return patientName;
     }
 
     public void setPatientName(String patientName) {
@@ -176,7 +176,7 @@ public class PrescriptionEntity implements Serializable {
 
     public String getCareProviderName() {
 
-        return this.careProviderName;
+        return careProviderName;
     }
 
     public void setCareProviderName(String careProviderName) {

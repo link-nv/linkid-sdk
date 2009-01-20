@@ -77,6 +77,6 @@ public class PkiClientImpl implements PkiClient {
 
     private String getUri() {
 
-        return "http://" + this.location + "/olas-auth/pki/cert";
+        return "http://" + location + "/olas-auth/pki/cert";
     }
 }

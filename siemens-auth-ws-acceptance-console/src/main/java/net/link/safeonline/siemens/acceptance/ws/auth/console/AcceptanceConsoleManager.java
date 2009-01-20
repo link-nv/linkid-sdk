@@ -61,16 +61,16 @@ public class AcceptanceConsoleManager extends Observable {
     public AuthenticationClient getAuthenticationClient()
             throws RequestDeniedException, WSClientTransportException {
 
-        if (null == this.authenticationClient) {
-            GetAuthenticationClient getAuthenticationClient = new GetAuthenticationClientImpl(this.location);
-            this.authenticationClient = new AuthenticationClientImpl(getAuthenticationClient.getInstance());
+        if (null == authenticationClient) {
+            GetAuthenticationClient getAuthenticationClient = new GetAuthenticationClientImpl(location);
+            authenticationClient = new AuthenticationClientImpl(getAuthenticationClient.getInstance());
         }
-        return this.authenticationClient;
+        return authenticationClient;
     }
 
     public void resetAuthenticationClient() {
 
-        this.authenticationClient = null;
+        authenticationClient = null;
     }
 
     public void setLocation(String location) {
@@ -82,7 +82,7 @@ public class AcceptanceConsoleManager extends Observable {
 
     public String getLocation() {
 
-        return this.location;
+        return location;
     }
 
     public void setApplication(String application) {
@@ -94,12 +94,12 @@ public class AcceptanceConsoleManager extends Observable {
 
     public String getApplication() {
 
-        return this.application;
+        return application;
     }
 
     public boolean getGenerateKeyPair() {
 
-        return this.generateKeyPair;
+        return generateKeyPair;
     }
 
     public void setGenerateKeyPair(boolean generateKeyPair) {
@@ -110,9 +110,9 @@ public class AcceptanceConsoleManager extends Observable {
     public PublicKey getPublicKey()
             throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
 
-        if (this.generateKeyPair) {
-            this.keyPair = KeyStoreUtils.generateKeyPair();
-            return this.keyPair.getPublic();
+        if (generateKeyPair) {
+            keyPair = KeyStoreUtils.generateKeyPair();
+            return keyPair.getPublic();
         }
         return null;
     }
@@ -124,6 +124,6 @@ public class AcceptanceConsoleManager extends Observable {
 
     public String getDeviceName() {
 
-        return this.deviceName;
+        return deviceName;
     }
 }

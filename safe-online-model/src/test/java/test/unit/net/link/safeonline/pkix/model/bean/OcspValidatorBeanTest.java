@@ -74,36 +74,36 @@ public class OcspValidatorBeanTest extends TestCase {
 
         super.setUp();
 
-        this.testedInstance = new OcspValidatorBean();
+        testedInstance = new OcspValidatorBean();
 
-        this.servletTestManager = new ServletTestManager();
+        servletTestManager = new ServletTestManager();
 
-        this.servletTestManager.setUp(TestOcspResponderServlet.class);
+        servletTestManager.setUp(TestOcspResponderServlet.class);
 
-        this.ocspUri = new URI(this.servletTestManager.getServletLocation());
+        ocspUri = new URI(servletTestManager.getServletLocation());
 
-        this.caKeyPair = PkiTestUtils.generateKeyPair();
-        this.caCertificate = PkiTestUtils.generateSelfSignedCertificate(this.caKeyPair, "CN=TestCA");
+        caKeyPair = PkiTestUtils.generateKeyPair();
+        caCertificate = PkiTestUtils.generateSelfSignedCertificate(caKeyPair, "CN=TestCA");
 
         KeyPair ocspResponderKeyPair = PkiTestUtils.generateKeyPair();
 
         TestOcspResponderServlet.certificate = PkiTestUtils.generateCertificate(ocspResponderKeyPair.getPublic(), "CN=TestOCSPResponder",
-                this.caKeyPair.getPrivate(), this.caCertificate, new DateTime(this.caCertificate.getNotBefore()), new DateTime(
-                        this.caCertificate.getNotAfter()), null, false, false, null);
+                caKeyPair.getPrivate(), caCertificate, new DateTime(caCertificate.getNotBefore()), new DateTime(
+                        caCertificate.getNotAfter()), null, false, false, null);
         TestOcspResponderServlet.privateKey = ocspResponderKeyPair.getPrivate();
 
         TestOcspResponderServlet.called = false;
 
-        this.mockResourceAuditLogger = createMock(ResourceAuditLogger.class);
-        this.mockObjects = new Object[] { this.mockResourceAuditLogger };
-        EJBTestUtils.inject(this.testedInstance, this.mockResourceAuditLogger);
+        mockResourceAuditLogger = createMock(ResourceAuditLogger.class);
+        mockObjects = new Object[] { mockResourceAuditLogger };
+        EJBTestUtils.inject(testedInstance, mockResourceAuditLogger);
     }
 
     @Override
     public void tearDown()
             throws Exception {
 
-        this.servletTestManager.tearDown();
+        servletTestManager.tearDown();
 
         super.tearDown();
     }
@@ -116,7 +116,7 @@ public class OcspValidatorBeanTest extends TestCase {
         X509Certificate certificate = PkiTestUtils.generateTestSelfSignedCert(testOcspUri);
 
         // operate
-        URI resultOcspUri = this.testedInstance.getOcspUri(certificate);
+        URI resultOcspUri = testedInstance.getOcspUri(certificate);
 
         // verify
         assertEquals(testOcspUri, resultOcspUri);
@@ -129,7 +129,7 @@ public class OcspValidatorBeanTest extends TestCase {
         X509Certificate certificate = PkiTestUtils.generateTestSelfSignedCert(null);
 
         // operate
-        URI resultOcspUri = this.testedInstance.getOcspUri(certificate);
+        URI resultOcspUri = testedInstance.getOcspUri(certificate);
 
         // verify
         assertNull(resultOcspUri);
@@ -143,17 +143,17 @@ public class OcspValidatorBeanTest extends TestCase {
         X509Certificate certificate = PkiTestUtils.generateTestSelfSignedCert(testOcspUri);
 
         // expectations
-        this.mockResourceAuditLogger.addResourceAudit(ResourceNameType.OCSP, ResourceLevelType.RESOURCE_UNAVAILABLE, "/",
+        mockResourceAuditLogger.addResourceAudit(ResourceNameType.OCSP, ResourceLevelType.RESOURCE_UNAVAILABLE, "/",
                 "OCSP Responder is down");
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
-        boolean result = this.testedInstance.performOcspCheck(certificate, certificate);
+        boolean result = testedInstance.performOcspCheck(certificate, certificate);
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
         assertFalse(result);
     }
 
@@ -165,7 +165,7 @@ public class OcspValidatorBeanTest extends TestCase {
         X509Certificate certificate = PkiTestUtils.generateTestSelfSignedCert(testOcspUri);
 
         // operate
-        boolean result = this.testedInstance.performOcspCheck(certificate, certificate);
+        boolean result = testedInstance.performOcspCheck(certificate, certificate);
 
         // verify
         assertFalse(result);
@@ -176,12 +176,12 @@ public class OcspValidatorBeanTest extends TestCase {
 
         // setup
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate certificate = PkiTestUtils.generateCertificate(keyPair.getPublic(), "CN=Test", this.caKeyPair.getPrivate(),
-                this.caCertificate, new DateTime(this.caCertificate.getNotBefore()), new DateTime(this.caCertificate.getNotAfter()), null,
-                false, false, this.ocspUri);
+        X509Certificate certificate = PkiTestUtils.generateCertificate(keyPair.getPublic(), "CN=Test", caKeyPair.getPrivate(),
+                caCertificate, new DateTime(caCertificate.getNotBefore()), new DateTime(caCertificate.getNotAfter()), null,
+                false, false, ocspUri);
 
         // operate
-        boolean result = this.testedInstance.performOcspCheck(certificate, this.caCertificate);
+        boolean result = testedInstance.performOcspCheck(certificate, caCertificate);
 
         // verify
         assertTrue(result);

@@ -88,8 +88,8 @@ public class PasswordAuthentication extends DeviceAuthenticationPanel {
 
         gbc.gridx = 1;
         gbc.gridy = 0;
-        gbl.setConstraints(this.loginField, gbc);
-        inputPanel.add(this.loginField, gbc);
+        gbl.setConstraints(loginField, gbc);
+        inputPanel.add(loginField, gbc);
 
         gbc.gridx = 0;
         gbc.gridy = 1;
@@ -98,11 +98,11 @@ public class PasswordAuthentication extends DeviceAuthenticationPanel {
 
         gbc.gridx = 1;
         gbc.gridy = 1;
-        gbl.setConstraints(this.passwordField, gbc);
-        inputPanel.add(this.passwordField, gbc);
+        gbl.setConstraints(passwordField, gbc);
+        inputPanel.add(passwordField, gbc);
 
-        controlPanel.add(this.loginButton);
-        controlPanel.add(this.cancelButton);
+        controlPanel.add(loginButton);
+        controlPanel.add(cancelButton);
 
         setLayout(new BorderLayout());
         this.add(inputPanel, BorderLayout.CENTER);
@@ -111,7 +111,7 @@ public class PasswordAuthentication extends DeviceAuthenticationPanel {
 
     private void handleEvents() {
 
-        this.loginButton.addActionListener(new ActionListener() {
+        loginButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
@@ -121,7 +121,7 @@ public class PasswordAuthentication extends DeviceAuthenticationPanel {
             }
         });
 
-        this.cancelButton.addActionListener(new ActionListener() {
+        cancelButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
@@ -135,8 +135,8 @@ public class PasswordAuthentication extends DeviceAuthenticationPanel {
         setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
         Map<String, String> deviceCredentials = new HashMap<String, String>();
-        deviceCredentials.put(PASSWORD_WS_AUTH_LOGIN_ATTRIBUTE, this.loginField.getText());
-        deviceCredentials.put(PASSWORD_WS_AUTH_PASSWORD_ATTRIBUTE, new String(this.passwordField.getPassword()));
+        deviceCredentials.put(PASSWORD_WS_AUTH_LOGIN_ATTRIBUTE, loginField.getText());
+        deviceCredentials.put(PASSWORD_WS_AUTH_PASSWORD_ATTRIBUTE, new String(passwordField.getPassword()));
 
         authenticate(deviceCredentials);
 
@@ -144,11 +144,11 @@ public class PasswordAuthentication extends DeviceAuthenticationPanel {
 
     protected boolean checkInput() {
 
-        if (null == this.loginField.getText() || this.loginField.getText().length() == 0) {
+        if (null == loginField.getText() || loginField.getText().length() == 0) {
             JOptionPane.showMessageDialog(this, "Please fill in the login name field", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }
-        if (this.passwordField.getPassword().length == 0) {
+        if (passwordField.getPassword().length == 0) {
             JOptionPane.showMessageDialog(this, "Please fill in the password field", "Error", JOptionPane.ERROR_MESSAGE);
             return false;
         }

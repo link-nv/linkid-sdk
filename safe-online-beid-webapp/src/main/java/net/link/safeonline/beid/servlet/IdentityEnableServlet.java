@@ -56,7 +56,7 @@ public class IdentityEnableServlet extends AbstractStatementServlet {
         try {
             String userId = DeviceOperationManager.getUserId(session);
             String operation = DeviceOperationManager.getOperation(session);
-            this.beIdDeviceService.enable(sessionId, userId, operation, statementData);
+            beIdDeviceService.enable(sessionId, userId, operation, statementData);
             response.setStatus(HttpServletResponse.SC_OK);
             protocolContext.setSuccess(true);
         } catch (TrustDomainNotFoundException e) {

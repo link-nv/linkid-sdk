@@ -64,13 +64,13 @@ public class DevicePropertyEntity implements Serializable {
         this.device = device;
         this.name = name;
         this.value = value;
-        this.pk = new DevicePropertyPK(device.getName(), name);
+        pk = new DevicePropertyPK(device.getName(), name);
     }
 
     @Column(name = PROPERTY_NAME_COLUMN_NAME, insertable = false, updatable = false)
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -80,7 +80,7 @@ public class DevicePropertyEntity implements Serializable {
 
     public String getValue() {
 
-        return this.value;
+        return value;
     }
 
     public void setValue(String value) {
@@ -93,7 +93,7 @@ public class DevicePropertyEntity implements Serializable {
             @AttributeOverride(name = "name", column = @Column(name = PROPERTY_NAME_COLUMN_NAME)) })
     public DevicePropertyPK getPk() {
 
-        return this.pk;
+        return pk;
     }
 
     public void setPk(DevicePropertyPK pk) {
@@ -105,7 +105,7 @@ public class DevicePropertyEntity implements Serializable {
     @JoinColumn(name = DEVICE_COLUMN_NAME, insertable = false, updatable = false)
     public DeviceEntity getDevice() {
 
-        return this.device;
+        return device;
     }
 
     public void setDevice(DeviceEntity device) {
@@ -116,7 +116,7 @@ public class DevicePropertyEntity implements Serializable {
     @Transient
     public String getDeviceName() {
 
-        return this.pk.getDeviceName();
+        return pk.getDeviceName();
     }
 
     @Override
@@ -129,19 +129,19 @@ public class DevicePropertyEntity implements Serializable {
         if (false == obj instanceof DevicePropertyEntity)
             return false;
         DevicePropertyEntity rhs = (DevicePropertyEntity) obj;
-        return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
+        return new EqualsBuilder().append(pk, rhs.pk).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.pk).toHashCode();
+        return new HashCodeBuilder().append(pk).toHashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("pk", this.pk).append("value", this.value).toString();
+        return new ToStringBuilder(this).append("pk", pk).append("value", value).toString();
     }
 
 

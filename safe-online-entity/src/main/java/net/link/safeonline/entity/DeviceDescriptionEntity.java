@@ -64,13 +64,13 @@ public class DeviceDescriptionEntity implements Serializable {
         this.device = device;
         this.language = language;
         this.description = description;
-        this.pk = new DeviceDescriptionPK(device.getName(), language);
+        pk = new DeviceDescriptionPK(device.getName(), language);
     }
 
     @Column(name = LANGUAGE_COLUMN_NAME, insertable = false, updatable = false)
     public String getLanguage() {
 
-        return this.language;
+        return language;
     }
 
     public void setLanguage(String language) {
@@ -80,7 +80,7 @@ public class DeviceDescriptionEntity implements Serializable {
 
     public String getDescription() {
 
-        return this.description;
+        return description;
     }
 
     public void setDescription(String description) {
@@ -93,7 +93,7 @@ public class DeviceDescriptionEntity implements Serializable {
             @AttributeOverride(name = "language", column = @Column(name = LANGUAGE_COLUMN_NAME)) })
     public DeviceDescriptionPK getPk() {
 
-        return this.pk;
+        return pk;
     }
 
     public void setPk(DeviceDescriptionPK pk) {
@@ -105,7 +105,7 @@ public class DeviceDescriptionEntity implements Serializable {
     @JoinColumn(name = DEVICE_COLUMN_NAME, insertable = false, updatable = false)
     public DeviceEntity getDevice() {
 
-        return this.device;
+        return device;
     }
 
     public void setDevice(DeviceEntity device) {
@@ -116,7 +116,7 @@ public class DeviceDescriptionEntity implements Serializable {
     @Transient
     public String getDeviceName() {
 
-        return this.pk.getDeviceName();
+        return pk.getDeviceName();
     }
 
     @Override
@@ -129,19 +129,19 @@ public class DeviceDescriptionEntity implements Serializable {
         if (false == obj instanceof DeviceDescriptionEntity)
             return false;
         DeviceDescriptionEntity rhs = (DeviceDescriptionEntity) obj;
-        return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
+        return new EqualsBuilder().append(pk, rhs.pk).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.pk).toHashCode();
+        return new HashCodeBuilder().append(pk).toHashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("pk", this.pk).append("description", this.description).toString();
+        return new ToStringBuilder(this).append("pk", pk).append("description", description).toString();
     }
 
 

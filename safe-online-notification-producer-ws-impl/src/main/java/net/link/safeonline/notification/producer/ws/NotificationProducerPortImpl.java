@@ -52,7 +52,7 @@ public class NotificationProducerPortImpl implements NotificationProducerPort {
 
         LOG.debug("subscribe");
 
-        X509Certificate certificate = WSSecurityServerHandler.getCertificate(this.context);
+        X509Certificate certificate = WSSecurityServerHandler.getCertificate(context);
 
         W3CEndpointReference consumerReference = request.getConsumerReference();
         DOMResult consumerReferenceDom = new DOMResult();
@@ -64,7 +64,7 @@ public class NotificationProducerPortImpl implements NotificationProducerPort {
         String topic = (String) topicExpression.getContent().get(0);
 
         try {
-            this.notificationProducerService.subscribe(topic, address, certificate);
+            notificationProducerService.subscribe(topic, address, certificate);
         } catch (PermissionDeniedException e) {
             LOG.debug("permission denied: " + e.getMessage());
             return createSubscribeCreationFailedResponse();

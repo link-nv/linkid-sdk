@@ -61,7 +61,7 @@ public class LogoutServlet extends AbstractInjectionServlet {
             Session.getInstance().invalidate();
         }
 
-        response.sendRedirect(this.logoutExitUrl);
+        response.sendRedirect(logoutExitUrl);
 
     }
 

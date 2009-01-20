@@ -54,18 +54,18 @@ public class DemoStatTaskBean implements Task {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void perform() {
 
-        ApplicationEntity application = this.applicationDAO.findApplication(DemoStartableBean.DEMO_APPLICATION_NAME);
+        ApplicationEntity application = applicationDAO.findApplication(DemoStartableBean.DEMO_APPLICATION_NAME);
         if (application == null)
             return;
-        StatisticEntity statistic = this.statisticDAO.findStatisticByNameDomainAndApplication(STAT_NAME, STAT_DOMAIN, application);
+        StatisticEntity statistic = statisticDAO.findStatisticByNameDomainAndApplication(STAT_NAME, STAT_DOMAIN, application);
         if (statistic == null) {
-            statistic = this.statisticDAO.addStatistic(STAT_NAME, STAT_DOMAIN, application);
+            statistic = statisticDAO.addStatistic(STAT_NAME, STAT_DOMAIN, application);
         }
         Random generator = new Random();
-        this.statisticDataPointDAO.cleanStatisticDataPoints(statistic);
-        this.statisticDataPointDAO.addStatisticDataPoint("cat A", statistic, generator.nextInt(), generator.nextInt(), generator.nextInt());
-        this.statisticDataPointDAO.addStatisticDataPoint("cat B", statistic, generator.nextInt(), generator.nextInt(), generator.nextInt());
-        this.statisticDataPointDAO.addStatisticDataPoint("cat C", statistic, generator.nextInt(), generator.nextInt(), generator.nextInt());
-        this.statisticDataPointDAO.addStatisticDataPoint("cat D", statistic, generator.nextInt(), generator.nextInt(), generator.nextInt());
+        statisticDataPointDAO.cleanStatisticDataPoints(statistic);
+        statisticDataPointDAO.addStatisticDataPoint("cat A", statistic, generator.nextInt(), generator.nextInt(), generator.nextInt());
+        statisticDataPointDAO.addStatisticDataPoint("cat B", statistic, generator.nextInt(), generator.nextInt(), generator.nextInt());
+        statisticDataPointDAO.addStatisticDataPoint("cat C", statistic, generator.nextInt(), generator.nextInt(), generator.nextInt());
+        statisticDataPointDAO.addStatisticDataPoint("cat D", statistic, generator.nextInt(), generator.nextInt(), generator.nextInt());
     }
 }

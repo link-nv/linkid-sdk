@@ -68,12 +68,13 @@ public class JavaVersionApplet extends Applet {
     }
 
 
+    @Override
     public void init() {
 
         super.init();
         String osName = System.getProperty("os.name");
         Iterator platformIterator = platformsDrivers.iterator();
-        this.hasPkcs11 = false;
+        hasPkcs11 = false;
         while (platformIterator.hasNext()) {
             PlatformDrivers platformDrivers = (PlatformDrivers) platformIterator.next();
             if (true == osName.matches(platformDrivers.platform)) {
@@ -83,7 +84,7 @@ public class JavaVersionApplet extends Applet {
                     String driverLocation = (String) driverIterator.next();
                     File driverPath = new File(driverLocation);
                     if (driverPath.exists()) {
-                        this.hasPkcs11 = true;
+                        hasPkcs11 = true;
                     }
                 }
             }
@@ -92,22 +93,22 @@ public class JavaVersionApplet extends Applet {
 
     public JavaVersionApplet() {
 
-        this.version = System.getProperty("java.version");
-        this.vendor = System.getProperty("java.vendor");
+        version = System.getProperty("java.version");
+        vendor = System.getProperty("java.vendor");
     }
 
     public String getVersion() {
 
-        return this.version;
+        return version;
     }
 
     public String getVendor() {
 
-        return this.vendor;
+        return vendor;
     }
 
     public boolean hasPkcs11() {
 
-        return this.hasPkcs11;
+        return hasPkcs11;
     }
 }

@@ -34,37 +34,37 @@ public class DeviceDAOBeanTest extends TestCase {
             throws Exception {
 
         super.setUp();
-        this.entityTestManager = new EntityTestManager();
+        entityTestManager = new EntityTestManager();
         /*
          * If you add entities to this list, also add them to safe-online-sql-ddl.
          */
-        this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
+        entityTestManager.setUp(SafeOnlineTestContainer.entities);
 
-        this.testedInstance = new DeviceDAOBean();
-        this.deviceClassDAO = new DeviceClassDAOBean();
+        testedInstance = new DeviceDAOBean();
+        deviceClassDAO = new DeviceClassDAOBean();
 
-        EJBTestUtils.inject(this.testedInstance, this.entityTestManager.getEntityManager());
-        EJBTestUtils.inject(this.deviceClassDAO, this.entityTestManager.getEntityManager());
+        EJBTestUtils.inject(testedInstance, entityTestManager.getEntityManager());
+        EJBTestUtils.inject(deviceClassDAO, entityTestManager.getEntityManager());
 
-        EJBTestUtils.init(this.testedInstance);
-        EJBTestUtils.init(this.deviceClassDAO);
+        EJBTestUtils.init(testedInstance);
+        EJBTestUtils.init(deviceClassDAO);
     }
 
     @Override
     protected void tearDown()
             throws Exception {
 
-        this.entityTestManager.tearDown();
+        entityTestManager.tearDown();
         super.tearDown();
     }
 
     public void testDevice() {
 
-        DeviceClassEntity deviceClass = this.deviceClassDAO.addDeviceClass(SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
+        DeviceClassEntity deviceClass = deviceClassDAO.addDeviceClass(SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
                 SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
-        DeviceEntity device = this.testedInstance.addDevice("testDevice", deviceClass, null, null, null, null, null, null, null, null,
+        DeviceEntity device = testedInstance.addDevice("testDevice", deviceClass, null, null, null, null, null, null, null, null,
                 null, null, null, null);
-        List<DeviceEntity> devices = this.testedInstance.listDevices();
+        List<DeviceEntity> devices = testedInstance.listDevices();
         assertEquals(device, devices.get(0));
     }
 

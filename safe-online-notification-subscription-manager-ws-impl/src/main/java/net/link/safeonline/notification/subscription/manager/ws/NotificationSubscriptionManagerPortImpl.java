@@ -62,7 +62,7 @@ public class NotificationSubscriptionManagerPortImpl implements NotificationSubs
 
         LOG.debug("unsubscribe");
 
-        X509Certificate certificate = WSSecurityServerHandler.getCertificate(this.context);
+        X509Certificate certificate = WSSecurityServerHandler.getCertificate(context);
 
         W3CEndpointReference consumerReference = request.getConsumerReference();
         DOMResult consumerReferenceDom = new DOMResult();
@@ -73,7 +73,7 @@ public class NotificationSubscriptionManagerPortImpl implements NotificationSubs
         String topic = (String) topicExpression.getContent().get(0);
 
         try {
-            this.notificationProducerService.unsubscribe(topic, address, certificate);
+            notificationProducerService.unsubscribe(topic, address, certificate);
         } catch (SubscriptionNotFoundException e) {
             LOG.debug("Subscription not found: " + e.getMessage());
             return createSubscriptionNotFoundResponse(e.getMessage());

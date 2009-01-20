@@ -65,13 +65,13 @@ public class NewAccountPage extends LayoutPage {
 
             super(id);
 
-            add(new TextField<String>("name", this.name = new Model<String>()));
+            add(new TextField<String>("name", name = new Model<String>()));
         }
 
         @Override
         protected void onSubmit() {
 
-            createAccount(this.name.getObject());
+            createAccount(name.getObject());
         }
     }
 

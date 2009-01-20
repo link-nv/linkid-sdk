@@ -64,7 +64,7 @@ public class SeatServiceTest extends AbstractCinemaServiceTest {
 
         super.setup();
 
-        this.initializationService.buildEntities();
+        initializationService.buildEntities();
     }
 
     @Test
@@ -81,7 +81,7 @@ public class SeatServiceTest extends AbstractCinemaServiceTest {
         // Occupy a seat.
         // - Find our film entity.
         CinemaFilmEntity sampleFilm = null;
-        List<CinemaFilmEntity> sampleFilms = this.filmService.getAllFilms();
+        List<CinemaFilmEntity> sampleFilms = filmService.getAllFilms();
         for (CinemaFilmEntity film : sampleFilms) {
             if (testFilmName.equals(film.getName())) {
                 sampleFilm = film;
@@ -92,7 +92,7 @@ public class SeatServiceTest extends AbstractCinemaServiceTest {
                 sampleFilm);
         // - Find our theatre entity.
         CinemaTheatreEntity sampleTheatre = null;
-        List<CinemaTheatreEntity> sampleTheatres = this.theatreService.getTheatresThatPlay(sampleFilm);
+        List<CinemaTheatreEntity> sampleTheatres = theatreService.getTheatresThatPlay(sampleFilm);
         for (CinemaTheatreEntity theatre : sampleTheatres) {
             if (testTheatreName.equals(theatre.getName())) {
                 sampleTheatre = theatre;
@@ -103,7 +103,7 @@ public class SeatServiceTest extends AbstractCinemaServiceTest {
                 sampleTheatre);
         // - Find our room entity.
         CinemaRoomEntity sampleRoom = null;
-        List<CinemaRoomEntity> sampleRooms = this.roomService.getRoomsFor(sampleTheatre, sampleFilm);
+        List<CinemaRoomEntity> sampleRooms = roomService.getRoomsFor(sampleTheatre, sampleFilm);
         for (CinemaRoomEntity room : sampleRooms) {
             if (testRoomName.equals(room.getName())) {
                 sampleRoom = room;
@@ -114,7 +114,7 @@ public class SeatServiceTest extends AbstractCinemaServiceTest {
                 sampleRoom);
         // - Find our seat.
         CinemaSeatEntity sampleSeat = null;
-        List<CinemaSeatEntity> sampleSeats = this.seatService.getSeatsFor(sampleRoom);
+        List<CinemaSeatEntity> sampleSeats = seatService.getSeatsFor(sampleRoom);
         for (CinemaSeatEntity seat : sampleSeats) {
             if (seat.getX() == testSeatX && seat.getY() == testSeatY) {
                 sampleSeat = seat;
@@ -125,13 +125,13 @@ public class SeatServiceTest extends AbstractCinemaServiceTest {
                 sampleSeat);
         // - Occupy our seat.
         try {
-            this.seatService.validate(sampleSeat, testSeatTime);
+            seatService.validate(sampleSeat, testSeatTime);
         } catch (IllegalStateException e) {
             throw new AssertionFailedError(String.format("seat not available: %s at %s", sampleSeat, testSeatTime));
         }
 
         // Check our seat.
         assertTrue(String.format("seat occupation failed for: %s at %s", sampleSeat, testSeatTime), //
-                this.seatService.isOccupied(sampleSeat, testSeatTime));
+                seatService.isOccupied(sampleSeat, testSeatTime));
     }
 }

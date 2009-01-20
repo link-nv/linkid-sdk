@@ -95,57 +95,57 @@ public class LogoutServletTest {
     public void setUp()
             throws Exception {
 
-        this.originalContextClassLoader = Thread.currentThread().getContextClassLoader();
-        this.testClassLoader = new TestClassLoader();
-        Thread.currentThread().setContextClassLoader(this.testClassLoader);
+        originalContextClassLoader = Thread.currentThread().getContextClassLoader();
+        testClassLoader = new TestClassLoader();
+        Thread.currentThread().setContextClassLoader(testClassLoader);
 
-        this.jndiTestUtils = new JndiTestUtils();
-        this.jndiTestUtils.setUp();
-        this.jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
+        jndiTestUtils = new JndiTestUtils();
+        jndiTestUtils.setUp();
+        jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
                 "SafeOnline/WSSecurityConfigurationBean/local");
 
         WSSecurityConfigurationService mockWSSecurityConfigurationService = EasyMock.createMock(WSSecurityConfigurationService.class);
-        this.jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local", mockWSSecurityConfigurationService);
+        jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local", mockWSSecurityConfigurationService);
         EasyMock.expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
         EasyMock.expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck((X509Certificate) EasyMock.anyObject()))
                 .andStubReturn(true);
         EasyMock.replay(mockWSSecurityConfigurationService);
 
-        this.keyPair = PkiTestUtils.generateKeyPair();
-        X509Certificate cert = PkiTestUtils.generateSelfSignedCertificate(this.keyPair, "CN=TestApplication");
+        keyPair = PkiTestUtils.generateKeyPair();
+        X509Certificate cert = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=TestApplication");
         File tmpP12File = File.createTempFile("application-", ".p12");
         tmpP12File.deleteOnExit();
-        PkiTestUtils.persistKey(tmpP12File, this.keyPair.getPrivate(), cert, "secret", "secret");
+        PkiTestUtils.persistKey(tmpP12File, keyPair.getPrivate(), cert, "secret", "secret");
 
         String p12ResourceName = "p12-resource-name.p12";
-        this.testClassLoader.addResource(p12ResourceName, tmpP12File.toURI().toURL());
+        testClassLoader.addResource(p12ResourceName, tmpP12File.toURI().toURL());
 
-        this.webServiceTestUtils = new WebServiceTestUtils();
+        webServiceTestUtils = new WebServiceTestUtils();
         SecurityTokenServicePort port = new SecurityTokenServicePortImpl();
-        this.webServiceTestUtils.setUp(port, "/safe-online-ws/sts");
+        webServiceTestUtils.setUp(port, "/safe-online-ws/sts");
 
-        this.servletTestManager = new ServletTestManager();
+        servletTestManager = new ServletTestManager();
         Map<String, String> initParams = new HashMap<String, String>();
-        initParams.put("LogoutUrl", this.logoutUrl);
-        initParams.put("ErrorPage", this.errorPage);
-        initParams.put(SafeOnlineLoginUtils.LOGOUT_EXIT_SERVICE_URL_INIT_PARAM, this.logoutExitServiceUrl);
-        initParams.put(SafeOnlineLoginUtils.APPLICATION_NAME_INIT_PARAM, this.applicationName);
+        initParams.put("LogoutUrl", logoutUrl);
+        initParams.put("ErrorPage", errorPage);
+        initParams.put(SafeOnlineLoginUtils.LOGOUT_EXIT_SERVICE_URL_INIT_PARAM, logoutExitServiceUrl);
+        initParams.put(SafeOnlineLoginUtils.APPLICATION_NAME_INIT_PARAM, applicationName);
         initParams.put(SafeOnlineLoginUtils.KEY_STORE_RESOURCE_INIT_PARAM, p12ResourceName);
         initParams.put(SafeOnlineLoginUtils.KEY_STORE_PASSWORD_INIT_PARAM, "secret");
-        initParams.put("ServletEndpointUrl", this.servletEndpointUrl);
-        initParams.put("WsLocation", this.webServiceTestUtils.getLocation());
+        initParams.put("ServletEndpointUrl", servletEndpointUrl);
+        initParams.put("WsLocation", webServiceTestUtils.getLocation());
 
-        this.servletTestManager.setUp(LogoutServlet.class, initParams, null, null, null);
-        this.location = this.servletTestManager.getServletLocation();
-        this.httpClient = new HttpClient();
+        servletTestManager.setUp(LogoutServlet.class, initParams, null, null, null);
+        location = servletTestManager.getServletLocation();
+        httpClient = new HttpClient();
     }
 
     @After
     public void tearDown()
             throws Exception {
 
-        this.servletTestManager.tearDown();
-        Thread.currentThread().setContextClassLoader(this.originalContextClassLoader);
+        servletTestManager.tearDown();
+        Thread.currentThread().setContextClassLoader(originalContextClassLoader);
     }
 
 
@@ -182,16 +182,16 @@ public class LogoutServletTest {
 
         // setup
         AuthenticationProtocolHandler mockAuthenticationProtocolHandler = createMock(AuthenticationProtocolHandler.class);
-        this.servletTestManager.setSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE,
+        servletTestManager.setSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE,
                 mockAuthenticationProtocolHandler);
 
         String targetUrl = "target";
-        this.servletTestManager.setSessionAttribute(AuthenticationProtocolManager.TARGET_ATTRIBUTE, targetUrl);
+        servletTestManager.setSessionAttribute(AuthenticationProtocolManager.TARGET_ATTRIBUTE, targetUrl);
 
         // operate
-        GetMethod getMethod = new GetMethod(this.location);
+        GetMethod getMethod = new GetMethod(location);
         getMethod.setFollowRedirects(false);
-        int statusCode = this.httpClient.executeMethod(getMethod);
+        int statusCode = httpClient.executeMethod(getMethod);
 
         // verify
         LOG.debug("status code: " + statusCode);
@@ -208,7 +208,7 @@ public class LogoutServletTest {
 
         // setup
         AuthenticationProtocolHandler mockAuthenticationProtocolHandler = createMock(AuthenticationProtocolHandler.class);
-        this.servletTestManager.setSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE,
+        servletTestManager.setSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE,
                 mockAuthenticationProtocolHandler);
 
         // expectations
@@ -219,14 +219,14 @@ public class LogoutServletTest {
         replay(mockAuthenticationProtocolHandler);
 
         // operate
-        GetMethod getMethod = new GetMethod(this.location);
-        int statusCode = this.httpClient.executeMethod(getMethod);
+        GetMethod getMethod = new GetMethod(location);
+        int statusCode = httpClient.executeMethod(getMethod);
 
         // verify
         verify(mockAuthenticationProtocolHandler);
         LOG.debug("status code: " + statusCode);
         assertEquals(HttpServletResponse.SC_OK, statusCode);
-        assertNull(this.servletTestManager.getSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE));
+        assertNull(servletTestManager.getSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE));
     }
 
     @Test
@@ -235,7 +235,7 @@ public class LogoutServletTest {
 
         // setup
         AuthenticationProtocolHandler mockAuthenticationProtocolHandler = createMock(AuthenticationProtocolHandler.class);
-        this.servletTestManager.setSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE,
+        servletTestManager.setSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE,
                 mockAuthenticationProtocolHandler);
 
         // expectations
@@ -247,15 +247,15 @@ public class LogoutServletTest {
         replay(mockAuthenticationProtocolHandler);
 
         // operate
-        PostMethod postMethod = new PostMethod(this.location);
-        int statusCode = this.httpClient.executeMethod(postMethod);
+        PostMethod postMethod = new PostMethod(location);
+        int statusCode = httpClient.executeMethod(postMethod);
 
         // verify
         verify(mockAuthenticationProtocolHandler);
         LOG.debug("status code: " + statusCode);
         assertEquals(HttpServletResponse.SC_MOVED_TEMPORARILY, statusCode);
         String resultTarget = postMethod.getResponseHeader("Location").getValue();
-        assertTrue(resultTarget.endsWith(this.logoutUrl));
+        assertTrue(resultTarget.endsWith(logoutUrl));
     }
 
     @Test
@@ -265,24 +265,24 @@ public class LogoutServletTest {
         // setup
         String userId = UUID.randomUUID().toString();
         Challenge<String> challenge = new Challenge<String>();
-        String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, this.applicationName, this.keyPair,
-                this.servletEndpointUrl, challenge);
+        String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, applicationName, keyPair,
+                servletEndpointUrl, challenge);
         String encodedSamlLogoutRequest = Base64.encode(samlLogoutRequest.getBytes());
 
-        this.servletTestManager.setSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE, userId);
+        servletTestManager.setSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE, userId);
 
-        PostMethod postMethod = new PostMethod(this.location);
+        PostMethod postMethod = new PostMethod(location);
         NameValuePair[] data = { new NameValuePair("SAMLRequest", encodedSamlLogoutRequest) };
         postMethod.setRequestBody(data);
 
         // operate
-        int statusCode = this.httpClient.executeMethod(postMethod);
+        int statusCode = httpClient.executeMethod(postMethod);
 
         // verify
         LOG.debug("status code: " + statusCode);
         assertEquals(HttpServletResponse.SC_MOVED_TEMPORARILY, statusCode);
         String resultTarget = postMethod.getResponseHeader("Location").getValue();
-        assertTrue(resultTarget.endsWith(this.logoutUrl));
+        assertTrue(resultTarget.endsWith(logoutUrl));
     }
 
     @Test
@@ -293,23 +293,23 @@ public class LogoutServletTest {
         String userId = UUID.randomUUID().toString();
         String fooUserId = UUID.randomUUID().toString();
         Challenge<String> challenge = new Challenge<String>();
-        String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, this.applicationName, this.keyPair,
-                this.servletEndpointUrl, challenge);
+        String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, applicationName, keyPair,
+                servletEndpointUrl, challenge);
         String encodedSamlLogoutRequest = Base64.encode(samlLogoutRequest.getBytes());
 
-        this.servletTestManager.setSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE, fooUserId);
+        servletTestManager.setSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE, fooUserId);
 
-        PostMethod postMethod = new PostMethod(this.location);
+        PostMethod postMethod = new PostMethod(location);
         NameValuePair[] data = { new NameValuePair("SAMLRequest", encodedSamlLogoutRequest) };
         postMethod.setRequestBody(data);
 
         // operate
-        int statusCode = this.httpClient.executeMethod(postMethod);
+        int statusCode = httpClient.executeMethod(postMethod);
 
         // verify
         LOG.debug("status code: " + statusCode);
         assertEquals(HttpServletResponse.SC_MOVED_TEMPORARILY, statusCode);
         String resultTarget = postMethod.getResponseHeader("Location").getValue();
-        assertTrue(resultTarget.endsWith(this.errorPage));
+        assertTrue(resultTarget.endsWith(errorPage));
     }
 }

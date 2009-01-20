@@ -57,12 +57,12 @@ public class AuthenticationPageTest extends TestCase {
 
         WicketUtil.setUnitTesting(true);
 
-        this.jndiTestUtils = new JndiTestUtils();
-        this.jndiTestUtils.setUp();
+        jndiTestUtils = new JndiTestUtils();
+        jndiTestUtils.setUp();
 
-        this.mockPasswordDeviceService = createMock(PasswordDeviceService.class);
-        this.mockSamlAuthorityService = createMock(SamlAuthorityService.class);
-        this.mockHelpdeskManager = createMock(HelpdeskManager.class);
+        mockPasswordDeviceService = createMock(PasswordDeviceService.class);
+        mockSamlAuthorityService = createMock(SamlAuthorityService.class);
+        mockHelpdeskManager = createMock(HelpdeskManager.class);
 
         // Initialize MBean's
         JmxTestUtils jmxTestUtils = new JmxTestUtils();
@@ -90,7 +90,7 @@ public class AuthenticationPageTest extends TestCase {
             }
         });
 
-        this.wicket = new WicketTester(new PasswordTestApplication());
+        wicket = new WicketTester(new PasswordTestApplication());
 
     }
 
@@ -99,7 +99,7 @@ public class AuthenticationPageTest extends TestCase {
     public void tearDown()
             throws Exception {
 
-        this.jndiTestUtils.tearDown();
+        jndiTestUtils.tearDown();
     }
 
     @Test
@@ -113,29 +113,29 @@ public class AuthenticationPageTest extends TestCase {
         DummyNameIdentifierMappingClient.setUserId(userId);
 
         // Authentication Page: Verify.
-        AuthenticationPage authenticationPage = (AuthenticationPage) this.wicket.startPage(AuthenticationPage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID, Form.class);
+        AuthenticationPage authenticationPage = (AuthenticationPage) wicket.startPage(AuthenticationPage.class);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID, Form.class);
 
         // setup
-        EJBTestUtils.inject(authenticationPage, this.mockPasswordDeviceService);
-        EJBTestUtils.inject(authenticationPage, this.mockSamlAuthorityService);
+        EJBTestUtils.inject(authenticationPage, mockPasswordDeviceService);
+        EJBTestUtils.inject(authenticationPage, mockSamlAuthorityService);
 
         // stubs
-        expect(this.mockPasswordDeviceService.authenticate(userId, password)).andStubReturn(userId);
-        expect(this.mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
+        expect(mockPasswordDeviceService.authenticate(userId, password)).andStubReturn(userId);
+        expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
-        replay(this.mockPasswordDeviceService, this.mockSamlAuthorityService);
+        replay(mockPasswordDeviceService, mockSamlAuthorityService);
 
         // operate
-        FormTester authenticationForm = this.wicket
+        FormTester authenticationForm = wicket
                                                    .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
         authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, login);
         authenticationForm.setValue(AuthenticationPage.PASSWORD_FIELD_ID, password);
         authenticationForm.submit(AuthenticationPage.LOGIN_BUTTON_ID);
 
         // verify
-        verify(this.mockPasswordDeviceService, this.mockSamlAuthorityService);
+        verify(mockPasswordDeviceService, mockSamlAuthorityService);
     }
 
     @Test
@@ -149,32 +149,32 @@ public class AuthenticationPageTest extends TestCase {
         DummyNameIdentifierMappingClient.setUserId(userId);
 
         // Authentication Page: Verify.
-        AuthenticationPage authenticationPage = (AuthenticationPage) this.wicket.startPage(AuthenticationPage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID, Form.class);
+        AuthenticationPage authenticationPage = (AuthenticationPage) wicket.startPage(AuthenticationPage.class);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID, Form.class);
 
         // setup
-        EJBTestUtils.inject(authenticationPage, this.mockPasswordDeviceService);
-        this.jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, this.mockHelpdeskManager);
+        EJBTestUtils.inject(authenticationPage, mockPasswordDeviceService);
+        jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
 
         // stubs
-        expect(this.mockPasswordDeviceService.authenticate(userId, password)).andThrow(new SubjectNotFoundException());
-        expect(this.mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
+        expect(mockPasswordDeviceService.authenticate(userId, password)).andThrow(new SubjectNotFoundException());
+        expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
-        replay(this.mockPasswordDeviceService, this.mockHelpdeskManager);
+        replay(mockPasswordDeviceService, mockHelpdeskManager);
 
         // RegisterPage: Register digipass for user
-        FormTester authenticationForm = this.wicket
+        FormTester authenticationForm = wicket
                                                    .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
         authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, login);
         authenticationForm.setValue(AuthenticationPage.PASSWORD_FIELD_ID, password);
         authenticationForm.submit(AuthenticationPage.LOGIN_BUTTON_ID);
 
         // verify
-        verify(this.mockPasswordDeviceService, this.mockHelpdeskManager);
+        verify(mockPasswordDeviceService, mockHelpdeskManager);
 
-        this.wicket.assertRenderedPage(AuthenticationPage.class);
-        this.wicket.assertErrorMessages(new String[] { "authenticationFailedMsg" });
+        wicket.assertRenderedPage(AuthenticationPage.class);
+        wicket.assertErrorMessages(new String[] { "authenticationFailedMsg" });
 
     }
 
@@ -189,32 +189,32 @@ public class AuthenticationPageTest extends TestCase {
         DummyNameIdentifierMappingClient.setUserId(userId);
 
         // Authentication Page: Verify.
-        AuthenticationPage authenticationPage = (AuthenticationPage) this.wicket.startPage(AuthenticationPage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID, Form.class);
+        AuthenticationPage authenticationPage = (AuthenticationPage) wicket.startPage(AuthenticationPage.class);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID, Form.class);
 
         // setup
-        EJBTestUtils.inject(authenticationPage, this.mockPasswordDeviceService);
-        this.jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, this.mockHelpdeskManager);
+        EJBTestUtils.inject(authenticationPage, mockPasswordDeviceService);
+        jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
 
         // stubs
-        expect(this.mockPasswordDeviceService.authenticate(userId, password)).andThrow(new DeviceDisabledException());
-        expect(this.mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
+        expect(mockPasswordDeviceService.authenticate(userId, password)).andThrow(new DeviceDisabledException());
+        expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
-        replay(this.mockPasswordDeviceService, this.mockHelpdeskManager);
+        replay(mockPasswordDeviceService, mockHelpdeskManager);
 
         // operate
-        FormTester authenticationForm = this.wicket
+        FormTester authenticationForm = wicket
                                                    .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
         authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, login);
         authenticationForm.setValue(AuthenticationPage.PASSWORD_FIELD_ID, password);
         authenticationForm.submit(AuthenticationPage.LOGIN_BUTTON_ID);
 
         // verify
-        verify(this.mockPasswordDeviceService, this.mockHelpdeskManager);
+        verify(mockPasswordDeviceService, mockHelpdeskManager);
 
-        this.wicket.assertRenderedPage(AuthenticationPage.class);
-        this.wicket.assertErrorMessages(new String[] { "errorDeviceDisabled" });
+        wicket.assertRenderedPage(AuthenticationPage.class);
+        wicket.assertErrorMessages(new String[] { "errorDeviceDisabled" });
 
     }
 
@@ -229,32 +229,32 @@ public class AuthenticationPageTest extends TestCase {
         DummyNameIdentifierMappingClient.setUserId(userId);
 
         // Authentication Page: Verify.
-        AuthenticationPage authenticationPage = (AuthenticationPage) this.wicket.startPage(AuthenticationPage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID, Form.class);
+        AuthenticationPage authenticationPage = (AuthenticationPage) wicket.startPage(AuthenticationPage.class);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID, Form.class);
 
         // setup
-        EJBTestUtils.inject(authenticationPage, this.mockPasswordDeviceService);
-        this.jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, this.mockHelpdeskManager);
+        EJBTestUtils.inject(authenticationPage, mockPasswordDeviceService);
+        jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
 
         // stubs
-        expect(this.mockPasswordDeviceService.authenticate(userId, password)).andStubReturn(null);
-        expect(this.mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
+        expect(mockPasswordDeviceService.authenticate(userId, password)).andStubReturn(null);
+        expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
-        replay(this.mockPasswordDeviceService, this.mockHelpdeskManager);
+        replay(mockPasswordDeviceService, mockHelpdeskManager);
 
         // operate
-        FormTester authenticationForm = this.wicket
+        FormTester authenticationForm = wicket
                                                    .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
         authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, login);
         authenticationForm.setValue(AuthenticationPage.PASSWORD_FIELD_ID, password);
         authenticationForm.submit(AuthenticationPage.LOGIN_BUTTON_ID);
 
         // verify
-        verify(this.mockPasswordDeviceService, this.mockHelpdeskManager);
+        verify(mockPasswordDeviceService, mockHelpdeskManager);
 
-        this.wicket.assertRenderedPage(AuthenticationPage.class);
-        this.wicket.assertErrorMessages(new String[] { "authenticationFailedMsg" });
+        wicket.assertRenderedPage(AuthenticationPage.class);
+        wicket.assertErrorMessages(new String[] { "authenticationFailedMsg" });
 
     }
 }

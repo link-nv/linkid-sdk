@@ -90,13 +90,13 @@ public class TimeoutFilter extends AbstractInjectionFilter {
             HttpSession session = httpRequest.getSession();
             String applicationId = LoginManager.findApplication(session);
             if (null != applicationId) {
-                setCookie(SafeOnlineCookies.APPLICATION_COOKIE, applicationId, this.cookiePath, httpResponse);
+                setCookie(SafeOnlineCookies.APPLICATION_COOKIE, applicationId, cookiePath, httpResponse);
             }
             /*
              * Remove the possible timeout cookie, add entry cookie to prevent timing out again on first entry after a previous timeout.
              */
-            removeCookie(SafeOnlineCookies.TIMEOUT_COOKIE, this.cookiePath, httpRequest, httpResponse);
-            addCookie(SafeOnlineCookies.ENTRY_COOKIE, "", this.cookiePath, httpRequest, httpResponse);
+            removeCookie(SafeOnlineCookies.TIMEOUT_COOKIE, cookiePath, httpRequest, httpResponse);
+            addCookie(SafeOnlineCookies.ENTRY_COOKIE, "", cookiePath, httpRequest, httpResponse);
             timeoutResponseWrapper.commit();
             return;
         }
@@ -115,10 +115,10 @@ public class TimeoutFilter extends AbstractInjectionFilter {
          * infinite timeout redirect loop, and remove the entry cookie.
          */
         if (hasCookie(SafeOnlineCookies.ENTRY_COOKIE, httpRequest)) {
-            LOG.debug("forwarding to timeout path: " + this.timeoutPath);
-            addCookie(SafeOnlineCookies.TIMEOUT_COOKIE, "", this.cookiePath, httpRequest, httpResponse);
-            removeCookie(SafeOnlineCookies.ENTRY_COOKIE, this.cookiePath, httpRequest, httpResponse);
-            httpResponse.sendRedirect(this.timeoutPath);
+            LOG.debug("forwarding to timeout path: " + timeoutPath);
+            addCookie(SafeOnlineCookies.TIMEOUT_COOKIE, "", cookiePath, httpRequest, httpResponse);
+            removeCookie(SafeOnlineCookies.ENTRY_COOKIE, cookiePath, httpRequest, httpResponse);
+            httpResponse.sendRedirect(timeoutPath);
             return;
         }
 

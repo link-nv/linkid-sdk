@@ -56,7 +56,7 @@ public class BeIdDeviceServiceBean implements BeIdDeviceService, BeIdDeviceServi
             DeviceDisabledException {
 
         LOG.debug("authenticate: sessionId=" + sessionId + " applicaitonId=" + applicationId);
-        return this.credentialManager.authenticate(sessionId, applicationId, authenticationStatement);
+        return credentialManager.authenticate(sessionId, applicationId, authenticationStatement);
     }
 
     public void register(String sessionId, String userId, String operation, byte[] identityStatementData)
@@ -65,7 +65,7 @@ public class BeIdDeviceServiceBean implements BeIdDeviceService, BeIdDeviceServi
             PkiExpiredException, PkiNotYetValidException, PkiInvalidException {
 
         LOG.debug("register: sessionId=" + sessionId + " userId=" + userId + " operation=" + operation);
-        this.credentialManager.mergeIdentityStatement(sessionId, userId, operation, identityStatementData);
+        credentialManager.mergeIdentityStatement(sessionId, userId, operation, identityStatementData);
     }
 
     public void enable(String sessionId, String userId, String operation, byte[] identityStatementData)
@@ -74,14 +74,14 @@ public class BeIdDeviceServiceBean implements BeIdDeviceService, BeIdDeviceServi
             PkiNotYetValidException, PkiInvalidException, AttributeNotFoundException, DeviceRegistrationNotFoundException {
 
         LOG.debug("enable: sessionId=" + sessionId + " userId=" + userId + " operation=" + operation);
-        this.credentialManager.enable(sessionId, userId, operation, identityStatementData);
+        credentialManager.enable(sessionId, userId, operation, identityStatementData);
     }
 
     public void disable(String userId, String attribute)
             throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException {
 
         LOG.debug("disable: userId=" + userId + " attribute=" + attribute);
-        this.beIdPkiProvider.disable(userId, attribute);
+        beIdPkiProvider.disable(userId, attribute);
     }
 
     public void remove(String userId, String attribute)
@@ -89,7 +89,7 @@ public class BeIdDeviceServiceBean implements BeIdDeviceService, BeIdDeviceServi
             AttributeNotFoundException {
 
         LOG.debug("remove: userId=" + userId + " attribute=" + attribute);
-        this.beIdPkiProvider.remove(userId, attribute);
+        beIdPkiProvider.remove(userId, attribute);
 
     }
 

@@ -41,19 +41,19 @@ public class HelpdeskEventDAOBean implements HelpdeskEventDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, HelpdeskEventEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, HelpdeskEventEntity.QueryInterface.class);
     }
 
     public void persist(List<HelpdeskEventEntity> helpdeskEvents) {
 
         for (HelpdeskEventEntity event : helpdeskEvents) {
-            this.entityManager.persist(event);
+            entityManager.persist(event);
         }
     }
 
     public List<HelpdeskEventEntity> listEvents(Long contextId) {
 
-        return this.queryObject.listLogs(contextId);
+        return queryObject.listLogs(contextId);
     }
 
     public void clearEvents(long ageInMinutes, LogLevelType logLevel) {
@@ -61,21 +61,21 @@ public class HelpdeskEventDAOBean implements HelpdeskEventDAO {
         Date ageLimit = new Date(System.currentTimeMillis() - ageInMinutes * 60 * 1000);
 
         LOG.debug("clearing helpdesk " + logLevel.toString() + " events older than: " + ageLimit);
-        this.queryObject.deleteEvents(ageLimit, logLevel);
+        queryObject.deleteEvents(ageLimit, logLevel);
     }
 
     public void removeEvents(Long logId) {
 
-        this.queryObject.deleteEvents(logId);
+        queryObject.deleteEvents(logId);
     }
 
     public List<HelpdeskContextEntity> listUserContexts(String user) {
 
-        return this.queryObject.listUserContexts(user);
+        return queryObject.listUserContexts(user);
     }
 
     public List<String> listUsers() {
 
-        return this.queryObject.listUsers();
+        return queryObject.listUsers();
     }
 }

@@ -25,7 +25,7 @@ public class DeviceEntry {
 
     public DeviceEntity getDevice() {
 
-        return this.device;
+        return device;
     }
 
     public void setDevice(DeviceEntity device) {
@@ -35,7 +35,7 @@ public class DeviceEntry {
 
     public String getFriendlyName() {
 
-        return this.friendlyName;
+        return friendlyName;
     }
 
     public void setFriendlyName(String friendlyName) {

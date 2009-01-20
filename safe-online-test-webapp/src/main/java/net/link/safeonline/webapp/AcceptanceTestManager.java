@@ -14,10 +14,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.server.SeleniumServer;
 
-import com.thoughtworks.selenium.DefaultSelenium;
-import com.thoughtworks.selenium.Selenium;
-import com.thoughtworks.selenium.SeleniumLogLevels;
-
 
 /**
  * Acceptance test manager based on the Selenium testing framework.
@@ -47,47 +43,47 @@ public class AcceptanceTestManager {
     public void setUp()
             throws Exception {
 
-        this.seleniumServer = new SeleniumServer(SELENIUM_SERVER_PORT);
-        this.seleniumServer.start();
+        seleniumServer = new SeleniumServer(SELENIUM_SERVER_PORT);
+        seleniumServer.start();
         Properties properties = new Properties();
         InputStream propConfigInputStream = AcceptanceTestManager.class.getResourceAsStream("/test-accept-config.properties");
         properties.load(propConfigInputStream);
-        this.safeOnlineLocation = "http://" + properties.getProperty("safeonline.location");
-        LOG.debug("SafeOnline location: " + this.safeOnlineLocation);
-        this.selenium = new DefaultSelenium("localhost", SELENIUM_SERVER_PORT, "*firefox", this.safeOnlineLocation);
-        this.selenium.start();
+        safeOnlineLocation = "http://" + properties.getProperty("safeonline.location");
+        LOG.debug("SafeOnline location: " + safeOnlineLocation);
+        selenium = new DefaultSelenium("localhost", SELENIUM_SERVER_PORT, "*firefox", safeOnlineLocation);
+        selenium.start();
 
-        Page.setSelenium(this.selenium);
+        Page.setSelenium(selenium);
         Page.setAcceptanceManager(this);
     }
 
     public void tearDown()
             throws Exception {
 
-        this.selenium.stop();
-        this.seleniumServer.stop();
+        selenium.stop();
+        seleniumServer.stop();
     }
 
     public void setContext(String context) {
 
-        this.selenium.setContext(context);
-        this.selenium.setBrowserLogLevel(SeleniumLogLevels.INFO);
+        selenium.setContext(context);
+        selenium.setBrowserLogLevel(SeleniumLogLevels.INFO);
     }
 
     public Selenium getSelenium() {
 
-        if (null == this.selenium)
+        if (null == selenium)
             throw new IllegalStateException("call setUp first");
-        return this.selenium;
+        return selenium;
     }
 
     public String getSafeOnlineLocation() {
 
-        return this.safeOnlineLocation;
+        return safeOnlineLocation;
     }
 
     public String getLocation() {
 
-        return this.selenium.getLocation();
+        return selenium.getLocation();
     }
 }

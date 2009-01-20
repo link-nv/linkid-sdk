@@ -17,16 +17,16 @@ public class OlasAttributeServiceFactory implements ServiceFactory {
     public Object getService(Bundle bundle, ServiceRegistration registration) {
 
         LOG.debug("Create object of OlasAttributeService for " + bundle.getSymbolicName());
-        this.usageCounter++;
-        LOG.debug("Number of bundles using service " + this.usageCounter);
+        usageCounter++;
+        LOG.debug("Number of bundles using service " + usageCounter);
         return new OlasAttributeServiceImpl();
     }
 
     public void ungetService(Bundle bundle, ServiceRegistration registration, Object service) {
 
         LOG.debug("Release object of OlasAttributeService for " + bundle.getSymbolicName());
-        this.usageCounter--;
-        LOG.debug("Number of bundles using service " + this.usageCounter);
+        usageCounter--;
+        LOG.debug("Number of bundles using service " + usageCounter);
     }
 
 }

@@ -37,37 +37,37 @@ public class PublicApplication {
 
     public PublicApplication(ApplicationEntity application) {
 
-        this.friendly = application.getFriendlyName();
-        this.name = application.getName();
+        friendly = application.getFriendlyName();
+        name = application.getName();
 
-        this.logo = application.getApplicationLogo();
+        logo = application.getApplicationLogo();
 
-        this.description = application.getDescription();
-        this.url = application.getApplicationUrl();
+        description = application.getDescription();
+        url = application.getApplicationUrl();
     }
 
     public byte[] getLogo() {
 
-        return this.logo;
+        return logo;
     }
 
     public URL getUrl() {
 
-        return this.url;
+        return url;
     }
 
     public String getFriendly() {
 
-        return this.friendly;
+        return friendly;
     }
 
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     public String getDescription() {
 
-        return this.description;
+        return description;
     }
 }

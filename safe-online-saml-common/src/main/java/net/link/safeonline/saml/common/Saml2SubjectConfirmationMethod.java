@@ -37,7 +37,7 @@ public enum Saml2SubjectConfirmationMethod {
 
     public String getMethodURI() {
 
-        return this.methodURI;
+        return methodURI;
     }
 
 }

@@ -47,19 +47,19 @@ public class Attribute {
 
     public Attribute(AttributeType attributeType) {
 
-        this.name = attributeType.getName();
-        this.friendlyName = attributeType.getFriendlyName();
-        this.dataType = DataType.getDataType(attributeType.getOtherAttributes().get(WebServiceConstants.DATATYPE_ATTRIBUTE));
-        this.anonymous = !Boolean.valueOf(attributeType.getOtherAttributes().get(WebServiceConstants.DATAMINING_ATTRIBUTE));
-        this.optional = Boolean.valueOf(attributeType.getOtherAttributes().get(WebServiceConstants.OPTIONAL_ATTRIBUTE));
+        name = attributeType.getName();
+        friendlyName = attributeType.getFriendlyName();
+        dataType = DataType.getDataType(attributeType.getOtherAttributes().get(WebServiceConstants.DATATYPE_ATTRIBUTE));
+        anonymous = !Boolean.valueOf(attributeType.getOtherAttributes().get(WebServiceConstants.DATAMINING_ATTRIBUTE));
+        optional = Boolean.valueOf(attributeType.getOtherAttributes().get(WebServiceConstants.OPTIONAL_ATTRIBUTE));
 
         if (null == attributeType.getAttributeValue() || attributeType.getAttributeValue().isEmpty()) {
-            this.members = null;
+            members = null;
         } else {
-            this.members = new LinkedList<Attribute>();
+            members = new LinkedList<Attribute>();
             for (Object memberAttribute : attributeType.getAttributeValue()) {
                 AttributeType memberAttributeType = (AttributeType) memberAttribute;
-                this.members.add(new Attribute(memberAttributeType));
+                members.add(new Attribute(memberAttributeType));
             }
         }
 
@@ -70,7 +70,7 @@ public class Attribute {
      */
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     /**
@@ -80,7 +80,7 @@ public class Attribute {
      */
     public String getFriendlyName() {
 
-        return this.friendlyName;
+        return friendlyName;
     }
 
     /**
@@ -88,7 +88,7 @@ public class Attribute {
      */
     public DataType getDataType() {
 
-        return this.dataType;
+        return dataType;
     }
 
     /**
@@ -96,7 +96,7 @@ public class Attribute {
      */
     public List<Attribute> getMembers() {
 
-        return this.members;
+        return members;
     }
 
     /**
@@ -104,7 +104,7 @@ public class Attribute {
      */
     public boolean isCompounded() {
 
-        return this.dataType.equals(DataType.COMPOUNDED);
+        return dataType.equals(DataType.COMPOUNDED);
     }
 
     /**
@@ -112,7 +112,7 @@ public class Attribute {
      */
     public boolean isAnonymous() {
 
-        return this.anonymous;
+        return anonymous;
     }
 
     /**
@@ -120,7 +120,7 @@ public class Attribute {
      */
     public boolean isOptional() {
 
-        return this.optional;
+        return optional;
     }
 
     /**
@@ -129,37 +129,37 @@ public class Attribute {
      */
     public void setValue(Object value) {
 
-        if (this.dataType == DataType.COMPOUNDED)
+        if (dataType == DataType.COMPOUNDED)
             throw new RuntimeException("Compound attributes do not have a value.");
 
-        if (this.dataType == DataType.STRING && !(value instanceof String) || this.dataType == DataType.BOOLEAN
-                && !(value instanceof Boolean) || this.dataType == DataType.DATE && !(value instanceof Date)
-                || this.dataType == DataType.DOUBLE && !(value instanceof Double) || this.dataType == DataType.INTEGER
+        if (dataType == DataType.STRING && !(value instanceof String) || dataType == DataType.BOOLEAN
+                && !(value instanceof Boolean) || dataType == DataType.DATE && !(value instanceof Date)
+                || dataType == DataType.DOUBLE && !(value instanceof Double) || dataType == DataType.INTEGER
                 && !(value instanceof Integer))
-            throw new RuntimeException("Invalid value for datatype " + this.dataType.toString());
+            throw new RuntimeException("Invalid value for datatype " + dataType.toString());
 
         this.value = value;
     }
 
     public Object getValue() {
 
-        return this.value;
+        return value;
     }
 
     public AttributeType getAttributeType() {
 
         AttributeType attributeType = new AttributeType();
         attributeType.setNameFormat(WebServiceConstants.SAML_ATTRIB_NAME_FORMAT_BASIC);
-        attributeType.setName(this.name);
-        attributeType.setFriendlyName(this.friendlyName);
-        if (this.dataType == DataType.COMPOUNDED) {
-            for (Attribute memberAttribute : this.members) {
+        attributeType.setName(name);
+        attributeType.setFriendlyName(friendlyName);
+        if (dataType == DataType.COMPOUNDED) {
+            for (Attribute memberAttribute : members) {
                 attributeType.getAttributeValue().add(memberAttribute.getAttributeType());
             }
         } else {
-            attributeType.getAttributeValue().add(this.value);
+            attributeType.getAttributeValue().add(value);
         }
-        attributeType.getOtherAttributes().put(WebServiceConstants.DATATYPE_ATTRIBUTE, this.dataType.getValue());
+        attributeType.getOtherAttributes().put(WebServiceConstants.DATATYPE_ATTRIBUTE, dataType.getValue());
         return attributeType;
 
     }

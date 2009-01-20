@@ -30,7 +30,7 @@ public class ProtocolException extends Exception {
     public ProtocolException(String message) {
 
         super(message);
-        this.protocolName = "unknown";
+        protocolName = "unknown";
     }
 
     /**
@@ -49,6 +49,6 @@ public class ProtocolException extends Exception {
      */
     public String getProtocolName() {
 
-        return this.protocolName;
+        return protocolName;
     }
 }

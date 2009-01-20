@@ -36,18 +36,18 @@ public class ApplicationsBean implements Applications {
     public ApplicationEntity getApplication(String applicationName)
             throws ApplicationNotFoundException {
 
-        return this.applicationDAO.getApplication(applicationName);
+        return applicationDAO.getApplication(applicationName);
     }
 
     public List<ApplicationEntity> listApplications() {
 
-        List<ApplicationEntity> applications = this.applicationDAO.listApplications();
+        List<ApplicationEntity> applications = applicationDAO.listApplications();
         return applications;
     }
 
     public List<ApplicationEntity> listUserApplications() {
 
-        List<ApplicationEntity> applications = this.applicationDAO.listUserApplications();
+        List<ApplicationEntity> applications = applicationDAO.listUserApplications();
         return applications;
     }
 
@@ -57,7 +57,7 @@ public class ApplicationsBean implements Applications {
         LOG.debug("get current application identity: " + application.getName());
 
         long currentIdentityVersion = application.getCurrentApplicationIdentity();
-        ApplicationIdentityEntity applicationIdentity = this.applicationIdentityDAO.getApplicationIdentity(application,
+        ApplicationIdentityEntity applicationIdentity = applicationIdentityDAO.getApplicationIdentity(application,
                 currentIdentityVersion);
         Set<ApplicationIdentityAttributeEntity> attributes = applicationIdentity.getAttributes();
         for (ApplicationIdentityAttributeEntity attribute : attributes) {

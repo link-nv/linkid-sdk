@@ -69,60 +69,58 @@ public abstract class AbstractTicketDataClientBean implements AbstractTicketData
     @PostConstruct
     public void postConstructCallback() {
 
-        this.log.debug("postConstruct");
+        log.debug("postConstruct");
         FacesContext context = FacesContext.getCurrentInstance();
         ExternalContext externalContext = context.getExternalContext();
-        this.demoHostName = externalContext.getInitParameter("DemoHostName");
-        this.demoHostPort = externalContext.getInitParameter("DemoHostPort");
-        this.wsLocation = externalContext.getInitParameter("WsLocation");
+        demoHostName = externalContext.getInitParameter("DemoHostName");
+        demoHostPort = externalContext.getInitParameter("DemoHostPort");
+        wsLocation = externalContext.getInitParameter("WsLocation");
         PrivateKeyEntry privateKeyEntry = DemoTicketKeyStoreUtils.getPrivateKeyEntry();
-        this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
-        this.privateKey = privateKeyEntry.getPrivateKey();
+        certificate = (X509Certificate) privateKeyEntry.getCertificate();
+        privateKey = privateKeyEntry.getPrivateKey();
         postActivateCallback();
     }
 
     @PostActivate
     public void postActivateCallback() {
 
-        this.log.debug("postActivate");
-        this.dataClient = new DataClientImpl(this.wsLocation, this.certificate, this.privateKey);
-        this.attributeClient = new AttributeClientImpl(this.wsLocation, this.certificate, this.privateKey);
+        log.debug("postActivate");
+        dataClient = new DataClientImpl(wsLocation, certificate, privateKey);
+        attributeClient = new AttributeClientImpl(wsLocation, certificate, privateKey);
     }
 
     @PrePassivate
     public void prePassivateCallback() {
 
-        this.log.debug("prePassivate");
-        this.dataClient = null;
-        this.attributeClient = null;
+        log.debug("prePassivate");
+        dataClient = null;
+        attributeClient = null;
     }
 
     @Remove
     @Destroy
     public void destroyCallback() {
 
-        this.log.debug("destroy");
-        this.dataClient = null;
-        this.attributeClient = null;
-        this.wsLocation = null;
-        this.certificate = null;
-        this.privateKey = null;
+        log.debug("destroy");
+        dataClient = null;
+        attributeClient = null;
+        wsLocation = null;
+        certificate = null;
+        privateKey = null;
     }
 
     protected DataClient getDataClient() {
 
-        if (null == this.dataClient) {
+        if (null == dataClient)
             throw new EJBException("data client not yet initialized");
-        }
-        return this.dataClient;
+        return dataClient;
     }
 
     protected AttributeClient getAttributeClient() {
 
-        if (null == this.attributeClient) {
+        if (null == attributeClient)
             throw new EJBException("attribute client not yet initialized");
-        }
-        return this.attributeClient;
+        return attributeClient;
     }
 
     /**
@@ -137,20 +135,20 @@ public abstract class AbstractTicketDataClientBean implements AbstractTicketData
         try {
             username = tempAttributeClient.getAttributeValue(userId, DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, String.class);
         } catch (WSClientTransportException e) {
-            this.facesMessages.add("connection error: " + e.getMessage());
+            facesMessages.add("connection error: " + e.getMessage());
             return null;
         } catch (RequestDeniedException e) {
-            this.facesMessages.add("request denied");
+            facesMessages.add("request denied");
             return null;
         } catch (AttributeNotFoundException e) {
-            this.facesMessages.add("login attribute not found");
+            facesMessages.add("login attribute not found");
             return null;
         } catch (AttributeUnavailableException e) {
-            this.facesMessages.add("login attribute unavailable");
+            facesMessages.add("login attribute unavailable");
             return null;
         }
 
-        this.log.debug("username = " + username);
+        log.debug("username = " + username);
         return username;
     }
 }

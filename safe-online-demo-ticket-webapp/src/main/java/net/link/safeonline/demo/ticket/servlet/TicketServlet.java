@@ -43,7 +43,7 @@ public class TicketServlet extends HttpServlet {
 
         super.init(config);
         LOG.debug("init");
-        this.ticketService = getTicketService();
+        ticketService = getTicketService();
     }
 
     private TicketService getTicketService() {
@@ -74,7 +74,7 @@ public class TicketServlet extends HttpServlet {
             return;
         }
 
-        boolean result = this.ticketService.hasValidPass(nrn, from, to);
+        boolean result = ticketService.hasValidPass(nrn, from, to);
 
         if (false == result) {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "User has no valid pass.");

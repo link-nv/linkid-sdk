@@ -46,6 +46,6 @@ public class PublicSubscriptionServiceBean implements PublicSubscriptionService 
     public boolean isSubscribed(SubjectEntity subject, ApplicationEntity application)
             throws SubscriptionNotFoundException {
 
-        return null != this.subscriptionDAO.findSubscription(subject, application);
+        return null != subscriptionDAO.findSubscription(subject, application);
     }
 }

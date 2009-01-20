@@ -77,18 +77,18 @@ public class PrescriptionPatientBean implements PrescriptionPatient {
     @Factory(PATIENT_PRESCRIPTIONS)
     public void patientPrescriptionsFactory() {
 
-        Principal patientPrincipal = this.sessionContext.getCallerPrincipal();
+        Principal patientPrincipal = sessionContext.getCallerPrincipal();
         String patient = patientPrincipal.getName();
-        Query query = this.entityManager.createQuery("SELECT prescription FROM PrescriptionEntity AS prescription "
+        Query query = entityManager.createQuery("SELECT prescription FROM PrescriptionEntity AS prescription "
                 + "WHERE prescription.patient = :patient");
         query.setParameter("patient", patient);
-        this.prescriptions = query.getResultList();
+        prescriptions = query.getResultList();
     }
 
     @RolesAllowed(PrescriptionConstants.PATIENT_ROLE)
     public String view() {
 
-        this.log.debug("view: #0", this.selectedPrescription.getId());
+        log.debug("view: #0", selectedPrescription.getId());
         return "view";
     }
 }

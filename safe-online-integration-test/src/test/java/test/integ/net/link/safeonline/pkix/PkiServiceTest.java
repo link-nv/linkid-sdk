@@ -40,110 +40,111 @@ import test.integ.net.link.safeonline.IntegrationTestUtils;
  */
 public class PkiServiceTest extends TestCase {
 
-	private static final Log LOG = LogFactory.getLog(PkiServiceTest.class);
+    private static final Log LOG = LogFactory.getLog(PkiServiceTest.class);
 
-	private InitialContext initialContext;
+    private InitialContext   initialContext;
 
-	private PkiService pkiService;
+    private PkiService       pkiService;
 
-	private SubjectService subjectService;
+    private SubjectService   subjectService;
 
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
 
-		this.initialContext = IntegrationTestUtils.getInitialContext();
-		IntegrationTestUtils.setupLoginConfig();
-		this.pkiService = getPkiService(this.initialContext);
-		this.subjectService = getSubjectService(this.initialContext);
-	}
+    @Override
+    protected void setUp()
+            throws Exception {
 
-	public void testTrustDomain() throws Exception {
-		// setup
-		String trustDomainName = UUID.randomUUID().toString();
-		SubjectEntity adminSubject = this.subjectService
-				.findSubjectFromUserName("admin");
+        super.setUp();
 
-		// operate
-		IntegrationTestUtils.login(adminSubject.getUserId(), "admin");
-		List<TrustDomainEntity> trustDomains = this.pkiService
-				.listTrustDomains();
-		int origSize = trustDomains.size();
-		LOG.debug("number of trust domains: " + origSize);
-		this.pkiService.addTrustDomain(trustDomainName, true);
-		trustDomains = this.pkiService.listTrustDomains();
-		assertEquals(origSize + 1, trustDomains.size());
-		boolean containsAddedTrustDomain = false;
-		for (TrustDomainEntity trustDomain : trustDomains) {
-			LOG.debug(trustDomain.toString());
-			if (trustDomainName.equals(trustDomain.getName())) {
-				containsAddedTrustDomain = true;
-			}
-		}
-		assertTrue(containsAddedTrustDomain);
+        initialContext = IntegrationTestUtils.getInitialContext();
+        IntegrationTestUtils.setupLoginConfig();
+        pkiService = getPkiService(initialContext);
+        subjectService = getSubjectService(initialContext);
+    }
 
-		// operate: adding twice does not work
-		try {
-			this.pkiService.addTrustDomain(trustDomainName, true);
-			fail();
-		} catch (Exception e) {
-			// expected
-			LOG.debug("expected exception type: " + e.getClass().getName());
-		}
+    public void testTrustDomain()
+            throws Exception {
 
-		// operate: remove trust domain
-		this.pkiService.removeTrustDomain(trustDomainName);
+        // setup
+        String trustDomainName = UUID.randomUUID().toString();
+        SubjectEntity adminSubject = subjectService.findSubjectFromUserName("admin");
 
-		// verify
-		trustDomains = this.pkiService.listTrustDomains();
-		containsAddedTrustDomain = false;
-		for (TrustDomainEntity trustDomain : trustDomains) {
-			LOG.debug(trustDomain.toString());
-			if (trustDomainName.equals(trustDomain.getName())) {
-				containsAddedTrustDomain = true;
-			}
-		}
-		assertFalse(containsAddedTrustDomain);
+        // operate
+        IntegrationTestUtils.login(adminSubject.getUserId(), "admin");
+        List<TrustDomainEntity> trustDomains = pkiService.listTrustDomains();
+        int origSize = trustDomains.size();
+        LOG.debug("number of trust domains: " + origSize);
+        pkiService.addTrustDomain(trustDomainName, true);
+        trustDomains = pkiService.listTrustDomains();
+        assertEquals(origSize + 1, trustDomains.size());
+        boolean containsAddedTrustDomain = false;
+        for (TrustDomainEntity trustDomain : trustDomains) {
+            LOG.debug(trustDomain.toString());
+            if (trustDomainName.equals(trustDomain.getName())) {
+                containsAddedTrustDomain = true;
+            }
+        }
+        assertTrue(containsAddedTrustDomain);
 
-		// operate & verify: removing twice does not work
-		try {
-			this.pkiService.removeTrustDomain(trustDomainName);
-			fail();
-		} catch (TrustDomainNotFoundException e) {
-			// expected
-		}
-	}
+        // operate: adding twice does not work
+        try {
+            pkiService.addTrustDomain(trustDomainName, true);
+            fail();
+        } catch (Exception e) {
+            // expected
+            LOG.debug("expected exception type: " + e.getClass().getName());
+        }
 
-	public void testTrustPoint() throws Exception {
-		// setup
-		String trustDomainName = "domain-" + UUID.randomUUID().toString();
-		KeyPair keyPair = PkiTestUtils.generateKeyPair();
-		String dn = "CN=Test";
-		X509Certificate certificate = PkiTestUtils
-				.generateSelfSignedCertificate(keyPair, dn);
-		SubjectEntity adminSubject = this.subjectService
-				.findSubjectFromUserName("admin");
+        // operate: remove trust domain
+        pkiService.removeTrustDomain(trustDomainName);
 
-		// operate: add trust domain
-		IntegrationTestUtils.login(adminSubject.getUserId(), "admin");
-		this.pkiService.addTrustDomain(trustDomainName, true);
+        // verify
+        trustDomains = pkiService.listTrustDomains();
+        containsAddedTrustDomain = false;
+        for (TrustDomainEntity trustDomain : trustDomains) {
+            LOG.debug(trustDomain.toString());
+            if (trustDomainName.equals(trustDomain.getName())) {
+                containsAddedTrustDomain = true;
+            }
+        }
+        assertFalse(containsAddedTrustDomain);
 
-		// operate: add trust point
-		this.pkiService
-				.addTrustPoint(trustDomainName, certificate.getEncoded());
+        // operate & verify: removing twice does not work
+        try {
+            pkiService.removeTrustDomain(trustDomainName);
+            fail();
+        } catch (TrustDomainNotFoundException e) {
+            // expected
+        }
+    }
 
-		// operate: get trust points
-		List<TrustPointEntity> trustPoints = this.pkiService
-				.listTrustPoints(trustDomainName);
+    public void testTrustPoint()
+            throws Exception {
 
-		// verify
-		assertEquals(1, trustPoints.size());
-		assertEquals(certificate, trustPoints.get(0).getCertificate());
+        // setup
+        String trustDomainName = "domain-" + UUID.randomUUID().toString();
+        KeyPair keyPair = PkiTestUtils.generateKeyPair();
+        String dn = "CN=Test";
+        X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, dn);
+        SubjectEntity adminSubject = subjectService.findSubjectFromUserName("admin");
 
-		// operate: remove trust point
-		this.pkiService.removeTrustPoint(trustPoints.get(0));
+        // operate: add trust domain
+        IntegrationTestUtils.login(adminSubject.getUserId(), "admin");
+        pkiService.addTrustDomain(trustDomainName, true);
 
-		// operate: remove trust domain
-		this.pkiService.removeTrustDomain(trustDomainName);
-	}
+        // operate: add trust point
+        pkiService.addTrustPoint(trustDomainName, certificate.getEncoded());
+
+        // operate: get trust points
+        List<TrustPointEntity> trustPoints = pkiService.listTrustPoints(trustDomainName);
+
+        // verify
+        assertEquals(1, trustPoints.size());
+        assertEquals(certificate, trustPoints.get(0).getCertificate());
+
+        // operate: remove trust point
+        pkiService.removeTrustPoint(trustPoints.get(0));
+
+        // operate: remove trust domain
+        pkiService.removeTrustDomain(trustDomainName);
+    }
 }

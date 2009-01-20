@@ -86,9 +86,9 @@ public class RemovePage extends TemplatePage {
 
             super(id);
 
-            final TextField<String> loginField = new TextField<String>(LOGIN_FIELD_ID, this.login = new Model<String>());
+            final TextField<String> loginField = new TextField<String>(LOGIN_FIELD_ID, login = new Model<String>());
             loginField.setRequired(true);
-            loginField.setEnabled(RemovePage.this.encapAttributes.isEmpty());
+            loginField.setEnabled(encapAttributes.isEmpty());
 
             add(loginField);
             add(new ErrorComponentFeedbackLabel("login_feedback", loginField));
@@ -101,14 +101,14 @@ public class RemovePage extends TemplatePage {
                 @Override
                 public boolean isVisible() {
 
-                    return RemovePage.this.encapAttributes.isEmpty();
+                    return encapAttributes.isEmpty();
                 }
 
                 @Override
                 public void onSubmit() {
 
                     try {
-                        RemovePage.this.encapAttributes = RemovePage.this.encapDeviceService.getMobiles(getUserId(), getLocale());
+                        encapAttributes = encapDeviceService.getMobiles(getUserId(), getLocale());
                     } catch (SubjectNotFoundException e) {
                         LOG.debug("subject not found");
                         loginField.error(getLocalizer().getString("errorSubjectNotFound", this));
@@ -123,7 +123,7 @@ public class RemovePage extends TemplatePage {
                         return;
                     }
 
-                    if (RemovePage.this.encapAttributes.isEmpty()) {
+                    if (encapAttributes.isEmpty()) {
                         LOG.debug("no encapes found");
                         GetForm.this.error(getLocalizer().getString("errorNoDeviceRegistrationsFound", this));
                         return;
@@ -140,7 +140,7 @@ public class RemovePage extends TemplatePage {
                 @Override
                 public boolean isVisible() {
 
-                    return RemovePage.this.encapAttributes.isEmpty();
+                    return encapAttributes.isEmpty();
                 }
 
                 @Override
@@ -166,9 +166,9 @@ public class RemovePage extends TemplatePage {
 
             String userId;
             try {
-                userId = idMappingClient.getUserId(this.login.getObject());
+                userId = idMappingClient.getUserId(login.getObject());
             } catch (net.link.safeonline.sdk.exception.SubjectNotFoundException e) {
-                LOG.error("subject not found: " + this.login);
+                LOG.error("subject not found: " + login);
                 throw new SubjectNotFoundException();
             } catch (RequestDeniedException e) {
                 LOG.error("request denied: " + e.getMessage());
@@ -212,7 +212,7 @@ public class RemovePage extends TemplatePage {
 
                             LOG.debug("remove encap: " + attribute.getStringValue());
                             try {
-                                RemovePage.this.encapDeviceService.removeEncapMobile(attribute.getStringValue());
+                                encapDeviceService.removeEncapMobile(attribute.getStringValue());
                             } catch (MobileException e) {
                                 LOG.debug("encap service caused: " + e.getMessage());
                                 ListForm.this.error(getLocalizer().getString("errorEncapServiceFailed", this));
@@ -233,7 +233,7 @@ public class RemovePage extends TemplatePage {
         @Override
         public boolean isVisible() {
 
-            return !RemovePage.this.encapAttributes.isEmpty();
+            return !encapAttributes.isEmpty();
         }
     }
 

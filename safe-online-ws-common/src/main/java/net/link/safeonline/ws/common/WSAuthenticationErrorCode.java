@@ -61,13 +61,13 @@ public enum WSAuthenticationErrorCode {
 
     public String getErrorCode() {
 
-        return this.errorCode;
+        return errorCode;
     }
 
     @Override
     public String toString() {
 
-        return this.errorCode;
+        return errorCode;
     }
 
     public static WSAuthenticationErrorCode getWSAuthenticationErrorCode(String errorCode) {

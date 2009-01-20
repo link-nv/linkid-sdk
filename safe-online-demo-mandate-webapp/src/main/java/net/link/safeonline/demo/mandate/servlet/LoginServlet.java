@@ -40,7 +40,7 @@ public class LoginServlet extends HttpServlet {
 
         super.init(config);
         LOG.debug("init");
-        this.authorizationService = AuthorizationServiceFactory.newInstance();
+        authorizationService = AuthorizationServiceFactory.newInstance();
     }
 
     @Override
@@ -61,7 +61,7 @@ public class LoginServlet extends HttpServlet {
         String userId = LoginManager.getUserId(request);
 
         LOG.debug("userId: " + userId);
-        boolean admin = this.authorizationService.isAdmin(userId);
+        boolean admin = authorizationService.isAdmin(userId);
 
         if (admin) {
             redirectToAdminPage(session, response);

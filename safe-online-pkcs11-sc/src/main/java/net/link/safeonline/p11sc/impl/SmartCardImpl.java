@@ -100,33 +100,33 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 
     public void close() {
 
-        if (null == this.pkcs11Provider) {
+        if (null == pkcs11Provider) {
             LOG.debug("smart card is not open, returning...");
             return;
         }
-        String providerName = this.pkcs11Provider.getName();
+        String providerName = pkcs11Provider.getName();
         LOG.debug("removing security provider: " + providerName);
         Security.removeProvider(providerName);
     }
 
     public X509Certificate getAuthenticationCertificate() {
 
-        return this.authenticationCertificate;
+        return authenticationCertificate;
     }
 
     public PrivateKey getAuthenticationPrivateKey() {
 
-        return this.authenticationPrivateKey;
+        return authenticationPrivateKey;
     }
 
     public X509Certificate getSignatureCertificate() {
 
-        return this.signatureCertificate;
+        return signatureCertificate;
     }
 
     public PrivateKey getSignaturePrivateKey() {
 
-        return this.signaturePrivateKey;
+        return signaturePrivateKey;
     }
 
 
@@ -137,28 +137,28 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 
     public void init(List<SmartCardConfig> newSmartCardConfigs, SmartCardInteraction smartCardInteraction) {
 
-        this.smartCardConfigs = newSmartCardConfigs;
+        smartCardConfigs = newSmartCardConfigs;
 
         if (null != smartCardInteraction) {
-            this.interaction = smartCardInteraction;
+            interaction = smartCardInteraction;
         } else {
-            this.interaction = new NullSmartCardInteraction();
+            interaction = new NullSmartCardInteraction();
         }
 
-        Locale locale = this.interaction.getLocale();
-        this.messages = new SmartCardMessages(locale);
+        Locale locale = interaction.getLocale();
+        messages = new SmartCardMessages(locale);
     }
 
     public boolean isOpen() {
 
-        return null != this.pkcs11Provider;
+        return null != pkcs11Provider;
     }
 
     private SmartCardConfig getSmartCardConfig(String smartCardAlias) {
 
-        if (null == this.smartCardConfigs)
+        if (null == smartCardConfigs)
             throw new IllegalStateException("call init first");
-        for (SmartCardConfig smartCardConfig : this.smartCardConfigs) {
+        for (SmartCardConfig smartCardConfig : smartCardConfigs) {
             if (smartCardConfig.getCardAlias().equals(smartCardAlias))
                 return smartCardConfig;
         }
@@ -218,7 +218,7 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
             throw new RuntimeException("IO error: " + e.getMessage());
         }
 
-        if (-1 == Security.addProvider(this.pkcs11Provider))
+        if (-1 == Security.addProvider(pkcs11Provider))
             throw new RuntimeException("could not add the security provider");
 
         try {
@@ -236,16 +236,16 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
         }
 
         if (null != identityDataExtractor) {
-            identityDataExtractor.postPkcs11(this.authenticationCertificate);
+            identityDataExtractor.postPkcs11(authenticationCertificate);
         }
     }
 
     private void loadCertificates(SmartCardConfig smartCardConfig)
             throws KeyStoreException, IOException, NoSuchAlgorithmException, CertificateException, UnrecoverableKeyException {
 
-        CallbackHandler callbackHandler = new PKCS11CallbackHandler(this.smartCardPinCallback);
+        CallbackHandler callbackHandler = new PKCS11CallbackHandler(smartCardPinCallback);
         KeyStore.CallbackHandlerProtection callbackHandlerProtection = new KeyStore.CallbackHandlerProtection(callbackHandler);
-        KeyStore.Builder builder = KeyStore.Builder.newInstance("PKCS11", this.pkcs11Provider, callbackHandlerProtection);
+        KeyStore.Builder builder = KeyStore.Builder.newInstance("PKCS11", pkcs11Provider, callbackHandlerProtection);
 
         KeyStore keyStore = builder.getKeyStore();
         keyStore.load(null, null);
@@ -253,11 +253,11 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
         String authenticationKeyAlias = smartCardConfig.getAuthenticationKeyAlias();
         String signatureKeyAlias = smartCardConfig.getSignatureKeyAlias();
 
-        this.authenticationCertificate = (X509Certificate) keyStore.getCertificate(authenticationKeyAlias);
-        this.authenticationPrivateKey = (PrivateKey) keyStore.getKey(authenticationKeyAlias, null);
+        authenticationCertificate = (X509Certificate) keyStore.getCertificate(authenticationKeyAlias);
+        authenticationPrivateKey = (PrivateKey) keyStore.getKey(authenticationKeyAlias, null);
 
-        this.signatureCertificate = (X509Certificate) keyStore.getCertificate(signatureKeyAlias);
-        this.signaturePrivateKey = (PrivateKey) keyStore.getKey(signatureKeyAlias, null);
+        signatureCertificate = (X509Certificate) keyStore.getCertificate(signatureKeyAlias);
+        signaturePrivateKey = (PrivateKey) keyStore.getKey(signatureKeyAlias, null);
 
         List<X509Certificate> certificates = new LinkedList<X509Certificate>();
         Enumeration<String> aliases = keyStore.aliases();
@@ -267,7 +267,7 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
             certificates.add(cert);
         }
 
-        this.authenticationCertificatePath = constructCertificatePath(this.authenticationCertificate, certificates);
+        authenticationCertificatePath = constructCertificatePath(authenticationCertificate, certificates);
     }
 
     private List<X509Certificate> constructCertificatePath(X509Certificate certificate, List<X509Certificate> certificateRepo) {
@@ -324,7 +324,7 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
         // resetPKCS11Driver();
 
         try {
-            this.pkcs11Provider = new SunPKCS11(tmpConfigFile.getAbsolutePath());
+            pkcs11Provider = new SunPKCS11(tmpConfigFile.getAbsolutePath());
         } catch (ProviderException e) {
             LOG.error("provider exception: " + e.getMessage());
             Throwable cause = e.getCause();
@@ -440,8 +440,8 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
                 LOG.debug("slot description: " + new String(slotInfo.slotDescription));
                 LOG.debug("manufacturer: " + new String(slotInfo.manufacturerID));
                 while (0 == (PKCS11Constants.CKF_TOKEN_PRESENT & slotInfo.flags)) {
-                    String msg = this.messages.getString(KEY.NO_CARD);
-                    this.interaction.output(msg);
+                    String msg = messages.getString(KEY.NO_CARD);
+                    interaction.output(msg);
                     try {
                         Thread.sleep(500);
                     } catch (InterruptedException e) {
@@ -501,9 +501,9 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
                 } else if (callback instanceof PasswordCallback) {
                     pkcsLOG.debug("password callback");
                     PasswordCallback passwordCallback = (PasswordCallback) callback;
-                    if (null == this.smartCardPinCallback)
+                    if (null == smartCardPinCallback)
                         throw new RuntimeException("no smart card PIN call back was provided");
-                    char[] pin = this.smartCardPinCallback.getPin();
+                    char[] pin = smartCardPinCallback.getPin();
                     if (null == pin)
                         throw new UnsupportedCallbackException(callback, "User canceled PIN input");
                     passwordCallback.setPassword(pin);
@@ -521,17 +521,17 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 
     public String getCountryCode() {
 
-        return this.countryCode;
+        return countryCode;
     }
 
     public String getGivenName() {
 
-        return this.givenName;
+        return givenName;
     }
 
     public String getSurname() {
 
-        return this.surname;
+        return surname;
     }
 
     public void setCountryCode(String countryCode) {
@@ -566,17 +566,17 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 
     public String getCity() {
 
-        return this.city;
+        return city;
     }
 
     public String getPostalCode() {
 
-        return this.postalCode;
+        return postalCode;
     }
 
     public String getStreet() {
 
-        return this.street;
+        return street;
     }
 
     public static void setLog(Log log) {
@@ -586,6 +586,6 @@ public class SmartCardImpl implements SmartCard, IdentityDataCollector {
 
     public List<X509Certificate> getAuthenticationCertificatePath() {
 
-        return this.authenticationCertificatePath;
+        return authenticationCertificatePath;
     }
 }

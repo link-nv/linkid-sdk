@@ -19,17 +19,17 @@ public abstract class TemplatePage extends WebPage {
 
     public void addHeader(Page page) {
 
-        if (null == this.headerBorder) {
-            this.headerBorder = new HeaderBorder(HEADER_ID, page);
-            super.add(this.headerBorder);
+        if (null == headerBorder) {
+            headerBorder = new HeaderBorder(HEADER_ID, page);
+            super.add(headerBorder);
         }
     }
 
     public void addHeader(Page page, boolean logoutEnabled) {
 
-        if (null == this.headerBorder) {
-            this.headerBorder = new HeaderBorder(HEADER_ID, page, logoutEnabled);
-            super.add(this.headerBorder);
+        if (null == headerBorder) {
+            headerBorder = new HeaderBorder(HEADER_ID, page, logoutEnabled);
+            super.add(headerBorder);
         }
 
     }
@@ -37,35 +37,35 @@ public abstract class TemplatePage extends WebPage {
     public HeaderBorder getHeader(Page page) {
 
         addHeader(page);
-        return this.headerBorder;
+        return headerBorder;
     }
 
     public void addContent() {
 
-        if (null == this.contentBorder) {
-            this.contentBorder = new ContentBorder(CONTENT_ID);
-            super.add(this.contentBorder);
+        if (null == contentBorder) {
+            contentBorder = new ContentBorder(CONTENT_ID);
+            super.add(contentBorder);
         }
     }
 
     public ContentBorder getContent() {
 
         addContent();
-        return this.contentBorder;
+        return contentBorder;
     }
 
     public void addSidebar() {
 
-        if (null == this.sidebarBorder) {
-            this.sidebarBorder = new SidebarBorder(SIDEBAR_ID);
+        if (null == sidebarBorder) {
+            sidebarBorder = new SidebarBorder(SIDEBAR_ID);
             addContent();
-            this.contentBorder.add(this.sidebarBorder);
+            contentBorder.add(sidebarBorder);
         }
     }
 
     public SidebarBorder getSidebar() {
 
         addSidebar();
-        return this.sidebarBorder;
+        return sidebarBorder;
     }
 }

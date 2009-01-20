@@ -43,7 +43,7 @@ public class AttributeCacheDAOBean implements AttributeCacheDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, AttributeCacheEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, AttributeCacheEntity.QueryInterface.class);
     }
 
     /**
@@ -52,7 +52,7 @@ public class AttributeCacheDAOBean implements AttributeCacheDAO {
     public List<AttributeCacheEntity> listAttributes(SubjectEntity subject, AttributeTypeEntity attributeType) {
 
         LOG.debug("listAttributes for " + subject.getUserId() + " of type " + attributeType.getName());
-        return this.queryObject.listAttributes(subject, attributeType);
+        return queryObject.listAttributes(subject, attributeType);
     }
 
     /**
@@ -62,7 +62,7 @@ public class AttributeCacheDAOBean implements AttributeCacheDAO {
 
         LOG.debug("find cached attribute for type  " + attributeType.getName() + " and subject " + subject.getUserId() + " (index=" + index
                 + ")");
-        AttributeCacheEntity attribute = this.entityManager
+        AttributeCacheEntity attribute = entityManager
                                                            .find(AttributeCacheEntity.class, new AttributePK(attributeType, subject, index));
         return attribute;
     }
@@ -79,11 +79,11 @@ public class AttributeCacheDAOBean implements AttributeCacheDAO {
                     AttributeTypeEntity memberAttributeType = member.getMember();
                     AttributeCacheEntity memberAttribute = findAttribute(subject, memberAttributeType, attribute.getAttributeIndex());
                     if (null != memberAttribute) {
-                        this.entityManager.remove(memberAttribute);
+                        entityManager.remove(memberAttribute);
                     }
                 }
             }
-            this.entityManager.remove(attribute);
+            entityManager.remove(attribute);
         }
     }
 
@@ -94,7 +94,7 @@ public class AttributeCacheDAOBean implements AttributeCacheDAO {
 
         LOG.debug("add cached attribute " + attributeType.getName() + " for subject " + subject);
         AttributeCacheEntity attribute = new AttributeCacheEntity(attributeType, subject, index);
-        this.entityManager.persist(attribute);
+        entityManager.persist(attribute);
         return attribute;
     }
 
@@ -104,7 +104,7 @@ public class AttributeCacheDAOBean implements AttributeCacheDAO {
     public List<AttributeCacheEntity> listAttributes() {
 
         LOG.debug("list all cached attributes");
-        return this.queryObject.listAttributes();
+        return queryObject.listAttributes();
     }
 
     /**
@@ -119,10 +119,10 @@ public class AttributeCacheDAOBean implements AttributeCacheDAO {
                 AttributeCacheEntity memberAttribute = findAttribute(attribute.getSubject(), memberAttributeType,
                         attribute.getAttributeIndex());
                 if (null != memberAttribute) {
-                    this.entityManager.remove(memberAttribute);
+                    entityManager.remove(memberAttribute);
                 }
             }
         }
-        this.entityManager.remove(attribute);
+        entityManager.remove(attribute);
     }
 }

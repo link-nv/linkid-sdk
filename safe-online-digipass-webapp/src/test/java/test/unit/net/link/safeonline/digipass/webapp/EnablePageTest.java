@@ -49,15 +49,15 @@ public class EnablePageTest extends TestCase {
 
         WicketUtil.setUnitTesting(true);
 
-        this.jndiTestUtils = new JndiTestUtils();
-        this.jndiTestUtils.setUp();
+        jndiTestUtils = new JndiTestUtils();
+        jndiTestUtils.setUp();
 
-        this.mockDigipassDeviceService = createMock(DigipassDeviceService.class);
-        this.mockSamlAuthorityService = createMock(SamlAuthorityService.class);
-        this.mockHelpdeskManager = createMock(HelpdeskManager.class);
+        mockDigipassDeviceService = createMock(DigipassDeviceService.class);
+        mockSamlAuthorityService = createMock(SamlAuthorityService.class);
+        mockHelpdeskManager = createMock(HelpdeskManager.class);
 
-        this.wicket = new WicketTester(new DigipassTestApplication());
-        this.wicket.processRequestCycle();
+        wicket = new WicketTester(new DigipassTestApplication());
+        wicket.processRequestCycle();
 
     }
 
@@ -66,7 +66,7 @@ public class EnablePageTest extends TestCase {
     public void tearDown()
             throws Exception {
 
-        this.jndiTestUtils.tearDown();
+        jndiTestUtils.tearDown();
     }
 
     @Test
@@ -78,32 +78,32 @@ public class EnablePageTest extends TestCase {
         String token = "000000";
         String serialNumber = "12345678";
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(this.wicket.getServletSession());
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setSubject(userId);
         protocolContext.setAttribute(serialNumber);
 
         // verify
-        EnablePage enablePage = (EnablePage) this.wicket.startPage(EnablePage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID, Form.class);
+        EnablePage enablePage = (EnablePage) wicket.startPage(EnablePage.class);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID, Form.class);
 
         // setup
-        EJBTestUtils.inject(enablePage, this.mockDigipassDeviceService);
-        EJBTestUtils.inject(enablePage, this.mockSamlAuthorityService);
+        EJBTestUtils.inject(enablePage, mockDigipassDeviceService);
+        EJBTestUtils.inject(enablePage, mockSamlAuthorityService);
 
         // stubs
-        expect(this.mockDigipassDeviceService.enable(userId, serialNumber, token)).andStubReturn(userId);
-        expect(this.mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
+        expect(mockDigipassDeviceService.enable(userId, serialNumber, token)).andStubReturn(userId);
+        expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
-        replay(this.mockDigipassDeviceService, this.mockSamlAuthorityService);
+        replay(mockDigipassDeviceService, mockSamlAuthorityService);
 
         // operate
-        FormTester enableForm = this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID);
+        FormTester enableForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID);
         enableForm.setValue(EnablePage.TOKEN_FIELD_ID, token);
         enableForm.submit(EnablePage.ENABLE_BUTTON_ID);
 
         // verify
-        verify(this.mockDigipassDeviceService, this.mockSamlAuthorityService);
+        verify(mockDigipassDeviceService, mockSamlAuthorityService);
     }
 
     @Test
@@ -115,35 +115,35 @@ public class EnablePageTest extends TestCase {
         String token = "000000";
         String serialNumber = "12345678";
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(this.wicket.getServletSession());
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setSubject(userId);
         protocolContext.setAttribute(serialNumber);
 
         // verify
-        EnablePage enablePage = (EnablePage) this.wicket.startPage(EnablePage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID, Form.class);
+        EnablePage enablePage = (EnablePage) wicket.startPage(EnablePage.class);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID, Form.class);
 
         // setup
-        EJBTestUtils.inject(enablePage, this.mockDigipassDeviceService);
-        this.jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, this.mockHelpdeskManager);
+        EJBTestUtils.inject(enablePage, mockDigipassDeviceService);
+        jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
 
         // stubs
-        expect(this.mockDigipassDeviceService.enable(userId, serialNumber, token)).andThrow(new SubjectNotFoundException());
-        expect(this.mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
+        expect(mockDigipassDeviceService.enable(userId, serialNumber, token)).andThrow(new SubjectNotFoundException());
+        expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
-        replay(this.mockDigipassDeviceService, this.mockHelpdeskManager);
+        replay(mockDigipassDeviceService, mockHelpdeskManager);
 
         // operate
-        FormTester enableForm = this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID);
+        FormTester enableForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID);
         enableForm.setValue(EnablePage.TOKEN_FIELD_ID, token);
         enableForm.submit(EnablePage.ENABLE_BUTTON_ID);
 
         // verify
-        verify(this.mockDigipassDeviceService, this.mockHelpdeskManager);
+        verify(mockDigipassDeviceService, mockHelpdeskManager);
 
-        this.wicket.assertRenderedPage(EnablePage.class);
-        this.wicket.assertErrorMessages(new String[] { "digipassNotRegistered" });
+        wicket.assertRenderedPage(EnablePage.class);
+        wicket.assertErrorMessages(new String[] { "digipassNotRegistered" });
 
     }
 
@@ -156,35 +156,35 @@ public class EnablePageTest extends TestCase {
         String token = "000000";
         String serialNumber = "12345678";
 
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(this.wicket.getServletSession());
+        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setSubject(userId);
         protocolContext.setAttribute(serialNumber);
 
         // verify
-        EnablePage enablePage = (EnablePage) this.wicket.startPage(EnablePage.class);
-        this.wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID, Form.class);
+        EnablePage enablePage = (EnablePage) wicket.startPage(EnablePage.class);
+        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID, Form.class);
 
         // setup
-        EJBTestUtils.inject(enablePage, this.mockDigipassDeviceService);
-        this.jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, this.mockHelpdeskManager);
+        EJBTestUtils.inject(enablePage, mockDigipassDeviceService);
+        jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
 
         // stubs
-        expect(this.mockDigipassDeviceService.enable(userId, serialNumber, token)).andStubReturn(null);
-        expect(this.mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
+        expect(mockDigipassDeviceService.enable(userId, serialNumber, token)).andStubReturn(null);
+        expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
-        replay(this.mockDigipassDeviceService, this.mockHelpdeskManager);
+        replay(mockDigipassDeviceService, mockHelpdeskManager);
 
         // operate
-        FormTester enableForm = this.wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID);
+        FormTester enableForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID);
         enableForm.setValue(EnablePage.TOKEN_FIELD_ID, token);
         enableForm.submit(EnablePage.ENABLE_BUTTON_ID);
 
         // verify
-        verify(this.mockDigipassDeviceService, this.mockHelpdeskManager);
+        verify(mockDigipassDeviceService, mockHelpdeskManager);
 
-        this.wicket.assertRenderedPage(EnablePage.class);
-        this.wicket.assertErrorMessages(new String[] { "authenticationFailedMsg" });
+        wicket.assertRenderedPage(EnablePage.class);
+        wicket.assertErrorMessages(new String[] { "authenticationFailedMsg" });
 
     }
 }

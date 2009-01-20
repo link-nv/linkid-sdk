@@ -53,7 +53,7 @@ public class TransactionServiceTest extends AbstractBankServiceTest {
 
         super.setup();
 
-        this.initializationService.buildEntities();
+        initializationService.buildEntities();
     }
 
     /**
@@ -69,11 +69,11 @@ public class TransactionServiceTest extends AbstractBankServiceTest {
         String testTargetCode = InitializationService.digipassUser_AccountCodes[1];
 
         // Create test transaction.
-        BankAccountEntity testTransactionSourceAccount = this.accountService.getAccount(testSourceCode);
-        this.transactionService.createTransaction(testDescription, testTransactionSourceAccount, testTargetCode, testAmount);
+        BankAccountEntity testTransactionSourceAccount = accountService.getAccount(testSourceCode);
+        transactionService.createTransaction(testDescription, testTransactionSourceAccount, testTargetCode, testAmount);
 
         // Verify && transaction created successfully.
-        List<BankTransactionEntity> transactions = this.transactionService.getAllTransactions(testTransactionSourceAccount);
+        List<BankTransactionEntity> transactions = transactionService.getAllTransactions(testTransactionSourceAccount);
         assertTrue(transactions.size() == 1);
         BankTransactionEntity transaction = transactions.get(0);
 

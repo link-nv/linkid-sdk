@@ -54,12 +54,12 @@ public class CompoundBuilder {
         if (null == compoundAnnotation) {
             if (false == Map.class.isAssignableFrom(compoundClass))
                 throw new IllegalArgumentException("valueClass not @Compound annotated or not of type java.util.Map");
-            this.isMap = true;
-            this.compoundAttribute = new HashMap<String, Object>();
+            isMap = true;
+            compoundAttribute = new HashMap<String, Object>();
         } else {
-            this.isMap = false;
+            isMap = false;
             try {
-                this.compoundAttribute = compoundClass.newInstance();
+                compoundAttribute = compoundClass.newInstance();
             } catch (Exception e) {
                 LOG.error("error: " + e.getMessage(), e);
                 throw new IllegalArgumentException("could not create new instance for " + compoundClass.getName());
@@ -73,7 +73,7 @@ public class CompoundBuilder {
      */
     public Object getCompound() {
 
-        return this.compoundAttribute;
+        return compoundAttribute;
     }
 
     /**
@@ -87,17 +87,17 @@ public class CompoundBuilder {
     @SuppressWarnings("unchecked")
     public void setCompoundProperty(String memberName, Object memberAttributeValue) {
 
-        if (this.isMap) {
+        if (isMap) {
             /*
              * We also support non-annotated compound results via a simple java.util.Map.
              */
-            Map<String, Object> compoundMap = (Map<String, Object>) this.compoundAttribute;
+            Map<String, Object> compoundMap = (Map<String, Object>) compoundAttribute;
             if (compoundMap.containsKey(memberName))
                 throw new RuntimeException("member already present in result map: " + memberName);
             compoundMap.put(memberName, memberAttributeValue);
             return;
         }
-        Method[] methods = this.compoundClass.getMethods();
+        Method[] methods = compoundClass.getMethods();
         for (Method method : methods) {
             CompoundMember compoundMemberAnnotation = method.getAnnotation(CompoundMember.class);
             if (null == compoundMemberAnnotation) {
@@ -106,9 +106,9 @@ public class CompoundBuilder {
             if (false == memberName.equals(compoundMemberAnnotation.value())) {
                 continue;
             }
-            Method setPropertyMethod = CompoundUtil.getSetMethod(this.compoundClass, method);
+            Method setPropertyMethod = CompoundUtil.getSetMethod(compoundClass, method);
             try {
-                setPropertyMethod.invoke(this.compoundAttribute, new Object[] { memberAttributeValue });
+                setPropertyMethod.invoke(compoundAttribute, new Object[] { memberAttributeValue });
             } catch (Exception e) {
                 throw new RuntimeException("could not invoke: " + setPropertyMethod.getName());
             }
@@ -123,23 +123,23 @@ public class CompoundBuilder {
     @SuppressWarnings("unchecked")
     public void setCompoundId(String attributeId) {
 
-        if (this.isMap) {
+        if (isMap) {
             /*
              * We also support non-annotated compound results via a simple java.util.Map.
              */
-            Map<String, Object> compoundMap = (Map<String, Object>) this.compoundAttribute;
+            Map<String, Object> compoundMap = (Map<String, Object>) compoundAttribute;
             compoundMap.put(ATTRIBUTE_ID_KEY, attributeId);
             return;
         }
-        Method[] methods = this.compoundClass.getMethods();
+        Method[] methods = compoundClass.getMethods();
         for (Method method : methods) {
             CompoundId compoundIdAnnotation = method.getAnnotation(CompoundId.class);
             if (null == compoundIdAnnotation) {
                 continue;
             }
-            Method setPropertyMethod = CompoundUtil.getSetMethod(this.compoundClass, method);
+            Method setPropertyMethod = CompoundUtil.getSetMethod(compoundClass, method);
             try {
-                setPropertyMethod.invoke(this.compoundAttribute, new Object[] { attributeId });
+                setPropertyMethod.invoke(compoundAttribute, new Object[] { attributeId });
             } catch (Exception e) {
                 throw new RuntimeException("could not invoke: " + setPropertyMethod.getName());
             }

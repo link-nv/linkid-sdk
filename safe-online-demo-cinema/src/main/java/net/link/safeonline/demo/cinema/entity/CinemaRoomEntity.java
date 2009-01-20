@@ -46,7 +46,7 @@ public class CinemaRoomEntity implements Serializable {
 
     public CinemaRoomEntity() {
 
-        this.films = new HashSet<CinemaFilmEntity>();
+        films = new HashSet<CinemaFilmEntity>();
     }
 
     public CinemaRoomEntity(String name, CinemaTheatreEntity theatre) {
@@ -62,7 +62,7 @@ public class CinemaRoomEntity implements Serializable {
      */
     public CinemaTheatreEntity getTheatre() {
 
-        return this.theatre;
+        return theatre;
     }
 
     /**
@@ -70,7 +70,7 @@ public class CinemaRoomEntity implements Serializable {
      */
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     /**
@@ -78,7 +78,7 @@ public class CinemaRoomEntity implements Serializable {
      */
     public Collection<CinemaFilmEntity> getFilms() {
 
-        return this.films;
+        return films;
     }
 
     /**
@@ -86,6 +86,6 @@ public class CinemaRoomEntity implements Serializable {
      */
     public long getId() {
 
-        return this.id;
+        return id;
     }
 }

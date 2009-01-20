@@ -55,7 +55,7 @@ public class DeviceOperationResponseImpl extends StatusResponseTypeImpl implemen
     protected DeviceOperationResponseImpl(String namespaceURI, String elementLocalName, String namespacePrefix) {
 
         super(namespaceURI, elementLocalName, namespacePrefix);
-        this.indexedChildren = new IndexedXMLObjectChildrenList<XMLObject>(this);
+        indexedChildren = new IndexedXMLObjectChildrenList<XMLObject>(this);
     }
 
     /**
@@ -63,7 +63,7 @@ public class DeviceOperationResponseImpl extends StatusResponseTypeImpl implemen
      */
     public String getDeviceOperation() {
 
-        return this.deviceOperation;
+        return deviceOperation;
     }
 
     /**
@@ -79,7 +79,7 @@ public class DeviceOperationResponseImpl extends StatusResponseTypeImpl implemen
      */
     public String getDevice() {
 
-        return this.device;
+        return device;
     }
 
     /**
@@ -95,7 +95,7 @@ public class DeviceOperationResponseImpl extends StatusResponseTypeImpl implemen
      */
     public String getSubjectName() {
 
-        return this.subjectName;
+        return subjectName;
     }
 
     /**
@@ -112,7 +112,7 @@ public class DeviceOperationResponseImpl extends StatusResponseTypeImpl implemen
     @SuppressWarnings("unchecked")
     public List<Assertion> getAssertions() {
 
-        return (List<Assertion>) this.indexedChildren.subList(Assertion.DEFAULT_ELEMENT_NAME);
+        return (List<Assertion>) indexedChildren.subList(Assertion.DEFAULT_ELEMENT_NAME);
     }
 
     /** {@inheritDoc} */
@@ -125,7 +125,7 @@ public class DeviceOperationResponseImpl extends StatusResponseTypeImpl implemen
             children.addAll(super.getOrderedChildren());
         }
 
-        children.addAll(this.indexedChildren);
+        children.addAll(indexedChildren);
 
         if (children.size() == 0)
             return null;

@@ -99,17 +99,17 @@ public class AccountMergingServiceBean implements AccountMergingService {
             throws SubjectNotFoundException, AttributeTypeNotFoundException, ApplicationNotFoundException, EmptyDevicePolicyException {
 
         LOG.debug("merge account: " + sourceAccountName);
-        SubjectEntity targetSubject = this.subjectManager.getCallerSubject();
-        SubjectEntity sourceSubject = this.subjectService.getSubjectFromUserName(sourceAccountName);
+        SubjectEntity targetSubject = subjectManager.getCallerSubject();
+        SubjectEntity sourceSubject = subjectService.getSubjectFromUserName(sourceAccountName);
 
         AccountMergingDO accountMergingDO = new AccountMergingDO(sourceSubject);
 
-        List<SubscriptionEntity> targetSubscriptions = this.subscriptionDAO.listSubsciptions(targetSubject);
-        List<SubscriptionEntity> sourceSubscriptions = this.subscriptionDAO.listSubsciptions(sourceSubject);
+        List<SubscriptionEntity> targetSubscriptions = subscriptionDAO.listSubsciptions(targetSubject);
+        List<SubscriptionEntity> sourceSubscriptions = subscriptionDAO.listSubsciptions(sourceSubject);
         mergeSubscriptions(accountMergingDO, targetSubscriptions, sourceSubscriptions);
 
-        Map<AttributeTypeEntity, List<AttributeEntity>> targetAttributes = this.attributeDAO.listAttributes(targetSubject);
-        Map<AttributeTypeEntity, List<AttributeEntity>> sourceAttributes = this.attributeDAO.listAttributes(sourceSubject);
+        Map<AttributeTypeEntity, List<AttributeEntity>> targetAttributes = attributeDAO.listAttributes(targetSubject);
+        Map<AttributeTypeEntity, List<AttributeEntity>> sourceAttributes = attributeDAO.listAttributes(sourceSubject);
         mergeAttributes(accountMergingDO, targetSubject, targetAttributes, sourceSubject, sourceAttributes);
 
         return accountMergingDO;
@@ -131,8 +131,8 @@ public class AccountMergingServiceBean implements AccountMergingService {
         LOG.debug("commit merge with account " + accountMergingDO.getSourceSubject().getUserId());
         if (null != neededDevices && neededDevices.size() != 0)
             throw new PermissionDeniedException("authentication needed for certain devices");
-        SubjectEntity targetSubject = this.subjectManager.getCallerSubject();
-        SubjectEntity sourceSubject = this.subjectService.getSubject(accountMergingDO.getSourceSubject().getUserId());
+        SubjectEntity targetSubject = subjectManager.getCallerSubject();
+        SubjectEntity sourceSubject = subjectService.getSubject(accountMergingDO.getSourceSubject().getUserId());
         /*
          * Add attributes
          */
@@ -151,7 +151,7 @@ public class AccountMergingServiceBean implements AccountMergingService {
         /*
          * Update subject identifiers
          */
-        List<SubjectIdentifierEntity> sourceSubjectIdentifiers = this.subjectIdentifierDAO.getSubjectIdentifiers(sourceSubject);
+        List<SubjectIdentifierEntity> sourceSubjectIdentifiers = subjectIdentifierDAO.getSubjectIdentifiers(sourceSubject);
         for (SubjectIdentifierEntity subjectIdentifier : sourceSubjectIdentifiers) {
             subjectIdentifier.setSubject(targetSubject);
         }
@@ -159,20 +159,20 @@ public class AccountMergingServiceBean implements AccountMergingService {
         /*
          * Remove the remaining subject identifier in the login domain
          */
-        String targetSubjectLogin = this.subjectService.getSubjectLogin(targetSubject.getUserId());
-        this.subjectIdentifierDAO.removeOtherSubjectIdentifiers(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN, targetSubjectLogin,
+        String targetSubjectLogin = subjectService.getSubjectLogin(targetSubject.getUserId());
+        subjectIdentifierDAO.removeOtherSubjectIdentifiers(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN, targetSubjectLogin,
                 targetSubject);
         /*
          * Remove source account, without removing the subject identifiers.
          */
-        this.accountService.removeAccount(sourceSubject.getUserId());
+        accountService.removeAccount(sourceSubject.getUserId());
 
         /*
          * Update subscriptions
          */
         if (null != accountMergingDO.getImportedSubscriptions()) {
             for (SubscriptionDO importingSubscription : accountMergingDO.getImportedSubscriptions()) {
-                this.subscriptionDAO.addSubscription(importingSubscription.getSubscription().getSubscriptionOwnerType(), targetSubject,
+                subscriptionDAO.addSubscription(importingSubscription.getSubscription().getSubscriptionOwnerType(), targetSubject,
                         importingSubscription.getSubscription().getApplication(), importingSubscription.getSubscription()
                                                                                                        .getSubscriptionUserId());
             }
@@ -189,13 +189,13 @@ public class AccountMergingServiceBean implements AccountMergingService {
     private void commitMerge(List<AttributeDO> attributes)
             throws AttributeTypeNotFoundException {
 
-        SubjectEntity subject = this.subjectManager.getCallerSubject();
+        SubjectEntity subject = subjectManager.getCallerSubject();
         Iterator<AttributeDO> iterator = attributes.listIterator();
         while (iterator.hasNext()) {
             AttributeDO attribute = iterator.next();
             LOG.debug("add attribute: " + attribute.getName());
-            AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attribute.getName());
-            AttributeEntity attributeEntity = this.attributeDAO.addAttribute(attributeType, subject);
+            AttributeTypeEntity attributeType = attributeTypeDAO.getAttributeType(attribute.getName());
+            AttributeEntity attributeEntity = attributeDAO.addAttribute(attributeType, subject);
             if (attributeType.isCompounded()) {
                 attributeEntity.setStringValue(attribute.getStringValue());
             } else {
@@ -248,7 +248,7 @@ public class AccountMergingServiceBean implements AccountMergingService {
 
         List<DeviceEntity> allowedDevices = null;
         if (subscription.getApplication().isDeviceRestriction()) {
-            allowedDevices = this.devicePolicyService.getDevicePolicy(subscription.getApplication().getName(), null);
+            allowedDevices = devicePolicyService.getDevicePolicy(subscription.getApplication().getName(), null);
         }
         return new SubscriptionDO(subscription, allowedDevices);
     }
@@ -390,7 +390,7 @@ public class AccountMergingServiceBean implements AccountMergingService {
         List<CompoundedAttributeTypeMemberEntity> members = attributes.getKey().getMembers();
         for (AttributeEntity attribute : attributes.getValue()) {
             for (CompoundedAttributeTypeMemberEntity member : members) {
-                AttributeEntity memberAttribute = this.attributeDAO.findAttribute(subject, member.getMember(),
+                AttributeEntity memberAttribute = attributeDAO.findAttribute(subject, member.getMember(),
                         attribute.getAttributeIndex());
                 if (null != memberAttribute) {
                     attribute.getMembers().add(memberAttribute);
@@ -466,7 +466,7 @@ public class AccountMergingServiceBean implements AccountMergingService {
             String description = null;
             if (null != language) {
                 LOG.debug("trying language: " + language);
-                AttributeTypeDescriptionEntity attributeTypeDescription = this.attributeTypeDAO
+                AttributeTypeDescriptionEntity attributeTypeDescription = attributeTypeDAO
                                                                                                .findDescription(new AttributeTypeDescriptionPK(
                                                                                                        attributeType.getName(), language));
                 if (null != attributeTypeDescription) {

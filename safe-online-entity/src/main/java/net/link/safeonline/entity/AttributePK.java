@@ -63,7 +63,7 @@ public class AttributePK implements Serializable {
 
     public String getAttributeType() {
 
-        return this.attributeType;
+        return attributeType;
     }
 
     public void setAttributeType(String attributeType) {
@@ -73,7 +73,7 @@ public class AttributePK implements Serializable {
 
     public String getSubject() {
 
-        return this.subject;
+        return subject;
     }
 
     public void setSubject(String subject) {
@@ -87,7 +87,7 @@ public class AttributePK implements Serializable {
      */
     public long getAttributeIndex() {
 
-        return this.attributeIndex;
+        return attributeIndex;
     }
 
     public void setAttributeIndex(long attributeIndex) {
@@ -103,20 +103,20 @@ public class AttributePK implements Serializable {
         if (false == obj instanceof AttributePK)
             return false;
         AttributePK rhs = (AttributePK) obj;
-        return new EqualsBuilder().append(this.subject, rhs.subject).append(this.attributeType, rhs.attributeType).append(
-                this.attributeIndex, rhs.attributeIndex).isEquals();
+        return new EqualsBuilder().append(subject, rhs.subject).append(attributeType, rhs.attributeType).append(
+                attributeIndex, rhs.attributeIndex).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.subject).append(this.attributeType).append(this.attributeIndex).toHashCode();
+        return new HashCodeBuilder().append(subject).append(attributeType).append(attributeIndex).toHashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("subject", this.subject).append("attributeType", this.attributeType).append("index",
-                this.attributeIndex).toString();
+        return new ToStringBuilder(this).append("subject", subject).append("attributeType", attributeType).append("index",
+                attributeIndex).toString();
     }
 }

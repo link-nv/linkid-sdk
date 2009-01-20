@@ -70,12 +70,12 @@ public class NodeAccountServiceBean implements NodeAccountService, NodeAccountSe
 
         LOG.debug("remove account: " + subject.getUserId());
 
-        this.historyDAO.clearAllHistory(subject);
-        this.subscriptionDAO.removeAllSubscriptions(subject);
-        this.applicationScopeIdDAO.removeApplicationScopeIds(subject);
-        this.attributeDAO.removeAttributes(subject);
-        this.subjectIdentifierDAO.removeSubjectIdentifiers(subject);
-        this.nodeMappingDAO.removeNodeMappings(subject);
-        this.subjectDAO.removeSubject(subject);
+        historyDAO.clearAllHistory(subject);
+        subscriptionDAO.removeAllSubscriptions(subject);
+        applicationScopeIdDAO.removeApplicationScopeIds(subject);
+        attributeDAO.removeAttributes(subject);
+        subjectIdentifierDAO.removeSubjectIdentifiers(subject);
+        nodeMappingDAO.removeNodeMappings(subject);
+        subjectDAO.removeSubject(subject);
     }
 }

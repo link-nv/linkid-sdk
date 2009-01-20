@@ -75,7 +75,7 @@ public class OtpOverSmsAuthentication extends DeviceAuthenticationPanel {
         inputPanel.setLayout(gbl);
 
         JLabel mobileOrOtpLabel;
-        if (this.initial) {
+        if (initial) {
             mobileOrOtpLabel = new JLabel("Mobile");
         } else {
             mobileOrOtpLabel = new JLabel("OTP");
@@ -94,10 +94,10 @@ public class OtpOverSmsAuthentication extends DeviceAuthenticationPanel {
 
         gbc.gridx = 1;
         gbc.gridy = 0;
-        gbl.setConstraints(this.mobileOrOtpField, gbc);
-        inputPanel.add(this.mobileOrOtpField, gbc);
+        gbl.setConstraints(mobileOrOtpField, gbc);
+        inputPanel.add(mobileOrOtpField, gbc);
 
-        if (!this.initial) {
+        if (!initial) {
             gbc.gridx = 0;
             gbc.gridy = 1;
             gbl.setConstraints(pinLabel, gbc);
@@ -105,12 +105,12 @@ public class OtpOverSmsAuthentication extends DeviceAuthenticationPanel {
 
             gbc.gridx = 1;
             gbc.gridy = 1;
-            gbl.setConstraints(this.pinField, gbc);
-            inputPanel.add(this.pinField, gbc);
+            gbl.setConstraints(pinField, gbc);
+            inputPanel.add(pinField, gbc);
         }
 
-        controlPanel.add(this.loginButton);
-        controlPanel.add(this.cancelButton);
+        controlPanel.add(loginButton);
+        controlPanel.add(cancelButton);
 
         setLayout(new BorderLayout());
         this.add(inputPanel, BorderLayout.CENTER);
@@ -119,7 +119,7 @@ public class OtpOverSmsAuthentication extends DeviceAuthenticationPanel {
 
     private void handleEvents() {
 
-        this.loginButton.addActionListener(new ActionListener() {
+        loginButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
@@ -129,7 +129,7 @@ public class OtpOverSmsAuthentication extends DeviceAuthenticationPanel {
             }
         });
 
-        this.cancelButton.addActionListener(new ActionListener() {
+        cancelButton.addActionListener(new ActionListener() {
 
             public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
@@ -144,11 +144,11 @@ public class OtpOverSmsAuthentication extends DeviceAuthenticationPanel {
 
         Map<String, String> deviceCredentials = new HashMap<String, String>();
 
-        if (this.initial) {
-            deviceCredentials.put(OTPOVERSMS_WS_AUTH_MOBILE_ATTRIBUTE, this.mobileOrOtpField.getText());
+        if (initial) {
+            deviceCredentials.put(OTPOVERSMS_WS_AUTH_MOBILE_ATTRIBUTE, mobileOrOtpField.getText());
         } else {
-            deviceCredentials.put(OTPOVERSMS_WS_AUTH_OTP_ATTRIBUTE, this.mobileOrOtpField.getText());
-            deviceCredentials.put(OTPOVERSMS_WS_AUTH_PIN_ATTRIBUTE, new String(this.pinField.getPassword()));
+            deviceCredentials.put(OTPOVERSMS_WS_AUTH_OTP_ATTRIBUTE, mobileOrOtpField.getText());
+            deviceCredentials.put(OTPOVERSMS_WS_AUTH_PIN_ATTRIBUTE, new String(pinField.getPassword()));
         }
 
         authenticate(deviceCredentials);
@@ -157,8 +157,8 @@ public class OtpOverSmsAuthentication extends DeviceAuthenticationPanel {
 
     protected boolean checkInput() {
 
-        if (null == this.mobileOrOtpField.getText() || this.mobileOrOtpField.getText().length() == 0) {
-            if (this.initial) {
+        if (null == mobileOrOtpField.getText() || mobileOrOtpField.getText().length() == 0) {
+            if (initial) {
                 JOptionPane.showMessageDialog(this, "Please fill in the mobile field", "Error", JOptionPane.ERROR_MESSAGE);
             } else {
                 JOptionPane.showMessageDialog(this, "Please fill in the otp field", "Error", JOptionPane.ERROR_MESSAGE);
@@ -166,8 +166,8 @@ public class OtpOverSmsAuthentication extends DeviceAuthenticationPanel {
             return false;
         }
 
-        if (!this.initial) {
-            if (this.pinField.getPassword().length == 0) {
+        if (!initial) {
+            if (pinField.getPassword().length == 0) {
                 JOptionPane.showMessageDialog(this, "Please fill in the pin field", "Error", JOptionPane.ERROR_MESSAGE);
                 return false;
             }

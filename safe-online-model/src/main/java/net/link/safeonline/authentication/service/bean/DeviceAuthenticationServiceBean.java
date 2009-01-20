@@ -54,7 +54,7 @@ public class DeviceAuthenticationServiceBean implements DeviceAuthenticationServ
     public String authenticate(X509Certificate certificate)
             throws DeviceNotFoundException {
 
-        DeviceEntity device = this.deviceDAO.getDevice(certificate);
+        DeviceEntity device = deviceDAO.getDevice(certificate);
         LOG.debug("authenticated device: " + device.getName());
         return device.getName();
     }
@@ -63,8 +63,8 @@ public class DeviceAuthenticationServiceBean implements DeviceAuthenticationServ
             throws DeviceNotFoundException {
 
         LOG.debug("get certificates for device: " + deviceName);
-        DeviceEntity device = this.deviceDAO.getDevice(deviceName);
-        List<TrustPointEntity> trustPoints = this.trustPointDAO.listTrustPoints(device.getCertificateSubject());
+        DeviceEntity device = deviceDAO.getDevice(deviceName);
+        List<TrustPointEntity> trustPoints = trustPointDAO.listTrustPoints(device.getCertificateSubject());
         List<X509Certificate> certificates = new LinkedList<X509Certificate>();
         for (TrustPointEntity trustPoint : trustPoints) {
             certificates.add(trustPoint.getCertificate());
@@ -77,8 +77,8 @@ public class DeviceAuthenticationServiceBean implements DeviceAuthenticationServ
             throws TrustDomainNotFoundException {
 
         LOG.debug("find trust point: domain=" + domainName + " cert=" + certificate);
-        TrustDomainEntity trustDomain = this.trustDomainDAO.getTrustDomain(domainName);
-        return this.trustPointDAO.findTrustPoint(trustDomain, certificate);
+        TrustDomainEntity trustDomain = trustDomainDAO.getTrustDomain(domainName);
+        return trustPointDAO.findTrustPoint(trustDomain, certificate);
     }
 
 }

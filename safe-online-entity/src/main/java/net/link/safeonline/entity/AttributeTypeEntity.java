@@ -145,15 +145,15 @@ public class AttributeTypeEntity implements Serializable {
         this.type = type;
         this.userVisible = userVisible;
         this.userEditable = userEditable;
-        this.descriptions = new HashMap<String, AttributeTypeDescriptionEntity>();
-        this.members = new LinkedList<CompoundedAttributeTypeMemberEntity>();
+        descriptions = new HashMap<String, AttributeTypeDescriptionEntity>();
+        members = new LinkedList<CompoundedAttributeTypeMemberEntity>();
     }
 
     @Id
     @Column(name = "name")
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -165,7 +165,7 @@ public class AttributeTypeEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     public DatatypeType getType() {
 
-        return this.type;
+        return type;
     }
 
     public void setType(DatatypeType type) {
@@ -183,24 +183,24 @@ public class AttributeTypeEntity implements Serializable {
         if (getClass() != obj.getClass())
             return false;
         final AttributeTypeEntity rhs = (AttributeTypeEntity) obj;
-        return new EqualsBuilder().append(this.name, rhs.name).isEquals();
+        return new EqualsBuilder().append(name, rhs.name).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.name).toHashCode();
+        return new HashCodeBuilder().append(name).toHashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("name", this.name).toString();
+        return new ToStringBuilder(this).append("name", name).toString();
     }
 
     public boolean isUserVisible() {
 
-        return this.userVisible;
+        return userVisible;
     }
 
     public void setUserVisible(boolean userVisible) {
@@ -210,7 +210,7 @@ public class AttributeTypeEntity implements Serializable {
 
     public boolean isUserEditable() {
 
-        return this.userEditable;
+        return userEditable;
     }
 
     public void setUserEditable(boolean userEditable) {
@@ -224,7 +224,7 @@ public class AttributeTypeEntity implements Serializable {
      */
     public boolean isMultivalued() {
 
-        return this.multivalued;
+        return multivalued;
     }
 
     public void setMultivalued(boolean multivalued) {
@@ -239,7 +239,7 @@ public class AttributeTypeEntity implements Serializable {
      */
     public boolean isCompoundMember() {
 
-        return this.compoundMember;
+        return compoundMember;
     }
 
     public void setCompoundMember(boolean compoundMember) {
@@ -251,7 +251,7 @@ public class AttributeTypeEntity implements Serializable {
     @IndexColumn(name = CompoundedAttributeTypeMemberEntity.MEMBER_SEQUENCE_COLUMN_NAME)
     public List<CompoundedAttributeTypeMemberEntity> getMembers() {
 
-        return this.members;
+        return members;
     }
 
     public void setMembers(List<CompoundedAttributeTypeMemberEntity> members) {
@@ -279,14 +279,14 @@ public class AttributeTypeEntity implements Serializable {
     @Transient
     public boolean isCompounded() {
 
-        return false == this.members.isEmpty();
+        return false == members.isEmpty();
     }
 
     @OneToMany(mappedBy = "attributeType")
     @MapKey(name = "language")
     public Map<String, AttributeTypeDescriptionEntity> getDescriptions() {
 
-        return this.descriptions;
+        return descriptions;
     }
 
     public void setDescriptions(Map<String, AttributeTypeDescriptionEntity> descriptions) {
@@ -301,7 +301,7 @@ public class AttributeTypeEntity implements Serializable {
     @ManyToOne
     public NodeEntity getLocation() {
 
-        return this.location;
+        return location;
     }
 
     public void setLocation(NodeEntity location) {
@@ -328,7 +328,7 @@ public class AttributeTypeEntity implements Serializable {
 
     public String getPluginConfiguration() {
 
-        return this.pluginConfiguration;
+        return pluginConfiguration;
     }
 
     public void setPluginConfiguration(String pluginConfiguration) {
@@ -338,7 +338,7 @@ public class AttributeTypeEntity implements Serializable {
 
     public String getPluginName() {
 
-        return this.pluginName;
+        return pluginName;
     }
 
     public void setPluginName(String pluginName) {
@@ -349,7 +349,7 @@ public class AttributeTypeEntity implements Serializable {
     @Transient
     public boolean isExternal() {
 
-        return null != this.pluginName;
+        return null != pluginName;
     }
 
     /**
@@ -358,7 +358,7 @@ public class AttributeTypeEntity implements Serializable {
      */
     public long getAttributeCacheTimeoutMillis() {
 
-        return this.attributeCacheTimeoutMillis;
+        return attributeCacheTimeoutMillis;
     }
 
     public void setAttributeCacheTimeoutMillis(long attributeCacheTimeoutMillis) {

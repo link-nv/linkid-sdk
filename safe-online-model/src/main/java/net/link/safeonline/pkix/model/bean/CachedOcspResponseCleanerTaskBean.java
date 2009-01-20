@@ -52,9 +52,9 @@ public class CachedOcspResponseCleanerTaskBean implements Task {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void perform() {
 
-        List<TrustDomainEntity> trustDomains = this.trustDomainDAO.listTrustDomains();
+        List<TrustDomainEntity> trustDomains = trustDomainDAO.listTrustDomains();
         for (TrustDomainEntity trustDomain : trustDomains) {
-            this.cachedOcspResponseDAO.clearOcspCachePerTrustDomain(trustDomain);
+            cachedOcspResponseDAO.clearOcspCachePerTrustDomain(trustDomain);
         }
 
     }

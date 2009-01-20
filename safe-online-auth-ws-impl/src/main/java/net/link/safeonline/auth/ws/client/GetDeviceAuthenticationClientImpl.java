@@ -50,36 +50,36 @@ public class GetDeviceAuthenticationClientImpl extends AbstractMessageAccessor i
     public GetDeviceAuthenticationClientImpl(String location) {
 
         GetDeviceAuthenticationService getDeviceAuthenticationService = GetDeviceAuthenticationServiceFactory.newInstance();
-        this.port = getDeviceAuthenticationService.getGetDeviceAuthenticationPort();
+        port = getDeviceAuthenticationService.getGetDeviceAuthenticationPort();
         this.location = location + "/get_auth";
 
         setEndpointAddress();
 
-        registerMessageLoggerHandler(this.port);
+        registerMessageLoggerHandler(port);
 
         // TODO: disable logging when finished
-        LoggingHandler.addNewHandler(this.port);
+        LoggingHandler.addNewHandler(port);
         setCaptureMessages(true);
     }
 
     private void setEndpointAddress() {
 
-        BindingProvider bindingProvider = (BindingProvider) this.port;
-        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location);
+        BindingProvider bindingProvider = (BindingProvider) port;
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location);
     }
 
     public W3CEndpointReference getInstance()
             throws WSClientTransportException {
 
-        LOG.debug("get instance of stateful authentication service at " + this.location);
+        LOG.debug("get instance of stateful authentication service at " + location);
 
         SafeOnlineTrustManager.configureSsl();
 
         AuthenticationGetInstanceResponseType response;
         try {
-            response = this.port.getInstance(new AuthenticationGetInstanceRequestType());
+            response = port.getInstance(new AuthenticationGetInstanceRequestType());
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(this.location);
+            throw new WSClientTransportException(location);
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {

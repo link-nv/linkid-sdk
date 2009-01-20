@@ -34,12 +34,12 @@ public class WSAuthenticationException extends Exception {
 
     public WSAuthenticationErrorCode getErrorCode() {
 
-        return this.errorCode;
+        return errorCode;
     }
 
     @Override
     public String getMessage() {
 
-        return this.message;
+        return message;
     }
 }

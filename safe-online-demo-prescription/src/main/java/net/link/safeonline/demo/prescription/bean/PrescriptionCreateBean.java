@@ -64,7 +64,7 @@ public class PrescriptionCreateBean extends AbstractPrescriptionDataClientBean i
 
     public List<String> getSelectedMedicines() {
 
-        return this.selectedMedicines;
+        return selectedMedicines;
     }
 
     public void setSelectedMedicines(List<String> selectedMedicines) {
@@ -86,18 +86,18 @@ public class PrescriptionCreateBean extends AbstractPrescriptionDataClientBean i
     @RolesAllowed(PrescriptionConstants.CARE_PROVIDER_ROLE)
     public String create() {
 
-        this.log.debug("create prescription for patient: #0", this.patient);
-        Principal careProviderPrincipal = this.sessionContext.getCallerPrincipal();
+        log.debug("create prescription for patient: #0", patient);
+        Principal careProviderPrincipal = sessionContext.getCallerPrincipal();
         String careProvider = careProviderPrincipal.getName();
         String careProviderName = super.getUsername(careProvider);
-        String patientName = super.getUsername(this.patient);
+        String patientName = super.getUsername(patient);
 
-        PrescriptionEntity prescription = new PrescriptionEntity(this.patient, patientName, careProvider, careProviderName);
-        this.entityManager.persist(prescription);
-        this.log.debug("prescription id: #0", prescription.getId());
-        for (String selectedMedicine : this.selectedMedicines) {
+        PrescriptionEntity prescription = new PrescriptionEntity(patient, patientName, careProvider, careProviderName);
+        entityManager.persist(prescription);
+        log.debug("prescription id: #0", prescription.getId());
+        for (String selectedMedicine : selectedMedicines) {
             PrescriptionMedicineEntity prescriptionMedicine = new PrescriptionMedicineEntity(prescription, selectedMedicine);
-            this.entityManager.persist(prescriptionMedicine);
+            entityManager.persist(prescriptionMedicine);
         }
         return "created";
     }
@@ -105,7 +105,7 @@ public class PrescriptionCreateBean extends AbstractPrescriptionDataClientBean i
     @Factory("patientName")
     public String patientNameFactory() {
 
-        String patientName = super.getUsername(this.patient);
+        String patientName = super.getUsername(patient);
         return patientName;
     }
 }

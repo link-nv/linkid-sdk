@@ -37,7 +37,7 @@ public class SMSManagedConnectionFactoryImpl implements SMSManagedConnectionFact
     public SMSManagedConnectionFactoryImpl() {
 
         LOG.debug("Factory created");
-        this.serialPorts = new ArrayList<String>();
+        serialPorts = new ArrayList<String>();
     }
 
     public Object createConnectionFactory() {
@@ -56,13 +56,13 @@ public class SMSManagedConnectionFactoryImpl implements SMSManagedConnectionFact
             throws ResourceException {
 
         LOG.debug("Creating a managed connection");
-        if (this.serialPorts.size() == 0) {
+        if (serialPorts.size() == 0) {
             LOG.debug("Failed");
             throw new ResourceAllocationException();
         }
         LOG.debug("Success");
-        ManagedConnection managedConnection = new SMSManagedConnectionImpl(this.serialPorts.get(0));
-        this.serialPorts.remove(0);
+        ManagedConnection managedConnection = new SMSManagedConnectionImpl(serialPorts.get(0));
+        serialPorts.remove(0);
         return managedConnection;
     }
 
@@ -88,7 +88,7 @@ public class SMSManagedConnectionFactoryImpl implements SMSManagedConnectionFact
     public void addSerialPort(String serialPort) {
 
         LOG.debug("Adding a serial port");
-        this.serialPorts.add(serialPort);
+        serialPorts.add(serialPort);
     }
 
 }

@@ -64,13 +64,13 @@ public class DeviceClassDescriptionEntity implements Serializable {
         this.deviceClass = deviceClass;
         this.language = language;
         this.description = description;
-        this.pk = new DeviceClassDescriptionPK(deviceClass.getName(), language);
+        pk = new DeviceClassDescriptionPK(deviceClass.getName(), language);
     }
 
     @Column(name = LANGUAGE_COLUMN_NAME, insertable = false, updatable = false)
     public String getLanguage() {
 
-        return this.language;
+        return language;
     }
 
     public void setLanguage(String language) {
@@ -80,7 +80,7 @@ public class DeviceClassDescriptionEntity implements Serializable {
 
     public String getDescription() {
 
-        return this.description;
+        return description;
     }
 
     public void setDescription(String description) {
@@ -93,7 +93,7 @@ public class DeviceClassDescriptionEntity implements Serializable {
             @AttributeOverride(name = "language", column = @Column(name = LANGUAGE_COLUMN_NAME)) })
     public DeviceClassDescriptionPK getPk() {
 
-        return this.pk;
+        return pk;
     }
 
     public void setPk(DeviceClassDescriptionPK pk) {
@@ -105,7 +105,7 @@ public class DeviceClassDescriptionEntity implements Serializable {
     @JoinColumn(name = DEVICE_CLASS_COLUMN_NAME, insertable = false, updatable = false)
     public DeviceClassEntity getDeviceClass() {
 
-        return this.deviceClass;
+        return deviceClass;
     }
 
     public void setDeviceClass(DeviceClassEntity deviceClass) {
@@ -116,7 +116,7 @@ public class DeviceClassDescriptionEntity implements Serializable {
     @Transient
     public String getDeviceClassName() {
 
-        return this.pk.getDeviceClassName();
+        return pk.getDeviceClassName();
     }
 
     @Override
@@ -129,19 +129,19 @@ public class DeviceClassDescriptionEntity implements Serializable {
         if (false == obj instanceof DeviceClassDescriptionEntity)
             return false;
         DeviceClassDescriptionEntity rhs = (DeviceClassDescriptionEntity) obj;
-        return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
+        return new EqualsBuilder().append(pk, rhs.pk).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.pk).toHashCode();
+        return new HashCodeBuilder().append(pk).toHashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("pk", this.pk).append("description", this.description).toString();
+        return new ToStringBuilder(this).append("pk", pk).append("description", description).toString();
     }
 
 

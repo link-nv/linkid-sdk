@@ -110,7 +110,7 @@ public class HelpPage extends TemplatePage {
                 @Override
                 public void onClick() {
 
-                    HelpPage.this.helpdeskId = HelpdeskLogger.persistContext(HelpPage.this.returnPage.getClassRelativePath(),
+                    helpdeskId = HelpdeskLogger.persistContext(returnPage.getClassRelativePath(),
                             WicketUtil.getHttpSession(getRequest()));
 
                 }
@@ -124,7 +124,7 @@ public class HelpPage extends TemplatePage {
         @Override
         public boolean isVisible() {
 
-            return HelpPage.this.helpdeskId.equals(EMPTY_HELPDESK_ID);
+            return helpdeskId.equals(EMPTY_HELPDESK_ID);
         }
     }
 
@@ -139,9 +139,9 @@ public class HelpPage extends TemplatePage {
 
             add(new Label(IDENTIFIER_LABEL_ID, new PropertyModel<String>(HelpPage.this, "helpdeskId")));
 
-            add(new Label(PHONE_LABEL_ID, HelpPage.this.contact.getPhone()));
+            add(new Label(PHONE_LABEL_ID, contact.getPhone()));
 
-            add(new Label(EMAIL_LABEL_ID, HelpPage.this.contact.getEmail()));
+            add(new Label(EMAIL_LABEL_ID, contact.getEmail()));
         }
 
         /**
@@ -150,7 +150,7 @@ public class HelpPage extends TemplatePage {
         @Override
         public boolean isVisible() {
 
-            return !HelpPage.this.helpdeskId.equals(EMPTY_HELPDESK_ID);
+            return !helpdeskId.equals(EMPTY_HELPDESK_ID);
         }
     }
 }

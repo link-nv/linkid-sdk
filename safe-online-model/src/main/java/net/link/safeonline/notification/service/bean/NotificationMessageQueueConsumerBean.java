@@ -77,18 +77,18 @@ public class NotificationMessageQueueConsumerBean implements MessageListener {
             notificationMessage = new NotificationMessage(message);
         } catch (JMSException e) {
             LOG.debug("received bogus JMS message, rejecting ...");
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, "bogus notification message on notifications queue");
+            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, "bogus notification message on notifications queue");
             return;
         }
 
-        EndpointReferenceEntity consumer = this.endpointReferenceDAO.findEndpointReference(notificationMessage.getConsumerId());
+        EndpointReferenceEntity consumer = endpointReferenceDAO.findEndpointReference(notificationMessage.getConsumerId());
         try {
             MessageHandlerManager.sendMessage(notificationMessage, consumer);
         } catch (WSClientTransportException e) {
             String msg = "Failed to send messsage for topic " + notificationMessage.getTopic() + " to consumer: " + e.getLocation();
             LOG.debug(msg);
-            this.resourceAuditLogger.addResourceAudit(ResourceNameType.WS, ResourceLevelType.RESOURCE_UNAVAILABLE, e.getLocation(), msg);
-            this.notificationMessageDAO.addNotificationAttempt(notificationMessage, consumer);
+            resourceAuditLogger.addResourceAudit(ResourceNameType.WS, ResourceLevelType.RESOURCE_UNAVAILABLE, e.getLocation(), msg);
+            notificationMessageDAO.addNotificationAttempt(notificationMessage, consumer);
             /*
              * NotificationMessageEntity notificationMessageEntity = this.notificationMessageDAO.findNotificationMessage(
              * notificationMessage, consumer); if (null == notificationMessageEntity) {
@@ -101,17 +101,17 @@ public class NotificationMessageQueueConsumerBean implements MessageListener {
             String msg = "no message handler found for notification message on notifications queue, topic="
                     + notificationMessage.getTopic();
             LOG.debug(msg);
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, msg);
+            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, msg);
             return;
         }
 
         /*
          * If persisted, remove so we do not send it again
          */
-        NotificationMessageEntity notificationMessageEntity = this.notificationMessageDAO.findNotificationMessage(notificationMessage,
+        NotificationMessageEntity notificationMessageEntity = notificationMessageDAO.findNotificationMessage(notificationMessage,
                 consumer);
         if (null != notificationMessageEntity) {
-            this.notificationMessageDAO.removeNotificationMessage(notificationMessageEntity);
+            notificationMessageDAO.removeNotificationMessage(notificationMessageEntity);
         }
 
     }

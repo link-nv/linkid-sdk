@@ -62,31 +62,31 @@ public class IdentityServletTest {
     public void setUp()
             throws Exception {
 
-        this.jndiTestUtils = new JndiTestUtils();
-        this.jndiTestUtils.setUp();
+        jndiTestUtils = new JndiTestUtils();
+        jndiTestUtils.setUp();
 
-        this.mockBeIdDeviceServiceBean = createMock(BeIdDeviceService.class);
-        this.jndiTestUtils.bindComponent(BeIdDeviceService.JNDI_BINDING, this.mockBeIdDeviceServiceBean);
+        mockBeIdDeviceServiceBean = createMock(BeIdDeviceService.class);
+        jndiTestUtils.bindComponent(BeIdDeviceService.JNDI_BINDING, mockBeIdDeviceServiceBean);
 
-        this.mockSamlAuthorityService = createMock(SamlAuthorityService.class);
-        this.jndiTestUtils.bindComponent(SamlAuthorityService.JNDI_BINDING, this.mockSamlAuthorityService);
+        mockSamlAuthorityService = createMock(SamlAuthorityService.class);
+        jndiTestUtils.bindComponent(SamlAuthorityService.JNDI_BINDING, mockSamlAuthorityService);
 
-        this.servletTestManager = new ServletTestManager();
-        this.servletTestManager.setUp(IdentityServlet.class);
-        this.servletTestManager.setSessionAttribute(DeviceOperationManager.USERID_SESSION_ATTRIBUTE, UUID.randomUUID().toString());
-        this.servletTestManager.setSessionAttribute(DeviceOperationManager.DEVICE_OPERATION_SESSION_ATTRIBUTE,
+        servletTestManager = new ServletTestManager();
+        servletTestManager.setUp(IdentityServlet.class);
+        servletTestManager.setSessionAttribute(DeviceOperationManager.USERID_SESSION_ATTRIBUTE, UUID.randomUUID().toString());
+        servletTestManager.setSessionAttribute(DeviceOperationManager.DEVICE_OPERATION_SESSION_ATTRIBUTE,
                 DeviceOperationType.REGISTER.name());
-        this.location = this.servletTestManager.getServletLocation();
+        location = servletTestManager.getServletLocation();
 
-        this.httpClient = new HttpClient();
+        httpClient = new HttpClient();
     }
 
     @After
     public void tearDown()
             throws Exception {
 
-        this.servletTestManager.tearDown();
-        this.jndiTestUtils.tearDown();
+        servletTestManager.tearDown();
+        jndiTestUtils.tearDown();
     }
 
     @Test
@@ -94,10 +94,10 @@ public class IdentityServletTest {
             throws Exception {
 
         // setup
-        PostMethod postMethod = new PostMethod(this.location);
+        PostMethod postMethod = new PostMethod(location);
 
         // operate
-        int result = this.httpClient.executeMethod(postMethod);
+        int result = httpClient.executeMethod(postMethod);
 
         // verify
         LOG.debug("result: " + result);
@@ -110,10 +110,10 @@ public class IdentityServletTest {
             throws Exception {
 
         // setup
-        GetMethod getMethod = new GetMethod(this.location);
+        GetMethod getMethod = new GetMethod(location);
 
         // operate
-        int result = this.httpClient.executeMethod(getMethod);
+        int result = httpClient.executeMethod(getMethod);
 
         // verify
         LOG.debug("result: " + result);
@@ -125,24 +125,24 @@ public class IdentityServletTest {
             throws Exception {
 
         // setup
-        PostMethod postMethod = new PostMethod(this.location);
+        PostMethod postMethod = new PostMethod(location);
         RequestEntity requestEntity = new StringRequestEntity("test-message", "application/octet-stream", null);
         postMethod.setRequestEntity(requestEntity);
 
         // expectations
-        this.mockBeIdDeviceServiceBean.register((String) EasyMock.anyObject(), (String) EasyMock.anyObject(),
+        mockBeIdDeviceServiceBean.register((String) EasyMock.anyObject(), (String) EasyMock.anyObject(),
                 (String) EasyMock.anyObject(), EasyMock.aryEq("test-message".getBytes()));
-        EasyMock.expect(this.mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
+        EasyMock.expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
-        replay(this.mockBeIdDeviceServiceBean);
+        replay(mockBeIdDeviceServiceBean);
 
         // operate
-        int result = this.httpClient.executeMethod(postMethod);
+        int result = httpClient.executeMethod(postMethod);
 
         // verify
         assertEquals(HttpServletResponse.SC_OK, result);
-        verify(this.mockBeIdDeviceServiceBean);
+        verify(mockBeIdDeviceServiceBean);
     }
 
     @Test
@@ -150,7 +150,7 @@ public class IdentityServletTest {
             throws Exception {
 
         // setup
-        URL url = new URL(this.location);
+        URL url = new URL(location);
         HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
 
         httpURLConnection.setRequestMethod("POST");
@@ -165,12 +165,12 @@ public class IdentityServletTest {
         httpURLConnection.disconnect();
 
         // expectations
-        this.mockBeIdDeviceServiceBean.register((String) EasyMock.anyObject(), (String) EasyMock.anyObject(),
+        mockBeIdDeviceServiceBean.register((String) EasyMock.anyObject(), (String) EasyMock.anyObject(),
                 (String) EasyMock.anyObject(), EasyMock.aryEq("test-message".getBytes()));
-        EasyMock.expect(this.mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
+        EasyMock.expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
-        replay(this.mockBeIdDeviceServiceBean);
+        replay(mockBeIdDeviceServiceBean);
 
         // operate
         int responseCode = httpURLConnection.getResponseCode();
@@ -178,6 +178,6 @@ public class IdentityServletTest {
         // verify
         LOG.debug("response code: " + responseCode);
         assertEquals(HttpServletResponse.SC_OK, responseCode);
-        verify(this.mockBeIdDeviceServiceBean);
+        verify(mockBeIdDeviceServiceBean);
     }
 }

@@ -67,9 +67,9 @@ public class LayoutPage extends WebPage {
             super(id);
 
             add(new OlasLogoutLink("logout"));
-            add(new Label("name", this.name = new Model<String>()));
-            add(new Label("nrn", this.nrn = new Model<String>()));
-            add(new Label("junior", this.junior = new Model<Boolean>(false)) {
+            add(new Label("name", name = new Model<String>()));
+            add(new Label("nrn", nrn = new Model<String>()));
+            add(new Label("junior", junior = new Model<Boolean>(false)) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -79,7 +79,7 @@ public class LayoutPage extends WebPage {
 
                     super.onComponentTag(tag);
 
-                    if (UserInfo.this.junior.getObject()) {
+                    if (junior.getObject()) {
                         tag.put("class", "selected");
                     }
                 }
@@ -87,14 +87,14 @@ public class LayoutPage extends WebPage {
                 @Override
                 protected void onComponentTagBody(MarkupStream markupStream, ComponentTag openTag) {
 
-                    replaceComponentTagBody(markupStream, openTag, UserInfo.this.junior.getObject()? "Junior Discount": "No Discount");
+                    replaceComponentTagBody(markupStream, openTag, junior.getObject()? "Junior Discount": "No Discount");
                 }
             });
 
             if (CinemaSession.isUserSet()) {
-                this.name.setObject(CinemaSession.get().getUser().getName());
-                this.nrn.setObject(CinemaSession.get().getUser().getNrn());
-                this.junior.setObject(CinemaSession.get().getUser().isJunior());
+                name.setObject(CinemaSession.get().getUser().getName());
+                nrn.setObject(CinemaSession.get().getUser().getNrn());
+                junior.setObject(CinemaSession.get().getUser().isJunior());
             } else {
                 setVisible(false);
             }
@@ -133,7 +133,7 @@ public class LayoutPage extends WebPage {
 
             super(id);
 
-            add(new Label("name", this.name = new Model<String>()));
+            add(new Label("name", name = new Model<String>()));
             add(new Link<String>("delete") {
 
                 private static final long serialVersionUID = 1L;
@@ -149,7 +149,7 @@ public class LayoutPage extends WebPage {
 
             // Put film name in label or hide if no film selected.
             if (CinemaSession.isFilmSet()) {
-                this.name.setObject(CinemaSession.get().getFilm().getName());
+                name.setObject(CinemaSession.get().getFilm().getName());
             } else {
                 setVisible(false);
             }
@@ -166,7 +166,7 @@ public class LayoutPage extends WebPage {
 
             super(id);
 
-            add(new Label("name", this.name = new Model<String>()));
+            add(new Label("name", name = new Model<String>()));
             add(new Link<String>("delete") {
 
                 private static final long serialVersionUID = 1L;
@@ -182,7 +182,7 @@ public class LayoutPage extends WebPage {
 
             // Put theatre name in label or hide if no theatre selected.
             if (CinemaSession.isTheaterSet()) {
-                this.name.setObject(CinemaSession.get().getTheatre().getName());
+                name.setObject(CinemaSession.get().getTheatre().getName());
             } else {
                 setVisible(false);
             }
@@ -199,7 +199,7 @@ public class LayoutPage extends WebPage {
 
             super(id);
 
-            add(new Label("time", this.time = new Model<String>()));
+            add(new Label("time", time = new Model<String>()));
             add(new Link<String>("delete") {
 
                 private static final long serialVersionUID = 1L;
@@ -215,7 +215,7 @@ public class LayoutPage extends WebPage {
 
             // Put time in label (formatted) or hide if no time selected.
             if (CinemaSession.isTimeSet()) {
-                this.time.setObject(WicketUtil.format(getLocale(), CinemaSession.get().getTime()));
+                time.setObject(WicketUtil.format(getLocale(), CinemaSession.get().getTime()));
             } else {
                 setVisible(false);
             }
@@ -232,7 +232,7 @@ public class LayoutPage extends WebPage {
 
             super(id);
 
-            add(new Label("name", this.name = new Model<String>()));
+            add(new Label("name", name = new Model<String>()));
             add(new Link<String>("delete") {
 
                 private static final long serialVersionUID = 1L;
@@ -248,7 +248,7 @@ public class LayoutPage extends WebPage {
 
             // Put name of the room in label or hide if no room selected.
             if (CinemaSession.isRoomSet()) {
-                this.name.setObject(CinemaSession.get().getRoom().getName());
+                name.setObject(CinemaSession.get().getRoom().getName());
             } else {
                 setVisible(false);
             }
@@ -265,7 +265,7 @@ public class LayoutPage extends WebPage {
 
             super(id);
 
-            add(new Label("price", this.price = new Model<String>()));
+            add(new Label("price", price = new Model<String>()));
 
             // Check to see if our ticket data is complete - if so, create a ticket.
             if (!CinemaSession.isTicketSet()) {
@@ -273,12 +273,12 @@ public class LayoutPage extends WebPage {
                         && CinemaSession.isUserSet()) {
                     try {
                         CinemaSession.get().setTicket(
-                                LayoutPage.this.ticketService.createTicket(CinemaSession.get().getUser(), CinemaSession.get().getFilm(),
+                                ticketService.createTicket(CinemaSession.get().getUser(), CinemaSession.get().getFilm(),
                                         CinemaSession.get().getTime(), CinemaSession.get().getOccupation()));
                     }
 
                     catch (IllegalStateException e) {
-                        LayoutPage.this.LOG.error("Removing seat selection.", e);
+                        LOG.error("Removing seat selection.", e);
                         CinemaSession.get().toggleSeat(CinemaSession.get().getOccupation().getSeat());
                     }
                 }
@@ -286,8 +286,8 @@ public class LayoutPage extends WebPage {
 
             // Put price in label or hide if ticket is not complete.
             if (CinemaSession.isTicketSet()) {
-                this.price.setObject(WicketUtil.format(CinemaSession.CURRENCY,
-                        LayoutPage.this.ticketService.calculatePrice(CinemaSession.get().getTicket())));
+                price.setObject(WicketUtil.format(CinemaSession.CURRENCY,
+                        ticketService.calculatePrice(CinemaSession.get().getTicket())));
             } else {
                 setVisible(false);
             }
@@ -307,9 +307,9 @@ public class LayoutPage extends WebPage {
                     String paymentUsername = CinemaSession.get().getUser().getName();
                     CinemaTicketEntity ticket = CinemaSession.get().getTicket();
                     double paymentPrice = ticket.getPrice();
-                    String paymentMessage = String.format("Viewing of %s at %s in %s.", LayoutPage.this.ticketService.getFilmName(ticket),
+                    String paymentMessage = String.format("Viewing of %s at %s in %s.", ticketService.getFilmName(ticket),
                             WicketUtil.format(getLocale(), new Date(ticket.getTime())),
-                            LayoutPage.this.ticketService.getTheatreName(ticket));
+                            ticketService.getTheatreName(ticket));
                     String paymentTargetUrl = RequestUtils.toAbsolutePath(RequestCycle.get().urlFor(
                             new BookmarkablePageRequestTarget(TicketPage.class)).toString());
 
@@ -336,7 +336,7 @@ public class LayoutPage extends WebPage {
 
                         // FIXME: Cheat by reserving ticket before payment has
                         // actually been completed.
-                        LayoutPage.this.ticketService.reserve(CinemaSession.get().getTicket());
+                        ticketService.reserve(CinemaSession.get().getTicket());
                         CinemaSession.get().resetTicket();
 
                         // Redirect user to demo-payment.
@@ -344,7 +344,7 @@ public class LayoutPage extends WebPage {
                     }
 
                     catch (UnsupportedEncodingException e) {
-                        LayoutPage.this.LOG.error("URL encoding error", e);
+                        LOG.error("URL encoding error", e);
                     }
                 }
             });

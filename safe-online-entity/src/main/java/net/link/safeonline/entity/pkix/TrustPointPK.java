@@ -41,7 +41,7 @@ public class TrustPointPK implements Serializable {
 
     public TrustPointPK(TrustDomainEntity trustDomain, String subjectName, String keyId) {
 
-        this.domain = trustDomain.getId();
+        domain = trustDomain.getId();
         this.subjectName = subjectName;
         if (null == keyId || keyId.equals("")) {
             this.keyId = subjectName;
@@ -55,12 +55,12 @@ public class TrustPointPK implements Serializable {
         String newSubjectName = getSubjectName(certificate);
         String newKeyId = getSubjectKeyId(certificate);
 
-        this.domain = trustDomain.getId();
-        this.subjectName = newSubjectName;
+        domain = trustDomain.getId();
+        subjectName = newSubjectName;
         if (null == newKeyId || newKeyId.equals("")) {
-            this.keyId = newSubjectName;
+            keyId = newSubjectName;
         } else {
-            this.keyId = newKeyId;
+            keyId = newKeyId;
         }
     }
 
@@ -89,17 +89,17 @@ public class TrustPointPK implements Serializable {
 
     public String getSubjectName() {
 
-        return this.subjectName;
+        return subjectName;
     }
 
     public void setSubjectName(String application) {
 
-        this.subjectName = application;
+        subjectName = application;
     }
 
     public long getDomain() {
 
-        return this.domain;
+        return domain;
     }
 
     public void setDomain(long domain) {
@@ -109,7 +109,7 @@ public class TrustPointPK implements Serializable {
 
     public String getKeyId() {
 
-        return this.keyId;
+        return keyId;
     }
 
     public void setKeyId(String keyId) {
@@ -125,20 +125,20 @@ public class TrustPointPK implements Serializable {
         if (false == obj instanceof TrustPointPK)
             return false;
         TrustPointPK rhs = (TrustPointPK) obj;
-        return new EqualsBuilder().append(this.domain, rhs.domain).append(this.subjectName, rhs.subjectName).append(this.keyId, rhs.keyId)
+        return new EqualsBuilder().append(domain, rhs.domain).append(subjectName, rhs.subjectName).append(keyId, rhs.keyId)
                                   .isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.domain).append(this.subjectName).append(this.keyId).toHashCode();
+        return new HashCodeBuilder().append(domain).append(subjectName).append(keyId).toHashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("domain", this.domain).append("subject name", this.subjectName)
-                                        .append("key id", this.keyId).toString();
+        return new ToStringBuilder(this).append("domain", domain).append("subject name", subjectName)
+                                        .append("key id", keyId).toString();
     }
 }

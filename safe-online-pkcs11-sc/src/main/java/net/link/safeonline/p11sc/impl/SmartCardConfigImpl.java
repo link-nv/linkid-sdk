@@ -37,22 +37,22 @@ public class SmartCardConfigImpl implements SmartCardConfig {
         public Pkcs11Platform(String platformMatch) {
 
             this.platformMatch = platformMatch;
-            this.driverLocations = new LinkedList<File>();
+            driverLocations = new LinkedList<File>();
         }
 
         public String getPlatformMatch() {
 
-            return this.platformMatch;
+            return platformMatch;
         }
 
         public List<File> getDriverLocations() {
 
-            return this.driverLocations;
+            return driverLocations;
         }
 
         public void addDriverLocation(File driverLocation) {
 
-            this.driverLocations.add(driverLocation);
+            driverLocations.add(driverLocation);
         }
 
         public void addDriverLocation(String driverLocation) {
@@ -66,22 +66,22 @@ public class SmartCardConfigImpl implements SmartCardConfig {
     public SmartCardConfigImpl(String cardAlias) {
 
         this.cardAlias = cardAlias;
-        this.pkcs11DriverLocations = new LinkedList<Pkcs11Platform>();
+        pkcs11DriverLocations = new LinkedList<Pkcs11Platform>();
     }
 
     public String getCardAlias() {
 
-        return this.cardAlias;
+        return cardAlias;
     }
 
     public String getAuthenticationKeyAlias() {
 
-        return this.authenticationKeyAlias;
+        return authenticationKeyAlias;
     }
 
     public String getSignatureKeyAlias() {
 
-        return this.signatureKeyAlias;
+        return signatureKeyAlias;
     }
 
     public void setAuthenticationKeyAlias(String authenticationKeyAlias) {
@@ -97,7 +97,7 @@ public class SmartCardConfigImpl implements SmartCardConfig {
     public List<File> getPkcs11DriverLocations(String platform) {
 
         List<File> driverLocations = new LinkedList<File>();
-        for (Pkcs11Platform pkcs11Platform : this.pkcs11DriverLocations) {
+        for (Pkcs11Platform pkcs11Platform : pkcs11DriverLocations) {
             if (false == platform.matches(pkcs11Platform.getPlatformMatch())) {
                 continue;
             }
@@ -114,12 +114,12 @@ public class SmartCardConfigImpl implements SmartCardConfig {
             driverLocation = driverLocation.trim();
             platform.addDriverLocation(driverLocation);
         }
-        this.pkcs11DriverLocations.add(platform);
+        pkcs11DriverLocations.add(platform);
     }
 
     public String getIdentityExtractorClassname() {
 
-        return this.identityExtractorClassname;
+        return identityExtractorClassname;
     }
 
     public void setIdentityExtractorClassname(String identityExtractorClassname) {

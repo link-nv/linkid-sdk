@@ -89,14 +89,14 @@ public class ResourceAuditEntity implements Serializable {
         this.resourceLevel = resourceLevel;
         this.sourceComponent = sourceComponent;
         this.message = message;
-        this.eventDate = new Date();
+        eventDate = new Date();
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Long getId() {
 
-        return this.id;
+        return id;
     }
 
     public void setId(Long id) {
@@ -106,7 +106,7 @@ public class ResourceAuditEntity implements Serializable {
 
     public String getMessage() {
 
-        return this.message;
+        return message;
     }
 
     public void setMessage(String message) {
@@ -117,7 +117,7 @@ public class ResourceAuditEntity implements Serializable {
     @Temporal(value = TemporalType.TIMESTAMP)
     public Date getEventDate() {
 
-        return this.eventDate;
+        return eventDate;
     }
 
     public void setEventDate(Date eventDate) {
@@ -128,7 +128,7 @@ public class ResourceAuditEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     public ResourceNameType getResourceName() {
 
-        return this.resourceName;
+        return resourceName;
     }
 
     public void setResourceName(ResourceNameType resourceName) {
@@ -139,7 +139,7 @@ public class ResourceAuditEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     public ResourceLevelType getResourceLevel() {
 
-        return this.resourceLevel;
+        return resourceLevel;
     }
 
     public void setResourceLevel(ResourceLevelType resourceLevel) {
@@ -150,7 +150,7 @@ public class ResourceAuditEntity implements Serializable {
     @ManyToOne
     public AuditContextEntity getAuditContext() {
 
-        return this.auditContext;
+        return auditContext;
     }
 
     public void setAuditContext(AuditContextEntity auditContext) {
@@ -160,7 +160,7 @@ public class ResourceAuditEntity implements Serializable {
 
     public String getSourceComponent() {
 
-        return this.sourceComponent;
+        return sourceComponent;
     }
 
     public void setSourceComponent(String sourceComponent) {

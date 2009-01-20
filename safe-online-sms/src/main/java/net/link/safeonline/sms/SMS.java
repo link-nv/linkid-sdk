@@ -37,7 +37,7 @@ public class SMS {
 
     public String getFrom() {
 
-        return this.from;
+        return from;
     }
 
     public void setFrom(String from) {
@@ -47,7 +47,7 @@ public class SMS {
 
     public String getTo() {
 
-        return this.to;
+        return to;
     }
 
     public void setTo(String to) {
@@ -57,7 +57,7 @@ public class SMS {
 
     public String getMessage() {
 
-        return this.message;
+        return message;
     }
 
     public void setMessage(String message) {
@@ -72,13 +72,13 @@ public class SMS {
             ba.write(0x00); // length of SMSC info
             ba.write(0x01); // this is a SMS-SUBMIT message
             ba.write(0x00); // message reference
-            ba.write(this.to.length()); // telephone number length
+            ba.write(to.length()); // telephone number length
             ba.write(0x91); // indicates an international phone number
-            ba.write(telToBytes(this.to)); // telephone number
+            ba.write(telToBytes(to)); // telephone number
             ba.write(0x00); // protocol identifier
             ba.write(0x00); // Data coding scheme
-            ba.write(this.message.length()); // length of message
-            ba.write(msgToBytes(this.message)); // message
+            ba.write(message.length()); // length of message
+            ba.write(msgToBytes(message)); // message
         } catch (Exception e) {
             LOG.info("Exception while creating SMS encoding");
             LOG.debug(e.getMessage());

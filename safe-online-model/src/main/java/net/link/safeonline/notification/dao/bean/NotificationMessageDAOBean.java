@@ -44,7 +44,7 @@ public class NotificationMessageDAOBean implements NotificationMessageDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, NotificationMessageEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, NotificationMessageEntity.QueryInterface.class);
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -53,7 +53,7 @@ public class NotificationMessageDAOBean implements NotificationMessageDAO {
         LOG.debug("persist notification message");
         NotificationMessageEntity notificationMessageEntity = new NotificationMessageEntity(notificationMessage.getTopic(), consumer,
                 notificationMessage.getSubject(), notificationMessage.getContent());
-        this.entityManager.persist(notificationMessageEntity);
+        entityManager.persist(notificationMessageEntity);
         return notificationMessageEntity;
     }
 
@@ -63,13 +63,13 @@ public class NotificationMessageDAOBean implements NotificationMessageDAO {
         LOG.debug("find notification message topic: " + message.getTopic() + " subject: " + message.getSubject() + " content: "
                 + message.getContent() + " consumerId: " + consumer.getId());
         if (null == message.getSubject() && null == message.getContent())
-            return this.queryObject.findNotificationMessage(message.getTopic(), consumer);
+            return queryObject.findNotificationMessage(message.getTopic(), consumer);
         else if (null == message.getSubject())
-            return this.queryObject.findNotificationMessageWhereContent(message.getTopic(), consumer, message.getContent());
+            return queryObject.findNotificationMessageWhereContent(message.getTopic(), consumer, message.getContent());
         else if (null == message.getContent())
-            return this.queryObject.findNotificationMessageWhereSubject(message.getTopic(), consumer, message.getSubject());
+            return queryObject.findNotificationMessageWhereSubject(message.getTopic(), consumer, message.getSubject());
         else
-            return this.queryObject.findNotificationMessage(message.getTopic(), consumer, message.getSubject(), message.getContent());
+            return queryObject.findNotificationMessage(message.getTopic(), consumer, message.getSubject(), message.getContent());
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -97,7 +97,7 @@ public class NotificationMessageDAOBean implements NotificationMessageDAO {
     public void removeNotificationMessage(NotificationMessageEntity notificationMessageEntity) {
 
         LOG.debug("remove notification message");
-        this.entityManager.remove(notificationMessageEntity);
+        entityManager.remove(notificationMessageEntity);
 
     }
 
@@ -105,7 +105,7 @@ public class NotificationMessageDAOBean implements NotificationMessageDAO {
     public List<NotificationMessageEntity> listNotificationMessages() {
 
         LOG.debug("list notification messages");
-        return this.queryObject.listNotificationMessages();
+        return queryObject.listNotificationMessages();
     }
 
 }

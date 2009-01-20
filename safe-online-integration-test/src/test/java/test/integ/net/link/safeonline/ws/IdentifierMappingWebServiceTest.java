@@ -74,8 +74,8 @@ public class IdentifierMappingWebServiceTest {
             throws Exception {
 
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        this.certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test" + UUID.randomUUID().toString());
-        this.privateKey = keyPair.getPrivate();
+        certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test" + UUID.randomUUID().toString());
+        privateKey = keyPair.getPrivate();
     }
 
     @Test
@@ -105,12 +105,12 @@ public class IdentifierMappingWebServiceTest {
 
         String adminUserId = subjectService.getSubjectFromUserName(SafeOnlineConstants.ADMIN_LOGIN).getUserId();
         IntegrationTestUtils.login(adminUserId, "admin");
-        pkiService.addTrustPoint(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, this.certificate.getEncoded());
+        pkiService.addTrustPoint(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate.getEncoded());
 
         // operate: add application with certificate
         ApplicationService applicationService = getApplicationService(initialContext);
         applicationService.addApplication(testApplicationName, null, "owner", null, true, IdScopeType.USER, null, null,
-                this.certificate.getEncoded(), Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
+                certificate.getEncoded(), Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
                         IntegrationTestUtils.NAME_ATTRIBUTE) }), false, false, false, null);
 
         // operate: subscribe onto the application and confirm identity usage
@@ -121,8 +121,8 @@ public class IdentifierMappingWebServiceTest {
         identityService.confirmIdentity(testApplicationName);
 
         // operate & verify
-        NameIdentifierMappingClient client = new NameIdentifierMappingClientImpl("https://localhost:8443", this.certificate,
-                this.privateKey);
+        NameIdentifierMappingClient client = new NameIdentifierMappingClientImpl("https://localhost:8443", certificate,
+                privateKey);
         client.setCaptureMessages(false);
         String resultUserId = client.getUserId(login);
         LOG.debug("userId: " + resultUserId);
@@ -165,12 +165,12 @@ public class IdentifierMappingWebServiceTest {
         LOG.debug("admin userId: " + adminUserId);
 
         IntegrationTestUtils.login(adminUserId, "admin");
-        pkiService.addTrustPoint(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, this.certificate.getEncoded());
+        pkiService.addTrustPoint(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate.getEncoded());
 
         // operate: add application with certificate
         ApplicationService applicationService = getApplicationService(initialContext);
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null,
-                this.certificate.getEncoded(), Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
+                certificate.getEncoded(), Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
                         IntegrationTestUtils.NAME_ATTRIBUTE) }), false, false, false, null);
 
         // operate: subscribe onto the application and confirm identity usage
@@ -181,8 +181,8 @@ public class IdentifierMappingWebServiceTest {
         identityService.confirmIdentity(testApplicationName);
 
         // operate & verify
-        NameIdentifierMappingClient client = new NameIdentifierMappingClientImpl("https://localhost:8443", this.certificate,
-                this.privateKey);
+        NameIdentifierMappingClient client = new NameIdentifierMappingClientImpl("https://localhost:8443", certificate,
+                privateKey);
         try {
             client.getUserId(login);
             fail();

@@ -82,13 +82,13 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
     public AttributeClientImpl(String location, X509Certificate clientCertificate, PrivateKey clientPrivateKey) {
 
         SAMLAttributeService attributeService = SAMLAttributeServiceFactory.newInstance();
-        this.port = attributeService.getSAMLAttributePort();
+        port = attributeService.getSAMLAttributePort();
         this.location = location + "/safe-online-ws/attrib";
 
         setEndpointAddress();
 
-        registerMessageLoggerHandler(this.port);
-        WSSecurityClientHandler.addNewHandler(this.port, clientCertificate, clientPrivateKey);
+        registerMessageLoggerHandler(port);
+        WSSecurityClientHandler.addNewHandler(port, clientCertificate, clientPrivateKey);
     }
 
     public <T> T getAttributeValue(String userId, String attributeName, Class<T> valueClass)
@@ -182,13 +182,13 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
             throws WSClientTransportException {
 
         try {
-            return this.port.attributeQuery(request);
+            return port.attributeQuery(request);
         } catch (ClientTransportException e) {
-            throw new WSClientTransportException(this.location);
+            throw new WSClientTransportException(location);
         } catch (Exception e) {
             throw retrieveHeadersFromException(e);
         } finally {
-            retrieveHeadersFromPort(this.port);
+            retrieveHeadersFromPort(port);
         }
     }
 
@@ -221,9 +221,9 @@ public class AttributeClientImpl extends AbstractMessageAccessor implements Attr
 
     private void setEndpointAddress() {
 
-        BindingProvider bindingProvider = (BindingProvider) this.port;
+        BindingProvider bindingProvider = (BindingProvider) port;
 
-        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, this.location);
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location);
     }
 
     private AttributeQueryType getAttributeQuery(String subjectLogin, String attributeName) {

@@ -70,14 +70,14 @@ public class AttributeTypeServiceBean implements AttributeTypeService, Attribute
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public List<AttributeTypeEntity> listAttributeTypes() {
 
-        List<AttributeTypeEntity> attributeTypes = this.attributeTypeDAO.listAttributeTypes();
+        List<AttributeTypeEntity> attributeTypes = attributeTypeDAO.listAttributeTypes();
         return attributeTypes;
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public List<AttributeTypeEntity> listAttributeTypes(DatatypeType datatype) {
 
-        List<AttributeTypeEntity> attributeTypes = this.attributeTypeDAO.listAttributeTypes(datatype);
+        List<AttributeTypeEntity> attributeTypes = attributeTypeDAO.listAttributeTypes(datatype);
         return attributeTypes;
     }
 
@@ -89,7 +89,7 @@ public class AttributeTypeServiceBean implements AttributeTypeService, Attribute
         String name = attributeType.getName();
         checkExistingAttributeType(name);
         checkCompoundedMembers(attributeType);
-        this.attributeTypeDAO.addAttributeType(attributeType);
+        attributeTypeDAO.addAttributeType(attributeType);
         markCompoundMembers(attributeType);
     }
 
@@ -101,7 +101,7 @@ public class AttributeTypeServiceBean implements AttributeTypeService, Attribute
             /*
              * Make sure to first load an attached member attribute type.
              */
-            AttributeTypeEntity memberAttributeType = this.attributeTypeDAO.getAttributeType(memberName);
+            AttributeTypeEntity memberAttributeType = attributeTypeDAO.getAttributeType(memberName);
             memberAttributeType.setCompoundMember(true);
         }
     }
@@ -111,7 +111,7 @@ public class AttributeTypeServiceBean implements AttributeTypeService, Attribute
 
         for (CompoundedAttributeTypeMemberEntity member : attributeType.getMembers()) {
             String memberName = member.getMember().getName();
-            AttributeTypeEntity memberAttributeType = this.attributeTypeDAO.getAttributeType(memberName);
+            AttributeTypeEntity memberAttributeType = attributeTypeDAO.getAttributeType(memberName);
             if (memberAttributeType.isCompounded())
                 /*
                  * We don't allow compounded of compounded attributes.
@@ -128,7 +128,7 @@ public class AttributeTypeServiceBean implements AttributeTypeService, Attribute
     private void checkExistingAttributeType(String name)
             throws ExistingAttributeTypeException {
 
-        AttributeTypeEntity existingAttributeType = this.attributeTypeDAO.findAttributeType(name);
+        AttributeTypeEntity existingAttributeType = attributeTypeDAO.findAttributeType(name);
         if (null != existingAttributeType)
             throw new ExistingAttributeTypeException();
     }
@@ -137,8 +137,8 @@ public class AttributeTypeServiceBean implements AttributeTypeService, Attribute
     public List<AttributeTypeDescriptionEntity> listDescriptions(String attributeTypeName)
             throws AttributeTypeNotFoundException {
 
-        AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeTypeName);
-        List<AttributeTypeDescriptionEntity> descriptions = this.attributeTypeDAO.listDescriptions(attributeType);
+        AttributeTypeEntity attributeType = attributeTypeDAO.getAttributeType(attributeTypeName);
+        List<AttributeTypeDescriptionEntity> descriptions = attributeTypeDAO.listDescriptions(attributeType);
         return descriptions;
     }
 
@@ -147,28 +147,28 @@ public class AttributeTypeServiceBean implements AttributeTypeService, Attribute
             throws AttributeTypeNotFoundException {
 
         String attributeTypeName = newAttributeTypeDescription.getAttributeTypeName();
-        AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeTypeName);
-        this.attributeTypeDAO.addAttributeTypeDescription(attributeType, newAttributeTypeDescription);
+        AttributeTypeEntity attributeType = attributeTypeDAO.getAttributeType(attributeTypeName);
+        attributeTypeDAO.addAttributeTypeDescription(attributeType, newAttributeTypeDescription);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public void removeDescription(AttributeTypeDescriptionEntity attributeTypeDescription)
             throws AttributeTypeDescriptionNotFoundException {
 
-        AttributeTypeDescriptionEntity attachedEntity = this.attributeTypeDAO.getDescription(attributeTypeDescription.getPk());
-        this.attributeTypeDAO.removeDescription(attachedEntity);
+        AttributeTypeDescriptionEntity attachedEntity = attributeTypeDAO.getDescription(attributeTypeDescription.getPk());
+        attributeTypeDAO.removeDescription(attachedEntity);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public void saveDescription(AttributeTypeDescriptionEntity attributeTypeDescription) {
 
-        this.attributeTypeDAO.saveDescription(attributeTypeDescription);
+        attributeTypeDAO.saveDescription(attributeTypeDescription);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     public List<AttributeTypeEntity> listAvailableMemberAttributeTypes() {
 
-        List<AttributeTypeEntity> attributeTypes = this.attributeTypeDAO.listAttributeTypes();
+        List<AttributeTypeEntity> attributeTypes = attributeTypeDAO.listAttributeTypes();
         List<AttributeTypeEntity> availableMemberAttributeTypes = FilterUtil.filter(attributeTypes,
                 new AvailableMemberAttributeTypeFilter());
         return availableMemberAttributeTypes;
@@ -206,29 +206,29 @@ public class AttributeTypeServiceBean implements AttributeTypeService, Attribute
         checkDevices(attributeType);
 
         // remove attribute provider entities
-        this.attributeProviderDAO.removeAttributeProviders(attributeType);
+        attributeProviderDAO.removeAttributeProviders(attributeType);
 
         // remove all its descriptions
-        List<AttributeTypeDescriptionEntity> descriptions = this.attributeTypeDAO.listDescriptions(attributeType);
+        List<AttributeTypeDescriptionEntity> descriptions = attributeTypeDAO.listDescriptions(attributeType);
         for (AttributeTypeDescriptionEntity description : descriptions) {
             removeDescription(description);
         }
 
         // remove attributes of this type
-        this.attributeDAO.removeAttributes(attributeType);
+        attributeDAO.removeAttributes(attributeType);
 
         if (attributeType.isCompounded()) {
-            this.attributeTypeDAO.removeMemberEntries(attributeType);
+            attributeTypeDAO.removeMemberEntries(attributeType);
             unmarkCompoundMembers(attributeType);
         }
 
-        this.attributeTypeDAO.removeAttributeType(attributeType.getName());
+        attributeTypeDAO.removeAttributeType(attributeType.getName());
     }
 
     private void checkApplicationIdentities(AttributeTypeEntity attributeType)
             throws PermissionDeniedException {
 
-        List<ApplicationIdentityEntity> applicationIdentities = this.applicationIdentityDAO.listApplicationIdentities();
+        List<ApplicationIdentityEntity> applicationIdentities = applicationIdentityDAO.listApplicationIdentities();
         for (ApplicationIdentityEntity applicationIdentity : applicationIdentities) {
             if (applicationIdentity.getAttributeTypes().contains(attributeType))
                 throw new PermissionDeniedException("Attribute type still exists in application identity: "
@@ -247,7 +247,7 @@ public class AttributeTypeServiceBean implements AttributeTypeService, Attribute
     private void checkDevices(AttributeTypeEntity attributeType)
             throws PermissionDeniedException {
 
-        List<DeviceEntity> devices = this.deviceDAO.listDevices();
+        List<DeviceEntity> devices = deviceDAO.listDevices();
         for (DeviceEntity device : devices) {
             if (device.getAttributeType().equals(attributeType))
                 throw new PermissionDeniedException("Attribute type exist in device: " + device.getName(),
@@ -263,7 +263,7 @@ public class AttributeTypeServiceBean implements AttributeTypeService, Attribute
             /*
              * Make sure to first load an attached member attribute type.
              */
-            AttributeTypeEntity memberAttributeType = this.attributeTypeDAO.getAttributeType(memberName);
+            AttributeTypeEntity memberAttributeType = attributeTypeDAO.getAttributeType(memberName);
             memberAttributeType.setCompoundMember(false);
         }
     }
@@ -273,7 +273,7 @@ public class AttributeTypeServiceBean implements AttributeTypeService, Attribute
             throws AttributeTypeNotFoundException {
 
         LOG.debug("set plugin configuration: " + pluginConfiguration + " for attribute type " + attributeTypeName);
-        AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeTypeName);
+        AttributeTypeEntity attributeType = attributeTypeDAO.getAttributeType(attributeTypeName);
         attributeType.setPluginConfiguration(pluginConfiguration);
     }
 
@@ -285,7 +285,7 @@ public class AttributeTypeServiceBean implements AttributeTypeService, Attribute
             throws AttributeTypeNotFoundException {
 
         LOG.debug("set attribute cache timeout: " + cacheTimeout + " for attribute type " + attributeTypeName);
-        AttributeTypeEntity attributeType = this.attributeTypeDAO.getAttributeType(attributeTypeName);
+        AttributeTypeEntity attributeType = attributeTypeDAO.getAttributeType(attributeTypeName);
         attributeType.setAttributeCacheTimeoutMillis(cacheTimeout);
     }
 }

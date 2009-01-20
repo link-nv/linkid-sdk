@@ -196,7 +196,7 @@ public class TimeRoomSelectionPage extends LayoutPage {
 
             // Either get all rooms TODO: or just those that play the film at
             // the selected time.
-            List<CinemaRoomEntity> data = TimeRoomSelectionPage.this.roomService.getRoomsFor(CinemaSession.get().getTheatre(),
+            List<CinemaRoomEntity> data = roomService.getRoomsFor(CinemaSession.get().getTheatre(),
                     CinemaSession.get().getFilm());
 
             add(new ListView<CinemaRoomEntity>("list", data) {

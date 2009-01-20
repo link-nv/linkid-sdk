@@ -37,7 +37,7 @@ public class SMSManagedConnectionImpl implements SMSManagedConnection {
 
     public SMSManagedConnectionImpl(String serialPort) {
 
-        this.gsmModem = new GSMModem(serialPort);
+        gsmModem = new GSMModem(serialPort);
         LOG.debug("Connection created: " + serialPort);
     }
 
@@ -55,18 +55,18 @@ public class SMSManagedConnectionImpl implements SMSManagedConnection {
 
     public void cleanup() {
 
-        LOG.debug("Connection cleanup: " + this.gsmModem.getSerialPortName());
+        LOG.debug("Connection cleanup: " + gsmModem.getSerialPortName());
     }
 
     public void destroy() {
 
-        LOG.debug("Connection destroy: " + this.gsmModem.getSerialPortName());
+        LOG.debug("Connection destroy: " + gsmModem.getSerialPortName());
     }
 
     @SuppressWarnings("unused")
     public Object getConnection(Subject arg0, ConnectionRequestInfo arg1) {
 
-        return this.gsmModem;
+        return gsmModem;
     }
 
     public LocalTransaction getLocalTransaction() {

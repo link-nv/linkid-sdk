@@ -31,18 +31,18 @@ public class TrustDomainDAOBeanTest extends TestCase {
 
         super.setUp();
 
-        this.entityTestManager = new EntityTestManager();
-        this.entityTestManager.setUp(TrustDomainEntity.class);
+        entityTestManager = new EntityTestManager();
+        entityTestManager.setUp(TrustDomainEntity.class);
 
-        this.testedInstance = EJBTestUtils.newInstance(TrustDomainDAOBean.class, SafeOnlineTestContainer.sessionBeans,
-                this.entityTestManager.getEntityManager());
+        testedInstance = EJBTestUtils.newInstance(TrustDomainDAOBean.class, SafeOnlineTestContainer.sessionBeans,
+                entityTestManager.getEntityManager());
     }
 
     @Override
     protected void tearDown()
             throws Exception {
 
-        this.entityTestManager.tearDown();
+        entityTestManager.tearDown();
         super.tearDown();
     }
 
@@ -53,9 +53,9 @@ public class TrustDomainDAOBeanTest extends TestCase {
         String name = UUID.randomUUID().toString();
 
         // operate & verify
-        this.testedInstance.addTrustDomain(name, true);
-        TrustDomainEntity resultTrustDomain = this.testedInstance.findTrustDomain(name);
+        testedInstance.addTrustDomain(name, true);
+        TrustDomainEntity resultTrustDomain = testedInstance.findTrustDomain(name);
         assertNotNull(resultTrustDomain);
-        this.testedInstance.removeTrustDomain(resultTrustDomain);
+        testedInstance.removeTrustDomain(resultTrustDomain);
     }
 }

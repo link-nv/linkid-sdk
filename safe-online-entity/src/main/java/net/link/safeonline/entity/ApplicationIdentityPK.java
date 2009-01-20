@@ -42,12 +42,12 @@ public class ApplicationIdentityPK implements Serializable {
     public ApplicationIdentityPK(ApplicationEntity application) {
 
         this.application = application.getName();
-        this.identityVersion = INITIAL_IDENTITY_VERSION;
+        identityVersion = INITIAL_IDENTITY_VERSION;
     }
 
     public String getApplication() {
 
-        return this.application;
+        return application;
     }
 
     public void setApplication(String application) {
@@ -57,7 +57,7 @@ public class ApplicationIdentityPK implements Serializable {
 
     public long getIdentityVersion() {
 
-        return this.identityVersion;
+        return identityVersion;
     }
 
     public void setIdentityVersion(long identityVersion) {
@@ -73,18 +73,18 @@ public class ApplicationIdentityPK implements Serializable {
         if (false == obj instanceof ApplicationIdentityPK)
             return false;
         ApplicationIdentityPK rhs = (ApplicationIdentityPK) obj;
-        return new EqualsBuilder().append(this.application, rhs.application).append(this.identityVersion, rhs.identityVersion).isEquals();
+        return new EqualsBuilder().append(application, rhs.application).append(identityVersion, rhs.identityVersion).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.application).append(this.identityVersion).toHashCode();
+        return new HashCodeBuilder().append(application).append(identityVersion).toHashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("application", this.application).append("identityVersion", this.identityVersion).toString();
+        return new ToStringBuilder(this).append("application", application).append("identityVersion", identityVersion).toString();
     }
 }

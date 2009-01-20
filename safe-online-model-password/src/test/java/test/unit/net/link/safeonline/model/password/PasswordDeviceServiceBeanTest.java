@@ -39,24 +39,24 @@ public class PasswordDeviceServiceBeanTest extends TestCase {
 
         super.setUp();
 
-        this.testedInstance = new PasswordDeviceServiceBean();
+        testedInstance = new PasswordDeviceServiceBean();
 
-        this.mockSubjectService = createMock(SubjectService.class);
-        EJBTestUtils.inject(this.testedInstance, this.mockSubjectService);
+        mockSubjectService = createMock(SubjectService.class);
+        EJBTestUtils.inject(testedInstance, mockSubjectService);
 
-        this.mockHistoryDAO = createMock(HistoryDAO.class);
-        EJBTestUtils.inject(this.testedInstance, this.mockHistoryDAO);
+        mockHistoryDAO = createMock(HistoryDAO.class);
+        EJBTestUtils.inject(testedInstance, mockHistoryDAO);
 
-        this.mockPasswordManager = createMock(PasswordManager.class);
-        EJBTestUtils.inject(this.testedInstance, this.mockPasswordManager);
+        mockPasswordManager = createMock(PasswordManager.class);
+        EJBTestUtils.inject(testedInstance, mockPasswordManager);
 
-        this.mockSecurityAuditLogger = createMock(SecurityAuditLogger.class);
-        EJBTestUtils.inject(this.testedInstance, this.mockSecurityAuditLogger);
+        mockSecurityAuditLogger = createMock(SecurityAuditLogger.class);
+        EJBTestUtils.inject(testedInstance, mockSecurityAuditLogger);
 
-        EJBTestUtils.init(this.testedInstance);
+        EJBTestUtils.init(testedInstance);
 
-        this.mockObjects = new Object[] { this.mockSubjectService, this.mockPasswordManager, this.mockHistoryDAO,
-                this.mockSecurityAuditLogger };
+        mockObjects = new Object[] { mockSubjectService, mockPasswordManager, mockHistoryDAO,
+                mockSecurityAuditLogger };
     }
 
     public void testAuthenticate()
@@ -68,18 +68,18 @@ public class PasswordDeviceServiceBeanTest extends TestCase {
 
         // stubs
         SubjectEntity subject = new SubjectEntity(userId);
-        expect(this.mockSubjectService.getSubject(userId)).andStubReturn(subject);
-        expect(this.mockPasswordManager.isDisabled(subject)).andStubReturn(false);
-        expect(this.mockPasswordManager.validatePassword(subject, password)).andStubReturn(true);
+        expect(mockSubjectService.getSubject(userId)).andStubReturn(subject);
+        expect(mockPasswordManager.isDisabled(subject)).andStubReturn(false);
+        expect(mockPasswordManager.validatePassword(subject, password)).andStubReturn(true);
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
-        String resultUserId = this.testedInstance.authenticate(userId, password);
+        String resultUserId = testedInstance.authenticate(userId, password);
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
         assertNotNull(resultUserId);
     }
 
@@ -92,21 +92,21 @@ public class PasswordDeviceServiceBeanTest extends TestCase {
 
         // stubs
         SubjectEntity subject = new SubjectEntity(userId);
-        expect(this.mockSubjectService.getSubject(userId)).andStubReturn(subject);
-        expect(this.mockPasswordManager.isDisabled(subject)).andStubReturn(false);
-        expect(this.mockPasswordManager.validatePassword(subject, wrongPassword)).andStubReturn(false);
+        expect(mockSubjectService.getSubject(userId)).andStubReturn(subject);
+        expect(mockPasswordManager.isDisabled(subject)).andStubReturn(false);
+        expect(mockPasswordManager.validatePassword(subject, wrongPassword)).andStubReturn(false);
 
         // expectations
-        this.mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, "incorrect password");
+        mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, "incorrect password");
 
         // prepare
-        replay(this.mockObjects);
+        replay(mockObjects);
 
         // operate
-        String resultUserId = this.testedInstance.authenticate(userId, wrongPassword);
+        String resultUserId = testedInstance.authenticate(userId, wrongPassword);
 
         // verify
-        verify(this.mockObjects);
+        verify(mockObjects);
         assertNull(resultUserId);
     }
 

@@ -30,11 +30,11 @@ public class HistoryMessage {
 
     public Date getWhen() {
 
-        return this.when;
+        return when;
     }
 
     public String getMessage() {
 
-        return this.message;
+        return message;
     }
 }

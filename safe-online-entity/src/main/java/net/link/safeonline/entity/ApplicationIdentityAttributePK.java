@@ -45,7 +45,7 @@ public class ApplicationIdentityAttributePK implements Serializable {
 
     public String getApplication() {
 
-        return this.application;
+        return application;
     }
 
     public void setApplication(String application) {
@@ -55,7 +55,7 @@ public class ApplicationIdentityAttributePK implements Serializable {
 
     public long getIdentityVersion() {
 
-        return this.identityVersion;
+        return identityVersion;
     }
 
     public void setIdentityVersion(long identityVersion) {
@@ -65,7 +65,7 @@ public class ApplicationIdentityAttributePK implements Serializable {
 
     public String getAttributeTypeName() {
 
-        return this.attributeTypeName;
+        return attributeTypeName;
     }
 
     public void setAttributeTypeName(String attributeTypeName) {
@@ -81,20 +81,20 @@ public class ApplicationIdentityAttributePK implements Serializable {
         if (false == obj instanceof ApplicationIdentityAttributePK)
             return false;
         ApplicationIdentityAttributePK rhs = (ApplicationIdentityAttributePK) obj;
-        return new EqualsBuilder().append(this.application, rhs.application).append(this.identityVersion, rhs.identityVersion).append(
-                this.attributeTypeName, rhs.attributeTypeName).isEquals();
+        return new EqualsBuilder().append(application, rhs.application).append(identityVersion, rhs.identityVersion).append(
+                attributeTypeName, rhs.attributeTypeName).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.application).append(this.identityVersion).append(this.attributeTypeName).toHashCode();
+        return new HashCodeBuilder().append(application).append(identityVersion).append(attributeTypeName).toHashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("application", this.application).append(
-                "identityVersion", this.identityVersion).append("attributeType", this.attributeTypeName).toString();
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("application", application).append(
+                "identityVersion", identityVersion).append("attributeType", attributeTypeName).toString();
     }
 }

@@ -52,12 +52,12 @@ public class ServletTestManager {
 
         public TestHashSessionManager() {
 
-            this.initialSessionAttributes = new HashMap<String, Object>();
+            initialSessionAttributes = new HashMap<String, Object>();
         }
 
         public void setInitialSessionAttribute(String name, Object value) {
 
-            this.initialSessionAttributes.put(name, value);
+            initialSessionAttributes.put(name, value);
         }
 
         @Override
@@ -65,7 +65,7 @@ public class ServletTestManager {
 
             LOG.debug("new session");
             Session session = (Session) super.newSession(request);
-            for (Map.Entry<String, Object> mapEntry : this.initialSessionAttributes.entrySet()) {
+            for (Map.Entry<String, Object> mapEntry : initialSessionAttributes.entrySet()) {
                 LOG.debug("setting attribute: " + mapEntry.getKey());
                 session.setAttribute(mapEntry.getKey(), mapEntry.getValue());
             }
@@ -120,15 +120,15 @@ public class ServletTestManager {
                       Map<String, String> filterInitParameters, Map<String, Object> initialSessionAttributes)
             throws Exception {
 
-        this.server = new Server();
+        server = new Server();
         this.contextPath = contextPath;
 
         Connector connector = new LocalConnector();
-        this.sessionManager = new TestHashSessionManager();
-        Context context = new Context(null, new SessionHandler(this.sessionManager), new SecurityHandler(), null, null);
+        sessionManager = new TestHashSessionManager();
+        Context context = new Context(null, new SessionHandler(sessionManager), new SecurityHandler(), null, null);
         context.setContextPath(contextPath);
-        this.server.addConnector(connector);
-        this.server.addHandler(context);
+        server.addConnector(connector);
+        server.addHandler(context);
 
         if (null != servletInitParameters) {
             context.setInitParams(servletInitParameters);
@@ -158,10 +158,10 @@ public class ServletTestManager {
         servletMapping.setPathSpecs(new String[] { "/*", this.contextPath });
         handler.addServletMapping(servletMapping);
 
-        this.server.start();
+        server.start();
 
         if (null != initialSessionAttributes) {
-            this.sessionManager.initialSessionAttributes.putAll(initialSessionAttributes);
+            sessionManager.initialSessionAttributes.putAll(initialSessionAttributes);
         }
     }
 
@@ -170,8 +170,8 @@ public class ServletTestManager {
 
         SocketConnector connector = new SocketConnector();
         connector.setHost("127.0.0.1");
-        this.server.addConnector(connector);
-        if (this.server.isStarted()) {
+        server.addConnector(connector);
+        if (server.isStarted()) {
             connector.start();
         } else {
             connector.open();
@@ -183,19 +183,19 @@ public class ServletTestManager {
     public String getServletLocation()
             throws Exception {
 
-        return createSocketConnector() + this.contextPath;
+        return createSocketConnector() + contextPath;
     }
 
     public void tearDown()
             throws Exception {
 
-        this.server.stop();
+        server.stop();
     }
 
     @SuppressWarnings( { "unchecked" })
     public Object getSessionAttribute(String name) {
 
-        Map<String, AbstractSessionManager.Session> sessions = this.sessionManager.getSessionMap();
+        Map<String, AbstractSessionManager.Session> sessions = sessionManager.getSessionMap();
         AbstractSessionManager.Session session = sessions.values().iterator().next();
         String sessionId = session.getId();
         LOG.debug("session id: " + sessionId);
@@ -212,10 +212,10 @@ public class ServletTestManager {
     @SuppressWarnings( { "unchecked" })
     public void setSessionAttribute(String name, Object value) {
 
-        Map<String, AbstractSessionManager.Session> sessions = this.sessionManager.getSessionMap();
+        Map<String, AbstractSessionManager.Session> sessions = sessionManager.getSessionMap();
         for (AbstractSessionManager.Session session : sessions.values()) {
             session.setAttribute(name, value);
         }
-        this.sessionManager.setInitialSessionAttribute(name, value);
+        sessionManager.setInitialSessionAttribute(name, value);
     }
 }

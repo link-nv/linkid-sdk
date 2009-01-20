@@ -75,7 +75,7 @@ public class AttributesBean implements Attributes {
     public void attributeTypeListFactory() {
 
         LOG.debug("attributeTypeListFactory");
-        this.attributeTypeList = this.attributeTypeService.listAttributeTypes();
+        attributeTypeList = attributeTypeService.listAttributeTypes();
     }
 
     @Remove
@@ -88,10 +88,10 @@ public class AttributesBean implements Attributes {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String view() {
 
-        LOG.debug("view: " + this.selectedAttributeType.getName());
+        LOG.debug("view: " + selectedAttributeType.getName());
 
-        this.pluginConfiguration = this.selectedAttributeType.getPluginConfiguration();
-        this.cacheTimeout = this.selectedAttributeType.getAttributeCacheTimeoutMillis();
+        pluginConfiguration = selectedAttributeType.getPluginConfiguration();
+        cacheTimeout = selectedAttributeType.getAttributeCacheTimeoutMillis();
 
         return "view";
     }
@@ -99,7 +99,7 @@ public class AttributesBean implements Attributes {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String remove() {
 
-        LOG.debug("remove: " + this.selectedAttributeType.getName());
+        LOG.debug("remove: " + selectedAttributeType.getName());
         return "remove";
     }
 
@@ -107,15 +107,15 @@ public class AttributesBean implements Attributes {
     public String removeConfirm()
             throws AttributeTypeDescriptionNotFoundException, PermissionDeniedException, AttributeTypeNotFoundException {
 
-        LOG.debug("confirm remove: " + this.selectedAttributeType.getName());
-        this.attributeTypeService.remove(this.selectedAttributeType);
+        LOG.debug("confirm remove: " + selectedAttributeType.getName());
+        attributeTypeService.remove(selectedAttributeType);
         return "success";
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getPluginConfiguration() {
 
-        return this.pluginConfiguration;
+        return pluginConfiguration;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -128,8 +128,8 @@ public class AttributesBean implements Attributes {
     public String savePlugin()
             throws AttributeTypeNotFoundException {
 
-        this.attributeTypeService.savePluginConfiguration(this.selectedAttributeType.getName(), this.pluginConfiguration);
-        this.attributeTypeService.saveCacheTimeout(this.selectedAttributeType.getName(), this.cacheTimeout);
+        attributeTypeService.savePluginConfiguration(selectedAttributeType.getName(), pluginConfiguration);
+        attributeTypeService.saveCacheTimeout(selectedAttributeType.getName(), cacheTimeout);
         return null;
     }
 
@@ -137,7 +137,7 @@ public class AttributesBean implements Attributes {
     public String saveOlas()
             throws AttributeTypeNotFoundException {
 
-        this.attributeTypeService.saveCacheTimeout(this.selectedAttributeType.getName(), this.cacheTimeout);
+        attributeTypeService.saveCacheTimeout(selectedAttributeType.getName(), cacheTimeout);
         return null;
     }
 
@@ -147,7 +147,7 @@ public class AttributesBean implements Attributes {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public Long getCacheTimeout() {
 
-        return this.cacheTimeout;
+        return cacheTimeout;
     }
 
     /**

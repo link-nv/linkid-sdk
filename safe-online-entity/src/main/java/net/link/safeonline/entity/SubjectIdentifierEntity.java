@@ -72,14 +72,14 @@ public class SubjectIdentifierEntity implements Serializable {
 
     public SubjectIdentifierEntity(String domain, String identifier, SubjectEntity subject) {
 
-        this.pk = new SubjectIdentifierPK(domain, identifier);
+        pk = new SubjectIdentifierPK(domain, identifier);
         this.subject = subject;
     }
 
     @EmbeddedId
     public SubjectIdentifierPK getPk() {
 
-        return this.pk;
+        return pk;
     }
 
     public void setPk(SubjectIdentifierPK pk) {
@@ -91,7 +91,7 @@ public class SubjectIdentifierEntity implements Serializable {
     @JoinColumn(name = "subject")
     public SubjectEntity getSubject() {
 
-        return this.subject;
+        return subject;
     }
 
     public void setSubject(SubjectEntity subject) {

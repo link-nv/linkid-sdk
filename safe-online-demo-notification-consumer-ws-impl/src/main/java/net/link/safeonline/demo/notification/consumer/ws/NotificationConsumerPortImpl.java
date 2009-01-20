@@ -45,7 +45,7 @@ public class NotificationConsumerPortImpl implements NotificationConsumerPort {
             for (Object topic : topics) {
                 String topicString = (String) topic;
                 LOG.debug("topic: " + topicString + " destination: " + notification.getMessage().getDestination());
-                this.notificationConsumerService.handleMessage(topicString, notification.getMessage().getDestination(),
+                notificationConsumerService.handleMessage(topicString, notification.getMessage().getDestination(),
                         notification.getMessage().getSubject(), notification.getMessage().getContent());
             }
         }
@@ -53,7 +53,7 @@ public class NotificationConsumerPortImpl implements NotificationConsumerPort {
 
     private void loadDependencies() {
 
-        this.notificationConsumerService = EjbUtils.getEJB(NotificationConsumerService.JNDI_BINDING, NotificationConsumerService.class);
+        notificationConsumerService = EjbUtils.getEJB(NotificationConsumerService.JNDI_BINDING, NotificationConsumerService.class);
     }
 
 }

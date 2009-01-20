@@ -19,6 +19,6 @@ public class DEREncodedData implements DEREncodable {
 
     public byte[] getEncoded() {
 
-        return this.data;
+        return data;
     }
 }

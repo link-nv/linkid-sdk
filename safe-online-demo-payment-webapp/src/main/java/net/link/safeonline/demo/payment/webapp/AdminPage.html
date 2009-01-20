@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:wicket="http://wicket.sourceforge.net/" xml:lang="en" lang="en">
+
+<body>
+<wicket:extend>
+
+	<h2>User administration.</h2>
+
+	<form wicket:id="adminForm">
+	<table>
+		<caption>User Properties</caption>
+
+		<wicket:enclosure>
+			<thead>
+				<tr>
+					<th>Errors:</th>
+					<td><span wicket:id="feedback" /></td>
+				</tr>
+			</thead>
+		</wicket:enclosure>
+
+		<tbody>
+			<tr>
+				<th>User Name:</th>
+				<td><input wicket:id="name" /></td>
+			</tr>
+
+			<wicket:enclosure>
+				<tr>
+					<th>Junior:</th>
+					<td><input wicket:id="junior" type="checkbox" /></td>
+				</tr>
+			</wicket:enclosure>
+		</tbody>
+
+		<tfoot>
+			<tr>
+				<th colspan="2" class="nopad">
+				    <input wicket:id="submit" type="submit" value="Search &gt;" />
+				</th>
+			</tr>
+		</tfoot>
+	</table>
+	</form>
+
+</wicket:extend>
+</body>
+
+</html>

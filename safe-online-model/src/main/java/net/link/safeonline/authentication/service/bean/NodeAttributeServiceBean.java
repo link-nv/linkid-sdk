@@ -55,6 +55,6 @@ public class NodeAttributeServiceBean implements NodeAttributeService, NodeAttri
             throws PermissionDeniedException, AttributeTypeNotFoundException, SubjectNotFoundException, AttributeUnavailableException {
 
         LOG.debug("get attribute " + attributeName + " for login " + subjectId);
-        return this.proxyAttributeService.findAttributeValue(subjectId, attributeName);
+        return proxyAttributeService.findAttributeValue(subjectId, attributeName);
     }
 }

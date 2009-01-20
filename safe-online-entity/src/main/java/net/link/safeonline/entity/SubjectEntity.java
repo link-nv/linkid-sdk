@@ -47,13 +47,13 @@ public class SubjectEntity implements Serializable {
     public SubjectEntity(String userId) {
 
         this.userId = userId;
-        this.confirmedUsageAgreementVersion = GlobalUsageAgreementEntity.EMPTY_GLOBAL_USAGE_AGREEMENT_VERSION;
+        confirmedUsageAgreementVersion = GlobalUsageAgreementEntity.EMPTY_GLOBAL_USAGE_AGREEMENT_VERSION;
     }
 
     @Id
     public String getUserId() {
 
-        return this.userId;
+        return userId;
     }
 
     public void setUserId(String userId) {
@@ -63,7 +63,7 @@ public class SubjectEntity implements Serializable {
 
     public Long getConfirmedUsageAgreementVersion() {
 
-        return this.confirmedUsageAgreementVersion;
+        return confirmedUsageAgreementVersion;
     }
 
     public void setConfirmedUsageAgreementVersion(Long confirmedUsageAgreementVersion) {
@@ -79,13 +79,13 @@ public class SubjectEntity implements Serializable {
         if (false == obj instanceof SubjectEntity)
             return false;
         SubjectEntity rhs = (SubjectEntity) obj;
-        return new EqualsBuilder().append(this.userId, rhs.userId).isEquals();
+        return new EqualsBuilder().append(userId, rhs.userId).isEquals();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("userId", this.userId).toString();
+        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("userId", userId).toString();
     }
 
 

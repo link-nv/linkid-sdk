@@ -57,7 +57,7 @@ public class AuthNewUser extends Page {
 
         this.acceptanceTestManager = acceptanceTestManager;
         getCaptcha();
-        fillInputField("captcha", this.captcha);
+        fillInputField("captcha", captcha);
     }
 
     public AuthNewUserDevice register() {
@@ -78,8 +78,8 @@ public class AuthNewUser extends Page {
                 Assert.fail("Thread interrupted");
             }
         }
-        if (null == this.captcha) {
-            this.captcha = "";
+        if (null == captcha) {
+            captcha = "";
         }
     }
 
@@ -120,34 +120,34 @@ public class AuthNewUser extends Page {
             loadCaptcha();
 
             JPanel imagePanel = new JPanel(new FlowLayout());
-            imagePanel.add(this.label);
-            imagePanel.add(this.refresh);
+            imagePanel.add(label);
+            imagePanel.add(refresh);
 
             JPanel inputPanel = new JPanel(new FlowLayout());
-            inputPanel.add(this.captchaText);
-            inputPanel.add(this.submit);
+            inputPanel.add(captchaText);
+            inputPanel.add(submit);
 
-            this.getContentPane().add(imagePanel, BorderLayout.CENTER);
-            this.getContentPane().add(inputPanel, BorderLayout.SOUTH);
-            this.setTitle("Captcha");
-            this.pack();
-            this.setVisible(true);
+            getContentPane().add(imagePanel, BorderLayout.CENTER);
+            getContentPane().add(inputPanel, BorderLayout.SOUTH);
+            setTitle("Captcha");
+            pack();
+            setVisible(true);
 
             handleEvents();
         }
 
         private void handleEvents() {
 
-            this.submit.addActionListener(new ActionListener() {
+            submit.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
 
-                    AuthNewUser.this.captcha = getCaptchaText();
+                    captcha = getCaptchaText();
                     close();
                 }
             });
 
-            this.refresh.addActionListener(new ActionListener() {
+            refresh.addActionListener(new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
 
@@ -160,12 +160,12 @@ public class AuthNewUser extends Page {
 
             try {
                 HttpClient httpClient = new HttpClient();
-                HttpMethod method = new GetMethod(AuthNewUser.this.acceptanceTestManager.getSafeOnlineLocation() + CAPTCHA);
-                method.setRequestHeader("Cookie", "JSESSIONID=" + this.jSessionId);
+                HttpMethod method = new GetMethod(acceptanceTestManager.getSafeOnlineLocation() + CAPTCHA);
+                method.setRequestHeader("Cookie", "JSESSIONID=" + jSessionId);
 
                 httpClient.executeMethod(method);
                 Image captchaImage = ImageIO.read(method.getResponseBodyAsStream());
-                this.label.setIcon(new ImageIcon(captchaImage));
+                label.setIcon(new ImageIcon(captchaImage));
 
             } catch (IOException e) {
                 return;
@@ -174,12 +174,12 @@ public class AuthNewUser extends Page {
 
         public String getCaptchaText() {
 
-            return this.captchaText.getText();
+            return captchaText.getText();
         }
 
         public void close() {
 
-            this.dispose();
+            dispose();
         }
 
     }

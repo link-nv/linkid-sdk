@@ -83,21 +83,21 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
          * By injecting the attribute DAO of this session bean in the attribute manager we are sure that the attribute manager (a
          * lightweight bean) will live within the same transaction and security context as this identity service EJB3 session bean.
          */
-        this.attributeManager = new AttributeManagerLWBean(this.attributeDAO);
+        attributeManager = new AttributeManagerLWBean(attributeDAO);
     }
 
     public String authenticate(String userId, String token)
             throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException, DeviceDisabledException {
 
-        SubjectEntity subject = this.subjectService.getSubject(userId);
-        DeviceEntity device = this.deviceDAO.getDevice(DigipassConstants.DIGIPASS_DEVICE_ID);
-        List<AttributeEntity> attributes = this.attributeDAO.listAttributes(subject, device.getAttributeType());
-        List<AttributeEntity> disableAttributes = this.attributeDAO.listAttributes(subject, device.getDisableAttributeType());
+        SubjectEntity subject = subjectService.getSubject(userId);
+        DeviceEntity device = deviceDAO.getDevice(DigipassConstants.DIGIPASS_DEVICE_ID);
+        List<AttributeEntity> attributes = attributeDAO.listAttributes(subject, device.getAttributeType());
+        List<AttributeEntity> disableAttributes = attributeDAO.listAttributes(subject, device.getDisableAttributeType());
 
         if (0 == attributes.size())
             return null;
         if (true == disableAttributes.get(0).getBooleanValue()) {
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, "device is disabled");
+            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, "device is disabled");
             throw new DeviceDisabledException();
         }
 
@@ -108,7 +108,7 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
 
         if (Integer.parseInt(token) % 2 != 0) {
             LOG.debug("Invalid token: " + token);
-            this.securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, subject.getUserId(), "incorrect digipass token");
+            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, subject.getUserId(), "incorrect digipass token");
             return null;
         }
         return subject.getUserId();
@@ -118,35 +118,35 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
     public String register(String userId, String serialNumber)
             throws SubjectNotFoundException, ArgumentIntegrityException, AttributeTypeNotFoundException {
 
-        SubjectEntity existingMappedSubject = this.subjectIdentifierDAO.findSubject(DigipassConstants.DIGIPASS_IDENTIFIER_DOMAIN,
+        SubjectEntity existingMappedSubject = subjectIdentifierDAO.findSubject(DigipassConstants.DIGIPASS_IDENTIFIER_DOMAIN,
                 serialNumber);
         if (null != existingMappedSubject)
             throw new ArgumentIntegrityException();
 
-        SubjectEntity subject = this.subjectService.findSubject(userId);
+        SubjectEntity subject = subjectService.findSubject(userId);
         if (null == subject) {
-            subject = this.subjectService.addSubjectWithoutLogin(userId);
+            subject = subjectService.addSubjectWithoutLogin(userId);
         }
         setSerialNumber(subject, serialNumber);
 
-        this.subjectIdentifierDAO.addSubjectIdentifier(DigipassConstants.DIGIPASS_IDENTIFIER_DOMAIN, serialNumber, subject);
+        subjectIdentifierDAO.addSubjectIdentifier(DigipassConstants.DIGIPASS_IDENTIFIER_DOMAIN, serialNumber, subject);
         return userId;
     }
 
     private void setSerialNumber(SubjectEntity subject, String serialNumber)
             throws AttributeTypeNotFoundException {
 
-        AttributeTypeEntity deviceAttributeType = this.attributeTypeDAO.getAttributeType(DigipassConstants.DIGIPASS_DEVICE_ATTRIBUTE);
-        AttributeTypeEntity snAttributeType = this.attributeTypeDAO.getAttributeType(DigipassConstants.DIGIPASS_SN_ATTRIBUTE);
-        AttributeTypeEntity deviceDisableAttributeType = this.attributeTypeDAO
+        AttributeTypeEntity deviceAttributeType = attributeTypeDAO.getAttributeType(DigipassConstants.DIGIPASS_DEVICE_ATTRIBUTE);
+        AttributeTypeEntity snAttributeType = attributeTypeDAO.getAttributeType(DigipassConstants.DIGIPASS_SN_ATTRIBUTE);
+        AttributeTypeEntity deviceDisableAttributeType = attributeTypeDAO
                                                                               .getAttributeType(DigipassConstants.DIGIPASS_DEVICE_DISABLE_ATTRIBUTE);
 
-        AttributeEntity snAttribute = this.attributeDAO.addAttribute(snAttributeType, subject);
+        AttributeEntity snAttribute = attributeDAO.addAttribute(snAttributeType, subject);
         snAttribute.setStringValue(serialNumber);
-        AttributeEntity deviceDisableAttribute = this.attributeDAO.addAttribute(deviceDisableAttributeType, subject);
+        AttributeEntity deviceDisableAttribute = attributeDAO.addAttribute(deviceDisableAttributeType, subject);
         deviceDisableAttribute.setBooleanValue(false);
 
-        AttributeEntity deviceAttribute = this.attributeDAO.addAttribute(deviceAttributeType, subject);
+        AttributeEntity deviceAttribute = attributeDAO.addAttribute(deviceAttributeType, subject);
         deviceAttribute.setStringValue(UUID.randomUUID().toString());
         List<AttributeEntity> deviceAttributeMembers = new LinkedList<AttributeEntity>();
         deviceAttributeMembers.add(snAttribute);
@@ -157,33 +157,33 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
     public void remove(String serialNumber)
             throws DigipassException, AttributeTypeNotFoundException, AttributeNotFoundException {
 
-        SubjectEntity subject = this.subjectIdentifierDAO.findSubject(DigipassConstants.DIGIPASS_IDENTIFIER_DOMAIN, serialNumber);
+        SubjectEntity subject = subjectIdentifierDAO.findSubject(DigipassConstants.DIGIPASS_IDENTIFIER_DOMAIN, serialNumber);
         if (null == subject)
             throw new DigipassException("device registration not found");
 
-        AttributeTypeEntity deviceAttributeType = this.attributeTypeDAO.getAttributeType(DigipassConstants.DIGIPASS_DEVICE_ATTRIBUTE);
-        AttributeTypeEntity snAttributeType = this.attributeTypeDAO.getAttributeType(DigipassConstants.DIGIPASS_SN_ATTRIBUTE);
+        AttributeTypeEntity deviceAttributeType = attributeTypeDAO.getAttributeType(DigipassConstants.DIGIPASS_DEVICE_ATTRIBUTE);
+        AttributeTypeEntity snAttributeType = attributeTypeDAO.getAttributeType(DigipassConstants.DIGIPASS_SN_ATTRIBUTE);
 
-        List<AttributeEntity> deviceAttributes = this.attributeDAO.listAttributes(subject, deviceAttributeType);
+        List<AttributeEntity> deviceAttributes = attributeDAO.listAttributes(subject, deviceAttributeType);
         for (AttributeEntity deviceAttribute : deviceAttributes) {
-            AttributeEntity mobileAttribute = this.attributeDAO
+            AttributeEntity mobileAttribute = attributeDAO
                                                                .findAttribute(subject, snAttributeType, deviceAttribute.getAttributeIndex());
             if (mobileAttribute.getStringValue().equals(serialNumber)) {
                 LOG.debug("remove attribute");
-                this.attributeManager.removeAttribute(deviceAttributeType, deviceAttribute.getAttributeIndex(), subject);
+                attributeManager.removeAttribute(deviceAttributeType, deviceAttribute.getAttributeIndex(), subject);
                 break;
             }
         }
 
-        this.subjectIdentifierDAO.removeSubjectIdentifier(subject, DigipassConstants.DIGIPASS_IDENTIFIER_DOMAIN, serialNumber);
+        subjectIdentifierDAO.removeSubjectIdentifier(subject, DigipassConstants.DIGIPASS_IDENTIFIER_DOMAIN, serialNumber);
     }
 
     public List<AttributeDO> getDigipasses(String userId, Locale locale)
             throws SubjectNotFoundException, DeviceNotFoundException {
 
         LOG.debug("get digipasses for: " + userId);
-        DeviceEntity device = this.deviceDAO.getDevice(DigipassConstants.DIGIPASS_DEVICE_ID);
-        SubjectEntity subject = this.subjectService.getSubject(userId);
+        DeviceEntity device = deviceDAO.getDevice(DigipassConstants.DIGIPASS_DEVICE_ID);
+        SubjectEntity subject = subjectService.getSubject(userId);
 
         List<AttributeDO> attributes = new LinkedList<AttributeDO>();
 
@@ -195,7 +195,7 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
             description = attributeTypeDescription.getDescription();
         }
 
-        List<AttributeEntity> userAttributes = this.attributeDAO.listAttributes(subject, device.getUserAttributeType());
+        List<AttributeEntity> userAttributes = attributeDAO.listAttributes(subject, device.getUserAttributeType());
         for (AttributeEntity userAttribute : userAttributes) {
             attributes
                       .add(new AttributeDO(device.getUserAttributeType().getName(), device.getUserAttributeType().getType(), true,
@@ -211,7 +211,7 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
             return null;
         String language = locale.getLanguage();
         LOG.debug("trying language: " + language);
-        AttributeTypeDescriptionEntity attributeTypeDescription = this.attributeTypeDAO.findDescription(new AttributeTypeDescriptionPK(
+        AttributeTypeDescriptionEntity attributeTypeDescription = attributeTypeDAO.findDescription(new AttributeTypeDescriptionPK(
                 attributeType.getName(), language));
         return attributeTypeDescription;
     }
@@ -222,16 +222,16 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
     public void disable(String userId, String serialNumber)
             throws SubjectNotFoundException, DeviceNotFoundException, DeviceRegistrationNotFoundException {
 
-        DeviceEntity device = this.deviceDAO.getDevice(DigipassConstants.DIGIPASS_DEVICE_ID);
-        SubjectEntity subject = this.subjectService.getSubject(userId);
+        DeviceEntity device = deviceDAO.getDevice(DigipassConstants.DIGIPASS_DEVICE_ID);
+        SubjectEntity subject = subjectService.getSubject(userId);
 
-        List<AttributeEntity> deviceAttributes = this.attributeDAO.listAttributes(subject, device.getAttributeType());
+        List<AttributeEntity> deviceAttributes = attributeDAO.listAttributes(subject, device.getAttributeType());
         for (AttributeEntity deviceAttribute : deviceAttributes) {
-            AttributeEntity snAttribute = this.attributeDAO.findAttribute(subject, DigipassConstants.DIGIPASS_SN_ATTRIBUTE,
+            AttributeEntity snAttribute = attributeDAO.findAttribute(subject, DigipassConstants.DIGIPASS_SN_ATTRIBUTE,
                     deviceAttribute.getAttributeIndex());
             if (snAttribute.getStringValue().equals(serialNumber)) {
                 LOG.debug("disable digipass " + serialNumber);
-                AttributeEntity disableAttribute = this.attributeDAO.findAttribute(subject, device.getDisableAttributeType(),
+                AttributeEntity disableAttribute = attributeDAO.findAttribute(subject, device.getDisableAttributeType(),
                         deviceAttribute.getAttributeIndex());
                 disableAttribute.setBooleanValue(true);
                 return;
@@ -244,19 +244,19 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
     public String enable(String userId, String serialNumber, String token)
             throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException {
 
-        DeviceEntity device = this.deviceDAO.getDevice(DigipassConstants.DIGIPASS_DEVICE_ID);
-        SubjectEntity subject = this.subjectService.getSubject(userId);
+        DeviceEntity device = deviceDAO.getDevice(DigipassConstants.DIGIPASS_DEVICE_ID);
+        SubjectEntity subject = subjectService.getSubject(userId);
 
         if (null == authenticate(subject, token))
             return null;
 
-        List<AttributeEntity> deviceAttributes = this.attributeDAO.listAttributes(subject, device.getAttributeType());
+        List<AttributeEntity> deviceAttributes = attributeDAO.listAttributes(subject, device.getAttributeType());
         for (AttributeEntity deviceAttribute : deviceAttributes) {
-            AttributeEntity snAttribute = this.attributeDAO.findAttribute(subject, DigipassConstants.DIGIPASS_SN_ATTRIBUTE,
+            AttributeEntity snAttribute = attributeDAO.findAttribute(subject, DigipassConstants.DIGIPASS_SN_ATTRIBUTE,
                     deviceAttribute.getAttributeIndex());
             if (snAttribute.getStringValue().equals(serialNumber)) {
                 LOG.debug("disable digipass " + serialNumber);
-                AttributeEntity disableAttribute = this.attributeDAO.findAttribute(subject, device.getDisableAttributeType(),
+                AttributeEntity disableAttribute = attributeDAO.findAttribute(subject, device.getDisableAttributeType(),
                         deviceAttribute.getAttributeIndex());
                 disableAttribute.setBooleanValue(false);
                 return subject.getUserId();

@@ -11,7 +11,6 @@ import java.util.UUID;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-import net.link.safeonline.model.beid.BeIdConstants;
 import net.link.safeonline.webapp.AcceptanceTestManager;
 import net.link.safeonline.webapp.PageUtils;
 import net.link.safeonline.webapp.WebappConstants;
@@ -52,15 +51,15 @@ public class DemoTicketPaymentTest extends TestCase {
     protected void setUp()
             throws Exception {
 
-        this.acceptanceTestManager = new AcceptanceTestManager();
-        this.acceptanceTestManager.setUp();
+        acceptanceTestManager = new AcceptanceTestManager();
+        acceptanceTestManager.setUp();
     }
 
     @Override
     protected void tearDown()
             throws Exception {
 
-        this.acceptanceTestManager.tearDown();
+        acceptanceTestManager.tearDown();
     }
 
     /**
@@ -80,16 +79,16 @@ public class DemoTicketPaymentTest extends TestCase {
             throws Exception {
 
         // setup
-        this.acceptanceTestManager.setContext("Testing the demo payment and ticket webapp.");
+        acceptanceTestManager.setContext("Testing the demo payment and ticket webapp.");
 
         String login = UUID.randomUUID().toString();
         String password = "secret";
 
         // register test user
-        PageUtils.registerUserWithPassword(this.acceptanceTestManager, login, password);
+        PageUtils.registerUserWithPassword(acceptanceTestManager, login, password);
 
         // register test user beid device
-        UserOverview userOverview = PageUtils.loginUserWithPassword(this.acceptanceTestManager, login, password);
+        UserOverview userOverview = PageUtils.loginUserWithPassword(acceptanceTestManager, login, password);
 
         UserAccount userAccount = userOverview.gotoAccount();
 
@@ -101,7 +100,7 @@ public class DemoTicketPaymentTest extends TestCase {
         userDevices.logout();
 
         // set junior attribute in payment webapp for test user
-        DemoPaymentSearch demoPaymentSearch = PageUtils.loginPaymentAdmin(this.acceptanceTestManager);
+        DemoPaymentSearch demoPaymentSearch = PageUtils.loginPaymentAdmin(acceptanceTestManager);
         demoPaymentSearch.setName(login);
         DemoPaymentSearchResult demoPaymentSearchResult = demoPaymentSearch.search();
         demoPaymentSearchResult.setJunior(true);
@@ -110,7 +109,7 @@ public class DemoTicketPaymentTest extends TestCase {
         demoPaymentSearchResult.logout();
 
         // login test user to user webapp, check junior attribute set
-        userOverview = PageUtils.loginUserWithPassword(this.acceptanceTestManager, login, password);
+        userOverview = PageUtils.loginUserWithPassword(acceptanceTestManager, login, password);
         UserProfile userProfile = userOverview.gotoProfile();
         Assert.assertEquals("true", userProfile.getAttributeValue(WebappConstants.DEMO_PAYMENT_JUNIOR_LABEL));
         userProfile.logout();
@@ -122,12 +121,12 @@ public class DemoTicketPaymentTest extends TestCase {
         AuthMain authMain = demoTicketMain.login();
         authMain.selectDevice(BeIdConstants.BEID_DEVICE_ID);
         authMain.next();
-        PageUtils.waitForRedirect(this.acceptanceTestManager, AuthSubscription.PAGE_NAME);
+        PageUtils.waitForRedirect(acceptanceTestManager, AuthSubscription.PAGE_NAME);
 
         AuthSubscription authSubscription = new AuthSubscription();
         AuthIdentityConfirmation authIdentityConfirmation = authSubscription.confirm();
         authIdentityConfirmation.agree();
-        PageUtils.waitForRedirect(this.acceptanceTestManager, DemoTicketOverview.PAGE_NAME);
+        PageUtils.waitForRedirect(acceptanceTestManager, DemoTicketOverview.PAGE_NAME);
         DemoTicketOverview demoTicketOverview = new DemoTicketOverview();
         demoTicketOverview.checkLoggedIn(login);
 
@@ -142,7 +141,7 @@ public class DemoTicketPaymentTest extends TestCase {
         authMain = demoPaymentEntry.confirm();
         authMain.selectDevice(BeIdConstants.BEID_DEVICE_ID);
         authMain.next();
-        PageUtils.waitForRedirect(this.acceptanceTestManager, AuthSubscription.PAGE_NAME);
+        PageUtils.waitForRedirect(acceptanceTestManager, AuthSubscription.PAGE_NAME);
 
         authSubscription = new AuthSubscription();
         authIdentityConfirmation = authSubscription.confirm();
@@ -150,7 +149,7 @@ public class DemoTicketPaymentTest extends TestCase {
         AuthMissingAttributes authMissingAttributes = new AuthMissingAttributes();
         authMissingAttributes.setAttributeValue(WebappConstants.DEMO_PAYMENT_VISA_LABEL, "0000111122223333");
         authMissingAttributes.save();
-        PageUtils.waitForRedirect(this.acceptanceTestManager, DemoPaymentCards.PAGE_NAME);
+        PageUtils.waitForRedirect(acceptanceTestManager, DemoPaymentCards.PAGE_NAME);
 
         // pay ticket
         DemoPaymentCards demoPaymentCards = new DemoPaymentCards();
@@ -165,7 +164,7 @@ public class DemoTicketPaymentTest extends TestCase {
         demoTicketOverview.remove();
 
         // remove beid device
-        userOverview = PageUtils.loginUserWithPassword(this.acceptanceTestManager, login, password);
+        userOverview = PageUtils.loginUserWithPassword(acceptanceTestManager, login, password);
         userDevices = userOverview.gotoDevices();
         userDevices.removeBeId();
 

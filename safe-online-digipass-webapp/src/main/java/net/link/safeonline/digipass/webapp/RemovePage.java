@@ -88,9 +88,9 @@ public class RemovePage extends TemplatePage {
 
             super(id);
 
-            final TextField<String> loginField = new TextField<String>(LOGIN_FIELD_ID, this.login = new Model<String>());
+            final TextField<String> loginField = new TextField<String>(LOGIN_FIELD_ID, login = new Model<String>());
             loginField.setRequired(true);
-            loginField.setEnabled(RemovePage.this.digipassAttributes.isEmpty());
+            loginField.setEnabled(digipassAttributes.isEmpty());
 
             add(loginField);
             add(new ErrorComponentFeedbackLabel("login_feedback", loginField));
@@ -103,14 +103,14 @@ public class RemovePage extends TemplatePage {
                 @Override
                 public boolean isVisible() {
 
-                    return RemovePage.this.digipassAttributes.isEmpty();
+                    return digipassAttributes.isEmpty();
                 }
 
                 @Override
                 public void onSubmit() {
 
                     try {
-                        RemovePage.this.digipassAttributes = RemovePage.this.digipassDeviceService.getDigipasses(getUserId(), getLocale());
+                        digipassAttributes = digipassDeviceService.getDigipasses(getUserId(), getLocale());
                     } catch (SubjectNotFoundException e) {
                         LOG.debug("subject not found");
                         loginField.error(getLocalizer().getString("errorSubjectNotFound", this));
@@ -125,7 +125,7 @@ public class RemovePage extends TemplatePage {
                         return;
                     }
 
-                    if (RemovePage.this.digipassAttributes.isEmpty()) {
+                    if (digipassAttributes.isEmpty()) {
                         LOG.debug("no digipasses found");
                         GetForm.this.error(getLocalizer().getString("errorNoDeviceRegistrationsFound", this));
                         return;
@@ -142,7 +142,7 @@ public class RemovePage extends TemplatePage {
                 @Override
                 public boolean isVisible() {
 
-                    return RemovePage.this.digipassAttributes.isEmpty();
+                    return digipassAttributes.isEmpty();
                 }
 
                 @Override
@@ -168,9 +168,9 @@ public class RemovePage extends TemplatePage {
 
             String userId;
             try {
-                userId = idMappingClient.getUserId(this.login.getObject());
+                userId = idMappingClient.getUserId(login.getObject());
             } catch (net.link.safeonline.sdk.exception.SubjectNotFoundException e) {
-                LOG.error("subject not found: " + this.login);
+                LOG.error("subject not found: " + login);
                 throw new SubjectNotFoundException();
             } catch (RequestDeniedException e) {
                 LOG.error("request denied: " + e.getMessage());
@@ -214,7 +214,7 @@ public class RemovePage extends TemplatePage {
 
                             LOG.debug("remove digipass: " + attribute.getStringValue());
                             try {
-                                RemovePage.this.digipassDeviceService.remove(attribute.getStringValue());
+                                digipassDeviceService.remove(attribute.getStringValue());
                             } catch (DigipassException e) {
                                 LOG.debug("device not found: " + e.getMessage());
                                 ListForm.this.error(getLocalizer().getString("errorDeviceRegistrationNotFound", this));
@@ -243,7 +243,7 @@ public class RemovePage extends TemplatePage {
         @Override
         public boolean isVisible() {
 
-            return !RemovePage.this.digipassAttributes.isEmpty();
+            return !digipassAttributes.isEmpty();
         }
     }
 

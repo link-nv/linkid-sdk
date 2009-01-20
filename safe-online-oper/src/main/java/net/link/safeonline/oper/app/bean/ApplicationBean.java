@@ -189,12 +189,12 @@ public class ApplicationBean implements Application {
     @Destroy
     public void destroyCallback() {
 
-        this.name = null;
-        this.description = null;
-        this.applicationUrl = null;
-        this.applicationLogo = null;
-        this.skipMessageIntegrityCheck = false;
-        this.ssoLogoutUrl = null;
+        name = null;
+        description = null;
+        applicationUrl = null;
+        applicationLogo = null;
+        skipMessageIntegrityCheck = false;
+        ssoLogoutUrl = null;
     }
 
 
@@ -222,7 +222,7 @@ public class ApplicationBean implements Application {
             throws ApplicationNotFoundException {
 
         LOG.debug("application list factory");
-        this.operApplicationList = this.applicationService.listApplications();
+        operApplicationList = applicationService.listApplications();
     }
 
     @Factory(APPLICATION_IDENTITY_ATTRIBUTES_NAME)
@@ -231,76 +231,76 @@ public class ApplicationBean implements Application {
             throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException {
 
         LOG.debug("application identity attributes factory");
-        String applicationName = this.selectedApplication.getName();
+        String applicationName = selectedApplication.getName();
 
-        this.applicationIdentityAttributes = this.applicationService.getCurrentApplicationIdentity(applicationName);
-        this.numberOfSubscriptions = this.subscriptionService.getNumberOfSubscriptions(applicationName);
-        this.ownerAdminName = this.subjectService.getSubjectLogin(this.selectedApplication.getApplicationOwner().getAdmin().getUserId());
+        applicationIdentityAttributes = applicationService.getCurrentApplicationIdentity(applicationName);
+        numberOfSubscriptions = subscriptionService.getNumberOfSubscriptions(applicationName);
+        ownerAdminName = subjectService.getSubjectLogin(selectedApplication.getApplicationOwner().getAdmin().getUserId());
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String add()
             throws AttributeTypeNotFoundException, IOException, ApplicationNotFoundException {
 
-        LOG.debug("add application: " + this.name);
-        if (null != this.friendlyName) {
-            LOG.debug("user friendly name: " + this.friendlyName);
+        LOG.debug("add application: " + name);
+        if (null != friendlyName) {
+            LOG.debug("user friendly name: " + friendlyName);
         }
-        if (null != this.applicationUrl) {
-            LOG.debug("application url: " + this.applicationUrl);
+        if (null != applicationUrl) {
+            LOG.debug("application url: " + applicationUrl);
         }
-        if (null != this.ssoLogoutUrl) {
-            LOG.debug("sso logout url: " + this.ssoLogoutUrl);
+        if (null != ssoLogoutUrl) {
+            LOG.debug("sso logout url: " + ssoLogoutUrl);
         }
 
         URL newApplicationUrl = null;
         byte[] newApplicationLogo = null;
         URL newSsoLogoutUrl = null;
-        if (null != this.applicationUrl && this.applicationUrl.length() != 0) {
+        if (null != applicationUrl && applicationUrl.length() != 0) {
             try {
-                newApplicationUrl = new URL(this.applicationUrl);
+                newApplicationUrl = new URL(applicationUrl);
             } catch (MalformedURLException e) {
-                LOG.debug("illegal URL format: " + this.applicationUrl);
-                this.facesMessages.addToControlFromResourceBundle("applicationUrl", FacesMessage.SEVERITY_ERROR, "errorIllegalUrl",
-                        this.applicationUrl);
+                LOG.debug("illegal URL format: " + applicationUrl);
+                facesMessages.addToControlFromResourceBundle("applicationUrl", FacesMessage.SEVERITY_ERROR, "errorIllegalUrl",
+                        applicationUrl);
                 return null;
             }
         }
-        if (null != this.applicationLogoFile) {
+        if (null != applicationLogoFile) {
             try {
-                newApplicationLogo = getUpFileContent(this.applicationLogoFile);
+                newApplicationLogo = getUpFileContent(applicationLogoFile);
                 if (!Magic.getMagicMatch(newApplicationLogo).getMimeType().startsWith("image/"))
                     throw new MagicException("Application logo requires an image/* MIME type.");
             } catch (IOException e) {
                 LOG.debug("couldn't fetch uploaded data for application logo.");
-                this.facesMessages.addToControlFromResourceBundle("applicationLogo", FacesMessage.SEVERITY_ERROR, "errorUploadLogoFetch");
+                facesMessages.addToControlFromResourceBundle("applicationLogo", FacesMessage.SEVERITY_ERROR, "errorUploadLogoFetch");
                 return null;
             } catch (MagicParseException e) {
                 LOG.debug("uploaded logo is not an image.");
-                this.facesMessages.addToControlFromResourceBundle("applicationLogo", FacesMessage.SEVERITY_ERROR, "errorUploadLogoType");
+                facesMessages.addToControlFromResourceBundle("applicationLogo", FacesMessage.SEVERITY_ERROR, "errorUploadLogoType");
                 return null;
             } catch (MagicMatchNotFoundException e) {
                 LOG.debug("uploaded logo is not an image.");
-                this.facesMessages.addToControlFromResourceBundle("applicationLogo", FacesMessage.SEVERITY_ERROR, "errorUploadLogoType");
+                facesMessages.addToControlFromResourceBundle("applicationLogo", FacesMessage.SEVERITY_ERROR, "errorUploadLogoType");
                 return null;
             } catch (MagicException e) {
                 LOG.debug("uploaded logo is not an image.");
-                this.facesMessages.addToControlFromResourceBundle("applicationLogo", FacesMessage.SEVERITY_ERROR, "errorUploadLogoType");
+                facesMessages.addToControlFromResourceBundle("applicationLogo", FacesMessage.SEVERITY_ERROR, "errorUploadLogoType");
                 return null;
             }
         }
-        if (null != this.ssoLogoutUrl && this.ssoLogoutUrl.length() != 0) {
+        if (null != ssoLogoutUrl && ssoLogoutUrl.length() != 0) {
             try {
-                newSsoLogoutUrl = new URL(this.ssoLogoutUrl);
+                newSsoLogoutUrl = new URL(ssoLogoutUrl);
             } catch (MalformedURLException e) {
-                LOG.debug("illegal URL format: " + this.ssoLogoutUrl);
-                this.facesMessages.addToControlFromResourceBundle("ssoLogoutUrl", FacesMessage.SEVERITY_ERROR, "errorIllegalUrl",
-                        this.ssoLogoutUrl);
+                LOG.debug("illegal URL format: " + ssoLogoutUrl);
+                facesMessages.addToControlFromResourceBundle("ssoLogoutUrl", FacesMessage.SEVERITY_ERROR, "errorIllegalUrl",
+                        ssoLogoutUrl);
                 return null;
             }
         }
         List<IdentityAttributeTypeDO> tempIdentityAttributes = new LinkedList<IdentityAttributeTypeDO>();
-        for (IdentityAttribute viewIdentityAttribute : this.newIdentityAttributes) {
+        for (IdentityAttribute viewIdentityAttribute : newIdentityAttributes) {
             if (false == viewIdentityAttribute.isIncluded()) {
                 continue;
             }
@@ -311,44 +311,44 @@ public class ApplicationBean implements Application {
         }
         try {
             byte[] encodedCertificate;
-            if (null != this.upFile) {
-                encodedCertificate = getUpFileContent(this.upFile);
+            if (null != upFile) {
+                encodedCertificate = getUpFileContent(upFile);
             } else {
                 encodedCertificate = null;
             }
-            this.applicationService.addApplication(this.name, this.friendlyName, this.applicationOwner, this.description, this.idmapping,
-                    IdScopeType.valueOf(this.applicationIdScope), newApplicationUrl, newApplicationLogo, encodedCertificate,
-                    tempIdentityAttributes, this.skipMessageIntegrityCheck, this.deviceRestriction, this.ssoEnabled, newSsoLogoutUrl);
+            applicationService.addApplication(name, friendlyName, applicationOwner, description, idmapping,
+                    IdScopeType.valueOf(applicationIdScope), newApplicationUrl, newApplicationLogo, encodedCertificate,
+                    tempIdentityAttributes, skipMessageIntegrityCheck, deviceRestriction, ssoEnabled, newSsoLogoutUrl);
 
         } catch (ExistingApplicationException e) {
-            LOG.debug("application already exists: " + this.name);
-            this.facesMessages.addToControlFromResourceBundle("name", FacesMessage.SEVERITY_ERROR, "errorApplicationAlreadyExists",
-                    this.name);
+            LOG.debug("application already exists: " + name);
+            facesMessages.addToControlFromResourceBundle("name", FacesMessage.SEVERITY_ERROR, "errorApplicationAlreadyExists",
+                    name);
             return null;
         } catch (ApplicationOwnerNotFoundException e) {
-            LOG.debug("application owner not found: " + this.applicationOwner);
-            this.facesMessages.addToControlFromResourceBundle("owner", FacesMessage.SEVERITY_ERROR, "errorApplicationOwnerNotFound",
-                    this.applicationOwner);
+            LOG.debug("application owner not found: " + applicationOwner);
+            facesMessages.addToControlFromResourceBundle("owner", FacesMessage.SEVERITY_ERROR, "errorApplicationOwnerNotFound",
+                    applicationOwner);
             return null;
         } catch (CertificateEncodingException e) {
             LOG.debug("X509 certificate encoding error");
-            this.facesMessages.addToControlFromResourceBundle("fileupload", FacesMessage.SEVERITY_ERROR, "errorX509Encoding");
+            facesMessages.addToControlFromResourceBundle("fileupload", FacesMessage.SEVERITY_ERROR, "errorX509Encoding");
             return null;
         }
 
         // fetch new application
-        this.selectedApplication = this.applicationService.getApplication(this.name);
+        selectedApplication = applicationService.getApplication(name);
 
         // device restriction
         List<AllowedDeviceEntity> allowedDeviceList = new ArrayList<AllowedDeviceEntity>();
-        for (DeviceEntry deviceEntry : this.allowedDevices) {
+        for (DeviceEntry deviceEntry : allowedDevices) {
             if (deviceEntry.isAllowed() == true) {
-                AllowedDeviceEntity device = new AllowedDeviceEntity(this.selectedApplication, deviceEntry.getDevice(),
+                AllowedDeviceEntity device = new AllowedDeviceEntity(selectedApplication, deviceEntry.getDevice(),
                         deviceEntry.getWeight());
                 allowedDeviceList.add(device);
             }
         }
-        this.deviceService.setAllowedDevices(this.selectedApplication, allowedDeviceList);
+        deviceService.setAllowedDevices(selectedApplication, allowedDeviceList);
 
         applicationListFactory();
         return "success";
@@ -357,18 +357,18 @@ public class ApplicationBean implements Application {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public UploadedFile getUpFile() {
 
-        return this.upFile;
+        return upFile;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public void setUpFile(UploadedFile uploadedFile) {
 
-        this.upFile = uploadedFile;
+        upFile = uploadedFile;
     }
 
     public String getDescription() {
 
-        return this.description;
+        return description;
     }
 
     public void setDescription(String description) {
@@ -378,7 +378,7 @@ public class ApplicationBean implements Application {
 
     public String getApplicationUrl() {
 
-        return this.applicationUrl;
+        return applicationUrl;
     }
 
     public void setApplicationUrl(String applicationUrl) {
@@ -388,7 +388,7 @@ public class ApplicationBean implements Application {
 
     public byte[] getApplicationLogo() {
 
-        return this.applicationLogo;
+        return applicationLogo;
     }
 
     public void setApplicationLogo(byte[] applicationLogo) {
@@ -403,12 +403,12 @@ public class ApplicationBean implements Application {
 
     public UploadedFile getApplicationLogoFile() {
 
-        return this.applicationLogoFile;
+        return applicationLogoFile;
     }
 
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -418,7 +418,7 @@ public class ApplicationBean implements Application {
 
     public String getFriendlyName() {
 
-        return this.friendlyName;
+        return friendlyName;
     }
 
     public void setFriendlyName(String friendlyName) {
@@ -428,7 +428,7 @@ public class ApplicationBean implements Application {
 
     public String getApplicationOwner() {
 
-        return this.applicationOwner;
+        return applicationOwner;
     }
 
     public void setApplicationOwner(String applicationOwner) {
@@ -438,7 +438,7 @@ public class ApplicationBean implements Application {
 
     public boolean isIdmapping() {
 
-        return this.idmapping;
+        return idmapping;
     }
 
     public void setIdmapping(boolean idmapping) {
@@ -448,7 +448,7 @@ public class ApplicationBean implements Application {
 
     public String getApplicationIdScope() {
 
-        return this.applicationIdScope;
+        return applicationIdScope;
     }
 
     public void setApplicationIdScope(String applicationIdScope) {
@@ -458,7 +458,7 @@ public class ApplicationBean implements Application {
 
     public boolean isSkipMessageIntegrityCheck() {
 
-        return this.skipMessageIntegrityCheck;
+        return skipMessageIntegrityCheck;
     }
 
     public void setSkipMessageIntegrityCheck(boolean skipMessageIntegrityCheck) {
@@ -468,7 +468,7 @@ public class ApplicationBean implements Application {
 
     public boolean isDeviceRestriction() {
 
-        return this.deviceRestriction;
+        return deviceRestriction;
     }
 
     public void setDeviceRestriction(boolean deviceRestriction) {
@@ -478,7 +478,7 @@ public class ApplicationBean implements Application {
 
     public boolean isSsoEnabled() {
 
-        return this.ssoEnabled;
+        return ssoEnabled;
     }
 
     public void setSsoEnabled(boolean ssoEnabled) {
@@ -488,7 +488,7 @@ public class ApplicationBean implements Application {
 
     public String getSsoLogoutUrl() {
 
-        return this.ssoLogoutUrl;
+        return ssoLogoutUrl;
     }
 
     public void setSsoLogoutUrl(String ssoLogoutUrl) {
@@ -503,13 +503,13 @@ public class ApplicationBean implements Application {
         /*
          * http://jira.jboss.com/jira/browse/EJBTHREE-786
          */
-        String applicationName = this.selectedApplication.getName();
+        String applicationName = selectedApplication.getName();
         LOG.debug("remove application: " + applicationName);
         try {
-            this.applicationService.removeApplication(applicationName);
+            applicationService.removeApplication(applicationName);
         } catch (PermissionDeniedException e) {
             LOG.debug("permission denied to remove: " + applicationName);
-            this.facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), e.getResourceArgs());
+            facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), e.getResourceArgs());
             return null;
         }
         applicationListFactory();
@@ -520,11 +520,11 @@ public class ApplicationBean implements Application {
     @Factory(NEW_IDENTITY_ATTRIBUTES_NAME)
     public void newIdentityAttributesFactory() {
 
-        this.newIdentityAttributes = new LinkedList<IdentityAttribute>();
-        List<AttributeTypeEntity> attributeTypes = this.attributeTypeService.listAttributeTypes();
+        newIdentityAttributes = new LinkedList<IdentityAttribute>();
+        List<AttributeTypeEntity> attributeTypes = attributeTypeService.listAttributeTypes();
         for (AttributeTypeEntity attributeType : attributeTypes) {
             IdentityAttribute identityAttribute = new IdentityAttribute(attributeType.getName());
-            this.newIdentityAttributes.add(identityAttribute);
+            newIdentityAttributes.add(identityAttribute);
         }
     }
 
@@ -533,8 +533,8 @@ public class ApplicationBean implements Application {
     public void identityAttributesFactory()
             throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException {
 
-        Set<ApplicationIdentityAttributeEntity> currentIdentityAttributes = this.applicationService
-                                                                                                   .getCurrentApplicationIdentity(this.selectedApplication
+        Set<ApplicationIdentityAttributeEntity> currentIdentityAttributes = applicationService
+                                                                                                   .getCurrentApplicationIdentity(selectedApplication
                                                                                                                                                           .getName());
 
         /*
@@ -548,8 +548,8 @@ public class ApplicationBean implements Application {
         /*
          * The view receives a full attribute list, annotated with included and required flags.
          */
-        this.identityAttributes = new LinkedList<IdentityAttribute>();
-        List<AttributeTypeEntity> attributeTypes = this.attributeTypeService.listAttributeTypes();
+        identityAttributes = new LinkedList<IdentityAttribute>();
+        List<AttributeTypeEntity> attributeTypes = attributeTypeService.listAttributeTypes();
         for (AttributeTypeEntity attributeType : attributeTypes) {
             boolean included = false;
             boolean required = false;
@@ -565,7 +565,7 @@ public class ApplicationBean implements Application {
                 }
             }
             IdentityAttribute identityAttribute = new IdentityAttribute(attributeType.getName(), included, required, dataMining);
-            this.identityAttributes.add(identityAttribute);
+            identityAttributes.add(identityAttribute);
         }
     }
 
@@ -594,49 +594,49 @@ public class ApplicationBean implements Application {
             throws CertificateEncodingException, ApplicationNotFoundException, IOException, ApplicationIdentityNotFoundException,
             AttributeTypeNotFoundException, PermissionDeniedException {
 
-        String applicationId = this.selectedApplication.getName();
+        String applicationId = selectedApplication.getName();
         LOG.debug("save application: " + applicationId);
 
         URL newApplicationUrl = null;
         byte[] newApplicationLogo = null;
         URL newSsoLogoutUrl = null;
-        if (null != this.applicationUrl && this.applicationUrl.length() != 0) {
+        if (null != applicationUrl && applicationUrl.length() != 0) {
             try {
-                newApplicationUrl = new URL(this.applicationUrl);
+                newApplicationUrl = new URL(applicationUrl);
             } catch (MalformedURLException e) {
-                LOG.debug("illegal URL format: " + this.applicationUrl);
-                this.facesMessages.addToControlFromResourceBundle("applicationUrl", FacesMessage.SEVERITY_ERROR, "errorIllegalUrl",
-                        this.applicationUrl);
+                LOG.debug("illegal URL format: " + applicationUrl);
+                facesMessages.addToControlFromResourceBundle("applicationUrl", FacesMessage.SEVERITY_ERROR, "errorIllegalUrl",
+                        applicationUrl);
                 return null;
             }
         }
-        if (null != this.applicationLogoFile) {
+        if (null != applicationLogoFile) {
             try {
-                newApplicationLogo = getUpFileContent(this.applicationLogoFile);
+                newApplicationLogo = getUpFileContent(applicationLogoFile);
             } catch (IOException e) {
                 LOG.debug("couldn't fetch uploaded data for application logo.");
-                this.facesMessages.addToControlFromResourceBundle("applicationLogo", FacesMessage.SEVERITY_ERROR, "errorUploadLogo");
+                facesMessages.addToControlFromResourceBundle("applicationLogo", FacesMessage.SEVERITY_ERROR, "errorUploadLogo");
                 return null;
             }
         }
-        if (null != this.ssoLogoutUrl && this.ssoLogoutUrl.length() != 0) {
+        if (null != ssoLogoutUrl && ssoLogoutUrl.length() != 0) {
             try {
-                newSsoLogoutUrl = new URL(this.ssoLogoutUrl);
+                newSsoLogoutUrl = new URL(ssoLogoutUrl);
             } catch (MalformedURLException e) {
-                LOG.debug("illegal URL format: " + this.ssoLogoutUrl);
-                this.facesMessages.addToControlFromResourceBundle("ssoLogoutUrl", FacesMessage.SEVERITY_ERROR, "errorIllegalUrl",
-                        this.ssoLogoutUrl);
+                LOG.debug("illegal URL format: " + ssoLogoutUrl);
+                facesMessages.addToControlFromResourceBundle("ssoLogoutUrl", FacesMessage.SEVERITY_ERROR, "errorIllegalUrl",
+                        ssoLogoutUrl);
                 return null;
             }
         }
 
-        if (null != this.upFile) {
+        if (null != upFile) {
             LOG.debug("updating application certificate");
-            this.applicationService.updateApplicationCertificate(applicationId, getUpFileContent(this.upFile));
+            applicationService.updateApplicationCertificate(applicationId, getUpFileContent(upFile));
         }
 
         List<IdentityAttributeTypeDO> tempNewIdentityAttributes = new LinkedList<IdentityAttributeTypeDO>();
-        for (IdentityAttribute identityAttribute : this.identityAttributes) {
+        for (IdentityAttribute identityAttribute : identityAttributes) {
             if (false == identityAttribute.isIncluded()) {
                 continue;
             }
@@ -645,37 +645,37 @@ public class ApplicationBean implements Application {
             tempNewIdentityAttributes.add(newIdentityAttribute);
         }
 
-        this.applicationService.updateApplicationIdentity(applicationId, tempNewIdentityAttributes);
-        this.applicationService.updateApplicationUrl(applicationId, newApplicationUrl);
+        applicationService.updateApplicationIdentity(applicationId, tempNewIdentityAttributes);
+        applicationService.updateApplicationUrl(applicationId, newApplicationUrl);
         if (newApplicationLogo != null) {
-            this.applicationService.updateApplicationLogo(applicationId, newApplicationLogo);
+            applicationService.updateApplicationLogo(applicationId, newApplicationLogo);
         }
-        this.applicationService.setIdentifierMappingServiceAccess(applicationId, this.idmapping);
-        if (null != this.applicationIdScope) {
-            this.applicationService.setIdScope(applicationId, IdScopeType.valueOf(this.applicationIdScope));
+        applicationService.setIdentifierMappingServiceAccess(applicationId, idmapping);
+        if (null != applicationIdScope) {
+            applicationService.setIdScope(applicationId, IdScopeType.valueOf(applicationIdScope));
         }
-        this.applicationService.setSkipMessageIntegrityCheck(applicationId, this.skipMessageIntegrityCheck);
-        this.applicationService.setSsoEnabled(applicationId, this.ssoEnabled);
-        this.applicationService.updateSsoLogoutUrl(applicationId, newSsoLogoutUrl);
+        applicationService.setSkipMessageIntegrityCheck(applicationId, skipMessageIntegrityCheck);
+        applicationService.setSsoEnabled(applicationId, ssoEnabled);
+        applicationService.updateSsoLogoutUrl(applicationId, newSsoLogoutUrl);
 
         // device restriction
         List<AllowedDeviceEntity> allowedDeviceList = new ArrayList<AllowedDeviceEntity>();
-        for (DeviceEntry deviceEntry : this.allowedDevices) {
+        for (DeviceEntry deviceEntry : allowedDevices) {
             if (deviceEntry.isAllowed() == true) {
-                AllowedDeviceEntity device = new AllowedDeviceEntity(this.selectedApplication, deviceEntry.getDevice(),
+                AllowedDeviceEntity device = new AllowedDeviceEntity(selectedApplication, deviceEntry.getDevice(),
                         deviceEntry.getWeight());
                 allowedDeviceList.add(device);
             }
         }
-        this.applicationService.setApplicationDescription(applicationId, this.description);
-        this.applicationService.setApplicationDeviceRestriction(applicationId, this.deviceRestriction);
-        this.deviceService.setAllowedDevices(this.selectedApplication, allowedDeviceList);
+        applicationService.setApplicationDescription(applicationId, description);
+        applicationService.setApplicationDeviceRestriction(applicationId, deviceRestriction);
+        deviceService.setAllowedDevices(selectedApplication, allowedDeviceList);
 
         /*
          * Refresh the selected application.
          */
-        this.selectedApplication = this.applicationService.getApplication(applicationId);
-        this.applicationIdentityAttributes = this.applicationService.getCurrentApplicationIdentity(applicationId);
+        selectedApplication = applicationService.getApplication(applicationId);
+        applicationIdentityAttributes = applicationService.getCurrentApplicationIdentity(applicationId);
 
         applicationListFactory();
         return "success";
@@ -687,7 +687,7 @@ public class ApplicationBean implements Application {
         /*
          * To set the selected application.
          */
-        LOG.debug("view application: " + this.selectedApplication.getName());
+        LOG.debug("view application: " + selectedApplication.getName());
         return "view";
     }
 
@@ -697,28 +697,28 @@ public class ApplicationBean implements Application {
         /*
          * To set the selected application.
          */
-        LOG.debug("edit application: " + this.selectedApplication.getName());
+        LOG.debug("edit application: " + selectedApplication.getName());
 
-        if (null != this.selectedApplication.getApplicationUrl()) {
-            this.applicationUrl = this.selectedApplication.getApplicationUrl().toExternalForm();
+        if (null != selectedApplication.getApplicationUrl()) {
+            applicationUrl = selectedApplication.getApplicationUrl().toExternalForm();
         }
-        if (null != this.selectedApplication.getApplicationLogo()) {
-            this.applicationLogo = this.selectedApplication.getApplicationLogo();
+        if (null != selectedApplication.getApplicationLogo()) {
+            applicationLogo = selectedApplication.getApplicationLogo();
         }
-        this.idmapping = this.selectedApplication.isIdentifierMappingAllowed();
+        idmapping = selectedApplication.isIdentifierMappingAllowed();
 
-        this.skipMessageIntegrityCheck = this.selectedApplication.isSkipMessageIntegrityCheck();
+        skipMessageIntegrityCheck = selectedApplication.isSkipMessageIntegrityCheck();
 
-        this.applicationIdScope = this.selectedApplication.getIdScope().name();
+        applicationIdScope = selectedApplication.getIdScope().name();
 
-        this.description = this.selectedApplication.getDescription();
+        description = selectedApplication.getDescription();
 
-        this.deviceRestriction = this.selectedApplication.isDeviceRestriction();
+        deviceRestriction = selectedApplication.isDeviceRestriction();
 
-        this.ssoEnabled = this.selectedApplication.isSsoEnabled();
+        ssoEnabled = selectedApplication.isSsoEnabled();
 
-        if (null != this.selectedApplication.getSsoLogoutUrl()) {
-            this.ssoLogoutUrl = this.selectedApplication.getSsoLogoutUrl().toExternalForm();
+        if (null != selectedApplication.getSsoLogoutUrl()) {
+            ssoLogoutUrl = selectedApplication.getSsoLogoutUrl().toExternalForm();
         }
 
         return "edit";
@@ -728,7 +728,7 @@ public class ApplicationBean implements Application {
     @Factory("availableApplicationOwners")
     public List<SelectItem> availableApplicationOwnersFactory() {
 
-        List<ApplicationOwnerEntity> applicationOwners = this.applicationService.listApplicationOwners();
+        List<ApplicationOwnerEntity> applicationOwners = applicationService.listApplicationOwners();
         List<SelectItem> availableApplicationOwners = ConvertorUtil.convert(applicationOwners, new ApplicationOwnerSelectItemConvertor());
         return availableApplicationOwners;
     }
@@ -751,7 +751,7 @@ public class ApplicationBean implements Application {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();
 
-        String text = this.usageAgreementService.getUsageAgreementText(this.selectedApplication.getName(), viewLocale.getLanguage());
+        String text = usageAgreementService.getUsageAgreementText(selectedApplication.getName(), viewLocale.getLanguage());
         if (null == text)
             return "";
         return text;
@@ -764,22 +764,22 @@ public class ApplicationBean implements Application {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();
 
-        this.allowedDevices = new ArrayList<DeviceEntry>();
+        allowedDevices = new ArrayList<DeviceEntry>();
         boolean defaultValue = false;
 
-        List<DeviceEntity> deviceList = this.deviceService.listDevices();
+        List<DeviceEntity> deviceList = deviceService.listDevices();
         for (DeviceEntity deviceEntity : deviceList) {
-            String deviceDescription = this.devicePolicyService.getDeviceDescription(deviceEntity.getName(), viewLocale);
-            this.allowedDevices.add(new DeviceEntry(deviceEntity, deviceDescription, defaultValue, 0));
+            String deviceDescription = devicePolicyService.getDeviceDescription(deviceEntity.getName(), viewLocale);
+            allowedDevices.add(new DeviceEntry(deviceEntity, deviceDescription, defaultValue, 0));
         }
 
-        if (this.selectedApplication == null)
+        if (selectedApplication == null)
             return;
 
-        List<AllowedDeviceEntity> allowedDeviceList = this.deviceService.listAllowedDevices(this.selectedApplication);
+        List<AllowedDeviceEntity> allowedDeviceList = deviceService.listAllowedDevices(selectedApplication);
 
         for (AllowedDeviceEntity allowedDevice : allowedDeviceList) {
-            for (DeviceEntry deviceEntry : this.allowedDevices) {
+            for (DeviceEntry deviceEntry : allowedDevices) {
                 if (deviceEntry.getDevice().equals(allowedDevice.getDevice())) {
                     deviceEntry.setAllowed(true);
                     deviceEntry.setWeight(allowedDevice.getWeight());
@@ -793,17 +793,17 @@ public class ApplicationBean implements Application {
     public void usageAgreementListFactory()
             throws ApplicationNotFoundException, PermissionDeniedException {
 
-        if (null == this.selectedApplication)
+        if (null == selectedApplication)
             return;
         LOG.debug("usage agreement list factory");
-        this.selectedApplicationUsageAgreements = this.usageAgreementService.getUsageAgreements(this.selectedApplication.getName());
+        selectedApplicationUsageAgreements = usageAgreementService.getUsageAgreements(selectedApplication.getName());
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String viewUsageAgreement() {
 
-        LOG.debug("view usage agreement for application: " + this.selectedApplication.getName() + ", version="
-                + this.operSelectedUsageAgreement.getUsageAgreementVersion());
+        LOG.debug("view usage agreement for application: " + selectedApplication.getName() + ", version="
+                + operSelectedUsageAgreement.getUsageAgreementVersion());
         return "view-usage-agreement";
     }
 
@@ -811,9 +811,9 @@ public class ApplicationBean implements Application {
     public String editUsageAgreement()
             throws ApplicationNotFoundException, PermissionDeniedException {
 
-        LOG.debug("edit usage agreement for application: " + this.selectedApplication.getName());
-        this.draftUsageAgreement = this.usageAgreementService.getDraftUsageAgreement(this.selectedApplication.getName());
-        this.currentUsageAgreement = this.usageAgreementService.getCurrentUsageAgreement(this.selectedApplication.getName());
+        LOG.debug("edit usage agreement for application: " + selectedApplication.getName());
+        draftUsageAgreement = usageAgreementService.getDraftUsageAgreement(selectedApplication.getName());
+        currentUsageAgreement = usageAgreementService.getCurrentUsageAgreement(selectedApplication.getName());
         return "edit-usage-agreement";
     }
 

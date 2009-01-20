@@ -54,8 +54,8 @@ public class NoPkcs11Servlet extends AbstractInjectionServlet {
     private void invoke(@SuppressWarnings("unused") HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
-        LOG.debug("java version: " + this.javaVersion);
-        if (this.javaVersion == JAVA_VERSION.JAVA_1_5) {
+        LOG.debug("java version: " + javaVersion);
+        if (javaVersion == JAVA_VERSION.JAVA_1_5) {
             response.sendRedirect("./missing-middleware.seam");
         } else {
             response.sendRedirect("./beid-pcsc.seam");

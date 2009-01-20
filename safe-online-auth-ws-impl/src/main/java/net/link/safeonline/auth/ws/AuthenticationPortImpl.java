@@ -199,15 +199,15 @@ public class AuthenticationPortImpl implements AuthenticationPort {
 
         LOG.debug("authenticate");
 
-        if (null != this.authenticatedSubject) {
-            LOG.error("already authenticated user " + this.authenticatedSubject.getUserId());
+        if (null != authenticatedSubject) {
+            LOG.error("already authenticated user " + authenticatedSubject.getUserId());
             manager.unexport(this);
             return createAuthenticationResponse(request.getID(), WSAuthenticationErrorCode.ALREADY_AUTHENTICATED, null);
         }
 
-        this.language = request.getLanguage();
-        this.applicationName = request.getApplicationId();
-        this.keyInfo = request.getKeyInfo();
+        language = request.getLanguage();
+        applicationName = request.getApplicationId();
+        keyInfo = request.getKeyInfo();
 
         // proxy request to specified device
         WSAuthenticationResponseType response;
@@ -228,15 +228,15 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         }
 
         try {
-            this.authenticatedSubject = findSubject(response);
-            if (null == this.authenticatedSubject) {
+            authenticatedSubject = findSubject(response);
+            if (null == authenticatedSubject) {
                 // not yet authenticated, device authentication ws is returning extra information for authentication
                 LOG.debug("not yet authenticated, forward response");
                 return response;
             }
-            this.authenticatedDevice = getAuthenticatedDevice(response);
+            authenticatedDevice = getAuthenticatedDevice(response);
 
-            LOG.debug("authenticated: userId=" + this.authenticatedSubject.getUserId());
+            LOG.debug("authenticated: userId=" + authenticatedSubject.getUserId());
 
             login(request.getID(), response);
 
@@ -259,7 +259,7 @@ public class AuthenticationPortImpl implements AuthenticationPort {
 
         LOG.debug("request global usage agreement");
 
-        if (null == this.authenticatedSubject) {
+        if (null == authenticatedSubject) {
             LOG.error("user not yet authenticated");
             return createGlobalUsageAgreementResponse(request.getID(), WSAuthenticationErrorCode.NOT_AUTHENTICATED, null);
         }
@@ -268,7 +268,7 @@ public class AuthenticationPortImpl implements AuthenticationPort {
                 WSAuthenticationErrorCode.SUCCESS, null);
 
         try {
-            if (!this.globalConfirmationRequired) {
+            if (!globalConfirmationRequired) {
                 login(request.getID(), response);
                 return response;
             }
@@ -280,7 +280,7 @@ public class AuthenticationPortImpl implements AuthenticationPort {
                 // lookup global usage agreement
                 UsageAgreementService usageAgreementService = EjbUtils.getEJB(UsageAgreementService.JNDI_BINDING,
                         UsageAgreementService.class);
-                String globalUsageAgreement = usageAgreementService.getGlobalUsageAgreementText(this.language);
+                String globalUsageAgreement = usageAgreementService.getGlobalUsageAgreementText(language);
 
                 response.setGlobalUsageAgreement(globalUsageAgreement);
 
@@ -305,7 +305,7 @@ public class AuthenticationPortImpl implements AuthenticationPort {
 
         LOG.debug("confirm global usage agreement");
 
-        if (null == this.authenticatedSubject) {
+        if (null == authenticatedSubject) {
             LOG.error("user not yet authenticated");
             return createAuthenticationResponse(request.getID(), WSAuthenticationErrorCode.NOT_AUTHENTICATED, null);
         }
@@ -349,9 +349,9 @@ public class AuthenticationPortImpl implements AuthenticationPort {
      */
     public WSAuthenticationUsageAgreementResponseType requestUsageAgreement(WSAuthenticationUsageAgreementRequestType request) {
 
-        LOG.debug("request application usage agreement / subscription : " + this.applicationName);
+        LOG.debug("request application usage agreement / subscription : " + applicationName);
 
-        if (null == this.authenticatedSubject) {
+        if (null == authenticatedSubject) {
             LOG.error("user not yet authenticated");
             return createUsageAgreementResponse(request.getID(), WSAuthenticationErrorCode.NOT_AUTHENTICATED, null);
         }
@@ -360,7 +360,7 @@ public class AuthenticationPortImpl implements AuthenticationPort {
                 WSAuthenticationErrorCode.SUCCESS, null);
 
         try {
-            if (!this.subscriptionRequired) {
+            if (!subscriptionRequired) {
                 login(request.getID(), response);
                 return response;
             }
@@ -372,11 +372,11 @@ public class AuthenticationPortImpl implements AuthenticationPort {
                 // lookup application's usage agreement
                 UsageAgreementService usageAgreementService = EjbUtils.getEJB(UsageAgreementService.JNDI_BINDING,
                         UsageAgreementService.class);
-                String usageAgreement = usageAgreementService.getUsageAgreementText(this.applicationName, this.language);
+                String usageAgreement = usageAgreementService.getUsageAgreementText(applicationName, language);
                 if (null == usageAgreement) {
                     // check is subscription is needed
                     SubscriptionService subscriptionService = EjbUtils.getEJB(SubscriptionService.JNDI_BINDING, SubscriptionService.class);
-                    if (!subscriptionService.isSubscribed(this.applicationName)) {
+                    if (!subscriptionService.isSubscribed(applicationName)) {
                         usageAgreement = "";
                     }
                 }
@@ -404,9 +404,9 @@ public class AuthenticationPortImpl implements AuthenticationPort {
      */
     public WSAuthenticationResponseType confirmUsageAgreement(WSAuthenticationUsageAgreementConfirmationType request) {
 
-        LOG.debug("confirm application usage agreement / subscribe : " + this.applicationName);
+        LOG.debug("confirm application usage agreement / subscribe : " + applicationName);
 
-        if (null == this.authenticatedSubject) {
+        if (null == authenticatedSubject) {
             LOG.error("user not yet authenticated");
             return createAuthenticationResponse(request.getID(), WSAuthenticationErrorCode.NOT_AUTHENTICATED, null);
         }
@@ -428,14 +428,14 @@ public class AuthenticationPortImpl implements AuthenticationPort {
                         UsageAgreementService.class);
                 SubscriptionService subscriptionService = EjbUtils.getEJB(SubscriptionService.JNDI_BINDING, SubscriptionService.class);
 
-                if (!subscriptionService.isSubscribed(this.applicationName)) {
-                    LOG.debug("subscribe to application " + this.applicationName);
-                    subscriptionService.subscribe(this.applicationName);
+                if (!subscriptionService.isSubscribed(applicationName)) {
+                    LOG.debug("subscribe to application " + applicationName);
+                    subscriptionService.subscribe(applicationName);
                 }
 
-                if (usageAgreementService.requiresUsageAgreementAcceptation(this.applicationName, this.language)) {
-                    LOG.debug("confirm usage agreement for application " + this.applicationName);
-                    usageAgreementService.confirmUsageAgreementVersion(this.applicationName);
+                if (usageAgreementService.requiresUsageAgreementAcceptation(applicationName, language)) {
+                    LOG.debug("confirm usage agreement for application " + applicationName);
+                    usageAgreementService.confirmUsageAgreementVersion(applicationName);
                 }
             } catch (ApplicationNotFoundException e) {
                 throw new WSAuthenticationException(WSAuthenticationErrorCode.APPLICATION_NOT_FOUND, e.getMessage());
@@ -467,9 +467,9 @@ public class AuthenticationPortImpl implements AuthenticationPort {
      */
     public WSAuthenticationResponseType requestIdentity(WSAuthenticationIdentityRequestType request) {
 
-        LOG.debug("request identity for application: " + this.applicationName);
+        LOG.debug("request identity for application: " + applicationName);
 
-        if (null == this.authenticatedSubject) {
+        if (null == authenticatedSubject) {
             LOG.error("user not yet authenticated");
             return createAuthenticationResponse(request.getID(), WSAuthenticationErrorCode.NOT_AUTHENTICATED, null);
         }
@@ -477,7 +477,7 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         WSAuthenticationResponseType response = createAuthenticationResponse(request.getID(), WSAuthenticationErrorCode.SUCCESS, null);
 
         try {
-            if (!this.confirmationRequired) {
+            if (!confirmationRequired) {
                 login(request.getID(), response);
                 return response;
             }
@@ -488,8 +488,8 @@ public class AuthenticationPortImpl implements AuthenticationPort {
 
                 IdentityService identityService = EjbUtils.getEJB(IdentityService.JNDI_BINDING, IdentityService.class);
 
-                List<AttributeDO> confirmationList = identityService.listIdentityAttributesToConfirm(this.applicationName, new Locale(
-                        this.language));
+                List<AttributeDO> confirmationList = identityService.listIdentityAttributesToConfirm(applicationName, new Locale(
+                        language));
                 List<AttributeType> confirmationAttributes = getAttributes(confirmationList, false);
                 AssertionType attributeAssertion = getAttributeAssertion(confirmationAttributes);
                 response.getAssertion().add(attributeAssertion);
@@ -519,9 +519,9 @@ public class AuthenticationPortImpl implements AuthenticationPort {
      */
     public WSAuthenticationResponseType confirmIdentity(WSAuthenticationIdentityConfirmationType request) {
 
-        LOG.debug("confirm application identity: " + this.applicationName);
+        LOG.debug("confirm application identity: " + applicationName);
 
-        if (null == this.authenticatedSubject) {
+        if (null == authenticatedSubject) {
             LOG.error("user not yet authenticated");
             return createAuthenticationResponse(request.getID(), WSAuthenticationErrorCode.NOT_AUTHENTICATED, null);
         }
@@ -541,7 +541,7 @@ public class AuthenticationPortImpl implements AuthenticationPort {
                 // confirm application identity
                 IdentityService identityService = EjbUtils.getEJB(IdentityService.JNDI_BINDING, IdentityService.class);
 
-                identityService.confirmIdentity(this.applicationName);
+                identityService.confirmIdentity(applicationName);
 
             } catch (SubscriptionNotFoundException e) {
                 throw new WSAuthenticationException(WSAuthenticationErrorCode.SUBSCRIPTION_NOT_FOUND, e.getMessage());
@@ -571,9 +571,9 @@ public class AuthenticationPortImpl implements AuthenticationPort {
      */
     public WSAuthenticationResponseType requestMissingAttributes(WSAuthenticationMissingAttributesRequestType request) {
 
-        LOG.debug("request missing attributes for application: " + this.applicationName);
+        LOG.debug("request missing attributes for application: " + applicationName);
 
-        if (null == this.authenticatedSubject) {
+        if (null == authenticatedSubject) {
             LOG.error("user not yet authenticated");
             return createAuthenticationResponse(request.getID(), WSAuthenticationErrorCode.NOT_AUTHENTICATED, null);
         }
@@ -581,7 +581,7 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         WSAuthenticationResponseType response = createAuthenticationResponse(request.getID(), WSAuthenticationErrorCode.SUCCESS, null);
 
         try {
-            if (!this.hasMissingAttributes) {
+            if (!hasMissingAttributes) {
                 login(request.getID(), response);
                 return response;
             }
@@ -591,8 +591,8 @@ public class AuthenticationPortImpl implements AuthenticationPort {
             try {
                 IdentityService identityService = EjbUtils.getEJB(IdentityService.JNDI_BINDING, IdentityService.class);
 
-                List<AttributeDO> missingAttributeList = identityService.listMissingAttributes(this.applicationName, new Locale(
-                        this.language));
+                List<AttributeDO> missingAttributeList = identityService.listMissingAttributes(applicationName, new Locale(
+                        language));
 
                 // first check if all there are non-user-editable attributes missing, if so user cannot authenticate.
                 String unavailableAttributes = "";
@@ -606,8 +606,8 @@ public class AuthenticationPortImpl implements AuthenticationPort {
                             + unavailableAttributes + "] is(are) unavailable");
 
                 // include optional attributes
-                List<AttributeDO> optionalAttributeList = identityService.listOptionalAttributes(this.applicationName, new Locale(
-                        this.language));
+                List<AttributeDO> optionalAttributeList = identityService.listOptionalAttributes(applicationName, new Locale(
+                        language));
 
                 List<AttributeType> missingAttributes = getAttributes(missingAttributeList, false);
                 List<AttributeType> optionalAttributes = getAttributes(optionalAttributeList, true);
@@ -643,9 +643,9 @@ public class AuthenticationPortImpl implements AuthenticationPort {
      */
     public WSAuthenticationResponseType saveMissingAttributes(WSAuthenticationMissingAttributesSaveRequestType request) {
 
-        LOG.debug("save missing attributes for: " + this.applicationName);
+        LOG.debug("save missing attributes for: " + applicationName);
 
-        if (null == this.authenticatedSubject) {
+        if (null == authenticatedSubject) {
             LOG.error("user not yet authenticated");
             return createAuthenticationResponse(request.getID(), WSAuthenticationErrorCode.NOT_AUTHENTICATED, null);
         }
@@ -692,11 +692,11 @@ public class AuthenticationPortImpl implements AuthenticationPort {
     private WSAuthenticationResponseType proxyRequest(WSAuthenticationRequestType request)
             throws RequestDeniedException, WSClientTransportException, WSAuthenticationException {
 
-        if (null == this.deviceAuthenticationClient) {
+        if (null == deviceAuthenticationClient) {
             setDeviceAuthenticationClient(request.getDeviceName());
         }
 
-        return this.deviceAuthenticationClient.authenticate(request);
+        return deviceAuthenticationClient.authenticate(request);
     }
 
     /**
@@ -720,28 +720,28 @@ public class AuthenticationPortImpl implements AuthenticationPort {
 
             // perform global usage agreement check
             performGlobalUsageAgreementCheck();
-            if (true == this.globalConfirmationRequired) {
+            if (true == globalConfirmationRequired) {
                 response.setAuthenticationStep(AuthenticationStep.GLOBAL_USAGE_AGREEMENT.getValue());
                 return;
             }
 
             // perform subscription check
             performSubscriptionCheck();
-            if (true == this.subscriptionRequired) {
+            if (true == subscriptionRequired) {
                 response.setAuthenticationStep(AuthenticationStep.USAGE_AGREEMENT.getValue());
                 return;
             }
 
             // perform identity confirmation check
             performConfirmationCheck();
-            if (true == this.confirmationRequired) {
+            if (true == confirmationRequired) {
                 response.setAuthenticationStep(AuthenticationStep.IDENTITY_CONFIRMATION.getValue());
                 return;
             }
 
             // perform missing attributes check
             performMissingAttributesCheck();
-            if (true == this.hasMissingAttributes) {
+            if (true == hasMissingAttributes) {
                 response.setAuthenticationStep(AuthenticationStep.MISSING_ATTRIBUTES.getValue());
                 return;
             }
@@ -755,7 +755,7 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         String applicationUserId = getApplicationUserId();
 
         response.setUserId(applicationUserId);
-        response.setDeviceName(this.authenticatedDevice.getName());
+        response.setDeviceName(authenticatedDevice.getName());
         AssertionType assertion = generateAssertion(id, applicationUserId);
         response.getAssertion().add(assertion);
         manager.unexport(this);
@@ -836,7 +836,7 @@ public class AuthenticationPortImpl implements AuthenticationPort {
 
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
 
-        this.deviceAuthenticationClient = new DeviceAuthenticationClientImpl(getDeviceAuthenticationClient.getInstance(),
+        deviceAuthenticationClient = new DeviceAuthenticationClientImpl(getDeviceAuthenticationClient.getInstance(),
                 authIdentityServiceClient.getCertificate(), authIdentityServiceClient.getPrivateKey());
     }
 
@@ -848,13 +848,13 @@ public class AuthenticationPortImpl implements AuthenticationPort {
     private LoginContext jaasLogin()
             throws WSAuthenticationException {
 
-        if (null == this.authenticatedSubject)
+        if (null == authenticatedSubject)
             return null;
 
-        UsernamePasswordHandler handler = new UsernamePasswordHandler(this.authenticatedSubject.getUserId(), null);
+        UsernamePasswordHandler handler = new UsernamePasswordHandler(authenticatedSubject.getUserId(), null);
         try {
             LoginContext loginContext = new LoginContext("client-login", handler);
-            LOG.debug("login to client-login with " + this.authenticatedSubject.getUserId());
+            LOG.debug("login to client-login with " + authenticatedSubject.getUserId());
             loginContext.login();
             return loginContext;
         } catch (LoginException e) {
@@ -872,7 +872,7 @@ public class AuthenticationPortImpl implements AuthenticationPort {
     private void jaasLogout(LoginContext loginContext)
             throws WSAuthenticationException {
 
-        LOG.debug("logout " + this.authenticatedSubject.getUserId());
+        LOG.debug("logout " + authenticatedSubject.getUserId());
         try {
             loginContext.logout();
         } catch (LoginException e) {
@@ -880,7 +880,7 @@ public class AuthenticationPortImpl implements AuthenticationPort {
             throw new WSAuthenticationException(WSAuthenticationErrorCode.AUTHENTICATION_FAILED, e.getMessage());
         }
 
-        flushCredentialCache(this.authenticatedSubject.getUserId(), SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
+        flushCredentialCache(authenticatedSubject.getUserId(), SafeOnlineConstants.SAFE_ONLINE_SECURITY_DOMAIN);
     }
 
     private void flushCredentialCache(String login, String securityDomain) {
@@ -926,15 +926,15 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         DevicePolicyService devicePolicyService = EjbUtils.getEJB(DevicePolicyService.JNDI_BINDING, DevicePolicyService.class);
         List<DeviceEntity> devicePolicy;
         try {
-            devicePolicy = devicePolicyService.getDevicePolicy(this.applicationName, null);
+            devicePolicy = devicePolicyService.getDevicePolicy(applicationName, null);
         } catch (ApplicationNotFoundException e) {
-            LOG.error("application not found: " + this.applicationName);
+            LOG.error("application not found: " + applicationName);
             throw new WSAuthenticationException(WSAuthenticationErrorCode.APPLICATION_NOT_FOUND, e.getMessage());
         } catch (EmptyDevicePolicyException e) {
-            LOG.error("empty device policy for " + this.applicationName);
+            LOG.error("empty device policy for " + applicationName);
             throw new WSAuthenticationException(WSAuthenticationErrorCode.EMPTY_DEVICE_POLICY, e.getMessage());
         }
-        if (devicePolicy.contains(this.authenticatedDevice))
+        if (devicePolicy.contains(authenticatedDevice))
             return true;
 
         return false;
@@ -946,7 +946,7 @@ public class AuthenticationPortImpl implements AuthenticationPort {
     private void performGlobalUsageAgreementCheck() {
 
         UsageAgreementService usageAgreementService = EjbUtils.getEJB(UsageAgreementService.JNDI_BINDING, UsageAgreementService.class);
-        this.globalConfirmationRequired = usageAgreementService.requiresGlobalUsageAgreementAcceptation(this.language);
+        globalConfirmationRequired = usageAgreementService.requiresGlobalUsageAgreementAcceptation(language);
     }
 
     /**
@@ -959,15 +959,15 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         UsageAgreementService usageAgreementService = EjbUtils.getEJB(UsageAgreementService.JNDI_BINDING, UsageAgreementService.class);
 
         try {
-            this.subscriptionRequired = !subscriptionService.isSubscribed(this.applicationName);
-            if (!this.subscriptionRequired) {
-                this.subscriptionRequired = usageAgreementService.requiresUsageAgreementAcceptation(this.applicationName, this.language);
+            subscriptionRequired = !subscriptionService.isSubscribed(applicationName);
+            if (!subscriptionRequired) {
+                subscriptionRequired = usageAgreementService.requiresUsageAgreementAcceptation(applicationName, language);
             }
         } catch (ApplicationNotFoundException e) {
-            LOG.error("application not found: " + this.applicationName);
+            LOG.error("application not found: " + applicationName);
             throw new WSAuthenticationException(WSAuthenticationErrorCode.APPLICATION_NOT_FOUND, e.getMessage());
         } catch (SubscriptionNotFoundException e) {
-            LOG.error("subscription not found for " + this.applicationName);
+            LOG.error("subscription not found for " + applicationName);
             throw new WSAuthenticationException(WSAuthenticationErrorCode.SUBSCRIPTION_NOT_FOUND, e.getMessage());
         }
     }
@@ -981,18 +981,18 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         IdentityService identityService = EjbUtils.getEJB(IdentityService.JNDI_BINDING, IdentityService.class);
 
         try {
-            this.confirmationRequired = identityService.isConfirmationRequired(this.applicationName);
+            confirmationRequired = identityService.isConfirmationRequired(applicationName);
         } catch (SubscriptionNotFoundException e) {
-            LOG.error("subscription not found for " + this.applicationName);
+            LOG.error("subscription not found for " + applicationName);
             throw new WSAuthenticationException(WSAuthenticationErrorCode.SUBSCRIPTION_NOT_FOUND, e.getMessage());
         } catch (ApplicationNotFoundException e) {
-            LOG.error("application not found: " + this.applicationName);
+            LOG.error("application not found: " + applicationName);
             throw new WSAuthenticationException(WSAuthenticationErrorCode.APPLICATION_NOT_FOUND, e.getMessage());
         } catch (ApplicationIdentityNotFoundException e) {
-            LOG.error("application identity not found for " + this.applicationName);
+            LOG.error("application identity not found for " + applicationName);
             throw new WSAuthenticationException(WSAuthenticationErrorCode.APPLICATION_IDENTITY_NOT_FOUND, e.getMessage());
         }
-        LOG.debug("confirmation required: " + this.confirmationRequired);
+        LOG.debug("confirmation required: " + confirmationRequired);
     }
 
     /**
@@ -1004,12 +1004,12 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         IdentityService identityService = EjbUtils.getEJB(IdentityService.JNDI_BINDING, IdentityService.class);
 
         try {
-            this.hasMissingAttributes = identityService.hasMissingAttributes(this.applicationName);
+            hasMissingAttributes = identityService.hasMissingAttributes(applicationName);
         } catch (ApplicationNotFoundException e) {
-            LOG.error("application not found: " + this.applicationName);
+            LOG.error("application not found: " + applicationName);
             throw new WSAuthenticationException(WSAuthenticationErrorCode.APPLICATION_NOT_FOUND, e.getMessage());
         } catch (ApplicationIdentityNotFoundException e) {
-            LOG.error("application identity not found for " + this.applicationName);
+            LOG.error("application identity not found for " + applicationName);
             throw new WSAuthenticationException(WSAuthenticationErrorCode.APPLICATION_IDENTITY_NOT_FOUND, e.getMessage());
         } catch (PermissionDeniedException e) {
             LOG.error("permission denied: " + e.getMessage());
@@ -1098,8 +1098,8 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         response.setInResponseTo(id);
         response.setIssuer(issuerName);
 
-        if (null != this.authenticatedDevice) {
-            response.setDeviceName(this.authenticatedDevice.getName());
+        if (null != authenticatedDevice) {
+            response.setDeviceName(authenticatedDevice.getName());
         }
 
         setStatus(response, code, message);
@@ -1114,12 +1114,12 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         UserIdMappingService userIdMappingService = EjbUtils.getEJB(UserIdMappingService.JNDI_BINDING, UserIdMappingService.class);
 
         try {
-            return userIdMappingService.getApplicationUserId(this.applicationName, this.authenticatedSubject.getUserId());
+            return userIdMappingService.getApplicationUserId(applicationName, authenticatedSubject.getUserId());
         } catch (SubscriptionNotFoundException e) {
-            LOG.error("subscription not found for " + this.applicationName);
+            LOG.error("subscription not found for " + applicationName);
             throw new WSAuthenticationException(WSAuthenticationErrorCode.SUBSCRIPTION_NOT_FOUND, e.getMessage());
         } catch (ApplicationNotFoundException e) {
-            LOG.error("application not found: " + this.applicationName);
+            LOG.error("application not found: " + applicationName);
             throw new WSAuthenticationException(WSAuthenticationErrorCode.APPLICATION_NOT_FOUND, e.getMessage());
         }
     }
@@ -1130,9 +1130,9 @@ public class AuthenticationPortImpl implements AuthenticationPort {
     private AssertionType generateBaseAssertion()
             throws WSAuthenticationException {
 
-        if (null == this.authenticatedSubject)
+        if (null == authenticatedSubject)
             throw new WSAuthenticationException(WSAuthenticationErrorCode.NOT_AUTHENTICATED, null);
-        if (null == this.authenticatedDevice)
+        if (null == authenticatedDevice)
             throw new WSAuthenticationException(WSAuthenticationErrorCode.NOT_AUTHENTICATED, null);
 
         DatatypeFactory datatypeFactory;
@@ -1210,17 +1210,17 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         conditions.setNotBefore(now);
         conditions.setNotOnOrAfter(notAfter);
         AudienceRestrictionType audienceRestriction = new AudienceRestrictionType();
-        audienceRestriction.getAudience().add(this.applicationName);
+        audienceRestriction.getAudience().add(applicationName);
         conditions.getConditionOrAudienceRestrictionOrOneTimeUse().add(audienceRestriction);
         assertion.setConditions(conditions);
 
         // SubjectConfirmation
         SubjectConfirmationType subjectConfirmation = new SubjectConfirmationType();
         SubjectConfirmationDataType subjectConfirmationData = new SubjectConfirmationDataType();
-        if (null != this.keyInfo) {
+        if (null != keyInfo) {
             subjectConfirmation.setMethod(Saml2SubjectConfirmationMethod.HOLDER_OF_KEY.getMethodURI());
             org.w3._2000._09.xmldsig_.ObjectFactory dsigObjectFactory = new org.w3._2000._09.xmldsig_.ObjectFactory();
-            subjectConfirmationData.getContent().add(dsigObjectFactory.createKeyInfo(this.keyInfo));
+            subjectConfirmationData.getContent().add(dsigObjectFactory.createKeyInfo(keyInfo));
         } else {
             subjectConfirmation.setMethod(Saml2SubjectConfirmationMethod.SENDER_VOUCHES.getMethodURI());
         }
@@ -1234,7 +1234,7 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         AuthnStatementType authnStatement = new AuthnStatementType();
         authnStatement.setAuthnInstant(now);
         AuthnContextType authnContext = new AuthnContextType();
-        authnContext.getContent().add(samlObjectFactory.createAuthnContextClassRef(this.authenticatedDevice.getName()));
+        authnContext.getContent().add(samlObjectFactory.createAuthnContextClassRef(authenticatedDevice.getName()));
         authnStatement.setAuthnContext(authnContext);
         assertion.getStatementOrAuthnStatementOrAuthzDecisionStatement().add(authnStatement);
 

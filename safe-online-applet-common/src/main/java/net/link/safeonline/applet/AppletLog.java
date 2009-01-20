@@ -28,42 +28,42 @@ public class AppletLog implements Log {
 
     public void debug(Object message) {
 
-        this.appletView.outputDetailMessage("DEBUG: " + message);
+        appletView.outputDetailMessage("DEBUG: " + message);
     }
 
     public void debug(Object message, Throwable t) {
 
-        this.appletView.outputDetailMessage("DEBUG: " + message);
+        appletView.outputDetailMessage("DEBUG: " + message);
     }
 
     public void error(Object message) {
 
-        this.appletView.outputDetailMessage("ERROR: " + message);
+        appletView.outputDetailMessage("ERROR: " + message);
     }
 
     public void error(Object message, @SuppressWarnings("unused") Throwable t) {
 
-        this.appletView.outputDetailMessage("ERROR: " + message);
+        appletView.outputDetailMessage("ERROR: " + message);
     }
 
     public void fatal(Object message) {
 
-        this.appletView.outputDetailMessage("FATAL: " + message);
+        appletView.outputDetailMessage("FATAL: " + message);
     }
 
     public void fatal(Object message, @SuppressWarnings("unused") Throwable t) {
 
-        this.appletView.outputDetailMessage("FATAL: " + message);
+        appletView.outputDetailMessage("FATAL: " + message);
     }
 
     public void info(Object message) {
 
-        this.appletView.outputDetailMessage("INFO: " + message);
+        appletView.outputDetailMessage("INFO: " + message);
     }
 
     public void info(Object message, @SuppressWarnings("unused") Throwable t) {
 
-        this.appletView.outputDetailMessage("INFO: " + message);
+        appletView.outputDetailMessage("INFO: " + message);
     }
 
     public boolean isDebugEnabled() {
@@ -98,21 +98,21 @@ public class AppletLog implements Log {
 
     public void trace(Object message) {
 
-        this.appletView.outputDetailMessage("TRACE: " + message);
+        appletView.outputDetailMessage("TRACE: " + message);
     }
 
     public void trace(Object message, @SuppressWarnings("unused") Throwable t) {
 
-        this.appletView.outputDetailMessage("TRACE: " + message);
+        appletView.outputDetailMessage("TRACE: " + message);
     }
 
     public void warn(Object message) {
 
-        this.appletView.outputDetailMessage("WARN: " + message);
+        appletView.outputDetailMessage("WARN: " + message);
     }
 
     public void warn(Object message, @SuppressWarnings("unused") Throwable t) {
 
-        this.appletView.outputDetailMessage("WARN: " + message);
+        appletView.outputDetailMessage("WARN: " + message);
     }
 }

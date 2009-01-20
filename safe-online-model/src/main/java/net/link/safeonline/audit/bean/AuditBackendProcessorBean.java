@@ -92,10 +92,10 @@ public class AuditBackendProcessorBean implements MessageListener {
     private void sanitize(long auditContextId) {
 
         LOG.debug("sanitizing audit context: " + auditContextId);
-        this.accessAuditDAO.cleanup(auditContextId);
+        accessAuditDAO.cleanup(auditContextId);
 
         try {
-            this.auditContextDAO.removeAuditContext(auditContextId);
+            auditContextDAO.removeAuditContext(auditContextId);
         } catch (AuditContextNotFoundException e) {
             throw new EJBException("audit context not found: " + auditContextId, e);
         }
@@ -103,19 +103,19 @@ public class AuditBackendProcessorBean implements MessageListener {
 
     private boolean requiresSanitation(long auditContextId) {
 
-        if (this.resourceAuditDAO.hasRecords(auditContextId)) {
+        if (resourceAuditDAO.hasRecords(auditContextId)) {
             LOG.debug("has resource audit records");
             return false;
         }
-        if (this.securityAuditDAO.hasRecords(auditContextId)) {
+        if (securityAuditDAO.hasRecords(auditContextId)) {
             LOG.debug("has security audit records");
             return false;
         }
-        if (this.auditAuditDAO.hasRecords(auditContextId)) {
+        if (auditAuditDAO.hasRecords(auditContextId)) {
             LOG.debug("has audit audit records");
             return false;
         }
-        if (this.accessAuditDAO.hasErrorRecords(auditContextId)) {
+        if (accessAuditDAO.hasErrorRecords(auditContextId)) {
             LOG.debug("has access audit error records");
             return false;
         }
@@ -128,12 +128,12 @@ public class AuditBackendProcessorBean implements MessageListener {
         String message = exception.getMessage();
 
         try {
-            AuditContextEntity auditContext = this.auditContextDAO.getAuditContext(auditContextId);
-            this.auditAuditDAO.addAuditAudit(auditContext, message);
+            AuditContextEntity auditContext = auditContextDAO.getAuditContext(auditContextId);
+            auditAuditDAO.addAuditAudit(auditContext, message);
         }
 
         catch (AuditContextNotFoundException e) {
-            this.auditAuditDAO.addAuditAudit("audit backend error for audit context " + auditContextId + ": " + message);
+            auditAuditDAO.addAuditAudit("audit backend error for audit context " + auditContextId + ": " + message);
         }
     }
 

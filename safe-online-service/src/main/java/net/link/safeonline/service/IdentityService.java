@@ -69,39 +69,39 @@ public class IdentityService implements IdentityServiceMBean {
     public void loadKeyPair() {
 
         LOG.debug("load private key");
-        if (null == this.keyStoreResource && null == this.keyStoreFile)
+        if (null == keyStoreResource && null == keyStoreFile)
             throw new RuntimeException("no key store resource or file set");
-        if (null == this.keyStorePassword)
+        if (null == keyStorePassword)
             throw new RuntimeException("no key store password set");
-        if (null == this.keyStoreType)
+        if (null == keyStoreType)
             throw new RuntimeException("no key store type set");
 
         InputStream keyStoreInputStream;
-        if (null != this.keyStoreResource) {
+        if (null != keyStoreResource) {
             Thread currenThread = Thread.currentThread();
             ClassLoader classLoader = currenThread.getContextClassLoader();
-            keyStoreInputStream = classLoader.getResourceAsStream(this.keyStoreResource);
+            keyStoreInputStream = classLoader.getResourceAsStream(keyStoreResource);
             if (null == keyStoreInputStream)
-                throw new RuntimeException("keystore resource not found: " + this.keyStoreResource);
+                throw new RuntimeException("keystore resource not found: " + keyStoreResource);
         } else {
             try {
-                keyStoreInputStream = new FileInputStream(this.keyStoreFile);
+                keyStoreInputStream = new FileInputStream(keyStoreFile);
             } catch (FileNotFoundException e) {
-                throw new RuntimeException("keystore file not found: " + this.keyStoreFile);
+                throw new RuntimeException("keystore file not found: " + keyStoreFile);
             }
         }
 
         PrivateKeyEntry privateKeyEntry;
         try {
-            privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(this.keyStoreType, keyStoreInputStream, this.keyStorePassword,
-                    this.keyStorePassword);
+            privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(keyStoreType, keyStoreInputStream, keyStorePassword,
+                    keyStorePassword);
         } finally {
             IOUtils.closeQuietly(keyStoreInputStream);
         }
-        this.privateKey = privateKeyEntry.getPrivateKey();
-        this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
-        this.publicKey = this.certificate.getPublicKey();
-        this.certificate = (X509Certificate) privateKeyEntry.getCertificate();
+        privateKey = privateKeyEntry.getPrivateKey();
+        certificate = (X509Certificate) privateKeyEntry.getCertificate();
+        publicKey = certificate.getPublicKey();
+        certificate = (X509Certificate) privateKeyEntry.getCertificate();
     }
 
     public void generateSsoKey() {
@@ -110,7 +110,7 @@ public class IdentityService implements IdentityServiceMBean {
         try {
             KeyGenerator keyGen = KeyGenerator.getInstance("AES");
             keyGen.init(128, new SecureRandom());
-            this.ssoKey = keyGen.generateKey();
+            ssoKey = keyGen.generateKey();
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("algorithm not found: AES");
         }
@@ -130,18 +130,18 @@ public class IdentityService implements IdentityServiceMBean {
 
     public String getKeyStorePassword() {
 
-        return this.keyStorePassword;
+        return keyStorePassword;
     }
 
     public String getKeyStoreResource() {
 
-        LOG.debug("get key store resource: " + this.keyStoreResource);
-        return this.keyStoreResource;
+        LOG.debug("get key store resource: " + keyStoreResource);
+        return keyStoreResource;
     }
 
     public String getKeyStoreType() {
 
-        return this.keyStoreType;
+        return keyStoreType;
     }
 
     public void setKeyStoreType(String keyStoreType) {
@@ -151,23 +151,23 @@ public class IdentityService implements IdentityServiceMBean {
 
     public PrivateKey getPrivateKey() {
 
-        if (null == this.privateKey) {
+        if (null == privateKey) {
             loadKeyPair();
         }
-        return this.privateKey;
+        return privateKey;
     }
 
     public PublicKey getPublicKey() {
 
-        if (null == this.publicKey) {
+        if (null == publicKey) {
             loadKeyPair();
         }
-        return this.publicKey;
+        return publicKey;
     }
 
     public String getKeyStoreFile() {
 
-        return this.keyStoreFile;
+        return keyStoreFile;
     }
 
     public void setKeyStoreFile(String keyStoreFile) {
@@ -177,17 +177,17 @@ public class IdentityService implements IdentityServiceMBean {
 
     public X509Certificate getCertificate() {
 
-        if (null == this.certificate) {
+        if (null == certificate) {
             loadKeyPair();
         }
-        return this.certificate;
+        return certificate;
     }
 
     public SecretKey getSsoKey() {
 
-        if (null == this.ssoKey) {
+        if (null == ssoKey) {
             generateSsoKey();
         }
-        return this.ssoKey;
+        return ssoKey;
     }
 }

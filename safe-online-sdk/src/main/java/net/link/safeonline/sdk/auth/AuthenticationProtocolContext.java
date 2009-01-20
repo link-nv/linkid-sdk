@@ -36,12 +36,12 @@ public class AuthenticationProtocolContext {
 
     public String getUserId() {
 
-        return this.userId;
+        return userId;
     }
 
     public String getAuthenticatedDevice() {
 
-        return this.authenticatedDevice;
+        return authenticatedDevice;
     }
 
 }

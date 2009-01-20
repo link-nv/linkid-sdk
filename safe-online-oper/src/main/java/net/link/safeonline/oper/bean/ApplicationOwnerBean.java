@@ -93,7 +93,7 @@ public class ApplicationOwnerBean implements ApplicationOwner {
 
     public String getLogin() {
 
-        return this.login;
+        return login;
     }
 
     public void setLogin(String login) {
@@ -103,7 +103,7 @@ public class ApplicationOwnerBean implements ApplicationOwner {
 
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -120,7 +120,7 @@ public class ApplicationOwnerBean implements ApplicationOwner {
             throws SubjectNotFoundException, ExistingApplicationOwnerException, ExistingApplicationAdminException {
 
         LOG.debug("add");
-        this.applicationService.registerApplicationOwner(this.name, this.login);
+        applicationService.registerApplicationOwner(name, login);
         return "success";
     }
 
@@ -129,8 +129,8 @@ public class ApplicationOwnerBean implements ApplicationOwner {
             throws SubscriptionNotFoundException, SubjectNotFoundException, ApplicationOwnerNotFoundException, PermissionDeniedException {
 
         LOG.debug("remove");
-        this.applicationService.removeApplicationOwner(this.selectedApplicationOwner.getEntity().getName(),
-                this.selectedApplicationOwner.getAdminName());
+        applicationService.removeApplicationOwner(selectedApplicationOwner.getEntity().getName(),
+                selectedApplicationOwner.getAdminName());
 
         applicationOwnerListFactory();
         return "success";
@@ -139,14 +139,14 @@ public class ApplicationOwnerBean implements ApplicationOwner {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String view() {
 
-        LOG.debug("view owner: " + this.selectedApplicationOwner.getAdminName());
+        LOG.debug("view owner: " + selectedApplicationOwner.getAdminName());
         return "view-owner";
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String viewapp() {
 
-        LOG.debug("view owner app: " + this.selectedApplication.getName());
+        LOG.debug("view owner app: " + selectedApplication.getName());
         return "view-app";
     }
 
@@ -155,20 +155,20 @@ public class ApplicationOwnerBean implements ApplicationOwner {
     public void applicationOwnerListFactory() {
 
         LOG.debug("application owner list factory");
-        List<ApplicationOwnerEntity> applicationOwnerEntityList = this.applicationService.listApplicationOwners();
-        this.applicationOwnerList = new LinkedList<ApplicationOwnerWrapper>();
+        List<ApplicationOwnerEntity> applicationOwnerEntityList = applicationService.listApplicationOwners();
+        applicationOwnerList = new LinkedList<ApplicationOwnerWrapper>();
         for (ApplicationOwnerEntity applicationOwnerEntity : applicationOwnerEntityList) {
-            this.applicationOwnerList.add(new ApplicationOwnerWrapper(applicationOwnerEntity));
+            applicationOwnerList.add(new ApplicationOwnerWrapper(applicationOwnerEntity));
         }
     }
 
     @Factory(APPLICATION_LIST_NAME)
     public void applicationListFactory() {
 
-        if (null == this.selectedApplicationOwner)
+        if (null == selectedApplicationOwner)
             return;
-        LOG.debug("application list factory for owner=" + this.selectedApplicationOwner.getEntity().getName());
-        this.applicationList = this.selectedApplicationOwner.getEntity().getApplications();
+        LOG.debug("application list factory for owner=" + selectedApplicationOwner.getEntity().getName());
+        applicationList = selectedApplicationOwner.getEntity().getApplications();
     }
 
     @Remove
@@ -188,17 +188,17 @@ public class ApplicationOwnerBean implements ApplicationOwner {
         public ApplicationOwnerWrapper(ApplicationOwnerEntity entity) {
 
             this.entity = entity;
-            this.adminName = ApplicationOwnerBean.this.subjectService.getSubjectLogin(this.entity.getAdmin().getUserId());
+            adminName = subjectService.getSubjectLogin(this.entity.getAdmin().getUserId());
         }
 
         public String getAdminName() {
 
-            return this.adminName;
+            return adminName;
         }
 
         public ApplicationOwnerEntity getEntity() {
 
-            return this.entity;
+            return entity;
         }
     }
 }

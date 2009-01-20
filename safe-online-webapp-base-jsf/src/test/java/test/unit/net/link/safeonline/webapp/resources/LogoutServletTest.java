@@ -22,57 +22,58 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+
 public class LogoutServletTest extends TestCase {
 
-	private static final Log LOG = LogFactory.getLog(LogoutServletTest.class);
+    private static final Log   LOG           = LogFactory.getLog(LogoutServletTest.class);
 
-	private ServletTestManager servletTestManager;
+    private ServletTestManager servletTestManager;
 
-	private String servletLocation;
+    private String             servletLocation;
 
-	private String logoutExitUrl = "logoutexit";
+    private String             logoutExitUrl = "logoutexit";
 
-	@Override
-	protected void setUp() throws Exception {
 
-		super.setUp();
+    @Override
+    protected void setUp()
+            throws Exception {
 
-		this.servletTestManager = new ServletTestManager();
-		this.servletTestManager.setUp(LogoutServlet.class, Collections
-				.singletonMap("LogoutExitUrl", this.logoutExitUrl), null, null,
-				Collections.singletonMap(LoginManager.USERID_SESSION_ATTRIBUTE,
-						(Object) UUID.randomUUID().toString()));
-		this.servletLocation = this.servletTestManager.getServletLocation();
-	}
+        super.setUp();
 
-	@Override
-	protected void tearDown() throws Exception {
+        servletTestManager = new ServletTestManager();
+        servletTestManager.setUp(LogoutServlet.class, Collections.singletonMap("LogoutExitUrl", logoutExitUrl), null, null,
+                Collections.singletonMap(LoginManager.USERID_SESSION_ATTRIBUTE, (Object) UUID.randomUUID().toString()));
+        servletLocation = servletTestManager.getServletLocation();
+    }
 
-		this.servletTestManager.tearDown();
+    @Override
+    protected void tearDown()
+            throws Exception {
 
-		super.tearDown();
-	}
+        servletTestManager.tearDown();
 
-	public void testDoGet() throws Exception {
+        super.tearDown();
+    }
 
-		// setup
-		HttpClient httpClient = new HttpClient();
-		GetMethod getMethod = new GetMethod(this.servletLocation);
-		getMethod.setFollowRedirects(false);
+    public void testDoGet()
+            throws Exception {
 
-		// operate
-		int result = httpClient.executeMethod(getMethod);
+        // setup
+        HttpClient httpClient = new HttpClient();
+        GetMethod getMethod = new GetMethod(servletLocation);
+        getMethod.setFollowRedirects(false);
 
-		// verify
-		LOG.debug("result: " + result);
-		assertEquals(HttpServletResponse.SC_MOVED_TEMPORARILY, result);
-		String resultLocation = getMethod.getResponseHeader("Location")
-				.getValue();
-		LOG.debug("location: " + resultLocation);
-		assertTrue(resultLocation.endsWith(this.logoutExitUrl));
+        // operate
+        int result = httpClient.executeMethod(getMethod);
 
-		String resultUserId = (String) this.servletTestManager
-				.getSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
-		assertNull(resultUserId);
-	}
+        // verify
+        LOG.debug("result: " + result);
+        assertEquals(HttpServletResponse.SC_MOVED_TEMPORARILY, result);
+        String resultLocation = getMethod.getResponseHeader("Location").getValue();
+        LOG.debug("location: " + resultLocation);
+        assertTrue(resultLocation.endsWith(logoutExitUrl));
+
+        String resultUserId = (String) servletTestManager.getSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE);
+        assertNull(resultUserId);
+    }
 }

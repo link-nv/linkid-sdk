@@ -70,14 +70,14 @@ public class TaskSchedulerBeanTest {
     public void setUp()
             throws Exception {
 
-        this.mockTimerService = createMock(TimerService.class);
-        this.mockTimer = createMock(Timer.class);
-        this.testedInstance = new TaskSchedulerBean();
-        EJBTestUtils.inject(this.testedInstance, this.mockTimerService);
+        mockTimerService = createMock(TimerService.class);
+        mockTimer = createMock(Timer.class);
+        testedInstance = new TaskSchedulerBean();
+        EJBTestUtils.inject(testedInstance, mockTimerService);
 
-        this.entityTestManager = new EntityTestManager();
-        this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
+        entityTestManager = new EntityTestManager();
+        entityTestManager.setUp(SafeOnlineTestContainer.entities);
+        EntityManager entityManager = entityTestManager.getEntityManager();
 
         JmxTestUtils jmxTestUtils = new JmxTestUtils();
         jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
@@ -112,19 +112,19 @@ public class TaskSchedulerBeanTest {
         entityTransaction.commit();
         entityTransaction.begin();
 
-        this.jndiTestUtils = new JndiTestUtils();
-        this.jndiTestUtils.setUp();
+        jndiTestUtils = new JndiTestUtils();
+        jndiTestUtils.setUp();
     }
 
     @After
     public void tearDown()
             throws Exception {
 
-        if (this.entityTestManager != null) {
-            this.entityTestManager.tearDown();
+        if (entityTestManager != null) {
+            entityTestManager.tearDown();
         }
-        if (this.jndiTestUtils != null) {
-            this.jndiTestUtils.tearDown();
+        if (jndiTestUtils != null) {
+            jndiTestUtils.tearDown();
         }
     }
 
@@ -135,17 +135,17 @@ public class TaskSchedulerBeanTest {
         // setup
         SchedulingEntity scheduling = new SchedulingEntity("test", "0 0/5 * * * ?", null);
 
-        expect(this.mockTimerService.createTimer((Date) anyObject(), (String) anyObject())).andReturn(this.mockTimer);
-        expect(this.mockTimer.getHandle()).andReturn(null);
-        expect(this.mockTimerService.createTimer((Date) anyObject(), (String) anyObject())).andReturn(this.mockTimer);
-        expect(this.mockTimer.getHandle()).andReturn(null);
-        replay(this.mockTimerService);
-        replay(this.mockTimer);
+        expect(mockTimerService.createTimer((Date) anyObject(), (String) anyObject())).andReturn(mockTimer);
+        expect(mockTimer.getHandle()).andReturn(null);
+        expect(mockTimerService.createTimer((Date) anyObject(), (String) anyObject())).andReturn(mockTimer);
+        expect(mockTimer.getHandle()).andReturn(null);
+        replay(mockTimerService);
+        replay(mockTimer);
 
         // operate
-        this.testedInstance.setTimer(scheduling);
+        testedInstance.setTimer(scheduling);
         Date firstDate = scheduling.getFireDate();
-        this.testedInstance.setTimer(scheduling);
+        testedInstance.setTimer(scheduling);
         Date nextDate = scheduling.getFireDate();
         assertFalse(firstDate.equals(nextDate));
     }
@@ -155,15 +155,15 @@ public class TaskSchedulerBeanTest {
             throws Exception {
 
         // setup
-        EntityManager entityManager = this.entityTestManager.getEntityManager();
-        this.testedInstance = EJBTestUtils.newInstance(TaskSchedulerBean.class, SafeOnlineTestContainer.sessionBeans, entityManager);
+        EntityManager entityManager = entityTestManager.getEntityManager();
+        testedInstance = EJBTestUtils.newInstance(TaskSchedulerBean.class, SafeOnlineTestContainer.sessionBeans, entityManager);
 
         Task testTaskComponent = new TestTask();
-        this.jndiTestUtils.bindComponent(TestTask.JNDI_BINDING, testTaskComponent);
+        jndiTestUtils.bindComponent(TestTask.JNDI_BINDING, testTaskComponent);
 
         // operate
         LOG.debug("------------------ FIRST POST START -------------------------");
-        this.testedInstance.postStart();
+        testedInstance.postStart();
         EntityTransaction entityTransaction = entityManager.getTransaction();
         entityTransaction.commit();
         entityTransaction.begin();
@@ -183,7 +183,7 @@ public class TaskSchedulerBeanTest {
         /*
          * We run postStart twice since the task scheduler bean must be capable of rebooting using a non-volatile database.
          */
-        this.testedInstance.postStart();
+        testedInstance.postStart();
     }
 
 

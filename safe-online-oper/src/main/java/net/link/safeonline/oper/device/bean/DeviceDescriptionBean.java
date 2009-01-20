@@ -95,8 +95,8 @@ public class DeviceDescriptionBean implements DeviceDescription {
     public void deviceDescriptionsListFactory()
             throws DeviceNotFoundException {
 
-        LOG.debug("device description list factory for device: " + this.selectedDevice.getName());
-        this.deviceDescriptions = this.deviceService.listDeviceDescriptions(this.selectedDevice.getName());
+        LOG.debug("device description list factory for device: " + selectedDevice.getName());
+        deviceDescriptions = deviceService.listDeviceDescriptions(selectedDevice.getName());
     }
 
     /*
@@ -107,13 +107,13 @@ public class DeviceDescriptionBean implements DeviceDescription {
     public String add()
             throws ExistingDeviceDescriptionException, DeviceNotFoundException {
 
-        LOG.debug("add: " + this.language);
+        LOG.debug("add: " + language);
 
         DeviceDescriptionEntity newDeviceDescription = new DeviceDescriptionEntity();
-        DeviceDescriptionPK pk = new DeviceDescriptionPK(this.selectedDevice.getName(), this.language);
+        DeviceDescriptionPK pk = new DeviceDescriptionPK(selectedDevice.getName(), language);
         newDeviceDescription.setPk(pk);
-        newDeviceDescription.setDescription(this.description);
-        this.deviceService.addDeviceDescription(newDeviceDescription);
+        newDeviceDescription.setDescription(description);
+        deviceService.addDeviceDescription(newDeviceDescription);
         return "success";
     }
 
@@ -121,7 +121,7 @@ public class DeviceDescriptionBean implements DeviceDescription {
     @Begin
     public String edit() {
 
-        LOG.debug("edit: " + this.selectedDeviceDescription);
+        LOG.debug("edit: " + selectedDeviceDescription);
         return "edit-desc";
     }
 
@@ -130,8 +130,8 @@ public class DeviceDescriptionBean implements DeviceDescription {
     public String remove()
             throws DeviceNotFoundException, DeviceDescriptionNotFoundException {
 
-        LOG.debug("remove: " + this.selectedDeviceDescription);
-        this.deviceService.removeDeviceDescription(this.selectedDeviceDescription);
+        LOG.debug("remove: " + selectedDeviceDescription);
+        deviceService.removeDeviceDescription(selectedDeviceDescription);
         deviceDescriptionsListFactory();
         return "removed";
     }
@@ -140,8 +140,8 @@ public class DeviceDescriptionBean implements DeviceDescription {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String save() {
 
-        LOG.debug("save: " + this.selectedDeviceDescription);
-        this.deviceService.saveDeviceDescription(this.selectedDeviceDescription);
+        LOG.debug("save: " + selectedDeviceDescription);
+        deviceService.saveDeviceDescription(selectedDeviceDescription);
         return "saved";
     }
 
@@ -158,7 +158,7 @@ public class DeviceDescriptionBean implements DeviceDescription {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getLanguage() {
 
-        return this.language;
+        return language;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -170,7 +170,7 @@ public class DeviceDescriptionBean implements DeviceDescription {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String getDescription() {
 
-        return this.description;
+        return description;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)

@@ -28,7 +28,7 @@ public class BeIdentityExtractor implements IdentityDataExtractor {
     public void init(IdentityDataCollector inIdentityDataCollector) {
 
         LOG.debug("init");
-        this.identityDataCollector = inIdentityDataCollector;
+        identityDataCollector = inIdentityDataCollector;
     }
 
     public void postPkcs11(X509Certificate authenticationCertificate) {
@@ -38,13 +38,13 @@ public class BeIdentityExtractor implements IdentityDataExtractor {
         LOG.debug("subject: " + subjectName);
 
         String givenName = getAttributeFromSubjectName(subjectName, "GIVENNAME");
-        this.identityDataCollector.setGivenName(givenName);
+        identityDataCollector.setGivenName(givenName);
 
         String surname = getAttributeFromSubjectName(subjectName, "SURNAME");
-        this.identityDataCollector.setSurname(surname);
+        identityDataCollector.setSurname(surname);
 
         String countryCode = getAttributeFromSubjectName(subjectName, "C");
-        this.identityDataCollector.setCountryCode(countryCode);
+        identityDataCollector.setCountryCode(countryCode);
     }
 
     private String getSubjectName(X509Certificate certificate) {

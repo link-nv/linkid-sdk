@@ -76,7 +76,7 @@ public class NodeMappingEntity implements Serializable {
     @JoinColumn(name = "subject", nullable = false)
     public SubjectEntity getSubject() {
 
-        return this.subject;
+        return subject;
     }
 
     public void setSubject(SubjectEntity subject) {
@@ -87,7 +87,7 @@ public class NodeMappingEntity implements Serializable {
     @Id
     public String getId() {
 
-        return this.id;
+        return id;
     }
 
     public void setId(String id) {
@@ -99,7 +99,7 @@ public class NodeMappingEntity implements Serializable {
     @JoinColumn(name = "node", nullable = false)
     public NodeEntity getNode() {
 
-        return this.node;
+        return node;
     }
 
     public void setNode(NodeEntity node) {
@@ -115,14 +115,14 @@ public class NodeMappingEntity implements Serializable {
         if (false == obj instanceof NodeMappingEntity)
             return false;
         NodeMappingEntity rhs = (NodeMappingEntity) obj;
-        return new EqualsBuilder().append(this.id, rhs.id).isEquals();
+        return new EqualsBuilder().append(id, rhs.id).isEquals();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("id", this.id).append("subject", this.subject.getUserId())
-                                                                    .append("node", this.node.getName()).toString();
+        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("id", id).append("subject", subject.getUserId())
+                                                                    .append("node", node.getName()).toString();
     }
 
 

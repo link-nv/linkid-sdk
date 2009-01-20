@@ -65,9 +65,9 @@ public class AuthenticationUtils extends Observable {
             protected String doInBackground()
                     throws Exception {
 
-                return AuthenticationUtils.this.consoleManager.getAuthenticationClient().authenticate(
-                        AuthenticationUtils.this.consoleManager.getApplication(), deviceName, Locale.ENGLISH.getLanguage(),
-                        deviceCredentials, AuthenticationUtils.this.consoleManager.getPublicKey());
+                return consoleManager.getAuthenticationClient().authenticate(
+                        consoleManager.getApplication(), deviceName, Locale.ENGLISH.getLanguage(),
+                        deviceCredentials, consoleManager.getPublicKey());
             }
 
             @SuppressWarnings("synthetic-access")
@@ -78,11 +78,11 @@ public class AuthenticationUtils extends Observable {
                 setChanged();
                 try {
                     if (null == get()) {
-                        if (null != AuthenticationUtils.this.consoleManager.getAuthenticationClient().getAuthenticationStep()) {
-                            notifyObservers(AuthenticationUtils.this.consoleManager.getAuthenticationClient().getAuthenticationStep());
-                        } else if (null != AuthenticationUtils.this.consoleManager.getAuthenticationClient()
+                        if (null != consoleManager.getAuthenticationClient().getAuthenticationStep()) {
+                            notifyObservers(consoleManager.getAuthenticationClient().getAuthenticationStep());
+                        } else if (null != consoleManager.getAuthenticationClient()
                                                                                   .getDeviceAuthenticationInformation()) {
-                            notifyObservers(AuthenticationUtils.this.consoleManager.getAuthenticationClient()
+                            notifyObservers(consoleManager.getAuthenticationClient()
                                                                                    .getDeviceAuthenticationInformation());
                         } else {
                             // no additional device information given but the specific device needs further authentication steps
@@ -129,7 +129,7 @@ public class AuthenticationUtils extends Observable {
             protected String doInBackground()
                     throws Exception {
 
-                return AuthenticationUtils.this.consoleManager.getAuthenticationClient().getGlobalUsageAgreement();
+                return consoleManager.getAuthenticationClient().getGlobalUsageAgreement();
             }
 
             @SuppressWarnings("synthetic-access")
@@ -140,8 +140,8 @@ public class AuthenticationUtils extends Observable {
                 setChanged();
                 try {
                     if (null == get()) {
-                        if (null != AuthenticationUtils.this.consoleManager.getAuthenticationClient().getAuthenticationStep()) {
-                            notifyObservers(AuthenticationUtils.this.consoleManager.getAuthenticationClient().getAuthenticationStep());
+                        if (null != consoleManager.getAuthenticationClient().getAuthenticationStep()) {
+                            notifyObservers(consoleManager.getAuthenticationClient().getAuthenticationStep());
                         }
                     } else {
                         notifyObservers(get());
@@ -184,7 +184,7 @@ public class AuthenticationUtils extends Observable {
             protected String doInBackground()
                     throws Exception {
 
-                return AuthenticationUtils.this.consoleManager.getAuthenticationClient().confirmGlobalUsageAgreement(confirmation);
+                return consoleManager.getAuthenticationClient().confirmGlobalUsageAgreement(confirmation);
             }
 
             @SuppressWarnings("synthetic-access")
@@ -195,8 +195,8 @@ public class AuthenticationUtils extends Observable {
                 setChanged();
                 try {
                     if (null == get()) {
-                        if (null != AuthenticationUtils.this.consoleManager.getAuthenticationClient().getAuthenticationStep()) {
-                            notifyObservers(AuthenticationUtils.this.consoleManager.getAuthenticationClient().getAuthenticationStep());
+                        if (null != consoleManager.getAuthenticationClient().getAuthenticationStep()) {
+                            notifyObservers(consoleManager.getAuthenticationClient().getAuthenticationStep());
                         }
                     } else {
                         notifyObservers(get());
@@ -239,7 +239,7 @@ public class AuthenticationUtils extends Observable {
             protected String doInBackground()
                     throws Exception {
 
-                return AuthenticationUtils.this.consoleManager.getAuthenticationClient().getUsageAgreement();
+                return consoleManager.getAuthenticationClient().getUsageAgreement();
             }
 
             @SuppressWarnings("synthetic-access")
@@ -250,8 +250,8 @@ public class AuthenticationUtils extends Observable {
                 setChanged();
                 try {
                     if (null == get()) {
-                        if (null != AuthenticationUtils.this.consoleManager.getAuthenticationClient().getAuthenticationStep()) {
-                            notifyObservers(AuthenticationUtils.this.consoleManager.getAuthenticationClient().getAuthenticationStep());
+                        if (null != consoleManager.getAuthenticationClient().getAuthenticationStep()) {
+                            notifyObservers(consoleManager.getAuthenticationClient().getAuthenticationStep());
                         }
                     } else {
                         notifyObservers(get());
@@ -294,7 +294,7 @@ public class AuthenticationUtils extends Observable {
             protected String doInBackground()
                     throws Exception {
 
-                return AuthenticationUtils.this.consoleManager.getAuthenticationClient().confirmUsageAgreement(confirmation);
+                return consoleManager.getAuthenticationClient().confirmUsageAgreement(confirmation);
             }
 
             @SuppressWarnings("synthetic-access")
@@ -305,8 +305,8 @@ public class AuthenticationUtils extends Observable {
                 setChanged();
                 try {
                     if (null == get()) {
-                        if (null != AuthenticationUtils.this.consoleManager.getAuthenticationClient().getAuthenticationStep()) {
-                            notifyObservers(AuthenticationUtils.this.consoleManager.getAuthenticationClient().getAuthenticationStep());
+                        if (null != consoleManager.getAuthenticationClient().getAuthenticationStep()) {
+                            notifyObservers(consoleManager.getAuthenticationClient().getAuthenticationStep());
                         }
                     } else {
                         notifyObservers(get());
@@ -349,7 +349,7 @@ public class AuthenticationUtils extends Observable {
             protected List<Attribute> doInBackground()
                     throws Exception {
 
-                return AuthenticationUtils.this.consoleManager.getAuthenticationClient().getIdentity();
+                return consoleManager.getAuthenticationClient().getIdentity();
             }
 
             @SuppressWarnings("synthetic-access")
@@ -360,8 +360,8 @@ public class AuthenticationUtils extends Observable {
                 setChanged();
                 try {
                     if (null == get()) {
-                        if (null != AuthenticationUtils.this.consoleManager.getAuthenticationClient().getAuthenticationStep()) {
-                            notifyObservers(AuthenticationUtils.this.consoleManager.getAuthenticationClient().getAuthenticationStep());
+                        if (null != consoleManager.getAuthenticationClient().getAuthenticationStep()) {
+                            notifyObservers(consoleManager.getAuthenticationClient().getAuthenticationStep());
                         }
                     } else {
                         notifyObservers(get());
@@ -404,7 +404,7 @@ public class AuthenticationUtils extends Observable {
             protected String doInBackground()
                     throws Exception {
 
-                return AuthenticationUtils.this.consoleManager.getAuthenticationClient().confirmIdentity(confirmation);
+                return consoleManager.getAuthenticationClient().confirmIdentity(confirmation);
             }
 
             @SuppressWarnings("synthetic-access")
@@ -415,8 +415,8 @@ public class AuthenticationUtils extends Observable {
                 setChanged();
                 try {
                     if (null == get()) {
-                        if (null != AuthenticationUtils.this.consoleManager.getAuthenticationClient().getAuthenticationStep()) {
-                            notifyObservers(AuthenticationUtils.this.consoleManager.getAuthenticationClient().getAuthenticationStep());
+                        if (null != consoleManager.getAuthenticationClient().getAuthenticationStep()) {
+                            notifyObservers(consoleManager.getAuthenticationClient().getAuthenticationStep());
                         }
                     } else {
                         notifyObservers(get());
@@ -459,7 +459,7 @@ public class AuthenticationUtils extends Observable {
             protected List<Attribute> doInBackground()
                     throws Exception {
 
-                return AuthenticationUtils.this.consoleManager.getAuthenticationClient().getMissingAttributes();
+                return consoleManager.getAuthenticationClient().getMissingAttributes();
             }
 
             @SuppressWarnings("synthetic-access")
@@ -470,8 +470,8 @@ public class AuthenticationUtils extends Observable {
                 setChanged();
                 try {
                     if (null == get()) {
-                        if (null != AuthenticationUtils.this.consoleManager.getAuthenticationClient().getAuthenticationStep()) {
-                            notifyObservers(AuthenticationUtils.this.consoleManager.getAuthenticationClient().getAuthenticationStep());
+                        if (null != consoleManager.getAuthenticationClient().getAuthenticationStep()) {
+                            notifyObservers(consoleManager.getAuthenticationClient().getAuthenticationStep());
                         }
                     } else {
                         notifyObservers(get());
@@ -514,7 +514,7 @@ public class AuthenticationUtils extends Observable {
             protected String doInBackground()
                     throws Exception {
 
-                return AuthenticationUtils.this.consoleManager.getAuthenticationClient().saveMissingAttributes(missingAttributes);
+                return consoleManager.getAuthenticationClient().saveMissingAttributes(missingAttributes);
             }
 
             @SuppressWarnings("synthetic-access")
@@ -525,8 +525,8 @@ public class AuthenticationUtils extends Observable {
                 setChanged();
                 try {
                     if (null == get()) {
-                        if (null != AuthenticationUtils.this.consoleManager.getAuthenticationClient().getAuthenticationStep()) {
-                            notifyObservers(AuthenticationUtils.this.consoleManager.getAuthenticationClient().getAuthenticationStep());
+                        if (null != consoleManager.getAuthenticationClient().getAuthenticationStep()) {
+                            notifyObservers(consoleManager.getAuthenticationClient().getAuthenticationStep());
                         }
                     } else {
                         notifyObservers(get());

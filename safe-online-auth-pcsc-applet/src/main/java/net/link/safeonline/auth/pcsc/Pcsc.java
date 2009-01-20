@@ -121,7 +121,7 @@ public class Pcsc {
 
         this.cardChannel = cardChannel;
         try {
-            this.certificateFactory = CertificateFactory.getInstance("X.509");
+            certificateFactory = CertificateFactory.getInstance("X.509");
         } catch (CertificateException e) {
             throw new RuntimeException("Certificate Factory error: " + e.getMessage(), e);
         }
@@ -130,7 +130,7 @@ public class Pcsc {
     public ResponseAPDU transmit(CommandAPDU commandApdu)
             throws CardException {
 
-        ResponseAPDU responseApdu = this.cardChannel.transmit(commandApdu);
+        ResponseAPDU responseApdu = cardChannel.transmit(commandApdu);
         return responseApdu;
     }
 
@@ -138,7 +138,7 @@ public class Pcsc {
             throws CardException {
 
         CommandAPDU selectFileApdu = new CommandAPDU(0x00, 0xA4, 0x08, 0x0C, fullAid);
-        ResponseAPDU responseApdu = this.cardChannel.transmit(selectFileApdu);
+        ResponseAPDU responseApdu = cardChannel.transmit(selectFileApdu);
         checkResponseSW(responseApdu);
 
         int offset = 0;
@@ -146,7 +146,7 @@ public class Pcsc {
         byte[] data;
         do {
             CommandAPDU readBinaryApdu = new CommandAPDU(0x00, 0xB0, offset >> 8, offset & 0xFF, 0xFF);
-            responseApdu = this.cardChannel.transmit(readBinaryApdu);
+            responseApdu = cardChannel.transmit(readBinaryApdu);
             checkResponseSW(responseApdu);
             data = responseApdu.getData();
             LOG.debug("reading offset: " + offset + " # bytes: " + data.length);
@@ -179,56 +179,56 @@ public class Pcsc {
     public X509Certificate getAuthenticationCertificate()
             throws CardException, CertificateException {
 
-        if (null == this.authenticationCertificate) {
-            this.authenticationCertificate = getCertificate(EF_CERT_2);
+        if (null == authenticationCertificate) {
+            authenticationCertificate = getCertificate(EF_CERT_2);
         }
-        return this.authenticationCertificate;
+        return authenticationCertificate;
     }
 
     public X509Certificate getSigningCertificate()
             throws CardException, CertificateException {
 
-        if (null == this.signingCertificate) {
-            this.signingCertificate = getCertificate(EF_CERT_3);
+        if (null == signingCertificate) {
+            signingCertificate = getCertificate(EF_CERT_3);
         }
-        return this.signingCertificate;
+        return signingCertificate;
     }
 
     public X509Certificate getCACertificate()
             throws CardException, CertificateException {
 
-        if (null == this.caCertificate) {
-            this.caCertificate = getCertificate(EF_CERT_4);
+        if (null == caCertificate) {
+            caCertificate = getCertificate(EF_CERT_4);
         }
-        return this.caCertificate;
+        return caCertificate;
     }
 
     public X509Certificate getRootCertificate()
             throws CardException, CertificateException {
 
-        if (null == this.rootCertificate) {
-            this.rootCertificate = getCertificate(EF_CERT_6);
+        if (null == rootCertificate) {
+            rootCertificate = getCertificate(EF_CERT_6);
         }
-        return this.rootCertificate;
+        return rootCertificate;
     }
 
     public X509Certificate getNationalRegisterCertificate()
             throws CardException, CertificateException {
 
-        if (null == this.nationalRegisterCertificate) {
-            this.nationalRegisterCertificate = getCertificate(EF_CERT_8);
+        if (null == nationalRegisterCertificate) {
+            nationalRegisterCertificate = getCertificate(EF_CERT_8);
         }
-        return this.nationalRegisterCertificate;
+        return nationalRegisterCertificate;
     }
 
     public BufferedImage getPhoto()
             throws CardException, IOException {
 
-        if (null == this.photo) {
+        if (null == photo) {
             byte[] data = readFile(EF_ID_PHOTO);
-            this.photo = ImageIO.read(new ByteArrayInputStream(data));
+            photo = ImageIO.read(new ByteArrayInputStream(data));
         }
-        return this.photo;
+        return photo;
     }
 
     public boolean verifyRnSignature()
@@ -298,7 +298,7 @@ public class Pcsc {
         // 4 = size of following data block, 80 = algo tag, 0x01 = RSA PKCS#1,
         // 0x84 = key tag, 0x82 = authn key
         CommandAPDU setApdu = new CommandAPDU(0x00, 0x22, 0x41, 0xB6, new byte[] { 0x04, (byte) 0x80, 0x01, (byte) 0x84, (byte) 0x82 });
-        ResponseAPDU responseApdu = this.cardChannel.transmit(setApdu);
+        ResponseAPDU responseApdu = cardChannel.transmit(setApdu);
         checkResponseSW(responseApdu);
 
         /*
@@ -315,7 +315,7 @@ public class Pcsc {
         System.arraycopy(pinBcd, 0, verifyData, 1, pin.length() / 2);
 
         CommandAPDU verifyApdu = new CommandAPDU(0x00, 0x20, 0x00, 0x01, verifyData);
-        responseApdu = this.cardChannel.transmit(verifyApdu);
+        responseApdu = cardChannel.transmit(verifyApdu);
         checkResponseSW(responseApdu);
 
         byte[] ALGORITHM_IDENTIFIER_SHA1 = new byte[] { 0x30, 0x21, 0x30, 0x09, 0x06, 0x05, 0x2B, 0x0E, 0x03, 0x02, 0x1A, 0x05, 0x00, 0x04,
@@ -325,7 +325,7 @@ public class Pcsc {
         signData.write(digest);
         byte[] dsData = signData.toByteArray();
         CommandAPDU computeDigitalSignatureApdu = new CommandAPDU(0x00, 0x2A, 0x9E, 0x9A, dsData);
-        responseApdu = this.cardChannel.transmit(computeDigitalSignatureApdu);
+        responseApdu = cardChannel.transmit(computeDigitalSignatureApdu);
         checkResponseSW(responseApdu);
 
         byte[] signature = responseApdu.getData();
@@ -337,7 +337,7 @@ public class Pcsc {
             throws CardException, CertificateException {
 
         byte[] data = readFile(fullAid);
-        X509Certificate certificate = (X509Certificate) this.certificateFactory.generateCertificate(new ByteArrayInputStream(data));
+        X509Certificate certificate = (X509Certificate) certificateFactory.generateCertificate(new ByteArrayInputStream(data));
         return certificate;
     }
 

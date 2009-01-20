@@ -48,14 +48,14 @@ public class EndpointReferenceDAOBean implements EndpointReferenceDAO {
     @PostConstruct
     public void postConstructCallback() {
 
-        this.queryObject = QueryObjectFactory.createQueryObject(this.entityManager, EndpointReferenceEntity.QueryInterface.class);
+        queryObject = QueryObjectFactory.createQueryObject(entityManager, EndpointReferenceEntity.QueryInterface.class);
     }
 
     public EndpointReferenceEntity addEndpointReference(String address, ApplicationEntity application) {
 
         LOG.debug("add endpoint: " + address + ", " + application.getName());
         EndpointReferenceEntity endpointReference = new EndpointReferenceEntity(address, application);
-        this.entityManager.persist(endpointReference);
+        entityManager.persist(endpointReference);
         return endpointReference;
     }
 
@@ -63,26 +63,26 @@ public class EndpointReferenceDAOBean implements EndpointReferenceDAO {
 
         LOG.debug("add endpoint: " + address + ", " + node.getName());
         EndpointReferenceEntity endpointReference = new EndpointReferenceEntity(address, node);
-        this.entityManager.persist(endpointReference);
+        entityManager.persist(endpointReference);
         return endpointReference;
     }
 
     public EndpointReferenceEntity findEndpointReference(String address, ApplicationEntity application) {
 
         LOG.debug("find endpoint ref: address=" + address + " application=" + application.getName());
-        return this.queryObject.find(address, application);
+        return queryObject.find(address, application);
     }
 
     public EndpointReferenceEntity findEndpointReference(String address, NodeEntity node) {
 
         LOG.debug("find endpoint ref: address=" + address + " node=" + node.getName());
-        return this.queryObject.find(address, node);
+        return queryObject.find(address, node);
     }
 
     public EndpointReferenceEntity findEndpointReference(long id) {
 
         LOG.debug("find endpoint ref: id=" + id);
-        return this.entityManager.find(EndpointReferenceEntity.class, id);
+        return entityManager.find(EndpointReferenceEntity.class, id);
     }
 
     public EndpointReferenceEntity getEndpointReference(String address, ApplicationEntity application)
@@ -105,29 +105,29 @@ public class EndpointReferenceDAOBean implements EndpointReferenceDAO {
 
     public List<EndpointReferenceEntity> listEndpoints() {
 
-        return this.queryObject.listEndpoints();
+        return queryObject.listEndpoints();
     }
 
     public List<EndpointReferenceEntity> listEndpoints(NodeEntity node) {
 
-        return this.queryObject.listEndpoints(node);
+        return queryObject.listEndpoints(node);
     }
 
     public List<EndpointReferenceEntity> listEndpoints(ApplicationEntity application) {
 
-        return this.queryObject.listEndpoints(application);
+        return queryObject.listEndpoints(application);
     }
 
     public void remove(EndpointReferenceEntity endpoint) {
 
         LOG.debug("remove endpoint: " + endpoint.getAddress() + ", " + endpoint.getName());
         // Manage relationships.
-        List<NotificationProducerSubscriptionEntity> topics = this.notificationProducerDAO.listTopics();
+        List<NotificationProducerSubscriptionEntity> topics = notificationProducerDAO.listTopics();
         for (NotificationProducerSubscriptionEntity topic : topics) {
             topic.getConsumers().remove(endpoint);
         }
 
         // Remove from database.
-        this.entityManager.remove(endpoint);
+        entityManager.remove(endpoint);
     }
 }

@@ -105,33 +105,33 @@ public class LogoutServlet extends AbstractInjectionServlet {
 
         super.init(config);
         LOG.debug("init");
-        if (null == this.authenticationProtocolString) {
-            this.authenticationProtocol = DEFAULT_AUTHN_PROTOCOL;
+        if (null == authenticationProtocolString) {
+            authenticationProtocol = DEFAULT_AUTHN_PROTOCOL;
         } else {
-            this.authenticationProtocol = AuthenticationProtocol.toAuthenticationProtocol(this.authenticationProtocolString);
+            authenticationProtocol = AuthenticationProtocol.toAuthenticationProtocol(authenticationProtocolString);
         }
-        LOG.debug("authentication protocol: " + this.authenticationProtocol);
+        LOG.debug("authentication protocol: " + authenticationProtocol);
 
         InputStream keyStoreInputStream = null;
-        if (null != this.p12KeyStoreResourceName) {
+        if (null != p12KeyStoreResourceName) {
             Thread currentThread = Thread.currentThread();
             ClassLoader classLoader = currentThread.getContextClassLoader();
             LOG.debug("classloader name: " + classLoader.getClass().getName());
-            keyStoreInputStream = classLoader.getResourceAsStream(this.p12KeyStoreResourceName);
+            keyStoreInputStream = classLoader.getResourceAsStream(p12KeyStoreResourceName);
             if (null == keyStoreInputStream)
-                throw new UnavailableException("PKCS12 keystore resource not found: " + this.p12KeyStoreResourceName);
-        } else if (null != this.p12KeyStoreFileName) {
+                throw new UnavailableException("PKCS12 keystore resource not found: " + p12KeyStoreResourceName);
+        } else if (null != p12KeyStoreFileName) {
             try {
-                keyStoreInputStream = new FileInputStream(this.p12KeyStoreFileName);
+                keyStoreInputStream = new FileInputStream(p12KeyStoreFileName);
             } catch (FileNotFoundException e) {
-                throw new UnavailableException("PKCS12 keystore resource not found: " + this.p12KeyStoreFileName);
+                throw new UnavailableException("PKCS12 keystore resource not found: " + p12KeyStoreFileName);
             }
         }
         if (null != keyStoreInputStream) {
-            PrivateKeyEntry privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(this.keyStoreType, keyStoreInputStream,
-                    this.keyStorePassword, this.keyStorePassword);
-            this.applicationKeyPair = new KeyPair(privateKeyEntry.getCertificate().getPublicKey(), privateKeyEntry.getPrivateKey());
-            this.applicationCertificate = (X509Certificate) privateKeyEntry.getCertificate();
+            PrivateKeyEntry privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry(keyStoreType, keyStoreInputStream,
+                    keyStorePassword, keyStorePassword);
+            applicationKeyPair = new KeyPair(privateKeyEntry.getCertificate().getPublicKey(), privateKeyEntry.getPrivateKey());
+            applicationCertificate = (X509Certificate) privateKeyEntry.getCertificate();
         }
     }
 
@@ -144,8 +144,8 @@ public class LogoutServlet extends AbstractInjectionServlet {
          * opensaml is checking the destination field.
          */
         HttpServletRequestEndpointWrapper requestWrapper;
-        if (null != this.servletEndpointUrl) {
-            requestWrapper = new HttpServletRequestEndpointWrapper(request, this.servletEndpointUrl);
+        if (null != servletEndpointUrl) {
+            requestWrapper = new HttpServletRequestEndpointWrapper(request, servletEndpointUrl);
         } else {
             requestWrapper = new HttpServletRequestEndpointWrapper(request, request.getRequestURL().toString());
         }
@@ -166,7 +166,7 @@ public class LogoutServlet extends AbstractInjectionServlet {
                 if (null == protocolHandler) {
                     String msg = "no protocol handler active";
                     LOG.error(msg);
-                    redirectToErrorPage(requestWrapper, response, this.errorPage, null, new ErrorMessage(msg));
+                    redirectToErrorPage(requestWrapper, response, errorPage, null, new ErrorMessage(msg));
                     return;
                 }
 
@@ -190,8 +190,8 @@ public class LogoutServlet extends AbstractInjectionServlet {
          * opensaml is checking the destination field.
          */
         HttpServletRequestEndpointWrapper requestWrapper;
-        if (null != this.servletEndpointUrl) {
-            requestWrapper = new HttpServletRequestEndpointWrapper(request, this.servletEndpointUrl);
+        if (null != servletEndpointUrl) {
+            requestWrapper = new HttpServletRequestEndpointWrapper(request, servletEndpointUrl);
         } else {
             requestWrapper = new HttpServletRequestEndpointWrapper(request, request.getRequestURL().toString());
         }
@@ -203,12 +203,12 @@ public class LogoutServlet extends AbstractInjectionServlet {
              * another application.
              */
             try {
-                protocolHandler = AuthenticationProtocolManager.createAuthenticationProtocolHandler(this.authenticationProtocol,
-                        this.logoutExitServiceUrl, this.applicationName, this.applicationFriendlyName, this.applicationKeyPair,
-                        this.applicationCertificate, true, this.configParams, requestWrapper);
+                protocolHandler = AuthenticationProtocolManager.createAuthenticationProtocolHandler(authenticationProtocol,
+                        logoutExitServiceUrl, applicationName, applicationFriendlyName, applicationKeyPair,
+                        applicationCertificate, true, configParams, requestWrapper);
                 LOG.debug("initialized protocol");
             } catch (ServletException e) {
-                throw new RuntimeException("could not init authentication protocol handler: " + this.authenticationProtocol
+                throw new RuntimeException("could not init authentication protocol handler: " + authenticationProtocol
                         + "; original message: " + e.getMessage(), e);
             }
 
@@ -216,7 +216,7 @@ public class LogoutServlet extends AbstractInjectionServlet {
             if (null == logoutUserId) {
                 String msg = "invalid logout request";
                 LOG.error(msg);
-                redirectToErrorPage(requestWrapper, response, this.errorPage, null, new ErrorMessage(msg));
+                redirectToErrorPage(requestWrapper, response, errorPage, null, new ErrorMessage(msg));
                 return;
             }
 
@@ -231,11 +231,11 @@ public class LogoutServlet extends AbstractInjectionServlet {
             if (!logoutUserId.equals(userId)) {
                 String msg = "trying to logout a different user";
                 LOG.error(msg);
-                redirectToErrorPage(requestWrapper, response, this.errorPage, null, new ErrorMessage(msg));
+                redirectToErrorPage(requestWrapper, response, errorPage, null, new ErrorMessage(msg));
                 return;
             }
 
-            response.sendRedirect(this.logoutUrl);
+            response.sendRedirect(logoutUrl);
             return;
         }
 
@@ -246,10 +246,10 @@ public class LogoutServlet extends AbstractInjectionServlet {
         if (false == logoutSuccess) {
             String msg = "protocol handler could not finalize";
             LOG.error(msg);
-            redirectToErrorPage(requestWrapper, response, this.errorPage, null, new ErrorMessage(msg));
+            redirectToErrorPage(requestWrapper, response, errorPage, null, new ErrorMessage(msg));
             return;
         }
 
-        response.sendRedirect(this.logoutUrl);
+        response.sendRedirect(logoutUrl);
     }
 }

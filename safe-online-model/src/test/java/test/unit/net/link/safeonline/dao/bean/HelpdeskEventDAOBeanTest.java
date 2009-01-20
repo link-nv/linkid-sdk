@@ -35,39 +35,39 @@ public class HelpdeskEventDAOBeanTest extends TestCase {
             throws Exception {
 
         super.setUp();
-        this.entityTestManager = new EntityTestManager();
+        entityTestManager = new EntityTestManager();
         /*
          * If you add entities to this list, also add them to safe-online-sql-ddl.
          */
-        this.entityTestManager.setUp(SafeOnlineTestContainer.entities);
+        entityTestManager.setUp(SafeOnlineTestContainer.entities);
 
-        this.eventDAO = new HelpdeskEventDAOBean();
-        this.contextDAO = new HelpdeskContextDAOBean();
+        eventDAO = new HelpdeskEventDAOBean();
+        contextDAO = new HelpdeskContextDAOBean();
 
-        EJBTestUtils.inject(this.eventDAO, this.entityTestManager.getEntityManager());
-        EJBTestUtils.inject(this.contextDAO, this.entityTestManager.getEntityManager());
+        EJBTestUtils.inject(eventDAO, entityTestManager.getEntityManager());
+        EJBTestUtils.inject(contextDAO, entityTestManager.getEntityManager());
 
-        EJBTestUtils.init(this.eventDAO);
-        EJBTestUtils.init(this.contextDAO);
+        EJBTestUtils.init(eventDAO);
+        EJBTestUtils.init(contextDAO);
     }
 
     @Override
     protected void tearDown()
             throws Exception {
 
-        this.entityTestManager.tearDown();
+        entityTestManager.tearDown();
         super.tearDown();
     }
 
     public void testLogs() {
 
-        HelpdeskContextEntity context = this.contextDAO.createHelpdeskContext("test-location");
+        HelpdeskContextEntity context = contextDAO.createHelpdeskContext("test-location");
         List<HelpdeskEventEntity> events = new Vector<HelpdeskEventEntity>();
         events.add(new HelpdeskEventEntity(context, new Date(), "test-message-1", "test-principal", LogLevelType.INFO));
         events.add(new HelpdeskEventEntity(context, new Date(), "test-message-2", "test-principal", LogLevelType.ERROR));
-        this.eventDAO.persist(events);
+        eventDAO.persist(events);
 
-        List<HelpdeskEventEntity> persisted_events = this.eventDAO.listEvents(context.getId());
+        List<HelpdeskEventEntity> persisted_events = eventDAO.listEvents(context.getId());
         assertEquals(persisted_events.size(), events.size());
     }
 

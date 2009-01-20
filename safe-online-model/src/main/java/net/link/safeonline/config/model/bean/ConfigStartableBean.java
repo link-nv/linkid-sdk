@@ -40,7 +40,7 @@ public class ConfigStartableBean extends AbstractConfigStartableBean {
 
     public ConfigStartableBean() {
 
-        this.configurationBeans = new Class[] { AuditCleanerTaskBean.class, AuditSyslogBean.class, SamlAuthorityServiceBean.class,
+        configurationBeans = new Class[] { AuditCleanerTaskBean.class, AuditSyslogBean.class, SamlAuthorityServiceBean.class,
                 WSSecurityConfigurationBean.class, HelpdeskCleanerTaskBean.class, HelpdeskManagerBean.class, EmailBean.class,
                 ClockDriftDetectorTaskBean.class, HelpdeskContactBean.class, HistoryCleanerTaskBean.class, IdGeneratorBean.class,
                 UsageStatisticTaskBean.class, NotificationMessageQueueTaskBean.class, TaskHistoryCleanerTaskBean.class,

@@ -38,7 +38,7 @@ public class LoginPage extends LayoutPage {
             }
 
             catch (ServletException e) {
-                this.LOG.error("[BUG] Not really logged in?!", e);
+                LOG.error("[BUG] Not really logged in?!", e);
             }
         }
 

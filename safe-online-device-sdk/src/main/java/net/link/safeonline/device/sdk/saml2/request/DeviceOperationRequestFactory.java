@@ -102,7 +102,8 @@ public class DeviceOperationRequestFactory {
         if (null == device)
             throw new IllegalArgumentException("device should not be null");
 
-        DeviceOperationRequest request = Saml2Util.buildXMLObject(DeviceOperationRequest.class, DeviceOperationRequest.DEFAULT_ELEMENT_NAME);
+        DeviceOperationRequest request = Saml2Util
+                                                  .buildXMLObject(DeviceOperationRequest.class, DeviceOperationRequest.DEFAULT_ELEMENT_NAME);
 
         SecureRandomIdentifierGenerator idGenerator;
         try {

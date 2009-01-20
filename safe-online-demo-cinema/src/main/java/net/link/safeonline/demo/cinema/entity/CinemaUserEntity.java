@@ -39,7 +39,7 @@ public class CinemaUserEntity implements Serializable {
 
     public CinemaUserEntity(String id) {
 
-        this.olasId = id;
+        olasId = id;
     }
 
     /**
@@ -47,7 +47,7 @@ public class CinemaUserEntity implements Serializable {
      */
     public String getOlasId() {
 
-        return this.olasId;
+        return olasId;
     }
 
     /**
@@ -56,7 +56,7 @@ public class CinemaUserEntity implements Serializable {
      */
     public void setJunior(boolean isJunior) {
 
-        this.junior = isJunior;
+        junior = isJunior;
     }
 
     /**
@@ -64,7 +64,7 @@ public class CinemaUserEntity implements Serializable {
      */
     public boolean isJunior() {
 
-        return this.junior;
+        return junior;
     }
 
     /**
@@ -81,7 +81,7 @@ public class CinemaUserEntity implements Serializable {
      */
     public String getNrn() {
 
-        return this.nrn;
+        return nrn;
     }
 
     /**
@@ -98,6 +98,6 @@ public class CinemaUserEntity implements Serializable {
      */
     public String getName() {
 
-        return this.name;
+        return name;
     }
 }

@@ -58,7 +58,7 @@ public class CustomStringResourceLoader implements IStringResourceLoader {
     private String getStringResource(String key, Locale locale) {
 
         try {
-            ResourceBundle messages = ResourceBundle.getBundle(this.resourceBase, locale);
+            ResourceBundle messages = ResourceBundle.getBundle(resourceBase, locale);
             return messages.getString(key);
         } catch (MissingResourceException e) {
             return null;

@@ -85,17 +85,17 @@ public class SchedulingBean implements Scheduling {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public void schedulingListFactory() {
 
-        this.schedulingList = this.schedulingService.getSchedulingList();
+        schedulingList = schedulingService.getSchedulingList();
     }
 
     @Factory("taskList")
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public void taskListFactory() {
 
-        if (this.selectedScheduling == null) {
-            this.taskList = this.schedulingService.listTaskList();
+        if (selectedScheduling == null) {
+            taskList = schedulingService.listTaskList();
         } else {
-            this.taskList = this.selectedScheduling.getTasks();
+            taskList = selectedScheduling.getTasks();
         }
     }
 
@@ -103,14 +103,14 @@ public class SchedulingBean implements Scheduling {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public void taskHistoryListFactory() {
 
-        this.taskHistoryList = this.schedulingService.getTaskHistoryList(this.selectedTask);
+        taskHistoryList = schedulingService.getTaskHistoryList(selectedTask);
     }
 
     @Factory("newScheduling")
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public void newSchedulingFactory() {
 
-        this.newScheduling = new SchedulingEntity();
+        newScheduling = new SchedulingEntity();
     }
 
     @Factory("selectSchedulingList")
@@ -118,8 +118,8 @@ public class SchedulingBean implements Scheduling {
     public List<SelectItem> selectSchedulingListFactory() {
 
         List<SelectItem> selectSchedulingList = new ArrayList<SelectItem>();
-        this.schedulingListFactory();
-        for (SchedulingEntity scheduling : this.schedulingList) {
+        schedulingListFactory();
+        for (SchedulingEntity scheduling : schedulingList) {
             SelectItem selectItem = new SelectItem(scheduling.getName());
             selectSchedulingList.add(selectItem);
         }
@@ -136,25 +136,25 @@ public class SchedulingBean implements Scheduling {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String schedulingListView() {
 
-        this.selectedTask = null;
+        selectedTask = null;
         return "schedulinglistview";
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String schedulingView() {
 
-        if (this.selectedScheduling == null) {
-            this.selectedScheduling = this.selectedTask.getScheduling();
+        if (selectedScheduling == null) {
+            selectedScheduling = selectedTask.getScheduling();
         }
-        this.taskList = this.selectedScheduling.getTasks();
+        taskList = selectedScheduling.getTasks();
         return "schedulingview";
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String taskListView() {
 
-        this.selectedScheduling = null;
-        this.taskList = this.schedulingService.listTaskList();
+        selectedScheduling = null;
+        taskList = schedulingService.listTaskList();
         return "tasklistview";
     }
 
@@ -173,21 +173,21 @@ public class SchedulingBean implements Scheduling {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String performTask() {
 
-        this.schedulingService.performTask(this.selectedTask);
+        schedulingService.performTask(selectedTask);
         return "successperformtask";
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String performScheduling() {
 
-        this.schedulingService.performScheduling(this.selectedScheduling);
+        schedulingService.performScheduling(selectedScheduling);
         return "successperformscheduling";
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String clearTaskHistory() {
 
-        this.schedulingService.clearTaskHistory(this.selectedTask);
+        schedulingService.clearTaskHistory(selectedTask);
         taskHistoryListFactory();
         return "successcleartaskhistory";
     }
@@ -195,7 +195,7 @@ public class SchedulingBean implements Scheduling {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String clearAllTasksHistory() {
 
-        this.schedulingService.clearAllTasksHistory();
+        schedulingService.clearAllTasksHistory();
         return "successclearalltaskhistory";
     }
 
@@ -203,9 +203,9 @@ public class SchedulingBean implements Scheduling {
     public String saveScheduling() {
 
         try {
-            this.schedulingService.saveScheduling(this.selectedScheduling);
+            schedulingService.saveScheduling(selectedScheduling);
         } catch (InvalidCronExpressionException e) {
-            this.facesMessages.addToControlFromResourceBundle("cronExpression", FacesMessage.SEVERITY_ERROR, "errorCronExpressionInvalid");
+            facesMessages.addToControlFromResourceBundle("cronExpression", FacesMessage.SEVERITY_ERROR, "errorCronExpressionInvalid");
             return null;
         }
         return "successsavescheduling";
@@ -226,14 +226,14 @@ public class SchedulingBean implements Scheduling {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String addScheduling() {
 
-        LOG.debug("adding scheduling: " + this.newScheduling.getName());
+        LOG.debug("adding scheduling: " + newScheduling.getName());
         try {
-            this.schedulingService.addScheduling(this.newScheduling);
+            schedulingService.addScheduling(newScheduling);
         } catch (InvalidCronExpressionException e) {
-            this.facesMessages.addToControlFromResourceBundle("cronExpression", FacesMessage.SEVERITY_ERROR, "errorCronExpressionInvalid");
+            facesMessages.addToControlFromResourceBundle("cronExpression", FacesMessage.SEVERITY_ERROR, "errorCronExpressionInvalid");
             return null;
         } catch (ExistingSchedulingException e) {
-            this.facesMessages
+            facesMessages
                               .addToControlFromResourceBundle("cronExpression", FacesMessage.SEVERITY_ERROR, "errorSchedulingAlreadyExists");
             return null;
         }
@@ -243,7 +243,7 @@ public class SchedulingBean implements Scheduling {
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
     public String saveTask() {
 
-        this.schedulingService.saveTask(this.selectedTask);
+        schedulingService.saveTask(selectedTask);
         return "successsavetask";
     }
 

@@ -86,7 +86,7 @@ public class StartupServletContextListener implements ServletContextListener {
 
         public int compare(Startable startable1, Startable startable2) {
 
-            if (false == this.priorityDescSort)
+            if (false == priorityDescSort)
                 return startable1.getPriority() - startable2.getPriority();
             return startable2.getPriority() - startable1.getPriority();
         }

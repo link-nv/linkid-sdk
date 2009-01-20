@@ -9,6 +9,7 @@ package net.link.safeonline.sdk.ws.auth;
 import java.util.HashMap;
 import java.util.Map;
 
+
 /**
  * <h2>{@link DataType}<br>
  * <sub>[in short] (TODO).</sub></h2>
@@ -25,8 +26,12 @@ import java.util.Map;
  */
 public enum DataType {
 
-    STRING("string"), BOOLEAN("boolean"), INTEGER("integer"), DOUBLE("double"), DATE(
-            "date"), COMPOUNDED("compound");
+    STRING("string"),
+    BOOLEAN("boolean"),
+    INTEGER("integer"),
+    DOUBLE("double"),
+    DATE("date"),
+    COMPOUNDED("compound");
 
     private final String                       value;
 
@@ -45,26 +50,22 @@ public enum DataType {
         this.value = value;
     }
 
-
     public String getValue() {
 
-        return this.value;
+        return value;
     }
-
 
     @Override
     public String toString() {
 
-        return this.value;
+        return value;
     }
-
 
     public static DataType getDataType(String dataTypeValue) {
 
         DataType dataType = dataTypeMap.get(dataTypeValue);
         if (null == dataType)
-            throw new IllegalArgumentException("unknown dataType: "
-                    + dataTypeValue);
+            throw new IllegalArgumentException("unknown dataType: " + dataTypeValue);
         return dataType;
     }
 

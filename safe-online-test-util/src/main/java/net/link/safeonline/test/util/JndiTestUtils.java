@@ -35,14 +35,14 @@ public class JndiTestUtils {
 
     public JndiTestUtils() {
 
-        this.components = new HashMap<String, Object>();
+        components = new HashMap<String, Object>();
     }
 
     public void bindComponent(String jndiName, Object component)
             throws NamingException {
 
         LOG.debug("bind component: " + jndiName);
-        this.components.put(jndiName, component);
+        components.put(jndiName, component);
         InitialContext initialContext = new InitialContext();
         String[] names = jndiName.split("/");
         Context context = initialContext;
@@ -82,7 +82,7 @@ public class JndiTestUtils {
             throws NamingException {
 
         InitialContext initialContext = new InitialContext();
-        for (String name : this.components.keySet()) {
+        for (String name : components.keySet()) {
             LOG.debug("unbinding: " + name);
             initialContext.unbind(name);
         }

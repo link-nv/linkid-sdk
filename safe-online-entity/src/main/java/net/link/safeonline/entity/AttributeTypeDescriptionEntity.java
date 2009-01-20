@@ -61,7 +61,7 @@ public class AttributeTypeDescriptionEntity implements Serializable {
 
     public AttributeTypeDescriptionEntity(AttributeTypeEntity attributeType, String language, String name, String description) {
 
-        this.pk = new AttributeTypeDescriptionPK(attributeType.getName(), language);
+        pk = new AttributeTypeDescriptionPK(attributeType.getName(), language);
         this.attributeType = attributeType;
         this.language = language;
         this.name = name;
@@ -79,7 +79,7 @@ public class AttributeTypeDescriptionEntity implements Serializable {
             @AttributeOverride(name = "language", column = @Column(name = LANGUAGE_COLUMN_NAME)) })
     public AttributeTypeDescriptionPK getPk() {
 
-        return this.pk;
+        return pk;
     }
 
     public void setPk(AttributeTypeDescriptionPK pk) {
@@ -91,7 +91,7 @@ public class AttributeTypeDescriptionEntity implements Serializable {
     @JoinColumn(name = ATTRIBUTE_TYPE_COLUMN_NAME, insertable = false, updatable = false)
     public AttributeTypeEntity getAttributeType() {
 
-        return this.attributeType;
+        return attributeType;
     }
 
     public void setAttributeType(AttributeTypeEntity attributeType) {
@@ -101,7 +101,7 @@ public class AttributeTypeDescriptionEntity implements Serializable {
 
     public String getDescription() {
 
-        return this.description;
+        return description;
     }
 
     public void setDescription(String description) {
@@ -112,7 +112,7 @@ public class AttributeTypeDescriptionEntity implements Serializable {
     @Basic(optional = false)
     public String getName() {
 
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -123,7 +123,7 @@ public class AttributeTypeDescriptionEntity implements Serializable {
     @Column(name = LANGUAGE_COLUMN_NAME, insertable = false, updatable = false)
     public String getLanguage() {
 
-        return this.language;
+        return language;
     }
 
     public void setLanguage(String language) {
@@ -134,7 +134,7 @@ public class AttributeTypeDescriptionEntity implements Serializable {
     @Transient
     public String getAttributeTypeName() {
 
-        return this.pk.getAttributeType();
+        return pk.getAttributeType();
     }
 
     @Override
@@ -147,19 +147,19 @@ public class AttributeTypeDescriptionEntity implements Serializable {
         if (false == obj instanceof AttributeTypeDescriptionEntity)
             return false;
         AttributeTypeDescriptionEntity rhs = (AttributeTypeDescriptionEntity) obj;
-        return new EqualsBuilder().append(this.pk, rhs.pk).isEquals();
+        return new EqualsBuilder().append(pk, rhs.pk).isEquals();
     }
 
     @Override
     public int hashCode() {
 
-        return new HashCodeBuilder().append(this.pk).toHashCode();
+        return new HashCodeBuilder().append(pk).toHashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this).append("pk", this.pk).append("name", this.name).append("description", this.description).toString();
+        return new ToStringBuilder(this).append("pk", pk).append("name", name).append("description", description).toString();
     }
 
 

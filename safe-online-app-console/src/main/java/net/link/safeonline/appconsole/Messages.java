@@ -80,6 +80,6 @@ public enum Messages {
 
     public String getMessage() {
 
-        return this.messages.getString(this.key);
+        return messages.getString(key);
     }
 }

@@ -50,24 +50,24 @@ public class LawyerEditBean extends AbstractLawyerDataClientBean implements Lawy
     @RolesAllowed(LawyerConstants.ADMIN_ROLE)
     public String persist() {
 
-        this.log.debug("---------------------------------------- save #0 -----------------------------", this.name);
+        log.debug("---------------------------------------- save #0 -----------------------------", name);
 
         try {
-            createOrUpdateAttribute(DemoConstants.LAWYER_ATTRIBUTE_NAME, Boolean.valueOf(this.lawyerStatus.isLawyer()));
-            createOrUpdateAttribute(DemoConstants.LAWYER_SUSPENDED_ATTRIBUTE_NAME, Boolean.valueOf(this.lawyerStatus.isSuspended()));
-            createOrUpdateAttribute(DemoConstants.LAWYER_BAR_ATTRIBUTE_NAME, this.lawyerStatus.getBar());
-            createOrUpdateAttribute(DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME, Boolean.valueOf(this.lawyerStatus.isBarAdmin()));
+            createOrUpdateAttribute(DemoConstants.LAWYER_ATTRIBUTE_NAME, Boolean.valueOf(lawyerStatus.isLawyer()));
+            createOrUpdateAttribute(DemoConstants.LAWYER_SUSPENDED_ATTRIBUTE_NAME, Boolean.valueOf(lawyerStatus.isSuspended()));
+            createOrUpdateAttribute(DemoConstants.LAWYER_BAR_ATTRIBUTE_NAME, lawyerStatus.getBar());
+            createOrUpdateAttribute(DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME, Boolean.valueOf(lawyerStatus.isBarAdmin()));
         } catch (WSClientTransportException e) {
-            this.facesMessages.add("connection error");
+            facesMessages.add("connection error");
             return null;
         } catch (RequestDeniedException e) {
-            this.facesMessages.add("request denied");
+            facesMessages.add("request denied");
             return null;
         } catch (SubjectNotFoundException e) {
-            this.facesMessages.add("subject not found: " + this.name);
+            facesMessages.add("subject not found: " + name);
             return null;
         } catch (AttributeNotFoundException e) {
-            this.facesMessages.add("attribute not found");
+            facesMessages.add("attribute not found");
             return null;
         }
         return "success";
@@ -76,14 +76,14 @@ public class LawyerEditBean extends AbstractLawyerDataClientBean implements Lawy
     private void createOrUpdateAttribute(String attributeName, Object attributeValue)
             throws WSClientTransportException, RequestDeniedException, SubjectNotFoundException, AttributeNotFoundException {
 
-        String userId = getNameIdentifierMappingClient().getUserId(this.name);
+        String userId = getNameIdentifierMappingClient().getUserId(name);
 
         DataClient dataClient = getDataClient();
         if (null == dataClient.getAttributeValue(userId, attributeName, attributeValue.getClass())) {
-            this.log.debug("create attribute #0 for #1", attributeName, this.name);
+            log.debug("create attribute #0 for #1", attributeName, name);
             dataClient.createAttribute(userId, attributeName, attributeValue);
         } else {
-            this.log.debug("set attribute #0 for #1", attributeName, this.name);
+            log.debug("set attribute #0 for #1", attributeName, name);
             dataClient.setAttributeValue(userId, attributeName, attributeValue);
         }
     }

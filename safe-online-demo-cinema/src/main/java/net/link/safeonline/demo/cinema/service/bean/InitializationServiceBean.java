@@ -44,10 +44,10 @@ public class InitializationServiceBean extends AbstractCinemaServiceBean impleme
      */
     public void buildEntities() {
 
-        this.theatreRoomEntities = new ArrayList<List<CinemaRoomEntity>>();
+        theatreRoomEntities = new ArrayList<List<CinemaRoomEntity>>();
 
         // Don't bother if already created.
-        Object count = this.em.createQuery("SELECT count(t) FROM CinemaTheatreEntity t").getSingleResult();
+        Object count = em.createQuery("SELECT count(t) FROM CinemaTheatreEntity t").getSingleResult();
         if (count != null && !count.toString().equals("0"))
             return;
 
@@ -62,10 +62,10 @@ public class InitializationServiceBean extends AbstractCinemaServiceBean impleme
 
         for (int t = 0; t < theatreNames.length; ++t) {
             CinemaTheatreEntity theatre = new CinemaTheatreEntity(theatreNames[t], theatreAdresses[t]);
-            this.em.persist(theatre);
+            em.persist(theatre);
 
             List<CinemaRoomEntity> currentTheatreRooms = new ArrayList<CinemaRoomEntity>();
-            this.theatreRoomEntities.add(currentTheatreRooms);
+            theatreRoomEntities.add(currentTheatreRooms);
 
             for (int r = 0; r < theatreRooms[t].length; ++r) {
                 currentTheatreRooms.add(addRoom(theatre, theatreRooms[t][r], theatreRoomSeats[t][r][0], theatreRoomSeats[t][r][1]));
@@ -85,17 +85,17 @@ public class InitializationServiceBean extends AbstractCinemaServiceBean impleme
             for (CinemaShowTimeEntity time : filmTimes[f]) {
                 CinemaShowTimeEntity timeEntity = time.clone();
 
-                this.em.persist(timeEntity);
+                em.persist(timeEntity);
                 times.add(timeEntity);
             }
 
             CinemaFilmEntity filmEntity = new CinemaFilmEntity(filmNames[f], filmDescriptions[f], filmDurations[f], filmPrices[f], times);
-            this.em.persist(filmEntity);
+            em.persist(filmEntity);
 
             // Rooms.
             for (int t = 0; t < filmTheatres[f].length; ++t) {
                 for (int r : filmRooms[f][t]) {
-                    CinemaRoomEntity roomEntity = this.theatreRoomEntities.get(filmTheatres[f][t]).get(r);
+                    CinemaRoomEntity roomEntity = theatreRoomEntities.get(filmTheatres[f][t]).get(r);
                     roomEntity.getFilms().add(filmEntity);
                 }
             }
@@ -108,11 +108,11 @@ public class InitializationServiceBean extends AbstractCinemaServiceBean impleme
     private CinemaRoomEntity addRoom(CinemaTheatreEntity theatre, String name, int columns, int rows) {
 
         CinemaRoomEntity room = new CinemaRoomEntity(name, theatre);
-        this.em.persist(room);
+        em.persist(room);
 
         for (int x = 1; x <= columns; ++x) {
             for (int y = 1; y <= rows; ++y) {
-                this.em.persist(new CinemaSeatEntity(room, x, y));
+                em.persist(new CinemaSeatEntity(room, x, y));
             }
         }
 

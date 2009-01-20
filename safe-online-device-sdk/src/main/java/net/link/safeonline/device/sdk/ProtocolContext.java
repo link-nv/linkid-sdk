@@ -59,7 +59,7 @@ public class ProtocolContext implements Serializable {
 
     public String getSubject() {
 
-        return this.subject;
+        return subject;
     }
 
     public void setSubject(String subject) {
@@ -69,7 +69,7 @@ public class ProtocolContext implements Serializable {
 
     public String getDevice() {
 
-        return this.device;
+        return device;
     }
 
     public void setDevice(String device) {
@@ -79,7 +79,7 @@ public class ProtocolContext implements Serializable {
 
     public String getIssuer() {
 
-        return this.issuer;
+        return issuer;
     }
 
     public void setIssuer(String issuer) {
@@ -89,7 +89,7 @@ public class ProtocolContext implements Serializable {
 
     public String getInResponseTo() {
 
-        return this.inResponseTo;
+        return inResponseTo;
     }
 
     public void setInResponseTo(String inResponseTo) {
@@ -99,7 +99,7 @@ public class ProtocolContext implements Serializable {
 
     public String getTargetUrl() {
 
-        return this.targetUrl;
+        return targetUrl;
     }
 
     public void setTargetUrl(String targetUrl) {
@@ -109,7 +109,7 @@ public class ProtocolContext implements Serializable {
 
     public String getNodeName() {
 
-        return this.nodeName;
+        return nodeName;
     }
 
     public void setNodeName(String nodeName) {
@@ -124,12 +124,12 @@ public class ProtocolContext implements Serializable {
 
     public DeviceOperationType getDeviceOperation() {
 
-        return this.deviceOperation;
+        return deviceOperation;
     }
 
     public boolean getSuccess() {
 
-        return this.success;
+        return success;
     }
 
     public void setSuccess(boolean success) {
@@ -139,7 +139,7 @@ public class ProtocolContext implements Serializable {
 
     public String getAuthenticatedDevice() {
 
-        return this.authenticatedDevice;
+        return authenticatedDevice;
     }
 
     public void setAuthenticatedDevice(String authenticatedDevice) {
@@ -149,7 +149,7 @@ public class ProtocolContext implements Serializable {
 
     public int getValidity() {
 
-        return this.validity;
+        return validity;
     }
 
     public void setValidity(int validity) {
@@ -159,7 +159,7 @@ public class ProtocolContext implements Serializable {
 
     public String getAttribute() {
 
-        return this.attribute;
+        return attribute;
     }
 
     public void setAttribute(String attribute) {
