@@ -89,6 +89,7 @@ public class WSSecurityServerHandlerTest {
         jndiTestUtils.setUp();
         jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
                 "SafeOnline/WSSecurityConfigurationBean/local");
+        jndiTestUtils.bindComponent("java:comp/env/wsSecurityOptionalInboudSignature", Boolean.FALSE);
 
         mockWSSecurityConfigurationService = createMock(WSSecurityConfigurationService.class);
 
@@ -227,6 +228,41 @@ public class WSSecurityServerHandlerTest {
         Set<String> signedElements = (Set<String>) soapMessageContext.get(WSSecurityServerHandler.SIGNED_ELEMENTS_CONTEXT_KEY);
         assertEquals(2, signedElements.size());
         LOG.debug("signed elements: " + signedElements);
+    }
+
+    @Test
+    public void testInboundMessageOptionalSignedNotSigned()
+            throws Exception {
+
+        // setup
+        KeyPair olasKeyPair = PkiTestUtils.generateKeyPair();
+        X509Certificate olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=OLAS");
+
+        MessageFactory messageFactory = MessageFactory.newInstance(SOAPConstants.SOAP_1_1_PROTOCOL);
+        InputStream testSoapMessageInputStream = WSSecurityServerHandlerTest.class.getResourceAsStream("/test-soap-message.xml");
+        assertNotNull(testSoapMessageInputStream);
+
+        SOAPMessage message = messageFactory.createMessage(null, testSoapMessageInputStream);
+
+        SOAPMessageContext soapMessageContext = new TestSOAPMessageContext(message, false);
+
+        jndiTestUtils.bindComponent("java:comp/env/wsSecurityOptionalInboudSignature", Boolean.TRUE);
+        testedInstance = new WSSecurityServerHandler();
+        testedInstance.postConstructCallback();
+
+        // stubs
+        expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
+        expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
+
+        // prepare
+        replay(mockObjects);
+
+        // operate
+        testedInstance.handleMessage(soapMessageContext);
+
+        // verify
+        verify(mockObjects);
     }
 
     @Test

@@ -70,6 +70,10 @@ public interface Device {
 
     void setAuthenticationPath(String authenticationPath);
 
+    String getAuthenticationWSPath();
+
+    void setAuthenticationWSPath(String authenticationWSPath);
+
     String getRegistrationPath();
 
     void setRegistrationPath(String registrationPath);

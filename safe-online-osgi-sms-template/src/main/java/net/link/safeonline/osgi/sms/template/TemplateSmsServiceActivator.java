@@ -27,7 +27,7 @@ public class TemplateSmsServiceActivator implements BundleActivator {
             throws Exception {
 
         TemplateSmsServiceFactory smsServiceFactory = new TemplateSmsServiceFactory();
-        this.templateSmsServiceRegistration = context.registerService(SmsService.class.getName(), smsServiceFactory, null);
+        templateSmsServiceRegistration = context.registerService(SmsService.class.getName(), smsServiceFactory, null);
     }
 
     /*
@@ -38,6 +38,6 @@ public class TemplateSmsServiceActivator implements BundleActivator {
     public void stop(BundleContext context)
             throws Exception {
 
-        this.templateSmsServiceRegistration.unregister();
+        templateSmsServiceRegistration.unregister();
     }
 }

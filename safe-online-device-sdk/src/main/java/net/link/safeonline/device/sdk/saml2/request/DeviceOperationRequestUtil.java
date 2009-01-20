@@ -13,7 +13,7 @@ import java.security.cert.X509Certificate;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
-import net.link.safeonline.sdk.auth.saml2.DomUtils;
+import net.link.safeonline.saml.common.DomUtils;
 import net.link.safeonline.sdk.auth.saml2.SamlRequestSecurityPolicyResolver;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.sdk.ws.sts.SecurityTokenServiceClient;

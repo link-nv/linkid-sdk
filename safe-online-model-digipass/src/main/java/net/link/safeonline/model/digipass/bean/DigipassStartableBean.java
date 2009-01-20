@@ -50,15 +50,14 @@ public class DigipassStartableBean extends AbstractInitBean {
         attributeTypes.add(digipassSNAttributeType);
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(digipassSNAttributeType, Locale.ENGLISH.getLanguage(),
                 "Digipass Serial number", null));
-        attributeTypeDescriptions
-                                      .add(new AttributeTypeDescriptionEntity(digipassSNAttributeType, "nl", "Digipass Serie nummer", null));
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(digipassSNAttributeType, "nl", "Digipass Serie nummer", null));
 
         AttributeTypeEntity digipassDeviceDisableAttributeType = new AttributeTypeEntity(
                 DigipassConstants.DIGIPASS_DEVICE_DISABLE_ATTRIBUTE, DatatypeType.BOOLEAN, false, false);
         digipassDeviceDisableAttributeType.setMultivalued(true);
         attributeTypes.add(digipassDeviceDisableAttributeType);
-        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(digipassDeviceDisableAttributeType,
-                Locale.ENGLISH.getLanguage(), "Digipass Disable Attribute", null));
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(digipassDeviceDisableAttributeType, Locale.ENGLISH.getLanguage(),
+                "Digipass Disable Attribute", null));
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(digipassDeviceDisableAttributeType, "nl",
                 "Digipass Disable Attribuut", null));
 
@@ -79,11 +78,10 @@ public class DigipassStartableBean extends AbstractInitBean {
         String digipassWebappName = properties.getString("digipass.webapp.name");
 
         devices.add(new Device(DigipassConstants.DIGIPASS_DEVICE_ID, SafeOnlineConstants.DIGIPASS_DEVICE_CLASS, nodeName, "/"
-                + digipassWebappName + "/auth", null, null, null, "/" + digipassWebappName + "/device", "/" + digipassWebappName
+                + digipassWebappName + "/auth", null, null, null, null, "/" + digipassWebappName + "/device", "/" + digipassWebappName
                 + "/device", certificate, digipassDeviceAttributeType, digipassSNAttributeType, digipassDeviceDisableAttributeType));
         deviceDescriptions.add(new DeviceDescription(DigipassConstants.DIGIPASS_DEVICE_ID, "nl", "EBank Digipass"));
-        deviceDescriptions.add(new DeviceDescription(DigipassConstants.DIGIPASS_DEVICE_ID, Locale.ENGLISH.getLanguage(),
-                "EBank Digipass"));
+        deviceDescriptions.add(new DeviceDescription(DigipassConstants.DIGIPASS_DEVICE_ID, Locale.ENGLISH.getLanguage(), "EBank Digipass"));
         trustedCertificates.put(certificate, SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
     }
 

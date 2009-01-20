@@ -44,6 +44,9 @@ import org.w3c.dom.Document;
  * the SafeOnline web service authentication module. Per default this handler will sign the Body element of the SOAP envelope. You can make
  * this handler to sign additional XML elements via the {@link #addToBeSignedId(String, SOAPMessageContext)} method.
  * 
+ * If no certificate or private key is specified, this handler will not sign the outbound message but will be able to process signed inbound
+ * messages.
+ * 
  * @author fcorneli
  * 
  */
@@ -118,6 +121,11 @@ public class WSSecurityClientHandler implements SOAPHandler<SOAPMessageContext> 
      *            the optional set of XML Id's to be signed.
      */
     private void handleDocument(Document document, Set<String> tbsIds) {
+
+        if (null == certificate || null == privateKey) {
+            LOG.debug("no certificate specified, will NOT sign message");
+            return;
+        }
 
         LOG.debug("adding WS-Security SOAP header");
         WSSecSignature wsSecSignature = new WSSecSignature();

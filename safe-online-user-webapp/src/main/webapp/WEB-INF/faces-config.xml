@@ -39,6 +39,7 @@
 		<navigation-case>
 			<from-outcome>add</from-outcome>
 			<to-view-id>/profile/attribute-add.xhtml</to-view-id>
+			<redirect />
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
@@ -46,10 +47,12 @@
 		<navigation-case>
 			<from-outcome>success</from-outcome>
 			<to-view-id>/profile/profile.xhtml</to-view-id>
+			<redirect />
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>cancel</from-outcome>
 			<to-view-id>/profile/profile.xhtml</to-view-id>
+			<redirect />
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>

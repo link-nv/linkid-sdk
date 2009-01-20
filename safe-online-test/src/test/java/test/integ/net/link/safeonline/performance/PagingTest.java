@@ -12,11 +12,6 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import net.link.safeonline.performance.entity.DriverProfileEntity;
-import net.link.safeonline.performance.entity.ExecutionEntity;
-import net.link.safeonline.performance.entity.MeasurementEntity;
-import net.link.safeonline.performance.entity.ProfileDataEntity;
-import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.test.util.EntityTestManager;
 import net.link.safeonline.util.performance.ProfileData;
 

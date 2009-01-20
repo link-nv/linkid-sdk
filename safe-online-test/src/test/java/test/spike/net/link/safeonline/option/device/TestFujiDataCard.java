@@ -6,8 +6,6 @@
  */
 package test.spike.net.link.safeonline.option.device;
 
-import net.link.safeonline.option.device.impl.FujiDataCard;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;

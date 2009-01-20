@@ -33,7 +33,7 @@
 		</jws:handler>
 		<jws:handler>
 			<jws:handler-class>
-				net.link.safeonline.ws.util.LoggingHandler
+				net.link.safeonline.sdk.ws.LoggingHandler
 			</jws:handler-class>
 		</jws:handler>
 	</jws:handler-chain>

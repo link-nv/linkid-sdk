@@ -218,7 +218,6 @@ public class AttribService extends JPanel implements Observer {
             } catch (ParseException e) {
                 JOptionPane.showMessageDialog(this, "Invalid input, not a valid date ( format=\"" + DATE_FORMAT + "\" )");
                 return null;
-
             }
         } else if (node.getUserObject() instanceof Boolean) {
             if (newValue.equals("true") || newValue.equals("false"))

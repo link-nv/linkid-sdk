@@ -8,9 +8,9 @@
 package net.link.safeonline.sdk.exception;
 
 /**
- * Thrown in case the subject was not found.
+ * Thrown in case the subscription was not found.
  * 
- * @author fcorneli
+ * @author wvdhaute
  * 
  */
 public class SubscriptionNotFoundException extends Exception {

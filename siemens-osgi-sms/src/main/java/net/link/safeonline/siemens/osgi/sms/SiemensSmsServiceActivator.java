@@ -28,7 +28,7 @@ public class SiemensSmsServiceActivator implements BundleActivator {
 
         System.out.println("registering siemens sms service");
         SiemensSmsServiceFactory smsServiceFactory = new SiemensSmsServiceFactory();
-        this.siemensSmsServiceRegistration = context.registerService(SmsService.class.getName(), smsServiceFactory, null);
+        siemensSmsServiceRegistration = context.registerService(SmsService.class.getName(), smsServiceFactory, null);
     }
 
     /*
@@ -40,6 +40,6 @@ public class SiemensSmsServiceActivator implements BundleActivator {
             throws Exception {
 
         System.out.println("unregistering siemens sms service");
-        this.siemensSmsServiceRegistration.unregister();
+        siemensSmsServiceRegistration.unregister();
     }
 }

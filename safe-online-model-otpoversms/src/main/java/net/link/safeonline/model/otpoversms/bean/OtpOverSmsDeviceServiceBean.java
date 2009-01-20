@@ -270,12 +270,34 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
     /**
      * {@inheritDoc}
      */
+    public OtpService requestOtp(String mobile)
+            throws ConnectException, SafeOnlineResourceException {
+
+        OtpService otpService = EjbUtils.getEJB(OtpService.JNDI_BINDING, OtpService.class);
+        otpService.requestOtp(mobile);
+        return otpService;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public boolean verifyOtp(HttpSession httpSession, String mobile, String otp)
             throws SubjectNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException, DeviceDisabledException {
 
         checkMobile(mobile);
 
         OtpService otpService = (OtpService) httpSession.getAttribute(OTP_SERVICE_ATTRIBUTE);
+        return otpService.verifyOtp(otp);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean verifyOtp(OtpService otpService, String mobile, String otp)
+            throws SubjectNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException, DeviceDisabledException {
+
+        checkMobile(mobile);
+
         return otpService.verifyOtp(otp);
     }
 

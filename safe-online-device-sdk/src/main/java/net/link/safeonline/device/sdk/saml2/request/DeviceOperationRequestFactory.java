@@ -10,16 +10,12 @@ package net.link.safeonline.device.sdk.saml2.request;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 
-import javax.xml.namespace.QName;
-import javax.xml.transform.TransformerException;
-
 import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
-import net.link.safeonline.sdk.auth.saml2.Challenge;
-import net.link.safeonline.sdk.auth.saml2.DomUtils;
+import net.link.safeonline.saml.common.Challenge;
+import net.link.safeonline.saml.common.Saml2Util;
 
 import org.joda.time.DateTime;
 import org.opensaml.DefaultBootstrap;
-import org.opensaml.common.SAMLObject;
 import org.opensaml.common.SAMLVersion;
 import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
 import org.opensaml.common.xml.SAMLConstants;
@@ -28,19 +24,6 @@ import org.opensaml.saml2.core.NameID;
 import org.opensaml.saml2.core.Subject;
 import org.opensaml.xml.Configuration;
 import org.opensaml.xml.ConfigurationException;
-import org.opensaml.xml.XMLObjectBuilder;
-import org.opensaml.xml.XMLObjectBuilderFactory;
-import org.opensaml.xml.io.Marshaller;
-import org.opensaml.xml.io.MarshallerFactory;
-import org.opensaml.xml.io.MarshallingException;
-import org.opensaml.xml.security.SecurityHelper;
-import org.opensaml.xml.security.credential.BasicCredential;
-import org.opensaml.xml.signature.Signature;
-import org.opensaml.xml.signature.SignatureConstants;
-import org.opensaml.xml.signature.SignatureException;
-import org.opensaml.xml.signature.Signer;
-import org.opensaml.xml.signature.impl.SignatureBuilder;
-import org.w3c.dom.Element;
 
 
 /**
@@ -119,7 +102,8 @@ public class DeviceOperationRequestFactory {
         if (null == device)
             throw new IllegalArgumentException("device should not be null");
 
-        DeviceOperationRequest request = buildXMLObject(DeviceOperationRequest.class, DeviceOperationRequest.DEFAULT_ELEMENT_NAME);
+        DeviceOperationRequest request = Saml2Util
+                                                  .buildXMLObject(DeviceOperationRequest.class, DeviceOperationRequest.DEFAULT_ELEMENT_NAME);
 
         SecureRandomIdentifierGenerator idGenerator;
         try {
@@ -134,12 +118,12 @@ public class DeviceOperationRequestFactory {
         }
         request.setVersion(SAMLVersion.VERSION_20);
         request.setIssueInstant(new DateTime());
-        Issuer issuer = buildXMLObject(Issuer.class, Issuer.DEFAULT_ELEMENT_NAME);
+        Issuer issuer = Saml2Util.buildXMLObject(Issuer.class, Issuer.DEFAULT_ELEMENT_NAME);
         issuer.setValue(issuerName);
         request.setIssuer(issuer);
 
-        Subject subject = buildXMLObject(Subject.class, Subject.DEFAULT_ELEMENT_NAME);
-        NameID nameID = buildXMLObject(NameID.class, NameID.DEFAULT_ELEMENT_NAME);
+        Subject subject = Saml2Util.buildXMLObject(Subject.class, Subject.DEFAULT_ELEMENT_NAME);
+        NameID nameID = Saml2Util.buildXMLObject(NameID.class, NameID.DEFAULT_ELEMENT_NAME);
         nameID.setValue(subjectName);
         nameID.setFormat("urn:oasis:names:tc:SAML:2.0:nameid-format:persistent");
         subject.setNameID(nameID);
@@ -153,64 +137,6 @@ public class DeviceOperationRequestFactory {
         request.setAuthenticatedDevice(authenticatedDevice);
         request.setAttribute(attribute);
 
-        return signRequest(request, signerKeyPair);
-    }
-
-    /**
-     * Signs the unsigned device operation request
-     * 
-     * @return
-     */
-    private static String signRequest(DeviceOperationRequest request, KeyPair signerKeyPair) {
-
-        XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
-        SignatureBuilder signatureBuilder = (SignatureBuilder) builderFactory.getBuilder(Signature.DEFAULT_ELEMENT_NAME);
-        Signature signature = signatureBuilder.buildObject();
-        signature.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
-        String algorithm = signerKeyPair.getPrivate().getAlgorithm();
-        if ("RSA".equals(algorithm)) {
-            signature.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_RSA);
-        } else if ("DSA".equals(algorithm)) {
-            signature.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_DSA);
-        }
-        request.setSignature(signature);
-        BasicCredential signingCredential = SecurityHelper.getSimpleCredential(signerKeyPair.getPublic(), signerKeyPair.getPrivate());
-        signature.setSigningCredential(signingCredential);
-
-        // marshalling
-        MarshallerFactory marshallerFactory = Configuration.getMarshallerFactory();
-        Marshaller marshaller = marshallerFactory.getMarshaller(request);
-        Element requestElement;
-        try {
-            requestElement = marshaller.marshall(request);
-        } catch (MarshallingException e) {
-            throw new RuntimeException("opensaml2 marshalling error: " + e.getMessage(), e);
-        }
-
-        // sign after marshaling of course
-        try {
-            Signer.signObject(signature);
-        } catch (SignatureException e) {
-            throw new RuntimeException("opensaml2 signing error: " + e.getMessage(), e);
-        }
-
-        String result;
-        try {
-            result = DomUtils.domToString(requestElement);
-        } catch (TransformerException e) {
-            throw new RuntimeException("DOM to string error: " + e.getMessage(), e);
-        }
-        return result;
-
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <Type extends SAMLObject> Type buildXMLObject(@SuppressWarnings("unused") Class<Type> clazz, QName objectQName) {
-
-        XMLObjectBuilder<Type> builder = Configuration.getBuilderFactory().getBuilder(objectQName);
-        if (builder == null)
-            throw new RuntimeException("Unable to retrieve builder for object QName " + objectQName);
-        Type object = builder.buildObject(objectQName.getNamespaceURI(), objectQName.getLocalPart(), objectQName.getPrefix());
-        return object;
+        return Saml2Util.sign(request, signerKeyPair);
     }
 }

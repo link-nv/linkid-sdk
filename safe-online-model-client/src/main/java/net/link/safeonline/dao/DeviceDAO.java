@@ -32,10 +32,10 @@ public interface DeviceDAO extends SafeOnlineService {
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "DeviceDAOBean/local";
 
 
-    DeviceEntity addDevice(String name, DeviceClassEntity deviceClass, NodeEntity node, String authenticationPath, String registrationPath,
-                           String removalPath, String updatePath, String disablePath, String enablePath, X509Certificate certificate,
-                           AttributeTypeEntity attributeType, AttributeTypeEntity userAttributeType,
-                           AttributeTypeEntity disableAttributeType);
+    DeviceEntity addDevice(String name, DeviceClassEntity deviceClass, NodeEntity node, String authenticationPath,
+                           String authenticationWSPath, String registrationPath, String removalPath, String updatePath, String disablePath,
+                           String enablePath, X509Certificate certificate, AttributeTypeEntity attributeType,
+                           AttributeTypeEntity userAttributeType, AttributeTypeEntity disableAttributeType);
 
     List<DeviceEntity> listDevices();
 

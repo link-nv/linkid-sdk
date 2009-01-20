@@ -17,8 +17,6 @@ import javax.naming.InitialContext;
 import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
 
-import org.jboss.security.auth.callback.UsernamePasswordHandler;
-
 
 /**
  * Utility methods to aid the integration testing via the remote RMI interface.

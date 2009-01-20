@@ -62,7 +62,7 @@ public class DeviceDAOBeanTest extends TestCase {
 
         DeviceClassEntity deviceClass = deviceClassDAO.addDeviceClass(SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
                 SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS);
-        DeviceEntity device = testedInstance.addDevice("testDevice", deviceClass, null, null, null, null, null, null, null, null,
+        DeviceEntity device = testedInstance.addDevice("testDevice", deviceClass, null, null, null, null, null, null, null, null, null,
                 null, null, null);
         List<DeviceEntity> devices = testedInstance.listDevices();
         assertEquals(device, devices.get(0));

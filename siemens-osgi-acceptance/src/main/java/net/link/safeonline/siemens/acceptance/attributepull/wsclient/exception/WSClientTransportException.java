@@ -28,12 +28,12 @@ public class WSClientTransportException extends Exception {
 
     public String getLocation() {
 
-        return this.location;
+        return location;
     }
 
     @Override
     public String getMessage() {
 
-        return "Failed to contact webservice: " + this.location;
+        return "Failed to contact webservice: " + location;
     }
 }

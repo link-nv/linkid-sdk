@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoints xmlns="http://java.sun.com/xml/ns/jax-ws/ri/runtime"
+	version="2.0">
+	<endpoint name="SafeOnline-Encap-Authentication-WS"
+		implementation="net.link.safeonline.encap.auth.ws.EncapAuthenticationPortImpl"
+		url-pattern="/auth" interface="net.lin_k.safe_online.auth.AuthenticationPort"
+		service="{urn:net:lin-k:safe-online:auth}AuthenticationService" port="{urn:net:lin-k:safe-online:auth}AuthenticationPort" />
+	<endpoint name="SafeOnline-Password-GetAuthentication-WS"
+		implementation="net.link.safeonline.encap.auth.ws.GetEncapAuthenticationPortImpl"
+		url-pattern="/get_auth" interface="net.lin_k.safe_online.auth.GetAuthenticationPort"
+		service="{urn:net:lin-k:safe-online:auth}GetAuthenticationService"
+		port="{urn:net:lin-k:safe-online:auth}GetAuthenticationPort" />
+</endpoints>

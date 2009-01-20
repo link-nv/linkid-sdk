@@ -20,11 +20,6 @@ import java.util.List;
 
 import javax.persistence.NoResultException;
 
-import net.link.safeonline.performance.entity.DriverProfileEntity;
-import net.link.safeonline.performance.entity.ExecutionEntity;
-import net.link.safeonline.performance.entity.MeasurementEntity;
-import net.link.safeonline.performance.entity.ProfileDataEntity;
-import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.util.performance.ProfileData;
 
 

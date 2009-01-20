@@ -21,8 +21,8 @@ public class TemplateSmsServiceFactory implements ServiceFactory {
     public Object getService(Bundle bundle, ServiceRegistration registration) {
 
         System.out.println("Create object of SmsService for " + bundle.getSymbolicName());
-        this.usageCounter++;
-        System.out.println("Number of bundles using service " + this.usageCounter);
+        usageCounter++;
+        System.out.println("Number of bundles using service " + usageCounter);
         SmsService templateSmsService = new TemplateSmsService(bundle.getBundleContext());
         return templateSmsService;
     }
@@ -30,8 +30,8 @@ public class TemplateSmsServiceFactory implements ServiceFactory {
     public void ungetService(Bundle bundle, ServiceRegistration registration, Object service) {
 
         System.out.println("Release object of SmsService for " + bundle.getSymbolicName());
-        this.usageCounter--;
-        System.out.println("Number of bundles using service " + this.usageCounter);
+        usageCounter--;
+        System.out.println("Number of bundles using service " + usageCounter);
     }
 
 }

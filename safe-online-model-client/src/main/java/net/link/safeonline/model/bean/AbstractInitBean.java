@@ -315,6 +315,8 @@ public abstract class AbstractInitBean implements Startable {
 
         final String              authenticationPath;
 
+        final String              authenticationWSPath;
+
         final String              registrationPath;
 
         final String              removalPath;
@@ -332,15 +334,16 @@ public abstract class AbstractInitBean implements Startable {
         final AttributeTypeEntity deviceDisableAttribute;
 
 
-        public Device(String deviceName, String deviceClassName, String nodeName, String authenticationPath, String registrationPath,
-                      String removalPath, String updatePath, String disablePath, String enablePath, X509Certificate certificate,
-                      AttributeTypeEntity deviceAttribute, AttributeTypeEntity deviceUserAttribute,
+        public Device(String deviceName, String deviceClassName, String nodeName, String authenticationPath, String authenticationWSPath,
+                      String registrationPath, String removalPath, String updatePath, String disablePath, String enablePath,
+                      X509Certificate certificate, AttributeTypeEntity deviceAttribute, AttributeTypeEntity deviceUserAttribute,
                       AttributeTypeEntity deviceDisableAttribute) {
 
             this.deviceName = deviceName;
             this.deviceClassName = deviceClassName;
             this.nodeName = nodeName;
             this.authenticationPath = authenticationPath;
+            this.authenticationWSPath = authenticationWSPath;
             this.registrationPath = registrationPath;
             this.removalPath = removalPath;
             this.updatePath = updatePath;
@@ -667,7 +670,7 @@ public abstract class AbstractInitBean implements Startable {
     private void initTrustDomains() {
 
         TrustDomainEntity applicationsTrustDomain = trustDomainDAO
-                                                                       .findTrustDomain(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
+                                                                  .findTrustDomain(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
         if (null != applicationsTrustDomain)
             return;
 
@@ -788,8 +791,7 @@ public abstract class AbstractInitBean implements Startable {
             if (null != existingApplicationPool) {
                 continue;
             }
-            ApplicationPoolEntity newApplicationPool = applicationPoolDAO.addApplicationPool(applicationPool.name,
-                    applicationPool.timeout);
+            ApplicationPoolEntity newApplicationPool = applicationPoolDAO.addApplicationPool(applicationPool.name, applicationPool.timeout);
             List<ApplicationEntity> applications = new LinkedList<ApplicationEntity>();
             for (String applicationName : applicationPool.applications) {
                 ApplicationEntity application = applicationDAO.findApplication(applicationName);
@@ -834,13 +836,11 @@ public abstract class AbstractInitBean implements Startable {
             UsageAgreementEntity usageAgreementEntity = usageAgreementDAO.getUsageAgreement(application,
                     UsageAgreementPK.INITIAL_USAGE_AGREEMENT_VERSION);
             if (usageAgreementEntity == null) {
-                usageAgreementEntity = usageAgreementDAO.addUsageAgreement(application,
-                        UsageAgreementPK.INITIAL_USAGE_AGREEMENT_VERSION);
+                usageAgreementEntity = usageAgreementDAO.addUsageAgreement(application, UsageAgreementPK.INITIAL_USAGE_AGREEMENT_VERSION);
             }
             for (UsageAgreementText usageAgreementText : usageAgreement.usageAgreementTexts) {
                 if (usageAgreementDAO.getUsageAgreementText(usageAgreementEntity, usageAgreementText.language) == null) {
-                    usageAgreementDAO
-                                          .addUsageAgreementText(usageAgreementEntity, usageAgreementText.text, usageAgreementText.language);
+                    usageAgreementDAO.addUsageAgreementText(usageAgreementEntity, usageAgreementText.text, usageAgreementText.language);
                 }
             }
             try {
@@ -897,8 +897,9 @@ public abstract class AbstractInitBean implements Startable {
                     olasNode = olasDAO.getNode(device.nodeName);
                 }
                 deviceEntity = deviceDAO.addDevice(device.deviceName, deviceClassEntity, olasNode, device.authenticationPath,
-                        device.registrationPath, device.removalPath, device.updatePath, device.disablePath, device.enablePath,
-                        device.certificate, device.deviceAttribute, device.deviceUserAttribute, device.deviceDisableAttribute);
+                        device.authenticationWSPath, device.registrationPath, device.removalPath, device.updatePath, device.disablePath,
+                        device.enablePath, device.certificate, device.deviceAttribute, device.deviceUserAttribute,
+                        device.deviceDisableAttribute);
             }
         }
     }
@@ -906,8 +907,8 @@ public abstract class AbstractInitBean implements Startable {
     private void initDeviceDescriptions() {
 
         for (DeviceDescription deviceDescription : deviceDescriptions) {
-            DeviceDescriptionEntity existingDescription = deviceDAO.findDescription(new DeviceDescriptionPK(
-                    deviceDescription.deviceName, deviceDescription.language));
+            DeviceDescriptionEntity existingDescription = deviceDAO.findDescription(new DeviceDescriptionPK(deviceDescription.deviceName,
+                    deviceDescription.language));
             if (null != existingDescription) {
                 continue;
             }
@@ -917,8 +918,8 @@ public abstract class AbstractInitBean implements Startable {
             } catch (DeviceNotFoundException e) {
                 throw new EJBException("device not found: " + deviceDescription.deviceName);
             }
-            deviceDAO.addDescription(device, new DeviceDescriptionEntity(device, deviceDescription.language,
-                    deviceDescription.description));
+            deviceDAO
+                     .addDescription(device, new DeviceDescriptionEntity(device, deviceDescription.language, deviceDescription.description));
         }
     }
 
@@ -1000,8 +1001,8 @@ public abstract class AbstractInitBean implements Startable {
             throw new EJBException("No Olas node specified");
         NodeEntity olasNode = olasDAO.findNode(node.name);
         if (null == olasNode) {
-            olasDAO.addNode(node.name, node.protocol, node.hostname, node.port, node.sslPort,
-                    node.authnCertificate, node.signingCertificate);
+            olasDAO.addNode(node.name, node.protocol, node.hostname, node.port, node.sslPort, node.authnCertificate,
+                    node.signingCertificate);
         }
     }
 }

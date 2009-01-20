@@ -5,23 +5,6 @@ import java.util.TreeSet;
 
 import javax.persistence.EntityManager;
 
-import net.link.safeonline.performance.entity.DriverExceptionEntity;
-import net.link.safeonline.performance.entity.DriverProfileEntity;
-import net.link.safeonline.performance.entity.ExecutionEntity;
-import net.link.safeonline.performance.entity.MeasurementEntity;
-import net.link.safeonline.performance.entity.ProfileDataEntity;
-import net.link.safeonline.performance.entity.ScenarioTimingEntity;
-import net.link.safeonline.performance.service.DriverExceptionService;
-import net.link.safeonline.performance.service.DriverProfileService;
-import net.link.safeonline.performance.service.ExecutionService;
-import net.link.safeonline.performance.service.ProfileDataService;
-import net.link.safeonline.performance.service.ScenarioTimingService;
-import net.link.safeonline.performance.service.bean.AbstractProfilingServiceBean;
-import net.link.safeonline.performance.service.bean.DriverExceptionServiceBean;
-import net.link.safeonline.performance.service.bean.DriverProfileServiceBean;
-import net.link.safeonline.performance.service.bean.ExecutionServiceBean;
-import net.link.safeonline.performance.service.bean.ProfileDataServiceBean;
-import net.link.safeonline.performance.service.bean.ScenarioTimingServiceBean;
 import net.link.safeonline.test.util.EntityTestManager;
 
 import org.apache.commons.logging.Log;

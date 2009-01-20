@@ -84,7 +84,7 @@ public class ClientCrypto implements Crypto {
     public X509Certificate[] getCertificates(String alias) {
 
         LOG.debug("getCertificates for alias: " + alias);
-        X509Certificate[] certificates = new X509Certificate[] { this.certificate };
+        X509Certificate[] certificates = new X509Certificate[] { certificate };
         return certificates;
     }
 
@@ -102,7 +102,7 @@ public class ClientCrypto implements Crypto {
             throws Exception {
 
         LOG.debug("getPrivateKey for alias: " + alias);
-        return this.privateKey;
+        return privateKey;
     }
 
     public byte[] getSKIBytesFromCert(X509Certificate cert) {

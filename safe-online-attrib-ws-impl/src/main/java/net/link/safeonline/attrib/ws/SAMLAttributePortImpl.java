@@ -61,6 +61,7 @@ import oasis.names.tc.saml._2_0.protocol.StatusType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.opensaml.common.SAMLVersion;
 
 
 /**
@@ -337,7 +338,7 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
         subject.getContent().add(samlObjectFactory.createNameID(subjectName));
         assertion.setSubject(subject);
 
-        assertion.setVersion("2.0");
+        assertion.setVersion(SAMLVersion.VERSION_20.toString());
 
         String assertionId = "urn:uuid:" + UUID.randomUUID().toString();
         assertion.setID(assertionId);

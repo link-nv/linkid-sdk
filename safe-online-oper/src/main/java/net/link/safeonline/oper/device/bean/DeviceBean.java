@@ -101,6 +101,8 @@ public class DeviceBean implements Device {
 
     private String               authenticationPath;
 
+    private String               authenticationWSPath;
+
     private String               registrationPath;
 
     private String               removalPath;
@@ -260,9 +262,8 @@ public class DeviceBean implements Device {
             encodedCertificate = getUpFileContent(certificate);
         }
 
-        deviceService.addDevice(name, deviceClass, node, authenticationPath, registrationPath,
-                removalPath, updatePath, disablePath, enablePath, encodedCertificate, attributeType,
-                userAttributeType, disableAttributeType);
+        deviceService.addDevice(name, deviceClass, node, authenticationPath, authenticationWSPath, registrationPath, removalPath,
+                updatePath, disablePath, enablePath, encodedCertificate, attributeType, userAttributeType, disableAttributeType);
         return "success";
     }
 
@@ -288,6 +289,7 @@ public class DeviceBean implements Device {
         LOG.debug("edit device: " + selectedDevice.getName());
 
         authenticationPath = selectedDevice.getAuthenticationPath();
+        authenticationWSPath = selectedDevice.getAuthenticationWSPath();
         registrationPath = selectedDevice.getRegistrationPath();
         removalPath = selectedDevice.getRemovalPath();
         disablePath = selectedDevice.getDisablePath();
@@ -314,6 +316,9 @@ public class DeviceBean implements Device {
         String deviceName = selectedDevice.getName();
 
         deviceService.updateAuthenticationPath(deviceName, authenticationPath);
+        if (null != authenticationWSPath) {
+            deviceService.updateAuthenticationWSPath(deviceName, authenticationWSPath);
+        }
         if (null != registrationPath) {
             deviceService.updateRegistrationPath(deviceName, registrationPath);
         }
@@ -412,6 +417,18 @@ public class DeviceBean implements Device {
     public void setAuthenticationPath(String authenticationPath) {
 
         this.authenticationPath = authenticationPath;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public String getAuthenticationWSPath() {
+
+        return authenticationWSPath;
+    }
+
+    @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
+    public void setAuthenticationWSPath(String authenticationWSPath) {
+
+        this.authenticationWSPath = authenticationWSPath;
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)

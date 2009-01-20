@@ -127,15 +127,14 @@ public class ExitServletTest {
 
         final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
         authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=test");
-        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate",
-                new MBeanActionHandler() {
+        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
 
-                    public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
+            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
 
-                        LOG.debug("returning certificate");
-                        return authCertificate;
-                    }
-                });
+                LOG.debug("returning certificate");
+                return authCertificate;
+            }
+        });
 
         jndiTestUtils = new JndiTestUtils();
         int validity = 60 * 10;
@@ -153,7 +152,7 @@ public class ExitServletTest {
 
         DeviceClassEntity deviceClass = new DeviceClassEntity(SafeOnlineConstants.PKI_DEVICE_CLASS,
                 SafeOnlineConstants.PKI_DEVICE_AUTH_CONTEXT_CLASS);
-        device = new DeviceEntity(BeIdConstants.BEID_DEVICE_ID, deviceClass, null, null, null, null, null, null, null, null);
+        device = new DeviceEntity(BeIdConstants.BEID_DEVICE_ID, deviceClass, null, null, null, null, null, null, null, null, null);
 
         initialSessionAttributes.put(ProtocolHandlerManager.PROTOCOL_HANDLER_ID_ATTRIBUTE, Saml2PostProtocolHandler.class.getName());
         initialSessionAttributes.put(LoginManager.USERID_ATTRIBUTE, userid);
@@ -164,8 +163,8 @@ public class ExitServletTest {
 
         exitServletTestManager.setUp(ExitServlet.class, servletInitParams, null, null, initialSessionAttributes);
 
-        String samlResponseToken = AuthnResponseFactory.createAuthResponse(inResponseTo, applicationId, applicationId,
-                userid, device.getAuthenticationContextClass(), keyPair, validity, target);
+        String samlResponseToken = AuthnResponseFactory.createAuthResponse(inResponseTo, applicationId, applicationId, userid,
+                device.getAuthenticationContextClass(), keyPair, validity, target);
         String encodedSamlResponseToken = org.apache.xml.security.utils.Base64.encode(samlResponseToken.getBytes());
         expect(mockAuthenticationService.finalizeAuthentication()).andStubReturn(encodedSamlResponseToken);
 

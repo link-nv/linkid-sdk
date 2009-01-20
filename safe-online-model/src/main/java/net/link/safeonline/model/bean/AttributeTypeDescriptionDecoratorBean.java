@@ -21,6 +21,7 @@ import net.link.safeonline.entity.ApplicationIdentityAttributeEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.model.AttributeTypeDescriptionDecorator;
 
@@ -60,7 +61,30 @@ public class AttributeTypeDescriptionDecoratorBean implements AttributeTypeDescr
             }
             AttributeDO attribute = new AttributeDO(name, datatype, false, 0, humanReadableName, description,
                     identityAttribute.getAttributeType().isUserEditable(), identityAttribute.isDataMining(), null, null);
+            attribute.setCompounded(attributeType.isCompounded());
             attributes.add(attribute);
+            if (attributeType.isCompounded()) {
+                for (CompoundedAttributeTypeMemberEntity member : attributeType.getMembers()) {
+                    AttributeTypeEntity memberType = member.getMember();
+                    humanReadableName = null;
+                    description = null;
+                    if (null != language) {
+                        AttributeTypeDescriptionEntity attributeTypeDescription = attributeTypeDAO
+                                                                                                       .findDescription(new AttributeTypeDescriptionPK(
+                                                                                                               memberType.getName(),
+                                                                                                               language));
+                        if (null != attributeTypeDescription) {
+                            humanReadableName = attributeTypeDescription.getName();
+                            description = attributeTypeDescription.getDescription();
+                        }
+                    }
+                    AttributeDO memberAttribute = new AttributeDO(memberType.getName(), memberType.getType(), false, 0, humanReadableName,
+                            description, memberType.isUserEditable(), identityAttribute.isDataMining(), null, null);
+                    memberAttribute.setMember(true);
+                    attributes.add(memberAttribute);
+                }
+            }
+
         }
         return attributes;
     }

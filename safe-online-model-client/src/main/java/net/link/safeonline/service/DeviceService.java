@@ -64,9 +64,9 @@ public interface DeviceService extends SafeOnlineService {
     void removeDeviceProperty(DevicePropertyEntity property)
             throws DevicePropertyNotFoundException;
 
-    void addDevice(String name, String deviceClassName, String nodeName, String authenticationPath, String registrationPath,
-                   String removalPath, String updatePath, String disablePath, String enablePath, byte[] encodedCertificate,
-                   String attributeTypeName, String userAttributeTypeName, String disableAttributeTypeName)
+    void addDevice(String name, String deviceClassName, String nodeName, String authenticationPath, String authenticationWSPath,
+                   String registrationPath, String removalPath, String updatePath, String disablePath, String enablePath,
+                   byte[] encodedCertificate, String attributeTypeName, String userAttributeTypeName, String disableAttributeTypeName)
             throws CertificateEncodingException, DeviceClassNotFoundException, ExistingDeviceException, AttributeTypeNotFoundException,
             NodeNotFoundException, PermissionDeniedException;
 
@@ -89,6 +89,9 @@ public interface DeviceService extends SafeOnlineService {
             throws PermissionDeniedException;
 
     void updateAuthenticationPath(String deviceName, String authenticationPath)
+            throws DeviceNotFoundException;
+
+    void updateAuthenticationWSPath(String deviceName, String authenticationWSPath)
             throws DeviceNotFoundException;
 
     void updateRegistrationPath(String deviceName, String registrationPath)

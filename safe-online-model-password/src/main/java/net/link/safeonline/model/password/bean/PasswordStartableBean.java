@@ -132,6 +132,7 @@ public class PasswordStartableBean extends AbstractInitBean {
         ResourceBundle properties = ResourceBundle.getBundle("password_config");
         String nodeName = properties.getString("olas.node.name");
         String passwordWebappName = properties.getString("password.webapp.name");
+        String passwordAuthWSPath = properties.getString("password.auth.ws.webapp.name");
 
         AttributeTypeEntity passwordHashAttributeType = new AttributeTypeEntity(PasswordConstants.PASSWORD_HASH_ATTRIBUTE,
                 DatatypeType.STRING, false, false);
@@ -149,17 +150,16 @@ public class PasswordStartableBean extends AbstractInitBean {
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordAlgorithmAttributeType, Locale.ENGLISH.getLanguage(),
                 "Password hash algorithm", null));
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordHashAttributeType, "nl", "Wachtwoord hash", null));
-        attributeTypeDescriptions
-                                      .add(new AttributeTypeDescriptionEntity(passwordSeedAttributeType, "nl", "Wachtwoord hash seed", null));
-        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordAlgorithmAttributeType, "nl",
-                "Wachtwoord hash algoritme", null));
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordSeedAttributeType, "nl", "Wachtwoord hash seed", null));
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordAlgorithmAttributeType, "nl", "Wachtwoord hash algoritme",
+                null));
 
         AttributeTypeEntity passwordDeviceDisableAttributeType = new AttributeTypeEntity(
                 PasswordConstants.PASSWORD_DEVICE_DISABLE_ATTRIBUTE, DatatypeType.BOOLEAN, false, false);
         passwordDeviceDisableAttributeType.setMultivalued(true);
         attributeTypes.add(passwordDeviceDisableAttributeType);
-        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordDeviceDisableAttributeType,
-                Locale.ENGLISH.getLanguage(), "Password Disable Attribute", null));
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordDeviceDisableAttributeType, Locale.ENGLISH.getLanguage(),
+                "Password Disable Attribute", null));
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordDeviceDisableAttributeType, "nl",
                 "Paswoord Disable Attribuut", null));
 
@@ -176,9 +176,9 @@ public class PasswordStartableBean extends AbstractInitBean {
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordDeviceAttributeType, "nl", "Wachtwoord", null));
 
         devices.add(new Device(PasswordConstants.PASSWORD_DEVICE_ID, SafeOnlineConstants.PASSWORD_DEVICE_CLASS, nodeName, "/"
-                + passwordWebappName + "/auth", "/" + passwordWebappName + "/device", "/" + passwordWebappName + "/device", "/"
-                + passwordWebappName + "/device", "/" + passwordWebappName + "/device", "/" + passwordWebappName + "/device", certificate,
-                passwordDeviceAttributeType, null, passwordDeviceDisableAttributeType));
+                + passwordWebappName + "/auth", "/" + passwordAuthWSPath, "/" + passwordWebappName + "/device", "/" + passwordWebappName
+                + "/device", "/" + passwordWebappName + "/device", "/" + passwordWebappName + "/device", "/" + passwordWebappName
+                + "/device", certificate, passwordDeviceAttributeType, null, passwordDeviceDisableAttributeType));
         deviceDescriptions.add(new DeviceDescription(PasswordConstants.PASSWORD_DEVICE_ID, "nl", "Paswoord"));
         deviceDescriptions.add(new DeviceDescription(PasswordConstants.PASSWORD_DEVICE_ID, Locale.ENGLISH.getLanguage(), "Password"));
         trustedCertificates.put(certificate, SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);

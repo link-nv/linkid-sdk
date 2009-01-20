@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" targetNamespace="urn:net:lin-k:safe-online:auth"
+	xmlns:tns="urn:net:lin-k:safe-online:auth" xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
+	xmlns:wsa="http://www.w3.org/2005/08/addressing" name="SafeOnlineDeviceAuthenticationWebService">
+	<types>
+		<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+			<import namespace="urn:oasis:names:tc:SAML:2.0:protocol"
+				schemaLocation="saml-schema-protocol-2.0.xsd" />
+			<import namespace="urn:net:lin-k:safe-online:auth"
+				schemaLocation="safe-online-auth.xsd" />
+			<import namespace="http://www.w3.org/2005/08/addressing"
+				schemaLocation="ws-addr-1.0.xsd" />
+		</schema>
+	</types>
+
+	<message name="AuthenticationRequestMessage">
+		<part name="request" element="tns:WSAuthenticationRequest" />
+	</message>
+	<message name="AuthenticationResponseMessage">
+		<part name="result" element="tns:WSAuthenticationResponse" />
+	</message>
+	<message name="AuthenticationGetInstanceRequestMessage">
+		<part name="request" element="tns:AuthenticationGetInstanceRequest"></part>
+	</message>
+	<message name="AuthenticationGetInstanceResponseMessage">
+		<part name="endpoint" element="tns:AuthenticationGetInstanceResponse" />
+	</message>
+
+	<portType name="DeviceAuthenticationPort">
+		<operation name="authenticate">
+			<input message="tns:AuthenticationRequestMessage" />
+			<output message="tns:AuthenticationResponseMessage" />
+		</operation>
+	</portType>
+	<portType name="GetDeviceAuthenticationPort">
+		<operation name="getInstance">
+			<input message="tns:AuthenticationGetInstanceRequestMessage" />
+			<output message="tns:AuthenticationGetInstanceResponseMessage" />
+		</operation>
+	</portType>
+
+	<binding name="DeviceAuthenticationBinding" type="tns:DeviceAuthenticationPort">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="authenticate">
+			<soap:operation soapAction="urn:net:lin-k:safe-online:auth:authenticate" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<binding name="GetDeviceAuthenticationBinding" type="tns:GetDeviceAuthenticationPort">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="getInstance">
+			<soap:operation soapAction="urn:net:lin-k:safe-online:auth:getInstance" />
+			<input>
+				<soap:body use="literal" />
+			</input>
+			<output>
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+
+	<service name="DeviceAuthenticationService">
+		<port name="DeviceAuthenticationPort" binding="tns:DeviceAuthenticationBinding">
+			<soap:address location="http://localhost:8080/safe-online-device-auth-ws/auth/" />
+		</port>
+	</service>
+	<service name="GetDeviceAuthenticationService">
+		<port name="GetDeviceAuthenticationPort" binding="tns:GetDeviceAuthenticationBinding">
+			<soap:address location="http://localhost:8080/safe-online-device-auth-ws/get_auth/" />
+		</port>
+	</service>
+</definitions>

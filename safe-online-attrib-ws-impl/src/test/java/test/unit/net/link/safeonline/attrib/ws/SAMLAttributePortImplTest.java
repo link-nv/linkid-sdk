@@ -133,8 +133,8 @@ public class SAMLAttributePortImplTest {
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
-        jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
-                "SafeOnline/WSSecurityConfigurationBean/local");
+        jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName", "SafeOnline/WSSecurityConfigurationBean/local");
+        jndiTestUtils.bindComponent("java:comp/env/wsSecurityOptionalInboudSignature", false);
 
         mockWSSecurityConfigurationService = createMock(WSSecurityConfigurationService.class);
         mockAttributeService = createMock(AttributeService.class);
@@ -147,34 +147,30 @@ public class SAMLAttributePortImplTest {
         mockApplicationManager = createMock(ApplicationManager.class);
         mockApplicationIdentifierMappingService = createMock(ApplicationIdentifierMappingService.class);
 
-        mockObjects = new Object[] { mockWSSecurityConfigurationService, mockAttributeService,
-                mockNodeAttributeService, mockPkiValidator, mockApplicationAuthenticationService,
-                mockSamlAuthorityService, mockApplicationManager, mockApplicationIdentifierMappingService };
+        mockObjects = new Object[] { mockWSSecurityConfigurationService, mockAttributeService, mockNodeAttributeService, mockPkiValidator,
+                mockApplicationAuthenticationService, mockSamlAuthorityService, mockApplicationManager,
+                mockApplicationIdentifierMappingService };
 
         jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local", mockWSSecurityConfigurationService);
         jndiTestUtils.bindComponent("SafeOnline/AttributeServiceBean/local", mockAttributeService);
         jndiTestUtils.bindComponent("SafeOnline/NodeAttributeServiceBean/local", mockNodeAttributeService);
         jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local", mockPkiValidator);
-        jndiTestUtils
-                          .bindComponent("SafeOnline/ApplicationAuthenticationServiceBean/local", mockApplicationAuthenticationService);
+        jndiTestUtils.bindComponent("SafeOnline/ApplicationAuthenticationServiceBean/local", mockApplicationAuthenticationService);
         jndiTestUtils.bindComponent("SafeOnline/DeviceAuthenticationServiceBean/local", mockDeviceAuthenticationService);
         jndiTestUtils.bindComponent("SafeOnline/NodeAuthenticationServiceBean/local", mockNodeAuthenticationService);
         jndiTestUtils.bindComponent("SafeOnline/SamlAuthorityServiceBean/local", mockSamlAuthorityService);
         jndiTestUtils.bindComponent("SafeOnline/ApplicationManagerBean/local", mockApplicationManager);
-        jndiTestUtils.bindComponent("SafeOnline/ApplicationIdentifierMappingServiceBean/local",
-                mockApplicationIdentifierMappingService);
+        jndiTestUtils.bindComponent("SafeOnline/ApplicationIdentifierMappingServiceBean/local", mockApplicationIdentifierMappingService);
 
-        expect(mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock.anyObject()))
-                                                                                                                                .andStubReturn(
-                                                                                                                                        PkiResult.VALID);
+        expect(mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock.anyObject())).andStubReturn(
+                PkiResult.VALID);
 
         expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
 
         expect(mockApplicationManager.getCallerApplication()).andStubReturn(
                 new ApplicationEntity(testApplicationId, null, new ApplicationOwnerEntity(), null, null, null, certificate));
 
-        expect(mockApplicationIdentifierMappingService.findUserId(testApplicationId, testSubjectLogin)).andStubReturn(
-                testSubjectId);
+        expect(mockApplicationIdentifierMappingService.findUserId(testApplicationId, testSubjectLogin)).andStubReturn(testSubjectId);
 
         JaasTestUtils.initJaasLoginModule(DummyLoginModule.class);
 

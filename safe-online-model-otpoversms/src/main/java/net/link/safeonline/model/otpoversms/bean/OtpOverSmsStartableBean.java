@@ -67,6 +67,7 @@ public class OtpOverSmsStartableBean extends AbstractInitBean {
         ResourceBundle properties = ResourceBundle.getBundle("otpoversms_config");
         String nodeName = properties.getString("olas.node.name");
         String otpOverSmsWebappName = properties.getString("otpoversms.webapp.name");
+        String otpOverSmsAuthWSPath = properties.getString("otpoversms.auth.ws.webapp.name");
 
         AttributeTypeEntity otpOverSmsMobileAttributeType = new AttributeTypeEntity(OtpOverSmsConstants.OTPOVERSMS_MOBILE_ATTRIBUTE,
                 DatatypeType.STRING, true, false);
@@ -102,10 +103,9 @@ public class OtpOverSmsStartableBean extends AbstractInitBean {
                 "Mobile Lite Pin Attempts", null));
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(pinHashAttributeType, "nl", "GSM lite pin hash", null));
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(pinSeedAttributeType, "nl", "GSM lite hash seed", null));
-        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(pinAlgorithmAttributeType, "nl",
-                "GSM lite pin hash algoritme", null));
-        attributeTypeDescriptions
-                                      .add(new AttributeTypeDescriptionEntity(pinAttemptsAttributeType, "nl", "GSM lite pin pogingen", null));
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(pinAlgorithmAttributeType, "nl", "GSM lite pin hash algoritme",
+                null));
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(pinAttemptsAttributeType, "nl", "GSM lite pin pogingen", null));
 
         AttributeTypeEntity otpOverSmsDeviceDisableAttributeType = new AttributeTypeEntity(
                 OtpOverSmsConstants.OTPOVERSMS_DEVICE_DISABLE_ATTRIBUTE, DatatypeType.BOOLEAN, false, false);
@@ -131,12 +131,13 @@ public class OtpOverSmsStartableBean extends AbstractInitBean {
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(otpOverSmsDeviceAttributeType, "nl", "GSM Lite", null));
 
         devices.add(new Device(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID, SafeOnlineConstants.MOBILE_DEVICE_CLASS, nodeName, "/"
-                + otpOverSmsWebappName + "/auth", "/" + otpOverSmsWebappName + "/device", "/" + otpOverSmsWebappName + "/device", "/"
-                + otpOverSmsWebappName + "/device", "/" + otpOverSmsWebappName + "/device", "/" + otpOverSmsWebappName + "/device",
-                certificate, otpOverSmsDeviceAttributeType, otpOverSmsMobileAttributeType, otpOverSmsDeviceDisableAttributeType));
+                + otpOverSmsWebappName + "/auth", "/" + otpOverSmsAuthWSPath, "/" + otpOverSmsWebappName + "/device", "/"
+                + otpOverSmsWebappName + "/device", "/" + otpOverSmsWebappName + "/device", "/" + otpOverSmsWebappName + "/device", "/"
+                + otpOverSmsWebappName + "/device", certificate, otpOverSmsDeviceAttributeType, otpOverSmsMobileAttributeType,
+                otpOverSmsDeviceDisableAttributeType));
         deviceDescriptions.add(new DeviceDescription(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID, "nl", "GSM Lite"));
-        deviceDescriptions.add(new DeviceDescription(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID, Locale.ENGLISH.getLanguage(),
-                "Mobile Lite"));
+        deviceDescriptions
+                          .add(new DeviceDescription(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID, Locale.ENGLISH.getLanguage(), "Mobile Lite"));
         trustedCertificates.put(certificate, SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
 
     }
