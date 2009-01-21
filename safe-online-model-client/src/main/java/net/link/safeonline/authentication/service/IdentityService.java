@@ -24,6 +24,7 @@ import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.HistoryEntity;
 import net.link.safeonline.entity.SubjectEntity;
+import oasis.names.tc.saml._2_0.assertion.AttributeType;
 
 
 /**
@@ -61,6 +62,16 @@ public interface IdentityService extends SafeOnlineService {
      * @throws AttributeTypeNotFoundException
      */
     void saveAttribute(AttributeDO attribute)
+            throws PermissionDeniedException, AttributeTypeNotFoundException;
+
+    /**
+     * Saves a new attribute value for the current user.
+     * 
+     * @throws PermissionDeniedException
+     *             if the user is not allowed to edit the attribute.
+     * @throws AttributeTypeNotFoundException
+     */
+    void saveAttribute(AttributeType attribute)
             throws PermissionDeniedException, AttributeTypeNotFoundException;
 
     /**

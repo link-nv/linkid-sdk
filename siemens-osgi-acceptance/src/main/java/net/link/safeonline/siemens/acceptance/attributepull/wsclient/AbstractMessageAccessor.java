@@ -36,28 +36,28 @@ public abstract class AbstractMessageAccessor implements MessageAccessor {
 
     public AbstractMessageAccessor() {
 
-        this.messageLoggerHandler = new MessageLoggerHandler();
-        this.responseHeaders = new HashMap<String, List<String>>();
+        messageLoggerHandler = new MessageLoggerHandler();
+        responseHeaders = new HashMap<String, List<String>>();
     }
 
     public Document getInboundMessage() {
 
-        return this.messageLoggerHandler.getInboundMessage();
+        return messageLoggerHandler.getInboundMessage();
     }
 
     public Document getOutboundMessage() {
 
-        return this.messageLoggerHandler.getOutboundMessage();
+        return messageLoggerHandler.getOutboundMessage();
     }
 
     public boolean isCaptureMessages() {
 
-        return this.messageLoggerHandler.isCaptureMessages();
+        return messageLoggerHandler.isCaptureMessages();
     }
 
     public void setCaptureMessages(boolean captureMessages) {
 
-        this.messageLoggerHandler.setCaptureMessages(captureMessages);
+        messageLoggerHandler.setCaptureMessages(captureMessages);
     }
 
     /**
@@ -71,7 +71,7 @@ public abstract class AbstractMessageAccessor implements MessageAccessor {
         Binding binding = bindingProvider.getBinding();
         @SuppressWarnings("unchecked")
         List<Handler> handlerChain = binding.getHandlerChain();
-        handlerChain.add(this.messageLoggerHandler);
+        handlerChain.add(messageLoggerHandler);
         binding.setHandlerChain(handlerChain);
     }
 
@@ -93,7 +93,7 @@ public abstract class AbstractMessageAccessor implements MessageAccessor {
         if (context == null || !context.containsKey(MessageContext.HTTP_RESPONSE_HEADERS))
             return;
 
-        this.responseHeaders = (Map<String, List<String>>) context.get(MessageContext.HTTP_RESPONSE_HEADERS);
+        responseHeaders = (Map<String, List<String>>) context.get(MessageContext.HTTP_RESPONSE_HEADERS);
     }
 
     /**
@@ -111,7 +111,7 @@ public abstract class AbstractMessageAccessor implements MessageAccessor {
 
         if (e instanceof ProfiledException) {
             for (Map.Entry<String, String> header : ((ProfiledException) e).getHeaders().entrySet()) {
-                this.responseHeaders.put(header.getKey(), Arrays.asList(new String[] { header.getValue() }));
+                responseHeaders.put(header.getKey(), Arrays.asList(new String[] { header.getValue() }));
             }
 
             // Throw the exception wrapped in the ProfiledException.
@@ -125,6 +125,6 @@ public abstract class AbstractMessageAccessor implements MessageAccessor {
 
     public Map<String, List<String>> getHeaders() {
 
-        return this.responseHeaders;
+        return responseHeaders;
     }
 }

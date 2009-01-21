@@ -24,6 +24,7 @@ import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.AccessAuditLogger;
@@ -65,16 +66,19 @@ import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.model.AttributeTypeDescriptionDecorator;
 import net.link.safeonline.model.SubjectManager;
 import net.link.safeonline.model.bean.AttributeManagerLWBean;
+import net.link.safeonline.sdk.ws.auth.DataType;
 import net.link.safeonline.util.FilterUtil;
 import net.link.safeonline.util.MapEntryFilter;
 import net.link.safeonline.validation.InputValidation;
 import net.link.safeonline.validation.annotation.NonEmptyString;
 import net.link.safeonline.validation.annotation.NotNull;
+import net.link.safeonline.ws.common.WebServiceConstants;
+import oasis.names.tc.saml._2_0.assertion.AttributeType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.security.SecurityDomain;
 
 
@@ -200,6 +204,64 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
         String msg = "compounded parent attribute type is not user editable: " + compoundedAttributeType.getName();
         LOG.debug(msg);
         throw new PermissionDeniedException(msg);
+    }
+
+    @RolesAllowed(SafeOnlineRoles.USER_ROLE)
+    public void saveAttribute(@NotNull AttributeType attribute)
+            throws AttributeTypeNotFoundException, PermissionDeniedException {
+
+        DatatypeType type = getDatatypeType(attribute);
+        AttributeTypeEntity attributeType = attributeTypeDAO.getAttributeType(attribute.getName());
+
+        AttributeDO attributeDO = new AttributeDO(attribute.getName(), type, false, 0, null, null, attributeType.isUserEditable(), false,
+                null, null);
+        if (type != DatatypeType.COMPOUNDED) {
+            attributeDO.setValue(convertXMLDatatypeToServiceDatatype(attribute.getAttributeValue().get(0)));
+            saveAttribute(attributeDO);
+        } else {
+            attributeDO.setCompounded(true);
+            saveAttribute(attributeDO);
+            for (Object memberAttributeObject : attribute.getAttributeValue()) {
+                AttributeType memberAttribute = (AttributeType) memberAttributeObject;
+                saveAttribute(memberAttribute);
+            }
+        }
+
+    }
+
+    /**
+     * Convertor to go from XML datatypes to Service datatypes.
+     * 
+     * @param value
+     */
+    private Object convertXMLDatatypeToServiceDatatype(Object value) {
+
+        if (null == value)
+            return null;
+        if (value instanceof XMLGregorianCalendar) {
+            XMLGregorianCalendar calendar = (XMLGregorianCalendar) value;
+            return calendar.toGregorianCalendar().getTime();
+        }
+        return value;
+    }
+
+    private DatatypeType getDatatypeType(AttributeType attributeType) {
+
+        DataType dataType = DataType.getDataType(attributeType.getOtherAttributes().get(WebServiceConstants.DATATYPE_ATTRIBUTE));
+        if (dataType == DataType.STRING)
+            return DatatypeType.STRING;
+        else if (dataType == DataType.BOOLEAN)
+            return DatatypeType.BOOLEAN;
+        else if (dataType == DataType.DATE)
+            return DatatypeType.DATE;
+        else if (dataType == DataType.DOUBLE)
+            return DatatypeType.DOUBLE;
+        else if (dataType == DataType.INTEGER)
+            return DatatypeType.INTEGER;
+        else if (dataType == DataType.COMPOUNDED)
+            return DatatypeType.COMPOUNDED;
+        else
+            throw new RuntimeException("Unknown datatype " + dataType.getValue());
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)

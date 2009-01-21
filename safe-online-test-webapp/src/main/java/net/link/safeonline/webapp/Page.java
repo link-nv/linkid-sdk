@@ -14,9 +14,6 @@ import net.link.safeonline.webapp.auth.AuthMain;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.thoughtworks.selenium.Selenium;
-import com.thoughtworks.selenium.SeleniumException;
-
 
 public abstract class Page {
 

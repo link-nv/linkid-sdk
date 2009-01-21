@@ -14,10 +14,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openqa.selenium.server.SeleniumServer;
 
-import com.thoughtworks.selenium.DefaultSelenium;
-import com.thoughtworks.selenium.Selenium;
-import com.thoughtworks.selenium.SeleniumLogLevels;
-
 
 /**
  * Acceptance test manager based on the Selenium testing framework.

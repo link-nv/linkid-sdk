@@ -45,13 +45,14 @@ public class WSSecurityBodyHandler implements SOAPHandler<SOAPMessageContext> {
 
     private String                         wsSecurityConfigurationServiceJndiName;
 
+    private boolean                        wsSecurityOptionalInboudSignature;
+
 
     @PostConstruct
     public void postConstructCallback() {
 
         loadDependencies();
-        wsSecurityConfigurationService = EjbUtils.getEJB(wsSecurityConfigurationServiceJndiName,
-                WSSecurityConfigurationService.class);
+        wsSecurityConfigurationService = EjbUtils.getEJB(wsSecurityConfigurationServiceJndiName, WSSecurityConfigurationService.class);
     }
 
     private void loadDependencies() {
@@ -60,9 +61,10 @@ public class WSSecurityBodyHandler implements SOAPHandler<SOAPMessageContext> {
             Context ctx = new javax.naming.InitialContext();
             Context env = (Context) ctx.lookup("java:comp/env");
             wsSecurityConfigurationServiceJndiName = (String) env.lookup("wsSecurityConfigurationServiceJndiName");
+            wsSecurityOptionalInboudSignature = (Boolean) env.lookup("wsSecurityOptionalInboudSignature");
         } catch (NamingException e) {
             LOG.debug("naming exception: " + e.getMessage());
-            throw new RuntimeException("WS Security Configuration JNDI path not specified");
+            throw new RuntimeException("WS Security Configuration JNDI path or \"wsSecurityOptionalInboudSignature\" not specified");
         }
     }
 
@@ -87,8 +89,13 @@ public class WSSecurityBodyHandler implements SOAPHandler<SOAPMessageContext> {
             return true;
 
         X509Certificate certificate = WSSecurityServerHandler.getCertificate(soapMessageContext);
-        if (null == certificate)
+        if (null == certificate) {
+            if (wsSecurityOptionalInboudSignature) {
+                LOG.debug("inbound message is set to optional signed");
+                return true;
+            }
             throw new RuntimeException("no certificate found on JAX-WS context");
+        }
 
         boolean skipMessageIntegrityCheck = wsSecurityConfigurationService.skipMessageIntegrityCheck(certificate);
 

@@ -12,12 +12,11 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Set;
 
-import javax.xml.namespace.QName;
-import javax.xml.transform.TransformerException;
+import net.link.safeonline.saml.common.Challenge;
+import net.link.safeonline.saml.common.Saml2Util;
 
 import org.joda.time.DateTime;
 import org.opensaml.DefaultBootstrap;
-import org.opensaml.common.SAMLObject;
 import org.opensaml.common.SAMLVersion;
 import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
 import org.opensaml.common.xml.SAMLConstants;
@@ -29,21 +28,7 @@ import org.opensaml.saml2.core.Conditions;
 import org.opensaml.saml2.core.Issuer;
 import org.opensaml.saml2.core.NameIDPolicy;
 import org.opensaml.saml2.core.RequestedAuthnContext;
-import org.opensaml.xml.Configuration;
 import org.opensaml.xml.ConfigurationException;
-import org.opensaml.xml.XMLObjectBuilder;
-import org.opensaml.xml.XMLObjectBuilderFactory;
-import org.opensaml.xml.io.Marshaller;
-import org.opensaml.xml.io.MarshallerFactory;
-import org.opensaml.xml.io.MarshallingException;
-import org.opensaml.xml.security.SecurityHelper;
-import org.opensaml.xml.security.credential.BasicCredential;
-import org.opensaml.xml.signature.Signature;
-import org.opensaml.xml.signature.SignatureConstants;
-import org.opensaml.xml.signature.SignatureException;
-import org.opensaml.xml.signature.Signer;
-import org.opensaml.xml.signature.impl.SignatureBuilder;
-import org.w3c.dom.Element;
 
 
 /**
@@ -107,7 +92,7 @@ public class AuthnRequestFactory {
         if (null == issuerName)
             throw new IllegalArgumentException("application name should not be null");
 
-        AuthnRequest request = buildXMLObject(AuthnRequest.class, AuthnRequest.DEFAULT_ELEMENT_NAME);
+        AuthnRequest request = Saml2Util.buildXMLObject(AuthnRequest.class, AuthnRequest.DEFAULT_ELEMENT_NAME);
 
         request.setForceAuthn(!ssoEnabled);
         SecureRandomIdentifierGenerator idGenerator;
@@ -123,7 +108,7 @@ public class AuthnRequestFactory {
         }
         request.setVersion(SAMLVersion.VERSION_20);
         request.setIssueInstant(new DateTime());
-        Issuer issuer = buildXMLObject(Issuer.class, Issuer.DEFAULT_ELEMENT_NAME);
+        Issuer issuer = Saml2Util.buildXMLObject(Issuer.class, Issuer.DEFAULT_ELEMENT_NAME);
         issuer.setValue(issuerName);
         request.setIssuer(issuer);
 
@@ -142,16 +127,16 @@ public class AuthnRequestFactory {
             request.setProviderName(applicationFriendlyName);
         }
 
-        NameIDPolicy nameIdPolicy = buildXMLObject(NameIDPolicy.class, NameIDPolicy.DEFAULT_ELEMENT_NAME);
+        NameIDPolicy nameIdPolicy = Saml2Util.buildXMLObject(NameIDPolicy.class, NameIDPolicy.DEFAULT_ELEMENT_NAME);
         nameIdPolicy.setAllowCreate(true);
         request.setNameIDPolicy(nameIdPolicy);
 
         if (null != devices) {
-            RequestedAuthnContext requestedAuthnContext = buildXMLObject(RequestedAuthnContext.class,
+            RequestedAuthnContext requestedAuthnContext = Saml2Util.buildXMLObject(RequestedAuthnContext.class,
                     RequestedAuthnContext.DEFAULT_ELEMENT_NAME);
             List<AuthnContextClassRef> authnContextClassRefs = requestedAuthnContext.getAuthnContextClassRefs();
             for (String device : devices) {
-                AuthnContextClassRef authnContextClassRef = buildXMLObject(AuthnContextClassRef.class,
+                AuthnContextClassRef authnContextClassRef = Saml2Util.buildXMLObject(AuthnContextClassRef.class,
                         AuthnContextClassRef.DEFAULT_ELEMENT_NAME);
                 authnContextClassRef.setAuthnContextClassRef(device);
                 authnContextClassRefs.add(authnContextClassRef);
@@ -159,74 +144,17 @@ public class AuthnRequestFactory {
             request.setRequestedAuthnContext(requestedAuthnContext);
         }
 
-        Conditions conditions = buildXMLObject(Conditions.class, Conditions.DEFAULT_ELEMENT_NAME);
+        Conditions conditions = Saml2Util.buildXMLObject(Conditions.class, Conditions.DEFAULT_ELEMENT_NAME);
         List<AudienceRestriction> audienceRestrictions = conditions.getAudienceRestrictions();
-        AudienceRestriction audienceRestriction = buildXMLObject(AudienceRestriction.class, AudienceRestriction.DEFAULT_ELEMENT_NAME);
+        AudienceRestriction audienceRestriction = Saml2Util.buildXMLObject(AudienceRestriction.class,
+                AudienceRestriction.DEFAULT_ELEMENT_NAME);
         audienceRestrictions.add(audienceRestriction);
         List<Audience> audiences = audienceRestriction.getAudiences();
-        Audience audience = buildXMLObject(Audience.class, Audience.DEFAULT_ELEMENT_NAME);
+        Audience audience = Saml2Util.buildXMLObject(Audience.class, Audience.DEFAULT_ELEMENT_NAME);
         audiences.add(audience);
         audience.setAudienceURI(applicationName);
         request.setConditions(conditions);
 
-        return signAuthnRequest(request, signerKeyPair);
-    }
-
-    /**
-     * Signs the unsigned authentication request
-     * 
-     * @return
-     */
-    private static String signAuthnRequest(AuthnRequest authnRequest, KeyPair signerKeyPair) {
-
-        XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
-        SignatureBuilder signatureBuilder = (SignatureBuilder) builderFactory.getBuilder(Signature.DEFAULT_ELEMENT_NAME);
-        Signature signature = signatureBuilder.buildObject();
-        signature.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
-        String algorithm = signerKeyPair.getPrivate().getAlgorithm();
-        if ("RSA".equals(algorithm)) {
-            signature.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_RSA);
-        } else if ("DSA".equals(algorithm)) {
-            signature.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_DSA);
-        }
-        authnRequest.setSignature(signature);
-        BasicCredential signingCredential = SecurityHelper.getSimpleCredential(signerKeyPair.getPublic(), signerKeyPair.getPrivate());
-        signature.setSigningCredential(signingCredential);
-
-        // marshalling
-        MarshallerFactory marshallerFactory = Configuration.getMarshallerFactory();
-        Marshaller marshaller = marshallerFactory.getMarshaller(authnRequest);
-        Element requestElement;
-        try {
-            requestElement = marshaller.marshall(authnRequest);
-        } catch (MarshallingException e) {
-            throw new RuntimeException("opensaml2 marshalling error: " + e.getMessage(), e);
-        }
-
-        // sign after marshaling of course
-        try {
-            Signer.signObject(signature);
-        } catch (SignatureException e) {
-            throw new RuntimeException("opensaml2 signing error: " + e.getMessage(), e);
-        }
-
-        String result;
-        try {
-            result = DomUtils.domToString(requestElement);
-        } catch (TransformerException e) {
-            throw new RuntimeException("DOM to string error: " + e.getMessage(), e);
-        }
-        return result;
-
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <Type extends SAMLObject> Type buildXMLObject(@SuppressWarnings("unused") Class<Type> clazz, QName objectQName) {
-
-        XMLObjectBuilder<Type> builder = Configuration.getBuilderFactory().getBuilder(objectQName);
-        if (builder == null)
-            throw new RuntimeException("Unable to retrieve builder for object QName " + objectQName);
-        Type object = builder.buildObject(objectQName.getNamespaceURI(), objectQName.getLocalPart(), objectQName.getPrefix());
-        return object;
+        return Saml2Util.sign(request, signerKeyPair);
     }
 }

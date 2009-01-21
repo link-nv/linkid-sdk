@@ -9,8 +9,6 @@ package net.link.safeonline.webapp.user.device;
 import junit.framework.Assert;
 import net.link.safeonline.webapp.user.UserTemplate;
 
-import com.thoughtworks.selenium.SeleniumException;
-
 
 public class UserDevices extends UserTemplate {
 

@@ -10,7 +10,6 @@ package test.accept.net.link.safeonline.demo;
 import java.util.UUID;
 
 import junit.framework.TestCase;
-import net.link.safeonline.model.password.PasswordConstants;
 import net.link.safeonline.webapp.AcceptanceTestManager;
 import net.link.safeonline.webapp.PageUtils;
 import net.link.safeonline.webapp.WebappConstants;

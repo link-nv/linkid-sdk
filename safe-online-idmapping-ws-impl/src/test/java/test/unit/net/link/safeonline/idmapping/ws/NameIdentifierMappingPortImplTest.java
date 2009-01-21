@@ -35,6 +35,7 @@ import net.link.safeonline.idmapping.ws.NameIdentifierMappingServiceFactory;
 import net.link.safeonline.model.WSSecurityConfiguration;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.pkix.model.PkiValidator.PkiResult;
+import net.link.safeonline.sdk.ws.LoggingHandler;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
 import net.link.safeonline.sdk.ws.WSSecurityConfigurationService;
 import net.link.safeonline.test.util.DummyLoginModule;
@@ -42,7 +43,6 @@ import net.link.safeonline.test.util.JaasTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.WebServiceTestUtils;
-import net.link.safeonline.ws.util.LoggingHandler;
 import oasis.names.tc.saml._2_0.assertion.NameIDType;
 import oasis.names.tc.saml._2_0.protocol.NameIDMappingRequestType;
 import oasis.names.tc.saml._2_0.protocol.NameIDMappingResponseType;
@@ -96,8 +96,8 @@ public class NameIdentifierMappingPortImplTest {
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
-        jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
-                "SafeOnline/WSSecurityConfigurationBean/local");
+        jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName", "SafeOnline/WSSecurityConfigurationBean/local");
+        jndiTestUtils.bindComponent("java:comp/env/wsSecurityOptionalInboudSignature", false);
 
         mockWSSecurityConfigurationService = createMock(WSSecurityConfiguration.class);
         mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
@@ -112,13 +112,11 @@ public class NameIdentifierMappingPortImplTest {
                 mockNodeIdentifierMappingService };
 
         jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local", mockWSSecurityConfigurationService);
-        jndiTestUtils
-                          .bindComponent("SafeOnline/ApplicationAuthenticationServiceBean/local", mockApplicationAuthenticationService);
+        jndiTestUtils.bindComponent("SafeOnline/ApplicationAuthenticationServiceBean/local", mockApplicationAuthenticationService);
         jndiTestUtils.bindComponent("SafeOnline/DeviceAuthenticationServiceBean/local", mockDeviceAuthenticationService);
         jndiTestUtils.bindComponent("SafeOnline/NodeAuthenticationServiceBean/local", mockNodeAuthenticationService);
         jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local", mockPkiValidator);
-        jndiTestUtils.bindComponent("SafeOnline/ApplicationIdentifierMappingServiceBean/local",
-                mockApplicationIdentifierMappingService);
+        jndiTestUtils.bindComponent("SafeOnline/ApplicationIdentifierMappingServiceBean/local", mockApplicationIdentifierMappingService);
         jndiTestUtils.bindComponent("SafeOnline/NodeIdentifierMappingServiceBean/local", mockNodeIdentifierMappingService);
 
         webServiceTestUtils = new WebServiceTestUtils();
@@ -147,9 +145,8 @@ public class NameIdentifierMappingPortImplTest {
 
         String testApplicationName = "test-application-name";
         expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
-        expect(mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock.anyObject()))
-                                                                                                                                .andStubReturn(
-                                                                                                                                        PkiResult.VALID);
+        expect(mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock.anyObject())).andStubReturn(
+                PkiResult.VALID);
         expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(testApplicationName);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);

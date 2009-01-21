@@ -17,6 +17,8 @@ import javax.naming.InitialContext;
 import javax.security.auth.Subject;
 import javax.security.auth.login.LoginContext;
 
+import net.link.safeonline.authentication.service.AccountService;
+import net.link.safeonline.authentication.service.AccountServiceRemote;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.ApplicationServiceRemote;
 import net.link.safeonline.authentication.service.AttributeProviderManagerService;
@@ -29,6 +31,8 @@ import net.link.safeonline.authentication.service.ProxyAttributeService;
 import net.link.safeonline.authentication.service.ProxyAttributeServiceRemote;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.SubscriptionServiceRemote;
+import net.link.safeonline.authentication.service.UsageAgreementService;
+import net.link.safeonline.authentication.service.UsageAgreementServiceRemote;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.authentication.service.UserRegistrationServiceRemote;
 import net.link.safeonline.model.password.PasswordDeviceService;
@@ -188,5 +192,18 @@ public class IntegrationTestUtils {
         PasswordDeviceService passwordDeviceService = EjbUtils.getEJB(initialContext, PasswordDeviceServiceRemote.JNDI_BINDING,
                 PasswordDeviceServiceRemote.class);
         return passwordDeviceService;
+    }
+
+    public static UsageAgreementService getUsageAgreementService(InitialContext initialContext) {
+
+        UsageAgreementService usageAgreementService = EjbUtils.getEJB(initialContext, UsageAgreementServiceRemote.JNDI_BINDING,
+                UsageAgreementServiceRemote.class);
+        return usageAgreementService;
+    }
+
+    public static AccountService getAccountService(InitialContext initialContext) {
+
+        AccountService accountService = EjbUtils.getEJB(initialContext, AccountServiceRemote.JNDI_BINDING, AccountServiceRemote.class);
+        return accountService;
     }
 }

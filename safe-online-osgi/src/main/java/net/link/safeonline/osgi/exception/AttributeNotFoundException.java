@@ -11,8 +11,8 @@ package net.link.safeonline.osgi.exception;
  * <sub>Attribute not found Exception.</sub></h2>
  * 
  * <p>
- * Exception thrown when a requested existing attribute could not be found for a certain user by this OSGi plugin or by
- * OLAS.
+ * Exception thrown when a requested existing attribute could not be found for a
+ * certain user by this OSGi plugin or by OLAS.
  * 
  * </p>
  * 
@@ -24,19 +24,18 @@ package net.link.safeonline.osgi.exception;
  */
 public class AttributeNotFoundException extends Exception {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private final String      errorMessage;
+	private final String errorMessage;
 
+	public AttributeNotFoundException(String errorMessage) {
 
-    public AttributeNotFoundException(String errorMessage) {
+		this.errorMessage = errorMessage;
+	}
 
-        this.errorMessage = errorMessage;
-    }
+	public String getErrorMessage() {
 
-    public String getErrorMessage() {
-
-        return errorMessage;
-    }
+		return errorMessage;
+	}
 
 }

@@ -21,8 +21,6 @@ import java.util.List;
 
 import javax.persistence.Query;
 
-import net.link.safeonline.performance.entity.ExecutionEntity;
-
 
 /**
  * <h2>{@link QuickTest}<br>

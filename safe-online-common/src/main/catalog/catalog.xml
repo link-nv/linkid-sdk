@@ -24,6 +24,9 @@
 
     <systemSuffix   systemIdSuffix="xml.xsd"
                         uri="xml.xsd"/>
+	<!-- SafeOnline WS Authentication schema -->
+	<systemSuffix   systemIdSuffix="safe-online-auth.xsd"
+						uri="safe-online-auth.xsd" />
 
     <!-- Internal XML stuff -->
     <systemSuffix   systemIdSuffix="xmldsig-core-schema.xsd"

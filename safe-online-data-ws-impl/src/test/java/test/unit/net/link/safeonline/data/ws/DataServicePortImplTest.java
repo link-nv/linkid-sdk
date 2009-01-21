@@ -72,6 +72,7 @@ import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.WSSecurityConfiguration;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.pkix.model.PkiValidator.PkiResult;
+import net.link.safeonline.sdk.ws.LoggingHandler;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
 import net.link.safeonline.sdk.ws.WSSecurityConfigurationService;
 import net.link.safeonline.sdk.ws.data.TargetIdentityClientHandler;
@@ -82,7 +83,6 @@ import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.WebServiceTestUtils;
 import net.link.safeonline.ws.common.WebServiceConstants;
-import net.link.safeonline.ws.util.LoggingHandler;
 import net.link.safeonline.ws.util.ri.InjectionInstanceResolver;
 import oasis.names.tc.saml._2_0.assertion.AttributeType;
 
@@ -151,6 +151,7 @@ public class DataServicePortImplTest {
         jndiTestUtils.setUp();
         jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
                 "SafeOnline/WSSecurityConfigurationBean/local");
+        jndiTestUtils.bindComponent("java:comp/env/wsSecurityOptionalInboudSignature", false);
 
         mockWSSecurityConfigurationService = createMock(WSSecurityConfiguration.class);
         jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local", mockWSSecurityConfigurationService);

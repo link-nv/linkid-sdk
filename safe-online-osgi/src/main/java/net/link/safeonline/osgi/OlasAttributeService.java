@@ -11,13 +11,13 @@ import net.link.safeonline.osgi.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.osgi.exception.AttributeUnavailableException;
 import net.link.safeonline.osgi.exception.SubjectNotFoundException;
 
-
 /**
  * <h2>{@link OlasAttributeService}<br>
  * <sub>OLAS Attribute Service API.</sub></h2>
  * 
  * <p>
- * OLAS Attribute Service API. This service should be used if OSGi attribute plugins wish to retrieve OLAS attributes.
+ * OLAS Attribute Service API. This service should be used if OSGi attribute
+ * plugins wish to retrieve OLAS attributes.
  * </p>
  * 
  * <p>
@@ -28,19 +28,20 @@ import net.link.safeonline.osgi.exception.SubjectNotFoundException;
  */
 public interface OlasAttributeService {
 
-    /**
-     * Returns the attribute from OLAS for the specified attribute name from the specified user.
-     * 
-     * @param userId
-     * @param attributeName
-     * @return attribute view
-     * @throws AttributeTypeNotFoundException
-     * @throws AttributeNotFoundException
-     * @throws AttributeUnavailableException
-     * @throws SubjectNotFoundException
-     */
-    public Object getAttribute(String userId, String attributeName)
-            throws AttributeTypeNotFoundException, AttributeNotFoundException, AttributeUnavailableException,
-            SubjectNotFoundException;
+	/**
+	 * Returns the attribute from OLAS for the specified attribute name from the
+	 * specified user.
+	 * 
+	 * @param userId
+	 * @param attributeName
+	 * @return attribute view
+	 * @throws AttributeTypeNotFoundException
+	 * @throws AttributeNotFoundException
+	 * @throws AttributeUnavailableException
+	 * @throws SubjectNotFoundException
+	 */
+	public Object getAttribute(String userId, String attributeName)
+			throws AttributeTypeNotFoundException, AttributeNotFoundException,
+			AttributeUnavailableException, SubjectNotFoundException;
 
 }

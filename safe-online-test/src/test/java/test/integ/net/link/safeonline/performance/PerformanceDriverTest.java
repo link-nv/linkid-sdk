@@ -16,25 +16,10 @@ import java.util.Map;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
-import net.link.safeonline.model.performance.PerformanceServiceRemote;
 import net.link.safeonline.performance.drivers.AttribDriver;
 import net.link.safeonline.performance.drivers.AuthDriver;
 import net.link.safeonline.performance.drivers.IdMappingDriver;
-import net.link.safeonline.performance.entity.DriverExceptionEntity;
-import net.link.safeonline.performance.entity.DriverProfileEntity;
-import net.link.safeonline.performance.entity.ExecutionEntity;
-import net.link.safeonline.performance.entity.MeasurementEntity;
-import net.link.safeonline.performance.entity.ProfileDataEntity;
-import net.link.safeonline.performance.entity.ScenarioTimingEntity;
 import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
-import net.link.safeonline.performance.service.DriverExceptionService;
-import net.link.safeonline.performance.service.ExecutionService;
-import net.link.safeonline.performance.service.ProfileDataService;
-import net.link.safeonline.performance.service.bean.AbstractProfilingServiceBean;
-import net.link.safeonline.performance.service.bean.DriverExceptionServiceBean;
-import net.link.safeonline.performance.service.bean.ExecutionServiceBean;
-import net.link.safeonline.performance.service.bean.ProfileDataServiceBean;
-import net.link.safeonline.performance.service.bean.ScenarioTimingServiceBean;
 import net.link.safeonline.test.util.EntityTestManager;
 
 import org.apache.commons.logging.Log;

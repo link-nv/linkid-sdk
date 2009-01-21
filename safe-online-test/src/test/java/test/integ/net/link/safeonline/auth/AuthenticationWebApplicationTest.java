@@ -32,7 +32,6 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.xml.transform.TransformerException;
 
-import net.link.safeonline.performance.DriverException;
 import net.link.safeonline.performance.keystore.PerformanceKeyStoreUtils;
 import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
 import net.link.safeonline.test.util.DomTestUtils;

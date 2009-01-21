@@ -27,15 +27,13 @@ import net.link.safeonline.demo.mandate.MandateConstants;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.security.SimpleGroup;
-import org.jboss.security.SimplePrincipal;
 
 
 /**
  * Mandate JAAS login module.
- *
+ * 
  * @author fcorneli
- *
+ * 
  */
 public class MandateLoginModule implements LoginModule {
 
@@ -52,23 +50,23 @@ public class MandateLoginModule implements LoginModule {
     private AuthorizationService authorizationService;
 
 
-    public void initialize(Subject inSubject, CallbackHandler inCallbackHandler, Map<String, ?> sharedState,
-            Map<String, ?> options) {
+    public void initialize(Subject inSubject, CallbackHandler inCallbackHandler, Map<String, ?> sharedState, Map<String, ?> options) {
 
         LOG.debug("initialize");
-        this.subject = inSubject;
-        this.callbackHandler = inCallbackHandler;
+        subject = inSubject;
+        callbackHandler = inCallbackHandler;
 
-        this.authorizationService = AuthorizationServiceFactory.newInstance();
+        authorizationService = AuthorizationServiceFactory.newInstance();
     }
 
-    public boolean login() throws LoginException {
+    public boolean login()
+            throws LoginException {
 
         NameCallback nameCallback = new NameCallback("username");
         Callback[] callbacks = new Callback[] { nameCallback };
 
         try {
-            this.callbackHandler.handle(callbacks);
+            callbackHandler.handle(callbacks);
         } catch (IOException e) {
             throw new LoginException("IO error: " + e.getMessage());
         } catch (UnsupportedCallbackException e) {
@@ -79,20 +77,21 @@ public class MandateLoginModule implements LoginModule {
         LOG.debug("username: " + username);
 
         // authentication
-        this.authenticatedPrincipal = new SimplePrincipal(username);
+        authenticatedPrincipal = new SimplePrincipal(username);
 
         // authorization
-        this.admin = this.authorizationService.isAdmin(username);
+        admin = authorizationService.isAdmin(username);
 
         return true;
     }
 
-    public boolean commit() throws LoginException {
+    public boolean commit()
+            throws LoginException {
 
-        Set<Principal> principals = this.subject.getPrincipals();
-        principals.add(this.authenticatedPrincipal);
+        Set<Principal> principals = subject.getPrincipals();
+        principals.add(authenticatedPrincipal);
         setRole(principals, MandateConstants.USER_ROLE);
-        if (this.admin) {
+        if (admin) {
             setRole(principals, MandateConstants.ADMIN_ROLE);
         }
         return true;
@@ -125,18 +124,20 @@ public class MandateLoginModule implements LoginModule {
         return group;
     }
 
-    public boolean abort() throws LoginException {
+    public boolean abort()
+            throws LoginException {
 
-        this.authenticatedPrincipal = null;
-        this.admin = false;
+        authenticatedPrincipal = null;
+        admin = false;
         return true;
     }
 
-    public boolean logout() throws LoginException {
+    public boolean logout()
+            throws LoginException {
 
-        this.subject.getPrincipals().clear();
-        this.subject.getPublicCredentials().clear();
-        this.subject.getPrivateCredentials().clear();
+        subject.getPrincipals().clear();
+        subject.getPublicCredentials().clear();
+        subject.getPrivateCredentials().clear();
         return true;
     }
 }

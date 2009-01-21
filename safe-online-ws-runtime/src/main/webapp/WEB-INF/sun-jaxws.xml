@@ -40,7 +40,7 @@
 	<endpoint name="SafeOnline-Notification-Subscription-Manager-WS"
 		implementation="net.link.safeonline.notification.subscription.manager.ws.NotificationSubscriptionManagerPortImpl"
 		url-pattern="/subscription"
-		interface="net.lin_k.safe_online.notification.subscription.manager.NotificationSubscriptionManagerort"
+		interface="net.lin_k.safe_online.notification.subscription.manager.NotificationSubscriptionManagerPort"
 		service="{urn:net:lin-k:safe-online:notification:subscription:manager}NotificationSubscriptionManagerService"
 		port="{urn:net:lin-k:safe-online:notification:subscription:manager}NotificationSubscriptionManagerPort" />
 </endpoints>

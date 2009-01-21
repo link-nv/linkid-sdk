@@ -99,11 +99,11 @@ public class TemplateAttributeService implements PluginAttributeService {
         } else {
             // Beware: this code makes an endless loop by getting the external
             // attribute from OLAS which will again redirect to this plugin ...
-            ServiceReference serviceReference = this.bundleContext.getServiceReference(OlasAttributeService.class.getName());
+            ServiceReference serviceReference = bundleContext.getServiceReference(OlasAttributeService.class.getName());
             if (null != serviceReference) {
-                OlasAttributeService attributeService = (OlasAttributeService) this.bundleContext.getService(serviceReference);
+                OlasAttributeService attributeService = (OlasAttributeService) bundleContext.getService(serviceReference);
                 Object value = attributeService.getAttribute(userId, attributeName);
-                this.bundleContext.ungetService(serviceReference);
+                bundleContext.ungetService(serviceReference);
                 return value;
             }
         }

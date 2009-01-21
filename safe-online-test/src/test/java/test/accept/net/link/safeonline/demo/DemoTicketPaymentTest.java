@@ -11,7 +11,6 @@ import java.util.UUID;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
-import net.link.safeonline.model.beid.BeIdConstants;
 import net.link.safeonline.webapp.AcceptanceTestManager;
 import net.link.safeonline.webapp.PageUtils;
 import net.link.safeonline.webapp.WebappConstants;

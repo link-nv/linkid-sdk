@@ -48,7 +48,7 @@ public class JavaVersionServlet extends AbstractInjectionServlet {
 
     private static final String PKCS11_TARGET_SESSION_ATTRIBUTE = JavaVersionServlet.class.getName() + ".pkcs11target";
 
-    private static final String JAVA_VERSION_REG_EXPR           = "^1\\.(5|6).*";
+    public static final String  JAVA_VERSION_REG_EXPR           = "^1\\.(5|6).*";
 
     private static final String JAVA_1_5_VERSION_REG_EXPR       = "^1\\.5.*";
 

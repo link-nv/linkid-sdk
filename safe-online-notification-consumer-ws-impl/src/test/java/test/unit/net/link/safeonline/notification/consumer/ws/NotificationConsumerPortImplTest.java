@@ -30,6 +30,7 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.DeviceAuthenticationService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
+import net.link.safeonline.model.WSSecurityConfiguration;
 import net.link.safeonline.notification.consumer.ws.NotificationConsumerPortImpl;
 import net.link.safeonline.notification.consumer.ws.NotificationConsumerServiceFactory;
 import net.link.safeonline.pkix.model.PkiValidator;
@@ -90,8 +91,8 @@ public class NotificationConsumerPortImplTest {
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
-        jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
-                "SafeOnline/WSSecurityConfigurationBean/local");
+        jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName", "SafeOnline/WSSecurityConfigurationBean/local");
+        jndiTestUtils.bindComponent("java:comp/env/wsSecurityOptionalInboudSignature", false);
 
         mockWSSecurityConfigurationService = createMock(WSSecurityConfigurationService.class);
         mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
@@ -101,21 +102,19 @@ public class NotificationConsumerPortImplTest {
         mockNotificationConsumerService = createMock(net.link.safeonline.notification.service.NotificationConsumerService.class);
 
         mockObjects = new Object[] { mockWSSecurityConfigurationService, mockApplicationAuthenticationService,
-                mockDeviceAuthenticationService, mockNodeAuthenticationService, mockPkiValidator,
-                mockNotificationConsumerService };
+                mockDeviceAuthenticationService, mockNodeAuthenticationService, mockPkiValidator, mockNotificationConsumerService };
 
-        jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local", mockWSSecurityConfigurationService);
-        jndiTestUtils
-                          .bindComponent("SafeOnline/ApplicationAuthenticationServiceBean/local", mockApplicationAuthenticationService);
-        jndiTestUtils.bindComponent("SafeOnline/DeviceAuthenticationServiceBean/local", mockDeviceAuthenticationService);
-        jndiTestUtils.bindComponent("SafeOnline/NodeAuthenticationServiceBean/local", mockNodeAuthenticationService);
-        jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local", mockPkiValidator);
-        jndiTestUtils.bindComponent("SafeOnline/NotificationConsumerServiceBean/local", mockNotificationConsumerService);
+        jndiTestUtils.bindComponent(WSSecurityConfiguration.JNDI_BINDING, mockWSSecurityConfigurationService);
+        jndiTestUtils.bindComponent(ApplicationAuthenticationService.JNDI_BINDING, mockApplicationAuthenticationService);
+        jndiTestUtils.bindComponent(DeviceAuthenticationService.JNDI_BINDING, mockDeviceAuthenticationService);
+        jndiTestUtils.bindComponent(NodeAuthenticationService.JNDI_BINDING, mockNodeAuthenticationService);
+        jndiTestUtils.bindComponent(PkiValidator.JNDI_BINDING, mockPkiValidator);
+        jndiTestUtils.bindComponent(net.link.safeonline.notification.service.NotificationConsumerService.JNDI_BINDING,
+                mockNotificationConsumerService);
 
         // expectations
-        expect(mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock.anyObject()))
-                                                                                                                                .andStubReturn(
-                                                                                                                                        PkiResult.VALID);
+        expect(mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock.anyObject())).andStubReturn(
+                PkiResult.VALID);
         expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
 
         JaasTestUtils.initJaasLoginModule(DummyLoginModule.class);

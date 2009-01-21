@@ -7,7 +7,6 @@
 
 package net.link.safeonline.webapp.auth;
 
-import net.link.safeonline.model.password.PasswordConstants;
 import net.link.safeonline.webapp.Page;
 import net.link.safeonline.webapp.auth.password.AuthRegisterPassword;
 

@@ -21,8 +21,8 @@ public class AcceptanceMetroServiceFactory implements ServiceFactory {
     public Object getService(Bundle bundle, ServiceRegistration registration) {
 
         System.out.println("Create object of PluginAttributeService for " + bundle.getSymbolicName());
-        this.usageCounter++;
-        System.out.println("Number of bundles using service " + this.usageCounter);
+        usageCounter++;
+        System.out.println("Number of bundles using service " + usageCounter);
         PluginAttributeService templateAttributeService = new AcceptanceMetroService(bundle.getBundleContext());
         return templateAttributeService;
     }
@@ -30,8 +30,8 @@ public class AcceptanceMetroServiceFactory implements ServiceFactory {
     public void ungetService(Bundle bundle, ServiceRegistration registration, Object service) {
 
         System.out.println("Release object of PluginAttributeService for " + bundle.getSymbolicName());
-        this.usageCounter--;
-        System.out.println("Number of bundles using service " + this.usageCounter);
+        usageCounter--;
+        System.out.println("Number of bundles using service " + usageCounter);
     }
 
 }

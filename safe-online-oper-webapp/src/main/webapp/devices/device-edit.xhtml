@@ -52,6 +52,18 @@
 								</tr>
 								<tr>
 									<th>
+										<h:outputText value="#{msgs.authenticationWSPath}" />
+									</th>
+									<td>
+										<s:decorate>
+											<h:inputText id="authenticationWSPath"
+												value="#{operDevice.authenticationWSPath}" styleClass="label" />
+											<h:message for="authenticationWSPath" styleClass="error" />
+										</s:decorate>
+									</td>
+								</tr>
+								<tr>
+									<th>
 										<h:outputText value="#{msgs.registrationPath}" />
 									</th>
 									<td>

@@ -92,8 +92,8 @@ public class BeIdStartableBean extends AbstractInitBean {
         attributeTypes.add(identifierAttributeType);
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(identifierAttributeType, Locale.ENGLISH.getLanguage(),
                 "Identifier (BeID)", null));
-        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(identifierAttributeType, "nl", "Identificatienummer (BeID)",
-                null));
+        attributeTypeDescriptions
+                                 .add(new AttributeTypeDescriptionEntity(identifierAttributeType, "nl", "Identificatienummer (BeID)", null));
 
         AttributeTypeEntity beidDeviceUserAttributeType = new AttributeTypeEntity(BeIdConstants.BEID_DEVICE_USER_ATTRIBUTE,
                 DatatypeType.STRING, true, false);
@@ -109,8 +109,8 @@ public class BeIdStartableBean extends AbstractInitBean {
         attributeTypes.add(beidDeviceDisableAttributeType);
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(beidDeviceDisableAttributeType, Locale.ENGLISH.getLanguage(),
                 "BeID Disable Attribute", null));
-        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(beidDeviceDisableAttributeType, "nl",
-                "BeID Disable Attribuut", null));
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(beidDeviceDisableAttributeType, "nl", "BeID Disable Attribuut",
+                null));
 
         AttributeTypeEntity beidDeviceAttributeType = new AttributeTypeEntity(BeIdConstants.BEID_DEVICE_ATTRIBUTE, DatatypeType.COMPOUNDED,
                 true, false);
@@ -122,8 +122,8 @@ public class BeIdStartableBean extends AbstractInitBean {
         beidDeviceAttributeType.addMember(beidDeviceUserAttributeType, 4, true);
         beidDeviceAttributeType.addMember(beidDeviceDisableAttributeType, 5, true);
         attributeTypes.add(beidDeviceAttributeType);
-        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(beidDeviceAttributeType, Locale.ENGLISH.getLanguage(),
-                "BeID", null));
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(beidDeviceAttributeType, Locale.ENGLISH.getLanguage(), "BeID",
+                null));
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(beidDeviceAttributeType, "nl", "BeID", null));
 
         X509Certificate certificate = (X509Certificate) BeidKeyStoreUtils.getPrivateKeyEntry().getCertificate();
@@ -133,10 +133,10 @@ public class BeIdStartableBean extends AbstractInitBean {
         String nodeName = properties.getString("olas.node.name");
         String beidWebappName = properties.getString("beid.webapp.name");
 
-        devices.add(new Device(BeIdConstants.BEID_DEVICE_ID, SafeOnlineConstants.PKI_DEVICE_CLASS, nodeName, "/" + beidWebappName
-                + "/_auth", "/" + beidWebappName + "/_device", "/" + beidWebappName + "/_device", null, "/" + beidWebappName + "/_device",
-                "/" + beidWebappName + "/_device", certificate, beidDeviceAttributeType, beidDeviceUserAttributeType,
-                beidDeviceDisableAttributeType));
+        devices.add(new Device(BeIdConstants.BEID_DEVICE_ID, SafeOnlineConstants.PKI_DEVICE_CLASS, nodeName,
+                "/" + beidWebappName + "/auth", null, "/" + beidWebappName + "/device", "/" + beidWebappName + "/device", null, "/"
+                        + beidWebappName + "/device", "/" + beidWebappName + "/device", certificate, beidDeviceAttributeType,
+                beidDeviceUserAttributeType, beidDeviceDisableAttributeType));
         deviceDescriptions.add(new DeviceDescription(BeIdConstants.BEID_DEVICE_ID, "nl", "Belgische eID"));
         deviceDescriptions.add(new DeviceDescription(BeIdConstants.BEID_DEVICE_ID, Locale.ENGLISH.getLanguage(), "Belgian eID"));
     }
