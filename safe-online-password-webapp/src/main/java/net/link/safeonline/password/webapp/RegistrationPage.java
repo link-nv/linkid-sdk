@@ -127,6 +127,7 @@ public class RegistrationPage extends TemplatePage {
             final PasswordTextField password1Field = new PasswordTextField(PASSWORD1_FIELD_ID, password1 = new Model<String>());
 
             add(password1Field);
+            focus(password1Field);
             add(new ErrorComponentFeedbackLabel("password1_feedback", password1Field));
 
             final PasswordTextField password2Field = new PasswordTextField(PASSWORD2_FIELD_ID, password2 = new Model<String>());

@@ -68,8 +68,6 @@ public class RegistrationPage extends TemplatePage {
 
     public RegistrationPage() {
 
-        super();
-
         protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
         getHeader();
@@ -96,14 +94,14 @@ public class RegistrationPage extends TemplatePage {
     class RequestOtpForm extends Form<String> {
 
         private static final long serialVersionUID = 1L;
+        TextField<PhoneNumber>    mobileField;
 
 
         public RequestOtpForm(String id) {
 
             super(id);
 
-            TextField<PhoneNumber> mobileField = new TextField<PhoneNumber>(MOBILE_FIELD_ID, mobile = new Model<PhoneNumber>(),
-                    PhoneNumber.class);
+            mobileField = new TextField<PhoneNumber>(MOBILE_FIELD_ID, mobile = new Model<PhoneNumber>(), PhoneNumber.class);
             mobileField.setRequired(true);
             add(mobileField);
             add(new ErrorComponentFeedbackLabel("mobile_feedback", mobileField));
@@ -155,7 +153,17 @@ public class RegistrationPage extends TemplatePage {
             add(cancel);
 
             add(new ErrorFeedbackPanel("request_feedback", new ComponentFeedbackMessageFilter(this)));
+        }
 
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void onBeforeRender() {
+
+            focus(mobileField);
+
+            super.onBeforeRender();
         }
 
         /**
@@ -178,12 +186,14 @@ public class RegistrationPage extends TemplatePage {
 
         Model<String>             pin2;
 
+        TextField<String>         otpField;
+
 
         public VerifyOtpForm(String id) {
 
             super(id);
 
-            final TextField<String> otpField = new TextField<String>(OTP_FIELD_ID, otp = new Model<String>());
+            otpField = new TextField<String>(OTP_FIELD_ID, otp = new Model<String>());
             otpField.setRequired(true);
             add(otpField);
             add(new ErrorComponentFeedbackLabel("otp_feedback", otpField));
@@ -247,9 +257,7 @@ public class RegistrationPage extends TemplatePage {
 
                     protocolContext.setSuccess(true);
                     exit();
-
                 }
-
             });
 
             Button cancel = new Button(CANCEL_BUTTON_ID) {
@@ -269,6 +277,17 @@ public class RegistrationPage extends TemplatePage {
             add(cancel);
 
             add(new ErrorFeedbackPanel("feedback", new ComponentFeedbackMessageFilter(this)));
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void onBeforeRender() {
+
+            focus(otpField);
+
+            super.onBeforeRender();
         }
 
         /**

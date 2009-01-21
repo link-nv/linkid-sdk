@@ -94,6 +94,7 @@ public class UpdatePage extends TemplatePage {
             final PasswordTextField oldpasswordField = new PasswordTextField(OLDPASSWORD_FIELD_ID, oldpassword = new Model<String>());
             add(oldpasswordField);
             add(new ErrorComponentFeedbackLabel("oldpassword_feedback", oldpasswordField));
+            focus(oldpasswordField);
 
             final PasswordTextField password1Field = new PasswordTextField(PASSWORD1_FIELD_ID, password1 = new Model<String>());
             add(password1Field);

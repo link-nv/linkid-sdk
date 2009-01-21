@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.WebPage;
 
 
@@ -33,6 +34,8 @@ import org.apache.wicket.markup.html.WebPage;
 public abstract class WicketPage extends WebPage {
 
     public final Log            LOG             = LogFactory.getLog(getClass());
+
+    private FocusOnLoad         focusOnLoad;
 
     // %[argument_index$][flags][width][.precision][t]conversion
     private static final String formatSpecifier = "%(\\d+\\$)?([-#+ 0,(\\<]*)?(\\d+)?(\\.\\d+)?([tT])?([a-zA-Z%])";
@@ -85,5 +88,29 @@ public abstract class WicketPage extends WebPage {
         }
 
         return String.format(getLocale(), newFormat.toString(), localizationData.toArray());
+    }
+
+    /**
+     * Cause a component to be focussed referenced by the path given by element ids separated by colons.
+     */
+    public void focus(final Component component) {
+
+        String componentId = component.getMarkupId(true);
+        component.setOutputMarkupId(true);
+        focus(componentId);
+    }
+
+    /**
+     * Cause a component to be focussed referenced by the path given by element ids separated by colons.
+     */
+    public void focus(final String path) {
+
+        if (focusOnLoad == null) {
+            add(focusOnLoad = new FocusOnLoad(path));
+        }
+
+        else {
+            focusOnLoad.setPath(path);
+        }
     }
 }

@@ -68,8 +68,6 @@ public class AuthenticationPage extends TemplatePage {
 
     public AuthenticationPage() {
 
-        super();
-
         authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.getHttpSession(getRequest()));
 
         getHeader();
@@ -107,14 +105,14 @@ public class AuthenticationPage extends TemplatePage {
     class RequestOtpForm extends Form<String> {
 
         private static final long serialVersionUID = 1L;
+        TextField<PhoneNumber>    mobileField;
 
 
         public RequestOtpForm(String id) {
 
             super(id);
 
-            final TextField<PhoneNumber> mobileField = new TextField<PhoneNumber>(MOBILE_FIELD_ID, mobile = new Model<PhoneNumber>(),
-                    PhoneNumber.class);
+            mobileField = new TextField<PhoneNumber>(MOBILE_FIELD_ID, mobile = new Model<PhoneNumber>(), PhoneNumber.class);
             mobileField.setRequired(true);
             add(mobileField);
             add(new ErrorComponentFeedbackLabel("mobile_feedback", mobileField));
@@ -200,6 +198,17 @@ public class AuthenticationPage extends TemplatePage {
          * {@inheritDoc}
          */
         @Override
+        protected void onBeforeRender() {
+
+            focus(mobileField);
+
+            super.onBeforeRender();
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
         public boolean isVisible() {
 
             return null == mobile.getObject();
@@ -214,12 +223,14 @@ public class AuthenticationPage extends TemplatePage {
 
         Model<String>             pin;
 
+        TextField<String>         otpField;
+
 
         public VerifyOtpForm(String id) {
 
             super(id);
 
-            final TextField<String> otpField = new TextField<String>(OTP_FIELD_ID, otp = new Model<String>());
+            otpField = new TextField<String>(OTP_FIELD_ID, otp = new Model<String>());
             otpField.setRequired(true);
             add(otpField);
             add(new ErrorComponentFeedbackLabel("otp_feedback", otpField));
@@ -308,6 +319,17 @@ public class AuthenticationPage extends TemplatePage {
             add(cancel);
 
             add(new ErrorFeedbackPanel("feedback", new ComponentFeedbackMessageFilter(this)));
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void onBeforeRender() {
+
+            focus(otpField);
+
+            super.onBeforeRender();
         }
 
         /**

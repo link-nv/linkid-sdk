@@ -136,7 +136,7 @@ public class RemovePageTest extends TestCase {
         // RemovePage: Verify
         wicket.assertRenderedPage(RemovePage.class);
         wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + RemovePage.LIST_FORM_ID, Form.class);
-        wicket.assertListView(TemplatePage.CONTENT_ID + ":" + RemovePage.LIST_FORM_ID + ":" + RemovePage.DIGIPASSS_LIST_ID,
+        wicket.assertListView(TemplatePage.CONTENT_ID + ":" + RemovePage.LIST_FORM_ID + ":" + RemovePage.DIGIPASS_LIST_ID,
                 digipassAttributes);
 
         // setup
@@ -149,7 +149,7 @@ public class RemovePageTest extends TestCase {
         replay(mockDigipassDeviceService);
 
         // RemovePage: remove digipass
-        wicket.clickLink(TemplatePage.CONTENT_ID + ":" + RemovePage.LIST_FORM_ID + ":" + RemovePage.DIGIPASSS_LIST_ID + ":0:"
+        wicket.clickLink(TemplatePage.CONTENT_ID + ":" + RemovePage.LIST_FORM_ID + ":" + RemovePage.DIGIPASS_LIST_ID + ":0:"
                 + RemovePage.REMOVE_LINK_ID);
 
         // verify
