@@ -167,6 +167,7 @@ public class RegistrationPage extends TemplatePage {
             add(mobileField, activationField);
             add(activateButton, registerButton, cancelButton);
             add(new ErrorFeedbackPanel("feedback", new ComponentFeedbackMessageFilter(this)));
+            focus(mobileField);
         }
 
         /**

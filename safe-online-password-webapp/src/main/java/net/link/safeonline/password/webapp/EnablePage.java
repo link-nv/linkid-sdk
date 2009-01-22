@@ -81,6 +81,7 @@ public class EnablePage extends TemplatePage {
             final PasswordTextField passwordField = new PasswordTextField(PASSWORD_FIELD_ID, password = new Model<String>());
             add(passwordField);
             add(new ErrorComponentFeedbackLabel("password_feedback", passwordField));
+            focus(passwordField);
 
             add(new Button(ENABLE_BUTTON_ID) {
 

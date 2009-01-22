@@ -343,6 +343,16 @@ public class AuthenticationPage extends TemplatePage {
             challengeButton.setVisible(challengeCode == null);
             loginButton.setVisible(challengeCode != null);
 
+            if (mobileField.isEnabled()) {
+                focus(mobileField);
+            } else if (otpField.isVisible()) {
+                focus(otpField);
+            } else if (challengeButton.isVisible()) {
+                focus(challengeButton);
+            } else {
+                focus(loginButton);
+            }
+
             super.onBeforeRender();
         }
     }

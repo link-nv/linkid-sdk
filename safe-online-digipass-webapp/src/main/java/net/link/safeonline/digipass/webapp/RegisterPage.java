@@ -86,6 +86,7 @@ public class RegisterPage extends TemplatePage {
 
             add(loginField);
             add(new ErrorComponentFeedbackLabel("login_feedback", loginField));
+            focus(loginField);
 
             final TextField serialNumberField = new TextField(SERIALNUMBER_FIELD_ID, serialNumber = new Model<String>());
             serialNumberField.setRequired(true);

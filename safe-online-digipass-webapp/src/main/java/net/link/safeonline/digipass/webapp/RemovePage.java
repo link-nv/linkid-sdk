@@ -49,7 +49,7 @@ public class RemovePage extends TemplatePage {
 
     public static final String      CANCEL_BUTTON_ID   = "cancel";
 
-    public static final String      DIGIPASSS_LIST_ID  = "digipassList";
+    public static final String      DIGIPASS_LIST_ID   = "digipassList";
 
     public static final String      REMOVE_LINK_ID     = "remove";
 
@@ -83,13 +83,15 @@ public class RemovePage extends TemplatePage {
 
         Model<String>             login;
 
+        TextField<String>         loginField;
+
 
         @SuppressWarnings("unchecked")
         public GetForm(String id) {
 
             super(id);
 
-            final TextField<String> loginField = new TextField<String>(LOGIN_FIELD_ID, login = new Model<String>());
+            loginField = new TextField<String>(LOGIN_FIELD_ID, login = new Model<String>());
             loginField.setRequired(true);
             loginField.setEnabled(digipassAttributes.isEmpty());
 
@@ -159,6 +161,17 @@ public class RemovePage extends TemplatePage {
             add(new ErrorFeedbackPanel("feedback_get", new ComponentFeedbackMessageFilter(this)));
         }
 
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void onBeforeRender() {
+
+            focus(loginField);
+
+            super.onBeforeRender();
+        }
+
         protected String getUserId()
                 throws SubjectNotFoundException, PermissionDeniedException {
 
@@ -187,6 +200,7 @@ public class RemovePage extends TemplatePage {
     class ListForm extends Form<String> {
 
         private static final long serialVersionUID = 1L;
+        ListView<AttributeDO>     digiPassList;
 
 
         @SuppressWarnings("unchecked")
@@ -194,7 +208,8 @@ public class RemovePage extends TemplatePage {
 
             super(id);
 
-            add(new ListView<AttributeDO>(DIGIPASSS_LIST_ID, new PropertyModel<List<AttributeDO>>(RemovePage.this, "digipassAttributes")) {
+            add(digiPassList = new ListView<AttributeDO>(DIGIPASS_LIST_ID, new PropertyModel<List<AttributeDO>>(RemovePage.this,
+                    "digipassAttributes")) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -239,6 +254,17 @@ public class RemovePage extends TemplatePage {
             });
 
             add(new ErrorFeedbackPanel("feedback_list", new ComponentFeedbackMessageFilter(this)));
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void onBeforeRender() {
+
+            focus(digiPassList);
+
+            super.onBeforeRender();
         }
 
         @Override

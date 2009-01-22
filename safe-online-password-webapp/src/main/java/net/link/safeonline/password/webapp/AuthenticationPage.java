@@ -59,8 +59,6 @@ public class AuthenticationPage extends TemplatePage {
 
     public AuthenticationPage() {
 
-        super();
-
         authenticationContext = AuthenticationContext.getAuthenticationContext(WicketUtil.toServletRequest(getRequest()).getSession());
 
         getHeader();
@@ -108,11 +106,12 @@ public class AuthenticationPage extends TemplatePage {
         public AuthenticationForm(String id) {
 
             super(id);
+            setMarkupId(id);
 
             final TextField<String> loginField = new TextField<String>(LOGIN_NAME_FIELD_ID, login = new Model<String>());
             loginField.setRequired(true);
-
             add(loginField);
+            focus(loginField);
 
             final PasswordTextField passwordField = new PasswordTextField(PASSWORD_FIELD_ID, password = new Model<String>());
 

@@ -91,14 +91,15 @@ public class UpdatePage extends TemplatePage {
     class RequestOtpForm extends Form<String> {
 
         private static final long serialVersionUID = 1L;
+        TextField<PhoneNumber>    mobileField;
 
 
         public RequestOtpForm(String id) {
 
             super(id);
 
-            final TextField<PhoneNumber> mobileField = new TextField<PhoneNumber>(MOBILE_FIELD_ID, new Model<PhoneNumber>(new PhoneNumber(
-                    protocolContext.getAttribute())), PhoneNumber.class);
+            mobileField = new TextField<PhoneNumber>(MOBILE_FIELD_ID, new Model<PhoneNumber>(
+                    new PhoneNumber(protocolContext.getAttribute())), PhoneNumber.class);
             mobileField.setEnabled(false);
             mobileField.setRequired(true);
             add(mobileField);
@@ -152,9 +153,7 @@ public class UpdatePage extends TemplatePage {
                         return;
                     }
                     requested = true;
-
                 }
-
             });
 
             Button cancel = new Button(REQUEST_CANCEL_BUTTON_ID) {
@@ -173,7 +172,17 @@ public class UpdatePage extends TemplatePage {
             add(cancel);
 
             add(new ErrorFeedbackPanel("request_feedback", new ComponentFeedbackMessageFilter(this)));
+        }
 
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void onBeforeRender() {
+
+            focus(mobileField);
+
+            super.onBeforeRender();
         }
 
         /**
@@ -198,13 +207,15 @@ public class UpdatePage extends TemplatePage {
 
         Model<String>             pin2;
 
+        TextField<String>         otpField;
+
 
         @SuppressWarnings("unchecked")
         public UpdateForm(String id) {
 
             super(id);
 
-            final TextField<String> otpField = new TextField<String>(OTP_FIELD_ID, otp = new Model<String>());
+            otpField = new TextField<String>(OTP_FIELD_ID, otp = new Model<String>());
             otpField.setRequired(true);
             add(otpField);
             add(new ErrorComponentFeedbackLabel("otp_feedback", otpField));
@@ -327,6 +338,17 @@ public class UpdatePage extends TemplatePage {
             add(cancel);
 
             add(new ErrorFeedbackPanel("feedback", new ComponentFeedbackMessageFilter(this)));
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void onBeforeRender() {
+
+            focus(otpField);
+
+            super.onBeforeRender();
         }
 
         /**

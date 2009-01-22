@@ -116,6 +116,7 @@ public class AuthenticationPage extends TemplatePage {
             final TextField<String> loginField = new TextField<String>(LOGIN_NAME_FIELD_ID, login = new Model<String>());
             loginField.setRequired(true);
             add(loginField);
+            focus(loginField);
 
             final TextField<String> tokenField = new TextField<String>(TOKEN_FIELD_ID, token = new Model<String>());
             tokenField.setRequired(true);

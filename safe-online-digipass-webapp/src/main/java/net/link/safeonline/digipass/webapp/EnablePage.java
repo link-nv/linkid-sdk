@@ -84,6 +84,7 @@ public class EnablePage extends TemplatePage {
             final TextField<String> tokenField = new TextField<String>(TOKEN_FIELD_ID, token = new Model<String>());
             tokenField.setRequired(true);
             add(tokenField);
+            focus(tokenField);
 
             add(new Button(ENABLE_BUTTON_ID) {
 
