@@ -10,6 +10,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.RadioChoice;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 
 
@@ -67,24 +68,51 @@ public class NewTransactionPage extends LayoutPage {
         private Model<String>            target;
         private Model<String>            amount;
 
+        private FeedbackPanel            feedback;
+
 
         public TransactionForm(String id) {
 
             super(id);
 
-            add(new TextArea<String>("description", description = new Model<String>()));
-            add(new RadioChoice<BankAccountEntity>("source", source = new Model<BankAccountEntity>(), getUserService().getAccounts(
-                    BankSession.get().getUser())));
-            add(new TextField<String>("target", target = new Model<String>()));
-            add(new TextField<String>("amount", amount = new Model<String>()));
+            TextArea<String> descriptionField = new TextArea<String>("description", description = new Model<String>());
+            RadioChoice<BankAccountEntity> sourceField = new RadioChoice<BankAccountEntity>("source",
+                    source = new Model<BankAccountEntity>(), getUserService().getAccounts(BankSession.get().getUser()));
+            TextField<String> targetField = new TextField<String>("target", target = new Model<String>());
+            TextField<String> amountField = new TextField<String>("amount", amount = new Model<String>());
+
+            sourceField.setRequired(true);
+            targetField.setRequired(true);
+            amountField.setRequired(true);
+
+            add(feedback = new FeedbackPanel("feedback"));
+            add(sourceField, targetField, amountField, descriptionField);
+            focus(sourceField);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void onBeforeRender() {
+
+            feedback.setVisible(feedback.anyErrorMessage());
+
+            super.onBeforeRender();
         }
 
         @Override
         protected void onSubmit() {
 
-            if (getTransactionService().createTransaction(description.getObject(), source.getObject(), target.getObject(),
-                    Double.parseDouble(amount.getObject())) != null)
-                throw new RestartResponseException(AccountPage.class);
+            try {
+                if (getTransactionService().createTransaction(description.getObject(), source.getObject(), target.getObject(),
+                        Double.parseDouble(amount.getObject())) != null)
+                    throw new RestartResponseException(AccountPage.class);
+            }
+
+            catch (NumberFormatException e) {
+                error("Illegal amount specified.");
+            }
         }
     }
 

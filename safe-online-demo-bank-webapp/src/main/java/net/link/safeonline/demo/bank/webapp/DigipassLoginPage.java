@@ -6,6 +6,7 @@ import org.apache.wicket.Page;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 
 
@@ -30,14 +31,33 @@ public class DigipassLoginPage extends LayoutPage {
         private static final long serialVersionUID = 1L;
         private Model<String>     bankId;
         private Model<String>     otp;
+        private FeedbackPanel     feedback;
 
 
         public OTPForm(String id) {
 
             super(id);
 
-            add(new TextField<String>("bankId", bankId = new Model<String>()));
-            add(new TextField<String>("otp", otp = new Model<String>()));
+            TextField<String> bankIdField = new TextField<String>("bankId", bankId = new Model<String>());
+            TextField<String> otpField = new TextField<String>("otp", otp = new Model<String>());
+
+            bankIdField.setRequired(true);
+            otpField.setRequired(true);
+
+            add(feedback = new FeedbackPanel("feedback"));
+            add(bankIdField, otpField);
+            focus(bankIdField);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void onBeforeRender() {
+
+            feedback.setVisible(feedback.anyErrorMessage());
+
+            super.onBeforeRender();
         }
 
         @Override

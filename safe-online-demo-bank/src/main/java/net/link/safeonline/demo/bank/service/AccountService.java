@@ -43,4 +43,9 @@ public interface AccountService extends BankService {
      * @return The account with the given code, or <code>null</code> if no such account is owned by us.
      */
     public BankAccountEntity getAccount(String code);
+
+    /**
+     * @return The account with the given code, or <code>null</code> if no such account is owned by us.
+     */
+    public BankAccountEntity findAccount(String code);
 }
