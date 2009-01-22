@@ -12,7 +12,16 @@
             <form wicket:id="newTransaction">
 	            <table>
 	                <caption>Specify the details of your transaction</caption>
-	
+
+                    <wicket:enclosure>
+		                <thead>
+		                   <tr>
+		                       <th>Errors:</th>
+		                       <td wicket:id="feedback" />
+		                   </tr>
+		                </thead>
+	                </wicket:enclosure>
+
 	                <tbody>
 	                    <tr>
 	                        <th>Source Account:</th>
@@ -38,7 +47,7 @@
 	                        <th colspan="2"><textarea wicket:id="description"></textarea></th>
 	                    </tr>
 	                </tbody>
-	                
+
 	                <tfoot>
 	                    <tr>
 	                        <th colspan="2" class="nopad">

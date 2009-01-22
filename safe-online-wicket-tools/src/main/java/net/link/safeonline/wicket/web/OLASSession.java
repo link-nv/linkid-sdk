@@ -68,12 +68,4 @@ public abstract class OLASSession extends WebSession {
 
         super(request);
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void cleanupFeedbackMessages() {
-
-    }
 }

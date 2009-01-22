@@ -65,4 +65,18 @@ public class AccountServiceBean extends AbstractBankServiceBean implements Accou
 
         return (BankAccountEntity) em.createNamedQuery(BankAccountEntity.getByCode).setParameter("code", code).getSingleResult();
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public BankAccountEntity findAccount(String code) {
+
+        try {
+            return getAccount(code);
+        }
+
+        catch (NoResultException e) {
+            return null;
+        }
+    }
 }

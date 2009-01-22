@@ -12,14 +12,23 @@
             <form wicket:id="newAccount">
 	            <table>
 	                <caption>Specify the details of your new account</caption>
-	
+
+                    <wicket:enclosure>
+                        <thead>
+                           <tr>
+                               <th>Errors:</th>
+                               <td wicket:id="feedback" />
+                           </tr>
+                        </thead>
+                    </wicket:enclosure>
+
 	                <tbody>
 		                <tr>
 		                    <th>Account Name:</th>
 		                    <td><input type="text" wicket:id="name" /></td>
 		                </tr>
 	                </tbody>
-	                
+
 	                <tfoot>
 		                <tr>
 		                    <th colspan="2" class="nopad">
@@ -29,7 +38,7 @@
 	                </tfoot>
 	            </table>
             </form>
-            
+
         </wicket:extend>
     </body>
 

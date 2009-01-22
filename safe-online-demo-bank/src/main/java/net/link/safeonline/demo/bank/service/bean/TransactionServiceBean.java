@@ -11,7 +11,6 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.persistence.NoResultException;
 
 import net.link.safeonline.demo.bank.entity.BankAccountEntity;
 import net.link.safeonline.demo.bank.entity.BankTransactionEntity;
@@ -58,11 +57,10 @@ public class TransactionServiceBean extends AbstractBankServiceBean implements T
         BankAccountEntity sourceEntity = attach(source);
         sourceEntity.setAmount(sourceEntity.getAmount() - amount);
 
-        // Add the money to the target (if it's a bank account owned by us).
-        try {
-            BankAccountEntity targetEntity = accountService.getAccount(targetCode);
+        // Add the money to the target. (We ignore accounts with external banks in this demo).
+        BankAccountEntity targetEntity = accountService.findAccount(targetCode);
+        if (targetEntity != null) {
             targetEntity.setAmount(targetEntity.getAmount() + amount);
-        } catch (NoResultException e) {
         }
 
         // Record this transaction.

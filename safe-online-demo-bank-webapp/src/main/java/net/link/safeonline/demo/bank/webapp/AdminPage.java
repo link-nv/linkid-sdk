@@ -139,6 +139,7 @@ public class AdminPage extends LayoutPage {
                 bankIdsList.setVisibilityAllowed(true);
 
                 submitButton.setModelObject("Search &gt;");
+                focus(bankIdField);
             }
 
             else {
@@ -146,13 +147,16 @@ public class AdminPage extends LayoutPage {
 
                 if (nameField.isVisible()) {
                     submitButton.setModelObject("Create &gt;");
+                    focus(nameField);
                 }
 
                 else if (linkedField.isVisible()) {
                     if (linkedField.isEnabled()) {
                         submitButton.setModelObject("Apply &gt;");
+                        focus(linkedField);
                     } else {
                         submitButton.setModelObject("Return &lt;");
+                        focus(submitButton);
                     }
                 }
             }

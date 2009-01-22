@@ -33,7 +33,7 @@ import org.apache.wicket.markup.html.WebPage;
  */
 public abstract class WicketPage extends WebPage {
 
-    public final Log            LOG             = LogFactory.getLog(getClass());
+    public transient final Log  LOG             = LogFactory.getLog(getClass());
 
     private FocusOnLoad         focusOnLoad;
 
@@ -92,8 +92,15 @@ public abstract class WicketPage extends WebPage {
 
     /**
      * Cause a component to be focussed referenced by the path given by element ids separated by colons.
+     * 
+     * <p>
+     * <b>NOTE: You need to make sure the component has been added to the component hierarchy before invoking this method on it!</b>
+     * </p>
      */
     public void focus(final Component component) {
+
+        if (component.getParent() == null)
+            throw new IllegalStateException("The component needs to be added to the page hierarchy before invoking this method.");
 
         String componentId = component.getMarkupId(true);
         component.setOutputMarkupId(true);
@@ -102,6 +109,10 @@ public abstract class WicketPage extends WebPage {
 
     /**
      * Cause a component to be focussed referenced by the path given by element ids separated by colons.
+     * 
+     * <p>
+     * <b>NOTE: You need to make sure the component has been added to the component hierarchy before invoking this method on it!</b>
+     * </p>
      */
     public void focus(final String path) {
 

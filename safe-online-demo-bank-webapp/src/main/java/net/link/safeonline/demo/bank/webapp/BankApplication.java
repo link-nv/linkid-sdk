@@ -35,7 +35,6 @@ public class BankApplication extends WebApplication {
 
         ConverterLocator converterLocator = new ConverterLocator();
         converterLocator.set(BankAccountEntity.class, new BankAccountConverter());
-
         return converterLocator;
     }
 
