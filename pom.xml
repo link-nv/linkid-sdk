@@ -636,6 +636,7 @@
 		<safe-online.ws.webapp.name>safe-online-ws</safe-online.ws.webapp.name>
 		<safe-online.auth.ws.webapp.name>safe-online-auth-ws</safe-online.auth.ws.webapp.name>
 		<safe-online.beid.webapp.name>olas-beid</safe-online.beid.webapp.name>
+		<safe-online.beid.auth.ws.webapp.name>olas-beid-auth-ws</safe-online.beid.auth.ws.webapp.name>
 		<safe-online.digipass.webapp.name>olas-digipass</safe-online.digipass.webapp.name>
 		<safe-online.encap.webapp.name>olas-encap</safe-online.encap.webapp.name>
 		<safe-online.encap.auth.ws.webapp.name>olas-encap-auth-ws</safe-online.encap.auth.ws.webapp.name>
@@ -851,6 +852,7 @@
 		<module>safe-online-app-console</module>
 		<module>safe-online-jpa-util</module>
 		<module>safe-online-saml-authn-context</module>
+		<module>safe-online-saml-common</module>
 		<module>safe-online-node-keystore</module>
         <!-- TODO: Remove the following.  Only here because of a test dependency in s-o-model.
 -->
@@ -941,6 +943,8 @@
 		<module>safe-online-beid-pcsc-applet</module>
 		<module>safe-online-beid-pcsc-applet-package</module>
 		<module>safe-online-beid-startup-runtime</module>
+		<module>safe-online-beid-auth-ws-impl</module>
+		<module>safe-online-beid-auth-ws-runtime</module>
 		<module>safe-online-beid-deploy</module>
 		<module>safe-online-beid-keystore</module>
 		<module>safe-online-beid-webapp</module>

@@ -19,7 +19,10 @@ import net.link.safeonline.shared.statement.IdentityProvider;
 
 public class AuthenticationApplet extends AppletBase {
 
-    private static final long serialVersionUID = 1L;
+    private static final long  serialVersionUID     = 1L;
+
+    public static final String PARAM_SESSION_ID     = "sessionId";
+    public static final String PARAM_APPLICATION_ID = "applicationId";
 
 
     public AuthenticationApplet() {
@@ -35,8 +38,8 @@ public class AuthenticationApplet extends AppletBase {
     @Override
     public byte[] createStatement(Signer signer, IdentityProvider identityProvider) {
 
-        String sessionId = getParameter("SessionId");
-        String applicationId = getParameter("ApplicationId");
+        String sessionId = getParameter(PARAM_SESSION_ID);
+        String applicationId = getParameter(PARAM_APPLICATION_ID);
 
         Locale locale = getLocale();
         ResourceBundle messages = ResourceBundle.getBundle("net.link.safeonline.sc.pkcs11.auth.AuthenticationMessages", locale);

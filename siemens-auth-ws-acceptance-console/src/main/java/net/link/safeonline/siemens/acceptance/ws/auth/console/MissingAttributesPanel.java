@@ -26,6 +26,9 @@ import net.link.safeonline.auth.ws.AuthenticationStep;
 import net.link.safeonline.sdk.ws.auth.Attribute;
 import net.link.safeonline.sdk.ws.auth.DataType;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 
 /**
  * <h2>{@link MissingAttributesPanel}<br>
@@ -43,22 +46,24 @@ import net.link.safeonline.sdk.ws.auth.DataType;
  */
 public class MissingAttributesPanel extends JPanel implements Observer {
 
-    private static final long serialVersionUID = 1L;
+    static final Log          LOG                    = LogFactory.getLog(MissingAttributesPanel.class);
 
-    AcceptanceConsole         parent           = null;
+    private static final long serialVersionUID       = 1L;
 
-    private JPanel            infoPanel        = new JPanel();
+    AcceptanceConsole         parent                 = null;
 
-    private JLabel            infoLabel        = new JLabel("Missing Attributes for application "
-                                                       + AcceptanceConsoleManager.getInstance().getApplication());
+    private JPanel            infoPanel              = new JPanel();
 
-    JTable                    identityTable    = null;
+    private JLabel            infoLabel              = new JLabel("Missing Attributes for application "
+                                                             + AcceptanceConsoleManager.getInstance().getApplication());
 
-    private Action            saveAction       = new SaveAction("Save");
-    private JButton           saveButton       = new JButton(saveAction);
+    JTable                    missingAttributesTable = null;
 
-    private Action            cancelAction     = new CancelAction("Cancel");
-    private JButton           cancelButton     = new JButton(cancelAction);
+    private Action            saveAction             = new SaveAction("Save");
+    private JButton           saveButton             = new JButton(saveAction);
+
+    private Action            cancelAction           = new CancelAction("Cancel");
+    private JButton           cancelButton           = new JButton(cancelAction);
 
 
     public MissingAttributesPanel(AcceptanceConsole parent) {
@@ -140,10 +145,10 @@ public class MissingAttributesPanel extends JPanel implements Observer {
         }
 
         // set table
-        identityTable = new JTable(new AttributesTableModel(attributeList, true));
-        identityTable.getColumnModel().getColumn(1).setMaxWidth(75);
-        identityTable.getColumnModel().getColumn(2).setMaxWidth(75);
-        JScrollPane tableScrollPane = new JScrollPane(identityTable);
+        missingAttributesTable = new JTable(new AttributesTableModel(attributeList, true));
+        missingAttributesTable.getColumnModel().getColumn(1).setMaxWidth(75);
+        missingAttributesTable.getColumnModel().getColumn(2).setMaxWidth(75);
+        JScrollPane tableScrollPane = new JScrollPane(missingAttributesTable);
         infoPanel.add(tableScrollPane, BorderLayout.CENTER);
         infoPanel.revalidate();
     }
@@ -181,10 +186,18 @@ public class MissingAttributesPanel extends JPanel implements Observer {
 
         public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
-            parent
-                                              .saveMissingAttributes(((AttributesTableModel) identityTable
-                                                                                                                                      .getModel())
-                                                                                                                                                  .getAttributes());
+            // TODO: why the f#$k do I need to log the value to workaround some issue that it being null else ??
+            List<Attribute> missingAttributes = ((AttributesTableModel) missingAttributesTable.getModel()).getAttributes();
+            for (Attribute attribute : missingAttributes) {
+                LOG.debug("missing attribute: " + attribute.getName());
+                if (attribute.isCompounded()) {
+                    for (Attribute memberAttribute : attribute.getMembers()) {
+                        LOG.debug("missing attribute: member : " + memberAttribute.getName() + " value=" + memberAttribute.getValue());
+                    }
+                }
+            }
+
+            parent.saveMissingAttributes(missingAttributes);
         }
     }
 }

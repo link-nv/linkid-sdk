@@ -62,15 +62,15 @@ public class BeIdStartableBean extends AbstractInitBean {
 
         configureNode();
 
-        AttributeTypeEntity givenNameAttributeType = new AttributeTypeEntity(BeIdConstants.GIVENNAME_ATTRIBUTE, DatatypeType.STRING, true,
-                false);
+        AttributeTypeEntity givenNameAttributeType = new AttributeTypeEntity(BeIdConstants.BEID_GIVENNAME_ATTRIBUTE, DatatypeType.STRING,
+                true, false);
         givenNameAttributeType.setMultivalued(true);
         attributeTypes.add(givenNameAttributeType);
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(givenNameAttributeType, Locale.ENGLISH.getLanguage(),
                 "Given name (BeID)", null));
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(givenNameAttributeType, "nl", "Naam (BeID)", null));
 
-        AttributeTypeEntity surnameAttributeType = new AttributeTypeEntity(BeIdConstants.SURNAME_ATTRIBUTE, DatatypeType.STRING, true,
+        AttributeTypeEntity surnameAttributeType = new AttributeTypeEntity(BeIdConstants.BEID_SURNAME_ATTRIBUTE, DatatypeType.STRING, true,
                 false);
         surnameAttributeType.setMultivalued(true);
         attributeTypes.add(surnameAttributeType);
@@ -78,7 +78,7 @@ public class BeIdStartableBean extends AbstractInitBean {
                 "Surname (BeID)", null));
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(surnameAttributeType, "nl", "Achternaam (BeID)", null));
 
-        AttributeTypeEntity nrnAttributeType = new AttributeTypeEntity(BeIdConstants.NRN_ATTRIBUTE, DatatypeType.STRING, true, false);
+        AttributeTypeEntity nrnAttributeType = new AttributeTypeEntity(BeIdConstants.BEID_NRN_ATTRIBUTE, DatatypeType.STRING, true, false);
         nrnAttributeType.setMultivalued(true);
         attributeTypes.add(nrnAttributeType);
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(nrnAttributeType, Locale.ENGLISH.getLanguage(),
@@ -86,7 +86,7 @@ public class BeIdStartableBean extends AbstractInitBean {
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(nrnAttributeType, "nl",
                 "Identificatienummer van het Rijksregister", null));
 
-        AttributeTypeEntity identifierAttributeType = new AttributeTypeEntity(BeIdConstants.IDENTIFIER_ATTRIBUTE, DatatypeType.STRING,
+        AttributeTypeEntity identifierAttributeType = new AttributeTypeEntity(BeIdConstants.BEID_IDENTIFIER_ATTRIBUTE, DatatypeType.STRING,
                 false, false);
         identifierAttributeType.setMultivalued(true);
         attributeTypes.add(identifierAttributeType);
@@ -132,10 +132,11 @@ public class BeIdStartableBean extends AbstractInitBean {
         ResourceBundle properties = ResourceBundle.getBundle("beid_config");
         String nodeName = properties.getString("olas.node.name");
         String beidWebappName = properties.getString("beid.webapp.name");
+        String beidAuthWSPath = properties.getString("beid.auth.ws.webapp.name");
 
-        devices.add(new Device(BeIdConstants.BEID_DEVICE_ID, SafeOnlineConstants.PKI_DEVICE_CLASS, nodeName,
-                "/" + beidWebappName + "/auth", null, "/" + beidWebappName + "/device", "/" + beidWebappName + "/device", null, "/"
-                        + beidWebappName + "/device", "/" + beidWebappName + "/device", certificate, beidDeviceAttributeType,
+        devices.add(new Device(BeIdConstants.BEID_DEVICE_ID, SafeOnlineConstants.PKI_DEVICE_CLASS, nodeName, "/" + beidWebappName
+                + "/_auth", "/" + beidAuthWSPath, "/" + beidWebappName + "/_device", "/" + beidWebappName + "/_device", null, "/"
+                + beidWebappName + "/_device", "/" + beidWebappName + "/_device", certificate, beidDeviceAttributeType,
                 beidDeviceUserAttributeType, beidDeviceDisableAttributeType));
         deviceDescriptions.add(new DeviceDescription(BeIdConstants.BEID_DEVICE_ID, "nl", "Belgische eID"));
         deviceDescriptions.add(new DeviceDescription(BeIdConstants.BEID_DEVICE_ID, Locale.ENGLISH.getLanguage(), "Belgian eID"));

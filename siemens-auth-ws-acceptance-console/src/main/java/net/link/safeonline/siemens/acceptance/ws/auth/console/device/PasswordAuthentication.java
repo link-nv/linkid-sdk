@@ -49,17 +49,16 @@ public class PasswordAuthentication extends DeviceAuthenticationPanel {
     private JButton             cancelButton                        = new JButton("Cancel");
 
 
-    public PasswordAuthentication(String deviceName, AcceptanceConsole parent) {
+    public PasswordAuthentication(AcceptanceConsole parent) {
 
-        super(deviceName, parent);
+        super(parent);
         buildWindow();
         handleEvents();
     }
 
-    public PasswordAuthentication(String deviceName, AcceptanceConsole parent,
-                                  DeviceAuthenticationInformationType deviceAuthenticationInformation) {
+    public PasswordAuthentication(AcceptanceConsole parent, DeviceAuthenticationInformationType deviceAuthenticationInformation) {
 
-        super(deviceName, parent, deviceAuthenticationInformation);
+        super(parent, deviceAuthenticationInformation);
         buildWindow();
         handleEvents();
     }

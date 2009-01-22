@@ -71,7 +71,7 @@ public class UserServiceTest extends AbstractCinemaServiceTest {
 
         // Set up the dummy OLAS attribute service and update our cinema user with the attributes.
         WicketUtil.setUnitTesting(true);
-        DummyAttributeClient.setAttribute(testUserOlasId, BeIdConstants.NRN_ATTRIBUTE, new String[] { testUserNrn });
+        DummyAttributeClient.setAttribute(testUserOlasId, BeIdConstants.BEID_NRN_ATTRIBUTE, new String[] { testUserNrn });
         DummyAttributeClient.setAttribute(testUserOlasId, DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, testUserName);
         userService.updateUser(sampleUser, null);
 
