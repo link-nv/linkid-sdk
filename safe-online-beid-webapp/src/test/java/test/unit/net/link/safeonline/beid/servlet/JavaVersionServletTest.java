@@ -70,7 +70,7 @@ public class JavaVersionServletTest {
         assertEquals(JavaVersionServlet.PLATFORM.LINUX, servletTestManager.getSessionAttribute("platform"));
         String resultLocation = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("result location: " + resultLocation);
-        assertEquals(location + "beid-applet.seam", resultLocation);
+        assertEquals(location + "error?type=protocol", resultLocation);
     }
 
     @Test
@@ -91,7 +91,7 @@ public class JavaVersionServletTest {
         assertEquals(JavaVersionServlet.PLATFORM.WINDOWS, servletTestManager.getSessionAttribute("platform"));
         String resultLocation = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("result location: " + resultLocation);
-        assertEquals(location + "beid-applet.seam", resultLocation);
+        assertEquals(location + "error?type=protocol", resultLocation);
     }
 
     @Test
@@ -112,7 +112,7 @@ public class JavaVersionServletTest {
         assertEquals(JavaVersionServlet.PLATFORM.MAC, servletTestManager.getSessionAttribute("platform"));
         String resultLocation = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("result location: " + resultLocation);
-        assertEquals(location + "beid-applet.seam", resultLocation);
+        assertEquals(location + "error?type=protocol", resultLocation);
     }
 
     @Test
@@ -133,7 +133,7 @@ public class JavaVersionServletTest {
         assertEquals(JavaVersionServlet.PLATFORM.UNSUPPORTED, servletTestManager.getSessionAttribute("platform"));
         String resultLocation = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("result location: " + resultLocation);
-        assertEquals(location + "unsupported-platform.seam", resultLocation);
+        assertEquals(location + "error?type=platform", resultLocation);
     }
 
     @Test
@@ -154,7 +154,7 @@ public class JavaVersionServletTest {
         assertEquals(JavaVersionServlet.PLATFORM.WINDOWS, servletTestManager.getSessionAttribute("platform"));
         String resultLocation = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("result location: " + resultLocation);
-        assertEquals(location + "java-disabled.seam", resultLocation);
+        assertEquals(location + "error?type=java-disabled", resultLocation);
     }
 
     @Test
@@ -175,7 +175,7 @@ public class JavaVersionServletTest {
         assertEquals(JavaVersionServlet.PLATFORM.WINDOWS, servletTestManager.getSessionAttribute("platform"));
         String resultLocation = postMethod.getResponseHeader("Location").getValue();
         LOG.debug("result location: " + resultLocation);
-        assertEquals(location + "java-version.seam", resultLocation);
+        assertEquals(location + "error?type=java-version", resultLocation);
     }
 
     @Test

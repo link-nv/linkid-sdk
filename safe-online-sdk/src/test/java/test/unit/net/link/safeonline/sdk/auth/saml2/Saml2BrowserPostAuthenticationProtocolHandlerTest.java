@@ -85,8 +85,8 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
-        jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
-                "SafeOnline/WSSecurityConfigurationBean/local");
+        jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName", "SafeOnline/WSSecurityConfigurationBean/local");
+        jndiTestUtils.bindComponent("java:comp/env/wsSecurityOptionalInboudSignature", false);
 
         WSSecurityConfigurationService mockWSSecurityConfigurationService = EasyMock.createMock(WSSecurityConfigurationService.class);
         jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local", mockWSSecurityConfigurationService);
@@ -312,7 +312,7 @@ public class Saml2BrowserPostAuthenticationProtocolHandlerTest {
         LOG.debug("authenticated userId: " + userId);
         assertNotNull(userId);
         String authenticatedDevice = (String) responseServletTestManager
-                                                                             .getSessionAttribute(LoginManager.AUTHENTICATED_DEVICE_SESSION_ATTRIBUTE);
+                                                                        .getSessionAttribute(LoginManager.AUTHENTICATED_DEVICE_SESSION_ATTRIBUTE);
         LOG.debug("authenticated device: " + authenticatedDevice);
         assertNotNull(authenticatedDevice);
     }

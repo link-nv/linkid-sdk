@@ -321,7 +321,7 @@ public class DemoStartableBean extends AbstractInitBean {
         }
 
         identities.add(new Identity(DEMO_TICKET_APPLICATION_NAME, new IdentityAttributeTypeDO[] {
-                new IdentityAttributeTypeDO(BeIdConstants.NRN_ATTRIBUTE, true, false),
+                new IdentityAttributeTypeDO(BeIdConstants.BEID_NRN_ATTRIBUTE, true, false),
                 new IdentityAttributeTypeDO(DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, false, false),
                 new IdentityAttributeTypeDO(DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, true, false) }));
 
@@ -399,7 +399,7 @@ public class DemoStartableBean extends AbstractInitBean {
         }
 
         identities.add(new Identity(DEMO_CINEMA_APPLICATION_NAME, new IdentityAttributeTypeDO[] {
-                new IdentityAttributeTypeDO(BeIdConstants.NRN_ATTRIBUTE, false, false),
+                new IdentityAttributeTypeDO(BeIdConstants.BEID_NRN_ATTRIBUTE, false, false),
                 new IdentityAttributeTypeDO(DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, false, false),
                 new IdentityAttributeTypeDO(DemoConstants.DEMO_LOGIN_ATTRIBUTE_NAME, true, false) }));
 

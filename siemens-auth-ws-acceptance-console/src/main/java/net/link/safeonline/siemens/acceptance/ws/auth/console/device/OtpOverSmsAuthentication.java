@@ -50,17 +50,16 @@ public class OtpOverSmsAuthentication extends DeviceAuthenticationPanel {
     private JButton             cancelButton                        = new JButton("Cancel");
 
 
-    public OtpOverSmsAuthentication(String deviceName, AcceptanceConsole parent) {
+    public OtpOverSmsAuthentication(AcceptanceConsole parent) {
 
-        super(deviceName, parent);
+        super(parent);
         buildWindow();
         handleEvents();
     }
 
-    public OtpOverSmsAuthentication(String deviceName, AcceptanceConsole parent,
-                                    DeviceAuthenticationInformationType deviceAuthenticationInformation) {
+    public OtpOverSmsAuthentication(AcceptanceConsole parent, DeviceAuthenticationInformationType deviceAuthenticationInformation) {
 
-        super(deviceName, parent, deviceAuthenticationInformation);
+        super(parent, deviceAuthenticationInformation);
         buildWindow();
         handleEvents();
     }

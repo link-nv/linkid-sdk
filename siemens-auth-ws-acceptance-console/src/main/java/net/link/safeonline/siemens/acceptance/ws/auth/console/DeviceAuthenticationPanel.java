@@ -31,26 +31,23 @@ public abstract class DeviceAuthenticationPanel extends JPanel {
 
     private static final long                     serialVersionUID = 1L;
 
-    private String                                deviceName;
-
     protected DeviceAuthenticationInformationType deviceAuthenticationInformation;
 
     protected boolean                             initial          = true;
 
     protected AcceptanceConsole                   parent           = null;
 
+    protected AcceptanceConsoleManager            consoleManager   = AcceptanceConsoleManager.getInstance();
 
-    public DeviceAuthenticationPanel(String deviceName, AcceptanceConsole parent) {
 
-        this.deviceName = deviceName;
+    public DeviceAuthenticationPanel(AcceptanceConsole parent) {
+
         this.parent = parent;
         initial = true;
     }
 
-    public DeviceAuthenticationPanel(String deviceName, AcceptanceConsole parent,
-                                     DeviceAuthenticationInformationType deviceAuthenticationInformation) {
+    public DeviceAuthenticationPanel(AcceptanceConsole parent, DeviceAuthenticationInformationType deviceAuthenticationInformation) {
 
-        this.deviceName = deviceName;
         this.deviceAuthenticationInformation = deviceAuthenticationInformation;
         this.parent = parent;
         initial = false;
@@ -58,7 +55,7 @@ public abstract class DeviceAuthenticationPanel extends JPanel {
 
     public void authenticate(Map<String, String> deviceCredentials) {
 
-        parent.login(deviceName, deviceCredentials);
+        parent.login(deviceCredentials);
     }
 
     public void cancel() {

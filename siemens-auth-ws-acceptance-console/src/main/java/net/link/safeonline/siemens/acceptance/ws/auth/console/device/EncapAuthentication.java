@@ -36,28 +36,27 @@ import net.link.safeonline.siemens.acceptance.ws.auth.console.DeviceAuthenticati
  */
 public class EncapAuthentication extends DeviceAuthenticationPanel {
 
-    private static final long  serialVersionUID               = 1L;
+    private static final long   serialVersionUID               = 1L;
 
-    public static final String ENCAP_WS_AUTH_MOBILE_ATTRIBUTE = "urn:net:lin-k:safe-online:encap:ws:auth:mobile";
-    public static final String ENCAP_WS_AUTH_OTP_ATTRIBUTE    = "urn:net:lin-k:safe-online:encap:ws:auth:otp";
+    private static final String ENCAP_WS_AUTH_MOBILE_ATTRIBUTE = "urn:net:lin-k:safe-online:encap:ws:auth:mobile";
+    private static final String ENCAP_WS_AUTH_OTP_ATTRIBUTE    = "urn:net:lin-k:safe-online:encap:ws:auth:otp";
 
-    private JTextField         mobileOrOtpField               = new JTextField(20);
+    private JTextField          mobileOrOtpField               = new JTextField(20);
 
-    private JButton            loginButton                    = new JButton("Login");
-    private JButton            cancelButton                   = new JButton("Cancel");
+    private JButton             loginButton                    = new JButton("Login");
+    private JButton             cancelButton                   = new JButton("Cancel");
 
 
-    public EncapAuthentication(String deviceName, AcceptanceConsole parent) {
+    public EncapAuthentication(AcceptanceConsole parent) {
 
-        super(deviceName, parent);
+        super(parent);
         buildWindow();
         handleEvents();
     }
 
-    public EncapAuthentication(String deviceName, AcceptanceConsole parent,
-                               DeviceAuthenticationInformationType deviceAuthenticationInformation) {
+    public EncapAuthentication(AcceptanceConsole parent, DeviceAuthenticationInformationType deviceAuthenticationInformation) {
 
-        super(deviceName, parent, deviceAuthenticationInformation);
+        super(parent, deviceAuthenticationInformation);
         buildWindow();
         handleEvents();
     }

@@ -101,8 +101,8 @@ public class LogoutServletTest {
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
-        jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
-                "SafeOnline/WSSecurityConfigurationBean/local");
+        jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName", "SafeOnline/WSSecurityConfigurationBean/local");
+        jndiTestUtils.bindComponent("java:comp/env/wsSecurityOptionalInboudSignature", false);
 
         WSSecurityConfigurationService mockWSSecurityConfigurationService = EasyMock.createMock(WSSecurityConfigurationService.class);
         jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local", mockWSSecurityConfigurationService);
@@ -182,8 +182,7 @@ public class LogoutServletTest {
 
         // setup
         AuthenticationProtocolHandler mockAuthenticationProtocolHandler = createMock(AuthenticationProtocolHandler.class);
-        servletTestManager.setSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE,
-                mockAuthenticationProtocolHandler);
+        servletTestManager.setSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE, mockAuthenticationProtocolHandler);
 
         String targetUrl = "target";
         servletTestManager.setSessionAttribute(AuthenticationProtocolManager.TARGET_ATTRIBUTE, targetUrl);
@@ -208,8 +207,7 @@ public class LogoutServletTest {
 
         // setup
         AuthenticationProtocolHandler mockAuthenticationProtocolHandler = createMock(AuthenticationProtocolHandler.class);
-        servletTestManager.setSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE,
-                mockAuthenticationProtocolHandler);
+        servletTestManager.setSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE, mockAuthenticationProtocolHandler);
 
         // expectations
         mockAuthenticationProtocolHandler.sendLogoutResponse(EasyMock.anyBoolean(), (HttpServletRequest) EasyMock.anyObject(),
@@ -235,8 +233,7 @@ public class LogoutServletTest {
 
         // setup
         AuthenticationProtocolHandler mockAuthenticationProtocolHandler = createMock(AuthenticationProtocolHandler.class);
-        servletTestManager.setSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE,
-                mockAuthenticationProtocolHandler);
+        servletTestManager.setSessionAttribute(AuthenticationProtocolManager.PROTOCOL_HANDLER_ATTRIBUTE, mockAuthenticationProtocolHandler);
 
         // expectations
         expect(
@@ -265,8 +262,8 @@ public class LogoutServletTest {
         // setup
         String userId = UUID.randomUUID().toString();
         Challenge<String> challenge = new Challenge<String>();
-        String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, applicationName, keyPair,
-                servletEndpointUrl, challenge);
+        String samlLogoutRequest = LogoutRequestFactory
+                                                       .createLogoutRequest(userId, applicationName, keyPair, servletEndpointUrl, challenge);
         String encodedSamlLogoutRequest = Base64.encode(samlLogoutRequest.getBytes());
 
         servletTestManager.setSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE, userId);
@@ -293,8 +290,8 @@ public class LogoutServletTest {
         String userId = UUID.randomUUID().toString();
         String fooUserId = UUID.randomUUID().toString();
         Challenge<String> challenge = new Challenge<String>();
-        String samlLogoutRequest = LogoutRequestFactory.createLogoutRequest(userId, applicationName, keyPair,
-                servletEndpointUrl, challenge);
+        String samlLogoutRequest = LogoutRequestFactory
+                                                       .createLogoutRequest(userId, applicationName, keyPair, servletEndpointUrl, challenge);
         String encodedSamlLogoutRequest = Base64.encode(samlLogoutRequest.getBytes());
 
         servletTestManager.setSessionAttribute(LoginManager.USERID_SESSION_ATTRIBUTE, fooUserId);

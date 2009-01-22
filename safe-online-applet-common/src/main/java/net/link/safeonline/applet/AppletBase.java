@@ -20,9 +20,11 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.swing.Box;
@@ -55,31 +57,41 @@ import org.apache.commons.logging.LogFactory;
  */
 public abstract class AppletBase extends JApplet implements ActionListener, AppletView, AppletHelpdesk, RuntimeContext, StatementProvider {
 
-    private static final long serialVersionUID = 1L;
+    private static final long   serialVersionUID          = 1L;
 
-    private static final Log  LOG              = LogFactory.getLog(AppletBase.class);
+    private static final Log    LOG                       = LogFactory.getLog(AppletBase.class);
 
-    JTextArea                 outputArea;
+    public static final String  PARAM_LANGUAGE            = "Language";
+    public static final String  PARAM_BG_COLOR            = "bgcolor";
+    public static final String  PARAM_HELPDESK_EVENT_PATH = "HelpdeskEventPath";
+    public static final String  PARAM_HELP_PATH           = "HelpPath";
+    public static final String  PARAM_TARGET_PATH         = "targetPath";
 
-    JLabel                    infoLabel;
+    JTextArea                   outputArea;
 
-    InfoLevel                 infoLevel;
+    JLabel                      infoLabel;
 
-    JProgressBar              progressBar;
+    InfoLevel                   infoLevel;
 
-    private JPanel            cards;
+    JProgressBar                progressBar;
 
-    private JButton           detailsButton;
+    private JPanel              cards;
 
-    JButton                   retryButton;
+    private JButton             detailsButton;
 
-    JButton                   helpButton;
+    JButton                     retryButton;
 
-    JButton                   tryAnotherDeviceButton;
+    JButton                     helpButton;
 
-    Thread                    thread;
+    JButton                     tryAnotherDeviceButton;
 
-    List<HelpdeskEvent>       helpdeskEvents;
+    Thread                      thread;
+
+    List<HelpdeskEvent>         helpdeskEvents;
+
+    private Map<String, String> parameters;
+
+    private boolean             integrated                = false;
 
 
     private class HelpdeskEvent {
@@ -135,16 +147,20 @@ public abstract class AppletBase extends JApplet implements ActionListener, Appl
         Locale locale = getLocale();
         messages = ResourceBundle.getBundle("net.link.safeonline.applet.AppletMessages", locale);
 
-        try {
-            SwingUtilities.invokeAndWait(new Runnable() {
+        if (integrated) {
+            setupScreen();
+        } else {
+            try {
+                SwingUtilities.invokeAndWait(new Runnable() {
 
-                public void run() {
+                    public void run() {
 
-                    setupScreen();
-                }
-            });
-        } catch (Exception e) {
-            throw new RuntimeException("could not setup the GUI");
+                        setupScreen();
+                    }
+                });
+            } catch (Exception e) {
+                throw new RuntimeException("could not setup the GUI");
+            }
         }
         initAppletController();
 
@@ -266,7 +282,7 @@ public abstract class AppletBase extends JApplet implements ActionListener, Appl
         });
 
         // background color
-        String c = getParameter("bgcolor");
+        String c = getParameter(PARAM_BG_COLOR);
         Color color = null;
         try {
             color = Color.decode(c);
@@ -404,7 +420,7 @@ public abstract class AppletBase extends JApplet implements ActionListener, Appl
             throws IOException, NoHelpdeskConfiguredException {
 
         URL documentBase = getDocumentBase();
-        String servletPath = getParameter("HelpdeskEventPath");
+        String servletPath = getParameter(PARAM_HELPDESK_EVENT_PATH);
         if (null == servletPath)
             throw new NoHelpdeskConfiguredException();
         URL url = AppletControl.transformUrl(documentBase, servletPath);
@@ -457,7 +473,7 @@ public abstract class AppletBase extends JApplet implements ActionListener, Appl
     void redirectToHelp() {
 
         URL documentBase = getDocumentBase();
-        String targetPath = getParameter("HelpPath");
+        String targetPath = getParameter(PARAM_HELP_PATH);
         URL target = AppletControl.transformUrl(documentBase, targetPath);
         showDocument(target);
     }
@@ -465,7 +481,7 @@ public abstract class AppletBase extends JApplet implements ActionListener, Appl
     void redirectToTryAnotherDevice() {
 
         URL documentBase = getDocumentBase();
-        String targetPath = getParameter("TargetPath") + "?cacheid=" + Math.random() * 1000000;
+        String targetPath = getParameter(PARAM_TARGET_PATH) + "?cacheid=" + Math.random() * 1000000;
         URL target = AppletControl.transformUrl(documentBase, targetPath);
         showDocument(target);
     }
@@ -496,7 +512,7 @@ public abstract class AppletBase extends JApplet implements ActionListener, Appl
     @Override
     public Locale getLocale() {
 
-        String language = getParameter("Language");
+        String language = getParameter(PARAM_LANGUAGE);
         if (null != language) {
             Locale locale = new Locale(language);
             return locale;
@@ -507,6 +523,38 @@ public abstract class AppletBase extends JApplet implements ActionListener, Appl
     @Override
     public String getParameter(String name) {
 
+        if (null != parameters) {
+            if (parameters.containsKey(name))
+                return parameters.get(name);
+        }
+
         return super.getParameter(name);
+    }
+
+    public void setParameter(String name, String value) {
+
+        if (null == parameters) {
+            parameters = new HashMap<String, String>();
+        }
+        parameters.put(name, value);
+    }
+
+    /**
+     * Sets whether applet is started integrated in a client application or not. If integrated, the screen will not be setup on the event
+     * dispatching thread using {@link SwingUtilities#invokeAndWait(Runnable)}
+     */
+    public void setIntegrated(boolean integrated) {
+
+        this.integrated = integrated;
+    }
+
+    @Override
+    public URL getDocumentBase() {
+
+        // TODO: implement me
+        if (integrated)
+            return null;
+
+        return super.getDocumentBase();
     }
 }

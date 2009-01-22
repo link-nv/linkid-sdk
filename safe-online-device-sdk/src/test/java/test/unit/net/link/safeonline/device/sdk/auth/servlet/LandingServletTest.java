@@ -98,14 +98,13 @@ public class LandingServletTest {
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
-        jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
-                "SafeOnline/WSSecurityConfigurationBean/local");
+        jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName", "SafeOnline/WSSecurityConfigurationBean/local");
+        jndiTestUtils.bindComponent("java:comp/env/wsSecurityOptionalInboudSignature", false);
 
         mockWSSecurityConfigurationService = EasyMock.createMock(WSSecurityConfigurationService.class);
         jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local", mockWSSecurityConfigurationService);
         expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
-        expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck((X509Certificate) EasyMock.anyObject())).andStubReturn(
-                true);
+        expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck((X509Certificate) EasyMock.anyObject())).andStubReturn(true);
         replay(mockWSSecurityConfigurationService);
 
         webServiceTestUtils = new WebServiceTestUtils();
@@ -199,7 +198,7 @@ public class LandingServletTest {
         String resultApplicationName = (String) servletTestManager.getSessionAttribute("applicationName");
         assertEquals(applicationName, resultApplicationName);
         AuthenticationContext authenticationContext = (AuthenticationContext) servletTestManager
-                                                                                                     .getSessionAttribute(AuthenticationContext.AUTHENTICATION_CONTEXT);
+                                                                                                .getSessionAttribute(AuthenticationContext.AUTHENTICATION_CONTEXT);
         assertNotNull(authenticationContext);
         assertEquals(applicationName, authenticationContext.getApplication());
         assertEquals(applicationName, authenticationContext.getApplicationFriendlyName());

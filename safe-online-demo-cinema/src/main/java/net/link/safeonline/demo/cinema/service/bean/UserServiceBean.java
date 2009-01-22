@@ -69,7 +69,7 @@ public class UserServiceBean extends AbstractCinemaServiceBean implements UserSe
             CinemaUserEntity userEntity = attach(user);
 
             // National registry number of user.
-            String nrns[] = attributeClient.getAttributeValue(userEntity.getOlasId(), BeIdConstants.NRN_ATTRIBUTE, String[].class);
+            String nrns[] = attributeClient.getAttributeValue(userEntity.getOlasId(), BeIdConstants.BEID_NRN_ATTRIBUTE, String[].class);
             if (nrns != null && nrns.length > 0) {
                 userEntity.setNrn(nrns[0]);
             }

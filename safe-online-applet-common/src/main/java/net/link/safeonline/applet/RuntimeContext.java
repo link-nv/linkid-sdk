@@ -19,6 +19,10 @@ import java.util.Locale;
  */
 public interface RuntimeContext {
 
+    public static final String PARAM_SMARTCARD_CONFIG = "smartCardConfig";
+    public static final String PARAM_SERVLET_PATH     = "servletPath";
+
+
     /**
      * Gives back the parameter value, or <code>null</code> if not set.
      * 

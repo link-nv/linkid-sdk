@@ -68,7 +68,6 @@ public class JavaVersionApplet extends Applet {
     }
 
 
-    @Override
     public void init() {
 
         super.init();

@@ -49,15 +49,18 @@ import sun.security.pkcs11.wrapper.PKCS11Exception;
  */
 public class AppletControl implements AppletController, SmartCardPinCallback, SmartCardInteraction {
 
-    private AppletView        appletView;
+    public static final String PARAM_NO_PCKS11_PATH = "NoPkcs11Path";
+    public static final String PARAM_TARGET_PATH    = "targetPath";
 
-    private RuntimeContext    runtimeContext;
+    private AppletView         appletView;
 
-    private StatementProvider statementProvider;
+    private RuntimeContext     runtimeContext;
 
-    private ResourceBundle    messages;
+    private StatementProvider  statementProvider;
 
-    private SmartCard         smartCard;
+    private ResourceBundle     messages;
+
+    private SmartCard          smartCard;
 
 
     private void setupLogging() {
@@ -81,7 +84,7 @@ public class AppletControl implements AppletController, SmartCardPinCallback, Sm
             appletView.outputDetailMessage("smart card config available for: " + smartCardConfig.getCardAlias());
         }
 
-        String smartCardAlias = runtimeContext.getParameter("SmartCardConfig");
+        String smartCardAlias = runtimeContext.getParameter(RuntimeContext.PARAM_SMARTCARD_CONFIG);
 
         appletView.outputDetailMessage("Connecting to smart card...");
         String osName = System.getProperty("os.name");
@@ -93,7 +96,7 @@ public class AppletControl implements AppletController, SmartCardPinCallback, Sm
             smartCard.open(smartCardAlias);
         } catch (NoPkcs11LibraryException e) {
             appletView.outputDetailMessage("no PKCS#11 library found");
-            showDocument("NoPkcs11Path");
+            showDocument(PARAM_NO_PCKS11_PATH);
             appletView.outputDetailMessage("Disconnecting from smart card...");
             smartCard.close();
             smartCard.resetPKCS11Driver();
@@ -190,7 +193,7 @@ public class AppletControl implements AppletController, SmartCardPinCallback, Sm
         appletView.outputInfoMessage(InfoLevel.NORMAL, messages.getString("done"));
         appletView.outputDetailMessage("Done.");
 
-        showDocument("TargetPath");
+        showDocument(AppletBase.PARAM_TARGET_PATH);
     }
 
     private void showPath(String path) {
@@ -219,8 +222,10 @@ public class AppletControl implements AppletController, SmartCardPinCallback, Sm
         appletView.outputDetailMessage("Sending statement...");
         URL documentBase = runtimeContext.getDocumentBase();
         appletView.outputDetailMessage("document base: " + documentBase);
-        String servletPath = runtimeContext.getParameter("ServletPath");
+        String servletPath = runtimeContext.getParameter(RuntimeContext.PARAM_SERVLET_PATH);
+        appletView.outputDetailMessage("servlet path: " + servletPath);
         URL url = transformUrl(documentBase, servletPath);
+        appletView.outputDetailMessage("URL: " + url.toString());
         HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
 
         httpURLConnection.setRequestMethod("POST");

@@ -12,10 +12,14 @@ import java.util.Map;
 
 import javax.servlet.ServletException;
 
+import net.link.safeonline.applet.AppletBase;
+import net.link.safeonline.applet.AppletControl;
+import net.link.safeonline.applet.RuntimeContext;
 import net.link.safeonline.device.sdk.AuthenticationContext;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.device.sdk.auth.saml2.DeviceManager;
 import net.link.safeonline.device.sdk.saml2.DeviceOperationManager;
+import net.link.safeonline.sc.pkcs11.auth.AuthenticationApplet;
 import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
@@ -71,17 +75,17 @@ public abstract class AppletPage extends TemplatePage {
         variables.put("archive", archive);
         variables.put("width", width);
         variables.put("height", height);
-        variables.put("smartCardConfig", smartCardConfig);
-        variables.put("servletPath", servletPath);
-        variables.put("targetPath", targetPath);
-        variables.put("helpdeskEventPath", helpdeskEventPath);
-        variables.put("helpPath", helpPath);
-        variables.put("noPkcs11Path", noPkcs11Path);
-        variables.put("sessionId", sessionId);
-        variables.put("applicationId", applicationId);
+        variables.put(RuntimeContext.PARAM_SMARTCARD_CONFIG, smartCardConfig);
+        variables.put(RuntimeContext.PARAM_SERVLET_PATH, servletPath);
+        variables.put(AppletBase.PARAM_TARGET_PATH, targetPath);
+        variables.put(AppletBase.PARAM_HELPDESK_EVENT_PATH, helpdeskEventPath);
+        variables.put(AppletBase.PARAM_HELP_PATH, helpPath);
+        variables.put(AppletControl.PARAM_NO_PCKS11_PATH, noPkcs11Path);
+        variables.put(AuthenticationApplet.PARAM_SESSION_ID, sessionId);
+        variables.put(AuthenticationApplet.PARAM_APPLICATION_ID, applicationId);
         variables.put("userId", userId);
         variables.put("operation", operation);
-        variables.put("language", language);
+        variables.put(AppletBase.PARAM_LANGUAGE, language);
         variables.put("javaVersion", javaVersion);
 
         TextTemplate deployJavaApplet = new PackagedTextTemplate(getClass(), "deployJavaApplet.js");

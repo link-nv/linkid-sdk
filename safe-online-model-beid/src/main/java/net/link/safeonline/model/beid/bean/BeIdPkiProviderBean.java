@@ -128,11 +128,11 @@ public class BeIdPkiProviderBean implements PkiProvider {
 
         switch (identityStatementAttributes) {
             case SURNAME:
-                return BeIdConstants.SURNAME_ATTRIBUTE;
+                return BeIdConstants.BEID_SURNAME_ATTRIBUTE;
             case GIVEN_NAME:
-                return BeIdConstants.GIVENNAME_ATTRIBUTE;
+                return BeIdConstants.BEID_GIVENNAME_ATTRIBUTE;
             case AUTH_CERT:
-                return BeIdConstants.AUTH_CERT_ATTRIBUTE;
+                return BeIdConstants.BEID_AUTH_CERT_ATTRIBUTE;
             default:
                 throw new IllegalArgumentException("unsupported identity statement attribute");
         }
@@ -159,11 +159,11 @@ public class BeIdPkiProviderBean implements PkiProvider {
 
         String subjectName = getSubjectName(certificate);
         String nrn = getAttributeFromSubjectName(subjectName, "SERIALNUMBER");
-        setAttribute(BeIdConstants.NRN_ATTRIBUTE, subject, nrn);
+        setAttribute(BeIdConstants.BEID_NRN_ATTRIBUTE, subject, nrn);
 
         // Identifier attribute used for removal, no authentication is required in that step so no access to the eID certificate.
         String identifier = getSubjectIdentifier(certificate);
-        setAttribute(BeIdConstants.IDENTIFIER_ATTRIBUTE, subject, identifier);
+        setAttribute(BeIdConstants.BEID_IDENTIFIER_ATTRIBUTE, subject, identifier);
     }
 
     private void setAttribute(String attributeName, SubjectEntity subject, String value) {
@@ -208,8 +208,8 @@ public class BeIdPkiProviderBean implements PkiProvider {
         AttributeTypeEntity deviceUserAttributeType = device.getUserAttributeType();
         AttributeTypeEntity deviceDisableAttributeType = device.getDisableAttributeType();
 
-        AttributeEntity givenNameAttribute = attributeDAO.getAttribute(BeIdConstants.GIVENNAME_ATTRIBUTE, subject, index);
-        AttributeEntity surNameAttribute = attributeDAO.getAttribute(BeIdConstants.SURNAME_ATTRIBUTE, subject, index);
+        AttributeEntity givenNameAttribute = attributeDAO.getAttribute(BeIdConstants.BEID_GIVENNAME_ATTRIBUTE, subject, index);
+        AttributeEntity surNameAttribute = attributeDAO.getAttribute(BeIdConstants.BEID_SURNAME_ATTRIBUTE, subject, index);
         AttributeEntity deviceUserAttribute = attributeDAO.findAttribute(subject, deviceUserAttributeType, index);
         if (null == deviceUserAttribute) {
             String userAttributeValue = getUserAttributeValue(givenNameAttribute, surNameAttribute);
@@ -229,8 +229,8 @@ public class BeIdPkiProviderBean implements PkiProvider {
             List<AttributeEntity> deviceAttributeMembers = new LinkedList<AttributeEntity>();
             deviceAttributeMembers.add(givenNameAttribute);
             deviceAttributeMembers.add(surNameAttribute);
-            deviceAttributeMembers.add(attributeDAO.getAttribute(BeIdConstants.NRN_ATTRIBUTE, subject, index));
-            deviceAttributeMembers.add(attributeDAO.getAttribute(BeIdConstants.IDENTIFIER_ATTRIBUTE, subject, index));
+            deviceAttributeMembers.add(attributeDAO.getAttribute(BeIdConstants.BEID_NRN_ATTRIBUTE, subject, index));
+            deviceAttributeMembers.add(attributeDAO.getAttribute(BeIdConstants.BEID_IDENTIFIER_ATTRIBUTE, subject, index));
             deviceAttributeMembers.add(deviceUserAttribute);
             deviceAttributeMembers.add(deviceDisableAttribute);
             deviceAttribute.setMembers(deviceAttributeMembers);
@@ -247,7 +247,7 @@ public class BeIdPkiProviderBean implements PkiProvider {
         List<AttributeEntity> attributes = attributeDAO.listAttributes(subject, deviceAttributeType);
         LOG.debug("check if device is enabled (nrn=" + nrn + ")");
         for (AttributeEntity attribute : attributes) {
-            AttributeEntity nrnAttribute = attributeDAO.findAttribute(subject, BeIdConstants.NRN_ATTRIBUTE,
+            AttributeEntity nrnAttribute = attributeDAO.findAttribute(subject, BeIdConstants.BEID_NRN_ATTRIBUTE,
                     attribute.getAttributeIndex());
             if (nrnAttribute.getStringValue().equals(nrn)) {
                 AttributeEntity disabledAttribute = attributeDAO.findAttribute(subject, BeIdConstants.BEID_DEVICE_DISABLE_ATTRIBUTE,
@@ -276,9 +276,9 @@ public class BeIdPkiProviderBean implements PkiProvider {
 
         List<AttributeEntity> deviceAttributes = attributeDAO.listAttributes(subject, device.getAttributeType());
         for (AttributeEntity deviceAttribute : deviceAttributes) {
-            AttributeEntity givenNameAttribute = attributeDAO.findAttribute(subject, BeIdConstants.GIVENNAME_ATTRIBUTE,
+            AttributeEntity givenNameAttribute = attributeDAO.findAttribute(subject, BeIdConstants.BEID_GIVENNAME_ATTRIBUTE,
                     deviceAttribute.getAttributeIndex());
-            AttributeEntity surNameAttribute = attributeDAO.findAttribute(subject, BeIdConstants.SURNAME_ATTRIBUTE,
+            AttributeEntity surNameAttribute = attributeDAO.findAttribute(subject, BeIdConstants.BEID_SURNAME_ATTRIBUTE,
                     deviceAttribute.getAttributeIndex());
             String deviceUserAttribute = getUserAttributeValue(givenNameAttribute, surNameAttribute);
             if (deviceUserAttribute.equals(attribute)) {
@@ -306,7 +306,7 @@ public class BeIdPkiProviderBean implements PkiProvider {
         List<AttributeEntity> attributes = attributeDAO.listAttributes(subject, deviceAttributeType);
         LOG.debug("enable device registration: nrn=" + nrn);
         for (AttributeEntity attribute : attributes) {
-            AttributeEntity nrnAttribute = attributeDAO.findAttribute(subject, BeIdConstants.NRN_ATTRIBUTE,
+            AttributeEntity nrnAttribute = attributeDAO.findAttribute(subject, BeIdConstants.BEID_NRN_ATTRIBUTE,
                     attribute.getAttributeIndex());
             if (nrnAttribute.getStringValue().equals(nrn)) {
                 AttributeEntity disableAttribute = attributeDAO.findAttribute(subject, device.getDisableAttributeType(),
@@ -331,13 +331,13 @@ public class BeIdPkiProviderBean implements PkiProvider {
 
         List<AttributeEntity> deviceAttributes = attributeDAO.listAttributes(subject, device.getAttributeType());
         for (AttributeEntity deviceAttribute : deviceAttributes) {
-            AttributeEntity givenNameAttribute = attributeDAO.findAttribute(subject, BeIdConstants.GIVENNAME_ATTRIBUTE,
+            AttributeEntity givenNameAttribute = attributeDAO.findAttribute(subject, BeIdConstants.BEID_GIVENNAME_ATTRIBUTE,
                     deviceAttribute.getAttributeIndex());
-            AttributeEntity surNameAttribute = attributeDAO.findAttribute(subject, BeIdConstants.SURNAME_ATTRIBUTE,
+            AttributeEntity surNameAttribute = attributeDAO.findAttribute(subject, BeIdConstants.BEID_SURNAME_ATTRIBUTE,
                     deviceAttribute.getAttributeIndex());
             String deviceUserAttribute = getUserAttributeValue(givenNameAttribute, surNameAttribute);
             if (deviceUserAttribute.equals(attribute)) {
-                AttributeTypeEntity identifierAttributeType = attributeTypeDAO.getAttributeType(BeIdConstants.IDENTIFIER_ATTRIBUTE);
+                AttributeTypeEntity identifierAttributeType = attributeTypeDAO.getAttributeType(BeIdConstants.BEID_IDENTIFIER_ATTRIBUTE);
                 AttributeEntity identifierAttribute = attributeDAO.findAttribute(subject, identifierAttributeType,
                         deviceAttribute.getAttributeIndex());
                 subjectIdentifierDAO.removeSubjectIdentifier(subject, getIdentifierDomainName(), identifierAttribute.getStringValue());
