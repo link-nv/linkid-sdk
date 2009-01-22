@@ -146,6 +146,7 @@ public abstract class AppletBase extends JApplet implements ActionListener, Appl
 
         Locale locale = getLocale();
         messages = ResourceBundle.getBundle("net.link.safeonline.applet.AppletMessages", locale);
+        helpdeskEvents = new LinkedList<HelpdeskEvent>();
 
         if (integrated) {
             setupScreen();
@@ -164,7 +165,6 @@ public abstract class AppletBase extends JApplet implements ActionListener, Appl
         }
         initAppletController();
 
-        helpdeskEvents = new LinkedList<HelpdeskEvent>();
     }
 
     void initAppletController() {

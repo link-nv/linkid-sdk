@@ -8,9 +8,6 @@ package net.link.safeonline.siemens.acceptance.ws.auth.console;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Observable;
@@ -22,6 +19,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.SwingConstants;
 
 import net.lin_k.safe_online.auth.DeviceAuthenticationInformationType;
 import net.link.safeonline.auth.ws.AuthenticationStep;
@@ -56,8 +54,9 @@ public class LoginPanel extends JPanel implements Observer {
 
     public LoginPanel(AcceptanceConsole parent, String message) {
 
+        setCursor(new Cursor(Cursor.WAIT_CURSOR));
         this.parent = parent;
-        infoLabel = new JLabel(message);
+        infoLabel = new JLabel(message, SwingConstants.CENTER);
 
         AuthenticationUtils.getInstance().addObserver(this);
         buildWindow();
@@ -74,24 +73,9 @@ public class LoginPanel extends JPanel implements Observer {
         JPanel infoPanel = new JPanel();
         JPanel controlPanel = new JPanel();
 
-        GridBagLayout gbl = new GridBagLayout();
-        GridBagConstraints gbc = new GridBagConstraints();
-        infoPanel.setLayout(gbl);
-
-        gbc.gridwidth = 1;
-        gbc.gridheight = 1;
-        gbc.fill = 1;
-        gbc.insets = new Insets(5, 2, 5, 2);
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbl.setConstraints(infoLabel, gbc);
-        infoPanel.add(infoLabel, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbl.setConstraints(progressBar, gbc);
-        infoPanel.add(progressBar, gbc);
+        infoPanel.setLayout(new BorderLayout());
+        infoPanel.add(infoLabel, BorderLayout.CENTER);
+        infoPanel.add(progressBar, BorderLayout.SOUTH);
 
         controlPanel.add(exitButton);
 
@@ -110,29 +94,40 @@ public class LoginPanel extends JPanel implements Observer {
         exitButton.setEnabled(true);
         progressBar.setVisible(false);
 
-        if (arg instanceof AuthenticationError) {
-            AuthenticationError error = (AuthenticationError) arg;
-            infoLabel.setText("Authentication failed: " + error.getCode().getErrorCode() + " message=" + error.getMessage());
-        } else if (arg instanceof AuthenticationStep) {
-            AuthenticationStep authenticationStep = (AuthenticationStep) arg;
-            if (authenticationStep.equals(AuthenticationStep.GLOBAL_USAGE_AGREEMENT)) {
-                parent.requestGlobalUsageAgreement();
-            } else if (authenticationStep.equals(AuthenticationStep.USAGE_AGREEMENT)) {
-                parent.requestUsageAgreement();
-            } else if (authenticationStep.equals(AuthenticationStep.IDENTITY_CONFIRMATION)) {
-                parent.getIdentity();
-            } else if (authenticationStep.equals(AuthenticationStep.MISSING_ATTRIBUTES)) {
-                parent.getMissingAttributes();
-            } else {
-                infoLabel.setText("Additional authentication step: " + authenticationStep.getValue());
+        try {
+            if (arg instanceof AuthenticationError) {
+                AuthenticationError error = (AuthenticationError) arg;
+                infoLabel.setText("Authentication failed: " + error.getCode().getErrorCode() + " message=" + error.getMessage());
+            } else if (arg instanceof AuthenticationStep) {
+                AuthenticationStep authenticationStep = (AuthenticationStep) arg;
+                if (authenticationStep.equals(AuthenticationStep.GLOBAL_USAGE_AGREEMENT)) {
+                    parent.requestGlobalUsageAgreement();
+                } else if (authenticationStep.equals(AuthenticationStep.USAGE_AGREEMENT)) {
+                    parent.requestUsageAgreement();
+                } else if (authenticationStep.equals(AuthenticationStep.IDENTITY_CONFIRMATION)) {
+                    parent.getIdentity();
+                } else if (authenticationStep.equals(AuthenticationStep.MISSING_ATTRIBUTES)) {
+                    parent.getMissingAttributes();
+                } else {
+                    infoLabel.setText("Additional authentication step: " + authenticationStep.getValue());
+                }
+            } else if (arg instanceof DeviceAuthenticationInformationType) {
+                DeviceAuthenticationInformationType deviceAuthenticationInformation = (DeviceAuthenticationInformationType) arg;
+                parent.onAuthenticateFurther(deviceAuthenticationInformation);
+            } else if (arg instanceof String) {
+                // success
+                parent.consoleManager.setUserId((String) arg);
+                parent.resetContent();
             }
-        } else if (arg instanceof DeviceAuthenticationInformationType) {
-            DeviceAuthenticationInformationType deviceAuthenticationInformation = (DeviceAuthenticationInformationType) arg;
-            parent.onAuthenticateFurther(deviceAuthenticationInformation);
-        } else if (arg instanceof String) {
-            // success
-            infoLabel.setText("Successfully authenticated user " + (String) arg);
+        } finally {
+            cleanup();
         }
+
+    }
+
+    protected void cleanup() {
+
+        AuthenticationUtils.getInstance().deleteObserver(this);
 
     }
 
@@ -152,6 +147,7 @@ public class LoginPanel extends JPanel implements Observer {
         public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
             parent.resetContent();
+            cleanup();
         }
     }
 

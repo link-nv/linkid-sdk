@@ -8,7 +8,6 @@
 package net.link.safeonline.siemens.acceptance.ws.auth.console.device;
 
 import java.awt.BorderLayout;
-import java.awt.Cursor;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -122,8 +121,6 @@ public class EncapAuthentication extends DeviceAuthenticationPanel {
     }
 
     protected void authenticate() {
-
-        setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
         Map<String, String> deviceCredentials = new HashMap<String, String>();
 

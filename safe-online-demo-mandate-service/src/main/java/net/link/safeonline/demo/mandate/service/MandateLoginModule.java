@@ -24,9 +24,11 @@ import javax.security.auth.spi.LoginModule;
 import net.link.safeonline.demo.mandate.AuthorizationService;
 import net.link.safeonline.demo.mandate.AuthorizationServiceFactory;
 import net.link.safeonline.demo.mandate.MandateConstants;
+import net.link.safeonline.sdk.auth.jaas.SimplePrincipal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.seam.security.SimpleGroup;
 
 
 /**

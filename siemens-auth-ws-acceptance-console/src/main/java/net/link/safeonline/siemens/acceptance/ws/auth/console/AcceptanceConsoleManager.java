@@ -40,8 +40,11 @@ public class AcceptanceConsoleManager extends Observable {
 
     private KeyPair                         keyPair;
 
+    private boolean                         usePcscApplet   = false;
+
     private AuthenticationClient            authenticationClient;
 
+    private String                          userId;
     private String                          deviceName;
 
 
@@ -117,6 +120,16 @@ public class AcceptanceConsoleManager extends Observable {
         return null;
     }
 
+    public boolean getUsePcscApplet() {
+
+        return usePcscApplet;
+    }
+
+    public void setUsePcscApplet(boolean usePcscApplet) {
+
+        this.usePcscApplet = usePcscApplet;
+    }
+
     public void setDeviceName(String deviceName) {
 
         this.deviceName = deviceName;
@@ -125,5 +138,17 @@ public class AcceptanceConsoleManager extends Observable {
     public String getDeviceName() {
 
         return deviceName;
+    }
+
+    public void setUserId(String userId) {
+
+        this.userId = userId;
+        setChanged();
+        notifyObservers();
+    }
+
+    public String getUserId() {
+
+        return userId;
     }
 }

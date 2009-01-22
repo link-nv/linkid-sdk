@@ -7,6 +7,7 @@
 package net.link.safeonline.siemens.acceptance.ws.auth.console;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -21,6 +22,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 
 import net.link.safeonline.auth.ws.AuthenticationStep;
 import net.link.safeonline.auth.ws.Confirmation;
@@ -51,7 +53,7 @@ public class IdentityConfirmationPanel extends JPanel implements Observer {
     private JPanel            infoPanel        = new JPanel();
 
     private JLabel            infoLabel        = new JLabel("Application Identity for application "
-                                                       + AcceptanceConsoleManager.getInstance().getApplication());
+                                                       + AcceptanceConsoleManager.getInstance().getApplication(), SwingConstants.CENTER);
 
     private JTable            identityTable    = null;
 
@@ -66,6 +68,8 @@ public class IdentityConfirmationPanel extends JPanel implements Observer {
 
 
     public IdentityConfirmationPanel(AcceptanceConsole parent) {
+
+        setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
         this.parent = parent;
 
@@ -106,16 +110,20 @@ public class IdentityConfirmationPanel extends JPanel implements Observer {
         setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         exitButton.setEnabled(true);
 
-        if (arg instanceof AuthenticationError) {
-            AuthenticationError error = (AuthenticationError) arg;
-            infoLabel.setText("Authentication failed: " + error.getCode().getErrorCode() + " message=" + error.getMessage());
-        } else if (arg instanceof AuthenticationStep) {
-            AuthenticationStep authenticationStep = (AuthenticationStep) arg;
-            infoLabel.setText("Additional authentication step: " + authenticationStep.getValue());
-        } else if (arg instanceof List<?>) {
-            confirmButton.setEnabled(true);
-            rejectButton.setEnabled(true);
-            setIdentityTable((List<Attribute>) arg);
+        try {
+            if (arg instanceof AuthenticationError) {
+                AuthenticationError error = (AuthenticationError) arg;
+                infoLabel.setText("Authentication failed: " + error.getCode().getErrorCode() + " message=" + error.getMessage());
+            } else if (arg instanceof AuthenticationStep) {
+                AuthenticationStep authenticationStep = (AuthenticationStep) arg;
+                infoLabel.setText("Additional authentication step: " + authenticationStep.getValue());
+            } else if (arg instanceof List<?>) {
+                confirmButton.setEnabled(true);
+                rejectButton.setEnabled(true);
+                setIdentityTable((List<Attribute>) arg);
+            }
+        } finally {
+            cleanup();
         }
 
     }
@@ -148,10 +156,20 @@ public class IdentityConfirmationPanel extends JPanel implements Observer {
 
         // set table
         identityTable = new JTable(new AttributesTableModel(attributeList, false));
+        identityTable.setShowGrid(false);
+        identityTable.setShowHorizontalLines(true);
+        identityTable.setGridColor(Color.LIGHT_GRAY);
         identityTable.getColumnModel().getColumn(1).setMaxWidth(75);
+        identityTable.getColumnModel().getColumn(2).setMaxWidth(75);
         JScrollPane tableScrollPane = new JScrollPane(identityTable);
         infoPanel.add(tableScrollPane, BorderLayout.CENTER);
         infoPanel.revalidate();
+    }
+
+    protected void cleanup() {
+
+        AuthenticationUtils.getInstance().deleteObserver(this);
+
     }
 
 
@@ -170,6 +188,7 @@ public class IdentityConfirmationPanel extends JPanel implements Observer {
         public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
             parent.resetContent();
+            cleanup();
         }
     }
 
@@ -188,6 +207,7 @@ public class IdentityConfirmationPanel extends JPanel implements Observer {
         public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
             parent.confirmIdentity(Confirmation.CONFIRM);
+            cleanup();
         }
     }
 
@@ -206,6 +226,7 @@ public class IdentityConfirmationPanel extends JPanel implements Observer {
         public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
             parent.confirmIdentity(Confirmation.REJECT);
+            cleanup();
         }
     }
 

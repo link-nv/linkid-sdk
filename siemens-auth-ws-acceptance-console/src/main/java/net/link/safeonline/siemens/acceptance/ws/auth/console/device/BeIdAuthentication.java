@@ -8,7 +8,6 @@
 package net.link.safeonline.siemens.acceptance.ws.auth.console.device;
 
 import java.awt.BorderLayout;
-import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
@@ -18,6 +17,7 @@ import java.util.Map;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import net.lin_k.safe_online.auth.DeviceAuthenticationInformationType;
 import net.link.safeonline.applet.AppletBase;
@@ -90,22 +90,13 @@ public class BeIdAuthentication extends DeviceAuthenticationPanel {
         JPanel controlPanel = new JPanel();
 
         if (null != sessionId) {
-            final AuthenticationApplet authenticationApplet = new AuthenticationApplet();
-            authenticationApplet.setIntegrated(true);
-            authenticationApplet.setParameter(AuthenticationApplet.PARAM_SESSION_ID, sessionId);
-            authenticationApplet.setParameter(AuthenticationApplet.PARAM_APPLICATION_ID, consoleManager.getApplication());
-            authenticationApplet.setParameter(RuntimeContext.PARAM_SMARTCARD_CONFIG, "beid");
-            authenticationApplet.setParameter(RuntimeContext.PARAM_SERVLET_PATH, authenticationServletPath);
-            authenticationApplet.setParameter(AppletBase.PARAM_LANGUAGE, Locale.ENGLISH.getLanguage());
-            authenticationApplet.setParameter(AppletBase.PARAM_BG_COLOR, "0xFFFFFF");
-            authenticationApplet.setParameter(AppletControl.PARAM_NO_PCKS11_PATH, "foo");
-            authenticationApplet.setParameter(AppletControl.PARAM_TARGET_PATH, null);
+            final AuthenticationApplet authenticationApplet = getAuthenticationApplet();
             inputPanel.add(authenticationApplet, BorderLayout.CENTER);
             authenticationApplet.init();
             authenticationApplet.start();
 
         } else {
-            inputPanel.add(new JLabel("Login first to retrieve session ID from OLAS"), BorderLayout.CENTER);
+            inputPanel.add(new JLabel("Login first to retrieve session ID from OLAS", SwingConstants.CENTER), BorderLayout.CENTER);
         }
 
         controlPanel.add(loginButton);
@@ -117,6 +108,26 @@ public class BeIdAuthentication extends DeviceAuthenticationPanel {
         setLayout(new BorderLayout());
         this.add(inputPanel, BorderLayout.CENTER);
         this.add(controlPanel, BorderLayout.SOUTH);
+    }
+
+    private AuthenticationApplet getAuthenticationApplet() {
+
+        AuthenticationApplet authenticationApplet;
+        if (consoleManager.getUsePcscApplet()) {
+            authenticationApplet = new net.link.safeonline.sc.pcsc.auth.AuthenticationApplet();
+        } else {
+            authenticationApplet = new AuthenticationApplet();
+        }
+        authenticationApplet.setIntegrated(true);
+        authenticationApplet.setParameter(AuthenticationApplet.PARAM_SESSION_ID, sessionId);
+        authenticationApplet.setParameter(AuthenticationApplet.PARAM_APPLICATION_ID, consoleManager.getApplication());
+        authenticationApplet.setParameter(RuntimeContext.PARAM_SMARTCARD_CONFIG, "beid");
+        authenticationApplet.setParameter(RuntimeContext.PARAM_SERVLET_PATH, authenticationServletPath);
+        authenticationApplet.setParameter(AppletBase.PARAM_LANGUAGE, Locale.ENGLISH.getLanguage());
+        authenticationApplet.setParameter(AppletBase.PARAM_BG_COLOR, "0xFFFFFF");
+        authenticationApplet.setParameter(AppletControl.PARAM_NO_PCKS11_PATH, "foo");
+        authenticationApplet.setParameter(AppletControl.PARAM_TARGET_PATH, null);
+        return authenticationApplet;
     }
 
     private void handleEvents() {
@@ -140,12 +151,13 @@ public class BeIdAuthentication extends DeviceAuthenticationPanel {
 
     protected void authenticate() {
 
-        setCursor(new Cursor(Cursor.WAIT_CURSOR));
         authenticate(new HashMap<String, String>());
 
     }
 
     public void authenticate(String authenticationStatement) {
+
+        BeIdAuthenticationServletManager.getInstance().shutDown();
 
         Map<String, String> deviceCredentials = new HashMap<String, String>();
         deviceCredentials.put(BEID_WS_AUTH_STATEMENT_ATTRIBUTE, authenticationStatement);
