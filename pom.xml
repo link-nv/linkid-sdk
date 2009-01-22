@@ -851,6 +851,7 @@
 		<module>safe-online-app-console</module>
 		<module>safe-online-jpa-util</module>
 		<module>safe-online-saml-authn-context</module>
+		<module>safe-online-saml-common</module>
 		<module>safe-online-node-keystore</module>
         <!-- TODO: Remove the following.  Only here because of a test dependency in s-o-model.
 -->
