@@ -125,7 +125,32 @@
 							</outputDirectory>
 						</configuration>
 					</execution>
+				</executions>
+			</plugin>
 
+			<plugin>
+				<artifactId>maven-patch-plugin</artifactId>
+				<configuration>
+					<patchDirectory>target/classes/patches
+					</patchDirectory>
+					<targetDirectory>target/files/jboss-4.2.3.GA
+					</targetDirectory>
+					<reverse>true</reverse>
+					<patches>
+						<patch>00_JAXB_Fix.patch</patch>
+					</patches>
+				</configuration>
+				<executions>
+					<execution>
+						<!--
+							https://jira.jboss.org/jira/browse/JBWS-2301?page=com.atlassian.jira.plugin.system.issuetabpanels:all-tabpanel
+						-->
+						<id>patch</id>
+						<phase>package</phase>
+						<goals>
+							<goal>apply</goal>
+						</goals>
+					</execution>
 				</executions>
 			</plugin>
 
@@ -160,6 +185,14 @@
 			<groupId>net.lin-k.safe-online.siemens
 			</groupId>
 			<artifactId>siemens-metro-acceptance-ws-runtime
+			</artifactId>
+			<version>1.3-SNAPSHOT</version>
+			<type>war</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online.siemens
+			</groupId>
+			<artifactId>siemens-auth-ws-acceptance-ws-runtime
 			</artifactId>
 			<version>1.3-SNAPSHOT</version>
 			<type>war</type>

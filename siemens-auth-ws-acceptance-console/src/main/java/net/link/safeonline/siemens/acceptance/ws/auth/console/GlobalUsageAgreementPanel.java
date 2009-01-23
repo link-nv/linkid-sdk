@@ -8,9 +8,6 @@ package net.link.safeonline.siemens.acceptance.ws.auth.console;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Observable;
@@ -22,6 +19,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 
 import net.link.safeonline.auth.ws.AuthenticationStep;
 import net.link.safeonline.auth.ws.Confirmation;
@@ -47,7 +45,7 @@ public class GlobalUsageAgreementPanel extends JPanel implements Observer {
 
     AcceptanceConsole         parent                   = null;
 
-    private JLabel            infoLabel                = new JLabel("OLAS Global Usage Agreement");
+    private JLabel            infoLabel                = new JLabel("OLAS Global Usage Agreement", SwingConstants.CENTER);
 
     private JTextArea         globalUsageAgreementText = new JTextArea(10, 80);
 
@@ -62,6 +60,8 @@ public class GlobalUsageAgreementPanel extends JPanel implements Observer {
 
 
     public GlobalUsageAgreementPanel(AcceptanceConsole parent) {
+
+        setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
         this.parent = parent;
 
@@ -83,24 +83,9 @@ public class GlobalUsageAgreementPanel extends JPanel implements Observer {
         JPanel infoPanel = new JPanel();
         JPanel controlPanel = new JPanel();
 
-        GridBagLayout gbl = new GridBagLayout();
-        GridBagConstraints gbc = new GridBagConstraints();
-        infoPanel.setLayout(gbl);
-
-        gbc.gridwidth = 1;
-        gbc.gridheight = 1;
-        gbc.fill = 1;
-        gbc.insets = new Insets(5, 2, 5, 2);
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbl.setConstraints(infoLabel, gbc);
-        infoPanel.add(infoLabel, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbl.setConstraints(globalUsageAgreementText, gbc);
-        infoPanel.add(globalUsageAgreementText, gbc);
+        infoPanel.setLayout(new BorderLayout());
+        infoPanel.add(infoLabel, BorderLayout.NORTH);
+        infoPanel.add(globalUsageAgreementText, BorderLayout.CENTER);
 
         controlPanel.add(confirmButton);
         controlPanel.add(rejectButton);
@@ -120,17 +105,27 @@ public class GlobalUsageAgreementPanel extends JPanel implements Observer {
         setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         exitButton.setEnabled(true);
 
-        if (arg instanceof AuthenticationError) {
-            AuthenticationError error = (AuthenticationError) arg;
-            infoLabel.setText("Authentication failed: " + error.getCode().getErrorCode() + " message=" + error.getMessage());
-        } else if (arg instanceof AuthenticationStep) {
-            AuthenticationStep authenticationStep = (AuthenticationStep) arg;
-            infoLabel.setText("Additional authentication step: " + authenticationStep.getValue());
-        } else if (arg instanceof String) {
-            confirmButton.setEnabled(true);
-            rejectButton.setEnabled(true);
-            globalUsageAgreementText.setText((String) arg);
+        try {
+            if (arg instanceof AuthenticationError) {
+                AuthenticationError error = (AuthenticationError) arg;
+                infoLabel.setText("Authentication failed: " + error.getCode().getErrorCode() + " message=" + error.getMessage());
+            } else if (arg instanceof AuthenticationStep) {
+                AuthenticationStep authenticationStep = (AuthenticationStep) arg;
+                infoLabel.setText("Additional authentication step: " + authenticationStep.getValue());
+            } else if (arg instanceof String) {
+                confirmButton.setEnabled(true);
+                rejectButton.setEnabled(true);
+                globalUsageAgreementText.setText((String) arg);
+            }
+        } finally {
+            cleanup();
         }
+
+    }
+
+    protected void cleanup() {
+
+        AuthenticationUtils.getInstance().deleteObserver(this);
 
     }
 
@@ -150,6 +145,7 @@ public class GlobalUsageAgreementPanel extends JPanel implements Observer {
         public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
             parent.resetContent();
+            cleanup();
         }
     }
 
@@ -168,6 +164,7 @@ public class GlobalUsageAgreementPanel extends JPanel implements Observer {
         public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
             parent.confirmGlobalUsageAgreement(Confirmation.CONFIRM);
+            cleanup();
         }
     }
 
@@ -186,6 +183,7 @@ public class GlobalUsageAgreementPanel extends JPanel implements Observer {
         public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
             parent.confirmGlobalUsageAgreement(Confirmation.REJECT);
+            cleanup();
         }
     }
 

@@ -76,6 +76,7 @@ public class NotificationConsumerPortImplTest {
         jndiTestUtils.setUp();
         jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
                 "SafeOnlineZDemo/WSSecurityConfigurationBean/local");
+        jndiTestUtils.bindComponent("java:comp/env/wsSecurityOptionalInboudSignature", false);
 
         mockWSSecurityConfigurationService = createMock(WSSecurityConfigurationService.class);
         mockNotificationConsumerService = createMock(net.link.safeonline.demo.model.NotificationConsumerService.class);

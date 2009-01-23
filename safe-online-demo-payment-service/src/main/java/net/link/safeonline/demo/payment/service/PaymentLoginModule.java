@@ -26,9 +26,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.sdk.auth.filter.LoginManager;
+import net.link.safeonline.sdk.auth.jaas.SimplePrincipal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jboss.seam.security.SimpleGroup;
 
 
 /**

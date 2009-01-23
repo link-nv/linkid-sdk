@@ -20,6 +20,8 @@ import net.link.safeonline.sdk.ws.auth.AuthenticationClientImpl;
 import net.link.safeonline.sdk.ws.auth.GetAuthenticationClient;
 import net.link.safeonline.sdk.ws.auth.GetAuthenticationClientImpl;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
+import net.link.safeonline.siemens.auth.ws.acceptance.jaxws.ws.client.SiemensAuthWsAcceptanceClient;
+import net.link.safeonline.siemens.auth.ws.acceptance.jaxws.ws.client.SiemensAuthWsAcceptanceClientImpl;
 
 
 /**
@@ -40,8 +42,11 @@ public class AcceptanceConsoleManager extends Observable {
 
     private KeyPair                         keyPair;
 
+    private boolean                         usePcscApplet   = false;
+
     private AuthenticationClient            authenticationClient;
 
+    private String                          userId;
     private String                          deviceName;
 
 
@@ -71,6 +76,14 @@ public class AcceptanceConsoleManager extends Observable {
     public void resetAuthenticationClient() {
 
         authenticationClient = null;
+    }
+
+    public SiemensAuthWsAcceptanceClient getAcceptanceWsClient() {
+
+        if (null == authenticationClient || null == authenticationClient.getAssertion())
+            return null;
+        SiemensAuthWsAcceptanceClient client = new SiemensAuthWsAcceptanceClientImpl(location, authenticationClient.getAssertion());
+        return client;
     }
 
     public void setLocation(String location) {
@@ -117,6 +130,16 @@ public class AcceptanceConsoleManager extends Observable {
         return null;
     }
 
+    public boolean getUsePcscApplet() {
+
+        return usePcscApplet;
+    }
+
+    public void setUsePcscApplet(boolean usePcscApplet) {
+
+        this.usePcscApplet = usePcscApplet;
+    }
+
     public void setDeviceName(String deviceName) {
 
         this.deviceName = deviceName;
@@ -125,5 +148,17 @@ public class AcceptanceConsoleManager extends Observable {
     public String getDeviceName() {
 
         return deviceName;
+    }
+
+    public void setUserId(String userId) {
+
+        this.userId = userId;
+        setChanged();
+        notifyObservers();
+    }
+
+    public String getUserId() {
+
+        return userId;
     }
 }

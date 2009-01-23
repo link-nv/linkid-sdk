@@ -1,0 +1,11 @@
+*** bin/run.conf	Fri Jan 23 09:50:13 2009
+--- bin/run.conf	Fri Jul 18 15:18:48 2008
+***************
+*** 48,53 ****
+  
+  # Sample JPDA settings for shared memory debugging 
+  #JAVA_OPTS="$JAVA_OPTS -Xrunjdwp:transport=dt_shmem,server=y,suspend=n,address=jboss"
+- 
+- # JAXB linkage workaround 
+- JAVA_OPTS="$JAVA_OPTS -Dcom.sun.xml.bind.v2.bytecode.ClassTailor.noOptimize=true" 
+--- 48,50 ----

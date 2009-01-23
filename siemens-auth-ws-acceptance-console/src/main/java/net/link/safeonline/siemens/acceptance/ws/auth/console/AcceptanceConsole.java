@@ -81,8 +81,11 @@ public class AcceptanceConsole extends JFrame implements Observer {
     private Action                  setLocationAction       = new SetLocationAction("Set Location ...");
     private Action                  setApplicationAction    = new SetApplicationAction("Set Application ...");
     private Action                  generateKeyPairAction   = new GenerateKeyPairAction("Generate Keypair ...");
+    private Action                  usePcscAppletAction     = new UsePcscAppletAction("Use pcsc applet ...");
 
     private Action                  quitAction              = new QuitAction("Quit");
+
+    private Action                  acceptanceWsAction      = new AcceptanceWsAction("Acceptance Test WS ...");
 
     /*
      * GUI components
@@ -91,19 +94,24 @@ public class AcceptanceConsole extends JFrame implements Observer {
     private JSplitPane              splitPane               = null;
     private JSplitPane              statusPanel             = null;
 
+    private JLabel                  authenticatedLabel      = new JLabel();
     private JLabel                  locationLabel           = new JLabel();
     private JLabel                  applicationLabel        = new JLabel();
 
     /*
      * Menus
      */
+    private JMenu                   setupMenu               = new JMenu("Setup");
     private JMenu                   authMenu                = new JMenu("OLAS WS Authentication");
+    private JMenu                   wsMenu                  = new JMenu("Acceptance Test WS");
 
     private JMenuItem               setApplicationMenuItem  = new JMenuItem(setApplicationAction);
     private JMenuItem               setLocationMenuItem     = new JMenuItem(setLocationAction);
     private JCheckBoxMenuItem       generateKeyPairMenuItem = new JCheckBoxMenuItem(generateKeyPairAction);
-
+    private JCheckBoxMenuItem       usePcscAppletMenuItem   = new JCheckBoxMenuItem(usePcscAppletAction);
     private JMenuItem               quitMenuItem            = new JMenuItem(quitAction);
+
+    private JMenuItem               acceptanceWsMenuItem    = new JMenuItem(acceptanceWsAction);
 
     /*
      * Non-GUI members
@@ -133,22 +141,31 @@ public class AcceptanceConsole extends JFrame implements Observer {
     private void buildMenu() {
 
         generateKeyPairMenuItem.setSelected(consoleManager.getGenerateKeyPair());
+        usePcscAppletMenuItem.setSelected(consoleManager.getUsePcscApplet());
+        acceptanceWsMenuItem.setEnabled(false);
 
+        setupMenu.setMnemonic(KeyEvent.VK_S);
         authMenu.setMnemonic(KeyEvent.VK_A);
+
+        setupMenu.add(setLocationMenuItem);
+        setupMenu.add(setApplicationMenuItem);
+        setupMenu.add(generateKeyPairMenuItem);
+        setupMenu.addSeparator();
+        setupMenu.add(usePcscAppletMenuItem);
+        setupMenu.addSeparator();
+        setupMenu.add(quitMenuItem);
 
         authMenu.add(new AuthenticationAction(PASSWORD_DEVICE_NAME));
         authMenu.add(new AuthenticationAction(OTP_OVER_SMS_DEVICE_NAME));
         authMenu.add(new AuthenticationAction(ENCAP_DEVICE_NAME));
         authMenu.add(new AuthenticationAction(BEID_DEVICE_NAME));
-        authMenu.addSeparator();
-        authMenu.add(setLocationMenuItem);
-        authMenu.add(setApplicationMenuItem);
-        authMenu.add(generateKeyPairMenuItem);
-        authMenu.addSeparator();
-        authMenu.add(quitMenuItem);
+
+        wsMenu.add(acceptanceWsMenuItem);
 
         JMenuBar menu = new JMenuBar();
+        menu.add(setupMenu);
         menu.add(authMenu);
+        menu.add(wsMenu);
         setJMenuBar(menu);
     }
 
@@ -162,7 +179,8 @@ public class AcceptanceConsole extends JFrame implements Observer {
 
         splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, contentPanel, statusPanel);
         splitPane.setResizeWeight(1.0);
-        splitPane.setDividerSize(3);
+        splitPane.setDividerSize(0);
+        splitPane.setBorder(null);
 
         this.add(splitPane);
     }
@@ -171,16 +189,24 @@ public class AcceptanceConsole extends JFrame implements Observer {
 
         setStatus();
 
+        JPanel topPanel = new JPanel();
+        topPanel.add(authenticatedLabel);
+
         JPanel applicationPanel = new JPanel();
         applicationPanel.add(applicationLabel);
 
         JPanel locationPanel = new JPanel();
         locationPanel.add(locationLabel);
 
-        statusPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, applicationPanel, locationPanel);
+        JSplitPane bottomPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, applicationPanel, locationPanel);
+        bottomPanel.setDividerSize(0);
+        bottomPanel.setResizeWeight(0.5);
+        bottomPanel.setBorder(null);
+
+        statusPanel = new JSplitPane(JSplitPane.VERTICAL_SPLIT, topPanel, bottomPanel);
         statusPanel.setDividerSize(0);
         statusPanel.setResizeWeight(0.5);
-
+        statusPanel.setBorder(null);
     }
 
     public void resetContent() {
@@ -329,8 +355,15 @@ public class AcceptanceConsole extends JFrame implements Observer {
 
     public void setStatus() {
 
-        locationLabel.setText("Location: " + consoleManager.getLocation());
-        applicationLabel.setText("Application: " + consoleManager.getApplication());
+        if (null == consoleManager.getUserId()) {
+            authenticatedLabel.setText("<html>OLAS Authentication: <font color=red>Not yet authenticated</font></html>");
+        } else {
+            authenticatedLabel.setText("<html>OLAS Authentication: user <i>" + consoleManager.getUserId() + "</i> using device <i>"
+                    + consoleManager.getDeviceName() + "</i></html>");
+            acceptanceWsMenuItem.setEnabled(true);
+        }
+        locationLabel.setText("<html>Location: <i>" + consoleManager.getLocation() + "</i></html>");
+        applicationLabel.setText("<html>Application: <i>" + consoleManager.getApplication() + "</i></html>");
     }
 
     protected void onSetLocation() {
@@ -353,6 +386,17 @@ public class AcceptanceConsole extends JFrame implements Observer {
 
         consoleManager.setGenerateKeyPair(!consoleManager.getGenerateKeyPair());
         generateKeyPairMenuItem.setSelected(consoleManager.getGenerateKeyPair());
+
+    }
+
+    protected void onUsePcscApplet() {
+
+        consoleManager.setUsePcscApplet(!consoleManager.getUsePcscApplet());
+        usePcscAppletMenuItem.setSelected(consoleManager.getUsePcscApplet());
+
+    }
+
+    protected void onAcceptanceWS() {
 
     }
 
@@ -459,6 +503,41 @@ public class AcceptanceConsole extends JFrame implements Observer {
         public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
             onGenerateKeyPair();
+        }
+    }
+
+    public class UsePcscAppletAction extends AbstractAction {
+
+        private static final long serialVersionUID = 1L;
+
+
+        public UsePcscAppletAction(String name) {
+
+            putValue(NAME, name);
+            putValue(SHORT_DESCRIPTION, name);
+            putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_P));
+        }
+
+        public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
+
+            onUsePcscApplet();
+        }
+    }
+
+    public class AcceptanceWsAction extends AbstractAction {
+
+        private static final long serialVersionUID = 1L;
+
+
+        public AcceptanceWsAction(String name) {
+
+            putValue(NAME, name);
+            putValue(SHORT_DESCRIPTION, name);
+        }
+
+        public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
+
+            onAcceptanceWS();
         }
     }
 

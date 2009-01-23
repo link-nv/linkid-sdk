@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endpoints xmlns="http://java.sun.com/xml/ns/jax-ws/ri/runtime"
+	version="2.0">
+	<endpoint name="Siemens-WS-Auth-Acceptance-WS"
+		implementation="net.link.safeonline.siemens.auth.ws.acceptance.jaxws.ws.impl.SiemensAuthWsAcceptancePortImpl"
+		url-pattern="/test" interface="net.lin_k.siemens.jaxws.SiemensAuthWsAcceptancePort"
+		service="{urn:net:lin-k:siemens:jaxws}SiemensAuthWsAcceptanceService"
+		port="{urn:net:lin-k:siemens:jaxws}SiemensAuthWsAcceptancePort" />
+</endpoints>

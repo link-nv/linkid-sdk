@@ -7,7 +7,8 @@
 
 package net.link.safeonline.beid.auth.ws;
 
-import java.util.UUID;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 import javax.annotation.PostConstruct;
 import javax.jws.HandlerChain;
@@ -45,6 +46,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.utils.Base64;
+import org.bouncycastle.util.encoders.Hex;
 
 import com.sun.xml.ws.api.server.InstanceResolver;
 import com.sun.xml.ws.developer.Stateful;
@@ -120,6 +122,15 @@ public class BeIdAuthenticationPortImpl implements DeviceAuthenticationPort {
 
     }
 
+    private String generateIdentifier(int size)
+            throws NoSuchAlgorithmException {
+
+        SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+        byte[] buf = new byte[size];
+        random.nextBytes(buf);
+        return new String(Hex.encode(buf));
+    }
+
     private WSAuthenticationResponseType generateSessionId(WSAuthenticationRequestType request) {
 
         SamlAuthorityService samlAuthorityService = EjbUtils.getEJB(SamlAuthorityService.JNDI_BINDING, SamlAuthorityService.class);
@@ -127,8 +138,14 @@ public class BeIdAuthenticationPortImpl implements DeviceAuthenticationPort {
         WSAuthenticationResponseType response = DeviceAuthenticationPortUtil.generateResponse(request.getID(), issuerName,
                 request.getDeviceName());
 
-        // TODO: fixme
-        sessionId = UUID.randomUUID().toString();
+        try {
+            sessionId = generateIdentifier(16);
+        } catch (NoSuchAlgorithmException e) {
+            LOG.error("no such algorithm exception: " + e.getMessage(), e);
+            DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.INTERNAL_ERROR, e.getMessage());
+            manager.unexport(this);
+            return response;
+        }
 
         DeviceAuthenticationInformationType deviceAuthenticationInformation = new DeviceAuthenticationInformationType();
         NameValuePairType nameValuePair = new NameValuePairType();
@@ -180,7 +197,6 @@ public class BeIdAuthenticationPortImpl implements DeviceAuthenticationPort {
 
         BeIdDeviceService beidDeviceService = EjbUtils.getEJB(BeIdDeviceService.JNDI_BINDING, BeIdDeviceService.class);
 
-        // TODO: allways throw authentication failed, specific error code's per device ?
         String userId;
         try {
             userId = beidDeviceService.authenticate(sessionId, request.getApplicationId(), authenticationStatement);
@@ -195,8 +211,8 @@ public class BeIdAuthenticationPortImpl implements DeviceAuthenticationPort {
             manager.unexport(this);
             return response;
         } catch (TrustDomainNotFoundException e) {
-            LOG.error("authentication failed: " + e.getMessage(), e);
-            DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.AUTHENTICATION_FAILED, e.getMessage());
+            LOG.error("trust domain not found: " + e.getMessage(), e);
+            DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.INVALID_CREDENTIALS, e.getMessage());
             manager.unexport(this);
             return response;
         } catch (ArgumentIntegrityException e) {
@@ -205,28 +221,28 @@ public class BeIdAuthenticationPortImpl implements DeviceAuthenticationPort {
             manager.unexport(this);
             return response;
         } catch (PkiRevokedException e) {
-            LOG.error("authentication failed: " + e.getMessage(), e);
-            DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.AUTHENTICATION_FAILED, e.getMessage());
+            LOG.error("PKI revoked: " + e.getMessage(), e);
+            DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.PKI_REVOKED, e.getMessage());
             manager.unexport(this);
             return response;
         } catch (PkiSuspendedException e) {
             LOG.error("authentication failed: " + e.getMessage(), e);
-            DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.AUTHENTICATION_FAILED, e.getMessage());
+            DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.PKI_SUSPENDED, e.getMessage());
             manager.unexport(this);
             return response;
         } catch (PkiExpiredException e) {
             LOG.error("authentication failed: " + e.getMessage(), e);
-            DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.AUTHENTICATION_FAILED, e.getMessage());
+            DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.PKI_EXPIRED, e.getMessage());
             manager.unexport(this);
             return response;
         } catch (PkiNotYetValidException e) {
             LOG.error("authentication failed: " + e.getMessage(), e);
-            DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.AUTHENTICATION_FAILED, e.getMessage());
+            DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.PKI_NOT_YET_VALID, e.getMessage());
             manager.unexport(this);
             return response;
         } catch (PkiInvalidException e) {
             LOG.error("authentication failed: " + e.getMessage(), e);
-            DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.AUTHENTICATION_FAILED, e.getMessage());
+            DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.PKI_INVALID, e.getMessage());
             manager.unexport(this);
             return response;
         } catch (DeviceDisabledException e) {

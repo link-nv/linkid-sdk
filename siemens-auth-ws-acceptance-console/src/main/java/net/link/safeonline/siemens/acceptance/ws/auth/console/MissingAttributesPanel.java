@@ -7,6 +7,7 @@
 package net.link.safeonline.siemens.acceptance.ws.auth.console;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -21,6 +22,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 
 import net.link.safeonline.auth.ws.AuthenticationStep;
 import net.link.safeonline.sdk.ws.auth.Attribute;
@@ -55,7 +57,8 @@ public class MissingAttributesPanel extends JPanel implements Observer {
     private JPanel            infoPanel              = new JPanel();
 
     private JLabel            infoLabel              = new JLabel("Missing Attributes for application "
-                                                             + AcceptanceConsoleManager.getInstance().getApplication());
+                                                             + AcceptanceConsoleManager.getInstance().getApplication(),
+                                                             SwingConstants.CENTER);
 
     JTable                    missingAttributesTable = null;
 
@@ -67,6 +70,8 @@ public class MissingAttributesPanel extends JPanel implements Observer {
 
 
     public MissingAttributesPanel(AcceptanceConsole parent) {
+
+        setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
         this.parent = parent;
 
@@ -105,15 +110,19 @@ public class MissingAttributesPanel extends JPanel implements Observer {
         setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         cancelButton.setEnabled(true);
 
-        if (arg instanceof AuthenticationError) {
-            AuthenticationError error = (AuthenticationError) arg;
-            infoLabel.setText("Authentication failed: " + error.getCode().getErrorCode() + " message=" + error.getMessage());
-        } else if (arg instanceof AuthenticationStep) {
-            AuthenticationStep authenticationStep = (AuthenticationStep) arg;
-            infoLabel.setText("Additional authentication step: " + authenticationStep.getValue());
-        } else if (arg instanceof List<?>) {
-            saveButton.setEnabled(true);
-            setMissingAttributes((List<Attribute>) arg);
+        try {
+            if (arg instanceof AuthenticationError) {
+                AuthenticationError error = (AuthenticationError) arg;
+                infoLabel.setText("Authentication failed: " + error.getCode().getErrorCode() + " message=" + error.getMessage());
+            } else if (arg instanceof AuthenticationStep) {
+                AuthenticationStep authenticationStep = (AuthenticationStep) arg;
+                infoLabel.setText("Additional authentication step: " + authenticationStep.getValue());
+            } else if (arg instanceof List<?>) {
+                saveButton.setEnabled(true);
+                setMissingAttributes((List<Attribute>) arg);
+            }
+        } finally {
+            cleanup();
         }
 
     }
@@ -146,11 +155,20 @@ public class MissingAttributesPanel extends JPanel implements Observer {
 
         // set table
         missingAttributesTable = new JTable(new AttributesTableModel(attributeList, true));
+        missingAttributesTable.setShowGrid(false);
+        missingAttributesTable.setShowHorizontalLines(true);
+        missingAttributesTable.setGridColor(Color.LIGHT_GRAY);
         missingAttributesTable.getColumnModel().getColumn(1).setMaxWidth(75);
         missingAttributesTable.getColumnModel().getColumn(2).setMaxWidth(75);
         JScrollPane tableScrollPane = new JScrollPane(missingAttributesTable);
         infoPanel.add(tableScrollPane, BorderLayout.CENTER);
         infoPanel.revalidate();
+    }
+
+    protected void cleanup() {
+
+        AuthenticationUtils.getInstance().deleteObserver(this);
+
     }
 
 
@@ -169,6 +187,7 @@ public class MissingAttributesPanel extends JPanel implements Observer {
         public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
             parent.resetContent();
+            cleanup();
         }
     }
 
@@ -187,17 +206,19 @@ public class MissingAttributesPanel extends JPanel implements Observer {
         public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
             // TODO: why the f#$k do I need to log the value to workaround some issue that it being null else ??
+            //
             List<Attribute> missingAttributes = ((AttributesTableModel) missingAttributesTable.getModel()).getAttributes();
-            for (Attribute attribute : missingAttributes) {
-                LOG.debug("missing attribute: " + attribute.getName());
-                if (attribute.isCompounded()) {
-                    for (Attribute memberAttribute : attribute.getMembers()) {
-                        LOG.debug("missing attribute: member : " + memberAttribute.getName() + " value=" + memberAttribute.getValue());
-                    }
-                }
-            }
+            // for (Attribute attribute : missingAttributes) {
+            // LOG.debug("missing attribute: " + attribute.getName());
+            // if (attribute.isCompounded()) {
+            // for (Attribute memberAttribute : attribute.getMembers()) {
+            // LOG.debug("missing attribute: member : " + memberAttribute.getName() + " value=" + memberAttribute.getValue());
+            // }
+            // }
+            // }
 
             parent.saveMissingAttributes(missingAttributes);
+            cleanup();
         }
     }
 }

@@ -8,9 +8,6 @@ package net.link.safeonline.siemens.acceptance.ws.auth.console;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.Observable;
@@ -22,6 +19,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 
 import net.link.safeonline.auth.ws.AuthenticationStep;
 import net.link.safeonline.auth.ws.Confirmation;
@@ -48,7 +46,7 @@ public class UsageAgreementPanel extends JPanel implements Observer {
     AcceptanceConsole         parent             = null;
 
     private JLabel            infoLabel          = new JLabel("Usage Agreement for application "
-                                                         + AcceptanceConsoleManager.getInstance().getApplication());
+                                                         + AcceptanceConsoleManager.getInstance().getApplication(), SwingConstants.CENTER);
 
     private JTextArea         usageAgreementText = new JTextArea(10, 80);
 
@@ -63,6 +61,8 @@ public class UsageAgreementPanel extends JPanel implements Observer {
 
 
     public UsageAgreementPanel(AcceptanceConsole parent) {
+
+        setCursor(new Cursor(Cursor.WAIT_CURSOR));
 
         this.parent = parent;
 
@@ -84,24 +84,9 @@ public class UsageAgreementPanel extends JPanel implements Observer {
         JPanel infoPanel = new JPanel();
         JPanel controlPanel = new JPanel();
 
-        GridBagLayout gbl = new GridBagLayout();
-        GridBagConstraints gbc = new GridBagConstraints();
-        infoPanel.setLayout(gbl);
-
-        gbc.gridwidth = 1;
-        gbc.gridheight = 1;
-        gbc.fill = 1;
-        gbc.insets = new Insets(5, 2, 5, 2);
-
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbl.setConstraints(infoLabel, gbc);
-        infoPanel.add(infoLabel, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbl.setConstraints(usageAgreementText, gbc);
-        infoPanel.add(usageAgreementText, gbc);
+        infoPanel.setLayout(new BorderLayout());
+        infoPanel.add(infoLabel, BorderLayout.NORTH);
+        infoPanel.add(usageAgreementText, BorderLayout.CENTER);
 
         controlPanel.add(confirmButton);
         controlPanel.add(rejectButton);
