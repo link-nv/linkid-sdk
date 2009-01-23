@@ -5,7 +5,7 @@
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 
-package test.integ.net.link.safeonline.ws.metro;
+package net.link.safeonline.siemens.acceptance.ws.auth.client;
 
 import java.net.ConnectException;
 

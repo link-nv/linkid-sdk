@@ -20,6 +20,8 @@ import net.link.safeonline.sdk.ws.auth.AuthenticationClientImpl;
 import net.link.safeonline.sdk.ws.auth.GetAuthenticationClient;
 import net.link.safeonline.sdk.ws.auth.GetAuthenticationClientImpl;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
+import net.link.safeonline.siemens.auth.ws.acceptance.jaxws.ws.client.SiemensAuthWsAcceptanceClient;
+import net.link.safeonline.siemens.auth.ws.acceptance.jaxws.ws.client.SiemensAuthWsAcceptanceClientImpl;
 
 
 /**
@@ -74,6 +76,14 @@ public class AcceptanceConsoleManager extends Observable {
     public void resetAuthenticationClient() {
 
         authenticationClient = null;
+    }
+
+    public SiemensAuthWsAcceptanceClient getAcceptanceWsClient() {
+
+        if (null == authenticationClient || null == authenticationClient.getAssertion())
+            return null;
+        SiemensAuthWsAcceptanceClient client = new SiemensAuthWsAcceptanceClientImpl(location, authenticationClient.getAssertion());
+        return client;
     }
 
     public void setLocation(String location) {

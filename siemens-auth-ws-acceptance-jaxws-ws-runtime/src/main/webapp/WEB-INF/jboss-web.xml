@@ -4,6 +4,6 @@
 	"http://www.jboss.org/j2ee/dtd/jboss-web_4_0.dtd">
 <jboss-web>
 
-	<context-root>/siemens-auth-ws</context-root>
+	<context-root>/siemens-ws</context-root>
 
 </jboss-web>

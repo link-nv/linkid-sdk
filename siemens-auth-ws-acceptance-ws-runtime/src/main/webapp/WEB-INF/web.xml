@@ -12,7 +12,7 @@
 
 	<servlet-mapping>
 		<servlet-name>Siemens WS Authentication Acceptance Test WS</servlet-name>
-		<url-pattern>/siemens_ws_auth</url-pattern>
+		<url-pattern>/test</url-pattern>
 	</servlet-mapping>
 
 </web-app>

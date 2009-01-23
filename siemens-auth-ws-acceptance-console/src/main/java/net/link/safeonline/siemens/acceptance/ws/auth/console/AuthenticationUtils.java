@@ -37,11 +37,11 @@ import org.jdesktop.swingworker.SwingWorker;
  */
 public class AuthenticationUtils extends Observable {
 
-    static final Log                   LOG                   = LogFactory.getLog(AuthenticationUtils.class);
+    static final Log                   LOG                         = LogFactory.getLog(AuthenticationUtils.class);
 
-    private static AuthenticationUtils servicesUtilsInstance = null;
+    private static AuthenticationUtils authenticationUtilsInstance = null;
 
-    private AcceptanceConsoleManager   consoleManager        = AcceptanceConsoleManager.getInstance();
+    private AcceptanceConsoleManager   consoleManager              = AcceptanceConsoleManager.getInstance();
 
 
     private AuthenticationUtils() {
@@ -50,10 +50,10 @@ public class AuthenticationUtils extends Observable {
 
     public static AuthenticationUtils getInstance() {
 
-        if (null == servicesUtilsInstance) {
-            servicesUtilsInstance = new AuthenticationUtils();
+        if (null == authenticationUtilsInstance) {
+            authenticationUtilsInstance = new AuthenticationUtils();
         }
-        return servicesUtilsInstance;
+        return authenticationUtilsInstance;
     }
 
     public void authenticate(final String deviceName, final Object deviceCredentials) {
@@ -65,9 +65,8 @@ public class AuthenticationUtils extends Observable {
             protected String doInBackground()
                     throws Exception {
 
-                return consoleManager.getAuthenticationClient().authenticate(
-                        consoleManager.getApplication(), deviceName, Locale.ENGLISH.getLanguage(),
-                        deviceCredentials, consoleManager.getPublicKey());
+                return consoleManager.getAuthenticationClient().authenticate(consoleManager.getApplication(), deviceName,
+                        Locale.ENGLISH.getLanguage(), deviceCredentials, consoleManager.getPublicKey());
             }
 
             @SuppressWarnings("synthetic-access")
@@ -80,10 +79,8 @@ public class AuthenticationUtils extends Observable {
                     if (null == get()) {
                         if (null != consoleManager.getAuthenticationClient().getAuthenticationStep()) {
                             notifyObservers(consoleManager.getAuthenticationClient().getAuthenticationStep());
-                        } else if (null != consoleManager.getAuthenticationClient()
-                                                                                  .getDeviceAuthenticationInformation()) {
-                            notifyObservers(consoleManager.getAuthenticationClient()
-                                                                                   .getDeviceAuthenticationInformation());
+                        } else if (null != consoleManager.getAuthenticationClient().getDeviceAuthenticationInformation()) {
+                            notifyObservers(consoleManager.getAuthenticationClient().getDeviceAuthenticationInformation());
                         } else {
                             // no additional device information given but the specific device needs further authentication steps
                             notifyObservers(new DeviceAuthenticationInformationType());
@@ -553,6 +550,36 @@ public class AuthenticationUtils extends Observable {
                 if (null != error) {
                     setChanged();
                     notifyObservers(error);
+                }
+            }
+
+        };
+        worker.execute();
+    }
+
+    public void acceptanceTestWs() {
+
+        SwingWorker<String, Object> worker = new SwingWorker<String, Object>() {
+
+            @SuppressWarnings("synthetic-access")
+            @Override
+            protected String doInBackground()
+                    throws Exception {
+
+                return consoleManager.getAcceptanceWsClient().getAttribute();
+            }
+
+            @SuppressWarnings("synthetic-access")
+            @Override
+            protected void done() {
+
+                setChanged();
+                try {
+                    notifyObservers(get());
+                } catch (ExecutionException e) {
+                    LOG.error("Authentication failed to execute ...");
+                } catch (InterruptedException e) {
+                    LOG.error("Interrupted exception ...");
                 }
             }
 

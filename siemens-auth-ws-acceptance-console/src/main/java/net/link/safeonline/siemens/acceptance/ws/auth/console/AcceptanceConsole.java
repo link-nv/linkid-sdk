@@ -85,6 +85,8 @@ public class AcceptanceConsole extends JFrame implements Observer {
 
     private Action                  quitAction              = new QuitAction("Quit");
 
+    private Action                  acceptanceWsAction      = new AcceptanceWsAction("Acceptance Test WS ...");
+
     /*
      * GUI components
      */
@@ -101,13 +103,15 @@ public class AcceptanceConsole extends JFrame implements Observer {
      */
     private JMenu                   setupMenu               = new JMenu("Setup");
     private JMenu                   authMenu                = new JMenu("OLAS WS Authentication");
+    private JMenu                   wsMenu                  = new JMenu("Acceptance Test WS");
 
     private JMenuItem               setApplicationMenuItem  = new JMenuItem(setApplicationAction);
     private JMenuItem               setLocationMenuItem     = new JMenuItem(setLocationAction);
     private JCheckBoxMenuItem       generateKeyPairMenuItem = new JCheckBoxMenuItem(generateKeyPairAction);
     private JCheckBoxMenuItem       usePcscAppletMenuItem   = new JCheckBoxMenuItem(usePcscAppletAction);
-
     private JMenuItem               quitMenuItem            = new JMenuItem(quitAction);
+
+    private JMenuItem               acceptanceWsMenuItem    = new JMenuItem(acceptanceWsAction);
 
     /*
      * Non-GUI members
@@ -138,6 +142,7 @@ public class AcceptanceConsole extends JFrame implements Observer {
 
         generateKeyPairMenuItem.setSelected(consoleManager.getGenerateKeyPair());
         usePcscAppletMenuItem.setSelected(consoleManager.getUsePcscApplet());
+        acceptanceWsMenuItem.setEnabled(false);
 
         setupMenu.setMnemonic(KeyEvent.VK_S);
         authMenu.setMnemonic(KeyEvent.VK_A);
@@ -155,9 +160,12 @@ public class AcceptanceConsole extends JFrame implements Observer {
         authMenu.add(new AuthenticationAction(ENCAP_DEVICE_NAME));
         authMenu.add(new AuthenticationAction(BEID_DEVICE_NAME));
 
+        wsMenu.add(acceptanceWsMenuItem);
+
         JMenuBar menu = new JMenuBar();
         menu.add(setupMenu);
         menu.add(authMenu);
+        menu.add(wsMenu);
         setJMenuBar(menu);
     }
 
@@ -352,6 +360,7 @@ public class AcceptanceConsole extends JFrame implements Observer {
         } else {
             authenticatedLabel.setText("<html>OLAS Authentication: user <i>" + consoleManager.getUserId() + "</i> using device <i>"
                     + consoleManager.getDeviceName() + "</i></html>");
+            acceptanceWsMenuItem.setEnabled(true);
         }
         locationLabel.setText("<html>Location: <i>" + consoleManager.getLocation() + "</i></html>");
         applicationLabel.setText("<html>Application: <i>" + consoleManager.getApplication() + "</i></html>");
@@ -384,6 +393,10 @@ public class AcceptanceConsole extends JFrame implements Observer {
 
         consoleManager.setUsePcscApplet(!consoleManager.getUsePcscApplet());
         usePcscAppletMenuItem.setSelected(consoleManager.getUsePcscApplet());
+
+    }
+
+    protected void onAcceptanceWS() {
 
     }
 
@@ -508,6 +521,23 @@ public class AcceptanceConsole extends JFrame implements Observer {
         public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
 
             onUsePcscApplet();
+        }
+    }
+
+    public class AcceptanceWsAction extends AbstractAction {
+
+        private static final long serialVersionUID = 1L;
+
+
+        public AcceptanceWsAction(String name) {
+
+            putValue(NAME, name);
+            putValue(SHORT_DESCRIPTION, name);
+        }
+
+        public void actionPerformed(@SuppressWarnings("unused") ActionEvent evt) {
+
+            onAcceptanceWS();
         }
     }
 

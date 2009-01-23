@@ -1,0 +1,72 @@
+/*
+ * SafeOnline project.
+ *
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
+ * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
+ */
+
+package net.link.safeonline.siemens.auth.ws.acceptance.jaxws.ws.client;
+
+import java.net.ConnectException;
+
+import javax.xml.ws.BindingProvider;
+
+import net.lin_k.siemens.jaxws.Request;
+import net.lin_k.siemens.jaxws.Response;
+import net.lin_k.siemens.jaxws.SiemensAuthWsAcceptancePort;
+import net.lin_k.siemens.jaxws.SiemensAuthWsAcceptanceService;
+import net.link.safeonline.siemens.auth.ws.acceptance.jaxws.ws.SiemensAuthWsAcceptanceServiceFactory;
+import net.link.safeonline.siemens.auth.ws.acceptance.jaxws.ws.handler.SamlTokenClientHandler;
+import oasis.names.tc.saml._2_0.assertion.AssertionType;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import com.sun.xml.ws.client.ClientTransportException;
+
+
+public class SiemensAuthWsAcceptanceClientImpl implements SiemensAuthWsAcceptanceClient {
+
+    private static final Log                  LOG = LogFactory.getLog(SiemensAuthWsAcceptanceClientImpl.class);
+
+    private final SiemensAuthWsAcceptancePort port;
+
+    private final String                      location;
+
+
+    public SiemensAuthWsAcceptanceClientImpl(String location, AssertionType assertion) {
+
+        SiemensAuthWsAcceptanceService service = SiemensAuthWsAcceptanceServiceFactory.newInstance();
+        port = service.getSiemensAuthWsAcceptancePort();
+        this.location = location + "/siemens-ws/test";
+
+        setEndpointAddress();
+
+        SamlTokenClientHandler.addNewHandler(port, assertion);
+
+    }
+
+    private void setEndpointAddress() {
+
+        BindingProvider bindingProvider = (BindingProvider) port;
+
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getAttribute()
+            throws ConnectException {
+
+        Request request = new Request();
+
+        try {
+            Response response = port.getAttribute(request);
+            return response.getAttribute();
+        } catch (ClientTransportException e) {
+            throw new ConnectException(e.getMessage());
+        }
+    }
+
+}
