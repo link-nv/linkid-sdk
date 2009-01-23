@@ -54,9 +54,14 @@ public interface UserService extends BankService {
     public void removeUser(BankUserEntity user);
 
     /**
-     * @return The {@link BankUserEntity} with the given Bank ID, or <code>null</code> if no such ID is known by the bank.
+     * @return The {@link BankUserEntity} with the given Bank ID.
      */
     public BankUserEntity getBankUser(String bankId);
+
+    /**
+     * @return The {@link BankUserEntity} with the given Bank ID, or <code>null</code> if no such ID is known by the bank.
+     */
+    public BankUserEntity findBankUser(String bankId);
 
     /**
      * NOTE: If no {@link BankUserEntity} with the given OLAS ID exists yet, one will be created and returned.
@@ -64,6 +69,11 @@ public interface UserService extends BankService {
      * @return The {@link BankUserEntity} with the given OLAS ID.
      */
     public BankUserEntity getOLASUser(String olasId);
+
+    /**
+     * @return The {@link BankUserEntity} with the given OLAS ID or <code>null</code> if no bank user has the given OLAS ID.
+     */
+    public BankUserEntity findOLASUser(String olasId);
 
     /**
      * @return The {@link BankUserEntity} that has been linked to the OLAS account of the given OLAS id.

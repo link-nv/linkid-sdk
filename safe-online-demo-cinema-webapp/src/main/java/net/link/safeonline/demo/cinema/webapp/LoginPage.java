@@ -18,11 +18,20 @@ public class LoginPage extends LayoutPage {
      */
     public LoginPage() {
 
+        add(new Label("headerTitle", "Login Page"));
+        add(new OlasLoginLink("loginLink"));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onBeforeRender() {
+
         // If logged in, send user to the ticket history page.
         if (CinemaSession.get().isUserSet())
             throw new RestartResponseException(TicketPage.class);
 
-        add(new Label("headerTitle", "Login Page"));
-        add(new OlasLoginLink("loginLink"));
+        super.onBeforeRender();
     }
 }

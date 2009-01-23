@@ -6,7 +6,6 @@ import org.apache.wicket.Page;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 
 
@@ -61,8 +60,6 @@ public class NewAccountPage extends LayoutPage {
 
         private Model<String>     name;
 
-        private FeedbackPanel     feedback;
-
 
         public AccountForm(String id) {
 
@@ -71,7 +68,6 @@ public class NewAccountPage extends LayoutPage {
             TextField<String> nameField = new TextField<String>("name", name = new Model<String>());
             nameField.setRequired(true);
 
-            add(feedback = new FeedbackPanel("feedback"));
             add(nameField);
             focus(nameField);
         }
@@ -81,8 +77,6 @@ public class NewAccountPage extends LayoutPage {
          */
         @Override
         protected void onBeforeRender() {
-
-            feedback.setVisible(feedback.anyErrorMessage());
 
             super.onBeforeRender();
         }
@@ -106,7 +100,7 @@ public class NewAccountPage extends LayoutPage {
 
     void createAccount(String name) {
 
-        if (getAccountService().createAccount(BankSession.get().getUser(), name) != null)
+        if (accountService.createAccount(BankSession.get().getUser(), name) != null)
             throw new RestartResponseException(AccountPage.class);
     }
 

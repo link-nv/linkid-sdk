@@ -16,46 +16,25 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.link.PageLink;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 
 
 public abstract class LayoutPage extends OlasApplicationPage {
 
-    private static final long            serialVersionUID = 1L;
+    private static final long    serialVersionUID = 1L;
 
     @EJB(mappedName = UserService.JNDI_BINDING)
-    transient private UserService        userService;
+    transient UserService        userService;
 
     @EJB(mappedName = AccountService.JNDI_BINDING)
-    transient private AccountService     accountService;
+    transient AccountService     accountService;
 
     @EJB(mappedName = TransactionService.JNDI_BINDING)
-    transient private TransactionService transactionService;
+    transient TransactionService transactionService;
 
+    private FeedbackPanel        globalFeedback;
 
-    /**
-     * @return The userService of this {@link LayoutPage}.
-     */
-    UserService getUserService() {
-
-        return userService;
-    }
-
-    /**
-     * @return The accountService of this {@link LayoutPage}.
-     */
-    AccountService getAccountService() {
-
-        return accountService;
-    }
-
-    /**
-     * @return The transactionService of this {@link LayoutPage}.
-     */
-    TransactionService getTransactionService() {
-
-        return transactionService;
-    }
 
     /**
      * Add components to the layout that are present on every page.
@@ -66,6 +45,7 @@ public abstract class LayoutPage extends OlasApplicationPage {
 
         add(new Label("pageTitle", "Bank Demo Application"));
         add(new Label("headerTitle", getHeaderTitle()));
+        add(globalFeedback = new FeedbackPanel("globalFeedback"));
 
         add(new UserInfo("user"));
 
@@ -74,9 +54,27 @@ public abstract class LayoutPage extends OlasApplicationPage {
             BankUserEntity user = BankSession.get().getUser();
             String olasId = WicketUtil.findOlasId(getRequest());
 
-            BankSession.get().setUser(getUserService().linkOLASUser(user, olasId, WicketUtil.toServletRequest(getRequest())));
+            try {
+                BankSession.get().setUser(userService.linkOLASUser(user, olasId, WicketUtil.toServletRequest(getRequest())));
+            }
+
+            catch (IllegalStateException e) {
+                error(e.getMessage());
+            }
+
             BankSession.get().setLinkingUser(null);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onBeforeRender() {
+
+        globalFeedback.setVisible(globalFeedback.anyErrorMessage());
+
+        super.onBeforeRender();
     }
 
     /**
@@ -86,9 +84,9 @@ public abstract class LayoutPage extends OlasApplicationPage {
     protected void onOlasAuthenticated() {
 
         String olasId = WicketUtil.findOlasId(getRequest());
-        BankUserEntity user = getUserService().getOLASUser(olasId);
+        BankUserEntity user = userService.getOLASUser(olasId);
 
-        BankSession.get().setUser(getUserService().updateUser(user, WicketUtil.toServletRequest(getRequest())));
+        BankSession.get().setUser(userService.updateUser(user, WicketUtil.toServletRequest(getRequest())));
     }
 
     /**
@@ -129,7 +127,7 @@ public abstract class LayoutPage extends OlasApplicationPage {
             if (BankSession.get().isUserSet()) {
                 double total = 0;
                 BankUserEntity user = BankSession.get().getUser();
-                for (BankAccountEntity account : getUserService().getAccounts(user)) {
+                for (BankAccountEntity account : userService.getAccounts(user)) {
                     total += account.getAmount();
                 }
 

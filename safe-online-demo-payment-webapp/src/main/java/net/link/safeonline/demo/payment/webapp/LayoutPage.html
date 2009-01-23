@@ -21,6 +21,17 @@
             </h1>
         </div>
 
+        <wicket:enclosure>
+            <table id="errors">
+                <tr>
+                    <th>Error(s) Occurred:</th>
+                </tr>
+                <tr>
+                    <td wicket:id="globalFeedback" />
+                </tr>
+            </table>
+        </wicket:enclosure>
+
         <div id="user" wicket:id="user">
             <table>
                 <caption>Logged in as:</caption>

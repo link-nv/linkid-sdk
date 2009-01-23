@@ -14,35 +14,24 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.link.PageLink;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 
 
 public abstract class LayoutPage extends OlasApplicationPage {
 
-    private static final long            serialVersionUID = 1L;
+    private static final long    serialVersionUID = 1L;
 
     @EJB(mappedName = UserService.JNDI_BINDING)
-    transient private UserService        userService;
+    transient UserService        userService;
 
     @EJB(mappedName = TransactionService.JNDI_BINDING)
-    transient private TransactionService transactionService;
+    transient TransactionService transactionService;
 
+    private UserInfo             userForm;
 
-    /**
-     * @return The userService of this {@link LayoutPage}.
-     */
-    UserService getUserService() {
+    private FeedbackPanel        globalFeedback;
 
-        return userService;
-    }
-
-    /**
-     * @return The transactionService of this {@link LayoutPage}.
-     */
-    TransactionService getTransactionService() {
-
-        return transactionService;
-    }
 
     /**
      * Add components to the layout that are present on every page.
@@ -53,8 +42,22 @@ public abstract class LayoutPage extends OlasApplicationPage {
 
         add(new Label("pageTitle", "Payment Demo Application"));
         add(new Label("headerTitle", getHeaderTitle()));
+        add(globalFeedback = new FeedbackPanel("globalFeedback"));
 
-        add(new UserInfo("user"));
+        add(userForm = new UserInfo("user"));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onBeforeRender() {
+
+        userForm.setVisible(PaymentSession.get().isUserSet());
+
+        globalFeedback.setVisible(globalFeedback.anyErrorMessage());
+
+        super.onBeforeRender();
     }
 
     /**
@@ -64,9 +67,9 @@ public abstract class LayoutPage extends OlasApplicationPage {
     protected void onOlasAuthenticated() {
 
         String olasId = WicketUtil.findOlasId(getRequest());
-        PaymentUserEntity user = getUserService().getUser(olasId);
+        PaymentUserEntity user = userService.getUser(olasId);
 
-        PaymentSession.get().setUser(getUserService().updateUser(user, WicketUtil.toServletRequest(getRequest())));
+        PaymentSession.get().setUser(userService.updateUser(user, WicketUtil.toServletRequest(getRequest())));
     }
 
     /**
@@ -79,10 +82,6 @@ public abstract class LayoutPage extends OlasApplicationPage {
 
         private static final long serialVersionUID = 1L;
         private Model<String>     name;
-
-        {
-            setVisible(PaymentSession.get().isUserSet());
-        }
 
 
         public UserInfo(String id) {
@@ -101,11 +100,20 @@ public abstract class LayoutPage extends OlasApplicationPage {
             // User information.
             add(new OlasLogoutLink("logout"));
             add(new Label("name", name = new Model<String>()));
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void onBeforeRender() {
 
             if (PaymentSession.get().isUserSet()) {
                 PaymentUserEntity user = PaymentSession.get().getUser();
                 name.setObject(user.getOlasName());
             }
+
+            super.onBeforeRender();
         }
     }
 

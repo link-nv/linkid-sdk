@@ -5,7 +5,6 @@ import net.link.safeonline.demo.bank.webapp.NewAccountPage.AccountForm;
 import net.link.safeonline.wicket.web.ForceLogout;
 
 import org.apache.wicket.Page;
-import org.apache.wicket.feedback.IFeedbackMessageFilter;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -14,7 +13,6 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.Model;
 
 
@@ -70,7 +68,6 @@ public class AdminPage extends LayoutPage {
         CheckBox                  deleteField;
 
         Button                    submitButton;
-        FeedbackPanel             feedbackPanel;
 
 
         public AdminForm(String id) {
@@ -79,7 +76,7 @@ public class AdminPage extends LayoutPage {
 
             add(bankIdField = new TextField<String>("bankId", bankId = new Model<String>()));
 
-            add(bankIdsList = new ListView<BankUserEntity>("bankIds", getUserService().getUsers()) {
+            add(bankIdsList = new ListView<BankUserEntity>("bankIds", userService.getUsers()) {
 
                 private static final long serialVersionUID = 1L;
 
@@ -118,7 +115,6 @@ public class AdminPage extends LayoutPage {
             add(deleteField = new CheckBox("delete", delete = new Model<Boolean>()));
 
             add(submitButton = new Button("submit", new Model<String>("Search &gt;")));
-            add(feedbackPanel = new FeedbackPanel("feedback", IFeedbackMessageFilter.ALL));
 
             bankIdField.setRequired(true);
             submitButton.setEscapeModelStrings(false);
@@ -161,8 +157,6 @@ public class AdminPage extends LayoutPage {
                 }
             }
 
-            feedbackPanel.setVisible(feedbackPanel.anyMessage());
-
             super.onBeforeRender();
         }
 
@@ -175,7 +169,7 @@ public class AdminPage extends LayoutPage {
             if (bankIdField.isEnabled()) {
                 // Submit was a search query.
 
-                BankUserEntity bankUser = getUserService().getBankUser(bankId.getObject());
+                BankUserEntity bankUser = userService.findBankUser(bankId.getObject());
                 if (bankUser == null) {
                     nameField.setVisible(true);
                     linkedField.setVisible(false);
@@ -204,19 +198,19 @@ public class AdminPage extends LayoutPage {
                 if (nameField.isVisible()) {
                     // Submit was a create.
 
-                    getUserService().addUser(bankId.getObject(), name.getObject());
+                    userService.addUser(bankId.getObject(), name.getObject());
                 }
 
                 if (linkedField.isVisible() && linked.getObject() == false) {
                     // Submit was an apply & link was broken by unchecking the checkbox.
 
-                    getUserService().unlinkOLASUser(getUserService().getBankUser(bankId.getObject()));
+                    userService.unlinkOLASUser(userService.getBankUser(bankId.getObject()));
                 }
 
                 if (deleteField.isVisible() && delete.getObject() == true) {
                     // Submit was an apply & delete was checked.
 
-                    getUserService().removeUser(getUserService().getBankUser(bankId.getObject()));
+                    userService.removeUser(userService.getBankUser(bankId.getObject()));
                 }
 
                 nameField.setVisible(false);
@@ -224,7 +218,7 @@ public class AdminPage extends LayoutPage {
                 deleteField.setVisible(false);
 
                 bankIdField.setEnabled(true);
-                bankIdsList.setList(getUserService().getUsers());
+                bankIdsList.setList(userService.getUsers());
             }
         }
     }

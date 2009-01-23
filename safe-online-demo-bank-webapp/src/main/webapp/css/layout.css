@@ -103,6 +103,21 @@ textarea, select {
  * Section: Classes
  */
 
+#errors {
+    position:           fixed;
+
+    width:              100%;
+    margin:             1ex 2%;
+    padding:            0;
+    top:                0;
+}
+#errors[id] {
+    width:              96%;
+}
+#errors * {
+    margin:             0;
+    padding:            0;
+}
 .small {
     width:              20%;
 }

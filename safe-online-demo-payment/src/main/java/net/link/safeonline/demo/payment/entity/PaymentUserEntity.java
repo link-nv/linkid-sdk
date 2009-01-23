@@ -14,15 +14,19 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 
 @Entity
 @Table(name = "demo_payment_user")
+@NamedQueries( { @NamedQuery(name = PaymentUserEntity.getAll, query = "SELECT u FROM PaymentUserEntity u") })
 public class PaymentUserEntity implements Serializable {
 
     private static final long   serialVersionUID = 1L;
+    public static final String  getAll           = "PaymentUserEntity.getAll";
 
     @Id
     private String              olasId;

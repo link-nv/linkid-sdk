@@ -45,6 +45,10 @@ public class FilmTheatreSelectionPage extends LayoutPage {
     @EJB(mappedName = TheatreService.JNDI_BINDING)
     transient TheatreService  theatreService;
 
+    private FilmsForm         filmsForm;
+
+    private TheatersForm      theatresForm;
+
 
     /**
      * If film and theatre are selected; continue to the time and room selection page.
@@ -53,14 +57,26 @@ public class FilmTheatreSelectionPage extends LayoutPage {
      */
     public FilmTheatreSelectionPage() {
 
+        add(new Label("headerTitle", "Film And Theatre Selection"));
+
+        add(filmsForm = new FilmsForm("films"));
+        add(theatresForm = new TheatersForm("theatres"));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onBeforeRender() {
+
         // If theatre and film selected, send user to the time and room selection page.
         if (CinemaSession.isFilmAndTheaterSet())
             throw new RestartResponseException(TimeRoomSelectionPage.class);
 
-        add(new Label("headerTitle", "Film And Theatre Selection"));
+        filmsForm.setVisible(!CinemaSession.isFilmSet());
+        theatresForm.setVisible(!CinemaSession.isTheaterSet());
 
-        add(new FilmsForm("films"));
-        add(new TheatersForm("theatres"));
+        super.onBeforeRender();
     }
 
 
@@ -90,7 +106,6 @@ public class FilmTheatreSelectionPage extends LayoutPage {
         public FilmsForm(String id) {
 
             super(id);
-            setVisible(!CinemaSession.isFilmSet());
 
             // Either get all films or just those that play in selected theatre.
             List<CinemaFilmEntity> data;
@@ -128,7 +143,6 @@ public class FilmTheatreSelectionPage extends LayoutPage {
                         public void onClick() {
 
                             CinemaSession.get().setFilm(film);
-                            throw new RestartResponseException(FilmTheatreSelectionPage.class);
                         }
                     });
                 }
@@ -166,7 +180,6 @@ public class FilmTheatreSelectionPage extends LayoutPage {
         public TheatersForm(String id) {
 
             super(id);
-            setVisible(!CinemaSession.isTheaterSet());
 
             // Either get all theatres or just those that play selected film.
             List<CinemaTheatreEntity> data;
@@ -203,7 +216,6 @@ public class FilmTheatreSelectionPage extends LayoutPage {
                         public void onClick() {
 
                             CinemaSession.get().setTheatre(theatre);
-                            throw new RestartResponseException(FilmTheatreSelectionPage.class);
                         }
                     });
                 }

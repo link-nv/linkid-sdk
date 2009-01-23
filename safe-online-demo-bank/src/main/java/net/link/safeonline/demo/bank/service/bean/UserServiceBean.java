@@ -74,9 +74,19 @@ public class UserServiceBean extends AbstractBankServiceBean implements UserServ
      */
     public BankUserEntity getBankUser(String bankId) {
 
+        return (BankUserEntity) em.createNamedQuery(BankUserEntity.getByBankId).setParameter("bankId", bankId).getSingleResult();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public BankUserEntity findBankUser(String bankId) {
+
         try {
-            return (BankUserEntity) em.createNamedQuery(BankUserEntity.getByBankId).setParameter("bankId", bankId).getSingleResult();
-        } catch (NoResultException e) {
+            return getBankUser(bankId);
+        }
+
+        catch (NoResultException e) {
             return null;
         }
     }
@@ -86,24 +96,36 @@ public class UserServiceBean extends AbstractBankServiceBean implements UserServ
      */
     public BankUserEntity getOLASUser(String olasId) {
 
-        try {
-            return (BankUserEntity) em.createNamedQuery(BankUserEntity.getByOlasId).setParameter("olasId", olasId).getSingleResult();
-        }
+        BankUserEntity userEntity = findOLASUser(olasId);
 
-        catch (NoResultException e) {
+        if (userEntity == null) {
             String bankId = olasId;
             while (true) {
-                if (getBankUser(bankId) == null) {
+                if (findBankUser(bankId) == null) {
                     break;
                 }
 
                 bankId += "_";
             }
 
-            BankUserEntity userEntity = new BankUserEntity(bankId, olasId, olasId);
+            userEntity = new BankUserEntity(bankId, olasId, olasId);
             em.persist(userEntity);
+        }
 
-            return userEntity;
+        return userEntity;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public BankUserEntity findOLASUser(String olasId) {
+
+        try {
+            return (BankUserEntity) em.createNamedQuery(BankUserEntity.getByOlasId).setParameter("olasId", olasId).getSingleResult();
+        }
+
+        catch (NoResultException e) {
+            return null;
         }
     }
 
@@ -111,6 +133,15 @@ public class UserServiceBean extends AbstractBankServiceBean implements UserServ
      * {@inheritDoc}
      */
     public BankUserEntity linkOLASUser(BankUserEntity user, String olasId, HttpServletRequest httpRequest) {
+
+        BankUserEntity olasEntity = findOLASUser(olasId);
+        if (olasEntity != null) {
+            if (olasEntity.getBankId() == user.getBankId())
+                // Already linked. Odd but meh.
+                return olasEntity;
+
+            throw new IllegalStateException("The OLAS user we're linking with is already registered with the bank.");
+        }
 
         BankUserEntity userEntity = attach(user);
         userEntity.setOlasId(olasId);

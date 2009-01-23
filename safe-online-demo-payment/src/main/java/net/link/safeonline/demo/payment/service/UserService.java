@@ -6,6 +6,8 @@
  */
 package net.link.safeonline.demo.payment.service;
 
+import java.util.List;
+
 import javax.ejb.Local;
 import javax.servlet.http.HttpServletRequest;
 
@@ -31,6 +33,11 @@ public interface UserService extends PaymentService {
 
     public static final String JNDI_BINDING = JNDI_PREFIX + "UserServiceBean/local";
 
+
+    /**
+     * @return All known {@link PaymentUserEntity}s.
+     */
+    public List<PaymentUserEntity> getUsers();
 
     /**
      * NOTE: If no {@link PaymentUserEntity} with the given OLAS ID exists yet, one will be created and returned.
