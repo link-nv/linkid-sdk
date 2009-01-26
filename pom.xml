@@ -444,6 +444,7 @@
 			<modules>
 				<module>siemens-metro-acceptance-ws-impl</module>
 				<module>siemens-metro-acceptance-ws-runtime</module>
+				<module>siemens-auth-ws-acceptance-ws-runtime</module>
 				<module>siemens-metro-distribution</module>
 			</modules>
 		</profile>
