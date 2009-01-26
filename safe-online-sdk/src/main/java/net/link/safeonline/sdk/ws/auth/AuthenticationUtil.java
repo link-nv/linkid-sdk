@@ -239,5 +239,4 @@ public class AuthenticationUtil {
 
         return keyInfo;
     }
-
 }

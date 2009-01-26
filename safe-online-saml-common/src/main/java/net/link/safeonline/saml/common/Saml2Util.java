@@ -8,6 +8,7 @@ package net.link.safeonline.saml.common;
 
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.List;
 
@@ -27,6 +28,7 @@ import oasis.names.tc.saml._2_0.ac.classes.passwordprotectedtransport.ExtensionO
 import oasis.names.tc.saml._2_0.ac.classes.passwordprotectedtransport.ObjectFactory;
 
 import org.joda.time.DateTime;
+import org.opensaml.DefaultBootstrap;
 import org.opensaml.common.SAMLObject;
 import org.opensaml.common.SignableSAMLObject;
 import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
@@ -44,6 +46,7 @@ import org.opensaml.saml2.core.Subject;
 import org.opensaml.saml2.core.SubjectConfirmation;
 import org.opensaml.saml2.core.SubjectConfirmationData;
 import org.opensaml.xml.Configuration;
+import org.opensaml.xml.ConfigurationException;
 import org.opensaml.xml.XMLObject;
 import org.opensaml.xml.XMLObjectBuilder;
 import org.opensaml.xml.XMLObjectBuilderFactory;
@@ -78,6 +81,20 @@ import org.w3c.dom.Element;
  * @author wvdhaute
  */
 public class Saml2Util {
+
+    static {
+        /*
+         * Next is because Sun loves to endorse crippled versions of Xerces.
+         */
+        System.setProperty("javax.xml.validation.SchemaFactory:http://www.w3.org/2001/XMLSchema",
+                "org.apache.xerces.jaxp.validation.XMLSchemaFactory");
+        try {
+            DefaultBootstrap.bootstrap();
+        } catch (ConfigurationException e) {
+            throw new RuntimeException("could not bootstrap the OpenSAML2 library");
+        }
+    }
+
 
     @SuppressWarnings("unchecked")
     public static <Type extends XMLObject> Type buildXMLObject(@SuppressWarnings("unused") Class<Type> clazz, QName objectQName) {
@@ -114,23 +131,20 @@ public class Saml2Util {
         return result;
     }
 
-    /**
-     * Signs and marshalls the given SignableSAMLObject.
-     */
-    public static String sign(SignableSAMLObject samlObject, KeyPair signerKeyPair) {
+    public static Element sign(SignableSAMLObject samlObject, PublicKey publicKey, PrivateKey privateKey) {
 
         XMLObjectBuilderFactory builderFactory = Configuration.getBuilderFactory();
         SignatureBuilder signatureBuilder = (SignatureBuilder) builderFactory.getBuilder(Signature.DEFAULT_ELEMENT_NAME);
         Signature signature = signatureBuilder.buildObject();
         signature.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
-        String algorithm = signerKeyPair.getPrivate().getAlgorithm();
+        String algorithm = privateKey.getAlgorithm();
         if ("RSA".equals(algorithm)) {
             signature.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_RSA);
         } else if ("DSA".equals(algorithm)) {
             signature.setSignatureAlgorithm(SignatureConstants.ALGO_ID_SIGNATURE_DSA);
         }
         samlObject.setSignature(signature);
-        BasicCredential signingCredential = SecurityHelper.getSimpleCredential(signerKeyPair.getPublic(), signerKeyPair.getPrivate());
+        BasicCredential signingCredential = SecurityHelper.getSimpleCredential(publicKey, privateKey);
         signature.setSigningCredential(signingCredential);
 
         // marshalling
@@ -149,6 +163,16 @@ public class Saml2Util {
         } catch (SignatureException e) {
             throw new RuntimeException("opensaml2 signing error: " + e.getMessage(), e);
         }
+
+        return requestElement;
+    }
+
+    /**
+     * Signs and marshalls the given SignableSAMLObject.
+     */
+    public static String sign(SignableSAMLObject samlObject, KeyPair signerKeyPair) {
+
+        Element requestElement = sign(samlObject, signerKeyPair.getPublic(), signerKeyPair.getPrivate());
 
         String result;
         try {

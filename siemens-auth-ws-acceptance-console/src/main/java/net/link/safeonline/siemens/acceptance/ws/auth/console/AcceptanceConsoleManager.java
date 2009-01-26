@@ -7,10 +7,15 @@
 
 package net.link.safeonline.siemens.acceptance.ws.auth.console;
 
+import java.io.IOException;
 import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.PublicKey;
+import java.security.SignatureException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.Observable;
 
 import net.link.safeonline.sdk.KeyStoreUtils;
@@ -41,6 +46,8 @@ public class AcceptanceConsoleManager extends Observable {
     private boolean                         generateKeyPair = true;
 
     private KeyPair                         keyPair;
+
+    private X509Certificate                 certificate;
 
     private boolean                         usePcscApplet   = false;
 
@@ -82,7 +89,8 @@ public class AcceptanceConsoleManager extends Observable {
 
         if (null == authenticationClient || null == authenticationClient.getAssertion())
             return null;
-        SiemensAuthWsAcceptanceClient client = new SiemensAuthWsAcceptanceClientImpl(location, authenticationClient.getAssertion());
+        SiemensAuthWsAcceptanceClient client = new SiemensAuthWsAcceptanceClientImpl("http://localhost:8080",
+                authenticationClient.getAssertion(), certificate, keyPair.getPrivate());
         return client;
     }
 
@@ -121,10 +129,12 @@ public class AcceptanceConsoleManager extends Observable {
     }
 
     public PublicKey getPublicKey()
-            throws NoSuchAlgorithmException, InvalidAlgorithmParameterException {
+            throws NoSuchAlgorithmException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalStateException,
+            SignatureException, CertificateException, IOException {
 
         if (generateKeyPair) {
             keyPair = KeyStoreUtils.generateKeyPair();
+            certificate = KeyStoreUtils.generateSelfSignedCertificate(keyPair, "cn=Test");
             return keyPair.getPublic();
         }
         return null;

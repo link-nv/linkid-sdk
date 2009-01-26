@@ -27,6 +27,9 @@ import javax.management.ObjectName;
 import javax.management.ReflectionException;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -76,6 +79,7 @@ import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.entity.NodeMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.saml.common.Saml2SubjectConfirmationMethod;
+import net.link.safeonline.saml.common.Saml2Util;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.auth.DataType;
 import net.link.safeonline.sdk.ws.exception.WSAuthenticationException;
@@ -84,6 +88,7 @@ import net.link.safeonline.service.NodeMappingService;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.EjbUtils;
+import net.link.safeonline.util.ee.IdentityServiceClient;
 import net.link.safeonline.ws.common.WSAuthenticationErrorCode;
 import net.link.safeonline.ws.common.WebServiceConstants;
 import net.link.safeonline.ws.util.ri.Injection;
@@ -108,9 +113,16 @@ import org.apache.commons.logging.LogFactory;
 import org.jboss.mx.util.MBeanServerLocator;
 import org.jboss.security.SimplePrincipal;
 import org.jboss.security.auth.callback.UsernamePasswordHandler;
+import org.joda.time.DateTime;
 import org.opensaml.common.SAMLVersion;
 import org.opensaml.common.impl.SecureRandomIdentifierGenerator;
+import org.opensaml.saml2.core.Assertion;
+import org.opensaml.xml.Configuration;
+import org.opensaml.xml.io.Marshaller;
+import org.opensaml.xml.io.MarshallerFactory;
+import org.opensaml.xml.io.MarshallingException;
 import org.w3._2000._09.xmldsig_.KeyInfoType;
+import org.w3c.dom.Element;
 
 import com.sun.xml.ws.api.server.InstanceResolver;
 import com.sun.xml.ws.developer.Stateful;
@@ -488,8 +500,7 @@ public class AuthenticationPortImpl implements AuthenticationPort {
 
                 IdentityService identityService = EjbUtils.getEJB(IdentityService.JNDI_BINDING, IdentityService.class);
 
-                List<AttributeDO> confirmationList = identityService.listIdentityAttributesToConfirm(applicationName, new Locale(
-                        language));
+                List<AttributeDO> confirmationList = identityService.listIdentityAttributesToConfirm(applicationName, new Locale(language));
                 List<AttributeType> confirmationAttributes = getAttributes(confirmationList, false);
                 AssertionType attributeAssertion = getAttributeAssertion(confirmationAttributes);
                 response.getAssertion().add(attributeAssertion);
@@ -591,8 +602,7 @@ public class AuthenticationPortImpl implements AuthenticationPort {
             try {
                 IdentityService identityService = EjbUtils.getEJB(IdentityService.JNDI_BINDING, IdentityService.class);
 
-                List<AttributeDO> missingAttributeList = identityService.listMissingAttributes(applicationName, new Locale(
-                        language));
+                List<AttributeDO> missingAttributeList = identityService.listMissingAttributes(applicationName, new Locale(language));
 
                 // first check if all there are non-user-editable attributes missing, if so user cannot authenticate.
                 String unavailableAttributes = "";
@@ -606,8 +616,7 @@ public class AuthenticationPortImpl implements AuthenticationPort {
                             + unavailableAttributes + "] is(are) unavailable");
 
                 // include optional attributes
-                List<AttributeDO> optionalAttributeList = identityService.listOptionalAttributes(applicationName, new Locale(
-                        language));
+                List<AttributeDO> optionalAttributeList = identityService.listOptionalAttributes(applicationName, new Locale(language));
 
                 List<AttributeType> missingAttributes = getAttributes(missingAttributeList, false);
                 List<AttributeType> optionalAttributes = getAttributes(optionalAttributeList, true);
@@ -756,7 +765,8 @@ public class AuthenticationPortImpl implements AuthenticationPort {
 
         response.setUserId(applicationUserId);
         response.setDeviceName(authenticatedDevice.getName());
-        AssertionType assertion = generateAssertion(id, applicationUserId);
+        // AssertionType assertion = generateAssertion(id, applicationUserId);
+        AssertionType assertion = getAssertion(id, applicationUserId);
         response.getAssertion().add(assertion);
         manager.unexport(this);
     }
@@ -1168,6 +1178,56 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         assertion.setIssuer(issuerName);
 
         return assertion;
+    }
+
+    private AssertionType getAssertion(String id, String applicationUserId)
+            throws WSAuthenticationException {
+
+        SamlAuthorityService samlAuthorityService = EjbUtils.getEJB(SamlAuthorityService.JNDI_BINDING, SamlAuthorityService.class);
+        IdentityServiceClient identityServiceClient = new IdentityServiceClient();
+
+        Element assertionElement = null;
+        if (null != keyInfo) {
+            // holder-of-key : SAML assertion SHOULD contain a <ds:signature> element that protects the integrity of the confirmation
+            // <ds:KeyInfo> established by the assertion authority.
+            Assertion assertion = Saml2Util.getAssertion(id, applicationName, applicationUserId, samlAuthorityService.getIssuerName(),
+                    authenticatedDevice.getName(), samlAuthorityService.getAuthnAssertionValidity(), null, new DateTime(),
+                    Saml2SubjectConfirmationMethod.HOLDER_OF_KEY, null);
+            assertionElement = Saml2Util.sign(assertion, identityServiceClient.getPublicKey(), identityServiceClient.getPrivateKey());
+
+        } else {
+            Assertion assertion = Saml2Util.getAssertion(id, applicationName, applicationUserId, samlAuthorityService.getIssuerName(),
+                    authenticatedDevice.getName(), samlAuthorityService.getAuthnAssertionValidity(), null, new DateTime(),
+                    Saml2SubjectConfirmationMethod.SENDER_VOUCHES, null);
+            MarshallerFactory marshallerFactory = Configuration.getMarshallerFactory();
+            Marshaller marshaller = marshallerFactory.getMarshaller(assertion);
+            try {
+                assertionElement = marshaller.marshall(assertion);
+            } catch (MarshallingException e) {
+                throw new RuntimeException("opensaml2 marshalling error: " + e.getMessage(), e);
+            }
+
+        }
+        JAXBContext context;
+        try {
+            context = JAXBContext.newInstance(AssertionType.class);
+            javax.xml.bind.Unmarshaller unmarshaller = context.createUnmarshaller();
+            JAXBElement<?> assertionObject = (JAXBElement<?>) unmarshaller.unmarshal(assertionElement);
+            AssertionType assertion = (AssertionType) assertionObject.getValue();
+            if (null != keyInfo) {
+                org.w3._2000._09.xmldsig_.ObjectFactory dsigObjectFactory = new org.w3._2000._09.xmldsig_.ObjectFactory();
+                for (JAXBElement<?> element : assertion.getSubject().getContent()) {
+                    if (element.getValue() instanceof SubjectConfirmationType) {
+                        SubjectConfirmationType subjectConfirmation = (SubjectConfirmationType) element.getValue();
+                        subjectConfirmation.getSubjectConfirmationData().getContent().add(dsigObjectFactory.createKeyInfo(keyInfo));
+                    }
+                }
+            }
+            return assertion;
+        } catch (JAXBException e) {
+            throw new WSAuthenticationException(WSAuthenticationErrorCode.INTERNAL_ERROR, e.getMessage());
+        }
+
     }
 
     /**

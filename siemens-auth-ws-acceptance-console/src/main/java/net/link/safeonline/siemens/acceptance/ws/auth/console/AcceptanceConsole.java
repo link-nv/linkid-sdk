@@ -213,7 +213,7 @@ public class AcceptanceConsole extends JFrame implements Observer {
 
         contentPanel = new JPanel();
         splitPane.setTopComponent(contentPanel);
-        resetAuthentication();
+        // resetAuthentication();
     }
 
     public void login(Object deviceCredentials) {
@@ -397,6 +397,8 @@ public class AcceptanceConsole extends JFrame implements Observer {
     }
 
     protected void onAcceptanceWS() {
+
+        AuthenticationUtils.getInstance().acceptanceTestWs();
 
     }
 

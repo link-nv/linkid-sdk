@@ -97,6 +97,7 @@ import net.link.safeonline.test.util.MBeanActionHandler;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.WebServiceTestUtils;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
+import net.link.safeonline.util.ee.IdentityServiceClient;
 import net.link.safeonline.ws.common.WSAuthenticationErrorCode;
 import oasis.names.tc.saml._2_0.assertion.AssertionType;
 import oasis.names.tc.saml._2_0.assertion.AttributeStatementType;
@@ -170,6 +171,7 @@ public class AuthenticationPortImplTest {
         JmxTestUtils jmxTestUtils = new JmxTestUtils();
         jmxTestUtils.setUp("jboss.security:service=JaasSecurityManager");
         jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
+        jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
         final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
         final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
@@ -181,12 +183,28 @@ public class AuthenticationPortImplTest {
             }
         });
 
+        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getPrivateKey", new MBeanActionHandler() {
+
+            @SuppressWarnings("synthetic-access")
+            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
+
+                return authKeyPair.getPrivate();
+            }
+        });
+        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getPublicKey", new MBeanActionHandler() {
+
+            @SuppressWarnings("synthetic-access")
+            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
+
+                return authKeyPair.getPublic();
+            }
+        });
+
         JaasTestUtils.initJaasLoginModule(DummyLoginModule.class);
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
-        jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
-                "SafeOnline/WSSecurityConfigurationBean/local");
+        jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName", "SafeOnline/WSSecurityConfigurationBean/local");
         jndiTestUtils.bindComponent("java:comp/env/wsSecurityOptionalInboudSignature", true);
 
         mockWSSecurityConfigurationService = createMock(WSSecurityConfigurationService.class);
@@ -290,17 +308,15 @@ public class AuthenticationPortImplTest {
         expect(mockNodeAuthenticationService.getLocalNode()).andStubReturn(localNode);
         expect(mockDevicePolicyService.getDevice(DeviceTestAuthenticationClientImpl.testDeviceName)).andStubReturn(testDevice);
         expect(mockSubjectService.getSubject(DeviceTestAuthenticationClientImpl.testUserId)).andStubReturn(testSubject);
-        expect(mockDevicePolicyService.getDevicePolicy(testApplicationId, null)).andStubReturn(
-                Collections.singletonList(testDevice));
+        expect(mockDevicePolicyService.getDevicePolicy(testApplicationId, null)).andStubReturn(Collections.singletonList(testDevice));
         expect(mockUsageAgreementService.requiresGlobalUsageAgreementAcceptation(testLanguage)).andStubReturn(false);
         expect(mockSubscriptionService.isSubscribed(testApplicationId)).andStubReturn(true);
-        expect(mockUsageAgreementService.requiresUsageAgreementAcceptation(testApplicationId, testLanguage)).andStubReturn(
-                false);
+        expect(mockUsageAgreementService.requiresUsageAgreementAcceptation(testApplicationId, testLanguage)).andStubReturn(false);
         expect(mockIdentityService.isConfirmationRequired(testApplicationId)).andStubReturn(false);
         expect(mockIdentityService.hasMissingAttributes(testApplicationId)).andStubReturn(false);
         expect(mockUserIdMappingService.getApplicationUserId(testApplicationId, DeviceTestAuthenticationClientImpl.testUserId))
-                                                                                                                                         .andStubReturn(
-                                                                                                                                                 DeviceTestAuthenticationClientImpl.testUserId);
+                                                                                                                               .andStubReturn(
+                                                                                                                                       DeviceTestAuthenticationClientImpl.testUserId);
         expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
         expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
@@ -565,8 +581,7 @@ public class AuthenticationPortImplTest {
         expect(mockNodeAuthenticationService.getLocalNode()).andStubReturn(localNode);
         expect(mockDevicePolicyService.getDevice(DeviceTestAuthenticationClientImpl.testDeviceName)).andStubReturn(testDevice);
         expect(mockSubjectService.getSubject(DeviceTestAuthenticationClientImpl.testUserId)).andStubReturn(testSubject);
-        expect(mockDevicePolicyService.getDevicePolicy(testApplicationId, null)).andStubReturn(
-                Collections.singletonList(testDevice));
+        expect(mockDevicePolicyService.getDevicePolicy(testApplicationId, null)).andStubReturn(Collections.singletonList(testDevice));
         expect(mockUsageAgreementService.requiresGlobalUsageAgreementAcceptation(testLanguage)).andStubReturn(true);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
         expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
@@ -608,7 +623,7 @@ public class AuthenticationPortImplTest {
 
         // operate
         WSAuthenticationGlobalUsageAgreementResponseType globalUsageAgreementResponse = clientPort
-                                                                                                       .requestGlobalUsageAgreement(globalUsageAgeementRequest);
+                                                                                                  .requestGlobalUsageAgreement(globalUsageAgeementRequest);
 
         // verify
         verify(mockObjects);
@@ -631,17 +646,15 @@ public class AuthenticationPortImplTest {
         // expectations
         mockUsageAgreementService.confirmGlobalUsageAgreementVersion();
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
-        expect(mockDevicePolicyService.getDevicePolicy(testApplicationId, null)).andStubReturn(
-                Collections.singletonList(testDevice));
+        expect(mockDevicePolicyService.getDevicePolicy(testApplicationId, null)).andStubReturn(Collections.singletonList(testDevice));
         expect(mockUsageAgreementService.requiresGlobalUsageAgreementAcceptation(testLanguage)).andStubReturn(false);
         expect(mockSubscriptionService.isSubscribed(testApplicationId)).andStubReturn(true);
-        expect(mockUsageAgreementService.requiresUsageAgreementAcceptation(testApplicationId, testLanguage)).andStubReturn(
-                false);
+        expect(mockUsageAgreementService.requiresUsageAgreementAcceptation(testApplicationId, testLanguage)).andStubReturn(false);
         expect(mockIdentityService.isConfirmationRequired(testApplicationId)).andStubReturn(false);
         expect(mockIdentityService.hasMissingAttributes(testApplicationId)).andStubReturn(false);
         expect(mockUserIdMappingService.getApplicationUserId(testApplicationId, DeviceTestAuthenticationClientImpl.testUserId))
-                                                                                                                                         .andStubReturn(
-                                                                                                                                                 DeviceTestAuthenticationClientImpl.testUserId);
+                                                                                                                               .andStubReturn(
+                                                                                                                                       DeviceTestAuthenticationClientImpl.testUserId);
         expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
         expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
@@ -687,8 +700,7 @@ public class AuthenticationPortImplTest {
         expect(mockNodeAuthenticationService.getLocalNode()).andStubReturn(localNode);
         expect(mockDevicePolicyService.getDevice(DeviceTestAuthenticationClientImpl.testDeviceName)).andStubReturn(testDevice);
         expect(mockSubjectService.getSubject(DeviceTestAuthenticationClientImpl.testUserId)).andStubReturn(testSubject);
-        expect(mockDevicePolicyService.getDevicePolicy(testApplicationId, null)).andStubReturn(
-                Collections.singletonList(testDevice));
+        expect(mockDevicePolicyService.getDevicePolicy(testApplicationId, null)).andStubReturn(Collections.singletonList(testDevice));
         expect(mockUsageAgreementService.requiresGlobalUsageAgreementAcceptation(testLanguage)).andStubReturn(true);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
         expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
@@ -730,7 +742,7 @@ public class AuthenticationPortImplTest {
 
         // operate
         WSAuthenticationGlobalUsageAgreementResponseType globalUsageAgreementResponse = clientPort
-                                                                                                       .requestGlobalUsageAgreement(globalUsageAgeementRequest);
+                                                                                                  .requestGlobalUsageAgreement(globalUsageAgeementRequest);
 
         // verify
         verify(mockObjects);
@@ -753,8 +765,7 @@ public class AuthenticationPortImplTest {
         // expectations
         mockUsageAgreementService.confirmGlobalUsageAgreementVersion();
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
-        expect(mockDevicePolicyService.getDevicePolicy(testApplicationId, null)).andStubReturn(
-                Collections.singletonList(testDevice));
+        expect(mockDevicePolicyService.getDevicePolicy(testApplicationId, null)).andStubReturn(Collections.singletonList(testDevice));
         expect(mockUsageAgreementService.requiresGlobalUsageAgreementAcceptation(testLanguage)).andStubReturn(false);
         expect(mockSubscriptionService.isSubscribed(testApplicationId)).andStubReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
@@ -819,12 +830,9 @@ public class AuthenticationPortImplTest {
         // expectations
         expect(mockSubscriptionService.isSubscribed(testApplicationId)).andReturn(false).andReturn(true);
         mockSubscriptionService.subscribe(testApplicationId);
-        expect(mockUsageAgreementService.requiresUsageAgreementAcceptation(testApplicationId, testLanguage))
-                                                                                                                           .andReturn(false)
-                                                                                                                           .times(2);
+        expect(mockUsageAgreementService.requiresUsageAgreementAcceptation(testApplicationId, testLanguage)).andReturn(false).times(2);
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
-        expect(mockDevicePolicyService.getDevicePolicy(testApplicationId, null)).andStubReturn(
-                Collections.singletonList(testDevice));
+        expect(mockDevicePolicyService.getDevicePolicy(testApplicationId, null)).andStubReturn(Collections.singletonList(testDevice));
         expect(mockUsageAgreementService.requiresGlobalUsageAgreementAcceptation(testLanguage)).andStubReturn(false);
         expect(mockIdentityService.isConfirmationRequired(testApplicationId)).andStubReturn(true);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
@@ -850,16 +858,16 @@ public class AuthenticationPortImplTest {
          * Request Identity to be confirmed
          */
         List<AttributeDO> confirmationList = new LinkedList<AttributeDO>();
-        AttributeDO testSingleStringAttribute = new AttributeDO(testSingleStringAttributeName, DatatypeType.STRING, false, 0, null,
-                null, true, true, null, null);
+        AttributeDO testSingleStringAttribute = new AttributeDO(testSingleStringAttributeName, DatatypeType.STRING, false, 0, null, null,
+                true, true, null, null);
         AttributeDO testMultiStringAttribute = new AttributeDO(testMultiStringAttributeName, DatatypeType.STRING, true, 0, null, null,
                 true, true, null, null);
         testMultiStringAttribute.setMember(true);
         AttributeDO testMultiDateAttribute = new AttributeDO(testMultiDateAttributeName, DatatypeType.DATE, true, 0, null, null, true,
                 true, null, null);
         testMultiDateAttribute.setMember(true);
-        AttributeDO testCompoundAttribute = new AttributeDO(testCompoundAttributeName, DatatypeType.COMPOUNDED, true, 0, null, null,
-                true, true, null, null);
+        AttributeDO testCompoundAttribute = new AttributeDO(testCompoundAttributeName, DatatypeType.COMPOUNDED, true, 0, null, null, true,
+                true, null, null);
         testCompoundAttribute.setCompounded(true);
         confirmationList.add(testSingleStringAttribute);
         confirmationList.add(testCompoundAttribute);
@@ -872,9 +880,8 @@ public class AuthenticationPortImplTest {
         reset(mockObjects);
 
         // expectations
-        expect(mockIdentityService.listIdentityAttributesToConfirm(testApplicationId, new Locale(testLanguage)))
-                                                                                                                               .andStubReturn(
-                                                                                                                                       confirmationList);
+        expect(mockIdentityService.listIdentityAttributesToConfirm(testApplicationId, new Locale(testLanguage))).andStubReturn(
+                confirmationList);
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
 
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
@@ -908,11 +915,9 @@ public class AuthenticationPortImplTest {
         // expectations
         mockIdentityService.confirmIdentity(testApplicationId);
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
-        expect(mockDevicePolicyService.getDevicePolicy(testApplicationId, null)).andStubReturn(
-                Collections.singletonList(testDevice));
+        expect(mockDevicePolicyService.getDevicePolicy(testApplicationId, null)).andStubReturn(Collections.singletonList(testDevice));
         expect(mockSubscriptionService.isSubscribed(testApplicationId)).andReturn(true);
-        expect(mockUsageAgreementService.requiresUsageAgreementAcceptation(testApplicationId, testLanguage))
-                                                                                                                           .andReturn(false);
+        expect(mockUsageAgreementService.requiresUsageAgreementAcceptation(testApplicationId, testLanguage)).andReturn(false);
         expect(mockUsageAgreementService.requiresGlobalUsageAgreementAcceptation(testLanguage)).andStubReturn(false);
         expect(mockIdentityService.isConfirmationRequired(testApplicationId)).andStubReturn(false);
         expect(mockIdentityService.hasMissingAttributes(testApplicationId)).andStubReturn(true);
@@ -944,8 +949,7 @@ public class AuthenticationPortImplTest {
         reset(mockObjects);
 
         // expectations
-        expect(mockIdentityService.listMissingAttributes(testApplicationId, new Locale(testLanguage))).andReturn(
-                confirmationList);
+        expect(mockIdentityService.listMissingAttributes(testApplicationId, new Locale(testLanguage))).andReturn(confirmationList);
         expect(mockIdentityService.listOptionalAttributes(testApplicationId, new Locale(testLanguage))).andReturn(null);
 
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
@@ -994,17 +998,15 @@ public class AuthenticationPortImplTest {
         mockIdentityService.saveAttribute((AttributeType) EasyMock.anyObject());
         mockIdentityService.saveAttribute((AttributeType) EasyMock.anyObject());
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
-        expect(mockDevicePolicyService.getDevicePolicy(testApplicationId, null)).andStubReturn(
-                Collections.singletonList(testDevice));
+        expect(mockDevicePolicyService.getDevicePolicy(testApplicationId, null)).andStubReturn(Collections.singletonList(testDevice));
         expect(mockSubscriptionService.isSubscribed(testApplicationId)).andReturn(true);
-        expect(mockUsageAgreementService.requiresUsageAgreementAcceptation(testApplicationId, testLanguage))
-                                                                                                                           .andReturn(false);
+        expect(mockUsageAgreementService.requiresUsageAgreementAcceptation(testApplicationId, testLanguage)).andReturn(false);
         expect(mockUsageAgreementService.requiresGlobalUsageAgreementAcceptation(testLanguage)).andStubReturn(false);
         expect(mockIdentityService.isConfirmationRequired(testApplicationId)).andStubReturn(false);
         expect(mockIdentityService.hasMissingAttributes(testApplicationId)).andStubReturn(false);
         expect(mockUserIdMappingService.getApplicationUserId(testApplicationId, DeviceTestAuthenticationClientImpl.testUserId))
-                                                                                                                                         .andStubReturn(
-                                                                                                                                                 DeviceTestAuthenticationClientImpl.testUserId);
+                                                                                                                               .andStubReturn(
+                                                                                                                                       DeviceTestAuthenticationClientImpl.testUserId);
         expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
         expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
@@ -1074,6 +1076,11 @@ public class AuthenticationPortImplTest {
         assertEquals(1, resultAuthnStatement.getAuthnContext().getContent().size());
         String resultDeviceName = (String) resultAuthnStatement.getAuthnContext().getContent().get(0).getValue();
         assertEquals(deviceName, resultDeviceName);
+
+        if (null != publicKey) {
+            // verify assertion contains a signature
+            assertNotNull(resultAssertion.getSignature());
+        }
 
     }
 
