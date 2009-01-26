@@ -342,6 +342,15 @@ public class BankWebTest extends AbstractWicketTests {
         // AccountPage: Click to link our account to OLAS.
         wicket.clickLink("user:pageLink");
 
+        wicket.assertComponent("olasFrame", InlineFrame.class);
+        InlineFrame olasFrame = (InlineFrame) wicket.getLastRenderedPage().get("olasFrame");
+        try {
+            olasFrame.onLinkClicked();
+        } catch (AbortException e) {
+            RequestCycle.get().request(RequestCycle.get().getRequestTarget());
+            wicket.processRequestCycle();
+        }
+
         // AccountPage: Verify && old accounts still there.
         wicket.assertRenderedPage(AccountPage.class);
 
