@@ -6,10 +6,9 @@
  */
 package net.link.safeonline.keystore;
 
-import java.io.InputStream;
-import java.security.KeyStore.PrivateKeyEntry;
-import java.util.HashMap;
-import java.util.Map;
+import java.security.KeyPair;
+import java.security.PrivateKey;
+import java.security.cert.X509Certificate;
 
 
 /**
@@ -26,36 +25,29 @@ import java.util.Map;
  * 
  * @author lhunath
  */
-public abstract class AbstractKeyStore {
+public abstract class AbstractKeyStore implements OlasKeyStore {
 
-    private static Map<ClassLoader, Map<String, PrivateKeyEntry>> privateKeyEntries;
-    private String                                                keyStoreResource;
+    /**
+     * {@inheritDoc}
+     */
+    public PrivateKey getPrivateKey() {
 
-
-    public AbstractKeyStore(String keyStoreResource) {
-
-        this.keyStoreResource = keyStoreResource;
+        return _getPrivateKeyEntry().getPrivateKey();
     }
 
-    public PrivateKeyEntry _getPrivateKeyEntry() {
+    /**
+     * {@inheritDoc}
+     */
+    public X509Certificate getCertificate() {
 
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        return (X509Certificate) _getPrivateKeyEntry().getCertificate();
+    }
 
-        if (privateKeyEntries == null) {
-            privateKeyEntries = new HashMap<ClassLoader, Map<String, PrivateKeyEntry>>();
-        }
-        if (!privateKeyEntries.containsKey(classLoader)) {
-            privateKeyEntries.put(classLoader, new HashMap<String, PrivateKeyEntry>());
-        }
-        if (!privateKeyEntries.containsKey(keyStoreResource)) {
-            InputStream keyStoreInputStream = classLoader.getResourceAsStream(keyStoreResource);
-            if (null == keyStoreInputStream)
-                throw new RuntimeException("keystore not found: " + keyStoreResource);
+    /**
+     * {@inheritDoc}
+     */
+    public KeyPair getKeyPair() {
 
-            PrivateKeyEntry privateKeyEntry = KeyStoreUtils.loadPrivateKeyEntry("jks", keyStoreInputStream, "secret", "secret");
-            privateKeyEntries.get(classLoader).put(keyStoreResource, privateKeyEntry);
-        }
-
-        return privateKeyEntries.get(classLoader).get(keyStoreResource);
+        return new KeyPair(getCertificate().getPublicKey(), getPrivateKey());
     }
 }

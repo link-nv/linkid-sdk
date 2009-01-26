@@ -31,6 +31,7 @@ import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.service.AttributeTypeService;
 import net.link.safeonline.service.AttributeTypeServiceRemote;
 import net.link.safeonline.util.Filter;
@@ -38,8 +39,8 @@ import net.link.safeonline.util.FilterUtil;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.security.SecurityDomain;
 
 
@@ -172,6 +173,22 @@ public class AttributeTypeServiceBean implements AttributeTypeService, Attribute
         List<AttributeTypeEntity> availableMemberAttributeTypes = FilterUtil.filter(attributeTypes,
                 new AvailableMemberAttributeTypeFilter());
         return availableMemberAttributeTypes;
+    }
+
+    public boolean isLocal(AttributeTypeEntity attributeType) {
+
+        if (attributeType.isExternal())
+            return false;
+
+        if (null == attributeType.getLocation())
+            return true;
+
+        SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
+        if (nodeKeyStore.getCertificate().getSubjectX500Principal().getName().equals(
+                attributeType.getLocation().getAuthnCertificateSubject()))
+            return true;
+
+        return false;
     }
 
 

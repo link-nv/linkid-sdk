@@ -9,10 +9,10 @@ package net.link.safeonline.digipass.keystore;
 
 import java.security.KeyStore.PrivateKeyEntry;
 
-import net.link.safeonline.keystore.AbstractKeyStore;
+import net.link.safeonline.keystore.AbstractFileBasedKeyStore;
 
 
-public class DigipassKeyStore extends AbstractKeyStore {
+public class DigipassKeyStore extends AbstractFileBasedKeyStore {
 
     public DigipassKeyStore() {
 

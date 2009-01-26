@@ -9,10 +9,10 @@ package net.link.safeonline.demo.prescription.keystore;
 
 import java.security.KeyStore.PrivateKeyEntry;
 
-import net.link.safeonline.keystore.AbstractKeyStore;
+import net.link.safeonline.keystore.AbstractFileBasedKeyStore;
 
 
-public class DemoPrescriptionKeyStore extends AbstractKeyStore {
+public class DemoPrescriptionKeyStore extends AbstractFileBasedKeyStore {
 
     public static final String KEYSTORE_RESOURCE = "safe-online-demo-prescription-keystore.jks";
 

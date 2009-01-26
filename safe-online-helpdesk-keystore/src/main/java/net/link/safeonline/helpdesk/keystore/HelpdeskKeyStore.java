@@ -9,10 +9,10 @@ package net.link.safeonline.helpdesk.keystore;
 
 import java.security.KeyStore.PrivateKeyEntry;
 
-import net.link.safeonline.keystore.AbstractKeyStore;
+import net.link.safeonline.keystore.AbstractFileBasedKeyStore;
 
 
-public class HelpdeskKeyStore extends AbstractKeyStore {
+public class HelpdeskKeyStore extends AbstractFileBasedKeyStore {
 
     public HelpdeskKeyStore() {
 

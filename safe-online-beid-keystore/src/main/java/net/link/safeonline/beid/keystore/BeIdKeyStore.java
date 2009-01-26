@@ -9,10 +9,10 @@ package net.link.safeonline.beid.keystore;
 
 import java.security.KeyStore.PrivateKeyEntry;
 
-import net.link.safeonline.keystore.AbstractKeyStore;
+import net.link.safeonline.keystore.AbstractFileBasedKeyStore;
 
 
-public class BeIdKeyStore extends AbstractKeyStore {
+public class BeIdKeyStore extends AbstractFileBasedKeyStore {
 
     public BeIdKeyStore() {
 

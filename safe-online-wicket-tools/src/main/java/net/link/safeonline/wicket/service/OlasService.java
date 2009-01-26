@@ -11,7 +11,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import net.link.safeonline.keystore.AbstractKeyStore;
+import net.link.safeonline.keystore.AbstractFileBasedKeyStore;
 
 
 /**
@@ -33,7 +33,7 @@ import net.link.safeonline.keystore.AbstractKeyStore;
 public @interface OlasService {
 
     /**
-     * The {@link AbstractKeyStore} for this application.
+     * The {@link AbstractFileBasedKeyStore} for this application.
      */
-    Class<? extends AbstractKeyStore> keyStore();
+    Class<? extends AbstractFileBasedKeyStore> keyStore();
 }

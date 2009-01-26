@@ -9,7 +9,7 @@ package net.link.safeonline.performance.keystore;
 
 import java.security.KeyStore.PrivateKeyEntry;
 
-import net.link.safeonline.keystore.AbstractKeyStore;
+import net.link.safeonline.keystore.AbstractFileBasedKeyStore;
 
 
 /**
@@ -26,7 +26,7 @@ import net.link.safeonline.keystore.AbstractKeyStore;
  * 
  * @author mbillemo
  */
-public class PerformanceKeyStore extends AbstractKeyStore {
+public class PerformanceKeyStore extends AbstractFileBasedKeyStore {
 
     public PerformanceKeyStore() {
 

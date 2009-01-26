@@ -9,10 +9,10 @@ package net.link.safeonline.demo.ticket.keystore;
 
 import java.security.KeyStore.PrivateKeyEntry;
 
-import net.link.safeonline.keystore.AbstractKeyStore;
+import net.link.safeonline.keystore.AbstractFileBasedKeyStore;
 
 
-public class DemoTicketKeyStore extends AbstractKeyStore {
+public class DemoTicketKeyStore extends AbstractFileBasedKeyStore {
 
     public static final String KEYSTORE_RESOURCE = "safe-online-demo-ticket-keystore.jks";
 

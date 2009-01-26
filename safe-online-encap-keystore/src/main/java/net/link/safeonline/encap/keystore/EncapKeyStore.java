@@ -9,10 +9,10 @@ package net.link.safeonline.encap.keystore;
 
 import java.security.KeyStore.PrivateKeyEntry;
 
-import net.link.safeonline.keystore.AbstractKeyStore;
+import net.link.safeonline.keystore.AbstractFileBasedKeyStore;
 
 
-public class EncapKeyStore extends AbstractKeyStore {
+public class EncapKeyStore extends AbstractFileBasedKeyStore {
 
     public EncapKeyStore() {
 

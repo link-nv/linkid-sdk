@@ -2,10 +2,10 @@ package net.link.safeonline.otpoversms.keystore;
 
 import java.security.KeyStore.PrivateKeyEntry;
 
-import net.link.safeonline.keystore.AbstractKeyStore;
+import net.link.safeonline.keystore.AbstractFileBasedKeyStore;
 
 
-public class OtpOverSmsKeyStore extends AbstractKeyStore {
+public class OtpOverSmsKeyStore extends AbstractFileBasedKeyStore {
 
     public OtpOverSmsKeyStore() {
 

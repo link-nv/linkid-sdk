@@ -9,10 +9,10 @@ package net.link.safeonline.password.keystore;
 
 import java.security.KeyStore.PrivateKeyEntry;
 
-import net.link.safeonline.keystore.AbstractKeyStore;
+import net.link.safeonline.keystore.AbstractFileBasedKeyStore;
 
 
-public class PasswordKeyStore extends AbstractKeyStore {
+public class PasswordKeyStore extends AbstractFileBasedKeyStore {
 
     public PasswordKeyStore() {
 

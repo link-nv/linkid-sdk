@@ -9,10 +9,10 @@ package net.link.safeonline.owner.keystore;
 
 import java.security.KeyStore.PrivateKeyEntry;
 
-import net.link.safeonline.keystore.AbstractKeyStore;
+import net.link.safeonline.keystore.AbstractFileBasedKeyStore;
 
 
-public class OwnerKeyStore extends AbstractKeyStore {
+public class OwnerKeyStore extends AbstractFileBasedKeyStore {
 
     public OwnerKeyStore() {
 

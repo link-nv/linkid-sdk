@@ -9,10 +9,10 @@ package net.link.safeonline.demo.lawyer.keystore;
 
 import java.security.KeyStore.PrivateKeyEntry;
 
-import net.link.safeonline.keystore.AbstractKeyStore;
+import net.link.safeonline.keystore.AbstractFileBasedKeyStore;
 
 
-public class DemoLawyerKeyStore extends AbstractKeyStore {
+public class DemoLawyerKeyStore extends AbstractFileBasedKeyStore {
 
     public static final String KEYSTORE_RESOURCE = "safe-online-demo-lawyer-keystore.jks";
 
