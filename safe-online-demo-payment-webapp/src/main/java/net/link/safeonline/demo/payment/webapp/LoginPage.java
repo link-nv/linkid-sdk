@@ -1,5 +1,7 @@
 package net.link.safeonline.demo.payment.webapp;
 
+import net.link.safeonline.wicket.web.OlasAuthRedirectPage;
+
 import org.apache.wicket.Page;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.link.PageLink;
@@ -17,12 +19,21 @@ public class LoginPage extends LayoutPage {
      */
     public LoginPage() {
 
+        // HTML Components.
+        add(new PageLink<OlasAuthRedirectPage>("olasLoginLink", OlasAuthRedirectPage.class));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onBeforeRender() {
+
         // If logged in, send user to the ticket history page.
         if (PaymentSession.get().isUserSet())
             throw new RestartResponseException(AccountPage.class);
 
-        // HTML Components.
-        add(new PageLink<OlasAuthPage>("olasLoginLink", OlasAuthPage.class));
+        super.onBeforeRender();
     }
 
     /**

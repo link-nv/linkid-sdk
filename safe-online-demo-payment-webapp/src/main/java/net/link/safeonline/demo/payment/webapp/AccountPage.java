@@ -68,7 +68,7 @@ public class AccountPage extends LayoutPage {
             super(id);
 
             /* Transactions List. */
-            add(new ListView<PaymentEntity>("transactionList", getTransactionService().getAllTransactions(PaymentSession.get().getUser())) {
+            add(new ListView<PaymentEntity>("transactionList", transactionService.getAllTransactions(PaymentSession.get().getUser())) {
 
                 private static final long serialVersionUID = 1L;
 

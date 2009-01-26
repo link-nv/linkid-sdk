@@ -13,20 +13,24 @@
 	<table>
 		<caption>User Properties</caption>
 
-		<wicket:enclosure>
-			<thead>
-				<tr>
-					<th>Errors:</th>
-					<td><span wicket:id="feedback" /></td>
-				</tr>
-			</thead>
-		</wicket:enclosure>
-
 		<tbody>
 			<tr>
 				<th>User Name:</th>
 				<td><input wicket:id="name" /></td>
 			</tr>
+
+            <wicket:enclosure child="names">
+                <tr>
+                    <th colspan="2">All Registered Payment Ids:</th>
+                </tr>
+                <tr wicket:id="names">
+                    <td colspan="2">
+                        <a wicket:id="select">
+                            <span wicket:id="name" />
+                        </a>
+                    </td>
+                </tr>
+            </wicket:enclosure>
 
 			<wicket:enclosure>
 				<tr>

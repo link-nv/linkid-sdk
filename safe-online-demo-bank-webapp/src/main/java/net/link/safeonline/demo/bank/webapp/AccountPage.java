@@ -72,7 +72,7 @@ public class AccountPage extends LayoutPage {
 
             super(id);
 
-            final List<BankAccountEntity> accounts = getUserService().getAccounts(BankSession.get().getUser());
+            final List<BankAccountEntity> accounts = userService.getAccounts(BankSession.get().getUser());
 
             /* Accounts List. */
             add(new ListView<BankAccountEntity>("accountList", accounts) {
@@ -94,8 +94,7 @@ public class AccountPage extends LayoutPage {
                     accountItem.add(new Label("amount", WicketUtil.format(BankSession.CURRENCY, account.getAmount())));
 
                     /* Transactions List. */
-                    accountItem.add(new ListView<BankTransactionEntity>("transactionList", getTransactionService().getAllTransactions(
-                            account)) {
+                    accountItem.add(new ListView<BankTransactionEntity>("transactionList", transactionService.getAllTransactions(account)) {
 
                         private static final long serialVersionUID = 1L;
 

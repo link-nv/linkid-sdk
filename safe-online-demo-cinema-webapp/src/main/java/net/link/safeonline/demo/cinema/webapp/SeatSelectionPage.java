@@ -48,13 +48,22 @@ public class SeatSelectionPage extends LayoutPage {
      */
     public SeatSelectionPage() {
 
+        add(new Label("headerTitle", "Seat Selection"));
+
+        add(new SeatsForm("seats"));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onBeforeRender() {
+
         // If time or room are not yet set, go back.
         if (!CinemaSession.isTimeAndRoomSet())
             throw new RestartResponseException(TimeRoomSelectionPage.class);
 
-        add(new Label("headerTitle", "Seat Selection"));
-
-        add(new SeatsForm("seats"));
+        super.onBeforeRender();
     }
 
 
@@ -125,7 +134,6 @@ public class SeatSelectionPage extends LayoutPage {
                                 public void onClick() {
 
                                     CinemaSession.get().toggleSeat(seat);
-                                    throw new RestartResponseException(SeatSelectionPage.class);
                                 }
 
                                 @Override
@@ -150,7 +158,6 @@ public class SeatSelectionPage extends LayoutPage {
         @Override
         protected void onSubmit() {
 
-            // TODO: Redirect to payment.
         }
     }
 }

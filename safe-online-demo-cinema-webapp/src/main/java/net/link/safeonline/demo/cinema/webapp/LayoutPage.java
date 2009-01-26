@@ -11,23 +11,21 @@ import net.link.safeonline.demo.cinema.entity.CinemaTicketEntity;
 import net.link.safeonline.demo.cinema.entity.CinemaUserEntity;
 import net.link.safeonline.demo.cinema.service.TicketService;
 import net.link.safeonline.demo.cinema.service.UserService;
-import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.wicket.tools.WicketUtil;
 import net.link.safeonline.wicket.web.OlasApplicationPage;
 import net.link.safeonline.wicket.web.OlasLogoutLink;
 
 import org.apache.wicket.RedirectToUrlException;
 import org.apache.wicket.RequestCycle;
-import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.MarkupStream;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.http.RequestUtils;
-import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.request.target.component.BookmarkablePageRequestTarget;
 
 
@@ -41,6 +39,12 @@ public class LayoutPage extends OlasApplicationPage {
     @EJB(mappedName = UserService.JNDI_BINDING)
     transient UserService     userService;
 
+    private Ticket            ticketForm;
+
+    private UserInfo          userForm;
+
+    private FeedbackPanel     globalFeedback;
+
 
     /**
      * Add components to the layout that are present on every page.
@@ -50,9 +54,43 @@ public class LayoutPage extends OlasApplicationPage {
     public LayoutPage() {
 
         add(new Label("pageTitle", "Cinema Demo Application"));
+        add(globalFeedback = new FeedbackPanel("globalFeedback"));
 
-        add(new UserInfo("user"));
-        add(new Ticket("ticket"));
+        add(userForm = new UserInfo("user"));
+        add(ticketForm = new Ticket("ticket"));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onBeforeRender() {
+
+        // Check to see if our ticket data is complete - if so, create a ticket.
+        if (!CinemaSession.isTicketSet()) {
+            if (CinemaSession.isFilmAndTheaterSet() && CinemaSession.isTimeAndRoomSet() && CinemaSession.isSeatSet()
+                    && CinemaSession.get().isUserSet()) {
+                try {
+                    CinemaSession.get().setTicket(
+                            ticketService.createTicket(CinemaSession.get().getUser(), CinemaSession.get().getFilm(),
+                                    CinemaSession.get().getTime(), CinemaSession.get().getOccupation()));
+                }
+
+                catch (IllegalStateException e) {
+                    LOG.error("Removing seat selection.", e);
+                    CinemaSession.get().toggleSeat(CinemaSession.get().getOccupation().getSeat());
+                }
+            }
+        }
+
+        userForm.setVisible(CinemaSession.get().isUserSet());
+        ticketForm.setVisible(CinemaSession.get().isUserSet()
+                && (CinemaSession.isFilmSet() || CinemaSession.isTheaterSet() || CinemaSession.isRoomSet() || CinemaSession.isSeatSet()
+                        || CinemaSession.isTimeSet() || CinemaSession.isTicketSet()));
+
+        globalFeedback.setVisible(globalFeedback.anyErrorMessage());
+
+        super.onBeforeRender();
     }
 
     /**
@@ -104,37 +142,59 @@ public class LayoutPage extends OlasApplicationPage {
                     replaceComponentTagBody(markupStream, openTag, junior.getObject()? "Junior Discount": "No Discount");
                 }
             });
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void onBeforeRender() {
 
             if (CinemaSession.get().isUserSet()) {
                 name.setObject(CinemaSession.get().getUser().getName());
                 nrn.setObject(CinemaSession.get().getUser().getNrn());
                 junior.setObject(CinemaSession.get().getUser().isJunior());
-            } else {
-                setVisible(false);
             }
+
+            super.onBeforeRender();
         }
     }
 
     class Ticket extends WebMarkupContainer {
 
+        private static final long serialVersionUID = 1L;
+        private SelectedPrice     paymentForm;
+        private SelectedRoom      roomForm;
+        private SelectedTime      timeForm;
+        private SelectedTheatre   theatreForm;
+        private SelectedFilm      filmForm;
+
+
         public Ticket(String id) {
 
             super(id);
 
-            setVisible(LoginManager.isAuthenticated(((WebRequest) getRequest()).getHttpServletRequest())
-                    && (CinemaSession.isFilmSet() || CinemaSession.isTheaterSet() || CinemaSession.isRoomSet() || CinemaSession.isSeatSet()
-                            || CinemaSession.isTimeSet() || CinemaSession.isTicketSet()));
-
-            add(new SelectedFilm("film"));
-            add(new SelectedTheatre("theatre"));
-            add(new SelectedTime("time"));
-            add(new SelectedRoom("room"));
-            add(new SelectedPrice("payment"));
+            add(filmForm = new SelectedFilm("film"));
+            add(theatreForm = new SelectedTheatre("theatre"));
+            add(timeForm = new SelectedTime("time"));
+            add(roomForm = new SelectedRoom("room"));
+            add(paymentForm = new SelectedPrice("payment"));
         }
 
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void onBeforeRender() {
 
-        private static final long serialVersionUID = 1L;
+            filmForm.setVisible(CinemaSession.isFilmSet());
+            theatreForm.setVisible(CinemaSession.isTheaterSet());
+            timeForm.setVisible(CinemaSession.isTimeSet());
+            roomForm.setVisible(CinemaSession.isRoomSet());
+            paymentForm.setVisible(CinemaSession.isTicketSet());
 
+            super.onBeforeRender();
+        }
     }
 
     class SelectedFilm extends WebMarkupContainer {
@@ -157,16 +217,22 @@ public class LayoutPage extends OlasApplicationPage {
                 public void onClick() {
 
                     CinemaSession.get().resetFilm();
-                    throw new RestartResponseException(FilmTheatreSelectionPage.class);
                 }
             });
+        }
 
-            // Put film name in label or hide if no film selected.
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void onBeforeRender() {
+
+            // Put film name in label if film selected.
             if (CinemaSession.isFilmSet()) {
                 name.setObject(CinemaSession.get().getFilm().getName());
-            } else {
-                setVisible(false);
             }
+
+            super.onBeforeRender();
         }
     }
 
@@ -190,16 +256,22 @@ public class LayoutPage extends OlasApplicationPage {
                 public void onClick() {
 
                     CinemaSession.get().resetTheatre();
-                    throw new RestartResponseException(FilmTheatreSelectionPage.class);
                 }
             });
+        }
 
-            // Put theatre name in label or hide if no theatre selected.
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void onBeforeRender() {
+
+            // Put theatre name in label if theatre selected.
             if (CinemaSession.isTheaterSet()) {
                 name.setObject(CinemaSession.get().getTheatre().getName());
-            } else {
-                setVisible(false);
             }
+
+            super.onBeforeRender();
         }
     }
 
@@ -223,16 +295,22 @@ public class LayoutPage extends OlasApplicationPage {
                 public void onClick() {
 
                     CinemaSession.get().resetTime();
-                    throw new RestartResponseException(TimeRoomSelectionPage.class);
                 }
             });
+        }
 
-            // Put time in label (formatted) or hide if no time selected.
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void onBeforeRender() {
+
+            // Put time in label (formatted) if time selected.
             if (CinemaSession.isTimeSet()) {
                 time.setObject(WicketUtil.format(getLocale(), CinemaSession.get().getTime()));
-            } else {
-                setVisible(false);
             }
+
+            super.onBeforeRender();
         }
     }
 
@@ -256,16 +334,22 @@ public class LayoutPage extends OlasApplicationPage {
                 public void onClick() {
 
                     CinemaSession.get().resetRoom();
-                    throw new RestartResponseException(TimeRoomSelectionPage.class);
                 }
             });
+        }
 
-            // Put name of the room in label or hide if no room selected.
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void onBeforeRender() {
+
+            // Put name of the room in label if room selected.
             if (CinemaSession.isRoomSet()) {
                 name.setObject(CinemaSession.get().getRoom().getName());
-            } else {
-                setVisible(false);
             }
+
+            super.onBeforeRender();
         }
     }
 
@@ -280,31 +364,6 @@ public class LayoutPage extends OlasApplicationPage {
             super(id);
 
             add(new Label("price", price = new Model<String>()));
-
-            // Check to see if our ticket data is complete - if so, create a ticket.
-            if (!CinemaSession.isTicketSet()) {
-                if (CinemaSession.isFilmAndTheaterSet() && CinemaSession.isTimeAndRoomSet() && CinemaSession.isSeatSet()
-                        && CinemaSession.get().isUserSet()) {
-                    try {
-                        CinemaSession.get().setTicket(
-                                ticketService.createTicket(CinemaSession.get().getUser(), CinemaSession.get().getFilm(),
-                                        CinemaSession.get().getTime(), CinemaSession.get().getOccupation()));
-                    }
-
-                    catch (IllegalStateException e) {
-                        LOG.error("Removing seat selection.", e);
-                        CinemaSession.get().toggleSeat(CinemaSession.get().getOccupation().getSeat());
-                    }
-                }
-            }
-
-            // Put price in label or hide if ticket is not complete.
-            if (CinemaSession.isTicketSet()) {
-                price.setObject(WicketUtil.format(CinemaSession.CURRENCY, ticketService.calculatePrice(CinemaSession.get().getTicket())));
-            } else {
-                setVisible(false);
-            }
-
             add(new Link<String>("pay") {
 
                 private static final long serialVersionUID = 1L;
@@ -356,6 +415,20 @@ public class LayoutPage extends OlasApplicationPage {
                     }
                 }
             });
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void onBeforeRender() {
+
+            // Put price in label if ticket is complete.
+            if (CinemaSession.isTicketSet()) {
+                price.setObject(WicketUtil.format(CinemaSession.CURRENCY, ticketService.calculatePrice(CinemaSession.get().getTicket())));
+            }
+
+            super.onBeforeRender();
         }
     }
 }

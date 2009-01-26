@@ -65,7 +65,8 @@ public class TicketPage extends LayoutPage {
      */
     class TicketForm extends Form<String> {
 
-        private static final long serialVersionUID = 1L;
+        private static final long            serialVersionUID = 1L;
+        private ListView<CinemaTicketEntity> ticketList;
 
 
         public TicketForm(String id) {
@@ -73,14 +74,9 @@ public class TicketPage extends LayoutPage {
             super(id);
 
             final List<CinemaTicketEntity> data = TicketPage.this.ticketService.getTickets(CinemaSession.get().getUser());
-
-            add(new ListView<CinemaTicketEntity>("list", data) {
+            add(ticketList = new ListView<CinemaTicketEntity>("list", data) {
 
                 private static final long serialVersionUID = 1L;
-
-                {
-                    setVisible(!data.isEmpty());
-                }
 
 
                 @Override
@@ -98,6 +94,19 @@ public class TicketPage extends LayoutPage {
             });
 
             add(new PageLink<FilmTheatreSelectionPage>("new", FilmTheatreSelectionPage.class));
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void onBeforeRender() {
+
+            final List<CinemaTicketEntity> data = TicketPage.this.ticketService.getTickets(CinemaSession.get().getUser());
+            ticketList.setList(data);
+            ticketList.setVisible(!ticketList.getList().isEmpty());
+
+            super.onBeforeRender();
         }
 
         @Override

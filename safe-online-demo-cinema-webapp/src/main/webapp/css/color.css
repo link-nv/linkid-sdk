@@ -66,6 +66,16 @@ input[type=text], textarea, select {
     background:         #d9d9d9;
     border-color:       #a6a6a6;
 }
+#error {
+    border:             1px solid #ffcccc;
+}
+#error th, #error td {
+    background:         #993333;
+    color:              #ffcccc;
+}
+#error th {
+    background:         #cc6666;
+}
 
 
 

@@ -1,5 +1,6 @@
 package net.link.safeonline.demo.payment.webapp;
 
+import net.link.safeonline.demo.payment.entity.PaymentUserEntity;
 import net.link.safeonline.demo.payment.keystore.DemoPaymentKeyStoreUtils;
 import net.link.safeonline.demo.payment.webapp.AccountPage.AccountForm;
 import net.link.safeonline.model.demo.DemoConstants;
@@ -14,13 +15,14 @@ import net.link.safeonline.wicket.tools.WicketUtil;
 import net.link.safeonline.wicket.web.ForceLogout;
 
 import org.apache.wicket.RedirectToUrlException;
-import org.apache.wicket.feedback.IFeedbackMessageFilter;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.Model;
 
 
@@ -75,15 +77,15 @@ public class AdminPage extends LayoutPage {
      */
     class AdminForm extends Form<String> {
 
-        private static final long serialVersionUID = 1L;
-        private Model<String>     name;
-        private Model<Boolean>    junior;
-        private boolean           createJunior;
+        private static final long           serialVersionUID = 1L;
+        Model<String>                       name;
+        private Model<Boolean>              junior;
+        private boolean                     createJunior;
 
-        private CheckBox          juniorField;
-        private Button            submitButton;
-        private FeedbackPanel     feedbackPanel;
-        private TextField<String> nameField;
+        private CheckBox                    juniorField;
+        private Button                      submitButton;
+        private TextField<String>           nameField;
+        private ListView<PaymentUserEntity> namesList;
 
 
         public AdminForm(String id) {
@@ -91,12 +93,48 @@ public class AdminPage extends LayoutPage {
             super(id);
 
             add(nameField = new TextField<String>("name", name = new Model<String>()));
+
+            add(namesList = new ListView<PaymentUserEntity>("names", userService.getUsers()) {
+
+                private static final long serialVersionUID = 1L;
+
+
+                @Override
+                public boolean isVisible() {
+
+                    return !getList().isEmpty();
+                }
+
+                @Override
+                protected void populateItem(final ListItem<PaymentUserEntity> item) {
+
+                    item.add(new Link<String>("select") {
+
+                        private static final long serialVersionUID = 1L;
+
+                        {
+                            add(new Label("name", item.getModelObject().getOlasName()));
+                        }
+
+
+                        @Override
+                        public void onClick() {
+
+                            name.setObject(item.getModelObject().getOlasName());
+                            onSubmit();
+                        }
+                    });
+                }
+            });
+
             add(juniorField = new CheckBox("junior", junior = new Model<Boolean>()));
+
             add(submitButton = new Button("submit", new Model<String>("Search &gt;")));
-            add(feedbackPanel = new FeedbackPanel("feedback", IFeedbackMessageFilter.ALL));
 
             nameField.setRequired(true);
             submitButton.setEscapeModelStrings(false);
+
+            juniorField.setVisible(false);
         }
 
         /**
@@ -105,54 +143,40 @@ public class AdminPage extends LayoutPage {
         @Override
         protected void onBeforeRender() {
 
-            super.onBeforeRender();
+            // Decide what submit text to show.
+            if (nameField.isEnabled()) {
+                namesList.setVisibilityAllowed(true);
 
-            juniorField.setVisible(junior.getObject() != null);
-            if (junior.getObject() == null) {
                 submitButton.setModelObject("Search &gt;");
-                nameField.setEnabled(true);
-            } else {
-                submitButton.setModelObject("Apply &gt;");
-                nameField.setEnabled(false);
+                focus(nameField);
             }
-            feedbackPanel.setVisible(feedbackPanel.anyMessage());
+
+            else {
+                namesList.setVisibilityAllowed(false);
+
+                if (juniorField.isEnabled()) {
+                    submitButton.setModelObject("Apply &gt;");
+                    focus(juniorField);
+                } else {
+                    submitButton.setModelObject("Return &lt;");
+                    focus(submitButton);
+                }
+            }
+
+            super.onBeforeRender();
         }
 
         @Override
         protected void onSubmit() {
 
-            if (juniorField.isVisible()) {
-                try {
-                    DataClient dataClient = WicketUtil.getOLASDataService(WicketUtil.toServletRequest(getRequest()),
-                            DemoPaymentKeyStoreUtils.getPrivateKeyEntry());
-                    NameIdentifierMappingClient nameIdentifierMappingClient = WicketUtil.getOLASIdMappingService(
-                            WicketUtil.toServletRequest(getRequest()), DemoPaymentKeyStoreUtils.getPrivateKeyEntry());
-                    String userId = nameIdentifierMappingClient.getUserId(name.getObject());
+            // Toggle field visibility & enabling depending on whether this is a search or not;
+            // and if it is, what result it yields.
 
-                    if (createJunior) {
-                        dataClient.createAttribute(userId, DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, junior.getObject());
-                    } else {
-                        dataClient.setAttributeValue(userId, DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, junior.getObject());
-                    }
-                }
+            if (nameField.isEnabled()) {
+                nameField.setVisible(false);
+                juniorField.setVisible(true);
 
-                catch (AttributeNotFoundException e) {
-                    error("Attribute not found.");
-                } catch (WSClientTransportException e) {
-                    error("Connection error. Check your SSL setup.");
-                } catch (SubjectNotFoundException e) {
-                    error("Subject not found");
-                } catch (RequestDeniedException e) {
-                    error("Request Denied");
-                    LOG.error("request denied", e);
-                }
-
-                // Reset the form.
-                name.setObject(null);
-                junior.setObject(null);
-            }
-
-            else if (name.getObject() != null) {
+                // Submit was a search query.
                 try {
                     DataClient dataClient = WicketUtil.getOLASDataService(WicketUtil.toServletRequest(getRequest()),
                             DemoPaymentKeyStoreUtils.getPrivateKeyEntry());
@@ -179,6 +203,44 @@ public class AdminPage extends LayoutPage {
                     error("Request Denied");
                     LOG.error("request denied", e);
                 }
+
+                nameField.setEnabled(false);
+            }
+
+            else {
+                // Submit was an apply/create/return.
+
+                if (juniorField.isVisible()) {
+                    try {
+                        DataClient dataClient = WicketUtil.getOLASDataService(WicketUtil.toServletRequest(getRequest()),
+                                DemoPaymentKeyStoreUtils.getPrivateKeyEntry());
+                        NameIdentifierMappingClient nameIdentifierMappingClient = WicketUtil.getOLASIdMappingService(
+                                WicketUtil.toServletRequest(getRequest()), DemoPaymentKeyStoreUtils.getPrivateKeyEntry());
+                        String userId = nameIdentifierMappingClient.getUserId(name.getObject());
+
+                        if (createJunior) {
+                            dataClient.createAttribute(userId, DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, junior.getObject());
+                        } else {
+                            dataClient.setAttributeValue(userId, DemoConstants.PAYMENT_JUNIOR_ATTRIBUTE_NAME, junior.getObject());
+                        }
+                    }
+
+                    catch (AttributeNotFoundException e) {
+                        error("Attribute not found.");
+                    } catch (WSClientTransportException e) {
+                        error("Connection error. Check your SSL setup.");
+                    } catch (SubjectNotFoundException e) {
+                        error("Subject not found");
+                    } catch (RequestDeniedException e) {
+                        error("Request Denied");
+                        LOG.error("request denied", e);
+                    }
+                }
+
+                // Reset the form.
+                juniorField.setVisible(false);
+                nameField.setEnabled(true);
+                namesList.setList(userService.getUsers());
             }
         }
     }

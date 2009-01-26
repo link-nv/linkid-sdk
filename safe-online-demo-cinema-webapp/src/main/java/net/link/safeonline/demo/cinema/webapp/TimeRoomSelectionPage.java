@@ -48,6 +48,10 @@ public class TimeRoomSelectionPage extends LayoutPage {
     @EJB(mappedName = RoomService.JNDI_BINDING)
     transient RoomService     roomService;
 
+    private TimesForm         timesForm;
+
+    private RoomsForm         roomsForm;
+
 
     /**
      * If time and room are selected; continue to the seat selection page.
@@ -56,6 +60,18 @@ public class TimeRoomSelectionPage extends LayoutPage {
      */
     public TimeRoomSelectionPage() {
 
+        add(new Label("headerTitle", "Time And Room Selection"));
+
+        add(timesForm = new TimesForm("times"));
+        add(roomsForm = new RoomsForm("rooms"));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onBeforeRender() {
+
         // If theatre and film are not yet set; go back.
         if (!CinemaSession.isFilmAndTheaterSet())
             throw new RestartResponseException(FilmTheatreSelectionPage.class);
@@ -63,10 +79,10 @@ public class TimeRoomSelectionPage extends LayoutPage {
         if (CinemaSession.isTimeAndRoomSet())
             throw new RestartResponseException(SeatSelectionPage.class);
 
-        add(new Label("headerTitle", "Time And Room Selection"));
+        timesForm.setVisible(!CinemaSession.isTimeSet());
+        roomsForm.setVisible(!CinemaSession.isRoomSet());
 
-        add(new TimesForm("times"));
-        add(new RoomsForm("rooms"));
+        super.onBeforeRender();
     }
 
 
@@ -98,7 +114,6 @@ public class TimeRoomSelectionPage extends LayoutPage {
         public TimesForm(String id) {
 
             super(id);
-            setVisible(!CinemaSession.isTimeSet());
 
             // TODO: Either get all times or just those for the selected room.
             List<Date> data = new LinkedList<Date>();
@@ -135,7 +150,6 @@ public class TimeRoomSelectionPage extends LayoutPage {
                         public void onClick() {
 
                             CinemaSession.get().setTime(time);
-                            throw new RestartResponseException(TimeRoomSelectionPage.class);
                         }
                     });
                 }
@@ -194,7 +208,6 @@ public class TimeRoomSelectionPage extends LayoutPage {
         public RoomsForm(String id) {
 
             super(id);
-            setVisible(!CinemaSession.isRoomSet());
 
             // Either get all rooms TODO: or just those that play the film at
             // the selected time.
@@ -223,7 +236,6 @@ public class TimeRoomSelectionPage extends LayoutPage {
                         public void onClick() {
 
                             CinemaSession.get().setRoom(room);
-                            throw new RestartResponseException(TimeRoomSelectionPage.class);
                         }
                     });
                 }

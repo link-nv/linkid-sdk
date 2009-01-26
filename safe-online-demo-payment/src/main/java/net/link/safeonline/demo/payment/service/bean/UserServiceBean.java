@@ -6,6 +6,8 @@
  */
 package net.link.safeonline.demo.payment.service.bean;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.servlet.http.HttpServletRequest;
 
@@ -36,6 +38,15 @@ import org.jboss.annotation.ejb.LocalBinding;
 @Stateless
 @LocalBinding(jndiBinding = UserService.JNDI_BINDING)
 public class UserServiceBean extends AbstractPaymentServiceBean implements UserService {
+
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public List<PaymentUserEntity> getUsers() {
+
+        return em.createNamedQuery(PaymentUserEntity.getAll).getResultList();
+    }
 
     /**
      * {@inheritDoc}
