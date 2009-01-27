@@ -55,20 +55,20 @@
 		<description>Landing page to finalize a login process.</description>
 		<param-name>LandingPage</param-name>
 		<param-value>
-			${safe-online.host.auth.basename}/${safe-online.demo.ticket.webapp.name}/login 
+			${safe-online.host.auth.basename}/${safe-online.demo.ticket.webapp.url}/login 
 		</param-value>
 	</context-param>
 	<context-param>
 		<description>Landing page to finalize a logout process.</description>
 		<param-name>LogoutLandingPage</param-name>
 		<param-value>
-			${safe-online.host.auth.basename}/${safe-online.demo.ticket.webapp.name}/logout 
+			${safe-online.host.auth.basename}/${safe-online.demo.ticket.webapp.url}/logout 
 		</param-value>
 	</context-param>
 	<context-param>
 		<param-name>TargetBaseUrl</param-name>
 		<param-value>
-			${safe-online.host.basename}/${safe-online.demo.ticket.webapp.name}/ 
+			${safe-online.host.basename}/${safe-online.demo.ticket.webapp.url}/ 
 		</param-value>
 		<description>Url to redirect to after successful authentication</description>
 	</context-param>
@@ -165,7 +165,7 @@
 		<init-param>
 			<param-name>ServletEndpointUrl</param-name>
 			<param-value>
-				${safe-online.host.auth.basename}/${safe-online.demo.ticket.webapp.name}/login 
+				${safe-online.host.auth.basename}/${safe-online.demo.ticket.webapp.url}/login 
 			</param-value>
 			<description>Used to wrap the servlet request's request URL for
 				verification of the receiving endpoint with the destination in the
@@ -183,7 +183,7 @@
 		<init-param>
 			<param-name>LogoutUrl</param-name>
 			<param-value>
-				${safe-online.host.auth.basename}/${safe-online.demo.ticket.webapp.name}/ticketlogout 
+				${safe-online.host.auth.basename}/${safe-online.demo.ticket.webapp.url}/ticketlogout 
 			</param-value>
 		</init-param>
 		<init-param>
@@ -196,7 +196,7 @@
 				saml response.</description>
 			<param-name>ServletEndpointUrl</param-name>
 			<param-value>
-				${safe-online.host.auth.basename}/${safe-online.demo.ticket.webapp.name}/logout 
+				${safe-online.host.auth.basename}/${safe-online.demo.ticket.webapp.url}/logout 
 			</param-value>
 		</init-param>
 	</servlet>
@@ -207,7 +207,7 @@
 		<init-param>
 			<param-name>LogoutExitUrl</param-name>
 			<param-value>
-				${safe-online.host.auth.basename}/${safe-online.demo.ticket.webapp.name}/logout 
+				${safe-online.host.auth.basename}/${safe-online.demo.ticket.webapp.url}/logout 
 			</param-value>
 		</init-param>
 	</servlet>

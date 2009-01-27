@@ -87,7 +87,9 @@ input[type=text], textarea, select {
     background:         #eaeaea;
     border-bottom-color:#a6a6a6;
 }
-
+#logo {
+    border-color:       #a6a6a6;
+}
 #footer {
 	border-top-color:   #eaeaea;
 	color:              #ccc;

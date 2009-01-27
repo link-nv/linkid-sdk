@@ -308,13 +308,23 @@
 				<!-- WEBAPP NAMES -->
 				<safe-online.demo.app.webapp.name>demo</safe-online.demo.app.webapp.name>
 				<safe-online.demo.prescription.webapp.name>demo-prescription</safe-online.demo.prescription.webapp.name>
-				<safe-online.demo.bank.webapp.name>demo-bank</safe-online.demo.bank.webapp.name>
-				<safe-online.demo.cinema.webapp.name>demo-cinema</safe-online.demo.cinema.webapp.name>
+				<safe-online.demo.bank.webapp.name>ebank</safe-online.demo.bank.webapp.name>
+				<safe-online.demo.cinema.webapp.name>cinema</safe-online.demo.cinema.webapp.name>
 				<safe-online.demo.lawyer.webapp.name>demo-lawyer</safe-online.demo.lawyer.webapp.name>
 				<safe-online.demo.mandate.webapp.name>demo-mandate</safe-online.demo.mandate.webapp.name>
-				<safe-online.demo.payment.webapp.name>demo-payment</safe-online.demo.payment.webapp.name>
-				<safe-online.demo.ticket.webapp.name>demo-ticket</safe-online.demo.ticket.webapp.name>
+				<safe-online.demo.payment.webapp.name>epayment</safe-online.demo.payment.webapp.name>
+				<safe-online.demo.ticket.webapp.name>eticket</safe-online.demo.ticket.webapp.name>
 				<safe-online.demo.ws.webapp.name>safe-online-demo-ws</safe-online.demo.ws.webapp.name>
+
+				<safe-online.demo.app.webapp.url>demo</safe-online.demo.app.webapp.url>
+				<safe-online.demo.prescription.webapp.url>demo-prescription</safe-online.demo.prescription.webapp.url>
+				<safe-online.demo.bank.webapp.url>demo-bank</safe-online.demo.bank.webapp.url>
+				<safe-online.demo.cinema.webapp.url>demo-cinema</safe-online.demo.cinema.webapp.url>
+				<safe-online.demo.lawyer.webapp.url>demo-lawyer</safe-online.demo.lawyer.webapp.url>
+				<safe-online.demo.mandate.webapp.url>demo-mandate</safe-online.demo.mandate.webapp.url>
+				<safe-online.demo.payment.webapp.url>demo-payment</safe-online.demo.payment.webapp.url>
+				<safe-online.demo.ticket.webapp.url>demo-ticket</safe-online.demo.ticket.webapp.url>
+				<safe-online.demo.ws.webapp.url>safe-online-demo-ws</safe-online.demo.ws.webapp.url>
 			</properties>
 			<modules>
 				<!-- DEMO CORE -->

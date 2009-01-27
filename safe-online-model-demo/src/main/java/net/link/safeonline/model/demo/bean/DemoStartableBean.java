@@ -66,9 +66,9 @@ public class DemoStartableBean extends AbstractInitBean {
 
     public static final String  DEMO_APPLICATION_NAME              = "demo-application";
 
-    public static final String  DEMO_TICKET_APPLICATION_NAME       = "demo-ticket";
+    public static final String  DEMO_TICKET_APPLICATION_NAME       = "eticket";
 
-    public static final String  DEMO_PAYMENT_APPLICATION_NAME      = "ebank";
+    public static final String  DEMO_PAYMENT_APPLICATION_NAME      = "epayment";
 
     public static final String  DEMO_LAWYER_APPLICATION_NAME       = "demo-lawyer";
 
@@ -78,7 +78,7 @@ public class DemoStartableBean extends AbstractInitBean {
 
     private static final String DEMO_CINEMA_APPLICATION_NAME       = "cinema";
 
-    private static final String DEMO_BANK_APPLICATION_NAME         = "demo-bank";
+    private static final String DEMO_BANK_APPLICATION_NAME         = "ebank";
 
     private static final String PASSWORD                           = "secret";
 
@@ -392,7 +392,7 @@ public class DemoStartableBean extends AbstractInitBean {
         trustedCertificates.put(demoCinemaCertificate, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
         try {
             registeredApplications.add(new Application(DEMO_CINEMA_APPLICATION_NAME, "owner", null, new URL(protocol, hostname, hostport,
-                    "/" + demoCinemaWebappName), getLogo("/cinema.png"), true, true, demoCinemaCertificate, false,
+                    "/" + demoCinemaWebappName), getLogo("/ecinema-small.png"), true, true, demoCinemaCertificate, false,
                     IdScopeType.SUBSCRIPTION, true, new URL(sslProtocol, hostname, hostportssl, "/" + demoCinemaWebappName + "/logout")));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
@@ -439,7 +439,7 @@ public class DemoStartableBean extends AbstractInitBean {
 
         try {
             registeredApplications.add(new Application(DEMO_PAYMENT_APPLICATION_NAME, "owner", null, new URL(protocol, hostname, hostport,
-                    "/" + demoPaymentWebappName), getLogo("/ebank-small.png"), true, true, demoPaymentCertificate, true,
+                    "/" + demoPaymentWebappName), getLogo("/epayment-small.png"), true, true, demoPaymentCertificate, true,
                     IdScopeType.SUBSCRIPTION, true, new URL(sslProtocol, hostname, hostportssl, "/" + demoPaymentWebappName + "/logout")));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());

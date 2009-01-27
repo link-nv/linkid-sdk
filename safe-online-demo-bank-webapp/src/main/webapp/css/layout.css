@@ -170,6 +170,13 @@ textarea, select {
     text-align:         left;
 }
 
+#logo {
+    float:              right;
+
+    margin:             -1em 1em 1em;
+    border:             1px solid black;
+}
+
 #content {
     width:              1000px;
     padding:            0 1em;

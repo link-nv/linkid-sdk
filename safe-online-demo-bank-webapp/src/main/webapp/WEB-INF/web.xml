@@ -44,7 +44,7 @@
 	</context-param>
     <context-param>
         <param-name>ApplicationName</param-name>
-        <param-value>demo-bank</param-value>
+        <param-value>${safe-online.demo.bank.webapp.name}</param-value>
     </context-param>
     <context-param>
         <param-name>ApplicationColor</param-name>
@@ -78,20 +78,20 @@
         <description>Landing page to finalize a login process.</description>
         <param-name>LandingPage</param-name>
         <param-value>
-            ${safe-online.host.auth.basename}/${safe-online.demo.bank.webapp.name}/login 
+            ${safe-online.host.auth.basename}/${safe-online.demo.bank.webapp.url}/login 
         </param-value>
     </context-param>
     <context-param>
         <description>Landing page to finalize a logout process.</description>
         <param-name>LogoutLandingPage</param-name>
         <param-value>
-            ${safe-online.host.auth.basename}/${safe-online.demo.bank.webapp.name}/logout 
+            ${safe-online.host.auth.basename}/${safe-online.demo.bank.webapp.url}/logout 
         </param-value>
     </context-param>
     <context-param>
         <param-name>TargetBaseUrl</param-name>
         <param-value>
-            ${safe-online.host.basename}/${safe-online.demo.bank.webapp.name}/ 
+            ${safe-online.host.basename}/${safe-online.demo.bank.webapp.url}/ 
         </param-value>
         <description>Url to redirect to after successful authentication</description>
     </context-param>
@@ -114,7 +114,7 @@
 		<init-param>
 			<param-name>ServletEndpointUrl</param-name>
 			<param-value>
-				${safe-online.host.auth.basename}/${safe-online.demo.bank.webapp.name}/login 
+				${safe-online.host.auth.basename}/${safe-online.demo.bank.webapp.url}/login 
 			</param-value>
 			<description>Used to wrap the servlet request's request URL for
 				verification of the receiving endpoint with the destination in the
@@ -132,7 +132,7 @@
 		<init-param>
 			<param-name>LogoutUrl</param-name>
 			<param-value>
-				${safe-online.host.auth.basename}/${safe-online.demo.bank.webapp.name}/banklogout 
+				${safe-online.host.auth.basename}/${safe-online.demo.bank.webapp.url}/banklogout 
 			</param-value>
 		</init-param>
 		<init-param>
@@ -145,7 +145,7 @@
 				saml response.</description>
 			<param-name>ServletEndpointUrl</param-name>
 			<param-value>
-				${safe-online.host.auth.basename}/${safe-online.demo.bank.webapp.name}/logout 
+				${safe-online.host.auth.basename}/${safe-online.demo.bank.webapp.url}/logout 
 			</param-value>
 		</init-param>
 	</servlet>
@@ -157,7 +157,7 @@
 		<init-param>
 			<param-name>LogoutExitUrl</param-name>
 			<param-value>
-				${safe-online.host.auth.basename}/${safe-online.demo.bank.webapp.name}/logout 
+				${safe-online.host.auth.basename}/${safe-online.demo.bank.webapp.url}/logout 
 			</param-value>
 		</init-param>
 	</servlet>
