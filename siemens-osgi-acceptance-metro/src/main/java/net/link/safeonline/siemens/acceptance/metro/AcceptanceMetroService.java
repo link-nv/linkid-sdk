@@ -70,6 +70,7 @@ public class AcceptanceMetroService implements PluginAttributeService {
             // empty
             System.out.println("ws: exception: " + e.getMessage());
             e.printStackTrace();
+            throw new AttributeUnavailableException(e.getMessage());
         } finally {
             Thread.currentThread().setContextClassLoader(cl);
         }
