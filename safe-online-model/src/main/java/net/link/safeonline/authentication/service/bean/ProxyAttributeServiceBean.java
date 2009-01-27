@@ -269,6 +269,9 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
             throw new AttributeUnavailableException();
         } catch (net.link.safeonline.osgi.exception.SubjectNotFoundException e) {
             throw new SubjectNotFoundException();
+        } catch (Exception e) {
+            LOG.debug("unexpected exception: " + e.getClass().getName());
+            throw new AttributeUnavailableException();
         }
     }
 

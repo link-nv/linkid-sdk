@@ -187,6 +187,9 @@ public class OSGIStartableBean implements OSGIStartable {
         // Add the OLAS service packages to be exported from the class path via the system bundle.
         systemPackages += "net.link.safeonline.osgi; version=" + version + ", ";
 
+        // Add the osgi exception package to be exported from the class path via the system bundle.
+        systemPackages += "net.link.safeonline.osgi.exception; version=" + version + ", ";
+
         // Add the attribute plugin service package to be exported from the class path via the system bundle.
         systemPackages += "net.link.safeonline.osgi.plugin; version=" + version + ", ";
 
