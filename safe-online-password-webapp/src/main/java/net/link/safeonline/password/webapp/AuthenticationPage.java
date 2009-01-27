@@ -16,14 +16,17 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.AuthenticationContext;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.model.password.PasswordConstants;
 import net.link.safeonline.model.password.PasswordDeviceService;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
+import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.ProgressAuthenticationPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
+import net.link.safeonline.wicket.service.OlasService;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
@@ -38,21 +41,24 @@ import org.apache.wicket.model.Model;
 
 public class AuthenticationPage extends TemplatePage {
 
-    private static final long       serialVersionUID       = 1L;
+    private static final long          serialVersionUID       = 1L;
 
-    public static final String      AUTHENTICATION_FORM_ID = "authentication_form";
-    public static final String      LOGIN_NAME_FIELD_ID    = "loginName";
-    public static final String      PASSWORD_FIELD_ID      = "password";
-    public static final String      LOGIN_BUTTON_ID        = "login";
-    public static final String      CANCEL_BUTTON_ID       = "cancel";
+    public static final String         AUTHENTICATION_FORM_ID = "authentication_form";
+    public static final String         LOGIN_NAME_FIELD_ID    = "loginName";
+    public static final String         PASSWORD_FIELD_ID      = "password";
+    public static final String         LOGIN_BUTTON_ID        = "login";
+    public static final String         CANCEL_BUTTON_ID       = "cancel";
 
     @EJB(mappedName = PasswordDeviceService.JNDI_BINDING)
-    transient PasswordDeviceService passwordDeviceService;
+    transient PasswordDeviceService    passwordDeviceService;
 
     @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
-    transient SamlAuthorityService  samlAuthorityService;
+    transient SamlAuthorityService     samlAuthorityService;
 
-    AuthenticationContext           authenticationContext;
+    AuthenticationContext              authenticationContext;
+
+    @OlasService(keyStore = SafeOnlineNodeKeyStore.class)
+    public NameIdentifierMappingClient idMappingClient;
 
 
     public AuthenticationPage() {

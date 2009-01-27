@@ -15,8 +15,8 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.AuthenticationContext;
-import net.link.safeonline.digipass.keystore.DigipassKeyStore;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.model.digipass.DigipassConstants;
 import net.link.safeonline.model.digipass.DigipassDeviceService;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
@@ -58,7 +58,7 @@ public class AuthenticationPage extends TemplatePage {
     @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
     transient SamlAuthorityService        samlAuthorityService;
 
-    @OlasService(keyStore = DigipassKeyStore.class)
+    @OlasService(keyStore = SafeOnlineNodeKeyStore.class)
     transient NameIdentifierMappingClient idMappingClient;
 
     AuthenticationContext                 authenticationContext;

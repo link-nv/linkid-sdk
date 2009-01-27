@@ -75,6 +75,7 @@ import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.entity.NodeMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.saml.common.Saml2SubjectConfirmationMethod;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.auth.DataType;
@@ -82,7 +83,6 @@ import net.link.safeonline.sdk.ws.exception.WSAuthenticationException;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.service.NodeMappingService;
 import net.link.safeonline.service.SubjectService;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.ws.common.WSAuthenticationErrorCode;
 import net.link.safeonline.ws.common.WebServiceConstants;
@@ -488,8 +488,7 @@ public class AuthenticationPortImpl implements AuthenticationPort {
 
                 IdentityService identityService = EjbUtils.getEJB(IdentityService.JNDI_BINDING, IdentityService.class);
 
-                List<AttributeDO> confirmationList = identityService.listIdentityAttributesToConfirm(applicationName, new Locale(
-                        language));
+                List<AttributeDO> confirmationList = identityService.listIdentityAttributesToConfirm(applicationName, new Locale(language));
                 List<AttributeType> confirmationAttributes = getAttributes(confirmationList, false);
                 AssertionType attributeAssertion = getAttributeAssertion(confirmationAttributes);
                 response.getAssertion().add(attributeAssertion);
@@ -591,8 +590,7 @@ public class AuthenticationPortImpl implements AuthenticationPort {
             try {
                 IdentityService identityService = EjbUtils.getEJB(IdentityService.JNDI_BINDING, IdentityService.class);
 
-                List<AttributeDO> missingAttributeList = identityService.listMissingAttributes(applicationName, new Locale(
-                        language));
+                List<AttributeDO> missingAttributeList = identityService.listMissingAttributes(applicationName, new Locale(language));
 
                 // first check if all there are non-user-editable attributes missing, if so user cannot authenticate.
                 String unavailableAttributes = "";
@@ -606,8 +604,7 @@ public class AuthenticationPortImpl implements AuthenticationPort {
                             + unavailableAttributes + "] is(are) unavailable");
 
                 // include optional attributes
-                List<AttributeDO> optionalAttributeList = identityService.listOptionalAttributes(applicationName, new Locale(
-                        language));
+                List<AttributeDO> optionalAttributeList = identityService.listOptionalAttributes(applicationName, new Locale(language));
 
                 List<AttributeType> missingAttributes = getAttributes(missingAttributeList, false);
                 List<AttributeType> optionalAttributes = getAttributes(optionalAttributeList, true);
@@ -834,10 +831,9 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         }
         GetDeviceAuthenticationClient getDeviceAuthenticationClient = new GetDeviceAuthenticationClientImpl(deviceAuthenticationWSURL);
 
-        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-
+        SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
         deviceAuthenticationClient = new DeviceAuthenticationClientImpl(getDeviceAuthenticationClient.getInstance(),
-                authIdentityServiceClient.getCertificate(), authIdentityServiceClient.getPrivateKey());
+                nodeKeyStore.getCertificate(), nodeKeyStore.getPrivateKey());
     }
 
     /**

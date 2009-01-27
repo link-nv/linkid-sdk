@@ -372,7 +372,6 @@
 				<module>safe-online-option-connection-manager-package</module>
 				<module>safe-online-option-applet</module>
 				<module>safe-online-option-applet-package</module>
-				<module>safe-online-option-keystore</module>
 				<module>safe-online-option-startup-runtime</module>
 				<module>safe-online-option</module>
 				<module>safe-online-option-webapp</module>
@@ -392,7 +391,6 @@
 			<modules>
 				<module>safe-online-model-otpoversms-client</module>
 				<module>safe-online-model-otpoversms</module>
-				<module>safe-online-otpoversms-keystore</module>
 				<module>safe-online-otpoversms-startup-runtime</module>
 				<module>safe-online-otpoversms-webapp</module>
 				<module>safe-online-otpoversms-deploy</module>
@@ -923,7 +921,6 @@
 		<module>safe-online-encap-ws-impl</module>
 		<module>safe-online-encap-sdk</module>
 		<module>safe-online-encap-ws-runtime</module>
-		<module>safe-online-encap-keystore</module>
 		<module>safe-online-encap-webapp</module>
 		<module>safe-online-encap-startup-runtime</module>
 		<module>safe-online-encap-auth-ws-impl</module>
@@ -931,7 +928,6 @@
 		<module>safe-online-encap-deploy</module>
 		<module>safe-online-digipass-startup-runtime</module>
 		<module>safe-online-digipass-deploy</module>
-		<module>safe-online-digipass-keystore</module>
 		<module>safe-online-digipass-webapp</module>
 		<module>safe-online-device-sdk</module>
 		<module>safe-online-java-version-applet</module>
@@ -946,7 +942,6 @@
 		<module>safe-online-beid-auth-ws-impl</module>
 		<module>safe-online-beid-auth-ws-runtime</module>
 		<module>safe-online-beid-deploy</module>
-		<module>safe-online-beid-keystore</module>
 		<module>safe-online-beid-webapp</module>
 		<module>safe-online-osgi</module>
 		<module>safe-online-osgi-plugin</module>
@@ -956,7 +951,6 @@
 		<module>safe-online-serial</module>
 		<module>safe-online-model-password-client</module>
 		<module>safe-online-model-password</module>
-		<module>safe-online-password-keystore</module>
 		<module>safe-online-password-startup-runtime</module>
 		<module>safe-online-password-webapp</module>
 		<module>safe-online-password-deploy</module>

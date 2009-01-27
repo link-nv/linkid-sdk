@@ -16,9 +16,9 @@ import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.ProtocolContext;
-import net.link.safeonline.encap.keystore.EncapKeyStore;
 import net.link.safeonline.encap.webapp.AuthenticationPage.Goal;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.model.encap.EncapDeviceService;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
@@ -55,7 +55,7 @@ public class RegistrationPage extends TemplatePage {
     @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
     transient SamlAuthorityService        samlAuthorityService;
 
-    @OlasService(keyStore = EncapKeyStore.class)
+    @OlasService(keyStore = SafeOnlineNodeKeyStore.class)
     transient NameIdentifierMappingClient idMappingClient;
 
     ProtocolContext                       protocolContext;

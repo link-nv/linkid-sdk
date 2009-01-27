@@ -7,7 +7,6 @@
 
 package net.link.safeonline.model.digipass.bean;
 
-import java.security.cert.X509Certificate;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -16,14 +15,13 @@ import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
-import net.link.safeonline.digipass.keystore.DigipassKeyStore;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
+import net.link.safeonline.keystore.SafeOnlineKeyStore;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.model.bean.AbstractInitBean;
 import net.link.safeonline.model.digipass.DigipassConstants;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
-import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -71,18 +69,18 @@ public class DigipassStartableBean extends AbstractInitBean {
                 "Digipass", null));
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(digipassDeviceAttributeType, "nl", "Digipass", null));
 
-        X509Certificate certificate = (X509Certificate) DigipassKeyStore.getPrivateKeyEntry().getCertificate();
-
+        SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
         ResourceBundle properties = ResourceBundle.getBundle("digipass_config");
         String nodeName = properties.getString("olas.node.name");
         String digipassWebappName = properties.getString("digipass.webapp.name");
 
         devices.add(new Device(DigipassConstants.DIGIPASS_DEVICE_ID, SafeOnlineConstants.DIGIPASS_DEVICE_CLASS, nodeName, "/"
                 + digipassWebappName + "/auth", null, null, null, null, "/" + digipassWebappName + "/device", "/" + digipassWebappName
-                + "/device", certificate, digipassDeviceAttributeType, digipassSNAttributeType, digipassDeviceDisableAttributeType));
+                + "/device", nodeKeyStore.getCertificate(), digipassDeviceAttributeType, digipassSNAttributeType,
+                digipassDeviceDisableAttributeType));
         deviceDescriptions.add(new DeviceDescription(DigipassConstants.DIGIPASS_DEVICE_ID, "nl", "EBank Digipass"));
         deviceDescriptions.add(new DeviceDescription(DigipassConstants.DIGIPASS_DEVICE_ID, Locale.ENGLISH.getLanguage(), "EBank Digipass"));
-        trustedCertificates.put(certificate, SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
+        trustedCertificates.put(nodeKeyStore.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
     }
 
     private void configureNode() {
@@ -94,12 +92,11 @@ public class DigipassStartableBean extends AbstractInitBean {
         int hostport = Integer.parseInt(properties.getString("olas.host.port"));
         int hostportssl = Integer.parseInt(properties.getString("olas.host.port.ssl"));
 
-        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-        IdentityServiceClient identityServiceClient = new IdentityServiceClient();
+        SafeOnlineKeyStore olasKeyStore = new SafeOnlineKeyStore();
+        SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
 
-        node = new Node(nodeName, protocol, hostname, hostport, hostportssl, authIdentityServiceClient.getCertificate(),
-                identityServiceClient.getCertificate());
-        trustedCertificates.put(authIdentityServiceClient.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
+        node = new Node(nodeName, protocol, hostname, hostport, hostportssl, nodeKeyStore.getCertificate(), olasKeyStore.getCertificate());
+        trustedCertificates.put(nodeKeyStore.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
     }
 
     @Override

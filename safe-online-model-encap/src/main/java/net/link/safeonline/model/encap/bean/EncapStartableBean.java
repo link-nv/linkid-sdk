@@ -7,7 +7,6 @@
 
 package net.link.safeonline.model.encap.bean;
 
-import java.security.cert.X509Certificate;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -16,14 +15,13 @@ import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
-import net.link.safeonline.encap.keystore.EncapKeyStore;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
+import net.link.safeonline.keystore.SafeOnlineKeyStore;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.model.bean.AbstractInitBean;
 import net.link.safeonline.model.encap.EncapConstants;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
-import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -47,44 +45,44 @@ public class EncapStartableBean extends AbstractInitBean {
         AttributeTypeEntity encapMobileAttributeType = new AttributeTypeEntity(EncapConstants.ENCAP_MOBILE_ATTRIBUTE, DatatypeType.STRING,
                 true, false);
         encapMobileAttributeType.setMultivalued(true);
-        this.attributeTypes.add(encapMobileAttributeType);
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(encapMobileAttributeType, Locale.ENGLISH.getLanguage(),
-                "Mobile", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(encapMobileAttributeType, "nl", "Gsm nummer", null));
+        attributeTypes.add(encapMobileAttributeType);
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(encapMobileAttributeType, Locale.ENGLISH.getLanguage(), "Mobile",
+                null));
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(encapMobileAttributeType, "nl", "Gsm nummer", null));
 
         AttributeTypeEntity encapDeviceDisableAttributeType = new AttributeTypeEntity(EncapConstants.ENCAP_DEVICE_DISABLE_ATTRIBUTE,
                 DatatypeType.BOOLEAN, false, false);
         encapDeviceDisableAttributeType.setMultivalued(true);
-        this.attributeTypes.add(encapDeviceDisableAttributeType);
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(encapDeviceDisableAttributeType,
-                Locale.ENGLISH.getLanguage(), "Encap Disable Attribute", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(encapDeviceDisableAttributeType, "nl",
-                "Encap Disable Attribuut", null));
+        attributeTypes.add(encapDeviceDisableAttributeType);
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(encapDeviceDisableAttributeType, Locale.ENGLISH.getLanguage(),
+                "Encap Disable Attribute", null));
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(encapDeviceDisableAttributeType, "nl", "Encap Disable Attribuut",
+                null));
 
         AttributeTypeEntity encapDeviceAttributeType = new AttributeTypeEntity(EncapConstants.ENCAP_DEVICE_ATTRIBUTE,
                 DatatypeType.COMPOUNDED, true, false);
         encapDeviceAttributeType.setMultivalued(true);
         encapDeviceAttributeType.addMember(encapMobileAttributeType, 0, true);
         encapDeviceAttributeType.addMember(encapDeviceDisableAttributeType, 1, true);
-        this.attributeTypes.add(encapDeviceAttributeType);
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(encapDeviceAttributeType, Locale.ENGLISH.getLanguage(),
-                "Encap", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(encapDeviceAttributeType, "nl", "Encap", null));
+        attributeTypes.add(encapDeviceAttributeType);
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(encapDeviceAttributeType, Locale.ENGLISH.getLanguage(), "Encap",
+                null));
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(encapDeviceAttributeType, "nl", "Encap", null));
 
-        X509Certificate certificate = (X509Certificate) EncapKeyStore.getPrivateKeyEntry().getCertificate();
+        SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
 
         ResourceBundle properties = ResourceBundle.getBundle("encap_config");
         String nodeName = properties.getString("olas.node.name");
         String encapWebappName = properties.getString("encap.webapp.name");
         String encapAuthWSPath = properties.getString("encap.auth.ws.webapp.name");
 
-        this.devices.add(new Device(EncapConstants.ENCAP_DEVICE_ID, SafeOnlineConstants.MOBILE_DEVICE_CLASS, nodeName, "/olas-encap/auth",
-                "/" + encapAuthWSPath, "/" + encapWebappName + "/device", "/" + encapWebappName + "/device", null, "/" + encapWebappName
-                        + "/device", "/" + encapWebappName + "/device", certificate, encapDeviceAttributeType, encapMobileAttributeType,
-                encapDeviceDisableAttributeType));
-        this.deviceDescriptions.add(new DeviceDescription(EncapConstants.ENCAP_DEVICE_ID, "nl", "GSM"));
-        this.deviceDescriptions.add(new DeviceDescription(EncapConstants.ENCAP_DEVICE_ID, Locale.ENGLISH.getLanguage(), "Mobile"));
-        this.trustedCertificates.put(certificate, SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
+        devices.add(new Device(EncapConstants.ENCAP_DEVICE_ID, SafeOnlineConstants.MOBILE_DEVICE_CLASS, nodeName, "/olas-encap/auth", "/"
+                + encapAuthWSPath, "/" + encapWebappName + "/device", "/" + encapWebappName + "/device", null, "/" + encapWebappName
+                + "/device", "/" + encapWebappName + "/device", nodeKeyStore.getCertificate(), encapDeviceAttributeType,
+                encapMobileAttributeType, encapDeviceDisableAttributeType));
+        deviceDescriptions.add(new DeviceDescription(EncapConstants.ENCAP_DEVICE_ID, "nl", "GSM"));
+        deviceDescriptions.add(new DeviceDescription(EncapConstants.ENCAP_DEVICE_ID, Locale.ENGLISH.getLanguage(), "Mobile"));
+        trustedCertificates.put(nodeKeyStore.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
     }
 
     private void configureNode() {
@@ -96,12 +94,11 @@ public class EncapStartableBean extends AbstractInitBean {
         int hostport = Integer.parseInt(properties.getString("olas.host.port"));
         int hostportssl = Integer.parseInt(properties.getString("olas.host.port.ssl"));
 
-        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-        IdentityServiceClient identityServiceClient = new IdentityServiceClient();
+        SafeOnlineKeyStore olasKeyStore = new SafeOnlineKeyStore();
+        SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
 
-        this.node = new Node(nodeName, protocol, hostname, hostport, hostportssl, authIdentityServiceClient.getCertificate(),
-                identityServiceClient.getCertificate());
-        this.trustedCertificates.put(authIdentityServiceClient.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
+        node = new Node(nodeName, protocol, hostname, hostport, hostportssl, nodeKeyStore.getCertificate(), olasKeyStore.getCertificate());
+        trustedCertificates.put(nodeKeyStore.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
     }
 
     @Override

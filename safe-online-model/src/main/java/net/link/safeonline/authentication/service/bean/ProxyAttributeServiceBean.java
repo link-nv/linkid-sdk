@@ -36,6 +36,7 @@ import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.ResourceLevelType;
 import net.link.safeonline.entity.audit.ResourceNameType;
 import net.link.safeonline.entity.audit.SecurityThreatType;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.osgi.OSGIService;
 import net.link.safeonline.osgi.OSGIStartable;
 import net.link.safeonline.osgi.OSGIHostActivator.OSGIServiceType;
@@ -45,9 +46,9 @@ import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
+import net.link.safeonline.service.AttributeTypeService;
 import net.link.safeonline.service.NodeMappingService;
 import net.link.safeonline.service.SubjectService;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -60,31 +61,34 @@ import org.jboss.annotation.ejb.RemoteBinding;
 @RemoteBinding(jndiBinding = ProxyAttributeServiceRemote.JNDI_BINDING)
 public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAttributeServiceRemote {
 
-    private static final Log    LOG = LogFactory.getLog(ProxyAttributeServiceBean.class);
+    private static final Log     LOG = LogFactory.getLog(ProxyAttributeServiceBean.class);
+
+    @EJB(mappedName = AttributeTypeService.JNDI_BINDING)
+    private AttributeTypeService attributeTypeService;
 
     @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
-    private AttributeTypeDAO    attributeTypeDAO;
+    private AttributeTypeDAO     attributeTypeDAO;
 
     @EJB(mappedName = AttributeDAO.JNDI_BINDING)
-    private AttributeDAO        attributeDAO;
+    private AttributeDAO         attributeDAO;
 
     @EJB(mappedName = AttributeCacheDAO.JNDI_BINDING)
-    private AttributeCacheDAO   attributeCacheDAO;
+    private AttributeCacheDAO    attributeCacheDAO;
 
     @EJB(mappedName = SubjectService.JNDI_BINDING)
-    private SubjectService      subjectService;
+    private SubjectService       subjectService;
 
     @EJB(mappedName = OSGIStartable.JNDI_BINDING)
-    private OSGIStartable       osgiStartable;
+    private OSGIStartable        osgiStartable;
 
     @EJB(mappedName = ResourceAuditLogger.JNDI_BINDING)
-    private ResourceAuditLogger resourceAuditLogger;
+    private ResourceAuditLogger  resourceAuditLogger;
 
     @EJB(mappedName = SecurityAuditLogger.JNDI_BINDING)
-    private SecurityAuditLogger securityAuditLogger;
+    private SecurityAuditLogger  securityAuditLogger;
 
     @EJB(mappedName = NodeMappingService.JNDI_BINDING)
-    private NodeMappingService  nodeMappingService;
+    private NodeMappingService   nodeMappingService;
 
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -97,7 +101,7 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
 
         SubjectEntity subject = subjectService.getSubject(userId);
 
-        if (attributeType.isLocal())
+        if (attributeTypeService.isLocal(attributeType))
             return findLocalAttribute(subject, attributeType);
 
         // Not local, check the attribute cache.
@@ -381,9 +385,9 @@ public class ProxyAttributeServiceBean implements ProxyAttributeService, ProxyAt
 
         NodeMappingEntity nodeMapping = nodeMappingService.getNodeMapping(subject.getUserId(), attributeType.getLocation().getName());
 
-        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-        AttributeClient attributeClient = new AttributeClientImpl(attributeType.getLocation().getLocation(),
-                authIdentityServiceClient.getCertificate(), authIdentityServiceClient.getPrivateKey());
+        SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
+        AttributeClient attributeClient = new AttributeClientImpl(attributeType.getLocation().getLocation(), nodeKeyStore.getCertificate(),
+                nodeKeyStore.getPrivateKey());
 
         DatatypeType datatype = attributeType.getType();
         Class<?> attributeClass;

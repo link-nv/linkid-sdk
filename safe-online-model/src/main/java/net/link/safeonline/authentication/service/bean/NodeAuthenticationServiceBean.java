@@ -19,8 +19,8 @@ import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.dao.NodeDAO;
 import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.entity.pkix.TrustPointEntity;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.pkix.dao.TrustPointDAO;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -78,7 +78,7 @@ public class NodeAuthenticationServiceBean implements NodeAuthenticationService 
     public NodeEntity getLocalNode()
             throws NodeNotFoundException {
 
-        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-        return getNode(authenticate(authIdentityServiceClient.getCertificate()));
+        SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
+        return getNode(authenticate(nodeKeyStore.getCertificate()));
     }
 }

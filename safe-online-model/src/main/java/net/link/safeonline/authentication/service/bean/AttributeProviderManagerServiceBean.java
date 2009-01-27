@@ -31,11 +31,12 @@ import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.AttributeProviderEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.service.AttributeTypeService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.security.SecurityDomain;
 
 
@@ -47,6 +48,9 @@ import org.jboss.annotation.security.SecurityDomain;
 public class AttributeProviderManagerServiceBean implements AttributeProviderManagerService, AttributeProviderManagerServiceRemote {
 
     private static final Log     LOG = LogFactory.getLog(AttributeProviderManagerServiceBean.class);
+
+    @EJB(mappedName = AttributeTypeService.JNDI_BINDING)
+    private AttributeTypeService attributeTypeService;
 
     @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
     private AttributeTypeDAO     attributeTypeDAO;
@@ -86,7 +90,7 @@ public class AttributeProviderManagerServiceBean implements AttributeProviderMan
 
         ApplicationEntity application = applicationDAO.getApplication(applicationName);
         AttributeTypeEntity attributeType = attributeTypeDAO.getAttributeType(attributeName);
-        if (!attributeType.isLocal())
+        if (!attributeTypeService.isLocal(attributeType))
             throw new PermissionDeniedException("Cannot set attribute provider on remote attribute");
         AttributeProviderEntity existingAttributeProvider = attributeProviderDAO.findAttributeProvider(application, attributeType);
         if (null != existingAttributeProvider)

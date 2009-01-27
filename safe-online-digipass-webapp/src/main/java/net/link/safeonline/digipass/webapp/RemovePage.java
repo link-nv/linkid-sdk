@@ -11,7 +11,7 @@ import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.data.AttributeDO;
-import net.link.safeonline.digipass.keystore.DigipassKeyStore;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.model.digipass.DigipassDeviceService;
 import net.link.safeonline.model.digipass.DigipassException;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
@@ -58,7 +58,7 @@ public class RemovePage extends TemplatePage {
     @EJB(mappedName = DigipassDeviceService.JNDI_BINDING)
     transient DigipassDeviceService       digipassDeviceService;
 
-    @OlasService(keyStore = DigipassKeyStore.class)
+    @OlasService(keyStore = SafeOnlineNodeKeyStore.class)
     transient NameIdentifierMappingClient idMappingClient;
 
     List<AttributeDO>                     digipassAttributes = new LinkedList<AttributeDO>();

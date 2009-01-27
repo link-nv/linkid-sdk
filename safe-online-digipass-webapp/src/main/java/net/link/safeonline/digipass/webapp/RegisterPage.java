@@ -13,7 +13,7 @@ import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.digipass.keystore.DigipassKeyStore;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.model.digipass.DigipassDeviceService;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
@@ -49,7 +49,7 @@ public class RegisterPage extends TemplatePage {
     @EJB(mappedName = DigipassDeviceService.JNDI_BINDING)
     transient DigipassDeviceService       digipassDeviceService;
 
-    @OlasService(keyStore = DigipassKeyStore.class)
+    @OlasService(keyStore = SafeOnlineNodeKeyStore.class)
     transient NameIdentifierMappingClient idMappingClient;
 
 

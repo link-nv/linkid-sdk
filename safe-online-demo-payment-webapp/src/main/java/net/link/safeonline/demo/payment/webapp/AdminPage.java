@@ -214,10 +214,6 @@ public class AdminPage extends LayoutPage {
 
                 if (juniorField.isVisible()) {
                     try {
-                        DataClient dataClient = WicketUtil.getOLASDataService(WicketUtil.toServletRequest(getRequest()),
-                                DemoPaymentKeyStoreUtils.getPrivateKeyEntry());
-                        NameIdentifierMappingClient nameIdentifierMappingClient = WicketUtil.getOLASIdMappingService(
-                                WicketUtil.toServletRequest(getRequest()), DemoPaymentKeyStoreUtils.getPrivateKeyEntry());
                         String userId = nameIdentifierMappingClient.getUserId(name.getObject());
 
                         if (createJunior) {

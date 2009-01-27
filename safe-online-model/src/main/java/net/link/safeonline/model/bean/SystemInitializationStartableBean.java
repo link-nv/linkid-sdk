@@ -25,11 +25,11 @@ import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.helpdesk.keystore.HelpdeskKeyStore;
+import net.link.safeonline.keystore.SafeOnlineKeyStore;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.oper.keystore.OperKeyStore;
 import net.link.safeonline.owner.keystore.OwnerKeyStore;
 import net.link.safeonline.user.keystore.UserKeyStore;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
-import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
@@ -134,13 +134,13 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         int hostport = Integer.parseInt(properties.getString("olas.host.port"));
         int hostportssl = Integer.parseInt(properties.getString("olas.host.port.ssl"));
 
-        IdentityServiceClient identityServiceClient = new IdentityServiceClient();
-        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
+        SafeOnlineKeyStore olasKeyStore = new SafeOnlineKeyStore();
+        SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
 
-        node = new Node(nodeName, sslprotocol, hostname, hostport, hostportssl, authIdentityServiceClient.getCertificate(),
-                identityServiceClient.getCertificate());
-        trustedCertificates.put(authIdentityServiceClient.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
-        trustedCertificates.put(identityServiceClient.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
+        node = new Node(nodeName, sslprotocol, hostname, hostport, hostportssl, nodeKeyStore.getCertificate(),
+                olasKeyStore.getCertificate());
+        trustedCertificates.put(nodeKeyStore.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
+        trustedCertificates.put(olasKeyStore.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
     }
 
     private void configureAttributeTypes() {
@@ -148,20 +148,19 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         AttributeTypeEntity loginAttributeType = new AttributeTypeEntity(SafeOnlineConstants.LOGIN_ATTRIBTUE, DatatypeType.STRING, false,
                 false);
         attributeTypes.add(loginAttributeType);
-        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(loginAttributeType, Locale.ENGLISH.getLanguage(),
-                "Login name", null));
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(loginAttributeType, Locale.ENGLISH.getLanguage(), "Login name",
+                null));
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(loginAttributeType, "nl", "Login naam", null));
     }
 
     private void configureDevices() {
 
-        deviceClasses.add(new DeviceClass(SafeOnlineConstants.PASSWORD_DEVICE_CLASS,
-                SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS));
-        deviceClasses.add(new DeviceClass(SafeOnlineConstants.MOBILE_DEVICE_CLASS,
-                SafeOnlineConstants.MOBILE_DEVICE_AUTH_CONTEXT_CLASS));
+        deviceClasses
+                     .add(new DeviceClass(SafeOnlineConstants.PASSWORD_DEVICE_CLASS, SafeOnlineConstants.PASSWORD_DEVICE_AUTH_CONTEXT_CLASS));
+        deviceClasses.add(new DeviceClass(SafeOnlineConstants.MOBILE_DEVICE_CLASS, SafeOnlineConstants.MOBILE_DEVICE_AUTH_CONTEXT_CLASS));
         deviceClasses.add(new DeviceClass(SafeOnlineConstants.PKI_DEVICE_CLASS, SafeOnlineConstants.PKI_DEVICE_AUTH_CONTEXT_CLASS));
-        deviceClasses.add(new DeviceClass(SafeOnlineConstants.DIGIPASS_DEVICE_CLASS,
-                SafeOnlineConstants.DIGIPASS_DEVICE_AUTH_CONTEXT_CLASS));
+        deviceClasses
+                     .add(new DeviceClass(SafeOnlineConstants.DIGIPASS_DEVICE_CLASS, SafeOnlineConstants.DIGIPASS_DEVICE_AUTH_CONTEXT_CLASS));
     }
 
     @Override

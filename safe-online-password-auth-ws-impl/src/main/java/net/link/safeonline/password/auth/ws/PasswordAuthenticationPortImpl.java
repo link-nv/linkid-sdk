@@ -26,13 +26,13 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.authentication.service.WSAuthenticationService;
 import net.link.safeonline.device.auth.ws.util.DeviceAuthenticationPortUtil;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.model.password.PasswordConstants;
 import net.link.safeonline.model.password.PasswordDeviceService;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.ws.common.WSAuthenticationErrorCode;
 import net.link.safeonline.ws.util.ri.Injection;
@@ -193,11 +193,9 @@ public class PasswordAuthenticationPortImpl implements DeviceAuthenticationPort 
     private String getUserId(String loginName)
             throws SubjectNotFoundException, PermissionDeniedException {
 
-        AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
-
         if (null == idMappingClient) {
-            idMappingClient = new NameIdentifierMappingClientImpl(wsLocation, authIdentityServiceClient.getCertificate(),
-                    authIdentityServiceClient.getPrivateKey());
+            SafeOnlineNodeKeyStore nodeKeyStore = new SafeOnlineNodeKeyStore();
+            idMappingClient = new NameIdentifierMappingClientImpl(wsLocation, nodeKeyStore.getCertificate(), nodeKeyStore.getPrivateKey());
         }
 
         String userId;
