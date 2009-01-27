@@ -36,7 +36,7 @@ public class MetroClientImpl implements MetroClient {
         metroPort = metroService.getMetroPort();
 
         BindingProvider bindingProvider = (BindingProvider) metroPort;
-        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location + "/siemens-ws/siemens");
+        bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, location + "/siemens-ws/test");
     }
 
     public String getAttribute()

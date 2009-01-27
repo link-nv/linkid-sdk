@@ -24,7 +24,7 @@ public class MetroWebServiceTest {
             throws Exception {
 
         // setup
-        MetroClient client = new MetroClientImpl("http://localhost:8080");
+        MetroClient client = new MetroClientImpl("http://sebeco-dev-10:8080");
 
         // operate
         String attribute = client.getAttribute();
@@ -32,16 +32,11 @@ public class MetroWebServiceTest {
         LOG.debug("returned attribute: " + attribute);
     }
 
-    @Test
-    public void testSiemensWSAuthenticationService()
-            throws Exception {
-
-        // setup
-        MetroWSAuthenticationClient client = new MetroWSAuthenticationClientImpl("http://localhost:8080");
-
-        // operate
-        String attribute = client.getAttribute();
-        assertNotNull(attribute);
-        LOG.debug("returned attribute: " + attribute);
-    }
+    /*
+     * @Test public void testSiemensWSAuthenticationService() throws Exception {
+     * 
+     * // setup MetroWSAuthenticationClient client = new MetroWSAuthenticationClientImpl("http://localhost:8080");
+     * 
+     * // operate String attribute = client.getAttribute(); assertNotNull(attribute); LOG.debug("returned attribute: " + attribute); }
+     */
 }
