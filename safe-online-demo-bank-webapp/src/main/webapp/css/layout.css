@@ -74,7 +74,6 @@ table caption {
 
     border:             1px solid black;
 
-    font-weight:        bold;
     font-size:          120%;
 }
 table a, input[type=submit] {
@@ -173,7 +172,7 @@ textarea, select {
 #logo {
     float:              right;
 
-    margin:             -1em 1em 1em;
+    margin:             -1.5em 1em 1em;
     border:             1px solid black;
 }
 
