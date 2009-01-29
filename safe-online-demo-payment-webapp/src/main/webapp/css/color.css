@@ -26,17 +26,17 @@
  */
 
 body {
-    color:              #4E2D6F; /* E */
+    color:              white;
     background:         white;
 }
 h1, h2 {
     color:              #7141A2; /* D */
 }
 a, a:link, a:visited, input[type=submit] {
-    color:              #A660EF; /* B */
+    color:              white;
 }
 a:active, a:hover {
-    color:              #7141A2; /* D */
+    color:              #CBA8EF; /* A */
 }
 table {
     background:         #7141A2; /* D */
@@ -51,12 +51,12 @@ table td, input[type=submit] {
     background:         #A660EF; /* B */
 }
 table td a:hover, input[type=submit]:hover {
-    background:         #977DB2; /* C */
-    color:              #7141A2; /* D */
+    background:         #CBA8EF; /* A */
+    color:              #A660EF; /* B */
 }
 table th a:hover, table th input[type=submit]:hover {
     background:         #CBA8EF; /* A */
-    color:              #7141A2; /* D */
+    color:              #4E2D6F; /* E */
 }
 table tfoot tr {
     border-top-color:   #4E2D6F; /* E */
