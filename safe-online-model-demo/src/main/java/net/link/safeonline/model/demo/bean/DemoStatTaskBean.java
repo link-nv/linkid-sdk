@@ -8,6 +8,7 @@
 package net.link.safeonline.model.demo.bean;
 
 import java.util.Random;
+import java.util.ResourceBundle;
 
 import javax.ejb.EJB;
 import javax.ejb.Local;
