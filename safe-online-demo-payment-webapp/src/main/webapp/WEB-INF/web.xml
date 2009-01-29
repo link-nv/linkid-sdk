@@ -47,10 +47,6 @@
         <param-value>${safe-online.demo.payment.webapp.name}</param-value>
     </context-param>
     <context-param>
-        <param-name>ApplicationColor</param-name>
-        <param-value>#00006A</param-value>
-    </context-param>
-    <context-param>
         <param-name>ApplicationMinimal</param-name>
         <param-value>false</param-value>
     </context-param>

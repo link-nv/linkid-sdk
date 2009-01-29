@@ -48,7 +48,7 @@
     </context-param>
     <context-param>
         <param-name>ApplicationColor</param-name>
-        <param-value>#00006A</param-value>
+        <param-value>#534021</param-value>
     </context-param>
     <context-param>
         <param-name>ApplicationMinimal</param-name>

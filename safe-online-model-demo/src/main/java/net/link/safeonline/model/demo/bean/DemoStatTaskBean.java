@@ -54,7 +54,9 @@ public class DemoStatTaskBean implements Task {
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public void perform() {
 
-        ApplicationEntity application = applicationDAO.findApplication(DemoStartableBean.DEMO_APPLICATION_NAME);
+        ResourceBundle properties = ResourceBundle.getBundle("config");
+        String demoAppWebappName = properties.getString("olas.demo.app.webapp.name");
+        ApplicationEntity application = applicationDAO.findApplication(demoAppWebappName);
         if (application == null)
             return;
         StatisticEntity statistic = statisticDAO.findStatisticByNameDomainAndApplication(STAT_NAME, STAT_DOMAIN, application);
