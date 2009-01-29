@@ -566,8 +566,7 @@
 
 
         <!-- CONFIGURATION PROFILES -->
-        <!-- Profile that uses insecure transport for secure traffic to reduce transport overhead
--->
+        <!-- Profile that uses insecure transport for secure traffic to reduce transport overhead -->
 		<profile>
 			<id>http</id>
 			<properties>
