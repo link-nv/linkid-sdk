@@ -25,6 +25,7 @@ import net.link.safeonline.test.util.EntityTestManager;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.TestClassLoader;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -47,6 +48,7 @@ public class KeyServiceTest {
 
     private KeyServiceBean  keyService;
     private TestClassLoader testClassLoader;
+    private ClassLoader     origClassLoader;
 
 
     class TestKeyStore extends AbstractServiceBasedKeyStore {
@@ -65,8 +67,18 @@ public class KeyServiceTest {
         keyService = new KeyServiceBean();
         EJBTestUtils.inject(keyService, entityManager);
 
+        Thread currentThread = Thread.currentThread();
+        origClassLoader = currentThread.getContextClassLoader();
+
         testClassLoader = new TestClassLoader();
         Thread.currentThread().setContextClassLoader(testClassLoader);
+    }
+
+    @After
+    public void tearDown()
+            throws Exception {
+
+        Thread.currentThread().setContextClassLoader(origClassLoader);
     }
 
     @Test

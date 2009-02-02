@@ -7,10 +7,11 @@
 package net.link.safeonline.keystore.service;
 
 import java.security.KeyStore.PrivateKeyEntry;
+import java.util.List;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.keystore.AbstractKeyStore;
+import net.link.safeonline.keystore.OlasKeyStore;
 import net.link.safeonline.keystore.entity.Type;
 
 
@@ -39,11 +40,28 @@ public interface KeyService {
     public static final String JNDI_BINDING = "SafeOnline/KeyServiceBean/local";
 
 
-    public PrivateKeyEntry getPrivateKeyEntry(Class<? extends AbstractKeyStore> keyStoreAccessor);
+    public PrivateKeyEntry getPrivateKeyEntry(Class<? extends OlasKeyStore> keyStoreAccessor);
 
-    public Type getType(Class<? extends AbstractKeyStore> keyStoreAccessor);
+    public Type getType(Class<? extends OlasKeyStore> keyStoreAccessor);
 
-    public String getConfig(Class<? extends AbstractKeyStore> keyStoreAccessor);
+    public String getConfig(Class<? extends OlasKeyStore> keyStoreAccessor);
 
-    public void configure(Class<? extends AbstractKeyStore> keyStoreAccessor, Type type, String config);
+    public void configure(Class<? extends OlasKeyStore> keyStoreAccessor, Type type, String config);
+
+    /*
+     * The same, but with String keyStoreAccessors, just because of the configuration MBean (KeyConfigMBean).
+     */
+    public List<String> getAccessors();
+
+    @Deprecated
+    public PrivateKeyEntry getPrivateKeyEntry(String keyStoreAccessor);
+
+    @Deprecated
+    public Type getType(String keyStoreAccessor);
+
+    @Deprecated
+    public String getConfig(String keyStoreAccessor);
+
+    @Deprecated
+    public void configure(String keyStoreAccessor, Type type, String config);
 }

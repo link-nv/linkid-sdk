@@ -10,6 +10,8 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 
 /**
@@ -27,15 +29,18 @@ import javax.persistence.Id;
  * @author lhunath
  */
 @Entity
+@NamedQueries(@NamedQuery(name = KeyConfig.getAccessors, query = "SELECT c.keyStoreAccessor FROM KeyConfig c"))
 public class KeyConfig {
 
+    public static final String getAccessors = "KeyConfig.getAccessors";
+
     @Id
-    private String keyStoreAccessor;
+    private String             keyStoreAccessor;
 
     @Enumerated(EnumType.STRING)
-    private Type   type;
+    private Type               type;
 
-    private String config;
+    private String             config;
 
 
     public KeyConfig() {

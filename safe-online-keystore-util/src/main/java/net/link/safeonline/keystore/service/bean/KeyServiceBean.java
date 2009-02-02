@@ -7,12 +7,13 @@
 package net.link.safeonline.keystore.service.bean;
 
 import java.security.KeyStore.PrivateKeyEntry;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import net.link.safeonline.keystore.AbstractKeyStore;
+import net.link.safeonline.keystore.OlasKeyStore;
 import net.link.safeonline.keystore.entity.KeyConfig;
 import net.link.safeonline.keystore.entity.Type;
 import net.link.safeonline.keystore.service.KeyService;
@@ -42,12 +43,27 @@ public class KeyServiceBean implements KeyService {
     protected EntityManager em;
 
 
+    @SuppressWarnings("unchecked")
+    public List<String> getAccessors() {
+
+        return em.createNamedQuery(KeyConfig.getAccessors).getResultList();
+    }
+
     /**
      * {@inheritDoc}
      */
-    public PrivateKeyEntry getPrivateKeyEntry(Class<? extends AbstractKeyStore> keyStoreAccessor) {
+    public PrivateKeyEntry getPrivateKeyEntry(Class<? extends OlasKeyStore> keyStoreAccessor) {
 
-        KeyConfig keyStoreConfig = em.find(KeyConfig.class, keyStoreAccessor.getCanonicalName());
+        return getPrivateKeyEntry(keyStoreAccessor.getCanonicalName());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Deprecated
+    public PrivateKeyEntry getPrivateKeyEntry(String keyStoreAccessor) {
+
+        KeyConfig keyStoreConfig = em.find(KeyConfig.class, keyStoreAccessor);
         if (keyStoreConfig == null)
             throw new IllegalStateException("No configuration for key store: " + keyStoreAccessor);
 
@@ -57,9 +73,18 @@ public class KeyServiceBean implements KeyService {
     /**
      * {@inheritDoc}
      */
-    public Type getType(Class<? extends AbstractKeyStore> keyStoreAccessor) {
+    public Type getType(Class<? extends OlasKeyStore> keyStoreAccessor) {
 
-        KeyConfig keyStoreConfig = em.find(KeyConfig.class, keyStoreAccessor.getCanonicalName());
+        return getType(keyStoreAccessor.getCanonicalName());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Deprecated
+    public Type getType(String keyStoreAccessor) {
+
+        KeyConfig keyStoreConfig = em.find(KeyConfig.class, keyStoreAccessor);
         if (keyStoreConfig == null)
             return null;
 
@@ -69,9 +94,18 @@ public class KeyServiceBean implements KeyService {
     /**
      * {@inheritDoc}
      */
-    public String getConfig(Class<? extends AbstractKeyStore> keyStoreAccessor) {
+    public String getConfig(Class<? extends OlasKeyStore> keyStoreAccessor) {
 
-        KeyConfig keyStoreConfig = em.find(KeyConfig.class, keyStoreAccessor.getCanonicalName());
+        return getConfig(keyStoreAccessor.getCanonicalName());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Deprecated
+    public String getConfig(String keyStoreAccessor) {
+
+        KeyConfig keyStoreConfig = em.find(KeyConfig.class, keyStoreAccessor);
         if (keyStoreConfig == null)
             return null;
 
@@ -81,12 +115,21 @@ public class KeyServiceBean implements KeyService {
     /**
      * {@inheritDoc}
      */
-    public void configure(Class<? extends AbstractKeyStore> keyStoreAccessor, Type type, String config) {
+    public void configure(Class<? extends OlasKeyStore> keyStoreAccessor, Type type, String config) {
 
-        KeyConfig keyStoreConfig = em.find(KeyConfig.class, keyStoreAccessor.getCanonicalName());
+        configure(keyStoreAccessor.getCanonicalName(), type, config);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Deprecated
+    public void configure(String keyStoreAccessor, Type type, String config) {
+
+        KeyConfig keyStoreConfig = em.find(KeyConfig.class, keyStoreAccessor);
 
         if (keyStoreConfig == null) {
-            keyStoreConfig = new KeyConfig(keyStoreAccessor.getCanonicalName(), type, config);
+            keyStoreConfig = new KeyConfig(keyStoreAccessor, type, config);
             em.persist(keyStoreConfig);
         }
 
