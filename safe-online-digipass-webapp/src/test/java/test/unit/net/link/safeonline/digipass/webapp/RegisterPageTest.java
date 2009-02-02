@@ -6,22 +6,23 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
 import java.security.KeyPair;
+import java.security.KeyStore.PrivateKeyEntry;
+import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.UUID;
 
-import junit.framework.TestCase;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.digipass.webapp.MainPage;
 import net.link.safeonline.digipass.webapp.RegisterPage;
 import net.link.safeonline.digipass.webapp.RemovePage;
+import net.link.safeonline.keystore.SafeOnlineKeyStore;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
+import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.model.digipass.DigipassDeviceService;
 import net.link.safeonline.test.util.EJBTestUtils;
-import net.link.safeonline.test.util.JmxTestUtils;
-import net.link.safeonline.test.util.MBeanActionHandler;
+import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
-import net.link.safeonline.util.ee.IdentityServiceClient;
 import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.tools.WicketUtil;
 import net.link.safeonline.wicket.tools.olas.DummyNameIdentifierMappingClient;
@@ -29,57 +30,56 @@ import net.link.safeonline.wicket.tools.olas.DummyNameIdentifierMappingClient;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.util.tester.FormTester;
 import org.apache.wicket.util.tester.WicketTester;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 
-public class RegisterPageTest extends TestCase {
+public class RegisterPageTest {
 
     private DigipassDeviceService mockDigipassDeviceService;
 
     private WicketTester          wicket;
 
+    private KeyService            mockKeyService;
 
-    @Override
+    private JndiTestUtils         jndiTestUtils;
+
+
     @Before
     public void setUp()
             throws Exception {
 
-        super.setUp();
-
         WicketUtil.setUnitTesting(true);
 
         mockDigipassDeviceService = createMock(DigipassDeviceService.class);
+        mockKeyService = createMock(KeyService.class);
 
-        // Initialize MBean's
-        JmxTestUtils jmxTestUtils = new JmxTestUtils();
-        jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
+        final KeyPair nodeKeyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate nodeCertificate = PkiTestUtils.generateSelfSignedCertificate(nodeKeyPair, "CN=Test");
+        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
+                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate }));
 
-        final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
+        final KeyPair olasKeyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=Test");
+        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineKeyStore.class)).andReturn(
+                new PrivateKeyEntry(olasKeyPair.getPrivate(), new Certificate[] { olasCertificate }));
 
-            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
+        replay(mockKeyService);
 
-                return authCertificate;
-            }
-        });
-
-        jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
-
-        final KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
-
-            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
-
-                return certificate;
-            }
-        });
+        jndiTestUtils = new JndiTestUtils();
+        jndiTestUtils.setUp();
+        jndiTestUtils.bindComponent(KeyService.JNDI_BINDING, mockKeyService);
 
         wicket = new WicketTester(new DigipassTestApplication());
         wicket.processRequestCycle();
+    }
 
+    @After
+    public void tearDown()
+            throws Exception {
+
+        jndiTestUtils.tearDown();
     }
 
     @Test

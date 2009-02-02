@@ -19,8 +19,9 @@ import static org.junit.Assert.fail;
 
 import java.net.URL;
 import java.security.KeyPair;
-import java.security.SecureRandom;
 import java.security.Security;
+import java.security.KeyStore.PrivateKeyEntry;
+import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.Collections;
 import java.util.HashSet;
@@ -30,8 +31,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
 import javax.servlet.http.Cookie;
 
 import net.link.safeonline.SafeOnlineConstants;
@@ -61,6 +60,8 @@ import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
+import net.link.safeonline.keystore.SafeOnlineKeyStore;
+import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.pkix.model.PkiValidator.PkiResult;
 import net.link.safeonline.saml.common.DomUtils;
@@ -68,10 +69,8 @@ import net.link.safeonline.sdk.auth.saml2.AuthnRequestFactory;
 import net.link.safeonline.sdk.auth.saml2.LogoutRequestFactory;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.test.util.EJBTestUtils;
-import net.link.safeonline.test.util.JmxTestUtils;
-import net.link.safeonline.test.util.MBeanActionHandler;
+import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
-import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.joda.time.DateTime;
@@ -119,7 +118,9 @@ public class AuthenticationServiceBeanTest {
 
     private UserIdMappingService             mockUserIdMappingService;
 
-    private static SecretKey                 ssoKey;
+    private KeyService                       mockKeyService;
+
+    private JndiTestUtils                    jndiTestUtils;
 
 
     @BeforeClass
@@ -129,24 +130,6 @@ public class AuthenticationServiceBeanTest {
         if (null == Security.getProvider(BouncyCastleProvider.PROVIDER_NAME)) {
             Security.addProvider(new BouncyCastleProvider());
         }
-
-        JmxTestUtils jmxTestUtils = new JmxTestUtils();
-        jmxTestUtils.tearDown();
-        jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
-
-        BouncyCastleProvider bcp = (BouncyCastleProvider) Security.getProvider(BouncyCastleProvider.PROVIDER_NAME);
-        KeyGenerator keyGen = KeyGenerator.getInstance("AES", bcp);
-        keyGen.init(128, new SecureRandom());
-        AuthenticationServiceBeanTest.ssoKey = keyGen.generateKey();
-
-        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getSsoKey", new MBeanActionHandler() {
-
-            @SuppressWarnings("synthetic-access")
-            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
-
-                return ssoKey;
-            }
-        });
     }
 
     @Before
@@ -194,18 +177,29 @@ public class AuthenticationServiceBeanTest {
         mockUserIdMappingService = createMock(UserIdMappingService.class);
         EJBTestUtils.inject(testedInstance, mockUserIdMappingService);
 
+        mockKeyService = createMock(KeyService.class);
+
+        final KeyPair olasKeyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=Test");
+        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineKeyStore.class)).andReturn(
+                new PrivateKeyEntry(olasKeyPair.getPrivate(), new Certificate[] { olasCertificate }));
+
+        jndiTestUtils = new JndiTestUtils();
+        jndiTestUtils.setUp();
+        jndiTestUtils.bindComponent(KeyService.JNDI_BINDING, mockKeyService);
+
         EJBTestUtils.init(testedInstance);
 
-        mockObjects = new Object[] { mockSubjectService, mockApplicationDAO, mockSubscriptionDAO, mockHistoryDAO,
-                mockStatisticDAO, mockStatisticDataPointDAO, mockDeviceDAO, mockApplicationAuthenticationService,
-                mockPkiValidator, mockDevicePolicyService, mockApplicationPoolDAO, mockSecurityAuditLogger,
-                mockUserIdMappingService };
+        mockObjects = new Object[] { mockSubjectService, mockApplicationDAO, mockSubscriptionDAO, mockHistoryDAO, mockStatisticDAO,
+                mockStatisticDataPointDAO, mockDeviceDAO, mockApplicationAuthenticationService, mockPkiValidator, mockDevicePolicyService,
+                mockApplicationPoolDAO, mockSecurityAuditLogger, mockUserIdMappingService, mockKeyService };
     }
 
     @After
     public void tearDown()
             throws Exception {
 
+        jndiTestUtils.tearDown();
     }
 
     @Test
@@ -224,11 +218,9 @@ public class AuthenticationServiceBeanTest {
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
-        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
-                Collections.singletonList(applicationCert));
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
-                                                                                                                                     .andReturn(
-                                                                                                                                             PkiResult.VALID);
+        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(Collections.singletonList(applicationCert));
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert)).andReturn(
+                PkiResult.VALID);
 
         // prepare
         replay(mockObjects);
@@ -261,11 +253,9 @@ public class AuthenticationServiceBeanTest {
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
-        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
-                Collections.singletonList(applicationCert));
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
-                                                                                                                                     .andReturn(
-                                                                                                                                             PkiResult.VALID);
+        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(Collections.singletonList(applicationCert));
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert)).andReturn(
+                PkiResult.VALID);
 
         List<DeviceEntity> authnDevices = new LinkedList<DeviceEntity>();
         DeviceEntity passwordDevice = new DeviceEntity("test-password-device", new DeviceClassEntity(
@@ -340,11 +330,9 @@ public class AuthenticationServiceBeanTest {
         AuthnRequest authnRequest = getAuthnRequest(encodedAuthnRequest);
 
         // expectations
-        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
-                Collections.singletonList(applicationCert));
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
-                                                                                                                                     .andReturn(
-                                                                                                                                             PkiResult.INVALID);
+        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(Collections.singletonList(applicationCert));
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert)).andReturn(
+                PkiResult.INVALID);
 
         // prepare
         replay(mockObjects);
@@ -389,11 +377,9 @@ public class AuthenticationServiceBeanTest {
         Cookie ssoCookie = getSsoCookie(subject, application, device, null);
 
         // expectations
-        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
-                Collections.singletonList(applicationCert));
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
-                                                                                                                                     .andReturn(
-                                                                                                                                             PkiResult.VALID);
+        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(Collections.singletonList(applicationCert));
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert)).andReturn(
+                PkiResult.VALID);
         expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
         expect(mockSubjectService.findSubject(userId)).andStubReturn(subject);
         expect(mockApplicationDAO.findApplication(applicationName)).andStubReturn(application);
@@ -454,11 +440,9 @@ public class AuthenticationServiceBeanTest {
         Cookie ssoCookie = getSsoCookie(subject, application, device, null);
 
         // expectations
-        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
-                Collections.singletonList(applicationCert));
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
-                                                                                                                                     .andReturn(
-                                                                                                                                             PkiResult.VALID);
+        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(Collections.singletonList(applicationCert));
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert)).andReturn(
+                PkiResult.VALID);
         expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
 
         // prepare
@@ -509,11 +493,9 @@ public class AuthenticationServiceBeanTest {
         Cookie ssoCookie = getSsoCookie(subject, application, device, null);
 
         // expectations
-        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
-                Collections.singletonList(applicationCert));
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
-                                                                                                                                     .andReturn(
-                                                                                                                                             PkiResult.VALID);
+        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(Collections.singletonList(applicationCert));
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert)).andReturn(
+                PkiResult.VALID);
         expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
 
         // prepare
@@ -557,14 +539,11 @@ public class AuthenticationServiceBeanTest {
         Cookie ssoCookie = getInvalidSsoCookie(applicationName);
 
         // expectations
-        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
-                Collections.singletonList(applicationCert));
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
-                                                                                                                                     .andReturn(
-                                                                                                                                             PkiResult.VALID);
+        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(Collections.singletonList(applicationCert));
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert)).andReturn(
+                PkiResult.VALID);
         expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
-        mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION,
-                AuthenticationServiceBean.SECURITY_MESSAGE_INVALID_COOKIE);
+        mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, AuthenticationServiceBean.SECURITY_MESSAGE_INVALID_COOKIE);
 
         // prepare
         replay(mockObjects);
@@ -611,11 +590,9 @@ public class AuthenticationServiceBeanTest {
         Cookie ssoCookie = getSsoCookie(invalidSubject, application, device, null);
 
         // expectations
-        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
-                Collections.singletonList(applicationCert));
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
-                                                                                                                                     .andReturn(
-                                                                                                                                             PkiResult.VALID);
+        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(Collections.singletonList(applicationCert));
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert)).andReturn(
+                PkiResult.VALID);
         expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
         expect(mockSubjectService.findSubject(invalidUser)).andStubReturn(null);
         mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, AuthenticationServiceBean.SECURITY_MESSAGE_INVALID_USER
@@ -669,11 +646,9 @@ public class AuthenticationServiceBeanTest {
         Cookie ssoCookie = getSsoCookie(subject, invalidApplication, device, null);
 
         // expectations
-        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
-                Collections.singletonList(applicationCert));
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
-                                                                                                                                     .andReturn(
-                                                                                                                                             PkiResult.VALID);
+        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(Collections.singletonList(applicationCert));
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert)).andReturn(
+                PkiResult.VALID);
         expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
         expect(mockSubjectService.findSubject(userId)).andStubReturn(subject);
         expect(mockApplicationDAO.findApplication(invalidApplicationName)).andStubReturn(null);
@@ -727,11 +702,9 @@ public class AuthenticationServiceBeanTest {
         Cookie ssoCookie = getSsoCookie(subject, cookieApplication, device, null);
 
         // expectations
-        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
-                Collections.singletonList(applicationCert));
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
-                                                                                                                                     .andReturn(
-                                                                                                                                             PkiResult.VALID);
+        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(Collections.singletonList(applicationCert));
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert)).andReturn(
+                PkiResult.VALID);
         expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
         expect(mockSubjectService.findSubject(userId)).andStubReturn(subject);
         expect(mockApplicationDAO.findApplication(cookieApplicationName)).andStubReturn(cookieApplication);
@@ -819,11 +792,10 @@ public class AuthenticationServiceBeanTest {
         Cookie ssoCookie = getSsoCookie(subject, application1, device, Collections.singletonList(application2));
 
         // expectations
-        expect(mockApplicationAuthenticationService.getCertificates(application3Name)).andReturn(
-                Collections.singletonList(applicationCert));
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
-                                                                                                                                     .andReturn(
-                                                                                                                                             PkiResult.VALID);
+        expect(mockApplicationAuthenticationService.getCertificates(application3Name))
+                                                                                      .andReturn(Collections.singletonList(applicationCert));
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert)).andReturn(
+                PkiResult.VALID);
         expect(mockApplicationDAO.getApplication(application3Name)).andStubReturn(application3);
         expect(mockSubjectService.findSubject(userId)).andStubReturn(subject);
         expect(mockApplicationDAO.findApplication(application1Name)).andStubReturn(application1);
@@ -881,19 +853,17 @@ public class AuthenticationServiceBeanTest {
         Cookie ssoCookie = getSsoCookie(subject, application, invalidDevice, null);
 
         // expectations
-        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
-                Collections.singletonList(applicationCert));
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
-                                                                                                                                     .andReturn(
-                                                                                                                                             PkiResult.VALID);
+        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(Collections.singletonList(applicationCert));
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert)).andReturn(
+                PkiResult.VALID);
         expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
         expect(mockSubjectService.findSubject(userId)).andStubReturn(subject);
         expect(mockApplicationDAO.findApplication(applicationName)).andStubReturn(application);
         expect(mockApplicationPoolDAO.listCommonApplicationPools(application, application)).andStubReturn(
                 Collections.singletonList(applicationPool));
         expect(mockDeviceDAO.findDevice(invalidDeviceName)).andStubReturn(null);
-        mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION,
-                AuthenticationServiceBean.SECURITY_MESSAGE_INVALID_DEVICE + invalidDeviceName);
+        mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, AuthenticationServiceBean.SECURITY_MESSAGE_INVALID_DEVICE
+                + invalidDeviceName);
 
         // prepare
         replay(mockObjects);
@@ -940,11 +910,9 @@ public class AuthenticationServiceBeanTest {
         Cookie ssoCookie = getSsoCookie(subject, application, device, null);
 
         // expectations
-        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
-                Collections.singletonList(applicationCert));
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
-                                                                                                                                     .andReturn(
-                                                                                                                                             PkiResult.VALID);
+        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(Collections.singletonList(applicationCert));
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert)).andReturn(
+                PkiResult.VALID);
         expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
         expect(mockSubjectService.findSubject(userId)).andStubReturn(subject);
         expect(mockApplicationDAO.findApplication(applicationName)).andStubReturn(application);
@@ -1001,11 +969,9 @@ public class AuthenticationServiceBeanTest {
         Cookie ssoCookie = getExpiredSsoCookie(subject, application, device);
 
         // expectations
-        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
-                Collections.singletonList(applicationCert));
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
-                                                                                                                                     .andReturn(
-                                                                                                                                             PkiResult.VALID);
+        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(Collections.singletonList(applicationCert));
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert)).andReturn(
+                PkiResult.VALID);
         expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
         expect(mockSubjectService.findSubject(userId)).andStubReturn(subject);
         expect(mockApplicationDAO.findApplication(applicationName)).andStubReturn(application);
@@ -1052,7 +1018,7 @@ public class AuthenticationServiceBeanTest {
 
         BouncyCastleProvider bcp = (BouncyCastleProvider) Security.getProvider(BouncyCastleProvider.PROVIDER_NAME);
         Cipher encryptCipher = Cipher.getInstance("AES", bcp);
-        encryptCipher.init(Cipher.ENCRYPT_MODE, ssoKey);
+        encryptCipher.init(Cipher.ENCRYPT_MODE, SafeOnlineKeyStore.getSSOKey());
         byte[] encryptedBytes = encryptCipher.doFinal(value.getBytes("UTF-8"));
         String encryptedValue = new sun.misc.BASE64Encoder().encode(encryptedBytes);
         Cookie ssoCookie = new Cookie(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX + "." + application.getName(), encryptedValue);
@@ -1071,7 +1037,7 @@ public class AuthenticationServiceBeanTest {
 
         BouncyCastleProvider bcp = (BouncyCastleProvider) Security.getProvider(BouncyCastleProvider.PROVIDER_NAME);
         Cipher encryptCipher = Cipher.getInstance("AES", bcp);
-        encryptCipher.init(Cipher.ENCRYPT_MODE, ssoKey);
+        encryptCipher.init(Cipher.ENCRYPT_MODE, SafeOnlineKeyStore.getSSOKey());
         byte[] encryptedBytes = encryptCipher.doFinal(value.getBytes("UTF-8"));
         String encryptedValue = new sun.misc.BASE64Encoder().encode(encryptedBytes);
         Cookie ssoCookie = new Cookie(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX + "." + application.getName(), encryptedValue);
@@ -1087,7 +1053,7 @@ public class AuthenticationServiceBeanTest {
 
         BouncyCastleProvider bcp = (BouncyCastleProvider) Security.getProvider(BouncyCastleProvider.PROVIDER_NAME);
         Cipher encryptCipher = Cipher.getInstance("AES", bcp);
-        encryptCipher.init(Cipher.ENCRYPT_MODE, ssoKey);
+        encryptCipher.init(Cipher.ENCRYPT_MODE, SafeOnlineKeyStore.getSSOKey());
         byte[] encryptedBytes = encryptCipher.doFinal(value.getBytes("UTF-8"));
         String encryptedValue = new sun.misc.BASE64Encoder().encode(encryptedBytes);
         Cookie ssoCookie = new Cookie(SafeOnlineCookies.SINGLE_SIGN_ON_COOKIE_PREFIX + "." + applicationId, encryptedValue);
@@ -1120,11 +1086,9 @@ public class AuthenticationServiceBeanTest {
 
         // expectations
         expect(mockApplicationDAO.getApplication(applicationName)).andStubReturn(application);
-        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(
-                Collections.singletonList(applicationCert));
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert))
-                                                                                                                                     .andReturn(
-                                                                                                                                             PkiResult.VALID);
+        expect(mockApplicationAuthenticationService.getCertificates(applicationName)).andReturn(Collections.singletonList(applicationCert));
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, applicationCert)).andReturn(
+                PkiResult.VALID);
         expect(mockUserIdMappingService.findUserId(applicationName, applicationUserId)).andStubReturn(userId);
         expect(mockSubjectService.getSubject(userId)).andStubReturn(subject);
 

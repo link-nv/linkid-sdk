@@ -7,21 +7,27 @@
 
 package test.unit.net.link.safeonline.auth.servlet;
 
+import static org.easymock.EasyMock.createMock;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.StringReader;
 import java.security.KeyPair;
+import java.security.KeyStore.PrivateKeyEntry;
+import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.auth.servlet.PkiServlet;
-import net.link.safeonline.test.util.JmxTestUtils;
+import net.link.safeonline.keystore.SafeOnlineKeyStore;
+import net.link.safeonline.keystore.service.KeyService;
+import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.MBeanActionHandler;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.ServletTestManager;
-import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -39,23 +45,29 @@ public class PkiServletTest {
 
     private ServletTestManager servletTestManager;
 
-    private JmxTestUtils       jmxTestUtils;
-
     private X509Certificate    certificate;
+
+    private KeyService         mockKeyService;
+
+    private JndiTestUtils      jndiTestUtils;
 
 
     @Before
     public void setUp()
             throws Exception {
 
-        jmxTestUtils = new JmxTestUtils();
-        jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
+        mockKeyService = createMock(KeyService.class);
 
-        KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
+        final KeyPair olasKeyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=Test");
+        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineKeyStore.class)).andReturn(
+                new PrivateKeyEntry(olasKeyPair.getPrivate(), new Certificate[] { olasCertificate }));
 
-        GetCertificateMBeanActionHandler actionHandler = new GetCertificateMBeanActionHandler(certificate);
-        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate", actionHandler);
+        replay(mockKeyService);
+
+        jndiTestUtils = new JndiTestUtils();
+        jndiTestUtils.setUp();
+        jndiTestUtils.bindComponent(KeyService.JNDI_BINDING, mockKeyService);
 
         servletTestManager = new ServletTestManager();
         servletTestManager.setUp(PkiServlet.class);
@@ -66,7 +78,7 @@ public class PkiServletTest {
             throws Exception {
 
         servletTestManager.tearDown();
-        jmxTestUtils.tearDown();
+        jndiTestUtils.tearDown();
     }
 
 

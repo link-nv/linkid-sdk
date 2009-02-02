@@ -517,7 +517,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         /*
          * Create SSO Cookie for authentication webapp
          */
-        createSsoCookie(olasKeyStore.getSSOKey());
+        createSsoCookie(SafeOnlineKeyStore.getSSOKey());
 
         return subjectEntity.getUserId();
     }
@@ -619,7 +619,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
          * Add application to cookie
          */
         sso.addSsoApplication(application);
-        createSsoCookie(olasKeyStore.getSSOKey(), sso);
+        createSsoCookie(SafeOnlineKeyStore.getSSOKey(), sso);
 
         /*
          * Safe the state in this stateful session bean.
@@ -743,7 +743,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         String decryptedValue;
         try {
             Cipher decryptCipher = Cipher.getInstance("AES", bcp);
-            decryptCipher.init(Cipher.DECRYPT_MODE, olasKeyStore.getSSOKey());
+            decryptCipher.init(Cipher.DECRYPT_MODE, SafeOnlineKeyStore.getSSOKey());
             byte[] decryptedBytes = decryptCipher.doFinal(Base64.decode(cookie.getValue().getBytes("UTF-8")));
             decryptedValue = new String(decryptedBytes);
         } catch (InvalidKeyException e) {
@@ -879,7 +879,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         /*
          * Create SSO Cookie for authentication webapp
          */
-        createSsoCookie(olasKeyStore.getSSOKey());
+        createSsoCookie(SafeOnlineKeyStore.getSSOKey());
 
         /*
          * Communicate that the authentication process can continue.
@@ -971,7 +971,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         /*
          * Create SSO Cookie for authentication webapp
          */
-        createSsoCookie(olasKeyStore.getSSOKey());
+        createSsoCookie(SafeOnlineKeyStore.getSSOKey());
 
         addHistoryEntry(authenticatedSubject, HistoryEventType.DEVICE_REGISTRATION, null, device.getName());
 

@@ -17,20 +17,15 @@ import javax.crypto.SecretKey;
 
 public class SafeOnlineKeyStore extends AbstractServiceBasedKeyStore {
 
-    private SecretKey ssoKey;
+    private static SecretKey ssoKey;
 
-
-    public SafeOnlineKeyStore() {
-
-        super(/* Something, don't know what yet. */);
-    }
 
     public static PrivateKeyEntry getPrivateKeyEntry() {
 
         return new SafeOnlineKeyStore()._getPrivateKeyEntry();
     }
 
-    public SecretKey getSSOKey() {
+    public static SecretKey getSSOKey() {
 
         if (ssoKey == null) {
             try {

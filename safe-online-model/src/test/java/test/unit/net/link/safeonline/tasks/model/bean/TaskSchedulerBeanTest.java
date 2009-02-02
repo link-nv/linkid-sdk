@@ -16,6 +16,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import java.security.KeyPair;
+import java.security.KeyStore.PrivateKeyEntry;
+import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.Date;
 import java.util.List;
@@ -29,18 +31,17 @@ import net.link.safeonline.Startable;
 import net.link.safeonline.Task;
 import net.link.safeonline.entity.tasks.SchedulingEntity;
 import net.link.safeonline.entity.tasks.TaskEntity;
+import net.link.safeonline.keystore.SafeOnlineKeyStore;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
+import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
 import net.link.safeonline.tasks.dao.SchedulingDAO;
 import net.link.safeonline.tasks.dao.bean.SchedulingDAOBean;
 import net.link.safeonline.tasks.model.bean.TaskSchedulerBean;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.EntityTestManager;
-import net.link.safeonline.test.util.JmxTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
-import net.link.safeonline.test.util.MBeanActionHandler;
 import net.link.safeonline.test.util.PkiTestUtils;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
-import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -65,6 +66,8 @@ public class TaskSchedulerBeanTest {
 
     private JndiTestUtils     jndiTestUtils;
 
+    private KeyService        mockKeyService;
+
 
     @Before
     public void setUp()
@@ -79,29 +82,21 @@ public class TaskSchedulerBeanTest {
         entityTestManager.setUp(SafeOnlineTestContainer.entities);
         EntityManager entityManager = entityTestManager.getEntityManager();
 
-        JmxTestUtils jmxTestUtils = new JmxTestUtils();
-        jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
+        mockKeyService = createMock(KeyService.class);
 
-        final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
+        final KeyPair nodeKeyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate nodeCertificate = PkiTestUtils.generateSelfSignedCertificate(nodeKeyPair, "CN=Test");
+        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
+                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate }));
 
-            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
+        final KeyPair olasKeyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=Test");
+        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineKeyStore.class)).andReturn(
+                new PrivateKeyEntry(olasKeyPair.getPrivate(), new Certificate[] { olasCertificate }));
 
-                return authCertificate;
-            }
-        });
+        replay(mockKeyService);
 
-        jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
-        final KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
-
-            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
-
-                return certificate;
-            }
-        });
+        jndiTestUtils.bindComponent(KeyService.JNDI_BINDING, mockKeyService);
 
         Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class, SafeOnlineTestContainer.sessionBeans,
                 entityManager);

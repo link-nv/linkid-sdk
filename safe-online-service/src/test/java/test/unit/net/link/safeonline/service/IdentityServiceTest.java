@@ -61,7 +61,7 @@ public class IdentityServiceTest {
         PrivateKey privateKey = keyPair.getPrivate();
         X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
         String password = "secret";
-        PkiTestUtils.persistKey(tmpPkcs12KeyStore, privateKey, certificate, password, password);
+        PkiTestUtils.persistInPKCS12KeyStore(tmpPkcs12KeyStore, privateKey, certificate, password, password);
         String resourceName = "test-keystore-resource-name";
         testClassLoader.addResource(resourceName, tmpPkcs12KeyStore.toURI().toURL());
 
@@ -88,7 +88,7 @@ public class IdentityServiceTest {
         PrivateKey privateKey = keyPair.getPrivate();
         X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
         String password = "secret";
-        PkiTestUtils.persistKey(tmpPkcs12KeyStore, privateKey, certificate, password, password);
+        PkiTestUtils.persistInPKCS12KeyStore(tmpPkcs12KeyStore, privateKey, certificate, password, password);
 
         // operate
         IdentityServiceMBean testedInstance = new IdentityService();

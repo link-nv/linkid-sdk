@@ -19,6 +19,8 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.security.KeyPair;
 import java.security.PublicKey;
+import java.security.KeyStore.PrivateKeyEntry;
+import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,16 +38,15 @@ import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationState;
 import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.keystore.SafeOnlineKeyStore;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
+import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.model.beid.BeIdConstants;
 import net.link.safeonline.sdk.auth.saml2.AuthnResponseFactory;
 import net.link.safeonline.test.util.DomTestUtils;
-import net.link.safeonline.test.util.JmxTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
-import net.link.safeonline.test.util.MBeanActionHandler;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.ServletTestManager;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
-import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.httpclient.HttpClient;
@@ -83,8 +84,6 @@ public class ExitServletTest {
 
     private String                applicationId    = "test-application-id";
 
-    private JmxTestUtils          jmxTestUtils;
-
     private JndiTestUtils         jndiTestUtils;
 
     private Object[]              mockObjects;
@@ -95,46 +94,12 @@ public class ExitServletTest {
 
     X509Certificate               authCertificate;
 
+    private KeyService            mockKeyService;
+
 
     @Before
     public void setUp()
             throws Exception {
-
-        jmxTestUtils = new JmxTestUtils();
-
-        jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
-
-        final KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        publicKey = keyPair.getPublic();
-        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getPrivateKey", new MBeanActionHandler() {
-
-            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
-
-                LOG.debug("returning private key");
-                return keyPair.getPrivate();
-            }
-        });
-        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getPublicKey", new MBeanActionHandler() {
-
-            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
-
-                LOG.debug("returning public key");
-                return keyPair.getPublic();
-            }
-        });
-
-        jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
-
-        final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
-        authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=test");
-        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
-
-            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
-
-                LOG.debug("returning certificate");
-                return authCertificate;
-            }
-        });
 
         jndiTestUtils = new JndiTestUtils();
         int validity = 60 * 10;
@@ -142,8 +107,21 @@ public class ExitServletTest {
         mockAuthenticationService = createMock(AuthenticationService.class);
         expect(mockAuthenticationService.getAuthenticationState()).andStubReturn(AuthenticationState.USER_AUTHENTICATED);
 
-        mockObjects = new Object[] { mockAuthenticationService };
+        mockKeyService = createMock(KeyService.class);
+
+        final KeyPair nodeKeyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate nodeCertificate = PkiTestUtils.generateSelfSignedCertificate(nodeKeyPair, "CN=Test");
+        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
+                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate }));
+
+        final KeyPair olasKeyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=Test");
+        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineKeyStore.class)).andReturn(
+                new PrivateKeyEntry(olasKeyPair.getPrivate(), new Certificate[] { olasCertificate }));
+
+        mockObjects = new Object[] { mockAuthenticationService, mockKeyService };
         jndiTestUtils.setUp();
+        jndiTestUtils.bindComponent(KeyService.JNDI_BINDING, mockKeyService);
 
         exitServletTestManager = new ServletTestManager();
         Map<String, String> servletInitParams = new HashMap<String, String>();
@@ -164,7 +142,7 @@ public class ExitServletTest {
         exitServletTestManager.setUp(ExitServlet.class, servletInitParams, null, null, initialSessionAttributes);
 
         String samlResponseToken = AuthnResponseFactory.createAuthResponse(inResponseTo, applicationId, applicationId, userid,
-                device.getAuthenticationContextClass(), keyPair, validity, target);
+                device.getAuthenticationContextClass(), olasKeyPair, validity, target);
         String encodedSamlResponseToken = org.apache.xml.security.utils.Base64.encode(samlResponseToken.getBytes());
         expect(mockAuthenticationService.finalizeAuthentication()).andStubReturn(encodedSamlResponseToken);
 

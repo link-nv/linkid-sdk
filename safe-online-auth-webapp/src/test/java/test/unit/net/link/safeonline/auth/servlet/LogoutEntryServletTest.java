@@ -28,11 +28,9 @@ import net.link.safeonline.authentication.service.AuthenticationService;
 import net.link.safeonline.authentication.service.AuthenticationState;
 import net.link.safeonline.common.SafeOnlineCookies;
 import net.link.safeonline.sdk.auth.saml2.LogoutRequestFactory;
-import net.link.safeonline.test.util.JmxTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.ServletTestManager;
-import net.link.safeonline.util.ee.IdentityServiceClient;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -80,9 +78,6 @@ public class LogoutEntryServletTest {
         jndiTestUtils.setUp();
 
         mockAuthenticationService = createMock(AuthenticationService.class);
-
-        JmxTestUtils jmxTestUtils = new JmxTestUtils();
-        jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
 
         logoutEntryServletTestManager = new ServletTestManager();
         Map<String, String> initParams = new HashMap<String, String>();

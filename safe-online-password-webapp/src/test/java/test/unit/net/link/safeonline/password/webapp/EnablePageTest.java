@@ -6,11 +6,8 @@ import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
-import java.security.KeyPair;
-import java.security.cert.X509Certificate;
 import java.util.UUID;
 
-import junit.framework.TestCase;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.ProtocolContext;
@@ -18,12 +15,7 @@ import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.model.password.PasswordDeviceService;
 import net.link.safeonline.password.webapp.EnablePage;
 import net.link.safeonline.test.util.EJBTestUtils;
-import net.link.safeonline.test.util.JmxTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
-import net.link.safeonline.test.util.MBeanActionHandler;
-import net.link.safeonline.test.util.PkiTestUtils;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
-import net.link.safeonline.util.ee.IdentityServiceClient;
 import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.tools.WicketUtil;
 import net.link.safeonline.wicket.tools.olas.DummyNameIdentifierMappingClient;
@@ -36,7 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class EnablePageTest extends TestCase {
+public class EnablePageTest {
 
     private PasswordDeviceService mockPasswordDeviceService;
 
@@ -49,12 +41,9 @@ public class EnablePageTest extends TestCase {
     private JndiTestUtils         jndiTestUtils;
 
 
-    @Override
     @Before
     public void setUp()
             throws Exception {
-
-        super.setUp();
 
         WicketUtil.setUnitTesting(true);
 
@@ -65,37 +54,9 @@ public class EnablePageTest extends TestCase {
         mockSamlAuthorityService = createMock(SamlAuthorityService.class);
         mockHelpdeskManager = createMock(HelpdeskManager.class);
 
-        // Initialize MBean's
-        JmxTestUtils jmxTestUtils = new JmxTestUtils();
-        jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
-
-        final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
-
-            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
-
-                return authCertificate;
-            }
-        });
-
-        jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
-
-        final KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
-
-            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
-
-                return certificate;
-            }
-        });
-
         wicket = new WicketTester(new PasswordTestApplication());
-
     }
 
-    @Override
     @After
     public void tearDown()
             throws Exception {

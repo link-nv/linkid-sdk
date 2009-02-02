@@ -12,11 +12,6 @@ import java.security.KeyStore.PrivateKeyEntry;
 
 public class SafeOnlineNodeKeyStore extends AbstractServiceBasedKeyStore {
 
-    public SafeOnlineNodeKeyStore() {
-
-        super(/* Something, don't know what yet. */);
-    }
-
     public static PrivateKeyEntry getPrivateKeyEntry() {
 
         return new SafeOnlineNodeKeyStore()._getPrivateKeyEntry();

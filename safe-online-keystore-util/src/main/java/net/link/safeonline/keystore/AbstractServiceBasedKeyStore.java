@@ -8,6 +8,9 @@ package net.link.safeonline.keystore;
 
 import java.security.KeyStore.PrivateKeyEntry;
 
+import net.link.safeonline.keystore.service.KeyService;
+import net.link.safeonline.util.ee.EjbUtils;
+
 
 /**
  * <h2>{@link AbstractServiceBasedKeyStore}<br>
@@ -25,12 +28,8 @@ import java.security.KeyStore.PrivateKeyEntry;
  */
 public abstract class AbstractServiceBasedKeyStore extends AbstractKeyStore {
 
-    public AbstractServiceBasedKeyStore() {
-
-    }
-
     public PrivateKeyEntry _getPrivateKeyEntry() {
 
-        return null;
+        return EjbUtils.getEJB(KeyService.JNDI_BINDING, KeyService.class).getPrivateKeyEntry(getClass());
     }
 }

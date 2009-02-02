@@ -19,6 +19,7 @@ import net.link.safeonline.sdk.auth.filter.LoginManager;
 import net.link.safeonline.wicket.javaee.DummyAnnotJavaEEInjector;
 import net.link.safeonline.wicket.service.AnnotSDKInjector;
 import net.link.safeonline.wicket.service.OlasNamingStrategy;
+import net.link.safeonline.wicket.tools.olas.DummyAnnotSDKInjector;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -120,7 +121,7 @@ public abstract class WicketUtil {
             if (!isUnitTest) {
                 sdkInjector = new AnnotSDKInjector();
             } else {
-                // Inside Unit Test (TODO)
+                sdkInjector = new DummyAnnotSDKInjector();
             }
         }
 

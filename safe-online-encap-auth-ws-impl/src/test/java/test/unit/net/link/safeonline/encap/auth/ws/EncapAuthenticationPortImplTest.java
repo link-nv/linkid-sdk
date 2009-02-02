@@ -21,6 +21,8 @@ import java.io.StringWriter;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.KeyStore.PrivateKeyEntry;
+import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.List;
@@ -55,6 +57,8 @@ import net.link.safeonline.device.auth.ws.DeviceAuthenticationServiceFactory;
 import net.link.safeonline.device.auth.ws.GetDeviceAuthenticationServiceFactory;
 import net.link.safeonline.encap.auth.ws.EncapAuthenticationPortImpl;
 import net.link.safeonline.encap.auth.ws.GetEncapAuthenticationPortImpl;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
+import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.model.WSSecurityConfiguration;
 import net.link.safeonline.model.encap.EncapConstants;
 import net.link.safeonline.model.encap.EncapDeviceService;
@@ -65,12 +69,9 @@ import net.link.safeonline.sdk.ws.WSSecurityConfigurationService;
 import net.link.safeonline.sdk.ws.auth.AuthenticationUtil;
 import net.link.safeonline.test.util.DummyLoginModule;
 import net.link.safeonline.test.util.JaasTestUtils;
-import net.link.safeonline.test.util.JmxTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
-import net.link.safeonline.test.util.MBeanActionHandler;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.WebServiceTestUtils;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.ws.common.WSAuthenticationErrorCode;
 
 import org.apache.commons.logging.Log;
@@ -124,6 +125,8 @@ public class EncapAuthenticationPortImplTest {
 
     private String                           testApplicationId = "test-application-name";
 
+    private KeyService                       mockKeyService;
+
 
     @SuppressWarnings("unchecked")
     @Before
@@ -131,21 +134,6 @@ public class EncapAuthenticationPortImplTest {
             throws Exception {
 
         LOG.debug("setup");
-
-        // setup JMX
-        JmxTestUtils jmxTestUtils = new JmxTestUtils();
-        jmxTestUtils.setUp("jboss.security:service=JaasSecurityManager");
-        jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
-
-        final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
-
-            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
-
-                return authCertificate;
-            }
-        });
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
@@ -161,10 +149,17 @@ public class EncapAuthenticationPortImplTest {
         mockSamlAuthorityService = createMock(SamlAuthorityService.class);
         mockWSAuthenticationService = createMock(WSAuthenticationService.class);
         mockEncapDeviceServce = createMock(EncapDeviceService.class);
+        mockKeyService = createMock(KeyService.class);
 
-        mockObjects = new Object[] { mockWSSecurityConfigurationService, mockPkiValidator,
-                mockApplicationAuthenticationService, mockSamlAuthorityService, mockEncapDeviceServce };
+        final KeyPair nodeKeyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate nodeCertificate = PkiTestUtils.generateSelfSignedCertificate(nodeKeyPair, "CN=Test");
+        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
+                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate }));
 
+        mockObjects = new Object[] { mockWSSecurityConfigurationService, mockPkiValidator, mockApplicationAuthenticationService,
+                mockSamlAuthorityService, mockEncapDeviceServce, mockKeyService };
+
+        jndiTestUtils.bindComponent(KeyService.JNDI_BINDING, mockKeyService);
         jndiTestUtils.bindComponent(WSSecurityConfiguration.JNDI_BINDING, mockWSSecurityConfigurationService);
         jndiTestUtils.bindComponent(PkiValidator.JNDI_BINDING, mockPkiValidator);
         jndiTestUtils.bindComponent(ApplicationAuthenticationService.JNDI_BINDING, mockApplicationAuthenticationService);
@@ -174,9 +169,8 @@ public class EncapAuthenticationPortImplTest {
         jndiTestUtils.bindComponent(WSAuthenticationService.JNDI_BINDING, mockWSAuthenticationService);
         jndiTestUtils.bindComponent(EncapDeviceService.JNDI_BINDING, mockEncapDeviceServce);
 
-        expect(mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock.anyObject()))
-                                                                                                                                .andStubReturn(
-                                                                                                                                        PkiResult.VALID);
+        expect(mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock.anyObject())).andStubReturn(
+                PkiResult.VALID);
         expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
         expect(mockWSAuthenticationService.getAuthenticationTimeout()).andStubReturn(60 * 30);
         replay(mockWSAuthenticationService);
@@ -285,9 +279,8 @@ public class EncapAuthenticationPortImplTest {
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
         expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
-        expect(mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock.anyObject()))
-                                                                                                                                .andStubReturn(
-                                                                                                                                        PkiResult.VALID);
+        expect(mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock.anyObject())).andStubReturn(
+                PkiResult.VALID);
         expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
 
         // prepare
@@ -364,9 +357,8 @@ public class EncapAuthenticationPortImplTest {
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
         expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
-        expect(mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock.anyObject()))
-                                                                                                                                .andStubReturn(
-                                                                                                                                        PkiResult.VALID);
+        expect(mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock.anyObject())).andStubReturn(
+                PkiResult.VALID);
         expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
 
         // prepare

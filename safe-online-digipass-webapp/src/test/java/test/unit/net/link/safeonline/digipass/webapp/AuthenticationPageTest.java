@@ -6,6 +6,8 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
 import java.security.KeyPair;
+import java.security.KeyStore.PrivateKeyEntry;
+import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.UUID;
 
@@ -15,14 +17,13 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.digipass.webapp.AuthenticationPage;
 import net.link.safeonline.helpdesk.HelpdeskManager;
+import net.link.safeonline.keystore.SafeOnlineKeyStore;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
+import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.model.digipass.DigipassDeviceService;
 import net.link.safeonline.test.util.EJBTestUtils;
-import net.link.safeonline.test.util.JmxTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
-import net.link.safeonline.test.util.MBeanActionHandler;
 import net.link.safeonline.test.util.PkiTestUtils;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
-import net.link.safeonline.util.ee.IdentityServiceClient;
 import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.tools.WicketUtil;
 import net.link.safeonline.wicket.tools.olas.DummyNameIdentifierMappingClient;
@@ -47,6 +48,8 @@ public class AuthenticationPageTest extends TestCase {
 
     private JndiTestUtils         jndiTestUtils;
 
+    private KeyService            mockKeyService;
+
 
     @Override
     @Before
@@ -63,32 +66,22 @@ public class AuthenticationPageTest extends TestCase {
         mockDigipassDeviceService = createMock(DigipassDeviceService.class);
         mockSamlAuthorityService = createMock(SamlAuthorityService.class);
         mockHelpdeskManager = createMock(HelpdeskManager.class);
+        mockKeyService = createMock(KeyService.class);
 
         // Initialize MBean's
-        JmxTestUtils jmxTestUtils = new JmxTestUtils();
-        jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
+        final KeyPair nodeKeyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate nodeCertificate = PkiTestUtils.generateSelfSignedCertificate(nodeKeyPair, "CN=Test");
+        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
+                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate }));
 
-        final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
+        final KeyPair olasKeyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=Test");
+        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineKeyStore.class)).andReturn(
+                new PrivateKeyEntry(olasKeyPair.getPrivate(), new Certificate[] { olasCertificate }));
 
-            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
+        replay(mockKeyService);
 
-                return authCertificate;
-            }
-        });
-
-        jmxTestUtils.setUp(IdentityServiceClient.IDENTITY_SERVICE);
-
-        final KeyPair keyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(IdentityServiceClient.IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
-
-            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
-
-                return certificate;
-            }
-        });
+        jndiTestUtils.bindComponent(KeyService.JNDI_BINDING, mockKeyService);
 
         wicket = new WicketTester(new DigipassTestApplication());
         wicket.processRequestCycle();
@@ -128,8 +121,7 @@ public class AuthenticationPageTest extends TestCase {
         replay(mockDigipassDeviceService, mockSamlAuthorityService);
 
         // RegisterPage: Register digipass for user
-        FormTester authenticationForm = wicket
-                                                   .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
+        FormTester authenticationForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
         authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, UUID.randomUUID().toString());
         authenticationForm.setValue(AuthenticationPage.TOKEN_FIELD_ID, token);
         authenticationForm.submit(AuthenticationPage.LOGIN_BUTTON_ID);
@@ -163,8 +155,7 @@ public class AuthenticationPageTest extends TestCase {
         replay(mockDigipassDeviceService, mockHelpdeskManager);
 
         // operate
-        FormTester authenticationForm = wicket
-                                                   .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
+        FormTester authenticationForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
         authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, UUID.randomUUID().toString());
         authenticationForm.setValue(AuthenticationPage.TOKEN_FIELD_ID, token);
         authenticationForm.submit(AuthenticationPage.LOGIN_BUTTON_ID);
@@ -202,8 +193,7 @@ public class AuthenticationPageTest extends TestCase {
         replay(mockDigipassDeviceService, mockHelpdeskManager);
 
         // operate
-        FormTester authenticationForm = wicket
-                                                   .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
+        FormTester authenticationForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
         authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, UUID.randomUUID().toString());
         authenticationForm.setValue(AuthenticationPage.TOKEN_FIELD_ID, token);
         authenticationForm.submit(AuthenticationPage.LOGIN_BUTTON_ID);
@@ -241,8 +231,7 @@ public class AuthenticationPageTest extends TestCase {
         replay(mockDigipassDeviceService, mockHelpdeskManager);
 
         // operate
-        FormTester authenticationForm = wicket
-                                                   .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
+        FormTester authenticationForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
         authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, UUID.randomUUID().toString());
         authenticationForm.setValue(AuthenticationPage.TOKEN_FIELD_ID, token);
         authenticationForm.submit(AuthenticationPage.LOGIN_BUTTON_ID);

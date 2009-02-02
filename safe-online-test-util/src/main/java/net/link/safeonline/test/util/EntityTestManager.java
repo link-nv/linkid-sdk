@@ -66,16 +66,16 @@ public class EntityTestManager {
     }
 
     @SuppressWarnings("deprecation")
-    public void setUp(Class<?>... serializableClasses)
+    public void setUp(Class<?>... entityClasses)
             throws Exception {
 
         if (configuration == null) {
             configureHSql();
         }
 
-        for (Class<?> serializableClass : serializableClasses) {
-            LOG.debug("adding annotated class: " + serializableClass.getName());
-            configuration.addAnnotatedClass(serializableClass);
+        for (Class<?> entityClass : entityClasses) {
+            LOG.debug("adding annotated class: " + entityClass.getName());
+            configuration.addAnnotatedClass(entityClass);
         }
         entityManagerFactory = configuration.createEntityManagerFactory();
         /*

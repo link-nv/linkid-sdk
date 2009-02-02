@@ -19,6 +19,8 @@ import static org.junit.Assert.assertNull;
 import java.io.StringWriter;
 import java.security.KeyPair;
 import java.security.PrivateKey;
+import java.security.KeyStore.PrivateKeyEntry;
+import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.List;
@@ -53,6 +55,8 @@ import net.link.safeonline.beid.auth.ws.BeIdAuthenticationPortImpl;
 import net.link.safeonline.beid.auth.ws.GetBeIdAuthenticationPortImpl;
 import net.link.safeonline.device.auth.ws.DeviceAuthenticationServiceFactory;
 import net.link.safeonline.device.auth.ws.GetDeviceAuthenticationServiceFactory;
+import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
+import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.model.WSSecurityConfiguration;
 import net.link.safeonline.model.beid.BeIdConstants;
 import net.link.safeonline.model.beid.BeIdDeviceService;
@@ -65,12 +69,9 @@ import net.link.safeonline.shared.JceSigner;
 import net.link.safeonline.shared.Signer;
 import net.link.safeonline.test.util.DummyLoginModule;
 import net.link.safeonline.test.util.JaasTestUtils;
-import net.link.safeonline.test.util.JmxTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
-import net.link.safeonline.test.util.MBeanActionHandler;
 import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.test.util.WebServiceTestUtils;
-import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.ws.common.WSAuthenticationErrorCode;
 
 import org.apache.commons.logging.Log;
@@ -125,6 +126,8 @@ public class BeIdAuthenticationPortImplTest {
 
     private String                           testApplicationId = "test-application-name";
 
+    private KeyService                       mockKeyService;
+
 
     @SuppressWarnings("unchecked")
     @Before
@@ -132,21 +135,6 @@ public class BeIdAuthenticationPortImplTest {
             throws Exception {
 
         LOG.debug("setup");
-
-        // setup JMX
-        JmxTestUtils jmxTestUtils = new JmxTestUtils();
-        jmxTestUtils.setUp("jboss.security:service=JaasSecurityManager");
-        jmxTestUtils.setUp(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE);
-
-        final KeyPair authKeyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate authCertificate = PkiTestUtils.generateSelfSignedCertificate(authKeyPair, "CN=Test");
-        jmxTestUtils.registerActionHandler(AuthIdentityServiceClient.AUTH_IDENTITY_SERVICE, "getCertificate", new MBeanActionHandler() {
-
-            public Object invoke(@SuppressWarnings("unused") Object[] arguments) {
-
-                return authCertificate;
-            }
-        });
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
@@ -162,10 +150,17 @@ public class BeIdAuthenticationPortImplTest {
         mockSamlAuthorityService = createMock(SamlAuthorityService.class);
         mockWSAuthenticationService = createMock(WSAuthenticationService.class);
         mockBeIdDeviceService = createMock(BeIdDeviceService.class);
+        mockKeyService = createMock(KeyService.class);
+
+        final KeyPair nodeKeyPair = PkiTestUtils.generateKeyPair();
+        final X509Certificate nodeCertificate = PkiTestUtils.generateSelfSignedCertificate(nodeKeyPair, "CN=Test");
+        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
+                new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate }));
 
         mockObjects = new Object[] { mockWSSecurityConfigurationService, mockPkiValidator, mockApplicationAuthenticationService,
-                mockSamlAuthorityService, mockBeIdDeviceService };
+                mockSamlAuthorityService, mockBeIdDeviceService, mockKeyService };
 
+        jndiTestUtils.bindComponent(KeyService.JNDI_BINDING, mockKeyService);
         jndiTestUtils.bindComponent(WSSecurityConfiguration.JNDI_BINDING, mockWSSecurityConfigurationService);
         jndiTestUtils.bindComponent(PkiValidator.JNDI_BINDING, mockPkiValidator);
         jndiTestUtils.bindComponent(ApplicationAuthenticationService.JNDI_BINDING, mockApplicationAuthenticationService);
