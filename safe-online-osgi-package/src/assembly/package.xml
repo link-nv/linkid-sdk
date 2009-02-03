@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/assembly-1.0.0.xsd">
+	<id>package</id>
+	<formats>
+		<format>zip</format>
+	</formats>
+	<dependencySets>
+		<dependencySet>
+			<excludes>
+				<exclude>
+					net.lin-k.safe-online:safe-online-osgi-plugin-manual
+				</exclude>
+			</excludes>
+		</dependencySet>
+	</dependencySets>
+	<fileSets>
+		<fileSet>
+			<directory>target/files/javadoc-osgi</directory>
+			<outputDirectory>/javadoc-osgi</outputDirectory>
+			<excludes>
+				<exclude>META-INF/**</exclude>
+			</excludes>
+		</fileSet>
+		<fileSet>
+			<directory>target/files/javadoc-osgi-plugin</directory>
+			<outputDirectory>/javadoc-osgi-plugin</outputDirectory>
+			<excludes>
+				<exclude>META-INF/**</exclude>
+			</excludes>
+		</fileSet>
+	</fileSets>
+	<files>
+		<file>
+			<source>target/files/osgi-plugin-manual.pdf</source>
+			<outputDirectory>/</outputDirectory>
+		</file>
+	</files>
+</assembly>
