@@ -52,9 +52,9 @@
 							<outputDirectory>
 								${project.build.directory}/classes
 							</outputDirectory>
-							<excludeArtifactIds>
-								safe-online-keystore
-							</excludeArtifactIds>
+							<excludeScope>
+								provided
+							</excludeScope>
 							<excludes>
 								META-INF/maven/**,META-INF/LICENSE.TXT
 							</excludes>
@@ -99,7 +99,7 @@
 			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-keystore</artifactId>
 			<version>1.3-SNAPSHOT</version>
-            <optional>true</optional>
+            <scope>provided</scope>
 		</dependency>
 
 	</dependencies>

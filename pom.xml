@@ -780,24 +780,23 @@
 		<velocity.version>1.5</velocity.version>
 		<xercesImpl.version>2.9.1</xercesImpl.version>
 		<rxtx.version>2.1.7</rxtx.version>
-		<maven-eclipse-plugin.version> 2.5.1 </maven-eclipse-plugin.version>
+		<maven-eclipse-plugin.version>2.5.1</maven-eclipse-plugin.version>
 		<commons-net.version>1.4.1</commons-net.version>
-		<netbeans-freeform-maven-plugin.version> 2.1-SNAPSHOT 
-		</netbeans-freeform-maven-plugin.version>
+		<netbeans-freeform-maven-plugin.version>2.1-SNAPSHOT</netbeans-freeform-maven-plugin.version>
 		<javafxrt.version>1531</javafxrt.version>
 		<swing-layout.version>1.0.2</swing-layout.version>
 		<Filters.version>1531</Filters.version>
 		<swing-worker.version>1.1</swing-worker.version>
 		<BrowserLauncher2.version>12.0</BrowserLauncher2.version>
 		<kaptcha.version>2.3</kaptcha.version>
-		<mysql-connector-java.version> 5.1.5 </mysql-connector-java.version>
+		<mysql-connector-java.version>5.1.5</mysql-connector-java.version>
 		<postgresql.version>8.2-504.jdbc3</postgresql.version>
 		<ojdbc5.version>11.1.0.6.0</ojdbc5.version>
-		<maven-jdocbook-plugin.version> 2.1.1 </maven-jdocbook-plugin.version>
+		<maven-jdocbook-plugin.version>2.1.1</maven-jdocbook-plugin.version>
 		<maven-javadoc-plugin.version>2.4</maven-javadoc-plugin.version>
 		<axis.version>1.4</axis.version>
 		<axis-jaxrpc.version>1.3</axis-jaxrpc.version>
-		<axistools-maven-plugin.version> 1.1 </axistools-maven-plugin.version>
+		<axistools-maven-plugin.version>1.1</axistools-maven-plugin.version>
 		<jgoodies-forms.version>1.1.0</jgoodies-forms.version>
 		<jgoodies-looks.version>2.1.4</jgoodies-looks.version>
 		<jtidy.version>r8-20060801</jtidy.version>

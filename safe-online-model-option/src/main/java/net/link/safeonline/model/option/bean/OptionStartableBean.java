@@ -26,7 +26,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 
 
 /**
- * <h2>{@link OptionStartableBean}<br>
+ * <h2>{@link SafeOnlineNodeKeyStoreStartableBean}<br>
  * <sub>[in short] (TODO).</sub></h2>
  * 
  * <p>
@@ -44,7 +44,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = OptionStartableBean.JNDI_BINDING)
 public class OptionStartableBean extends AbstractInitBean {
 
-    public static final String JNDI_BINDING = OptionConstants.OPTION_STARTABLE_JNDI_PREFIX + "OptionStartableBean";
+    public static final String JNDI_BINDING = OptionConstants.OPTION_STARTABLE_JNDI_PREFIX + "SafeOnlineNodeKeyStoreStartableBean";
 
 
     public OptionStartableBean() {
