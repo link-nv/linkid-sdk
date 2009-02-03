@@ -27,9 +27,12 @@ import net.link.safeonline.entity.SubscriptionOwnerType;
 import net.link.safeonline.helpdesk.keystore.HelpdeskKeyStore;
 import net.link.safeonline.keystore.SafeOnlineKeyStore;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
+import net.link.safeonline.keystore.entity.Type;
+import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.oper.keystore.OperKeyStore;
 import net.link.safeonline.owner.keystore.OwnerKeyStore;
 import net.link.safeonline.user.keystore.UserKeyStore;
+import net.link.safeonline.util.ee.EjbUtils;
 
 import org.jboss.annotation.ejb.LocalBinding;
 
@@ -48,7 +51,11 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = SystemInitializationStartableBean.JNDI_BINDING)
 public class SystemInitializationStartableBean extends AbstractInitBean {
 
-    public static final String JNDI_BINDING = Startable.JNDI_PREFIX + "SystemInitializationStartableBean";
+    public static final String  JNDI_BINDING      = Startable.JNDI_PREFIX + "SystemInitializationStartableBean";
+    private static final String OLAS_KEY_PASSWORD = "secret";
+    private static final Object NODE_KEY_PASSWORD = "secret";
+    private static final String OLAS_KEY_RESOURCE = "safe-online-keystore.jks";
+    private static final String NODE_KEY_RESOURCE = "safe-online-node-keystore.jks";
 
 
     public SystemInitializationStartableBean() {
@@ -66,6 +73,7 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         String helpdeskWebappName = properties.getString("olas.helpdesk.webapp.name");
 
         // Initialize this OLAS node, common attributes and available devices.
+        configureKeys();
         configureNode();
         configureAttributeTypes();
         configureDevices();
@@ -123,6 +131,19 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         notificationTopics.add(SafeOnlineConstants.TOPIC_REMOVE_USER);
         notificationTopics.add(SafeOnlineConstants.TOPIC_UNSUBSCRIBE_USER);
 
+    }
+
+    private void configureKeys() {
+
+        KeyService keyService = EjbUtils.getEJB(KeyService.JNDI_BINDING, KeyService.class);
+        if (keyService.getConfig(SafeOnlineKeyStore.class) == null) {
+            keyService.configure(SafeOnlineKeyStore.class, Type.JKS, String.format("%s:%s:%s", OLAS_KEY_PASSWORD, OLAS_KEY_PASSWORD,
+                    OLAS_KEY_RESOURCE));
+        }
+        if (keyService.getConfig(SafeOnlineNodeKeyStore.class) == null) {
+            keyService.configure(SafeOnlineNodeKeyStore.class, Type.JKS, String.format("%s:%s:%s", NODE_KEY_PASSWORD, NODE_KEY_PASSWORD,
+                    NODE_KEY_RESOURCE));
+        }
     }
 
     private void configureNode() {
