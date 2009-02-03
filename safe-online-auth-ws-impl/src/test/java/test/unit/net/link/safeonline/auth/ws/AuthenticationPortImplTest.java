@@ -7,6 +7,7 @@
 
 package test.unit.net.link.safeonline.auth.ws;
 
+import static org.easymock.EasyMock.checkOrder;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
@@ -21,7 +22,6 @@ import static org.junit.Assert.fail;
 
 import java.io.StringWriter;
 import java.security.KeyPair;
-import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.Certificate;
@@ -81,6 +81,7 @@ import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.keystore.SafeOnlineKeyStore;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.model.WSSecurityConfiguration;
@@ -139,6 +140,7 @@ public class AuthenticationPortImplTest {
     private SubscriptionService            mockSubscriptionService;
     private IdentityService                mockIdentityService;
     private UserIdMappingService           mockUserIdMappingService;
+    private KeyService                     mockKeyService;
 
     private Object[]                       mockObjects;
 
@@ -146,7 +148,7 @@ public class AuthenticationPortImplTest {
 
     private X509Certificate                olasCertificate;
 
-    private PrivateKey                     olasPrivateKey;
+    private KeyPair                        olasKeyPair;
 
     private String                         testLanguage                  = Locale.ENGLISH.getLanguage();
 
@@ -158,8 +160,6 @@ public class AuthenticationPortImplTest {
     private String                         testMultiStringAttributeName  = "test-multi-string-attribute";
     private String                         testMultiDateAttributeName    = "test-multi-date-attribute";
     private String                         testCompoundAttributeName     = "test-compound-attribute";
-
-    private KeyService                     mockKeyService;
 
 
     @SuppressWarnings("unchecked")
@@ -190,14 +190,22 @@ public class AuthenticationPortImplTest {
         mockUserIdMappingService = createMock(UserIdMappingService.class);
         mockKeyService = createMock(KeyService.class);
 
+        olasKeyPair = PkiTestUtils.generateKeyPair();
+        olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=Test");
+        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineKeyStore.class)).andReturn(
+                new PrivateKeyEntry(olasKeyPair.getPrivate(), new Certificate[] { olasCertificate }));
+
         final KeyPair nodeKeyPair = PkiTestUtils.generateKeyPair();
         final X509Certificate nodeCertificate = PkiTestUtils.generateSelfSignedCertificate(nodeKeyPair, "CN=Test");
         expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
                 new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate }));
 
+        checkOrder(mockKeyService, false);
+        replay(mockKeyService);
+
         mockObjects = new Object[] { mockWSSecurityConfigurationService, mockPkiValidator, mockSamlAuthorityService,
                 mockDevicePolicyService, mockNodeAuthenticationService, mockNodeMappingService, mockSubjectService,
-                mockUsageAgreementService, mockSubscriptionService, mockIdentityService, mockUserIdMappingService, mockKeyService };
+                mockUsageAgreementService, mockSubscriptionService, mockIdentityService, mockUserIdMappingService };
 
         jndiTestUtils.bindComponent(KeyService.JNDI_BINDING, mockKeyService);
         jndiTestUtils.bindComponent(WSSecurityConfiguration.JNDI_BINDING, mockWSSecurityConfigurationService);
@@ -239,10 +247,6 @@ public class AuthenticationPortImplTest {
 
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
         testpublicKey = keyPair.getPublic();
-
-        KeyPair olasKeyPair = PkiTestUtils.generateKeyPair();
-        olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=OLAS");
-        olasPrivateKey = olasKeyPair.getPrivate();
 
         BindingProvider bindingProvider = (BindingProvider) clientPort;
         Binding binding = bindingProvider.getBinding();
@@ -295,7 +299,7 @@ public class AuthenticationPortImplTest {
                                                                                                                                        DeviceTestAuthenticationClientImpl.testUserId);
         expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
-        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
 
         // prepare
         replay(mockObjects);
@@ -324,7 +328,7 @@ public class AuthenticationPortImplTest {
         // expectations
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
-        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
 
         // prepare
         replay(mockObjects);
@@ -352,7 +356,7 @@ public class AuthenticationPortImplTest {
         // expectations
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
-        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
 
         // prepare
         replay(mockObjects);
@@ -379,7 +383,7 @@ public class AuthenticationPortImplTest {
         // expectations
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
-        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
 
         // prepare
         replay(mockObjects);
@@ -407,7 +411,7 @@ public class AuthenticationPortImplTest {
         // expectations
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
-        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
 
         // prepare
         replay(mockObjects);
@@ -434,7 +438,7 @@ public class AuthenticationPortImplTest {
         // expectations
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
-        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
 
         // prepare
         replay(mockObjects);
@@ -461,7 +465,7 @@ public class AuthenticationPortImplTest {
         // expectations
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
-        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
 
         // prepare
         replay(mockObjects);
@@ -488,7 +492,7 @@ public class AuthenticationPortImplTest {
         // expectations
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
-        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
 
         // prepare
         replay(mockObjects);
@@ -515,7 +519,7 @@ public class AuthenticationPortImplTest {
         // expectations
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
-        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
 
         // prepare
         replay(mockObjects);
@@ -560,7 +564,7 @@ public class AuthenticationPortImplTest {
         expect(mockDevicePolicyService.getDevicePolicy(testApplicationId, null)).andStubReturn(Collections.singletonList(testDevice));
         expect(mockUsageAgreementService.requiresGlobalUsageAgreementAcceptation(testLanguage)).andStubReturn(true);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
-        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
 
         // prepare
         replay(mockObjects);
@@ -592,7 +596,7 @@ public class AuthenticationPortImplTest {
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
 
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
-        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
 
         // prepare
         replay(mockObjects);
@@ -633,7 +637,7 @@ public class AuthenticationPortImplTest {
                                                                                                                                        DeviceTestAuthenticationClientImpl.testUserId);
         expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
-        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
 
         // prepare
         replay(mockObjects);
@@ -679,7 +683,7 @@ public class AuthenticationPortImplTest {
         expect(mockDevicePolicyService.getDevicePolicy(testApplicationId, null)).andStubReturn(Collections.singletonList(testDevice));
         expect(mockUsageAgreementService.requiresGlobalUsageAgreementAcceptation(testLanguage)).andStubReturn(true);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
-        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
 
         // prepare
         replay(mockObjects);
@@ -711,7 +715,7 @@ public class AuthenticationPortImplTest {
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
 
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
-        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
 
         // prepare
         replay(mockObjects);
@@ -745,7 +749,7 @@ public class AuthenticationPortImplTest {
         expect(mockUsageAgreementService.requiresGlobalUsageAgreementAcceptation(testLanguage)).andStubReturn(false);
         expect(mockSubscriptionService.isSubscribed(testApplicationId)).andStubReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
-        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
 
         // prepare
         replay(mockObjects);
@@ -777,7 +781,7 @@ public class AuthenticationPortImplTest {
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
 
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
-        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
 
         // prepare
         replay(mockObjects);
@@ -812,7 +816,7 @@ public class AuthenticationPortImplTest {
         expect(mockUsageAgreementService.requiresGlobalUsageAgreementAcceptation(testLanguage)).andStubReturn(false);
         expect(mockIdentityService.isConfirmationRequired(testApplicationId)).andStubReturn(true);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
-        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
 
         // prepare
         replay(mockObjects);
@@ -861,7 +865,7 @@ public class AuthenticationPortImplTest {
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
 
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
-        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
 
         // prepare
         replay(mockObjects);
@@ -898,7 +902,7 @@ public class AuthenticationPortImplTest {
         expect(mockIdentityService.isConfirmationRequired(testApplicationId)).andStubReturn(false);
         expect(mockIdentityService.hasMissingAttributes(testApplicationId)).andStubReturn(true);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
-        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
 
         // prepare
         replay(mockObjects);
@@ -930,7 +934,7 @@ public class AuthenticationPortImplTest {
 
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
-        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
 
         // prepare
         replay(mockObjects);
@@ -985,7 +989,7 @@ public class AuthenticationPortImplTest {
                                                                                                                                        DeviceTestAuthenticationClientImpl.testUserId);
         expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
-        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
 
         // prepare
         replay(mockObjects);

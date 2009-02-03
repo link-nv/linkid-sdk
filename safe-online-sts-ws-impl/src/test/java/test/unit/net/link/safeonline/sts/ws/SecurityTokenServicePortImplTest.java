@@ -7,6 +7,7 @@
 
 package test.unit.net.link.safeonline.sts.ws;
 
+import static org.easymock.EasyMock.checkOrder;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
@@ -15,7 +16,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.security.KeyPair;
-import java.security.PrivateKey;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
@@ -98,13 +98,11 @@ public class SecurityTokenServicePortImplTest {
 
     private Object[]                         mockObjects;
 
-    PrivateKey                               privateKey;
-
-    private X509Certificate                  certificate;
-
     private KeyService                       mockKeyService;
 
     private KeyPair                          olasKeyPair;
+
+    private X509Certificate                  olasCertificate;
 
 
     @Before
@@ -129,12 +127,15 @@ public class SecurityTokenServicePortImplTest {
                 new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate }));
 
         olasKeyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=Test");
+        olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=Test");
         expect(mockKeyService.getPrivateKeyEntry(SafeOnlineKeyStore.class)).andReturn(
                 new PrivateKeyEntry(olasKeyPair.getPrivate(), new Certificate[] { olasCertificate }));
 
+        checkOrder(mockKeyService, false);
+        replay(mockKeyService);
+
         mockObjects = new Object[] { mockWSSecurityConfigurationService, mockApplicationAuthenticationService,
-                mockDeviceAuthenticationService, mockNodeAuthenticationService, mockPkiValidator, mockKeyService };
+                mockDeviceAuthenticationService, mockNodeAuthenticationService, mockPkiValidator };
 
         jndiTestUtils.bindComponent(KeyService.JNDI_BINDING, mockKeyService);
         jndiTestUtils.bindComponent(WSSecurityConfiguration.JNDI_BINDING, mockWSSecurityConfigurationService);
@@ -150,15 +151,16 @@ public class SecurityTokenServicePortImplTest {
 
         String testNodeName = "test-node-name";
         expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate)).andStubReturn(
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, olasCertificate))
+                                                                                                                                .andStubReturn(
+                                                                                                                                        PkiResult.INVALID);
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN, olasCertificate)).andStubReturn(
                 PkiResult.INVALID);
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN, certificate)).andStubReturn(
-                PkiResult.INVALID);
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN, certificate)).andStubReturn(
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN, olasCertificate)).andStubReturn(
                 PkiResult.VALID);
-        expect(mockNodeAuthenticationService.authenticate(certificate)).andStubReturn(testNodeName);
-        expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
-        expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
+        expect(mockNodeAuthenticationService.authenticate(olasCertificate)).andStubReturn(testNodeName);
+        expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(olasCertificate)).andReturn(false);
+        expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(olasCertificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
         expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
 
@@ -201,13 +203,13 @@ public class SecurityTokenServicePortImplTest {
         BindingProvider bindingProvider = (BindingProvider) port;
         bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, webServiceTestUtils.getEndpointAddress());
         List<Handler> handlers = bindingProvider.getBinding().getHandlerChain();
-        handlers.add(new WSSecurityClientHandler(certificate, privateKey));
+        handlers.add(new WSSecurityClientHandler(olasCertificate, olasKeyPair.getPrivate()));
         handlers.add(new LoggingHandler());
         handlers.add(new SignatureVerificationTestHandler());
 
         bindingProvider.getBinding().setHandlerChain(handlers);
 
-        expect(mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(Collections.singletonList(certificate));
+        expect(mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(Collections.singletonList(olasCertificate));
 
         // prepare
         replay(mockObjects);
@@ -260,13 +262,13 @@ public class SecurityTokenServicePortImplTest {
         BindingProvider bindingProvider = (BindingProvider) port;
         bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, webServiceTestUtils.getEndpointAddress());
         List<Handler> handlers = bindingProvider.getBinding().getHandlerChain();
-        handlers.add(new WSSecurityClientHandler(certificate, privateKey));
+        handlers.add(new WSSecurityClientHandler(olasCertificate, olasKeyPair.getPrivate()));
         handlers.add(new LoggingHandler());
         handlers.add(new SignatureVerificationTestHandler());
 
         bindingProvider.getBinding().setHandlerChain(handlers);
 
-        expect(mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(Collections.singletonList(certificate));
+        expect(mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(Collections.singletonList(olasCertificate));
 
         // prepare
         replay(mockObjects);
@@ -318,13 +320,13 @@ public class SecurityTokenServicePortImplTest {
         BindingProvider bindingProvider = (BindingProvider) port;
         bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, webServiceTestUtils.getEndpointAddress());
         List<Handler> handlers = bindingProvider.getBinding().getHandlerChain();
-        handlers.add(new WSSecurityClientHandler(certificate, privateKey));
+        handlers.add(new WSSecurityClientHandler(olasCertificate, olasKeyPair.getPrivate()));
         handlers.add(new LoggingHandler());
         handlers.add(new SignatureVerificationTestHandler());
 
         bindingProvider.getBinding().setHandlerChain(handlers);
 
-        expect(mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(Collections.singletonList(certificate));
+        expect(mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(Collections.singletonList(olasCertificate));
 
         // prepare
         replay(mockObjects);
@@ -376,13 +378,13 @@ public class SecurityTokenServicePortImplTest {
         BindingProvider bindingProvider = (BindingProvider) port;
         bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, webServiceTestUtils.getEndpointAddress());
         List<Handler> handlers = bindingProvider.getBinding().getHandlerChain();
-        handlers.add(new WSSecurityClientHandler(certificate, privateKey));
+        handlers.add(new WSSecurityClientHandler(olasCertificate, olasKeyPair.getPrivate()));
         handlers.add(new LoggingHandler());
         handlers.add(new SignatureVerificationTestHandler());
 
         bindingProvider.getBinding().setHandlerChain(handlers);
 
-        expect(mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(Collections.singletonList(certificate));
+        expect(mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(Collections.singletonList(olasCertificate));
 
         // prepare
         replay(mockObjects);
@@ -434,13 +436,13 @@ public class SecurityTokenServicePortImplTest {
         BindingProvider bindingProvider = (BindingProvider) port;
         bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, webServiceTestUtils.getEndpointAddress());
         List<Handler> handlers = bindingProvider.getBinding().getHandlerChain();
-        handlers.add(new WSSecurityClientHandler(certificate, privateKey));
+        handlers.add(new WSSecurityClientHandler(olasCertificate, olasKeyPair.getPrivate()));
         handlers.add(new LoggingHandler());
         handlers.add(new SignatureVerificationTestHandler());
 
         bindingProvider.getBinding().setHandlerChain(handlers);
 
-        expect(mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(Collections.singletonList(certificate));
+        expect(mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(Collections.singletonList(olasCertificate));
 
         // prepare
         replay(mockObjects);
@@ -493,13 +495,13 @@ public class SecurityTokenServicePortImplTest {
         BindingProvider bindingProvider = (BindingProvider) port;
         bindingProvider.getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, webServiceTestUtils.getEndpointAddress());
         List<Handler> handlers = bindingProvider.getBinding().getHandlerChain();
-        handlers.add(new WSSecurityClientHandler(certificate, privateKey));
+        handlers.add(new WSSecurityClientHandler(olasCertificate, olasKeyPair.getPrivate()));
         handlers.add(new LoggingHandler());
         handlers.add(new SignatureVerificationTestHandler());
 
         bindingProvider.getBinding().setHandlerChain(handlers);
 
-        expect(mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(Collections.singletonList(certificate));
+        expect(mockNodeAuthenticationService.getSigningCertificates(testIssuer)).andStubReturn(Collections.singletonList(olasCertificate));
 
         // prepare
         replay(mockObjects);

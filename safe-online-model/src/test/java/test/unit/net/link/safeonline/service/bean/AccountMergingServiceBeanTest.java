@@ -7,6 +7,7 @@
 
 package test.unit.net.link.safeonline.service.bean;
 
+import static org.easymock.EasyMock.checkOrder;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
@@ -107,6 +108,7 @@ public class AccountMergingServiceBeanTest {
         expect(mockKeyService.getPrivateKeyEntry(SafeOnlineKeyStore.class)).andReturn(
                 new PrivateKeyEntry(olasKeyPair.getPrivate(), new Certificate[] { olasCertificate }));
 
+        checkOrder(mockKeyService, false);
         replay(mockKeyService);
 
         jndiTestUtils = new JndiTestUtils();

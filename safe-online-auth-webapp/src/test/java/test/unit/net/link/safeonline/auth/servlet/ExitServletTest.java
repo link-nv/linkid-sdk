@@ -7,6 +7,7 @@
 
 package test.unit.net.link.safeonline.auth.servlet;
 
+import static org.easymock.EasyMock.checkOrder;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
@@ -18,7 +19,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.security.KeyPair;
-import java.security.PublicKey;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
@@ -90,11 +90,9 @@ public class ExitServletTest {
 
     private AuthenticationService mockAuthenticationService;
 
-    private PublicKey             publicKey;
-
-    X509Certificate               authCertificate;
-
     private KeyService            mockKeyService;
+
+    private KeyPair               olasKeyPair;
 
 
     @Before
@@ -114,12 +112,15 @@ public class ExitServletTest {
         expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
                 new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate }));
 
-        final KeyPair olasKeyPair = PkiTestUtils.generateKeyPair();
+        olasKeyPair = PkiTestUtils.generateKeyPair();
         final X509Certificate olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=Test");
         expect(mockKeyService.getPrivateKeyEntry(SafeOnlineKeyStore.class)).andReturn(
                 new PrivateKeyEntry(olasKeyPair.getPrivate(), new Certificate[] { olasCertificate }));
 
-        mockObjects = new Object[] { mockAuthenticationService, mockKeyService };
+        checkOrder(mockKeyService, false);
+        replay(mockKeyService);
+
+        mockObjects = new Object[] { mockAuthenticationService };
         jndiTestUtils.setUp();
         jndiTestUtils.bindComponent(KeyService.JNDI_BINDING, mockKeyService);
 
@@ -196,7 +197,7 @@ public class ExitServletTest {
         String xmlFilename = tmpFile.getAbsolutePath();
         String pubFilename = FilenameUtils.getFullPath(xmlFilename) + FilenameUtils.getBaseName(xmlFilename) + ".pem";
         PEMWriter writer = new PEMWriter(new FileWriter(pubFilename));
-        writer.writeObject(publicKey);
+        writer.writeObject(olasKeyPair.getPublic());
         writer.close();
 
         Document samlResponseDocument = DomTestUtils.parseDocument(samlResponse);

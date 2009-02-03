@@ -7,6 +7,7 @@
 
 package test.unit.net.link.safeonline.authentication.service.bean;
 
+import static org.easymock.EasyMock.checkOrder;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
@@ -184,6 +185,9 @@ public class AuthenticationServiceBeanTest {
         expect(mockKeyService.getPrivateKeyEntry(SafeOnlineKeyStore.class)).andReturn(
                 new PrivateKeyEntry(olasKeyPair.getPrivate(), new Certificate[] { olasCertificate }));
 
+        checkOrder(mockKeyService, false);
+        replay(mockKeyService);
+
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
         jndiTestUtils.bindComponent(KeyService.JNDI_BINDING, mockKeyService);
@@ -192,7 +196,7 @@ public class AuthenticationServiceBeanTest {
 
         mockObjects = new Object[] { mockSubjectService, mockApplicationDAO, mockSubscriptionDAO, mockHistoryDAO, mockStatisticDAO,
                 mockStatisticDataPointDAO, mockDeviceDAO, mockApplicationAuthenticationService, mockPkiValidator, mockDevicePolicyService,
-                mockApplicationPoolDAO, mockSecurityAuditLogger, mockUserIdMappingService, mockKeyService };
+                mockApplicationPoolDAO, mockSecurityAuditLogger, mockUserIdMappingService };
     }
 
     @After

@@ -7,6 +7,7 @@
 
 package test.unit.net.link.safeonline.password.auth.ws;
 
+import static org.easymock.EasyMock.checkOrder;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
@@ -17,7 +18,6 @@ import static org.junit.Assert.assertNull;
 
 import java.io.StringWriter;
 import java.security.KeyPair;
-import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.KeyStore.PrivateKeyEntry;
 import java.security.cert.Certificate;
@@ -51,6 +51,7 @@ import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.authentication.service.WSAuthenticationService;
 import net.link.safeonline.device.auth.ws.DeviceAuthenticationServiceFactory;
 import net.link.safeonline.device.auth.ws.GetDeviceAuthenticationServiceFactory;
+import net.link.safeonline.keystore.SafeOnlineKeyStore;
 import net.link.safeonline.keystore.SafeOnlineNodeKeyStore;
 import net.link.safeonline.keystore.service.KeyService;
 import net.link.safeonline.model.WSSecurityConfiguration;
@@ -103,6 +104,7 @@ public class PasswordAuthenticationPortImplTest {
     private WSAuthenticationService          mockWSAuthenticationService;
 
     private PasswordDeviceService            mockPasswordDeviceServce;
+    private KeyService                       mockKeyService;
 
     private Object[]                         mockObjects;
 
@@ -112,15 +114,13 @@ public class PasswordAuthenticationPortImplTest {
 
     private X509Certificate                  olasCertificate;
 
-    private PrivateKey                       olasPrivateKey;
+    private KeyPair                          olasKeyPair;
 
     private String                           testLanguage      = Locale.ENGLISH.getLanguage();
 
     private String                           testIssuerName    = "test-issuer-name";
 
     private String                           testApplicationId = "test-application-name";
-
-    private KeyService                       mockKeyService;
 
 
     @SuppressWarnings("unchecked")
@@ -146,13 +146,21 @@ public class PasswordAuthenticationPortImplTest {
         mockPasswordDeviceServce = createMock(PasswordDeviceService.class);
         mockKeyService = createMock(KeyService.class);
 
+        olasKeyPair = PkiTestUtils.generateKeyPair();
+        olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=Test");
+        expect(mockKeyService.getPrivateKeyEntry(SafeOnlineKeyStore.class)).andReturn(
+                new PrivateKeyEntry(olasKeyPair.getPrivate(), new Certificate[] { olasCertificate }));
+
         final KeyPair nodeKeyPair = PkiTestUtils.generateKeyPair();
         final X509Certificate nodeCertificate = PkiTestUtils.generateSelfSignedCertificate(nodeKeyPair, "CN=Test");
         expect(mockKeyService.getPrivateKeyEntry(SafeOnlineNodeKeyStore.class)).andReturn(
                 new PrivateKeyEntry(nodeKeyPair.getPrivate(), new Certificate[] { nodeCertificate }));
 
+        checkOrder(mockKeyService, false);
+        replay(mockKeyService);
+
         mockObjects = new Object[] { mockWSSecurityConfigurationService, mockPkiValidator, mockApplicationAuthenticationService,
-                mockSamlAuthorityService, mockPasswordDeviceServce, mockKeyService };
+                mockSamlAuthorityService, mockPasswordDeviceServce };
 
         jndiTestUtils.bindComponent(KeyService.JNDI_BINDING, mockKeyService);
         jndiTestUtils.bindComponent(WSSecurityConfiguration.JNDI_BINDING, mockWSSecurityConfigurationService);
@@ -197,10 +205,6 @@ public class PasswordAuthenticationPortImplTest {
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
         certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
 
-        KeyPair olasKeyPair = PkiTestUtils.generateKeyPair();
-        olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=OLAS");
-        olasPrivateKey = olasKeyPair.getPrivate();
-
         BindingProvider bindingProvider = (BindingProvider) clientPort;
         Binding binding = bindingProvider.getBinding();
         List<Handler> handlerChain = binding.getHandlerChain();
@@ -240,7 +244,7 @@ public class PasswordAuthenticationPortImplTest {
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
-        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
 
         // prepare
         replay(mockObjects);
@@ -279,7 +283,7 @@ public class PasswordAuthenticationPortImplTest {
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
-        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
 
         // prepare
         replay(mockObjects);
@@ -319,7 +323,7 @@ public class PasswordAuthenticationPortImplTest {
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
-        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasKeyPair.getPrivate());
 
         // prepare
         replay(mockObjects);

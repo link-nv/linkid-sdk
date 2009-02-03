@@ -7,6 +7,7 @@
 
 package test.unit.net.link.safeonline.auth.servlet;
 
+import static org.easymock.EasyMock.checkOrder;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
@@ -45,11 +46,11 @@ public class PkiServletTest {
 
     private ServletTestManager servletTestManager;
 
-    private X509Certificate    certificate;
-
     private KeyService         mockKeyService;
 
     private JndiTestUtils      jndiTestUtils;
+
+    private X509Certificate    olasCertificate;
 
 
     @Before
@@ -59,10 +60,11 @@ public class PkiServletTest {
         mockKeyService = createMock(KeyService.class);
 
         final KeyPair olasKeyPair = PkiTestUtils.generateKeyPair();
-        final X509Certificate olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=Test");
+        olasCertificate = PkiTestUtils.generateSelfSignedCertificate(olasKeyPair, "CN=Test");
         expect(mockKeyService.getPrivateKeyEntry(SafeOnlineKeyStore.class)).andReturn(
                 new PrivateKeyEntry(olasKeyPair.getPrivate(), new Certificate[] { olasCertificate }));
 
+        checkOrder(mockKeyService, false);
         replay(mockKeyService);
 
         jndiTestUtils = new JndiTestUtils();
@@ -119,6 +121,6 @@ public class PkiServletTest {
         LOG.debug("obj class: " + obj.getClass().getName());
         assertTrue(obj instanceof X509Certificate);
         X509Certificate resultCertificate = (X509Certificate) obj;
-        assertEquals(certificate, resultCertificate);
+        assertEquals(olasCertificate, resultCertificate);
     }
 }

@@ -7,6 +7,7 @@
 
 package test.unit.net.link.safeonline.model.beid.bean;
 
+import static org.easymock.EasyMock.checkOrder;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
@@ -75,13 +76,16 @@ public class BeIdStartableBeanTest extends TestCase {
         expect(mockKeyService.getPrivateKeyEntry(SafeOnlineKeyStore.class)).andReturn(
                 new PrivateKeyEntry(olasKeyPair.getPrivate(), new Certificate[] { olasCertificate }));
 
+        checkOrder(mockKeyService, false);
+        replay(mockKeyService);
+
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
         jndiTestUtils.bindComponent(KeyService.JNDI_BINDING, mockKeyService);
 
         EJBTestUtils.init(testedInstance);
 
-        mockObjects = new Object[] { mockTrustDomainDAO, mockTrustPointDAO, mockKeyService };
+        mockObjects = new Object[] { mockTrustDomainDAO, mockTrustPointDAO };
     }
 
     public void testInitTrustDomain()
