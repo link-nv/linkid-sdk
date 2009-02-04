@@ -210,7 +210,6 @@
 				<module>safe-online-root-webapp</module>
 				<module>safe-online-install-manual</module>
 				<module>safe-online-maintenance-manual</module>
-				<module>safe-online-osgi-plugin-manual</module>
 				<module>safe-online-distribution</module>
 			</modules>
 		</profile>
@@ -425,6 +424,8 @@
 				<module>safe-online-sdk-manual</module>
 				<module>safe-online-sdk-package</module>
 				<module>safe-online-device-sdk-manual</module>
+				<module>safe-online-osgi-plugin-manual</module>
+				<module>safe-online-osgi-package</module>
 			</modules>
 		</profile>
 

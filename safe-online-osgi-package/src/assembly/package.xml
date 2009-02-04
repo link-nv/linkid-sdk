@@ -10,7 +10,7 @@
 		<dependencySet>
 			<excludes>
 				<exclude>
-					net.lin-k.safe-online:safe-online-sdk-manual
+					net.lin-k.safe-online:safe-online-osgi-plugin-manual
 				</exclude>
 				<exclude>
 					*:javadoc
@@ -20,8 +20,15 @@
 	</dependencySets>
 	<fileSets>
 		<fileSet>
-			<directory>target/files/javadoc</directory>
-			<outputDirectory>/javadoc</outputDirectory>
+			<directory>target/files/javadoc-osgi</directory>
+			<outputDirectory>/javadoc-osgi</outputDirectory>
+			<excludes>
+				<exclude>META-INF/**</exclude>
+			</excludes>
+		</fileSet>
+		<fileSet>
+			<directory>target/files/javadoc-osgi-plugin</directory>
+			<outputDirectory>/javadoc-osgi-plugin</outputDirectory>
 			<excludes>
 				<exclude>META-INF/**</exclude>
 			</excludes>
@@ -29,11 +36,7 @@
 	</fileSets>
 	<files>
 		<file>
-			<source>target/files/sdk-manual.pdf</source>
-			<outputDirectory>/</outputDirectory>
-		</file>
-		<file>
-			<source>src/files/README.txt</source>
+			<source>target/files/osgi-plugin-manual.pdf</source>
 			<outputDirectory>/</outputDirectory>
 		</file>
 	</files>

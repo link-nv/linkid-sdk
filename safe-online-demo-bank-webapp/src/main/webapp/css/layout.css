@@ -48,7 +48,6 @@ p {
 a, a:link, a:visited, input[type=submit] {
     font:               inherit;
     border:             none;
-    background:         transparent;
 
     text-decoration:    none;
 }
@@ -59,7 +58,7 @@ table {
     width:              100%;
     margin:             1em auto 3em;
 
-    border:             1px solid black;
+    border:             2px solid black;
     border-collapse:    collapse;
 }
 table th {
@@ -72,7 +71,7 @@ table td, table th {
 table caption {
     padding:            1ex;
 
-    border:             1px solid black;
+    border:             2px solid black;
 
     font-size:          120%;
 }

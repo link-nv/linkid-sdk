@@ -11,11 +11,11 @@
 
 /* Schema:
  *
- * A=C6AF8B
- * B=C6984F
- * C=907F65
- * D=795D31
- * E=46361C
+ * A=515699 // Link Fore
+ * B=989FB0 // Link Hover Back
+ * C=A6A6A6 // Border
+ * D=CFD9F0 // Header + Table Back
+ * E=000099 // Main Fore
  *
  */
 
@@ -26,46 +26,46 @@
  */
 
 body {
-    color:              white;
+    color:              #000099; /* E */
     background:         white;
 }
 h1, h2 {
-    color:              #795D31; /* D */
+    color:              #000099; /* E */
 }
 a, a:link, a:visited, input[type=submit] {
-    color:              white;
+    color:              #515699; /* A */
 }
 a:active, a:hover {
-    color:              #C6AF8B; /* A */
+    color:              #989FB0; /* B */
 }
 table {
-    background:         #795D31; /* D */
-    border-color:       #46361C; /* E */
+    background:         #CFD9F0; /* D */
+    border-color:       #CFD9F0; /* D */
 }
 table caption {
-    background:         #46361C; /* E */
-    border-color:       #46361C; /* E */
-    color:              white;
+    background:         white;
+    border-color:       #CFD9F0; /* D */
+    color:              black;
 }
-table td, input[type=submit] {
-    background:         #C6984F; /* B */
+table a, input[type=submit] {
+    background:         #CFD9F0; /* D */
 }
 table td a:hover, input[type=submit]:hover {
-    background:         #C6AF8B; /* A */
-    color:              #C6984F; /* B */
+    background:         #989FB0; /* B */
+    color:              #515699; /* A */
 }
 table th a:hover, table th input[type=submit]:hover {
-    background:         #C6AF8B; /* A */
-    color:              #46361C; /* E */
+    background:         #989FB0; /* B */
+    color:              #000099; /* E */
 }
 table tfoot tr {
-    border-top-color:   #46361C; /* E */
+    border-top-color:   #A6A6A6; /* C */
 }
 .header {
-    border-bottom-color:#46361C; /* E */
+    border-bottom-color:#A6A6A6; /* C */
 }
 input[type=text], textarea, select {
-    border-color:       #46361C; /* E */
+    border-color:       #A6A6A6; /* C */
 }
 
 
@@ -99,16 +99,13 @@ input[type=text], textarea, select {
  */
 
 #header {
-    background:         #795D31; /* D */
-    border-bottom-color:#46361C; /* E */
-}
-#header h1 {
-    color:              #46361C; /* E */
+    background:         #CFD9F0; /* D */
+    border-bottom-color:#A6A6A6; /* C */
 }
 #logo {
-    border-color:       #46361C; /* E */
+    border-color:       #A6A6A6; /* C */
 }
 #footer {
-    border-top-color:   #907F65; /* C */
-    color:              #907F65; /* C */
+    border-top-color:   #A6A6A6; /* C */
+    color:              #A6A6A6; /* C */
 }
