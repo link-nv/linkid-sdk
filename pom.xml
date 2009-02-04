@@ -838,6 +838,7 @@
 		<osgi.core.version>1.0.1</osgi.core.version>
 		<osgi.compendium.version>1.0.1</osgi.compendium.version>
 		<jaxws-maven-plugin.version>1.10</jaxws-maven-plugin.version>
+		<maven-bundle-plugin.version>1.4.3</maven-bundle-plugin.version>
 	</properties>
 
 	<!-- ALL MODULES THAT ARE ENABLED BY DEFAULT -->
@@ -1301,6 +1302,11 @@
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>jaxws-maven-plugin</artifactId>
 					<version>${jaxws-maven-plugin.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.felix</groupId>
+					<artifactId>maven-bundle-plugin</artifactId>
+					<version>${maven-bundle-plugin.version}</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
