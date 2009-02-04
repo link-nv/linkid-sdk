@@ -12,6 +12,9 @@
 				<exclude>
 					net.lin-k.safe-online:safe-online-osgi-plugin-manual
 				</exclude>
+				<exclude>
+					*:javadoc
+				</exclude>
 			</excludes>
 		</dependencySet>
 	</dependencySets>

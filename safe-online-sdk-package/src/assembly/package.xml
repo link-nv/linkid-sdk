@@ -12,6 +12,9 @@
 				<exclude>
 					net.lin-k.safe-online:safe-online-sdk-manual
 				</exclude>
+				<exclude>
+					*:javadoc
+				</exclude>
 			</excludes>
 		</dependencySet>
 	</dependencySets>
