@@ -78,9 +78,9 @@ public class OptionStartableBean extends AbstractInitBean {
         String optionAuthWSPath = properties.getString("option.auth.ws.webapp.name");
 
         devices.add(new Device(OptionConstants.OPTION_DEVICE_ID, SafeOnlineConstants.MOBILE_DEVICE_CLASS, nodeName, "/olas-option/auth",
-                "/" + optionAuthWSPath, "/" + optionWebappName + "/device", "/" + optionWebappName + "/device", null, "/"
-                        + optionWebappName + "/device", "/" + optionWebappName + "/device", certificate, optionDeviceAttributeType,
-                optionImeiAttributeType, optionDeviceDisableAttributeType));
+                "/" + optionAuthWSPath, "/" + optionWebappName + "/device", "/" + optionWebappName + "/device", "/" + optionWebappName
+                        + "/device", "/" + optionWebappName + "/device", "/" + optionWebappName + "/device", certificate,
+                optionDeviceAttributeType, optionImeiAttributeType, optionDeviceDisableAttributeType));
         deviceDescriptions.add(new DeviceDescription(OptionConstants.OPTION_DEVICE_ID, "nl", "Option Datakaart"));
         deviceDescriptions.add(new DeviceDescription(OptionConstants.OPTION_DEVICE_ID, Locale.ENGLISH.getLanguage(), "Option Data Card"));
         trustedCertificates.put(certificate, SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
