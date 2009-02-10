@@ -14,7 +14,7 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
-import net.link.safeonline.authentication.exception.MobileAuthenticationException;
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
@@ -238,7 +238,7 @@ public class AuthenticationPage extends TemplatePage {
                                 String userId = encapDeviceService.authenticate(mobile.getObject(), challengeCode, otp.getObject());
                                 if (null == userId)
                                     // Authentication failed.
-                                    throw new MobileAuthenticationException();
+                                    throw new DeviceAuthenticationException();
 
                                 // Authentication passed, log the user in.
                                 authenticationContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
@@ -252,7 +252,7 @@ public class AuthenticationPage extends TemplatePage {
                             case ENABLE_DEVICE:
                                 if (!encapDeviceService.authenticateEncap(challengeCode, otp.getObject()))
                                     // Authentication failed.
-                                    throw new MobileAuthenticationException();
+                                    throw new DeviceAuthenticationException();
 
                                 // Authentication passed, enable the device.
                                 encapDeviceService.enable(protocolContext.getSubject(), mobile.getObject());
@@ -265,7 +265,7 @@ public class AuthenticationPage extends TemplatePage {
                             case REGISTER_DEVICE:
                                 if (!encapDeviceService.authenticateEncap(challengeCode, otp.getObject()))
                                     // Authentication failed.
-                                    throw new MobileAuthenticationException();
+                                    throw new DeviceAuthenticationException();
 
                                 // Authentication passed, commit this registration to OLAS.
                                 encapDeviceService.commitRegistration(protocolContext.getSubject(), mobile.getObject());
@@ -282,7 +282,7 @@ public class AuthenticationPage extends TemplatePage {
                         AuthenticationForm.this.error(localize("mobileCommunicationFailed"));
                         HelpdeskLogger.add(localize("login: comm: %s for %s", e.getMessage(), mobile.getObject()), //
                                 LogLevelType.ERROR);
-                    } catch (MobileAuthenticationException e) {
+                    } catch (DeviceAuthenticationException e) {
                         AuthenticationForm.this.error(localize("authenticationFailedMsg"));
                         HelpdeskLogger.add(localize("login: failed: %s for %s", e.getMessage(), mobile.getObject()), //
                                 LogLevelType.ERROR);

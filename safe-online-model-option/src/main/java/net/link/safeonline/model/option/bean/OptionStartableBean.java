@@ -1,9 +1,10 @@
 /*
  * SafeOnline project.
- * 
- * Copyright 2006-2008 Lin.k N.V. All rights reserved.
+ *
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
+
 package net.link.safeonline.model.option.bean;
 
 import java.security.cert.X509Certificate;
@@ -24,23 +25,11 @@ import net.link.safeonline.option.keystore.OptionKeyStoreUtils;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.IdentityServiceClient;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
 
 
-/**
- * <h2>{@link OptionStartableBean}<br>
- * <sub>[in short] (TODO).</sub></h2>
- * 
- * <p>
- * [description / usage].
- * </p>
- * 
- * <p>
- * <i>Sep 8, 2008</i>
- * </p>
- * 
- * @author dhouthoo
- */
 @Stateless
 @Local(Startable.class)
 @LocalBinding(jndiBinding = OptionStartableBean.JNDI_BINDING)
@@ -48,60 +37,53 @@ public class OptionStartableBean extends AbstractInitBean {
 
     public static final String JNDI_BINDING = OptionConstants.OPTION_STARTABLE_JNDI_PREFIX + "OptionStartableBean";
 
+    private static final Log   LOG          = LogFactory.getLog(OptionStartableBean.class);
+
 
     public OptionStartableBean() {
 
         configureNode();
 
-        AttributeTypeEntity imeiAttributeType = new AttributeTypeEntity(OptionConstants.IMEI_OPTION_ATTRIBUTE, DatatypeType.STRING, true,
-                false);
-
-        this.attributeTypes.add(imeiAttributeType);
-        this.attributeTypeDescriptions
-                                      .add(new AttributeTypeDescriptionEntity(imeiAttributeType, Locale.ENGLISH.getLanguage(), "Imei", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(imeiAttributeType, "nl", "Imei", null));
-
-        AttributeTypeEntity pinAttributeType = new AttributeTypeEntity(OptionConstants.PIN_OPTION_ATTRIBUTE, DatatypeType.STRING, false,
-                false);
-
-        this.attributeTypes.add(pinAttributeType);
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(pinAttributeType, Locale.ENGLISH.getLanguage(), "PIN", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(pinAttributeType, "nl", "PIN", null));
+        AttributeTypeEntity optionImeiAttributeType = new AttributeTypeEntity(OptionConstants.OPTION_IMEI_ATTRIBUTE, DatatypeType.STRING,
+                true, false);
+        optionImeiAttributeType.setMultivalued(true);
+        attributeTypes.add(optionImeiAttributeType);
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(optionImeiAttributeType, Locale.ENGLISH.getLanguage(), "IMEI",
+                null));
 
         AttributeTypeEntity optionDeviceDisableAttributeType = new AttributeTypeEntity(OptionConstants.OPTION_DEVICE_DISABLE_ATTRIBUTE,
                 DatatypeType.BOOLEAN, false, false);
         optionDeviceDisableAttributeType.setMultivalued(true);
-        this.attributeTypes.add(optionDeviceDisableAttributeType);
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(optionDeviceDisableAttributeType,
-                Locale.ENGLISH.getLanguage(), "Option Disable Attribute", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(optionDeviceDisableAttributeType, "nl",
+        attributeTypes.add(optionDeviceDisableAttributeType);
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(optionDeviceDisableAttributeType, Locale.ENGLISH.getLanguage(),
+                "Option Disable Attribute", null));
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(optionDeviceDisableAttributeType, "nl",
                 "Option Disable Attribuut", null));
 
         AttributeTypeEntity optionDeviceAttributeType = new AttributeTypeEntity(OptionConstants.OPTION_DEVICE_ATTRIBUTE,
                 DatatypeType.COMPOUNDED, true, false);
         optionDeviceAttributeType.setMultivalued(true);
-        optionDeviceAttributeType.addMember(imeiAttributeType, 0, true);
-        optionDeviceAttributeType.addMember(pinAttributeType, 1, true);
-        optionDeviceAttributeType.addMember(optionDeviceDisableAttributeType, 2, true);
-        this.attributeTypes.add(optionDeviceAttributeType);
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(optionDeviceAttributeType, Locale.ENGLISH.getLanguage(),
-                "Option", null));
-        this.attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(optionDeviceAttributeType, "nl", "Option", null));
+        optionDeviceAttributeType.addMember(optionImeiAttributeType, 0, true);
+        optionDeviceAttributeType.addMember(optionDeviceDisableAttributeType, 1, true);
+        attributeTypes.add(optionDeviceAttributeType);
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(optionDeviceAttributeType, Locale.ENGLISH.getLanguage(), "Option",
+                null));
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(optionDeviceAttributeType, "nl", "Option", null));
 
         X509Certificate certificate = (X509Certificate) OptionKeyStoreUtils.getPrivateKeyEntry().getCertificate();
 
         ResourceBundle properties = ResourceBundle.getBundle("option_config");
         String nodeName = properties.getString("olas.node.name");
         String optionWebappName = properties.getString("option.webapp.name");
+        String optionAuthWSPath = properties.getString("option.auth.ws.webapp.name");
 
-        this.devices.add(new Device(OptionConstants.OPTION_DEVICE_ID, SafeOnlineConstants.MOBILE_DEVICE_CLASS, nodeName, "/"
-                + optionWebappName + "/auth", null, "/" + optionWebappName + "/device", "/" + optionWebappName + "/device", null, "/"
-                + optionWebappName + "/device", "/" + optionWebappName + "/device", certificate, optionDeviceAttributeType,
-                imeiAttributeType, optionDeviceDisableAttributeType));
-        this.deviceDescriptions.add(new DeviceDescription(OptionConstants.OPTION_DEVICE_ID, "nl", "Option Datakaart"));
-        this.deviceDescriptions.add(new DeviceDescription(OptionConstants.OPTION_DEVICE_ID, Locale.ENGLISH.getLanguage(),
-                "Option Data Card"));
-        this.trustedCertificates.put(certificate, SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
+        devices.add(new Device(OptionConstants.OPTION_DEVICE_ID, SafeOnlineConstants.MOBILE_DEVICE_CLASS, nodeName, "/olas-option/auth",
+                "/" + optionAuthWSPath, "/" + optionWebappName + "/device", "/" + optionWebappName + "/device", null, "/"
+                        + optionWebappName + "/device", "/" + optionWebappName + "/device", certificate, optionDeviceAttributeType,
+                optionImeiAttributeType, optionDeviceDisableAttributeType));
+        deviceDescriptions.add(new DeviceDescription(OptionConstants.OPTION_DEVICE_ID, "nl", "Option Datakaart"));
+        deviceDescriptions.add(new DeviceDescription(OptionConstants.OPTION_DEVICE_ID, Locale.ENGLISH.getLanguage(), "Option Data Card"));
+        trustedCertificates.put(certificate, SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
     }
 
     private void configureNode() {
@@ -116,15 +98,15 @@ public class OptionStartableBean extends AbstractInitBean {
         AuthIdentityServiceClient authIdentityServiceClient = new AuthIdentityServiceClient();
         IdentityServiceClient identityServiceClient = new IdentityServiceClient();
 
-        this.node = new Node(nodeName, protocol, hostname, hostport, hostportssl, authIdentityServiceClient.getCertificate(),
+        node = new Node(nodeName, protocol, hostname, hostport, hostportssl, authIdentityServiceClient.getCertificate(),
                 identityServiceClient.getCertificate());
-        this.trustedCertificates.put(authIdentityServiceClient.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
+        trustedCertificates.put(authIdentityServiceClient.getCertificate(), SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN);
     }
 
     @Override
     public void preStop() {
 
-        this.LOG.debug("pre stop");
+        LOG.debug("pre stop");
     }
 
     @Override
@@ -132,5 +114,4 @@ public class OptionStartableBean extends AbstractInitBean {
 
         return OptionConstants.OPTION_BOOT_PRIORITY;
     }
-
 }

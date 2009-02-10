@@ -1,7 +1,7 @@
 /*
  * SafeOnline project.
- * 
- * Copyright 2006-2008 Lin.k N.V. All rights reserved.
+ *
+ * Copyright 2006-2007 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
 package net.link.safeonline.model.option;
@@ -14,47 +14,29 @@ import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.model.option.exception.OptionAuthenticationException;
-import net.link.safeonline.model.option.exception.OptionRegistrationException;
 
 
-/**
- * <h2>{@link OptionDeviceService}<br>
- * <sub>[in short] (TODO).</sub></h2>
- * 
- * <p>
- * [description / usage].
- * </p>
- * 
- * <p>
- * <i>Sep 8, 2008</i>
- * </p>
- * 
- * @author dhouthoo
- */
 @Local
 public interface OptionDeviceService extends OptionService {
 
     public static final String JNDI_BINDING = OptionService.JNDI_PREFIX + "OptionDeviceServiceBean/local";
 
 
-    String authenticate(String imei, String pin)
-            throws SubjectNotFoundException, OptionAuthenticationException, OptionRegistrationException, AttributeTypeNotFoundException,
-            AttributeNotFoundException, DeviceDisabledException;
+    public void register(String imei, String userId)
+            throws AttributeTypeNotFoundException;
 
-    void register(String userId, String imei, String pin)
-            throws OptionAuthenticationException, OptionRegistrationException, AttributeNotFoundException, AttributeTypeNotFoundException,
-            DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException;
+    public void remove(String imei)
+            throws SubjectNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException;
 
-    void enable(String userId, String imei, String pin)
-            throws OptionAuthenticationException, OptionRegistrationException, SubjectNotFoundException,
-            DeviceRegistrationNotFoundException, DeviceNotFoundException;
+    /**
+     * @return The User ID of the user who just successfully authenticated. <code>null</code> when authentication failed.
+     */
+    public String authenticate(String imei)
+            throws SubjectNotFoundException, DeviceNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException;
 
-    void disable(String userId, String imei)
+    public void enable(String imei, String userId)
             throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException;
 
-    void remove(String userId, String imei)
-            throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException, AttributeTypeNotFoundException,
-            AttributeNotFoundException;
-
+    public void disable(String imei, String userId)
+            throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException;
 }

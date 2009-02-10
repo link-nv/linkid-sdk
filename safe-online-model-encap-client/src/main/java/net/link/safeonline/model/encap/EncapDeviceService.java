@@ -16,9 +16,9 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
-import net.link.safeonline.authentication.exception.MobileAuthenticationException;
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.MobileException;
-import net.link.safeonline.authentication.exception.MobileRegistrationException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.data.AttributeDO;
 
@@ -49,11 +49,11 @@ public interface EncapDeviceService extends EncapService {
      * @param mobileOTP
      * @return device subject ID
      * @throws SubjectNotFoundException
-     * @throws MobileAuthenticationException
+     * @throws DeviceAuthenticationException
      * @throws MobileException
      */
     String authenticate(String mobile, String challengeId, String mobileOTP)
-            throws SubjectNotFoundException, MobileAuthenticationException, MobileException;
+            throws SubjectNotFoundException, DeviceAuthenticationException, MobileException;
 
     /**
      * Authenticates against the encap server.
@@ -73,10 +73,10 @@ public interface EncapDeviceService extends EncapService {
      * @param sessionId
      * @return activationCode code to be used by the user on his mobile
      * @throws MobileException
-     * @throws MobileRegistrationException
+     * @throws DeviceRegistrationException
      */
     String register(String mobile, String sessionId)
-            throws MobileException, MobileRegistrationException;
+            throws MobileException, DeviceRegistrationException;
 
     /**
      * Commits the encap registration for OLAS, creates a device subject if necessary, creates a new device registration for this mobile and

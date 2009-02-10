@@ -13,6 +13,7 @@ import junit.framework.TestCase;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
+import net.link.safeonline.device.sdk.AuthenticationContext;
 import net.link.safeonline.digipass.webapp.AuthenticationPage;
 import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.model.digipass.DigipassDeviceService;
@@ -128,14 +129,15 @@ public class AuthenticationPageTest extends TestCase {
         replay(mockDigipassDeviceService, mockSamlAuthorityService);
 
         // RegisterPage: Register digipass for user
-        FormTester authenticationForm = wicket
-                                                   .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
+        FormTester authenticationForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
         authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, UUID.randomUUID().toString());
         authenticationForm.setValue(AuthenticationPage.TOKEN_FIELD_ID, token);
         authenticationForm.submit(AuthenticationPage.LOGIN_BUTTON_ID);
 
         // verify
         verify(mockDigipassDeviceService, mockSamlAuthorityService);
+        assertNotNull("No authenticated user on the session.", //
+                AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
     }
 
     @Test
@@ -163,8 +165,7 @@ public class AuthenticationPageTest extends TestCase {
         replay(mockDigipassDeviceService, mockHelpdeskManager);
 
         // operate
-        FormTester authenticationForm = wicket
-                                                   .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
+        FormTester authenticationForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
         authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, UUID.randomUUID().toString());
         authenticationForm.setValue(AuthenticationPage.TOKEN_FIELD_ID, token);
         authenticationForm.submit(AuthenticationPage.LOGIN_BUTTON_ID);
@@ -174,7 +175,8 @@ public class AuthenticationPageTest extends TestCase {
 
         wicket.assertRenderedPage(AuthenticationPage.class);
         wicket.assertErrorMessages(new String[] { "digipassNotRegistered" });
-
+        assertNull("There was an authenticated user on the session.", //
+                AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
     }
 
     @Test
@@ -202,8 +204,7 @@ public class AuthenticationPageTest extends TestCase {
         replay(mockDigipassDeviceService, mockHelpdeskManager);
 
         // operate
-        FormTester authenticationForm = wicket
-                                                   .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
+        FormTester authenticationForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
         authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, UUID.randomUUID().toString());
         authenticationForm.setValue(AuthenticationPage.TOKEN_FIELD_ID, token);
         authenticationForm.submit(AuthenticationPage.LOGIN_BUTTON_ID);
@@ -213,7 +214,8 @@ public class AuthenticationPageTest extends TestCase {
 
         wicket.assertRenderedPage(AuthenticationPage.class);
         wicket.assertErrorMessages(new String[] { "digipassDisabled" });
-
+        assertNull("There was an authenticated user on the session.", //
+                AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
     }
 
     @Test
@@ -241,8 +243,7 @@ public class AuthenticationPageTest extends TestCase {
         replay(mockDigipassDeviceService, mockHelpdeskManager);
 
         // operate
-        FormTester authenticationForm = wicket
-                                                   .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
+        FormTester authenticationForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
         authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, UUID.randomUUID().toString());
         authenticationForm.setValue(AuthenticationPage.TOKEN_FIELD_ID, token);
         authenticationForm.submit(AuthenticationPage.LOGIN_BUTTON_ID);
@@ -252,6 +253,7 @@ public class AuthenticationPageTest extends TestCase {
 
         wicket.assertRenderedPage(AuthenticationPage.class);
         wicket.assertErrorMessages(new String[] { "authenticationFailedMsg" });
-
+        assertNull("There was an authenticated user on the session.", //
+                AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
     }
 }

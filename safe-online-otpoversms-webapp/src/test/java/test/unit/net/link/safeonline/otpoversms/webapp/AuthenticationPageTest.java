@@ -20,13 +20,14 @@ import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
-import net.link.safeonline.wicket.tools.WicketUtil;
+import net.link.safeonline.device.sdk.AuthenticationContext;
 import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.model.otpoversms.OtpOverSmsDeviceService;
 import net.link.safeonline.otpoversms.webapp.AuthenticationPage;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.webapp.template.TemplatePage;
+import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.util.tester.FormTester;
@@ -140,6 +141,8 @@ public class AuthenticationPageTest extends TestCase {
 
         // verify
         verify(mockOtpOverSmsDeviceService, mockSamlAuthorityService);
+        assertNotNull("No authenticated user on the session.", //
+                AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
     }
 
     @Test
@@ -177,6 +180,8 @@ public class AuthenticationPageTest extends TestCase {
 
         wicket.assertRenderedPage(AuthenticationPage.class);
         wicket.assertErrorMessages(new String[] { "mobileNotRegistered" });
+        assertNull("There was an authenticated user on the session.", //
+                AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
 
     }
 
@@ -215,6 +220,8 @@ public class AuthenticationPageTest extends TestCase {
 
         wicket.assertRenderedPage(AuthenticationPage.class);
         wicket.assertErrorMessages(new String[] { "mobileDisabled" });
+        assertNull("There was an authenticated user on the session.", //
+                AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
 
     }
 
@@ -255,6 +262,8 @@ public class AuthenticationPageTest extends TestCase {
 
         wicket.assertRenderedPage(AuthenticationPage.class);
         wicket.assertErrorMessages(new String[] { "errorServiceConnection" });
+        assertNull("There was an authenticated user on the session.", //
+                AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
 
     }
 
@@ -319,6 +328,8 @@ public class AuthenticationPageTest extends TestCase {
 
         wicket.assertRenderedPage(AuthenticationPage.class);
         wicket.assertErrorMessages(new String[] { "authenticationFailedMsg" });
+        assertNull("There was an authenticated user on the session.", //
+                AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
 
     }
 
@@ -384,7 +395,8 @@ public class AuthenticationPageTest extends TestCase {
 
         wicket.assertRenderedPage(AuthenticationPage.class);
         wicket.assertErrorMessages(new String[] { "authenticationFailedMsg" });
-
+        assertNull("There was an authenticated user on the session.", //
+                AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
     }
 
 }
