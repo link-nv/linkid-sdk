@@ -98,7 +98,7 @@ public class UpdatePage extends TemplatePage {
                 public void onSubmit() {
 
                     if (!newPin.getObject().equals(newPinConfirm.getObject())) {
-                        RegisterForm.this.error(localize("pinDoesntMatch"));
+                        RegisterForm.this.error(localize("errorUnmatchedPin"));
                         HelpdeskLogger.add("register: PINs don't match.", //
                                 LogLevelType.ERROR);
                         LOG.error("reg failed");

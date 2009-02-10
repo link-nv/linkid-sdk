@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.protocol.http.MockHttpServletRequest;
 import org.apache.wicket.protocol.http.WebRequest;
@@ -36,8 +38,10 @@ import org.apache.wicket.protocol.http.WebResponse;
  */
 public abstract class OptionDevice {
 
-    public static final String  PIN_COOKIE_NAME  = "pin";
-    private static final String IMEI_COOKIE_NAME = "imei";
+    private static final Log    LOG              = LogFactory.getLog(OptionDevice.class);
+
+    public static final String  PIN_COOKIE_NAME  = "OPTION.pin";
+    private static final String IMEI_COOKIE_NAME = "OPTION.imei";
 
 
     /**
@@ -54,14 +58,16 @@ public abstract class OptionDevice {
         WebRequest webRequest = ((WebRequestCycle) RequestCycle.get()).getWebRequest();
 
         Cookie pinCookie = webRequest.getCookie(PIN_COOKIE_NAME);
-        if (pin == null || pinCookie == null || //
-                !pinCookie.getSecure() || pinCookie.getValue() == null || //
-                !pin.equals(pinCookie.getValue()))
+        if (pin == null || pinCookie == null || !pin.equals(pinCookie.getValue())) {
             // Invalid PIN.
+            LOG.debug("Validation failed of PIN: " + pin);
+            LOG.debug("PIN Cookie (" + PIN_COOKIE_NAME + ") was: " + (pinCookie == null? "[no cookie]": pinCookie.getValue()));
+
             throw new DeviceAuthenticationException();
+        }
 
         Cookie imeiCookie = webRequest.getCookie(IMEI_COOKIE_NAME);
-        return imeiCookie != null && imeiCookie.getSecure()? imeiCookie.getValue(): null;
+        return imeiCookie != null? imeiCookie.getValue(): null;
     }
 
     /**
@@ -88,12 +94,10 @@ public abstract class OptionDevice {
 
         Cookie pinCookie = new Cookie(PIN_COOKIE_NAME, pin);
         pinCookie.setMaxAge(Integer.MAX_VALUE);
-        pinCookie.setSecure(true);
         webResponse.addCookie(pinCookie);
 
         Cookie imeiCookie = new Cookie(IMEI_COOKIE_NAME, imei);
         imeiCookie.setMaxAge(Integer.MAX_VALUE);
-        imeiCookie.setSecure(true);
         webResponse.addCookie(imeiCookie);
 
         // TODO: Manually add cookies to the MockHttpServletRequest until https://issues.apache.org/jira/browse/WICKET-1886 is fixed.

@@ -137,24 +137,25 @@ public class AuthenticationPage extends TemplatePage {
                     }
 
                     catch (DeviceAuthenticationException e) {
+                        LOG.error("authentication failed", e);
                         AuthenticationForm.this.error(localize("authenticationFailedMsg"));
                         HelpdeskLogger.add(localize("login: failed: %s", e.getMessage()), //
                                 LogLevelType.ERROR);
                     } catch (DeviceDisabledException e) {
                         AuthenticationForm.this.error(localize("errorDeviceDisabled"));
-                        HelpdeskLogger.add(localize("login: device is disabled"), //
+                        HelpdeskLogger.add(localize("%s", "login: device is disabled"), //
                                 LogLevelType.ERROR);
                     } catch (DeviceRegistrationNotFoundException e) {
                         AuthenticationForm.this.error(localize("optionNotRegistered"));
-                        HelpdeskLogger.add(localize("login: device is not registered"), //
+                        HelpdeskLogger.add(localize("%s", "login: device is not registered"), //
                                 LogLevelType.ERROR);
                     } catch (DeviceNotFoundException e) {
                         AuthenticationForm.this.error(localize("optionNotRegistered"));
-                        HelpdeskLogger.add(localize("login: device is not registered"), //
+                        HelpdeskLogger.add(localize("%s", "login: device is not registered"), //
                                 LogLevelType.ERROR);
                     } catch (SubjectNotFoundException e) {
                         AuthenticationForm.this.error(localize("errorSubjectNotFound"));
-                        HelpdeskLogger.add(localize("login: subject not found"), //
+                        HelpdeskLogger.add(localize("%s", "login: subject not found"), //
                                 LogLevelType.ERROR);
                     }
 
@@ -185,6 +186,7 @@ public class AuthenticationPage extends TemplatePage {
 
     void exit() {
 
+        LOG.debug("option: exit");
         authenticationContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
 
         throw new RedirectToUrlException("authenticationexit");

@@ -82,7 +82,7 @@ public class OptionStartableBean extends AbstractInitBean {
                         + optionWebappName + "/device", "/" + optionWebappName + "/device", certificate, optionDeviceAttributeType,
                 optionImeiAttributeType, optionDeviceDisableAttributeType));
         deviceDescriptions.add(new DeviceDescription(OptionConstants.OPTION_DEVICE_ID, "nl", "Option Datakaart"));
-        deviceDescriptions.add(new DeviceDescription(OptionConstants.OPTION_DEVICE_ID, Locale.ENGLISH.getLanguage(), "Option Datacard"));
+        deviceDescriptions.add(new DeviceDescription(OptionConstants.OPTION_DEVICE_ID, Locale.ENGLISH.getLanguage(), "Option Data Card"));
         trustedCertificates.put(certificate, SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN);
     }
 
