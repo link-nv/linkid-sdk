@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.sourceforge.net/"
+	xml:lang="en" lang="en">
+
+	<head>
+		<link rel="stylesheet" type="text/css" href="css/style.css" />
+	</head>
+
+	<body>
+
+		<wicket:container wicket:id="header_border"></wicket:container>
+
+		<wicket:container wicket:id="content_border">
+
+			<wicket:container wicket:id="sidebar_border">
+			</wicket:container>
+
+			<form wicket:id="register_form">
+
+                <wicket:enclosure>
+					<label>
+						<wicket:message key="pin">[PIN]</wicket:message>
+					</label>
+					<input wicket:id="pin" type="password" class="label" />
+				</wicket:enclosure>
+
+				<wicket:enclosure>
+	                <label>
+						<wicket:message key="pinConfirm">[PIN Confirmation]</wicket:message>
+					</label>
+					<input wicket:id="pinConfirm" type="password" class="label" />
+				</wicket:enclosure>
+
+				<label>&nbsp;</label>
+                <input wicket:id="register" type="submit" value="[Confirm]"
+					wicket:message="value:deviceRegister" class="submit" />
+				<input wicket:id="cancel" type="submit" value="[Cancel]"
+					wicket:message="value:cancelaction" class="submit" />
+
+				<div wicket:id="feedback" class="error"></div>
+			</form>
+
+		</wicket:container>
+
+	</body>
+</html>

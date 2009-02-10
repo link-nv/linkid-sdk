@@ -367,14 +367,8 @@
 				<safe-online.option.webapp.name>olas-option</safe-online.option.webapp.name>
 			</properties>
 			<modules>
-				<module>safe-online-option-device</module>
-				<module>safe-online-option-connection-manager-ws</module>
-				<module>safe-online-option-connection-manager</module>
-				<module>safe-online-option-connection-manager-package</module>
-				<module>safe-online-option-applet</module>
-				<module>safe-online-option-applet-package</module>
-				<module>safe-online-option-keystore</module>
 				<module>safe-online-option-startup-runtime</module>
+                <module>safe-online-option-keystore</module>
 				<module>safe-online-option</module>
 				<module>safe-online-option-webapp</module>
 				<module>safe-online-option-deploy</module>

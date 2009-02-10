@@ -13,6 +13,7 @@ import junit.framework.TestCase;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
+import net.link.safeonline.device.sdk.AuthenticationContext;
 import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.model.password.PasswordDeviceService;
 import net.link.safeonline.password.webapp.AuthenticationPage;
@@ -128,14 +129,15 @@ public class AuthenticationPageTest extends TestCase {
         replay(mockPasswordDeviceService, mockSamlAuthorityService);
 
         // operate
-        FormTester authenticationForm = wicket
-                                                   .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
+        FormTester authenticationForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
         authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, login);
         authenticationForm.setValue(AuthenticationPage.PASSWORD_FIELD_ID, password);
         authenticationForm.submit(AuthenticationPage.LOGIN_BUTTON_ID);
 
         // verify
         verify(mockPasswordDeviceService, mockSamlAuthorityService);
+        assertNotNull("No authenticated user on the session.", //
+                AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
     }
 
     @Test
@@ -164,8 +166,7 @@ public class AuthenticationPageTest extends TestCase {
         replay(mockPasswordDeviceService, mockHelpdeskManager);
 
         // RegisterPage: Register digipass for user
-        FormTester authenticationForm = wicket
-                                                   .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
+        FormTester authenticationForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
         authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, login);
         authenticationForm.setValue(AuthenticationPage.PASSWORD_FIELD_ID, password);
         authenticationForm.submit(AuthenticationPage.LOGIN_BUTTON_ID);
@@ -175,6 +176,8 @@ public class AuthenticationPageTest extends TestCase {
 
         wicket.assertRenderedPage(AuthenticationPage.class);
         wicket.assertErrorMessages(new String[] { "authenticationFailedMsg" });
+        assertNull("There was an authenticated user on the session.", //
+                AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
 
     }
 
@@ -204,8 +207,7 @@ public class AuthenticationPageTest extends TestCase {
         replay(mockPasswordDeviceService, mockHelpdeskManager);
 
         // operate
-        FormTester authenticationForm = wicket
-                                                   .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
+        FormTester authenticationForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
         authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, login);
         authenticationForm.setValue(AuthenticationPage.PASSWORD_FIELD_ID, password);
         authenticationForm.submit(AuthenticationPage.LOGIN_BUTTON_ID);
@@ -215,6 +217,8 @@ public class AuthenticationPageTest extends TestCase {
 
         wicket.assertRenderedPage(AuthenticationPage.class);
         wicket.assertErrorMessages(new String[] { "errorDeviceDisabled" });
+        assertNull("There was an authenticated user on the session.", //
+                AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
 
     }
 
@@ -244,8 +248,7 @@ public class AuthenticationPageTest extends TestCase {
         replay(mockPasswordDeviceService, mockHelpdeskManager);
 
         // operate
-        FormTester authenticationForm = wicket
-                                                   .newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
+        FormTester authenticationForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + AuthenticationPage.AUTHENTICATION_FORM_ID);
         authenticationForm.setValue(AuthenticationPage.LOGIN_NAME_FIELD_ID, login);
         authenticationForm.setValue(AuthenticationPage.PASSWORD_FIELD_ID, password);
         authenticationForm.submit(AuthenticationPage.LOGIN_BUTTON_ID);
@@ -255,6 +258,7 @@ public class AuthenticationPageTest extends TestCase {
 
         wicket.assertRenderedPage(AuthenticationPage.class);
         wicket.assertErrorMessages(new String[] { "authenticationFailedMsg" });
-
+        assertNull("There was an authenticated user on the session.", //
+                AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
     }
 }

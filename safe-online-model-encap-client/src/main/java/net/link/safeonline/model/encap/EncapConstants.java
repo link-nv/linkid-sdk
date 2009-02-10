@@ -18,8 +18,8 @@ public interface EncapConstants {
 
     // Encap device attributes
     public static final String ENCAP_DEVICE_ID                = "encap";
-    public static final String ENCAP_MOBILE_ATTRIBUTE         = "urn:net:lin-k:safe-online:attribute:encap:mobile";
     public static final String ENCAP_DEVICE_ATTRIBUTE         = "urn:net:lin-k:safe-online:attribute:encap:device";
+    public static final String ENCAP_MOBILE_ATTRIBUTE         = "urn:net:lin-k:safe-online:attribute:encap:device:mobile";
     public static final String ENCAP_DEVICE_DISABLE_ATTRIBUTE = "urn:net:lin-k:safe-online:attribute:encap:device:disable";
 
     // Encap WS authentication device credential attributes

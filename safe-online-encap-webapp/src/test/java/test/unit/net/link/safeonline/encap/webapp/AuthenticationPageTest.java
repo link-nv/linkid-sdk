@@ -5,6 +5,8 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.UUID;
 
@@ -82,7 +84,6 @@ public class AuthenticationPageTest {
         AuthenticationContext authenticationContext = AuthenticationContext.getAuthenticationContext(wicket.getServletSession());
         authenticationContext.setApplication(TEST_APPLICATION);
         authenticationContext.setApplicationFriendlyName(TEST_APPLICATION);
-        authenticationContext.setUserId(TEST_USERID);
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setSubject(TEST_USERID);
         protocolContext.setAttribute(TEST_MOBILE);
@@ -152,6 +153,8 @@ public class AuthenticationPageTest {
         wicket.assertRenderedPage(AuthenticationPage.class);
         wicket.assertNoErrorMessage();
         verify(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
+        assertNotNull("No authenticated user on the session.", //
+                AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
     }
 
     @Test
@@ -174,6 +177,8 @@ public class AuthenticationPageTest {
         wicket.assertRenderedPage(AuthenticationPage.class);
         wicket.assertErrorMessages(new String[] { "mobileNotRegistered" });
         verify(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
+        assertNull("There was an authenticated user on the session.", //
+                AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
     }
 
     @Test
@@ -196,6 +201,8 @@ public class AuthenticationPageTest {
         wicket.assertRenderedPage(AuthenticationPage.class);
         wicket.assertErrorMessages(new String[] { "mobileDisabled" });
         verify(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
+        assertNull("There was an authenticated user on the session.", //
+                AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
     }
 
     @Test
@@ -228,6 +235,8 @@ public class AuthenticationPageTest {
         wicket.assertRenderedPage(AuthenticationPage.class);
         wicket.assertErrorMessages(new String[] { "authenticationFailedMsg" });
         verify(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
+        assertNull("There was an authenticated user on the session.", //
+                AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
     }
 
     @Test
@@ -293,6 +302,8 @@ public class AuthenticationPageTest {
         wicket.assertRenderedPage(AuthenticationPage.class);
         wicket.assertErrorMessages(new String[] { "errorSubjectNotFound" });
         verify(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
+        assertNull("There was an authenticated user on the session.", //
+                AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
     }
 
     @Test
@@ -324,5 +335,7 @@ public class AuthenticationPageTest {
         wicket.assertRenderedPage(AuthenticationPage.class);
         wicket.assertErrorMessages(new String[] { "authenticationFailedMsg" });
         verify(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
+        assertNull("There was an authenticated user on the session.", //
+                AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
     }
 }
