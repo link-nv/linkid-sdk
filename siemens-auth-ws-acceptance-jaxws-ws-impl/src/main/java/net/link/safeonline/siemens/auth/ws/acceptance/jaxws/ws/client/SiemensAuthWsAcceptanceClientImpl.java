@@ -22,15 +22,10 @@ import net.link.safeonline.siemens.auth.ws.acceptance.jaxws.ws.SiemensAuthWsAcce
 import net.link.safeonline.siemens.auth.ws.acceptance.jaxws.ws.handler.SamlTokenClientHandler;
 import oasis.names.tc.saml._2_0.assertion.AssertionType;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import com.sun.xml.ws.client.ClientTransportException;
 
 
 public class SiemensAuthWsAcceptanceClientImpl implements SiemensAuthWsAcceptanceClient {
-
-    private static final Log                  LOG = LogFactory.getLog(SiemensAuthWsAcceptanceClientImpl.class);
 
     private final SiemensAuthWsAcceptancePort port;
 

@@ -18,15 +18,12 @@ import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
+import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
-
-import net.lin_k.safe_online.auth.DeviceAuthenticationInformationType;
-import net.link.safeonline.auth.ws.AuthenticationStep;
 
 
 /**
- * <h2>{@link LoginPanel}<br>
+ * <h2>{@link AcceptanceWSPanel}<br>
  * <sub>[in short] (TODO).</sub></h2>
  * 
  * <p>
@@ -39,24 +36,25 @@ import net.link.safeonline.auth.ws.AuthenticationStep;
  * 
  * @author wvdhaute
  */
-public class LoginPanel extends JPanel implements Observer {
+public class AcceptanceWSPanel extends JPanel implements Observer {
 
     private static final long serialVersionUID = 1L;
 
     AcceptanceConsole         parent           = null;
 
-    private JLabel            infoLabel        = null;
-    private JProgressBar      progressBar      = new JProgressBar();
+    private JLabel            infoLabel        = new JLabel("Acceptance Test WS", SwingConstants.CENTER);
+
+    private JTextArea         attributeText    = new JTextArea(10, 80);
 
     private Action            exitAction       = new ExitAction("Exit");
     private JButton           exitButton       = new JButton(exitAction);
 
 
-    public LoginPanel(AcceptanceConsole parent, String message) {
+    public AcceptanceWSPanel(AcceptanceConsole parent) {
 
         setCursor(new Cursor(Cursor.WAIT_CURSOR));
+
         this.parent = parent;
-        infoLabel = new JLabel(message, SwingConstants.CENTER);
 
         AuthenticationUtils.getInstance().addObserver(this);
         buildWindow();
@@ -67,15 +65,16 @@ public class LoginPanel extends JPanel implements Observer {
      */
     private void buildWindow() {
 
-        progressBar.setIndeterminate(true);
+        attributeText.setEditable(false);
+
         exitButton.setEnabled(false);
 
         JPanel infoPanel = new JPanel();
         JPanel controlPanel = new JPanel();
 
         infoPanel.setLayout(new BorderLayout());
-        infoPanel.add(infoLabel, BorderLayout.CENTER);
-        infoPanel.add(progressBar, BorderLayout.SOUTH);
+        infoPanel.add(infoLabel, BorderLayout.NORTH);
+        infoPanel.add(attributeText, BorderLayout.CENTER);
 
         controlPanel.add(exitButton);
 
@@ -92,33 +91,10 @@ public class LoginPanel extends JPanel implements Observer {
 
         setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         exitButton.setEnabled(true);
-        progressBar.setVisible(false);
 
         try {
-            if (arg instanceof AuthenticationError) {
-                AuthenticationError error = (AuthenticationError) arg;
-                infoLabel.setText("<html><font color=red>Authentication failed</font><br><br><b>Error code:</b> "
-                        + error.getCode().getErrorCode() + "<br><br><b>Message:</b> " + error.getMessage() + "</html>");
-            } else if (arg instanceof AuthenticationStep) {
-                AuthenticationStep authenticationStep = (AuthenticationStep) arg;
-                if (authenticationStep.equals(AuthenticationStep.GLOBAL_USAGE_AGREEMENT)) {
-                    parent.requestGlobalUsageAgreement();
-                } else if (authenticationStep.equals(AuthenticationStep.USAGE_AGREEMENT)) {
-                    parent.requestUsageAgreement();
-                } else if (authenticationStep.equals(AuthenticationStep.IDENTITY_CONFIRMATION)) {
-                    parent.getIdentity();
-                } else if (authenticationStep.equals(AuthenticationStep.MISSING_ATTRIBUTES)) {
-                    parent.getMissingAttributes();
-                } else {
-                    infoLabel.setText("Additional authentication step: " + authenticationStep.getValue());
-                }
-            } else if (arg instanceof DeviceAuthenticationInformationType) {
-                DeviceAuthenticationInformationType deviceAuthenticationInformation = (DeviceAuthenticationInformationType) arg;
-                parent.onAuthenticateFurther(deviceAuthenticationInformation);
-            } else if (arg instanceof String) {
-                // success
-                parent.consoleManager.setUserId((String) arg);
-                parent.resetContent();
+            if (arg instanceof String) {
+                attributeText.setText("Returned attribute: " + (String) arg);
             }
         } finally {
             cleanup();
@@ -151,5 +127,4 @@ public class LoginPanel extends JPanel implements Observer {
             cleanup();
         }
     }
-
 }

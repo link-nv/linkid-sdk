@@ -329,7 +329,7 @@
 				<!-- DEMO CORE -->
 				<module>safe-online-model-demo-client</module>
 				<module>safe-online-model-demo</module>
-                <module>safe-online-demo-sql-ddl</module>
+				<module>safe-online-demo-sql-ddl</module>
 				<module>safe-online-demo-deploy</module>
 				<module>safe-online-demo-util</module>
 				<module>safe-online-demo-applet</module>
@@ -377,7 +377,7 @@
 			</properties>
 			<modules>
 				<module>safe-online-option-startup-runtime</module>
-                <module>safe-online-option-keystore</module>
+				<module>safe-online-option-keystore</module>
 				<module>safe-online-option</module>
 				<module>safe-online-option-webapp</module>
 				<module>safe-online-option-deploy</module>
@@ -441,9 +441,11 @@
 				<module>safe-online-test</module>
 			</modules>
 		</profile>
-		
-		<!-- Profile that builds the siemens metro web service and Metro WS Stack distribution
--->
+
+		<!--
+			Profile that builds the siemens metro web service and Metro WS Stack
+			distribution
+		-->
 		<profile>
 			<id>dep:siemens</id>
 			<modules>
@@ -454,9 +456,6 @@
 				<module>siemens-auth-ws-acceptance-jaxws-ws</module>
 				<module>siemens-auth-ws-acceptance-jaxws-ws-impl</module>
 				<module>siemens-auth-ws-acceptance-jaxws-ws-runtime</module>
-				<module>siemens-auth-ws-acceptance-ws</module>
-				<module>siemens-auth-ws-acceptance-ws-impl</module>
-				<module>siemens-auth-ws-acceptance-ws-runtime</module>
 				<module>siemens-metro-distribution</module>
 			</modules>
 		</profile>
@@ -479,16 +478,16 @@
 		<profile>
 			<id>host:demo</id>
 			<properties>
-                <safe-online.distribution>base</safe-online.distribution>
+				<safe-online.distribution>base</safe-online.distribution>
 				<safe-online.host.name>demo.olas.be</safe-online.host.name>
 
-                <safe-online.data.source.user>olasdemo</safe-online.data.source.user>
-                <safe-online.data.source.pass>1abb9f16a7ba974a6cf1</safe-online.data.source.pass>
+				<safe-online.data.source.user>olasdemo</safe-online.data.source.user>
+				<safe-online.data.source.pass>1abb9f16a7ba974a6cf1</safe-online.data.source.pass>
 
-                <safe-online.jboss.host.port:insecure>8080</safe-online.jboss.host.port:insecure>
-                <safe-online.jboss.host.port:secure>8443</safe-online.jboss.host.port:secure>
-                <safe-online.host.port:insecure>80</safe-online.host.port:insecure>
-                <safe-online.host.port:secure>443</safe-online.host.port:secure>
+				<safe-online.jboss.host.port:insecure>8080</safe-online.jboss.host.port:insecure>
+				<safe-online.jboss.host.port:secure>8443</safe-online.jboss.host.port:secure>
+				<safe-online.host.port:insecure>80</safe-online.host.port:insecure>
+				<safe-online.host.port:secure>443</safe-online.host.port:secure>
 			</properties>
 		</profile>
 
@@ -560,8 +559,11 @@
 		</profile>
 
 
-        <!-- CONFIGURATION PROFILES -->
-        <!-- Profile that uses insecure transport for secure traffic to reduce transport overhead -->
+		<!-- CONFIGURATION PROFILES -->
+		<!--
+			Profile that uses insecure transport for secure traffic to reduce
+			transport overhead
+		-->
 		<profile>
 			<id>http</id>
 			<properties>
@@ -768,6 +770,7 @@
 		<http.version>20070405</http.version>
 		<maven-antrun-plugin.version>1.1</maven-antrun-plugin.version>
 		<wss4j.version>1.5.4</wss4j.version>
+		<wss4j-so-saml2.version>1.5.6-so-saml2</wss4j-so-saml2.version>
 		<quartz.version>1.5.2</quartz.version>
 		<hsqldb.version>1.8.0.7</hsqldb.version>
 		<dom4j.version>1.6.1</dom4j.version>
@@ -867,9 +870,11 @@
 		<module>safe-online-saml-authn-context</module>
 		<module>safe-online-saml-common</module>
 		<module>safe-online-node-keystore</module>
-        <!-- TODO: Remove the following.  Only here because of a test dependency in s-o-model.
--->
-        <module>safe-online-beid-pkcs11-applet</module>
+		<!--
+			TODO: Remove the following. Only here because of a test dependency in
+			s-o-model.
+		-->
+		<module>safe-online-beid-pkcs11-applet</module>
 
 		<!-- CORE WEB APPS -->
 		<module>safe-online-webapp-base-olas</module>
@@ -982,7 +987,7 @@
 		<module>siemens-osgi-sms</module>
 		<module>siemens-metro-acceptance-ws</module>
 		<module>siemens-osgi-acceptance-metro</module>
-        <module>safe-online-otpoversms-sdk</module>
+		<module>safe-online-otpoversms-sdk</module>
 	</modules>
 
 	<!-- DEFAULT BUILD CONFIGURATION -->
@@ -2376,10 +2381,10 @@
 						<artifactId>resolver</artifactId>
 					</exclusion>
 
-                    <!-- Exclude bcprov-jdk13, bcprov-jdk14: We use bcprov-jdk15 -->
+					<!-- Exclude bcprov-jdk13, bcprov-jdk14: We use bcprov-jdk15 -->
 					<exclusion>
-                        <groupId>bouncycastle</groupId>
-                        <artifactId>bcprov-jdk14</artifactId>
+						<groupId>bouncycastle</groupId>
+						<artifactId>bcprov-jdk14</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>
@@ -2482,8 +2487,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.ws.security</groupId>
-				<artifactId>wss4j</artifactId>
-				<version>${wss4j.version}</version>
+				<artifactId>wss4j-so-saml2</artifactId>
+				<version>${wss4j-so-saml2.version}</version>
+				<!--
+					artifactId>wss4j</artifactId> <version>${wss4j.version}</version
+				-->
 				<exclusions>
 					<exclusion>
 						<groupId>axis</groupId>
@@ -2523,14 +2531,14 @@
 						<artifactId>opensaml</artifactId> </exclusion
 					-->
 
-                    <!-- Exclude bcprov-jdk13, bcprov-jdk14: We use bcprov-jdk15 -->
+					<!-- Exclude bcprov-jdk13, bcprov-jdk14: We use bcprov-jdk15 -->
 					<exclusion>
-                        <groupId>bouncycastle</groupId>
-                        <artifactId>bcprov-jdk13</artifactId>
+						<groupId>bouncycastle</groupId>
+						<artifactId>bcprov-jdk13</artifactId>
 					</exclusion>
 					<exclusion>
-                        <groupId>bouncycastle</groupId>
-                        <artifactId>bcprov-jdk14</artifactId>
+						<groupId>bouncycastle</groupId>
+						<artifactId>bcprov-jdk14</artifactId>
 					</exclusion>
 				</exclusions>
 			</dependency>

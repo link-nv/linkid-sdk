@@ -28,6 +28,9 @@ import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.siemens.auth.ws.acceptance.jaxws.ws.client.SiemensAuthWsAcceptanceClient;
 import net.link.safeonline.siemens.auth.ws.acceptance.jaxws.ws.client.SiemensAuthWsAcceptanceClientImpl;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 
 /**
  * 
@@ -37,6 +40,8 @@ import net.link.safeonline.siemens.auth.ws.acceptance.jaxws.ws.client.SiemensAut
  */
 public class AcceptanceConsoleManager extends Observable {
 
+    static final Log                        LOG             = LogFactory.getLog(AcceptanceConsoleManager.class);
+
     private static AcceptanceConsoleManager manager         = null;
 
     private String                          location        = "https://localhost:8443/safe-online-auth-ws";
@@ -44,10 +49,11 @@ public class AcceptanceConsoleManager extends Observable {
     private String                          application     = "olas-user";
 
     private boolean                         generateKeyPair = true;
-
     private KeyPair                         keyPair;
-
     private X509Certificate                 certificate;
+
+    private KeyPair                         svKeyPair;
+    private X509Certificate                 svCertificate;
 
     private boolean                         usePcscApplet   = false;
 
@@ -89,9 +95,23 @@ public class AcceptanceConsoleManager extends Observable {
 
         if (null == authenticationClient || null == authenticationClient.getAssertion())
             return null;
-        SiemensAuthWsAcceptanceClient client = new SiemensAuthWsAcceptanceClientImpl("http://localhost:8080",
-                authenticationClient.getAssertion(), certificate, keyPair.getPrivate());
-        return client;
+
+        if (null != keyPair)
+            // holder-of-key
+            return new SiemensAuthWsAcceptanceClientImpl("http://localhost:8080", authenticationClient.getAssertion(), certificate,
+                    keyPair.getPrivate());
+
+        // sender-vouches
+        try {
+            svKeyPair = KeyStoreUtils.generateKeyPair();
+            svCertificate = KeyStoreUtils.generateSelfSignedCertificate(svKeyPair, "cn=Acceptance Test Console");
+        } catch (Exception e) {
+            LOG.error("Exception: " + e.getCause().getClass().getName() + " message=" + e.getMessage(), e);
+            return null;
+        }
+
+        return new SiemensAuthWsAcceptanceClientImpl("http://localhost:8080", authenticationClient.getAssertion(), svCertificate,
+                svKeyPair.getPrivate());
     }
 
     public void setLocation(String location) {
@@ -137,6 +157,9 @@ public class AcceptanceConsoleManager extends Observable {
             certificate = KeyStoreUtils.generateSelfSignedCertificate(keyPair, "cn=Test");
             return keyPair.getPublic();
         }
+
+        keyPair = null;
+        certificate = null;
         return null;
     }
 

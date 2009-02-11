@@ -10,10 +10,8 @@ package net.link.safeonline.siemens.auth.ws.acceptance.jaxws.ws.impl;
 import java.util.Date;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import javax.jws.HandlerChain;
 import javax.jws.WebService;
-import javax.xml.ws.WebServiceContext;
 
 import net.lin_k.siemens.jaxws.Request;
 import net.lin_k.siemens.jaxws.Response;
@@ -33,10 +31,7 @@ import org.apache.commons.logging.LogFactory;
 @HandlerChain(file = "ws-handlers.xml")
 public class SiemensAuthWsAcceptancePortImpl implements SiemensAuthWsAcceptancePort {
 
-    private static final Log  LOG = LogFactory.getLog(SiemensAuthWsAcceptancePortImpl.class);
-
-    @Resource
-    private WebServiceContext context;
+    private static final Log LOG = LogFactory.getLog(SiemensAuthWsAcceptancePortImpl.class);
 
 
     @PostConstruct

@@ -9,7 +9,6 @@ package net.link.safeonline.auth.ws;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.Principal;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
@@ -95,16 +94,9 @@ import net.link.safeonline.ws.util.ri.Injection;
 import oasis.names.tc.saml._2_0.assertion.AssertionType;
 import oasis.names.tc.saml._2_0.assertion.AttributeStatementType;
 import oasis.names.tc.saml._2_0.assertion.AttributeType;
-import oasis.names.tc.saml._2_0.assertion.AudienceRestrictionType;
-import oasis.names.tc.saml._2_0.assertion.AuthnContextType;
-import oasis.names.tc.saml._2_0.assertion.AuthnStatementType;
-import oasis.names.tc.saml._2_0.assertion.ConditionsType;
 import oasis.names.tc.saml._2_0.assertion.NameIDType;
-import oasis.names.tc.saml._2_0.assertion.ObjectFactory;
 import oasis.names.tc.saml._2_0.assertion.StatementAbstractType;
-import oasis.names.tc.saml._2_0.assertion.SubjectConfirmationDataType;
 import oasis.names.tc.saml._2_0.assertion.SubjectConfirmationType;
-import oasis.names.tc.saml._2_0.assertion.SubjectType;
 import oasis.names.tc.saml._2_0.protocol.StatusCodeType;
 import oasis.names.tc.saml._2_0.protocol.StatusType;
 
@@ -198,7 +190,6 @@ public class AuthenticationPortImpl implements AuthenticationPort {
          */
         public void onTimeout(AuthenticationPort timedOutObject, StatefulWebServiceManager<AuthenticationPort> serviceManager) {
 
-            // XXX: notify stateful device ws of timeout ?
         }
 
     }
@@ -1228,77 +1219,6 @@ public class AuthenticationPortImpl implements AuthenticationPort {
             throw new WSAuthenticationException(WSAuthenticationErrorCode.INTERNAL_ERROR, e.getMessage());
         }
 
-    }
-
-    /**
-     * Generate SAML v2.0 assertion.
-     * 
-     * @param applicationUserId
-     */
-    private AssertionType generateAssertion(String id, String applicationUserId)
-            throws WSAuthenticationException {
-
-        AssertionType assertion = generateBaseAssertion();
-
-        DatatypeFactory datatypeFactory;
-        try {
-            datatypeFactory = DatatypeFactory.newInstance();
-        } catch (DatatypeConfigurationException e) {
-            throw new RuntimeException("datatype config error");
-        }
-
-        SamlAuthorityService samlAuthorityService = EjbUtils.getEJB(SamlAuthorityService.JNDI_BINDING, SamlAuthorityService.class);
-
-        GregorianCalendar gregorianCalendar = new GregorianCalendar();
-        gregorianCalendar.setTime(new Date());
-        XMLGregorianCalendar now = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
-
-        gregorianCalendar.add(Calendar.SECOND, samlAuthorityService.getAuthnAssertionValidity());
-        XMLGregorianCalendar notAfter = datatypeFactory.newXMLGregorianCalendar(gregorianCalendar);
-
-        // Subject
-        SubjectType subject = new SubjectType();
-        NameIDType subjectName = new NameIDType();
-        subjectName.setFormat("urn:oasis:names:tc:SAML:2.0:nameid-format:persistent");
-        subjectName.setValue(applicationUserId);
-        ObjectFactory samlObjectFactory = new ObjectFactory();
-        subject.getContent().add(samlObjectFactory.createNameID(subjectName));
-        assertion.setSubject(subject);
-
-        // Conditions
-        ConditionsType conditions = new ConditionsType();
-        conditions.setNotBefore(now);
-        conditions.setNotOnOrAfter(notAfter);
-        AudienceRestrictionType audienceRestriction = new AudienceRestrictionType();
-        audienceRestriction.getAudience().add(applicationName);
-        conditions.getConditionOrAudienceRestrictionOrOneTimeUse().add(audienceRestriction);
-        assertion.setConditions(conditions);
-
-        // SubjectConfirmation
-        SubjectConfirmationType subjectConfirmation = new SubjectConfirmationType();
-        SubjectConfirmationDataType subjectConfirmationData = new SubjectConfirmationDataType();
-        if (null != keyInfo) {
-            subjectConfirmation.setMethod(Saml2SubjectConfirmationMethod.HOLDER_OF_KEY.getMethodURI());
-            org.w3._2000._09.xmldsig_.ObjectFactory dsigObjectFactory = new org.w3._2000._09.xmldsig_.ObjectFactory();
-            subjectConfirmationData.getContent().add(dsigObjectFactory.createKeyInfo(keyInfo));
-        } else {
-            subjectConfirmation.setMethod(Saml2SubjectConfirmationMethod.SENDER_VOUCHES.getMethodURI());
-        }
-        subjectConfirmationData.setInResponseTo(id);
-        subjectConfirmationData.setNotBefore(now);
-        subjectConfirmationData.setNotOnOrAfter(notAfter);
-        subjectConfirmation.setSubjectConfirmationData(subjectConfirmationData);
-        subject.getContent().add(samlObjectFactory.createSubjectConfirmation(subjectConfirmation));
-
-        // Authentication Statement
-        AuthnStatementType authnStatement = new AuthnStatementType();
-        authnStatement.setAuthnInstant(now);
-        AuthnContextType authnContext = new AuthnContextType();
-        authnContext.getContent().add(samlObjectFactory.createAuthnContextClassRef(authenticatedDevice.getName()));
-        authnStatement.setAuthnContext(authnContext);
-        assertion.getStatementOrAuthnStatementOrAuthzDecisionStatement().add(authnStatement);
-
-        return assertion;
     }
 
     private AssertionType getAttributeAssertion(List<AttributeType> attributes)
