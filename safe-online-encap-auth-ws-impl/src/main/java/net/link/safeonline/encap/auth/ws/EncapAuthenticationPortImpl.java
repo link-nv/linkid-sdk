@@ -20,7 +20,7 @@ import net.lin_k.safe_online.auth.WSAuthenticationResponseType;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
-import net.link.safeonline.authentication.exception.MobileAuthenticationException;
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
@@ -203,7 +203,7 @@ public class EncapAuthenticationPortImpl implements DeviceAuthenticationPort {
             DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.SUBJECT_NOT_FOUND, e.getMessage());
             manager.unexport(this);
             return response;
-        } catch (MobileAuthenticationException e) {
+        } catch (DeviceAuthenticationException e) {
             LOG.error("authentication failed: " + e.getMessage(), e);
             DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.AUTHENTICATION_FAILED, e.getMessage());
             manager.unexport(this);

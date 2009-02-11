@@ -43,7 +43,7 @@ import net.link.safeonline.webapp.user.UserRemove;
  */
 public class DemoPaymentTest extends TestCase {
 
-    private static final String   DEMO_PAYMENT_APPLICATION_NAME = "ebank";
+    private static final String   DEMO_PAYMENT_APPLICATION_NAME = "epayment";
     private AcceptanceTestManager acceptanceTestManager;
 
 

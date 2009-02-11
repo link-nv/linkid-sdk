@@ -83,6 +83,10 @@ public class LayoutPage extends OlasApplicationPage {
             }
         }
 
+        if (CinemaSession.get().isUserSet()) {
+            CinemaSession.get().setUser(userService.updateUser(CinemaSession.get().getUser(), WicketUtil.toServletRequest(getRequest())));
+        }
+
         userForm.setVisible(CinemaSession.get().isUserSet());
         ticketForm.setVisible(CinemaSession.get().isUserSet()
                 && (CinemaSession.isFilmSet() || CinemaSession.isTheaterSet() || CinemaSession.isRoomSet() || CinemaSession.isSeatSet()

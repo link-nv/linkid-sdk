@@ -75,20 +75,20 @@
 		<description>Landing page to finalize a login process.</description>
 		<param-name>LandingPage</param-name>
 		<param-value>
-			${safe-online.host.auth.basename}/${safe-online.demo.lawyer.webapp.name}/authlogin 
+			${safe-online.host.auth.basename}/${safe-online.demo.lawyer.webapp.url}/authlogin 
 		</param-value>
 	</context-param>
 	<context-param>
 		<description>Landing page to finalize a logout process.</description>
 		<param-name>LogoutLandingPage</param-name>
 		<param-value>
-			${safe-online.host.auth.basename}/${safe-online.demo.lawyer.webapp.name}/logout 
+			${safe-online.host.auth.basename}/${safe-online.demo.lawyer.webapp.url}/logout 
 		</param-value>
 	</context-param>
 	<context-param>
 		<param-name>TargetBaseUrl</param-name>
 		<param-value>
-			${safe-online.host.basename}/${safe-online.demo.lawyer.webapp.name}/ 
+			${safe-online.host.basename}/${safe-online.demo.lawyer.webapp.url}/ 
 		</param-value>
 		<description>Url to redirect to after successful authentication</description>
 	</context-param>
@@ -153,7 +153,7 @@
 		<init-param>
 			<param-name>ServletEndpointUrl</param-name>
 			<param-value>
-				${safe-online.host.auth.basename}/${safe-online.demo.lawyer.webapp.name}/authlogin 
+				${safe-online.host.auth.basename}/${safe-online.demo.lawyer.webapp.url}/authlogin 
 			</param-value>
 			<description>Used to wrap the servlet request's request URL for
 				verification of the receiving endpoint with the destination in the
@@ -171,7 +171,7 @@
 		<init-param>
 			<param-name>LogoutUrl</param-name>
 			<param-value>
-				${safe-online.host.auth.basename}/${safe-online.demo.lawyer.webapp.name}/lawyerlogout 
+				${safe-online.host.auth.basename}/${safe-online.demo.lawyer.webapp.url}/lawyerlogout 
 			</param-value>
 		</init-param>
 		<init-param>
@@ -184,7 +184,7 @@
 				saml response.</description>
 			<param-name>ServletEndpointUrl</param-name>
 			<param-value>
-				${safe-online.host.auth.basename}/${safe-online.demo.lawyer.webapp.name}/authlogout 
+				${safe-online.host.auth.basename}/${safe-online.demo.lawyer.webapp.url}/authlogout 
 			</param-value>
 		</init-param>
 	</servlet>
@@ -195,7 +195,7 @@
 		<init-param>
 			<param-name>LogoutExitUrl</param-name>
 			<param-value>
-				${safe-online.host.auth.basename}/${safe-online.demo.lawyer.webapp.name}/authlogout 
+				${safe-online.host.auth.basename}/${safe-online.demo.lawyer.webapp.url}/authlogout 
 			</param-value>
 		</init-param>
 	</servlet>

@@ -57,47 +57,47 @@
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId> safe-online-demo-webapp </artifactId>
-							<contextRoot>/${safe-online.demo.app.webapp.name}</contextRoot>
+							<contextRoot>/${safe-online.demo.app.webapp.url}</contextRoot>
 						</webModule>
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId> safe-online-demo-ws-runtime </artifactId>
-							<contextRoot>/${safe-online.demo.ws.webapp.name}</contextRoot>
+							<contextRoot>/${safe-online.demo.ws.webapp.url}</contextRoot>
 						</webModule>
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId> safe-online-demo-ticket-webapp </artifactId>
-							<contextRoot>/${safe-online.demo.ticket.webapp.name}</contextRoot>
+							<contextRoot>/${safe-online.demo.ticket.webapp.url}</contextRoot>
 						</webModule>
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId> safe-online-demo-bank-webapp </artifactId>
-                            <contextRoot>/${safe-online.demo.bank.webapp.name}</contextRoot>
+                            <contextRoot>/${safe-online.demo.bank.webapp.url}</contextRoot>
 						</webModule>
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId> safe-online-demo-cinema-webapp </artifactId>
-							<contextRoot>/${safe-online.demo.cinema.webapp.name}</contextRoot>
+							<contextRoot>/${safe-online.demo.cinema.webapp.url}</contextRoot>
 						</webModule>
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId> safe-online-demo-payment-webapp </artifactId>
-							<contextRoot>/${safe-online.demo.payment.webapp.name}</contextRoot>
+							<contextRoot>/${safe-online.demo.payment.webapp.url}</contextRoot>
 						</webModule>
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId> safe-online-demo-lawyer-webapp </artifactId>
-							<contextRoot>/${safe-online.demo.lawyer.webapp.name}</contextRoot>
+							<contextRoot>/${safe-online.demo.lawyer.webapp.url}</contextRoot>
 						</webModule>
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId> safe-online-demo-prescription-webapp </artifactId>
-							<contextRoot>/${safe-online.demo.prescription.webapp.name}</contextRoot>
+							<contextRoot>/${safe-online.demo.prescription.webapp.url}</contextRoot>
 						</webModule>
 						<webModule>
 							<groupId>net.lin-k.safe-online</groupId>
 							<artifactId> safe-online-demo-mandate-webapp </artifactId>
-							<contextRoot>/${safe-online.demo.mandate.webapp.name}</contextRoot>
+							<contextRoot>/${safe-online.demo.mandate.webapp.url}</contextRoot>
 						</webModule>
 					</modules>
 

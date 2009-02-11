@@ -144,7 +144,7 @@ input.radio,
 }
 
 
-input.label {
+input.label, #sidebox img {
 
     border-color:       #333;
 }

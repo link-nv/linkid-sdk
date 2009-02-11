@@ -11,7 +11,7 @@ import javax.ejb.EJB;
 import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.authentication.exception.MobileException;
-import net.link.safeonline.authentication.exception.MobileRegistrationException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
@@ -117,7 +117,7 @@ public class RegistrationPage extends TemplatePage {
                         activation.setObject(encapDeviceService.register(mobile.getObject(), session.getId()));
                     }
 
-                    catch (MobileRegistrationException e) {
+                    catch (DeviceRegistrationException e) {
                         RegisterForm.this.error(localize("mobileRegistrationFailed"));
                         HelpdeskLogger.add(localize("requestActivation: %s", e.getMessage()), //
                                 LogLevelType.ERROR);

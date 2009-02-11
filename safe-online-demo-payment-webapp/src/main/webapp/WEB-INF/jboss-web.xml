@@ -5,5 +5,5 @@
 <jboss-web>
 	<security-domain flushOnSessionInvalidation="true">
 		java:/jaas/demo-payment </security-domain>
-	<context-root> /${safe-online.demo.payment.webapp.name}</context-root>
+	<context-root> /${safe-online.demo.payment.webapp.url}</context-root>
 </jboss-web>

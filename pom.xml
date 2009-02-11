@@ -210,7 +210,6 @@
 				<module>safe-online-root-webapp</module>
 				<module>safe-online-install-manual</module>
 				<module>safe-online-maintenance-manual</module>
-				<module>safe-online-osgi-plugin-manual</module>
 				<module>safe-online-distribution</module>
 			</modules>
 		</profile>
@@ -308,13 +307,23 @@
 				<!-- WEBAPP NAMES -->
 				<safe-online.demo.app.webapp.name>demo</safe-online.demo.app.webapp.name>
 				<safe-online.demo.prescription.webapp.name>demo-prescription</safe-online.demo.prescription.webapp.name>
-				<safe-online.demo.bank.webapp.name>demo-bank</safe-online.demo.bank.webapp.name>
-				<safe-online.demo.cinema.webapp.name>demo-cinema</safe-online.demo.cinema.webapp.name>
+				<safe-online.demo.bank.webapp.name>ebank</safe-online.demo.bank.webapp.name>
+				<safe-online.demo.cinema.webapp.name>cinema</safe-online.demo.cinema.webapp.name>
 				<safe-online.demo.lawyer.webapp.name>demo-lawyer</safe-online.demo.lawyer.webapp.name>
 				<safe-online.demo.mandate.webapp.name>demo-mandate</safe-online.demo.mandate.webapp.name>
-				<safe-online.demo.payment.webapp.name>demo-payment</safe-online.demo.payment.webapp.name>
-				<safe-online.demo.ticket.webapp.name>demo-ticket</safe-online.demo.ticket.webapp.name>
+				<safe-online.demo.payment.webapp.name>epayment</safe-online.demo.payment.webapp.name>
+				<safe-online.demo.ticket.webapp.name>eticket</safe-online.demo.ticket.webapp.name>
 				<safe-online.demo.ws.webapp.name>safe-online-demo-ws</safe-online.demo.ws.webapp.name>
+
+				<safe-online.demo.app.webapp.url>demo</safe-online.demo.app.webapp.url>
+				<safe-online.demo.prescription.webapp.url>demo-prescription</safe-online.demo.prescription.webapp.url>
+				<safe-online.demo.bank.webapp.url>demo-bank</safe-online.demo.bank.webapp.url>
+				<safe-online.demo.cinema.webapp.url>demo-cinema</safe-online.demo.cinema.webapp.url>
+				<safe-online.demo.lawyer.webapp.url>demo-lawyer</safe-online.demo.lawyer.webapp.url>
+				<safe-online.demo.mandate.webapp.url>demo-mandate</safe-online.demo.mandate.webapp.url>
+				<safe-online.demo.payment.webapp.url>demo-payment</safe-online.demo.payment.webapp.url>
+				<safe-online.demo.ticket.webapp.url>demo-ticket</safe-online.demo.ticket.webapp.url>
+				<safe-online.demo.ws.webapp.url>safe-online-demo-ws</safe-online.demo.ws.webapp.url>
 			</properties>
 			<modules>
 				<!-- DEMO CORE -->
@@ -367,14 +376,8 @@
 				<safe-online.option.webapp.name>olas-option</safe-online.option.webapp.name>
 			</properties>
 			<modules>
-				<module>safe-online-option-device</module>
-				<module>safe-online-option-connection-manager-ws</module>
-				<module>safe-online-option-connection-manager</module>
-				<module>safe-online-option-connection-manager-package</module>
-				<module>safe-online-option-applet</module>
-				<module>safe-online-option-applet-package</module>
-				<module>safe-online-option-keystore</module>
 				<module>safe-online-option-startup-runtime</module>
+                <module>safe-online-option-keystore</module>
 				<module>safe-online-option</module>
 				<module>safe-online-option-webapp</module>
 				<module>safe-online-option-deploy</module>
@@ -415,6 +418,8 @@
 				<module>safe-online-sdk-manual</module>
 				<module>safe-online-sdk-package</module>
 				<module>safe-online-device-sdk-manual</module>
+				<module>safe-online-osgi-plugin-manual</module>
+				<module>safe-online-osgi-package</module>
 			</modules>
 		</profile>
 
@@ -555,8 +560,7 @@
 
 
         <!-- CONFIGURATION PROFILES -->
-        <!-- Profile that uses insecure transport for secure traffic to reduce transport overhead
--->
+        <!-- Profile that uses insecure transport for secure traffic to reduce transport overhead -->
 		<profile>
 			<id>http</id>
 			<properties>
@@ -829,6 +833,7 @@
 		<osgi.core.version>1.0.1</osgi.core.version>
 		<osgi.compendium.version>1.0.1</osgi.compendium.version>
 		<jaxws-maven-plugin.version>1.10</jaxws-maven-plugin.version>
+		<maven-bundle-plugin.version>1.4.3</maven-bundle-plugin.version>
 	</properties>
 
 	<!-- ALL MODULES THAT ARE ENABLED BY DEFAULT -->
@@ -1292,6 +1297,11 @@
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>jaxws-maven-plugin</artifactId>
 					<version>${jaxws-maven-plugin.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.felix</groupId>
+					<artifactId>maven-bundle-plugin</artifactId>
+					<version>${maven-bundle-plugin.version}</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>

@@ -1,10 +1,3 @@
-/*
- * SafeOnline project.
- *
- * Copyright 2006 Lin.k N.V. All rights reserved.
- * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
- */
-
 package net.link.safeonline.option.servlet;
 
 import java.io.IOException;
@@ -17,13 +10,12 @@ import javax.servlet.http.HttpServletResponse;
 import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
-import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.device.sdk.saml2.DeviceOperationManager;
 import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.model.option.OptionDeviceService;
+import net.link.safeonline.option.webapp.OptionDevice;
 import net.link.safeonline.util.servlet.AbstractInjectionServlet;
 import net.link.safeonline.util.servlet.annotation.Init;
 
@@ -70,36 +62,37 @@ public class RemoveServlet extends AbstractInjectionServlet {
     private void handleLanding(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
 
-        String attribute = DeviceOperationManager.getAttribute(request.getSession());
+        String imei = DeviceOperationManager.findAttribute(request.getSession());
         String userId = DeviceOperationManager.getUserId(request.getSession());
-        LOG.debug("remove option device: " + attribute + " for user " + userId);
+        LOG.debug("remove option device: " + imei + " for user " + userId);
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(request.getSession());
         protocolContext.setSuccess(false);
 
         try {
-            optionDeviceService.remove(userId, attribute);
+            if (!OptionDevice.unregister(imei, request, response)) {
+                LOG.error("Option device with IMEI " + imei + " not registered.");
+            }
 
-            response.setStatus(HttpServletResponse.SC_OK);
-            // notify that the remove operation was successful.
-            protocolContext.setSuccess(true);
-        } catch (DeviceNotFoundException e) {
-            LOG.error("device not found", e);
-        } catch (SubjectNotFoundException e) {
+            else {
+                optionDeviceService.remove(imei);
+
+                response.setStatus(HttpServletResponse.SC_OK);
+                // notify that disable operation was successful.
+                protocolContext.setSuccess(true);
+            }
+        }
+
+        catch (SubjectNotFoundException e) {
             String message = "subject " + userId + " not found";
             LOG.error(message, e);
             securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, message);
-        } catch (DeviceRegistrationNotFoundException e) {
-            String message = "device registration \"" + attribute + "\" not found";
-            LOG.error(message, e);
-            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, message);
         } catch (AttributeTypeNotFoundException e) {
-            LOG.error("attribute type not found", e);
+            LOG.error("AttributeTypeNotFoundException", e);
         } catch (AttributeNotFoundException e) {
-            LOG.error("attribute not found", e);
+            LOG.error("AttributeNotFoundException", e);
         }
 
         response.sendRedirect(deviceExitPath);
-
     }
 }
