@@ -12,6 +12,7 @@ public class MainPage extends TemplatePage {
 
         getHeader();
         getContent();
+
     }
 
     /**

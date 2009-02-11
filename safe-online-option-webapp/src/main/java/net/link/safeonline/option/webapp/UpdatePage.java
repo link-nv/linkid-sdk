@@ -20,14 +20,17 @@ import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.wicket.RedirectToUrlException;
+import org.apache.wicket.ResourceReference;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
+import org.apache.wicket.markup.html.IHeaderContributor;
+import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.model.Model;
 
 
-public class UpdatePage extends TemplatePage {
+public class UpdatePage extends TemplatePage implements IHeaderContributor {
 
     private static final long      serialVersionUID         = 1L;
 
@@ -53,7 +56,17 @@ public class UpdatePage extends TemplatePage {
 
         getHeader();
         getSidebar(localize("helpUpdateOption"));
-        getContent().add(new RegisterForm(UPDATE_FORM_ID));
+        getContent().add(new UpdateForm(UPDATE_FORM_ID));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void renderHead(IHeaderResponse response) {
+
+        response.renderJavascriptReference(new ResourceReference(MainPage.class, "jquery.js"));
+        response.renderJavascriptReference(new ResourceReference(MainPage.class, "progress.js"));
+        response.renderOnDomReadyJavascript("$('#progressform #update').click(startProgress);");
     }
 
     /**
@@ -66,7 +79,7 @@ public class UpdatePage extends TemplatePage {
     }
 
 
-    class RegisterForm extends Form<String> {
+    class UpdateForm extends Form<String> {
 
         private static final long serialVersionUID = 1L;
 
@@ -76,9 +89,11 @@ public class UpdatePage extends TemplatePage {
 
 
         @SuppressWarnings("unchecked")
-        public RegisterForm(String id) {
+        public UpdateForm(String id) {
 
             super(id);
+            setMarkupId("progressform");
+            setOutputMarkupId(true);
 
             PasswordTextField oldPinField = new PasswordTextField(OLD_PIN_FIELD_ID, oldPin = new Model<String>());
             oldPinField.setRequired(true);
@@ -89,42 +104,9 @@ public class UpdatePage extends TemplatePage {
             PasswordTextField newPinConfirmField = new PasswordTextField(NEW_PIN_CONFIRM_FIELD_ID, newPinConfirm = new Model<String>());
             newPinConfirmField.setRequired(true);
 
-            Button updateButton = new Button(UPDATE_BUTTON_ID) {
-
-                private static final long serialVersionUID = 1L;
-
-
-                @Override
-                public void onSubmit() {
-
-                    if (!newPin.getObject().equals(newPinConfirm.getObject())) {
-                        RegisterForm.this.error(localize("errorUnmatchedPin"));
-                        HelpdeskLogger.add("register: PINs don't match.", //
-                                LogLevelType.ERROR);
-                        LOG.error("reg failed");
-
-                        newPin.setObject(null);
-                        newPinConfirm.setObject(null);
-
-                        return;
-                    }
-
-                    try {
-                        OptionDevice.update(oldPin.getObject(), newPin.getObject());
-
-                        exit(true);
-                    }
-
-                    catch (DeviceAuthenticationException e) {
-                        RegisterForm.this.error(localize("optionAuthenticationFailed"));
-                        HelpdeskLogger.add(localize("update: %s", e.getMessage()), //
-                                LogLevelType.ERROR);
-                        LOG.error("update failed", e);
-                        exit(false);
-                    }
-
-                }
-            };
+            Button updateButton = new Button(UPDATE_BUTTON_ID);
+            updateButton.setMarkupId("update");
+            updateButton.setOutputMarkupId(true);
 
             Button cancelButton = new Button(CANCEL_BUTTON_ID) {
 
@@ -144,6 +126,37 @@ public class UpdatePage extends TemplatePage {
             add(oldPinField, newPinField, newPinConfirmField, updateButton, cancelButton);
             add(new ErrorFeedbackPanel("feedback", new ComponentFeedbackMessageFilter(this)));
             focus(oldPinField);
+        }
+
+        @Override
+        public void onSubmit() {
+
+            if (!newPin.getObject().equals(newPinConfirm.getObject())) {
+                UpdateForm.this.error(localize("errorUnmatchedPin"));
+                HelpdeskLogger.add("register: PINs don't match.", //
+                        LogLevelType.ERROR);
+                LOG.error("reg failed");
+
+                newPin.setObject(null);
+                newPinConfirm.setObject(null);
+
+                return;
+            }
+
+            try {
+                OptionDevice.update(oldPin.getObject(), newPin.getObject());
+
+                exit(true);
+            }
+
+            catch (DeviceAuthenticationException e) {
+                UpdateForm.this.error(localize("optionAuthenticationFailed"));
+                HelpdeskLogger.add(localize("update: %s", e.getMessage()), //
+                        LogLevelType.ERROR);
+                LOG.error("update failed", e);
+                exit(false);
+            }
+
         }
     }
 
