@@ -32,10 +32,11 @@
 		</abstract>
 		<para> Authentication by the remote OLAS device provider will be done
 			according to the OASIS SAML version 2.0 Web SSO profile with HTTP
-			POST binding. All other device operations provided by the device
-			provider are according to a custom extension to the OASIS SAML
-			version 2.0 RequestAbstractType and StatusResponseType. The HTTP POST
-			binding is used for this.</para>
+			POST binding. Or it can be done by using web services. All other
+			device operations provided by the device provider are according to a
+			custom extension to the OASIS SAML version 2.0 RequestAbstractType
+			and StatusResponseType. The HTTP POST binding is used for this.
+		</para>
 		<para>
 			Following services can be provided by the device provider :
 			<itemizedlist>
@@ -52,14 +53,18 @@
 					Updating
 				</listitem>
 				<listitem>
-					Disabling / Enabling
+					Disabling
+				</listitem>
+				<listitem>
+					Enabling
 				</listitem>
 			</itemizedlist>
 		</para>
 		<para>
 			Below the protocol is shown as is used for registration and
 			authentication of an OLAS device by a remote device provider. The
-			removal, updating, disabling/enabling of a device follows the same
+			removal, updating, disabling and enabling of a device follows the
+			same
 			protocol as with registration.
 			<mediaobject>
 				<imageobject>
@@ -86,7 +91,8 @@
 			<variablelist>
 				<varlistentry>
 					<term>
-						<code>auth.LandingServlet</code>
+						<code>auth.servlet.LandingServlet
+						</code>
 					</term>
 					<listitem>
 						<para> This servlet should be used to handle the incoming SAML
@@ -95,7 +101,7 @@
 				</varlistentry>
 				<varlistentry>
 					<term>
-						<code>auth.ExitServlet</code>
+						<code>auth.servlet.ExitServlet</code>
 					</term>
 					<listitem>
 						<para> This servlet should be used to send out a SAML response for
@@ -105,7 +111,7 @@
 			</variablelist>
 		</para>
 		<para>
-			The context parameter
+			The init parameter
 			<code>AuthenticationUrl</code>
 			will be used by the
 			<code>LandingServlet</code>
@@ -165,7 +171,7 @@
 		</init-param>
 		<init-param>
 			<param-name>ErrorPage</param-name>
-			<param-value>protocol-error.seam</param-value>
+			<param-value>protocol-error.jsf</param-value>
 		</init-param>
 	</servlet>
 
@@ -181,7 +187,7 @@
 		</servlet-class>
 		<init-param>
 			<param-name>ErrorPage</param-name>
-			<param-value>protocol-error.seam</param-value>
+			<param-value>protocol-error.jsf</param-value>
 		</init-param>
 	</servlet>
 
@@ -261,7 +267,7 @@
 		</init-param>
 		<init-param>
 			<param-name>ErrorPage</param-name>
-			<param-value>protocol-error.seam</param-value>
+			<param-value>protocol-error.jsf</param-value>
 		</init-param>
 	</servlet>	
 			]]>
@@ -299,15 +305,17 @@
 		<para> Following 2 servlets are provided by the device SDK to handle
 			an incoming OLAS Device Operation request and send out an OLAS Device
 			Operation response to OLAS. The incoming request will contain the
-			request device operation, being REGISTER, NEW_ACCOUNT_REGISTER,
-			REMOVE, UPDATE or DISABLE. The device operation NEW_ACCOUNT_REGISTER
-			is used in case a new OLAS user is registrating his initial device.
+			requested device operation, being REGISTER, NEW_ACCOUNT_REGISTER,
+			REMOVE, UPDATE, DISABLE or ENABLE. The device operation
+			NEW_ACCOUNT_REGISTER
+			is used in case a new OLAS user is registrating
+			his initial device.
 		</para>
 		<para>
 			<variablelist>
 				<varlistentry>
 					<term>
-						<code>LandingServlet</code>
+						<code>servlet.LandingServlet</code>
 					</term>
 					<listitem>
 						<para> This servlet should be used to handle the incoming SAML
@@ -317,7 +325,7 @@
 				</varlistentry>
 				<varlistentry>
 					<term>
-						<code>ExitServlet</code>
+						<code>servlet.ExitServlet</code>
 					</term>
 					<listitem>
 						<para> This servlet should be used to send out a SAML response
@@ -332,15 +340,17 @@
 			<code>LandingServlet</code>
 			can contain following 3 optional init parameters, representing the
 			target URL's for each device operation REGISTER ( or
-			NEW_ACCOUNT_REGISTER ), REMOVE, UPDATE AND
-			DISABLE being respectively
+			NEW_ACCOUNT_REGISTER ), REMOVE, UPDATE, DISABLE and ENABLE being
+			respectively
 			<code>RegistrationUrl</code>
 			,
 			<code>RemovalUrl</code>
 			,
 			<code>UpdateUrl</code>
-			and
+			,
 			<code>DisableUrl</code>
+			and
+			<code>EnableUrl</code>
 			. If one of these parameters are not specified, and still a request
 			for this operation is returned, the servlet will return a response
 			containing an
@@ -453,8 +463,12 @@
 			<param-value>disable-device.jsf</param-value>
 		</init-param>
 		<init-param>
+			<param-name>EnableUrl</param-name>
+			<param-value>enable-device.jsf</param-value>
+		</init-param>
+		<init-param>
 			<param-name>ErrorPage</param-name>
-			<param-value>protocol-error.seam</param-value>
+			<param-value>protocol-error.jsf</param-value>
 		</init-param>
 	</servlet>
 
@@ -470,7 +484,7 @@
 		</servlet-class>
 		<init-param>
 			<param-name>ErrorPage</param-name>
-			<param-value>protocol-error.seam</param-value>
+			<param-value>protocol-error.jsf</param-value>
 		</init-param>
 	</servlet>
 
@@ -513,6 +527,10 @@
 			<param-value>disable-device.jsf</param-value>
 		</init-param>
 		<init-param>
+			<param-name>EnableUrl</param-name>
+			<param-value>Enable-device.jsf</param-value>
+		</init-param>
+		<init-param>
 			<param-name>ServletEndpointUrl</param-name>
 			<param-value>
 				https://device.webapp/device/auth 
@@ -520,10 +538,261 @@
 		</init-param>
 		<init-param>
 			<param-name>ErrorPage</param-name>
-			<param-value>protocol-error.seam</param-value>
+			<param-value>protocol-error.jsf</param-value>
 		</init-param>
 	</servlet>
 			]]>
 		</programlisting>
+	</chapter>
+	<chapter id="ws_authentication">
+		<title>Web Service Authentication</title>
+		<abstract>
+			<para> OLAS also provides possibility to authenticate using a web
+				service. This chapter will give an overview of the setup needed for
+				this.
+			</para>
+		</abstract>
+		<para>
+			OLAS web service authentication requires the web service to be
+			stateful. This because most devices require multiple steps to
+			complete the authentication process. ( Like requesting an OTP to be
+			generated and sent over ). Therefore the OLAS device authentication
+			wsdl contains 2 ports, one that will return a stateful instance of
+			the other port which will perform the actual authentication process.
+		</para>
+		<para>
+			When OLAS receives a web service authentication request, it will
+			lookup the requested device's authentication web service location.
+			Initially OLAS will request a stateful instance of this device's
+			stateful authentication web service. When successful, OLAS will proxy
+			the authentication request to this stateful instance. The device
+			authentication web service will then start the authentication
+			process.
+		</para>
+		<para>
+			For example an OTP will be generated and sent to the specified
+			user's
+			device. A response will be sent to the OLAS authentication web
+			service notifying this step has completed and OLAS will proxy this
+			response to the client application. When receiving the OTP, the user
+			will submit this to OLAS and OLAS will proxy this again to the same
+			stateful device authentication web service instance. Which will in
+			turn complete the authentication process and return the userId of the
+			authenticated user to OLAS. On receiving the userId, OLAS will
+			generate a SAML v2.0 Assertion and return this to the client
+			application. If the initial authentication request contained a public
+			key, the assertion will contain this public key and a signature on
+			this public key, signed by OLAS. This assertion can then be used
+			using the
+			<code>SAML v2.0 token profile with holder-of-key subject
+				confirmation</code>
+			. If no public key was specified, the assertion will not contain a
+			signature and can be used using the
+			<code>SAML v2.0 token profile with sender-vouches subject
+				confirmation</code>
+			.
+		</para>
+		<para>
+			In following listing you can see the schema of the
+			authentication request message sent to the device authentication web
+			service and the response to be sent back.
+		</para>
+		<programlisting>
+		<![CDATA[
+	<element name="WSAuthenticationRequest"
+		type="tns:WSAuthenticationRequestType" />
+	<complexType name="WSAuthenticationRequestType">
+		<complexContent>
+			<extension base="samlp:RequestAbstractType">
+				<sequence>
+					<element ref="tns:DeviceCredentials" minOccurs="0"
+						maxOccurs="1" />
+					<element ref="ds:KeyInfo" minOccurs="0" maxOccurs="1" />
+				</sequence>
+				<attribute name="ApplicationId" type="string" use="required" />
+				<attribute name="DeviceName" type="string" use="required" />
+				<attribute name="Language" type="string" use="required" />
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<element name="DeviceCredentials"
+		type="tns:DeviceCredentialsType" />
+	<complexType name="DeviceCredentialsType">
+		<sequence>
+			<element name="NameValueMap" ref="tns:NameValuePair"
+				minOccurs="0" maxOccurs="unbounded" />
+			<any namespace="##other" processContents="lax" maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+
+	<element name="NameValuePair" type="tns:NameValuePairType" />
+	<complexType name="NameValuePairType">
+		<attribute name="Name" type="string" use="required" />
+		<attribute name="Value" type="string" use="required" />
+	</complexType>
+
+	<element name="WSAuthenticationResponse" 
+		type="tns:WSAuthenticationResponseType" />
+	<complexType name="WSAuthenticationResponseType">
+		<complexContent>
+			<extension base="samlp:StatusResponseType">
+				<sequence>
+					<element ref="tns:DeviceAuthenticationInformation"
+						minOccurs="0" maxOccurs="1" />
+					<element name="assertions" ref="saml:Assertion" minOccurs="0"
+						maxOccurs="unbounded" />
+				</sequence>
+				<attribute name="DeviceName" type="string" />
+				<attribute name="UserId" type="string" />
+				<attribute name="AuthenticationStep" type="string" />
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<element name="DeviceAuthenticationInformation"
+		type="tns:DeviceAuthenticationInformationType" />
+	<complexType name="DeviceAuthenticationInformationType">
+		<sequence>
+			<element name="NameValuePairList" ref="tns:NameValuePair"
+				minOccurs="0" maxOccurs="unbounded" />
+			<any namespace="##other" processContents="lax" maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+		]]>
+		</programlisting>
+		<para>
+			The authentication request message is an extension of the SAML
+			v2.0 RequestAbstractType. Additionally it contains optional device
+			credentials, optional public key and required application ID, device
+			name and language. The device credentials contains a list of
+			name-value pairs or an arbitrary XML element. 
+		</para>
+		<para>
+			The authentication response message is an extension of the SAML
+			v2.0
+			StatusResponseType. Additionally it contains optional device
+			authentication information, SAML v2.0 assertion, device name, user ID
+			and authentication step. The assertion and authentication step are
+			filled in by OLAS and can be ignored by the device provider. The
+			device authentication information contains a list of name-value pairs
+			or an arbitrary XML element.
+			If the device authentication consists of
+			multiple steps, this field can be used to provide necessary
+			information to the client application. Upon successful
+			authentication, the user ID should be filled in and status set to
+			successful.
+		</para>
+		<para>
+			A list of available status codes is shown below.
+			<itemizedlist>
+				<listitem>
+					urn:oasis:names:tc:SAML:2.0:status:Success
+				</listitem>
+				<listitem>
+					urn:net:lin-k:safe-online:ws:auth:status:AuthenticationFailed
+				</listitem>
+				<listitem>
+					urn:net:lin-k:safe-online:ws:auth:status:DeviceDisabled
+				</listitem>
+				<listitem>
+					urn:net:lin-k:safe-online:ws:auth:status:InsufficientCredentials
+				</listitem>
+				<listitem>
+					urn:net:lin-k:safe-online:ws:auth:status:InvalidCredentials
+				</listitem>
+				<listitem>
+					urn:net:lin-k:safe-online:ws:auth:status:InternalError
+				</listitem>
+				<listitem>
+					urn:net:lin-k:safe-online:ws:auth:status:PermissionDenied
+				</listitem>
+				<listitem>
+					urn:net:lin-k:safe-online:ws:auth:status:RequestDenied
+				</listitem>
+				<listitem>
+					urn:net:lin-k:safe-online:ws:auth:status:RequestFailed
+				</listitem>
+				<listitem>
+					urn:net:lin-k:safe-online:ws:auth:status:SubjectNotFound
+				</listitem>
+			</itemizedlist>
+		</para>
+		<para>
+			A utility class is available to generate an authentication response
+			or set the appropriate status:
+			<code>DeviceAuthenticationPortUtil</code>
+		</para>
+		<para>
+			The device authentication web service should be secured via
+			server-side SSL and a client-side WS-Security signature on the
+			SOAP
+			message body. The WS-Security signature is according to OASIS Web
+			Services Security: SOAP
+			Message Security 1.0 Standard 200401, March
+			2004. 
+		</para>
+		<para>
+			The request SOAP messages are to be signed with the X509v3
+			application
+			certificate. The certificate must
+			be attached as
+			BinarySecurityToken within the Security SOAP header
+			element according
+			to 6.3
+			Binary Security Tokens. The WS-Security SOAP header should also
+			contain a
+			Timestamp according to
+			section 10 - Security Timestamps of
+			the OASIS WS-Security 1.0 specification.
+			The WS-Security signature
+			should sign both the SOAP body and the WS-Security Timestamp element.
+			The
+			KeyInfo XML Digital
+			Signature element should contain a
+			corresponding SecurityTokenReference
+			according to 7.2 -
+			Direct
+			References. 
+		</para>
+		<para>
+			To accomplish this following set of SOAP handlers should be set on
+			the web service.
+			<programlisting>
+				<![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<jws:handler-chains xmlns:jws="http://java.sun.com/xml/ns/javaee">
+	<jws:handler-chain>
+		<jws:handler>
+			<jws:handler-class>
+				net.link.safeonline.ws.util.LoginHandler
+			</jws:handler-class>
+		</jws:handler>
+		<jws:handler>
+			<jws:handler-class>
+				net.link.safeonline.sdk.ws.WSSecurityBodyHandler
+			</jws:handler-class>
+		</jws:handler>
+		<jws:handler>
+			<jws:handler-class>
+				net.link.safeonline.ws.util.CertificateMapperHandler
+			</jws:handler-class>
+		</jws:handler>
+		<jws:handler>
+			<jws:handler-class>
+				net.link.safeonline.ws.util.CertificateValidatorHandler
+			</jws:handler-class>
+		</jws:handler>
+		<jws:handler>
+			<jws:handler-class>
+				net.link.safeonline.sdk.ws.WSSecurityServerHandler
+			</jws:handler-class>
+		</jws:handler>
+	</jws:handler-chain>
+</jws:handler-chains>
+				]]>
+			</programlisting>
+
+		</para>
 	</chapter>
 </book>
