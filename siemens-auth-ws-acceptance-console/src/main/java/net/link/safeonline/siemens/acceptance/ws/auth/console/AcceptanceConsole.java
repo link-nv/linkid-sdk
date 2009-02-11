@@ -398,6 +398,9 @@ public class AcceptanceConsole extends JFrame implements Observer {
 
     protected void onAcceptanceWS() {
 
+        contentPanel = new AcceptanceWSPanel(this);
+        splitPane.setTopComponent(contentPanel);
+
         AuthenticationUtils.getInstance().acceptanceTestWs();
 
     }

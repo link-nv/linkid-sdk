@@ -1,3 +1,5 @@
 #!/bin/sh
 
+cd "${0%/*}"
+
 java -jar siemens-auth-ws-acceptance-console-*.jar

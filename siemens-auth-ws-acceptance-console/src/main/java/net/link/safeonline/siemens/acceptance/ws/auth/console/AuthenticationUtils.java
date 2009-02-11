@@ -567,6 +567,7 @@ public class AuthenticationUtils extends Observable {
                     throws Exception {
 
                 return consoleManager.getAcceptanceWsClient().getAttribute();
+                // return consoleManager.getAcceptanceMetroWsClient().getAttribute();
             }
 
             @SuppressWarnings("synthetic-access")

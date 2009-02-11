@@ -15,9 +15,12 @@ import java.util.Set;
 import java.util.Vector;
 
 import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.soap.SOAPPart;
 import javax.xml.ws.Binding;
@@ -27,18 +30,22 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
+import net.link.safeonline.saml.common.Saml2SubjectConfirmationMethod;
 import net.link.safeonline.sdk.ws.ClientCrypto;
 import oasis.names.tc.saml._2_0.assertion.AssertionType;
 import oasis.names.tc.saml._2_0.assertion.ObjectFactory;
+import oasis.names.tc.saml._2_0.assertion.SubjectConfirmationType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.ws.security.WSConstants;
 import org.apache.ws.security.WSEncryptionPart;
+import org.apache.ws.security.WSSecurityException;
 import org.apache.ws.security.components.crypto.Crypto;
 import org.apache.ws.security.message.WSSecHeader;
 import org.apache.ws.security.message.WSSecSignature;
 import org.apache.ws.security.message.WSSecTimestamp;
+import org.apache.ws.security.saml2.WSSecSignatureSAML2;
 import org.w3c.dom.Element;
 
 
@@ -47,6 +54,12 @@ public class SamlTokenClientHandler implements SOAPHandler<SOAPMessageContext> {
     private static final Log      LOG                = LogFactory.getLog(SamlTokenClientHandler.class);
 
     private static final String   WS_SECURITY_NS_URI = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd";
+
+    public static final String    WSU_NS             = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd";
+
+    public static final String    WSU_PREFIX         = "wsu";
+
+    public static final String    XMLNS_NS           = "http://www.w3.org/2000/xmlns/";
 
     private final AssertionType   assertion;
 
@@ -122,40 +135,71 @@ public class SamlTokenClientHandler implements SOAPHandler<SOAPMessageContext> {
             wsSecTimeStamp.prepare(soapPart);
             wsSecTimeStamp.prependToHeader(wsSecHeader);
 
-            Element securityHeader = wsSecHeader.getSecurityHeader();
+            Vector<WSEncryptionPart> wsEncryptionParts = new Vector<WSEncryptionPart>();
+            wsEncryptionParts.add(new WSEncryptionPart(wsSecTimeStamp.getId()));
 
-            // marshall SAML Assertion into XML
+            Crypto crypto = new ClientCrypto(certificate, privateKey);
+
+            for (JAXBElement<?> element : assertion.getSubject().getContent()) {
+                if (element.getValue() instanceof SubjectConfirmationType) {
+                    SubjectConfirmationType subjectConfirmation = (SubjectConfirmationType) element.getValue();
+                    if (subjectConfirmation.getMethod().equals(Saml2SubjectConfirmationMethod.HOLDER_OF_KEY.getMethodURI())) {
+
+                        LOG.debug("adding saml2 signature");
+                        WSSecSignatureSAML2 wsSecSignatureSAML2 = new WSSecSignatureSAML2();
+                        wsSecSignatureSAML2.setKeyIdentifierType(WSConstants.BST_DIRECT_REFERENCE);
+                        wsSecSignatureSAML2.setParts(wsEncryptionParts);
+                        wsSecSignatureSAML2.build(soapPart, crypto, assertion, null, null, null, wsSecHeader);
+
+                    } else {
+
+                        LOG.debug("adding assertion");
+                        addAssertion(soapPart, wsSecHeader);
+                        wsEncryptionParts.add(new WSEncryptionPart(assertion.getID()));
+
+                        LOG.debug("adding signature");
+                        WSSecSignature wsSecSignature = new WSSecSignature();
+                        wsSecSignature.setKeyIdentifierType(WSConstants.BST_DIRECT_REFERENCE);
+                        wsSecSignature.prepare(soapPart, crypto, wsSecHeader);
+                        wsSecSignature.addReferencesToSign(wsEncryptionParts, wsSecHeader);
+                        wsSecSignature.prependToHeader(wsSecHeader);
+                        wsSecSignature.prependBSTElementToHeader(wsSecHeader);
+                        wsSecSignature.computeSignature();
+
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            LOG.error("Exception caught: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Marshall SAML 2 assertion, wsu:Id with value the assertion's ID is added to included the assertion in the signature.
+     */
+    private void addAssertion(SOAPPart soapPart, WSSecHeader wsSecHeader)
+            throws WSSecurityException {
+
+        // marshall SAML Assertion into XML
+        try {
             JAXBContext context = JAXBContext.newInstance(net.lin_k.safe_online.auth.ObjectFactory.class);
             Marshaller marshaller = context.createMarshaller();
             ObjectFactory objectFactory = new ObjectFactory();
 
             org.w3c.dom.Document assertionElement = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
             marshaller.marshal(objectFactory.createAssertion(assertion), assertionElement);
+            Element samlToken = assertionElement.getDocumentElement();
 
-            LOG.debug("assertion: " + assertionElement.getDocumentElement().toString());
+            samlToken.setAttributeNS(XMLNS_NS, "xmlns:" + WSU_PREFIX, WSU_NS);
+            samlToken.setAttributeNS(WSU_NS, WSU_PREFIX + ":Id", assertion.getID());
 
-            securityHeader.appendChild(soapPart.importNode(assertionElement.getDocumentElement(), true));
+            wsSecHeader.getSecurityHeader().appendChild(soapPart.importNode(samlToken, true));
 
-            LOG.debug("adding signature");
-
-            WSSecSignature wsSecSignature = new WSSecSignature();
-            wsSecSignature.setKeyIdentifierType(WSConstants.BST_DIRECT_REFERENCE);
-            Crypto crypto = new ClientCrypto(certificate, privateKey);
-            wsSecSignature.prepare(soapPart, crypto, wsSecHeader);
-
-            Vector<WSEncryptionPart> wsEncryptionParts = new Vector<WSEncryptionPart>();
-            wsEncryptionParts.add(new WSEncryptionPart(wsSecTimeStamp.getId()));
-
-            wsSecSignature.addReferencesToSign(wsEncryptionParts, wsSecHeader);
-
-            wsSecSignature.prependToHeader(wsSecHeader);
-
-            wsSecSignature.prependBSTElementToHeader(wsSecHeader);
-
-            wsSecSignature.computeSignature();
-
-        } catch (Exception e) {
-            LOG.error("Exception caught: " + e.getMessage(), e);
+        } catch (ParserConfigurationException e) {
+            throw new WSSecurityException(WSSecurityException.FAILED_SIGNATURE, "noSAMLdoc", null, e);
+        } catch (JAXBException e) {
+            throw new WSSecurityException(WSSecurityException.FAILED_SIGNATURE, "noSAMLdoc", null, e);
         }
 
     }
