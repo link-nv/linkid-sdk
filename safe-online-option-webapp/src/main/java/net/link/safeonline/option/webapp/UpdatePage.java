@@ -55,7 +55,7 @@ public class UpdatePage extends TemplatePage implements IHeaderContributor {
         protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
         getHeader();
-        getSidebar(localize("helpUpdateOption"));
+        getSidebar(localize("helpOptionUpdate"));
         getContent().add(new UpdateForm(UPDATE_FORM_ID));
     }
 
