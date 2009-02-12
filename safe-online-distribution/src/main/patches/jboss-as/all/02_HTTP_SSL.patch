@@ -21,11 +21,11 @@
 -    <!--
 -    <Connector port="8443" protocol="HTTP/1.1" SSLEnabled="true"
 +    
-+    <Connector port="${safe-online.jboss.host.port:secure}" protocol="HTTP/1.1" SSLEnabled="true"
++    <Connector port="${safe-online.jboss.host.port:secure}" address="${jboss.bind.address}"
                 maxThreads="150" scheme="https" secure="true"
 -               clientAuth="false" sslProtocol="TLS" />
 -    -->
-+               clientAuth="false" sslProtocol="TLS"
++               protocol="HTTP/1.1" SSLEnabled="true" clientAuth="false" sslProtocol="TLS"
 +               proxyName="${safe-online.host.name}" proxyPort="${safe-online.host.port:secure}"
 +               keystoreFile="${jboss.server.home.dir}/conf/ssl.jks"
 +               keystorePass="secret" /> 
