@@ -33,8 +33,15 @@
 					<input wicket:id="pinConfirm" type="password" class="label" />
 				</wicket:enclosure>
 
+                <div style="display: none; background: url('images/progress_m.gif') repeat-x; width: 300px; height: 18px; margin-bottom: 1em; text-align: center" class="bar">
+                    <img src="images/progress_r.gif" style="float: right; margin-right: -1px" />
+                    <img src="images/progress_l.gif" style="float: left; margin-left: -2px" />
+
+                    <wicket:message key="optionCommunicating">[Communicating with the Option Data Card]</wicket:message>
+                </div>
+
 				<label>&nbsp;</label>
-                <input wicket:id="register" type="submit" value="[Confirm]"
+                <input wicket:id="register" type="submit" value="[Confirm]" onclick="return false;"
 					wicket:message="value:deviceRegister" class="submit" />
 				<input wicket:id="cancel" type="submit" value="[Cancel]"
 					wicket:message="value:cancelaction" class="submit" />

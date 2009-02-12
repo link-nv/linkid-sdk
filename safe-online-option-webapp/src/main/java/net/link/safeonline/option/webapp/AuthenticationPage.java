@@ -26,8 +26,11 @@ import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.wicket.RedirectToUrlException;
+import org.apache.wicket.ResourceReference;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.feedback.ComponentFeedbackMessageFilter;
+import org.apache.wicket.markup.html.IHeaderContributor;
+import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.form.Form;
@@ -36,7 +39,7 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.Model;
 
 
-public class AuthenticationPage extends TemplatePage {
+public class AuthenticationPage extends TemplatePage implements IHeaderContributor {
 
     private static final long      serialVersionUID       = 1L;
 
@@ -84,6 +87,16 @@ public class AuthenticationPage extends TemplatePage {
     /**
      * {@inheritDoc}
      */
+    public void renderHead(IHeaderResponse response) {
+
+        response.renderJavascriptReference(new ResourceReference(MainPage.class, "jquery.js"));
+        response.renderJavascriptReference(new ResourceReference(MainPage.class, "progress.js"));
+        response.renderOnDomReadyJavascript("$('#progressform #login').click(startProgress);");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected String getPageTitle() {
 
@@ -106,62 +119,15 @@ public class AuthenticationPage extends TemplatePage {
         public AuthenticationForm(String id) {
 
             super(id);
+            setMarkupId("progressform");
+            setOutputMarkupId(true);
 
             // Create our form's components.
             pinField = new PasswordTextField(PIN_FIELD_ID, pin = new Model<String>());
 
-            loginButton = new Button(LOGIN_BUTTON_ID) {
-
-                private static final long serialVersionUID = 1L;
-
-
-                @Override
-                public void onSubmit() {
-
-                    try {
-                        String imei = OptionDevice.validate(pin.getObject());
-                        String userId = optionDeviceService.authenticate(imei);
-                        if (null == userId)
-                            // Authentication failed.
-                            throw new DeviceAuthenticationException();
-
-                        // Authentication passed, log the user in.
-                        authenticationContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
-                        authenticationContext.setUsedDevice(OptionConstants.OPTION_DEVICE_ID);
-                        authenticationContext.setIssuer(OptionConstants.OPTION_DEVICE_ID);
-                        authenticationContext.setUserId(userId);
-
-                        // All went well, clear helpdesk events & exit successfully.
-                        HelpdeskLogger.clear(WicketUtil.toServletRequest(getRequest()).getSession());
-                        exit();
-                    }
-
-                    catch (DeviceAuthenticationException e) {
-                        LOG.error("authentication failed", e);
-                        AuthenticationForm.this.error(localize("authenticationFailedMsg"));
-                        HelpdeskLogger.add(localize("login: failed: %s", e.getMessage()), //
-                                LogLevelType.ERROR);
-                    } catch (DeviceDisabledException e) {
-                        AuthenticationForm.this.error(localize("errorDeviceDisabled"));
-                        HelpdeskLogger.add(localize("%s", "login: device is disabled"), //
-                                LogLevelType.ERROR);
-                    } catch (DeviceRegistrationNotFoundException e) {
-                        AuthenticationForm.this.error(localize("optionNotRegistered"));
-                        HelpdeskLogger.add(localize("%s", "login: device is not registered"), //
-                                LogLevelType.ERROR);
-                    } catch (DeviceNotFoundException e) {
-                        AuthenticationForm.this.error(localize("optionNotRegistered"));
-                        HelpdeskLogger.add(localize("%s", "login: device is not registered"), //
-                                LogLevelType.ERROR);
-                    } catch (SubjectNotFoundException e) {
-                        AuthenticationForm.this.error(localize("errorSubjectNotFound"));
-                        HelpdeskLogger.add(localize("%s", "login: subject not found"), //
-                                LogLevelType.ERROR);
-                    }
-
-                    throw new RestartResponseException(AuthenticationPage.class);
-                }
-            };
+            loginButton = new Button(LOGIN_BUTTON_ID);
+            loginButton.setMarkupId("login");
+            loginButton.setOutputMarkupId(true);
 
             cancelButton = new Button(CANCEL_BUTTON_ID) {
 
@@ -180,6 +146,56 @@ public class AuthenticationPage extends TemplatePage {
             add(pinField, loginButton, cancelButton);
             add(new ErrorFeedbackPanel("feedback", new ComponentFeedbackMessageFilter(this)));
             focus(pinField);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void onSubmit() {
+
+            try {
+                String imei = OptionDevice.validate(pin.getObject());
+                String userId = optionDeviceService.authenticate(imei);
+                if (null == userId)
+                    // Authentication failed.
+                    throw new DeviceAuthenticationException();
+
+                // Authentication passed, log the user in.
+                authenticationContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
+                authenticationContext.setUsedDevice(OptionConstants.OPTION_DEVICE_ID);
+                authenticationContext.setIssuer(OptionConstants.OPTION_DEVICE_ID);
+                authenticationContext.setUserId(userId);
+
+                // All went well, clear helpdesk events & exit successfully.
+                HelpdeskLogger.clear(WicketUtil.toServletRequest(getRequest()).getSession());
+                exit();
+            }
+
+            catch (DeviceAuthenticationException e) {
+                LOG.error("authentication failed", e);
+                AuthenticationForm.this.error(localize("authenticationFailedMsg"));
+                HelpdeskLogger.add(localize("login: failed: %s", e.getMessage()), //
+                        LogLevelType.ERROR);
+            } catch (DeviceDisabledException e) {
+                AuthenticationForm.this.error(localize("errorDeviceDisabled"));
+                HelpdeskLogger.add(localize("%s", "login: device is disabled"), //
+                        LogLevelType.ERROR);
+            } catch (DeviceRegistrationNotFoundException e) {
+                AuthenticationForm.this.error(localize("optionNotRegistered"));
+                HelpdeskLogger.add(localize("%s", "login: device is not registered"), //
+                        LogLevelType.ERROR);
+            } catch (DeviceNotFoundException e) {
+                AuthenticationForm.this.error(localize("optionNotRegistered"));
+                HelpdeskLogger.add(localize("%s", "login: device is not registered"), //
+                        LogLevelType.ERROR);
+            } catch (SubjectNotFoundException e) {
+                AuthenticationForm.this.error(localize("errorSubjectNotFound"));
+                HelpdeskLogger.add(localize("%s", "login: subject not found"), //
+                        LogLevelType.ERROR);
+            }
+
+            throw new RestartResponseException(AuthenticationPage.class);
         }
     }
 
