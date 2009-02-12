@@ -41,6 +41,7 @@
 									<artifactId>
 										safe-online-osgi-plugin-manual
 									</artifactId>
+									<version>1.3-SNAPSHOT</version>
 									<type>zip</type>
 								</artifactItem>
 							</artifactItems>
@@ -64,6 +65,7 @@
 									<artifactId>
 										safe-online-osgi
 									</artifactId>
+									<version>1.3-SNAPSHOT</version>
 									<classifier>javadoc</classifier>
 								</artifactItem>
 							</artifactItems>
@@ -87,11 +89,37 @@
 									<artifactId>
 										safe-online-osgi-plugin
 									</artifactId>
+									<version>1.3-SNAPSHOT</version>
 									<classifier>javadoc</classifier>
 								</artifactItem>
 							</artifactItems>
 							<outputDirectory>
 								${project.build.directory}/files/javadoc-osgi-plugin
+							</outputDirectory>
+						</configuration>
+					</execution>
+					<execution>
+						<id>unpack-osgi-plugin-template</id>
+						<phase>package</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>
+										net.lin-k.safe-online
+									</groupId>
+									<artifactId>
+										safe-online-osgi-plugin-template
+									</artifactId>
+									<version>1.3-SNAPSHOT</version>
+									<classifier>package</classifier>
+									<type>zip</type>
+								</artifactItem>
+							</artifactItems>
+							<outputDirectory>
+								${project.build.directory}/files/osgi-plugin-template
 							</outputDirectory>
 						</configuration>
 					</execution>
@@ -130,26 +158,8 @@
 		</dependency>
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-osgi</artifactId>
-			<version>1.3-SNAPSHOT</version>
-			<classifier>javadoc</classifier>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-osgi-plugin</artifactId>
 			<version>1.3-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-osgi-plugin</artifactId>
-			<version>1.3-SNAPSHOT</version>
-			<classifier>javadoc</classifier>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-osgi-plugin-manual</artifactId>
-			<version>1.3-SNAPSHOT</version>
-			<type>zip</type>
 		</dependency>
 	</dependencies>
 </project>

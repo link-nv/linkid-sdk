@@ -7,16 +7,7 @@
 		<format>zip</format>
 	</formats>
 	<dependencySets>
-		<dependencySet>
-			<excludes>
-				<exclude>
-					net.lin-k.safe-online:safe-online-sdk-manual
-				</exclude>
-				<exclude>
-					*:javadoc
-				</exclude>
-			</excludes>
-		</dependencySet>
+		<dependencySet/>
 	</dependencySets>
 	<fileSets>
 		<fileSet>
@@ -26,7 +17,15 @@
 				<exclude>META-INF/**</exclude>
 			</excludes>
 		</fileSet>
+		<fileSet>
+			<directory>target/files/sources</directory>
+			<outputDirectory>/sources</outputDirectory>
+			<excludes>
+				<exclude>META-INF/**</exclude>
+			</excludes>
+		</fileSet>
 	</fileSets>
+	
 	<files>
 		<file>
 			<source>target/files/sdk-manual.pdf</source>
