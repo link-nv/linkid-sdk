@@ -113,6 +113,7 @@ public class BeIdAuthentication extends DeviceAuthenticationPanel {
     private AuthenticationApplet getAuthenticationApplet() {
 
         AuthenticationApplet authenticationApplet;
+
         if (consoleManager.getUsePcscApplet()) {
             authenticationApplet = new net.link.safeonline.sc.pcsc.auth.AuthenticationApplet();
         } else {
