@@ -8,14 +8,6 @@
 	</formats>
 	<dependencySets>
 		<dependencySet>
-			<excludes>
-				<exclude>
-					net.lin-k.safe-online:safe-online-osgi-plugin-manual
-				</exclude>
-				<exclude>
-					*:javadoc
-				</exclude>
-			</excludes>
 		</dependencySet>
 	</dependencySets>
 	<fileSets>
@@ -32,6 +24,10 @@
 			<excludes>
 				<exclude>META-INF/**</exclude>
 			</excludes>
+		</fileSet>
+		<fileSet>
+			<directory>target/files/osgi-plugin-template</directory>
+			<outputDirectory>/osgi-plugin-template</outputDirectory>
 		</fileSet>
 	</fileSets>
 	<files>

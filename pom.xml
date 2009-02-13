@@ -812,6 +812,7 @@
 		<ojdbc5.version>11.1.0.6.0</ojdbc5.version>
 		<maven-jdocbook-plugin.version> 2.1.1 </maven-jdocbook-plugin.version>
 		<maven-javadoc-plugin.version>2.4</maven-javadoc-plugin.version>
+		<maven-sources-plugin.version>2.0.4</maven-sources-plugin.version>
 		<axis.version>1.4</axis.version>
 		<axis-jaxrpc.version>1.3</axis-jaxrpc.version>
 		<axistools-maven-plugin.version> 1.1 </axistools-maven-plugin.version>
@@ -1071,16 +1072,6 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-release-plugin</artifactId>
-				<configuration>
-					<tagBase>
-						scm:svn:svn+ssh://buildserver/scm/svn/products/safe-online/tags 
-					</tagBase>
-				</configuration>
-				<inherited>true</inherited>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-eclipse-plugin</artifactId>
 				<configuration>
 					<buildOutputDirectory> ${basedir}/eclipse 
@@ -1293,6 +1284,11 @@
 					<version>${maven-javadoc-plugin.version}</version>
 				</plugin>
 				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-sources-plugin</artifactId>
+					<version>${maven-sources-plugin.version}</version>
+				</plugin>
+				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>axistools-maven-plugin</artifactId>
 					<version>${axistools-maven-plugin.version}</version>
@@ -1314,193 +1310,25 @@
 	<!-- REMOTE ARTIFACT REPOSITORIES -->
 	<repositories>
 		<repository>
-			<id>buildserver-snapshots</id>
-			<name>Buildserver Snapshots Repository</name>
-			<url>http://buildserver/maven2-snapshots</url>
+			<id>nexus-javanet-legacy</id>
+			<name>Nexus java.net legacy repo mirror</name>
+			<url>http://buildserver:7070/nexus/content/repositories/java.net</url>
 			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
+				<enabled>false</enabled>
 			</snapshots>
 			<releases>
-				<enabled>false</enabled>
+				<enabled>true</enabled>
 			</releases>
 		</repository>
 		<repository>
-			<id>buildserver</id>
-			<name>Buildserver Repository</name>
-			<url>http://buildserver/maven2</url>
+			<id>nexus</id>
+			<name>Nexus</name>
+			<url>http://buildserver:7070/nexus/content/groups/public</url>
 			<snapshots>
-				<enabled>false</enabled>
-				<updatePolicy>never</updatePolicy>
+				<enabled>true</enabled>
 			</snapshots>
 			<releases>
 				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-		</repository>
-		<repository>
-			<!-- Keep Sun repository second for JAX-WS 2.1 API JAR -->
-			<id>java.net</id>
-			<name>java.net Maven Repository</name>
-			<url> https://maven-repository.dev.java.net/nonav/repository </url>
-			<layout>legacy</layout>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-		</repository>
-		<!--
-			repository> <id>ibiblio</id> <name>IBibilio Repository</name>
-			<url>http://mirrors.ibiblio.org/pub/mirrors/maven2/</url> <snapshots>
-			<enabled>false</enabled> </snapshots> <releases>
-			<enabled>true</enabled> <updatePolicy>never</updatePolicy>
-			</releases> </repository
-		-->
-		<repository>
-			<id>java.net-maven2</id>
-			<name>java.net Maven2 Repository</name>
-			<url>http://download.java.net/maven/2</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-		</repository>
-		<repository>
-			<id>central</id>
-			<name>Central Repository</name>
-			<url>http://repo1.maven.org/maven2</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-		</repository>
-		<repository>
-			<id>codehaus</id>
-			<name>Codehaus Maven Repository</name>
-			<url>http://snapshots.repository.codehaus.org/</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-		</repository>
-		<repository>
-			<id>codehaus-mule</id>
-			<name>Codehaus Mule Maven Repository</name>
-			<url>http://dist.codehaus.org/mule/dependencies/maven2</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-		</repository>
-		<repository>
-			<id>apache-repo</id>
-			<name>apache-repo</name>
-			<url> http://myfaces.zones.apache.org/dist/maven-repository </url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-		</repository>
-		<repository>
-			<id>jboss</id>
-			<name>JBoss Maven2 Repository</name>
-			<url>http://repository.jboss.com/maven2</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-		</repository>
-		<repository>
-			<id>apache-maven-snapshots</id>
-			<name>Apache Snapshot Repository</name>
-			<url> http://people.apache.org/repo/m2-snapshot-repository </url>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</snapshots>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-		</repository>
-		<repository>
-			<id>jboss-snapshots</id>
-			<name>JBoss Snapshots Maven2 Repository</name>
-			<url>http://snapshots.jboss.org/maven2</url>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</snapshots>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-		</repository>
-		<repository>
-			<id>openqa</id>
-			<name>OpenQA Repository</name>
-			<url>http://archiva.openqa.org/repository/releases/</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-		</repository>
-		<repository>
-			<id>opensaml</id>
-			<name>OpenSAML Repository</name>
-			<url>http://shibboleth.internet2.edu/downloads/maven2/</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-		</repository>
-		<repository>
-			<id>wss4j154</id>
-			<name>WSS4J 1.5.4</name>
-			<url> http://people.apache.org/~fadushin/stage/wss4j/1.5.4/maven/ 
-			</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-		</repository>
-		<repository>
-			<id>wicketstuff</id>
-			<url>http://wicketstuff.org/maven/repository</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
 			</releases>
 		</repository>
 	</repositories>
@@ -1508,102 +1336,25 @@
 	<!-- MAVEN PLUGIN REPOSITORIES -->
 	<pluginRepositories>
 		<pluginRepository>
-			<id>buildserver-plugins</id>
-			<name>Buildserver Plugin Repository</name>
-			<url>http://buildserver/maven2</url>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-		</pluginRepository>
-		<pluginRepository>
-			<id>central</id>
-			<name>Maven Plugin Repository</name>
-			<url>http://repo1.maven.org/maven2</url>
+			<id>nexus-javanet-legacy</id>
+			<name>Nexus java.net legacy repo mirror</name>
+			<url>http://buildserver:7070/nexus/content/repositories/java.net</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
 			<releases>
 				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
 			</releases>
 		</pluginRepository>
 		<pluginRepository>
-			<id>codehaus</id>
-			<name>Codehaus Maven Plugin Repository</name>
-			<url>http://snapshots.repository.codehaus.org/</url>
+			<id>nexus</id>
+			<name>Nexus</name>
+			<url>http://buildserver:7070/nexus/content/groups/public</url>
 			<snapshots>
 				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</snapshots>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-		</pluginRepository>
-		<pluginRepository>
-			<id>codehaus</id>
-			<name>Codehaus Maven Plugin Repository</name>
-			<url>http://repository.codehaus.org/</url>
-			<snapshots>
-				<enabled>false</enabled>
 			</snapshots>
 			<releases>
 				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-		</pluginRepository>
-		<pluginRepository>
-			<id>java.net</id>
-			<name>java.net Maven Repository</name>
-			<url> https://maven-repository.dev.java.net/nonav/repository </url>
-			<layout>legacy</layout>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-		</pluginRepository>
-		<pluginRepository>
-			<id>java.net-maven2</id>
-			<name>java.net Maven2 Repository</name>
-			<url>http://download.java.net/maven/2</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-		</pluginRepository>
-		<pluginRepository>
-			<id>maven-snapshot</id>
-			<name>Apache Maven Snapshot Repository</name>
-			<url> http://people.apache.org/maven-snapshot-repository </url>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</snapshots>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-		</pluginRepository>
-		<pluginRepository>
-			<id>jboss</id>
-			<name>JBoss Maven2 Repository</name>
-			<url>http://repository.jboss.com/maven2</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
 			</releases>
 		</pluginRepository>
 	</pluginRepositories>
