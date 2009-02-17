@@ -16,18 +16,20 @@
 		<view-handler>com.sun.facelets.FaceletViewHandler</view-handler>
 	</application>
 	<lifecycle>
-		<phase-listener> org.jboss.seam.jsf.SeamPhaseListener 
-		</phase-listener>
-		<phase-listener>net.link.safeonline.webapp.listener.LanguagePhaseListener</phase-listener>
+		<phase-listener>org.jboss.seam.jsf.SeamPhaseListener</phase-listener>
+		<phase-listener>
+			net.link.safeonline.webapp.listener.LanguagePhaseListener</phase-listener>
 	</lifecycle>
 	<navigation-rule>
 		<navigation-case>
 			<from-outcome>login-success</from-outcome>
 			<to-view-id>/overview.seam</to-view-id>
+			<redirect />
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>logout-success</from-outcome>
 			<to-view-id>/main.seam</to-view-id>
+			<redirect />
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
@@ -35,10 +37,12 @@
 		<navigation-case>
 			<from-outcome>view</from-outcome>
 			<to-view-id>/log-view.seam</to-view-id>
+			<redirect />
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>search-failed</from-outcome>
 			<to-view-id>/error.seam</to-view-id>
+			<redirect />
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
@@ -46,10 +50,12 @@
 		<navigation-case>
 			<from-outcome>viewUser</from-outcome>
 			<to-view-id>/user-view.seam</to-view-id>
+			<redirect />
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>search-failed</from-outcome>
 			<to-view-id>/error.seam</to-view-id>
+			<redirect />
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
@@ -57,6 +63,7 @@
 		<navigation-case>
 			<from-outcome>view</from-outcome>
 			<to-view-id>/log-view.seam</to-view-id>
+			<redirect />
 		</navigation-case>
 	</navigation-rule>
 </faces-config>

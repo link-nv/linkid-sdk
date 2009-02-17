@@ -138,7 +138,7 @@ public class UsageAgreementBean implements UsageAgreement {
             throws ApplicationNotFoundException, PermissionDeniedException {
 
         LOG.debug("get draft texts");
-        draftUsageAgreement = usageAgreementService.getDraftUsageAgreement(selectedApplication.getName());
+        draftUsageAgreement = usageAgreementService.getDraftUsageAgreement(selectedApplication.getId());
         if (null == draftUsageAgreement)
             return;
         draftUsageAgreementsTexts = draftUsageAgreement.getUsageAgreementTexts();
@@ -150,7 +150,7 @@ public class UsageAgreementBean implements UsageAgreement {
             throws PermissionDeniedException, ApplicationNotFoundException {
 
         LOG.debug("get current texts");
-        currentUsageAgreement = usageAgreementService.getCurrentUsageAgreement(selectedApplication.getName());
+        currentUsageAgreement = usageAgreementService.getCurrentUsageAgreement(selectedApplication.getId());
         if (null == currentUsageAgreement)
             return;
         currentUsageAgreementsTexts = currentUsageAgreement.getUsageAgreementTexts();
@@ -163,7 +163,7 @@ public class UsageAgreementBean implements UsageAgreement {
     public UsageAgreementEntity getCurrentUsageAgreement()
             throws PermissionDeniedException, ApplicationNotFoundException {
 
-        currentUsageAgreement = usageAgreementService.getCurrentUsageAgreement(selectedApplication.getName());
+        currentUsageAgreement = usageAgreementService.getCurrentUsageAgreement(selectedApplication.getId());
         return currentUsageAgreement;
     }
 
@@ -171,7 +171,7 @@ public class UsageAgreementBean implements UsageAgreement {
     public UsageAgreementEntity getDraftUsageAgreement()
             throws ApplicationNotFoundException, PermissionDeniedException {
 
-        draftUsageAgreement = usageAgreementService.getDraftUsageAgreement(selectedApplication.getName());
+        draftUsageAgreement = usageAgreementService.getDraftUsageAgreement(selectedApplication.getId());
         return draftUsageAgreement;
     }
 
@@ -236,10 +236,10 @@ public class UsageAgreementBean implements UsageAgreement {
 
         LOG.debug("create draft usage agreement");
         if (null != currentUsageAgreement) {
-            draftUsageAgreement = usageAgreementService.createDraftUsageAgreement(selectedApplication.getName(),
+            draftUsageAgreement = usageAgreementService.createDraftUsageAgreement(selectedApplication.getId(),
                     currentUsageAgreement.getUsageAgreementVersion());
         } else {
-            draftUsageAgreement = usageAgreementService.createDraftUsageAgreement(selectedApplication.getName(),
+            draftUsageAgreement = usageAgreementService.createDraftUsageAgreement(selectedApplication.getId(),
                     selectedApplication.getCurrentApplicationUsageAgreement());
         }
         return "success";
@@ -250,7 +250,7 @@ public class UsageAgreementBean implements UsageAgreement {
             throws ApplicationNotFoundException, PermissionDeniedException {
 
         LOG.debug("edit current usage agreement text: language=" + selectedCurrentUsageAgreementText.getLanguage());
-        UsageAgreementEntity usageAgreement = usageAgreementService.createDraftUsageAgreement(selectedApplication.getName(),
+        UsageAgreementEntity usageAgreement = usageAgreementService.createDraftUsageAgreement(selectedApplication.getId(),
                 currentUsageAgreement.getUsageAgreementVersion());
         selectedUsageAgreementText = usageAgreement.getUsageAgreementText(selectedCurrentUsageAgreementText.getLanguage());
         return "edittext";
@@ -269,8 +269,7 @@ public class UsageAgreementBean implements UsageAgreement {
             throws ApplicationNotFoundException, PermissionDeniedException {
 
         LOG.debug("remove draft text: language=" + selectedDraftUsageAgreementText.getLanguage());
-        usageAgreementService.removeDraftUsageAgreementText(selectedApplication.getName(),
-                selectedDraftUsageAgreementText.getLanguage());
+        usageAgreementService.removeDraftUsageAgreementText(selectedApplication.getId(), selectedDraftUsageAgreementText.getLanguage());
         draftUsageAgreementsTextsFactory();
         return "removed";
     }
@@ -280,8 +279,7 @@ public class UsageAgreementBean implements UsageAgreement {
             throws ApplicationNotFoundException, PermissionDeniedException {
 
         LOG.debug("add draft text: language=" + language);
-        selectedUsageAgreementText = usageAgreementService.createDraftUsageAgreementText(selectedApplication.getName(),
-                language, "");
+        selectedUsageAgreementText = usageAgreementService.createDraftUsageAgreementText(selectedApplication.getId(), language, "");
         draftUsageAgreementsTextsFactory();
         return "edittext";
     }
@@ -292,8 +290,7 @@ public class UsageAgreementBean implements UsageAgreement {
 
         LOG.debug("save usage agreement text: language=" + selectedUsageAgreementText.getLanguage());
         String text = selectedUsageAgreementText.getText();
-        usageAgreementService.setDraftUsageAgreementText(selectedApplication.getName(),
-                selectedUsageAgreementText.getLanguage(), text);
+        usageAgreementService.setDraftUsageAgreementText(selectedApplication.getId(), selectedUsageAgreementText.getLanguage(), text);
         draftUsageAgreementsTextsFactory();
         return "saved";
     }
@@ -303,7 +300,7 @@ public class UsageAgreementBean implements UsageAgreement {
             throws ApplicationNotFoundException, PermissionDeniedException {
 
         LOG.debug("release draft usage agreement");
-        usageAgreementService.updateUsageAgreement(selectedApplication.getName());
+        usageAgreementService.updateUsageAgreement(selectedApplication.getId());
         currentUsageAgreementsTextsFactory();
         draftUsageAgreementsTextsFactory();
         return "success";
@@ -314,7 +311,7 @@ public class UsageAgreementBean implements UsageAgreement {
             throws ApplicationNotFoundException, PermissionDeniedException {
 
         LOG.debug("remove draft usage agreement");
-        usageAgreementService.removeDraftUsageAgreement(selectedApplication.getName());
+        usageAgreementService.removeDraftUsageAgreement(selectedApplication.getId());
         currentUsageAgreementsTextsFactory();
         draftUsageAgreementsTextsFactory();
         return "success";

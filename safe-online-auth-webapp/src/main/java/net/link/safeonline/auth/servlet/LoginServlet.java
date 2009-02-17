@@ -68,7 +68,7 @@ public class LoginServlet extends AbstractInjectionServlet {
     DeviceEntity                  device;
 
     @In(LoginManager.APPLICATION_ID_ATTRIBUTE)
-    String                        applicationId;
+    long                          applicationId;
 
 
     @Override

@@ -46,10 +46,17 @@ public class ApplicationDAOBean implements ApplicationDAO {
         queryObject = QueryObjectFactory.createQueryObject(entityManager, ApplicationEntity.QueryInterface.class);
     }
 
+    public ApplicationEntity findApplication(long applicationId) {
+
+        LOG.debug("find application: " + applicationId);
+        ApplicationEntity application = entityManager.find(ApplicationEntity.class, applicationId);
+        return application;
+    }
+
     public ApplicationEntity findApplication(String applicationName) {
 
         LOG.debug("find application: " + applicationName);
-        ApplicationEntity application = entityManager.find(ApplicationEntity.class, applicationName);
+        ApplicationEntity application = queryObject.findApplication(applicationName);
         return application;
     }
 
@@ -74,6 +81,15 @@ public class ApplicationDAOBean implements ApplicationDAO {
 
         List<ApplicationEntity> applications = queryObject.listUserApplications();
         return applications;
+    }
+
+    public ApplicationEntity getApplication(long applicationId)
+            throws ApplicationNotFoundException {
+
+        ApplicationEntity application = findApplication(applicationId);
+        if (null == application)
+            throw new ApplicationNotFoundException();
+        return application;
     }
 
     public ApplicationEntity getApplication(String applicationName)
@@ -114,10 +130,8 @@ public class ApplicationDAOBean implements ApplicationDAO {
     public ApplicationEntity getApplication(X509Certificate certificate)
             throws ApplicationNotFoundException {
 
-        List<ApplicationEntity> applications = queryObject
-                                                               .listApplicationsWhereCertificateSubject(certificate
-                                                                                                                   .getSubjectX500Principal()
-                                                                                                                   .getName());
+        List<ApplicationEntity> applications = queryObject.listApplicationsWhereCertificateSubject(certificate.getSubjectX500Principal()
+                                                                                                              .getName());
         if (applications.isEmpty())
             throw new ApplicationNotFoundException();
         ApplicationEntity application = applications.get(0);
@@ -126,10 +140,8 @@ public class ApplicationDAOBean implements ApplicationDAO {
 
     public ApplicationEntity findApplication(X509Certificate certificate) {
 
-        List<ApplicationEntity> applications = queryObject
-                                                               .listApplicationsWhereCertificateSubject(certificate
-                                                                                                                   .getSubjectX500Principal()
-                                                                                                                   .getName());
+        List<ApplicationEntity> applications = queryObject.listApplicationsWhereCertificateSubject(certificate.getSubjectX500Principal()
+                                                                                                              .getName());
         if (applications.isEmpty())
             return null;
         ApplicationEntity application = applications.get(0);

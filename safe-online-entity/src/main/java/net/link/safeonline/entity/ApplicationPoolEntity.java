@@ -89,7 +89,7 @@ public class ApplicationPoolEntity implements Serializable {
     }
 
     @ManyToMany(fetch = FetchType.EAGER)
-    @OrderBy("name")
+    @OrderBy(ApplicationEntity.NAME_COLUMN)
     public List<ApplicationEntity> getApplications() {
 
         return applications;

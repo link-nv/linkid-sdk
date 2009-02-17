@@ -41,7 +41,7 @@ public interface DevicePolicyService extends SafeOnlineService {
      * @throws ApplicationNotFoundException
      * @throws EmptyDevicePolicyException
      */
-    List<DeviceEntity> getDevicePolicy(String applicationId, Set<DeviceEntity> requiredDevicePolicy)
+    List<DeviceEntity> getDevicePolicy(long applicationId, Set<DeviceEntity> requiredDevicePolicy)
             throws ApplicationNotFoundException, EmptyDevicePolicyException;
 
     /**

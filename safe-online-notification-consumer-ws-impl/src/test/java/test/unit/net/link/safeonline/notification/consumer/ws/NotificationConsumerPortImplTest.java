@@ -176,7 +176,7 @@ public class NotificationConsumerPortImplTest {
         notification.getNotificationMessage().add(notificationMessage);
 
         // expectations
-        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn("test-application-name");
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(1234567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         mockNotificationConsumerService.handleMessage(SafeOnlineConstants.TOPIC_REMOVE_USER, destination, subject, content);
 

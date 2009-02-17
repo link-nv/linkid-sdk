@@ -152,7 +152,7 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
 
         ApplicationIdentifierMappingService applicationIdentifierMappingService = EjbUtils.getEJB(
                 ApplicationIdentifierMappingService.JNDI_BINDING, ApplicationIdentifierMappingService.class);
-        return applicationIdentifierMappingService.findUserId(application.getName(), applicationUserId);
+        return applicationIdentifierMappingService.findUserId(application.getId(), applicationUserId);
     }
 
     public ResponseType attributeQuery(AttributeQueryType request) {

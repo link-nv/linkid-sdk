@@ -66,7 +66,7 @@ public class ApplicationIdentityEntity implements Serializable {
 
     public ApplicationIdentityEntity(ApplicationEntity application, long identityVersion) {
 
-        pk = new ApplicationIdentityPK(application.getName(), identityVersion);
+        pk = new ApplicationIdentityPK(application.getId(), identityVersion);
         this.application = application;
         attributes = new HashSet<ApplicationIdentityAttributeEntity>();
     }
@@ -78,8 +78,9 @@ public class ApplicationIdentityEntity implements Serializable {
 
 
     @EmbeddedId
-    @AttributeOverrides( { @AttributeOverride(name = "application", column = @Column(name = APPLICATION_COLUMN_NAME)),
-            @AttributeOverride(name = "identityVersion", column = @Column(name = IDENTITY_VERSION_COLUMN_NAME)) })
+    @AttributeOverrides( {
+            @AttributeOverride(name = ApplicationIdentityPK.APPLICATION_ID_COLUMN, column = @Column(name = APPLICATION_COLUMN_NAME)),
+            @AttributeOverride(name = ApplicationIdentityPK.IDENTITY_VERSION_COLUMN, column = @Column(name = IDENTITY_VERSION_COLUMN_NAME)) })
     public ApplicationIdentityPK getPk() {
 
         return pk;

@@ -84,8 +84,9 @@ public class AttributeProviderEntity implements Serializable {
     }
 
     @EmbeddedId
-    @AttributeOverrides( { @AttributeOverride(name = "applicationName", column = @Column(name = APPLICATION_NAME_COLUMN_NAME)),
-            @AttributeOverride(name = "attributeTypeName", column = @Column(name = ATTRIBUTE_TYPE_NAME_COLUMN_NAME)) })
+    @AttributeOverrides( {
+            @AttributeOverride(name = AttributeProviderPK.APPLICATION_ID_COLUMN, column = @Column(name = APPLICATION_NAME_COLUMN_NAME)),
+            @AttributeOverride(name = AttributeProviderPK.ATTRIBUTE_TYPE_NAME_COLUMN, column = @Column(name = ATTRIBUTE_TYPE_NAME_COLUMN_NAME)) })
     public AttributeProviderPK getPk() {
 
         return pk;
@@ -121,9 +122,9 @@ public class AttributeProviderEntity implements Serializable {
     }
 
     @Transient
-    public String getApplicationName() {
+    public long getApplicationId() {
 
-        return pk.getApplicationName();
+        return pk.getApplicationId();
     }
 
     @Transient

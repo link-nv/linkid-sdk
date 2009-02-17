@@ -243,7 +243,7 @@ public class EncapAuthenticationPortImplTest {
         // expectations
         mockEncapDeviceServce.requestOTP(testMobile);
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
-        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn("test-application-name");
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(1234567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
@@ -277,7 +277,7 @@ public class EncapAuthenticationPortImplTest {
         // expectations
         expect(mockEncapDeviceServce.authenticate(testMobile, testOtp)).andReturn(testUserId);
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
-        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn("test-application-name");
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(1234567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
@@ -319,7 +319,7 @@ public class EncapAuthenticationPortImplTest {
         // expectations
         mockEncapDeviceServce.requestOTP(testMobile);
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
-        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn("test-application-name");
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(1234567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
@@ -353,7 +353,7 @@ public class EncapAuthenticationPortImplTest {
         // expectations
         expect(mockEncapDeviceServce.authenticate(testMobile, testOtp)).andThrow(new MobileException("foo"));
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
-        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn("test-application-name");
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(1234567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
@@ -394,7 +394,7 @@ public class EncapAuthenticationPortImplTest {
         // expectations
         expectLastCall().andThrow(new DeviceDisabledException());
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
-        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn("test-application-name");
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(1234567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);

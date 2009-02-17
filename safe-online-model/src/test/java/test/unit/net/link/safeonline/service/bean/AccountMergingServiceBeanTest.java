@@ -165,13 +165,13 @@ public class AccountMergingServiceBeanTest {
         attributeTypeCompounded.addMember(attributeTypeCompoundMember2, 1, true);
 
         // create applications
-        Application application1 = new Application("test-application-1", Arrays.asList(new AttributeTypeEntity[] { attributeType1,
+        Application application1 = new Application(0, "test-application-1", Arrays.asList(new AttributeTypeEntity[] { attributeType1,
                 attributeType2 }), entityManager);
-        Application application2 = new Application("test-application-2",
+        Application application2 = new Application(1, "test-application-2",
                 Arrays.asList(new AttributeTypeEntity[] { attributeTypeMultivalued }), entityManager);
-        Application application3 = new Application("test-application-3",
+        Application application3 = new Application(2, "test-application-3",
                 Arrays.asList(new AttributeTypeEntity[] { attributeTypeCompounded }), entityManager);
-        Application application4 = new Application("test-application-4", Arrays.asList(new AttributeTypeEntity[] { attributeType1 }),
+        Application application4 = new Application(3, "test-application-4", Arrays.asList(new AttributeTypeEntity[] { attributeType1 }),
                 entityManager);
 
         // subscribe
@@ -262,11 +262,11 @@ public class AccountMergingServiceBeanTest {
 
             SubscriptionService subscriptionService = EJBTestUtils.newInstance(SubscriptionServiceBean.class,
                     SafeOnlineTestContainer.sessionBeans, entityManager, subject.getUserId(), "user");
-            subscriptionService.subscribe(application.applicationName);
+            subscriptionService.subscribe(application.applicationId);
 
             IdentityService identityService = EJBTestUtils.newInstance(IdentityServiceBean.class, SafeOnlineTestContainer.sessionBeans,
                     entityManager, subject.getUserId(), "user");
-            identityService.confirmIdentity(application.applicationName);
+            identityService.confirmIdentity(application.applicationId);
 
             for (AttributeTypeEntity attributeType : application.attributeTypes) {
                 addAttributeValue(attributeType, identityService);
@@ -311,13 +311,17 @@ public class AccountMergingServiceBeanTest {
 
         String                    applicationName;
 
+        long                      applicationId;
+
         List<AttributeTypeEntity> attributeTypes;
 
         private EntityManager     entityManager;
 
 
-        public Application(String applicationName, List<AttributeTypeEntity> attributeTypes, EntityManager entityManager) throws Exception {
+        public Application(long applicationId, String applicationName, List<AttributeTypeEntity> attributeTypes, EntityManager entityManager)
+                                                                                                                                             throws Exception {
 
+            this.applicationId = applicationId;
             this.applicationName = applicationName;
             this.attributeTypes = attributeTypes;
             this.entityManager = entityManager;

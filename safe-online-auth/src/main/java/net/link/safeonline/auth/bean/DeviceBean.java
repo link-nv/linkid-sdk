@@ -62,7 +62,7 @@ public class DeviceBean implements Device {
     private DevicePolicyService devicePolicyService;
 
     @In(value = LoginManager.APPLICATION_ID_ATTRIBUTE, required = true)
-    private String              application;
+    private long                application;
 
     @In(value = LoginManager.REQUIRED_DEVICES_ATTRIBUTE, required = false)
     private Set<DeviceEntity>   requiredDevicePolicy;

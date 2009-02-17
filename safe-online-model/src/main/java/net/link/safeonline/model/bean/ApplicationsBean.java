@@ -33,10 +33,10 @@ public class ApplicationsBean implements Applications {
     private ApplicationIdentityDAO applicationIdentityDAO;
 
 
-    public ApplicationEntity getApplication(String applicationName)
+    public ApplicationEntity getApplication(long applicationId)
             throws ApplicationNotFoundException {
 
-        return applicationDAO.getApplication(applicationName);
+        return applicationDAO.getApplication(applicationId);
     }
 
     public List<ApplicationEntity> listApplications() {
@@ -57,8 +57,7 @@ public class ApplicationsBean implements Applications {
         LOG.debug("get current application identity: " + application.getName());
 
         long currentIdentityVersion = application.getCurrentApplicationIdentity();
-        ApplicationIdentityEntity applicationIdentity = applicationIdentityDAO.getApplicationIdentity(application,
-                currentIdentityVersion);
+        ApplicationIdentityEntity applicationIdentity = applicationIdentityDAO.getApplicationIdentity(application, currentIdentityVersion);
         Set<ApplicationIdentityAttributeEntity> attributes = applicationIdentity.getAttributes();
         for (ApplicationIdentityAttributeEntity attribute : attributes) {
             LOG.debug("attribute: " + attribute);

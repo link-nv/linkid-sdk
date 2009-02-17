@@ -533,13 +533,13 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public boolean isConfirmationRequired(@NonEmptyString String applicationName)
+    public boolean isConfirmationRequired(long applicationId)
             throws ApplicationNotFoundException, SubscriptionNotFoundException, ApplicationIdentityNotFoundException {
 
         SubjectEntity subject = subjectManager.getCallerSubject();
-        LOG.debug("is confirmation required for application " + applicationName + " by subject " + subject.getUserId());
+        LOG.debug("is confirmation required for application " + applicationId + " by subject " + subject.getUserId());
 
-        ApplicationEntity application = applicationDAO.getApplication(applicationName);
+        ApplicationEntity application = applicationDAO.getApplication(applicationId);
         long currentIdentityVersion = application.getCurrentApplicationIdentity();
         ApplicationIdentityEntity applicationIdentity = applicationIdentityDAO.getApplicationIdentity(application, currentIdentityVersion);
         Set<ApplicationIdentityAttributeEntity> identityAttributeTypes = applicationIdentity.getAttributes();
@@ -564,12 +564,12 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public void confirmIdentity(@NonEmptyString String applicationName)
+    public void confirmIdentity(long applicationId)
             throws ApplicationNotFoundException, SubscriptionNotFoundException, ApplicationIdentityNotFoundException {
 
-        LOG.debug("confirm identity for application: " + applicationName);
+        LOG.debug("confirm identity for application: " + applicationId);
 
-        ApplicationEntity application = applicationDAO.getApplication(applicationName);
+        ApplicationEntity application = applicationDAO.getApplication(applicationId);
         long currentApplicationIdentityVersion = application.getCurrentApplicationIdentity();
 
         SubjectEntity subject = subjectManager.getCallerSubject();
@@ -578,16 +578,16 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
         subscription.setConfirmedIdentityVersion(currentApplicationIdentityVersion);
 
         historyDAO.addHistoryEntry(subject, HistoryEventType.IDENTITY_CONFIRMATION, Collections.singletonMap(
-                SafeOnlineConstants.APPLICATION_PROPERTY, applicationName));
+                SafeOnlineConstants.APPLICATION_PROPERTY, application.getName()));
 
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public List<AttributeDO> listIdentityAttributesToConfirm(@NonEmptyString String applicationName, Locale locale)
+    public List<AttributeDO> listIdentityAttributesToConfirm(long applicationId, Locale locale)
             throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, SubscriptionNotFoundException {
 
-        LOG.debug("get identity to confirm for application: " + applicationName);
-        ApplicationEntity application = applicationDAO.getApplication(applicationName);
+        LOG.debug("get identity to confirm for application: " + applicationId);
+        ApplicationEntity application = applicationDAO.getApplication(applicationId);
         long currentApplicationIdentityVersion = application.getCurrentApplicationIdentity();
         ApplicationIdentityEntity applicationIdentity = applicationIdentityDAO.getApplicationIdentity(application,
                 currentApplicationIdentityVersion);
@@ -632,12 +632,12 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public boolean hasMissingAttributes(@NonEmptyString String applicationName)
+    public boolean hasMissingAttributes(long applicationId)
             throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException,
             AttributeTypeNotFoundException {
 
-        LOG.debug("hasMissingAttributes for application: " + applicationName);
-        List<AttributeDO> missingAttributes = listMissingAttributes(applicationName, null);
+        LOG.debug("hasMissingAttributes for application: " + applicationId);
+        List<AttributeDO> missingAttributes = listMissingAttributes(applicationId, null);
         return false == missingAttributes.isEmpty();
     }
 
@@ -649,10 +649,10 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
      * @throws ApplicationNotFoundException
      * @throws ApplicationIdentityNotFoundException
      */
-    private List<AttributeTypeEntity> getDataAttributeTypes(@NonEmptyString String applicationName, boolean required)
+    private List<AttributeTypeEntity> getDataAttributeTypes(long applicationId, boolean required)
             throws ApplicationNotFoundException, ApplicationIdentityNotFoundException {
 
-        ApplicationEntity application = applicationDAO.getApplication(applicationName);
+        ApplicationEntity application = applicationDAO.getApplication(applicationId);
         long currentApplicationIdentityVersion = application.getCurrentApplicationIdentity();
         ApplicationIdentityEntity applicationIdentity = applicationIdentityDAO.getApplicationIdentity(application,
                 currentApplicationIdentityVersion);
@@ -723,27 +723,27 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
 
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public List<AttributeDO> listOptionalAttributes(@NonEmptyString String applicationName, Locale locale)
+    public List<AttributeDO> listOptionalAttributes(long applicationId, Locale locale)
             throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException,
             AttributeTypeNotFoundException {
 
-        LOG.debug("list optional missing attributes for application: " + applicationName);
+        LOG.debug("list optional missing attributes for application: " + applicationId);
         SubjectEntity subject = subjectManager.getCallerSubject();
 
-        List<AttributeTypeEntity> optionalApplicationAttributeTypes = getDataAttributeTypes(applicationName, false);
+        List<AttributeTypeEntity> optionalApplicationAttributeTypes = getDataAttributeTypes(applicationId, false);
 
         return listMissingAttributes(subject, optionalApplicationAttributeTypes, locale);
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public List<AttributeDO> listMissingAttributes(@NonEmptyString String applicationName, Locale locale)
+    public List<AttributeDO> listMissingAttributes(long applicationId, Locale locale)
             throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException,
             AttributeTypeNotFoundException {
 
-        LOG.debug("list missing attributes for application: " + applicationName);
+        LOG.debug("list missing attributes for application: " + applicationId);
         SubjectEntity subject = subjectManager.getCallerSubject();
 
-        List<AttributeTypeEntity> requiredApplicationAttributeTypes = getDataAttributeTypes(applicationName, true);
+        List<AttributeTypeEntity> requiredApplicationAttributeTypes = getDataAttributeTypes(applicationId, true);
 
         return listMissingAttributes(subject, requiredApplicationAttributeTypes, locale);
     }

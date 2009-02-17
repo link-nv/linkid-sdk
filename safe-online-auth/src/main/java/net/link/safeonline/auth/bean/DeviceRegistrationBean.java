@@ -55,7 +55,7 @@ public class DeviceRegistrationBean extends AbstractLoginBean implements DeviceR
     private String              device;
 
     @In(value = LoginManager.APPLICATION_ID_ATTRIBUTE, required = true)
-    private String              application;
+    private long                application;
 
     @In(value = LoginManager.REQUIRED_DEVICES_ATTRIBUTE, required = false)
     private Set<DeviceEntity>   requiredDevicePolicy;

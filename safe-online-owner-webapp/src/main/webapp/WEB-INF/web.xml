@@ -165,6 +165,10 @@
 		<url-pattern>*.seam</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
+		<filter-name>TimeoutFilter</filter-name>
+		<url-pattern>/login</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
 		<filter-name>AuthnResponseFilter</filter-name>
 		<url-pattern>*.seam</url-pattern>
 	</filter-mapping>

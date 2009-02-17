@@ -9,7 +9,6 @@ package net.link.safeonline.owner;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.owner.OwnerConstants;
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationOwnerNotFoundException;
@@ -25,6 +24,13 @@ public interface Application {
     /*
      * Accessors
      */
+    String getName();
+
+    void setName(String name);
+
+    String getFriendlyName();
+
+    void setFriendlyName(String friendlyName);
 
     /*
      * Factories

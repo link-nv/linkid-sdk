@@ -39,6 +39,7 @@ import net.link.safeonline.authentication.service.bean.SubscriptionServiceBean;
 import net.link.safeonline.authentication.service.bean.UserRegistrationServiceBean;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.data.AttributeDO;
+import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.IdScopeType;
@@ -194,10 +195,11 @@ public class AttributeServiceBeanTest {
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null,
                 Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(testAttributeName, true, false) }), false, false,
                 false, null);
+        ApplicationEntity application = applicationService.getApplication(testApplicationName);
 
         SubscriptionService subscriptionService = EJBTestUtils.newInstance(SubscriptionServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager, subject.getUserId(), "user");
-        subscriptionService.subscribe(testApplicationName);
+        subscriptionService.subscribe(application.getId());
 
         AttributeService attributeService = EJBTestUtils.newInstance(AttributeServiceBean.class, SafeOnlineTestContainer.sessionBeans,
                 entityManager, testApplicationName, "application");
@@ -241,14 +243,15 @@ public class AttributeServiceBeanTest {
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null,
                 Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(testAttributeName, true, false) }), false, false,
                 false, null);
+        ApplicationEntity application = applicationService.getApplication(testApplicationName);
 
         SubscriptionService subscriptionService = EJBTestUtils.newInstance(SubscriptionServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager, subject.getUserId(), "user");
-        subscriptionService.subscribe(testApplicationName);
+        subscriptionService.subscribe(application.getId());
 
         IdentityService identityService = EJBTestUtils.newInstance(IdentityServiceBean.class, SafeOnlineTestContainer.sessionBeans,
                 entityManager, subject.getUserId(), "user");
-        identityService.confirmIdentity(testApplicationName);
+        identityService.confirmIdentity(application.getId());
 
         AttributeDO testAttribute = new AttributeDO(testAttributeName, DatatypeType.STRING);
         testAttribute.setStringValue(testAttributeValue);
@@ -296,14 +299,15 @@ public class AttributeServiceBeanTest {
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null,
                 Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(testAttributeName, true, false) }), false, false,
                 false, null);
+        ApplicationEntity application = applicationService.getApplication(testApplicationName);
 
         SubscriptionService subscriptionService = EJBTestUtils.newInstance(SubscriptionServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager, subject.getUserId(), "user");
-        subscriptionService.subscribe(testApplicationName);
+        subscriptionService.subscribe(application.getId());
 
         IdentityService identityService = EJBTestUtils.newInstance(IdentityServiceBean.class, SafeOnlineTestContainer.sessionBeans,
                 entityManager, subject.getUserId(), "user");
-        identityService.confirmIdentity(testApplicationName);
+        identityService.confirmIdentity(application.getId());
 
         AttributeDO testAttribute = new AttributeDO(testAttributeName, DatatypeType.BOOLEAN);
         testAttribute.setBooleanValue(testAttributeValue);
@@ -354,14 +358,15 @@ public class AttributeServiceBeanTest {
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null,
                 Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(testAttributeName, true, false) }), false, false,
                 false, null);
+        ApplicationEntity application = applicationService.getApplication(testApplicationName);
 
         SubscriptionService subscriptionService = EJBTestUtils.newInstance(SubscriptionServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager, subject.getUserId(), "user");
-        subscriptionService.subscribe(testApplicationName);
+        subscriptionService.subscribe(application.getId());
 
         IdentityService identityService = EJBTestUtils.newInstance(IdentityServiceBean.class, SafeOnlineTestContainer.sessionBeans,
                 entityManager, subject.getUserId(), "user");
-        identityService.confirmIdentity(testApplicationName);
+        identityService.confirmIdentity(application.getId());
 
         AttributeDO testAttribute = new AttributeDO(testAttributeName, DatatypeType.STRING);
         testAttribute.setStringValue(testAttributeValue);
@@ -409,14 +414,15 @@ public class AttributeServiceBeanTest {
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null,
                 Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(testAttributeName, true, true) }), false, false,
                 false, null);
+        ApplicationEntity application = applicationService.getApplication(testApplicationName);
 
         SubscriptionService subscriptionService = EJBTestUtils.newInstance(SubscriptionServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager, subject.getUserId(), "user");
-        subscriptionService.subscribe(testApplicationName);
+        subscriptionService.subscribe(application.getId());
 
         IdentityService identityService = EJBTestUtils.newInstance(IdentityServiceBean.class, SafeOnlineTestContainer.sessionBeans,
                 entityManager, subject.getUserId(), "user");
-        identityService.confirmIdentity(testApplicationName);
+        identityService.confirmIdentity(application.getId());
 
         AttributeDO testAttribute = new AttributeDO(testAttributeName, DatatypeType.STRING);
         testAttribute.setStringValue(testAttributeValue);
@@ -469,14 +475,15 @@ public class AttributeServiceBeanTest {
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null,
                 Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(testAttributeName, true, false) }), false, false,
                 false, null);
+        ApplicationEntity application = applicationService.getApplication(testApplicationName);
 
         SubscriptionService subscriptionService = EJBTestUtils.newInstance(SubscriptionServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager, subject.getUserId(), "user");
-        subscriptionService.subscribe(testApplicationName);
+        subscriptionService.subscribe(application.getId());
 
         IdentityService identityService = EJBTestUtils.newInstance(IdentityServiceBean.class, SafeOnlineTestContainer.sessionBeans,
                 entityManager, subject.getUserId(), "user");
-        identityService.confirmIdentity(testApplicationName);
+        identityService.confirmIdentity(application.getId());
 
         AttributeDO testAttribute = new AttributeDO(testAttributeName, DatatypeType.STRING);
         testAttribute.setStringValue(testAttributeValue1);
@@ -562,14 +569,15 @@ public class AttributeServiceBeanTest {
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null,
                 Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(compoundName, true, false) }), false, false,
                 false, null);
+        ApplicationEntity application = applicationService.getApplication(testApplicationName);
 
         SubscriptionService subscriptionService = EJBTestUtils.newInstance(SubscriptionServiceBean.class,
                 SafeOnlineTestContainer.sessionBeans, entityManager, subject.getUserId(), "user");
-        subscriptionService.subscribe(testApplicationName);
+        subscriptionService.subscribe(application.getId());
 
         IdentityService identityService = EJBTestUtils.newInstance(IdentityServiceBean.class, SafeOnlineTestContainer.sessionBeans,
                 entityManager, subject.getUserId(), "user");
-        identityService.confirmIdentity(testApplicationName);
+        identityService.confirmIdentity(application.getId());
 
         AttributeDO compoundAttribute = new AttributeDO(compoundName, DatatypeType.COMPOUNDED);
         compoundAttribute.setCompounded(true);

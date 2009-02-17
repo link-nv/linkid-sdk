@@ -50,19 +50,20 @@ public class ApplicationIdentityAttributeEntity implements Serializable {
     public ApplicationIdentityAttributeEntity(ApplicationIdentityEntity applicationIdentity, AttributeTypeEntity attributeType,
                                               boolean required, boolean dataMining) {
 
-        String applicationName = applicationIdentity.getApplication().getName();
+        long applicationId = applicationIdentity.getApplication().getId();
         long identityVersion = applicationIdentity.getIdentityVersion();
         String attributeTypeName = attributeType.getName();
-        pk = new ApplicationIdentityAttributePK(applicationName, identityVersion, attributeTypeName);
+        pk = new ApplicationIdentityAttributePK(applicationId, identityVersion, attributeTypeName);
         this.attributeType = attributeType;
         this.required = required;
         this.dataMining = dataMining;
     }
 
     @EmbeddedId
-    @AttributeOverrides( { @AttributeOverride(name = "application", column = @Column(name = APPLICATION_COLUMN_NAME)),
-            @AttributeOverride(name = "identityVersion", column = @Column(name = IDENTITY_VERSION_NAME)),
-            @AttributeOverride(name = "attributeTypeName", column = @Column(name = ATTRIBUTE_TYPE_NAME)) })
+    @AttributeOverrides( {
+            @AttributeOverride(name = ApplicationIdentityAttributePK.APPLICATION_ID_COLUMN, column = @Column(name = APPLICATION_COLUMN_NAME)),
+            @AttributeOverride(name = ApplicationIdentityAttributePK.IDENTITY_VERSION_COLUMN, column = @Column(name = IDENTITY_VERSION_NAME)),
+            @AttributeOverride(name = ApplicationIdentityAttributePK.ATTRIBUTE_TYPE_NAME_COLUMN, column = @Column(name = ATTRIBUTE_TYPE_NAME)) })
     public ApplicationIdentityAttributePK getPk() {
 
         return pk;
@@ -110,9 +111,9 @@ public class ApplicationIdentityAttributeEntity implements Serializable {
     }
 
     @Transient
-    public String getApplicationName() {
+    public long getApplicationId() {
 
-        return pk.getApplication();
+        return pk.getApplicationId();
     }
 
     @Transient
@@ -142,7 +143,7 @@ public class ApplicationIdentityAttributeEntity implements Serializable {
 
     public boolean equivalent(ApplicationIdentityAttributeEntity attr) {
 
-        if (!getApplicationName().equals(attr.getApplicationName()))
+        if (!(getApplicationId() == attr.getApplicationId()))
             return false;
         if (!getAttributeTypeName().equals(attr.getAttributeTypeName()))
             return false;
@@ -172,7 +173,6 @@ public class ApplicationIdentityAttributeEntity implements Serializable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("pk", pk).append("required", required)
-                                                                          .toString();
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("pk", pk).append("required", required).toString();
     }
 }

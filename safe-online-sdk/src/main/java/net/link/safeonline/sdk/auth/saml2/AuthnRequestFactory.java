@@ -121,9 +121,7 @@ public class AuthnRequestFactory {
             request.setDestination(destinationURL);
         }
 
-        if (null == applicationFriendlyName) {
-            request.setProviderName(applicationName);
-        } else {
+        if (null != applicationFriendlyName) {
             request.setProviderName(applicationFriendlyName);
         }
 

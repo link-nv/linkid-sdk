@@ -106,8 +106,8 @@ public class SubscriptionEntity implements Serializable {
     }
 
     @EmbeddedId
-    @AttributeOverrides( { @AttributeOverride(name = "application", column = @Column(name = "application")),
-            @AttributeOverride(name = "subject", column = @Column(name = "subject")) })
+    @AttributeOverrides( { @AttributeOverride(name = SubscriptionPK.APPLICATION_ID_COLUMN, column = @Column(name = "application")),
+            @AttributeOverride(name = SubscriptionPK.SUBJECT_COLUMN, column = @Column(name = "subject")) })
     public SubscriptionPK getPk() {
 
         return pk;
@@ -209,8 +209,7 @@ public class SubscriptionEntity implements Serializable {
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("pk", pk).append("ownerType", subscriptionOwnerType)
-                                                                    .toString();
+        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("pk", pk).append("ownerType", subscriptionOwnerType).toString();
     }
 
 

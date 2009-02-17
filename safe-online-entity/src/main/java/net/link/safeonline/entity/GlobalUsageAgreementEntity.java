@@ -36,12 +36,10 @@ public class GlobalUsageAgreementEntity implements Serializable {
 
     private static final long             serialVersionUID                       = 1L;
 
-    public static final String            GLOBAL_USAGE_AGREEMENT                 = "GLOBAL_USAGE_AGREEMENT";
+    public static final long              GLOBAL_USAGE_AGREEMENT                 = -1;
 
     public static final Long              DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION   = -1L;
-
     public static final Long              EMPTY_GLOBAL_USAGE_AGREEMENT_VERSION   = 0L;
-
     public static final Long              INITIAL_GLOBAL_USAGE_AGREEMENT_VERSION = 1L;
 
     public static final String            QUERY_CURRENT_GLOBAL                   = "gua.cur";

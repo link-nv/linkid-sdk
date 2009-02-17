@@ -116,17 +116,15 @@ public class LoginManager {
         return userId;
     }
 
-    public static void setApplication(HttpSession session, String applicationId) {
+    public static void setApplicationId(HttpSession session, long applicationId) {
 
-        if (null == applicationId)
-            throw new IllegalArgumentException("application is null");
         session.setAttribute(APPLICATION_ID_ATTRIBUTE, applicationId);
     }
 
-    public static String findApplication(HttpSession session) {
+    public static Long findApplication(HttpSession session) {
 
-        String application = (String) session.getAttribute(APPLICATION_ID_ATTRIBUTE);
-        return application;
+        Long applicationId = (Long) session.getAttribute(APPLICATION_ID_ATTRIBUTE);
+        return applicationId;
     }
 
     public static void setApplicationFriendlyName(HttpSession session, String applicationFriendlyName) {
