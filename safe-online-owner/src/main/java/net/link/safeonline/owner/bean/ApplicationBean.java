@@ -16,12 +16,14 @@ import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.interceptor.Interceptors;
 
 import net.link.safeonline.authentication.exception.ApplicationIdentityNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
 import net.link.safeonline.authentication.exception.ApplicationOwnerNotFoundException;
+import net.link.safeonline.authentication.exception.ExistingApplicationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.DevicePolicyService;
@@ -86,6 +88,10 @@ public class ApplicationBean implements Application {
     @Out
     private long                  numberOfSubscriptions;
 
+    private String                name;
+
+    private String                friendlyName;
+
 
     /*
      * Lifecycle
@@ -93,6 +99,9 @@ public class ApplicationBean implements Application {
     @Remove
     @Destroy
     public void destroyCallback() {
+
+        name = null;
+        friendlyName = null;
 
     }
 
@@ -185,7 +194,30 @@ public class ApplicationBean implements Application {
         if (null == selectedApplication)
             return;
         LOG.debug("usage agreement list factory");
-        selectedApplicationUsageAgreements = usageAgreementService.getUsageAgreements(selectedApplication.getName());
+        selectedApplicationUsageAgreements = usageAgreementService.getUsageAgreements(selectedApplication.getId());
+    }
+
+    /*
+     * Accessors
+     */
+    public String getName() {
+
+        return name;
+    }
+
+    public void setName(String name) {
+
+        this.name = name;
+    }
+
+    public String getFriendlyName() {
+
+        return friendlyName;
+    }
+
+    public void setFriendlyName(String friendlyName) {
+
+        this.friendlyName = friendlyName;
     }
 
     /*
@@ -195,10 +227,10 @@ public class ApplicationBean implements Application {
     public String view()
             throws ApplicationNotFoundException, PermissionDeniedException, ApplicationIdentityNotFoundException {
 
-        String applicationName = selectedApplication.getName();
-        LOG.debug("view: " + applicationName);
-        numberOfSubscriptions = subscriptionService.getNumberOfSubscriptions(applicationName);
-        selectedApplicationIdentity = applicationService.getCurrentApplicationIdentity(applicationName);
+        long applicationId = selectedApplication.getId();
+        LOG.debug("view: " + applicationId);
+        numberOfSubscriptions = subscriptionService.getNumberOfSubscriptions(applicationId);
+        selectedApplicationIdentity = applicationService.getCurrentApplicationIdentity(applicationId);
         return "view-application";
     }
 
@@ -206,6 +238,8 @@ public class ApplicationBean implements Application {
     public String edit() {
 
         LOG.debug("edit: " + selectedApplication.getName());
+        name = selectedApplication.getName();
+        friendlyName = selectedApplication.getFriendlyName();
         return "edit-application";
     }
 
@@ -213,23 +247,35 @@ public class ApplicationBean implements Application {
     public String save()
             throws ApplicationNotFoundException, PermissionDeniedException {
 
-        String applicationName = selectedApplication.getName();
+        long applicationId = selectedApplication.getId();
         String applicationDescription = selectedApplication.getDescription();
         boolean deviceRestriction = selectedApplication.isDeviceRestriction();
-        LOG.debug("save: " + applicationName);
+        LOG.debug("save: " + applicationId);
         LOG.debug("description: " + applicationDescription);
+
+        if (!selectedApplication.getName().equals(name)) {
+            try {
+                applicationService.updateApplicationName(applicationId, name);
+            } catch (ExistingApplicationException e) {
+                LOG.debug("application already exists: " + name);
+                facesMessages.addToControlFromResourceBundle("name", FacesMessage.SEVERITY_ERROR, "errorApplicationAlreadyExists", name);
+                return null;
+            }
+        }
+        if (null != friendlyName) {
+            applicationService.updateApplicationFriendlyName(applicationId, friendlyName);
+        }
 
         List<AllowedDeviceEntity> allowedDeviceList = new ArrayList<AllowedDeviceEntity>();
         for (DeviceEntry deviceEntry : allowedDevices) {
             if (deviceEntry.isAllowed() == true) {
-                AllowedDeviceEntity device = new AllowedDeviceEntity(selectedApplication, deviceEntry.getDevice(),
-                        deviceEntry.getWeight());
+                AllowedDeviceEntity device = new AllowedDeviceEntity(selectedApplication, deviceEntry.getDevice(), deviceEntry.getWeight());
                 allowedDeviceList.add(device);
             }
         }
 
-        applicationService.setApplicationDescription(applicationName, applicationDescription);
-        applicationService.setApplicationDeviceRestriction(applicationName, deviceRestriction);
+        applicationService.setApplicationDescription(applicationId, applicationDescription);
+        applicationService.setApplicationDeviceRestriction(applicationId, deviceRestriction);
         deviceService.setAllowedDevices(selectedApplication, allowedDeviceList);
         return "saved";
     }
@@ -253,8 +299,8 @@ public class ApplicationBean implements Application {
             throws ApplicationNotFoundException, PermissionDeniedException {
 
         LOG.debug("edit usage agreement for application: " + selectedApplication.getName());
-        draftUsageAgreement = usageAgreementService.getDraftUsageAgreement(selectedApplication.getName());
-        currentUsageAgreement = usageAgreementService.getCurrentUsageAgreement(selectedApplication.getName());
+        draftUsageAgreement = usageAgreementService.getDraftUsageAgreement(selectedApplication.getId());
+        currentUsageAgreement = usageAgreementService.getCurrentUsageAgreement(selectedApplication.getId());
         return "edit-usage-agreement";
     }
 }

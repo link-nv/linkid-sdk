@@ -61,14 +61,14 @@ public class UsageAgreementTextEntity implements Serializable {
     public UsageAgreementTextEntity(GlobalUsageAgreementEntity globalUsageAgreement, String text, String language) {
 
         this.text = text;
-        pk = new UsageAgreementTextPK(GlobalUsageAgreementEntity.GLOBAL_USAGE_AGREEMENT,
-                globalUsageAgreement.getUsageAgreementVersion(), language);
+        pk = new UsageAgreementTextPK(GlobalUsageAgreementEntity.GLOBAL_USAGE_AGREEMENT, globalUsageAgreement.getUsageAgreementVersion(),
+                language);
     }
 
     public UsageAgreementTextEntity(UsageAgreementEntity usageAgreement, String text, String language) {
 
         this.text = text;
-        pk = new UsageAgreementTextPK(usageAgreement.getApplication().getName(), usageAgreement.getUsageAgreementVersion(), language);
+        pk = new UsageAgreementTextPK(usageAgreement.getApplication().getId(), usageAgreement.getUsageAgreementVersion(), language);
     }
 
     @Lob
@@ -113,7 +113,7 @@ public class UsageAgreementTextEntity implements Serializable {
     }
 
     @Transient
-    public String getOwner() {
+    public long getOwner() {
 
         return pk.getOwner();
     }
@@ -151,7 +151,7 @@ public class UsageAgreementTextEntity implements Serializable {
                                                                @QueryParam("version") Long usageAgreementVersion);
 
         @UpdateMethod(DELETE_WHERE_OWNER_AND_VERSION)
-        void removeUsageAgreementTexts(@QueryParam("owner") String ownerName, @QueryParam("version") Long usageAgreementVersion);
+        void removeUsageAgreementTexts(@QueryParam("owner") long owner, @QueryParam("version") Long usageAgreementVersion);
     }
 
 }

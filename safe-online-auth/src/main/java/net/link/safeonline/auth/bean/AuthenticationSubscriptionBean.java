@@ -54,7 +54,7 @@ public class AuthenticationSubscriptionBean extends AbstractExitBean implements 
     private Log                   log;
 
     @In(value = LoginManager.APPLICATION_ID_ATTRIBUTE, required = true)
-    private String                applicationId;
+    private long                  applicationId;
 
     @EJB(mappedName = SubscriptionService.JNDI_BINDING)
     private SubscriptionService   subscriptionService;

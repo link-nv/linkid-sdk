@@ -21,7 +21,7 @@ public class UsageAgreementTextPK implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private String            owner;
+    private long              owner;
 
     private Long              usageAgreementVersion;
 
@@ -33,19 +33,19 @@ public class UsageAgreementTextPK implements Serializable {
         // empty
     }
 
-    public UsageAgreementTextPK(String owner, Long usageAgreementVersion, String language) {
+    public UsageAgreementTextPK(long owner, Long usageAgreementVersion, String language) {
 
         this.language = language;
         this.usageAgreementVersion = usageAgreementVersion;
         this.owner = owner;
     }
 
-    public String getOwner() {
+    public long getOwner() {
 
         return owner;
     }
 
-    public void setOwner(String owner) {
+    public void setOwner(long owner) {
 
         this.owner = owner;
     }
@@ -79,8 +79,8 @@ public class UsageAgreementTextPK implements Serializable {
         if (false == obj instanceof UsageAgreementTextPK)
             return false;
         UsageAgreementTextPK rhs = (UsageAgreementTextPK) obj;
-        return new EqualsBuilder().append(usageAgreementVersion, rhs.usageAgreementVersion).append(owner, rhs.owner).append(
-                language, rhs.language).isEquals();
+        return new EqualsBuilder().append(usageAgreementVersion, rhs.usageAgreementVersion).append(owner, rhs.owner).append(language,
+                rhs.language).isEquals();
     }
 
     @Override

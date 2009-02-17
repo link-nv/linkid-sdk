@@ -54,7 +54,7 @@ public class IdentityConfirmationBean extends AbstractExitBean implements Identi
     private static final Log LOG = LogFactory.getLog(IdentityConfirmationBean.class);
 
     @In(value = LoginManager.APPLICATION_ID_ATTRIBUTE, required = true)
-    private String           application;
+    private long             application;
 
     @In(create = true)
     FacesMessages            facesMessages;

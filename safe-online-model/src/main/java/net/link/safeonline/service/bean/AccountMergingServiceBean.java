@@ -160,8 +160,7 @@ public class AccountMergingServiceBean implements AccountMergingService {
          * Remove the remaining subject identifier in the login domain
          */
         String targetSubjectLogin = subjectService.getSubjectLogin(targetSubject.getUserId());
-        subjectIdentifierDAO.removeOtherSubjectIdentifiers(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN, targetSubjectLogin,
-                targetSubject);
+        subjectIdentifierDAO.removeOtherSubjectIdentifiers(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN, targetSubjectLogin, targetSubject);
         /*
          * Remove source account, without removing the subject identifiers.
          */
@@ -248,7 +247,7 @@ public class AccountMergingServiceBean implements AccountMergingService {
 
         List<DeviceEntity> allowedDevices = null;
         if (subscription.getApplication().isDeviceRestriction()) {
-            allowedDevices = devicePolicyService.getDevicePolicy(subscription.getApplication().getName(), null);
+            allowedDevices = devicePolicyService.getDevicePolicy(subscription.getApplication().getId(), null);
         }
         return new SubscriptionDO(subscription, allowedDevices);
     }
@@ -390,8 +389,7 @@ public class AccountMergingServiceBean implements AccountMergingService {
         List<CompoundedAttributeTypeMemberEntity> members = attributes.getKey().getMembers();
         for (AttributeEntity attribute : attributes.getValue()) {
             for (CompoundedAttributeTypeMemberEntity member : members) {
-                AttributeEntity memberAttribute = attributeDAO.findAttribute(subject, member.getMember(),
-                        attribute.getAttributeIndex());
+                AttributeEntity memberAttribute = attributeDAO.findAttribute(subject, member.getMember(), attribute.getAttributeIndex());
                 if (null != memberAttribute) {
                     attribute.getMembers().add(memberAttribute);
                 }
@@ -466,9 +464,8 @@ public class AccountMergingServiceBean implements AccountMergingService {
             String description = null;
             if (null != language) {
                 LOG.debug("trying language: " + language);
-                AttributeTypeDescriptionEntity attributeTypeDescription = attributeTypeDAO
-                                                                                               .findDescription(new AttributeTypeDescriptionPK(
-                                                                                                       attributeType.getName(), language));
+                AttributeTypeDescriptionEntity attributeTypeDescription = attributeTypeDAO.findDescription(new AttributeTypeDescriptionPK(
+                        attributeType.getName(), language));
                 if (null != attributeTypeDescription) {
                     LOG.debug("found description");
                     humanReadableName = attributeTypeDescription.getName();

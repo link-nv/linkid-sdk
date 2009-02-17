@@ -65,6 +65,7 @@ import net.link.safeonline.auth.ws.AuthenticationServiceFactory;
 import net.link.safeonline.auth.ws.AuthenticationStep;
 import net.link.safeonline.auth.ws.Confirmation;
 import net.link.safeonline.auth.ws.GetAuthenticationServiceFactory;
+import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
@@ -74,6 +75,8 @@ import net.link.safeonline.authentication.service.UsageAgreementService;
 import net.link.safeonline.authentication.service.UserIdMappingService;
 import net.link.safeonline.authentication.service.WSAuthenticationService;
 import net.link.safeonline.data.AttributeDO;
+import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceEntity;
@@ -139,6 +142,7 @@ public class AuthenticationPortImplTest {
     private SubscriptionService            mockSubscriptionService;
     private IdentityService                mockIdentityService;
     private UserIdMappingService           mockUserIdMappingService;
+    private ApplicationService             mockApplicationService;
 
     private Object[]                       mockObjects;
 
@@ -150,7 +154,8 @@ public class AuthenticationPortImplTest {
 
     private String                         testLanguage                  = Locale.ENGLISH.getLanguage();
 
-    private String                         testApplicationId             = "test-application-name";
+    private String                         testApplicationName           = "test-application-name";
+    private long                           testApplicationId             = 1234567890;
 
     private String                         testIssuerName                = "test-issuer-name";
 
@@ -219,10 +224,11 @@ public class AuthenticationPortImplTest {
         mockSubscriptionService = createMock(SubscriptionService.class);
         mockIdentityService = createMock(IdentityService.class);
         mockUserIdMappingService = createMock(UserIdMappingService.class);
+        mockApplicationService = createMock(ApplicationService.class);
 
         mockObjects = new Object[] { mockWSSecurityConfigurationService, mockPkiValidator, mockSamlAuthorityService,
                 mockDevicePolicyService, mockNodeAuthenticationService, mockNodeMappingService, mockSubjectService,
-                mockUsageAgreementService, mockSubscriptionService, mockIdentityService, mockUserIdMappingService };
+                mockUsageAgreementService, mockSubscriptionService, mockIdentityService, mockUserIdMappingService, mockApplicationService };
 
         jndiTestUtils.bindComponent(WSSecurityConfiguration.JNDI_BINDING, mockWSSecurityConfigurationService);
         jndiTestUtils.bindComponent(PkiValidator.JNDI_BINDING, mockPkiValidator);
@@ -236,6 +242,7 @@ public class AuthenticationPortImplTest {
         jndiTestUtils.bindComponent(SubscriptionService.JNDI_BINDING, mockSubscriptionService);
         jndiTestUtils.bindComponent(IdentityService.JNDI_BINDING, mockIdentityService);
         jndiTestUtils.bindComponent(UserIdMappingService.JNDI_BINDING, mockUserIdMappingService);
+        jndiTestUtils.bindComponent(ApplicationService.JNDI_BINDING, mockApplicationService);
 
         expect(mockWSAuthenticationService.getAuthenticationTimeout()).andStubReturn(60 * 30);
         replay(mockWSAuthenticationService);
@@ -295,14 +302,18 @@ public class AuthenticationPortImplTest {
         DeviceEntity testDevice = new DeviceEntity(DeviceTestAuthenticationClientImpl.testDeviceName, testDeviceClass, localNode, null,
                 null, null, null, null, null, null, null);
         SubjectEntity testSubject = new SubjectEntity(DeviceTestAuthenticationClientImpl.testUserId);
+        ApplicationOwnerEntity owner = new ApplicationOwnerEntity("owner", testSubject);
+        ApplicationEntity application = new ApplicationEntity(testApplicationName, null, owner, null, null, null, null);
+        application.setId(testApplicationId);
 
         Map<String, String> nameValuePairs = new HashMap<String, String>();
         nameValuePairs.put("foo", "bar");
 
-        WSAuthenticationRequestType request = AuthenticationUtil.getAuthenticationRequest(testApplicationId,
+        WSAuthenticationRequestType request = AuthenticationUtil.getAuthenticationRequest(testApplicationName,
                 DeviceTestAuthenticationClientImpl.testDeviceName, testLanguage, nameValuePairs, testpublicKey);
 
         // expectations
+        expect(mockApplicationService.getApplication(testApplicationName)).andStubReturn(application);
         expect(mockDevicePolicyService.getAuthenticationWSURL(DeviceTestAuthenticationClientImpl.testDeviceName)).andStubReturn("foo");
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockNodeAuthenticationService.getLocalNode()).andStubReturn(localNode);
@@ -568,14 +579,18 @@ public class AuthenticationPortImplTest {
         DeviceEntity testDevice = new DeviceEntity(DeviceTestAuthenticationClientImpl.testDeviceName, testDeviceClass, localNode, null,
                 null, null, null, null, null, null, null);
         SubjectEntity testSubject = new SubjectEntity(DeviceTestAuthenticationClientImpl.testUserId);
+        ApplicationOwnerEntity owner = new ApplicationOwnerEntity("owner", testSubject);
+        ApplicationEntity application = new ApplicationEntity(testApplicationName, null, owner, null, null, null, null);
+        application.setId(testApplicationId);
 
         Map<String, String> nameValuePairs = new HashMap<String, String>();
         nameValuePairs.put("foo", "bar");
 
-        WSAuthenticationRequestType request = AuthenticationUtil.getAuthenticationRequest(testApplicationId,
+        WSAuthenticationRequestType request = AuthenticationUtil.getAuthenticationRequest(testApplicationName,
                 DeviceTestAuthenticationClientImpl.testDeviceName, testLanguage, nameValuePairs, testpublicKey);
 
         // expectations
+        expect(mockApplicationService.getApplication(testApplicationName)).andStubReturn(application);
         expect(mockDevicePolicyService.getAuthenticationWSURL(DeviceTestAuthenticationClientImpl.testDeviceName)).andStubReturn("foo");
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockNodeAuthenticationService.getLocalNode()).andStubReturn(localNode);
@@ -687,14 +702,18 @@ public class AuthenticationPortImplTest {
         DeviceEntity testDevice = new DeviceEntity(DeviceTestAuthenticationClientImpl.testDeviceName, testDeviceClass, localNode, null,
                 null, null, null, null, null, null, null);
         SubjectEntity testSubject = new SubjectEntity(DeviceTestAuthenticationClientImpl.testUserId);
+        ApplicationOwnerEntity owner = new ApplicationOwnerEntity("owner", testSubject);
+        ApplicationEntity application = new ApplicationEntity(testApplicationName, null, owner, null, null, null, null);
+        application.setId(testApplicationId);
 
         Map<String, String> nameValuePairs = new HashMap<String, String>();
         nameValuePairs.put("foo", "bar");
 
-        WSAuthenticationRequestType request = AuthenticationUtil.getAuthenticationRequest(testApplicationId,
+        WSAuthenticationRequestType request = AuthenticationUtil.getAuthenticationRequest(testApplicationName,
                 DeviceTestAuthenticationClientImpl.testDeviceName, testLanguage, nameValuePairs, testpublicKey);
 
         // expectations
+        expect(mockApplicationService.getApplication(testApplicationName)).andStubReturn(application);
         expect(mockDevicePolicyService.getAuthenticationWSURL(DeviceTestAuthenticationClientImpl.testDeviceName)).andStubReturn("foo");
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockNodeAuthenticationService.getLocalNode()).andStubReturn(localNode);

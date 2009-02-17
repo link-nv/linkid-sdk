@@ -61,7 +61,7 @@ public class ApplicationIdentifierMappingServiceBean implements ApplicationIdent
         SubjectEntity subject = subjectIdentifierDAO.findSubject(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN, username);
         if (null == subject)
             throw new SubjectNotFoundException();
-        String userId = userIdMappingService.getApplicationUserId(application.getName(), subject.getUserId());
+        String userId = userIdMappingService.getApplicationUserId(application.getId(), subject.getUserId());
         LOG.debug("userId: " + userId);
         return userId;
     }
@@ -76,10 +76,10 @@ public class ApplicationIdentifierMappingServiceBean implements ApplicationIdent
     }
 
     @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
-    public String findUserId(String applicationName, String applicationUserId)
+    public String findUserId(long applicationId, String applicationUserId)
             throws ApplicationNotFoundException {
 
-        LOG.debug("getUserId: " + applicationName + ", " + applicationUserId);
-        return userIdMappingService.findUserId(applicationName, applicationUserId);
+        LOG.debug("getUserId: " + applicationId + ", " + applicationUserId);
+        return userIdMappingService.findUserId(applicationId, applicationUserId);
     }
 }

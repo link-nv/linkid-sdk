@@ -157,8 +157,8 @@ public class PasswordAuthenticationPortImplTest {
         mockWSAuthenticationService = createMock(WSAuthenticationService.class);
         mockPasswordDeviceServce = createMock(PasswordDeviceService.class);
 
-        mockObjects = new Object[] { mockWSSecurityConfigurationService, mockPkiValidator,
-                mockApplicationAuthenticationService, mockSamlAuthorityService, mockPasswordDeviceServce };
+        mockObjects = new Object[] { mockWSSecurityConfigurationService, mockPkiValidator, mockApplicationAuthenticationService,
+                mockSamlAuthorityService, mockPasswordDeviceServce };
 
         jndiTestUtils.bindComponent(WSSecurityConfiguration.JNDI_BINDING, mockWSSecurityConfigurationService);
         jndiTestUtils.bindComponent(PkiValidator.JNDI_BINDING, mockPkiValidator);
@@ -169,9 +169,8 @@ public class PasswordAuthenticationPortImplTest {
         jndiTestUtils.bindComponent(WSAuthenticationService.JNDI_BINDING, mockWSAuthenticationService);
         jndiTestUtils.bindComponent(PasswordDeviceService.JNDI_BINDING, mockPasswordDeviceServce);
 
-        expect(mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock.anyObject()))
-                                                                                                                                .andStubReturn(
-                                                                                                                                        PkiResult.VALID);
+        expect(mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock.anyObject())).andStubReturn(
+                PkiResult.VALID);
 
         expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
         expect(mockWSAuthenticationService.getAuthenticationTimeout()).andStubReturn(60 * 30);
@@ -242,7 +241,7 @@ public class PasswordAuthenticationPortImplTest {
         expect(mockPasswordDeviceServce.authenticate(PasswordTestNameIdentifierMappingClientImpl.testUserId, testPassword)).andReturn(
                 PasswordTestNameIdentifierMappingClientImpl.testUserId);
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
-        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn("test-application-name");
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(12345567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
@@ -279,10 +278,9 @@ public class PasswordAuthenticationPortImplTest {
                 PasswordConstants.PASSWORD_DEVICE_ID, testLanguage, nameValuePairs, testpublicKey);
 
         // expectations
-        expect(mockPasswordDeviceServce.authenticate(PasswordTestNameIdentifierMappingClientImpl.testUserId, testPassword)).andReturn(
-                null);
+        expect(mockPasswordDeviceServce.authenticate(PasswordTestNameIdentifierMappingClientImpl.testUserId, testPassword)).andReturn(null);
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
-        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn("test-application-name");
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(12345567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
@@ -322,7 +320,7 @@ public class PasswordAuthenticationPortImplTest {
         expect(mockPasswordDeviceServce.authenticate(PasswordTestNameIdentifierMappingClientImpl.testUserId, testPassword)).andThrow(
                 new DeviceDisabledException());
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
-        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn("test-application-name");
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(12345567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);

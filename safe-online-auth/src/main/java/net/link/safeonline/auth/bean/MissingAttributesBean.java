@@ -58,7 +58,7 @@ public class MissingAttributesBean implements MissingAttributes {
     private IdentityService    identityService;
 
     @In(value = LoginManager.APPLICATION_ID_ATTRIBUTE, required = true)
-    private String             application;
+    private long               application;
 
     @In(create = true)
     FacesMessages              facesMessages;
@@ -108,13 +108,11 @@ public class MissingAttributesBean implements MissingAttributes {
                 identityService.saveAttribute(attribute);
             } catch (PermissionDeniedException e) {
                 LOG.debug("permission denied for attribute: " + attribute.getName());
-                facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorPermissionDeniedForAttribute",
-                        attribute.getName());
+                facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorPermissionDeniedForAttribute", attribute.getName());
                 return null;
             } catch (AttributeTypeNotFoundException e) {
                 LOG.debug("attribute type not found: " + attribute.getName());
-                facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFoundSpecific",
-                        attribute.getName());
+                facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFoundSpecific", attribute.getName());
                 return null;
             }
         }
@@ -124,13 +122,11 @@ public class MissingAttributesBean implements MissingAttributes {
                 identityService.saveAttribute(attribute);
             } catch (PermissionDeniedException e) {
                 LOG.debug("permission denied for attribute: " + attribute.getName());
-                facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorPermissionDeniedForAttribute",
-                        attribute.getName());
+                facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorPermissionDeniedForAttribute", attribute.getName());
                 return null;
             } catch (AttributeTypeNotFoundException e) {
                 LOG.debug("attribute type not found: " + attribute.getName());
-                facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFoundSpecific",
-                        attribute.getName());
+                facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorAttributeTypeNotFoundSpecific", attribute.getName());
                 return null;
             }
         }

@@ -86,7 +86,7 @@ public class ApplicationOwnerEntity implements Serializable {
     }
 
     @OneToMany(mappedBy = "applicationOwner", fetch = FetchType.EAGER)
-    @OrderBy("name")
+    @OrderBy(ApplicationEntity.NAME_COLUMN)
     public List<ApplicationEntity> getApplications() {
 
         return applications;

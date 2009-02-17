@@ -78,7 +78,7 @@ import org.junit.Test;
 
 public class SAMLAttributePortImplTest {
 
-    private static final Log                    LOG               = LogFactory.getLog(SAMLAttributePortImplTest.class);
+    private static final Log                    LOG                 = LogFactory.getLog(SAMLAttributePortImplTest.class);
 
     private WebServiceTestUtils                 webServiceTestUtils;
 
@@ -118,7 +118,8 @@ public class SAMLAttributePortImplTest {
 
     private String                              testSubjectId;
 
-    private String                              testApplicationId = "test-application-name";
+    private String                              testApplicationName = "test-application-name";
+    private long                                testApplicationId   = 1234567890;
 
 
     @SuppressWarnings("unchecked")
@@ -167,8 +168,10 @@ public class SAMLAttributePortImplTest {
 
         expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
 
-        expect(mockApplicationManager.getCallerApplication()).andStubReturn(
-                new ApplicationEntity(testApplicationId, null, new ApplicationOwnerEntity(), null, null, null, certificate));
+        ApplicationEntity testApplication = new ApplicationEntity(testApplicationName, null, new ApplicationOwnerEntity(), null, null,
+                null, certificate);
+        testApplication.setId(testApplicationId);
+        expect(mockApplicationManager.getCallerApplication()).andStubReturn(testApplication);
 
         expect(mockApplicationIdentifierMappingService.findUserId(testApplicationId, testSubjectLogin)).andStubReturn(testSubjectId);
 
@@ -237,7 +240,7 @@ public class SAMLAttributePortImplTest {
 
         // expectations
         expect(mockAttributeService.getConfirmedAttributeValue(testSubjectId, testAttributeName)).andReturn(testAttributeValue);
-        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn("test-application-name");
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(1234567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
@@ -317,7 +320,7 @@ public class SAMLAttributePortImplTest {
 
         // expectations
         expect(mockAttributeService.getConfirmedAttributeValue(testSubjectId, testAttributeName)).andReturn(testAttributeValues);
-        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(testApplicationId);
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(1234567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
@@ -409,7 +412,7 @@ public class SAMLAttributePortImplTest {
 
         // expectations
         expect(mockAttributeService.getConfirmedAttributeValue(testSubjectId, testAttributeName)).andReturn(testAttributeValues);
-        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(testApplicationId);
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(1234567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
@@ -484,7 +487,7 @@ public class SAMLAttributePortImplTest {
 
         // expectations
         expect(mockAttributeService.getConfirmedAttributeValue(testSubjectId, testAttributeName)).andReturn(testAttributeValue);
-        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(testApplicationId);
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(1234567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
@@ -550,7 +553,7 @@ public class SAMLAttributePortImplTest {
         // expectations
         expect(mockAttributeService.getConfirmedAttributeValue(testSubjectId, testAttributeName)).andThrow(
                 new AttributeTypeNotFoundException());
-        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(testApplicationId);
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(1234567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);

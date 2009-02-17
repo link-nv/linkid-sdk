@@ -164,19 +164,19 @@ public class SafeOnlineApplicationLoginModule implements LoginModule {
 
         // authenticate
         ApplicationAuthenticationService applicationAuthenticationService = getApplicationAuthenticationService();
-        String applicationName;
+        long applicationId;
         try {
-            applicationName = applicationAuthenticationService.authenticate(certificate);
+            applicationId = applicationAuthenticationService.authenticate(certificate);
         } catch (ApplicationNotFoundException e) {
             throw new FailedLoginException("certificate is not an application certificate");
         }
 
-        String expectedApplicationName = nameCallback.getName();
-        if (false == applicationName.equals(expectedApplicationName))
+        long expectedApplicationId = Long.parseLong(nameCallback.getName());
+        if (applicationId != expectedApplicationId)
             throw new FailedLoginException("application name not correct");
 
-        authenticatedPrincipal = new SimplePrincipal(applicationName);
-        LOG.debug("login: " + applicationName);
+        authenticatedPrincipal = new SimplePrincipal(nameCallback.getName());
+        LOG.debug("login: " + nameCallback.getName());
         LOG.debug("login subject: " + subject);
 
         return true;

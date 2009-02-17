@@ -45,7 +45,7 @@ public class GlobalUsageAgreementConfirmationBean extends AbstractExitBean imple
     private Log                   log;
 
     @In(value = LoginManager.APPLICATION_ID_ATTRIBUTE, required = true)
-    private String                applicationId;
+    private long                  applicationId;
 
     @EJB(mappedName = SubscriptionService.JNDI_BINDING)
     private SubscriptionService   subscriptionService;
@@ -77,8 +77,7 @@ public class GlobalUsageAgreementConfirmationBean extends AbstractExitBean imple
          */
         boolean subscriptionRequired = !subscriptionService.isSubscribed(applicationId);
         if (!subscriptionRequired) {
-            subscriptionRequired = usageAgreementService.requiresUsageAgreementAcceptation(applicationId,
-                    viewLocale.getLanguage());
+            subscriptionRequired = usageAgreementService.requiresUsageAgreementAcceptation(applicationId, viewLocale.getLanguage());
         }
         log.debug("subscription required: " + subscriptionRequired);
         if (true == subscriptionRequired)

@@ -102,11 +102,11 @@ public class SubscriptionServiceBean implements SubscriptionService, Subscriptio
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public void subscribe(String applicationName)
+    public void subscribe(long applicationId)
             throws ApplicationNotFoundException, AlreadySubscribedException, PermissionDeniedException {
 
         Subject subject = SubjectFactory.getCallerSubject(this);
-        Application application = ApplicationFactory.getApplication(this, applicationName);
+        Application application = ApplicationFactory.getApplication(this, applicationId);
         subject.subscribe(application);
 
         if (application.getEntity().getIdScope().equals(IdScopeType.APPLICATION)) {
@@ -116,32 +116,31 @@ public class SubscriptionServiceBean implements SubscriptionService, Subscriptio
         }
 
         historyDAO.addHistoryEntry(subject.getSubjectEntity(), HistoryEventType.SUBSCRIPTION_ADD, Collections.singletonMap(
-                SafeOnlineConstants.APPLICATION_PROPERTY, applicationName));
+                SafeOnlineConstants.APPLICATION_PROPERTY, application.getEntity().getName()));
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public void unsubscribe(String applicationName)
+    public void unsubscribe(long applicationId)
             throws ApplicationNotFoundException, SubscriptionNotFoundException, PermissionDeniedException, MessageHandlerNotFoundException {
 
         Subject subject = SubjectFactory.getCallerSubject(this);
-        Application application = ApplicationFactory.getApplication(this, applicationName);
+        Application application = ApplicationFactory.getApplication(this, applicationId);
 
-        notificationProducerService.sendNotification(SafeOnlineConstants.TOPIC_UNSUBSCRIBE_USER, subject.getSubjectEntity()
-                                                                                                             .getUserId(),
+        notificationProducerService.sendNotification(SafeOnlineConstants.TOPIC_UNSUBSCRIBE_USER, subject.getSubjectEntity().getUserId(),
                 application.getEntity().getName());
 
         subject.unsubscribe(application);
 
         historyDAO.addHistoryEntry(subject.getSubjectEntity(), HistoryEventType.SUBSCRIPTION_REMOVE, Collections.singletonMap(
-                SafeOnlineConstants.APPLICATION_PROPERTY, applicationName));
+                SafeOnlineConstants.APPLICATION_PROPERTY, application.getEntity().getName()));
     }
 
     @RolesAllowed( { SafeOnlineRoles.OPERATOR_ROLE, SafeOnlineRoles.OWNER_ROLE })
-    public long getNumberOfSubscriptions(String applicationName)
+    public long getNumberOfSubscriptions(long applicationId)
             throws ApplicationNotFoundException, PermissionDeniedException {
 
-        LOG.debug("get number of subscriptions for application: " + applicationName);
-        ApplicationEntity application = applicationDAO.getApplication(applicationName);
+        LOG.debug("get number of subscriptions for application: " + applicationId);
+        ApplicationEntity application = applicationDAO.getApplication(applicationId);
 
         checkReadPermission(application);
 
@@ -162,12 +161,12 @@ public class SubscriptionServiceBean implements SubscriptionService, Subscriptio
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public boolean isSubscribed(String applicationName)
+    public boolean isSubscribed(long applicationId)
             throws ApplicationNotFoundException {
 
-        LOG.debug("is subscribed: " + applicationName);
+        LOG.debug("is subscribed: " + applicationId);
         Subject subject = SubjectFactory.getCallerSubject(this);
-        Application application = ApplicationFactory.getApplication(this, applicationName);
+        Application application = ApplicationFactory.getApplication(this, applicationId);
         return subject.isSubscribed(application);
     }
 

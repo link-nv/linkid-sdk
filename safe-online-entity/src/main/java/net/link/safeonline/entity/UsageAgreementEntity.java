@@ -71,14 +71,15 @@ public class UsageAgreementEntity implements Serializable {
 
     public UsageAgreementEntity(ApplicationEntity application, Long usageAgreementVersion) {
 
-        pk = new UsageAgreementPK(application.getName(), usageAgreementVersion);
+        pk = new UsageAgreementPK(application.getId(), usageAgreementVersion);
         this.application = application;
         usageAgreementTexts = new HashSet<UsageAgreementTextEntity>();
     }
 
     @EmbeddedId
-    @AttributeOverrides( { @AttributeOverride(name = "application", column = @Column(name = APPLICATION_COLUMN_NAME)),
-            @AttributeOverride(name = "version", column = @Column(name = USAGE_AGREEMENT_VERSION_COLUMN_NAME)) })
+    @AttributeOverrides( {
+            @AttributeOverride(name = UsageAgreementPK.APPLICATION_ID_COLUMN, column = @Column(name = APPLICATION_COLUMN_NAME)),
+            @AttributeOverride(name = UsageAgreementPK.VERSION_COLUMN, column = @Column(name = USAGE_AGREEMENT_VERSION_COLUMN_NAME)) })
     public UsageAgreementPK getPk() {
 
         return pk;

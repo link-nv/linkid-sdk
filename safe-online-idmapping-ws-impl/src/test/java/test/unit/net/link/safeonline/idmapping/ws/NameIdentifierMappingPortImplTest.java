@@ -143,11 +143,11 @@ public class NameIdentifierMappingPortImplTest {
         handlerChain.add(loggingHandler);
         binding.setHandlerChain(handlerChain);
 
-        String testApplicationName = "test-application-name";
+        long testApplicationId = 1234567890;
         expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
         expect(mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock.anyObject())).andStubReturn(
                 PkiResult.VALID);
-        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(testApplicationName);
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(testApplicationId);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);

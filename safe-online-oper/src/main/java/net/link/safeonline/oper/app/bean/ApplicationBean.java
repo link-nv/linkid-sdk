@@ -190,6 +190,7 @@ public class ApplicationBean implements Application {
     public void destroyCallback() {
 
         name = null;
+        friendlyName = null;
         description = null;
         applicationUrl = null;
         applicationLogo = null;
@@ -231,10 +232,10 @@ public class ApplicationBean implements Application {
             throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException {
 
         LOG.debug("application identity attributes factory");
-        String applicationName = selectedApplication.getName();
+        long applicationId = selectedApplication.getId();
 
-        applicationIdentityAttributes = applicationService.getCurrentApplicationIdentity(applicationName);
-        numberOfSubscriptions = subscriptionService.getNumberOfSubscriptions(applicationName);
+        applicationIdentityAttributes = applicationService.getCurrentApplicationIdentity(applicationId);
+        numberOfSubscriptions = subscriptionService.getNumberOfSubscriptions(applicationId);
         ownerAdminName = subjectService.getSubjectLogin(selectedApplication.getApplicationOwner().getAdmin().getUserId());
     }
 
@@ -294,8 +295,7 @@ public class ApplicationBean implements Application {
                 newSsoLogoutUrl = new URL(ssoLogoutUrl);
             } catch (MalformedURLException e) {
                 LOG.debug("illegal URL format: " + ssoLogoutUrl);
-                facesMessages.addToControlFromResourceBundle("ssoLogoutUrl", FacesMessage.SEVERITY_ERROR, "errorIllegalUrl",
-                        ssoLogoutUrl);
+                facesMessages.addToControlFromResourceBundle("ssoLogoutUrl", FacesMessage.SEVERITY_ERROR, "errorIllegalUrl", ssoLogoutUrl);
                 return null;
             }
         }
@@ -322,8 +322,7 @@ public class ApplicationBean implements Application {
 
         } catch (ExistingApplicationException e) {
             LOG.debug("application already exists: " + name);
-            facesMessages.addToControlFromResourceBundle("name", FacesMessage.SEVERITY_ERROR, "errorApplicationAlreadyExists",
-                    name);
+            facesMessages.addToControlFromResourceBundle("name", FacesMessage.SEVERITY_ERROR, "errorApplicationAlreadyExists", name);
             return null;
         } catch (ApplicationOwnerNotFoundException e) {
             LOG.debug("application owner not found: " + applicationOwner);
@@ -343,8 +342,7 @@ public class ApplicationBean implements Application {
         List<AllowedDeviceEntity> allowedDeviceList = new ArrayList<AllowedDeviceEntity>();
         for (DeviceEntry deviceEntry : allowedDevices) {
             if (deviceEntry.isAllowed() == true) {
-                AllowedDeviceEntity device = new AllowedDeviceEntity(selectedApplication, deviceEntry.getDevice(),
-                        deviceEntry.getWeight());
+                AllowedDeviceEntity device = new AllowedDeviceEntity(selectedApplication, deviceEntry.getDevice(), deviceEntry.getWeight());
                 allowedDeviceList.add(device);
             }
         }
@@ -503,12 +501,12 @@ public class ApplicationBean implements Application {
         /*
          * http://jira.jboss.com/jira/browse/EJBTHREE-786
          */
-        String applicationName = selectedApplication.getName();
-        LOG.debug("remove application: " + applicationName);
+        long applicationId = selectedApplication.getId();
+        LOG.debug("remove application: " + applicationId);
         try {
-            applicationService.removeApplication(applicationName);
+            applicationService.removeApplication(applicationId);
         } catch (PermissionDeniedException e) {
-            LOG.debug("permission denied to remove: " + applicationName);
+            LOG.debug("permission denied to remove: " + applicationId);
             facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, e.getResourceMessage(), e.getResourceArgs());
             return null;
         }
@@ -534,8 +532,8 @@ public class ApplicationBean implements Application {
             throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException {
 
         Set<ApplicationIdentityAttributeEntity> currentIdentityAttributes = applicationService
-                                                                                                   .getCurrentApplicationIdentity(selectedApplication
-                                                                                                                                                          .getName());
+                                                                                              .getCurrentApplicationIdentity(selectedApplication
+                                                                                                                                                .getId());
 
         /*
          * Construct a map for fast lookup. The key is the attribute type name.
@@ -594,7 +592,7 @@ public class ApplicationBean implements Application {
             throws CertificateEncodingException, ApplicationNotFoundException, IOException, ApplicationIdentityNotFoundException,
             AttributeTypeNotFoundException, PermissionDeniedException {
 
-        String applicationId = selectedApplication.getName();
+        long applicationId = selectedApplication.getId();
         LOG.debug("save application: " + applicationId);
 
         URL newApplicationUrl = null;
@@ -624,8 +622,7 @@ public class ApplicationBean implements Application {
                 newSsoLogoutUrl = new URL(ssoLogoutUrl);
             } catch (MalformedURLException e) {
                 LOG.debug("illegal URL format: " + ssoLogoutUrl);
-                facesMessages.addToControlFromResourceBundle("ssoLogoutUrl", FacesMessage.SEVERITY_ERROR, "errorIllegalUrl",
-                        ssoLogoutUrl);
+                facesMessages.addToControlFromResourceBundle("ssoLogoutUrl", FacesMessage.SEVERITY_ERROR, "errorIllegalUrl", ssoLogoutUrl);
                 return null;
             }
         }
@@ -645,6 +642,18 @@ public class ApplicationBean implements Application {
             tempNewIdentityAttributes.add(newIdentityAttribute);
         }
 
+        if (!selectedApplication.getName().equals(name)) {
+            try {
+                applicationService.updateApplicationName(applicationId, name);
+            } catch (ExistingApplicationException e) {
+                LOG.debug("application already exists: " + name);
+                facesMessages.addToControlFromResourceBundle("name", FacesMessage.SEVERITY_ERROR, "errorApplicationAlreadyExists", name);
+                return null;
+            }
+        }
+        if (null != friendlyName) {
+            applicationService.updateApplicationFriendlyName(applicationId, friendlyName);
+        }
         applicationService.updateApplicationIdentity(applicationId, tempNewIdentityAttributes);
         applicationService.updateApplicationUrl(applicationId, newApplicationUrl);
         if (newApplicationLogo != null) {
@@ -662,8 +671,7 @@ public class ApplicationBean implements Application {
         List<AllowedDeviceEntity> allowedDeviceList = new ArrayList<AllowedDeviceEntity>();
         for (DeviceEntry deviceEntry : allowedDevices) {
             if (deviceEntry.isAllowed() == true) {
-                AllowedDeviceEntity device = new AllowedDeviceEntity(selectedApplication, deviceEntry.getDevice(),
-                        deviceEntry.getWeight());
+                AllowedDeviceEntity device = new AllowedDeviceEntity(selectedApplication, deviceEntry.getDevice(), deviceEntry.getWeight());
                 allowedDeviceList.add(device);
             }
         }
@@ -698,6 +706,10 @@ public class ApplicationBean implements Application {
          * To set the selected application.
          */
         LOG.debug("edit application: " + selectedApplication.getName());
+
+        name = selectedApplication.getName();
+
+        friendlyName = selectedApplication.getFriendlyName();
 
         if (null != selectedApplication.getApplicationUrl()) {
             applicationUrl = selectedApplication.getApplicationUrl().toExternalForm();
@@ -751,7 +763,7 @@ public class ApplicationBean implements Application {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();
 
-        String text = usageAgreementService.getUsageAgreementText(selectedApplication.getName(), viewLocale.getLanguage());
+        String text = usageAgreementService.getUsageAgreementText(selectedApplication.getId(), viewLocale.getLanguage());
         if (null == text)
             return "";
         return text;
@@ -796,7 +808,7 @@ public class ApplicationBean implements Application {
         if (null == selectedApplication)
             return;
         LOG.debug("usage agreement list factory");
-        selectedApplicationUsageAgreements = usageAgreementService.getUsageAgreements(selectedApplication.getName());
+        selectedApplicationUsageAgreements = usageAgreementService.getUsageAgreements(selectedApplication.getId());
     }
 
     @RolesAllowed(OperatorConstants.OPERATOR_ROLE)
@@ -812,8 +824,8 @@ public class ApplicationBean implements Application {
             throws ApplicationNotFoundException, PermissionDeniedException {
 
         LOG.debug("edit usage agreement for application: " + selectedApplication.getName());
-        draftUsageAgreement = usageAgreementService.getDraftUsageAgreement(selectedApplication.getName());
-        currentUsageAgreement = usageAgreementService.getCurrentUsageAgreement(selectedApplication.getName());
+        draftUsageAgreement = usageAgreementService.getDraftUsageAgreement(selectedApplication.getId());
+        currentUsageAgreement = usageAgreementService.getCurrentUsageAgreement(selectedApplication.getId());
         return "edit-usage-agreement";
     }
 
