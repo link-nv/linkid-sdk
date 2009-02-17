@@ -13,7 +13,6 @@ import javax.mail.AuthenticationFailedException;
 
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
-import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -28,8 +27,8 @@ public interface OtpOverSmsDeviceService extends OtpOverSmsService {
     String authenticate(String mobile, String pin, String otp)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException;
 
-    void register(String nodeName, String userId, String mobile, String pin)
-            throws PermissionDeniedException, NodeNotFoundException;
+    void register(String nodeName, String userId, String mobile, String pin, String otp)
+            throws PermissionDeniedException, AuthenticationFailedException;
 
     boolean update(String userId, String mobile, String otp, String oldPin, String newPin)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException;
@@ -47,5 +46,8 @@ public interface OtpOverSmsDeviceService extends OtpOverSmsService {
             throws ConnectException, SafeOnlineResourceException, SubjectNotFoundException, DeviceRegistrationNotFoundException,
             DeviceDisabledException;
 
-    boolean verifyOtp(String otp);
+    /**
+     * @return <code>true</code> when the OTP has been dispatched to the user.
+     */
+    boolean isChallenged();
 }

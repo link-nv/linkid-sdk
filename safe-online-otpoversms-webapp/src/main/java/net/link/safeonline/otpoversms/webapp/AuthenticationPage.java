@@ -23,6 +23,7 @@ import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.model.otpoversms.OtpOverSmsConstants;
 import net.link.safeonline.model.otpoversms.OtpOverSmsDeviceService;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
+import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.ProgressAuthenticationPanel;
@@ -41,28 +42,25 @@ import org.apache.wicket.model.Model;
 
 public class AuthenticationPage extends TemplatePage {
 
-    private static final long         serialVersionUID         = 1L;
+    private static final long      serialVersionUID         = 1L;
 
-    public static final String        REQUEST_OTP_FORM_ID      = "request_otp_form";
-    public static final String        MOBILE_FIELD_ID          = "mobile";
-    public static final String        REQUEST_OTP_BUTTON_ID    = "request_otp";
-    public static final String        REQUEST_CANCEL_BUTTON_ID = "request_cancel";
+    public static final String     REQUEST_OTP_FORM_ID      = "request_otp_form";
+    public static final String     MOBILE_FIELD_ID          = "mobile";
+    public static final String     REQUEST_OTP_BUTTON_ID    = "request_otp";
+    public static final String     REQUEST_CANCEL_BUTTON_ID = "request_cancel";
 
-    public static final String        VERIFY_OTP_FORM_ID       = "verify_otp_form";
-    public static final String        OTP_FIELD_ID             = "otp";
-    public static final String        PIN_FIELD_ID             = "pin";
-    public static final String        LOGIN_BUTTON_ID          = "login";
-    public static final String        CANCEL_BUTTON_ID         = "cancel";
-
-    @EJB(mappedName = OtpOverSmsDeviceService.JNDI_BINDING)
-    transient OtpOverSmsDeviceService otpOverSmsDeviceService;
+    public static final String     VERIFY_OTP_FORM_ID       = "verify_otp_form";
+    public static final String     OTP_FIELD_ID             = "otp";
+    public static final String     PIN_FIELD_ID             = "pin";
+    public static final String     LOGIN_BUTTON_ID          = "login";
+    public static final String     CANCEL_BUTTON_ID         = "cancel";
 
     @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
-    transient SamlAuthorityService    samlAuthorityService;
+    transient SamlAuthorityService samlAuthorityService;
 
-    AuthenticationContext             authenticationContext;
+    AuthenticationContext          authenticationContext;
 
-    Model<PhoneNumber>                mobile;
+    Model<PhoneNumber>             mobile;
 
 
     public AuthenticationPage() {
@@ -126,7 +124,11 @@ public class AuthenticationPage extends TemplatePage {
 
                     LOG.debug("request OTP for mobile: " + mobile.getObject());
                     try {
-                        otpOverSmsDeviceService.requestOtp(WicketUtil.getHttpSession(getRequest()), mobile.getObject().getNumber());
+                        OtpOverSmsDeviceService otpOverSmsDeviceService = EjbUtils.getEJB(OtpOverSmsDeviceService.JNDI_BINDING,
+                                OtpOverSmsDeviceService.class);
+
+                        otpOverSmsDeviceService.requestOtp(mobile.getObject().getNumber());
+                        OtpOverSmsSession.get().setDeviceBean(otpOverSmsDeviceService);
                     }
 
                     catch (ConnectException e) {
@@ -227,10 +229,11 @@ public class AuthenticationPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
+                    OtpOverSmsDeviceService otpOverSmsDeviceService = OtpOverSmsSession.get().getDeviceService();
+
                     try {
-                        String userId = otpOverSmsDeviceService.authenticate(WicketUtil.getHttpSession(getRequest()), mobile.getObject()
-                                                                                                                            .getNumber(),
-                                pin.getObject(), otp.getObject());
+                        String userId = otpOverSmsDeviceService.authenticate(mobile.getObject().getNumber(), pin.getObject(),
+                                otp.getObject());
                         if (null == userId)
                             throw new AuthenticationFailedException();
 

@@ -170,8 +170,11 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
     /**
      * {@inheritDoc}
      */
-    public void register(String nodeName, String userId, String mobile, String pin)
-            throws PermissionDeniedException, NodeNotFoundException {
+    public void register(String nodeName, String userId, String mobile, String pin, String otp)
+            throws PermissionDeniedException, AuthenticationFailedException {
+
+        if (false == verifyOtp(otp))
+            throw new AuthenticationFailedException();
 
         LOG.debug("register otp over sms device for \"" + userId + "\" mobile=" + mobile);
 
@@ -192,7 +195,11 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
         /*
          * Check through node mapping if subject exists, if not, it is created.
          */
-        subject = nodeMappingService.getSubject(userId, nodeName);
+        try {
+            subject = nodeMappingService.getSubject(userId, nodeName);
+        } catch (NodeNotFoundException e) {
+            throw new AuthenticationFailedException(e.getMessage());
+        }
 
         // Register the mobile with that subject and map the mobile to the subject.
         otpOverSmsManager.registerMobile(subject, mobile, pin);
@@ -300,13 +307,18 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
         osgiService.ungetService();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public boolean verifyOtp(String otp) {
+    private boolean verifyOtp(String otp) {
 
         LOG.debug("verify otp " + otp);
 
-        return expectedOtp != null && expectedOtp.equals(otp);
+        return isChallenged() && expectedOtp.equals(otp);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isChallenged() {
+
+        return expectedOtp != null;
     }
 }
