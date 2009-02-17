@@ -16,7 +16,6 @@ import javax.interceptor.Interceptors;
 import javax.mail.AuthenticationFailedException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.ResourceAuditLoggerInterceptor;
@@ -42,7 +41,6 @@ import net.link.safeonline.model.otpoversms.OtpOverSmsConstants;
 import net.link.safeonline.model.otpoversms.OtpOverSmsDeviceService;
 import net.link.safeonline.model.otpoversms.OtpOverSmsDeviceServiceRemote;
 import net.link.safeonline.model.otpoversms.OtpOverSmsManager;
-import net.link.safeonline.model.otpoversms.OtpService;
 import net.link.safeonline.osgi.OSGIHostActivator;
 import net.link.safeonline.osgi.OSGIService;
 import net.link.safeonline.osgi.OSGIStartable;
@@ -141,12 +139,12 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
     /**
      * {@inheritDoc}
      */
-    public String authenticate(HttpSession httpSession, String mobile, String pin, String otp)
+    public String authenticate(String mobile, String pin, String otp)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException {
 
         LOG.debug("authenticate otp over sms device mobile=" + mobile);
 
-        if (false == verifyOtp(httpSession, otp))
+        if (false == verifyOtp(otp))
             return null;
 
         SubjectEntity subject = subjectIdentifierDAO.findSubject(OtpOverSmsConstants.OTPOVERSMS_IDENTIFIER_DOMAIN, mobile);
@@ -213,13 +211,13 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
     /**
      * {@inheritDoc}
      */
-    public boolean update(HttpSession httpSession, String userId, String mobile, String otp, String oldPin, String newPin)
+    public boolean update(String userId, String mobile, String otp, String oldPin, String newPin)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException {
 
         LOG.debug("update pin for otp over sms device for \"" + userId + "\" mobile=" + mobile);
         SubjectEntity subject = subjectService.getSubject(userId);
 
-        if (false == verifyOtp(httpSession, otp))
+        if (false == verifyOtp(otp))
             return false;
 
         if (true == getDisableAttribute(subject, mobile).getBooleanValue())
@@ -234,13 +232,12 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
     /**
      * {@inheritDoc}
      */
-    public boolean enable(HttpSession httpSession, String userId, String mobile, String otp, String pin)
+    public boolean enable(String userId, String mobile, String otp, String pin)
             throws SubjectNotFoundException, AuthenticationFailedException, DeviceRegistrationNotFoundException {
 
         SubjectEntity subject = subjectService.getSubject(userId);
 
-        OtpService sessionOtpService = (OtpService) httpSession.getAttribute(OTP_SERVICE_ATTRIBUTE);
-        if (false == sessionOtpService.verifyOtp(otp))
+        if (false == verifyOtp(otp))
             throw new AuthenticationFailedException();
 
         if (!otpOverSmsManager.validatePin(subject, mobile, pin))
@@ -282,7 +279,7 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
     /**
      * {@inheritDoc}
      */
-    public void requestOtp(HttpSession httpSession, String mobile)
+    public void requestOtp(String mobile)
             throws ConnectException, SafeOnlineResourceException, SubjectNotFoundException, DeviceRegistrationNotFoundException,
             DeviceDisabledException {
 
@@ -302,7 +299,7 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
     /**
      * {@inheritDoc}
      */
-    public boolean verifyOtp(HttpSession httpSession, String otp) {
+    public boolean verifyOtp(String otp) {
 
         LOG.debug("verify otp " + otp);
 
