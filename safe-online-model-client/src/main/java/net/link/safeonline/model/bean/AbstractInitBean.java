@@ -407,6 +407,20 @@ public abstract class AbstractInitBean implements Startable {
         }
     }
 
+    protected static class AttributeProvider {
+
+        final String applicationName;
+
+        final String attributeTypeName;
+
+
+        public AttributeProvider(String applicationName, String attributeTypeName) {
+
+            this.applicationName = applicationName;
+            this.attributeTypeName = attributeTypeName;
+        }
+    }
+
 
     protected List<Subscription>                   subscriptions;
 
@@ -420,7 +434,7 @@ public abstract class AbstractInitBean implements Startable {
 
     protected Map<X509Certificate, String>         trustedCertificates;
 
-    protected List<AttributeProviderEntity>        attributeProviders;
+    protected List<AttributeProvider>              attributeProviders;
 
     protected Map<String, List<String>>            allowedDevices;
 
@@ -465,7 +479,7 @@ public abstract class AbstractInitBean implements Startable {
         usageAgreements = new LinkedList<UsageAgreement>();
         attributeTypeDescriptions = new LinkedList<AttributeTypeDescriptionEntity>();
         trustedCertificates = new HashMap<X509Certificate, String>();
-        attributeProviders = new LinkedList<AttributeProviderEntity>();
+        attributeProviders = new LinkedList<AttributeProvider>();
         attributes = new LinkedList<AttributeEntity>();
         deviceClasses = new LinkedList<DeviceClass>();
         deviceClassDescriptions = new LinkedList<DeviceClassDescription>();
@@ -626,12 +640,12 @@ public abstract class AbstractInitBean implements Startable {
 
     private void initAttributeProviders() {
 
-        for (AttributeProviderEntity attributeProvider : attributeProviders) {
-            long applicationId = attributeProvider.getApplicationId();
-            String attributeName = attributeProvider.getAttributeTypeName();
-            ApplicationEntity application = applicationDAO.findApplication(applicationId);
+        for (AttributeProvider attributeProvider : attributeProviders) {
+
+            ApplicationEntity application = applicationDAO.findApplication(attributeProvider.applicationName);
             if (null == application)
-                throw new EJBException("application not found: " + applicationId);
+                throw new EJBException("application not found: " + attributeProvider.applicationName);
+            String attributeName = attributeProvider.attributeTypeName;
             AttributeTypeEntity attributeType = attributeTypeDAO.findAttributeType(attributeName);
             if (null == attributeType)
                 throw new EJBException("attribute type not found: " + attributeName);
