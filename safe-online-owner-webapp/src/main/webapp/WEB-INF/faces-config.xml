@@ -15,18 +15,20 @@
 		<view-handler>com.sun.facelets.FaceletViewHandler</view-handler>
 	</application>
 	<lifecycle>
-		<phase-listener> org.jboss.seam.jsf.SeamPhaseListener 
-		</phase-listener>
-		<phase-listener>net.link.safeonline.webapp.listener.LanguagePhaseListener</phase-listener>
+		<phase-listener>org.jboss.seam.jsf.SeamPhaseListener</phase-listener>
+		<phase-listener>
+			net.link.safeonline.webapp.listener.LanguagePhaseListener</phase-listener>
 	</lifecycle>
 	<navigation-rule>
 		<navigation-case>
 			<from-outcome>login-success</from-outcome>
 			<to-view-id>/overview.seam</to-view-id>
+			<redirect />
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>logout-success</from-outcome>
 			<to-view-id>/main.seam</to-view-id>
+			<redirect />
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
@@ -34,18 +36,22 @@
 		<navigation-case>
 			<from-outcome>view-application</from-outcome>
 			<to-view-id>/application-view.seam</to-view-id>
+			<redirect />
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>edit-application</from-outcome>
 			<to-view-id>/application-edit.seam</to-view-id>
+			<redirect />
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>viewstats</from-outcome>
 			<to-view-id>/stats.seam</to-view-id>
+			<redirect />
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>edit-usage-agreement</from-outcome>
 			<to-view-id>/usage-agreements.seam</to-view-id>
+			<redirect />
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
@@ -53,14 +59,17 @@
 		<navigation-case>
 			<from-outcome>back</from-outcome>
 			<to-view-id>/applications.seam</to-view-id>
+			<redirect />
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>edit-application</from-outcome>
 			<to-view-id>/application-edit.seam</to-view-id>
+			<redirect />
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>view-usage-agreement</from-outcome>
 			<to-view-id>/usage-agreement-view.seam</to-view-id>
+			<redirect />
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
@@ -68,10 +77,12 @@
 		<navigation-case>
 			<from-outcome>cancel</from-outcome>
 			<to-view-id>/applications.seam</to-view-id>
+			<redirect />
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>saved</from-outcome>
 			<to-view-id>/applications.seam</to-view-id>
+			<redirect />
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
@@ -79,10 +90,12 @@
 		<navigation-case>
 			<from-outcome>back</from-outcome>
 			<to-view-id>/applications.seam</to-view-id>
+			<redirect />
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>viewstat</from-outcome>
 			<to-view-id>/stat-view.seam</to-view-id>
+			<redirect />
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
@@ -90,6 +103,7 @@
 		<navigation-case>
 			<from-outcome>back</from-outcome>
 			<to-view-id>/stats.seam</to-view-id>
+			<redirect />
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
@@ -97,10 +111,12 @@
 		<navigation-case>
 			<from-outcome>viewtext</from-outcome>
 			<to-view-id>/usage-agreement-text-view.seam</to-view-id>
+			<redirect />
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>back</from-outcome>
 			<to-view-id>/application-view.seam</to-view-id>
+			<redirect />
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
@@ -108,6 +124,7 @@
 		<navigation-case>
 			<from-outcome>back</from-outcome>
 			<to-view-id>/usage-agreement-view.seam</to-view-id>
+			<redirect />
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
@@ -115,14 +132,17 @@
 		<navigation-case>
 			<from-outcome>edittext</from-outcome>
 			<to-view-id>/usage-agreement-text-edit.seam</to-view-id>
+			<redirect />
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>viewtext</from-outcome>
 			<to-view-id>/usage-agreement-text-view.seam</to-view-id>
+			<redirect />
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>back</from-outcome>
 			<to-view-id>/applications.seam</to-view-id>
+			<redirect />
 		</navigation-case>
 	</navigation-rule>
 	<navigation-rule>
@@ -130,10 +150,12 @@
 		<navigation-case>
 			<from-outcome>back</from-outcome>
 			<to-view-id>/usage-agreements.seam</to-view-id>
+			<redirect />
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>saved</from-outcome>
 			<to-view-id>/usage-agreements.seam</to-view-id>
+			<redirect />
 		</navigation-case>
 	</navigation-rule>
 </faces-config>

@@ -108,14 +108,14 @@ public class CertificateMapperHandler implements SOAPHandler<SOAPMessageContext>
         }
 
         if (CertificateValidatorHandler.isApplicationCertificate(context)) {
-            String applicationId;
+            long applicationId;
 
             try {
                 applicationId = applicationAuthenticationService.authenticate(certificate);
             } catch (ApplicationNotFoundException e) {
                 throw WSSecurityUtil.createSOAPFaultException("unknown application", "FailedAuthentication");
             }
-            setId(applicationId, context);
+            setId(Long.toString(applicationId), context);
             return;
         }
         if (CertificateValidatorHandler.isOlasCertificate(context)) {

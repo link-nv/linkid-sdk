@@ -23,12 +23,12 @@ public interface UserIdMappingService extends SafeOnlineService {
     /**
      * Returns the application specific user id as specified in the application's id scope.
      * 
-     * @param applicationName
+     * @param applicationId
      * @param userId
      * @throws ApplicationNotFoundException
      * @throws SubscriptionNotFoundException
      */
-    String getApplicationUserId(String applicationName, String userId)
+    String getApplicationUserId(long applicationId, String userId)
             throws ApplicationNotFoundException, SubscriptionNotFoundException;
 
     /**
@@ -39,6 +39,6 @@ public interface UserIdMappingService extends SafeOnlineService {
      * @param applicationUserId
      * @throws ApplicationNotFoundException
      */
-    String findUserId(String applicationName, String applicationUserId)
+    String findUserId(long applicationId, String applicationUserId)
             throws ApplicationNotFoundException;
 }

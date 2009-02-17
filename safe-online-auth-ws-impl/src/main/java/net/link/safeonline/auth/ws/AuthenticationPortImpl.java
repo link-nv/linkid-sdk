@@ -63,6 +63,7 @@ import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.exception.SubscriptionNotFoundException;
+import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.DevicePolicyService;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
@@ -72,6 +73,7 @@ import net.link.safeonline.authentication.service.UsageAgreementService;
 import net.link.safeonline.authentication.service.UserIdMappingService;
 import net.link.safeonline.authentication.service.WSAuthenticationService;
 import net.link.safeonline.data.AttributeDO;
+import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.NodeEntity;
@@ -149,6 +151,8 @@ public class AuthenticationPortImpl implements AuthenticationPort {
 
     private DeviceEntity                                        authenticatedDevice;
 
+    private ApplicationEntity                                   application;
+
     private String                                              applicationName;
 
     private String                                              language;
@@ -209,8 +213,8 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         }
 
         language = request.getLanguage();
-        applicationName = request.getApplicationId();
         keyInfo = request.getKeyInfo();
+        applicationName = request.getApplicationId();
 
         // proxy request to specified device
         WSAuthenticationResponseType response;
@@ -371,15 +375,16 @@ public class AuthenticationPortImpl implements AuthenticationPort {
             // JAAS Login
             LoginContext loginContext = jaasLogin();
             try {
+                getApplication();
 
                 // lookup application's usage agreement
                 UsageAgreementService usageAgreementService = EjbUtils.getEJB(UsageAgreementService.JNDI_BINDING,
                         UsageAgreementService.class);
-                String usageAgreement = usageAgreementService.getUsageAgreementText(applicationName, language);
+                String usageAgreement = usageAgreementService.getUsageAgreementText(application.getId(), language);
                 if (null == usageAgreement) {
                     // check is subscription is needed
                     SubscriptionService subscriptionService = EjbUtils.getEJB(SubscriptionService.JNDI_BINDING, SubscriptionService.class);
-                    if (!subscriptionService.isSubscribed(applicationName)) {
+                    if (!subscriptionService.isSubscribed(application.getId())) {
                         usageAgreement = "";
                     }
                 }
@@ -425,20 +430,21 @@ public class AuthenticationPortImpl implements AuthenticationPort {
             // JAAS Login
             LoginContext loginContext = jaasLogin();
             try {
+                getApplication();
 
                 // confirm application usage agreement / subscribe
                 UsageAgreementService usageAgreementService = EjbUtils.getEJB(UsageAgreementService.JNDI_BINDING,
                         UsageAgreementService.class);
                 SubscriptionService subscriptionService = EjbUtils.getEJB(SubscriptionService.JNDI_BINDING, SubscriptionService.class);
 
-                if (!subscriptionService.isSubscribed(applicationName)) {
-                    LOG.debug("subscribe to application " + applicationName);
-                    subscriptionService.subscribe(applicationName);
+                if (!subscriptionService.isSubscribed(application.getId())) {
+                    LOG.debug("subscribe to application " + application.getName());
+                    subscriptionService.subscribe(application.getId());
                 }
 
-                if (usageAgreementService.requiresUsageAgreementAcceptation(applicationName, language)) {
-                    LOG.debug("confirm usage agreement for application " + applicationName);
-                    usageAgreementService.confirmUsageAgreementVersion(applicationName);
+                if (usageAgreementService.requiresUsageAgreementAcceptation(application.getId(), language)) {
+                    LOG.debug("confirm usage agreement for application " + application.getName());
+                    usageAgreementService.confirmUsageAgreementVersion(application.getId());
                 }
             } catch (ApplicationNotFoundException e) {
                 throw new WSAuthenticationException(WSAuthenticationErrorCode.APPLICATION_NOT_FOUND, e.getMessage());
@@ -488,10 +494,12 @@ public class AuthenticationPortImpl implements AuthenticationPort {
             // JAAS Login
             LoginContext loginContext = jaasLogin();
             try {
+                getApplication();
 
                 IdentityService identityService = EjbUtils.getEJB(IdentityService.JNDI_BINDING, IdentityService.class);
 
-                List<AttributeDO> confirmationList = identityService.listIdentityAttributesToConfirm(applicationName, new Locale(language));
+                List<AttributeDO> confirmationList = identityService.listIdentityAttributesToConfirm(application.getId(), new Locale(
+                        language));
                 List<AttributeType> confirmationAttributes = getAttributes(confirmationList, false);
                 AssertionType attributeAssertion = getAttributeAssertion(confirmationAttributes);
                 response.getAssertion().add(attributeAssertion);
@@ -539,11 +547,12 @@ public class AuthenticationPortImpl implements AuthenticationPort {
             // JAAS Login
             LoginContext loginContext = jaasLogin();
             try {
+                getApplication();
 
                 // confirm application identity
                 IdentityService identityService = EjbUtils.getEJB(IdentityService.JNDI_BINDING, IdentityService.class);
 
-                identityService.confirmIdentity(applicationName);
+                identityService.confirmIdentity(application.getId());
 
             } catch (SubscriptionNotFoundException e) {
                 throw new WSAuthenticationException(WSAuthenticationErrorCode.SUBSCRIPTION_NOT_FOUND, e.getMessage());
@@ -591,9 +600,11 @@ public class AuthenticationPortImpl implements AuthenticationPort {
             // JAAS Login
             LoginContext loginContext = jaasLogin();
             try {
+                getApplication();
+
                 IdentityService identityService = EjbUtils.getEJB(IdentityService.JNDI_BINDING, IdentityService.class);
 
-                List<AttributeDO> missingAttributeList = identityService.listMissingAttributes(applicationName, new Locale(language));
+                List<AttributeDO> missingAttributeList = identityService.listMissingAttributes(application.getId(), new Locale(language));
 
                 // first check if all there are non-user-editable attributes missing, if so user cannot authenticate.
                 String unavailableAttributes = "";
@@ -607,7 +618,7 @@ public class AuthenticationPortImpl implements AuthenticationPort {
                             + unavailableAttributes + "] is(are) unavailable");
 
                 // include optional attributes
-                List<AttributeDO> optionalAttributeList = identityService.listOptionalAttributes(applicationName, new Locale(language));
+                List<AttributeDO> optionalAttributeList = identityService.listOptionalAttributes(application.getId(), new Locale(language));
 
                 List<AttributeType> missingAttributes = getAttributes(missingAttributeList, false);
                 List<AttributeType> optionalAttributes = getAttributes(optionalAttributeList, true);
@@ -778,6 +789,25 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         return device;
     }
 
+    private void getApplication()
+            throws ApplicationNotFoundException {
+
+        LOG.debug("applicationName = " + applicationName);
+
+        if (null == applicationName)
+            throw new ApplicationNotFoundException();
+
+        if (null == application) {
+            LOG.debug("a");
+            ApplicationService applicationService = EjbUtils.getEJB(ApplicationService.JNDI_BINDING, ApplicationService.class);
+            LOG.debug("b");
+            application = applicationService.getApplication(applicationName);
+            LOG.debug("c");
+        }
+
+        LOG.debug("application = " + application);
+    }
+
     /**
      * Checks whether the response contains a valid SAML v2.0 assertion. If so lookup the OLAS subject entity from the value of the
      * assertion's subject.
@@ -927,7 +957,12 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         DevicePolicyService devicePolicyService = EjbUtils.getEJB(DevicePolicyService.JNDI_BINDING, DevicePolicyService.class);
         List<DeviceEntity> devicePolicy;
         try {
-            devicePolicy = devicePolicyService.getDevicePolicy(applicationName, null);
+            getApplication();
+            if (null == application) {
+                LOG.debug("que");
+            }
+
+            devicePolicy = devicePolicyService.getDevicePolicy(application.getId(), null);
         } catch (ApplicationNotFoundException e) {
             LOG.error("application not found: " + applicationName);
             throw new WSAuthenticationException(WSAuthenticationErrorCode.APPLICATION_NOT_FOUND, e.getMessage());
@@ -960,9 +995,11 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         UsageAgreementService usageAgreementService = EjbUtils.getEJB(UsageAgreementService.JNDI_BINDING, UsageAgreementService.class);
 
         try {
-            subscriptionRequired = !subscriptionService.isSubscribed(applicationName);
+            getApplication();
+
+            subscriptionRequired = !subscriptionService.isSubscribed(application.getId());
             if (!subscriptionRequired) {
-                subscriptionRequired = usageAgreementService.requiresUsageAgreementAcceptation(applicationName, language);
+                subscriptionRequired = usageAgreementService.requiresUsageAgreementAcceptation(application.getId(), language);
             }
         } catch (ApplicationNotFoundException e) {
             LOG.error("application not found: " + applicationName);
@@ -982,7 +1019,9 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         IdentityService identityService = EjbUtils.getEJB(IdentityService.JNDI_BINDING, IdentityService.class);
 
         try {
-            confirmationRequired = identityService.isConfirmationRequired(applicationName);
+            getApplication();
+
+            confirmationRequired = identityService.isConfirmationRequired(application.getId());
         } catch (SubscriptionNotFoundException e) {
             LOG.error("subscription not found for " + applicationName);
             throw new WSAuthenticationException(WSAuthenticationErrorCode.SUBSCRIPTION_NOT_FOUND, e.getMessage());
@@ -1005,7 +1044,9 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         IdentityService identityService = EjbUtils.getEJB(IdentityService.JNDI_BINDING, IdentityService.class);
 
         try {
-            hasMissingAttributes = identityService.hasMissingAttributes(applicationName);
+            getApplication();
+
+            hasMissingAttributes = identityService.hasMissingAttributes(application.getId());
         } catch (ApplicationNotFoundException e) {
             LOG.error("application not found: " + applicationName);
             throw new WSAuthenticationException(WSAuthenticationErrorCode.APPLICATION_NOT_FOUND, e.getMessage());
@@ -1115,7 +1156,9 @@ public class AuthenticationPortImpl implements AuthenticationPort {
         UserIdMappingService userIdMappingService = EjbUtils.getEJB(UserIdMappingService.JNDI_BINDING, UserIdMappingService.class);
 
         try {
-            return userIdMappingService.getApplicationUserId(applicationName, authenticatedSubject.getUserId());
+            getApplication();
+
+            return userIdMappingService.getApplicationUserId(application.getId(), authenticatedSubject.getUserId());
         } catch (SubscriptionNotFoundException e) {
             LOG.error("subscription not found for " + applicationName);
             throw new WSAuthenticationException(WSAuthenticationErrorCode.SUBSCRIPTION_NOT_FOUND, e.getMessage());

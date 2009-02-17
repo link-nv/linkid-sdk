@@ -1,59 +1,93 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:t="http://myfaces.apache.org/tomahawk"
-	xmlns:a4j="http://richfaces.org/a4j"
-	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
-<body>
-<ui:composition template="/WEB-INF/template.xhtml">
-	<ui:define name="top_content">
-		<h1>#{selectedApplication.name}</h1>
-	</ui:define>
-	<ui:define name="content">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:t="http://myfaces.apache.org/tomahawk" xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:s="http://jboss.com/products/seam/taglib" xmlns:rich="http://richfaces.ajax4jsf.org/rich">
+	<body>
+		<ui:composition template="/WEB-INF/template.xhtml">
+			<ui:define name="top_content">
+				<h1>#{selectedApplication.name}</h1>
+			</ui:define>
+			<ui:define name="content">
 
-		<a4j:form id="editForm">
-            <h2>#{msgs.description}</h2>
-            <h:inputTextarea value="#{selectedApplication.description}"
-                escape="false" cols="60" rows="10" />
+				<a4j:form id="editForm">
+					<rich:simpleTogglePanel switchType="client"
+						styleClass="fullwidth" id="description-tab" label="#{msgs.description}">
+						<table class="inner">
+							<colgroup class="half" />
+							<colgroup />
 
-            <h2>#{msgs.devices}</h2>
-            <table class="inner">
-                <tr>
-                    <th class="half">
-                        <h:outputText value="#{msgs.isDeviceRestriction}"/>
-                    </th>
-                    <td>
-                        <h:selectBooleanCheckbox id="restriction" value="#{selectedApplication.deviceRestriction}" />
-                    </td>
-                </tr>
-            </table>
+							<tbody>
+								<tr>
+									<th>
+										<h:outputText value="#{msgs.name}" />
+									</th>
+									<td>
+										<s:decorate>
+											<h:inputText id="name" value="#{ownerApplication.name}"
+												styleClass="label" />
+											<h:message for="name" styleClass="error" />
+										</s:decorate>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<h:outputText value="#{msgs.friendlyname}" />
+									</th>
+									<td>
+										<s:decorate>
+											<h:inputText id="friendlyname"
+												value="#{ownerApplication.friendlyName}" styleClass="label" />
+											<h:message for="friendlyname" styleClass="error" />
+										</s:decorate>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<h:inputTextarea value="#{selectedApplication.description}"
+							escape="false" cols="60" rows="10" />
+					</rich:simpleTogglePanel>
 
-            <rich:dataTable value="#{allowedDevices}" var="item" styleClass="inner ">
-                <h:column>
-                    <f:facet name="header">#{msgs.name}</f:facet>
-                    <h:outputText value="#{item.friendlyName}" />
-                </h:column>
-                <h:column>
-                    <f:facet name="header">#{msgs.allowed}</f:facet>
-                    <h:selectBooleanCheckbox value="#{item.allowed}" />
-                </h:column>
-                <h:column>
-                    <f:facet name="header">#{msgs.weight}</f:facet>
-                    <h:inputText value="#{item.weight}" styleClass="label"/>
-                </h:column>
-            </rich:dataTable>
+					<rich:simpleTogglePanel switchType="client"
+						styleClass="fullwidth" id="devices-tab" label="#{msgs.devices}">
+						<table class="inner">
+							<tr>
+								<th class="half">
+									<h:outputText value="#{msgs.isDeviceRestriction}" />
+								</th>
+								<td>
+									<h:selectBooleanCheckbox id="restriction"
+										value="#{selectedApplication.deviceRestriction}" />
+								</td>
+							</tr>
+						</table>
 
-			<a4j:commandButton id="save" value="#{msgs.saveaction}"
-				action="#{ownerApplication.save}" styleClass="submit" />
-			<a4j:commandButton id="cancel" value="#{msgs.cancelaction}"
-				action="cancel" immediate="true" styleClass="submit" />
-		</a4j:form>
-	</ui:define>
-	<ui:define name="sidebar">
-		<p>#{msgs.helpApplicationEdit}</p>
-	</ui:define>
-</ui:composition>
-</body>
+						<rich:dataTable value="#{allowedDevices}" var="item"
+							styleClass="inner ">
+							<h:column>
+								<f:facet name="header">#{msgs.name}</f:facet>
+								<h:outputText value="#{item.friendlyName}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">#{msgs.allowed}</f:facet>
+								<h:selectBooleanCheckbox value="#{item.allowed}" />
+							</h:column>
+							<h:column>
+								<f:facet name="header">#{msgs.weight}</f:facet>
+								<h:inputText value="#{item.weight}" styleClass="label" />
+							</h:column>
+						</rich:dataTable>
+					</rich:simpleTogglePanel>
+
+					<a4j:commandButton id="save" value="#{msgs.saveaction}"
+						action="#{ownerApplication.save}" styleClass="submit" />
+					<a4j:commandButton id="cancel" value="#{msgs.cancelaction}"
+						action="cancel" immediate="true" styleClass="submit" />
+				</a4j:form>
+			</ui:define>
+			<ui:define name="sidebar">
+				<p>#{msgs.helpApplicationEdit}</p>
+			</ui:define>
+		</ui:composition>
+	</body>
 
 </html>

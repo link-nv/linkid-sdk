@@ -32,6 +32,25 @@ public interface ApplicationDAO extends SafeOnlineService {
 
 
     /**
+     * Find the application for a given application Id.
+     * 
+     * @param applicationId
+     *            the application id.
+     * @return the application or <code>null</code> if not found.
+     */
+    ApplicationEntity findApplication(long applicationId);
+
+    /**
+     * Gives back the application entity for a given application Id.
+     * 
+     * @param applicationId
+     * @throws ApplicationNotFoundException
+     *             in case the application was not found.
+     */
+    ApplicationEntity getApplication(long applicationId)
+            throws ApplicationNotFoundException;
+
+    /**
      * Find the application for a given application name.
      * 
      * @param applicationName

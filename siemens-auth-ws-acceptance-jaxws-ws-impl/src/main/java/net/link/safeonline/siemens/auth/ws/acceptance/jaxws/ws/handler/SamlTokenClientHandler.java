@@ -19,6 +19,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.soap.SOAPMessage;
@@ -46,6 +47,14 @@ import org.apache.ws.security.message.WSSecHeader;
 import org.apache.ws.security.message.WSSecSignature;
 import org.apache.ws.security.message.WSSecTimestamp;
 import org.apache.ws.security.saml2.WSSecSignatureSAML2;
+import org.opensaml.DefaultBootstrap;
+import org.opensaml.saml2.core.Assertion;
+import org.opensaml.xml.Configuration;
+import org.opensaml.xml.ConfigurationException;
+import org.opensaml.xml.io.Unmarshaller;
+import org.opensaml.xml.io.UnmarshallerFactory;
+import org.opensaml.xml.io.UnmarshallingException;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 
@@ -66,6 +75,19 @@ public class SamlTokenClientHandler implements SOAPHandler<SOAPMessageContext> {
     private final X509Certificate certificate;
 
     private final PrivateKey      privateKey;
+
+    static {
+        /*
+         * Next is because Sun loves to endorse crippled versions of Xerces.
+         */
+        System.setProperty("javax.xml.validation.SchemaFactory:http://www.w3.org/2001/XMLSchema",
+                "org.apache.xerces.jaxp.validation.XMLSchemaFactory");
+        try {
+            DefaultBootstrap.bootstrap();
+        } catch (ConfigurationException e) {
+            throw new RuntimeException("could not bootstrap the OpenSAML2 library");
+        }
+    }
 
 
     /**
@@ -145,11 +167,14 @@ public class SamlTokenClientHandler implements SOAPHandler<SOAPMessageContext> {
                     SubjectConfirmationType subjectConfirmation = (SubjectConfirmationType) element.getValue();
                     if (subjectConfirmation.getMethod().equals(Saml2SubjectConfirmationMethod.HOLDER_OF_KEY.getMethodURI())) {
 
+                        LOG.debug("unmarshalling saml 2 assertion");
+                        Assertion saml2Assertion = getAssertion();
+
                         LOG.debug("adding saml2 signature");
                         WSSecSignatureSAML2 wsSecSignatureSAML2 = new WSSecSignatureSAML2();
                         wsSecSignatureSAML2.setKeyIdentifierType(WSConstants.BST_DIRECT_REFERENCE);
                         wsSecSignatureSAML2.setParts(wsEncryptionParts);
-                        wsSecSignatureSAML2.build(soapPart, crypto, assertion, null, null, null, wsSecHeader);
+                        wsSecSignatureSAML2.build(soapPart, crypto, saml2Assertion, null, null, null, wsSecHeader);
 
                     } else {
 
@@ -172,6 +197,43 @@ public class SamlTokenClientHandler implements SOAPHandler<SOAPMessageContext> {
 
         } catch (Exception e) {
             LOG.error("Exception caught: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * TODO
+     */
+    private Assertion getAssertion() {
+
+        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        documentBuilderFactory.setNamespaceAware(true);
+        DocumentBuilder documentBuilder;
+        try {
+            documentBuilder = documentBuilderFactory.newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+            throw new RuntimeException("DOM error");
+        }
+        Document assertionElement = documentBuilder.newDocument();
+        JAXBContext context;
+        try {
+            context = JAXBContext.newInstance(AssertionType.class);
+            javax.xml.bind.Marshaller marshaller = context.createMarshaller();
+            // have to marshal the JAXBElement that contains the JAXB binding object instead of the binding object itself as the latter
+            // does not contain an XmlRootElement annotation
+            marshaller.marshal(new ObjectFactory().createAssertion(assertion), assertionElement);
+        } catch (JAXBException e) {
+            LOG.error("Exception caught: " + e.getMessage(), e);
+        }
+
+        Assertion saml2Assertion;
+        UnmarshallerFactory unmarshallerFactory = Configuration.getUnmarshallerFactory();
+        Unmarshaller unmarshaller = unmarshallerFactory.getUnmarshaller(assertionElement.getDocumentElement());
+        try {
+            saml2Assertion = (Assertion) unmarshaller.unmarshall(assertionElement.getDocumentElement());
+            return saml2Assertion;
+        } catch (UnmarshallingException e) {
+            LOG.error("Exception caught: " + e.getMessage(), e);
+            return null;
         }
     }
 

@@ -45,16 +45,16 @@ public class ApplicationAuthenticationServiceBean implements ApplicationAuthenti
     private TrustPointDAO    trustPointDAO;
 
 
-    public String authenticate(X509Certificate certificate)
+    public long authenticate(X509Certificate certificate)
             throws ApplicationNotFoundException {
 
         ApplicationEntity application = applicationDAO.getApplication(certificate);
-        String applicationName = application.getName();
-        LOG.debug("authenticated application: " + applicationName);
-        return applicationName;
+        long applicationId = application.getId();
+        LOG.debug("authenticated application: " + applicationId);
+        return applicationId;
     }
 
-    public List<X509Certificate> getCertificates(String applicationId)
+    public List<X509Certificate> getCertificates(long applicationId)
             throws ApplicationNotFoundException {
 
         LOG.debug("get certificates for application Id: " + applicationId);
@@ -68,7 +68,21 @@ public class ApplicationAuthenticationServiceBean implements ApplicationAuthenti
         return certificates;
     }
 
-    public boolean skipMessageIntegrityCheck(String applicationId)
+    public List<X509Certificate> getCertificates(String applicationName)
+            throws ApplicationNotFoundException {
+
+        LOG.debug("get certificates for application: " + applicationName);
+        ApplicationEntity application = applicationDAO.getApplication(applicationName);
+        List<TrustPointEntity> trustPoints = trustPointDAO.listTrustPoints(application.getCertificateSubject());
+        List<X509Certificate> certificates = new LinkedList<X509Certificate>();
+        for (TrustPointEntity trustPoint : trustPoints) {
+            certificates.add(trustPoint.getCertificate());
+
+        }
+        return certificates;
+    }
+
+    public boolean skipMessageIntegrityCheck(long applicationId)
             throws ApplicationNotFoundException {
 
         ApplicationEntity application = applicationDAO.getApplication(applicationId);

@@ -35,108 +35,108 @@ public interface UsageAgreementService extends SafeOnlineService {
     /**
      * Create draft usage agreement from the specified version.
      * 
-     * @param applicationName
+     * @param applicationId
      * @throws PermissionDeniedException
      * @throws ApplicationNotFoundException
      */
-    UsageAgreementEntity createDraftUsageAgreement(String applicationName, Long usageAgreementVersion)
+    UsageAgreementEntity createDraftUsageAgreement(long applicationId, Long usageAgreementVersion)
             throws ApplicationNotFoundException, PermissionDeniedException;
 
     /**
      * Commits the draft usage agreement to a new version.
      * 
-     * @param applicationName
+     * @param applicationId
      * @throws ApplicationNotFoundException
      * @throws PermissionDeniedException
      */
-    void updateUsageAgreement(String applicationName)
+    void updateUsageAgreement(long applicationId)
             throws ApplicationNotFoundException, PermissionDeniedException;
 
     /**
      * Returns currently associated usage agreement with the specified application.
      * 
-     * @param applicationName
+     * @param applicationId
      * @throws PermissionDeniedException
      * @throws ApplicationNotFoundException
      */
-    UsageAgreementEntity getCurrentUsageAgreement(String applicationName)
+    UsageAgreementEntity getCurrentUsageAgreement(long applicationId)
             throws PermissionDeniedException, ApplicationNotFoundException;
 
     /**
      * Returns current draft usage agreement with the specified application. Returns null if no draft is present.
      * 
-     * @param applicationName
+     * @param applicationId
      * @throws ApplicationNotFoundException
      * @throws PermissionDeniedException
      */
-    UsageAgreementEntity getDraftUsageAgreement(String applicationName)
+    UsageAgreementEntity getDraftUsageAgreement(long applicationId)
             throws ApplicationNotFoundException, PermissionDeniedException;
 
     /**
      * Get all usage agreements of the specified application.
      * 
-     * @param applicationName
+     * @param applicationId
      * @throws ApplicationNotFoundException
      * @throws PermissionDeniedException
      */
-    List<UsageAgreementEntity> getUsageAgreements(String applicationName)
+    List<UsageAgreementEntity> getUsageAgreements(long applicationId)
             throws ApplicationNotFoundException, PermissionDeniedException;
 
     /**
      * Create ( if not already created ) new draft usage agreement text for the specified language.
      * 
-     * @param name
+     * @param applicationId
      * @param language
      * @param text
      * @throws ApplicationNotFoundException
      * @throws PermissionDeniedException
      */
-    UsageAgreementTextEntity createDraftUsageAgreementText(String applicationName, String language, String text)
+    UsageAgreementTextEntity createDraftUsageAgreementText(long applicationId, String language, String text)
             throws ApplicationNotFoundException, PermissionDeniedException;
 
     /**
      * Set draft usage agreement text for the specified application and language.
      * 
-     * @param name
+     * @param applicationId
      * @param language
      * @param text
      * @throws ApplicationNotFoundException
      * @throws PermissionDeniedException
      */
-    void setDraftUsageAgreementText(String applicatioName, String language, String text)
+    void setDraftUsageAgreementText(long applicationId, String language, String text)
             throws ApplicationNotFoundException, PermissionDeniedException;
 
     /**
      * Remove draft usage agreement text for the specified application and language.
      * 
-     * @param applicationName
+     * @param applicationId
      * @param language
      * @throws ApplicationNotFoundException
      * @throws PermissionDeniedException
      */
-    void removeDraftUsageAgreementText(String applicationName, String language)
+    void removeDraftUsageAgreementText(long applicationId, String language)
             throws ApplicationNotFoundException, PermissionDeniedException;
 
     /**
      * Remove draft usage agreement for the specified application.
      * 
-     * @param applicationName
+     * @param applicationId
      * @throws ApplicationNotFoundException
      * @throws PermissionDeniedException
      */
-    void removeDraftUsageAgreement(String applicationName)
+    void removeDraftUsageAgreement(long applicationId)
             throws ApplicationNotFoundException, PermissionDeniedException;
 
     /**
      * Check whether the authenticating subject's subscription to the specified application conforms with the application's current usage
      * agreement version.
      * 
-     * @param applicationName
+     * @param applicationId
      * @param language
      * @throws ApplicationNotFoundException
      * @throws SubscriptionNotFoundException
      */
-    boolean requiresUsageAgreementAcceptation(String applicationName, String language)
+    boolean requiresUsageAgreementAcceptation(long applicationId, String language)
             throws ApplicationNotFoundException, SubscriptionNotFoundException;
 
     /**
@@ -144,11 +144,11 @@ public interface UsageAgreementService extends SafeOnlineService {
      * 
      * TODO: Version specified as application owner might be changing the current version while a user is confirming...
      * 
-     * @param applicationName
+     * @param applicationId
      * @throws ApplicationNotFoundException
      * @throws SubscriptionNotFoundException
      */
-    void confirmUsageAgreementVersion(String applicationName)
+    void confirmUsageAgreementVersion(long applicationId)
             throws ApplicationNotFoundException, SubscriptionNotFoundException;
 
     /**
@@ -156,18 +156,18 @@ public interface UsageAgreementService extends SafeOnlineService {
      * 
      * @throws ApplicationNotFoundException
      */
-    String getUsageAgreementText(String applicationName, String language)
+    String getUsageAgreementText(long applicationId, String language)
             throws ApplicationNotFoundException;
 
     /**
      * Get version of application's usage agreement texts for specified language.
      * 
-     * @param applicationName
+     * @param applicationId
      * @param language
      * @param usageAgreementVersion
      * @throws ApplicationNotFoundException
      */
-    String getUsageAgreementText(String applicationName, String language, Long usageAgreementVersion)
+    String getUsageAgreementText(long applicationId, String language, Long usageAgreementVersion)
             throws ApplicationNotFoundException;
 
     /**

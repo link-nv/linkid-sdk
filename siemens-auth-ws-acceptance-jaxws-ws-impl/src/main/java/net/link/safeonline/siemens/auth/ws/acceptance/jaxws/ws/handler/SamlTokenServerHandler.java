@@ -12,7 +12,6 @@ import java.util.Set;
 import java.util.Vector;
 
 import javax.annotation.PostConstruct;
-import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.soap.SOAPPart;
@@ -20,12 +19,8 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
-import net.link.safeonline.saml.common.Saml2SubjectConfirmationMethod;
 import net.link.safeonline.sdk.ws.ServerCrypto;
 import net.link.safeonline.sdk.ws.WSSecurityUtil;
-import oasis.names.tc.saml._2_0.assertion.AssertionType;
-import oasis.names.tc.saml._2_0.assertion.NameIDType;
-import oasis.names.tc.saml._2_0.assertion.SubjectConfirmationType;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,8 +29,11 @@ import org.apache.ws.security.WSSecurityEngineResult;
 import org.apache.ws.security.WSSecurityException;
 import org.apache.ws.security.components.crypto.Crypto;
 import org.apache.ws.security.message.token.Timestamp;
+import org.apache.ws.security.saml2.SAML2Constants;
 import org.joda.time.DateTime;
 import org.joda.time.Instant;
+import org.opensaml.saml2.core.Assertion;
+import org.opensaml.saml2.core.SubjectConfirmation;
 
 
 /**
@@ -111,7 +109,7 @@ public class SamlTokenServerHandler implements SOAPHandler<SOAPMessageContext> {
             throw WSSecurityUtil.createSOAPFaultException("An error was discovered processing the <wsse:Security> header.",
                     "InvalidSecurity");
         Timestamp timestamp = null;
-        AssertionType assertion = null;
+        Assertion assertion = null;
         Set<String> signedElements = null;
         for (WSSecurityEngineResult result : wsSecurityEngineResults) {
             Set<String> resultSignedElements = (Set<String>) result.get(WSSecurityEngineResult.TAG_SIGNED_ELEMENT_IDS);
@@ -119,7 +117,7 @@ public class SamlTokenServerHandler implements SOAPHandler<SOAPMessageContext> {
                 signedElements = resultSignedElements;
             }
 
-            AssertionType resultAssertion = (AssertionType) result.get(WSSecurityEngineResult.TAG_SAML2_ASSERTION);
+            Assertion resultAssertion = (Assertion) result.get(WSSecurityEngineResult.TAG_SAML2_ASSERTION);
             if (null != resultAssertion) {
                 assertion = resultAssertion;
             }
@@ -135,17 +133,11 @@ public class SamlTokenServerHandler implements SOAPHandler<SOAPMessageContext> {
         LOG.debug("assertion: " + assertion.toString());
         String subject = null;
         boolean senderVouches = false;
-        for (JAXBElement<?> element : assertion.getSubject().getContent()) {
-            if (element.getValue() instanceof SubjectConfirmationType) {
-                SubjectConfirmationType subjectConfirmation = (SubjectConfirmationType) element.getValue();
-                if (subjectConfirmation.getMethod().equals(Saml2SubjectConfirmationMethod.SENDER_VOUCHES.getMethodURI())) {
-                    senderVouches = true;
-                }
-            } else if (element.getValue() instanceof NameIDType) {
-                NameIDType nameIDType = (NameIDType) element.getValue();
-                subject = nameIDType.getValue();
-            }
+        SubjectConfirmation subjectConfirmation = assertion.getSubject().getSubjectConfirmations().get(0);
+        if (subjectConfirmation.getMethod().equals(SAML2Constants.CONF_METHOD_SENDER_VOUCHES)) {
+            senderVouches = true;
         }
+        subject = assertion.getSubject().getNameID().getValue();
 
         if (null == subject)
             throw WSSecurityUtil.createSOAPFaultException("Assertion does not contain a subject", "FailedCheck");

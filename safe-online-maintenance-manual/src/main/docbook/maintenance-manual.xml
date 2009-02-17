@@ -267,4 +267,13 @@
 			the user and is therefore not shown in the user's profile, nor is the
 			user asked for permission if the attribute needs to be shared.</para>
 	</chapter>
+	<chapter id="applications">
+		<title>OLAS applications</title>
+		<para>There is a possibility to change the name of an existing
+			OLAS application. There are some limitations on this matter as it is
+			not allowed to use an existing application's name. Also it is not
+			allowed to change to name of any OLAS specific application. (
+			olas-user, olas-oper, olas-owner, olas-helpdesk ).
+		</para>
+	</chapter>
 </book>

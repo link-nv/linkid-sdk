@@ -133,7 +133,7 @@ public class DataServicePortImplTest {
 
     private String                              targetIdentity;
 
-    private String                              applicationName;
+    private long                                applicationId;
 
     private String                              testSubjectId;
 
@@ -144,13 +144,12 @@ public class DataServicePortImplTest {
             throws Exception {
 
         targetIdentity = "test-target-identity-" + UUID.randomUUID().toString();
-        applicationName = "application-" + UUID.randomUUID().toString();
+        applicationId = 1234567890;
         testSubjectId = UUID.randomUUID().toString();
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
-        jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName",
-                "SafeOnline/WSSecurityConfigurationBean/local");
+        jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName", "SafeOnline/WSSecurityConfigurationBean/local");
         jndiTestUtils.bindComponent("java:comp/env/wsSecurityOptionalInboudSignature", false);
 
         mockWSSecurityConfigurationService = createMock(WSSecurityConfiguration.class);
@@ -160,8 +159,7 @@ public class DataServicePortImplTest {
         jndiTestUtils.bindComponent("SafeOnline/AttributeProviderServiceBean/local", mockAttributeProviderService);
 
         mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
-        jndiTestUtils
-                          .bindComponent("SafeOnline/ApplicationAuthenticationServiceBean/local", mockApplicationAuthenticationService);
+        jndiTestUtils.bindComponent("SafeOnline/ApplicationAuthenticationServiceBean/local", mockApplicationAuthenticationService);
 
         mockDeviceAuthenticationService = createMock(DeviceAuthenticationService.class);
         jndiTestUtils.bindComponent("SafeOnline/DeviceAuthenticationServiceBean/local", mockDeviceAuthenticationService);
@@ -178,14 +176,12 @@ public class DataServicePortImplTest {
         expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
 
         mockApplicationIdentifierMappingService = createMock(ApplicationIdentifierMappingService.class);
-        jndiTestUtils.bindComponent("SafeOnline/ApplicationIdentifierMappingServiceBean/local",
-                mockApplicationIdentifierMappingService);
-        expect(mockApplicationIdentifierMappingService.findUserId(applicationName, targetIdentity)).andStubReturn(
-                testSubjectId);
+        jndiTestUtils.bindComponent("SafeOnline/ApplicationIdentifierMappingServiceBean/local", mockApplicationIdentifierMappingService);
+        expect(mockApplicationIdentifierMappingService.findUserId(applicationId, targetIdentity)).andStubReturn(testSubjectId);
 
         mockObjects = new Object[] { mockWSSecurityConfigurationService, mockAttributeProviderService,
-                mockApplicationAuthenticationService, mockDeviceAuthenticationService, mockNodeAuthenticationService,
-                mockPkiValidator, mockConfigurationManager, mockApplicationIdentifierMappingService };
+                mockApplicationAuthenticationService, mockDeviceAuthenticationService, mockNodeAuthenticationService, mockPkiValidator,
+                mockConfigurationManager, mockApplicationIdentifierMappingService };
 
         webServiceTestUtils = new WebServiceTestUtils();
 
@@ -230,12 +226,10 @@ public class DataServicePortImplTest {
         QueryType query = new QueryType();
 
         // expectations
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate))
-                                                                                                                                      .andReturn(
-                                                                                                                                              PkiResult.INVALID);
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN, certificate))
-                                                                                                                                 .andReturn(
-                                                                                                                                         PkiResult.INVALID);
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate)).andReturn(
+                PkiResult.INVALID);
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN, certificate)).andReturn(
+                PkiResult.INVALID);
         expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN, certificate)).andReturn(
                 PkiResult.INVALID);
 
@@ -262,9 +256,8 @@ public class DataServicePortImplTest {
         QueryType query = new QueryType();
 
         // expectations
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate))
-                                                                                                                                      .andReturn(
-                                                                                                                                              PkiResult.VALID);
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate)).andReturn(
+                PkiResult.VALID);
 
         expect(mockApplicationAuthenticationService.authenticate(certificate)).andThrow(new ApplicationNotFoundException());
 
@@ -294,11 +287,10 @@ public class DataServicePortImplTest {
         queryItem.setObjectType("foo-bar-object-type");
 
         // expectations
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate))
-                                                                                                                                      .andReturn(
-                                                                                                                                              PkiResult.VALID);
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate)).andReturn(
+                PkiResult.VALID);
 
-        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(applicationName);
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(applicationId);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
@@ -328,11 +320,10 @@ public class DataServicePortImplTest {
         queryItem.setObjectType(DataServiceConstants.ATTRIBUTE_OBJECT_TYPE);
 
         // expectations
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate))
-                                                                                                                                      .andReturn(
-                                                                                                                                              PkiResult.VALID);
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate)).andReturn(
+                PkiResult.VALID);
 
-        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(applicationName);
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(applicationId);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
@@ -365,11 +356,10 @@ public class DataServicePortImplTest {
         queryItem.setSelect(select);
 
         // expectations
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate))
-                                                                                                                                      .andReturn(
-                                                                                                                                              PkiResult.VALID);
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate)).andReturn(
+                PkiResult.VALID);
 
-        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(applicationName);
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(applicationId);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
@@ -413,11 +403,10 @@ public class DataServicePortImplTest {
         binding.setHandlerChain(handlerChain);
 
         // expectations
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate))
-                                                                                                                                      .andReturn(
-                                                                                                                                              PkiResult.VALID);
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate)).andReturn(
+                PkiResult.VALID);
 
-        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(applicationName);
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(applicationId);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
@@ -468,11 +457,10 @@ public class DataServicePortImplTest {
         }
 
         // expectations
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate))
-                                                                                                                                      .andReturn(
-                                                                                                                                              PkiResult.VALID);
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate)).andReturn(
+                PkiResult.VALID);
 
-        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(applicationName);
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(applicationId);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
@@ -544,11 +532,10 @@ public class DataServicePortImplTest {
         ModifyType request = new ModifyType();
 
         // expectations
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate))
-                                                                                                                                      .andReturn(
-                                                                                                                                              PkiResult.VALID);
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate)).andReturn(
+                PkiResult.VALID);
 
-        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(applicationName);
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(applicationId);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
@@ -577,11 +564,10 @@ public class DataServicePortImplTest {
         request.getModifyItem().add(modifyItem);
 
         // expectations
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate))
-                                                                                                                                      .andReturn(
-                                                                                                                                              PkiResult.VALID);
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate)).andReturn(
+                PkiResult.VALID);
 
-        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(applicationName);
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(applicationId);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
@@ -611,11 +597,10 @@ public class DataServicePortImplTest {
         modifyItem.setObjectType(DataServiceConstants.ATTRIBUTE_OBJECT_TYPE);
 
         // expectations
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate))
-                                                                                                                                      .andReturn(
-                                                                                                                                              PkiResult.VALID);
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate)).andReturn(
+                PkiResult.VALID);
 
-        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(applicationName);
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(applicationId);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
@@ -661,11 +646,10 @@ public class DataServicePortImplTest {
         binding.setHandlerChain(handlerChain);
 
         // expectations
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate))
-                                                                                                                                      .andReturn(
-                                                                                                                                              PkiResult.VALID);
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate)).andReturn(
+                PkiResult.VALID);
 
-        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(applicationName);
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(applicationId);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
@@ -716,11 +700,10 @@ public class DataServicePortImplTest {
         binding.setHandlerChain(handlerChain);
 
         // expectations
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate))
-                                                                                                                                      .andReturn(
-                                                                                                                                              PkiResult.VALID);
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate)).andReturn(
+                PkiResult.VALID);
 
-        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(applicationName);
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(applicationId);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
@@ -774,11 +757,10 @@ public class DataServicePortImplTest {
         binding.setHandlerChain(handlerChain);
 
         // expectations
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate))
-                                                                                                                                      .andReturn(
-                                                                                                                                              PkiResult.VALID);
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate)).andReturn(
+                PkiResult.VALID);
 
-        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(applicationName);
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(applicationId);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
@@ -832,11 +814,10 @@ public class DataServicePortImplTest {
         binding.setHandlerChain(handlerChain);
 
         // expectations
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate))
-                                                                                                                                      .andReturn(
-                                                                                                                                              PkiResult.VALID);
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate)).andReturn(
+                PkiResult.VALID);
 
-        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(applicationName);
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(applicationId);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
@@ -895,11 +876,10 @@ public class DataServicePortImplTest {
         binding.setHandlerChain(handlerChain);
 
         // expectations
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate))
-                                                                                                                                      .andReturn(
-                                                                                                                                              PkiResult.VALID);
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate)).andReturn(
+                PkiResult.VALID);
 
-        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(applicationName);
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(applicationId);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
@@ -956,10 +936,9 @@ public class DataServicePortImplTest {
         binding.setHandlerChain(handlerChain);
 
         // expectations
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate))
-                                                                                                                                      .andReturn(
-                                                                                                                                              PkiResult.VALID);
-        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(applicationName);
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate)).andReturn(
+                PkiResult.VALID);
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(applicationId);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
@@ -1007,11 +986,10 @@ public class DataServicePortImplTest {
         binding.setHandlerChain(handlerChain);
 
         // expectations
-        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate))
-                                                                                                                                      .andReturn(
-                                                                                                                                              PkiResult.VALID);
+        expect(mockPkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate)).andReturn(
+                PkiResult.VALID);
 
-        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(applicationName);
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(applicationId);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);

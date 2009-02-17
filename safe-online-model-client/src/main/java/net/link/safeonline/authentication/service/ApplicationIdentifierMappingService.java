@@ -43,10 +43,10 @@ public interface ApplicationIdentifierMappingService extends SafeOnlineService {
     /**
      * Returns the global OLAS user ID using the application's id scope. Returns null if not found.
      * 
-     * @param applicationName
+     * @param applicationId
      * @param applicationUserId
      * @throws ApplicationNotFoundException
      */
-    String findUserId(String applicationName, String applicationUserId)
+    String findUserId(long applicationId, String applicationUserId)
             throws ApplicationNotFoundException;
 }

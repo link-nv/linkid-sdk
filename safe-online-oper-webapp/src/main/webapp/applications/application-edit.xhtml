@@ -31,6 +31,30 @@
 							<tbody>
 								<tr>
 									<th>
+										<h:outputText value="#{msgs.name}" />
+									</th>
+									<td>
+										<s:decorate>
+											<h:inputText id="name" value="#{operApplication.name}"
+												styleClass="label" />
+											<h:message for="name" styleClass="error" />
+										</s:decorate>
+									</td>
+								</tr>
+								<tr>
+									<th>
+										<h:outputText value="#{msgs.friendlyname}" />
+									</th>
+									<td>
+										<s:decorate>
+											<h:inputText id="friendlyname" value="#{operApplication.friendlyName}"
+												styleClass="label" />
+											<h:message for="friendlyname" styleClass="error" />
+										</s:decorate>
+									</td>
+								</tr>
+								<tr>
+									<th>
 										<h:outputText value="#{msgs.applicationUrl}" />
 									</th>
 									<td>

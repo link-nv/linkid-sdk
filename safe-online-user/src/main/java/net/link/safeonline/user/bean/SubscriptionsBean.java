@@ -112,11 +112,12 @@ public class SubscriptionsBean implements Subscriptions {
             throws SubscriptionNotFoundException, ApplicationNotFoundException, MessageHandlerNotFoundException {
 
         LOG.debug("unsubscribe from: " + selectedSubscription.getApplication().getName());
-        String applicationName = selectedSubscription.getApplication().getName();
+        long applicationId = selectedSubscription.getApplication().getId();
         try {
-            subscriptionService.unsubscribe(applicationName);
+            subscriptionService.unsubscribe(applicationId);
         } catch (PermissionDeniedException e) {
-            facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorUserMayNotUnsubscribeFrom", applicationName);
+            facesMessages.addFromResourceBundle(FacesMessage.SEVERITY_ERROR, "errorUserMayNotUnsubscribeFrom",
+                    selectedSubscription.getApplication().getName());
             return null;
         }
         subscriptionListFactory();
@@ -137,8 +138,8 @@ public class SubscriptionsBean implements Subscriptions {
         Locale viewLocale = facesContext.getViewRoot().getLocale();
         if (null == selectedSubscription)
             return null;
-        return usageAgreementService.getUsageAgreementText(selectedSubscription.getApplication().getName(),
-                viewLocale.getLanguage(), selectedSubscription.getConfirmedUsageAgreementVersion());
+        return usageAgreementService.getUsageAgreementText(selectedSubscription.getApplication().getId(), viewLocale.getLanguage(),
+                selectedSubscription.getConfirmedUsageAgreementVersion());
     }
 
     @RolesAllowed(UserConstants.USER_ROLE)
@@ -147,7 +148,6 @@ public class SubscriptionsBean implements Subscriptions {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         Locale viewLocale = facesContext.getViewRoot().getLocale();
         SubjectEntity subject = subjectManager.getCallerSubject();
-        return usageAgreementService
-                                         .getGlobalUsageAgreementText(viewLocale.getLanguage(), subject.getConfirmedUsageAgreementVersion());
+        return usageAgreementService.getGlobalUsageAgreementText(viewLocale.getLanguage(), subject.getConfirmedUsageAgreementVersion());
     }
 }

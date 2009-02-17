@@ -55,15 +55,10 @@ public class StatisticEntity implements Serializable {
     private static final long              serialVersionUID                        = 1L;
 
     public static final String             QUERY_WHERE_NAME_DOMAIN_AND_APPLICATION = "stat.naa";
-
     public static final String             QUERY_WHERE_NAME_DOMAIN_AND_NULL        = "stat.nan";
-
     public static final String             QUERY_WHERE_APPLICATION                 = "stat.app";
-
     public static final String             QUERY_ALL                               = "stat.all";
-
     public static final String             QUERY_DELETE_WHERE_DOMAIN               = "stat.deldomain";
-
     public static final String             QUERY_WHERE_DOMAIN                      = "stat.domain";
 
     private long                           id;

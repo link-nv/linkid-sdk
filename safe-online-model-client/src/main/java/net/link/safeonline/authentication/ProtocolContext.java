@@ -23,7 +23,8 @@ import net.link.safeonline.entity.DeviceEntity;
 public class ProtocolContext {
 
     private final String            target;
-    private final String            applicationId;
+    private final long              applicationId;
+    private final String            applicationName;
     private final String            applicationFriendlyName;
     private final Set<DeviceEntity> requiredDevices;
 
@@ -36,7 +37,8 @@ public class ProtocolContext {
      * Main constructor.
      * 
      * @param applicationId
-     *            the application Id of the application that the authentication protocol handler has determined that issued the
+     * @param applicationName
+     *            the application name of the application that the authentication protocol handler has determined that issued the
      *            authentication request.
      * @param applicationFriendlyName
      *            the application friendly name, can be used by the remote device issuer to display what the user is authenticating for
@@ -47,10 +49,11 @@ public class ProtocolContext {
      * @param requiredDevices
      *            the optional set of required devices for this authentication session.
      */
-    public ProtocolContext(String applicationId, String applicationFriendlyName, String target, Locale language, Integer color,
-                           Boolean minimal, Set<DeviceEntity> requiredDevices) {
+    public ProtocolContext(long applicationId, String applicationName, String applicationFriendlyName, String target, Locale language,
+                           Integer color, Boolean minimal, Set<DeviceEntity> requiredDevices) {
 
         this.applicationId = applicationId;
+        this.applicationName = applicationName;
         this.applicationFriendlyName = applicationFriendlyName;
         this.target = target;
         this.language = language;
@@ -59,7 +62,12 @@ public class ProtocolContext {
         this.requiredDevices = requiredDevices;
     }
 
-    public String getApplicationId() {
+    public String getApplicationName() {
+
+        return applicationName;
+    }
+
+    public long getApplicationId() {
 
         return applicationId;
     }

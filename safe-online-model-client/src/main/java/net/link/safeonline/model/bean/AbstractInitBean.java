@@ -627,11 +627,11 @@ public abstract class AbstractInitBean implements Startable {
     private void initAttributeProviders() {
 
         for (AttributeProviderEntity attributeProvider : attributeProviders) {
-            String applicationName = attributeProvider.getApplicationName();
+            long applicationId = attributeProvider.getApplicationId();
             String attributeName = attributeProvider.getAttributeTypeName();
-            ApplicationEntity application = applicationDAO.findApplication(applicationName);
+            ApplicationEntity application = applicationDAO.findApplication(applicationId);
             if (null == application)
-                throw new EJBException("application not found: " + applicationName);
+                throw new EJBException("application not found: " + applicationId);
             AttributeTypeEntity attributeType = attributeTypeDAO.findAttributeType(attributeName);
             if (null == attributeType)
                 throw new EJBException("attribute type not found: " + attributeName);
@@ -821,7 +821,8 @@ public abstract class AbstractInitBean implements Startable {
 
         for (Identity identity : identities) {
             try {
-                applicationIdentityService.updateApplicationIdentity(identity.application, Arrays.asList(identity.identityAttributes));
+                ApplicationEntity application = applicationDAO.getApplication(identity.application);
+                applicationIdentityService.updateApplicationIdentity(application.getId(), Arrays.asList(identity.identityAttributes));
             } catch (Exception e) {
                 LOG.debug("Could not update application identity");
                 throw new RuntimeException("could not update the application identity: " + e.getMessage(), e);

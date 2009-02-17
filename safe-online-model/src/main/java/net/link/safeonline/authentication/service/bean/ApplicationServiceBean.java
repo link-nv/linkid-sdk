@@ -148,8 +148,7 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
     @PermitAll
     public List<ApplicationEntity> listApplications() {
 
-        if (sessionContext.isCallerInRole(SafeOnlineRoles.OPERATOR_ROLE)
-                || sessionContext.isCallerInRole(SafeOnlineRoles.OWNER_ROLE)
+        if (sessionContext.isCallerInRole(SafeOnlineRoles.OPERATOR_ROLE) || sessionContext.isCallerInRole(SafeOnlineRoles.OWNER_ROLE)
                 || sessionContext.isCallerInRole(SafeOnlineRoles.GLOBAL_OPERATOR_ROLE))
             return applications.listApplications();
         return applications.listUserApplications();
@@ -171,8 +170,8 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
 
         ApplicationOwnerEntity applicationOwner = applicationOwnerDAO.getApplicationOwner(applicationOwnerName);
 
-        ApplicationEntity application = applicationDAO.addApplication(name, friendlyName, applicationOwner, description,
-                applicationUrl, applicationLogo, certificate);
+        ApplicationEntity application = applicationDAO.addApplication(name, friendlyName, applicationOwner, description, applicationUrl,
+                applicationLogo, certificate);
 
         application.setIdentifierMappingAllowed(idMappingServiceAccess);
 
@@ -194,8 +193,7 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
             throws AttributeTypeNotFoundException {
 
         long initialIdentityVersion = ApplicationIdentityPK.INITIAL_IDENTITY_VERSION;
-        ApplicationIdentityEntity applicationIdentity = applicationIdentityDAO.addApplicationIdentity(application,
-                initialIdentityVersion);
+        ApplicationIdentityEntity applicationIdentity = applicationIdentityDAO.addApplicationIdentity(application, initialIdentityVersion);
         application.setCurrentApplicationIdentity(initialIdentityVersion);
 
         addIdentityAttributes(applicationIdentity, initialApplicationIdentityAttributeTypes);
@@ -224,11 +222,11 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void removeApplication(String name)
+    public void removeApplication(long applicationId)
             throws ApplicationNotFoundException, PermissionDeniedException {
 
-        LOG.debug("remove application: " + name);
-        ApplicationEntity application = applicationDAO.getApplication(name);
+        LOG.debug("remove application: " + applicationId);
+        ApplicationEntity application = applicationDAO.getApplication(applicationId);
 
         if (false == application.isRemovable())
             throw new PermissionDeniedException("application not removable", "errorPermissionApplicationNotRemovable");
@@ -289,11 +287,10 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
     }
 
     @RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
-    public void setApplicationDescription(String name, String description)
+    public void setApplicationDescription(long applicationId, String description)
             throws ApplicationNotFoundException, PermissionDeniedException {
 
-        LOG.debug("set application description: " + name);
-        ApplicationEntity application = applicationDAO.getApplication(name);
+        ApplicationEntity application = applicationDAO.getApplication(applicationId);
 
         checkWritePermission(application);
 
@@ -400,10 +397,10 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
     }
 
     @RolesAllowed( { SafeOnlineRoles.OPERATOR_ROLE, SafeOnlineRoles.OWNER_ROLE })
-    public Set<ApplicationIdentityAttributeEntity> getCurrentApplicationIdentity(String applicationName)
+    public Set<ApplicationIdentityAttributeEntity> getCurrentApplicationIdentity(long applicationId)
             throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, PermissionDeniedException {
 
-        ApplicationEntity application = applications.getApplication(applicationName);
+        ApplicationEntity application = applications.getApplication(applicationId);
 
         checkReadPermission(application);
 
@@ -423,24 +420,31 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void updateApplicationIdentity(String applicationId, List<IdentityAttributeTypeDO> applicationIdentityAttributes)
+    public void updateApplicationIdentity(long applicationId, List<IdentityAttributeTypeDO> applicationIdentityAttributes)
             throws ApplicationNotFoundException, ApplicationIdentityNotFoundException, AttributeTypeNotFoundException {
 
         applicationIdentityService.updateApplicationIdentity(applicationId, applicationIdentityAttributes);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void updateApplicationUrl(String applicationId, URL applicationUrl)
+    public void updateApplicationUrl(long applicationId, URL applicationUrl)
             throws ApplicationNotFoundException {
 
         getApplication(applicationId).setApplicationUrl(applicationUrl);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void updateApplicationLogo(String applicationId, byte[] applicationLogo)
+    public void updateApplicationLogo(long applicationId, byte[] applicationLogo)
             throws ApplicationNotFoundException {
 
         getApplication(applicationId).setApplicationLogo(applicationLogo);
+    }
+
+    @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
+    public ApplicationEntity getApplication(long applicationId)
+            throws ApplicationNotFoundException {
+
+        return applicationDAO.getApplication(applicationId);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -451,23 +455,22 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void updateApplicationCertificate(String applicationName, byte[] certificateData)
+    public void updateApplicationCertificate(long applicationId, byte[] certificateData)
             throws CertificateEncodingException, ApplicationNotFoundException {
 
-        LOG.debug("updating application certificate for " + applicationName);
+        LOG.debug("updating application certificate for " + applicationId);
         X509Certificate certificate = PkiUtils.decodeCertificate(certificateData);
 
-        ApplicationEntity application = applicationDAO.getApplication(applicationName);
+        ApplicationEntity application = applicationDAO.getApplication(applicationId);
 
         application.setCertificate(certificate);
     }
 
     @RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
-    public void setApplicationDeviceRestriction(String name, boolean deviceRestriction)
+    public void setApplicationDeviceRestriction(long applicationId, boolean deviceRestriction)
             throws ApplicationNotFoundException, PermissionDeniedException {
 
-        LOG.debug("set application description: " + name);
-        ApplicationEntity application = applicationDAO.getApplication(name);
+        ApplicationEntity application = applicationDAO.getApplication(applicationId);
 
         checkWritePermission(application);
 
@@ -475,27 +478,24 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void setIdentifierMappingServiceAccess(String applicationName, boolean access)
+    public void setIdentifierMappingServiceAccess(long applicationId, boolean access)
             throws ApplicationNotFoundException {
 
-        ApplicationEntity application = applicationDAO.getApplication(applicationName);
-        application.setIdentifierMappingAllowed(access);
+        getApplication(applicationId).setIdentifierMappingAllowed(access);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void setIdScope(String applicationName, IdScopeType idScope)
+    public void setIdScope(long applicationId, IdScopeType idScope)
             throws ApplicationNotFoundException {
 
-        ApplicationEntity application = applicationDAO.getApplication(applicationName);
-        application.setIdScope(idScope);
+        getApplication(applicationId).setIdScope(idScope);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void setSkipMessageIntegrityCheck(String applicationName, boolean skipMessageIntegrityCheck)
+    public void setSkipMessageIntegrityCheck(long applicationId, boolean skipMessageIntegrityCheck)
             throws ApplicationNotFoundException {
 
-        ApplicationEntity application = applicationDAO.getApplication(applicationName);
-        application.setSkipMessageIntegrityCheck(skipMessageIntegrityCheck);
+        getApplication(applicationId).setSkipMessageIntegrityCheck(skipMessageIntegrityCheck);
     }
 
     /**
@@ -503,11 +503,10 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
      * 
      */
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void setSsoEnabled(String applicationName, boolean ssoEnabled)
+    public void setSsoEnabled(long applicationId, boolean ssoEnabled)
             throws ApplicationNotFoundException {
 
-        ApplicationEntity application = applicationDAO.getApplication(applicationName);
-        application.setSsoEnabled(ssoEnabled);
+        getApplication(applicationId).setSsoEnabled(ssoEnabled);
 
     }
 
@@ -515,10 +514,34 @@ public class ApplicationServiceBean implements ApplicationService, ApplicationSe
      * {@inheritDoc}
      */
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
-    public void updateSsoLogoutUrl(String applicationId, URL ssoLogoutUrl)
+    public void updateSsoLogoutUrl(long applicationId, URL ssoLogoutUrl)
             throws ApplicationNotFoundException {
 
         getApplication(applicationId).setSsoLogoutUrl(ssoLogoutUrl);
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @RolesAllowed( { SafeOnlineRoles.OPERATOR_ROLE, SafeOnlineRoles.OWNER_ROLE })
+    public void updateApplicationName(long applicationId, String applicationName)
+            throws ApplicationNotFoundException, ExistingApplicationException {
+
+        checkExistingApplication(applicationName);
+
+        getApplication(applicationId).setName(applicationName);
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @RolesAllowed( { SafeOnlineRoles.OPERATOR_ROLE, SafeOnlineRoles.OWNER_ROLE })
+    public void updateApplicationFriendlyName(long applicationId, String applicationFriendlyName)
+            throws ApplicationNotFoundException {
+
+        getApplication(applicationId).setFriendlyName(applicationFriendlyName);
 
     }
 }

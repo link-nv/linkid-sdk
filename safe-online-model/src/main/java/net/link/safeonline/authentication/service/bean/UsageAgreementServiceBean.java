@@ -41,8 +41,8 @@ import net.link.safeonline.model.UsageAgreementManager;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.security.SecurityDomain;
 
 
@@ -112,11 +112,11 @@ public class UsageAgreementServiceBean implements UsageAgreementService, UsageAg
     }
 
     @RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
-    public UsageAgreementEntity createDraftUsageAgreement(String applicationName, Long usageAgreementVersion)
+    public UsageAgreementEntity createDraftUsageAgreement(long applicationId, Long usageAgreementVersion)
             throws ApplicationNotFoundException, PermissionDeniedException {
 
-        LOG.debug("create draft usage agreement for application: " + applicationName + " from version: " + usageAgreementVersion);
-        ApplicationEntity application = applicationDAO.getApplication(applicationName);
+        LOG.debug("create draft usage agreement for application: " + applicationId + " from version: " + usageAgreementVersion);
+        ApplicationEntity application = applicationDAO.getApplication(applicationId);
         checkWritePermission(application);
 
         UsageAgreementEntity draftUsageAgreement = usageAgreementDAO.addUsageAgreement(application,
@@ -125,22 +125,22 @@ public class UsageAgreementServiceBean implements UsageAgreementService, UsageAg
         UsageAgreementEntity usageAgreement = usageAgreementDAO.getUsageAgreement(application, usageAgreementVersion);
         if (null != usageAgreement) {
             for (UsageAgreementTextEntity usageAgreementText : usageAgreement.getUsageAgreementTexts()) {
-                usageAgreementDAO.addUsageAgreementText(draftUsageAgreement, usageAgreementText.getText(),
-                        usageAgreementText.getLanguage());
+                usageAgreementDAO
+                                 .addUsageAgreementText(draftUsageAgreement, usageAgreementText.getText(), usageAgreementText.getLanguage());
             }
         }
         return draftUsageAgreement;
     }
 
     @RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
-    public UsageAgreementTextEntity createDraftUsageAgreementText(String applicationName, String language, String text)
+    public UsageAgreementTextEntity createDraftUsageAgreementText(long applicationId, String language, String text)
             throws ApplicationNotFoundException, PermissionDeniedException {
 
-        LOG.debug("create draft usage agreement text for application: " + applicationName + " language=" + language);
-        ApplicationEntity application = applicationDAO.getApplication(applicationName);
+        LOG.debug("create draft usage agreement text for application: " + applicationId + " language=" + language);
+        ApplicationEntity application = applicationDAO.getApplication(applicationId);
         checkWritePermission(application);
 
-        UsageAgreementEntity usageAgreement = getDraftUsageAgreement(applicationName);
+        UsageAgreementEntity usageAgreement = getDraftUsageAgreement(applicationId);
         UsageAgreementTextEntity usageAgreementText = usageAgreement.getUsageAgreementText(language);
         if (null == usageAgreementText) {
             usageAgreementText = usageAgreementDAO.addUsageAgreementText(usageAgreement, text, language);
@@ -149,56 +149,56 @@ public class UsageAgreementServiceBean implements UsageAgreementService, UsageAg
     }
 
     @RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
-    public void updateUsageAgreement(String applicationName)
+    public void updateUsageAgreement(long applicationId)
             throws ApplicationNotFoundException, PermissionDeniedException {
 
-        LOG.debug("update application usage agreement: " + applicationName);
-        ApplicationEntity application = applicationDAO.getApplication(applicationName);
+        LOG.debug("update application usage agreement: " + applicationId);
+        ApplicationEntity application = applicationDAO.getApplication(applicationId);
         checkWritePermission(application);
 
         usageAgreementManager.updateUsageAgreement(application);
     }
 
     @RolesAllowed( { SafeOnlineRoles.USER_ROLE, SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
-    public UsageAgreementEntity getCurrentUsageAgreement(String applicationName)
+    public UsageAgreementEntity getCurrentUsageAgreement(long applicationId)
             throws PermissionDeniedException, ApplicationNotFoundException {
 
-        LOG.debug("get current usage agreement for application: " + applicationName);
-        ApplicationEntity application = applicationDAO.getApplication(applicationName);
+        LOG.debug("get current usage agreement for application: " + applicationId);
+        ApplicationEntity application = applicationDAO.getApplication(applicationId);
         checkReadPermission(application);
 
         return usageAgreementDAO.getUsageAgreement(application, application.getCurrentApplicationUsageAgreement());
     }
 
     @RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
-    public List<UsageAgreementEntity> getUsageAgreements(String applicationName)
+    public List<UsageAgreementEntity> getUsageAgreements(long applicationId)
             throws ApplicationNotFoundException, PermissionDeniedException {
 
-        LOG.debug("get usage agreements for application: " + applicationName);
-        ApplicationEntity application = applicationDAO.getApplication(applicationName);
+        LOG.debug("get usage agreements for application: " + applicationId);
+        ApplicationEntity application = applicationDAO.getApplication(applicationId);
         checkReadPermission(application);
 
         return usageAgreementDAO.listUsageAgreements(application);
     }
 
     @RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
-    public UsageAgreementEntity getDraftUsageAgreement(String applicationName)
+    public UsageAgreementEntity getDraftUsageAgreement(long applicationId)
             throws ApplicationNotFoundException, PermissionDeniedException {
 
-        LOG.debug("get draft usage agreement for application: " + applicationName);
-        ApplicationEntity application = applicationDAO.getApplication(applicationName);
+        LOG.debug("get draft usage agreement for application: " + applicationId);
+        ApplicationEntity application = applicationDAO.getApplication(applicationId);
         checkReadPermission(application);
 
         return usageAgreementDAO.getUsageAgreement(application, UsageAgreementPK.DRAFT_USAGE_AGREEMENT_VERSION);
     }
 
     @RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
-    public void setDraftUsageAgreementText(String applicationName, String language, String text)
+    public void setDraftUsageAgreementText(long applicationId, String language, String text)
             throws ApplicationNotFoundException, PermissionDeniedException {
 
-        LOG.debug("set draft usage agreement text for application: " + applicationName + " language=" + language);
+        LOG.debug("set draft usage agreement text for application: " + applicationId + " language=" + language);
 
-        ApplicationEntity application = applicationDAO.getApplication(applicationName);
+        ApplicationEntity application = applicationDAO.getApplication(applicationId);
         checkWritePermission(application);
 
         UsageAgreementEntity usageAgreement = usageAgreementDAO.getUsageAgreement(application,
@@ -209,12 +209,12 @@ public class UsageAgreementServiceBean implements UsageAgreementService, UsageAg
     }
 
     @RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
-    public void removeDraftUsageAgreementText(String applicationName, String language)
+    public void removeDraftUsageAgreementText(long applicationId, String language)
             throws ApplicationNotFoundException, PermissionDeniedException {
 
-        LOG.debug("remove draft usage agreement text for application: " + applicationName + " language=" + language);
+        LOG.debug("remove draft usage agreement text for application: " + applicationId + " language=" + language);
 
-        ApplicationEntity application = applicationDAO.getApplication(applicationName);
+        ApplicationEntity application = applicationDAO.getApplication(applicationId);
         checkWritePermission(application);
 
         UsageAgreementEntity usageAgreement = usageAgreementDAO.getUsageAgreement(application,
@@ -225,32 +225,32 @@ public class UsageAgreementServiceBean implements UsageAgreementService, UsageAg
     }
 
     @RolesAllowed( { SafeOnlineRoles.OWNER_ROLE, SafeOnlineRoles.OPERATOR_ROLE })
-    public void removeDraftUsageAgreement(String applicationName)
+    public void removeDraftUsageAgreement(long applicationId)
             throws ApplicationNotFoundException, PermissionDeniedException {
 
-        LOG.debug("remove draft usage agreement for application: " + applicationName);
+        LOG.debug("remove draft usage agreement for application: " + applicationId);
 
-        ApplicationEntity application = applicationDAO.getApplication(applicationName);
+        ApplicationEntity application = applicationDAO.getApplication(applicationId);
         checkWritePermission(application);
 
         usageAgreementDAO.removeUsageAgreement(application, UsageAgreementPK.DRAFT_USAGE_AGREEMENT_VERSION);
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public boolean requiresUsageAgreementAcceptation(String applicationName, String language)
+    public boolean requiresUsageAgreementAcceptation(long applicationId, String language)
             throws ApplicationNotFoundException, SubscriptionNotFoundException {
 
         SubjectEntity subject = subjectManager.getCallerSubject();
-        LOG.debug("is confirmation required for application " + applicationName + " by subject " + subject.getUserId());
+        LOG.debug("is confirmation required for application " + applicationId + " by subject " + subject.getUserId());
 
-        ApplicationEntity application = applicationDAO.getApplication(applicationName);
+        ApplicationEntity application = applicationDAO.getApplication(applicationId);
         long currentUsageAgreementVersion = application.getCurrentApplicationUsageAgreement();
         SubscriptionEntity subscription = subscriptionDAO.getSubscription(subject, application);
 
         long confirmedUsageAgreementVersion = subscription.getConfirmedUsageAgreementVersion();
         if (confirmedUsageAgreementVersion != currentUsageAgreementVersion
                 && currentUsageAgreementVersion != GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION) {
-            String text = getUsageAgreementText(applicationName, language);
+            String text = getUsageAgreementText(applicationId, language);
             if (text.equals(""))
                 return false;
             return true;
@@ -259,13 +259,13 @@ public class UsageAgreementServiceBean implements UsageAgreementService, UsageAg
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public void confirmUsageAgreementVersion(String applicationName)
+    public void confirmUsageAgreementVersion(long applicationId)
             throws ApplicationNotFoundException, SubscriptionNotFoundException {
 
         SubjectEntity subject = subjectManager.getCallerSubject();
-        LOG.debug("confirm usage agreement for application " + applicationName + " by subject " + subject.getUserId());
+        LOG.debug("confirm usage agreement for application " + applicationId + " by subject " + subject.getUserId());
 
-        ApplicationEntity application = applicationDAO.getApplication(applicationName);
+        ApplicationEntity application = applicationDAO.getApplication(applicationId);
         Long currentUsageAgreementVersion = application.getCurrentApplicationUsageAgreement();
         SubscriptionEntity subscription = subscriptionDAO.getSubscription(subject, application);
         subscription.setConfirmedUsageAgreementVersion(currentUsageAgreementVersion);
@@ -273,10 +273,10 @@ public class UsageAgreementServiceBean implements UsageAgreementService, UsageAg
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public String getUsageAgreementText(String applicationName, String language)
+    public String getUsageAgreementText(long applicationId, String language)
             throws ApplicationNotFoundException {
 
-        ApplicationEntity application = applicationDAO.getApplication(applicationName);
+        ApplicationEntity application = applicationDAO.getApplication(applicationId);
         Long usageAgreementVersion = application.getCurrentApplicationUsageAgreement();
         UsageAgreementEntity usageAgreement = usageAgreementDAO.getUsageAgreement(application, usageAgreementVersion);
         if (null == usageAgreement)
@@ -288,10 +288,10 @@ public class UsageAgreementServiceBean implements UsageAgreementService, UsageAg
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
-    public String getUsageAgreementText(String applicationName, String language, Long usageAgreementVersion)
+    public String getUsageAgreementText(long applicationId, String language, Long usageAgreementVersion)
             throws ApplicationNotFoundException {
 
-        ApplicationEntity application = applicationDAO.getApplication(applicationName);
+        ApplicationEntity application = applicationDAO.getApplication(applicationId);
         UsageAgreementEntity usageAgreement = usageAgreementDAO.getUsageAgreement(application, usageAgreementVersion);
         if (null == usageAgreement)
             return null;
@@ -306,7 +306,7 @@ public class UsageAgreementServiceBean implements UsageAgreementService, UsageAg
 
         LOG.debug("create draft global usage agreement");
         GlobalUsageAgreementEntity draftUsageAgreement = usageAgreementDAO
-                                                                               .addGlobalUsageAgreement(GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION);
+                                                                          .addGlobalUsageAgreement(GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION);
         GlobalUsageAgreementEntity usageAgreement = usageAgreementDAO.getGlobalUsageAgreement();
         if (null != usageAgreement) {
             for (UsageAgreementTextEntity usageAgreementText : usageAgreement.getUsageAgreementTexts()) {
@@ -335,7 +335,7 @@ public class UsageAgreementServiceBean implements UsageAgreementService, UsageAg
         LOG.debug("set draft usage agreement text: language=" + language);
 
         GlobalUsageAgreementEntity usageAgreement = usageAgreementDAO
-                                                                          .getGlobalUsageAgreement(GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION);
+                                                                     .getGlobalUsageAgreement(GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION);
 
         UsageAgreementTextEntity usageAgreementText = usageAgreementDAO.getGlobalUsageAgreementText(usageAgreement, language);
         usageAgreementText.setText(text);
@@ -376,7 +376,7 @@ public class UsageAgreementServiceBean implements UsageAgreementService, UsageAg
         LOG.debug("remove draft usage agreement text language=" + language);
 
         GlobalUsageAgreementEntity usageAgreement = usageAgreementDAO
-                                                                          .getGlobalUsageAgreement(GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION);
+                                                                     .getGlobalUsageAgreement(GlobalUsageAgreementEntity.DRAFT_GLOBAL_USAGE_AGREEMENT_VERSION);
         UsageAgreementTextEntity usageAgreementText = usageAgreementDAO.getGlobalUsageAgreementText(usageAgreement, language);
 
         usageAgreementDAO.removeGlobalUsageAgreementText(usageAgreementText);

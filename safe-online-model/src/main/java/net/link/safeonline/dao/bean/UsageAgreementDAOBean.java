@@ -68,7 +68,7 @@ public class UsageAgreementDAOBean implements UsageAgreementDAO {
 
     public UsageAgreementEntity getUsageAgreement(ApplicationEntity application, Long usageAgreementVersion) {
 
-        UsageAgreementPK usageAgreementPK = new UsageAgreementPK(application.getName(), usageAgreementVersion);
+        UsageAgreementPK usageAgreementPK = new UsageAgreementPK(application.getId(), usageAgreementVersion);
         UsageAgreementEntity usageAgreement = entityManager.find(UsageAgreementEntity.class, usageAgreementPK);
         if (null == usageAgreement) {
             LOG.debug("usage agreement version: " + usageAgreementVersion + " not found for application: " + application.getName());
@@ -110,7 +110,7 @@ public class UsageAgreementDAOBean implements UsageAgreementDAO {
             return;
         entityManager.remove(usageAgreement);
         entityManager.flush();
-        textQueryObject.removeUsageAgreementTexts(application.getName(), usageAgreementVersion);
+        textQueryObject.removeUsageAgreementTexts(application.getId(), usageAgreementVersion);
     }
 
     public List<UsageAgreementTextEntity> listUsageAgreementTexts(ApplicationEntity application, Long usageAgreementVersion) {
@@ -149,7 +149,7 @@ public class UsageAgreementDAOBean implements UsageAgreementDAO {
     public UsageAgreementTextEntity getUsageAgreementText(UsageAgreementEntity usageAgreement, String language) {
 
         LOG.debug("get usage agreement text: language=" + language + " version=" + usageAgreement.getUsageAgreementVersion());
-        UsageAgreementTextPK usageAgreementTextPK = new UsageAgreementTextPK(usageAgreement.getApplication().getName(),
+        UsageAgreementTextPK usageAgreementTextPK = new UsageAgreementTextPK(usageAgreement.getApplication().getId(),
                 usageAgreement.getUsageAgreementVersion(), language);
         UsageAgreementTextEntity usageAgreementText = entityManager.find(UsageAgreementTextEntity.class, usageAgreementTextPK);
         if (null == usageAgreementText) {

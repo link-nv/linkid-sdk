@@ -265,7 +265,7 @@ public class AccountMergingServiceBean implements AccountMergingService {
 
         List<DeviceEntity> allowedDevices = null;
         if (subscription.getApplication().isDeviceRestriction()) {
-            allowedDevices = devicePolicyService.getDevicePolicy(subscription.getApplication().getName(), null);
+            allowedDevices = devicePolicyService.getDevicePolicy(subscription.getApplication().getId(), null);
         }
         return new SubscriptionDO(subscription, allowedDevices);
     }

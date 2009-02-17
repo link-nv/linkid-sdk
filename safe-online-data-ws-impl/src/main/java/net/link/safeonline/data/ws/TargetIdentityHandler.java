@@ -75,8 +75,7 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
     public void postConstructCallback() {
 
         loadDependencies();
-        wsSecurityConfigurationService = EjbUtils.getEJB(wsSecurityConfigurationServiceJndiName,
-                WSSecurityConfigurationService.class);
+        wsSecurityConfigurationService = EjbUtils.getEJB(wsSecurityConfigurationServiceJndiName, WSSecurityConfigurationService.class);
     }
 
     private void loadDependencies() {
@@ -182,10 +181,10 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
         SubjectType subject = (SubjectType) element;
         String login = findSubjectLogin(subject);
 
-        String applicationName = CertificateMapperHandler.getId(soapContext);
+        long applicationId = Long.parseLong(CertificateMapperHandler.getId(soapContext));
         String userId = null;
         try {
-            userId = findUserId(applicationName, login);
+            userId = findUserId(applicationId, login);
         } catch (ApplicationNotFoundException e) {
             throw new RuntimeException("application on JAX-WS context not found");
         }
@@ -215,12 +214,12 @@ public class TargetIdentityHandler implements SOAPHandler<SOAPMessageContext> {
         return null;
     }
 
-    private String findUserId(String applicationName, String applicationUserId)
+    private String findUserId(long applicationId, String applicationUserId)
             throws ApplicationNotFoundException {
 
         ApplicationIdentifierMappingService applicationIdentifierMappingService = EjbUtils.getEJB(
                 ApplicationIdentifierMappingService.JNDI_BINDING, ApplicationIdentifierMappingService.class);
-        return applicationIdentifierMappingService.findUserId(applicationName, applicationUserId);
+        return applicationIdentifierMappingService.findUserId(applicationId, applicationUserId);
     }
 
     /**
