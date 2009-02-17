@@ -27,8 +27,8 @@ public interface OtpOverSmsDeviceService extends OtpOverSmsService {
     String authenticate(String mobile, String pin, String otp)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException;
 
-    void register(String userId, String mobile, String pin)
-            throws PermissionDeniedException;
+    void register(String userId, String mobile, String pin, String otp)
+            throws PermissionDeniedException, AuthenticationFailedException;
 
     boolean update(String userId, String mobile, String otp, String oldPin, String newPin)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException;
@@ -46,5 +46,8 @@ public interface OtpOverSmsDeviceService extends OtpOverSmsService {
             throws ConnectException, SafeOnlineResourceException, SubjectNotFoundException, DeviceRegistrationNotFoundException,
             DeviceDisabledException;
 
-    boolean verifyOtp(String otp);
+    /**
+     * @return <code>true</code> when the OTP has been dispatched to the user.
+     */
+    boolean isChallenged();
 }

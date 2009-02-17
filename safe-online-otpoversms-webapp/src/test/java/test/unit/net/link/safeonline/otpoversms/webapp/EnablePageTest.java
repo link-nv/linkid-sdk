@@ -2,13 +2,14 @@ package test.unit.net.link.safeonline.otpoversms.webapp;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.reset;
 import static org.easymock.EasyMock.verify;
 
 import java.net.ConnectException;
 import java.util.UUID;
 
-import junit.framework.TestCase;
 import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.ProtocolContext;
@@ -29,7 +30,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class EnablePageTest extends TestCase {
+public class EnablePageTest {
 
     private OtpOverSmsDeviceService mockOtpOverSmsDeviceService;
 
@@ -44,12 +45,9 @@ public class EnablePageTest extends TestCase {
     private JndiTestUtils           jndiTestUtils;
 
 
-    @Override
     @Before
     public void setUp()
             throws Exception {
-
-        super.setUp();
 
         WicketUtil.setUnitTesting(true);
 
@@ -62,10 +60,8 @@ public class EnablePageTest extends TestCase {
         mockSecurityAuditLogger = createMock(SecurityAuditLogger.class);
 
         wicket = new WicketTester(new OtpOverSmsTestApplication());
-
     }
 
-    @Override
     @After
     public void tearDown()
             throws Exception {
@@ -93,11 +89,12 @@ public class EnablePageTest extends TestCase {
         wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID);
 
         // setup
-        EJBTestUtils.inject(enablePage, mockOtpOverSmsDeviceService);
+        jndiTestUtils.bindComponent(OtpOverSmsDeviceService.JNDI_BINDING, mockOtpOverSmsDeviceService);
         EJBTestUtils.inject(enablePage, mockSamlAuthorityService);
 
         // stubs
-        mockOtpOverSmsDeviceService.requestOtp(wicket.getServletSession(), mobile);
+        mockOtpOverSmsDeviceService.requestOtp(mobile);
+        expect(mockOtpOverSmsDeviceService.isChallenged()).andReturn(true);
 
         // prepare
         replay(mockOtpOverSmsDeviceService);
@@ -119,7 +116,8 @@ public class EnablePageTest extends TestCase {
         EasyMock.reset(mockOtpOverSmsDeviceService);
 
         // stubs
-        expect(mockOtpOverSmsDeviceService.enable(wicket.getServletSession(), userId, mobile, otp, pin)).andStubReturn(true);
+        expect(mockOtpOverSmsDeviceService.isChallenged()).andReturn(true);
+        expect(mockOtpOverSmsDeviceService.enable(userId, mobile, otp, pin)).andStubReturn(true);
         expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
@@ -153,13 +151,14 @@ public class EnablePageTest extends TestCase {
         wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID);
 
         // setup
-        EJBTestUtils.inject(enablePage, mockOtpOverSmsDeviceService);
+        jndiTestUtils.bindComponent(OtpOverSmsDeviceService.JNDI_BINDING, mockOtpOverSmsDeviceService);
         jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
         jndiTestUtils.bindComponent(SecurityAuditLogger.JNDI_BINDING, mockSecurityAuditLogger);
+        EJBTestUtils.inject(enablePage, mockSamlAuthorityService);
 
         // stubs
-        mockOtpOverSmsDeviceService.requestOtp(wicket.getServletSession(), mobile);
-        org.easymock.EasyMock.expectLastCall().andThrow(new ConnectException());
+        mockOtpOverSmsDeviceService.requestOtp(mobile);
+        expectLastCall().andThrow(new ConnectException());
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
@@ -198,10 +197,12 @@ public class EnablePageTest extends TestCase {
         wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID);
 
         // setup
-        EJBTestUtils.inject(enablePage, mockOtpOverSmsDeviceService);
+        jndiTestUtils.bindComponent(OtpOverSmsDeviceService.JNDI_BINDING, mockOtpOverSmsDeviceService);
+        EJBTestUtils.inject(enablePage, mockSamlAuthorityService);
 
         // stubs
-        mockOtpOverSmsDeviceService.requestOtp(wicket.getServletSession(), mobile);
+        mockOtpOverSmsDeviceService.requestOtp(mobile);
+        expect(mockOtpOverSmsDeviceService.isChallenged()).andReturn(true);
 
         // prepare
         replay(mockOtpOverSmsDeviceService);
@@ -220,11 +221,12 @@ public class EnablePageTest extends TestCase {
         wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + EnablePage.ENABLE_FORM_ID, Form.class);
 
         // setup
-        EasyMock.reset(mockOtpOverSmsDeviceService);
+        reset(mockOtpOverSmsDeviceService);
         jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
 
         // stubs
-        expect(mockOtpOverSmsDeviceService.enable(wicket.getServletSession(), userId, mobile, otp, pin)).andStubReturn(false);
+        expect(mockOtpOverSmsDeviceService.isChallenged()).andReturn(true);
+        expect(mockOtpOverSmsDeviceService.enable(userId, mobile, otp, pin)).andStubReturn(false);
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare

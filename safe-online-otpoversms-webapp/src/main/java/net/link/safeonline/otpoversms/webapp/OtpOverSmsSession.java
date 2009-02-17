@@ -7,7 +7,10 @@
 
 package net.link.safeonline.otpoversms.webapp;
 
+import net.link.safeonline.model.otpoversms.OtpOverSmsDeviceService;
+
 import org.apache.wicket.Request;
+import org.apache.wicket.Session;
 import org.apache.wicket.protocol.http.WebSession;
 
 
@@ -27,11 +30,38 @@ import org.apache.wicket.protocol.http.WebSession;
  */
 public class OtpOverSmsSession extends WebSession {
 
-    private static final long serialVersionUID = 1L;
+    private static final long       serialVersionUID = 1L;
+    private OtpOverSmsDeviceService otpOverSmsDeviceService;
 
 
     public OtpOverSmsSession(Request request) {
 
         super(request);
+    }
+
+    public static OtpOverSmsSession get() {
+
+        return (OtpOverSmsSession) Session.get();
+    }
+
+    /**
+     * Remember the given {@link OtpOverSmsDeviceService} bean on the session.
+     */
+    public void setDeviceBean(OtpOverSmsDeviceService otpOverSmsDeviceService) {
+
+        this.otpOverSmsDeviceService = otpOverSmsDeviceService;
+    }
+
+    /**
+     * @return The {@link OtpOverSmsDeviceService} of the session.
+     */
+    public OtpOverSmsDeviceService getDeviceService() {
+
+        return otpOverSmsDeviceService;
+    }
+
+    public boolean isChallenged() {
+
+        return otpOverSmsDeviceService != null && otpOverSmsDeviceService.isChallenged();
     }
 }

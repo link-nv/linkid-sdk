@@ -21,6 +21,7 @@ import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.model.otpoversms.OtpOverSmsDeviceService;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
+import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
@@ -37,43 +38,53 @@ import org.apache.wicket.model.Model;
 
 public class UpdatePage extends TemplatePage {
 
-    private static final long         serialVersionUID         = 1L;
+    private static final long      serialVersionUID         = 1L;
 
-    public static final String        REQUEST_OTP_FORM_ID      = "request_otp_form";
-    public static final String        MOBILE_FIELD_ID          = "mobile";
-    public static final String        REQUEST_OTP_BUTTON_ID    = "request_otp";
-    public static final String        REQUEST_CANCEL_BUTTON_ID = "request_cancel";
+    public static final String     REQUEST_OTP_FORM_ID      = "request_otp_form";
+    public static final String     MOBILE_FIELD_ID          = "mobile";
+    public static final String     REQUEST_OTP_BUTTON_ID    = "request_otp";
+    public static final String     REQUEST_CANCEL_BUTTON_ID = "request_cancel";
 
-    public static final String        UPDATE_FORM_ID           = "update_form";
-    public static final String        OTP_FIELD_ID             = "otp";
-    public static final String        OLDPIN_FIELD_ID          = "oldpin";
-    public static final String        PIN1_FIELD_ID            = "pin1";
-    public static final String        PIN2_FIELD_ID            = "pin2";
-    public static final String        SAVE_BUTTON_ID           = "save";
-    public static final String        CANCEL_BUTTON_ID         = "cancel";
-
-    @EJB(mappedName = OtpOverSmsDeviceService.JNDI_BINDING)
-    transient OtpOverSmsDeviceService otpOverSmsDeviceService;
+    public static final String     UPDATE_FORM_ID           = "update_form";
+    public static final String     OTP_FIELD_ID             = "otp";
+    public static final String     OLDPIN_FIELD_ID          = "oldpin";
+    public static final String     PIN1_FIELD_ID            = "pin1";
+    public static final String     PIN2_FIELD_ID            = "pin2";
+    public static final String     SAVE_BUTTON_ID           = "save";
+    public static final String     CANCEL_BUTTON_ID         = "cancel";
 
     @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
-    transient SamlAuthorityService    samlAuthorityService;
+    transient SamlAuthorityService samlAuthorityService;
 
-    ProtocolContext                   protocolContext;
+    ProtocolContext                protocolContext;
 
-    boolean                           requested                = false;
+    private RequestOtpForm         requestForm;
+
+    private UpdateForm             updateForm;
 
 
     public UpdatePage() {
-
-        super();
 
         protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
         getHeader();
         getSidebar(localize("helpOtpOverSmsPinChange"));
 
-        getContent().add(new RequestOtpForm(REQUEST_OTP_FORM_ID));
-        getContent().add(new UpdateForm(UPDATE_FORM_ID));
+        getContent().add(requestForm = new RequestOtpForm(REQUEST_OTP_FORM_ID));
+        getContent().add(updateForm = new UpdateForm(UPDATE_FORM_ID));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void onBeforeRender() {
+
+        boolean challenged = OtpOverSmsSession.get().isChallenged();
+        requestForm.setVisible(!challenged);
+        updateForm.setVisible(challenged);
+
+        super.onBeforeRender();
     }
 
     /**
@@ -113,9 +124,11 @@ public class UpdatePage extends TemplatePage {
 
                     LOG.debug("request OTP for mobile: " + protocolContext.getAttribute());
                     try {
-                        otpOverSmsDeviceService.requestOtp(WicketUtil.getHttpSession(getRequest()), protocolContext.getAttribute());
+                        OtpOverSmsDeviceService otpOverSmsDeviceService = EjbUtils.getEJB(OtpOverSmsDeviceService.JNDI_BINDING,
+                                OtpOverSmsDeviceService.class);
 
-                        requested = true;
+                        otpOverSmsDeviceService.requestOtp(protocolContext.getAttribute());
+                        OtpOverSmsSession.get().setDeviceBean(otpOverSmsDeviceService);
                     }
 
                     catch (ConnectException e) {
@@ -170,15 +183,6 @@ public class UpdatePage extends TemplatePage {
 
             super.onBeforeRender();
         }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public boolean isVisible() {
-
-            return !requested;
-        }
     }
 
     class UpdateForm extends Form<String> {
@@ -230,9 +234,11 @@ public class UpdatePage extends TemplatePage {
 
                     LOG.debug("update pin for " + protocolContext.getSubject() + " for mobile " + protocolContext.getAttribute());
 
+                    OtpOverSmsDeviceService otpOverSmsDeviceService = OtpOverSmsSession.get().getDeviceService();
+
                     try {
-                        if (!otpOverSmsDeviceService.update(WicketUtil.getHttpSession(getRequest()), protocolContext.getSubject(),
-                                protocolContext.getAttribute(), otp.getObject(), oldPin.getObject(), pin1.getObject())) {
+                        if (!otpOverSmsDeviceService.update(protocolContext.getSubject(), protocolContext.getAttribute(), otp.getObject(),
+                                oldPin.getObject(), pin1.getObject())) {
                             oldpinField.error(getLocalizer().getString("errorPinNotCorrect", this));
                             HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "update: device not found",
                                     LogLevelType.ERROR);
@@ -289,16 +295,6 @@ public class UpdatePage extends TemplatePage {
 
             super.onBeforeRender();
         }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public boolean isVisible() {
-
-            return requested;
-        }
-
     }
 
 

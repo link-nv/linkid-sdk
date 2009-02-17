@@ -21,6 +21,7 @@ import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.model.encap.EncapConstants;
 import net.link.safeonline.model.encap.EncapDeviceService;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
+import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.ProgressAuthenticationPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
@@ -47,9 +48,6 @@ public class AuthenticationPage extends TemplatePage {
     public static final String     CHALLENGE_BUTTON_ID    = "challenge";
     public static final String     LOGIN_BUTTON_ID        = "login";
     public static final String     CANCEL_BUTTON_ID       = "cancel";
-
-    @EJB(mappedName = EncapDeviceService.JNDI_BINDING)
-    transient EncapDeviceService   encapDeviceService;
 
     @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
     transient SamlAuthorityService samlAuthorityService;
@@ -142,19 +140,6 @@ public class AuthenticationPage extends TemplatePage {
      * {@inheritDoc}
      */
     @Override
-    protected void onBeforeRender() {
-
-        if (EncapSession.get().isChallenged()) {
-            encapDeviceService = EncapSession.get().getDeviceService();
-        }
-
-        super.onBeforeRender();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     protected String getPageTitle() {
 
         return pageTitle;
@@ -197,7 +182,8 @@ public class AuthenticationPage extends TemplatePage {
 
                     LOG.debug("challenge request for: " + mobile.getObject());
                     try {
-                        // Ask Encap to send OTP, we get back a challenge.
+                        EncapDeviceService encapDeviceService = EjbUtils.getEJB(EncapDeviceService.JNDI_BINDING, EncapDeviceService.class);
+
                         encapDeviceService.requestOTP(mobile.getObject());
                         EncapSession.get().setDeviceBean(encapDeviceService);
                     }
@@ -222,6 +208,8 @@ public class AuthenticationPage extends TemplatePage {
                     HelpdeskLogger.add("login: begin for: " + mobile.getObject(), LogLevelType.INFO);
 
                     try {
+                        EncapDeviceService encapDeviceService = EncapSession.get().getDeviceService();
+
                         switch (goal) {
                             case AUTHENTICATE:
                                 String userId = encapDeviceService.authenticate(mobile.getObject(), otp.getObject());

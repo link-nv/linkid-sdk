@@ -165,8 +165,11 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
     /**
      * {@inheritDoc}
      */
-    public void register(String userId, String mobile, String pin)
-            throws PermissionDeniedException {
+    public void register(String userId, String mobile, String pin, String otp)
+            throws PermissionDeniedException, AuthenticationFailedException {
+
+        if (false == verifyOtp(otp))
+            throw new AuthenticationFailedException();
 
         LOG.debug("register otp over sms device for \"" + userId + "\" mobile=" + mobile);
 
@@ -296,13 +299,18 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
         osgiService.ungetService();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public boolean verifyOtp(String otp) {
+    private boolean verifyOtp(String otp) {
 
         LOG.debug("verify otp " + otp);
 
-        return expectedOtp != null && expectedOtp.equals(otp);
+        return isChallenged() && expectedOtp.equals(otp);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isChallenged() {
+
+        return expectedOtp != null;
     }
 }

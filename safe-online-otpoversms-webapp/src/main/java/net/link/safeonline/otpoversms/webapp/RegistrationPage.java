@@ -10,6 +10,7 @@ package net.link.safeonline.otpoversms.webapp;
 import java.net.ConnectException;
 
 import javax.ejb.EJB;
+import javax.mail.AuthenticationFailedException;
 
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
@@ -23,6 +24,7 @@ import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.model.otpoversms.OtpOverSmsDeviceService;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
+import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.ProgressRegistrationPanel;
@@ -41,29 +43,26 @@ import org.apache.wicket.model.Model;
 
 public class RegistrationPage extends TemplatePage {
 
-    private static final long         serialVersionUID         = 1L;
+    private static final long      serialVersionUID         = 1L;
 
-    public static final String        REQUEST_OTP_FORM_ID      = "request_otp_form";
-    public static final String        MOBILE_FIELD_ID          = "mobile";
-    public static final String        REQUEST_OTP_BUTTON_ID    = "request_otp";
-    public static final String        REQUEST_CANCEL_BUTTON_ID = "request_cancel";
+    public static final String     REQUEST_OTP_FORM_ID      = "request_otp_form";
+    public static final String     MOBILE_FIELD_ID          = "mobile";
+    public static final String     REQUEST_OTP_BUTTON_ID    = "request_otp";
+    public static final String     REQUEST_CANCEL_BUTTON_ID = "request_cancel";
 
-    public static final String        VERIFY_OTP_FORM_ID       = "verify_otp_form";
-    public static final String        OTP_FIELD_ID             = "otp";
-    public static final String        PIN1_FIELD_ID            = "pin1";
-    public static final String        PIN2_FIELD_ID            = "pin2";
-    public static final String        SAVE_BUTTON_ID           = "save";
-    public static final String        CANCEL_BUTTON_ID         = "cancel";
-
-    @EJB(mappedName = OtpOverSmsDeviceService.JNDI_BINDING)
-    transient OtpOverSmsDeviceService otpOverSmsDeviceService;
+    public static final String     VERIFY_OTP_FORM_ID       = "verify_otp_form";
+    public static final String     OTP_FIELD_ID             = "otp";
+    public static final String     PIN1_FIELD_ID            = "pin1";
+    public static final String     PIN2_FIELD_ID            = "pin2";
+    public static final String     SAVE_BUTTON_ID           = "save";
+    public static final String     CANCEL_BUTTON_ID         = "cancel";
 
     @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
-    transient SamlAuthorityService    samlAuthorityService;
+    transient SamlAuthorityService samlAuthorityService;
 
-    ProtocolContext                   protocolContext;
+    ProtocolContext                protocolContext;
 
-    Model<PhoneNumber>                mobile;
+    Model<PhoneNumber>             mobile;
 
 
     public RegistrationPage() {
@@ -117,7 +116,11 @@ public class RegistrationPage extends TemplatePage {
                     LOG.debug("request otp for mobile " + mobile);
 
                     try {
-                        otpOverSmsDeviceService.requestOtp(WicketUtil.getHttpSession(getRequest()), mobile.getObject().getNumber());
+                        OtpOverSmsDeviceService otpOverSmsDeviceService = EjbUtils.getEJB(OtpOverSmsDeviceService.JNDI_BINDING,
+                                OtpOverSmsDeviceService.class);
+
+                        otpOverSmsDeviceService.requestOtp(mobile.getObject().getNumber());
+                        OtpOverSmsSession.get().setDeviceBean(otpOverSmsDeviceService);
                     }
 
                     catch (ConnectException e) {
@@ -229,17 +232,13 @@ public class RegistrationPage extends TemplatePage {
                 @Override
                 public void onSubmit() {
 
-                    try {
-                        if (!otpOverSmsDeviceService.verifyOtp(WicketUtil.getHttpSession(getRequest()), otp.getObject())) {
-                            otpField.error(getLocalizer().getString("authenticationFailedMsg", this));
-                            HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(),
-                                    "mobile otp: verification failed for mobile " + mobile, LogLevelType.ERROR);
-                            return;
-                        }
+                    OtpOverSmsDeviceService otpOverSmsDeviceService = OtpOverSmsSession.get().getDeviceService();
 
+                    try {
                         LOG.debug("register mobile " + mobile + " for " + protocolContext.getSubject());
 
-                        otpOverSmsDeviceService.register(protocolContext.getSubject(), mobile.getObject().getNumber(), pin1.getObject());
+                        otpOverSmsDeviceService.register(protocolContext.getSubject(), mobile.getObject().getNumber(), pin1.getObject(),
+                                otp.getObject());
 
                         protocolContext.setSuccess(true);
                         exit();
@@ -249,6 +248,10 @@ public class RegistrationPage extends TemplatePage {
                         pin2Field.error(getLocalizer().getString("errorPinNotCorrect", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "register: pin not correct",
                                 LogLevelType.ERROR);
+                    } catch (AuthenticationFailedException e) {
+                        otpField.error(getLocalizer().getString("authenticationFailedMsg", this));
+                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(),
+                                "mobile otp: verification failed for mobile " + mobile, LogLevelType.ERROR);
                     }
                 }
             });
