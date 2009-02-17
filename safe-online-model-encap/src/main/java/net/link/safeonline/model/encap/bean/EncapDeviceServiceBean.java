@@ -28,6 +28,7 @@ import net.link.safeonline.authentication.exception.DeviceRegistrationException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.InternalInconsistencyException;
 import net.link.safeonline.authentication.exception.MobileException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
@@ -47,6 +48,7 @@ import net.link.safeonline.model.encap.EncapConstants;
 import net.link.safeonline.model.encap.EncapDeviceService;
 import net.link.safeonline.model.encap.EncapDeviceServiceRemote;
 import net.link.safeonline.model.encap.MobileManager;
+import net.link.safeonline.service.NodeMappingService;
 import net.link.safeonline.service.SubjectService;
 
 import org.apache.commons.logging.Log;
@@ -65,6 +67,9 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
 
     @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService         subjectService;
+
+    @EJB(mappedName = NodeMappingService.JNDI_BINDING)
+    private NodeMappingService     nodeMappingService;
 
     @EJB(mappedName = SubjectIdentifierDAO.JNDI_BINDING)
     private SubjectIdentifierDAO   subjectIdentifierDAO;
@@ -159,8 +164,8 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
     /**
      * {@inheritDoc}
      */
-    public void commitRegistration(String userId, String mobile, String mobileOTP)
-            throws SubjectNotFoundException, MobileException, DeviceAuthenticationException {
+    public void commitRegistration(String nodeName, String userId, String mobile, String mobileOTP)
+            throws MobileException, DeviceAuthenticationException, NodeNotFoundException {
 
         if (false == mobileManager.verifyOTP(challengeCode, mobileOTP)) {
             securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, "incorrect mobile token");
@@ -176,11 +181,10 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
             entityManager.clear();
         }
 
-        // Create a new subject if one doesn't exist yet.
-        subject = subjectService.findSubject(userId);
-        if (null == subject) {
-            subject = subjectService.addSubjectWithoutLogin(userId);
-        }
+        /*
+         * Check through node mapping if subject exists, if not, it is created.
+         */
+        subject = nodeMappingService.getSubject(userId, nodeName);
 
         // Create the device attributes.
         try {

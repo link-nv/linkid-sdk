@@ -10,6 +10,7 @@ import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 
 
@@ -19,7 +20,8 @@ public interface OptionDeviceService extends OptionService {
     public static final String JNDI_BINDING = OptionService.JNDI_PREFIX + "OptionDeviceServiceBean/local";
 
 
-    public void register(String imei, String userId);
+    public void register(String nodeName, String imei, String userId)
+            throws NodeNotFoundException;
 
     public void remove(String imei)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException;

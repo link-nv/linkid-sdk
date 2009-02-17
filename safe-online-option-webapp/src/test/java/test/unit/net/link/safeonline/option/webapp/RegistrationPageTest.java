@@ -112,7 +112,7 @@ public class RegistrationPageTest {
         FormTester form = prepareRegistration();
 
         // Describe Expected Scenario.
-        mockOptionDeviceService.register((String) EasyMock.anyObject(), EasyMock.matches(TEST_USERID));
+        mockOptionDeviceService.register((String) EasyMock.anyObject(), (String) EasyMock.anyObject(), EasyMock.matches(TEST_USERID));
         replay(mockOptionDeviceService);
 
         // Pass the PIN for our device.

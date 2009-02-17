@@ -62,6 +62,12 @@ public interface SubjectService extends SafeOnlineService {
     SubjectEntity addSubjectWithoutLogin(String userId);
 
     /**
+     * Adds a subject. Does NOT add a login attribute and SubjectIdentifier. This method is used when the subject is created from a
+     * NodeMapping ID.
+     */
+    SubjectEntity addSubjectWithoutLogin();
+
+    /**
      * Gives back the subject for the given user ID.
      * 
      * @param login

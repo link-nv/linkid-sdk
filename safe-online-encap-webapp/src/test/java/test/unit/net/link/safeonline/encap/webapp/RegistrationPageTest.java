@@ -9,7 +9,7 @@ import static org.easymock.EasyMock.verify;
 import java.util.UUID;
 
 import net.link.safeonline.authentication.exception.DeviceRegistrationException;
-import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.encap.webapp.AuthenticationPage;
@@ -42,6 +42,7 @@ public class RegistrationPageTest {
     private WicketTester         wicket;
 
     private static final String  TEST_USERID     = UUID.randomUUID().toString();
+    private static final String  TEST_NODE_NAME  = "test-node-name";
     private static final String  TEST_MOBILE     = "0523012295";
     private static final String  TEST_ACTIVATION = "0123456789";
     private static final String  TEST_OTP        = "000000";
@@ -81,6 +82,7 @@ public class RegistrationPageTest {
         // Initialize contexts.
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setSubject(TEST_USERID);
+        protocolContext.setNodeName(TEST_NODE_NAME);
         protocolContext.setAttribute(TEST_MOBILE);
 
         // Load Authentication Page.
@@ -127,7 +129,7 @@ public class RegistrationPageTest {
         expect(mockEncapDeviceService.isChallenged()).andReturn(false);
         mockEncapDeviceService.requestOTP(TEST_MOBILE);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
-        mockEncapDeviceService.commitRegistration(TEST_USERID, TEST_MOBILE, TEST_OTP);
+        mockEncapDeviceService.commitRegistration(TEST_NODE_NAME, TEST_USERID, TEST_MOBILE, TEST_OTP);
         replay(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
 
         // Request activation code for our mobile.
@@ -192,7 +194,7 @@ public class RegistrationPageTest {
     }
 
     @Test
-    public void testRegisterSubjectNotFound()
+    public void testRegisterNodeNotFound()
             throws Exception {
 
         // Setup.
@@ -205,8 +207,8 @@ public class RegistrationPageTest {
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
-        mockEncapDeviceService.commitRegistration(TEST_USERID, TEST_MOBILE, TEST_OTP);
-        expectLastCall().andThrow(new SubjectNotFoundException());
+        mockEncapDeviceService.commitRegistration(TEST_NODE_NAME, TEST_USERID, TEST_MOBILE, TEST_OTP);
+        expectLastCall().andThrow(new NodeNotFoundException());
         replay(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
 
         // Request activation code for our mobile.
@@ -245,7 +247,7 @@ public class RegistrationPageTest {
 
         // Check for errors.
         wicket.assertRenderedPage(AuthenticationPage.class);
-        wicket.assertErrorMessages(new String[] { "errorSubjectNotFound" });
+        wicket.assertErrorMessages(new String[] { "errorNodeNotFound" });
         verify(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
     }
 }

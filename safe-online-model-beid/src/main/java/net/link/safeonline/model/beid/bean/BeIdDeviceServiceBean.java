@@ -13,6 +13,7 @@ import net.link.safeonline.authentication.exception.AlreadyRegisteredException;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.PkiExpiredException;
 import net.link.safeonline.authentication.exception.PkiInvalidException;
@@ -56,12 +57,13 @@ public class BeIdDeviceServiceBean implements BeIdDeviceService, BeIdDeviceServi
         return credentialManager.authenticate(sessionId, applicationId, authenticationStatement);
     }
 
-    public void register(String sessionId, String userId, String operation, byte[] identityStatementData)
+    public void register(String sessionId, String nodeName, String userId, String operation, byte[] identityStatementData)
             throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException, AlreadyRegisteredException,
-            PkiRevokedException, PkiSuspendedException, PkiExpiredException, PkiNotYetValidException, PkiInvalidException {
+            PkiRevokedException, PkiSuspendedException, PkiExpiredException, PkiNotYetValidException, PkiInvalidException,
+            NodeNotFoundException {
 
-        LOG.debug("register: sessionId=" + sessionId + " userId=" + userId + " operation=" + operation);
-        credentialManager.mergeIdentityStatement(sessionId, userId, operation, identityStatementData);
+        LOG.debug("register: sessionId=" + sessionId + "nodeName=" + nodeName + " userId=" + userId + " operation=" + operation);
+        credentialManager.mergeIdentityStatement(sessionId, nodeName, userId, operation, identityStatementData);
     }
 
     public void enable(String sessionId, String userId, String operation, byte[] identityStatementData)

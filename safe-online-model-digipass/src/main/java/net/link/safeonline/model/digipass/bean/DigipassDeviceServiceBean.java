@@ -23,6 +23,7 @@ import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.InternalInconsistencyException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.dao.AttributeDAO;
@@ -43,6 +44,7 @@ import net.link.safeonline.model.digipass.DigipassConstants;
 import net.link.safeonline.model.digipass.DigipassDeviceService;
 import net.link.safeonline.model.digipass.DigipassDeviceServiceRemote;
 import net.link.safeonline.model.digipass.DigipassException;
+import net.link.safeonline.service.NodeMappingService;
 import net.link.safeonline.service.SubjectService;
 
 import org.apache.commons.logging.Log;
@@ -58,6 +60,9 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
 
     @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService         subjectService;
+
+    @EJB(mappedName = NodeMappingService.JNDI_BINDING)
+    private NodeMappingService     nodeMappingService;
 
     @EJB(mappedName = SubjectIdentifierDAO.JNDI_BINDING)
     private SubjectIdentifierDAO   subjectIdentifierDAO;
@@ -127,17 +132,17 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
         return subject.getUserId();
     }
 
-    public String register(String userId, String serialNumber)
-            throws SubjectNotFoundException, ArgumentIntegrityException {
+    public String register(String nodeName, String userId, String serialNumber)
+            throws ArgumentIntegrityException, NodeNotFoundException {
 
         SubjectEntity existingMappedSubject = subjectIdentifierDAO.findSubject(DigipassConstants.DIGIPASS_IDENTIFIER_DOMAIN, serialNumber);
         if (null != existingMappedSubject)
             throw new ArgumentIntegrityException();
 
-        SubjectEntity subject = subjectService.findSubject(userId);
-        if (null == subject) {
-            subject = subjectService.addSubjectWithoutLogin(userId);
-        }
+        /*
+         * Check through node mapping if subject exists, if not, it is created.
+         */
+        SubjectEntity subject = nodeMappingService.getSubject(userId, nodeName);
         setSerialNumber(subject, serialNumber);
 
         subjectIdentifierDAO.addSubjectIdentifier(DigipassConstants.DIGIPASS_IDENTIFIER_DOMAIN, serialNumber, subject);

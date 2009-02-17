@@ -79,6 +79,15 @@ public class SubjectServiceBean implements SubjectService, SubjectServiceRemote 
 
     }
 
+    public SubjectEntity addSubjectWithoutLogin() {
+
+        String userId = idGenerator.generateId();
+
+        LOG.debug("add subject without login attribute: " + userId);
+        return subjectDAO.addSubject(userId);
+
+    }
+
     public SubjectEntity findSubject(String userId) {
 
         LOG.debug("find subject user ID: " + userId);

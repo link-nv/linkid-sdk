@@ -16,6 +16,7 @@ import javax.servlet.http.HttpSession;
 
 import net.link.safeonline.authentication.exception.AlreadyRegisteredException;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.PkiExpiredException;
 import net.link.safeonline.authentication.exception.PkiInvalidException;
@@ -24,7 +25,6 @@ import net.link.safeonline.authentication.exception.PkiRevokedException;
 import net.link.safeonline.authentication.exception.PkiSuspendedException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.ProtocolContext;
-import net.link.safeonline.device.sdk.saml2.DeviceOperationManager;
 import net.link.safeonline.model.beid.BeIdDeviceService;
 import net.link.safeonline.pkix.exception.TrustDomainNotFoundException;
 import net.link.safeonline.servlet.AbstractStatementServlet;
@@ -65,9 +65,10 @@ public class IdentityServlet extends AbstractStatementServlet {
             protocolContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
             protocolContext.setSuccess(false);
 
-            String userId = DeviceOperationManager.getUserId(session);
-            String operation = DeviceOperationManager.getOperation(session);
-            beIdDeviceService.register(sessionId, userId, operation, statementData);
+            String userId = protocolContext.getSubject();
+            String operation = protocolContext.getDeviceOperation().name();
+            String nodeName = protocolContext.getNodeName();
+            beIdDeviceService.register(sessionId, nodeName, userId, operation, statementData);
             response.setStatus(HttpServletResponse.SC_OK);
             // notify that registration was successful.
             protocolContext.setSuccess(true);
@@ -96,6 +97,9 @@ public class IdentityServlet extends AbstractStatementServlet {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
         } catch (PkiInvalidException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
+        } catch (NodeNotFoundException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
         }
