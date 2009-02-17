@@ -237,8 +237,9 @@ public class RegistrationPage extends TemplatePage {
                     try {
                         LOG.debug("register mobile " + mobile + " for " + protocolContext.getSubject());
 
-                        otpOverSmsDeviceService.register(protocolContext.getSubject(), mobile.getObject().getNumber(), pin1.getObject(),
-                                otp.getObject());
+                        otpOverSmsDeviceService.register(protocolContext.getNodeName(), protocolContext.getSubject(), mobile.getObject()
+                                                                                                                            .getNumber(),
+                                pin1.getObject(), otp.getObject());
 
                         protocolContext.setSuccess(true);
                         exit();

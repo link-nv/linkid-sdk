@@ -82,10 +82,12 @@ public class RegistrationPageTest {
         String convertedMobile = net.link.safeonline.custom.converter.PhoneNumberConverter.convertNumber(mobile);
         String otp = UUID.randomUUID().toString();
         String pin = "0000";
+        String nodeName = "test-node-name";
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setDeviceOperation(DeviceOperationType.NEW_ACCOUNT_REGISTER);
         protocolContext.setSubject(userId);
+        protocolContext.setNodeName(nodeName);
 
         // verify
         RegistrationPage registrationPage = (RegistrationPage) wicket.startPage(RegistrationPage.class);
@@ -119,7 +121,7 @@ public class RegistrationPageTest {
         EasyMock.reset(mockOtpOverSmsDeviceService);
 
         // stubs
-        mockOtpOverSmsDeviceService.register(userId, convertedMobile, pin, otp);
+        mockOtpOverSmsDeviceService.register(nodeName, userId, convertedMobile, pin, otp);
         expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
@@ -189,10 +191,12 @@ public class RegistrationPageTest {
         String convertedMobile = net.link.safeonline.custom.converter.PhoneNumberConverter.convertNumber(mobile);
         String otp = UUID.randomUUID().toString();
         String pin = "0000";
+        String nodeName = "test-node-name";
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setDeviceOperation(DeviceOperationType.NEW_ACCOUNT_REGISTER);
         protocolContext.setSubject(userId);
+        protocolContext.setNodeName(nodeName);
 
         // verify
         RegistrationPage registrationPage = (RegistrationPage) wicket.startPage(RegistrationPage.class);
@@ -227,7 +231,7 @@ public class RegistrationPageTest {
         jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
 
         // stubs
-        mockOtpOverSmsDeviceService.register(userId, convertedMobile, pin, otp);
+        mockOtpOverSmsDeviceService.register(nodeName, userId, convertedMobile, pin, otp);
         expectLastCall().andThrow(new AuthenticationFailedException());
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
@@ -258,10 +262,12 @@ public class RegistrationPageTest {
         String convertedMobile = net.link.safeonline.custom.converter.PhoneNumberConverter.convertNumber(mobile);
         String otp = UUID.randomUUID().toString();
         String pin = "0000";
+        String nodeName = "test-node-name";
 
         ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
         protocolContext.setDeviceOperation(DeviceOperationType.NEW_ACCOUNT_REGISTER);
         protocolContext.setSubject(userId);
+        protocolContext.setNodeName(nodeName);
 
         // verify
         RegistrationPage registrationPage = (RegistrationPage) wicket.startPage(RegistrationPage.class);
@@ -297,7 +303,7 @@ public class RegistrationPageTest {
         jndiTestUtils.bindComponent(SecurityAuditLogger.JNDI_BINDING, mockSecurityAuditLogger);
 
         // stubs
-        mockOtpOverSmsDeviceService.register(userId, convertedMobile, pin, otp);
+        mockOtpOverSmsDeviceService.register(nodeName, userId, convertedMobile, pin, otp);
         org.easymock.EasyMock.expectLastCall().andThrow(new PermissionDeniedException(""));
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
