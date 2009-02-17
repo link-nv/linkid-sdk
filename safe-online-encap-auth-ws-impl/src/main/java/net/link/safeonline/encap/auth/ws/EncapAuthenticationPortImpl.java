@@ -17,10 +17,9 @@ import net.lin_k.safe_online.auth.DeviceCredentialsType;
 import net.lin_k.safe_online.auth.NameValuePairType;
 import net.lin_k.safe_online.auth.WSAuthenticationRequestType;
 import net.lin_k.safe_online.auth.WSAuthenticationResponseType;
-import net.link.safeonline.authentication.exception.AttributeNotFoundException;
-import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
+import net.link.safeonline.authentication.exception.DeviceDisabledException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
@@ -63,7 +62,7 @@ public class EncapAuthenticationPortImpl implements DeviceAuthenticationPort {
 
     private String                                                    mobile;
 
-    private String                                                    challengeId;
+    private EncapDeviceService                                        deviceService;
 
 
     @PostConstruct
@@ -102,16 +101,16 @@ public class EncapAuthenticationPortImpl implements DeviceAuthenticationPort {
 
         LOG.debug("authenticate");
 
-        if (null == mobile && null == challengeId)
+        if (null == mobile && deviceService == null || !deviceService.isChallenged())
             // step 1, expect mobile attribute, will send OTP after mobile has been verified
-            return verifyMobileAndSendOtp(request);
+            return sendOtp(request);
 
         // step 2, expect OTP and pin attribute.
         return verifyOtpAndAuthenticate(request);
 
     }
 
-    private WSAuthenticationResponseType verifyMobileAndSendOtp(WSAuthenticationRequestType request) {
+    private WSAuthenticationResponseType sendOtp(WSAuthenticationRequestType request) {
 
         SamlAuthorityService samlAuthorityService = EjbUtils.getEJB(SamlAuthorityService.JNDI_BINDING, SamlAuthorityService.class);
         String issuerName = samlAuthorityService.getIssuerName();
@@ -132,34 +131,10 @@ public class EncapAuthenticationPortImpl implements DeviceAuthenticationPort {
             return response;
         }
 
-        EncapDeviceService encapDeviceService = EjbUtils.getEJB(EncapDeviceService.JNDI_BINDING, EncapDeviceService.class);
-        try {
-            encapDeviceService.checkMobile(mobile);
-        } catch (SubjectNotFoundException e) {
-            LOG.error("subject not found: " + e.getMessage(), e);
-            DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.SUBJECT_NOT_FOUND, e.getMessage());
-            manager.unexport(this);
-            return response;
-        } catch (AttributeTypeNotFoundException e) {
-            LOG.error("attribute type not found: " + e.getMessage(), e);
-            DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.ATTRIBUTE_TYPE_NOT_FOUND, e.getMessage());
-            manager.unexport(this);
-            return response;
-        } catch (AttributeNotFoundException e) {
-            LOG.error("attribute not found: " + e.getMessage(), e);
-            DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.ATTRIBUTE_NOT_FOUND, e.getMessage());
-            manager.unexport(this);
-            return response;
-        } catch (DeviceDisabledException e) {
-            LOG.error("device disabled: " + e.getMessage(), e);
-            DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.DEVICE_DISABLED, e.getMessage());
-            manager.unexport(this);
-            return response;
-        }
-
         LOG.debug("request OTP for mobile: " + mobile);
         try {
-            challengeId = encapDeviceService.requestOTP(mobile);
+            deviceService = EjbUtils.getEJB(EncapDeviceService.JNDI_BINDING, EncapDeviceService.class);
+            deviceService.requestOTP(mobile);
         } catch (MobileException e) {
             LOG.error("exception while requesting OTP: " + e.getMessage(), e);
             DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.REQUEST_FAILED, e.getMessage());
@@ -193,38 +168,44 @@ public class EncapAuthenticationPortImpl implements DeviceAuthenticationPort {
             return response;
         }
 
-        EncapDeviceService encapDeviceService = EjbUtils.getEJB(EncapDeviceService.JNDI_BINDING, EncapDeviceService.class);
-
-        String userId;
-        try {
-            userId = encapDeviceService.authenticate(mobile, challengeId, otp);
-        } catch (SubjectNotFoundException e) {
-            LOG.error("subject not found: " + e.getMessage(), e);
-            DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.SUBJECT_NOT_FOUND, e.getMessage());
+        if (deviceService == null || !deviceService.isChallenged()) {
+            DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.INSUFFICIENT_CREDENTIALS, "Not yet challenged");
             manager.unexport(this);
             return response;
+        }
+
+        try {
+            String userId = deviceService.authenticate(mobile, otp);
+            if (null != userId) {
+                response.setUserId(userId);
+                DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.SUCCESS, null);
+            } else {
+                LOG.debug("authentication failed");
+                DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.AUTHENTICATION_FAILED, null);
+            }
+        }
+
+        catch (SubjectNotFoundException e) {
+            LOG.error("subject not found: " + e.getMessage(), e);
+            DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.SUBJECT_NOT_FOUND, e.getMessage());
         } catch (DeviceAuthenticationException e) {
             LOG.error("authentication failed: " + e.getMessage(), e);
             DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.AUTHENTICATION_FAILED, e.getMessage());
-            manager.unexport(this);
-            return response;
         } catch (MobileException e) {
             LOG.error("authentication failed: " + e.getMessage(), e);
             DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.AUTHENTICATION_FAILED, e.getMessage());
+        } catch (DeviceDisabledException e) {
+            LOG.error("device disabled: " + e.getMessage(), e);
+            DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.DEVICE_DISABLED, e.getMessage());
+        } catch (DeviceRegistrationNotFoundException e) {
+            LOG.error("device not registered: " + e.getMessage(), e);
+            DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.DEVICE_NOT_FOUND, e.getMessage());
+        }
+
+        finally {
+            // authentication finished, cleanup
             manager.unexport(this);
-            return response;
         }
-
-        if (null != userId) {
-            response.setUserId(userId);
-            DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.SUCCESS, null);
-        } else {
-            LOG.debug("authentication failed");
-            DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.AUTHENTICATION_FAILED, null);
-        }
-
-        // authentication finished, cleanup
-        manager.unexport(this);
 
         return response;
     }

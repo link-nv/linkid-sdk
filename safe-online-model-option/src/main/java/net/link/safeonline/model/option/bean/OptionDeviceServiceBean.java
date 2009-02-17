@@ -6,10 +6,6 @@
  */
 package net.link.safeonline.model.option.bean;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
-
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -17,16 +13,14 @@ import javax.ejb.Stateless;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
+import net.link.safeonline.authentication.exception.InternalInconsistencyException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
-import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
+import net.link.safeonline.data.CompoundAttributeDO;
 import net.link.safeonline.entity.AttributeEntity;
-import net.link.safeonline.entity.AttributeTypeEntity;
-import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.bean.AttributeManagerLWBean;
 import net.link.safeonline.model.option.OptionConstants;
@@ -66,9 +60,6 @@ public class OptionDeviceServiceBean implements OptionDeviceService {
     @EJB(mappedName = AttributeDAO.JNDI_BINDING)
     private AttributeDAO           attributeDAO;
 
-    @EJB(mappedName = DeviceDAO.JNDI_BINDING)
-    private DeviceDAO              deviceDAO;
-
     private AttributeManagerLWBean attributeManager;
 
 
@@ -79,14 +70,14 @@ public class OptionDeviceServiceBean implements OptionDeviceService {
          * By injecting the attribute DAO of this session bean in the attribute manager we are sure that the attribute manager (a
          * lightweight bean) will live within the same transaction and security context as this identity service EJB3 session bean.
          */
-        attributeManager = new AttributeManagerLWBean(attributeDAO);
+        attributeManager = new AttributeManagerLWBean(attributeDAO, attributeTypeDAO);
     }
 
     /**
      * {@inheritDoc}
      */
     public String authenticate(String imei)
-            throws SubjectNotFoundException, DeviceNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException {
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException {
 
         // check registration exists
         SubjectEntity subject = subjectIdentifierDAO.findSubject(OptionConstants.OPTION_IDENTIFIER_DOMAIN, imei);
@@ -103,7 +94,7 @@ public class OptionDeviceServiceBean implements OptionDeviceService {
      * {@inheritDoc}
      */
     public void disable(String imei, String userId)
-            throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException {
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException {
 
         findDisableAttribute(imei, userId).setValue(true);
     }
@@ -112,33 +103,34 @@ public class OptionDeviceServiceBean implements OptionDeviceService {
      * {@inheritDoc}
      */
     public void enable(String imei, String userId)
-            throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException {
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException {
 
         findDisableAttribute(imei, userId).setValue(false);
     }
 
     public AttributeEntity findDisableAttribute(String imei, String userId)
-            throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException {
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException {
 
-        DeviceEntity device = deviceDAO.getDevice(OptionConstants.OPTION_DEVICE_ID);
-        SubjectEntity subject = subjectService.getSubject(userId);
+        try {
+            SubjectEntity subject = subjectService.getSubject(userId);
 
-        List<AttributeEntity> deviceAttributes = attributeDAO.listAttributes(subject, device.getAttributeType());
-        for (AttributeEntity deviceAttribute : deviceAttributes) {
-            AttributeEntity imeiAttribute = attributeDAO.findAttribute(subject, OptionConstants.OPTION_IMEI_ATTRIBUTE,
-                    deviceAttribute.getAttributeIndex());
-            if (imeiAttribute.getStringValue().equals(imei))
-                return attributeDAO.findAttribute(subject, device.getDisableAttributeType(), deviceAttribute.getAttributeIndex());
+            AttributeEntity device = attributeManager.getCompoundWhere(subject, OptionConstants.OPTION_DEVICE_ATTRIBUTE,
+                    OptionConstants.OPTION_IMEI_ATTRIBUTE, imei);
+
+            return attributeManager.getCompoundMember(device, OptionConstants.OPTION_DEVICE_DISABLE_ATTRIBUTE);
         }
 
-        throw new DeviceRegistrationNotFoundException();
+        catch (AttributeTypeNotFoundException e) {
+            throw new InternalInconsistencyException("Attribute types for Option device not defined.", e);
+        } catch (AttributeNotFoundException e) {
+            throw new DeviceRegistrationNotFoundException();
+        }
     }
 
     /**
      * {@inheritDoc}
      */
-    public void register(String imei, String userId)
-            throws AttributeTypeNotFoundException {
+    public void register(String imei, String userId) {
 
         SubjectEntity subject = subjectService.findSubject(userId);
         if (null == subject) {
@@ -149,49 +141,41 @@ public class OptionDeviceServiceBean implements OptionDeviceService {
         subjectIdentifierDAO.addSubjectIdentifier(OptionConstants.OPTION_IDENTIFIER_DOMAIN, imei, subject);
     }
 
-    private void setAttributes(SubjectEntity subject, String imei)
-            throws AttributeTypeNotFoundException {
+    private void setAttributes(SubjectEntity subject, String imei) {
 
-        AttributeTypeEntity deviceAttributeType = attributeTypeDAO.getAttributeType(OptionConstants.OPTION_DEVICE_ATTRIBUTE);
-        AttributeTypeEntity imeiAttributeType = attributeTypeDAO.getAttributeType(OptionConstants.OPTION_IMEI_ATTRIBUTE);
-        AttributeTypeEntity deviceDisableAttributeType = attributeTypeDAO.getAttributeType(OptionConstants.OPTION_DEVICE_DISABLE_ATTRIBUTE);
+        try {
+            CompoundAttributeDO deviceAttribute = attributeManager.newCompound(OptionConstants.OPTION_DEVICE_ATTRIBUTE, subject);
+            deviceAttribute.addAttribute(OptionConstants.OPTION_IMEI_ATTRIBUTE, imei);
+            deviceAttribute.addAttribute(OptionConstants.OPTION_DEVICE_DISABLE_ATTRIBUTE, false);
+        }
 
-        AttributeEntity imeiAttribute = attributeDAO.addAttribute(imeiAttributeType, subject);
-        imeiAttribute.setStringValue(imei);
-        AttributeEntity deviceDisableAttribute = attributeDAO.addAttribute(deviceDisableAttributeType, subject);
-        deviceDisableAttribute.setBooleanValue(false);
-
-        AttributeEntity deviceAttribute = attributeDAO.addAttribute(deviceAttributeType, subject);
-        deviceAttribute.setStringValue(UUID.randomUUID().toString());
-        List<AttributeEntity> deviceAttributeMembers = new LinkedList<AttributeEntity>();
-        deviceAttributeMembers.add(imeiAttribute);
-        deviceAttributeMembers.add(deviceDisableAttribute);
-        deviceAttribute.setMembers(deviceAttributeMembers);
+        catch (AttributeTypeNotFoundException e) {
+            throw new InternalInconsistencyException("Attribute types for Option device not defined.", e);
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     public void remove(String imei)
-            throws SubjectNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException {
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException {
 
         // check registration exists
         SubjectEntity subject = subjectIdentifierDAO.findSubject(OptionConstants.OPTION_IDENTIFIER_DOMAIN, imei);
         if (null == subject)
             throw new SubjectNotFoundException();
 
-        AttributeTypeEntity deviceAttributeType = attributeTypeDAO.getAttributeType(OptionConstants.OPTION_DEVICE_ATTRIBUTE);
-        AttributeTypeEntity imeiAttributeType = attributeTypeDAO.getAttributeType(OptionConstants.OPTION_IMEI_ATTRIBUTE);
+        try {
+            attributeManager.removeCompoundWhere(subject, OptionConstants.OPTION_DEVICE_ATTRIBUTE, OptionConstants.OPTION_IMEI_ATTRIBUTE,
+                    imei);
 
-        List<AttributeEntity> deviceAttributes = attributeDAO.listAttributes(subject, deviceAttributeType);
-        for (AttributeEntity deviceAttribute : deviceAttributes) {
-            AttributeEntity imeiAttribute = attributeDAO.findAttribute(subject, imeiAttributeType, deviceAttribute.getAttributeIndex());
-            if (imeiAttribute.getStringValue().equals(imei)) {
-                attributeManager.removeAttribute(deviceAttributeType, deviceAttribute.getAttributeIndex(), subject);
-                break;
-            }
+            subjectIdentifierDAO.removeSubjectIdentifier(subject, OptionConstants.OPTION_IDENTIFIER_DOMAIN, imei);
         }
 
-        subjectIdentifierDAO.removeSubjectIdentifier(subject, OptionConstants.OPTION_IDENTIFIER_DOMAIN, imei);
+        catch (AttributeTypeNotFoundException e) {
+            throw new InternalInconsistencyException("Attribute types for Option device not defined.", e);
+        } catch (AttributeNotFoundException e) {
+            throw new DeviceRegistrationNotFoundException();
+        }
     }
 }

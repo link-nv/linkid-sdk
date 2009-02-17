@@ -12,10 +12,7 @@ import javax.ejb.Local;
 import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.AlreadyRegisteredException;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
-import net.link.safeonline.authentication.exception.AttributeNotFoundException;
-import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.PkiExpiredException;
@@ -36,16 +33,15 @@ public interface CredentialManager extends SafeOnlineService {
 
     String authenticate(String sessionId, String applicationId, AuthenticationStatement authenticationStatement)
             throws ArgumentIntegrityException, TrustDomainNotFoundException, SubjectNotFoundException, PkiRevokedException,
-            PkiSuspendedException, PkiExpiredException, PkiNotYetValidException, PkiInvalidException, DeviceNotFoundException,
-            DeviceDisabledException;
+            PkiSuspendedException, PkiExpiredException, PkiNotYetValidException, PkiInvalidException, DeviceDisabledException,
+            DeviceRegistrationNotFoundException;
 
     void mergeIdentityStatement(String sessionId, String userId, String operation, byte[] identityStatementData)
-            throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException, AttributeTypeNotFoundException,
-            DeviceNotFoundException, AttributeNotFoundException, AlreadyRegisteredException, PkiRevokedException, PkiSuspendedException,
-            PkiExpiredException, PkiNotYetValidException, PkiInvalidException;
+            throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException, AlreadyRegisteredException,
+            PkiRevokedException, PkiSuspendedException, PkiExpiredException, PkiNotYetValidException, PkiInvalidException;
 
     void enable(String sessionId, String userId, String operation, byte[] identityStatementData)
-            throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException, AttributeTypeNotFoundException,
-            SubjectNotFoundException, DeviceNotFoundException, PkiRevokedException, PkiSuspendedException, PkiExpiredException,
-            PkiNotYetValidException, PkiInvalidException, AttributeNotFoundException, DeviceRegistrationNotFoundException;
+            throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException, SubjectNotFoundException,
+            PkiRevokedException, PkiSuspendedException, PkiExpiredException, PkiNotYetValidException, PkiInvalidException,
+            DeviceRegistrationNotFoundException;
 }

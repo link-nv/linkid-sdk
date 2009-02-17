@@ -10,7 +10,6 @@ package net.link.safeonline.digipass.webapp;
 import javax.ejb.EJB;
 
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
-import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.model.digipass.DigipassDeviceService;
@@ -120,10 +119,6 @@ public class RegisterPage extends TemplatePage {
                     } catch (PermissionDeniedException e) {
                         LOG.debug("permission denied: " + e.getMessage());
                         RegisterForm.this.error(getLocalizer().getString("errorPermissionDenied", this));
-                        return;
-                    } catch (AttributeTypeNotFoundException e) {
-                        LOG.debug("attribute type not found: " + e.getMessage());
-                        RegisterForm.this.error(getLocalizer().getString("errorAttributeTypeNotFound", this));
                         return;
                     }
 

@@ -138,15 +138,15 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
          * lightweight bean) will live within the same transaction and security context as this identity service EJB3 session bean.
          */
         LOG.debug("postConstruct");
-        attributeManager = new AttributeManagerLWBean(attributeDAO);
+        attributeManager = new AttributeManagerLWBean(attributeDAO, attributeTypeDAO);
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
     public List<HistoryEntity> listHistory() {
 
         SubjectEntity subject = subjectManager.getCallerSubject();
-        List<HistoryEntity> result = historyDAO.getHistory(subject);
-        return result;
+
+        return historyDAO.getHistory(subject);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -170,6 +170,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
             LOG.debug("user not allowed to edit attribute of type: " + attributeName);
             throw new PermissionDeniedException("user not allowed to edit attribute of type: " + attributeName);
         }
+
         return attributeType;
     }
 
@@ -184,16 +185,16 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     private AttributeTypeEntity getUserRemovableAttributeType(@NonEmptyString String attributeName)
             throws PermissionDeniedException, AttributeTypeNotFoundException {
 
-        AttributeTypeEntity attributeType = attributeTypeDAO.findAttributeType(attributeName);
-        if (null == attributeType)
-            throw new IllegalArgumentException("attribute type not found: " + attributeName);
+        AttributeTypeEntity attributeType = attributeTypeDAO.getAttributeType(attributeName);
         if (true == attributeType.isUserEditable())
             return attributeType;
+
         if (false == attributeType.isCompoundMember()) {
             String msg = "attribute type is not a compounded member: " + attributeType.getName();
             LOG.debug(msg);
             throw new PermissionDeniedException(msg);
         }
+
         /*
          * We make an exception here for compounded member attributes here. Even if the member attribute type is marked as being
          * non-user-editable the user is allowed to remove the entry if the compounded attribute type is editable.
@@ -201,6 +202,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
         AttributeTypeEntity compoundedAttributeType = attributeTypeDAO.getParent(attributeType);
         if (true == compoundedAttributeType.isUserEditable())
             return attributeType;
+
         String msg = "compounded parent attribute type is not user editable: " + compoundedAttributeType.getName();
         LOG.debug(msg);
         throw new PermissionDeniedException(msg);
@@ -221,9 +223,8 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
         } else {
             attributeDO.setCompounded(true);
             saveAttribute(attributeDO);
-            for (Object memberAttributeObject : attribute.getAttributeValue()) {
-                AttributeType memberAttribute = (AttributeType) memberAttributeObject;
-                saveAttribute(memberAttribute);
+            for (Object memberAttribute : attribute.getAttributeValue()) {
+                saveAttribute((AttributeType) memberAttribute);
             }
         }
 
@@ -238,30 +239,35 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
 
         if (null == value)
             return null;
+
         if (value instanceof XMLGregorianCalendar) {
             XMLGregorianCalendar calendar = (XMLGregorianCalendar) value;
             return calendar.toGregorianCalendar().getTime();
         }
+
         return value;
     }
 
     private DatatypeType getDatatypeType(AttributeType attributeType) {
 
         DataType dataType = DataType.getDataType(attributeType.getOtherAttributes().get(WebServiceConstants.DATATYPE_ATTRIBUTE));
-        if (dataType == DataType.STRING)
-            return DatatypeType.STRING;
-        else if (dataType == DataType.BOOLEAN)
-            return DatatypeType.BOOLEAN;
-        else if (dataType == DataType.DATE)
-            return DatatypeType.DATE;
-        else if (dataType == DataType.DOUBLE)
-            return DatatypeType.DOUBLE;
-        else if (dataType == DataType.INTEGER)
-            return DatatypeType.INTEGER;
-        else if (dataType == DataType.COMPOUNDED)
-            return DatatypeType.COMPOUNDED;
-        else
-            throw new RuntimeException("Unknown datatype " + dataType.getValue());
+
+        switch (dataType) {
+            case STRING:
+                return DatatypeType.STRING;
+            case BOOLEAN:
+                return DatatypeType.BOOLEAN;
+            case DATE:
+                return DatatypeType.DATE;
+            case DOUBLE:
+                return DatatypeType.DOUBLE;
+            case INTEGER:
+                return DatatypeType.INTEGER;
+            case COMPOUNDED:
+                return DatatypeType.COMPOUNDED;
+        }
+
+        throw new RuntimeException("Unknown datatype " + dataType.getValue());
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
@@ -535,8 +541,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
 
         ApplicationEntity application = applicationDAO.getApplication(applicationName);
         long currentIdentityVersion = application.getCurrentApplicationIdentity();
-        ApplicationIdentityEntity applicationIdentity = applicationIdentityDAO.getApplicationIdentity(application,
-                currentIdentityVersion);
+        ApplicationIdentityEntity applicationIdentity = applicationIdentityDAO.getApplicationIdentity(application, currentIdentityVersion);
         Set<ApplicationIdentityAttributeEntity> identityAttributeTypes = applicationIdentity.getAttributes();
         if (true == identityAttributeTypes.isEmpty())
             /*
@@ -621,8 +626,8 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
             }
         }
 
-        List<AttributeDO> resultAttributes = attributeTypeDescriptionDecorator.addDescriptionFromIdentityAttributes(
-                toConfirmAttributes, locale);
+        List<AttributeDO> resultAttributes = attributeTypeDescriptionDecorator.addDescriptionFromIdentityAttributes(toConfirmAttributes,
+                locale);
         return resultAttributes;
     }
 
@@ -778,8 +783,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
         Long confirmedIdentityVersion = subscription.getConfirmedIdentityVersion();
         if (null == confirmedIdentityVersion)
             return new LinkedList<AttributeDO>();
-        ApplicationIdentityEntity confirmedIdentity = applicationIdentityDAO.getApplicationIdentity(application,
-                confirmedIdentityVersion);
+        ApplicationIdentityEntity confirmedIdentity = applicationIdentityDAO.getApplicationIdentity(application, confirmedIdentityVersion);
         Set<ApplicationIdentityAttributeEntity> confirmedAttributeTypes = confirmedIdentity.getAttributes();
         List<AttributeDO> confirmedAttributes = attributeTypeDescriptionDecorator.addDescriptionFromIdentityAttributes(
                 confirmedAttributeTypes, locale);

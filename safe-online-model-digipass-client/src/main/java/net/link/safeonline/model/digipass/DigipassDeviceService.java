@@ -12,10 +12,7 @@ import java.util.Locale;
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
-import net.link.safeonline.authentication.exception.AttributeNotFoundException;
-import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -29,20 +26,20 @@ public interface DigipassDeviceService extends DigipassService {
 
 
     String authenticate(String userId, String token)
-            throws SubjectNotFoundException, PermissionDeniedException, DeviceNotFoundException, DeviceDisabledException;
+            throws SubjectNotFoundException, PermissionDeniedException, DeviceDisabledException;
 
     String register(String userId, String serialNumber)
-            throws ArgumentIntegrityException, SubjectNotFoundException, AttributeTypeNotFoundException;
+            throws ArgumentIntegrityException, SubjectNotFoundException;
 
     void remove(String serialNumber)
-            throws DigipassException, AttributeTypeNotFoundException, AttributeNotFoundException;
+            throws DigipassException;
 
     List<AttributeDO> getDigipasses(String userId, Locale locale)
-            throws SubjectNotFoundException, DeviceNotFoundException;
+            throws SubjectNotFoundException;
 
     void disable(String userId, String serialNumber)
-            throws SubjectNotFoundException, DeviceNotFoundException, DeviceRegistrationNotFoundException;
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException;
 
     String enable(String userId, String serialNumber, String token)
-            throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException;
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException;
 }

@@ -11,7 +11,6 @@ import javax.ejb.EJB;
 
 import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
@@ -182,10 +181,6 @@ public class AuthenticationPage extends TemplatePage implements IHeaderContribut
                 HelpdeskLogger.add(localize("%s", "login: device is disabled"), //
                         LogLevelType.ERROR);
             } catch (DeviceRegistrationNotFoundException e) {
-                AuthenticationForm.this.error(localize("optionNotRegistered"));
-                HelpdeskLogger.add(localize("%s", "login: device is not registered"), //
-                        LogLevelType.ERROR);
-            } catch (DeviceNotFoundException e) {
                 AuthenticationForm.this.error(localize("optionNotRegistered"));
                 HelpdeskLogger.add(localize("%s", "login: device is not registered"), //
                         LogLevelType.ERROR);

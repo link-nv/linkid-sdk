@@ -15,7 +15,6 @@ import static org.easymock.EasyMock.verify;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
-import java.util.LinkedList;
 import java.util.UUID;
 
 import junit.framework.TestCase;
@@ -25,7 +24,6 @@ import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.PkiInvalidException;
 import net.link.safeonline.authentication.service.AuthenticationStatement;
-import net.link.safeonline.authentication.service.IdentityStatementAttributes;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
@@ -167,7 +165,7 @@ public class CredentialManagerBeanTest extends TestCase {
         expect(mockPkiProvider.getTrustDomain()).andStubReturn(trustDomain);
         expect(mockPkiValidator.validateCertificate(trustDomain, certificate)).andStubReturn(PkiResult.VALID);
         expect(mockPkiProvider.getIdentifierDomainName()).andStubReturn(identifierDomain);
-        expect(mockPkiProvider.getSubjectIdentifier(certificate)).andStubReturn(identifier);
+        expect(mockPkiProvider.parseIdentifierFromCert(certificate)).andStubReturn(identifier);
         expect(mockSubjectIdentifierDAO.findSubject(identifierDomain, identifier)).andStubReturn(subject);
         expect(mockPkiProvider.isDisabled(subject, certificate)).andStubReturn(false);
 
@@ -229,18 +227,13 @@ public class CredentialManagerBeanTest extends TestCase {
 
         expect(mockPkiValidator.validateCertificate(trustDomain, certificate)).andStubReturn(PkiResult.VALID);
 
-        expect(mockPkiProvider.listDeviceAttributes(subject)).andStubReturn(new LinkedList<AttributeEntity>());
-
-        expect(mockPkiProvider.mapAttribute(IdentityStatementAttributes.SURNAME)).andStubReturn(surnameAttribute);
         expect(mockAttributeDAO.findAttribute(surnameAttribute, testSubject)).andStubReturn(null);
 
-        expect(mockPkiProvider.mapAttribute(IdentityStatementAttributes.GIVEN_NAME)).andStubReturn(givenNameAttribute);
         expect(mockAttributeDAO.findAttribute(givenNameAttribute, testSubject)).andStubReturn(null);
         expect(mockPkiProvider.getIdentifierDomainName()).andStubReturn(identifierDomain);
-        expect(mockPkiProvider.getSubjectIdentifier(certificate)).andStubReturn(identifier);
+        expect(mockPkiProvider.parseIdentifierFromCert(certificate)).andStubReturn(identifier);
         expect(mockSubjectIdentifierDAO.findSubject(identifierDomain, identifier)).andStubReturn(null);
-        mockPkiProvider.storeAdditionalAttributes(subject, certificate);
-        mockPkiProvider.storeDeviceAttribute(subject, 0);
+        mockPkiProvider.storeDeviceAttributes(subject, surnameAttribute, givenNameAttribute, certificate);
 
         AttributeTypeEntity surnameAttributeType = new AttributeTypeEntity();
         expect(mockAttributeTypeDAO.getAttributeType(surnameAttribute)).andStubReturn(surnameAttributeType);
@@ -289,13 +282,11 @@ public class CredentialManagerBeanTest extends TestCase {
 
         expect(mockPkiValidator.validateCertificate(trustDomain, certificate)).andStubReturn(PkiResult.VALID);
 
-        expect(mockPkiProvider.mapAttribute(IdentityStatementAttributes.SURNAME)).andStubReturn(surnameAttribute);
         expect(mockAttributeDAO.findAttribute(surnameAttribute, testSubject)).andStubReturn(null);
 
-        expect(mockPkiProvider.mapAttribute(IdentityStatementAttributes.GIVEN_NAME)).andStubReturn(givenNameAttribute);
         expect(mockAttributeDAO.findAttribute(givenNameAttribute, testSubject)).andStubReturn(null);
         expect(mockPkiProvider.getIdentifierDomainName()).andStubReturn(identifierDomain);
-        expect(mockPkiProvider.getSubjectIdentifier(certificate)).andStubReturn(identifier);
+        expect(mockPkiProvider.parseIdentifierFromCert(certificate)).andStubReturn(identifier);
         expect(mockSubjectIdentifierDAO.findSubject(identifierDomain, identifier)).andStubReturn(anotherSubject);
 
         // prepare

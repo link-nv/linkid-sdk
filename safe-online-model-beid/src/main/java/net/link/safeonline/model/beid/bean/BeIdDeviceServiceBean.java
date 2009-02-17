@@ -11,10 +11,7 @@ import javax.ejb.Stateless;
 
 import net.link.safeonline.authentication.exception.AlreadyRegisteredException;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
-import net.link.safeonline.authentication.exception.AttributeNotFoundException;
-import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.PkiExpiredException;
@@ -51,42 +48,40 @@ public class BeIdDeviceServiceBean implements BeIdDeviceService, BeIdDeviceServi
 
 
     public String authenticate(String sessionId, String applicationId, AuthenticationStatement authenticationStatement)
-            throws ArgumentIntegrityException, TrustDomainNotFoundException, SubjectNotFoundException, PkiRevokedException,
-            PkiSuspendedException, PkiExpiredException, PkiNotYetValidException, PkiInvalidException, DeviceNotFoundException,
-            DeviceDisabledException {
+            throws TrustDomainNotFoundException, SubjectNotFoundException, ArgumentIntegrityException, PkiRevokedException,
+            PkiSuspendedException, PkiExpiredException, PkiNotYetValidException, PkiInvalidException, DeviceDisabledException,
+            DeviceRegistrationNotFoundException {
 
         LOG.debug("authenticate: sessionId=" + sessionId + " applicaitonId=" + applicationId);
         return credentialManager.authenticate(sessionId, applicationId, authenticationStatement);
     }
 
     public void register(String sessionId, String userId, String operation, byte[] identityStatementData)
-            throws PermissionDeniedException, ArgumentIntegrityException, AttributeTypeNotFoundException, TrustDomainNotFoundException,
-            DeviceNotFoundException, AttributeNotFoundException, AlreadyRegisteredException, PkiRevokedException, PkiSuspendedException,
-            PkiExpiredException, PkiNotYetValidException, PkiInvalidException {
+            throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException, AlreadyRegisteredException,
+            PkiRevokedException, PkiSuspendedException, PkiExpiredException, PkiNotYetValidException, PkiInvalidException {
 
         LOG.debug("register: sessionId=" + sessionId + " userId=" + userId + " operation=" + operation);
         credentialManager.mergeIdentityStatement(sessionId, userId, operation, identityStatementData);
     }
 
     public void enable(String sessionId, String userId, String operation, byte[] identityStatementData)
-            throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException, AttributeTypeNotFoundException,
-            SubjectNotFoundException, DeviceNotFoundException, PkiRevokedException, PkiSuspendedException, PkiExpiredException,
-            PkiNotYetValidException, PkiInvalidException, AttributeNotFoundException, DeviceRegistrationNotFoundException {
+            throws TrustDomainNotFoundException, SubjectNotFoundException, PermissionDeniedException, ArgumentIntegrityException,
+            PkiRevokedException, PkiSuspendedException, PkiExpiredException, PkiNotYetValidException, PkiInvalidException,
+            DeviceRegistrationNotFoundException {
 
         LOG.debug("enable: sessionId=" + sessionId + " userId=" + userId + " operation=" + operation);
         credentialManager.enable(sessionId, userId, operation, identityStatementData);
     }
 
     public void disable(String userId, String attribute)
-            throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException {
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException {
 
         LOG.debug("disable: userId=" + userId + " attribute=" + attribute);
         beIdPkiProvider.disable(userId, attribute);
     }
 
     public void remove(String userId, String attribute)
-            throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException, AttributeTypeNotFoundException,
-            AttributeNotFoundException {
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException {
 
         LOG.debug("remove: userId=" + userId + " attribute=" + attribute);
         beIdPkiProvider.remove(userId, attribute);

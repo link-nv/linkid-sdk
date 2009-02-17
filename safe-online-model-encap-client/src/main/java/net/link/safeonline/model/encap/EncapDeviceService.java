@@ -11,14 +11,11 @@ import java.util.Locale;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.authentication.exception.AttributeNotFoundException;
-import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.authentication.exception.DeviceDisabledException;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
-import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
-import net.link.safeonline.authentication.exception.MobileException;
+import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
+import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.data.AttributeDO;
 
@@ -30,41 +27,20 @@ public interface EncapDeviceService extends EncapService {
 
 
     /**
-     * Verifies if this mobile is registered with OLAS.
-     * 
-     * @param mobile
-     * @throws SubjectNotFoundException
-     * @throws AttributeTypeNotFoundException
-     * @throws AttributeNotFoundException
-     * @throws DeviceDisabledException
-     */
-    void checkMobile(String mobile)
-            throws SubjectNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException, DeviceDisabledException;
-
-    /**
      * Authenticate against the encap server and verifies with OLAS.
      * 
      * @param mobile
-     * @param challengeId
      * @param mobileOTP
      * @return device subject ID
+     * @throws DeviceRegistrationNotFoundException
+     * @throws DeviceDisabledException
      * @throws SubjectNotFoundException
+     * @throws MobileException
      * @throws DeviceAuthenticationException
-     * @throws MobileException
      */
-    String authenticate(String mobile, String challengeId, String mobileOTP)
-            throws SubjectNotFoundException, DeviceAuthenticationException, MobileException;
-
-    /**
-     * Authenticates against the encap server.
-     * 
-     * @param challengeId
-     * @param mobileOTP
-     * @return true or false
-     * @throws MobileException
-     */
-    boolean authenticateEncap(String challengeId, String mobileOTP)
-            throws MobileException;
+    String authenticate(String mobile, String mobileOTP)
+            throws SubjectNotFoundException, DeviceDisabledException, DeviceRegistrationNotFoundException, MobileException,
+            DeviceAuthenticationException;
 
     /**
      * Activates the specified mobile at the encap server.
@@ -75,7 +51,7 @@ public interface EncapDeviceService extends EncapService {
      * @throws MobileException
      * @throws DeviceRegistrationException
      */
-    String register(String mobile, String sessionId)
+    String register(String mobile)
             throws MobileException, DeviceRegistrationException;
 
     /**
@@ -84,25 +60,23 @@ public interface EncapDeviceService extends EncapService {
      * 
      * @param deviceUserId
      * @param mobile
+     * @param otp
      * @throws SubjectNotFoundException
-     * @throws AttributeTypeNotFoundException
+     * @throws MobileException
+     * @throws DeviceAuthenticationException
      */
-    void commitRegistration(String userId, String mobile)
-            throws SubjectNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException;
-
-    void removeEncapMobile(String mobile)
-            throws MobileException;
+    void commitRegistration(String userId, String mobile, String otp)
+            throws SubjectNotFoundException, MobileException, DeviceAuthenticationException;
 
     void remove(String userId, String mobile)
-            throws MobileException, SubjectNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException;
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, MobileException;
 
     /**
      * Requests the encap server to send an OTP to the specified mobile.
      * 
      * @param mobile
-     * @throws MobileException
      */
-    String requestOTP(String mobile)
+    void requestOTP(String mobile)
             throws MobileException;
 
     /**
@@ -111,34 +85,37 @@ public interface EncapDeviceService extends EncapService {
      * @param userId
      * @param locale
      * @throws SubjectNotFoundException
-     * @throws DeviceNotFoundException
      */
     List<AttributeDO> getMobiles(String userId, Locale locale)
-            throws SubjectNotFoundException, DeviceNotFoundException;
+            throws SubjectNotFoundException;
 
     /**
      * Disables the encap device registration.
      * 
      * @param userId
      * @param mobile
-     * @throws SubjectNotFoundException
-     * @throws DeviceNotFoundException
      * @throws DeviceRegistrationNotFoundException
-     * @throws MobileException
+     * @throws SubjectNotFoundException
      */
     void disable(String userId, String mobile)
-            throws SubjectNotFoundException, DeviceNotFoundException, DeviceRegistrationNotFoundException, MobileException;
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException;
 
     /**
      * Enables the encap device registration.
      * 
      * @param userId
      * @param mobile
-     * @throws SubjectNotFoundException
-     * @throws DeviceNotFoundException
+     * @param otp
      * @throws DeviceRegistrationNotFoundException
+     * @throws SubjectNotFoundException
+     * @throws DeviceAuthenticationException
      * @throws MobileException
      */
-    void enable(String userId, String mobile)
-            throws SubjectNotFoundException, DeviceNotFoundException, DeviceRegistrationNotFoundException, MobileException;
+    void enable(String userId, String mobile, String otp)
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, MobileException, DeviceAuthenticationException;
+
+    /**
+     * @return <code>true</code> when an OTP has been dispatched to the user and we're waiting to verify it.
+     */
+    boolean isChallenged();
 }

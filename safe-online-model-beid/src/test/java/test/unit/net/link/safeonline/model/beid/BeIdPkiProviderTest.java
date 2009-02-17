@@ -71,7 +71,7 @@ public class BeIdPkiProviderTest extends TestCase {
         X509Certificate certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
 
         // operate
-        String result = testedInstance.getSubjectIdentifier(certificate);
+        String result = testedInstance.parseIdentifierFromCert(certificate);
 
         // verify
         assertNotNull(result);

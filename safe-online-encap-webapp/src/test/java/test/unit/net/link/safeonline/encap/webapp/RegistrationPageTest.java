@@ -44,7 +44,6 @@ public class RegistrationPageTest {
     private static final String  TEST_USERID     = UUID.randomUUID().toString();
     private static final String  TEST_MOBILE     = "0523012295";
     private static final String  TEST_ACTIVATION = "0123456789";
-    private static final String  TEST_CHALLENGE  = "0123456789";
     private static final String  TEST_OTP        = "000000";
 
 
@@ -124,10 +123,11 @@ public class RegistrationPageTest {
         FormTester form = prepareRegistration();
 
         // Describe Expected Scenario.
-        expect(mockEncapDeviceService.register(TEST_MOBILE, wicket.getServletSession().getId())).andStubReturn(TEST_ACTIVATION);
-        expect(mockEncapDeviceService.requestOTP(TEST_MOBILE)).andStubReturn(TEST_CHALLENGE);
-        expect(mockEncapDeviceService.authenticateEncap(TEST_CHALLENGE, TEST_OTP)).andStubReturn(true);
-        mockEncapDeviceService.commitRegistration(TEST_USERID, TEST_MOBILE);
+        expect(mockEncapDeviceService.register(TEST_MOBILE)).andStubReturn(TEST_ACTIVATION);
+        expect(mockEncapDeviceService.isChallenged()).andReturn(false);
+        mockEncapDeviceService.requestOTP(TEST_MOBILE);
+        expect(mockEncapDeviceService.isChallenged()).andReturn(true);
+        mockEncapDeviceService.commitRegistration(TEST_USERID, TEST_MOBILE, TEST_OTP);
         replay(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
 
         // Request activation code for our mobile.
@@ -178,8 +178,7 @@ public class RegistrationPageTest {
         FormTester form = prepareRegistration();
 
         // Describe Expected Scenario.
-        expect(mockEncapDeviceService.register(TEST_MOBILE, wicket.getServletSession().getId()))
-                                                                                                .andThrow(new DeviceRegistrationException());
+        expect(mockEncapDeviceService.register(TEST_MOBILE)).andThrow(new DeviceRegistrationException());
         replay(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
 
         // Request activation code for our mobile.
@@ -200,10 +199,13 @@ public class RegistrationPageTest {
         FormTester form = prepareRegistration();
 
         // Describe Expected Scenario.
-        expect(mockEncapDeviceService.register(TEST_MOBILE, wicket.getServletSession().getId())).andStubReturn(TEST_ACTIVATION);
-        expect(mockEncapDeviceService.requestOTP(TEST_MOBILE)).andStubReturn(TEST_CHALLENGE);
-        expect(mockEncapDeviceService.authenticateEncap(TEST_CHALLENGE, TEST_OTP)).andStubReturn(true);
-        mockEncapDeviceService.commitRegistration(TEST_USERID, TEST_MOBILE);
+        expect(mockEncapDeviceService.register(TEST_MOBILE)).andStubReturn(TEST_ACTIVATION);
+        expect(mockEncapDeviceService.isChallenged()).andReturn(false);
+        mockEncapDeviceService.requestOTP(TEST_MOBILE);
+        expect(mockEncapDeviceService.isChallenged()).andReturn(true);
+        expect(mockEncapDeviceService.isChallenged()).andReturn(true);
+        expect(mockEncapDeviceService.isChallenged()).andReturn(true);
+        mockEncapDeviceService.commitRegistration(TEST_USERID, TEST_MOBILE, TEST_OTP);
         expectLastCall().andThrow(new SubjectNotFoundException());
         replay(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
 

@@ -20,7 +20,6 @@ import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
-import net.link.safeonline.wicket.tools.WicketUtil;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.helpdesk.HelpdeskManager;
 import net.link.safeonline.model.otpoversms.OtpOverSmsDeviceService;
@@ -28,6 +27,7 @@ import net.link.safeonline.otpoversms.webapp.UpdatePage;
 import net.link.safeonline.test.util.EJBTestUtils;
 import net.link.safeonline.test.util.JndiTestUtils;
 import net.link.safeonline.webapp.template.TemplatePage;
+import net.link.safeonline.wicket.tools.WicketUtil;
 
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.util.tester.FormTester;
@@ -107,7 +107,6 @@ public class UpdatePageTest extends TestCase {
         EJBTestUtils.inject(updatePage, mockSamlAuthorityService);
 
         // stubs
-        mockOtpOverSmsDeviceService.checkMobile(mobile);
         mockOtpOverSmsDeviceService.requestOtp(wicket.getServletSession(), mobile);
 
         // prepare
@@ -130,8 +129,7 @@ public class UpdatePageTest extends TestCase {
         EasyMock.reset(mockOtpOverSmsDeviceService);
 
         // stubs
-        expect(mockOtpOverSmsDeviceService.verifyOtp(wicket.getServletSession(), mobile, otp)).andStubReturn(true);
-        expect(mockOtpOverSmsDeviceService.update(userId, mobile, oldPin, newPin)).andStubReturn(true);
+        expect(mockOtpOverSmsDeviceService.update(wicket.getServletSession(), userId, mobile, otp, oldPin, newPin)).andStubReturn(true);
         expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
@@ -171,7 +169,7 @@ public class UpdatePageTest extends TestCase {
         jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
 
         // stubs
-        mockOtpOverSmsDeviceService.checkMobile(mobile);
+        mockOtpOverSmsDeviceService.requestOtp(wicket.getServletSession(), mobile);
         org.easymock.EasyMock.expectLastCall().andThrow(new SubjectNotFoundException());
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
@@ -187,7 +185,7 @@ public class UpdatePageTest extends TestCase {
         verify(mockOtpOverSmsDeviceService, mockHelpdeskManager);
 
         wicket.assertRenderedPage(UpdatePage.class);
-        wicket.assertErrorMessages(new String[] { "mobileNotRegistered" });
+        wicket.assertErrorMessages(new String[] { "errorSubjectNotFound" });
 
     }
 
@@ -213,7 +211,7 @@ public class UpdatePageTest extends TestCase {
         jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
 
         // stubs
-        mockOtpOverSmsDeviceService.checkMobile(mobile);
+        mockOtpOverSmsDeviceService.requestOtp(wicket.getServletSession(), mobile);
         org.easymock.EasyMock.expectLastCall().andThrow(new DeviceDisabledException());
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
@@ -229,7 +227,7 @@ public class UpdatePageTest extends TestCase {
         verify(mockOtpOverSmsDeviceService, mockHelpdeskManager);
 
         wicket.assertRenderedPage(UpdatePage.class);
-        wicket.assertErrorMessages(new String[] { "mobileDisabled" });
+        wicket.assertErrorMessages(new String[] { "errorDeviceDisabled" });
 
     }
 
@@ -256,7 +254,6 @@ public class UpdatePageTest extends TestCase {
         jndiTestUtils.bindComponent(SecurityAuditLogger.JNDI_BINDING, mockSecurityAuditLogger);
 
         // stubs
-        mockOtpOverSmsDeviceService.checkMobile(mobile);
         mockOtpOverSmsDeviceService.requestOtp(wicket.getServletSession(), mobile);
         org.easymock.EasyMock.expectLastCall().andThrow(new ConnectException());
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
@@ -274,76 +271,6 @@ public class UpdatePageTest extends TestCase {
 
         wicket.assertRenderedPage(UpdatePage.class);
         wicket.assertErrorMessages(new String[] { "errorServiceConnection" });
-
-    }
-
-    @Test
-    public void testUpdateVerifyFailed()
-            throws Exception {
-
-        // setup
-        String userId = UUID.randomUUID().toString();
-        String mobile = "+32494575697";
-        String otp = UUID.randomUUID().toString();
-        String oldPin = "0000";
-        String newPin = "1111";
-
-        ProtocolContext protocolContext = ProtocolContext.getProtocolContext(wicket.getServletSession());
-        protocolContext.setSubject(userId);
-        protocolContext.setAttribute(mobile);
-
-        // verify
-        UpdatePage updatePage = (UpdatePage) wicket.startPage(UpdatePage.class);
-        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + UpdatePage.REQUEST_OTP_FORM_ID, Form.class);
-        wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + UpdatePage.UPDATE_FORM_ID);
-
-        // setup
-        EJBTestUtils.inject(updatePage, mockOtpOverSmsDeviceService);
-
-        // stubs
-        mockOtpOverSmsDeviceService.checkMobile(mobile);
-        mockOtpOverSmsDeviceService.requestOtp(wicket.getServletSession(), mobile);
-
-        // prepare
-        replay(mockOtpOverSmsDeviceService);
-
-        // operate
-        FormTester requestOtpForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + UpdatePage.REQUEST_OTP_FORM_ID);
-        requestOtpForm.setValue(UpdatePage.MOBILE_FIELD_ID, mobile);
-        requestOtpForm.submit(UpdatePage.REQUEST_OTP_BUTTON_ID);
-
-        // verify
-        verify(mockOtpOverSmsDeviceService);
-
-        // verify
-        updatePage = (UpdatePage) wicket.getLastRenderedPage();
-        wicket.assertInvisible(TemplatePage.CONTENT_ID + ":" + UpdatePage.REQUEST_OTP_FORM_ID);
-        wicket.assertComponent(TemplatePage.CONTENT_ID + ":" + UpdatePage.UPDATE_FORM_ID, Form.class);
-
-        // setup
-        EasyMock.reset(mockOtpOverSmsDeviceService);
-        jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
-
-        // stubs
-        expect(mockOtpOverSmsDeviceService.verifyOtp(wicket.getServletSession(), mobile, otp)).andStubReturn(false);
-        expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
-
-        // prepare
-        replay(mockOtpOverSmsDeviceService, mockHelpdeskManager);
-
-        // operate
-        FormTester updateForm = wicket.newFormTester(TemplatePage.CONTENT_ID + ":" + UpdatePage.UPDATE_FORM_ID);
-        updateForm.setValue(UpdatePage.OTP_FIELD_ID, otp);
-        updateForm.setValue(UpdatePage.OLDPIN_FIELD_ID, oldPin);
-        updateForm.setValue(UpdatePage.PIN1_FIELD_ID, newPin);
-        updateForm.setValue(UpdatePage.PIN2_FIELD_ID, newPin);
-        updateForm.submit(UpdatePage.SAVE_BUTTON_ID);
-
-        // verify
-        verify(mockOtpOverSmsDeviceService, mockHelpdeskManager);
-
-        wicket.assertRenderedPage(UpdatePage.class);
-        wicket.assertErrorMessages(new String[] { "authenticationFailedMsg" });
     }
 
     @Test
@@ -371,7 +298,6 @@ public class UpdatePageTest extends TestCase {
         jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
 
         // stubs
-        mockOtpOverSmsDeviceService.checkMobile(mobile);
         mockOtpOverSmsDeviceService.requestOtp(wicket.getServletSession(), mobile);
 
         // prepare
@@ -394,8 +320,7 @@ public class UpdatePageTest extends TestCase {
         EasyMock.reset(mockOtpOverSmsDeviceService);
 
         // stubs
-        expect(mockOtpOverSmsDeviceService.verifyOtp(wicket.getServletSession(), mobile, otp)).andStubReturn(true);
-        expect(mockOtpOverSmsDeviceService.update(userId, mobile, oldPin, newPin)).andStubReturn(false);
+        expect(mockOtpOverSmsDeviceService.update(wicket.getServletSession(), userId, mobile, otp, oldPin, newPin)).andStubReturn(false);
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare

@@ -8,9 +8,7 @@ package net.link.safeonline.model.otpoversms;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.authentication.exception.AttributeNotFoundException;
-import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.entity.SubjectEntity;
 
@@ -25,11 +23,11 @@ public interface OtpOverSmsManager extends OtpOverSmsService {
             throws PermissionDeniedException;
 
     boolean changePin(SubjectEntity subject, String mobile, String oldPin, String newPin)
-            throws DeviceNotFoundException;
+            throws DeviceRegistrationNotFoundException;
 
     boolean validatePin(SubjectEntity subject, String mobile, String pin)
-            throws DeviceNotFoundException;
+            throws DeviceRegistrationNotFoundException;
 
     void removeMobile(SubjectEntity subject, String mobile)
-            throws DeviceNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException;
+            throws DeviceRegistrationNotFoundException;
 }

@@ -8,8 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.audit.SecurityAuditLogger;
-import net.link.safeonline.authentication.exception.AttributeNotFoundException;
-import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.device.sdk.ProtocolContext;
@@ -81,10 +80,8 @@ public class RemoveServlet extends AbstractInjectionServlet {
             securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, message);
         } catch (MobileException e) {
             LOG.error("mobile exception thrown", e);
-        } catch (AttributeTypeNotFoundException e) {
-            LOG.error("AttributeTypeNotFoundException", e);
-        } catch (AttributeNotFoundException e) {
-            LOG.error("AttributeNotFoundException", e);
+        } catch (DeviceRegistrationNotFoundException e) {
+            LOG.error("Tried to remove a mobile that wasn't registered.", e);
         }
 
         response.sendRedirect(deviceExitPath);

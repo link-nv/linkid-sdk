@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
@@ -35,6 +34,7 @@ import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeProviderDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.HistoryDAO;
+import net.link.safeonline.data.CompoundAttributeDO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeProviderEntity;
@@ -48,8 +48,8 @@ import net.link.safeonline.service.SubjectService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.security.SecurityDomain;
 
 
@@ -91,7 +91,7 @@ public class AttributeProviderServiceBean implements AttributeProviderService, A
          * lightweight bean) will live within the same transaction and security context as this identity service EJB3 session bean.
          */
         LOG.debug("postConstruct");
-        attributeManager = new AttributeManagerLWBean(attributeDAO);
+        attributeManager = new AttributeManagerLWBean(attributeDAO, attributeTypeDAO);
     }
 
     @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
@@ -102,23 +102,7 @@ public class AttributeProviderServiceBean implements AttributeProviderService, A
         AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
         SubjectEntity subject = subjectService.getSubject(subjectLogin);
 
-        List<AttributeEntity> attributes = attributeDAO.listAttributes(subject, attributeType);
-
-        if (false == attributeType.isCompounded())
-            return attributes;
-
-        List<CompoundedAttributeTypeMemberEntity> members = attributeType.getMembers();
-        for (AttributeEntity attribute : attributes) {
-            for (CompoundedAttributeTypeMemberEntity member : members) {
-                AttributeEntity memberAttribute = attributeDAO.findAttribute(subject, member.getMember(),
-                        attribute.getAttributeIndex());
-                if (null != memberAttribute) {
-                    attribute.getMembers().add(memberAttribute);
-                }
-            }
-        }
-
-        return attributes;
+        return attributeDAO.listAttributes(subject, attributeType);
     }
 
     /**
@@ -141,24 +125,19 @@ public class AttributeProviderServiceBean implements AttributeProviderService, A
         AttributeProviderEntity attributeProvider = attributeProviderDAO.findAttributeProvider(application, attributeType);
         if (null == attributeProvider)
             throw new PermissionDeniedException("not an attribute provider");
+
         return attributeType;
     }
 
     private void createCompoundAttribute(SubjectEntity subject, AttributeTypeEntity attributeType, Map<String, Object> memberValues) {
 
-        AttributeEntity compoundAttribute = attributeDAO.addAttribute(attributeType, subject);
-        long attributeIdx = compoundAttribute.getAttributeIndex();
-        LOG.debug("createCompoundAttribute: idx " + attributeIdx);
-        String attributeId = UUID.randomUUID().toString();
-        LOG.debug("new attribute Id: " + attributeId);
-        compoundAttribute.setStringValue(attributeId);
-
-        List<CompoundedAttributeTypeMemberEntity> members = attributeType.getMembers();
-        for (CompoundedAttributeTypeMemberEntity member : members) {
-            AttributeTypeEntity memberAttributeType = member.getMember();
-            AttributeEntity memberAttribute = attributeDAO.addAttribute(memberAttributeType, subject, attributeIdx);
+        CompoundAttributeDO compoundAttribute = attributeManager.newCompound(attributeType, subject);
+        List<CompoundedAttributeTypeMemberEntity> memberTypes = attributeType.getMembers();
+        for (CompoundedAttributeTypeMemberEntity memberType : memberTypes) {
+            AttributeTypeEntity memberAttributeType = memberType.getMember();
             Object attributeValue = memberValues.get(memberAttributeType.getName());
-            memberAttribute.setValue(attributeValue);
+
+            compoundAttribute.addAttribute(memberAttributeType, attributeValue);
         }
     }
 
@@ -241,15 +220,10 @@ public class AttributeProviderServiceBean implements AttributeProviderService, A
     private void setSinglevaluedAttribute(Object attributeValue, AttributeTypeEntity attributeType, SubjectEntity subject)
             throws AttributeNotFoundException, DatatypeMismatchException {
 
-        /*
-         * Single-valued attribute.
-         */
         AttributeEntity attribute = attributeDAO.getAttribute(attributeType, subject);
 
         if (null == attributeValue) {
-            /*
-             * In case the attribute value is null we cannot extract the reflection class type. But actually we don't care. Just clear all.
-             */
+            // In case the attribute value is null we cannot extract the reflection class type. But actually we don't care. Just clear all.
             attribute.clearValues();
             return;
         }
@@ -262,10 +236,9 @@ public class AttributeProviderServiceBean implements AttributeProviderService, A
 
         List<AttributeEntity> attributes = attributeDAO.listAttributes(subject, attributeType);
         if (attributes.isEmpty())
-            /*
-             * Via setAttribute one can only update existing multivalued attributes, not create them.
-             */
+            // can only update existing multivalued attributes, not create them.
             throw new AttributeNotFoundException();
+
         if (null == attributeValue) {
             /*
              * In this case we remove all but one, which we set with a null value.
@@ -280,6 +253,7 @@ public class AttributeProviderServiceBean implements AttributeProviderService, A
         } else {
             if (false == attributeValue.getClass().isArray())
                 throw new DatatypeMismatchException();
+
             int newSize = Array.getLength(attributeValue);
             Iterator<AttributeEntity> iterator = attributes.iterator();
             for (int idx = 0; idx < newSize; idx++) {
@@ -311,9 +285,7 @@ public class AttributeProviderServiceBean implements AttributeProviderService, A
 
         SubjectEntity subject = subjectService.getSubject(subjectLogin);
 
-        /*
-         * AttributeId is the global Id of the record, while AttributeIdx is the local database Id of the attribute record.
-         */
+        // attributeId is the global UUID of the record, while AttributeIndex is the local database Id of the attribute record.
         AttributeEntity compoundAttribute = getCompoundAttribute(subject, attributeType, attributeId);
 
         long attributeIdx = compoundAttribute.getAttributeIndex();
@@ -329,12 +301,7 @@ public class AttributeProviderServiceBean implements AttributeProviderService, A
     private AttributeEntity getCompoundAttribute(SubjectEntity subject, AttributeTypeEntity attributeType, String attributeId)
             throws AttributeNotFoundException {
 
-        List<AttributeEntity> compoundAttributes = attributeDAO.listAttributes(subject, attributeType);
-        for (AttributeEntity compoundAttribute : compoundAttributes) {
-            if (attributeId.equals(compoundAttribute.getStringValue()))
-                return compoundAttribute;
-        }
-        throw new AttributeNotFoundException();
+        return attributeManager.getCompoundWhere(subject, attributeType, null, attributeId);
     }
 
     @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)

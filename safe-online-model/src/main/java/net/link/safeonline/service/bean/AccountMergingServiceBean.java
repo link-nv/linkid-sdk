@@ -15,12 +15,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.security.DenyAll;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -41,13 +43,13 @@ import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
-import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubjectIdentifierEntity;
 import net.link.safeonline.entity.SubscriptionEntity;
 import net.link.safeonline.model.SubjectManager;
+import net.link.safeonline.model.bean.AttributeManagerLWBean;
 import net.link.safeonline.notification.exception.MessageHandlerNotFoundException;
 import net.link.safeonline.service.AccountMergingService;
 import net.link.safeonline.service.SubjectService;
@@ -63,40 +65,56 @@ import org.jboss.annotation.security.SecurityDomain;
 @LocalBinding(jndiBinding = AccountMergingService.JNDI_BINDING)
 public class AccountMergingServiceBean implements AccountMergingService {
 
-    private static final Log     LOG = LogFactory.getLog(AccountMergingServiceBean.class);
+    private static final Log       LOG = LogFactory.getLog(AccountMergingServiceBean.class);
 
     @EJB(mappedName = SubjectService.JNDI_BINDING)
-    private SubjectService       subjectService;
+    private SubjectService         subjectService;
 
     @EJB(mappedName = SubjectManager.JNDI_BINDING)
-    private SubjectManager       subjectManager;
+    private SubjectManager         subjectManager;
 
     @EJB(mappedName = SubjectIdentifierDAO.JNDI_BINDING)
-    private SubjectIdentifierDAO subjectIdentifierDAO;
+    private SubjectIdentifierDAO   subjectIdentifierDAO;
 
     @EJB(mappedName = SubscriptionDAO.JNDI_BINDING)
-    private SubscriptionDAO      subscriptionDAO;
+    private SubscriptionDAO        subscriptionDAO;
 
     @EJB(mappedName = DevicePolicyService.JNDI_BINDING)
-    private DevicePolicyService  devicePolicyService;
+    private DevicePolicyService    devicePolicyService;
 
     @EJB(mappedName = AttributeDAO.JNDI_BINDING)
-    private AttributeDAO         attributeDAO;
+    private AttributeDAO           attributeDAO;
 
     @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
-    private AttributeTypeDAO     attributeTypeDAO;
+    private AttributeTypeDAO       attributeTypeDAO;
 
     @EJB(mappedName = AccountService.JNDI_BINDING)
-    private AccountService       accountService;
+    private AccountService         accountService;
 
+    private AttributeManagerLWBean attributeManager;
+
+
+    @PostConstruct
+    public void postConstructCallback() {
+
+        /*
+         * By injecting the attribute DAO of this session bean in the attribute manager we are sure that the attribute manager (a
+         * lightweight bean) will live within the same transaction and security context as this identity service EJB3 session bean.
+         */
+        LOG.debug("postConstruct");
+        attributeManager = new AttributeManagerLWBean(attributeDAO, attributeTypeDAO);
+    }
 
     /**
      * Dry run of merging with the specified account. Returns an account merging data object.
      * 
+     * @throws AttributeNotFoundException
+     * 
      */
     @DenyAll
     public AccountMergingDO getAccountMergingDO(String sourceAccountName)
-            throws SubjectNotFoundException, AttributeTypeNotFoundException, ApplicationNotFoundException, EmptyDevicePolicyException {
+            throws SubjectNotFoundException, AttributeTypeNotFoundException, ApplicationNotFoundException, EmptyDevicePolicyException,
+            AttributeNotFoundException {
 
         LOG.debug("merge account: " + sourceAccountName);
         SubjectEntity targetSubject = subjectManager.getCallerSubject();
@@ -110,7 +128,7 @@ public class AccountMergingServiceBean implements AccountMergingService {
 
         Map<AttributeTypeEntity, List<AttributeEntity>> targetAttributes = attributeDAO.listAttributes(targetSubject);
         Map<AttributeTypeEntity, List<AttributeEntity>> sourceAttributes = attributeDAO.listAttributes(sourceSubject);
-        mergeAttributes(accountMergingDO, targetSubject, targetAttributes, sourceSubject, sourceAttributes);
+        mergeAttributes(accountMergingDO, targetAttributes, sourceAttributes);
 
         return accountMergingDO;
     }
@@ -160,8 +178,7 @@ public class AccountMergingServiceBean implements AccountMergingService {
          * Remove the remaining subject identifier in the login domain
          */
         String targetSubjectLogin = subjectService.getSubjectLogin(targetSubject.getUserId());
-        subjectIdentifierDAO.removeOtherSubjectIdentifiers(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN, targetSubjectLogin,
-                targetSubject);
+        subjectIdentifierDAO.removeOtherSubjectIdentifiers(SafeOnlineConstants.LOGIN_IDENTIFIER_DOMAIN, targetSubjectLogin, targetSubject);
         /*
          * Remove source account, without removing the subject identifiers.
          */
@@ -266,11 +283,12 @@ public class AccountMergingServiceBean implements AccountMergingService {
      * 
      * @param targetAttributes
      * @param sourceAttributes
+     * @throws AttributeNotFoundException
      * @throws AttributeTypeNotFoundException
      */
-    private void mergeAttributes(AccountMergingDO accountMergingDO, SubjectEntity targetSubject,
-                                 Map<AttributeTypeEntity, List<AttributeEntity>> targetAttributes, SubjectEntity sourceSubject,
-                                 Map<AttributeTypeEntity, List<AttributeEntity>> sourceAttributes) {
+    private void mergeAttributes(AccountMergingDO accountMergingDO, Map<AttributeTypeEntity, List<AttributeEntity>> targetAttributes,
+                                 Map<AttributeTypeEntity, List<AttributeEntity>> sourceAttributes)
+            throws AttributeNotFoundException {
 
         Map<AttributeTypeEntity, List<AttributeEntity>> preservedAttributeMap = new HashMap<AttributeTypeEntity, List<AttributeEntity>>(
                 targetAttributes);
@@ -292,11 +310,10 @@ public class AccountMergingServiceBean implements AccountMergingService {
                  * compounded attributes should be merged as one big attribute
                  */
                 if (sourceAttributeType.getType().equals(DatatypeType.COMPOUNDED)) {
-                    List<AttributeEntity> mergedCompoundedAttributesToAdd = mergeCompoundedAttribute(targetSubject, sourceSubject,
-                            targetAttribute, sourceAttribute);
+                    List<AttributeEntity> mergedCompoundedAttributesToAdd = mergeCompoundedAttribute(targetAttribute, sourceAttribute);
                     for (AttributeEntity mergedCompoundedAttributeToAdd : mergedCompoundedAttributesToAdd) {
                         mergedAttributeToAddList.add(mergedCompoundedAttributeToAdd);
-                        List<AttributeEntity> mergedCompoundedMembers = mergedCompoundedAttributeToAdd.getMembers();
+                        List<AttributeEntity> mergedCompoundedMembers = attributeManager.getCompoundMembers(mergedCompoundedAttributeToAdd);
                         for (AttributeEntity mergedCompoundedMember : mergedCompoundedMembers) {
                             mergedAttributeToAddList.add(mergedCompoundedMember);
                         }
@@ -347,22 +364,21 @@ public class AccountMergingServiceBean implements AccountMergingService {
      * 
      * @param targetAttributes
      * @param sourceAttributes
+     * @throws AttributeNotFoundException
      */
-    private List<AttributeEntity> mergeCompoundedAttribute(SubjectEntity targetSubject, SubjectEntity sourceSubject,
-                                                           Entry<AttributeTypeEntity, List<AttributeEntity>> targetAttributes,
-                                                           Entry<AttributeTypeEntity, List<AttributeEntity>> sourceAttributes) {
+    private List<AttributeEntity> mergeCompoundedAttribute(Entry<AttributeTypeEntity, List<AttributeEntity>> targetAttributes,
+                                                           Entry<AttributeTypeEntity, List<AttributeEntity>> sourceAttributes)
+            throws AttributeNotFoundException {
 
-        fetchCompoundedMemberAttributes(targetSubject, targetAttributes);
-        fetchCompoundedMemberAttributes(sourceSubject, sourceAttributes);
         /*
          * lets merge
          */
         List<AttributeEntity> mergedAttributesToAdd = new LinkedList<AttributeEntity>();
         for (AttributeEntity sourceAttribute : sourceAttributes.getValue()) {
-            List<AttributeEntity> sourceMembers = sourceAttribute.getMembers();
+            List<AttributeEntity> sourceMembers = attributeManager.getCompoundMembers(sourceAttribute);
             boolean found = false;
             for (AttributeEntity targetAttribute : targetAttributes.getValue()) {
-                List<AttributeEntity> targetMembers = targetAttribute.getMembers();
+                List<AttributeEntity> targetMembers = attributeManager.getCompoundMembers(targetAttribute);
                 if (compoundEqual(sourceMembers, targetMembers)) {
                     found = true;
                     break;
@@ -377,26 +393,6 @@ public class AccountMergingServiceBean implements AccountMergingService {
             }
         }
         return mergedAttributesToAdd;
-    }
-
-    /**
-     * Fetch the compounded attributes' member attributes
-     * 
-     * @param subject
-     * @param attributes
-     */
-    private void fetchCompoundedMemberAttributes(SubjectEntity subject, Entry<AttributeTypeEntity, List<AttributeEntity>> attributes) {
-
-        List<CompoundedAttributeTypeMemberEntity> members = attributes.getKey().getMembers();
-        for (AttributeEntity attribute : attributes.getValue()) {
-            for (CompoundedAttributeTypeMemberEntity member : members) {
-                AttributeEntity memberAttribute = attributeDAO.findAttribute(subject, member.getMember(),
-                        attribute.getAttributeIndex());
-                if (null != memberAttribute) {
-                    attribute.getMembers().add(memberAttribute);
-                }
-            }
-        }
     }
 
     /**
@@ -466,9 +462,8 @@ public class AccountMergingServiceBean implements AccountMergingService {
             String description = null;
             if (null != language) {
                 LOG.debug("trying language: " + language);
-                AttributeTypeDescriptionEntity attributeTypeDescription = attributeTypeDAO
-                                                                                               .findDescription(new AttributeTypeDescriptionPK(
-                                                                                                       attributeType.getName(), language));
+                AttributeTypeDescriptionEntity attributeTypeDescription = attributeTypeDAO.findDescription(new AttributeTypeDescriptionPK(
+                        attributeType.getName(), language));
                 if (null != attributeTypeDescription) {
                     LOG.debug("found description");
                     humanReadableName = attributeTypeDescription.getName();

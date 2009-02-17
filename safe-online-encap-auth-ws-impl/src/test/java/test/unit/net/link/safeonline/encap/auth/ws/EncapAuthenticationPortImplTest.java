@@ -162,8 +162,8 @@ public class EncapAuthenticationPortImplTest {
         mockWSAuthenticationService = createMock(WSAuthenticationService.class);
         mockEncapDeviceServce = createMock(EncapDeviceService.class);
 
-        mockObjects = new Object[] { mockWSSecurityConfigurationService, mockPkiValidator,
-                mockApplicationAuthenticationService, mockSamlAuthorityService, mockEncapDeviceServce };
+        mockObjects = new Object[] { mockWSSecurityConfigurationService, mockPkiValidator, mockApplicationAuthenticationService,
+                mockSamlAuthorityService, mockEncapDeviceServce };
 
         jndiTestUtils.bindComponent(WSSecurityConfiguration.JNDI_BINDING, mockWSSecurityConfigurationService);
         jndiTestUtils.bindComponent(PkiValidator.JNDI_BINDING, mockPkiValidator);
@@ -174,9 +174,8 @@ public class EncapAuthenticationPortImplTest {
         jndiTestUtils.bindComponent(WSAuthenticationService.JNDI_BINDING, mockWSAuthenticationService);
         jndiTestUtils.bindComponent(EncapDeviceService.JNDI_BINDING, mockEncapDeviceServce);
 
-        expect(mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock.anyObject()))
-                                                                                                                                .andStubReturn(
-                                                                                                                                        PkiResult.VALID);
+        expect(mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock.anyObject())).andStubReturn(
+                PkiResult.VALID);
         expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
         expect(mockWSAuthenticationService.getAuthenticationTimeout()).andStubReturn(60 * 30);
         replay(mockWSAuthenticationService);
@@ -234,7 +233,6 @@ public class EncapAuthenticationPortImplTest {
         String testUserId = UUID.randomUUID().toString();
         String testMobile = "+32000000";
         String testOtp = "00000000";
-        String testChallengeId = UUID.randomUUID().toString();
 
         Map<String, String> nameValuePairs = new HashMap<String, String>();
         nameValuePairs.put(EncapConstants.ENCAP_WS_AUTH_MOBILE_ATTRIBUTE, testMobile);
@@ -243,8 +241,7 @@ public class EncapAuthenticationPortImplTest {
                 EncapConstants.ENCAP_DEVICE_ID, testLanguage, nameValuePairs, testpublicKey);
 
         // expectations
-        mockEncapDeviceServce.checkMobile(testMobile);
-        expect(mockEncapDeviceServce.requestOTP(testMobile)).andReturn(testChallengeId);
+        mockEncapDeviceServce.requestOTP(testMobile);
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn("test-application-name");
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
@@ -278,16 +275,15 @@ public class EncapAuthenticationPortImplTest {
                 nameValuePairs, testpublicKey);
 
         // expectations
-        expect(mockEncapDeviceServce.authenticate(testMobile, testChallengeId, testOtp)).andReturn(testUserId);
+        expect(mockEncapDeviceServce.authenticate(testMobile, testOtp)).andReturn(testUserId);
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn("test-application-name");
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
         expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
-        expect(mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock.anyObject()))
-                                                                                                                                .andStubReturn(
-                                                                                                                                        PkiResult.VALID);
+        expect(mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock.anyObject())).andStubReturn(
+                PkiResult.VALID);
         expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
 
         // prepare
@@ -313,7 +309,6 @@ public class EncapAuthenticationPortImplTest {
         // setup
         String testMobile = "+32000000";
         String testOtp = "00000000";
-        String testChallengeId = UUID.randomUUID().toString();
 
         Map<String, String> nameValuePairs = new HashMap<String, String>();
         nameValuePairs.put(EncapConstants.ENCAP_WS_AUTH_MOBILE_ATTRIBUTE, testMobile);
@@ -322,8 +317,7 @@ public class EncapAuthenticationPortImplTest {
                 EncapConstants.ENCAP_DEVICE_ID, testLanguage, nameValuePairs, testpublicKey);
 
         // expectations
-        mockEncapDeviceServce.checkMobile(testMobile);
-        expect(mockEncapDeviceServce.requestOTP(testMobile)).andReturn(testChallengeId);
+        mockEncapDeviceServce.requestOTP(testMobile);
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn("test-application-name");
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
@@ -357,16 +351,15 @@ public class EncapAuthenticationPortImplTest {
                 nameValuePairs, testpublicKey);
 
         // expectations
-        expect(mockEncapDeviceServce.authenticate(testMobile, testChallengeId, testOtp)).andThrow(new MobileException("foo"));
+        expect(mockEncapDeviceServce.authenticate(testMobile, testOtp)).andThrow(new MobileException("foo"));
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn("test-application-name");
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
         expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
-        expect(mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock.anyObject()))
-                                                                                                                                .andStubReturn(
-                                                                                                                                        PkiResult.VALID);
+        expect(mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock.anyObject())).andStubReturn(
+                PkiResult.VALID);
         expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
 
         // prepare
@@ -399,7 +392,6 @@ public class EncapAuthenticationPortImplTest {
                 EncapConstants.ENCAP_DEVICE_ID, testLanguage, nameValuePairs, testpublicKey);
 
         // expectations
-        mockEncapDeviceServce.checkMobile(testMobile);
         expectLastCall().andThrow(new DeviceDisabledException());
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn("test-application-name");

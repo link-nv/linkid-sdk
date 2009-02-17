@@ -1,6 +1,6 @@
 /*
  * SafeOnline project.
- * 
+ *
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
@@ -23,7 +23,7 @@ public class TemplateSmsServiceFactory implements ServiceFactory {
         System.out.println("Create object of SmsService for " + bundle.getSymbolicName());
         usageCounter++;
         System.out.println("Number of bundles using service " + usageCounter);
-        SmsService templateSmsService = new TemplateSmsService(bundle.getBundleContext());
+        SmsService templateSmsService = new TemplateSmsService();
         return templateSmsService;
     }
 

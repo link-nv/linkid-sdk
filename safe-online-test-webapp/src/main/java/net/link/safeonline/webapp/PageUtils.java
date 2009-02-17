@@ -8,6 +8,7 @@
 package net.link.safeonline.webapp;
 
 import junit.framework.Assert;
+import net.link.safeonline.model.password.PasswordConstants;
 import net.link.safeonline.webapp.auth.AuthFirstTime;
 import net.link.safeonline.webapp.auth.AuthIdentityConfirmation;
 import net.link.safeonline.webapp.auth.AuthMain;

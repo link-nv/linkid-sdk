@@ -18,11 +18,8 @@ import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.AlreadyRegisteredException;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
-import net.link.safeonline.authentication.exception.AttributeNotFoundException;
-import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DecodingException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.PkiExpiredException;
@@ -33,13 +30,8 @@ import net.link.safeonline.authentication.exception.PkiSuspendedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AuthenticationStatement;
 import net.link.safeonline.authentication.service.IdentityStatement;
-import net.link.safeonline.authentication.service.IdentityStatementAttributes;
-import net.link.safeonline.dao.AttributeDAO;
-import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.device.backend.CredentialManager;
-import net.link.safeonline.entity.AttributeEntity;
-import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
@@ -82,20 +74,14 @@ public class CredentialManagerBean implements CredentialManager {
     @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService       subjectService;
 
-    @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
-    private AttributeTypeDAO     attributeTypeDAO;
-
-    @EJB(mappedName = AttributeDAO.JNDI_BINDING)
-    private AttributeDAO         attributeDAO;
-
     @EJB(mappedName = SecurityAuditLogger.JNDI_BINDING)
     private SecurityAuditLogger  securityAuditLogger;
 
 
     public String authenticate(String sessionId, String applicationId, AuthenticationStatement authenticationStatement)
             throws ArgumentIntegrityException, TrustDomainNotFoundException, SubjectNotFoundException, PkiRevokedException,
-            PkiSuspendedException, PkiExpiredException, PkiNotYetValidException, PkiInvalidException, DeviceNotFoundException,
-            DeviceDisabledException {
+            PkiSuspendedException, PkiExpiredException, PkiNotYetValidException, PkiInvalidException, DeviceDisabledException,
+            DeviceRegistrationNotFoundException {
 
         X509Certificate certificate = authenticationStatement.verifyIntegrity();
         if (null == certificate)
@@ -109,16 +95,19 @@ public class CredentialManagerBean implements CredentialManager {
             throw new ArgumentIntegrityException();
         TrustDomainEntity trustDomain = pkiProvider.getTrustDomain();
         PkiResult validationResult = pkiValidator.validateCertificate(trustDomain, certificate);
-        if (PkiResult.REVOKED == validationResult)
-            throw new PkiRevokedException();
-        else if (PkiResult.SUSPENDED == validationResult)
-            throw new PkiSuspendedException();
-        else if (PkiResult.EXPIRED == validationResult)
-            throw new PkiExpiredException();
-        else if (PkiResult.NOT_YET_VALID == validationResult)
-            throw new PkiNotYetValidException();
-        else if (PkiResult.INVALID == validationResult)
-            throw new PkiInvalidException();
+        switch (validationResult) {
+            case REVOKED:
+                throw new PkiRevokedException();
+            case SUSPENDED:
+                throw new PkiSuspendedException();
+            case EXPIRED:
+                throw new PkiExpiredException();
+            case NOT_YET_VALID:
+                throw new PkiNotYetValidException();
+            case INVALID:
+                throw new PkiInvalidException();
+            case VALID:
+        }
 
         if (false == sessionId.equals(statementSessionId)) {
             securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, SECURITY_MESSAGE_SESSION_ID_MISMATCH);
@@ -131,7 +120,7 @@ public class CredentialManagerBean implements CredentialManager {
         }
 
         String identifierDomainName = pkiProvider.getIdentifierDomainName();
-        String identifier = pkiProvider.getSubjectIdentifier(certificate);
+        String identifier = pkiProvider.parseIdentifierFromCert(certificate);
         SubjectEntity subject = subjectIdentifierDAO.findSubject(identifierDomainName, identifier);
         if (null == subject)
             throw new SubjectNotFoundException();
@@ -139,13 +128,11 @@ public class CredentialManagerBean implements CredentialManager {
             throw new DeviceDisabledException();
 
         return subject.getUserId();
-
     }
 
     public void mergeIdentityStatement(String sessionId, String userId, String operation, byte[] identityStatementData)
-            throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException, AttributeTypeNotFoundException,
-            DeviceNotFoundException, AttributeNotFoundException, AlreadyRegisteredException, PkiRevokedException, PkiSuspendedException,
-            PkiExpiredException, PkiNotYetValidException, PkiInvalidException {
+            throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException, AlreadyRegisteredException,
+            PkiRevokedException, PkiSuspendedException, PkiExpiredException, PkiNotYetValidException, PkiInvalidException {
 
         /*
          * First check integrity of the received identity statement.
@@ -201,7 +188,7 @@ public class CredentialManagerBean implements CredentialManager {
         SubjectEntity subject;
 
         String domain = pkiProvider.getIdentifierDomainName();
-        String identifier = pkiProvider.getSubjectIdentifier(certificate);
+        String identifier = pkiProvider.parseIdentifierFromCert(certificate);
         SubjectEntity existingMappedSubject = subjectIdentifierDAO.findSubject(domain, identifier);
         if (null == existingMappedSubject) {
             /*
@@ -226,29 +213,13 @@ public class CredentialManagerBean implements CredentialManager {
         String surname = identityStatement.getSurname();
         String givenName = identityStatement.getGivenName();
 
-        long index = setAttribute(IdentityStatementAttributes.SURNAME, subject, surname, pkiProvider);
-        setAttribute(IdentityStatementAttributes.GIVEN_NAME, subject, givenName, pkiProvider);
-
-        pkiProvider.storeAdditionalAttributes(subject, certificate);
-
-        pkiProvider.storeDeviceAttribute(subject, index);
-    }
-
-    private long setAttribute(IdentityStatementAttributes identityStatementAttribute, SubjectEntity subject, String value,
-                              PkiProvider pkiProvider)
-            throws AttributeTypeNotFoundException {
-
-        String attributeName = pkiProvider.mapAttribute(identityStatementAttribute);
-        AttributeTypeEntity attributeType = attributeTypeDAO.getAttributeType(attributeName);
-        AttributeEntity attribute = attributeDAO.addAttribute(attributeType, subject);
-        attribute.setStringValue(value);
-        return attribute.getAttributeIndex();
+        pkiProvider.storeDeviceAttributes(subject, surname, givenName, certificate);
     }
 
     public void enable(String sessionId, String userId, String operation, byte[] identityStatementData)
-            throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException, AttributeTypeNotFoundException,
-            SubjectNotFoundException, DeviceNotFoundException, PkiRevokedException, PkiSuspendedException, PkiExpiredException,
-            PkiNotYetValidException, PkiInvalidException, AttributeNotFoundException, DeviceRegistrationNotFoundException {
+            throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException, SubjectNotFoundException,
+            PkiRevokedException, PkiSuspendedException, PkiExpiredException, PkiNotYetValidException, PkiInvalidException,
+            DeviceRegistrationNotFoundException {
 
         /*
          * First check integrity of the received identity statement.
@@ -302,7 +273,7 @@ public class CredentialManagerBean implements CredentialManager {
         }
 
         String domain = pkiProvider.getIdentifierDomainName();
-        String identifier = pkiProvider.getSubjectIdentifier(certificate);
+        String identifier = pkiProvider.parseIdentifierFromCert(certificate);
         SubjectEntity existingMappedSubject = subjectIdentifierDAO.findSubject(domain, identifier);
 
         pkiProvider.enable(existingMappedSubject, certificate);
