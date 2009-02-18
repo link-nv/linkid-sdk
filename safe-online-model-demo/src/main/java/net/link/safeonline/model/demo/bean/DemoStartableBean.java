@@ -24,7 +24,6 @@ import javax.ejb.Stateless;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.demo.bank.keystore.DemoBankKeyStoreUtils;
 import net.link.safeonline.demo.cinema.keystore.DemoCinemaKeyStoreUtils;
@@ -200,11 +199,7 @@ public class DemoStartableBean extends AbstractInitBean {
             }
 
             if (!passwordManager.isPasswordConfigured(subject)) {
-                try {
-                    passwordManager.setPassword(subject, passwordRegistration.password);
-                } catch (PermissionDeniedException e) {
-                    throw new EJBException(e);
-                }
+                passwordManager.registerPassword(subject, passwordRegistration.password);
             }
         }
 
@@ -554,7 +549,7 @@ public class DemoStartableBean extends AbstractInitBean {
          */
         AttributeEntity prescriptionAdminAttribute = new AttributeEntity();
         prescriptionAdminAttribute.setPk(new AttributePK(DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME, prescriptionAdmin));
-        prescriptionAdminAttribute.setBooleanValue(true);
+        prescriptionAdminAttribute.setValue(true);
         attributes.add(prescriptionAdminAttribute);
 
         /*
@@ -613,7 +608,7 @@ public class DemoStartableBean extends AbstractInitBean {
          */
         AttributeEntity barAdminBarAdminAttribute = new AttributeEntity();
         barAdminBarAdminAttribute.setPk(new AttributePK(DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME, "baradmin"));
-        barAdminBarAdminAttribute.setBooleanValue(true);
+        barAdminBarAdminAttribute.setValue(true);
         attributes.add(barAdminBarAdminAttribute);
 
         /*

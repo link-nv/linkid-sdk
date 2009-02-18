@@ -173,11 +173,7 @@ public class AttributeManagerLWBean {
                  * just change the attribute index since it is part of the compounded primary key of the attribute entity. Maybe we should
                  * use a global PK attribute Id and a separate viewId instead?
                  */
-                if (attributeType.isCompounded()) {
-                    removeAttribute.setStringValue(nextAttribute.getStringValue());
-                } else {
-                    removeAttribute.setValue(nextAttribute.getValue());
-                }
+                removeAttribute.setValue(nextAttribute.getValue());
                 removeAttribute = nextAttribute;
             }
             attributeDAO.removeAttribute(removeAttribute);
@@ -190,40 +186,37 @@ public class AttributeManagerLWBean {
     }
 
     /**
-     * Removes a compounded attribute record of the given attribute type for the given subject.
-     * 
-     * <p>
-     * The compounded attribute record is identified via the attribute Id.
-     * </p>
-     * 
-     * <p>
-     * At this point the RBAC and owner access control checks should already have been performed.
-     * </p>
-     * 
-     * @param attributeType
-     * @param subject
-     * @param attributeId
-     * @throws AttributeNotFoundException
+     * @see #removeCompoundAttribute(AttributeEntity)
      */
     public void removeCompoundAttribute(AttributeTypeEntity attributeType, SubjectEntity subject, String attributeId)
             throws AttributeNotFoundException {
 
-        AttributeEntity compoundAttribute = getCompoundAttribute(attributeType, subject, attributeId);
-        long attributeIdx = compoundAttribute.getAttributeIndex();
-        LOG.debug("attribute index: " + attributeIdx);
-        List<CompoundedAttributeTypeMemberEntity> members = attributeType.getMembers();
-        for (CompoundedAttributeTypeMemberEntity member : members) {
+        removeCompoundAttribute(getCompoundAttribute(attributeType, subject, attributeId));
+    }
+
+    /**
+     * Removes a compounded attribute record and all its members.
+     * 
+     * @param parentAttribute
+     *            The compound parent attribute which must be removed along with its members.
+     */
+    public void removeCompoundAttribute(AttributeEntity parentAttribute) {
+
+        SubjectEntity subject = parentAttribute.getSubject();
+        AttributeTypeEntity attributeType = parentAttribute.getAttributeType();
+        long compoundIndex = parentAttribute.getAttributeIndex();
+
+        for (CompoundedAttributeTypeMemberEntity member : attributeType.getMembers()) {
             AttributeTypeEntity memberAttributeType = member.getMember();
-            AttributeEntity memberAttribute = attributeDAO.findAttribute(subject, memberAttributeType, attributeIdx);
+            AttributeEntity memberAttribute = attributeDAO.findAttribute(subject, memberAttributeType, compoundIndex);
+
             if (null != memberAttribute) {
-                /*
-                 * It's allowed that some (i.e. the optional) member attribute entries are missing.
-                 */
+                // It's allowed that some (i.e. the optional) member attribute entries are missing.
                 attributeDAO.removeAttribute(memberAttribute);
             }
         }
 
-        attributeDAO.removeAttribute(compoundAttribute);
+        attributeDAO.removeAttribute(parentAttribute);
     }
 
     private AttributeEntity getCompoundAttribute(AttributeTypeEntity attributeType, SubjectEntity subject, String attributeId)

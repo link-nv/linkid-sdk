@@ -213,7 +213,7 @@ public class AuthenticationPage extends TemplatePage {
 
                         switch (goal) {
                             case AUTHENTICATE:
-                                String userId = encapDeviceService.authenticate(mobile.getObject(), otp.getObject());
+                                String userId = encapDeviceService.authenticate(otp.getObject());
                                 if (null == userId)
                                     // Authentication failed.
                                     throw new DeviceAuthenticationException();
@@ -229,7 +229,7 @@ public class AuthenticationPage extends TemplatePage {
 
                             case ENABLE_DEVICE:
                                 // Authentication passed, enable the device.
-                                encapDeviceService.enable(protocolContext.getSubject(), mobile.getObject(), otp.getObject());
+                                encapDeviceService.enable(protocolContext.getSubject(), otp.getObject());
                                 protocolContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
                                 protocolContext.setSuccess(true);
 
@@ -239,7 +239,7 @@ public class AuthenticationPage extends TemplatePage {
                             case REGISTER_DEVICE:
                                 // Authentication passed, commit this registration to OLAS.
                                 encapDeviceService.commitRegistration(protocolContext.getNodeName(), protocolContext.getSubject(),
-                                        mobile.getObject(), otp.getObject());
+                                        otp.getObject());
 
                                 exit(true);
                             break;

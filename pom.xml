@@ -378,7 +378,6 @@
 			<modules>
 				<module>safe-online-option-startup-runtime</module>
 				<module>safe-online-option-keystore</module>
-				<module>safe-online-option</module>
 				<module>safe-online-option-webapp</module>
 				<module>safe-online-option-deploy</module>
 				<module>safe-online-model-option-client</module>

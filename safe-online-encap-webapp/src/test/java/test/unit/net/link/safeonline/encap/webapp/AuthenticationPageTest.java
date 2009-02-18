@@ -134,7 +134,7 @@ public class AuthenticationPageTest {
         expect(mockEncapDeviceService.isChallenged()).andReturn(false);
         mockEncapDeviceService.requestOTP(TEST_MOBILE);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
-        expect(mockEncapDeviceService.authenticate(TEST_MOBILE, TEST_OTP)).andStubReturn(TEST_USERID);
+        expect(mockEncapDeviceService.authenticate(TEST_OTP)).andStubReturn(TEST_USERID);
         replay(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
 
         // Request OTP for our mobile.
@@ -171,7 +171,7 @@ public class AuthenticationPageTest {
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
-        mockEncapDeviceService.authenticate(TEST_MOBILE, TEST_OTP);
+        mockEncapDeviceService.authenticate(TEST_OTP);
         expectLastCall().andThrow(new SubjectNotFoundException());
         replay(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
 
@@ -209,7 +209,7 @@ public class AuthenticationPageTest {
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
-        mockEncapDeviceService.authenticate(TEST_MOBILE, TEST_OTP);
+        mockEncapDeviceService.authenticate(TEST_OTP);
         expectLastCall().andThrow(new DeviceDisabledException());
         replay(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
 
@@ -247,7 +247,7 @@ public class AuthenticationPageTest {
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
-        expect(mockEncapDeviceService.authenticate(TEST_MOBILE, TEST_OTP)).andStubReturn(null);
+        expect(mockEncapDeviceService.authenticate(TEST_OTP)).andStubReturn(null);
         replay(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
 
         // Request OTP for our mobile.
@@ -282,7 +282,7 @@ public class AuthenticationPageTest {
         expect(mockEncapDeviceService.isChallenged()).andReturn(false);
         mockEncapDeviceService.requestOTP(TEST_MOBILE);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
-        mockEncapDeviceService.enable(TEST_USERID, TEST_MOBILE, TEST_OTP);
+        mockEncapDeviceService.enable(TEST_USERID, TEST_OTP);
         replay(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
 
         // Request OTP for our mobile.
@@ -317,7 +317,7 @@ public class AuthenticationPageTest {
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
-        mockEncapDeviceService.enable(TEST_USERID, TEST_MOBILE, TEST_OTP);
+        mockEncapDeviceService.enable(TEST_USERID, TEST_OTP);
         expectLastCall().andThrow(new SubjectNotFoundException());
         replay(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
 
@@ -355,7 +355,7 @@ public class AuthenticationPageTest {
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
-        mockEncapDeviceService.enable(TEST_USERID, TEST_MOBILE, TEST_OTP);
+        mockEncapDeviceService.enable(TEST_USERID, TEST_OTP);
         expectLastCall().andThrow(new DeviceAuthenticationException());
         replay(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
 

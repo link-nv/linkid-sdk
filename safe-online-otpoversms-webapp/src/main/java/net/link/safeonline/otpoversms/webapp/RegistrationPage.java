@@ -12,7 +12,6 @@ import java.net.ConnectException;
 import javax.ejb.EJB;
 import javax.mail.AuthenticationFailedException;
 
-import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
@@ -143,10 +142,6 @@ public class RegistrationPage extends TemplatePage {
                         RequestOtpForm.this.error(getLocalizer().getString("errorDeviceRegistrationNotFound", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "request: mobile isn't registered: "
                                 + protocolContext.getAttribute(), LogLevelType.ERROR);
-                    } catch (DeviceDisabledException e) {
-                        RequestOtpForm.this.error(getLocalizer().getString("errorDeviceDisabled", this));
-                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "request: mobile is disabled: "
-                                + protocolContext.getAttribute(), LogLevelType.ERROR);
                     }
                 }
 
@@ -237,9 +232,7 @@ public class RegistrationPage extends TemplatePage {
                     try {
                         LOG.debug("register mobile " + mobile + " for " + protocolContext.getSubject());
 
-                        otpOverSmsDeviceService.register(protocolContext.getNodeName(), protocolContext.getSubject(), mobile.getObject()
-                                                                                                                            .getNumber(),
-                                pin1.getObject(), otp.getObject());
+                        otpOverSmsDeviceService.register(protocolContext.getNodeName(), protocolContext.getSubject(), pin1.getObject(), otp.getObject());
 
                         protocolContext.setSuccess(true);
                         exit();

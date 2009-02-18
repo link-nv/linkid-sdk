@@ -21,7 +21,6 @@ import javax.ejb.Stateless;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
@@ -99,11 +98,7 @@ public class PasswordStartableBean extends AbstractInitBean {
             }
 
             if (!passwordManager.isPasswordConfigured(subject)) {
-                try {
-                    passwordManager.setPassword(subject, passwordRegistration.password);
-                } catch (PermissionDeniedException e) {
-                    throw new EJBException(e);
-                }
+                passwordManager.registerPassword(subject, passwordRegistration.password);
             }
         }
     }
@@ -140,19 +135,26 @@ public class PasswordStartableBean extends AbstractInitBean {
                 DatatypeType.STRING, false, false);
         AttributeTypeEntity passwordAlgorithmAttributeType = new AttributeTypeEntity(PasswordConstants.PASSWORD_ALGORITHM_ATTRIBUTE,
                 DatatypeType.STRING, false, false);
+        AttributeTypeEntity passwordNewAlgorithmAttributeType = new AttributeTypeEntity(PasswordConstants.PASSWORD_NEW_ALGORITHM_ATTRIBUTE,
+                DatatypeType.STRING, false, false);
         attributeTypes.add(passwordHashAttributeType);
         attributeTypes.add(passwordSeedAttributeType);
         attributeTypes.add(passwordAlgorithmAttributeType);
+        attributeTypes.add(passwordNewAlgorithmAttributeType);
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordHashAttributeType, Locale.ENGLISH.getLanguage(),
                 "Password hash", null));
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordSeedAttributeType, Locale.ENGLISH.getLanguage(),
                 "Password hash seed", null));
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordAlgorithmAttributeType, Locale.ENGLISH.getLanguage(),
                 "Password hash algorithm", null));
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordNewAlgorithmAttributeType, Locale.ENGLISH.getLanguage(),
+                "New password hash algorithm", null));
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordHashAttributeType, "nl", "Wachtwoord hash", null));
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordSeedAttributeType, "nl", "Wachtwoord hash seed", null));
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordAlgorithmAttributeType, "nl", "Wachtwoord hash algoritme",
                 null));
+        attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(passwordNewAlgorithmAttributeType, "nl",
+                "Nieuw wachtwoord hash algoritme", null));
 
         AttributeTypeEntity passwordDeviceDisableAttributeType = new AttributeTypeEntity(
                 PasswordConstants.PASSWORD_DEVICE_DISABLE_ATTRIBUTE, DatatypeType.BOOLEAN, false, false);

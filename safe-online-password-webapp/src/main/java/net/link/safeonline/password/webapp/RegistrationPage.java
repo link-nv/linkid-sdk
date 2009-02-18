@@ -61,15 +61,11 @@ public class RegistrationPage extends TemplatePage {
 
         protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
-        if (null == passwordDeviceService) {
-            alreadyRegistered = false;
-        } else {
-            try {
-                alreadyRegistered = passwordDeviceService.isPasswordConfigured(protocolContext.getSubject());
-            } catch (SubjectNotFoundException e) {
-                error(getLocalizer().getString("errorSubjectNotFound", this));
-                return;
-            }
+        try {
+            alreadyRegistered = passwordDeviceService.isPasswordConfigured(protocolContext.getSubject());
+        } catch (SubjectNotFoundException e) {
+            error(getLocalizer().getString("errorSubjectNotFound", this));
+            return;
         }
 
         getHeader();
@@ -155,11 +151,7 @@ public class RegistrationPage extends TemplatePage {
                                 LogLevelType.ERROR);
                         return;
                     }
-
-                    protocolContext.setSuccess(true);
-                    exit();
                 }
-
             });
 
             Button cancel = new Button(CANCEL_BUTTON_ID) {

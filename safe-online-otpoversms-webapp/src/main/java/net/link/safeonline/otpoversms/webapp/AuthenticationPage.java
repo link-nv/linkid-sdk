@@ -149,10 +149,6 @@ public class AuthenticationPage extends TemplatePage {
                         RequestOtpForm.this.error(getLocalizer().getString("errorDeviceRegistrationNotFound", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()),
                                 "login: mobile isn't registered: " + mobile.getObject(), LogLevelType.ERROR);
-                    } catch (DeviceDisabledException e) {
-                        RequestOtpForm.this.error(getLocalizer().getString("errorDeviceDisabled", this));
-                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: mobile is disabled: " + mobile.getObject(),
-                                LogLevelType.ERROR);
                     }
                 }
             });
@@ -232,8 +228,7 @@ public class AuthenticationPage extends TemplatePage {
                     OtpOverSmsDeviceService otpOverSmsDeviceService = OtpOverSmsSession.get().getDeviceService();
 
                     try {
-                        String userId = otpOverSmsDeviceService.authenticate(mobile.getObject().getNumber(), pin.getObject(),
-                                otp.getObject());
+                        String userId = otpOverSmsDeviceService.authenticate(pin.getObject(), otp.getObject());
                         if (null == userId)
                             throw new AuthenticationFailedException();
 

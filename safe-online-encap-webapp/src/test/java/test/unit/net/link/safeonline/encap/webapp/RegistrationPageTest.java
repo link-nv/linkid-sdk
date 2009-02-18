@@ -129,7 +129,7 @@ public class RegistrationPageTest {
         expect(mockEncapDeviceService.isChallenged()).andReturn(false);
         mockEncapDeviceService.requestOTP(TEST_MOBILE);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
-        mockEncapDeviceService.commitRegistration(TEST_NODE_NAME, TEST_USERID, TEST_MOBILE, TEST_OTP);
+        mockEncapDeviceService.commitRegistration(TEST_NODE_NAME, TEST_USERID, TEST_OTP);
         replay(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
 
         // Request activation code for our mobile.
@@ -207,7 +207,7 @@ public class RegistrationPageTest {
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
-        mockEncapDeviceService.commitRegistration(TEST_NODE_NAME, TEST_USERID, TEST_MOBILE, TEST_OTP);
+        mockEncapDeviceService.commitRegistration(TEST_NODE_NAME, TEST_USERID, TEST_OTP);
         expectLastCall().andThrow(new NodeNotFoundException());
         replay(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
 

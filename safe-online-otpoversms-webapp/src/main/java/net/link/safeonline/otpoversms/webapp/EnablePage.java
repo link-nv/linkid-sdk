@@ -12,8 +12,8 @@ import java.net.ConnectException;
 import javax.ejb.EJB;
 import javax.mail.AuthenticationFailedException;
 
-import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
@@ -151,10 +151,6 @@ public class EnablePage extends TemplatePage {
                         RequestOtpForm.this.error(getLocalizer().getString("errorDeviceRegistrationNotFound", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "enable: mobile isn't registered: "
                                 + protocolContext.getAttribute(), LogLevelType.ERROR);
-                    } catch (DeviceDisabledException e) {
-                        RequestOtpForm.this.error(getLocalizer().getString("errorDeviceDisabled", this));
-                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "enable: mobile is disabled: "
-                                + protocolContext.getAttribute(), LogLevelType.ERROR);
                     }
                 }
             });
@@ -227,13 +223,7 @@ public class EnablePage extends TemplatePage {
                     OtpOverSmsDeviceService otpOverSmsDeviceService = OtpOverSmsSession.get().getDeviceService();
 
                     try {
-                        if (false == otpOverSmsDeviceService.enable(protocolContext.getSubject(), protocolContext.getAttribute(),
-                                otp.getObject(), pin.getObject())) {
-                            pinField.error(getLocalizer().getString("errorPinNotCorrect", this));
-                            HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: pin not correct",
-                                    LogLevelType.ERROR);
-                            return;
-                        }
+                        otpOverSmsDeviceService.enable(protocolContext.getSubject(), otp.getObject(), pin.getObject());
 
                         protocolContext.setSuccess(true);
                         exit();
@@ -249,6 +239,10 @@ public class EnablePage extends TemplatePage {
                     } catch (DeviceRegistrationNotFoundException e) {
                         pinField.error(getLocalizer().getString("errorDeviceRegistrationNotFound", this));
                         HelpdeskLogger.add("enable: device registration not found", LogLevelType.ERROR);
+                    } catch (PermissionDeniedException e) {
+                        pinField.error(getLocalizer().getString("errorPinNotCorrect", this));
+                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: pin not correct",
+                                LogLevelType.ERROR);
                     }
                 }
             });

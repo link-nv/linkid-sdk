@@ -126,7 +126,7 @@ public class AuthenticationPageTest extends TestCase {
         EasyMock.reset(mockOtpOverSmsDeviceService);
 
         // stubs
-        expect(mockOtpOverSmsDeviceService.authenticate(convertedMobile, pin, otp)).andStubReturn(userId);
+        expect(mockOtpOverSmsDeviceService.authenticate(pin, otp)).andStubReturn(userId);
         expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
@@ -308,7 +308,7 @@ public class AuthenticationPageTest extends TestCase {
         jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
 
         // stubs
-        expect(mockOtpOverSmsDeviceService.authenticate(convertedMobile, pin, otp)).andStubReturn(null);
+        expect(mockOtpOverSmsDeviceService.authenticate(pin, otp)).andStubReturn(null);
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare

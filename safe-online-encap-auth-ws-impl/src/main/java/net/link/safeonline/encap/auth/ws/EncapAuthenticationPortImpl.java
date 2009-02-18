@@ -60,8 +60,6 @@ public class EncapAuthenticationPortImpl implements DeviceAuthenticationPort {
 
     public static StatefulWebServiceManager<DeviceAuthenticationPort> manager;
 
-    private String                                                    mobile;
-
     private EncapDeviceService                                        deviceService;
 
 
@@ -101,7 +99,7 @@ public class EncapAuthenticationPortImpl implements DeviceAuthenticationPort {
 
         LOG.debug("authenticate");
 
-        if (null == mobile && deviceService == null || !deviceService.isChallenged())
+        if (deviceService == null || !deviceService.isChallenged())
             // step 1, expect mobile attribute, will send OTP after mobile has been verified
             return sendOtp(request);
 
@@ -118,6 +116,7 @@ public class EncapAuthenticationPortImpl implements DeviceAuthenticationPort {
                 request.getDeviceName());
 
         DeviceCredentialsType deviceCredentials = request.getDeviceCredentials();
+        String mobile = null;
         for (NameValuePairType nameValuePair : deviceCredentials.getNameValuePair()) {
             if (nameValuePair.getName().equals(EncapConstants.ENCAP_WS_AUTH_MOBILE_ATTRIBUTE)) {
                 mobile = nameValuePair.getValue();
@@ -168,14 +167,8 @@ public class EncapAuthenticationPortImpl implements DeviceAuthenticationPort {
             return response;
         }
 
-        if (deviceService == null || !deviceService.isChallenged()) {
-            DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.INSUFFICIENT_CREDENTIALS, "Not yet challenged");
-            manager.unexport(this);
-            return response;
-        }
-
         try {
-            String userId = deviceService.authenticate(mobile, otp);
+            String userId = deviceService.authenticate(otp);
             if (null != userId) {
                 response.setUserId(userId);
                 DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.SUCCESS, null);

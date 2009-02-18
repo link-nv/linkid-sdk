@@ -444,7 +444,7 @@ public class EntityTest {
         AttributeTypeEntity attributeType = new AttributeTypeEntity(attributeName, DatatypeType.STRING, false, false);
         AttributeEntity attribute1 = new AttributeEntity(attributeType, subject, "value1");
         AttributeEntity attribute2 = new AttributeEntity(attributeType, subject, 1);
-        attribute2.setStringValue("value2");
+        attribute2.setValue("value2");
 
         AttributePK pk1 = new AttributePK(attributeName, login, 0);
         AttributePK pk2 = new AttributePK(attributeName, login, 0);
