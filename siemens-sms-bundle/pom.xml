@@ -2,22 +2,21 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
 	<parent>
 		<groupId>net.lin-k</groupId>
 		<artifactId>safe-online</artifactId>
 		<version>1.3-SNAPSHOT</version>
 	</parent>
 
-	<name>Siemens Acceptance Test OSGI bundle</name>
+	<name>Siemens SMS Service OSGI bundle</name>
 	<description>
-		This bundle is used in the acceptance scenario for the
-		Metro WS.
+		This bundle is used by the OTP over SMS device to send out an SMS. It uses
+		the Siemens SMS WSDL. 
 	</description>
 
-	<groupId>net.lin-k.safe-online.siemens
-	</groupId>
-	<artifactId>siemens-osgi-acceptance-metro
-	</artifactId>
+	<groupId>net.lin-k.safe-online.siemens</groupId>
+	<artifactId>siemens-sms-bundle</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 
@@ -38,8 +37,7 @@
 				<artifactId>xml-maven-plugin</artifactId>
 				<configuration>
 					<catalogs>
-						<catalog>src/main/catalog/catalog.xml
-						</catalog>
+						<catalog>src/main/catalog/catalog.xml</catalog>
 					</catalogs>
 					<validationSets>
 						<validationSet>
@@ -67,25 +65,20 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Export-Package>net.link.safeonline.siemens.acceptance.metro.*
-						</Export-Package>
+						<Export-Package>net.link.safeonline.siemens.osgi.sms.*</Export-Package>
 						<Import-Package>
-							net.link.safeonline.osgi; version="[1.3, 1.3]",
-							net.link.safeonline.osgi.exception; version="[1.3, 1.3]",
-							net.link.safeonline.osgi.plugin; version="[1.3, 1.3]",
+							net.link.safeonline.osgi; version="[1.3 ,1.3]",
+							net.link.safeonline.osgi.sms; version="[1.3, 1.3]",
 							org.osgi.framework,
 							javax.net.ssl,
 							javax.crypto,
-							javax.security.auth.callback,
 							!*
 						</Import-Package>
 						<Bundle-Activator>
-							net.link.safeonline.siemens.acceptance.metro.AcceptanceMetroServiceActivator
+							net.link.safeonline.siemens.osgi.sms.SiemensSmsServiceActivator
 						</Bundle-Activator>
-						<Bundle-SymbolicName>${pom.artifactId}
-						</Bundle-SymbolicName>
-						<Embed-Dependency>*;scope=compile|runtime;type=!pom
-						</Embed-Dependency>
+						<Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
+						<Embed-Dependency>*;scope=compile|runtime;type=!pom</Embed-Dependency>
 						<Embed-Transitive>true</Embed-Transitive>
 						<!--Embed-StripVersion>true</Embed-StripVersion-->
 					</instructions>
@@ -98,8 +91,7 @@
 		<repository>
 			<id>ibiblio</id>
 			<name>IBibilio Repository</name>
-			<url>http://mirrors.ibiblio.org/pub/mirrors/maven2/
-			</url>
+			<url>http://mirrors.ibiblio.org/pub/mirrors/maven2/</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
@@ -115,35 +107,31 @@
 		<!-- Specific Dependencies: OLAS -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>safe-online-osgi-plugin
-			</artifactId>
-			<version>1.3-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>net.lin-k.safe-online</groupId>
 			<artifactId>safe-online-osgi</artifactId>
 			<version>1.3-SNAPSHOT</version>
 		</dependency>
-
-		<!-- Specific Dependencies: WS Client -->
 		<dependency>
 			<groupId>net.lin-k.safe-online</groupId>
-			<artifactId>siemens-metro-acceptance-ws
-			</artifactId>
+			<artifactId>safe-online-osgi-sms</artifactId>
 			<version>1.3-SNAPSHOT</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.sun.xml.bind</groupId>
-					<artifactId>jaxb-xjc</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>gnu-getopt</groupId>
-					<artifactId>getopt</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
-
-		<!-- Specific Dependencies: Overrides -->
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-otpoversms-sdk</artifactId>
+			<version>1.3-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-container-as</artifactId>
+			<version>1.3-SNAPSHOT</version>
+			<scope>provided</scope>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-otpoversms-ws</artifactId>
+			<version>1.3-SNAPSHOT</version>
+		</dependency>
 
 		<!-- Specific Dependencies: External -->
 		<dependency>
@@ -153,39 +141,15 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.4</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
 			<groupId>com.sun.xml.ws</groupId>
 			<artifactId>jaxws-rt</artifactId>
 			<version>2.1.4</version>
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.4.3</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.1.0.jboss</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.xalan</groupId>
 			<artifactId>xalan</artifactId>
 			<version>2.7.1</version>
-			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.14</version>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>

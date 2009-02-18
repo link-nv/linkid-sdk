@@ -965,9 +965,10 @@
 		<module>safe-online-beid-webapp</module>
 		<module>safe-online-osgi</module>
 		<module>safe-online-osgi-plugin</module>
-		<module>safe-online-osgi-plugin-template</module>
+		<module>safe-online-attrplugin-template-bundle</module>
 		<module>safe-online-osgi-sms</module>
-		<module>safe-online-osgi-sms-template</module>
+		<module>safe-online-sms-template-bundle</module>
+		<module>safe-online-sms-clickatell-bundle</module>
 		<module>safe-online-serial</module>
 		<module>safe-online-model-password-client</module>
 		<module>safe-online-model-password</module>
@@ -980,10 +981,10 @@
 		<module>safe-online-password-auth-ws-impl</module>
 		<module>safe-online-password-auth-ws-runtime</module>
 
-		<module>siemens-osgi-acceptance</module>
-		<module>siemens-osgi-sms</module>
+		<module>siemens-attrplugin-acceptance-bundle</module>
+		<module>siemens-sms-bundle</module>
 		<module>siemens-metro-acceptance-ws</module>
-		<module>siemens-osgi-acceptance-metro</module>
+		<module>siemens-attrplugin-acceptance-metro-bundle</module>
 		<module>safe-online-otpoversms-sdk</module>
 	</modules>
 
