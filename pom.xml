@@ -969,7 +969,6 @@
 		<module>safe-online-osgi-sms</module>
 		<module>safe-online-sms-template-bundle</module>
 		<module>safe-online-sms-clickatell-bundle</module>
-		<module>safe-online-serial</module>
 		<module>safe-online-model-password-client</module>
 		<module>safe-online-model-password</module>
 		<module>safe-online-password-keystore</module>
