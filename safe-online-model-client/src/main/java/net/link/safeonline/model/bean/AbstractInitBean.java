@@ -634,7 +634,7 @@ public abstract class AbstractInitBean implements Startable {
 
             String stringValue = attribute.getStringValue();
             AttributeEntity persistentAttribute = attributeDAO.addAttribute(attributeType, subject, stringValue);
-            persistentAttribute.setBooleanValue(attribute.getBooleanValue());
+            persistentAttribute.setValue(attribute.getBooleanValue());
         }
     }
 

@@ -549,7 +549,7 @@ public class DemoStartableBean extends AbstractInitBean {
          */
         AttributeEntity prescriptionAdminAttribute = new AttributeEntity();
         prescriptionAdminAttribute.setPk(new AttributePK(DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME, prescriptionAdmin));
-        prescriptionAdminAttribute.setBooleanValue(true);
+        prescriptionAdminAttribute.setValue(true);
         attributes.add(prescriptionAdminAttribute);
 
         /*
@@ -608,7 +608,7 @@ public class DemoStartableBean extends AbstractInitBean {
          */
         AttributeEntity barAdminBarAdminAttribute = new AttributeEntity();
         barAdminBarAdminAttribute.setPk(new AttributePK(DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME, "baradmin"));
-        barAdminBarAdminAttribute.setBooleanValue(true);
+        barAdminBarAdminAttribute.setValue(true);
         attributes.add(barAdminBarAdminAttribute);
 
         /*

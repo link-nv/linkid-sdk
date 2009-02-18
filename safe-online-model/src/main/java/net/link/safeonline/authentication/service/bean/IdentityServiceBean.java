@@ -297,7 +297,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
                 String compoundedAttributeId = UUID.randomUUID().toString();
                 LOG.debug("adding compounded attribute for " + subject.getUserId() + " of type " + attributeName + " with ID "
                         + compoundedAttributeId);
-                compoundedAttribute.setStringValue(compoundedAttributeId);
+                compoundedAttribute.setValue(compoundedAttributeId);
             }
             /*
              * Notice that, if there is already a compounded attribute for the given record index, then we don't overwrite it with a new ID.
@@ -850,7 +850,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
             AttributeEntity compoundedAttribute = attributeDAO.addAttribute(attributeType, subject);
             String compoundedAttributeId = UUID.randomUUID().toString();
             LOG.debug("adding new compounded entry with Id: " + compoundedAttributeId);
-            compoundedAttribute.setStringValue(compoundedAttributeId);
+            compoundedAttribute.setValue(compoundedAttributeId);
             long attributeIndex = compoundedAttribute.getAttributeIndex();
             LOG.debug("compounded attribute index: " + attributeIndex);
 

@@ -475,11 +475,11 @@ public class DataServicePortImplTest {
         List<AttributeEntity> attributes = new LinkedList<AttributeEntity>();
         AttributeEntity attribute1 = new AttributeEntity(attributeType, subject, 0);
         String attributeValue1 = "value1";
-        attribute1.setStringValue(attributeValue1);
+        attribute1.setValue(attributeValue1);
         attributes.add(attribute1);
         AttributeEntity attribute2 = new AttributeEntity(attributeType, subject, 1);
         String attributeValue2 = "value2";
-        attribute2.setStringValue(attributeValue2);
+        attribute2.setValue(attributeValue2);
         attributes.add(attribute2);
 
         expect(mockAttributeProviderService.getAttributes(testSubjectId, attributeName)).andReturn(attributes);

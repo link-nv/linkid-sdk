@@ -204,19 +204,9 @@ public class AttributeEntity implements Serializable {
         return stringValue;
     }
 
-    public void setStringValue(String stringValue) {
-
-        this.stringValue = stringValue;
-    }
-
     public Boolean getBooleanValue() {
 
         return booleanValue;
-    }
-
-    public void setBooleanValue(Boolean booleanValue) {
-
-        this.booleanValue = booleanValue;
     }
 
     @Temporal(TemporalType.DATE)
@@ -225,29 +215,14 @@ public class AttributeEntity implements Serializable {
         return dateValue;
     }
 
-    public void setDateValue(Date dateValue) {
-
-        this.dateValue = dateValue;
-    }
-
     public Double getDoubleValue() {
 
         return doubleValue;
     }
 
-    public void setDoubleValue(Double doubleValue) {
-
-        this.doubleValue = doubleValue;
-    }
-
     public Integer getIntegerValue() {
 
         return integerValue;
-    }
-
-    public void setIntegerValue(Integer integerValue) {
-
-        this.integerValue = integerValue;
     }
 
     /**
@@ -260,6 +235,7 @@ public class AttributeEntity implements Serializable {
         DatatypeType datatype = attributeType.getType();
         switch (datatype) {
             case STRING:
+            case COMPOUNDED:
                 return getStringValue();
             case BOOLEAN:
                 return getBooleanValue();
@@ -269,9 +245,9 @@ public class AttributeEntity implements Serializable {
                 return getDoubleValue();
             case DATE:
                 return getDateValue();
-            default:
-                throw new EJBException("datatype not supported: " + datatype);
         }
+
+        throw new EJBException("datatype not supported: " + datatype);
     }
 
     @Transient
@@ -280,22 +256,21 @@ public class AttributeEntity implements Serializable {
         DatatypeType datatype = attributeType.getType();
         switch (datatype) {
             case STRING:
-                setStringValue((String) value);
+            case COMPOUNDED:
+                stringValue = (String) value;
             break;
             case BOOLEAN:
-                setBooleanValue((Boolean) value);
+                booleanValue = (Boolean) value;
             break;
             case INTEGER:
-                setIntegerValue((Integer) value);
+                integerValue = (Integer) value;
             break;
             case DOUBLE:
-                setDoubleValue((Double) value);
+                doubleValue = (Double) value;
             break;
             case DATE:
-                setDateValue((Date) value);
+                dateValue = (Date) value;
             break;
-            default:
-                throw new EJBException("datatype not supported: " + datatype);
         }
     }
 
@@ -305,6 +280,7 @@ public class AttributeEntity implements Serializable {
         DatatypeType datatype = attributeType.getType();
         switch (datatype) {
             case STRING:
+            case COMPOUNDED:
                 String value = getStringValue();
                 if (null == value)
                     return true;
@@ -317,9 +293,8 @@ public class AttributeEntity implements Serializable {
                 return null == getDoubleValue();
             case DATE:
                 return null == getDateValue();
-            default:
-                throw new EJBException("datatype not supported: " + datatype);
         }
+        throw new EJBException("datatype not supported: " + datatype);
     }
 
     @Transient

@@ -214,7 +214,7 @@ public class AccountMergingServiceBean implements AccountMergingService {
             AttributeTypeEntity attributeType = attributeTypeDAO.getAttributeType(attribute.getName());
             AttributeEntity attributeEntity = attributeDAO.addAttribute(attributeType, subject);
             if (attributeType.isCompounded()) {
-                attributeEntity.setStringValue(attribute.getStringValue());
+                attributeEntity.setValue(attribute.getStringValue());
             } else {
                 attribute.copyValueTo(attributeType, attributeEntity);
             }
