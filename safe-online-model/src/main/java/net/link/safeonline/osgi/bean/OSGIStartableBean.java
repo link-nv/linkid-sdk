@@ -22,7 +22,7 @@ import net.link.safeonline.audit.ResourceAuditLoggerInterceptor;
 import net.link.safeonline.osgi.OSGIHostActivator;
 import net.link.safeonline.osgi.OSGIService;
 import net.link.safeonline.osgi.OSGIStartable;
-import net.link.safeonline.osgi.OSGIHostActivator.OSGIServiceType;
+import net.link.safeonline.osgi.OSGIConstants.OSGIServiceType;
 import net.link.safeonline.util.ee.EjbUtils;
 
 import org.apache.commons.logging.Log;
@@ -91,7 +91,7 @@ public class OSGIStartableBean implements OSGIStartable {
         // Add the core OSGi packages to be exported from the class path via the system bundle.
         String systemPackages = "org.osgi.framework; version=1.3.0, " + "org.osgi.service.packageadmin; version=1.2.0, "
                 + "org.osgi.service.startlevel; version=1.0.0, " + "org.osgi.service.url; version=1.0.0, "
-                + "org.osgi.util.tracker; version=1.3.1, ";
+                + "org.osgi.util.tracker; version=1.3.1, " + "org.osgi.service.log; version=1.0.1, ";
 
         // Add the javax.* packages to be exported from the class path via the system bundle.
         systemPackages += "javax; version=1.0.0, ";

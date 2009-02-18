@@ -15,6 +15,7 @@ import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.config.model.ConfigurationManager;
 import net.link.safeonline.osgi.attribute.OlasAttributeServiceFactory;
 import net.link.safeonline.osgi.configuration.OlasConfigurationServiceFactory;
+import net.link.safeonline.osgi.log.OlasLogServiceFactory;
 import net.link.safeonline.osgi.plugin.PluginAttributeService;
 import net.link.safeonline.osgi.sms.SmsService;
 import net.link.safeonline.util.ee.EjbUtils;
@@ -27,6 +28,7 @@ import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.log.LogService;
 import org.osgi.util.tracker.ServiceTracker;
 
 
@@ -58,6 +60,7 @@ public class OSGIHostActivator implements BundleActivator, ServiceListener, Seri
 
     private ServiceRegistration olasAttributeServiceRegistration     = null;
     private ServiceRegistration olasConfigurationServiceRegistration = null;
+    private ServiceRegistration olasLogServiceRegistration           = null;
 
 
     /**
@@ -85,6 +88,10 @@ public class OSGIHostActivator implements BundleActivator, ServiceListener, Seri
         olasConfigurationServiceRegistration = context.registerService(OlasConfigurationService.class.getName(),
                 configurationServiceFactory, null);
 
+        // Initialize olas log service
+        OlasLogServiceFactory logServiceFactory = new OlasLogServiceFactory();
+        olasLogServiceRegistration = context.registerService(LogService.class.getName(), logServiceFactory, null);
+
     }
 
     /**
@@ -96,6 +103,7 @@ public class OSGIHostActivator implements BundleActivator, ServiceListener, Seri
         smsServiceTracker.close();
         olasAttributeServiceRegistration.unregister();
         olasConfigurationServiceRegistration.unregister();
+        olasLogServiceRegistration.unregister();
 
     }
 
