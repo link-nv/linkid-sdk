@@ -24,7 +24,6 @@ import javax.ejb.Stateless;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.demo.bank.keystore.DemoBankKeyStoreUtils;
 import net.link.safeonline.demo.cinema.keystore.DemoCinemaKeyStoreUtils;
@@ -200,11 +199,7 @@ public class DemoStartableBean extends AbstractInitBean {
             }
 
             if (!passwordManager.isPasswordConfigured(subject)) {
-                try {
-                    passwordManager.setPassword(subject, passwordRegistration.password);
-                } catch (PermissionDeniedException e) {
-                    throw new EJBException(e);
-                }
+                passwordManager.registerPassword(subject, passwordRegistration.password);
             }
         }
 
@@ -642,6 +637,7 @@ public class DemoStartableBean extends AbstractInitBean {
 
         if (null != attributeProviderName) {
             attributeProviders.add(new AttributeProvider(attributeProviderName, attributeProviderName));
+            attributeProviders.add(new AttributeProvider(attributeProviderName, attributeName));
         }
 
         if (null != enName) {

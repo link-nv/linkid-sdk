@@ -9,8 +9,6 @@ package net.link.safeonline.model.otpoversms.bean;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.LinkedList;
-import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -22,16 +20,15 @@ import net.link.safeonline.audit.AccessAuditLogger;
 import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
+import net.link.safeonline.authentication.exception.InternalInconsistencyException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.common.Configurable;
 import net.link.safeonline.config.model.ConfigurationInterceptor;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
-import net.link.safeonline.dao.DeviceDAO;
+import net.link.safeonline.data.CompoundAttributeDO;
 import net.link.safeonline.entity.AttributeEntity;
-import net.link.safeonline.entity.AttributeTypeEntity;
-import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.bean.AttributeManagerLWBean;
 import net.link.safeonline.model.otpoversms.OtpOverSmsConstants;
@@ -59,9 +56,6 @@ public class OtpOverSmsManagerBean implements OtpOverSmsManager {
     @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
     private AttributeTypeDAO       attributeTypeDAO;
 
-    @EJB(mappedName = DeviceDAO.JNDI_BINDING)
-    private DeviceDAO              deviceDAO;
-
     @Configurable(name = "Maximum Pin Attempts", group = "OTP over SMS")
     private Integer                configAttempts          = 3;
 
@@ -75,232 +69,176 @@ public class OtpOverSmsManagerBean implements OtpOverSmsManager {
          * By injecting the attribute DAO of this session bean in the attribute manager we are sure that the attribute manager (a
          * lightweight bean) will live within the same transaction and security context as this identity service EJB3 session bean.
          */
-        attributeManager = new AttributeManagerLWBean(attributeDAO);
+        attributeManager = new AttributeManagerLWBean(attributeDAO, attributeTypeDAO);
     }
 
-    public boolean changePin(SubjectEntity subject, String mobile, String oldPin, String newPin)
-            throws DeviceNotFoundException {
-
-        if (!validatePin(subject, mobile, oldPin))
-            return false;
+    public void updatePin(SubjectEntity subject, String mobile, String oldPin, String newPin)
+            throws DeviceRegistrationNotFoundException {
 
         setPinWithForce(subject, mobile, newPin);
-
-        return true;
     }
 
     private void setPinWithForce(SubjectEntity subject, String mobile, String pin)
-            throws DeviceNotFoundException {
+            throws DeviceRegistrationNotFoundException {
 
-        Mobile mobileAttribute = getMobileAttribute(subject, mobile);
-
-        String seed = subject.getUserId();
-        String hashValue;
         try {
-            hashValue = hash(pin, seed, defaultHashingAlgorithm);
-        } catch (NoSuchAlgorithmException e) {
-            throw new EJBException("Could not find the default otp over sms pin hashing algorithm: " + defaultHashingAlgorithm);
+            AttributeEntity deviceAttribute = attributeManager.getCompoundWhere(subject, OtpOverSmsConstants.OTPOVERSMS_DEVICE_ATTRIBUTE,
+                    OtpOverSmsConstants.OTPOVERSMS_MOBILE_ATTRIBUTE, mobile);
+            AttributeEntity algorithmAttribute = attributeManager.getCompoundMember(deviceAttribute,
+                    OtpOverSmsConstants.OTPOVERSMS_PIN_ALGORITHM_ATTRIBUTE);
+            AttributeEntity newAlgorithmAttribute = attributeManager.getCompoundMember(deviceAttribute,
+                    OtpOverSmsConstants.OTPOVERSMS_PIN_NEW_ALGORITHM_ATTRIBUTE);
+            AttributeEntity hashAttribute = attributeManager.getCompoundMember(deviceAttribute,
+                    OtpOverSmsConstants.OTPOVERSMS_PIN_HASH_ATTRIBUTE);
+            AttributeEntity seedAttribute = attributeManager.getCompoundMember(deviceAttribute,
+                    OtpOverSmsConstants.OTPOVERSMS_PIN_SEED_ATTRIBUTE);
+
+            String seed = subject.getUserId();
+            String algorithm = newAlgorithmAttribute.isEmpty()? algorithmAttribute.getStringValue(): newAlgorithmAttribute.getStringValue();
+            String hashValue = hash(pin, seed, algorithm);
+
+            hashAttribute.setStringValue(hashValue);
+            seedAttribute.setStringValue(seed);
+
+            if (false == newAlgorithmAttribute.isEmpty()) {
+                // We used newAlgorithm, write it to algorithm and unset newAlgorithm.
+                algorithmAttribute.setValue(algorithm);
+                newAlgorithmAttribute.setValue(null);
+            }
         }
 
-        mobileAttribute.hash.setStringValue(hashValue);
+        catch (NoSuchAlgorithmException e) {
+            throw new EJBException("Could not find the hashing algorithm.");
+        } catch (AttributeTypeNotFoundException e) {
+            throw new InternalInconsistencyException("Attribute types for OtpOverSMS device not defined.", e);
+        } catch (AttributeNotFoundException e) {
+            throw new DeviceRegistrationNotFoundException();
+        }
     }
 
     public void registerMobile(SubjectEntity subject, String mobile, String pin)
             throws PermissionDeniedException {
 
-        AttributeTypeEntity mobileAttributeType;
-        AttributeTypeEntity pinHashAttributeType;
-        AttributeTypeEntity pinSeedAttributeType;
-        AttributeTypeEntity pinAlgorithmAttributeType;
-        AttributeTypeEntity pinAttemptsAttributeType;
-        AttributeTypeEntity otpOverSmsDeviceAttributeType;
-        AttributeTypeEntity otpOverSmsDeviceDisableAttributeType;
         try {
-            mobileAttributeType = attributeTypeDAO.getAttributeType(OtpOverSmsConstants.OTPOVERSMS_MOBILE_ATTRIBUTE);
-            pinHashAttributeType = attributeTypeDAO.getAttributeType(OtpOverSmsConstants.OTPOVERSMS_PIN_HASH_ATTRIBUTE);
-            pinSeedAttributeType = attributeTypeDAO.getAttributeType(OtpOverSmsConstants.OTPOVERSMS_PIN_SEED_ATTRIBUTE);
-            pinAlgorithmAttributeType = attributeTypeDAO.getAttributeType(OtpOverSmsConstants.OTPOVERSMS_PIN_ALGORITHM_ATTRIBUTE);
-            pinAttemptsAttributeType = attributeTypeDAO.getAttributeType(OtpOverSmsConstants.OTPOVERSMS_PIN_ATTEMPTS_ATTRIBUTE);
+            String seed = subject.getUserId();
+            String hashValue = hash(pin, seed, defaultHashingAlgorithm);
 
-            otpOverSmsDeviceAttributeType = attributeTypeDAO.getAttributeType(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ATTRIBUTE);
-            otpOverSmsDeviceDisableAttributeType = attributeTypeDAO
-                                                                        .getAttributeType(OtpOverSmsConstants.OTPOVERSMS_DEVICE_DISABLE_ATTRIBUTE);
+            CompoundAttributeDO deviceAttribute = attributeManager.newCompound(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ATTRIBUTE, subject);
+            deviceAttribute.addAttribute(OtpOverSmsConstants.OTPOVERSMS_MOBILE_ATTRIBUTE, mobile);
+            deviceAttribute.addAttribute(OtpOverSmsConstants.OTPOVERSMS_PIN_HASH_ATTRIBUTE, hashValue);
+            deviceAttribute.addAttribute(OtpOverSmsConstants.OTPOVERSMS_PIN_SEED_ATTRIBUTE, seed);
+            deviceAttribute.addAttribute(OtpOverSmsConstants.OTPOVERSMS_PIN_ALGORITHM_ATTRIBUTE, defaultHashingAlgorithm);
+            deviceAttribute.addAttribute(OtpOverSmsConstants.OTPOVERSMS_PIN_NEW_ALGORITHM_ATTRIBUTE, null);
+            deviceAttribute.addAttribute(OtpOverSmsConstants.OTPOVERSMS_PIN_ATTEMPTS_ATTRIBUTE, 0);
+            deviceAttribute.addAttribute(OtpOverSmsConstants.OTPOVERSMS_DEVICE_DISABLE_ATTRIBUTE, false);
+        }
+
+        catch (NoSuchAlgorithmException e) {
+            throw new EJBException("Could not use the default otp over sms pin hashing algorithm: " + defaultHashingAlgorithm);
         } catch (AttributeTypeNotFoundException e) {
-            throw new EJBException("otp over sms attribute types not found");
+            throw new InternalInconsistencyException("Attribute types for OtpOverSMS device not defined.", e);
         }
-
-        String seed = subject.getUserId();
-        String hashValue;
-        try {
-            hashValue = hash(pin, seed, defaultHashingAlgorithm);
-        } catch (NoSuchAlgorithmException e) {
-            throw new EJBException("Could not find the default otp over sms pin hashing algorithm: " + defaultHashingAlgorithm);
-        }
-
-        AttributeEntity mobileAttribute = attributeDAO.addAttribute(mobileAttributeType, subject);
-        mobileAttribute.setStringValue(mobile);
-        AttributeEntity hashAttribute = attributeDAO.addAttribute(pinHashAttributeType, subject);
-        hashAttribute.setStringValue(hashValue);
-        AttributeEntity seedAttribute = attributeDAO.addAttribute(pinSeedAttributeType, subject);
-        seedAttribute.setStringValue(seed);
-        AttributeEntity algorithmAttribute = attributeDAO.addAttribute(pinAlgorithmAttributeType, subject);
-        algorithmAttribute.setStringValue(defaultHashingAlgorithm);
-        AttributeEntity attemptsAttribute = attributeDAO.addAttribute(pinAttemptsAttributeType, subject);
-        attemptsAttribute.setIntegerValue(0);
-        AttributeEntity disableAttribute = attributeDAO.addAttribute(otpOverSmsDeviceDisableAttributeType, subject);
-        disableAttribute.setBooleanValue(false);
-        List<AttributeEntity> members = new LinkedList<AttributeEntity>();
-        members.add(mobileAttribute);
-        members.add(hashAttribute);
-        members.add(seedAttribute);
-        members.add(algorithmAttribute);
-        members.add(disableAttribute);
-        AttributeEntity parentAttribute = attributeDAO.addAttribute(otpOverSmsDeviceAttributeType, subject);
-        parentAttribute.setMembers(members);
     }
 
     public boolean validatePin(SubjectEntity subject, String mobile, String pin)
-            throws DeviceNotFoundException {
+            throws DeviceRegistrationNotFoundException {
 
-        // get mobile attributes
-        Mobile expectedMobile = getMobileAttribute(subject, mobile);
-        String expectedPinHash = expectedMobile.hash.getStringValue();
-        String seed = expectedMobile.seed.getStringValue();
-        String algorithm = expectedMobile.algorithm.getStringValue();
-
-        // calculate hash
-        String givenPinHash;
         try {
-            givenPinHash = hash(pin, seed, algorithm);
-        } catch (NoSuchAlgorithmException e) {
-            throw new EJBException("Pin hashing algorithm not found: " + algorithm);
-        }
+            AttributeEntity deviceAttribute = attributeManager.getCompoundWhere(subject, OtpOverSmsConstants.OTPOVERSMS_DEVICE_ATTRIBUTE,
+                    OtpOverSmsConstants.OTPOVERSMS_MOBILE_ATTRIBUTE, mobile);
+            AttributeEntity hashAttribute = attributeManager.getCompoundMember(deviceAttribute,
+                    OtpOverSmsConstants.OTPOVERSMS_PIN_HASH_ATTRIBUTE);
+            AttributeEntity seedAttribute = attributeManager.getCompoundMember(deviceAttribute,
+                    OtpOverSmsConstants.OTPOVERSMS_PIN_SEED_ATTRIBUTE);
+            AttributeEntity algorithmAttribute = attributeManager.getCompoundMember(deviceAttribute,
+                    OtpOverSmsConstants.OTPOVERSMS_PIN_ALGORITHM_ATTRIBUTE);
+            AttributeEntity newAlgorithmAttribute = attributeManager.getCompoundMember(deviceAttribute,
+                    OtpOverSmsConstants.OTPOVERSMS_PIN_NEW_ALGORITHM_ATTRIBUTE);
 
-        // compare hash
-        if (expectedPinHash.equals(givenPinHash)) {
-            // update hash to new default
-            if (!algorithm.equals(defaultHashingAlgorithm)) {
-                setPinWithForce(subject, mobile, pin);
+            // calculate hash
+            String givenPinHash = hash(pin, seedAttribute.getStringValue(), algorithmAttribute.getStringValue());
+
+            // compare hash
+            if (hashAttribute.getStringValue().equals(givenPinHash)) {
+                // In case we need to update the hash to a new algorithm:
+                if (false == newAlgorithmAttribute.isEmpty()) {
+                    setPinWithForce(subject, mobile, pin);
+                }
+
+                return true;
             }
-            return true;
+
+            addAttempt(subject, mobile);
+            return false;
         }
 
-        addAttempt(subject, mobile);
-
-        return false;
+        catch (NoSuchAlgorithmException e) {
+            throw new EJBException("Pin hashing algorithm not found.");
+        } catch (AttributeTypeNotFoundException e) {
+            throw new InternalInconsistencyException("Attribute types for OtpOverSMS device not defined.", e);
+        } catch (AttributeNotFoundException e) {
+            throw new DeviceRegistrationNotFoundException();
+        }
     }
 
     private void addAttempt(SubjectEntity subject, String mobile)
-            throws DeviceNotFoundException {
+            throws DeviceRegistrationNotFoundException {
 
-        Mobile mobileAttribute = getMobileAttribute(subject, mobile);
-        mobileAttribute.attempts.setIntegerValue(mobileAttribute.attempts.getIntegerValue() + 1);
-        if (mobileAttribute.attempts.getIntegerValue() >= configAttempts) {
-            mobileAttribute.disabled.setBooleanValue(true);
+        try {
+            AttributeEntity deviceAttribute = attributeManager.getCompoundWhere(subject, OtpOverSmsConstants.OTPOVERSMS_DEVICE_ATTRIBUTE,
+                    OtpOverSmsConstants.OTPOVERSMS_MOBILE_ATTRIBUTE, mobile);
+            AttributeEntity attemptsAttribute = attributeManager.getCompoundMember(deviceAttribute,
+                    OtpOverSmsConstants.OTPOVERSMS_PIN_ATTEMPTS_ATTRIBUTE);
+
+            attemptsAttribute.setValue(attemptsAttribute.getIntegerValue() + 1);
+            LOG.debug("attempts: " + attemptsAttribute.getIntegerValue());
+
+            if (attemptsAttribute.getIntegerValue() >= configAttempts) {
+                LOG.debug(" -> device disabled.");
+
+                AttributeEntity disableAttribute = attributeManager.getCompoundMember(deviceAttribute,
+                        OtpOverSmsConstants.OTPOVERSMS_DEVICE_DISABLE_ATTRIBUTE);
+                disableAttribute.setBooleanValue(true);
+            }
         }
-        LOG.debug("attempts: " + mobileAttribute.attempts.getIntegerValue());
+
+        catch (AttributeTypeNotFoundException e) {
+            throw new InternalInconsistencyException("Attribute types for OtpOverSMS device not defined.", e);
+        } catch (AttributeNotFoundException e) {
+            throw new DeviceRegistrationNotFoundException();
+        }
     }
 
     public void removeMobile(SubjectEntity subject, String mobile)
-            throws DeviceNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException {
+            throws DeviceRegistrationNotFoundException {
 
-        AttributeTypeEntity deviceAttributeType = attributeTypeDAO.getAttributeType(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ATTRIBUTE);
-        AttributeTypeEntity mobileAttributeType = attributeTypeDAO.getAttributeType(OtpOverSmsConstants.OTPOVERSMS_MOBILE_ATTRIBUTE);
-
-        List<AttributeEntity> deviceAttributes = attributeDAO.listAttributes(subject, deviceAttributeType);
-        for (AttributeEntity deviceAttribute : deviceAttributes) {
-            AttributeEntity mobileAttribute = attributeDAO.findAttribute(subject, mobileAttributeType,
-                    deviceAttribute.getAttributeIndex());
-            if (mobileAttribute.getStringValue().equals(mobile)) {
-                attributeManager.removeAttribute(deviceAttributeType, deviceAttribute.getAttributeIndex(), subject);
-                return;
-            }
+        try {
+            attributeManager.removeCompoundWhere(subject, OtpOverSmsConstants.OTPOVERSMS_DEVICE_ATTRIBUTE,
+                    OtpOverSmsConstants.OTPOVERSMS_MOBILE_ATTRIBUTE, mobile);
         }
-        return;
+
+        catch (AttributeTypeNotFoundException e) {
+            throw new InternalInconsistencyException("Attribute types for OtpOverSMS device not defined.", e);
+        } catch (AttributeNotFoundException e) {
+            throw new DeviceRegistrationNotFoundException();
+        }
     }
 
     private static String hash(String input, String seed, String algorithm)
             throws NoSuchAlgorithmException {
 
-        String toHash = input + seed;
-        byte[] plainText = null;
-
         try {
-            plainText = toHash.getBytes("UTF8");
-        } catch (UnsupportedEncodingException e) {
+            String toHash = input + seed;
+            byte[] plainText = toHash.getBytes("UTF8");
+
+            MessageDigest messageDigest = MessageDigest.getInstance(algorithm, new BouncyCastleProvider());
+            messageDigest.update(plainText);
+
+            return new sun.misc.BASE64Encoder().encode(messageDigest.digest());
+        }
+
+        catch (UnsupportedEncodingException e) {
             throw new EJBException("Unsupported encoding in mobile pin hash function");
         }
-
-        MessageDigest messageDigest = MessageDigest.getInstance(algorithm, new BouncyCastleProvider());
-
-        messageDigest.update(plainText);
-        String digestAsString = new sun.misc.BASE64Encoder().encode(messageDigest.digest());
-
-        return digestAsString;
     }
-
-
-    private static class Mobile {
-
-        public AttributeEntity mobile;
-        public AttributeEntity hash;
-        public AttributeEntity seed;
-        public AttributeEntity algorithm;
-        public AttributeEntity attempts;
-        public AttributeEntity disabled;
-        public AttributeEntity parent;
-
-
-        public Mobile(AttributeEntity mobile, AttributeEntity hash, AttributeEntity seed, AttributeEntity algorithm,
-                      AttributeEntity attempts, AttributeEntity disabled, AttributeEntity parent) {
-
-            this.mobile = mobile;
-            this.hash = hash;
-            this.seed = seed;
-            this.algorithm = algorithm;
-            this.attempts = attempts;
-            this.disabled = disabled;
-            this.parent = parent;
-        }
-    }
-
-
-    private Mobile getMobileAttribute(SubjectEntity subject, String mobile)
-            throws DeviceNotFoundException {
-
-        DeviceEntity device = deviceDAO.getDevice(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID);
-
-        List<AttributeEntity> deviceAttributes = attributeDAO.listAttributes(subject, device.getAttributeType());
-        for (AttributeEntity deviceAttribute : deviceAttributes) {
-            AttributeEntity mobileAttribute = attributeDAO.findAttribute(subject, OtpOverSmsConstants.OTPOVERSMS_MOBILE_ATTRIBUTE,
-                    deviceAttribute.getAttributeIndex());
-            if (null == mobileAttribute)
-                throw new DeviceNotFoundException();
-            if (mobileAttribute.getStringValue().equals(mobile)) {
-                AttributeEntity pinHashAttribute = attributeDAO.findAttribute(subject,
-                        OtpOverSmsConstants.OTPOVERSMS_PIN_HASH_ATTRIBUTE, deviceAttribute.getAttributeIndex());
-                AttributeEntity pinSeedAttribute = attributeDAO.findAttribute(subject,
-                        OtpOverSmsConstants.OTPOVERSMS_PIN_SEED_ATTRIBUTE, deviceAttribute.getAttributeIndex());
-                AttributeEntity pinAlgorithmAttribute = attributeDAO.findAttribute(subject,
-                        OtpOverSmsConstants.OTPOVERSMS_PIN_ALGORITHM_ATTRIBUTE, deviceAttribute.getAttributeIndex());
-                AttributeEntity pinAttemptsAttribute = attributeDAO.findAttribute(subject,
-                        OtpOverSmsConstants.OTPOVERSMS_PIN_ATTEMPTS_ATTRIBUTE, deviceAttribute.getAttributeIndex());
-                AttributeEntity otpOverSmsDisableAttribute = attributeDAO.findAttribute(subject,
-                        OtpOverSmsConstants.OTPOVERSMS_DEVICE_DISABLE_ATTRIBUTE, deviceAttribute.getAttributeIndex());
-                if (null == pinHashAttribute || null == pinSeedAttribute || null == pinAlgorithmAttribute
-                        || null == otpOverSmsDisableAttribute || null == pinAttemptsAttribute)
-                    throw new DeviceNotFoundException();
-                String hash = pinHashAttribute.getStringValue();
-                String seed = pinSeedAttribute.getStringValue();
-                String algorithm = pinAlgorithmAttribute.getStringValue();
-                if (null == hash || null == seed || null == algorithm)
-                    throw new DeviceNotFoundException();
-
-                return new Mobile(mobileAttribute, pinHashAttribute, pinSeedAttribute, pinAlgorithmAttribute, pinAttemptsAttribute,
-                        otpOverSmsDisableAttribute, deviceAttribute);
-            }
-        }
-        return null;
-    }
-
 }

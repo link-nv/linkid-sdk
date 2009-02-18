@@ -8,13 +8,17 @@
 package net.link.safeonline.model.bean;
 
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.ejb.EJBException;
 
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.dao.AttributeDAO;
+import net.link.safeonline.dao.AttributeTypeDAO;
+import net.link.safeonline.data.CompoundAttributeDO;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
@@ -38,9 +42,10 @@ import org.apache.commons.logging.LogFactory;
  */
 public class AttributeManagerLWBean {
 
-    private static final Log   LOG = LogFactory.getLog(AttributeManagerLWBean.class);
+    private static final Log       LOG = LogFactory.getLog(AttributeManagerLWBean.class);
 
-    private final AttributeDAO attributeDAO;
+    private final AttributeDAO     attributeDAO;
+    private final AttributeTypeDAO attributeTypeDAO;
 
 
     /**
@@ -48,9 +53,10 @@ public class AttributeManagerLWBean {
      * 
      * @param attributeDAO
      */
-    public AttributeManagerLWBean(AttributeDAO attributeDAO) {
+    public AttributeManagerLWBean(AttributeDAO attributeDAO, AttributeTypeDAO attributeTypeDAO) {
 
         this.attributeDAO = attributeDAO;
+        this.attributeTypeDAO = attributeTypeDAO;
     }
 
     /**
@@ -127,11 +133,7 @@ public class AttributeManagerLWBean {
              */
         }
 
-        boolean multivalued = attributeType.isMultivalued();
-        if (false == multivalued) {
-            AttributeEntity attributeEntity = attributeDAO.getAttribute(attributeType, subject);
-            attributeDAO.removeAttribute(attributeEntity);
-        } else {
+        if (attributeType.isMultivalued()) {
             /*
              * In case the attribute to be removed is part of a multivalued attribute we have to resequence the remaining attributes.
              */
@@ -171,49 +173,50 @@ public class AttributeManagerLWBean {
                  * just change the attribute index since it is part of the compounded primary key of the attribute entity. Maybe we should
                  * use a global PK attribute Id and a separate viewId instead?
                  */
-                removeAttribute.setBooleanValue(nextAttribute.getBooleanValue());
-                removeAttribute.setStringValue(nextAttribute.getStringValue());
+                removeAttribute.setValue(nextAttribute.getValue());
                 removeAttribute = nextAttribute;
             }
             attributeDAO.removeAttribute(removeAttribute);
         }
+
+        else {
+            AttributeEntity attributeEntity = attributeDAO.getAttribute(attributeType, subject);
+            attributeDAO.removeAttribute(attributeEntity);
+        }
     }
 
     /**
-     * Removes a compounded attribute record of the given attribute type for the given subject.
-     * 
-     * <p>
-     * The compounded attribute record is identified via the attribute Id.
-     * </p>
-     * 
-     * <p>
-     * At this point the RBAC and owner access control checks should already have been performed.
-     * </p>
-     * 
-     * @param attributeType
-     * @param subject
-     * @param attributeId
-     * @throws AttributeNotFoundException
+     * @see #removeCompoundAttribute(AttributeEntity)
      */
     public void removeCompoundAttribute(AttributeTypeEntity attributeType, SubjectEntity subject, String attributeId)
             throws AttributeNotFoundException {
 
-        AttributeEntity compoundAttribute = getCompoundAttribute(attributeType, subject, attributeId);
-        long attributeIdx = compoundAttribute.getAttributeIndex();
-        LOG.debug("attribute index: " + attributeIdx);
-        List<CompoundedAttributeTypeMemberEntity> members = attributeType.getMembers();
-        for (CompoundedAttributeTypeMemberEntity member : members) {
+        removeCompoundAttribute(getCompoundAttribute(attributeType, subject, attributeId));
+    }
+
+    /**
+     * Removes a compounded attribute record and all its members.
+     * 
+     * @param parentAttribute
+     *            The compound parent attribute which must be removed along with its members.
+     */
+    public void removeCompoundAttribute(AttributeEntity parentAttribute) {
+
+        SubjectEntity subject = parentAttribute.getSubject();
+        AttributeTypeEntity attributeType = parentAttribute.getAttributeType();
+        long compoundIndex = parentAttribute.getAttributeIndex();
+
+        for (CompoundedAttributeTypeMemberEntity member : attributeType.getMembers()) {
             AttributeTypeEntity memberAttributeType = member.getMember();
-            AttributeEntity memberAttribute = attributeDAO.findAttribute(subject, memberAttributeType, attributeIdx);
+            AttributeEntity memberAttribute = attributeDAO.findAttribute(subject, memberAttributeType, compoundIndex);
+
             if (null != memberAttribute) {
-                /*
-                 * It's allowed that some (i.e. the optional) member attribute entries are missing.
-                 */
+                // It's allowed that some (i.e. the optional) member attribute entries are missing.
                 attributeDAO.removeAttribute(memberAttribute);
             }
         }
 
-        attributeDAO.removeAttribute(compoundAttribute);
+        attributeDAO.removeAttribute(parentAttribute);
     }
 
     private AttributeEntity getCompoundAttribute(AttributeTypeEntity attributeType, SubjectEntity subject, String attributeId)
@@ -227,5 +230,243 @@ public class AttributeManagerLWBean {
                 return attribute;
         }
         throw new AttributeNotFoundException();
+    }
+
+    // ---------
+
+    /**
+     * @see #newCompound(AttributeTypeEntity, SubjectEntity)
+     */
+    public CompoundAttributeDO newCompound(String attributeTypeName, SubjectEntity subject)
+            throws AttributeTypeNotFoundException {
+
+        AttributeEntity compoundAttribute = newAttribute(attributeTypeName, UUID.randomUUID().toString(), subject);
+        return new CompoundAttributeDO(compoundAttribute, this);
+    }
+
+    /**
+     * Create a compound attribute from the {@link AttributeTypeEntity} with the given name.
+     * 
+     * @return A {@link CompoundAttributeDO} object which you can use to add members to this compound attribute.
+     */
+    public CompoundAttributeDO newCompound(AttributeTypeEntity attributeType, SubjectEntity subject) {
+
+        AttributeEntity compoundAttribute = newAttribute(attributeType, UUID.randomUUID().toString(), subject);
+        return new CompoundAttributeDO(compoundAttribute, this);
+    }
+
+    /**
+     * @see #newAttribute(AttributeTypeEntity, Object, SubjectEntity)
+     */
+    public AttributeEntity newAttribute(String attributeTypeName, Object attributeValue, SubjectEntity subject)
+            throws AttributeTypeNotFoundException {
+
+        AttributeTypeEntity attributeType = attributeTypeDAO.getAttributeType(attributeTypeName);
+        return newAttribute(attributeType, attributeValue, subject);
+    }
+
+    /**
+     * Create a new attribute and initialize it with the given value.
+     * 
+     * <p>
+     * <b>NOTE:</b> Uses the first available index in the attribute type.
+     * </p>
+     */
+    public AttributeEntity newAttribute(AttributeTypeEntity attributeType, Object attributeValue, SubjectEntity subject) {
+
+        AttributeEntity attribute = attributeDAO.addAttribute(attributeType, subject);
+
+        attribute.setValue(attributeValue);
+
+        return attribute;
+    }
+
+    /**
+     * @see #newAttribute(AttributeTypeEntity, Object, AttributeEntity)
+     */
+    public AttributeEntity newAttribute(String attributeTypeName, Object attributeValue, AttributeEntity parent)
+            throws AttributeTypeNotFoundException {
+
+        AttributeTypeEntity attributeType = attributeTypeDAO.getAttributeType(attributeTypeName);
+        return newAttribute(attributeType, attributeValue, parent);
+    }
+
+    /**
+     * Create a new attribute and initialize it with the given value.
+     * 
+     * @param parent
+     *            The parent compound attribute that this attribute is a member of (shares index & subject with).
+     */
+    public AttributeEntity newAttribute(AttributeTypeEntity attributeType, Object attributeValue, AttributeEntity parent) {
+
+        AttributeEntity attribute = attributeDAO.addAttribute(attributeType, parent.getSubject(), parent.getAttributeIndex());
+        attribute.setValue(attributeValue);
+
+        return attribute;
+    }
+
+    /**
+     * @see #removeCompoundWhere(SubjectEntity, AttributeTypeEntity, AttributeTypeEntity, Object)
+     */
+    public void removeCompoundWhere(SubjectEntity subject, String parentAttributeTypeName, String memberAttributeTypeName,
+                                    Object memberValue)
+            throws AttributeTypeNotFoundException, AttributeNotFoundException {
+
+        AttributeTypeEntity parentAttributeType = attributeTypeDAO.getAttributeType(parentAttributeTypeName);
+        AttributeTypeEntity memberAttributeType = attributeTypeDAO.getAttributeType(memberAttributeTypeName);
+
+        removeCompoundWhere(subject, parentAttributeType, memberAttributeType, memberValue);
+    }
+
+    /**
+     * Remove the compound attribute and its members where the given member attribute has the given value.
+     * 
+     * @param parentAttributeType
+     *            The attribute type of the parent (compound) attribute to find and remove.
+     * @param memberAttributeType
+     *            The attribute type of the parent's member attribute which value we're checking memberValue against.
+     * @param memberValue
+     *            The value that the memberAttributeTypeName's attribute has to have.
+     */
+    public void removeCompoundWhere(SubjectEntity subject, AttributeTypeEntity parentAttributeType,
+                                    AttributeTypeEntity memberAttributeType, Object memberValue)
+            throws AttributeTypeNotFoundException, AttributeNotFoundException {
+
+        List<AttributeEntity> parentAttributes = attributeDAO.listAttributes(subject, parentAttributeType);
+        for (AttributeEntity parentAttribute : parentAttributes) {
+            AttributeEntity memberAttribute = attributeDAO.findAttribute(subject, memberAttributeType, parentAttribute.getAttributeIndex());
+            if (memberValue.equals(memberAttribute.getValue())) {
+                removeAttribute(parentAttributeType, parentAttribute.getAttributeIndex(), subject);
+                break;
+            }
+        }
+    }
+
+    /**
+     * @param parentAttribute
+     *            The parent compound attribute.
+     * 
+     * @return All member attributes of the given compound attribute.
+     */
+    public List<AttributeEntity> getCompoundMembers(AttributeEntity parentAttribute)
+            throws AttributeNotFoundException {
+
+        SubjectEntity subject = parentAttribute.getSubject();
+        List<AttributeEntity> attributeMembers = new LinkedList<AttributeEntity>();
+
+        for (CompoundedAttributeTypeMemberEntity memberAttributeType : parentAttribute.getAttributeType().getMembers()) {
+            attributeMembers.add(attributeDAO.getAttribute(memberAttributeType.getMember(), subject, parentAttribute.getAttributeIndex()));
+        }
+
+        return attributeMembers;
+    }
+
+    /**
+     * @see #getCompoundMember(AttributeEntity, AttributeTypeEntity)
+     */
+    public AttributeEntity getCompoundMember(AttributeEntity parentAttribute, String memberAttributeTypeName)
+            throws AttributeNotFoundException, AttributeTypeNotFoundException {
+
+        AttributeTypeEntity memberAttributeType = attributeTypeDAO.getAttributeType(memberAttributeTypeName);
+        return getCompoundMember(parentAttribute, memberAttributeType);
+    }
+
+    /**
+     * @param parentAttribute
+     *            The parent compound attribute.
+     * @param memberAttributeType
+     *            The name of the attribute type of the member attribute to return.
+     * 
+     * @return The member attribute of the given compound attribute of the {@link AttributeTypeEntity} with the given name. (
+     *         <code>null</code> if the parentAttribute is <code>null</code>)
+     */
+    public AttributeEntity getCompoundMember(AttributeEntity parentAttribute, AttributeTypeEntity memberAttributeType)
+            throws AttributeNotFoundException {
+
+        SubjectEntity subject = parentAttribute.getSubject();
+
+        return attributeDAO.getAttribute(memberAttributeType, subject, parentAttribute.getAttributeIndex());
+    }
+
+    /**
+     * @see #getCompoundWhere(SubjectEntity, AttributeTypeEntity, AttributeTypeEntity, String)
+     */
+    public AttributeEntity getCompoundWhere(SubjectEntity subject, String parentAttributeTypeName, String memberAttributeTypeName,
+                                            String memberValue)
+            throws AttributeTypeNotFoundException, AttributeNotFoundException {
+
+        AttributeTypeEntity parentAttributeType = attributeTypeDAO.getAttributeType(parentAttributeTypeName);
+        AttributeTypeEntity memberAttributeType = attributeTypeDAO.getAttributeType(memberAttributeTypeName);
+
+        return getCompoundWhere(subject, parentAttributeType, memberAttributeType, memberValue);
+    }
+
+    /**
+     * @param parentAttributeType
+     *            The attribute type of the parent (compound) attribute to search through & return.
+     * @param memberAttributeType
+     *            The attribute type of the parent's member attribute which value we're checking memberValue against. If <code>null</code>,
+     *            the memberValue is checked against the compound attribute's value (Which is to say, it's the compound attribute's UUID,
+     *            attributeId)
+     * @param memberValue
+     *            The value that the memberAttributeTypeName's attribute has to have for the parent attribute we're returning.
+     * 
+     * @return The compound attribute whose member contains a certain value.
+     */
+    public AttributeEntity getCompoundWhere(SubjectEntity subject, AttributeTypeEntity parentAttributeType,
+                                            AttributeTypeEntity memberAttributeType, String memberValue)
+            throws AttributeNotFoundException {
+
+        AttributeEntity compoundAttribute = findCompoundWhere(subject, parentAttributeType, memberAttributeType, memberValue);
+        if (compoundAttribute == null)
+            throw new AttributeNotFoundException();
+
+        return compoundAttribute;
+    }
+
+    /**
+     * @see #findCompoundWhere(SubjectEntity, AttributeTypeEntity, AttributeTypeEntity, String)
+     */
+    public AttributeEntity findCompoundWhere(SubjectEntity subject, String parentAttributeTypeName, String memberAttributeTypeName,
+                                             String memberValue)
+            throws AttributeTypeNotFoundException {
+
+        AttributeTypeEntity parentAttributeType = attributeTypeDAO.getAttributeType(parentAttributeTypeName);
+        AttributeTypeEntity memberAttributeType = attributeTypeDAO.getAttributeType(memberAttributeTypeName);
+
+        return findCompoundWhere(subject, parentAttributeType, memberAttributeType, memberValue);
+    }
+
+    /**
+     * @param parentAttributeType
+     *            The attribute type of the parent (compound) attribute to search through & return.
+     * @param memberAttributeType
+     *            The attribute type of the parent's member attribute which value we're checking memberValue against. If <code>null</code>,
+     *            the memberValue is checked against the compound attribute's value (Which is to say, it's the compound attribute's UUID,
+     *            attributeId)
+     * @param memberValue
+     *            The value that the memberAttributeTypeName's attribute has to have for the parent attribute we're returning.
+     * 
+     * @return The compound attribute whose member contains a certain value.
+     */
+    public AttributeEntity findCompoundWhere(SubjectEntity subject, AttributeTypeEntity parentAttributeType,
+                                             AttributeTypeEntity memberAttributeType, String memberValue) {
+
+        List<AttributeEntity> parentAttributes = attributeDAO.listAttributes(subject, parentAttributeType);
+        for (AttributeEntity parentAttribute : parentAttributes) {
+            if (memberAttributeType == null) {
+                if (memberValue.equals(parentAttribute.getValue()))
+                    return parentAttribute;
+            }
+
+            else {
+                AttributeEntity memberAttribute = attributeDAO.findAttribute(subject, memberAttributeType,
+                        parentAttribute.getAttributeIndex());
+                if (memberValue.equals(memberAttribute.getValue()))
+                    return parentAttribute;
+            }
+        }
+
+        return null;
     }
 }

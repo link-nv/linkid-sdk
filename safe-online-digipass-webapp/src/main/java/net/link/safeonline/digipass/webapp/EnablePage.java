@@ -9,7 +9,6 @@ package net.link.safeonline.digipass.webapp;
 
 import javax.ejb.EJB;
 
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
@@ -109,11 +108,6 @@ public class EnablePage extends TemplatePage {
                         EnableForm.this.error(getLocalizer().getString("digipassNotRegistered", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: subject not found for "
                                 + protocolContext.getSubject(), LogLevelType.ERROR);
-                        return;
-                    } catch (DeviceNotFoundException e) {
-                        EnableForm.this.error(getLocalizer().getString("digipassAuthenticationFailed", this));
-                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: digipass device not found",
-                                LogLevelType.ERROR);
                         return;
                     } catch (DeviceRegistrationNotFoundException e) {
                         EnableForm.this.error(getLocalizer().getString("errorDeviceRegistrationNotFound", this));

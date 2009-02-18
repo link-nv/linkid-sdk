@@ -17,7 +17,7 @@ import javax.servlet.http.HttpSession;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.DecodingException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.PkiExpiredException;
 import net.link.safeonline.authentication.exception.PkiInvalidException;
 import net.link.safeonline.authentication.exception.PkiNotYetValidException;
@@ -68,8 +68,8 @@ public class AuthenticationServlet extends AbstractStatementServlet {
             authenticationContext.setUsedDevice(BeIdConstants.BEID_DEVICE_ID);
 
             AuthenticationStatement authenticationStatement = new AuthenticationStatement(statementData);
-            String deviceUserId = beIdDeviceService.authenticate(sessionId, authenticationContext.getApplication(),
-                    authenticationStatement);
+            String deviceUserId = beIdDeviceService
+                                                   .authenticate(sessionId, authenticationContext.getApplication(), authenticationStatement);
 
             authenticationContext.setUserId(deviceUserId);
             authenticationContext.setValidity(samlAuthorityService.getAuthnAssertionValidity());
@@ -101,10 +101,10 @@ public class AuthenticationServlet extends AbstractStatementServlet {
         } catch (PkiInvalidException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
-        } catch (DeviceNotFoundException e) {
+        } catch (DeviceDisabledException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
-        } catch (DeviceDisabledException e) {
+        } catch (DeviceRegistrationNotFoundException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.setHeader(SharedConstants.SAFE_ONLINE_ERROR_HTTP_HEADER, e.getErrorCode());
         }

@@ -51,6 +51,19 @@ public interface NodeMappingService extends SafeOnlineService {
     public NodeMappingEntity getNodeMapping(String userId, String nodeName)
             throws SubjectNotFoundException, NodeNotFoundException;
 
+    /**
+     * Get or create if not existing the subject for the specified node mapping id and node. Used to map node mapping id's communicated by
+     * remote nodes to the local subject.
+     * 
+     * @param id
+     *            node mapping id or user ID if local node
+     * @param nodeName
+     * @throws NodeNotFoundException
+     * 
+     */
+    public SubjectEntity getSubject(String id, String nodeName)
+            throws NodeNotFoundException;
+
     public NodeMappingEntity getNodeMapping(String id)
             throws NodeMappingNotFoundException;
 

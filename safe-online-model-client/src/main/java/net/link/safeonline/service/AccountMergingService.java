@@ -13,6 +13,7 @@ import javax.ejb.Local;
 
 import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.EmptyDevicePolicyException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -37,9 +38,11 @@ public interface AccountMergingService extends SafeOnlineService {
      * @throws AttributeTypeNotFoundException
      * @throws EmptyDevicePolicyException
      * @throws ApplicationNotFoundException
+     * @throws AttributeNotFoundException
      */
     AccountMergingDO getAccountMergingDO(String sourceAccountName)
-            throws SubjectNotFoundException, AttributeTypeNotFoundException, ApplicationNotFoundException, EmptyDevicePolicyException;
+            throws SubjectNotFoundException, AttributeTypeNotFoundException, ApplicationNotFoundException, EmptyDevicePolicyException,
+            AttributeNotFoundException;
 
     /**
      * Commit the calculated changes from merging with the source account.

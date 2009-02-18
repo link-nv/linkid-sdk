@@ -9,32 +9,24 @@ package net.link.safeonline.model.beid.bean;
 
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
-import javax.ejb.EJBException;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
-import javax.security.auth.x500.X500Principal;
 
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
+import net.link.safeonline.authentication.exception.InternalInconsistencyException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
-import net.link.safeonline.authentication.service.IdentityStatementAttributes;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
-import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
+import net.link.safeonline.data.CompoundAttributeDO;
 import net.link.safeonline.entity.AttributeEntity;
-import net.link.safeonline.entity.AttributeTypeEntity;
-import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.pkix.TrustDomainEntity;
 import net.link.safeonline.model.bean.AttributeManagerLWBean;
@@ -74,9 +66,6 @@ public class BeIdPkiProviderBean implements PkiProvider {
     @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
     private AttributeTypeDAO       attributeTypeDAO;
 
-    @EJB(mappedName = DeviceDAO.JNDI_BINDING)
-    private DeviceDAO              deviceDAO;
-
     @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService         subjectService;
 
@@ -93,19 +82,19 @@ public class BeIdPkiProviderBean implements PkiProvider {
          * By injecting the attribute DAO of this session bean in the attribute manager we are sure that the attribute manager (a
          * lightweight bean) will live within the same transaction and security context as this identity service EJB3 session bean.
          */
-        attributeManager = new AttributeManagerLWBean(attributeDAO);
+        attributeManager = new AttributeManagerLWBean(attributeDAO, attributeTypeDAO);
     }
 
     public boolean accept(X509Certificate certificate) {
 
-        X500Principal subjectPrincipal = certificate.getSubjectX500Principal();
-        String subject = subjectPrincipal.toString();
-        LOG.debug("subject: " + subject);
-        if (subject.indexOf("SERIALNUMBER") == -1)
+        String subjectDN = certificate.getSubjectX500Principal().toString();
+        LOG.debug("subject: " + subjectDN);
+
+        if (subjectDN.indexOf("SERIALNUMBER") == -1)
             return false;
-        if (subject.indexOf("GIVENNAME") == -1)
+        if (subjectDN.indexOf("GIVENNAME") == -1)
             return false;
-        if (subject.indexOf("SURNAME") == -1)
+        if (subjectDN.indexOf("SURNAME") == -1)
             return false;
         return true;
     }
@@ -113,29 +102,13 @@ public class BeIdPkiProviderBean implements PkiProvider {
     public TrustDomainEntity getTrustDomain()
             throws TrustDomainNotFoundException {
 
-        TrustDomainEntity trustDomain = trustDomainDAO.getTrustDomain(TRUST_DOMAIN_NAME);
-        return trustDomain;
+        return trustDomainDAO.getTrustDomain(TRUST_DOMAIN_NAME);
     }
 
     public PkiProvider getReference() {
 
         LOG.debug("get reference");
-        PkiProvider reference = context.getBusinessObject(PkiProvider.class);
-        return reference;
-    }
-
-    public String mapAttribute(IdentityStatementAttributes identityStatementAttributes) {
-
-        switch (identityStatementAttributes) {
-            case SURNAME:
-                return BeIdConstants.BEID_SURNAME_ATTRIBUTE;
-            case GIVEN_NAME:
-                return BeIdConstants.BEID_GIVENNAME_ATTRIBUTE;
-            case AUTH_CERT:
-                return BeIdConstants.BEID_AUTH_CERT_ATTRIBUTE;
-            default:
-                throw new IllegalArgumentException("unsupported identity statement attribute");
-        }
+        return context.getBusinessObject(PkiProvider.class);
     }
 
     public String getIdentifierDomainName() {
@@ -143,216 +116,167 @@ public class BeIdPkiProviderBean implements PkiProvider {
         return IDENTIFIER_DOMAIN_NAME;
     }
 
-    public String getSubjectIdentifier(X509Certificate certificate) {
+    public String parseIdentifierFromCert(X509Certificate certificate) {
 
-        byte[] data;
         try {
-            data = certificate.getEncoded();
-        } catch (CertificateEncodingException e) {
-            throw new IllegalArgumentException("cert encoding error: " + e.getMessage());
+            byte[] data = certificate.getEncoded();
+            return DigestUtils.shaHex(data);
         }
-        String identifier = DigestUtils.shaHex(data);
-        return identifier;
-    }
 
-    public void storeAdditionalAttributes(SubjectEntity subject, X509Certificate certificate) {
-
-        String subjectName = getSubjectName(certificate);
-        String nrn = getAttributeFromSubjectName(subjectName, "SERIALNUMBER");
-        setAttribute(BeIdConstants.BEID_NRN_ATTRIBUTE, subject, nrn);
-
-        // Identifier attribute used for removal, no authentication is required in that step so no access to the eID certificate.
-        String identifier = getSubjectIdentifier(certificate);
-        setAttribute(BeIdConstants.BEID_IDENTIFIER_ATTRIBUTE, subject, identifier);
-    }
-
-    private void setAttribute(String attributeName, SubjectEntity subject, String value) {
-
-        AttributeTypeEntity attributeType;
-        try {
-            attributeType = attributeTypeDAO.getAttributeType(attributeName);
-        } catch (AttributeTypeNotFoundException e) {
-            throw new EJBException("attribute type not found");
+        catch (CertificateEncodingException e) {
+            throw new IllegalArgumentException("cert can't be encoded: " + e.getMessage());
         }
-        AttributeEntity attribute = attributeDAO.addAttribute(attributeType, subject);
-        attribute.setStringValue(value);
     }
 
-    private String getSubjectName(X509Certificate certificate) {
+    /**
+     * Parse the given attribute out of the given DN.
+     */
+    private String parseAttributeFromCert(X509Certificate certificate, String attributeName) {
 
-        X500Principal subjectPrincipal = certificate.getSubjectX500Principal();
-        String subjectName = subjectPrincipal.toString();
-        return subjectName;
-    }
-
-    private String getAttributeFromSubjectName(String subjectName, String attributeName) {
-
-        int attributeBegin = subjectName.indexOf(attributeName + "=");
-        if (-1 == attributeBegin)
+        String subjectName = certificate.getSubjectX500Principal().toString();
+        int attributeBegin = subjectName.indexOf(attributeName + '=');
+        if (attributeBegin < 0)
             throw new IllegalArgumentException("attribute name does not occur in subject: " + attributeName);
+
         attributeBegin += attributeName.length() + 1; // "attributeName="
-        int attributeEnd = subjectName.indexOf(",", attributeBegin);
-        if (-1 == attributeEnd) {
+        int attributeEnd = subjectName.indexOf(',', attributeBegin);
+        if (attributeEnd < 0) {
             // last field has no trailing ","
             attributeEnd = subjectName.length();
         }
-        String attributeValue = subjectName.substring(attributeBegin, attributeEnd);
-        return attributeValue;
+
+        return subjectName.substring(attributeBegin, attributeEnd);
     }
 
-    public void storeDeviceAttribute(SubjectEntity subject, long index)
-            throws DeviceNotFoundException, AttributeNotFoundException {
+    public void storeDeviceAttributes(SubjectEntity subject, String surname, String givenName, X509Certificate certificate) {
 
-        DeviceEntity device = deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
-        AttributeTypeEntity deviceAttributeType = device.getAttributeType();
-        AttributeTypeEntity deviceUserAttributeType = device.getUserAttributeType();
-        AttributeTypeEntity deviceDisableAttributeType = device.getDisableAttributeType();
+        try {
+            // Some attribute values we'll need to assign.
+            // Identifier attribute used for removal, no authentication is required in that step so no access to the eID certificate.
+            String userAttributeValue = getUserAttributeValue(givenName, surname);
+            String nrn = parseAttributeFromCert(certificate, "SERIALNUMBER");
+            String identifier = parseIdentifierFromCert(certificate);
 
-        AttributeEntity givenNameAttribute = attributeDAO.getAttribute(BeIdConstants.BEID_GIVENNAME_ATTRIBUTE, subject, index);
-        AttributeEntity surNameAttribute = attributeDAO.getAttribute(BeIdConstants.BEID_SURNAME_ATTRIBUTE, subject, index);
-        AttributeEntity deviceUserAttribute = attributeDAO.findAttribute(subject, deviceUserAttributeType, index);
-        if (null == deviceUserAttribute) {
-            String userAttributeValue = getUserAttributeValue(givenNameAttribute, surNameAttribute);
-            deviceUserAttribute = attributeDAO.addAttribute(deviceUserAttributeType, subject, index);
-            deviceUserAttribute.setStringValue(userAttributeValue);
-        }
-        AttributeEntity deviceDisableAttribute = attributeDAO.findAttribute(subject, deviceDisableAttributeType, index);
-        if (null == deviceDisableAttribute) {
-            deviceDisableAttribute = attributeDAO.addAttribute(deviceDisableAttributeType, subject, index);
-            deviceDisableAttribute.setBooleanValue(false);
+            // Create the compound attribute for the BeID device.
+            CompoundAttributeDO deviceAttribute = attributeManager.newCompound(BeIdConstants.BEID_DEVICE_ATTRIBUTE, subject);
+            deviceAttribute.addAttribute(BeIdConstants.BEID_SURNAME_ATTRIBUTE, surname);
+            deviceAttribute.addAttribute(BeIdConstants.BEID_GIVENNAME_ATTRIBUTE, givenName);
+            deviceAttribute.addAttribute(BeIdConstants.BEID_NRN_ATTRIBUTE, nrn);
+            deviceAttribute.addAttribute(BeIdConstants.BEID_IDENTIFIER_ATTRIBUTE, identifier);
+            deviceAttribute.addAttribute(BeIdConstants.BEID_DEVICE_USER_ATTRIBUTE, userAttributeValue);
+            deviceAttribute.addAttribute(BeIdConstants.BEID_DEVICE_DISABLE_ATTRIBUTE, false);
         }
 
-        AttributeEntity deviceAttribute = attributeDAO.findAttribute(subject, deviceAttributeType, index);
-        if (null == deviceAttribute) {
-            deviceAttribute = attributeDAO.addAttribute(deviceAttributeType, subject, index);
-            deviceAttribute.setStringValue(UUID.randomUUID().toString());
-            List<AttributeEntity> deviceAttributeMembers = new LinkedList<AttributeEntity>();
-            deviceAttributeMembers.add(givenNameAttribute);
-            deviceAttributeMembers.add(surNameAttribute);
-            deviceAttributeMembers.add(attributeDAO.getAttribute(BeIdConstants.BEID_NRN_ATTRIBUTE, subject, index));
-            deviceAttributeMembers.add(attributeDAO.getAttribute(BeIdConstants.BEID_IDENTIFIER_ATTRIBUTE, subject, index));
-            deviceAttributeMembers.add(deviceUserAttribute);
-            deviceAttributeMembers.add(deviceDisableAttribute);
-            deviceAttribute.setMembers(deviceAttributeMembers);
+        catch (AttributeTypeNotFoundException e) {
+            throw new InternalInconsistencyException("Missing attribute type for BeID device", e);
         }
     }
 
     public boolean isDisabled(SubjectEntity subject, X509Certificate certificate)
-            throws DeviceNotFoundException {
+            throws DeviceRegistrationNotFoundException {
 
-        DeviceEntity device = deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
-        String subjectName = getSubjectName(certificate);
-        String nrn = getAttributeFromSubjectName(subjectName, "SERIALNUMBER");
-        AttributeTypeEntity deviceAttributeType = device.getAttributeType();
-        List<AttributeEntity> attributes = attributeDAO.listAttributes(subject, deviceAttributeType);
-        LOG.debug("check if device is enabled (nrn=" + nrn + ")");
-        for (AttributeEntity attribute : attributes) {
-            AttributeEntity nrnAttribute = attributeDAO.findAttribute(subject, BeIdConstants.BEID_NRN_ATTRIBUTE,
-                    attribute.getAttributeIndex());
-            if (nrnAttribute.getStringValue().equals(nrn)) {
-                AttributeEntity disabledAttribute = attributeDAO.findAttribute(subject, BeIdConstants.BEID_DEVICE_DISABLE_ATTRIBUTE,
-                        attribute.getAttributeIndex());
-                return disabledAttribute.getBooleanValue();
-            }
+        String nrn = parseAttributeFromCert(certificate, "SERIALNUMBER");
+
+        // Find the device to enable based on the certificate's NRN.
+        try {
+            AttributeEntity deviceAttribute = attributeManager.getCompoundWhere(subject, BeIdConstants.BEID_DEVICE_ATTRIBUTE,
+                    BeIdConstants.BEID_NRN_ATTRIBUTE, nrn);
+            AttributeEntity disableAttribute = attributeManager.getCompoundMember(deviceAttribute,
+                    BeIdConstants.BEID_DEVICE_DISABLE_ATTRIBUTE);
+
+            return disableAttribute.getBooleanValue();
         }
-        return false;
-    }
 
-    public List<AttributeEntity> listDeviceAttributes(SubjectEntity subject)
-            throws DeviceNotFoundException {
-
-        DeviceEntity device = deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
-        return attributeDAO.listAttributes(subject, device.getAttributeType());
+        catch (AttributeTypeNotFoundException e) {
+            throw new InternalInconsistencyException("Missing attribute type for BeID device", e);
+        } catch (AttributeNotFoundException e) {
+            throw new DeviceRegistrationNotFoundException();
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     public void disable(String userId, String attribute)
-            throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException {
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException {
 
-        DeviceEntity device = deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
         SubjectEntity subject = subjectService.getSubject(userId);
 
-        List<AttributeEntity> deviceAttributes = attributeDAO.listAttributes(subject, device.getAttributeType());
-        for (AttributeEntity deviceAttribute : deviceAttributes) {
-            AttributeEntity givenNameAttribute = attributeDAO.findAttribute(subject, BeIdConstants.BEID_GIVENNAME_ATTRIBUTE,
-                    deviceAttribute.getAttributeIndex());
-            AttributeEntity surNameAttribute = attributeDAO.findAttribute(subject, BeIdConstants.BEID_SURNAME_ATTRIBUTE,
-                    deviceAttribute.getAttributeIndex());
-            String deviceUserAttribute = getUserAttributeValue(givenNameAttribute, surNameAttribute);
-            if (deviceUserAttribute.equals(attribute)) {
-                AttributeEntity disableAttribute = attributeDAO.findAttribute(subject, device.getDisableAttributeType(),
-                        deviceAttribute.getAttributeIndex());
-                disableAttribute.setBooleanValue(true);
-                return;
-            }
+        // Find the device to enable based on the user attribute (surname, givenName).
+        try {
+            AttributeEntity deviceAttribute = attributeManager.getCompoundWhere(subject, BeIdConstants.BEID_DEVICE_ATTRIBUTE,
+                    BeIdConstants.BEID_DEVICE_USER_ATTRIBUTE, attribute);
+            AttributeEntity disableAttribute = attributeManager.getCompoundMember(deviceAttribute,
+                    BeIdConstants.BEID_DEVICE_DISABLE_ATTRIBUTE);
+
+            disableAttribute.setValue(true);
         }
 
-        throw new DeviceRegistrationNotFoundException();
+        catch (AttributeTypeNotFoundException e) {
+            throw new InternalInconsistencyException("Missing attribute type for BeID device", e);
+        } catch (AttributeNotFoundException e) {
+            throw new DeviceRegistrationNotFoundException();
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     public void enable(SubjectEntity subject, X509Certificate certificate)
-            throws DeviceNotFoundException, PermissionDeniedException, AttributeNotFoundException, AttributeTypeNotFoundException,
-            DeviceRegistrationNotFoundException {
+            throws PermissionDeniedException, DeviceRegistrationNotFoundException {
 
-        DeviceEntity device = deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
-        String subjectName = getSubjectName(certificate);
-        String nrn = getAttributeFromSubjectName(subjectName, "SERIALNUMBER");
-        AttributeTypeEntity deviceAttributeType = device.getAttributeType();
-        List<AttributeEntity> attributes = attributeDAO.listAttributes(subject, deviceAttributeType);
-        LOG.debug("enable device registration: nrn=" + nrn);
-        for (AttributeEntity attribute : attributes) {
-            AttributeEntity nrnAttribute = attributeDAO.findAttribute(subject, BeIdConstants.BEID_NRN_ATTRIBUTE,
-                    attribute.getAttributeIndex());
-            if (nrnAttribute.getStringValue().equals(nrn)) {
-                AttributeEntity disableAttribute = attributeDAO.findAttribute(subject, device.getDisableAttributeType(),
-                        attribute.getAttributeIndex());
-                disableAttribute.setBooleanValue(false);
-                return;
-            }
+        String nrn = parseAttributeFromCert(certificate, "SERIALNUMBER");
+
+        // Find the device to enable based on the certificate's NRN.
+        try {
+            AttributeEntity deviceAttribute = attributeManager.getCompoundWhere(subject, BeIdConstants.BEID_DEVICE_ATTRIBUTE,
+                    BeIdConstants.BEID_NRN_ATTRIBUTE, nrn);
+            AttributeEntity disableAttribute = attributeManager.getCompoundMember(deviceAttribute,
+                    BeIdConstants.BEID_DEVICE_DISABLE_ATTRIBUTE);
+
+            disableAttribute.setValue(false);
         }
 
-        throw new DeviceRegistrationNotFoundException();
+        catch (AttributeTypeNotFoundException e) {
+            throw new InternalInconsistencyException("Missing attribute type for BeID device", e);
+        } catch (AttributeNotFoundException e) {
+            throw new DeviceRegistrationNotFoundException();
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     public void remove(String userId, String attribute)
-            throws SubjectNotFoundException, DeviceNotFoundException, AttributeTypeNotFoundException, DeviceRegistrationNotFoundException,
-            AttributeNotFoundException {
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException {
 
-        DeviceEntity device = deviceDAO.getDevice(BeIdConstants.BEID_DEVICE_ID);
         SubjectEntity subject = subjectService.getSubject(userId);
 
-        List<AttributeEntity> deviceAttributes = attributeDAO.listAttributes(subject, device.getAttributeType());
-        for (AttributeEntity deviceAttribute : deviceAttributes) {
-            AttributeEntity givenNameAttribute = attributeDAO.findAttribute(subject, BeIdConstants.BEID_GIVENNAME_ATTRIBUTE,
-                    deviceAttribute.getAttributeIndex());
-            AttributeEntity surNameAttribute = attributeDAO.findAttribute(subject, BeIdConstants.BEID_SURNAME_ATTRIBUTE,
-                    deviceAttribute.getAttributeIndex());
-            String deviceUserAttribute = getUserAttributeValue(givenNameAttribute, surNameAttribute);
-            if (deviceUserAttribute.equals(attribute)) {
-                AttributeTypeEntity identifierAttributeType = attributeTypeDAO.getAttributeType(BeIdConstants.BEID_IDENTIFIER_ATTRIBUTE);
-                AttributeEntity identifierAttribute = attributeDAO.findAttribute(subject, identifierAttributeType,
-                        deviceAttribute.getAttributeIndex());
-                subjectIdentifierDAO.removeSubjectIdentifier(subject, getIdentifierDomainName(), identifierAttribute.getStringValue());
-                attributeManager.removeAttribute(device.getAttributeType(), deviceAttribute.getAttributeIndex(), subject);
-                return;
-            }
+        // Find the device to remove.
+        try {
+            AttributeEntity deviceAttribute = attributeManager.getCompoundWhere(subject, BeIdConstants.BEID_DEVICE_ATTRIBUTE,
+                    BeIdConstants.BEID_DEVICE_USER_ATTRIBUTE, attribute);
+
+            // Find the device's certificate identifier which we need to remove the subject.
+            AttributeEntity identifierAttribute = attributeManager.getCompoundMember(deviceAttribute,
+                    BeIdConstants.BEID_IDENTIFIER_ATTRIBUTE);
+            String identifier = identifierAttribute.getStringValue();
+
+            // Remove the subject & the device compound attribute.
+            subjectIdentifierDAO.removeSubjectIdentifier(subject, getIdentifierDomainName(), identifier);
+            attributeManager.removeCompoundWhere(subject, BeIdConstants.BEID_DEVICE_ATTRIBUTE, BeIdConstants.BEID_IDENTIFIER_ATTRIBUTE,
+                    identifier);
         }
 
-        throw new DeviceRegistrationNotFoundException();
-
+        catch (AttributeTypeNotFoundException e) {
+            throw new InternalInconsistencyException("Missing attribute type for BeID device", e);
+        } catch (AttributeNotFoundException e) {
+            throw new DeviceRegistrationNotFoundException();
+        }
     }
 
-    private String getUserAttributeValue(AttributeEntity givenNameAttribute, AttributeEntity surNameAttribute) {
+    private String getUserAttributeValue(String givenName, String surname) {
 
-        return surNameAttribute.getStringValue() + ", " + givenNameAttribute.getStringValue();
+        return String.format("%s, %s", surname, givenName);
     }
-
 }

@@ -7,18 +7,22 @@
 package net.link.safeonline.model.password.bean;
 
 import java.util.Collections;
+import java.util.List;
 
 import javax.ejb.EJB;
-import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.dao.AttributeDAO;
+import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.HistoryDAO;
+import net.link.safeonline.entity.AttributeEntity;
+import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.HistoryEventType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
@@ -47,6 +51,12 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
     @EJB(mappedName = PasswordManager.JNDI_BINDING)
     private PasswordManager     passwordManager;
 
+    @EJB(mappedName = AttributeDAO.JNDI_BINDING)
+    private AttributeDAO        attributeDAO;
+
+    @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
+    private AttributeTypeDAO    attributeTypeDAO;
+
     @EJB(mappedName = SecurityAuditLogger.JNDI_BINDING)
     private SecurityAuditLogger securityAuditLogger;
 
@@ -54,106 +64,128 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
     private HistoryDAO          historyDAO;
 
 
+    private AttributeEntity getDisableAttribute(SubjectEntity subject)
+            throws DeviceRegistrationNotFoundException {
+
+        AttributeTypeEntity disableAttributeType = attributeTypeDAO.findAttributeType(PasswordConstants.PASSWORD_DEVICE_DISABLE_ATTRIBUTE);
+        List<AttributeEntity> disableAttributes = attributeDAO.listAttributes(subject, disableAttributeType);
+
+        if (disableAttributes.isEmpty())
+            throw new DeviceRegistrationNotFoundException();
+
+        return disableAttributes.get(0);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public String authenticate(String userId, String password)
-            throws DeviceNotFoundException, SubjectNotFoundException, DeviceDisabledException {
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException {
 
         LOG.debug("authenticate \"" + userId + "\"");
 
         SubjectEntity subject = subjectService.getSubject(userId);
-
-        if (passwordManager.isDisabled(subject))
+        if (true == getDisableAttribute(subject).getBooleanValue())
             throw new DeviceDisabledException();
 
-        boolean validationResult = false;
-        try {
-            validationResult = passwordManager.validatePassword(subject, password);
-        } catch (DeviceNotFoundException e) {
-            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, subject.getUserId(), "password device not found");
-            throw e;
-        }
-
-        if (!validationResult) {
+        if (false == passwordManager.validatePassword(subject, password)) {
             securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, subject.getUserId(), "incorrect password");
             return null;
         }
+
         return subject.getUserId();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void register(String userId, String password)
-            throws SubjectNotFoundException, DeviceNotFoundException {
+            throws SubjectNotFoundException {
 
         LOG.debug("register password for \"" + userId + "\"");
-        SubjectEntity subject = subjectService.getSubject(userId);
-        try {
-            passwordManager.setPassword(subject, password);
-        } catch (PermissionDeniedException e) {
-            throw new EJBException("Not allowed to set password");
-        }
+        SubjectEntity subject = subjectService.getSubject(userId); // FIXME: create subject mapping
+
+        passwordManager.registerPassword(subject, password);
 
         historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_REGISTRATION, Collections.singletonMap(
                 SafeOnlineConstants.DEVICE_PROPERTY, PasswordConstants.PASSWORD_DEVICE_ID));
-
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void remove(String userId)
-            throws DeviceNotFoundException, SubjectNotFoundException {
+            throws SubjectNotFoundException {
 
         LOG.debug("remove password for " + userId);
         SubjectEntity subject = subjectService.getSubject(userId);
 
-        passwordManager.removePassword(subject);
+        passwordManager.removePassword(subject); // FIXME: remove subject mapping
 
-        historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_REMOVAL, Collections.singletonMap(
-                SafeOnlineConstants.DEVICE_PROPERTY, PasswordConstants.PASSWORD_DEVICE_ID));
-
-    }
-
-    public void update(String userId, String oldPassword, String newPassword)
-            throws PermissionDeniedException, DeviceNotFoundException, SubjectNotFoundException {
-
-        LOG.debug("update password for \"" + userId + "\"");
-        SubjectEntity subject = subjectService.getSubject(userId);
-
-        passwordManager.changePassword(subject, oldPassword, newPassword);
-
-        historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_UPDATE, Collections.singletonMap(
-                SafeOnlineConstants.DEVICE_PROPERTY, PasswordConstants.PASSWORD_DEVICE_ID));
+        historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_REMOVAL, Collections.singletonMap(SafeOnlineConstants.DEVICE_PROPERTY,
+                PasswordConstants.PASSWORD_DEVICE_ID));
 
     }
 
     /**
      * {@inheritDoc}
      */
-    public void disable(String userId)
-            throws DeviceNotFoundException, SubjectNotFoundException {
+    public void update(String userId, String oldPassword, String newPassword)
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException, PermissionDeniedException {
 
+        LOG.debug("update password for \"" + userId + "\"");
         SubjectEntity subject = subjectService.getSubject(userId);
 
-        LOG.debug("disable password for \"" + subject.getUserId() + "\"");
-        passwordManager.disablePassword(subject, true);
+        if (true == getDisableAttribute(subject).getBooleanValue())
+            throw new DeviceDisabledException();
 
-        historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_DISABLE, Collections.singletonMap(
-                SafeOnlineConstants.DEVICE_PROPERTY, PasswordConstants.PASSWORD_DEVICE_ID));
+        if (false == passwordManager.validatePassword(subject, oldPassword))
+            throw new PermissionDeniedException("Invalid password");
+
+        passwordManager.updatePassword(subject, oldPassword, newPassword);
+
+        historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_UPDATE, Collections.singletonMap(SafeOnlineConstants.DEVICE_PROPERTY,
+                PasswordConstants.PASSWORD_DEVICE_ID));
     }
 
     /**
      * {@inheritDoc}
      */
     public void enable(String userId, String password)
-            throws DeviceNotFoundException, SubjectNotFoundException, PermissionDeniedException {
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, PermissionDeniedException {
 
         SubjectEntity subject = subjectService.getSubject(userId);
+
+        LOG.debug("enable password for \"" + subject.getUserId() + "\"");
 
         if (!passwordManager.validatePassword(subject, password))
             throw new PermissionDeniedException("Invalid password");
 
-        LOG.debug("enable password for \"" + subject.getUserId() + "\"");
-        passwordManager.disablePassword(subject, false);
+        getDisableAttribute(subject).setValue(false);
 
-        historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_ENABLE, Collections.singletonMap(
-                SafeOnlineConstants.DEVICE_PROPERTY, PasswordConstants.PASSWORD_DEVICE_ID));
+        historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_ENABLE, Collections.singletonMap(SafeOnlineConstants.DEVICE_PROPERTY,
+                PasswordConstants.PASSWORD_DEVICE_ID));
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public void disable(String userId)
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException {
+
+        SubjectEntity subject = subjectService.getSubject(userId);
+
+        LOG.debug("disable password for \"" + subject.getUserId() + "\"");
+
+        getDisableAttribute(subject).setValue(false);
+
+        historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_ENABLE, Collections.singletonMap(SafeOnlineConstants.DEVICE_PROPERTY,
+                PasswordConstants.PASSWORD_DEVICE_ID));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public boolean isPasswordConfigured(String userId)
             throws SubjectNotFoundException {
 

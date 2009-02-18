@@ -9,7 +9,6 @@ package test.unit.net.link.safeonline.encap.auth.ws;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.reset;
 import static org.easymock.EasyMock.verify;
@@ -233,7 +232,6 @@ public class EncapAuthenticationPortImplTest {
         String testUserId = UUID.randomUUID().toString();
         String testMobile = "+32000000";
         String testOtp = "00000000";
-        String testChallengeId = UUID.randomUUID().toString();
 
         Map<String, String> nameValuePairs = new HashMap<String, String>();
         nameValuePairs.put(EncapConstants.ENCAP_WS_AUTH_MOBILE_ATTRIBUTE, testMobile);
@@ -242,8 +240,7 @@ public class EncapAuthenticationPortImplTest {
                 EncapConstants.ENCAP_DEVICE_ID, testLanguage, nameValuePairs, testpublicKey);
 
         // expectations
-        mockEncapDeviceServce.checkMobile(testMobile);
-        expect(mockEncapDeviceServce.requestOTP(testMobile)).andReturn(testChallengeId);
+        mockEncapDeviceServce.requestOTP(testMobile);
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(1234567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
@@ -277,7 +274,7 @@ public class EncapAuthenticationPortImplTest {
                 nameValuePairs, testpublicKey);
 
         // expectations
-        expect(mockEncapDeviceServce.authenticate(testMobile, testChallengeId, testOtp)).andReturn(testUserId);
+        expect(mockEncapDeviceServce.authenticate(testOtp)).andReturn(testUserId);
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(1234567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
@@ -311,7 +308,6 @@ public class EncapAuthenticationPortImplTest {
         // setup
         String testMobile = "+32000000";
         String testOtp = "00000000";
-        String testChallengeId = UUID.randomUUID().toString();
 
         Map<String, String> nameValuePairs = new HashMap<String, String>();
         nameValuePairs.put(EncapConstants.ENCAP_WS_AUTH_MOBILE_ATTRIBUTE, testMobile);
@@ -320,8 +316,7 @@ public class EncapAuthenticationPortImplTest {
                 EncapConstants.ENCAP_DEVICE_ID, testLanguage, nameValuePairs, testpublicKey);
 
         // expectations
-        mockEncapDeviceServce.checkMobile(testMobile);
-        expect(mockEncapDeviceServce.requestOTP(testMobile)).andReturn(testChallengeId);
+        mockEncapDeviceServce.requestOTP(testMobile);
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(1234567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
@@ -355,7 +350,7 @@ public class EncapAuthenticationPortImplTest {
                 nameValuePairs, testpublicKey);
 
         // expectations
-        expect(mockEncapDeviceServce.authenticate(testMobile, testChallengeId, testOtp)).andThrow(new MobileException("foo"));
+        expect(mockEncapDeviceServce.authenticate(testOtp)).andThrow(new MobileException("foo"));
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(1234567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
@@ -388,6 +383,7 @@ public class EncapAuthenticationPortImplTest {
 
         // setup
         String testMobile = "+32000000";
+        String testOtp = "00000000";
 
         Map<String, String> nameValuePairs = new HashMap<String, String>();
         nameValuePairs.put(EncapConstants.ENCAP_WS_AUTH_MOBILE_ATTRIBUTE, testMobile);
@@ -396,8 +392,7 @@ public class EncapAuthenticationPortImplTest {
                 EncapConstants.ENCAP_DEVICE_ID, testLanguage, nameValuePairs, testpublicKey);
 
         // expectations
-        mockEncapDeviceServce.checkMobile(testMobile);
-        expectLastCall().andThrow(new DeviceDisabledException());
+        mockEncapDeviceServce.requestOTP(testMobile);
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(1234567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
@@ -410,6 +405,43 @@ public class EncapAuthenticationPortImplTest {
 
         // operate
         WSAuthenticationResponseType response = clientPort.authenticate(request);
+
+        // verify
+        verify(mockObjects);
+        assertNotNull(response);
+        assertEquals(EncapConstants.ENCAP_DEVICE_ID, response.getDeviceName());
+        assertNull(response.getUserId());
+        assertEquals(WSAuthenticationErrorCode.SUCCESS.getErrorCode(), response.getStatus().getStatusCode().getValue());
+
+        outputAuthenticationResponse(response);
+
+        // reset
+        reset(mockObjects);
+
+        // setup
+        nameValuePairs = new HashMap<String, String>();
+        nameValuePairs.put(EncapConstants.ENCAP_WS_AUTH_OTP_ATTRIBUTE, testOtp);
+
+        request = AuthenticationUtil.getAuthenticationRequest(testApplicationId, EncapConstants.ENCAP_DEVICE_ID, testLanguage,
+                nameValuePairs, testpublicKey);
+
+        // expectations
+        expect(mockEncapDeviceServce.authenticate(testOtp)).andThrow(new DeviceDisabledException());
+        expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(1234567890L);
+        expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
+        expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
+        expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
+        expect(mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock.anyObject())).andStubReturn(
+                PkiResult.VALID);
+        expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
+
+        // prepare
+        replay(mockObjects);
+
+        // operate
+        response = clientPort.authenticate(request);
 
         // verify
         verify(mockObjects);

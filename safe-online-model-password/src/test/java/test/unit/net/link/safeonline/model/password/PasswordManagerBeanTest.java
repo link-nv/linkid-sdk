@@ -8,11 +8,9 @@ package test.unit.net.link.safeonline.model.password;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.util.UUID;
 
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.SubjectDAO;
@@ -112,16 +110,18 @@ public class PasswordManagerBeanTest {
         EJBTestUtils.init(attributeTypeDAO);
         EJBTestUtils.init(testedInstance);
 
-        attributeTypeDAO.addAttributeType(new AttributeTypeEntity(PasswordConstants.PASSWORD_HASH_ATTRIBUTE, DatatypeType.STRING,
-                false, false));
-        attributeTypeDAO.addAttributeType(new AttributeTypeEntity(PasswordConstants.PASSWORD_SEED_ATTRIBUTE, DatatypeType.STRING,
-                false, false));
+        attributeTypeDAO.addAttributeType(new AttributeTypeEntity(PasswordConstants.PASSWORD_HASH_ATTRIBUTE, DatatypeType.STRING, false,
+                false));
+        attributeTypeDAO.addAttributeType(new AttributeTypeEntity(PasswordConstants.PASSWORD_SEED_ATTRIBUTE, DatatypeType.STRING, false,
+                false));
         attributeTypeDAO.addAttributeType(new AttributeTypeEntity(PasswordConstants.PASSWORD_DEVICE_DISABLE_ATTRIBUTE,
                 DatatypeType.BOOLEAN, false, false));
         attributeTypeDAO.addAttributeType(new AttributeTypeEntity(PasswordConstants.PASSWORD_ALGORITHM_ATTRIBUTE, DatatypeType.STRING,
                 false, false));
-        attributeTypeDAO.addAttributeType(new AttributeTypeEntity(PasswordConstants.PASSWORD_DEVICE_ATTRIBUTE,
-                DatatypeType.COMPOUNDED, false, false));
+        attributeTypeDAO.addAttributeType(new AttributeTypeEntity(PasswordConstants.PASSWORD_NEW_ALGORITHM_ATTRIBUTE, DatatypeType.STRING,
+                false, false));
+        attributeTypeDAO.addAttributeType(new AttributeTypeEntity(PasswordConstants.PASSWORD_DEVICE_ATTRIBUTE, DatatypeType.COMPOUNDED,
+                false, false));
 
     }
 
@@ -142,19 +142,11 @@ public class PasswordManagerBeanTest {
         String password = "password";
 
         // operate
-        testedInstance.setPassword(subject, password);
+        testedInstance.registerPassword(subject, password);
 
         // validate
         boolean validationResult = testedInstance.validatePassword(subject, password);
         assertTrue(validationResult);
-
-        try {
-            testedInstance.setPassword(subject, password);
-            fail();
-        } catch (PermissionDeniedException e) {
-            // empty
-        }
-
     }
 
     @Test
@@ -168,8 +160,8 @@ public class PasswordManagerBeanTest {
         String newPassword = "newpassword";
 
         // operate
-        testedInstance.setPassword(subject, password);
-        testedInstance.changePassword(subject, password, newPassword);
+        testedInstance.registerPassword(subject, password);
+        testedInstance.updatePassword(subject, password, newPassword);
 
         // validate
         boolean validationResult = testedInstance.validatePassword(subject, password);
@@ -189,7 +181,7 @@ public class PasswordManagerBeanTest {
         String password = "password";
 
         // operate
-        testedInstance.setPassword(subject, password);
+        testedInstance.registerPassword(subject, password);
 
         // validate
         boolean validationResult = testedInstance.validatePassword(subject, password);
@@ -206,7 +198,7 @@ public class PasswordManagerBeanTest {
         String password = "password";
 
         // operate
-        testedInstance.setPassword(subject, password);
+        testedInstance.registerPassword(subject, password);
 
         // validate
         boolean validationResult = testedInstance.isPasswordConfigured(subject);

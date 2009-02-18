@@ -8,9 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.audit.SecurityAuditLogger;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
-import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.device.sdk.saml2.DeviceOperationManager;
@@ -75,8 +73,6 @@ public class DisableServlet extends AbstractInjectionServlet {
             response.setStatus(HttpServletResponse.SC_OK);
             // notify that disable operation was successful.
             protocolContext.setSuccess(true);
-        } catch (DeviceNotFoundException e) {
-            LOG.error("device not found", e);
         } catch (SubjectNotFoundException e) {
             String message = "subject " + userId + " not found";
             LOG.error(message, e);
@@ -85,8 +81,6 @@ public class DisableServlet extends AbstractInjectionServlet {
             String message = "device registration \"" + attribute + "\" not found";
             LOG.error(message, e);
             securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, message);
-        } catch (MobileException e) {
-            LOG.error("Encap ws unavailable: " + e.getMessage(), e);
         }
 
         response.sendRedirect(deviceExitPath);

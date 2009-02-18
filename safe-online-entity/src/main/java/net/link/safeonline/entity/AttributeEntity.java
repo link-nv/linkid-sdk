@@ -19,7 +19,6 @@ import static net.link.safeonline.entity.AttributeEntity.SUBJECT_PARAM;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 
 import javax.ejb.EJBException;
@@ -249,29 +248,6 @@ public class AttributeEntity implements Serializable {
     public void setIntegerValue(Integer integerValue) {
 
         this.integerValue = integerValue;
-    }
-
-
-    private transient List<AttributeEntity> members;
-
-
-    /**
-     * We don't manage the member attributes of a compounded attribute directly via the database because the relationship is to complex to
-     * express. This field is filled in by the DAO layer upon request.
-     * 
-     */
-    @Transient
-    public List<AttributeEntity> getMembers() {
-
-        if (null == members) {
-            members = new LinkedList<AttributeEntity>();
-        }
-        return members;
-    }
-
-    public void setMembers(List<AttributeEntity> members) {
-
-        this.members = members;
     }
 
     /**
