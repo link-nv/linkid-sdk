@@ -257,19 +257,19 @@ public class AttributeEntity implements Serializable {
         switch (datatype) {
             case STRING:
             case COMPOUNDED:
-                stringValue = (String) value;
+                setStringValue((String) value);
             break;
             case BOOLEAN:
-                booleanValue = (Boolean) value;
+                setBooleanValue((Boolean) value);
             break;
             case INTEGER:
-                integerValue = (Integer) value;
+                setIntegerValue((Integer) value);
             break;
             case DOUBLE:
-                doubleValue = (Double) value;
+                setDoubleValue((Double) value);
             break;
             case DATE:
-                dateValue = (Date) value;
+                setDateValue((Date) value);
             break;
         }
     }
@@ -305,6 +305,51 @@ public class AttributeEntity implements Serializable {
         doubleValue = null;
         integerValue = null;
         stringValue = null;
+    }
+
+    /**
+     * @param booleanValue
+     *            The booleanValue of this {@link AttributeEntity}.
+     */
+    private void setBooleanValue(Boolean booleanValue) {
+
+        this.booleanValue = booleanValue;
+    }
+
+    /**
+     * @param dateValue
+     *            The dateValue of this {@link AttributeEntity}.
+     */
+    private void setDateValue(Date dateValue) {
+
+        this.dateValue = dateValue;
+    }
+
+    /**
+     * @param doubleValue
+     *            The doubleValue of this {@link AttributeEntity}.
+     */
+    private void setDoubleValue(Double doubleValue) {
+
+        this.doubleValue = doubleValue;
+    }
+
+    /**
+     * @param integerValue
+     *            The integerValue of this {@link AttributeEntity}.
+     */
+    private void setIntegerValue(Integer integerValue) {
+
+        this.integerValue = integerValue;
+    }
+
+    /**
+     * @param stringValue
+     *            The stringValue of this {@link AttributeEntity}.
+     */
+    private void setStringValue(String stringValue) {
+
+        this.stringValue = stringValue;
     }
 
     @Override
