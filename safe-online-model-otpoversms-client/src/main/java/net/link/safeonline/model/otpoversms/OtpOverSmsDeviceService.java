@@ -27,7 +27,7 @@ public interface OtpOverSmsDeviceService extends OtpOverSmsService {
     String authenticate(String pin, String otp)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException;
 
-    void register(String userId, String pin, String otp)
+    void register(String nodeName, String userId, String pin, String otp)
             throws PermissionDeniedException, AuthenticationFailedException;
 
     void update(String userId, String otp, String oldPin, String newPin)

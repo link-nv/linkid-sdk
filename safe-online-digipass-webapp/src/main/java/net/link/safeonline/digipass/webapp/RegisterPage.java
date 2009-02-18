@@ -10,8 +10,10 @@ package net.link.safeonline.digipass.webapp;
 import javax.ejb.EJB;
 
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.model.digipass.DigipassDeviceService;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
@@ -48,8 +50,12 @@ public class RegisterPage extends TemplatePage {
     @EJB(mappedName = DigipassDeviceService.JNDI_BINDING)
     transient DigipassDeviceService digipassDeviceService;
 
+    ProtocolContext                 protocolContext;
+
 
     public RegisterPage() {
+
+        protocolContext = ProtocolContext.getProtocolContext(WicketUtil.getHttpSession(getRequest()));
 
         getHeader();
         getSidebar(localize("helpRegisterDigipass"));
@@ -105,12 +111,12 @@ public class RegisterPage extends TemplatePage {
                     LOG.debug("register digipas with sn=" + serialNumber + " for user: " + login);
 
                     try {
-                        digipassDeviceService.register(getUserId(), serialNumber.getObject());
+                        digipassDeviceService.register(protocolContext.getNodeName(), getUserId(), serialNumber.getObject());
                     }
 
-                    catch (SubjectNotFoundException e) {
-                        LOG.debug("subject not found");
-                        loginField.error(getLocalizer().getString("errorSubjectNotFound", this));
+                    catch (NodeNotFoundException e) {
+                        LOG.debug("node not found");
+                        loginField.error(getLocalizer().getString("errorNodeNotFound", this));
                         return;
                     } catch (ArgumentIntegrityException e) {
                         LOG.debug("digipass already registered");
@@ -119,6 +125,10 @@ public class RegisterPage extends TemplatePage {
                     } catch (PermissionDeniedException e) {
                         LOG.debug("permission denied: " + e.getMessage());
                         RegisterForm.this.error(getLocalizer().getString("errorPermissionDenied", this));
+                        return;
+                    } catch (SubjectNotFoundException e) {
+                        LOG.debug("subject not found");
+                        loginField.error(getLocalizer().getString("errorSubjectNotFound", this));
                         return;
                     }
 

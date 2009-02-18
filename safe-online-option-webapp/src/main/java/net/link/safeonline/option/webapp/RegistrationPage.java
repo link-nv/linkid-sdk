@@ -9,6 +9,7 @@ package net.link.safeonline.option.webapp;
 
 import javax.ejb.EJB;
 
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
@@ -138,7 +139,13 @@ public class RegistrationPage extends TemplatePage implements IHeaderContributor
             }
 
             String imei = OptionDevice.register(pin.getObject());
-            optionDeviceService.register(imei, protocolContext.getSubject());
+            try {
+                optionDeviceService.register(protocolContext.getNodeName(), imei, protocolContext.getSubject());
+            } catch (NodeNotFoundException e) {
+                RegisterForm.this.error(localize("errorNodeNotFound"));
+                HelpdeskLogger.add(localize("node not found for %s", imei), //
+                        LogLevelType.ERROR);
+            }
 
             exit(true);
         }

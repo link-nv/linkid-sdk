@@ -21,6 +21,7 @@ import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.DecodingException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.PkiExpiredException;
 import net.link.safeonline.authentication.exception.PkiInvalidException;
@@ -40,7 +41,7 @@ import net.link.safeonline.pkix.model.PkiProvider;
 import net.link.safeonline.pkix.model.PkiProviderManager;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.pkix.model.PkiValidator.PkiResult;
-import net.link.safeonline.service.SubjectService;
+import net.link.safeonline.service.NodeMappingService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -71,8 +72,8 @@ public class CredentialManagerBean implements CredentialManager {
     @EJB(mappedName = SubjectIdentifierDAO.JNDI_BINDING)
     private SubjectIdentifierDAO subjectIdentifierDAO;
 
-    @EJB(mappedName = SubjectService.JNDI_BINDING)
-    private SubjectService       subjectService;
+    @EJB(mappedName = NodeMappingService.JNDI_BINDING)
+    private NodeMappingService   nodeMappingService;
 
     @EJB(mappedName = SecurityAuditLogger.JNDI_BINDING)
     private SecurityAuditLogger  securityAuditLogger;
@@ -130,9 +131,10 @@ public class CredentialManagerBean implements CredentialManager {
         return subject.getUserId();
     }
 
-    public void mergeIdentityStatement(String sessionId, String userId, String operation, byte[] identityStatementData)
+    public void mergeIdentityStatement(String sessionId, String nodeName, String userId, String operation, byte[] identityStatementData)
             throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException, AlreadyRegisteredException,
-            PkiRevokedException, PkiSuspendedException, PkiExpiredException, PkiNotYetValidException, PkiInvalidException {
+            PkiRevokedException, PkiSuspendedException, PkiExpiredException, PkiNotYetValidException, PkiInvalidException,
+            NodeNotFoundException {
 
         /*
          * First check integrity of the received identity statement.
@@ -192,12 +194,9 @@ public class CredentialManagerBean implements CredentialManager {
         SubjectEntity existingMappedSubject = subjectIdentifierDAO.findSubject(domain, identifier);
         if (null == existingMappedSubject) {
             /*
-             * Create new subject if needed
+             * Check through node mapping if subject exists, if not, it is created.
              */
-            subject = subjectService.findSubject(userId);
-            if (null == subject) {
-                subject = subjectService.addSubjectWithoutLogin(userId);
-            }
+            subject = nodeMappingService.getSubject(userId, nodeName);
             /*
              * In this case we register a new subject identifier within the system.
              */

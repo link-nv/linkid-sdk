@@ -13,6 +13,7 @@ import net.link.safeonline.authentication.exception.AlreadyRegisteredException;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.PkiExpiredException;
 import net.link.safeonline.authentication.exception.PkiInvalidException;
@@ -35,9 +36,10 @@ public interface BeIdDeviceService extends BeIdService {
             PkiSuspendedException, PkiExpiredException, PkiNotYetValidException, PkiInvalidException, DeviceDisabledException,
             DeviceRegistrationNotFoundException;
 
-    void register(String sessionId, String userId, String operation, byte[] identityStatementData)
+    void register(String sessionId, String nodeName, String userId, String operation, byte[] identityStatementData)
             throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException, AlreadyRegisteredException,
-            PkiRevokedException, PkiSuspendedException, PkiExpiredException, PkiNotYetValidException, PkiInvalidException;
+            PkiRevokedException, PkiSuspendedException, PkiExpiredException, PkiNotYetValidException, PkiInvalidException,
+            NodeNotFoundException;
 
     void enable(String sessionId, String userId, String operation, byte[] identityStatementData)
             throws TrustDomainNotFoundException, SubjectNotFoundException, PermissionDeniedException, ArgumentIntegrityException,

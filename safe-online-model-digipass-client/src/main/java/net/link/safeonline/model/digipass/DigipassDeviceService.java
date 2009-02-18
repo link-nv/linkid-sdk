@@ -14,6 +14,7 @@ import javax.ejb.Local;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.data.AttributeDO;
@@ -28,8 +29,8 @@ public interface DigipassDeviceService extends DigipassService {
     String authenticate(String userId, String token)
             throws SubjectNotFoundException, PermissionDeniedException, DeviceDisabledException;
 
-    String register(String userId, String serialNumber)
-            throws ArgumentIntegrityException, SubjectNotFoundException;
+    String register(String nodeName, String userId, String serialNumber)
+            throws ArgumentIntegrityException, NodeNotFoundException;
 
     void remove(String serialNumber)
             throws DigipassException;

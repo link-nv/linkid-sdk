@@ -25,6 +25,7 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.InternalInconsistencyException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -46,6 +47,7 @@ import net.link.safeonline.osgi.OSGIService;
 import net.link.safeonline.osgi.OSGIStartable;
 import net.link.safeonline.osgi.OSGIHostActivator.OSGIServiceType;
 import net.link.safeonline.osgi.sms.SmsService;
+import net.link.safeonline.service.NodeMappingService;
 import net.link.safeonline.service.SubjectService;
 
 import org.apache.commons.logging.Log;
@@ -70,6 +72,9 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
 
     @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService         subjectService;
+
+    @EJB(mappedName = NodeMappingService.JNDI_BINDING)
+    private NodeMappingService     nodeMappingService;
 
     @EJB(mappedName = SubjectIdentifierDAO.JNDI_BINDING)
     private SubjectIdentifierDAO   subjectIdentifierDAO;
@@ -167,7 +172,7 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
     /**
      * {@inheritDoc}
      */
-    public void register(String userId, String pin, String otp)
+    public void register(String nodeName, String userId, String pin, String otp)
             throws PermissionDeniedException, AuthenticationFailedException {
 
         if (false == verifyOtp(otp))
@@ -189,10 +194,13 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
             entityManager.clear();
         }
 
-        // Create a subject for this user if one doesn't exist already.
-        subject = subjectService.findSubject(userId);
-        if (null == subject) {
-            subject = subjectService.addSubjectWithoutLogin(userId);
+        /*
+         * Check through node mapping if subject exists, if not, it is created.
+         */
+        try {
+            subject = nodeMappingService.getSubject(userId, nodeName);
+        } catch (NodeNotFoundException e) {
+            throw new AuthenticationFailedException(e.getMessage());
         }
 
         // Register the mobile with that subject and map the mobile to the subject.

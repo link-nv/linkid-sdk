@@ -23,6 +23,8 @@ public interface NodeMappingDAO extends SafeOnlineService {
     public static final String JNDI_BINDING = SafeOnlineService.JNDI_PREFIX + "NodeMappingDAOBean/local";
 
 
+    public NodeMappingEntity addNodeMapping(SubjectEntity subject, NodeEntity node, String id);
+
     public NodeMappingEntity addNodeMapping(SubjectEntity subject, NodeEntity node);
 
     public List<NodeMappingEntity> listNodeMappings(SubjectEntity subject);

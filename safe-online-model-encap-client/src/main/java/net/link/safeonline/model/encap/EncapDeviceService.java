@@ -16,6 +16,7 @@ import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.MobileException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.data.AttributeDO;
 
@@ -58,15 +59,16 @@ public interface EncapDeviceService extends EncapService {
      * Commits the encap registration for OLAS, creates a device subject if necessary, creates a new device registration for this mobile and
      * attaches it to the device subject.
      * 
-     * @param deviceUserId
+     * @param nodeName
+     * @param userId
      * @param mobile
      * @param otp
-     * @throws SubjectNotFoundException
      * @throws MobileException
      * @throws DeviceAuthenticationException
+     * @throws NodeNotFoundException
      */
-    void commitRegistration(String userId, String otp)
-            throws SubjectNotFoundException, MobileException, DeviceAuthenticationException;
+    void commitRegistration(String nodeName, String userId, mobile, String otp)
+            throws MobileException, DeviceAuthenticationException, NodeNotFoundException;
 
     void remove(String userId, String mobile)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException, MobileException;

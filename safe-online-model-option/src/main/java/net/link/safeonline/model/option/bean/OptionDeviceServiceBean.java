@@ -15,6 +15,7 @@ import net.link.safeonline.authentication.exception.AttributeTypeNotFoundExcepti
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.InternalInconsistencyException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
@@ -25,6 +26,7 @@ import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.bean.AttributeManagerLWBean;
 import net.link.safeonline.model.option.OptionConstants;
 import net.link.safeonline.model.option.OptionDeviceService;
+import net.link.safeonline.service.NodeMappingService;
 import net.link.safeonline.service.SubjectService;
 
 import org.jboss.annotation.ejb.LocalBinding;
@@ -50,6 +52,9 @@ public class OptionDeviceServiceBean implements OptionDeviceService {
 
     @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService         subjectService;
+
+    @EJB(mappedName = NodeMappingService.JNDI_BINDING)
+    private NodeMappingService     nodeMappingService;
 
     @EJB(mappedName = SubjectIdentifierDAO.JNDI_BINDING)
     private SubjectIdentifierDAO   subjectIdentifierDAO;
@@ -130,12 +135,13 @@ public class OptionDeviceServiceBean implements OptionDeviceService {
     /**
      * {@inheritDoc}
      */
-    public void register(String imei, String userId) {
+    public void register(String nodeName, String imei, String userId)
+            throws NodeNotFoundException {
 
-        SubjectEntity subject = subjectService.findSubject(userId);
-        if (null == subject) {
-            subject = subjectService.addSubjectWithoutLogin(userId);
-        }
+        /*
+         * Check through node mapping if subject exists, if not, it is created.
+         */
+        SubjectEntity subject = nodeMappingService.getSubject(userId, nodeName);
 
         setAttributes(subject, imei);
         subjectIdentifierDAO.addSubjectIdentifier(OptionConstants.OPTION_IDENTIFIER_DOMAIN, imei, subject);

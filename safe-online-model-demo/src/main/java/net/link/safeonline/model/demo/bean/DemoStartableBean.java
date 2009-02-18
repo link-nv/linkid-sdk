@@ -35,8 +35,6 @@ import net.link.safeonline.demo.prescription.keystore.DemoPrescriptionKeyStoreUt
 import net.link.safeonline.demo.ticket.keystore.DemoTicketKeyStoreUtils;
 import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributePK;
-import net.link.safeonline.entity.AttributeProviderEntity;
-import net.link.safeonline.entity.AttributeProviderPK;
 import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
@@ -253,9 +251,7 @@ public class DemoStartableBean extends AbstractInitBean {
         mandateAttributeType.addMember(mandateTitleAttributeType, 1, true);
         attributeTypes.add(mandateAttributeType);
 
-        AttributeProviderEntity attributeProvider = new AttributeProviderEntity();
-        attributeProvider.setPk(new AttributeProviderPK(demoMandateWebappName, DemoConstants.MANDATE_ATTRIBUTE_NAME));
-        attributeProviders.add(attributeProvider);
+        attributeProviders.add(new AttributeProvider(demoMandateWebappName, DemoConstants.MANDATE_ATTRIBUTE_NAME));
 
         attributeTypeDescriptions.add(new AttributeTypeDescriptionEntity(mandateAttributeType, Locale.ENGLISH.getLanguage(), "Mandate",
                 null));
@@ -640,9 +636,7 @@ public class DemoStartableBean extends AbstractInitBean {
         attributeTypes.add(attributeType);
 
         if (null != attributeProviderName) {
-            AttributeProviderEntity attributeProvider = new AttributeProviderEntity();
-            attributeProvider.setPk(new AttributeProviderPK(attributeProviderName, attributeName));
-            attributeProviders.add(attributeProvider);
+            attributeProviders.add(new AttributeProvider(attributeProviderName, attributeProviderName));
         }
 
         if (null != enName) {

@@ -13,6 +13,7 @@ import net.link.safeonline.authentication.exception.DeviceAuthenticationExceptio
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.MobileException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.AuthenticationContext;
@@ -238,6 +239,7 @@ public class AuthenticationPage extends TemplatePage {
                             case REGISTER_DEVICE:
                                 // Authentication passed, commit this registration to OLAS.
                                 encapDeviceService.commitRegistration(protocolContext.getSubject(), otp.getObject());
+                                encapDeviceService.commitRegistration(protocolContext.getNodeName(), protocolContext.getSubject(), otp.getObject());
 
                                 exit(true);
                             break;
@@ -262,6 +264,10 @@ public class AuthenticationPage extends TemplatePage {
                     } catch (SubjectNotFoundException e) {
                         AuthenticationForm.this.error(localize("errorSubjectNotFound"));
                         HelpdeskLogger.add(localize("subject not found for %s", mobile.getObject()), //
+                                LogLevelType.ERROR);
+                    } catch (NodeNotFoundException e) {
+                        AuthenticationForm.this.error(localize("errorNodeNotFound"));
+                        HelpdeskLogger.add(localize("node not found for %s", mobile.getObject()), //
                                 LogLevelType.ERROR);
                     } catch (DeviceRegistrationNotFoundException e) {
                         AuthenticationForm.this.error(localize("errorDeviceRegistrationNotFound"));
