@@ -231,11 +231,7 @@ public class RegistrationPageTest {
         jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
 
         // stubs
-<<<<<<< HEAD:safe-online-otpoversms-webapp/src/test/java/test/unit/net/link/safeonline/otpoversms/webapp/RegistrationPageTest.java
-        mockOtpOverSmsDeviceService.register(userId, pin, otp);
-=======
-        mockOtpOverSmsDeviceService.register(nodeName, userId, convertedMobile, pin, otp);
->>>>>>> 3183a48f8b87237a544b3bf4bab3d33572ce4ac3:safe-online-otpoversms-webapp/src/test/java/test/unit/net/link/safeonline/otpoversms/webapp/RegistrationPageTest.java
+        mockOtpOverSmsDeviceService.register(nodeName, userId, pin, otp);
         expectLastCall().andThrow(new AuthenticationFailedException());
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
@@ -307,11 +303,7 @@ public class RegistrationPageTest {
         jndiTestUtils.bindComponent(SecurityAuditLogger.JNDI_BINDING, mockSecurityAuditLogger);
 
         // stubs
-<<<<<<< HEAD:safe-online-otpoversms-webapp/src/test/java/test/unit/net/link/safeonline/otpoversms/webapp/RegistrationPageTest.java
-        mockOtpOverSmsDeviceService.register(userId, pin, otp);
-=======
-        mockOtpOverSmsDeviceService.register(nodeName, userId, convertedMobile, pin, otp);
->>>>>>> 3183a48f8b87237a544b3bf4bab3d33572ce4ac3:safe-online-otpoversms-webapp/src/test/java/test/unit/net/link/safeonline/otpoversms/webapp/RegistrationPageTest.java
+        mockOtpOverSmsDeviceService.register(nodeName, userId, pin, otp);
         org.easymock.EasyMock.expectLastCall().andThrow(new PermissionDeniedException(""));
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
@@ -331,5 +323,4 @@ public class RegistrationPageTest {
         wicket.assertRenderedPage(RegistrationPage.class);
         wicket.assertErrorMessages(new String[] { "errorPinNotCorrect" });
     }
-
 }

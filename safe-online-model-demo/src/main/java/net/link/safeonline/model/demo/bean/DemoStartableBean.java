@@ -637,6 +637,7 @@ public class DemoStartableBean extends AbstractInitBean {
 
         if (null != attributeProviderName) {
             attributeProviders.add(new AttributeProvider(attributeProviderName, attributeProviderName));
+            attributeProviders.add(new AttributeProvider(attributeProviderName, attributeName));
         }
 
         if (null != enName) {

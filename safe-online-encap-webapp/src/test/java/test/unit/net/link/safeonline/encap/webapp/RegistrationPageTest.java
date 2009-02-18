@@ -207,7 +207,6 @@ public class RegistrationPageTest {
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
-        mockEncapDeviceService.commitRegistration(TEST_USERID, TEST_OTP);
         mockEncapDeviceService.commitRegistration(TEST_NODE_NAME, TEST_USERID, TEST_OTP);
         expectLastCall().andThrow(new NodeNotFoundException());
         replay(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);

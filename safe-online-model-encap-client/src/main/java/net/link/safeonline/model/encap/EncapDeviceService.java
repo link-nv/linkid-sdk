@@ -67,7 +67,7 @@ public interface EncapDeviceService extends EncapService {
      * @throws DeviceAuthenticationException
      * @throws NodeNotFoundException
      */
-    void commitRegistration(String nodeName, String userId, mobile, String otp)
+    void commitRegistration(String nodeName, String userId, String otp)
             throws MobileException, DeviceAuthenticationException, NodeNotFoundException;
 
     void remove(String userId, String mobile)

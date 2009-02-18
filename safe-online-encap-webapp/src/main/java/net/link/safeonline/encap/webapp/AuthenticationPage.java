@@ -238,8 +238,8 @@ public class AuthenticationPage extends TemplatePage {
 
                             case REGISTER_DEVICE:
                                 // Authentication passed, commit this registration to OLAS.
-                                encapDeviceService.commitRegistration(protocolContext.getSubject(), otp.getObject());
-                                encapDeviceService.commitRegistration(protocolContext.getNodeName(), protocolContext.getSubject(), otp.getObject());
+                                encapDeviceService.commitRegistration(protocolContext.getNodeName(), protocolContext.getSubject(),
+                                        otp.getObject());
 
                                 exit(true);
                             break;
