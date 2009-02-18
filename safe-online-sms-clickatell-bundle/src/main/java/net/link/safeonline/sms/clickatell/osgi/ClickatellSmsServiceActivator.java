@@ -4,7 +4,7 @@
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
-package net.link.safeonline.osgi.sms.template;
+package net.link.safeonline.sms.clickatell.osgi;
 
 import net.link.safeonline.osgi.sms.SmsService;
 
@@ -13,9 +13,9 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
 
-public class TemplateSmsServiceActivator implements BundleActivator {
+public class ClickatellSmsServiceActivator implements BundleActivator {
 
-    ServiceRegistration templateSmsServiceRegistration;
+    ServiceRegistration clickatellSmsServiceRegistration;
 
 
     /*
@@ -26,8 +26,8 @@ public class TemplateSmsServiceActivator implements BundleActivator {
     public void start(BundleContext context)
             throws Exception {
 
-        TemplateSmsServiceFactory smsServiceFactory = new TemplateSmsServiceFactory();
-        templateSmsServiceRegistration = context.registerService(SmsService.class.getName(), smsServiceFactory, null);
+        ClickatellSmsServiceFactory smsServiceFactory = new ClickatellSmsServiceFactory();
+        clickatellSmsServiceRegistration = context.registerService(SmsService.class.getName(), smsServiceFactory, null);
     }
 
     /*
@@ -38,6 +38,6 @@ public class TemplateSmsServiceActivator implements BundleActivator {
     public void stop(BundleContext context)
             throws Exception {
 
-        templateSmsServiceRegistration.unregister();
+        clickatellSmsServiceRegistration.unregister();
     }
 }

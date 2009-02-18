@@ -6,6 +6,9 @@
  */
 package net.link.safeonline.osgi;
 
+import static net.link.safeonline.osgi.OSGIConstants.SMS_SERVICE_GROUP_NAME;
+import static net.link.safeonline.osgi.OSGIConstants.SMS_SERVICE_IMPL_NAME;
+
 import java.io.Serializable;
 
 import net.link.safeonline.SafeOnlineService;
@@ -29,10 +32,10 @@ import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * <h2>{@link OSGIHostActivator}<br>
- * <sub>[in short] (TODO).</sub></h2>
+ * <sub>Sets up service tracking</sub></h2>
  * 
  * <p>
- * [description / usage].
+ * This activator sets up service trackers and reacts appropriately when service implementations come and go
  * </p>
  * 
  * <p>
@@ -43,21 +46,11 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public class OSGIHostActivator implements BundleActivator, ServiceListener, Serializable {
 
-    private static final long serialVersionUID = 1L;
-
-
-    public enum OSGIServiceType {
-        PLUGIN_SERVICE,
-        SMS_SERVICE;
-    }
-
+    private static final long   serialVersionUID                     = 1L;
 
     public static final String  JNDI_BINDING                         = SafeOnlineService.JNDI_PREFIX + "OSGI/HostActivator";
 
     private static final Log    LOG                                  = LogFactory.getLog(OSGIHostActivator.class);
-
-    public static final String  SMS_SERVICE_GROUP_NAME               = "SMS Service";
-    public static final String  SMS_SERVICE_IMPL_NAME                = "Implementations";
 
     private ServiceTracker      pluginAttributeServiceTracker        = null;
 
@@ -85,8 +78,7 @@ public class OSGIHostActivator implements BundleActivator, ServiceListener, Seri
 
         // Initialize olas attribute service
         OlasAttributeServiceFactory attribtueServiceFactory = new OlasAttributeServiceFactory();
-        olasAttributeServiceRegistration = context
-                                                       .registerService(OlasAttributeService.class.getName(), attribtueServiceFactory, null);
+        olasAttributeServiceRegistration = context.registerService(OlasAttributeService.class.getName(), attribtueServiceFactory, null);
 
         // Initialize olas configuration service
         OlasConfigurationServiceFactory configurationServiceFactory = new OlasConfigurationServiceFactory();

@@ -6,6 +6,9 @@
  */
 package net.link.safeonline.model.otpoversms.bean;
 
+import static net.link.safeonline.osgi.OSGIConstants.SMS_SERVICE_GROUP_NAME;
+import static net.link.safeonline.osgi.OSGIConstants.SMS_SERVICE_IMPL_NAME;
+
 import java.net.ConnectException;
 import java.security.SecureRandom;
 
@@ -19,10 +22,9 @@ import net.link.safeonline.common.Configurable;
 import net.link.safeonline.config.model.ConfigurationInterceptor;
 import net.link.safeonline.model.otpoversms.OtpService;
 import net.link.safeonline.model.otpoversms.OtpServiceRemote;
-import net.link.safeonline.osgi.OSGIHostActivator;
 import net.link.safeonline.osgi.OSGIService;
 import net.link.safeonline.osgi.OSGIStartable;
-import net.link.safeonline.osgi.OSGIHostActivator.OSGIServiceType;
+import net.link.safeonline.osgi.OSGIConstants.OSGIServiceType;
 import net.link.safeonline.osgi.sms.SmsService;
 
 import org.apache.commons.logging.Log;
@@ -40,7 +42,7 @@ public class OtpServiceBean implements OtpService, OtpServiceRemote {
 
     private final static Log LOG = LogFactory.getLog(OtpServiceBean.class);
 
-    @Configurable(name = OSGIHostActivator.SMS_SERVICE_IMPL_NAME, group = OSGIHostActivator.SMS_SERVICE_GROUP_NAME, multipleChoice = true)
+    @Configurable(name = SMS_SERVICE_IMPL_NAME, group = SMS_SERVICE_GROUP_NAME, multipleChoice = true)
     private String           smsServiceName;
 
     private String           expectedOtp;

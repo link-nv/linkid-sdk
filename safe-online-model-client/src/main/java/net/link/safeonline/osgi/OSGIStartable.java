@@ -9,7 +9,7 @@ package net.link.safeonline.osgi;
 import javax.ejb.Local;
 
 import net.link.safeonline.Startable;
-import net.link.safeonline.osgi.OSGIHostActivator.OSGIServiceType;
+import net.link.safeonline.osgi.OSGIConstants.OSGIServiceType;
 
 
 /**

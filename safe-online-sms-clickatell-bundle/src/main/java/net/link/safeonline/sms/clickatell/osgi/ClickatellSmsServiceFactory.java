@@ -4,7 +4,7 @@
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
-package net.link.safeonline.osgi.sms.template;
+package net.link.safeonline.sms.clickatell.osgi;
 
 import net.link.safeonline.osgi.sms.SmsService;
 
@@ -13,7 +13,7 @@ import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceRegistration;
 
 
-public class TemplateSmsServiceFactory implements ServiceFactory {
+public class ClickatellSmsServiceFactory implements ServiceFactory {
 
     private int usageCounter = 0;
 
@@ -23,7 +23,7 @@ public class TemplateSmsServiceFactory implements ServiceFactory {
         System.out.println("Create object of SmsService for " + bundle.getSymbolicName());
         usageCounter++;
         System.out.println("Number of bundles using service " + usageCounter);
-        SmsService templateSmsService = new TemplateSmsService(bundle.getBundleContext());
+        SmsService templateSmsService = new ClickatellSmsService(bundle.getBundleContext());
         return templateSmsService;
     }
 
