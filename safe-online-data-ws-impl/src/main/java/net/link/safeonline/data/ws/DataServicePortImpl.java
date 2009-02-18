@@ -11,6 +11,7 @@ import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -43,16 +44,17 @@ import liberty.util._2006_08.ResponseType;
 import liberty.util._2006_08.StatusType;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.DatatypeMismatchException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AttributeProviderService;
-import net.link.safeonline.dao.AttributeDAO;
-import net.link.safeonline.dao.AttributeTypeDAO;
-import net.link.safeonline.entity.AttributeEntity;
-import net.link.safeonline.entity.AttributeTypeEntity;
-import net.link.safeonline.model.bean.AttributeManagerLWBean;
+import net.link.safeonline.authentication.service.NodeAttributeService;
 import net.link.safeonline.ws.common.WebServiceConstants;
+import net.link.safeonline.ws.util.CertificateDomainException;
+import net.link.safeonline.ws.util.CertificateValidatorHandler;
+import net.link.safeonline.ws.util.CertificateValidatorHandler.CertificateDomain;
 import net.link.safeonline.ws.util.ri.Injection;
 import oasis.names.tc.saml._2_0.assertion.AttributeType;
 
@@ -81,16 +83,13 @@ public class DataServicePortImpl implements DataServicePort {
     @EJB(mappedName = AttributeProviderService.JNDI_BINDING)
     private AttributeProviderService attributeProviderService;
 
+    @EJB(mappedName = NodeAttributeService.JNDI_BINDING)
+    private NodeAttributeService     nodeAttributeService;
+
     @Resource
     private WebServiceContext        context;
 
-    @EJB(mappedName = AttributeDAO.JNDI_BINDING)
-    private AttributeDAO             attributeDAO;
-
-    @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
-    private AttributeTypeDAO         attributeTypeDAO;
-
-    private AttributeManagerLWBean   attributeManager;
+    private CertificateDomain        certificateDomain;
 
 
     @PostConstruct
@@ -101,7 +100,6 @@ public class DataServicePortImpl implements DataServicePort {
          * lightweight bean) will live within the same transaction and security context as this identity service EJB3 session bean.
          */
         LOG.debug("postConstruct");
-        attributeManager = new AttributeManagerLWBean(attributeDAO, attributeTypeDAO);
 
         LOG.debug("ready");
     }
@@ -109,6 +107,13 @@ public class DataServicePortImpl implements DataServicePort {
     public CreateResponseType create(CreateType request) {
 
         LOG.debug("create");
+
+        try {
+            certificateDomain = CertificateValidatorHandler.getCertificateDomain(context);
+        } catch (CertificateDomainException e) {
+            return createFailedCreateResponse(SecondLevelStatusCode.INVALID_DATA);
+        }
+
         List<CreateItemType> createItems = request.getCreateItem();
         if (createItems.size() > 1)
             return createFailedCreateResponse(SecondLevelStatusCode.NO_MULTIPLE_ALLOWED);
@@ -136,7 +141,12 @@ public class DataServicePortImpl implements DataServicePort {
                 attributeValue = getValueObjectFromAttribute(attribute);
             }
 
-            attributeProviderService.createAttribute(userId, attributeName, attributeValue);
+            if (certificateDomain.equals(CertificateDomain.APPLICATION)) {
+                attributeProviderService.createAttribute(userId, attributeName, attributeValue);
+            } else if (certificateDomain.equals(CertificateDomain.NODE)) {
+                nodeAttributeService.createAttribute(userId, attributeName, attributeValue);
+            } else
+                return createFailedCreateResponse(SecondLevelStatusCode.NOT_AUTHORIZED);
 
             StatusType status = new StatusType();
             status.setCode(TopLevelStatusCode.OK.getCode());
@@ -156,12 +166,20 @@ public class DataServicePortImpl implements DataServicePort {
             return createFailedCreateResponse(SecondLevelStatusCode.NOT_AUTHORIZED);
         } catch (DatatypeMismatchException e) {
             return createFailedCreateResponse(SecondLevelStatusCode.INVALID_DATA);
+        } catch (NodeNotFoundException e) {
+            return createFailedCreateResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "NodeNotFound");
         }
     }
 
     public DeleteResponseType delete(DeleteType request) {
 
         LOG.debug("delete");
+
+        try {
+            certificateDomain = CertificateValidatorHandler.getCertificateDomain(context);
+        } catch (CertificateDomainException e) {
+            return createFailedDeleteResponse(SecondLevelStatusCode.INVALID_DATA);
+        }
 
         List<DeleteItemType> deleteItems = request.getDeleteItem();
         if (deleteItems.size() > 1)
@@ -188,11 +206,20 @@ public class DataServicePortImpl implements DataServicePort {
             String userId = TargetIdentityHandler.getTargetIdentity(context);
             String attributeId = select.getOtherAttributes().get(WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID);
 
-            if (null == attributeId) {
-                attributeProviderService.removeAttribute(userId, attributeName);
-            } else {
-                attributeProviderService.removeCompoundAttributeRecord(userId, attributeName, attributeId);
-            }
+            if (certificateDomain.equals(CertificateDomain.APPLICATION)) {
+                if (null == attributeId) {
+                    attributeProviderService.removeAttribute(userId, attributeName);
+                } else {
+                    attributeProviderService.removeCompoundAttributeRecord(userId, attributeName, attributeId);
+                }
+            } else if (certificateDomain.equals(CertificateDomain.NODE)) {
+                if (null == attributeId) {
+                    nodeAttributeService.removeAttribute(userId, attributeName);
+                } else {
+                    nodeAttributeService.removeCompoundAttributeRecord(userId, attributeName, attributeId);
+                }
+            } else
+                return createFailedDeleteResponse(SecondLevelStatusCode.NOT_AUTHORIZED);
 
             StatusType status = new StatusType();
             status.setCode(TopLevelStatusCode.OK.getCode());
@@ -212,12 +239,21 @@ public class DataServicePortImpl implements DataServicePort {
             return createFailedDeleteResponse(SecondLevelStatusCode.NOT_AUTHORIZED);
         } catch (AttributeNotFoundException e) {
             return createFailedDeleteResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "AttributeNotFound");
+        } catch (NodeNotFoundException e) {
+            return createFailedDeleteResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "NodeNotFound");
         }
     }
 
     public ModifyResponseType modify(ModifyType request) {
 
         LOG.debug("modify");
+
+        try {
+            certificateDomain = CertificateValidatorHandler.getCertificateDomain(context);
+        } catch (CertificateDomainException e) {
+            return createFailedModifyResponse(SecondLevelStatusCode.INVALID_DATA);
+        }
+
         List<ModifyItemType> modifyItems = request.getModifyItem();
         if (modifyItems.size() > 1)
             return createFailedModifyResponse(SecondLevelStatusCode.NO_MULTIPLE_ALLOWED);
@@ -264,13 +300,23 @@ public class DataServicePortImpl implements DataServicePort {
 
                 Map<String, Object> memberValues = getCompoundMemberValues(attribute);
 
-                attributeProviderService.setCompoundAttributeRecord(userId, attributeName, attributeId, memberValues);
+                if (certificateDomain.equals(CertificateDomain.APPLICATION)) {
+                    attributeProviderService.setCompoundAttributeRecord(userId, attributeName, attributeId, memberValues);
+                } else if (certificateDomain.equals(CertificateDomain.NODE)) {
+                    nodeAttributeService.setCompoundAttributeRecord(userId, attributeName, attributeId, memberValues);
+                } else
+                    return createFailedModifyResponse(SecondLevelStatusCode.NOT_AUTHORIZED);
             }
 
             else {
                 Object attributeValue = getValueObjectFromAttribute(attribute);
 
-                attributeProviderService.setAttribute(userId, attributeName, attributeValue);
+                if (certificateDomain.equals(CertificateDomain.APPLICATION)) {
+                    attributeProviderService.setAttribute(userId, attributeName, attributeValue);
+                } else if (certificateDomain.equals(CertificateDomain.NODE)) {
+                    nodeAttributeService.setAttribute(userId, attributeName, attributeValue);
+                } else
+                    return createFailedModifyResponse(SecondLevelStatusCode.NOT_AUTHORIZED);
             }
 
             StatusType status = new StatusType();
@@ -293,6 +339,8 @@ public class DataServicePortImpl implements DataServicePort {
             return createFailedModifyResponse(SecondLevelStatusCode.INVALID_DATA, "DatatypeMismatch");
         } catch (AttributeNotFoundException e) {
             return createFailedModifyResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "AttributeNotFound");
+        } catch (NodeNotFoundException e) {
+            return createFailedModifyResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "NodeNotFound");
         }
     }
 
@@ -334,9 +382,16 @@ public class DataServicePortImpl implements DataServicePort {
         return false;
     }
 
+    @SuppressWarnings("unchecked")
     public QueryResponseType query(QueryType request) {
 
         LOG.debug("query");
+
+        try {
+            certificateDomain = CertificateValidatorHandler.getCertificateDomain(context);
+        } catch (CertificateDomainException e) {
+            return createFailedQueryResponse(SecondLevelStatusCode.INVALID_DATA);
+        }
 
         List<QueryItemType> queryItems = request.getQueryItem();
         if (queryItems.size() > 1)
@@ -365,7 +420,13 @@ public class DataServicePortImpl implements DataServicePort {
             String attributeName = select.getValue();
             LOG.debug("query user \"" + userId + "\" for attribute " + attributeName);
 
-            List<AttributeEntity> attributeList = attributeProviderService.getAttributes(userId, attributeName);
+            Object attributeValues = null;
+            if (certificateDomain.equals(CertificateDomain.APPLICATION)) {
+                attributeValues = attributeProviderService.getAttributes(userId, attributeName);
+            } else if (certificateDomain.equals(CertificateDomain.NODE)) {
+                attributeValues = nodeAttributeService.getAttributes(userId, attributeName);
+            } else
+                return createFailedQueryResponse(SecondLevelStatusCode.NOT_AUTHORIZED);
 
             StatusType status = new StatusType();
             status.setCode(TopLevelStatusCode.OK.getCode());
@@ -380,7 +441,7 @@ public class DataServicePortImpl implements DataServicePort {
              * Notice that value can be null. In that case we send an empty Data element. No Data element means that the attribute provider
              * still needs to create the attribute entity itself.
              */
-            if (false == attributeList.isEmpty()) {
+            if (null != attributeValues) {
                 AttributeType attribute = new AttributeType();
                 data.setAttribute(attribute);
                 attribute.setNameFormat(WebServiceConstants.SAML_ATTRIB_NAME_FORMAT_BASIC);
@@ -389,37 +450,42 @@ public class DataServicePortImpl implements DataServicePort {
                 /*
                  * Communicate the 'type' meta-data via some XML attributes on the Attribute XML SAML element.
                  */
-                AttributeTypeEntity attributeType = attributeList.get(0).getAttributeType();
-                if (attributeType.isMultivalued()) {
+                if (attributeValues.getClass().isArray()) {
                     Map<QName, String> otherAttributes = attribute.getOtherAttributes();
                     otherAttributes.put(WebServiceConstants.MULTIVALUED_ATTRIBUTE, Boolean.TRUE.toString());
-                }
 
-                for (AttributeEntity attributeEntity : attributeList) {
-                    if (attributeEntity.getAttributeType().isCompounded()) {
-                        AttributeType compoundAttribute = new AttributeType();
-                        compoundAttribute.setNameFormat(WebServiceConstants.SAML_ATTRIB_NAME_FORMAT_BASIC);
-                        compoundAttribute.setName(attributeName);
-                        compoundAttribute.getOtherAttributes().put(WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID,
-                                attributeEntity.getStringValue());
+                    for (Object attributeValue : (Object[]) attributeValues) {
+                        if (attributeValue instanceof Map) {
+                            // compound
+                            Map<String, Object> attributeMap = (Map<String, Object>) attributeValue;
 
-                        List<Object> memberAttributeValues = compoundAttribute.getAttributeValue();
-                        for (AttributeEntity memberAttributeEntity : attributeManager.getCompoundMembers(attributeEntity)) {
-                            AttributeType memberAttribute = new AttributeType();
-                            memberAttribute.setNameFormat(WebServiceConstants.SAFE_ONLINE_SAML_NAMESPACE);
-                            memberAttribute.setName(memberAttributeEntity.getAttributeType().getName());
+                            AttributeType compoundAttribute = new AttributeType();
+                            compoundAttribute.setNameFormat(WebServiceConstants.SAML_ATTRIB_NAME_FORMAT_BASIC);
+                            compoundAttribute.setName(attributeName);
+                            // add compound parent id
+                            compoundAttribute.getOtherAttributes().put(WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID,
+                                    (String) attributeMap.get(attributeName));
+                            // add compound members
+                            List<Object> memberAttributeValues = compoundAttribute.getAttributeValue();
+                            for (Entry<String, Object> attributeMapEntry : attributeMap.entrySet()) {
+                                AttributeType memberAttribute = new AttributeType();
+                                memberAttribute.setNameFormat(WebServiceConstants.SAFE_ONLINE_SAML_NAMESPACE);
+                                memberAttribute.setName(attributeMapEntry.getKey());
 
-                            setSamlAttributeValue(memberAttributeEntity, memberAttribute);
-                            memberAttributeValues.add(memberAttribute);
+                                memberAttribute.getAttributeValue().add(attributeMapEntry.getValue());
+                                memberAttributeValues.add(memberAttribute);
+                            }
+
+                            attribute.getAttributeValue().add(compoundAttribute);
+                        } else {
+                            // non-compound multivalued
+                            attribute.getAttributeValue().add(attributeValue);
                         }
-
-                        attribute.getAttributeValue().add(compoundAttribute);
                     }
 
-                    else {
-                        Object encodedValue = attributeEntity.getValue();
-                        attribute.getAttributeValue().add(encodedValue);
-                    }
+                } else {
+                    // single-valued
+                    attribute.getAttributeValue().add(attributeValues);
                 }
             }
             return queryResponse;
@@ -440,15 +506,10 @@ public class DataServicePortImpl implements DataServicePort {
             return failedResponse;
         } catch (EJBException e) {
             return createFailedQueryResponse(SecondLevelStatusCode.INVALID_DATA);
-        } catch (AttributeNotFoundException e) {
-            throw new RuntimeException("Internal inconsistency: Compound attribute members missing.");
+        } catch (AttributeUnavailableException e) {
+            QueryResponseType failedResponse = createFailedQueryResponse(SecondLevelStatusCode.DOES_NOT_EXIST, "AttributeUnavailable");
+            return failedResponse;
         }
-    }
-
-    private void setSamlAttributeValue(AttributeEntity attribute, AttributeType targetAttribute) {
-
-        List<Object> attributeValues = targetAttribute.getAttributeValue();
-        attributeValues.add(attribute.getValue());
     }
 
     private QueryResponseType createFailedQueryResponse(SecondLevelStatusCode secondLevelStatusCode) {

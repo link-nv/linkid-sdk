@@ -10,6 +10,7 @@ import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 
@@ -23,8 +24,8 @@ public interface PasswordDeviceService extends PasswordService {
     String authenticate(String userId, String password)
             throws DeviceNotFoundException, SubjectNotFoundException, DeviceDisabledException;
 
-    void register(String userId, String password)
-            throws SubjectNotFoundException, DeviceNotFoundException;
+    void register(String nodeName, String userId, String password)
+            throws NodeNotFoundException;
 
     void update(String userId, String oldPassword, String newPassword)
             throws PermissionDeniedException, DeviceNotFoundException, SubjectNotFoundException;

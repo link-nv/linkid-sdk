@@ -173,7 +173,11 @@ public class AttributeManagerLWBean {
                  * just change the attribute index since it is part of the compounded primary key of the attribute entity. Maybe we should
                  * use a global PK attribute Id and a separate viewId instead?
                  */
-                removeAttribute.setValue(nextAttribute.getValue());
+                if (attributeType.isCompounded()) {
+                    removeAttribute.setStringValue(nextAttribute.getStringValue());
+                } else {
+                    removeAttribute.setValue(nextAttribute.getValue());
+                }
                 removeAttribute = nextAttribute;
             }
             attributeDAO.removeAttribute(removeAttribute);

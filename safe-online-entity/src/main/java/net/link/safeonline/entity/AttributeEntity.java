@@ -269,6 +269,8 @@ public class AttributeEntity implements Serializable {
                 return getDoubleValue();
             case DATE:
                 return getDateValue();
+            case COMPOUNDED:
+                return getStringValue();
             default:
                 throw new EJBException("datatype not supported: " + datatype);
         }
@@ -293,6 +295,9 @@ public class AttributeEntity implements Serializable {
             break;
             case DATE:
                 setDateValue((Date) value);
+            break;
+            case COMPOUNDED:
+                setStringValue((String) value);
             break;
             default:
                 throw new EJBException("datatype not supported: " + datatype);

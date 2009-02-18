@@ -20,7 +20,6 @@ import static org.junit.Assert.fail;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -58,6 +57,7 @@ import net.link.safeonline.authentication.service.ApplicationAuthenticationServi
 import net.link.safeonline.authentication.service.ApplicationIdentifierMappingService;
 import net.link.safeonline.authentication.service.AttributeProviderService;
 import net.link.safeonline.authentication.service.DeviceAuthenticationService;
+import net.link.safeonline.authentication.service.NodeAttributeService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.config.model.ConfigurationManager;
 import net.link.safeonline.data.ws.DataServiceConstants;
@@ -65,10 +65,6 @@ import net.link.safeonline.data.ws.DataServiceFactory;
 import net.link.safeonline.data.ws.DataServicePortImpl;
 import net.link.safeonline.data.ws.SecondLevelStatusCode;
 import net.link.safeonline.data.ws.TopLevelStatusCode;
-import net.link.safeonline.entity.AttributeEntity;
-import net.link.safeonline.entity.AttributeTypeEntity;
-import net.link.safeonline.entity.DatatypeType;
-import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.WSSecurityConfiguration;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.pkix.model.PkiValidator.PkiResult;
@@ -111,6 +107,8 @@ public class DataServicePortImplTest {
 
     private AttributeProviderService            mockAttributeProviderService;
 
+    private NodeAttributeService                mockNodeAttributeService;
+
     private ApplicationAuthenticationService    mockApplicationAuthenticationService;
 
     private DeviceAuthenticationService         mockDeviceAuthenticationService;
@@ -149,37 +147,40 @@ public class DataServicePortImplTest {
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
-        jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName", "SafeOnline/WSSecurityConfigurationBean/local");
+        jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName", WSSecurityConfiguration.JNDI_BINDING);
         jndiTestUtils.bindComponent("java:comp/env/wsSecurityOptionalInboudSignature", false);
 
         mockWSSecurityConfigurationService = createMock(WSSecurityConfiguration.class);
-        jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local", mockWSSecurityConfigurationService);
+        jndiTestUtils.bindComponent(WSSecurityConfiguration.JNDI_BINDING, mockWSSecurityConfigurationService);
 
         mockAttributeProviderService = createMock(AttributeProviderService.class);
-        jndiTestUtils.bindComponent("SafeOnline/AttributeProviderServiceBean/local", mockAttributeProviderService);
+        jndiTestUtils.bindComponent(AttributeProviderService.JNDI_BINDING, mockAttributeProviderService);
+
+        mockNodeAttributeService = createMock(NodeAttributeService.class);
+        jndiTestUtils.bindComponent(NodeAttributeService.JNDI_BINDING, mockNodeAttributeService);
 
         mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
-        jndiTestUtils.bindComponent("SafeOnline/ApplicationAuthenticationServiceBean/local", mockApplicationAuthenticationService);
+        jndiTestUtils.bindComponent(ApplicationAuthenticationService.JNDI_BINDING, mockApplicationAuthenticationService);
 
         mockDeviceAuthenticationService = createMock(DeviceAuthenticationService.class);
-        jndiTestUtils.bindComponent("SafeOnline/DeviceAuthenticationServiceBean/local", mockDeviceAuthenticationService);
+        jndiTestUtils.bindComponent(DeviceAuthenticationService.JNDI_BINDING, mockDeviceAuthenticationService);
 
         mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
-        jndiTestUtils.bindComponent("SafeOnline/NodeAuthenticationServiceBean/local", mockNodeAuthenticationService);
+        jndiTestUtils.bindComponent(NodeAuthenticationService.JNDI_BINDING, mockNodeAuthenticationService);
 
         mockPkiValidator = createMock(PkiValidator.class);
-        jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local", mockPkiValidator);
+        jndiTestUtils.bindComponent(PkiValidator.JNDI_BINDING, mockPkiValidator);
 
         mockConfigurationManager = createMock(ConfigurationManager.class);
-        jndiTestUtils.bindComponent("SafeOnline/ConfigurationManagerBean/local", mockConfigurationManager);
+        jndiTestUtils.bindComponent(ConfigurationManager.JNDI_BINDING, mockConfigurationManager);
 
         expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
 
         mockApplicationIdentifierMappingService = createMock(ApplicationIdentifierMappingService.class);
-        jndiTestUtils.bindComponent("SafeOnline/ApplicationIdentifierMappingServiceBean/local", mockApplicationIdentifierMappingService);
+        jndiTestUtils.bindComponent(ApplicationIdentifierMappingService.JNDI_BINDING, mockApplicationIdentifierMappingService);
         expect(mockApplicationIdentifierMappingService.findUserId(applicationId, targetIdentity)).andStubReturn(testSubjectId);
 
-        mockObjects = new Object[] { mockWSSecurityConfigurationService, mockAttributeProviderService,
+        mockObjects = new Object[] { mockWSSecurityConfigurationService, mockAttributeProviderService, mockNodeAttributeService,
                 mockApplicationAuthenticationService, mockDeviceAuthenticationService, mockNodeAuthenticationService, mockPkiValidator,
                 mockConfigurationManager, mockApplicationIdentifierMappingService };
 
@@ -467,22 +468,11 @@ public class DataServicePortImplTest {
         expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
         expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
 
-        AttributeTypeEntity attributeType = new AttributeTypeEntity();
-        attributeType.setName(attributeName);
-        attributeType.setType(DatatypeType.STRING);
-        attributeType.setMultivalued(true);
-        SubjectEntity subject = new SubjectEntity();
-        List<AttributeEntity> attributes = new LinkedList<AttributeEntity>();
-        AttributeEntity attribute1 = new AttributeEntity(attributeType, subject, 0);
         String attributeValue1 = "value1";
-        attribute1.setStringValue(attributeValue1);
-        attributes.add(attribute1);
-        AttributeEntity attribute2 = new AttributeEntity(attributeType, subject, 1);
         String attributeValue2 = "value2";
-        attribute2.setStringValue(attributeValue2);
-        attributes.add(attribute2);
 
-        expect(mockAttributeProviderService.getAttributes(testSubjectId, attributeName)).andReturn(attributes);
+        expect(mockAttributeProviderService.getAttributes(testSubjectId, attributeName)).andReturn(
+                new String[] { attributeValue1, attributeValue2 });
 
         // prepare
         replay(mockObjects);

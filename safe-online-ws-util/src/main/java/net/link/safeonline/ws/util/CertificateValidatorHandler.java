@@ -135,7 +135,7 @@ public class CertificateValidatorHandler implements SOAPHandler<SOAPMessageConte
         soapMessageContext.setScope(CERTIFICATE_DOMAIN_PROPERTY, Scope.APPLICATION);
     }
 
-    private static CertificateDomain getCertificateDomain(SOAPMessageContext soapMessageContext) {
+    public static CertificateDomain getCertificateDomain(SOAPMessageContext soapMessageContext) {
 
         CertificateDomain certificateDomain = (CertificateDomain) soapMessageContext.get(CERTIFICATE_DOMAIN_PROPERTY);
         if (null == certificateDomain)
