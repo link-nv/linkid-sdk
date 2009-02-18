@@ -86,6 +86,7 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
 
     private AttributeManagerLWBean attributeManager;
 
+    private String                 challengeMobile;
     private String                 challengeCode;
 
 
@@ -121,18 +122,18 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
     /**
      * {@inheritDoc}
      */
-    public String authenticate(String mobile, String mobileOTP)
+    public String authenticate(String mobileOTP)
             throws SubjectNotFoundException, DeviceDisabledException, DeviceRegistrationNotFoundException, MobileException,
             DeviceAuthenticationException {
 
         if (!isChallenged())
             return null;
 
-        SubjectEntity subject = subjectIdentifierDAO.findSubject(EncapConstants.ENCAP_IDENTIFIER_DOMAIN, mobile);
+        SubjectEntity subject = subjectIdentifierDAO.findSubject(EncapConstants.ENCAP_IDENTIFIER_DOMAIN, challengeMobile);
         if (null == subject)
             throw new SubjectNotFoundException();
 
-        if (true == getDisableAttribute(subject, mobile).getBooleanValue())
+        if (true == getDisableAttribute(subject, challengeMobile).getBooleanValue())
             throw new DeviceDisabledException();
 
         if (false == mobileManager.verifyOTP(challengeCode, mobileOTP)) {
@@ -159,7 +160,7 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
     /**
      * {@inheritDoc}
      */
-    public void commitRegistration(String userId, String mobile, String mobileOTP)
+    public void commitRegistration(String userId, String mobileOTP)
             throws SubjectNotFoundException, MobileException, DeviceAuthenticationException {
 
         if (false == mobileManager.verifyOTP(challengeCode, mobileOTP)) {
@@ -168,9 +169,9 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
         }
 
         // Remove any old subjects that use this mobile.
-        SubjectEntity subject = subjectIdentifierDAO.findSubject(EncapConstants.ENCAP_IDENTIFIER_DOMAIN, mobile);
+        SubjectEntity subject = subjectIdentifierDAO.findSubject(EncapConstants.ENCAP_IDENTIFIER_DOMAIN, challengeMobile);
         if (null != subject) {
-            mobileManager.remove(mobile);
+            mobileManager.remove(challengeMobile);
             // flush and clear to commit and release the removed entities.
             entityManager.flush();
             entityManager.clear();
@@ -185,11 +186,11 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
         // Create the device attributes.
         try {
             CompoundAttributeDO deviceAttribute = attributeManager.newCompound(EncapConstants.ENCAP_DEVICE_ATTRIBUTE, subject);
-            deviceAttribute.addAttribute(EncapConstants.ENCAP_MOBILE_ATTRIBUTE, mobile);
+            deviceAttribute.addAttribute(EncapConstants.ENCAP_MOBILE_ATTRIBUTE, challengeMobile);
             deviceAttribute.addAttribute(EncapConstants.ENCAP_DEVICE_DISABLE_ATTRIBUTE, false);
 
             // Add the subject mapping.
-            subjectIdentifierDAO.addSubjectIdentifier(EncapConstants.ENCAP_IDENTIFIER_DOMAIN, mobile, subject);
+            subjectIdentifierDAO.addSubjectIdentifier(EncapConstants.ENCAP_IDENTIFIER_DOMAIN, challengeMobile, subject);
         }
 
         catch (AttributeTypeNotFoundException e) {
@@ -228,7 +229,8 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
     public void requestOTP(String mobile)
             throws MobileException {
 
-        challengeCode = mobileManager.requestOTP(mobile);
+        challengeMobile = mobile;
+        challengeCode = mobileManager.requestOTP(challengeMobile);
     }
 
     /**
@@ -291,7 +293,7 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
     /**
      * {@inheritDoc}
      */
-    public void enable(String userId, String mobile, String mobileOTP)
+    public void enable(String userId, String mobileOTP)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException, MobileException, DeviceAuthenticationException {
 
         if (false == mobileManager.verifyOTP(challengeCode, mobileOTP)) {
@@ -300,7 +302,7 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
         }
 
         SubjectEntity subject = subjectService.getSubject(userId);
-        AttributeEntity disableAttribute = getDisableAttribute(subject, mobile);
+        AttributeEntity disableAttribute = getDisableAttribute(subject, challengeMobile);
         disableAttribute.setBooleanValue(false);
     }
 
@@ -309,6 +311,6 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
      */
     public boolean isChallenged() {
 
-        return challengeCode != null;
+        return challengeMobile != null && challengeCode != null;
     }
 }

@@ -20,6 +20,7 @@ public interface PasswordConstants {
     public static final String PASSWORD_HASH_ATTRIBUTE             = "urn:net:lin-k:safe-online:attribute:password:hash";
     public static final String PASSWORD_SEED_ATTRIBUTE             = "urn:net:lin-k:safe-online:attribute:password:seed";
     public static final String PASSWORD_ALGORITHM_ATTRIBUTE        = "urn:net:lin-k:safe-online:attribute:password:algorithm";
+    public static final String PASSWORD_NEW_ALGORITHM_ATTRIBUTE    = "urn:net:lin-k:safe-online:attribute:password:algorithm:new";
     public static final String PASSWORD_DEVICE_DISABLE_ATTRIBUTE   = "urn:net:lin-k:safe-online:attribute:password:device:disable";
     public static final String PASSWORD_DEVICE_ATTRIBUTE           = "urn:net:lin-k:safe-online:attribute:password:device";
 

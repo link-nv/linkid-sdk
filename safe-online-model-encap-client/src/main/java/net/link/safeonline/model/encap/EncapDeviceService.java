@@ -38,7 +38,7 @@ public interface EncapDeviceService extends EncapService {
      * @throws MobileException
      * @throws DeviceAuthenticationException
      */
-    String authenticate(String mobile, String mobileOTP)
+    String authenticate(String mobileOTP)
             throws SubjectNotFoundException, DeviceDisabledException, DeviceRegistrationNotFoundException, MobileException,
             DeviceAuthenticationException;
 
@@ -65,7 +65,7 @@ public interface EncapDeviceService extends EncapService {
      * @throws MobileException
      * @throws DeviceAuthenticationException
      */
-    void commitRegistration(String userId, String mobile, String otp)
+    void commitRegistration(String userId, String otp)
             throws SubjectNotFoundException, MobileException, DeviceAuthenticationException;
 
     void remove(String userId, String mobile)
@@ -111,7 +111,7 @@ public interface EncapDeviceService extends EncapService {
      * @throws DeviceAuthenticationException
      * @throws MobileException
      */
-    void enable(String userId, String mobile, String otp)
+    void enable(String userId, String otp)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException, MobileException, DeviceAuthenticationException;
 
     /**

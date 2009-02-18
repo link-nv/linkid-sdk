@@ -9,26 +9,26 @@ package net.link.safeonline.model.password.bean;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.LinkedList;
-import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.interceptor.Interceptors;
 
 import net.link.safeonline.audit.AccessAuditLogger;
 import net.link.safeonline.audit.AuditContextManager;
+import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
+import net.link.safeonline.authentication.exception.InternalInconsistencyException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
+import net.link.safeonline.data.CompoundAttributeDO;
 import net.link.safeonline.entity.AttributeEntity;
-import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.SubjectEntity;
+import net.link.safeonline.model.bean.AttributeManagerLWBean;
 import net.link.safeonline.model.password.PasswordConstants;
 import net.link.safeonline.model.password.PasswordManager;
 
@@ -41,214 +41,172 @@ import org.jboss.annotation.ejb.LocalBinding;
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
 public class PasswordManagerBean implements PasswordManager {
 
-    private static final String defaultHashingAlgorithm = "SHA-512";
+    private static final String    defaultHashingAlgorithm = "SHA-512";
 
     @EJB(mappedName = AttributeDAO.JNDI_BINDING)
-    private AttributeDAO        attributeDAO;
+    private AttributeDAO           attributeDAO;
 
     @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
-    private AttributeTypeDAO    attributeTypeDAO;
+    private AttributeTypeDAO       attributeTypeDAO;
+
+    private AttributeManagerLWBean attributeManager;
 
 
-    public void changePassword(SubjectEntity subject, String oldPassword, String newPassword)
-            throws PermissionDeniedException, DeviceNotFoundException {
+    @PostConstruct
+    public void postConstructCallback() {
 
-        if (isPasswordConfigured(subject)) {
-            if (!validatePassword(subject, oldPassword))
-                throw new PermissionDeniedException("password mismatch");
-        }
-
-        setPasswordWithForce(subject, newPassword);
-    }
-
-    public void setPassword(SubjectEntity subject, String password)
-            throws PermissionDeniedException {
-
-        if (isPasswordConfigured(subject))
-            throw new PermissionDeniedException("password already configured");
-
-        setPasswordWithForce(subject, password);
-    }
-
-    private void setPasswordWithForce(SubjectEntity subject, String password) {
-
-        AttributeTypeEntity passwordHashAttributeType;
-        AttributeTypeEntity passwordSeedAttributeType;
-        AttributeTypeEntity passwordAlgorithmAttributeType;
-        AttributeTypeEntity passwordDeviceAttributeType;
-        AttributeTypeEntity passwordDeviceDisableAttributeType;
-        try {
-            passwordHashAttributeType = attributeTypeDAO.getAttributeType(PasswordConstants.PASSWORD_HASH_ATTRIBUTE);
-            passwordSeedAttributeType = attributeTypeDAO.getAttributeType(PasswordConstants.PASSWORD_SEED_ATTRIBUTE);
-            passwordAlgorithmAttributeType = attributeTypeDAO.getAttributeType(PasswordConstants.PASSWORD_ALGORITHM_ATTRIBUTE);
-            passwordDeviceAttributeType = attributeTypeDAO.getAttributeType(PasswordConstants.PASSWORD_DEVICE_ATTRIBUTE);
-            passwordDeviceDisableAttributeType = attributeTypeDAO
-                                                                      .getAttributeType(PasswordConstants.PASSWORD_DEVICE_DISABLE_ATTRIBUTE);
-        } catch (AttributeTypeNotFoundException e) {
-            throw new EJBException("password attribute types not found");
-        }
-
-        String seed = subject.getUserId();
-        String hashValue;
-        try {
-            hashValue = hash(password, seed, defaultHashingAlgorithm);
-        } catch (NoSuchAlgorithmException e) {
-            throw new EJBException("Could not find the default password hashing algorithm: " + defaultHashingAlgorithm);
-        }
-        try {
-            Password passwordAttribute = getPasswordAttribute(subject);
-
-            passwordAttribute.hash.setStringValue(hashValue);
-            passwordAttribute.seed.setStringValue(seed);
-            passwordAttribute.algorithm.setStringValue(defaultHashingAlgorithm);
-        } catch (DeviceNotFoundException e) {
-            AttributeEntity hashAttribute = attributeDAO.addAttribute(passwordHashAttributeType, subject, hashValue);
-            AttributeEntity seedAttribute = attributeDAO.addAttribute(passwordSeedAttributeType, subject, seed);
-            AttributeEntity algorithmAttribute = attributeDAO.addAttribute(passwordAlgorithmAttributeType, subject,
-                    defaultHashingAlgorithm);
-            AttributeEntity disableAttribute = attributeDAO.addAttribute(passwordDeviceDisableAttributeType, subject);
-            disableAttribute.setBooleanValue(false);
-            List<AttributeEntity> members = new LinkedList<AttributeEntity>();
-            members.add(hashAttribute);
-            members.add(seedAttribute);
-            members.add(algorithmAttribute);
-            members.add(disableAttribute);
-            AttributeEntity parentAttribute = attributeDAO.addAttribute(passwordDeviceAttributeType, subject);
-            parentAttribute.setMembers(members);
-        }
-    }
-
-    public boolean isDisabled(SubjectEntity subject)
-            throws DeviceNotFoundException {
-
-        Password password = getPasswordAttribute(subject);
-        return password.disabled.getBooleanValue();
-    }
-
-    public boolean validatePassword(SubjectEntity subject, String password)
-            throws DeviceNotFoundException {
-
-        // get current password
-        Password expectedPassword = getPasswordAttribute(subject);
-        String expectedPasswordHash = expectedPassword.hash.getStringValue();
-        String seed = expectedPassword.seed.getStringValue();
-        String algorithm = expectedPassword.algorithm.getStringValue();
-
-        // calculate hash
-        String givenPasswordHash;
-        try {
-            givenPasswordHash = hash(password, seed, algorithm);
-        } catch (NoSuchAlgorithmException e) {
-            throw new EJBException("Password hashing algorithm not found: " + algorithm);
-        }
-
-        // compare hash
-        if (expectedPasswordHash.equals(givenPasswordHash)) {
-            // update hash to new default
-            if (!algorithm.equals(defaultHashingAlgorithm)) {
-                setPasswordWithForce(subject, password);
-            }
-            return true;
-        }
-        return false;
-    }
-
-    private Password getPasswordAttribute(SubjectEntity subject)
-            throws DeviceNotFoundException {
-
-        AttributeEntity passwordHashAttribute = attributeDAO.findAttribute(PasswordConstants.PASSWORD_HASH_ATTRIBUTE, subject);
-        AttributeEntity passwordSeedAttribute = attributeDAO.findAttribute(PasswordConstants.PASSWORD_SEED_ATTRIBUTE, subject);
-        AttributeEntity passwordAlgorithmAttribute = attributeDAO.findAttribute(PasswordConstants.PASSWORD_ALGORITHM_ATTRIBUTE,
-                subject);
-        AttributeEntity passwordDisableAttribute = attributeDAO.findAttribute(PasswordConstants.PASSWORD_DEVICE_DISABLE_ATTRIBUTE,
-                subject);
-        AttributeEntity passwordParentAttribute = attributeDAO.findAttribute(PasswordConstants.PASSWORD_DEVICE_ATTRIBUTE, subject);
-        if (null == passwordHashAttribute || null == passwordSeedAttribute || null == passwordAlgorithmAttribute
-                || null == passwordParentAttribute || null == passwordDisableAttribute)
-            throw new DeviceNotFoundException();
-        String hash = passwordHashAttribute.getStringValue();
-        String seed = passwordSeedAttribute.getStringValue();
-        String algorithm = passwordAlgorithmAttribute.getStringValue();
-        if (null == hash || null == seed || null == algorithm)
-            throw new DeviceNotFoundException();
-
-        return new Password(passwordHashAttribute, passwordSeedAttribute, passwordAlgorithmAttribute, passwordDisableAttribute,
-                passwordParentAttribute);
-    }
-
-    public boolean isPasswordConfigured(SubjectEntity subject) {
-
-        try {
-            getPasswordAttribute(subject);
-        } catch (DeviceNotFoundException e) {
-            return false;
-        }
-        return true;
-    }
-
-    public void removePassword(SubjectEntity subject)
-            throws DeviceNotFoundException {
-
-        Password currentPassword = getPasswordAttribute(subject);
-        attributeDAO.removeAttribute(currentPassword.algorithm);
-        attributeDAO.removeAttribute(currentPassword.hash);
-        attributeDAO.removeAttribute(currentPassword.seed);
-        attributeDAO.removeAttribute(currentPassword.parent);
-        attributeDAO.removeAttribute(currentPassword.disabled);
+        /*
+         * By injecting the attribute DAO of this session bean in the attribute manager we are sure that the attribute manager (a
+         * lightweight bean) will live within the same transaction and security context as this identity service EJB3 session bean.
+         */
+        attributeManager = new AttributeManagerLWBean(attributeDAO, attributeTypeDAO);
     }
 
     /**
      * {@inheritDoc}
      */
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void disablePassword(SubjectEntity subject, boolean disable)
-            throws DeviceNotFoundException {
+    public void updatePassword(SubjectEntity subject, String oldPassword, String newPassword)
+            throws DeviceRegistrationNotFoundException, PermissionDeniedException {
 
-        Password password = getPasswordAttribute(subject);
-        password.disabled.setBooleanValue(disable);
+        if (!validatePassword(subject, oldPassword))
+            throw new PermissionDeniedException("password mismatch");
 
+        setPasswordWithForce(subject, newPassword);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public void registerPassword(SubjectEntity subject, String password) {
 
-    private static class Password {
+        try {
+            String seed = subject.getUserId();
+            String hashValue = hash(password, seed, defaultHashingAlgorithm);
 
-        public AttributeEntity hash;
-        public AttributeEntity seed;
-        public AttributeEntity algorithm;
-        public AttributeEntity disabled;
-        public AttributeEntity parent;
+            CompoundAttributeDO deviceAttribute = attributeManager.newCompound(PasswordConstants.PASSWORD_DEVICE_ATTRIBUTE, subject);
+            deviceAttribute.addAttribute(PasswordConstants.PASSWORD_HASH_ATTRIBUTE, hashValue);
+            deviceAttribute.addAttribute(PasswordConstants.PASSWORD_SEED_ATTRIBUTE, seed);
+            deviceAttribute.addAttribute(PasswordConstants.PASSWORD_ALGORITHM_ATTRIBUTE, defaultHashingAlgorithm);
+            deviceAttribute.addAttribute(PasswordConstants.PASSWORD_NEW_ALGORITHM_ATTRIBUTE, null);
+            deviceAttribute.addAttribute(PasswordConstants.PASSWORD_DEVICE_DISABLE_ATTRIBUTE, false);
+        }
 
-
-        public Password(AttributeEntity hash, AttributeEntity seed, AttributeEntity algorithm, AttributeEntity disabled,
-                        AttributeEntity parent) {
-
-            this.hash = hash;
-            this.seed = seed;
-            this.algorithm = algorithm;
-            this.disabled = disabled;
-            this.parent = parent;
+        catch (NoSuchAlgorithmException e) {
+            throw new EJBException("Could not use the default otp over sms pin hashing algorithm: " + defaultHashingAlgorithm);
+        } catch (AttributeTypeNotFoundException e) {
+            throw new InternalInconsistencyException("Attribute types for OtpOverSMS device not defined.", e);
         }
     }
 
+    private void setPasswordWithForce(SubjectEntity subject, String password)
+            throws DeviceRegistrationNotFoundException {
+
+        try {
+            AttributeEntity deviceAttribute = attributeDAO.findAttribute(subject, PasswordConstants.PASSWORD_DEVICE_ATTRIBUTE, 0);
+            AttributeEntity algorithmAttribute = attributeManager.getCompoundMember(deviceAttribute,
+                    PasswordConstants.PASSWORD_ALGORITHM_ATTRIBUTE);
+            AttributeEntity newAlgorithmAttribute = attributeManager.getCompoundMember(deviceAttribute,
+                    PasswordConstants.PASSWORD_NEW_ALGORITHM_ATTRIBUTE);
+            AttributeEntity hashAttribute = attributeManager.getCompoundMember(deviceAttribute, PasswordConstants.PASSWORD_HASH_ATTRIBUTE);
+            AttributeEntity seedAttribute = attributeManager.getCompoundMember(deviceAttribute, PasswordConstants.PASSWORD_SEED_ATTRIBUTE);
+
+            String seed = subject.getUserId();
+            String algorithm = newAlgorithmAttribute.isEmpty()? algorithmAttribute.getStringValue(): newAlgorithmAttribute.getStringValue();
+            String hashValue = hash(password, seed, algorithm);
+
+            hashAttribute.setStringValue(hashValue);
+            seedAttribute.setStringValue(seed);
+
+            if (false == newAlgorithmAttribute.isEmpty()) {
+                // We used newAlgorithm, write it to algorithm and unset newAlgorithm.
+                algorithmAttribute.setValue(algorithm);
+                newAlgorithmAttribute.setValue(null);
+            }
+        }
+
+        catch (NoSuchAlgorithmException e) {
+            throw new EJBException("Could not find the hashing algorithm.");
+        } catch (AttributeTypeNotFoundException e) {
+            throw new InternalInconsistencyException("Attribute types for OtpOverSMS device not defined.", e);
+        } catch (AttributeNotFoundException e) {
+            throw new DeviceRegistrationNotFoundException();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean validatePassword(SubjectEntity subject, String password)
+            throws DeviceRegistrationNotFoundException {
+
+        try {
+            AttributeEntity deviceAttribute = attributeDAO.findAttribute(subject, PasswordConstants.PASSWORD_DEVICE_ATTRIBUTE, 0);
+            AttributeEntity hashAttribute = attributeManager.getCompoundMember(deviceAttribute, PasswordConstants.PASSWORD_HASH_ATTRIBUTE);
+            AttributeEntity seedAttribute = attributeManager.getCompoundMember(deviceAttribute, PasswordConstants.PASSWORD_SEED_ATTRIBUTE);
+            AttributeEntity algorithmAttribute = attributeManager.getCompoundMember(deviceAttribute,
+                    PasswordConstants.PASSWORD_ALGORITHM_ATTRIBUTE);
+            AttributeEntity newAlgorithmAttribute = attributeManager.getCompoundMember(deviceAttribute,
+                    PasswordConstants.PASSWORD_NEW_ALGORITHM_ATTRIBUTE);
+
+            // calculate hash
+            String givenPinHash = hash(password, seedAttribute.getStringValue(), algorithmAttribute.getStringValue());
+
+            // compare hash
+            if (hashAttribute.getStringValue().equals(givenPinHash)) {
+                // In case we need to update the hash to a new algorithm:
+                if (false == newAlgorithmAttribute.isEmpty()) {
+                    setPasswordWithForce(subject, password);
+                }
+
+                return true;
+            }
+
+            return false;
+        }
+
+        catch (NoSuchAlgorithmException e) {
+            throw new EJBException("Pin hashing algorithm not found.");
+        } catch (AttributeTypeNotFoundException e) {
+            throw new InternalInconsistencyException("Attribute types for OtpOverSMS device not defined.", e);
+        } catch (AttributeNotFoundException e) {
+            throw new DeviceRegistrationNotFoundException();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void removePassword(SubjectEntity subject) {
+
+        AttributeEntity deviceAttribute = attributeDAO.findAttribute(subject, PasswordConstants.PASSWORD_DEVICE_ATTRIBUTE, 0);
+        attributeManager.removeCompoundAttribute(deviceAttribute);
+    }
 
     private static String hash(String input, String seed, String algorithm)
             throws NoSuchAlgorithmException {
 
-        String toHash = input + seed;
-        byte[] plainText = null;
-
         try {
-            plainText = toHash.getBytes("UTF8");
-        } catch (UnsupportedEncodingException e) {
-            throw new EJBException("Unsupported encoding in password hash function");
+            String toHash = input + seed;
+            byte[] plainText = toHash.getBytes("UTF8");
+
+            MessageDigest messageDigest = MessageDigest.getInstance(algorithm, new BouncyCastleProvider());
+            messageDigest.update(plainText);
+
+            return new sun.misc.BASE64Encoder().encode(messageDigest.digest());
         }
 
-        MessageDigest messageDigest = MessageDigest.getInstance(algorithm, new BouncyCastleProvider());
-
-        messageDigest.update(plainText);
-        String digestAsString = new sun.misc.BASE64Encoder().encode(messageDigest.digest());
-
-        return digestAsString;
+        catch (UnsupportedEncodingException e) {
+            throw new EJBException("Unsupported encoding in mobile pin hash function");
+        }
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isPasswordConfigured(SubjectEntity subject) {
+
+        AttributeEntity deviceAttribute = attributeDAO.findAttribute(subject, PasswordConstants.PASSWORD_DEVICE_ATTRIBUTE, 0);
+
+        return deviceAttribute != null;
+    }
 }

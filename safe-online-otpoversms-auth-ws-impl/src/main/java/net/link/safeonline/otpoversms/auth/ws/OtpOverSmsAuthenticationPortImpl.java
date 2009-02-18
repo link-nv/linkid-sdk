@@ -61,8 +61,6 @@ public class OtpOverSmsAuthenticationPortImpl implements DeviceAuthenticationPor
 
     public static StatefulWebServiceManager<DeviceAuthenticationPort> manager;
 
-    private String                                                    mobile;
-
     private OtpOverSmsDeviceService                                   deviceService;
 
 
@@ -103,7 +101,7 @@ public class OtpOverSmsAuthenticationPortImpl implements DeviceAuthenticationPor
 
         LOG.debug( "authenticate" );
 
-        if (null == mobile && deviceService == null || !deviceService.isChallenged())
+        if (deviceService == null || !deviceService.isChallenged())
             // step 1, expect mobile attribute, will send OTP after mobile has been verified
             return sendOtp( request );
 
@@ -122,6 +120,7 @@ public class OtpOverSmsAuthenticationPortImpl implements DeviceAuthenticationPor
                                                                                                request.getDeviceName() );
 
         DeviceCredentialsType deviceCredentials = request.getDeviceCredentials();
+        String mobile = null;
         for (NameValuePairType nameValuePair : deviceCredentials.getNameValuePair())
             if (nameValuePair.getName().equals( OtpOverSmsConstants.OTPOVERSMS_WS_AUTH_MOBILE_ATTRIBUTE ))
                 mobile = nameValuePair.getValue();
@@ -160,11 +159,6 @@ public class OtpOverSmsAuthenticationPortImpl implements DeviceAuthenticationPor
                                                     e.getMessage() );
             manager.unexport( this );
             return response;
-        } catch (DeviceDisabledException e) {
-            LOG.error( "device disabled: " + e.getMessage(), e );
-            DeviceAuthenticationPortUtil.setStatus( response, WSAuthenticationErrorCode.DEVICE_DISABLED, e.getMessage() );
-            manager.unexport( this );
-            return response;
         }
 
         DeviceAuthenticationPortUtil.setStatus( response, WSAuthenticationErrorCode.SUCCESS, null );
@@ -198,7 +192,7 @@ public class OtpOverSmsAuthenticationPortImpl implements DeviceAuthenticationPor
         }
 
         try {
-            String userId = deviceService.authenticate( mobile, pin, otp );
+            String userId = deviceService.authenticate( pin, otp );
 
             if (null != userId) {
                 response.setUserId( userId );

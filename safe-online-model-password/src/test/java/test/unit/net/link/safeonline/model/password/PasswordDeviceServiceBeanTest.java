@@ -4,11 +4,14 @@ import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.UUID;
 
-import junit.framework.TestCase;
 import net.link.safeonline.audit.SecurityAuditLogger;
+import net.link.safeonline.dao.AttributeDAO;
+import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
@@ -17,8 +20,11 @@ import net.link.safeonline.model.password.bean.PasswordDeviceServiceBean;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.test.util.EJBTestUtils;
 
+import org.junit.Before;
+import org.junit.Test;
 
-public class PasswordDeviceServiceBeanTest extends TestCase {
+
+public class PasswordDeviceServiceBeanTest {
 
     private PasswordDeviceServiceBean testedInstance;
 
@@ -32,33 +38,42 @@ public class PasswordDeviceServiceBeanTest extends TestCase {
 
     private SecurityAuditLogger       mockSecurityAuditLogger;
 
+    private AttributeDAO              mockAttributeDAO;
 
-    @Override
-    protected void setUp()
+    private AttributeTypeDAO          mockAttributeTypeDAO;
+
+
+    @Before
+    public void setUp()
             throws Exception {
 
-        super.setUp();
-
         testedInstance = new PasswordDeviceServiceBean();
+
+        mockAttributeDAO = createMock(AttributeDAO.class);
+        EJBTestUtils.inject(testedInstance, mockAttributeDAO);
+
+        mockAttributeTypeDAO = createMock(AttributeTypeDAO.class);
+        EJBTestUtils.inject(testedInstance, mockAttributeTypeDAO);
 
         mockSubjectService = createMock(SubjectService.class);
         EJBTestUtils.inject(testedInstance, mockSubjectService);
 
-        mockHistoryDAO = createMock(HistoryDAO.class);
-        EJBTestUtils.inject(testedInstance, mockHistoryDAO);
-
         mockPasswordManager = createMock(PasswordManager.class);
         EJBTestUtils.inject(testedInstance, mockPasswordManager);
+
+        mockHistoryDAO = createMock(HistoryDAO.class);
+        EJBTestUtils.inject(testedInstance, mockHistoryDAO);
 
         mockSecurityAuditLogger = createMock(SecurityAuditLogger.class);
         EJBTestUtils.inject(testedInstance, mockSecurityAuditLogger);
 
         EJBTestUtils.init(testedInstance);
 
-        mockObjects = new Object[] { mockSubjectService, mockPasswordManager, mockHistoryDAO,
+        mockObjects = new Object[] { mockAttributeDAO, mockAttributeTypeDAO, mockSubjectService, mockPasswordManager, mockHistoryDAO,
                 mockSecurityAuditLogger };
     }
 
+    @Test
     public void testAuthenticate()
             throws Exception {
 
@@ -69,7 +84,6 @@ public class PasswordDeviceServiceBeanTest extends TestCase {
         // stubs
         SubjectEntity subject = new SubjectEntity(userId);
         expect(mockSubjectService.getSubject(userId)).andStubReturn(subject);
-        expect(mockPasswordManager.isDisabled(subject)).andStubReturn(false);
         expect(mockPasswordManager.validatePassword(subject, password)).andStubReturn(true);
 
         // prepare
@@ -83,6 +97,7 @@ public class PasswordDeviceServiceBeanTest extends TestCase {
         assertNotNull(resultUserId);
     }
 
+    @Test
     public void testAuthenticateWithWrongPasswordFails()
             throws Exception {
 
@@ -93,7 +108,6 @@ public class PasswordDeviceServiceBeanTest extends TestCase {
         // stubs
         SubjectEntity subject = new SubjectEntity(userId);
         expect(mockSubjectService.getSubject(userId)).andStubReturn(subject);
-        expect(mockPasswordManager.isDisabled(subject)).andStubReturn(false);
         expect(mockPasswordManager.validatePassword(subject, wrongPassword)).andStubReturn(false);
 
         // expectations

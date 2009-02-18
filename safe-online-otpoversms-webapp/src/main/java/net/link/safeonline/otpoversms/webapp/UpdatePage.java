@@ -13,6 +13,7 @@ import javax.ejb.EJB;
 
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
+import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
@@ -147,10 +148,6 @@ public class UpdatePage extends TemplatePage {
                         RequestOtpForm.this.error(getLocalizer().getString("errorDeviceRegistrationNotFound", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "update: mobile isn't registered: "
                                 + protocolContext.getAttribute(), LogLevelType.ERROR);
-                    } catch (DeviceDisabledException e) {
-                        RequestOtpForm.this.error(getLocalizer().getString("errorDeviceDisabled", this));
-                        HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "update: mobile is disabled: "
-                                + protocolContext.getAttribute(), LogLevelType.ERROR);
                     }
                 }
             });
@@ -237,13 +234,7 @@ public class UpdatePage extends TemplatePage {
                     OtpOverSmsDeviceService otpOverSmsDeviceService = OtpOverSmsSession.get().getDeviceService();
 
                     try {
-                        if (!otpOverSmsDeviceService.update(protocolContext.getSubject(), protocolContext.getAttribute(), otp.getObject(),
-                                oldPin.getObject(), pin1.getObject())) {
-                            oldpinField.error(getLocalizer().getString("errorPinNotCorrect", this));
-                            HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "update: device not found",
-                                    LogLevelType.ERROR);
-                            return;
-                        }
+                        otpOverSmsDeviceService.update(protocolContext.getSubject(), otp.getObject(), oldPin.getObject(), pin1.getObject());
 
                         protocolContext.setSuccess(true);
                         exit();
@@ -261,6 +252,10 @@ public class UpdatePage extends TemplatePage {
                         password1Field.error(getLocalizer().getString("mobileDisabled", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: mobile " + protocolContext.getAttribute()
                                 + " disabled", LogLevelType.ERROR);
+                    } catch (PermissionDeniedException e) {
+                        oldpinField.error(getLocalizer().getString("errorPinNotCorrect", this));
+                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "update: device not found",
+                                LogLevelType.ERROR);
                     }
                 }
 

@@ -24,7 +24,6 @@ import javax.ejb.Stateless;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.demo.bank.keystore.DemoBankKeyStoreUtils;
 import net.link.safeonline.demo.cinema.keystore.DemoCinemaKeyStoreUtils;
@@ -62,13 +61,13 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = DemoStartableBean.JNDI_BINDING)
 public class DemoStartableBean extends AbstractInitBean {
 
-    public static final String  JNDI_BINDING                       = DemoConstants.DEMO_STARTABLE_JNDI_PREFIX + "DemoStartableBean";
+    public static final String  JNDI_BINDING                      = DemoConstants.DEMO_STARTABLE_JNDI_PREFIX + "DemoStartableBean";
 
-    private static final String PASSWORD                           = "secret";
+    private static final String PASSWORD                          = "secret";
 
-    public static final String  LICENSE_AGREEMENT_CONFIRM_TEXT_EN  = "PLEASE READ THIS SOFTWARE LICENSE AGREEMENT (\"LICENSE\") CAREFULLY BEFORE USING THE SOFTWARE. \n BY USING THE SOFTWARE, YOU ARE AGREEING TO BE BOUND BY THE TERMS OF THIS LICENSE. \n IF YOU ARE ACCESSING THE SOFTWARE ELECTRONICALLY, SIGNIFY YOUR AGREEMENT TO BE BOUND BY THE TERMS OF THIS LICENSE BY CLICKING THE \"AGREE/ACCEPT\" BUTTON. \n IF YOU DO NOT AGREE TO THE TERMS OF THIS LICENSE, DO NOT USE THE SOFTWARE AND (IF APPLICABLE) RETURN THE APPLE SOFTWARE TO THE PLACE WHERE YOU OBTAINED IT FOR A REFUND OR, IF THE SOFTWARE WAS ACCESSED ELECTRONICALLY, CLICK \"DISAGREE/DECLINE\".";
+    public static final String  LICENSE_AGREEMENT_CONFIRM_TEXT_EN = "PLEASE READ THIS SOFTWARE LICENSE AGREEMENT (\"LICENSE\") CAREFULLY BEFORE USING THE SOFTWARE. \n BY USING THE SOFTWARE, YOU ARE AGREEING TO BE BOUND BY THE TERMS OF THIS LICENSE. \n IF YOU ARE ACCESSING THE SOFTWARE ELECTRONICALLY, SIGNIFY YOUR AGREEMENT TO BE BOUND BY THE TERMS OF THIS LICENSE BY CLICKING THE \"AGREE/ACCEPT\" BUTTON. \n IF YOU DO NOT AGREE TO THE TERMS OF THIS LICENSE, DO NOT USE THE SOFTWARE AND (IF APPLICABLE) RETURN THE APPLE SOFTWARE TO THE PLACE WHERE YOU OBTAINED IT FOR A REFUND OR, IF THE SOFTWARE WAS ACCESSED ELECTRONICALLY, CLICK \"DISAGREE/DECLINE\".";
 
-    public static final String  LICENSE_AGREEMENT_CONFIRM_TEXT_NL  = "GELIEVE ZORGVULDIG DEZE OVEREENKOMST VAN DE VERGUNNING VAN SOFTWARE (\"LICENSE \") TE LEZEN ALVORENS DE SOFTWARE TE GEBRUIKEN.";
+    public static final String  LICENSE_AGREEMENT_CONFIRM_TEXT_NL = "GELIEVE ZORGVULDIG DEZE OVEREENKOMST VAN DE VERGUNNING VAN SOFTWARE (\"LICENSE \") TE LEZEN ALVORENS DE SOFTWARE TE GEBRUIKEN.";
 
 
     private static class PasswordRegistration {
@@ -202,11 +201,7 @@ public class DemoStartableBean extends AbstractInitBean {
             }
 
             if (!passwordManager.isPasswordConfigured(subject)) {
-                try {
-                    passwordManager.setPassword(subject, passwordRegistration.password);
-                } catch (PermissionDeniedException e) {
-                    throw new EJBException(e);
-                }
+                passwordManager.registerPassword(subject, passwordRegistration.password);
             }
         }
 
@@ -227,9 +222,9 @@ public class DemoStartableBean extends AbstractInitBean {
          */
         trustedCertificates.put(demoMandateCertificate, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
         try {
-            registeredApplications.add(new Application(demoMandateWebappName, "owner", null, new URL(protocol, hostname, hostport,
-                    "/" + demoMandateWebappUrl), getLogo(), true, true, demoMandateCertificate, true, IdScopeType.APPLICATION, true,
-                    new URL(sslProtocol, hostname, hostportssl, "/" + demoMandateWebappUrl + "/authlogout")));
+            registeredApplications.add(new Application(demoMandateWebappName, "owner", null, new URL(protocol, hostname, hostport, "/"
+                    + demoMandateWebappUrl), getLogo(), true, true, demoMandateCertificate, true, IdScopeType.APPLICATION, true, new URL(
+                    sslProtocol, hostname, hostportssl, "/" + demoMandateWebappUrl + "/authlogout")));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
         }
@@ -307,8 +302,8 @@ public class DemoStartableBean extends AbstractInitBean {
 
         trustedCertificates.put(demoTicketCertificate, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
         try {
-            registeredApplications.add(new Application(demoTicketWebappName, "owner", null, new URL(protocol, hostname, hostport,
-                    "/" + demoTicketWebappUrl), getLogo("/eticket-small.png"), true, true, demoTicketCertificate, false,
+            registeredApplications.add(new Application(demoTicketWebappName, "owner", null, new URL(protocol, hostname, hostport, "/"
+                    + demoTicketWebappUrl), getLogo("/eticket-small.png"), true, true, demoTicketCertificate, false,
                     IdScopeType.SUBSCRIPTION, true, new URL(sslProtocol, hostname, hostportssl, "/" + demoTicketWebappUrl + "/logout")));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
@@ -385,8 +380,8 @@ public class DemoStartableBean extends AbstractInitBean {
 
         trustedCertificates.put(demoCinemaCertificate, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
         try {
-            registeredApplications.add(new Application(demoCinemaWebappName, "owner", null, new URL(protocol, hostname, hostport,
-                    "/" + demoCinemaWebappUrl), getLogo("/ecinema-small.png"), true, true, demoCinemaCertificate, false,
+            registeredApplications.add(new Application(demoCinemaWebappName, "owner", null, new URL(protocol, hostname, hostport, "/"
+                    + demoCinemaWebappUrl), getLogo("/ecinema-small.png"), true, true, demoCinemaCertificate, false,
                     IdScopeType.SUBSCRIPTION, true, new URL(sslProtocol, hostname, hostportssl, "/" + demoCinemaWebappUrl + "/logout")));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
@@ -432,8 +427,8 @@ public class DemoStartableBean extends AbstractInitBean {
         X509Certificate demoPaymentCertificate = (X509Certificate) demoPaymentPrivateKeyEntry.getCertificate();
 
         try {
-            registeredApplications.add(new Application(demoPaymentWebappName, "owner", null, new URL(protocol, hostname, hostport,
-                    "/" + demoPaymentWebappUrl), getLogo("/epayment-small.png"), true, true, demoPaymentCertificate, true,
+            registeredApplications.add(new Application(demoPaymentWebappName, "owner", null, new URL(protocol, hostname, hostport, "/"
+                    + demoPaymentWebappUrl), getLogo("/epayment-small.png"), true, true, demoPaymentCertificate, true,
                     IdScopeType.SUBSCRIPTION, true, new URL(sslProtocol, hostname, hostportssl, "/" + demoPaymentWebappUrl + "/logout")));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
@@ -508,10 +503,9 @@ public class DemoStartableBean extends AbstractInitBean {
         X509Certificate demoPrescriptionCertificate = (X509Certificate) demoPrescriptionPrivateKeyEntry.getCertificate();
         trustedCertificates.put(demoPrescriptionCertificate, SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN);
         try {
-            registeredApplications.add(new Application(demoPrescriptionWebappName, "owner", null, new URL(protocol, hostname,
-                    hostport, "/" + demoPrescriptionWebappUrl), getLogo(), true, true, demoPrescriptionCertificate, true,
-                    IdScopeType.SUBSCRIPTION, true, new URL(sslProtocol, hostname, hostportssl, "/" + demoPrescriptionWebappUrl
-                            + "/authlogout")));
+            registeredApplications.add(new Application(demoPrescriptionWebappName, "owner", null, new URL(protocol, hostname, hostport, "/"
+                    + demoPrescriptionWebappUrl), getLogo(), true, true, demoPrescriptionCertificate, true, IdScopeType.SUBSCRIPTION, true,
+                    new URL(sslProtocol, hostname, hostportssl, "/" + demoPrescriptionWebappUrl + "/authlogout")));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
         }
@@ -538,12 +532,12 @@ public class DemoStartableBean extends AbstractInitBean {
         /*
          * Attribute Types.
          */
-        configDemoAttribute(DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME, DatatypeType.BOOLEAN, false,
-                demoPrescriptionWebappName, "Prescription Admin", "Voorschriftbeheerder", true, false);
+        configDemoAttribute(DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME, DatatypeType.BOOLEAN, false, demoPrescriptionWebappName,
+                "Prescription Admin", "Voorschriftbeheerder", true, false);
         configDemoAttribute(DemoConstants.PRESCRIPTION_CARE_PROVIDER_ATTRIBUTE_NAME, DatatypeType.BOOLEAN, false,
                 demoPrescriptionWebappName, "Care Provider", "Dokter", true, false);
-        configDemoAttribute(DemoConstants.PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME, DatatypeType.BOOLEAN, false,
-                demoPrescriptionWebappName, "Pharmacist", "Apotheker", true, false);
+        configDemoAttribute(DemoConstants.PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME, DatatypeType.BOOLEAN, false, demoPrescriptionWebappName,
+                "Pharmacist", "Apotheker", true, false);
 
         /*
          * Application Identities.
@@ -569,8 +563,7 @@ public class DemoStartableBean extends AbstractInitBean {
         usageAgreement.addUsageAgreementText(new UsageAgreementText(Locale.ENGLISH.getLanguage(), "English" + "\n\n" + "Lin-k NV" + "\n"
                 + "Software License Agreement for " + demoPrescriptionWebappName + "\n\n" + LICENSE_AGREEMENT_CONFIRM_TEXT_EN));
         usageAgreement.addUsageAgreementText(new UsageAgreementText("nl", "Nederlands" + "\n\n" + "Lin-k NV" + "\n"
-                + "Software Gebruikers Overeenkomst voor " + demoPrescriptionWebappName + "\n\n"
-                + LICENSE_AGREEMENT_CONFIRM_TEXT_NL));
+                + "Software Gebruikers Overeenkomst voor " + demoPrescriptionWebappName + "\n\n" + LICENSE_AGREEMENT_CONFIRM_TEXT_NL));
         usageAgreements.add(usageAgreement);
     }
 
@@ -579,9 +572,9 @@ public class DemoStartableBean extends AbstractInitBean {
         PrivateKeyEntry demoLawyerPrivateKeyEntry = DemoLawyerKeyStoreUtils.getPrivateKeyEntry();
         X509Certificate demoLawyerCertificate = (X509Certificate) demoLawyerPrivateKeyEntry.getCertificate();
         try {
-            registeredApplications.add(new Application(demoLawyerWebappName, "owner", null, new URL(protocol, hostname, hostport,
-                    "/" + demoLawyerWebappUrl), getLogo(), true, true, demoLawyerCertificate, true, IdScopeType.SUBSCRIPTION, true,
-                    new URL(sslProtocol, hostname, hostportssl, "/" + demoLawyerWebappUrl + "/authlogout")));
+            registeredApplications.add(new Application(demoLawyerWebappName, "owner", null, new URL(protocol, hostname, hostport, "/"
+                    + demoLawyerWebappUrl), getLogo(), true, true, demoLawyerCertificate, true, IdScopeType.SUBSCRIPTION, true, new URL(
+                    sslProtocol, hostname, hostportssl, "/" + demoLawyerWebappUrl + "/authlogout")));
         } catch (MalformedURLException e) {
             throw new EJBException("Malformed URL Exception: " + e.getMessage());
         }

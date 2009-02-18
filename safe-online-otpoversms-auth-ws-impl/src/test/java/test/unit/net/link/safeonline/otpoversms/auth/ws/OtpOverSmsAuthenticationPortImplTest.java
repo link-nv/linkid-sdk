@@ -287,7 +287,7 @@ public class OtpOverSmsAuthenticationPortImplTest {
                                                                nameValuePairs, testpublicKey );
 
         // expectations
-        expect( mockOtpOverSmsDeviceServce.authenticate( testMobile, testPin, testOtp ) ).andReturn( testUserId );
+        expect( mockOtpOverSmsDeviceServce.authenticate( testPin, testOtp ) ).andReturn( testUserId );
         expect( mockSamlAuthorityService.getIssuerName() ).andStubReturn( testIssuerName );
         expect( mockApplicationAuthenticationService.authenticate( certificate ) ).andReturn( 1234567890L );
         expect( mockWSSecurityConfigurationService.skipMessageIntegrityCheck( certificate ) ).andReturn( false );
@@ -373,7 +373,7 @@ public class OtpOverSmsAuthenticationPortImplTest {
                                                                nameValuePairs, testpublicKey );
 
         // expectations
-        expect( mockOtpOverSmsDeviceServce.authenticate( testMobile, testPin, testOtp ) ).andReturn( null );
+        expect( mockOtpOverSmsDeviceServce.authenticate( testPin, testOtp ) ).andReturn( null );
         expect( mockSamlAuthorityService.getIssuerName() ).andStubReturn( testIssuerName );
         expect( mockApplicationAuthenticationService.authenticate( certificate ) ).andReturn( 1234567890L );
         expect( mockWSSecurityConfigurationService.skipMessageIntegrityCheck( certificate ) ).andReturn( false );
@@ -460,7 +460,7 @@ public class OtpOverSmsAuthenticationPortImplTest {
                                                                nameValuePairs, testpublicKey );
 
         // expectations
-        mockOtpOverSmsDeviceServce.authenticate( testMobile, testPin, testOtp );
+        mockOtpOverSmsDeviceServce.authenticate( testPin, testOtp );
         expectLastCall().andThrow( new DeviceDisabledException() );
         expect( mockSamlAuthorityService.getIssuerName() ).andStubReturn( testIssuerName );
         expect( mockApplicationAuthenticationService.authenticate( certificate ) ).andReturn( 1234567890L );

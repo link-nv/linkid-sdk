@@ -119,7 +119,7 @@ public class RegistrationPageTest {
         EasyMock.reset(mockOtpOverSmsDeviceService);
 
         // stubs
-        mockOtpOverSmsDeviceService.register(userId, convertedMobile, pin, otp);
+        mockOtpOverSmsDeviceService.register(userId, pin, otp);
         expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
@@ -227,7 +227,7 @@ public class RegistrationPageTest {
         jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
 
         // stubs
-        mockOtpOverSmsDeviceService.register(userId, convertedMobile, pin, otp);
+        mockOtpOverSmsDeviceService.register(userId, pin, otp);
         expectLastCall().andThrow(new AuthenticationFailedException());
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
@@ -297,7 +297,7 @@ public class RegistrationPageTest {
         jndiTestUtils.bindComponent(SecurityAuditLogger.JNDI_BINDING, mockSecurityAuditLogger);
 
         // stubs
-        mockOtpOverSmsDeviceService.register(userId, convertedMobile, pin, otp);
+        mockOtpOverSmsDeviceService.register(userId, pin, otp);
         org.easymock.EasyMock.expectLastCall().andThrow(new PermissionDeniedException(""));
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 

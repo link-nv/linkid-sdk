@@ -22,7 +22,7 @@ public interface OtpOverSmsManager extends OtpOverSmsService {
     void registerMobile(SubjectEntity subject, String mobile, String pin)
             throws PermissionDeniedException;
 
-    boolean changePin(SubjectEntity subject, String mobile, String oldPin, String newPin)
+    void updatePin(SubjectEntity subject, String mobile, String oldPin, String newPin)
             throws DeviceRegistrationNotFoundException;
 
     boolean validatePin(SubjectEntity subject, String mobile, String pin)

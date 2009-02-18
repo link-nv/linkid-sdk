@@ -274,7 +274,7 @@ public class EncapAuthenticationPortImplTest {
                 nameValuePairs, testpublicKey);
 
         // expectations
-        expect(mockEncapDeviceServce.authenticate(testMobile, testOtp)).andReturn(testUserId);
+        expect(mockEncapDeviceServce.authenticate(testOtp)).andReturn(testUserId);
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(1234567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
@@ -350,7 +350,7 @@ public class EncapAuthenticationPortImplTest {
                 nameValuePairs, testpublicKey);
 
         // expectations
-        expect(mockEncapDeviceServce.authenticate(testMobile, testOtp)).andThrow(new MobileException("foo"));
+        expect(mockEncapDeviceServce.authenticate(testOtp)).andThrow(new MobileException("foo"));
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(1234567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
@@ -426,7 +426,7 @@ public class EncapAuthenticationPortImplTest {
                 nameValuePairs, testpublicKey);
 
         // expectations
-        expect(mockEncapDeviceServce.authenticate(testMobile, testOtp)).andThrow(new DeviceDisabledException());
+        expect(mockEncapDeviceServce.authenticate(testOtp)).andThrow(new DeviceDisabledException());
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(1234567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);

@@ -72,15 +72,10 @@ public class OtpOverSmsManagerBean implements OtpOverSmsManager {
         attributeManager = new AttributeManagerLWBean(attributeDAO, attributeTypeDAO);
     }
 
-    public boolean changePin(SubjectEntity subject, String mobile, String oldPin, String newPin)
+    public void updatePin(SubjectEntity subject, String mobile, String oldPin, String newPin)
             throws DeviceRegistrationNotFoundException {
 
-        if (!validatePin(subject, mobile, oldPin))
-            return false;
-
         setPinWithForce(subject, mobile, newPin);
-
-        return true;
     }
 
     private void setPinWithForce(SubjectEntity subject, String mobile, String pin)
@@ -95,12 +90,15 @@ public class OtpOverSmsManagerBean implements OtpOverSmsManager {
                     OtpOverSmsConstants.OTPOVERSMS_PIN_NEW_ALGORITHM_ATTRIBUTE);
             AttributeEntity hashAttribute = attributeManager.getCompoundMember(deviceAttribute,
                     OtpOverSmsConstants.OTPOVERSMS_PIN_HASH_ATTRIBUTE);
+            AttributeEntity seedAttribute = attributeManager.getCompoundMember(deviceAttribute,
+                    OtpOverSmsConstants.OTPOVERSMS_PIN_SEED_ATTRIBUTE);
 
             String seed = subject.getUserId();
             String algorithm = newAlgorithmAttribute.isEmpty()? algorithmAttribute.getStringValue(): newAlgorithmAttribute.getStringValue();
             String hashValue = hash(pin, seed, algorithm);
 
             hashAttribute.setStringValue(hashValue);
+            seedAttribute.setStringValue(seed);
 
             if (false == newAlgorithmAttribute.isEmpty()) {
                 // We used newAlgorithm, write it to algorithm and unset newAlgorithm.
