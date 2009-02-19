@@ -68,6 +68,7 @@ public class OlasLogServiceImpl implements LogService {
     public void log(ServiceReference service, int level, String message, Throwable throwable) {
 
         String finalMessage;
+        String throwableMessage;
 
         if (null == message) {
             finalMessage = "empty log action";
@@ -75,7 +76,13 @@ public class OlasLogServiceImpl implements LogService {
             finalMessage = message;
         }
 
-        String logString = "[" + logger + "] " + finalMessage + "(throwable msg: " + throwable.getMessage() + ")";
+        if (null == throwable) {
+            throwableMessage = "(No throwable)";
+        } else {
+            throwableMessage = "(throwable msg: " + throwable.getMessage() + ")";
+        }
+
+        String logString = "[" + logger + "] " + finalMessage + " " + throwableMessage;
         if (LogService.LOG_DEBUG == level) {
             LOG.debug(logString);
         } else if (LogService.LOG_ERROR == level) {

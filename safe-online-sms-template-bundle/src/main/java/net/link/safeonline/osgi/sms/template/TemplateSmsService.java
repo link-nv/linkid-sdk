@@ -10,7 +10,7 @@ import java.net.ConnectException;
 
 import net.link.safeonline.osgi.sms.SmsService;
 
-import org.osgi.framework.BundleContext;
+import org.osgi.service.log.LogService;
 
 
 /**
@@ -28,12 +28,8 @@ import org.osgi.framework.BundleContext;
  */
 public class TemplateSmsService implements SmsService {
 
-    private BundleContext bundleContext;
+    public TemplateSmsService() {
 
-
-    public TemplateSmsService(BundleContext bundleContext) {
-
-        this.bundleContext = bundleContext;
     }
 
     /**
@@ -42,7 +38,7 @@ public class TemplateSmsService implements SmsService {
     public void sendSms(String mobile, String message)
             throws ConnectException {
 
-        System.out.println("send sms to mobile " + mobile + " with message " + message);
+        TemplateSmsServiceActivator.LOG.log(LogService.LOG_INFO, "send sms to mobile " + mobile + " with message " + message);
 
     }
 

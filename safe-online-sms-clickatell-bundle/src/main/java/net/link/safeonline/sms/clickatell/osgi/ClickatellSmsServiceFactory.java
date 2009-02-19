@@ -23,7 +23,7 @@ public class ClickatellSmsServiceFactory implements ServiceFactory {
         System.out.println("Create object of SmsService for " + bundle.getSymbolicName());
         usageCounter++;
         System.out.println("Number of bundles using service " + usageCounter);
-        SmsService templateSmsService = new ClickatellSmsService(bundle.getBundleContext());
+        SmsService templateSmsService = new ClickatellSmsService();
         return templateSmsService;
     }
 

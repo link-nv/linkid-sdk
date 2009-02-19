@@ -10,8 +10,6 @@ import java.net.ConnectException;
 
 import net.link.safeonline.osgi.sms.SmsService;
 
-import org.osgi.framework.BundleContext;
-
 
 /**
  * <sub>Clickatell sms service.</sub></h2>
@@ -28,12 +26,8 @@ import org.osgi.framework.BundleContext;
  */
 public class ClickatellSmsService implements SmsService {
 
-    private BundleContext bundleContext;
+    public ClickatellSmsService() {
 
-
-    public ClickatellSmsService(BundleContext bundleContext) {
-
-        this.bundleContext = bundleContext;
     }
 
     /**
