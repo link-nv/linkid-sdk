@@ -553,7 +553,7 @@
 		<profile>
 			<id>host:wim</id>
 			<properties>
-				<safe-online.host.name>192.168.5.103</safe-online.host.name>
+				<safe-online.host.name>192.168.5.11</safe-online.host.name>
 			</properties>
 		</profile>
 
