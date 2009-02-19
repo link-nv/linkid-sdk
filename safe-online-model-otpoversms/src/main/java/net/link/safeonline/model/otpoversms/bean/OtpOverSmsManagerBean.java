@@ -97,8 +97,8 @@ public class OtpOverSmsManagerBean implements OtpOverSmsManager {
             String algorithm = newAlgorithmAttribute.isEmpty()? algorithmAttribute.getStringValue(): newAlgorithmAttribute.getStringValue();
             String hashValue = hash(pin, seed, algorithm);
 
-            hashAttribute.setStringValue(hashValue);
-            seedAttribute.setStringValue(seed);
+            hashAttribute.setValue(hashValue);
+            seedAttribute.setValue(seed);
 
             if (false == newAlgorithmAttribute.isEmpty()) {
                 // We used newAlgorithm, write it to algorithm and unset newAlgorithm.
@@ -198,7 +198,7 @@ public class OtpOverSmsManagerBean implements OtpOverSmsManager {
 
                 AttributeEntity disableAttribute = attributeManager.getCompoundMember(deviceAttribute,
                         OtpOverSmsConstants.OTPOVERSMS_DEVICE_DISABLE_ATTRIBUTE);
-                disableAttribute.setBooleanValue(true);
+                disableAttribute.setValue(true);
             }
         }
 

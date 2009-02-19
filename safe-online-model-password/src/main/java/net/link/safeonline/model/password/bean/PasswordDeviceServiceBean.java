@@ -16,6 +16,7 @@ import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.dao.AttributeDAO;
@@ -30,6 +31,7 @@ import net.link.safeonline.model.password.PasswordConstants;
 import net.link.safeonline.model.password.PasswordDeviceService;
 import net.link.safeonline.model.password.PasswordDeviceServiceRemote;
 import net.link.safeonline.model.password.PasswordManager;
+import net.link.safeonline.service.NodeMappingService;
 import net.link.safeonline.service.SubjectService;
 
 import org.apache.commons.logging.Log;
@@ -44,6 +46,9 @@ import org.jboss.annotation.ejb.RemoteBinding;
 public class PasswordDeviceServiceBean implements PasswordDeviceService, PasswordDeviceServiceRemote {
 
     private final static Log    LOG = LogFactory.getLog(PasswordDeviceServiceBean.class);
+
+    @EJB(mappedName = NodeMappingService.JNDI_BINDING)
+    private NodeMappingService  nodeMappingService;
 
     @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService      subjectService;
@@ -99,11 +104,15 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
     /**
      * {@inheritDoc}
      */
-    public void register(String userId, String password)
-            throws SubjectNotFoundException {
+    public void register(String nodeName, String userId, String password)
+            throws NodeNotFoundException {
 
         LOG.debug("register password for \"" + userId + "\"");
-        SubjectEntity subject = subjectService.getSubject(userId); // FIXME: create subject mapping
+
+        /*
+         * Check through node mapping if subject exists, if not, it is created.
+         */
+        SubjectEntity subject = nodeMappingService.getSubject(userId, nodeName);
 
         passwordManager.registerPassword(subject, password);
 

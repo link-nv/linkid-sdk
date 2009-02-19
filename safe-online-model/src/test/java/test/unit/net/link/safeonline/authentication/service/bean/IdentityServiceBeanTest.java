@@ -660,7 +660,7 @@ public class IdentityServiceBeanTest {
             applicationIdentityDAO.addApplicationIdentityAttribute(applicationIdentity, compoundedAttributeType, false, false);
 
             AttributeEntity optionalAttribute = attributeDAO.addAttribute(optionalAttributeType, subject);
-            optionalAttribute.setStringValue("value");
+            optionalAttribute.setValue("value");
         }
 
         public void verify(List<AttributeDO> result) {
@@ -744,7 +744,7 @@ public class IdentityServiceBeanTest {
             applicationIdentityDAO.addApplicationIdentityAttribute(applicationIdentity, attributeType, true, false);
 
             AttributeEntity attribute = attributeDAO.addAttribute(attributeType, subject);
-            attribute.setStringValue("hello world");
+            attribute.setValue("hello world");
         }
 
         public void verify(List<AttributeDO> result) {

@@ -291,7 +291,7 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
 
         SubjectEntity subject = subjectService.getSubject(userId);
         AttributeEntity disableAttribute = getDisableAttribute(subject, mobile);
-        disableAttribute.setBooleanValue(true);
+        disableAttribute.setValue(true);
     }
 
     /**
@@ -307,7 +307,7 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
 
         SubjectEntity subject = subjectService.getSubject(userId);
         AttributeEntity disableAttribute = getDisableAttribute(subject, challengeMobile);
-        disableAttribute.setBooleanValue(false);
+        disableAttribute.setValue(false);
     }
 
     /**

@@ -44,6 +44,7 @@ import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
 import net.link.safeonline.model.ApplicationManager;
+import net.link.safeonline.model.WSSecurityConfiguration;
 import net.link.safeonline.pkix.model.PkiValidator;
 import net.link.safeonline.pkix.model.PkiValidator.PkiResult;
 import net.link.safeonline.sdk.ws.WSSecurityClientHandler;
@@ -134,7 +135,7 @@ public class SAMLAttributePortImplTest {
 
         jndiTestUtils = new JndiTestUtils();
         jndiTestUtils.setUp();
-        jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName", "SafeOnline/WSSecurityConfigurationBean/local");
+        jndiTestUtils.bindComponent("java:comp/env/wsSecurityConfigurationServiceJndiName", WSSecurityConfiguration.JNDI_BINDING);
         jndiTestUtils.bindComponent("java:comp/env/wsSecurityOptionalInboudSignature", false);
 
         mockWSSecurityConfigurationService = createMock(WSSecurityConfigurationService.class);
@@ -152,16 +153,16 @@ public class SAMLAttributePortImplTest {
                 mockApplicationAuthenticationService, mockSamlAuthorityService, mockApplicationManager,
                 mockApplicationIdentifierMappingService };
 
-        jndiTestUtils.bindComponent("SafeOnline/WSSecurityConfigurationBean/local", mockWSSecurityConfigurationService);
-        jndiTestUtils.bindComponent("SafeOnline/AttributeServiceBean/local", mockAttributeService);
-        jndiTestUtils.bindComponent("SafeOnline/NodeAttributeServiceBean/local", mockNodeAttributeService);
-        jndiTestUtils.bindComponent("SafeOnline/PkiValidatorBean/local", mockPkiValidator);
-        jndiTestUtils.bindComponent("SafeOnline/ApplicationAuthenticationServiceBean/local", mockApplicationAuthenticationService);
-        jndiTestUtils.bindComponent("SafeOnline/DeviceAuthenticationServiceBean/local", mockDeviceAuthenticationService);
-        jndiTestUtils.bindComponent("SafeOnline/NodeAuthenticationServiceBean/local", mockNodeAuthenticationService);
-        jndiTestUtils.bindComponent("SafeOnline/SamlAuthorityServiceBean/local", mockSamlAuthorityService);
-        jndiTestUtils.bindComponent("SafeOnline/ApplicationManagerBean/local", mockApplicationManager);
-        jndiTestUtils.bindComponent("SafeOnline/ApplicationIdentifierMappingServiceBean/local", mockApplicationIdentifierMappingService);
+        jndiTestUtils.bindComponent(WSSecurityConfiguration.JNDI_BINDING, mockWSSecurityConfigurationService);
+        jndiTestUtils.bindComponent(AttributeService.JNDI_BINDING, mockAttributeService);
+        jndiTestUtils.bindComponent(NodeAttributeService.JNDI_BINDING, mockNodeAttributeService);
+        jndiTestUtils.bindComponent(PkiValidator.JNDI_BINDING, mockPkiValidator);
+        jndiTestUtils.bindComponent(ApplicationAuthenticationService.JNDI_BINDING, mockApplicationAuthenticationService);
+        jndiTestUtils.bindComponent(DeviceAuthenticationService.JNDI_BINDING, mockDeviceAuthenticationService);
+        jndiTestUtils.bindComponent(NodeAuthenticationService.JNDI_BINDING, mockNodeAuthenticationService);
+        jndiTestUtils.bindComponent(SamlAuthorityService.JNDI_BINDING, mockSamlAuthorityService);
+        jndiTestUtils.bindComponent(ApplicationManager.JNDI_BINDING, mockApplicationManager);
+        jndiTestUtils.bindComponent(ApplicationIdentifierMappingService.JNDI_BINDING, mockApplicationIdentifierMappingService);
 
         expect(mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock.anyObject())).andStubReturn(
                 PkiResult.VALID);

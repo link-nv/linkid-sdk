@@ -8,6 +8,7 @@
 package net.link.safeonline.sdk.ws;
 
 import java.lang.reflect.Method;
+import java.util.Map;
 
 import net.link.safeonline.sdk.ws.annotation.Compound;
 import net.link.safeonline.sdk.ws.annotation.CompoundId;
@@ -36,6 +37,10 @@ public class CompoundUtil {
 
         if (null == attributeValue)
             return false;
+
+        if (attributeValue instanceof Map<?, ?>)
+            return true;
+
         Class attributeClass = attributeValue.getClass();
         Compound compoundAnnotation = (Compound) attributeClass.getAnnotation(Compound.class);
         return null != compoundAnnotation;
@@ -46,7 +51,13 @@ public class CompoundUtil {
      * 
      * @param attributeValue
      */
+    @SuppressWarnings("unchecked")
     public static String getAttributeId(Object attributeValue) {
+
+        if (attributeValue instanceof Map<?, ?>) {
+            Map<String, Object> attributeMap = (Map<String, Object>) attributeValue;
+            return (String) attributeMap.get(CompoundBuilder.ATTRIBUTE_ID_KEY);
+        }
 
         Class<?> clazz = attributeValue.getClass();
         Method[] methods = clazz.getMethods();

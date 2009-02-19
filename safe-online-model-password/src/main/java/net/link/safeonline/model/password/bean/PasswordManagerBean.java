@@ -114,8 +114,8 @@ public class PasswordManagerBean implements PasswordManager {
             String algorithm = newAlgorithmAttribute.isEmpty()? algorithmAttribute.getStringValue(): newAlgorithmAttribute.getStringValue();
             String hashValue = hash(password, seed, algorithm);
 
-            hashAttribute.setStringValue(hashValue);
-            seedAttribute.setStringValue(seed);
+            hashAttribute.setValue(hashValue);
+            seedAttribute.setValue(seed);
 
             if (false == newAlgorithmAttribute.isEmpty()) {
                 // We used newAlgorithm, write it to algorithm and unset newAlgorithm.
