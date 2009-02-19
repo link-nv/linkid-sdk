@@ -144,18 +144,19 @@ public class AttributeServiceBeanTest {
         SubjectEntity subject = subjectService.findSubjectFromUserName(testSubjectLogin);
 
         AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(AttributeTypeServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, "test-admin", "global-operator");
+                SafeOnlineTestContainer.sessionBeans, entityManager, "test-admin", SafeOnlineRoles.GLOBAL_OPERATOR_ROLE);
         AttributeTypeEntity attributeType = new AttributeTypeEntity(testAttributeName, DatatypeType.STRING, true, true);
         attributeTypeService.add(attributeType);
 
         ApplicationService applicationService = EJBTestUtils.newInstance(ApplicationServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator", "operator");
+                SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator", SafeOnlineRoles.OPERATOR_ROLE);
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null,
                 Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(testAttributeName, true, false) }), false, false,
                 false, null);
+        ApplicationEntity testApplication = applicationService.getApplication(testApplicationName);
 
         AttributeService attributeService = EJBTestUtils.newInstance(AttributeServiceBean.class, SafeOnlineTestContainer.sessionBeans,
-                entityManager, testApplicationName, "application");
+                entityManager, Long.toString(testApplication.getId()), SafeOnlineApplicationRoles.APPLICATION_ROLE);
 
         // operate & verify
         try {
@@ -186,23 +187,23 @@ public class AttributeServiceBeanTest {
         SubjectEntity subject = subjectService.findSubjectFromUserName(testSubjectLogin);
 
         AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(AttributeTypeServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, "test-admin", "global-operator");
+                SafeOnlineTestContainer.sessionBeans, entityManager, "test-admin", SafeOnlineRoles.GLOBAL_OPERATOR_ROLE);
         AttributeTypeEntity attributeType = new AttributeTypeEntity(testAttributeName, DatatypeType.STRING, true, true);
         attributeTypeService.add(attributeType);
 
         ApplicationService applicationService = EJBTestUtils.newInstance(ApplicationServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator", "operator");
+                SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator", SafeOnlineRoles.OPERATOR_ROLE);
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null,
                 Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(testAttributeName, true, false) }), false, false,
                 false, null);
-        ApplicationEntity application = applicationService.getApplication(testApplicationName);
+        ApplicationEntity testApplication = applicationService.getApplication(testApplicationName);
 
         SubscriptionService subscriptionService = EJBTestUtils.newInstance(SubscriptionServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, subject.getUserId(), "user");
-        subscriptionService.subscribe(application.getId());
+                SafeOnlineTestContainer.sessionBeans, entityManager, subject.getUserId(), SafeOnlineRoles.USER_ROLE);
+        subscriptionService.subscribe(testApplication.getId());
 
         AttributeService attributeService = EJBTestUtils.newInstance(AttributeServiceBean.class, SafeOnlineTestContainer.sessionBeans,
-                entityManager, testApplicationName, "application");
+                entityManager, Long.toString(testApplication.getId()), SafeOnlineApplicationRoles.APPLICATION_ROLE);
 
         // operate & verify
         try {
@@ -234,24 +235,24 @@ public class AttributeServiceBeanTest {
         SubjectEntity subject = subjectService.findSubjectFromUserName(testSubjectLogin);
 
         AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(AttributeTypeServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, "test-admin", "global-operator");
+                SafeOnlineTestContainer.sessionBeans, entityManager, "test-admin", SafeOnlineRoles.GLOBAL_OPERATOR_ROLE);
         AttributeTypeEntity attributeType = new AttributeTypeEntity(testAttributeName, DatatypeType.STRING, true, true);
         attributeTypeService.add(attributeType);
 
         ApplicationService applicationService = EJBTestUtils.newInstance(ApplicationServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator", "operator");
+                SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator", SafeOnlineRoles.OPERATOR_ROLE);
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null,
                 Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(testAttributeName, true, false) }), false, false,
                 false, null);
-        ApplicationEntity application = applicationService.getApplication(testApplicationName);
+        ApplicationEntity testApplication = applicationService.getApplication(testApplicationName);
 
         SubscriptionService subscriptionService = EJBTestUtils.newInstance(SubscriptionServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, subject.getUserId(), "user");
-        subscriptionService.subscribe(application.getId());
+                SafeOnlineTestContainer.sessionBeans, entityManager, subject.getUserId(), SafeOnlineRoles.USER_ROLE);
+        subscriptionService.subscribe(testApplication.getId());
 
         IdentityService identityService = EJBTestUtils.newInstance(IdentityServiceBean.class, SafeOnlineTestContainer.sessionBeans,
-                entityManager, subject.getUserId(), "user");
-        identityService.confirmIdentity(application.getId());
+                entityManager, subject.getUserId(), SafeOnlineRoles.USER_ROLE);
+        identityService.confirmIdentity(testApplication.getId());
 
         AttributeDO testAttribute = new AttributeDO(testAttributeName, DatatypeType.STRING);
         testAttribute.setStringValue(testAttributeValue);
@@ -259,7 +260,7 @@ public class AttributeServiceBeanTest {
         identityService.saveAttribute(testAttribute);
 
         AttributeService attributeService = EJBTestUtils.newInstance(AttributeServiceBean.class, SafeOnlineTestContainer.sessionBeans,
-                entityManager, testApplicationName, "application");
+                entityManager, Long.toString(testApplication.getId()), SafeOnlineApplicationRoles.APPLICATION_ROLE);
 
         // operate
         Object result = attributeService.getConfirmedAttributeValue(subject.getUserId(), testAttributeName);
@@ -290,24 +291,24 @@ public class AttributeServiceBeanTest {
         SubjectEntity subject = subjectService.findSubjectFromUserName(testSubjectLogin);
 
         AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(AttributeTypeServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, "test-admin", "global-operator");
+                SafeOnlineTestContainer.sessionBeans, entityManager, "test-admin", SafeOnlineRoles.GLOBAL_OPERATOR_ROLE);
         AttributeTypeEntity attributeType = new AttributeTypeEntity(testAttributeName, DatatypeType.BOOLEAN, true, true);
         attributeTypeService.add(attributeType);
 
         ApplicationService applicationService = EJBTestUtils.newInstance(ApplicationServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator", "operator");
+                SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator", SafeOnlineRoles.OPERATOR_ROLE);
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null,
                 Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(testAttributeName, true, false) }), false, false,
                 false, null);
-        ApplicationEntity application = applicationService.getApplication(testApplicationName);
+        ApplicationEntity testApplication = applicationService.getApplication(testApplicationName);
 
         SubscriptionService subscriptionService = EJBTestUtils.newInstance(SubscriptionServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, subject.getUserId(), "user");
-        subscriptionService.subscribe(application.getId());
+                SafeOnlineTestContainer.sessionBeans, entityManager, subject.getUserId(), SafeOnlineRoles.USER_ROLE);
+        subscriptionService.subscribe(testApplication.getId());
 
         IdentityService identityService = EJBTestUtils.newInstance(IdentityServiceBean.class, SafeOnlineTestContainer.sessionBeans,
-                entityManager, subject.getUserId(), "user");
-        identityService.confirmIdentity(application.getId());
+                entityManager, subject.getUserId(), SafeOnlineRoles.USER_ROLE);
+        identityService.confirmIdentity(testApplication.getId());
 
         AttributeDO testAttribute = new AttributeDO(testAttributeName, DatatypeType.BOOLEAN);
         testAttribute.setBooleanValue(testAttributeValue);
@@ -315,7 +316,7 @@ public class AttributeServiceBeanTest {
         identityService.saveAttribute(testAttribute);
 
         AttributeService attributeService = EJBTestUtils.newInstance(AttributeServiceBean.class, SafeOnlineTestContainer.sessionBeans,
-                entityManager, testApplicationName, "application");
+                entityManager, Long.toString(testApplication.getId()), "application");
 
         // operate
         Object result = attributeService.getConfirmedAttributeValue(subject.getUserId(), testAttributeName);
@@ -347,33 +348,33 @@ public class AttributeServiceBeanTest {
         SubjectEntity subject = subjectService.findSubjectFromUserName(testSubjectLogin);
 
         AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(AttributeTypeServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, "test-admin", "global-operator");
+                SafeOnlineTestContainer.sessionBeans, entityManager, "test-admin", SafeOnlineRoles.GLOBAL_OPERATOR_ROLE);
         AttributeTypeEntity attributeType = new AttributeTypeEntity(testAttributeName, DatatypeType.STRING, true, true);
         attributeTypeService.add(attributeType);
         AttributeTypeEntity unconfirmedAttributeType = new AttributeTypeEntity(unconfirmedAttributeName, DatatypeType.STRING, true, true);
         attributeTypeService.add(unconfirmedAttributeType);
 
         ApplicationService applicationService = EJBTestUtils.newInstance(ApplicationServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator", "operator");
+                SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator", SafeOnlineRoles.OPERATOR_ROLE);
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null,
                 Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(testAttributeName, true, false) }), false, false,
                 false, null);
-        ApplicationEntity application = applicationService.getApplication(testApplicationName);
+        ApplicationEntity testApplication = applicationService.getApplication(testApplicationName);
 
         SubscriptionService subscriptionService = EJBTestUtils.newInstance(SubscriptionServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, subject.getUserId(), "user");
-        subscriptionService.subscribe(application.getId());
+                SafeOnlineTestContainer.sessionBeans, entityManager, subject.getUserId(), SafeOnlineRoles.USER_ROLE);
+        subscriptionService.subscribe(testApplication.getId());
 
         IdentityService identityService = EJBTestUtils.newInstance(IdentityServiceBean.class, SafeOnlineTestContainer.sessionBeans,
-                entityManager, subject.getUserId(), "user");
-        identityService.confirmIdentity(application.getId());
+                entityManager, subject.getUserId(), SafeOnlineRoles.USER_ROLE);
+        identityService.confirmIdentity(testApplication.getId());
 
         AttributeDO testAttribute = new AttributeDO(testAttributeName, DatatypeType.STRING);
         testAttribute.setStringValue(testAttributeValue);
         identityService.saveAttribute(testAttribute);
 
         AttributeService attributeService = EJBTestUtils.newInstance(AttributeServiceBean.class, SafeOnlineTestContainer.sessionBeans,
-                entityManager, testApplicationName, "application");
+                entityManager, Long.toString(testApplication.getId()), SafeOnlineApplicationRoles.APPLICATION_ROLE);
 
         // operate & verify
         try {
@@ -405,31 +406,31 @@ public class AttributeServiceBeanTest {
         SubjectEntity subject = subjectService.findSubjectFromUserName(testSubjectLogin);
 
         AttributeTypeService attributeTypeService = EJBTestUtils.newInstance(AttributeTypeServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, "test-admin", "global-operator");
+                SafeOnlineTestContainer.sessionBeans, entityManager, "test-admin", SafeOnlineRoles.GLOBAL_OPERATOR_ROLE);
         AttributeTypeEntity attributeType = new AttributeTypeEntity(testAttributeName, DatatypeType.STRING, true, true);
         attributeTypeService.add(attributeType);
 
         ApplicationService applicationService = EJBTestUtils.newInstance(ApplicationServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator", "operator");
+                SafeOnlineTestContainer.sessionBeans, entityManager, "test-operator", SafeOnlineRoles.OPERATOR_ROLE);
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null,
                 Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(testAttributeName, true, true) }), false, false,
                 false, null);
-        ApplicationEntity application = applicationService.getApplication(testApplicationName);
+        ApplicationEntity testApplication = applicationService.getApplication(testApplicationName);
 
         SubscriptionService subscriptionService = EJBTestUtils.newInstance(SubscriptionServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, subject.getUserId(), "user");
-        subscriptionService.subscribe(application.getId());
+                SafeOnlineTestContainer.sessionBeans, entityManager, subject.getUserId(), SafeOnlineRoles.USER_ROLE);
+        subscriptionService.subscribe(testApplication.getId());
 
         IdentityService identityService = EJBTestUtils.newInstance(IdentityServiceBean.class, SafeOnlineTestContainer.sessionBeans,
-                entityManager, subject.getUserId(), "user");
-        identityService.confirmIdentity(application.getId());
+                entityManager, subject.getUserId(), SafeOnlineRoles.USER_ROLE);
+        identityService.confirmIdentity(testApplication.getId());
 
         AttributeDO testAttribute = new AttributeDO(testAttributeName, DatatypeType.STRING);
         testAttribute.setStringValue(testAttributeValue);
         identityService.saveAttribute(testAttribute);
 
         AttributeService attributeService = EJBTestUtils.newInstance(AttributeServiceBean.class, SafeOnlineTestContainer.sessionBeans,
-                entityManager, testApplicationName, "application");
+                entityManager, Long.toString(testApplication.getId()), SafeOnlineApplicationRoles.APPLICATION_ROLE);
 
         // operate & verify
         try {
@@ -475,15 +476,15 @@ public class AttributeServiceBeanTest {
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null,
                 Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(testAttributeName, true, false) }), false, false,
                 false, null);
-        ApplicationEntity application = applicationService.getApplication(testApplicationName);
+        ApplicationEntity testApplication = applicationService.getApplication(testApplicationName);
 
         SubscriptionService subscriptionService = EJBTestUtils.newInstance(SubscriptionServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, subject.getUserId(), "user");
-        subscriptionService.subscribe(application.getId());
+                SafeOnlineTestContainer.sessionBeans, entityManager, subject.getUserId(), SafeOnlineRoles.USER_ROLE);
+        subscriptionService.subscribe(testApplication.getId());
 
         IdentityService identityService = EJBTestUtils.newInstance(IdentityServiceBean.class, SafeOnlineTestContainer.sessionBeans,
-                entityManager, subject.getUserId(), "user");
-        identityService.confirmIdentity(application.getId());
+                entityManager, subject.getUserId(), SafeOnlineRoles.USER_ROLE);
+        identityService.confirmIdentity(testApplication.getId());
 
         AttributeDO testAttribute = new AttributeDO(testAttributeName, DatatypeType.STRING);
         testAttribute.setStringValue(testAttributeValue1);
@@ -493,7 +494,7 @@ public class AttributeServiceBeanTest {
         identityService.addAttribute(Collections.singletonList(testAttribute));
 
         AttributeService attributeService = EJBTestUtils.newInstance(AttributeServiceBean.class, SafeOnlineTestContainer.sessionBeans,
-                entityManager, testApplicationName, SafeOnlineApplicationRoles.APPLICATION_ROLE);
+                entityManager, Long.toString(testApplication.getId()), SafeOnlineApplicationRoles.APPLICATION_ROLE);
 
         // operate
         Object result = attributeService.getConfirmedAttributeValue(subject.getUserId(), testAttributeName);
@@ -569,15 +570,15 @@ public class AttributeServiceBeanTest {
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null, null,
                 Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(compoundName, true, false) }), false, false,
                 false, null);
-        ApplicationEntity application = applicationService.getApplication(testApplicationName);
+        ApplicationEntity testApplication = applicationService.getApplication(testApplicationName);
 
         SubscriptionService subscriptionService = EJBTestUtils.newInstance(SubscriptionServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, subject.getUserId(), "user");
-        subscriptionService.subscribe(application.getId());
+                SafeOnlineTestContainer.sessionBeans, entityManager, subject.getUserId(), SafeOnlineRoles.USER_ROLE);
+        subscriptionService.subscribe(testApplication.getId());
 
         IdentityService identityService = EJBTestUtils.newInstance(IdentityServiceBean.class, SafeOnlineTestContainer.sessionBeans,
-                entityManager, subject.getUserId(), "user");
-        identityService.confirmIdentity(application.getId());
+                entityManager, subject.getUserId(), SafeOnlineRoles.USER_ROLE);
+        identityService.confirmIdentity(testApplication.getId());
 
         AttributeDO compoundAttribute = new AttributeDO(compoundName, DatatypeType.COMPOUNDED);
         compoundAttribute.setCompounded(true);
@@ -600,7 +601,7 @@ public class AttributeServiceBeanTest {
         entityTestManager.newTransaction();
 
         AttributeService attributeService = EJBTestUtils.newInstance(AttributeServiceBean.class, SafeOnlineTestContainer.sessionBeans,
-                entityManager, testApplicationName, SafeOnlineApplicationRoles.APPLICATION_ROLE);
+                entityManager, Long.toString(testApplication.getId()), SafeOnlineApplicationRoles.APPLICATION_ROLE);
 
         // operate
         Object result = attributeService.getConfirmedAttributeValue(subject.getUserId(), compoundName);

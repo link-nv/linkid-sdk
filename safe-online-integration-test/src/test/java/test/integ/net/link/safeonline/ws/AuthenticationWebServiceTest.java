@@ -85,6 +85,8 @@ public class AuthenticationWebServiceTest {
 
     private AuthenticationClient    authenticationClient;
 
+    private String                  nodeName   = "olas-localhost";
+
 
     @Before
     public void setUp()
@@ -118,8 +120,8 @@ public class AuthenticationWebServiceTest {
 
         // operate: try authenticate on same instance again, should fail as previous authentication was successful and instance is removed.
         try {
-            authenticationClient.authenticate(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
-                    PasswordConstants.PASSWORD_DEVICE_ID, Locale.ENGLISH.getLanguage(), null, keyPair.getPublic());
+            authenticationClient.authenticate(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, PasswordConstants.PASSWORD_DEVICE_ID,
+                    Locale.ENGLISH.getLanguage(), null, keyPair.getPublic());
         } catch (Exception e) {
             // success
             return;
@@ -144,8 +146,8 @@ public class AuthenticationWebServiceTest {
 
         // operate: authenticate with wrong password
         try {
-            authenticationClient.authenticate(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME,
-                    PasswordConstants.PASSWORD_DEVICE_ID, Locale.ENGLISH.getLanguage(), nameValuePairs, keyPair.getPublic());
+            authenticationClient.authenticate(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME, PasswordConstants.PASSWORD_DEVICE_ID,
+                    Locale.ENGLISH.getLanguage(), nameValuePairs, keyPair.getPublic());
         } catch (WSAuthenticationException e) {
             assertEquals(WSAuthenticationErrorCode.AUTHENTICATION_FAILED, e.getErrorCode());
             // operate: try authenticate on same instance again, should fail, instance should be removed.
@@ -191,7 +193,7 @@ public class AuthenticationWebServiceTest {
         String login = "login-" + UUID.randomUUID().toString();
         String password = "pwd-" + UUID.randomUUID().toString();
         SubjectEntity loginSubject = userRegistrationService.registerUser(login);
-        passwordDeviceService.register(loginSubject.getUserId(), password);
+        passwordDeviceService.register(nodeName, loginSubject.getUserId(), password);
 
         // login as admin
         String adminUserId = subjectService.getSubjectFromUserName(SafeOnlineConstants.ADMIN_LOGIN).getUserId();
@@ -332,8 +334,8 @@ public class AuthenticationWebServiceTest {
         // operate: login again, no further steps should be needed
         endpoint = getAuthenticationClient.getInstance();
         authenticationClient = new AuthenticationClientImpl(endpoint);
-        userId = authenticationClient.authenticate(testApplicationName, PasswordConstants.PASSWORD_DEVICE_ID,
-                Locale.ENGLISH.getLanguage(), nameValuePairs, keyPair.getPublic());
+        userId = authenticationClient.authenticate(testApplicationName, PasswordConstants.PASSWORD_DEVICE_ID, Locale.ENGLISH.getLanguage(),
+                nameValuePairs, keyPair.getPublic());
         assertNotNull(userId);
         assertion = authenticationClient.getAssertion();
         assertNotNull(assertion);
