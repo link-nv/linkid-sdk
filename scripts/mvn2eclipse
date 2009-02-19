@@ -42,6 +42,7 @@ for arg in $(getArgs hoMs "$@"); do
             '-s' "Tell maven to make an attempt to download Javadoc and Source artifacts for dependencies."
 
 			exit		;;
+        b) binFix=1     ;;
 		M) noMaven=1	;;
 		o) offline=1	;;
 		s) source=1	;;
@@ -54,6 +55,27 @@ shift "$(getArgs -c hoMs "$@")"
 if (( ! noMaven )); then
 	mvn "$@" ${offline:+-o} ${source:+-DdownloadJavadocs=true -DdownloadSources=true} eclipse:eclipse \
 		|| report "Maven eclipse plugin failed." || exit
+fi
+
+
+# Symlink jks and properties files from Maven's target directory into the eclipse build directory.
+if (( binFix )); then
+    emit "Symlinking Maven-created files into eclipse's bin directory" --
+        for d in */eclipse; do
+            cd "$d" && {
+                echo +"$d" > "$spinPipe"
+
+                if rm *jks 2>/dev/null; then
+                    ln -s ../target/classes/*jks || break
+                fi
+                
+                find . -name '*.properties' -exec ln -sf ../target/classes/{} \; || break
+            } \
+            
+            && cd - > /dev/null \
+            || break
+        done
+    emit -$?
 fi
 
 
