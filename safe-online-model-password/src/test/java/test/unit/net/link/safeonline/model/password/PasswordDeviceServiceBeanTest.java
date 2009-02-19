@@ -1,7 +1,6 @@
 package test.unit.net.link.safeonline.model.password;
 
 import static org.easymock.EasyMock.createMock;
-import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertNotNull;
@@ -119,8 +118,6 @@ public class PasswordDeviceServiceBeanTest {
 
     private HistoryDAO                mockHistoryDAO;
 
-    private SubjectService            mockSubjectService;
-
     private SecurityAuditLogger       mockSecurityAuditLogger;
 
     private EntityTestManager         entityTestManager;
@@ -132,6 +129,8 @@ public class PasswordDeviceServiceBeanTest {
     private SubjectEntity             testSubject;
 
     private PasswordManagerBean       passwordManager;
+
+    private String                    testWrongPassword;
 
     private static Class<?>[]         container = new Class[] { SubjectDAOBean.class, ApplicationDAOBean.class, SubscriptionDAOBean.class,
             AttributeDAOBean.class, TrustDomainDAOBean.class, ApplicationOwnerDAOBean.class, AttributeTypeDAOBean.class,
@@ -203,11 +202,11 @@ public class PasswordDeviceServiceBeanTest {
         AttributeTypeDAO attributeTypeDAO = EJBTestUtils.newInstance(AttributeTypeDAO.class, container, entityManager);
         EJBTestUtils.inject(testedInstance, attributeTypeDAO);
 
+        SubjectService subjectService = EJBTestUtils.newInstance(SubjectService.class, container, entityManager);
+        EJBTestUtils.inject(testedInstance, subjectService);
+
         passwordManager = EJBTestUtils.newInstance(PasswordManagerBean.class, container, entityManager);
         EJBTestUtils.inject(testedInstance, passwordManager);
-
-        mockSubjectService = createMock(SubjectService.class);
-        EJBTestUtils.inject(testedInstance, mockSubjectService);
 
         mockHistoryDAO = createMock(HistoryDAO.class);
         EJBTestUtils.inject(testedInstance, mockHistoryDAO);
@@ -217,14 +216,13 @@ public class PasswordDeviceServiceBeanTest {
 
         EJBTestUtils.init(testedInstance);
 
-        mockObjects = new Object[] { mockSubjectService, mockHistoryDAO, mockSecurityAuditLogger };
+        mockObjects = new Object[] { mockHistoryDAO, mockSecurityAuditLogger };
 
         // setup
         testUserId = UUID.randomUUID().toString();
-        testSubject = new SubjectEntity(testUserId);
+        testSubject = subjectService.addSubjectWithoutLogin(testUserId);
         testPassword = "test-password";
-
-        expect(mockSubjectService.getSubject(testUserId)).andStubReturn(testSubject);
+        testWrongPassword = "foobar";
 
         EntityTransaction entityTransaction = entityManager.getTransaction();
         entityTransaction.commit();
@@ -251,22 +249,15 @@ public class PasswordDeviceServiceBeanTest {
     public void testAuthenticateWithWrongPasswordFails()
             throws Exception {
 
-        // setup
-        String userId = UUID.randomUUID().toString();
-        String wrongPassword = "foobar";
-
-        // stubs
-        SubjectEntity subject = new SubjectEntity(userId);
-        expect(mockPasswordManager.validatePassword(subject, wrongPassword)).andStubReturn(false);
-
         // expectations
-        mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, "incorrect password");
+        mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, testUserId, "incorrect password");
 
         // prepare
+        passwordManager.registerPassword(testSubject, testPassword);
         replay(mockObjects);
 
         // operate
-        String resultUserId = testedInstance.authenticate(userId, wrongPassword);
+        String resultUserId = testedInstance.authenticate(testUserId, testWrongPassword);
 
         // verify
         verify(mockObjects);
