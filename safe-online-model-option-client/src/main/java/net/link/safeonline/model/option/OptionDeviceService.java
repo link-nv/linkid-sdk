@@ -8,11 +8,9 @@ package net.link.safeonline.model.option;
 
 import javax.ejb.Local;
 
-import net.link.safeonline.authentication.exception.AttributeNotFoundException;
-import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 
 
@@ -22,21 +20,21 @@ public interface OptionDeviceService extends OptionService {
     public static final String JNDI_BINDING = OptionService.JNDI_PREFIX + "OptionDeviceServiceBean/local";
 
 
-    public void register(String imei, String userId)
-            throws AttributeTypeNotFoundException;
+    public void register(String nodeName, String imei, String userId)
+            throws NodeNotFoundException;
 
     public void remove(String imei)
-            throws SubjectNotFoundException, AttributeTypeNotFoundException, AttributeNotFoundException;
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException;
 
     /**
      * @return The User ID of the user who just successfully authenticated. <code>null</code> when authentication failed.
      */
     public String authenticate(String imei)
-            throws SubjectNotFoundException, DeviceNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException;
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException;
 
     public void enable(String imei, String userId)
-            throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException;
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException;
 
     public void disable(String imei, String userId)
-            throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException;
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException;
 }

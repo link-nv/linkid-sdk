@@ -7,6 +7,10 @@
 
 package net.link.safeonline.webapp.auth;
 
+import net.link.safeonline.model.beid.BeIdConstants;
+import net.link.safeonline.model.digipass.DigipassConstants;
+import net.link.safeonline.model.encap.EncapConstants;
+import net.link.safeonline.model.password.PasswordConstants;
 import net.link.safeonline.webapp.Page;
 import net.link.safeonline.webapp.PageUtils;
 import net.link.safeonline.webapp.auth.password.AuthUserNamePassword;

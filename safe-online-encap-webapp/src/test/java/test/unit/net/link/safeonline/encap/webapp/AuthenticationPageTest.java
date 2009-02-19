@@ -10,6 +10,7 @@ import static org.junit.Assert.assertNull;
 
 import java.util.UUID;
 
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
@@ -37,15 +38,14 @@ import org.junit.Test;
 public class AuthenticationPageTest {
 
     private JndiTestUtils        jndiTestUtils;
-    private EncapDeviceService   mockEncapDeviceService;
     private SamlAuthorityService mockSamlAuthorityService;
     private HelpdeskManager      mockHelpdeskManager;
     private WicketTester         wicket;
+    private EncapDeviceService   mockEncapDeviceService;
 
     private static final String  TEST_APPLICATION = "test-application";
     private static final String  TEST_USERID      = UUID.randomUUID().toString();
     private static final String  TEST_MOBILE      = "0523012295";
-    private static final String  TEST_CHALLENGE   = "0123456789";
     private static final String  TEST_OTP         = "000000";
 
 
@@ -57,6 +57,8 @@ public class AuthenticationPageTest {
         jndiTestUtils.setUp();
 
         mockEncapDeviceService = createMock(EncapDeviceService.class);
+        jndiTestUtils.bindComponent(EncapDeviceService.JNDI_BINDING, mockEncapDeviceService);
+
         mockSamlAuthorityService = createMock(SamlAuthorityService.class);
         mockHelpdeskManager = createMock(HelpdeskManager.class);
 
@@ -105,7 +107,6 @@ public class AuthenticationPageTest {
         wicket.dumpPage();
 
         // Inject EJBs.
-        EJBTestUtils.inject(wicket.getLastRenderedPage(), mockEncapDeviceService);
         EJBTestUtils.inject(wicket.getLastRenderedPage(), mockSamlAuthorityService);
         jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
 
@@ -131,9 +132,9 @@ public class AuthenticationPageTest {
         FormTester form = prepareAuthentication(Goal.AUTHENTICATE);
 
         // Describe Expected Scenario.
-        mockEncapDeviceService.checkMobile(TEST_MOBILE);
-        expect(mockEncapDeviceService.requestOTP(TEST_MOBILE)).andStubReturn(TEST_CHALLENGE);
-        expect(mockEncapDeviceService.authenticate(TEST_MOBILE, TEST_CHALLENGE, TEST_OTP)).andStubReturn(TEST_USERID);
+        mockEncapDeviceService.requestOTP(TEST_MOBILE);
+        expect(mockEncapDeviceService.isChallenged()).andReturn(true);
+        expect(mockEncapDeviceService.authenticate(TEST_OTP)).andStubReturn(TEST_USERID);
         replay(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
 
         // Request OTP for our mobile.
@@ -165,7 +166,10 @@ public class AuthenticationPageTest {
         FormTester form = prepareAuthentication(Goal.AUTHENTICATE);
 
         // Describe Expected Scenario.
-        mockEncapDeviceService.checkMobile(TEST_MOBILE);
+        mockEncapDeviceService.requestOTP(TEST_MOBILE);
+        expect(mockEncapDeviceService.isChallenged()).andReturn(true);
+        expect(mockEncapDeviceService.isChallenged()).andReturn(true);
+        mockEncapDeviceService.authenticate(TEST_OTP);
         expectLastCall().andThrow(new SubjectNotFoundException());
         replay(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
 
@@ -175,7 +179,16 @@ public class AuthenticationPageTest {
 
         // Check for errors.
         wicket.assertRenderedPage(AuthenticationPage.class);
-        wicket.assertErrorMessages(new String[] { "mobileNotRegistered" });
+        wicket.assertNoErrorMessage();
+
+        // Specify our OTP and begin login.
+        form = getAuthenticationForm(wicket);
+        form.setValue(AuthenticationPage.OTP_FIELD_ID, TEST_OTP);
+        form.submit(AuthenticationPage.LOGIN_BUTTON_ID);
+
+        // Check for errors.
+        wicket.assertRenderedPage(AuthenticationPage.class);
+        wicket.assertErrorMessages(new String[] { "errorSubjectNotFound" });
         verify(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
         assertNull("There was an authenticated user on the session.", //
                 AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
@@ -189,7 +202,10 @@ public class AuthenticationPageTest {
         FormTester form = prepareAuthentication(Goal.AUTHENTICATE);
 
         // Describe Expected Scenario.
-        mockEncapDeviceService.checkMobile(TEST_MOBILE);
+        mockEncapDeviceService.requestOTP(TEST_MOBILE);
+        expect(mockEncapDeviceService.isChallenged()).andReturn(true);
+        expect(mockEncapDeviceService.isChallenged()).andReturn(true);
+        mockEncapDeviceService.authenticate(TEST_OTP);
         expectLastCall().andThrow(new DeviceDisabledException());
         replay(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
 
@@ -199,7 +215,16 @@ public class AuthenticationPageTest {
 
         // Check for errors.
         wicket.assertRenderedPage(AuthenticationPage.class);
-        wicket.assertErrorMessages(new String[] { "mobileDisabled" });
+        wicket.assertNoErrorMessage();
+
+        // Specify our OTP and begin login.
+        form = getAuthenticationForm(wicket);
+        form.setValue(AuthenticationPage.OTP_FIELD_ID, TEST_OTP);
+        form.submit(AuthenticationPage.LOGIN_BUTTON_ID);
+
+        // Check for errors.
+        wicket.assertRenderedPage(AuthenticationPage.class);
+        wicket.assertErrorMessages(new String[] { "errorDeviceDisabled" });
         verify(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
         assertNull("There was an authenticated user on the session.", //
                 AuthenticationContext.getAuthenticationContext(wicket.getServletSession()).getUserId());
@@ -213,9 +238,10 @@ public class AuthenticationPageTest {
         FormTester form = prepareAuthentication(Goal.AUTHENTICATE);
 
         // Describe Expected Scenario.
-        mockEncapDeviceService.checkMobile(TEST_MOBILE);
-        expect(mockEncapDeviceService.requestOTP(TEST_MOBILE)).andStubReturn(TEST_CHALLENGE);
-        expect(mockEncapDeviceService.authenticate(TEST_MOBILE, TEST_CHALLENGE, TEST_OTP)).andStubReturn(null);
+        mockEncapDeviceService.requestOTP(TEST_MOBILE);
+        expect(mockEncapDeviceService.isChallenged()).andReturn(true);
+        expect(mockEncapDeviceService.isChallenged()).andReturn(true);
+        expect(mockEncapDeviceService.authenticate(TEST_OTP)).andStubReturn(null);
         replay(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
 
         // Request OTP for our mobile.
@@ -247,9 +273,9 @@ public class AuthenticationPageTest {
         FormTester form = prepareAuthentication(Goal.ENABLE_DEVICE);
 
         // Describe Expected Scenario.
-        expect(mockEncapDeviceService.requestOTP(TEST_MOBILE)).andStubReturn(TEST_CHALLENGE);
-        expect(mockEncapDeviceService.authenticateEncap(TEST_CHALLENGE, TEST_OTP)).andReturn(true);
-        mockEncapDeviceService.enable(TEST_USERID, TEST_MOBILE);
+        mockEncapDeviceService.requestOTP(TEST_MOBILE);
+        expect(mockEncapDeviceService.isChallenged()).andReturn(true);
+        mockEncapDeviceService.enable(TEST_USERID, TEST_OTP);
         replay(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
 
         // Request OTP for our mobile.
@@ -279,9 +305,10 @@ public class AuthenticationPageTest {
         FormTester form = prepareAuthentication(Goal.ENABLE_DEVICE);
 
         // Describe Expected Scenario.
-        expect(mockEncapDeviceService.requestOTP(TEST_MOBILE)).andStubReturn(TEST_CHALLENGE);
-        expect(mockEncapDeviceService.authenticateEncap(TEST_CHALLENGE, TEST_OTP)).andReturn(true);
-        mockEncapDeviceService.enable(TEST_USERID, TEST_MOBILE);
+        mockEncapDeviceService.requestOTP(TEST_MOBILE);
+        expect(mockEncapDeviceService.isChallenged()).andReturn(true);
+        expect(mockEncapDeviceService.isChallenged()).andReturn(true);
+        mockEncapDeviceService.enable(TEST_USERID, TEST_OTP);
         expectLastCall().andThrow(new SubjectNotFoundException());
         replay(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
 
@@ -314,8 +341,11 @@ public class AuthenticationPageTest {
         FormTester form = prepareAuthentication(Goal.ENABLE_DEVICE);
 
         // Describe Expected Scenario.
-        expect(mockEncapDeviceService.requestOTP(TEST_MOBILE)).andStubReturn(TEST_CHALLENGE);
-        expect(mockEncapDeviceService.authenticateEncap(TEST_CHALLENGE, TEST_OTP)).andReturn(false);
+        mockEncapDeviceService.requestOTP(TEST_MOBILE);
+        expect(mockEncapDeviceService.isChallenged()).andReturn(true);
+        expect(mockEncapDeviceService.isChallenged()).andReturn(true);
+        mockEncapDeviceService.enable(TEST_USERID, TEST_OTP);
+        expectLastCall().andThrow(new DeviceAuthenticationException());
         replay(mockEncapDeviceService, mockSamlAuthorityService, mockHelpdeskManager);
 
         // Request OTP for our mobile.

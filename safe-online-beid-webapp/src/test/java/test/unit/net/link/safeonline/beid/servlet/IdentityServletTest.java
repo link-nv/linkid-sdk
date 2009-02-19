@@ -130,7 +130,7 @@ public class IdentityServletTest {
         postMethod.setRequestEntity(requestEntity);
 
         // expectations
-        mockBeIdDeviceServiceBean.register((String) EasyMock.anyObject(), (String) EasyMock.anyObject(),
+        mockBeIdDeviceServiceBean.register((String) EasyMock.anyObject(), (String) EasyMock.anyObject(), (String) EasyMock.anyObject(),
                 (String) EasyMock.anyObject(), EasyMock.aryEq("test-message".getBytes()));
         EasyMock.expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
 
@@ -165,7 +165,7 @@ public class IdentityServletTest {
         httpURLConnection.disconnect();
 
         // expectations
-        mockBeIdDeviceServiceBean.register((String) EasyMock.anyObject(), (String) EasyMock.anyObject(),
+        mockBeIdDeviceServiceBean.register((String) EasyMock.anyObject(), (String) EasyMock.anyObject(), (String) EasyMock.anyObject(),
                 (String) EasyMock.anyObject(), EasyMock.aryEq("test-message".getBytes()));
         EasyMock.expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
 

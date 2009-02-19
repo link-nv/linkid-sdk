@@ -138,15 +138,15 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
          * lightweight bean) will live within the same transaction and security context as this identity service EJB3 session bean.
          */
         LOG.debug("postConstruct");
-        attributeManager = new AttributeManagerLWBean(attributeDAO);
+        attributeManager = new AttributeManagerLWBean(attributeDAO, attributeTypeDAO);
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
     public List<HistoryEntity> listHistory() {
 
         SubjectEntity subject = subjectManager.getCallerSubject();
-        List<HistoryEntity> result = historyDAO.getHistory(subject);
-        return result;
+
+        return historyDAO.getHistory(subject);
     }
 
     @RolesAllowed(SafeOnlineRoles.OPERATOR_ROLE)
@@ -170,6 +170,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
             LOG.debug("user not allowed to edit attribute of type: " + attributeName);
             throw new PermissionDeniedException("user not allowed to edit attribute of type: " + attributeName);
         }
+
         return attributeType;
     }
 
@@ -184,16 +185,16 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
     private AttributeTypeEntity getUserRemovableAttributeType(@NonEmptyString String attributeName)
             throws PermissionDeniedException, AttributeTypeNotFoundException {
 
-        AttributeTypeEntity attributeType = attributeTypeDAO.findAttributeType(attributeName);
-        if (null == attributeType)
-            throw new IllegalArgumentException("attribute type not found: " + attributeName);
+        AttributeTypeEntity attributeType = attributeTypeDAO.getAttributeType(attributeName);
         if (true == attributeType.isUserEditable())
             return attributeType;
+
         if (false == attributeType.isCompoundMember()) {
             String msg = "attribute type is not a compounded member: " + attributeType.getName();
             LOG.debug(msg);
             throw new PermissionDeniedException(msg);
         }
+
         /*
          * We make an exception here for compounded member attributes here. Even if the member attribute type is marked as being
          * non-user-editable the user is allowed to remove the entry if the compounded attribute type is editable.
@@ -201,6 +202,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
         AttributeTypeEntity compoundedAttributeType = attributeTypeDAO.getParent(attributeType);
         if (true == compoundedAttributeType.isUserEditable())
             return attributeType;
+
         String msg = "compounded parent attribute type is not user editable: " + compoundedAttributeType.getName();
         LOG.debug(msg);
         throw new PermissionDeniedException(msg);
@@ -221,9 +223,8 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
         } else {
             attributeDO.setCompounded(true);
             saveAttribute(attributeDO);
-            for (Object memberAttributeObject : attribute.getAttributeValue()) {
-                AttributeType memberAttribute = (AttributeType) memberAttributeObject;
-                saveAttribute(memberAttribute);
+            for (Object memberAttribute : attribute.getAttributeValue()) {
+                saveAttribute((AttributeType) memberAttribute);
             }
         }
 
@@ -238,30 +239,35 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
 
         if (null == value)
             return null;
+
         if (value instanceof XMLGregorianCalendar) {
             XMLGregorianCalendar calendar = (XMLGregorianCalendar) value;
             return calendar.toGregorianCalendar().getTime();
         }
+
         return value;
     }
 
     private DatatypeType getDatatypeType(AttributeType attributeType) {
 
         DataType dataType = DataType.getDataType(attributeType.getOtherAttributes().get(WebServiceConstants.DATATYPE_ATTRIBUTE));
-        if (dataType == DataType.STRING)
-            return DatatypeType.STRING;
-        else if (dataType == DataType.BOOLEAN)
-            return DatatypeType.BOOLEAN;
-        else if (dataType == DataType.DATE)
-            return DatatypeType.DATE;
-        else if (dataType == DataType.DOUBLE)
-            return DatatypeType.DOUBLE;
-        else if (dataType == DataType.INTEGER)
-            return DatatypeType.INTEGER;
-        else if (dataType == DataType.COMPOUNDED)
-            return DatatypeType.COMPOUNDED;
-        else
-            throw new RuntimeException("Unknown datatype " + dataType.getValue());
+
+        switch (dataType) {
+            case STRING:
+                return DatatypeType.STRING;
+            case BOOLEAN:
+                return DatatypeType.BOOLEAN;
+            case DATE:
+                return DatatypeType.DATE;
+            case DOUBLE:
+                return DatatypeType.DOUBLE;
+            case INTEGER:
+                return DatatypeType.INTEGER;
+            case COMPOUNDED:
+                return DatatypeType.COMPOUNDED;
+        }
+
+        throw new RuntimeException("Unknown datatype " + dataType.getValue());
     }
 
     @RolesAllowed(SafeOnlineRoles.USER_ROLE)
@@ -291,7 +297,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
                 String compoundedAttributeId = UUID.randomUUID().toString();
                 LOG.debug("adding compounded attribute for " + subject.getUserId() + " of type " + attributeName + " with ID "
                         + compoundedAttributeId);
-                compoundedAttribute.setStringValue(compoundedAttributeId);
+                compoundedAttribute.setValue(compoundedAttributeId);
             }
             /*
              * Notice that, if there is already a compounded attribute for the given record index, then we don't overwrite it with a new ID.
@@ -844,7 +850,7 @@ public class IdentityServiceBean implements IdentityService, IdentityServiceRemo
             AttributeEntity compoundedAttribute = attributeDAO.addAttribute(attributeType, subject);
             String compoundedAttributeId = UUID.randomUUID().toString();
             LOG.debug("adding new compounded entry with Id: " + compoundedAttributeId);
-            compoundedAttribute.setStringValue(compoundedAttributeId);
+            compoundedAttribute.setValue(compoundedAttributeId);
             long attributeIndex = compoundedAttribute.getAttributeIndex();
             LOG.debug("compounded attribute index: " + attributeIndex);
 

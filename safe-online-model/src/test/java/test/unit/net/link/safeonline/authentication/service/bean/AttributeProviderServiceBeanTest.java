@@ -12,7 +12,6 @@ import static org.junit.Assert.fail;
 
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
-import java.util.List;
 
 import javax.persistence.EntityManager;
 
@@ -34,7 +33,6 @@ import net.link.safeonline.dao.bean.AttributeTypeDAOBean;
 import net.link.safeonline.dao.bean.SubjectDAOBean;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.ApplicationOwnerEntity;
-import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.SubjectEntity;
@@ -137,10 +135,12 @@ public class AttributeProviderServiceBeanTest {
 
         ApplicationDAO applicationDAO = EJBTestUtils.newInstance(ApplicationDAOBean.class, SafeOnlineTestContainer.sessionBeans,
                 entityManager);
-        applicationDAO.addApplication(testApplicationName, null, testApplicationOwnerEntity, null, null, null, null);
+        ApplicationEntity application = applicationDAO.addApplication(testApplicationName, null, testApplicationOwnerEntity, null, null,
+                null, null);
 
         AttributeProviderService attributeProviderService = EJBTestUtils.newInstance(AttributeProviderServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, "test-application", SafeOnlineApplicationRoles.APPLICATION_ROLE);
+                SafeOnlineTestContainer.sessionBeans, entityManager, Long.toString(application.getId()),
+                SafeOnlineApplicationRoles.APPLICATION_ROLE);
 
         // operate & verify
         try {
@@ -192,7 +192,8 @@ public class AttributeProviderServiceBeanTest {
         attributeProviderDAO.addAttributeProvider(testApplication, testAttributeType);
 
         AttributeProviderService attributeProviderService = EJBTestUtils.newInstance(AttributeProviderServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, "test-application", SafeOnlineApplicationRoles.APPLICATION_ROLE);
+                SafeOnlineTestContainer.sessionBeans, entityManager, Long.toString(testApplication.getId()),
+                SafeOnlineApplicationRoles.APPLICATION_ROLE);
 
         try {
             attributeProviderService.setAttribute(testLoginSubject.getUserId(), testAttributeName, null);
@@ -216,28 +217,28 @@ public class AttributeProviderServiceBeanTest {
         attributeProviderService.createAttribute(testLoginSubject.getUserId(), testAttributeName, testAttributeValue);
 
         // verify
-        List<AttributeEntity> resultAttributes = attributeProviderService.getAttributes(testLoginSubject.getUserId(), testAttributeName);
-        assertEquals(testAttributeValue.length, resultAttributes.size());
-        assertEquals(value1, resultAttributes.get(0).getStringValue());
-        assertEquals(value2, resultAttributes.get(1).getStringValue());
+        String[] resultAttributes = (String[]) attributeProviderService.getAttributes(testLoginSubject.getUserId(), testAttributeName);
+        assertEquals(testAttributeValue.length, resultAttributes.length);
+        assertEquals(value1, resultAttributes[0]);
+        assertEquals(value2, resultAttributes[1]);
 
         // operate
         attributeProviderService.setAttribute(testLoginSubject.getUserId(), testAttributeName, new String[] { value2 });
 
         // verify
-        resultAttributes = attributeProviderService.getAttributes(testLoginSubject.getUserId(), testAttributeName);
-        assertEquals(1, resultAttributes.size());
-        assertEquals(value2, resultAttributes.get(0).getStringValue());
+        resultAttributes = (String[]) attributeProviderService.getAttributes(testLoginSubject.getUserId(), testAttributeName);
+        assertEquals(1, resultAttributes.length);
+        assertEquals(value2, resultAttributes[0]);
 
         // operate
         attributeProviderService.setAttribute(testLoginSubject.getUserId(), testAttributeName, new String[] { value1, value2, value1 });
 
         // verify
-        resultAttributes = attributeProviderService.getAttributes(testLoginSubject.getUserId(), testAttributeName);
-        assertEquals(3, resultAttributes.size());
-        assertEquals(value1, resultAttributes.get(0).getStringValue());
-        assertEquals(value2, resultAttributes.get(1).getStringValue());
-        assertEquals(value1, resultAttributes.get(2).getStringValue());
+        resultAttributes = (String[]) attributeProviderService.getAttributes(testLoginSubject.getUserId(), testAttributeName);
+        assertEquals(3, resultAttributes.length);
+        assertEquals(value1, resultAttributes[0]);
+        assertEquals(value2, resultAttributes[1]);
+        assertEquals(value1, resultAttributes[2]);
     }
 
     @Test
@@ -278,7 +279,8 @@ public class AttributeProviderServiceBeanTest {
         attributeProviderDAO.addAttributeProvider(testApplication, testAttributeType);
 
         AttributeProviderService attributeProviderService = EJBTestUtils.newInstance(AttributeProviderServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, "test-application", SafeOnlineApplicationRoles.APPLICATION_ROLE);
+                SafeOnlineTestContainer.sessionBeans, entityManager, Long.toString(testApplication.getId()),
+                SafeOnlineApplicationRoles.APPLICATION_ROLE);
 
         try {
             attributeProviderService.setAttribute(testLoginSubject.getUserId(), testAttributeName, null);
@@ -302,7 +304,7 @@ public class AttributeProviderServiceBeanTest {
         attributeProviderService.createAttribute(testLoginSubject.getUserId(), testAttributeName, testAttributeValue);
 
         // verify
-        List<AttributeEntity> resultAttributes = attributeProviderService.getAttributes(testLoginSubject.getUserId(), testAttributeName);
-        assertEquals(testAttributeValue, resultAttributes.get(0).getStringValue());
+        String resultAttribute = (String) attributeProviderService.getAttributes(testLoginSubject.getUserId(), testAttributeName);
+        assertEquals(testAttributeValue, resultAttribute);
     }
 }

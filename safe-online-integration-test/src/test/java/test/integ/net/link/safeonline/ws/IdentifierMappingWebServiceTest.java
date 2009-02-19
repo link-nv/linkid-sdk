@@ -34,6 +34,7 @@ import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
+import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.password.PasswordDeviceService;
@@ -62,11 +63,13 @@ import test.integ.net.link.safeonline.IntegrationTestUtils;
  */
 public class IdentifierMappingWebServiceTest {
 
-    private static final Log LOG = LogFactory.getLog(IdentifierMappingWebServiceTest.class);
+    private static final Log LOG      = LogFactory.getLog(IdentifierMappingWebServiceTest.class);
 
     private X509Certificate  certificate;
 
     private PrivateKey       privateKey;
+
+    private String           nodeName = "olas-localhost";
 
 
     @Before
@@ -98,7 +101,7 @@ public class IdentifierMappingWebServiceTest {
         String login = "login-" + UUID.randomUUID().toString();
         String password = UUID.randomUUID().toString();
         SubjectEntity loginSubject = userRegistrationService.registerUser(login);
-        passwordDeviceService.register(loginSubject.getUserId(), password);
+        passwordDeviceService.register(nodeName, loginSubject.getUserId(), password);
 
         // operate: register certificate as application trust point
         PkiService pkiService = getPkiService(initialContext);
@@ -112,17 +115,17 @@ public class IdentifierMappingWebServiceTest {
         applicationService.addApplication(testApplicationName, null, "owner", null, true, IdScopeType.USER, null, null,
                 certificate.getEncoded(), Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
                         IntegrationTestUtils.NAME_ATTRIBUTE) }), false, false, false, null);
+        ApplicationEntity testApplication = applicationService.getApplication(testApplicationName);
 
         // operate: subscribe onto the application and confirm identity usage
         SubscriptionService subscriptionService = getSubscriptionService(initialContext);
 
         IntegrationTestUtils.login(loginSubject.getUserId(), password);
-        subscriptionService.subscribe(testApplicationName);
-        identityService.confirmIdentity(testApplicationName);
+        subscriptionService.subscribe(testApplication.getId());
+        identityService.confirmIdentity(testApplication.getId());
 
         // operate & verify
-        NameIdentifierMappingClient client = new NameIdentifierMappingClientImpl("https://localhost:8443", certificate,
-                privateKey);
+        NameIdentifierMappingClient client = new NameIdentifierMappingClientImpl("https://localhost:8443", certificate, privateKey);
         client.setCaptureMessages(false);
         String resultUserId = client.getUserId(login);
         LOG.debug("userId: " + resultUserId);
@@ -155,7 +158,7 @@ public class IdentifierMappingWebServiceTest {
         String login = "login-" + UUID.randomUUID().toString();
         String password = UUID.randomUUID().toString();
         SubjectEntity loginSubject = userRegistrationService.registerUser(login);
-        passwordDeviceService.register(loginSubject.getUserId(), password);
+        passwordDeviceService.register(nodeName, loginSubject.getUserId(), password);
 
         // operate: register certificate as application trust point
         PkiService pkiService = getPkiService(initialContext);
@@ -172,17 +175,17 @@ public class IdentifierMappingWebServiceTest {
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null,
                 certificate.getEncoded(), Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
                         IntegrationTestUtils.NAME_ATTRIBUTE) }), false, false, false, null);
+        ApplicationEntity testApplication = applicationService.getApplication(testApplicationName);
 
         // operate: subscribe onto the application and confirm identity usage
         SubscriptionService subscriptionService = getSubscriptionService(initialContext);
 
         IntegrationTestUtils.login(loginSubject.getUserId(), password);
-        subscriptionService.subscribe(testApplicationName);
-        identityService.confirmIdentity(testApplicationName);
+        subscriptionService.subscribe(testApplication.getId());
+        identityService.confirmIdentity(testApplication.getId());
 
         // operate & verify
-        NameIdentifierMappingClient client = new NameIdentifierMappingClientImpl("https://localhost:8443", certificate,
-                privateKey);
+        NameIdentifierMappingClient client = new NameIdentifierMappingClientImpl("https://localhost:8443", certificate, privateKey);
         try {
             client.getUserId(login);
             fail();

@@ -40,6 +40,7 @@ import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.data.AttributeDO;
+import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.IdScopeType;
@@ -79,11 +80,13 @@ import test.integ.net.link.safeonline.IntegrationTestUtils;
  */
 public class AttributeWebServiceTest {
 
-    private static final Log LOG = LogFactory.getLog(DataWebServiceTest.class);
+    private static final Log LOG      = LogFactory.getLog(DataWebServiceTest.class);
 
     private X509Certificate  certificate;
 
     private AttributeClient  attributeClient;
+
+    private String           nodeName = "olas-localhost";
 
 
     @Before
@@ -131,7 +134,7 @@ public class AttributeWebServiceTest {
         String login = "login-" + UUID.randomUUID().toString();
         String password = "pwd-" + UUID.randomUUID().toString();
         SubjectEntity loginSubject = userRegistrationService.registerUser(login);
-        passwordDeviceService.register(loginSubject.getUserId(), password);
+        passwordDeviceService.register(nodeName, loginSubject.getUserId(), password);
 
         // operate: save name attribute
         IntegrationTestUtils.login(loginSubject.getUserId(), password);
@@ -166,12 +169,13 @@ public class AttributeWebServiceTest {
                 certificate.getEncoded(),
                 Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(IntegrationTestUtils.NAME_ATTRIBUTE),
                         new IdentityAttributeTypeDO(testAttributeName) }), false, false, false, null);
+        ApplicationEntity testApplication = applicationService.getApplication(testApplicationName);
 
         // operate: subscribe onto the application and confirm identity usage
         SubscriptionService subscriptionService = getSubscriptionService(initialContext);
         IntegrationTestUtils.login(loginSubject.getUserId(), password);
-        subscriptionService.subscribe(testApplicationName);
-        identityService.confirmIdentity(testApplicationName);
+        subscriptionService.subscribe(testApplication.getId());
+        identityService.confirmIdentity(testApplication.getId());
 
         // operate: retrieve name attribute via web service
         String result = attributeClient.getAttributeValue(loginSubject.getUserId(), IntegrationTestUtils.NAME_ATTRIBUTE, String.class);
@@ -243,7 +247,7 @@ public class AttributeWebServiceTest {
         String login = "login-" + UUID.randomUUID().toString();
         String password = "pwd-" + UUID.randomUUID().toString();
         SubjectEntity loginSubject = userRegistrationService.registerUser(login);
-        passwordDeviceService.register(loginSubject.getUserId(), password);
+        passwordDeviceService.register(nodeName, loginSubject.getUserId(), password);
 
         // operate: register new attribute type
         IntegrationTestUtils.login(adminUserId, "admin");
@@ -261,12 +265,13 @@ public class AttributeWebServiceTest {
                 certificate.getEncoded(),
                 Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(IntegrationTestUtils.NAME_ATTRIBUTE),
                         new IdentityAttributeTypeDO(testAttributeName) }), false, false, false, null);
+        ApplicationEntity testApplication = applicationService.getApplication(testApplicationName);
 
         // operate: subscribe onto the application and confirm identity usage
         SubscriptionService subscriptionService = getSubscriptionService(initialContext);
         IntegrationTestUtils.login(loginSubject.getUserId(), password);
-        subscriptionService.subscribe(testApplicationName);
-        identityService.confirmIdentity(testApplicationName);
+        subscriptionService.subscribe(testApplication.getId());
+        identityService.confirmIdentity(testApplication.getId());
 
         // operate: retrieve attribute via web service
         attributeClient.setCaptureMessages(true);
@@ -299,7 +304,7 @@ public class AttributeWebServiceTest {
         String login = "login-" + UUID.randomUUID().toString();
         String password = "pwd-" + UUID.randomUUID().toString();
         SubjectEntity loginSubject = userRegistrationService.registerUser(login);
-        passwordDeviceService.register(loginSubject.getUserId(), password);
+        passwordDeviceService.register(nodeName, loginSubject.getUserId(), password);
 
         SubjectService subjectService = getSubjectService(initialContext);
         String adminUserId = subjectService.getSubjectFromUserName("admin").getUserId();
@@ -334,12 +339,13 @@ public class AttributeWebServiceTest {
                 certificate.getEncoded(),
                 Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(IntegrationTestUtils.NAME_ATTRIBUTE),
                         new IdentityAttributeTypeDO(testAttributeName) }), false, false, false, null);
+        ApplicationEntity testApplication = applicationService.getApplication(testApplicationName);
 
         // operate: subscribe onto the application and confirm identity usage
         SubscriptionService subscriptionService = getSubscriptionService(initialContext);
         IntegrationTestUtils.login(loginSubject.getUserId(), password);
-        subscriptionService.subscribe(testApplicationName);
-        identityService.confirmIdentity(testApplicationName);
+        subscriptionService.subscribe(testApplication.getId());
+        identityService.confirmIdentity(testApplication.getId());
 
         // operate: retrieve name attribute via web service
         attributeClient.setCaptureMessages(true);
@@ -385,7 +391,7 @@ public class AttributeWebServiceTest {
         String login = "login-" + UUID.randomUUID().toString();
         String password = "pwd-" + UUID.randomUUID().toString();
         SubjectEntity loginSubject = userRegistrationService.registerUser(login);
-        passwordDeviceService.register(loginSubject.getUserId(), password);
+        passwordDeviceService.register(nodeName, loginSubject.getUserId(), password);
 
         SubjectService subjectService = getSubjectService(initialContext);
         String adminUserId = subjectService.getSubjectFromUserName("admin").getUserId();
@@ -445,12 +451,13 @@ public class AttributeWebServiceTest {
                 certificate.getEncoded(), Arrays.asList(new IdentityAttributeTypeDO[] {
                         new IdentityAttributeTypeDO(IntegrationTestUtils.NAME_ATTRIBUTE), new IdentityAttributeTypeDO(TEST_COMP_NAME) }),
                 false, false, false, null);
+        ApplicationEntity testApplication = applicationService.getApplication(testApplicationName);
 
         // operate: subscribe onto the application and confirm identity usage
         SubscriptionService subscriptionService = getSubscriptionService(initialContext);
         IntegrationTestUtils.login(loginSubject.getUserId(), password);
-        subscriptionService.subscribe(testApplicationName);
-        identityService.confirmIdentity(testApplicationName);
+        subscriptionService.subscribe(testApplication.getId());
+        identityService.confirmIdentity(testApplication.getId());
 
         // operate: retrieve name attribute via web service
 

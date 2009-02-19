@@ -15,10 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.link.safeonline.audit.SecurityAuditLogger;
-import net.link.safeonline.authentication.exception.AttributeNotFoundException;
-import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.authentication.exception.DeviceDisabledException;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.device.sdk.saml2.DeviceOperationManager;
@@ -83,18 +80,12 @@ public class RemovalServlet extends AbstractInjectionServlet {
             response.setStatus(HttpServletResponse.SC_OK);
             // notify that remove operation was successful.
             protocolContext.setSuccess(true);
-        } catch (DeviceNotFoundException e) {
-            LOG.error("device not found", e);
         } catch (SubjectNotFoundException e) {
             String message = "subject " + userId + " not found";
             LOG.error(message, e);
             securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, message);
-        } catch (AttributeTypeNotFoundException e) {
-            LOG.error("attribute type not found", e);
-        } catch (AttributeNotFoundException e) {
-            LOG.error("attribute not found", e);
-        } catch (DeviceDisabledException e) {
-            LOG.error("device disabled", e);
+        } catch (DeviceRegistrationNotFoundException e) {
+            LOG.error("Tried to remove a device that wasn't registered.", e);
         }
 
         response.sendRedirect(deviceExitPath);

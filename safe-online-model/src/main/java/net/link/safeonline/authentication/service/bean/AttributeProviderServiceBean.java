@@ -7,14 +7,9 @@
 
 package net.link.safeonline.authentication.service.bean;
 
-import java.lang.reflect.Array;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -26,30 +21,29 @@ import net.link.safeonline.audit.AccessAuditLogger;
 import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.AttributeUnavailableException;
 import net.link.safeonline.authentication.exception.DatatypeMismatchException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.AttributeProviderService;
 import net.link.safeonline.authentication.service.AttributeProviderServiceRemote;
-import net.link.safeonline.dao.AttributeDAO;
+import net.link.safeonline.authentication.service.ProxyAttributeService;
 import net.link.safeonline.dao.AttributeProviderDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.entity.ApplicationEntity;
-import net.link.safeonline.entity.AttributeEntity;
 import net.link.safeonline.entity.AttributeProviderEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
-import net.link.safeonline.entity.CompoundedAttributeTypeMemberEntity;
 import net.link.safeonline.entity.HistoryEventType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.ApplicationManager;
-import net.link.safeonline.model.bean.AttributeManagerLWBean;
 import net.link.safeonline.service.SubjectService;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.ejb.LocalBinding;
+import org.jboss.annotation.ejb.RemoteBinding;
 import org.jboss.annotation.security.SecurityDomain;
 
 
@@ -60,66 +54,26 @@ import org.jboss.annotation.security.SecurityDomain;
 @Interceptors( { AuditContextManager.class, AccessAuditLogger.class })
 public class AttributeProviderServiceBean implements AttributeProviderService, AttributeProviderServiceRemote {
 
-    private static final Log       LOG = LogFactory.getLog(AttributeProviderServiceBean.class);
+    private static final Log      LOG = LogFactory.getLog(AttributeProviderServiceBean.class);
+
+    @EJB(mappedName = ProxyAttributeService.JNDI_BINDING)
+    private ProxyAttributeService proxyAttributeService;
 
     @EJB(mappedName = AttributeProviderDAO.JNDI_BINDING)
-    private AttributeProviderDAO   attributeProviderDAO;
+    private AttributeProviderDAO  attributeProviderDAO;
 
     @EJB(mappedName = ApplicationManager.JNDI_BINDING)
-    private ApplicationManager     applicationManager;
+    private ApplicationManager    applicationManager;
 
     @EJB(mappedName = AttributeTypeDAO.JNDI_BINDING)
-    private AttributeTypeDAO       attributeTypeDAO;
-
-    @EJB(mappedName = AttributeDAO.JNDI_BINDING)
-    private AttributeDAO           attributeDAO;
+    private AttributeTypeDAO      attributeTypeDAO;
 
     @EJB(mappedName = SubjectService.JNDI_BINDING)
-    private SubjectService         subjectService;
+    private SubjectService        subjectService;
 
     @EJB(mappedName = HistoryDAO.JNDI_BINDING)
-    private HistoryDAO             historyDAO;
+    private HistoryDAO            historyDAO;
 
-    private AttributeManagerLWBean attributeManager;
-
-
-    @PostConstruct
-    public void postConstructCallback() {
-
-        /*
-         * By injecting the attribute DAO of this session bean in the attribute manager we are sure that the attribute manager (a
-         * lightweight bean) will live within the same transaction and security context as this identity service EJB3 session bean.
-         */
-        LOG.debug("postConstruct");
-        attributeManager = new AttributeManagerLWBean(attributeDAO);
-    }
-
-    @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
-    public List<AttributeEntity> getAttributes(String subjectLogin, String attributeName)
-            throws AttributeTypeNotFoundException, PermissionDeniedException, SubjectNotFoundException {
-
-        LOG.debug("get attributes of type " + attributeName + " for subject " + subjectLogin);
-        AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
-        SubjectEntity subject = subjectService.getSubject(subjectLogin);
-
-        List<AttributeEntity> attributes = attributeDAO.listAttributes(subject, attributeType);
-
-        if (false == attributeType.isCompounded())
-            return attributes;
-
-        List<CompoundedAttributeTypeMemberEntity> members = attributeType.getMembers();
-        for (AttributeEntity attribute : attributes) {
-            for (CompoundedAttributeTypeMemberEntity member : members) {
-                AttributeEntity memberAttribute = attributeDAO.findAttribute(subject, member.getMember(),
-                        attribute.getAttributeIndex());
-                if (null != memberAttribute) {
-                    attribute.getMembers().add(memberAttribute);
-                }
-            }
-        }
-
-        return attributes;
-    }
 
     /**
      * Check whether the caller application is an attribute provider for the given attribute type.
@@ -141,31 +95,26 @@ public class AttributeProviderServiceBean implements AttributeProviderService, A
         AttributeProviderEntity attributeProvider = attributeProviderDAO.findAttributeProvider(application, attributeType);
         if (null == attributeProvider)
             throw new PermissionDeniedException("not an attribute provider");
+
         return attributeType;
     }
 
-    private void createCompoundAttribute(SubjectEntity subject, AttributeTypeEntity attributeType, Map<String, Object> memberValues) {
+    @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
+    public Object getAttributes(String subjectLogin, String attributeName)
+            throws AttributeTypeNotFoundException, PermissionDeniedException, SubjectNotFoundException, AttributeUnavailableException {
 
-        AttributeEntity compoundAttribute = attributeDAO.addAttribute(attributeType, subject);
-        long attributeIdx = compoundAttribute.getAttributeIndex();
-        LOG.debug("createCompoundAttribute: idx " + attributeIdx);
-        String attributeId = UUID.randomUUID().toString();
-        LOG.debug("new attribute Id: " + attributeId);
-        compoundAttribute.setStringValue(attributeId);
+        LOG.debug("get attributes of type " + attributeName + " for subject " + subjectLogin);
+        AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
+        SubjectEntity subject = subjectService.getSubject(subjectLogin);
 
-        List<CompoundedAttributeTypeMemberEntity> members = attributeType.getMembers();
-        for (CompoundedAttributeTypeMemberEntity member : members) {
-            AttributeTypeEntity memberAttributeType = member.getMember();
-            AttributeEntity memberAttribute = attributeDAO.addAttribute(memberAttributeType, subject, attributeIdx);
-            Object attributeValue = memberValues.get(memberAttributeType.getName());
-            memberAttribute.setValue(attributeValue);
-        }
+        return proxyAttributeService.findAttributeValue(subject, attributeType);
     }
 
     @SuppressWarnings("unchecked")
     @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
     public void createAttribute(String subjectLogin, String attributeName, Object attributeValue)
-            throws AttributeTypeNotFoundException, PermissionDeniedException, SubjectNotFoundException, DatatypeMismatchException {
+            throws AttributeTypeNotFoundException, PermissionDeniedException, SubjectNotFoundException, DatatypeMismatchException,
+            NodeNotFoundException {
 
         LOG.debug("create attribute: " + attributeName + " for " + subjectLogin);
         AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
@@ -176,51 +125,13 @@ public class AttributeProviderServiceBean implements AttributeProviderService, A
         historyProperties.put(SafeOnlineConstants.APPLICATION_PROPERTY, applicationManager.getCallerApplication().getFriendlyName());
         historyDAO.addHistoryEntry(subject, HistoryEventType.ATTRIBUTE_PROVIDER_ADD, historyProperties);
 
-        if (null == attributeValue) {
-            attributeDAO.addAttribute(attributeType, subject);
-            return;
-        }
-
-        if (attributeValue instanceof Map) {
-            Map<String, Object> memberValues = (Map<String, Object>) attributeValue;
-            createCompoundAttribute(subject, attributeType, memberValues);
-            return;
-        }
-
-        Class attributeValueClass = attributeValue.getClass();
-        if (attributeType.isMultivalued()) {
-            if (false == attributeValueClass.isArray())
-                throw new DatatypeMismatchException();
-
-            int size = Array.getLength(attributeValue);
-            for (int idx = 0; idx < size; idx++) {
-                Object value = Array.get(attributeValue, idx);
-                AttributeEntity attribute = attributeDAO.addAttribute(attributeType, subject);
-                setAttributeValue(attribute, value);
-            }
-        } else {
-            /*
-             * Single-valued attribute.
-             */
-            AttributeEntity attribute = attributeDAO.addAttribute(attributeType, subject);
-            setAttributeValue(attribute, attributeValue);
-        }
-    }
-
-    private void setAttributeValue(AttributeEntity attribute, Object value)
-            throws DatatypeMismatchException {
-
-        try {
-            attribute.setValue(value);
-        } catch (ClassCastException e) {
-            throw new DatatypeMismatchException();
-        }
+        proxyAttributeService.createAttribute(subject, attributeType, attributeValue);
     }
 
     @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
     public void setAttribute(String subjectLogin, String attributeName, Object attributeValue)
             throws AttributeTypeNotFoundException, PermissionDeniedException, SubjectNotFoundException, AttributeNotFoundException,
-            DatatypeMismatchException {
+            DatatypeMismatchException, NodeNotFoundException {
 
         LOG.debug("set attribute " + attributeName + " for " + subjectLogin);
         AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
@@ -231,78 +142,13 @@ public class AttributeProviderServiceBean implements AttributeProviderService, A
         historyProperties.put(SafeOnlineConstants.APPLICATION_PROPERTY, applicationManager.getCallerApplication().getFriendlyName());
         historyDAO.addHistoryEntry(subject, HistoryEventType.ATTRIBUTE_PROVIDER_CHANGE, historyProperties);
 
-        if (attributeType.isMultivalued()) {
-            setMultivaluedAttribute(attributeValue, attributeType, subject);
-        } else {
-            setSinglevaluedAttribute(attributeValue, attributeType, subject);
-        }
-    }
-
-    private void setSinglevaluedAttribute(Object attributeValue, AttributeTypeEntity attributeType, SubjectEntity subject)
-            throws AttributeNotFoundException, DatatypeMismatchException {
-
-        /*
-         * Single-valued attribute.
-         */
-        AttributeEntity attribute = attributeDAO.getAttribute(attributeType, subject);
-
-        if (null == attributeValue) {
-            /*
-             * In case the attribute value is null we cannot extract the reflection class type. But actually we don't care. Just clear all.
-             */
-            attribute.clearValues();
-            return;
-        }
-
-        setAttributeValue(attribute, attributeValue);
-    }
-
-    private void setMultivaluedAttribute(Object attributeValue, AttributeTypeEntity attributeType, SubjectEntity subject)
-            throws AttributeNotFoundException, DatatypeMismatchException {
-
-        List<AttributeEntity> attributes = attributeDAO.listAttributes(subject, attributeType);
-        if (attributes.isEmpty())
-            /*
-             * Via setAttribute one can only update existing multivalued attributes, not create them.
-             */
-            throw new AttributeNotFoundException();
-        if (null == attributeValue) {
-            /*
-             * In this case we remove all but one, which we set with a null value.
-             */
-            Iterator<AttributeEntity> iterator = attributes.iterator();
-            AttributeEntity attribute = iterator.next();
-            attribute.clearValues();
-            while (iterator.hasNext()) {
-                attribute = iterator.next();
-                attributeDAO.removeAttribute(attribute);
-            }
-        } else {
-            if (false == attributeValue.getClass().isArray())
-                throw new DatatypeMismatchException();
-            int newSize = Array.getLength(attributeValue);
-            Iterator<AttributeEntity> iterator = attributes.iterator();
-            for (int idx = 0; idx < newSize; idx++) {
-                Object value = Array.get(attributeValue, idx);
-                AttributeEntity attribute;
-                if (iterator.hasNext()) {
-                    attribute = iterator.next();
-                } else {
-                    attribute = attributeDAO.addAttribute(attributeType, subject);
-                }
-                setAttributeValue(attribute, value);
-            }
-            while (iterator.hasNext()) {
-                AttributeEntity attribute = iterator.next();
-                attributeDAO.removeAttribute(attribute);
-            }
-        }
+        proxyAttributeService.setAttribute(subject, attributeType, attributeValue);
     }
 
     @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
     public void setCompoundAttributeRecord(String subjectLogin, String attributeName, String attributeId, Map<String, Object> memberValues)
             throws AttributeTypeNotFoundException, PermissionDeniedException, SubjectNotFoundException, DatatypeMismatchException,
-            AttributeNotFoundException {
+            AttributeNotFoundException, NodeNotFoundException {
 
         LOG.debug("set compound attribute " + attributeName + " for " + subjectLogin);
         AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
@@ -311,35 +157,13 @@ public class AttributeProviderServiceBean implements AttributeProviderService, A
 
         SubjectEntity subject = subjectService.getSubject(subjectLogin);
 
-        /*
-         * AttributeId is the global Id of the record, while AttributeIdx is the local database Id of the attribute record.
-         */
-        AttributeEntity compoundAttribute = getCompoundAttribute(subject, attributeType, attributeId);
-
-        long attributeIdx = compoundAttribute.getAttributeIndex();
-        LOG.debug("attribute idx: " + attributeIdx);
-
-        for (Map.Entry<String, Object> memberValue : memberValues.entrySet()) {
-            AttributeTypeEntity memberAttributeType = attributeTypeDAO.getAttributeType(memberValue.getKey());
-            AttributeEntity memberAttribute = attributeDAO.getAttribute(memberAttributeType, subject, attributeIdx);
-            setAttributeValue(memberAttribute, memberValue.getValue());
-        }
-    }
-
-    private AttributeEntity getCompoundAttribute(SubjectEntity subject, AttributeTypeEntity attributeType, String attributeId)
-            throws AttributeNotFoundException {
-
-        List<AttributeEntity> compoundAttributes = attributeDAO.listAttributes(subject, attributeType);
-        for (AttributeEntity compoundAttribute : compoundAttributes) {
-            if (attributeId.equals(compoundAttribute.getStringValue()))
-                return compoundAttribute;
-        }
-        throw new AttributeNotFoundException();
+        proxyAttributeService.setCompoundAttribute(subject, attributeType, attributeId, memberValues);
     }
 
     @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
     public void removeAttribute(String subjectLogin, String attributeName)
-            throws AttributeTypeNotFoundException, PermissionDeniedException, SubjectNotFoundException, AttributeNotFoundException {
+            throws AttributeTypeNotFoundException, PermissionDeniedException, SubjectNotFoundException, AttributeNotFoundException,
+            NodeNotFoundException {
 
         LOG.debug("remove attribute " + attributeName + " from subject " + subjectLogin);
         AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
@@ -350,17 +174,18 @@ public class AttributeProviderServiceBean implements AttributeProviderService, A
         historyProperties.put(SafeOnlineConstants.APPLICATION_PROPERTY, applicationManager.getCallerApplication().getFriendlyName());
         historyDAO.addHistoryEntry(subject, HistoryEventType.ATTRIBUTE_PROVIDER_REMOVE, historyProperties);
 
-        attributeManager.removeAttribute(attributeType, subject);
+        proxyAttributeService.removeAttribute(subject, attributeType);
     }
 
     @RolesAllowed(SafeOnlineApplicationRoles.APPLICATION_ROLE)
     public void removeCompoundAttributeRecord(String subjectLogin, String attributeName, String attributeId)
-            throws AttributeTypeNotFoundException, PermissionDeniedException, SubjectNotFoundException, AttributeNotFoundException {
+            throws AttributeTypeNotFoundException, PermissionDeniedException, SubjectNotFoundException, AttributeNotFoundException,
+            NodeNotFoundException {
 
         LOG.debug("remove compound attribute " + attributeName + " from subject " + subjectLogin + " with attrib Id " + attributeId);
         AttributeTypeEntity attributeType = checkAttributeProviderPermission(attributeName);
         SubjectEntity subject = subjectService.getSubject(subjectLogin);
 
-        attributeManager.removeCompoundAttribute(attributeType, subject, attributeId);
+        proxyAttributeService.removeCompoundAttribute(subject, attributeType, attributeId);
     }
 }

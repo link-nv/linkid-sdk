@@ -24,7 +24,6 @@ import javax.ejb.Stateless;
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.demo.bank.keystore.DemoBankKeyStoreUtils;
 import net.link.safeonline.demo.cinema.keystore.DemoCinemaKeyStoreUtils;
@@ -200,11 +199,7 @@ public class DemoStartableBean extends AbstractInitBean {
             }
 
             if (!passwordManager.isPasswordConfigured(subject)) {
-                try {
-                    passwordManager.setPassword(subject, passwordRegistration.password);
-                } catch (PermissionDeniedException e) {
-                    throw new EJBException(e);
-                }
+                passwordManager.registerPassword(subject, passwordRegistration.password);
             }
         }
 
@@ -533,8 +528,8 @@ public class DemoStartableBean extends AbstractInitBean {
         /*
          * Attribute Types.
          */
-        configDemoAttribute(DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME, DatatypeType.BOOLEAN, false, demoPrescriptionWebappName,
-                "Prescription Admin", "Voorschriftbeheerder", true, false);
+        AttributeTypeEntity prescriptionAdminAttributeType = configDemoAttribute(DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME,
+                DatatypeType.BOOLEAN, false, demoPrescriptionWebappName, "Prescription Admin", "Voorschriftbeheerder", true, false);
         configDemoAttribute(DemoConstants.PRESCRIPTION_CARE_PROVIDER_ATTRIBUTE_NAME, DatatypeType.BOOLEAN, false,
                 demoPrescriptionWebappName, "Care Provider", "Dokter", true, false);
         configDemoAttribute(DemoConstants.PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME, DatatypeType.BOOLEAN, false, demoPrescriptionWebappName,
@@ -553,8 +548,9 @@ public class DemoStartableBean extends AbstractInitBean {
          * Also make sure the admin is marked as such.
          */
         AttributeEntity prescriptionAdminAttribute = new AttributeEntity();
+        prescriptionAdminAttribute.setAttributeType(prescriptionAdminAttributeType);
         prescriptionAdminAttribute.setPk(new AttributePK(DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME, prescriptionAdmin));
-        prescriptionAdminAttribute.setBooleanValue(true);
+        prescriptionAdminAttribute.setValue(true);
         attributes.add(prescriptionAdminAttribute);
 
         /*
@@ -595,8 +591,8 @@ public class DemoStartableBean extends AbstractInitBean {
         subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "wvdhaute", demoLawyerWebappName));
         subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "mbillemo", demoLawyerWebappName));
 
-        configLawyerDemoAttribute(DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME, DatatypeType.BOOLEAN, "Bar administrator",
-                "Baliebeheerder");
+        AttributeTypeEntity barAdminAttributeType = configLawyerDemoAttribute(DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME,
+                DatatypeType.BOOLEAN, "Bar administrator", "Baliebeheerder");
         configLawyerDemoAttribute(DemoConstants.LAWYER_ATTRIBUTE_NAME, DatatypeType.BOOLEAN, "Lawyer", "Advocaat");
         configLawyerDemoAttribute(DemoConstants.LAWYER_BAR_ATTRIBUTE_NAME, DatatypeType.STRING, "Bar", "Balie");
         configLawyerDemoAttribute(DemoConstants.LAWYER_SUSPENDED_ATTRIBUTE_NAME, DatatypeType.BOOLEAN, "Suspended", "Geschorst");
@@ -611,10 +607,11 @@ public class DemoStartableBean extends AbstractInitBean {
         /*
          * Also make sure the baradmin is marked as such.
          */
-        AttributeEntity barAdminBarAdminAttribute = new AttributeEntity();
-        barAdminBarAdminAttribute.setPk(new AttributePK(DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME, "baradmin"));
-        barAdminBarAdminAttribute.setBooleanValue(true);
-        attributes.add(barAdminBarAdminAttribute);
+        AttributeEntity barAdminAttribute = new AttributeEntity();
+        barAdminAttribute.setAttributeType(barAdminAttributeType);
+        barAdminAttribute.setPk(new AttributePK(DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME, "baradmin"));
+        barAdminAttribute.setValue(true);
+        attributes.add(barAdminAttribute);
 
         /*
          * Application usage agreements
@@ -627,9 +624,9 @@ public class DemoStartableBean extends AbstractInitBean {
         usageAgreements.add(usageAgreement);
     }
 
-    private void configLawyerDemoAttribute(String attributeName, DatatypeType datatype, String enName, String nlName) {
+    private AttributeTypeEntity configLawyerDemoAttribute(String attributeName, DatatypeType datatype, String enName, String nlName) {
 
-        configDemoAttribute(attributeName, datatype, false, demoLawyerWebappName, enName, nlName, true, false);
+        return configDemoAttribute(attributeName, datatype, false, demoLawyerWebappName, enName, nlName, true, false);
     }
 
     private AttributeTypeEntity configDemoAttribute(String attributeName, DatatypeType datatype, boolean multiValued,
@@ -641,7 +638,7 @@ public class DemoStartableBean extends AbstractInitBean {
         attributeTypes.add(attributeType);
 
         if (null != attributeProviderName) {
-            attributeProviders.add(new AttributeProvider(attributeProviderName, attributeProviderName));
+            attributeProviders.add(new AttributeProvider(attributeProviderName, attributeName));
         }
 
         if (null != enName) {

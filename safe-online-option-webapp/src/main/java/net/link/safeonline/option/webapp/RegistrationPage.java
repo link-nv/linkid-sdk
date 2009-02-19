@@ -9,7 +9,7 @@ package net.link.safeonline.option.webapp;
 
 import javax.ejb.EJB;
 
-import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
@@ -138,19 +138,16 @@ public class RegistrationPage extends TemplatePage implements IHeaderContributor
                 return;
             }
 
+            String imei = OptionDevice.register(pin.getObject());
             try {
-                String imei = OptionDevice.register(pin.getObject());
-                optionDeviceService.register(imei, protocolContext.getSubject());
-
-                exit(true);
-            }
-
-            catch (AttributeTypeNotFoundException e) {
-                RegisterForm.this.error(localize("errorAttributeTypeNotFound"));
-                HelpdeskLogger.add(localize("registration: %s", e.getMessage()), //
+                optionDeviceService.register(protocolContext.getNodeName(), imei, protocolContext.getSubject());
+            } catch (NodeNotFoundException e) {
+                RegisterForm.this.error(localize("errorNodeNotFound"));
+                HelpdeskLogger.add(localize("node not found for %s", imei), //
                         LogLevelType.ERROR);
-                LOG.error("reg failed", e);
             }
+
+            exit(true);
         }
     }
 

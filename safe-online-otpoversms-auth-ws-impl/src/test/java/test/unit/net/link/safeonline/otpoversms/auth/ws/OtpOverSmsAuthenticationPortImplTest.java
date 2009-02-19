@@ -55,7 +55,6 @@ import net.link.safeonline.device.auth.ws.GetDeviceAuthenticationServiceFactory;
 import net.link.safeonline.model.WSSecurityConfiguration;
 import net.link.safeonline.model.otpoversms.OtpOverSmsConstants;
 import net.link.safeonline.model.otpoversms.OtpOverSmsDeviceService;
-import net.link.safeonline.model.otpoversms.OtpService;
 import net.link.safeonline.otpoversms.auth.ws.GetOtpOverSmsAuthenticationPortImpl;
 import net.link.safeonline.otpoversms.auth.ws.OtpOverSmsAuthenticationPortImpl;
 import net.link.safeonline.pkix.model.PkiValidator;
@@ -107,8 +106,6 @@ public class OtpOverSmsAuthenticationPortImplTest {
     private WSAuthenticationService          mockWSAuthenticationService;
 
     private OtpOverSmsDeviceService          mockOtpOverSmsDeviceServce;
-
-    private OtpService                       mockOtpService;
 
     private Object[]                         mockObjects;
 
@@ -163,10 +160,9 @@ public class OtpOverSmsAuthenticationPortImplTest {
         mockSamlAuthorityService = createMock(SamlAuthorityService.class);
         mockWSAuthenticationService = createMock(WSAuthenticationService.class);
         mockOtpOverSmsDeviceServce = createMock(OtpOverSmsDeviceService.class);
-        mockOtpService = createMock(OtpService.class);
 
         mockObjects = new Object[] { mockWSSecurityConfigurationService, mockPkiValidator, mockApplicationAuthenticationService,
-                mockSamlAuthorityService, mockOtpOverSmsDeviceServce, mockOtpService };
+                mockDeviceAuthenticationService, mockSamlAuthorityService, mockOtpOverSmsDeviceServce };
 
         jndiTestUtils.bindComponent(WSSecurityConfiguration.JNDI_BINDING, mockWSSecurityConfigurationService);
         jndiTestUtils.bindComponent(PkiValidator.JNDI_BINDING, mockPkiValidator);
@@ -245,8 +241,7 @@ public class OtpOverSmsAuthenticationPortImplTest {
                 OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID, testLanguage, nameValuePairs, testpublicKey);
 
         // expectations
-        mockOtpOverSmsDeviceServce.checkMobile(testMobile);
-        expect(mockOtpOverSmsDeviceServce.requestOtp(testMobile)).andReturn(mockOtpService);
+        mockOtpOverSmsDeviceServce.requestOtp(testMobile);
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(1234567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
@@ -281,8 +276,8 @@ public class OtpOverSmsAuthenticationPortImplTest {
                 nameValuePairs, testpublicKey);
 
         // expectations
-        expect(mockOtpOverSmsDeviceServce.verifyOtp(mockOtpService, testMobile, testOtp)).andReturn(true);
-        expect(mockOtpOverSmsDeviceServce.authenticate(testMobile, testPin)).andReturn(testUserId);
+        expect(mockOtpOverSmsDeviceServce.isChallenged()).andReturn(true);
+        expect(mockOtpOverSmsDeviceServce.authenticate(testPin, testOtp)).andReturn(testUserId);
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(1234567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
@@ -325,8 +320,7 @@ public class OtpOverSmsAuthenticationPortImplTest {
                 OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID, testLanguage, nameValuePairs, testpublicKey);
 
         // expectations
-        mockOtpOverSmsDeviceServce.checkMobile(testMobile);
-        expect(mockOtpOverSmsDeviceServce.requestOtp(testMobile)).andReturn(mockOtpService);
+        mockOtpOverSmsDeviceServce.requestOtp(testMobile);
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(1234567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
@@ -361,7 +355,8 @@ public class OtpOverSmsAuthenticationPortImplTest {
                 nameValuePairs, testpublicKey);
 
         // expectations
-        expect(mockOtpOverSmsDeviceServce.verifyOtp(mockOtpService, testMobile, testOtp)).andReturn(false);
+        expect(mockOtpOverSmsDeviceServce.isChallenged()).andReturn(true);
+        expect(mockOtpOverSmsDeviceServce.authenticate(testPin, testOtp)).andReturn(null);
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(1234567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
@@ -394,6 +389,8 @@ public class OtpOverSmsAuthenticationPortImplTest {
 
         // setup
         String testMobile = "+32000000";
+        String testOtp = "00000000";
+        String testPin = "0000";
 
         Map<String, String> nameValuePairs = new HashMap<String, String>();
         nameValuePairs.put(OtpOverSmsConstants.OTPOVERSMS_WS_AUTH_MOBILE_ATTRIBUTE, testMobile);
@@ -402,8 +399,7 @@ public class OtpOverSmsAuthenticationPortImplTest {
                 OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID, testLanguage, nameValuePairs, testpublicKey);
 
         // expectations
-        mockOtpOverSmsDeviceServce.checkMobile(testMobile);
-        expectLastCall().andThrow(new DeviceDisabledException());
+        mockOtpOverSmsDeviceServce.requestOtp(testMobile);
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(1234567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
@@ -416,6 +412,46 @@ public class OtpOverSmsAuthenticationPortImplTest {
 
         // operate
         WSAuthenticationResponseType response = clientPort.authenticate(request);
+
+        // verify
+        verify(mockObjects);
+        assertNotNull(response);
+        assertEquals(OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID, response.getDeviceName());
+        assertNull(response.getUserId());
+        assertEquals(WSAuthenticationErrorCode.SUCCESS.getErrorCode(), response.getStatus().getStatusCode().getValue());
+
+        outputAuthenticationResponse(response);
+
+        // reset
+        reset(mockObjects);
+
+        // setup
+        nameValuePairs = new HashMap<String, String>();
+        nameValuePairs.put(OtpOverSmsConstants.OTPOVERSMS_WS_AUTH_OTP_ATTRIBUTE, testOtp);
+        nameValuePairs.put(OtpOverSmsConstants.OTPOVERSMS_WS_AUTH_PIN_ATTRIBUTE, testPin);
+
+        request = AuthenticationUtil.getAuthenticationRequest(testApplicationId, OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID, testLanguage,
+                nameValuePairs, testpublicKey);
+
+        // expectations
+        expect(mockOtpOverSmsDeviceServce.isChallenged()).andReturn(true);
+        mockOtpOverSmsDeviceServce.authenticate(testPin, testOtp);
+        expectLastCall().andThrow(new DeviceDisabledException());
+        expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
+        expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(1234567890L);
+        expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
+        expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
+        expect(mockWSSecurityConfigurationService.getCertificate()).andStubReturn(olasCertificate);
+        expect(mockWSSecurityConfigurationService.getPrivateKey()).andStubReturn(olasPrivateKey);
+        expect(mockPkiValidator.validateCertificate((String) EasyMock.anyObject(), (X509Certificate) EasyMock.anyObject())).andStubReturn(
+                PkiResult.VALID);
+        expect(mockWSSecurityConfigurationService.getMaximumWsSecurityTimestampOffset()).andStubReturn(Long.MAX_VALUE);
+
+        // prepare
+        replay(mockObjects);
+
+        // operate
+        response = clientPort.authenticate(request);
 
         // verify
         verify(mockObjects);

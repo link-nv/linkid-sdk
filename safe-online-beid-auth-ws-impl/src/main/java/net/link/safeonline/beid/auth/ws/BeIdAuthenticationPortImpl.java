@@ -24,7 +24,7 @@ import net.lin_k.safe_online.auth.WSAuthenticationResponseType;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.DecodingException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.PkiExpiredException;
 import net.link.safeonline.authentication.exception.PkiInvalidException;
 import net.link.safeonline.authentication.exception.PkiNotYetValidException;
@@ -205,11 +205,6 @@ public class BeIdAuthenticationPortImpl implements DeviceAuthenticationPort {
             DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.SUBJECT_NOT_FOUND, e.getMessage());
             manager.unexport(this);
             return response;
-        } catch (DeviceNotFoundException e) {
-            LOG.error("device not found: " + e.getMessage(), e);
-            DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.DEVICE_NOT_FOUND, e.getMessage());
-            manager.unexport(this);
-            return response;
         } catch (TrustDomainNotFoundException e) {
             LOG.error("trust domain not found: " + e.getMessage(), e);
             DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.INVALID_CREDENTIALS, e.getMessage());
@@ -248,6 +243,11 @@ public class BeIdAuthenticationPortImpl implements DeviceAuthenticationPort {
         } catch (DeviceDisabledException e) {
             LOG.error("device disabled: " + e.getMessage(), e);
             DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.DEVICE_DISABLED, e.getMessage());
+            manager.unexport(this);
+            return response;
+        } catch (DeviceRegistrationNotFoundException e) {
+            LOG.error("device not registered: " + e.getMessage(), e);
+            DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.DEVICE_NOT_FOUND, e.getMessage());
             manager.unexport(this);
             return response;
         }

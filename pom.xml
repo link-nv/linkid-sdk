@@ -475,11 +475,8 @@
 				</safe-online.option.webapp.name>
 			</properties>
 			<modules>
-				<module>safe-online-option-startup-runtime
-				</module>
-				<module>safe-online-option-keystore
-				</module>
-				<module>safe-online-option</module>
+				<module>safe-online-option-startup-runtime</module>
+				<module>safe-online-option-keystore</module>
 				<module>safe-online-option-webapp</module>
 				<module>safe-online-option-deploy</module>
 				<module>safe-online-model-option-client
@@ -687,8 +684,7 @@
 		<profile>
 			<id>host:wim</id>
 			<properties>
-				<safe-online.host.name>192.168.5.103
-				</safe-online.host.name>
+				<safe-online.host.name>192.168.5.11</safe-online.host.name>
 			</properties>
 		</profile>
 

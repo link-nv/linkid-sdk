@@ -8,10 +8,9 @@
 package net.link.safeonline.encap.webapp;
 
 import javax.ejb.EJB;
-import javax.servlet.http.HttpSession;
 
-import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationException;
+import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
@@ -113,8 +112,7 @@ public class RegistrationPage extends TemplatePage {
                     LOG.debug("register mobile: " + mobile.getObject());
 
                     try {
-                        HttpSession session = WicketUtil.toServletRequest(getRequest()).getSession();
-                        activation.setObject(encapDeviceService.register(mobile.getObject(), session.getId()));
+                        activation.setObject(encapDeviceService.register(mobile.getObject()));
                     }
 
                     catch (DeviceRegistrationException e) {

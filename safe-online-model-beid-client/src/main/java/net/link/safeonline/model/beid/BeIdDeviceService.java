@@ -11,11 +11,9 @@ import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.AlreadyRegisteredException;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
-import net.link.safeonline.authentication.exception.AttributeNotFoundException;
-import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
-import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
+import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.PkiExpiredException;
 import net.link.safeonline.authentication.exception.PkiInvalidException;
@@ -34,25 +32,23 @@ public interface BeIdDeviceService extends BeIdService {
 
 
     String authenticate(String sessionId, String applicationId, AuthenticationStatement authenticationStatement)
-            throws ArgumentIntegrityException, TrustDomainNotFoundException, SubjectNotFoundException, PkiRevokedException,
-            PkiSuspendedException, PkiExpiredException, PkiNotYetValidException, PkiInvalidException, DeviceNotFoundException,
-            DeviceDisabledException;
+            throws TrustDomainNotFoundException, SubjectNotFoundException, ArgumentIntegrityException, PkiRevokedException,
+            PkiSuspendedException, PkiExpiredException, PkiNotYetValidException, PkiInvalidException, DeviceDisabledException,
+            DeviceRegistrationNotFoundException;
 
-    void register(String sessionId, String userId, String operation, byte[] identityStatementData)
-            throws PermissionDeniedException, ArgumentIntegrityException, TrustDomainNotFoundException, AttributeTypeNotFoundException,
-            DeviceNotFoundException, AttributeNotFoundException, AlreadyRegisteredException, PkiRevokedException, PkiSuspendedException,
-            PkiExpiredException, PkiNotYetValidException, PkiInvalidException;
+    void register(String sessionId, String nodeName, String userId, String operation, byte[] identityStatementData)
+            throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException, AlreadyRegisteredException,
+            PkiRevokedException, PkiSuspendedException, PkiExpiredException, PkiNotYetValidException, PkiInvalidException,
+            NodeNotFoundException;
 
     void enable(String sessionId, String userId, String operation, byte[] identityStatementData)
-            throws TrustDomainNotFoundException, PermissionDeniedException, ArgumentIntegrityException, AttributeTypeNotFoundException,
-            SubjectNotFoundException, DeviceNotFoundException, PkiRevokedException, PkiSuspendedException, PkiExpiredException,
-            PkiNotYetValidException, PkiInvalidException, AttributeNotFoundException, DeviceRegistrationNotFoundException;
-
-    void remove(String userId, String attribute)
-            throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException, AttributeTypeNotFoundException,
-            AttributeNotFoundException;
+            throws TrustDomainNotFoundException, SubjectNotFoundException, PermissionDeniedException, ArgumentIntegrityException,
+            PkiRevokedException, PkiSuspendedException, PkiExpiredException, PkiNotYetValidException, PkiInvalidException,
+            DeviceRegistrationNotFoundException;
 
     void disable(String userId, String attribute)
-            throws DeviceNotFoundException, SubjectNotFoundException, DeviceRegistrationNotFoundException;
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException;
 
+    void remove(String userId, String attribute)
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException;
 }
