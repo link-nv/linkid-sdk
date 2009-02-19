@@ -135,10 +135,12 @@ public class AttributeProviderServiceBeanTest {
 
         ApplicationDAO applicationDAO = EJBTestUtils.newInstance(ApplicationDAOBean.class, SafeOnlineTestContainer.sessionBeans,
                 entityManager);
-        applicationDAO.addApplication(testApplicationName, null, testApplicationOwnerEntity, null, null, null, null);
+        ApplicationEntity application = applicationDAO.addApplication(testApplicationName, null, testApplicationOwnerEntity, null, null,
+                null, null);
 
         AttributeProviderService attributeProviderService = EJBTestUtils.newInstance(AttributeProviderServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, "test-application", SafeOnlineApplicationRoles.APPLICATION_ROLE);
+                SafeOnlineTestContainer.sessionBeans, entityManager, Long.toString(application.getId()),
+                SafeOnlineApplicationRoles.APPLICATION_ROLE);
 
         // operate & verify
         try {
@@ -190,7 +192,8 @@ public class AttributeProviderServiceBeanTest {
         attributeProviderDAO.addAttributeProvider(testApplication, testAttributeType);
 
         AttributeProviderService attributeProviderService = EJBTestUtils.newInstance(AttributeProviderServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, "test-application", SafeOnlineApplicationRoles.APPLICATION_ROLE);
+                SafeOnlineTestContainer.sessionBeans, entityManager, Long.toString(testApplication.getId()),
+                SafeOnlineApplicationRoles.APPLICATION_ROLE);
 
         try {
             attributeProviderService.setAttribute(testLoginSubject.getUserId(), testAttributeName, null);
@@ -276,7 +279,8 @@ public class AttributeProviderServiceBeanTest {
         attributeProviderDAO.addAttributeProvider(testApplication, testAttributeType);
 
         AttributeProviderService attributeProviderService = EJBTestUtils.newInstance(AttributeProviderServiceBean.class,
-                SafeOnlineTestContainer.sessionBeans, entityManager, "test-application", SafeOnlineApplicationRoles.APPLICATION_ROLE);
+                SafeOnlineTestContainer.sessionBeans, entityManager, Long.toString(testApplication.getId()),
+                SafeOnlineApplicationRoles.APPLICATION_ROLE);
 
         try {
             attributeProviderService.setAttribute(testLoginSubject.getUserId(), testAttributeName, null);
