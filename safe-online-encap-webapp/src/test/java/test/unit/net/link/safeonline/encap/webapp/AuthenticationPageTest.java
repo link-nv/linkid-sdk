@@ -38,10 +38,10 @@ import org.junit.Test;
 public class AuthenticationPageTest {
 
     private JndiTestUtils        jndiTestUtils;
-    private EncapDeviceService   mockEncapDeviceService;
     private SamlAuthorityService mockSamlAuthorityService;
     private HelpdeskManager      mockHelpdeskManager;
     private WicketTester         wicket;
+    private EncapDeviceService   mockEncapDeviceService;
 
     private static final String  TEST_APPLICATION = "test-application";
     private static final String  TEST_USERID      = UUID.randomUUID().toString();
@@ -57,6 +57,8 @@ public class AuthenticationPageTest {
         jndiTestUtils.setUp();
 
         mockEncapDeviceService = createMock(EncapDeviceService.class);
+        jndiTestUtils.bindComponent(EncapDeviceService.JNDI_BINDING, mockEncapDeviceService);
+
         mockSamlAuthorityService = createMock(SamlAuthorityService.class);
         mockHelpdeskManager = createMock(HelpdeskManager.class);
 
@@ -105,7 +107,6 @@ public class AuthenticationPageTest {
         wicket.dumpPage();
 
         // Inject EJBs.
-        EJBTestUtils.inject(wicket.getLastRenderedPage(), mockEncapDeviceService);
         EJBTestUtils.inject(wicket.getLastRenderedPage(), mockSamlAuthorityService);
         jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
 
@@ -131,7 +132,6 @@ public class AuthenticationPageTest {
         FormTester form = prepareAuthentication(Goal.AUTHENTICATE);
 
         // Describe Expected Scenario.
-        expect(mockEncapDeviceService.isChallenged()).andReturn(false);
         mockEncapDeviceService.requestOTP(TEST_MOBILE);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         expect(mockEncapDeviceService.authenticate(TEST_OTP)).andStubReturn(TEST_USERID);
@@ -166,9 +166,7 @@ public class AuthenticationPageTest {
         FormTester form = prepareAuthentication(Goal.AUTHENTICATE);
 
         // Describe Expected Scenario.
-        expect(mockEncapDeviceService.isChallenged()).andReturn(false);
         mockEncapDeviceService.requestOTP(TEST_MOBILE);
-        expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         mockEncapDeviceService.authenticate(TEST_OTP);
@@ -204,9 +202,7 @@ public class AuthenticationPageTest {
         FormTester form = prepareAuthentication(Goal.AUTHENTICATE);
 
         // Describe Expected Scenario.
-        expect(mockEncapDeviceService.isChallenged()).andReturn(false);
         mockEncapDeviceService.requestOTP(TEST_MOBILE);
-        expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         mockEncapDeviceService.authenticate(TEST_OTP);
@@ -242,9 +238,7 @@ public class AuthenticationPageTest {
         FormTester form = prepareAuthentication(Goal.AUTHENTICATE);
 
         // Describe Expected Scenario.
-        expect(mockEncapDeviceService.isChallenged()).andReturn(false);
         mockEncapDeviceService.requestOTP(TEST_MOBILE);
-        expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         expect(mockEncapDeviceService.authenticate(TEST_OTP)).andStubReturn(null);
@@ -279,7 +273,6 @@ public class AuthenticationPageTest {
         FormTester form = prepareAuthentication(Goal.ENABLE_DEVICE);
 
         // Describe Expected Scenario.
-        expect(mockEncapDeviceService.isChallenged()).andReturn(false);
         mockEncapDeviceService.requestOTP(TEST_MOBILE);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         mockEncapDeviceService.enable(TEST_USERID, TEST_OTP);
@@ -312,9 +305,7 @@ public class AuthenticationPageTest {
         FormTester form = prepareAuthentication(Goal.ENABLE_DEVICE);
 
         // Describe Expected Scenario.
-        expect(mockEncapDeviceService.isChallenged()).andReturn(false);
         mockEncapDeviceService.requestOTP(TEST_MOBILE);
-        expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         mockEncapDeviceService.enable(TEST_USERID, TEST_OTP);
@@ -350,9 +341,7 @@ public class AuthenticationPageTest {
         FormTester form = prepareAuthentication(Goal.ENABLE_DEVICE);
 
         // Describe Expected Scenario.
-        expect(mockEncapDeviceService.isChallenged()).andReturn(false);
         mockEncapDeviceService.requestOTP(TEST_MOBILE);
-        expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         expect(mockEncapDeviceService.isChallenged()).andReturn(true);
         mockEncapDeviceService.enable(TEST_USERID, TEST_OTP);
