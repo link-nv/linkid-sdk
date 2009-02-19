@@ -680,6 +680,14 @@
 			</properties>
 		</profile>
 
+		<!-- Profile for deploying on sebeco-dev-22 -->
+		<profile>
+			<id>host:sebeco-dev-22</id>
+			<properties>
+				<safe-online.host.name>sebeco-dev-22</safe-online.host.name>
+			</properties>
+		</profile>
+
 		<!-- Profile for deploying on Wim's Laptop -->
 		<profile>
 			<id>host:wim</id>
