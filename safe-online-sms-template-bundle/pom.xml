@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>net.lin-k</groupId>
+		<artifactId>safe-online</artifactId>
+		<version>1.3-SNAPSHOT</version>
+	</parent>
+
+	<name>Template SMS Service OSGI bundle</name>
+	<description>
+		Template bundle for the OSGi SMS Service. 
+    </description>
+
+	<groupId>net.lin-k.safe-online</groupId>
+	<artifactId>safe-online-sms-template-bundle</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>bundle</packaging>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+					<fork>true</fork>
+				</configuration>
+				<inherited>true</inherited>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>xml-maven-plugin</artifactId>
+				<configuration>
+					<catalogs>
+						<catalog>src/main/catalog/catalog.xml</catalog>
+					</catalogs>
+					<validationSets>
+						<validationSet>
+							<dir>.</dir>
+							<includes>
+								<include> target/classes/**/*.xhtml </include>
+								<include> target/classes/**/*.html </include>
+								<include> target/classes/**/*.xml </include>
+							</includes>
+						</validationSet>
+					</validationSets>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>test</phase>
+						<goals>
+							<goal>validate</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Export-Package>net.link.safeonline.osgi.sms.template.*</Export-Package>
+						<Import-Package>
+							net.link.safeonline.osgi; version="[1.3, 1.3]",
+							net.link.safeonline.osgi.exception; version="[1.3, 1.3]",
+							net.link.safeonline.osgi.plugin; version="[1.3, 1.3]",
+							org.osgi.framework,
+							!*
+						</Import-Package>
+						<Bundle-Activator>
+							net.link.safeonline.osgi.sms.template.TemplateSmsServiceActivator</Bundle-Activator>
+						<Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
+						<Embed-Dependency>*;scope=compile|runtime;type=!pom</Embed-Dependency>
+						<Embed-Transitive>true</Embed-Transitive>
+						<!--Embed-StripVersion>true</Embed-StripVersion-->
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<repositories>
+		<repository>
+			<id>ibiblio</id>
+			<name>IBibilio Repository</name>
+			<url>http://mirrors.ibiblio.org/pub/mirrors/maven2/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+		</repository>
+	</repositories>
+
+	<dependencies>
+
+		<!-- Specific Dependencies: OLAS -->
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-osgi</artifactId>
+			<version>1.3-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>net.lin-k.safe-online</groupId>
+			<artifactId>safe-online-osgi-sms</artifactId>
+			<version>1.3-SNAPSHOT</version>
+		</dependency>
+
+		<!-- Specific Dependencies: External -->
+		<dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.osgi.core</artifactId>
+			<version>1.0.1</version>
+			<scope>compile</scope>
+		</dependency>
+
+	</dependencies>
+</project>
