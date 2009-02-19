@@ -451,19 +451,19 @@ public class AttributeDO implements Serializable, Cloneable {
             case STRING:
             case COMPOUNDED:
                 targetAttribute.setValue(stringValue);
-            break;
+                return;
             case BOOLEAN:
                 targetAttribute.setValue(booleanValue);
-            break;
+                return;
             case INTEGER:
                 targetAttribute.setValue(integerValue);
-            break;
+                return;
             case DOUBLE:
                 targetAttribute.setValue(doubleValue);
-            break;
+                return;
             case DATE:
                 targetAttribute.setValue(dateValue);
-            break;
+                return;
         }
         throw new EJBException("datatype not supported: " + type);
     }

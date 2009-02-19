@@ -528,8 +528,8 @@ public class DemoStartableBean extends AbstractInitBean {
         /*
          * Attribute Types.
          */
-        configDemoAttribute(DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME, DatatypeType.BOOLEAN, false, demoPrescriptionWebappName,
-                "Prescription Admin", "Voorschriftbeheerder", true, false);
+        AttributeTypeEntity prescriptionAdminAttributeType = configDemoAttribute(DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME,
+                DatatypeType.BOOLEAN, false, demoPrescriptionWebappName, "Prescription Admin", "Voorschriftbeheerder", true, false);
         configDemoAttribute(DemoConstants.PRESCRIPTION_CARE_PROVIDER_ATTRIBUTE_NAME, DatatypeType.BOOLEAN, false,
                 demoPrescriptionWebappName, "Care Provider", "Dokter", true, false);
         configDemoAttribute(DemoConstants.PRESCRIPTION_PHARMACIST_ATTRIBUTE_NAME, DatatypeType.BOOLEAN, false, demoPrescriptionWebappName,
@@ -548,6 +548,7 @@ public class DemoStartableBean extends AbstractInitBean {
          * Also make sure the admin is marked as such.
          */
         AttributeEntity prescriptionAdminAttribute = new AttributeEntity();
+        prescriptionAdminAttribute.setAttributeType(prescriptionAdminAttributeType);
         prescriptionAdminAttribute.setPk(new AttributePK(DemoConstants.PRESCRIPTION_ADMIN_ATTRIBUTE_NAME, prescriptionAdmin));
         prescriptionAdminAttribute.setValue(true);
         attributes.add(prescriptionAdminAttribute);
@@ -590,8 +591,8 @@ public class DemoStartableBean extends AbstractInitBean {
         subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "wvdhaute", demoLawyerWebappName));
         subscriptions.add(new Subscription(SubscriptionOwnerType.SUBJECT, "mbillemo", demoLawyerWebappName));
 
-        configLawyerDemoAttribute(DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME, DatatypeType.BOOLEAN, "Bar administrator",
-                "Baliebeheerder");
+        AttributeTypeEntity barAdminAttributeType = configLawyerDemoAttribute(DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME,
+                DatatypeType.BOOLEAN, "Bar administrator", "Baliebeheerder");
         configLawyerDemoAttribute(DemoConstants.LAWYER_ATTRIBUTE_NAME, DatatypeType.BOOLEAN, "Lawyer", "Advocaat");
         configLawyerDemoAttribute(DemoConstants.LAWYER_BAR_ATTRIBUTE_NAME, DatatypeType.STRING, "Bar", "Balie");
         configLawyerDemoAttribute(DemoConstants.LAWYER_SUSPENDED_ATTRIBUTE_NAME, DatatypeType.BOOLEAN, "Suspended", "Geschorst");
@@ -606,10 +607,11 @@ public class DemoStartableBean extends AbstractInitBean {
         /*
          * Also make sure the baradmin is marked as such.
          */
-        AttributeEntity barAdminBarAdminAttribute = new AttributeEntity();
-        barAdminBarAdminAttribute.setPk(new AttributePK(DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME, "baradmin"));
-        barAdminBarAdminAttribute.setValue(true);
-        attributes.add(barAdminBarAdminAttribute);
+        AttributeEntity barAdminAttribute = new AttributeEntity();
+        barAdminAttribute.setAttributeType(barAdminAttributeType);
+        barAdminAttribute.setPk(new AttributePK(DemoConstants.LAWYER_BAR_ADMIN_ATTRIBUTE_NAME, "baradmin"));
+        barAdminAttribute.setValue(true);
+        attributes.add(barAdminAttribute);
 
         /*
          * Application usage agreements
@@ -622,9 +624,9 @@ public class DemoStartableBean extends AbstractInitBean {
         usageAgreements.add(usageAgreement);
     }
 
-    private void configLawyerDemoAttribute(String attributeName, DatatypeType datatype, String enName, String nlName) {
+    private AttributeTypeEntity configLawyerDemoAttribute(String attributeName, DatatypeType datatype, String enName, String nlName) {
 
-        configDemoAttribute(attributeName, datatype, false, demoLawyerWebappName, enName, nlName, true, false);
+        return configDemoAttribute(attributeName, datatype, false, demoLawyerWebappName, enName, nlName, true, false);
     }
 
     private AttributeTypeEntity configDemoAttribute(String attributeName, DatatypeType datatype, boolean multiValued,
