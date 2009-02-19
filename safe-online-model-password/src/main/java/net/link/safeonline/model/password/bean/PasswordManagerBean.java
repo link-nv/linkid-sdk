@@ -33,6 +33,7 @@ import net.link.safeonline.model.password.PasswordConstants;
 import net.link.safeonline.model.password.PasswordManager;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.util.encoders.Base64;
 import org.jboss.annotation.ejb.LocalBinding;
 
 
@@ -192,7 +193,7 @@ public class PasswordManagerBean implements PasswordManager {
             MessageDigest messageDigest = MessageDigest.getInstance(algorithm, new BouncyCastleProvider());
             messageDigest.update(plainText);
 
-            return new sun.misc.BASE64Encoder().encode(messageDigest.digest());
+            return new String(Base64.encode(messageDigest.digest()));
         }
 
         catch (UnsupportedEncodingException e) {
