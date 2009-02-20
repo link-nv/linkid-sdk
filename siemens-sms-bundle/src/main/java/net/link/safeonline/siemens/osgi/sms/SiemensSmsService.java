@@ -6,10 +6,9 @@
  */
 package net.link.safeonline.siemens.osgi.sms;
 
-import java.net.ConnectException;
-
 import net.link.safeonline.osgi.OlasConfigurationService;
 import net.link.safeonline.osgi.sms.SmsService;
+import net.link.safeonline.osgi.sms.exception.SmsServiceException;
 import net.link.safeonline.sdk.ws.otpoversms.SmsClient;
 import net.link.safeonline.sdk.ws.otpoversms.SmsClientImpl;
 
@@ -60,7 +59,7 @@ public class SiemensSmsService implements SmsService {
      * {@inheritDoc}
      */
     public void sendSms(String mobile, String message)
-            throws ConnectException {
+            throws SmsServiceException {
 
         System.out.println("send sms to " + mobile + " with messag:" + message);
 

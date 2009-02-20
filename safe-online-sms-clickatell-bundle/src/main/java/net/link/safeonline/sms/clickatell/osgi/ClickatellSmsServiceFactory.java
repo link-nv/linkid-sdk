@@ -11,27 +11,30 @@ import net.link.safeonline.osgi.sms.SmsService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.log.LogService;
 
 
 public class ClickatellSmsServiceFactory implements ServiceFactory {
 
-    private int usageCounter = 0;
+    private int        usageCounter = 0;
+
+    private LogService LOG          = ClickatellSmsServiceActivator.LOG;
 
 
     public Object getService(Bundle bundle, ServiceRegistration registration) {
 
-        System.out.println("Create object of SmsService for " + bundle.getSymbolicName());
+        LOG.log(LogService.LOG_DEBUG, "Create object of SmsService for " + bundle.getSymbolicName());
         usageCounter++;
-        System.out.println("Number of bundles using service " + usageCounter);
+        LOG.log(LogService.LOG_DEBUG, "Number of bundles using service " + usageCounter);
         SmsService templateSmsService = new ClickatellSmsService();
         return templateSmsService;
     }
 
     public void ungetService(Bundle bundle, ServiceRegistration registration, Object service) {
 
-        System.out.println("Release object of SmsService for " + bundle.getSymbolicName());
+        LOG.log(LogService.LOG_DEBUG, "Release object of SmsService for " + bundle.getSymbolicName());
         usageCounter--;
-        System.out.println("Number of bundles using service " + usageCounter);
+        LOG.log(LogService.LOG_DEBUG, "Number of bundles using service " + usageCounter);
     }
 
 }

@@ -33,28 +33,14 @@
 		<part name="return" type="xsd:string" />
 	</message>
 	<message name="sendmsgInput">
-		<part name="session_id" type="xsd:string" />
+
 		<part name="api_id" type="xsd:int" />
 		<part name="user" type="xsd:string" />
 		<part name="password" type="xsd:string" />
 		<part name="to" type="tns:ArrayOfString" />
-		<part name="from" type="xsd:string" />
+
 		<part name="text" type="xsd:string" />
-		<part name="concat" type="xsd:int" />
-		<part name="deliv_ack" type="xsd:int" />
-		<part name="callback" type="xsd:int" />
-		<part name="deliv_time" type="xsd:int" />
-		<part name="max_credits" type="xsd:float" />
-		<part name="req_feat" type="xsd:int" />
-		<part name="queue" type="xsd:int" />
-		<part name="escalate" type="xsd:int" />
-		<part name="mo" type="xsd:int" />
-		<part name="cliMsgId" type="xsd:string" />
-		<part name="unicode" type="xsd:int" />
-		<part name="msg_type" type="xsd:string" />
-		<part name="udh" type="xsd:string" />
-		<part name="data" type="xsd:string" />
-		<part name="validity" type="xsd:int" />
+
 	</message>
 	<message name="sendmsgOutput">
 		<part name="return" type="tns:ArrayOfString" />
