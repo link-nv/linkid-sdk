@@ -7,8 +7,6 @@
 
 package net.link.safeonline.otpoversms.webapp;
 
-import java.net.ConnectException;
-
 import javax.ejb.EJB;
 import javax.mail.AuthenticationFailedException;
 
@@ -22,6 +20,7 @@ import net.link.safeonline.device.sdk.AuthenticationContext;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.model.otpoversms.OtpOverSmsConstants;
 import net.link.safeonline.model.otpoversms.OtpOverSmsDeviceService;
+import net.link.safeonline.osgi.sms.exception.SmsServiceException;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
@@ -131,7 +130,7 @@ public class AuthenticationPage extends TemplatePage {
                         OtpOverSmsSession.get().setDeviceBean(otpOverSmsDeviceService);
                     }
 
-                    catch (ConnectException e) {
+                    catch (SmsServiceException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorServiceConnection", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: failed to send otp to " + mobile.getObject(),
                                 LogLevelType.ERROR);
@@ -229,8 +228,9 @@ public class AuthenticationPage extends TemplatePage {
 
                     try {
                         String userId = otpOverSmsDeviceService.authenticate(pin.getObject(), otp.getObject());
-                        if (null == userId)
+                        if (null == userId) {
                             throw new AuthenticationFailedException();
+                        }
 
                         login(userId);
                     }
