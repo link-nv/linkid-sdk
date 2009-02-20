@@ -109,9 +109,7 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
 
         LOG.debug("register password for \"" + userId + "\"");
 
-        /*
-         * Check through node mapping if subject exists, if not, it is created.
-         */
+        // Check through node mapping if subject exists, if not, it is created.
         SubjectEntity subject = nodeMappingService.getSubject(userId, nodeName);
 
         passwordManager.registerPassword(subject, password);
@@ -133,7 +131,6 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
 
         historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_REMOVAL, Collections.singletonMap(SafeOnlineConstants.DEVICE_PROPERTY,
                 PasswordConstants.PASSWORD_DEVICE_ID));
-
     }
 
     /**
@@ -186,7 +183,7 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
 
         LOG.debug("disable password for \"" + subject.getUserId() + "\"");
 
-        getDisableAttribute(subject).setValue(false);
+        getDisableAttribute(subject).setValue(true);
 
         historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_ENABLE, Collections.singletonMap(SafeOnlineConstants.DEVICE_PROPERTY,
                 PasswordConstants.PASSWORD_DEVICE_ID));
