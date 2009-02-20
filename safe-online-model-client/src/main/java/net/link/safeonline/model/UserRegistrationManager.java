@@ -23,4 +23,8 @@ public interface UserRegistrationManager extends SafeOnlineService {
 
     SubjectEntity registerUser(String username)
             throws ExistingUserException, AttributeTypeNotFoundException;
+
+    SubjectEntity registerUserWithoutLogin();
+
+    SubjectEntity registerUserWithoutLogin(String userId);
 }

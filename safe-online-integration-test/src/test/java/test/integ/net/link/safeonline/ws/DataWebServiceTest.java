@@ -94,7 +94,7 @@ public class DataWebServiceTest {
 
     private X509Certificate  certificate;
 
-    private String           nodeName = "olas-localhost";
+    private String           nodeName = "olas-192.168.5.11";
 
 
     @Before
