@@ -133,7 +133,7 @@ public class UpdatePageTest extends TestCase {
 
         // stubs
         expect(mockOtpOverSmsDeviceService.isChallenged()).andReturn(true);
-        mockOtpOverSmsDeviceService.update(userId, otp, oldPin, newPin);
+        mockOtpOverSmsDeviceService.update(userId, oldPin, newPin, otp);
         expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
@@ -326,7 +326,7 @@ public class UpdatePageTest extends TestCase {
 
         // stubs
         expect(mockOtpOverSmsDeviceService.isChallenged()).andReturn(true);
-        mockOtpOverSmsDeviceService.update(userId, otp, oldPin, newPin);
+        mockOtpOverSmsDeviceService.update(userId, oldPin, newPin, otp);
         expectLastCall().andThrow(new PermissionDeniedException("Incorrect PIN"));
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 

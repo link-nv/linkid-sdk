@@ -140,7 +140,7 @@ public class RegistrationPage extends TemplatePage implements IHeaderContributor
 
             String imei = OptionDevice.register(pin.getObject());
             try {
-                optionDeviceService.register(protocolContext.getNodeName(), imei, protocolContext.getSubject());
+                optionDeviceService.register(protocolContext.getNodeName(), protocolContext.getSubject(), imei);
             } catch (NodeNotFoundException e) {
                 RegisterForm.this.error(localize("errorNodeNotFound"));
                 HelpdeskLogger.add(localize("node not found for %s", imei), //

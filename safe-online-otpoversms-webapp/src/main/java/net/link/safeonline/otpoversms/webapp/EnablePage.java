@@ -223,7 +223,7 @@ public class EnablePage extends TemplatePage {
                     OtpOverSmsDeviceService otpOverSmsDeviceService = OtpOverSmsSession.get().getDeviceService();
 
                     try {
-                        otpOverSmsDeviceService.enable(protocolContext.getSubject(), otp.getObject(), pin.getObject());
+                        otpOverSmsDeviceService.enable(protocolContext.getSubject(), pin.getObject(), otp.getObject());
 
                         protocolContext.setSuccess(true);
                         exit();

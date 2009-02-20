@@ -68,7 +68,7 @@ public class EnableServlet extends AbstractInjectionServlet {
         protocolContext.setSuccess(false);
 
         try {
-            optionDeviceService.enable(imei, userId);
+            optionDeviceService.enable(userId, imei);
 
             response.setStatus(HttpServletResponse.SC_OK);
             // notify that disable operation was successful.

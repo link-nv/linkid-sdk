@@ -185,7 +185,7 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
 
         getDisableAttribute(subject).setValue(true);
 
-        historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_ENABLE, Collections.singletonMap(SafeOnlineConstants.DEVICE_PROPERTY,
+        historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_DISABLE, Collections.singletonMap(SafeOnlineConstants.DEVICE_PROPERTY,
                 PasswordConstants.PASSWORD_DEVICE_ID));
     }
 

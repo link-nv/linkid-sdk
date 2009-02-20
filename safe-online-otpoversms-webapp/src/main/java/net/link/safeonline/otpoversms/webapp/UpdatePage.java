@@ -234,7 +234,7 @@ public class UpdatePage extends TemplatePage {
                     OtpOverSmsDeviceService otpOverSmsDeviceService = OtpOverSmsSession.get().getDeviceService();
 
                     try {
-                        otpOverSmsDeviceService.update(protocolContext.getSubject(), otp.getObject(), oldPin.getObject(), pin1.getObject());
+                        otpOverSmsDeviceService.update(protocolContext.getSubject(), oldPin.getObject(), pin1.getObject(), otp.getObject());
 
                         protocolContext.setSuccess(true);
                         exit();
