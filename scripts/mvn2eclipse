@@ -32,7 +32,7 @@ maven=1
 binFix=1
 jarFix=1
 source=0
-offline=0
+offline=
 if getArgs -q :bmj "$@"; then
 	maven=0
 	binFix=0
