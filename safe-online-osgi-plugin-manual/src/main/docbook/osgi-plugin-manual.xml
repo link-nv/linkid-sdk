@@ -109,6 +109,23 @@
 				</programlisting>
 			</para>
 		</section>
+		<section>
+			<title>OLAS Log Service API</title>
+			<para>
+				To allow attribute plugins to use the OLAS logging facilities
+				OLAS offers a log service. This is an implementation of the 
+				<code>LogService</code> as defined in the OSGi Compendium. 
+				<programlisting>
+				ServiceReference serviceReference =
+					bundleContext.getServiceReference(
+						LogService.class.getName());
+				LogService logService = 
+					(LogService) bundleContext.
+						getService(serviceReference);
+				logService.log(LogService.INFO,"message");
+				</programlisting>
+			</para>
+		</section>
 	</chapter>
 	<chapter id="SSL">
 		<title>SSL</title>

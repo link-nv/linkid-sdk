@@ -20,7 +20,6 @@ import javax.persistence.Table;
 
 import net.link.safeonline.jpa.annotation.QueryMethod;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
@@ -78,8 +77,18 @@ public class SubjectEntity implements Serializable {
             return true;
         if (false == obj instanceof SubjectEntity)
             return false;
+
         SubjectEntity rhs = (SubjectEntity) obj;
-        return new EqualsBuilder().append(userId, rhs.userId).isEquals();
+        return userId.equals(rhs.userId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+
+        return userId.hashCode();
     }
 
     @Override

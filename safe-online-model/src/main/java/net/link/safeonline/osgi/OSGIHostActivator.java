@@ -6,12 +6,16 @@
  */
 package net.link.safeonline.osgi;
 
+import static net.link.safeonline.osgi.OSGIConstants.SMS_SERVICE_GROUP_NAME;
+import static net.link.safeonline.osgi.OSGIConstants.SMS_SERVICE_IMPL_NAME;
+
 import java.io.Serializable;
 
 import net.link.safeonline.SafeOnlineService;
 import net.link.safeonline.config.model.ConfigurationManager;
 import net.link.safeonline.osgi.attribute.OlasAttributeServiceFactory;
 import net.link.safeonline.osgi.configuration.OlasConfigurationServiceFactory;
+import net.link.safeonline.osgi.log.OlasLogServiceFactory;
 import net.link.safeonline.osgi.plugin.PluginAttributeService;
 import net.link.safeonline.osgi.sms.SmsService;
 import net.link.safeonline.util.ee.EjbUtils;
@@ -24,15 +28,16 @@ import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.log.LogService;
 import org.osgi.util.tracker.ServiceTracker;
 
 
 /**
  * <h2>{@link OSGIHostActivator}<br>
- * <sub>[in short] (TODO).</sub></h2>
+ * <sub>Sets up service tracking</sub></h2>
  * 
  * <p>
- * [description / usage].
+ * This activator sets up service trackers and reacts appropriately when service implementations come and go
  * </p>
  * 
  * <p>
@@ -43,21 +48,11 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public class OSGIHostActivator implements BundleActivator, ServiceListener, Serializable {
 
-    private static final long serialVersionUID = 1L;
-
-
-    public enum OSGIServiceType {
-        PLUGIN_SERVICE,
-        SMS_SERVICE;
-    }
-
+    private static final long   serialVersionUID                     = 1L;
 
     public static final String  JNDI_BINDING                         = SafeOnlineService.JNDI_PREFIX + "OSGI/HostActivator";
 
     private static final Log    LOG                                  = LogFactory.getLog(OSGIHostActivator.class);
-
-    public static final String  SMS_SERVICE_GROUP_NAME               = "SMS Service";
-    public static final String  SMS_SERVICE_IMPL_NAME                = "Implementations";
 
     private ServiceTracker      pluginAttributeServiceTracker        = null;
 
@@ -65,6 +60,7 @@ public class OSGIHostActivator implements BundleActivator, ServiceListener, Seri
 
     private ServiceRegistration olasAttributeServiceRegistration     = null;
     private ServiceRegistration olasConfigurationServiceRegistration = null;
+    private ServiceRegistration olasLogServiceRegistration           = null;
 
 
     /**
@@ -85,13 +81,16 @@ public class OSGIHostActivator implements BundleActivator, ServiceListener, Seri
 
         // Initialize olas attribute service
         OlasAttributeServiceFactory attribtueServiceFactory = new OlasAttributeServiceFactory();
-        olasAttributeServiceRegistration = context
-                                                       .registerService(OlasAttributeService.class.getName(), attribtueServiceFactory, null);
+        olasAttributeServiceRegistration = context.registerService(OlasAttributeService.class.getName(), attribtueServiceFactory, null);
 
         // Initialize olas configuration service
         OlasConfigurationServiceFactory configurationServiceFactory = new OlasConfigurationServiceFactory();
         olasConfigurationServiceRegistration = context.registerService(OlasConfigurationService.class.getName(),
                 configurationServiceFactory, null);
+
+        // Initialize olas log service
+        OlasLogServiceFactory logServiceFactory = new OlasLogServiceFactory();
+        olasLogServiceRegistration = context.registerService(LogService.class.getName(), logServiceFactory, null);
 
     }
 
@@ -104,6 +103,7 @@ public class OSGIHostActivator implements BundleActivator, ServiceListener, Seri
         smsServiceTracker.close();
         olasAttributeServiceRegistration.unregister();
         olasConfigurationServiceRegistration.unregister();
+        olasLogServiceRegistration.unregister();
 
     }
 

@@ -6,10 +6,13 @@
  */
 package net.link.safeonline.model.option.bean;
 
+import java.util.Collections;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
@@ -19,9 +22,11 @@ import net.link.safeonline.authentication.exception.NodeNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
+import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.data.CompoundAttributeDO;
 import net.link.safeonline.entity.AttributeEntity;
+import net.link.safeonline.entity.HistoryEventType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.bean.AttributeManagerLWBean;
 import net.link.safeonline.model.option.OptionConstants;
@@ -49,6 +54,9 @@ import org.jboss.annotation.ejb.LocalBinding;
 @Stateless
 @LocalBinding(jndiBinding = OptionDeviceService.JNDI_BINDING)
 public class OptionDeviceServiceBean implements OptionDeviceService {
+
+    @EJB(mappedName = HistoryDAO.JNDI_BINDING)
+    private HistoryDAO             historyDAO;
 
     @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService         subjectService;
@@ -89,7 +97,7 @@ public class OptionDeviceServiceBean implements OptionDeviceService {
         if (null == subject)
             throw new SubjectNotFoundException();
 
-        if (findDisableAttribute(imei, subject.getUserId()).getBooleanValue())
+        if (getDisableAttribute(subject, imei).getBooleanValue())
             throw new DeviceDisabledException();
 
         return subject.getUserId();
@@ -98,27 +106,33 @@ public class OptionDeviceServiceBean implements OptionDeviceService {
     /**
      * {@inheritDoc}
      */
-    public void disable(String imei, String userId)
+    public void enable(String userId, String imei)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException {
 
-        findDisableAttribute(imei, userId).setValue(true);
+        SubjectEntity subject = subjectService.getSubject(userId);
+        getDisableAttribute(subject, imei).setValue(false);
+
+        historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_ENABLE, Collections.singletonMap(SafeOnlineConstants.DEVICE_PROPERTY,
+                OptionConstants.OPTION_DEVICE_ID));
     }
 
     /**
      * {@inheritDoc}
      */
-    public void enable(String imei, String userId)
+    public void disable(String userId, String imei)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException {
 
-        findDisableAttribute(imei, userId).setValue(false);
+        SubjectEntity subject = subjectService.getSubject(userId);
+        getDisableAttribute(subject, imei).setValue(true);
+
+        historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_DISABLE, Collections.singletonMap(SafeOnlineConstants.DEVICE_PROPERTY,
+                OptionConstants.OPTION_DEVICE_ID));
     }
 
-    public AttributeEntity findDisableAttribute(String imei, String userId)
-            throws SubjectNotFoundException, DeviceRegistrationNotFoundException {
+    private AttributeEntity getDisableAttribute(SubjectEntity subject, String imei)
+            throws DeviceRegistrationNotFoundException {
 
         try {
-            SubjectEntity subject = subjectService.getSubject(userId);
-
             AttributeEntity device = attributeManager.getCompoundWhere(subject, OptionConstants.OPTION_DEVICE_ATTRIBUTE,
                     OptionConstants.OPTION_IMEI_ATTRIBUTE, imei);
 
@@ -135,7 +149,7 @@ public class OptionDeviceServiceBean implements OptionDeviceService {
     /**
      * {@inheritDoc}
      */
-    public void register(String nodeName, String imei, String userId)
+    public void register(String nodeName, String userId, String imei)
             throws NodeNotFoundException {
 
         /*
@@ -145,6 +159,9 @@ public class OptionDeviceServiceBean implements OptionDeviceService {
 
         setAttributes(subject, imei);
         subjectIdentifierDAO.addSubjectIdentifier(OptionConstants.OPTION_IDENTIFIER_DOMAIN, imei, subject);
+
+        historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_REGISTRATION, Collections.singletonMap(
+                SafeOnlineConstants.DEVICE_PROPERTY, OptionConstants.OPTION_DEVICE_ID));
     }
 
     private void setAttributes(SubjectEntity subject, String imei) {
@@ -176,6 +193,9 @@ public class OptionDeviceServiceBean implements OptionDeviceService {
                     imei);
 
             subjectIdentifierDAO.removeSubjectIdentifier(subject, OptionConstants.OPTION_IDENTIFIER_DOMAIN, imei);
+
+            historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_REMOVAL, Collections.singletonMap(
+                    SafeOnlineConstants.DEVICE_PROPERTY, OptionConstants.OPTION_DEVICE_ID));
         }
 
         catch (AttributeTypeNotFoundException e) {

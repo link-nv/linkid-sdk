@@ -389,7 +389,7 @@ public class SAMLAttributePortImpl implements SAMLAttributePort {
                  */
                 Object[] array = (Object[]) attributeValue;
                 for (Object item : array) {
-                    if (item instanceof Map) {
+                    if (item instanceof Map<?, ?>) {
                         /*
                          * Compounded attribute.
                          */

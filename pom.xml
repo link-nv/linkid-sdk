@@ -5,7 +5,8 @@
 
 	<!-- PROJECT METADATA -->
 	<name>SafeOnline</name>
-	<url>http://buildserver/site/safe-online</url>
+	<url>http://buildserver/site/safe-online
+	</url>
 	<inceptionYear>2006</inceptionYear>
 	<groupId>net.lin-k</groupId>
 	<artifactId>safe-online</artifactId>
@@ -30,7 +31,8 @@
 				<jabber>frank.cornelis@gmail.com</jabber>
 				<msn>frank.cornelis@ugent.be</msn>
 				<icq>168372541</icq>
-				<private-email>info@frankcornelis.be</private-email>
+				<private-email>info@frankcornelis.be
+				</private-email>
 			</properties>
 		</developer>
 		<developer>
@@ -55,7 +57,8 @@
 			<timezone>+1</timezone>
 			<properties>
 				<msn>wim.vandenhaute@easynet.be</msn>
-				<private-email>wim.vandenhaute@gmail.com</private-email>
+				<private-email>wim.vandenhaute@gmail.com
+				</private-email>
 			</properties>
 		</developer>
 		<developer>
@@ -78,20 +81,23 @@
 	<!-- CODE MANAGEMENT -->
 	<scm>
 		<tag>HEAD</tag>
-		<url>http://buildserver/cgi-bin/gitweb.cgi?p=safe-online.git</url>
-		<connection> scm:git:ssh://buildserver/scm/git/safeonline.git 
+		<url>http://buildserver/cgi-bin/gitweb.cgi?p=safe-online.git
+		</url>
+		<connection> scm:git:ssh://buildserver/scm/git/safeonline.git
 		</connection>
 		<developerConnection>
-			scm:git:ssh://buildserver/scm/git/safeonline.git 
+			scm:git:ssh://buildserver/scm/git/safeonline.git
 		</developerConnection>
 	</scm>
 	<issueManagement>
 		<system>JTrac</system>
-		<url>http://buildserver:7070/jtrac/app/</url>
+		<url>http://buildserver:7070/jtrac/app/
+		</url>
 	</issueManagement>
 	<ciManagement>
 		<system>Hudson</system>
-		<url>http://buildserver:7070/hudson/</url>
+		<url>http://buildserver:7070/hudson/
+		</url>
 	</ciManagement>
 	<mailingLists>
 		<mailingList>
@@ -107,13 +113,16 @@
 			<url>scpexe://buildserver/maven2</url>
 		</repository>
 		<snapshotRepository>
-			<id>buildserver-snapshot-repository</id>
-			<url>scpexe://buildserver/maven2-snapshots</url>
+			<id>buildserver-snapshot-repository
+			</id>
+			<url>scpexe://buildserver/maven2-snapshots
+			</url>
 			<uniqueVersion>false</uniqueVersion>
 		</snapshotRepository>
 		<site>
 			<id>buildserver-site-repository</id>
-			<url>scpexe://buildserver/site/safe-online</url>
+			<url>scpexe://buildserver/site/safe-online
+			</url>
 		</site>
 	</distributionManagement>
 	<reporting>
@@ -131,7 +140,8 @@
 				<safe-online.branding>option</safe-online.branding>
 			</properties>
 			<modules>
-				<module>safe-online-webapp-base-option</module>
+				<module>safe-online-webapp-base-option
+				</module>
 			</modules>
 		</profile>
 
@@ -140,9 +150,12 @@
 		<profile>
 			<id>ds:hsql</id>
 			<properties>
-				<safe-online.data.source.type>hsql</safe-online.data.source.type>
-				<safe-online.data.source.uri>jdbc:hsqldb:.</safe-online.data.source.uri>
-				<safe-online.data.source.dialect>org.hibernate.dialect.HSQLDialect</safe-online.data.source.dialect>
+				<safe-online.data.source.type>hsql
+				</safe-online.data.source.type>
+				<safe-online.data.source.uri>jdbc:hsqldb:.
+				</safe-online.data.source.uri>
+				<safe-online.data.source.dialect>org.hibernate.dialect.HSQLDialect
+				</safe-online.data.source.dialect>
 			</properties>
 		</profile>
 
@@ -150,9 +163,12 @@
 		<profile>
 			<id>ds:mysql</id>
 			<properties>
-				<safe-online.data.source.type>mysql</safe-online.data.source.type>
-				<safe-online.data.source.uri>jdbc:mysql://localhost:3306/safeonline</safe-online.data.source.uri>
-				<safe-online.data.source.dialect>org.hibernate.dialect.MySQLDialect</safe-online.data.source.dialect>
+				<safe-online.data.source.type>mysql
+				</safe-online.data.source.type>
+				<safe-online.data.source.uri>jdbc:mysql://localhost:3306/safeonline
+				</safe-online.data.source.uri>
+				<safe-online.data.source.dialect>org.hibernate.dialect.MySQLDialect
+				</safe-online.data.source.dialect>
 			</properties>
 		</profile>
 
@@ -160,9 +176,14 @@
 		<profile>
 			<id>ds:postgresql</id>
 			<properties>
-				<safe-online.data.source.type>postgresql</safe-online.data.source.type>
-				<safe-online.data.source.uri>jdbc:postgresql://localhost:5432/safeonline</safe-online.data.source.uri>
-				<safe-online.data.source.dialect>org.hibernate.dialect.PostgreSQLDialect</safe-online.data.source.dialect>
+				<safe-online.data.source.type>postgresql
+				</safe-online.data.source.type>
+				<safe-online.data.source.uri>
+					jdbc:postgresql://localhost:5432/safeonline
+				</safe-online.data.source.uri>
+				<safe-online.data.source.dialect>
+					org.hibernate.dialect.PostgreSQLDialect
+				</safe-online.data.source.dialect>
 			</properties>
 		</profile>
 
@@ -170,9 +191,14 @@
 		<profile>
 			<id>ds:oracle</id>
 			<properties>
-				<safe-online.data.source.type>oracle</safe-online.data.source.type>
-				<safe-online.data.source.uri>jdbc:oracle:thin:@localhost:1521:safeonline</safe-online.data.source.uri>
-				<safe-online.data.source.dialect>net.link.safeonline.hibernate.dialect.Oracle11Dialect</safe-online.data.source.dialect>
+				<safe-online.data.source.type>oracle
+				</safe-online.data.source.type>
+				<safe-online.data.source.uri>
+					jdbc:oracle:thin:@localhost:1521:safeonline
+				</safe-online.data.source.uri>
+				<safe-online.data.source.dialect>
+					net.link.safeonline.hibernate.dialect.Oracle11Dialect
+				</safe-online.data.source.dialect>
 			</properties>
 		</profile>
 
@@ -199,7 +225,8 @@
 				<safe-online.show.sql>false</safe-online.show.sql>
 				<wicket.configuration>DEPLOYMENT</wicket.configuration>
 				<defaultCronExpression>0 0 3 * * ?</defaultCronExpression>
-				<safe-online.hibernate.hbm2ddl.auto>validate</safe-online.hibernate.hbm2ddl.auto>
+				<safe-online.hibernate.hbm2ddl.auto>validate
+				</safe-online.hibernate.hbm2ddl.auto>
 
 				<safe-online.host.port:insecure>80</safe-online.host.port:insecure>
 				<safe-online.host.port:secure>443</safe-online.host.port:secure>
@@ -208,8 +235,10 @@
 			</properties>
 			<modules>
 				<module>safe-online-root-webapp</module>
-				<module>safe-online-install-manual</module>
-				<module>safe-online-maintenance-manual</module>
+				<module>safe-online-install-manual
+				</module>
+				<module>safe-online-maintenance-manual
+				</module>
 				<module>safe-online-distribution</module>
 			</modules>
 		</profile>
@@ -218,7 +247,8 @@
 		<profile>
 			<id>dist:performance</id>
 			<properties>
-				<safe-online.distribution>performance</safe-online.distribution>
+				<safe-online.distribution>performance
+				</safe-online.distribution>
 
 				<!--
 					Use insecure transport for secure traffic to reduce transport
@@ -227,15 +257,26 @@
 				<safe-online.host.protocol:secure>${safe-online.host.protocol:insecure}</safe-online.host.protocol:secure>
 				<safe-online.host.port:secure>${safe-online.host.port:insecure}</safe-online.host.port:secure>
 
-				<safe-online.profiling.group>net.lin-k.safe-online.performance</safe-online.profiling.group>
-				<safe-online.profiling.initial_hosts>sebeco-dev-11.lin-k.net[7800],sebeco-dev-12.lin-k.net[7800]</safe-online.profiling.initial_hosts>
+				<safe-online.profiling.group>net.lin-k.safe-online.performance
+				</safe-online.profiling.group>
+				<safe-online.profiling.initial_hosts>
+					sebeco-dev-11.lin-k.net[7800],sebeco-dev-12.lin-k.net[7800]
+				</safe-online.profiling.initial_hosts>
 
-				<safe-online.profiling.agent.show.sql>${safe-online.show.sql}</safe-online.profiling.agent.show.sql>
-				<safe-online.profiling.agent.batch.size>${safe-online.batch.size}</safe-online.profiling.agent.batch.size>
-				<safe-online.profiling.agent.data.source>AgentDS</safe-online.profiling.agent.data.source>
-				<safe-online.profiling.agent.data.source.dialect>${safe-online.data.source.dialect}</safe-online.profiling.agent.data.source.dialect>
-				<safe-online.profiling.agent.data.source.uri>${safe-online.data.source.uri}</safe-online.profiling.agent.data.source.uri>
-				<safe-online.profiling.agent.hibernate.hbm2ddl.auto>update</safe-online.profiling.agent.hibernate.hbm2ddl.auto>
+				<safe-online.profiling.agent.show.sql>${safe-online.show.sql}
+				</safe-online.profiling.agent.show.sql>
+				<safe-online.profiling.agent.batch.size>${safe-online.batch.size}
+				</safe-online.profiling.agent.batch.size>
+				<safe-online.profiling.agent.data.source>AgentDS
+				</safe-online.profiling.agent.data.source>
+				<safe-online.profiling.agent.data.source.dialect>
+					${safe-online.data.source.dialect}
+				</safe-online.profiling.agent.data.source.dialect>
+				<safe-online.profiling.agent.data.source.uri>
+					${safe-online.data.source.uri}
+				</safe-online.profiling.agent.data.source.uri>
+				<safe-online.profiling.agent.hibernate.hbm2ddl.auto>update
+				</safe-online.profiling.agent.hibernate.hbm2ddl.auto>
 
 				<safe-online.profiling.filter><![CDATA[-->
 					<filter>
@@ -276,23 +317,39 @@
 				</safe-online.profiling.interceptor>
 			</properties>
 			<modules>
-				<module>safe-online-model-performance-client</module>
-				<module>safe-online-model-performance</module>
-				<module>safe-online-performance-deploy</module>
-				<module>safe-online-performance-agent-deploy</module>
-				<module>safe-online-performance-entity</module>
-				<module>safe-online-performance-startup-runtime</module>
-				<module>safe-online-performance-keystore</module>
-				<module>safe-online-performance-agent-service</module>
-				<module>safe-online-performance-scenario-client</module>
-				<module>safe-online-performance-scenario</module>
-				<module>safe-online-performance-scenario-base</module>
-				<module>safe-online-performance-scenario-deploy</module>
-				<module>safe-online-performance-console-base</module>
-				<module>safe-online-performance-console-swing</module>
-				<module>safe-online-performance-console-package</module>
+				<module>safe-online-model-performance-client
+				</module>
+				<module>safe-online-model-performance
+				</module>
+				<module>safe-online-performance-deploy
+				</module>
+				<module>safe-online-performance-agent-deploy
+				</module>
+				<module>safe-online-performance-entity
+				</module>
+				<module>safe-online-performance-startup-runtime
+				</module>
+				<module>safe-online-performance-keystore
+				</module>
+				<module>safe-online-performance-agent-service
+				</module>
+				<module>safe-online-performance-scenario-client
+				</module>
+				<module>safe-online-performance-scenario
+				</module>
+				<module>safe-online-performance-scenario-base
+				</module>
+				<module>safe-online-performance-scenario-deploy
+				</module>
+				<module>safe-online-performance-console-base
+				</module>
+				<module>safe-online-performance-console-swing
+				</module>
+				<module>safe-online-performance-console-package
+				</module>
 				<module>safe-online-distribution</module>
-				<module>safe-online-performance-agent-distribution</module>
+				<module>safe-online-performance-agent-distribution
+				</module>
 			</modules>
 		</profile>
 
@@ -305,67 +362,108 @@
 				<defaultCronExpression>0 0 0 1 1 ?</defaultCronExpression>
 
 				<!-- WEBAPP NAMES -->
-				<safe-online.demo.app.webapp.name>demo</safe-online.demo.app.webapp.name>
-				<safe-online.demo.prescription.webapp.name>demo-prescription</safe-online.demo.prescription.webapp.name>
-				<safe-online.demo.bank.webapp.name>ebank</safe-online.demo.bank.webapp.name>
-				<safe-online.demo.cinema.webapp.name>cinema</safe-online.demo.cinema.webapp.name>
-				<safe-online.demo.lawyer.webapp.name>demo-lawyer</safe-online.demo.lawyer.webapp.name>
-				<safe-online.demo.mandate.webapp.name>demo-mandate</safe-online.demo.mandate.webapp.name>
-				<safe-online.demo.payment.webapp.name>epayment</safe-online.demo.payment.webapp.name>
-				<safe-online.demo.ticket.webapp.name>eticket</safe-online.demo.ticket.webapp.name>
-				<safe-online.demo.ws.webapp.name>safe-online-demo-ws</safe-online.demo.ws.webapp.name>
+				<safe-online.demo.app.webapp.name>demo
+				</safe-online.demo.app.webapp.name>
+				<safe-online.demo.prescription.webapp.name>demo-prescription
+				</safe-online.demo.prescription.webapp.name>
+				<safe-online.demo.bank.webapp.name>ebank
+				</safe-online.demo.bank.webapp.name>
+				<safe-online.demo.cinema.webapp.name>cinema
+				</safe-online.demo.cinema.webapp.name>
+				<safe-online.demo.lawyer.webapp.name>demo-lawyer
+				</safe-online.demo.lawyer.webapp.name>
+				<safe-online.demo.mandate.webapp.name>demo-mandate
+				</safe-online.demo.mandate.webapp.name>
+				<safe-online.demo.payment.webapp.name>epayment
+				</safe-online.demo.payment.webapp.name>
+				<safe-online.demo.ticket.webapp.name>eticket
+				</safe-online.demo.ticket.webapp.name>
+				<safe-online.demo.ws.webapp.name>safe-online-demo-ws
+				</safe-online.demo.ws.webapp.name>
 
-				<safe-online.demo.app.webapp.url>demo</safe-online.demo.app.webapp.url>
-				<safe-online.demo.prescription.webapp.url>demo-prescription</safe-online.demo.prescription.webapp.url>
-				<safe-online.demo.bank.webapp.url>demo-bank</safe-online.demo.bank.webapp.url>
-				<safe-online.demo.cinema.webapp.url>demo-cinema</safe-online.demo.cinema.webapp.url>
-				<safe-online.demo.lawyer.webapp.url>demo-lawyer</safe-online.demo.lawyer.webapp.url>
-				<safe-online.demo.mandate.webapp.url>demo-mandate</safe-online.demo.mandate.webapp.url>
-				<safe-online.demo.payment.webapp.url>demo-payment</safe-online.demo.payment.webapp.url>
-				<safe-online.demo.ticket.webapp.url>demo-ticket</safe-online.demo.ticket.webapp.url>
-				<safe-online.demo.ws.webapp.url>safe-online-demo-ws</safe-online.demo.ws.webapp.url>
+				<safe-online.demo.app.webapp.url>demo
+				</safe-online.demo.app.webapp.url>
+				<safe-online.demo.prescription.webapp.url>demo-prescription
+				</safe-online.demo.prescription.webapp.url>
+				<safe-online.demo.bank.webapp.url>demo-bank
+				</safe-online.demo.bank.webapp.url>
+				<safe-online.demo.cinema.webapp.url>demo-cinema
+				</safe-online.demo.cinema.webapp.url>
+				<safe-online.demo.lawyer.webapp.url>demo-lawyer
+				</safe-online.demo.lawyer.webapp.url>
+				<safe-online.demo.mandate.webapp.url>demo-mandate
+				</safe-online.demo.mandate.webapp.url>
+				<safe-online.demo.payment.webapp.url>demo-payment
+				</safe-online.demo.payment.webapp.url>
+				<safe-online.demo.ticket.webapp.url>demo-ticket
+				</safe-online.demo.ticket.webapp.url>
+				<safe-online.demo.ws.webapp.url>safe-online-demo-ws
+				</safe-online.demo.ws.webapp.url>
 			</properties>
 			<modules>
 				<!-- DEMO CORE -->
-				<module>safe-online-model-demo-client</module>
+				<module>safe-online-model-demo-client
+				</module>
 				<module>safe-online-model-demo</module>
 				<module>safe-online-demo-sql-ddl</module>
 				<module>safe-online-demo-deploy</module>
 				<module>safe-online-demo-util</module>
 				<module>safe-online-demo-applet</module>
 				<module>safe-online-demo-webapp</module>
-				<module>safe-online-demo-startup-runtime</module>
+				<module>safe-online-demo-startup-runtime
+				</module>
 				<module>safe-online-demo-keystore</module>
-				<module>safe-online-demo-remote-service</module>
-				<module>safe-online-demo-notification-consumer-ws-impl</module>
-				<module>safe-online-demo-ws-runtime</module>
+				<module>safe-online-demo-remote-service
+				</module>
+				<module>safe-online-demo-notification-consumer-ws-impl
+				</module>
+				<module>safe-online-demo-ws-runtime
+				</module>
 				<module>safe-online-demo-ws-model</module>
 
 				<!-- DEMO APPLICATIONS -->
-				<module>safe-online-demo-ticket-webapp</module>
+				<module>safe-online-demo-ticket-webapp
+				</module>
 				<module>safe-online-demo-ticket</module>
-				<module>safe-online-demo-ticket-keystore</module>
+				<module>safe-online-demo-ticket-keystore
+				</module>
 				<module>safe-online-demo-payment</module>
-				<module>safe-online-demo-payment-webapp</module>
-				<module>safe-online-demo-payment-keystore</module>
+				<module>safe-online-demo-payment-webapp
+				</module>
+				<module>safe-online-demo-payment-keystore
+				</module>
 				<module>safe-online-demo-lawyer</module>
-				<module>safe-online-demo-lawyer-webapp</module>
-				<module>safe-online-demo-lawyer-service</module>
-				<module>safe-online-demo-lawyer-keystore</module>
-				<module>safe-online-demo-prescription</module>
-				<module>safe-online-demo-prescription-webapp</module>
-				<module>safe-online-demo-prescription-service</module>
-				<module>safe-online-demo-prescription-keystore</module>
+				<module>safe-online-demo-lawyer-webapp
+				</module>
+				<module>safe-online-demo-lawyer-service
+				</module>
+				<module>safe-online-demo-lawyer-keystore
+				</module>
+				<module>safe-online-demo-prescription
+				</module>
+				<module>safe-online-demo-prescription-webapp
+				</module>
+				<module>safe-online-demo-prescription-service
+				</module>
+				<module>safe-online-demo-prescription-keystore
+				</module>
 				<module>safe-online-demo-mandate</module>
-				<module>safe-online-demo-mandate-webapp</module>
-				<module>safe-online-demo-mandate-service</module>
-				<module>safe-online-demo-mandate-keystore</module>
+				<module>safe-online-demo-mandate-webapp
+				</module>
+				<module>safe-online-demo-mandate-service
+				</module>
+				<module>safe-online-demo-mandate-keystore
+				</module>
 				<module>safe-online-demo-cinema</module>
-				<module>safe-online-demo-cinema-webapp</module>
-				<module>safe-online-demo-cinema-keystore</module>
+				<module>safe-online-demo-cinema-webapp
+				</module>
+				<module>safe-online-demo-cinema-keystore
+				</module>
 				<module>safe-online-demo-bank</module>
-				<module>safe-online-demo-bank-webapp</module>
-				<module>safe-online-demo-bank-keystore</module>
+				<module>safe-online-demo-bank-webapp
+				</module>
+				<module>safe-online-demo-bank-keystore
+				</module>
 			</modules>
 		</profile>
 
@@ -373,14 +471,16 @@
 		<profile>
 			<id>dep:option</id>
 			<properties>
-				<safe-online.option.webapp.name>olas-option</safe-online.option.webapp.name>
+				<safe-online.option.webapp.name>olas-option
+				</safe-online.option.webapp.name>
 			</properties>
 			<modules>
 				<module>safe-online-option-startup-runtime</module>
 				<module>safe-online-option-keystore</module>
 				<module>safe-online-option-webapp</module>
 				<module>safe-online-option-deploy</module>
-				<module>safe-online-model-option-client</module>
+				<module>safe-online-model-option-client
+				</module>
 				<module>safe-online-model-option</module>
 			</modules>
 		</profile>
@@ -389,21 +489,29 @@
 		<profile>
 			<id>dep:otpoversms</id>
 			<properties>
-				<safe-online.otpoversms.webapp.name>olas-otp-over-sms</safe-online.otpoversms.webapp.name>
-				<safe-online.otpoversms.auth.ws.webapp.name>olas-otp-over-sms-auth-ws</safe-online.otpoversms.auth.ws.webapp.name>
+				<safe-online.otpoversms.webapp.name>olas-otp-over-sms
+				</safe-online.otpoversms.webapp.name>
+				<safe-online.otpoversms.auth.ws.webapp.name>
+					olas-otp-over-sms-auth-ws
+				</safe-online.otpoversms.auth.ws.webapp.name>
 			</properties>
 			<modules>
-				<module>safe-online-model-otpoversms-client</module>
-				<module>safe-online-model-otpoversms</module>
-				<module>safe-online-otpoversms-keystore</module>
-				<module>safe-online-otpoversms-startup-runtime</module>
-				<module>safe-online-otpoversms-webapp</module>
-				<module>safe-online-otpoversms-deploy</module>
-				<module>safe-online-otpoversms-ws</module>
-				<module>safe-online-otpoversms-ws-impl</module>
-				<module>safe-online-otpoversms-ws-runtime</module>
-				<module>safe-online-otpoversms-auth-ws-impl</module>
-				<module>safe-online-otpoversms-auth-ws-runtime</module>
+				<module>safe-online-model-otpoversms-client
+				</module>
+				<module>safe-online-model-otpoversms
+				</module>
+				<module>safe-online-otpoversms-keystore
+				</module>
+				<module>safe-online-otpoversms-startup-runtime
+				</module>
+				<module>safe-online-otpoversms-webapp
+				</module>
+				<module>safe-online-otpoversms-deploy
+				</module>
+				<module>safe-online-otpoversms-auth-ws-impl
+				</module>
+				<module>safe-online-otpoversms-auth-ws-runtime
+				</module>
 			</modules>
 		</profile>
 
@@ -416,8 +524,10 @@
 			<modules>
 				<module>safe-online-sdk-manual</module>
 				<module>safe-online-sdk-package</module>
-				<module>safe-online-device-sdk-manual</module>
-				<module>safe-online-osgi-plugin-manual</module>
+				<module>safe-online-device-sdk-manual
+				</module>
+				<module>safe-online-osgi-plugin-manual
+				</module>
 				<module>safe-online-osgi-package</module>
 			</modules>
 		</profile>
@@ -448,14 +558,22 @@
 		<profile>
 			<id>dep:siemens</id>
 			<modules>
-				<module>siemens-metro-acceptance-ws-impl</module>
-				<module>siemens-metro-acceptance-ws-runtime</module>
-				<module>siemens-auth-ws-acceptance-console</module>
-				<module>siemens-auth-ws-acceptance-console-package</module>
-				<module>siemens-auth-ws-acceptance-jaxws-ws</module>
-				<module>siemens-auth-ws-acceptance-jaxws-ws-impl</module>
-				<module>siemens-auth-ws-acceptance-jaxws-ws-runtime</module>
-				<module>siemens-metro-distribution</module>
+				<module>siemens-metro-acceptance-ws-impl
+				</module>
+				<module>siemens-metro-acceptance-ws-runtime
+				</module>
+				<module>siemens-auth-ws-acceptance-console
+				</module>
+				<module>siemens-auth-ws-acceptance-console-package
+				</module>
+				<module>siemens-auth-ws-acceptance-jaxws-ws
+				</module>
+				<module>siemens-auth-ws-acceptance-jaxws-ws-impl
+				</module>
+				<module>siemens-auth-ws-acceptance-jaxws-ws-runtime
+				</module>
+				<module>siemens-metro-distribution
+				</module>
 			</modules>
 		</profile>
 
@@ -464,10 +582,13 @@
 		<profile>
 			<id>host:option</id>
 			<properties>
-				<safe-online.host.name>option.olas.be</safe-online.host.name>
+				<safe-online.host.name>option.olas.be
+				</safe-online.host.name>
 
-				<safe-online.data.source.user>olasoption</safe-online.data.source.user>
-				<safe-online.data.source.pass>380464ce4c61ebcc2fb9</safe-online.data.source.pass>
+				<safe-online.data.source.user>olasoption
+				</safe-online.data.source.user>
+				<safe-online.data.source.pass>380464ce4c61ebcc2fb9
+				</safe-online.data.source.pass>
 				<safe-online.jboss.host.port:insecure>8080</safe-online.jboss.host.port:insecure>
 				<safe-online.jboss.host.port:secure>8443</safe-online.jboss.host.port:secure>
 			</properties>
@@ -478,10 +599,13 @@
 			<id>host:demo</id>
 			<properties>
 				<safe-online.distribution>base</safe-online.distribution>
-				<safe-online.host.name>demo.olas.be</safe-online.host.name>
+				<safe-online.host.name>demo.olas.be
+				</safe-online.host.name>
 
-				<safe-online.data.source.user>olasdemo</safe-online.data.source.user>
-				<safe-online.data.source.pass>1abb9f16a7ba974a6cf1</safe-online.data.source.pass>
+				<safe-online.data.source.user>olasdemo
+				</safe-online.data.source.user>
+				<safe-online.data.source.pass>1abb9f16a7ba974a6cf1
+				</safe-online.data.source.pass>
 
 				<safe-online.jboss.host.port:insecure>8080</safe-online.jboss.host.port:insecure>
 				<safe-online.jboss.host.port:secure>8443</safe-online.jboss.host.port:secure>
@@ -494,7 +618,8 @@
 		<profile>
 			<id>host:encap</id>
 			<properties>
-				<safe-online.host.name>test.encap.no</safe-online.host.name>
+				<safe-online.host.name>test.encap.no
+				</safe-online.host.name>
 
 				<safe-online.jboss.host.port:insecure>8080</safe-online.jboss.host.port:insecure>
 				<safe-online.jboss.host.port:secure>8443</safe-online.jboss.host.port:secure>
@@ -505,7 +630,8 @@
 		<profile>
 			<id>host:buildserver</id>
 			<properties>
-				<safe-online.host.name>buildserver</safe-online.host.name>
+				<safe-online.host.name>buildserver
+				</safe-online.host.name>
 			</properties>
 		</profile>
 
@@ -513,7 +639,8 @@
 		<profile>
 			<id>host:sebeco-test-10</id>
 			<properties>
-				<safe-online.host.name>sebeco-test-10</safe-online.host.name>
+				<safe-online.host.name>sebeco-test-10
+				</safe-online.host.name>
 			</properties>
 		</profile>
 
@@ -521,7 +648,8 @@
 		<profile>
 			<id>host:sebeco-dev-10</id>
 			<properties>
-				<safe-online.host.name>sebeco-dev-10</safe-online.host.name>
+				<safe-online.host.name>sebeco-dev-10
+				</safe-online.host.name>
 			</properties>
 		</profile>
 
@@ -529,7 +657,8 @@
 		<profile>
 			<id>host:sebeco-dev-11</id>
 			<properties>
-				<safe-online.host.name>sebeco-dev-11</safe-online.host.name>
+				<safe-online.host.name>sebeco-dev-11
+				</safe-online.host.name>
 			</properties>
 		</profile>
 
@@ -537,7 +666,8 @@
 		<profile>
 			<id>host:sebeco-dev-12</id>
 			<properties>
-				<safe-online.host.name>sebeco-dev-12</safe-online.host.name>
+				<safe-online.host.name>sebeco-dev-12
+				</safe-online.host.name>
 			</properties>
 		</profile>
 
@@ -545,7 +675,8 @@
 		<profile>
 			<id>host:sebeco-dev-13</id>
 			<properties>
-				<safe-online.host.name>sebeco-dev-13</safe-online.host.name>
+				<safe-online.host.name>sebeco-dev-13
+				</safe-online.host.name>
 			</properties>
 		</profile>
 
@@ -596,11 +727,13 @@
 			<id>hudson</id>
 			<distributionManagement>
 				<repository>
-					<id>buildserver-release-repository</id>
+					<id>buildserver-release-repository
+					</id>
 					<url>file:///maven2</url>
 				</repository>
 				<snapshotRepository>
-					<id>buildserver-snapshot-repository</id>
+					<id>buildserver-snapshot-repository
+					</id>
 					<url>file:///maven2-snapshots</url>
 					<uniqueVersion>false</uniqueVersion>
 				</snapshotRepository>
@@ -626,13 +759,18 @@
 		<safe-online.branding>olas</safe-online.branding>
 		<safe-online.commercial.name>OLAS</safe-online.commercial.name>
 		<safe-online.batch.size>5</safe-online.batch.size>
-		<safe-online.data.source>SafeOnlineDS</safe-online.data.source>
-		<safe-online.data.source.user>safeonline</safe-online.data.source.user>
-		<safe-online.data.source.pass>safeonline</safe-online.data.source.pass>
-		<safe-online.hibernate.hbm2ddl.auto>update</safe-online.hibernate.hbm2ddl.auto>
+		<safe-online.data.source>SafeOnlineDS
+		</safe-online.data.source>
+		<safe-online.data.source.user>safeonline
+		</safe-online.data.source.user>
+		<safe-online.data.source.pass>safeonline
+		</safe-online.data.source.pass>
+		<safe-online.hibernate.hbm2ddl.auto>update
+		</safe-online.hibernate.hbm2ddl.auto>
 
 		<safe-online.host.name>localhost</safe-online.host.name>
-		<safe-online.node.name>olas-${safe-online.host.name}</safe-online.node.name>
+		<safe-online.node.name>olas-${safe-online.host.name}
+		</safe-online.node.name>
 
 		<safe-online.host.protocol:insecure>http</safe-online.host.protocol:insecure>
 		<safe-online.host.protocol:secure>https</safe-online.host.protocol:secure>
@@ -642,30 +780,45 @@
 		<safe-online.jboss.host.port:secure>8443</safe-online.jboss.host.port:secure>
 
 		<safe-online.host.basename>
-			${safe-online.host.protocol:insecure}://${safe-online.host.name}:${safe-online.host.port:insecure} 
+			${safe-online.host.protocol:insecure}://${safe-online.host.name}:${safe-online.host.port:insecure}
 		</safe-online.host.basename>
 		<safe-online.host.auth.basename>
-			${safe-online.host.protocol:secure}://${safe-online.host.name}:${safe-online.host.port:secure} 
+			${safe-online.host.protocol:secure}://${safe-online.host.name}:${safe-online.host.port:secure}
 		</safe-online.host.auth.basename>
 
 		<!-- WEBAPP NAMES -->
-		<safe-online.auth.webapp.name>olas-auth</safe-online.auth.webapp.name>
-		<safe-online.user.webapp.name>olas-user</safe-online.user.webapp.name>
-		<safe-online.helpdesk.webapp.name>olas-helpdesk</safe-online.helpdesk.webapp.name>
-		<safe-online.oper.webapp.name>olas-oper</safe-online.oper.webapp.name>
-		<safe-online.owner.webapp.name>olas-owner</safe-online.owner.webapp.name>
-		<safe-online.ws.webapp.name>safe-online-ws</safe-online.ws.webapp.name>
-		<safe-online.auth.ws.webapp.name>safe-online-auth-ws</safe-online.auth.ws.webapp.name>
-		<safe-online.beid.webapp.name>olas-beid</safe-online.beid.webapp.name>
-		<safe-online.beid.auth.ws.webapp.name>olas-beid-auth-ws</safe-online.beid.auth.ws.webapp.name>
-		<safe-online.digipass.webapp.name>olas-digipass</safe-online.digipass.webapp.name>
-		<safe-online.encap.webapp.name>olas-encap</safe-online.encap.webapp.name>
-		<safe-online.encap.auth.ws.webapp.name>olas-encap-auth-ws</safe-online.encap.auth.ws.webapp.name>
-		<safe-online.password.webapp.name>olas-password</safe-online.password.webapp.name>
-		<safe-online.password.auth.ws.webapp.name>olas-password-auth-ws</safe-online.password.auth.ws.webapp.name>
+		<safe-online.auth.webapp.name>olas-auth
+		</safe-online.auth.webapp.name>
+		<safe-online.user.webapp.name>olas-user
+		</safe-online.user.webapp.name>
+		<safe-online.helpdesk.webapp.name>olas-helpdesk
+		</safe-online.helpdesk.webapp.name>
+		<safe-online.oper.webapp.name>olas-oper
+		</safe-online.oper.webapp.name>
+		<safe-online.owner.webapp.name>olas-owner
+		</safe-online.owner.webapp.name>
+		<safe-online.ws.webapp.name>safe-online-ws
+		</safe-online.ws.webapp.name>
+		<safe-online.auth.ws.webapp.name>safe-online-auth-ws
+		</safe-online.auth.ws.webapp.name>
+		<safe-online.beid.webapp.name>olas-beid
+		</safe-online.beid.webapp.name>
+		<safe-online.beid.auth.ws.webapp.name>olas-beid-auth-ws
+		</safe-online.beid.auth.ws.webapp.name>
+		<safe-online.digipass.webapp.name>olas-digipass
+		</safe-online.digipass.webapp.name>
+		<safe-online.encap.webapp.name>olas-encap
+		</safe-online.encap.webapp.name>
+		<safe-online.encap.auth.ws.webapp.name>olas-encap-auth-ws
+		</safe-online.encap.auth.ws.webapp.name>
+		<safe-online.password.webapp.name>olas-password
+		</safe-online.password.webapp.name>
+		<safe-online.password.auth.ws.webapp.name>olas-password-auth-ws
+		</safe-online.password.auth.ws.webapp.name>
 
 		<!-- DEFAULT VERSIONS, SEE DEPENDENCIES -->
-		<safe-online.version>${pom.version}</safe-online.version>
+		<safe-online.version>${pom.version}
+		</safe-online.version>
 		<bcel.version>5.1</bcel.version>
 		<bsf.version>2.4.0</bsf.version>
 		<bsh.version>1.3.0</bsh.version>
@@ -691,22 +844,25 @@
 		<jboss.version>4.2.2.GA</jboss.version>
 		<jboss-messaging.version>1.4.1.CR1</jboss-messaging.version>
 		<sjsxp.version>1.0.1</sjsxp.version>
-		<commons-logging.version>1.1.0.jboss</commons-logging.version>
+		<commons-logging.version>1.1.0.jboss
+		</commons-logging.version>
 		<log4j.version>1.2.14</log4j.version>
 		<activation.version>1.1</activation.version>
 		<stax-api.version>1.0-2</stax-api.version>
 		<stax-ex.version>1.2</stax-ex.version>
 		<streambuffer.version>0.7</streambuffer.version>
 		<easymock.version>2.3</easymock.version>
-		<maven-ear-plugin.version>2.3.1-safe-online</maven-ear-plugin.version>
+		<maven-ear-plugin.version>2.3.1-safe-online
+		</maven-ear-plugin.version>
 		<commons-io.version>1.3.1</commons-io.version>
-		<hibernate-entitymanager.version> 3.3.1.ga 
+		<hibernate-entitymanager.version> 3.3.1.ga
 		</hibernate-entitymanager.version>
-		<hibernate-annotations.version> 3.3.1.GA 
+		<hibernate-annotations.version> 3.3.1.GA
 		</hibernate-annotations.version>
 		<hibernate.version>3.2.4.sp1</hibernate.version>
-		<hibernate-tools.version>3.2.0.beta9a</hibernate-tools.version>
-		<hibernate-commons-annotations.version> 3.0.0.ga 
+		<hibernate-tools.version>3.2.0.beta9a
+		</hibernate-tools.version>
+		<hibernate-commons-annotations.version> 3.0.0.ga
 		</hibernate-commons-annotations.version>
 		<hibernate-validator.version> 3.0.0.GA </hibernate-validator.version>
 		<derby.version>10.3.1.4</derby.version>
@@ -731,10 +887,13 @@
 		<tomahawk.version>1.1.6</tomahawk.version>
 		<tomahawk-facelets.version>1.0</tomahawk-facelets.version>
 		<myfaces-api.version>1.1.4</myfaces-api.version>
-		<jboss-sar-maven-plugin.version>2.0-SNAPSHOT</jboss-sar-maven-plugin.version>
-		<jboss-packaging-maven-plugin.version>2.0-beta-1</jboss-packaging-maven-plugin.version>
+		<jboss-sar-maven-plugin.version>2.0-SNAPSHOT
+		</jboss-sar-maven-plugin.version>
+		<jboss-packaging-maven-plugin.version>2.0-beta-1
+		</jboss-packaging-maven-plugin.version>
 		<maven-surefire-plugin.version>2.3</maven-surefire-plugin.version>
-		<easymockclassextension.version>2.2.2</easymockclassextension.version>
+		<easymockclassextension.version>2.2.2
+		</easymockclassextension.version>
 		<tomcat.version>3.3.2</tomcat.version>
 		<catalina.version>5.5.15</catalina.version>
 		<!-- http://jira.codehaus.org/browse/MWAR-18 -->
@@ -770,9 +929,9 @@
 		<maven-jaxb-plugin.version>1.1</maven-jaxb-plugin.version>
 		<!-- http://jira.codehaus.org/browse/MJAR-105 -->
 		<maven-jar-plugin.version>2.1</maven-jar-plugin.version>
-		<maven-assembly-plugin.version> 2.2-beta-1 
+		<maven-assembly-plugin.version> 2.2-beta-1
 		</maven-assembly-plugin.version>
-		<maven-dependency-plugin.version> 2.0 
+		<maven-dependency-plugin.version> 2.0
 		</maven-dependency-plugin.version>
 		<http.version>20070405</http.version>
 		<maven-antrun-plugin.version>1.1</maven-antrun-plugin.version>
@@ -787,8 +946,10 @@
 		<maven-deploy-plugin.version>2.3</maven-deploy-plugin.version>
 		<taglist-maven-plugin.version>2.0</taglist-maven-plugin.version>
 		<wicket.version>1.4-so1</wicket.version>
-		<wicket-javaee.version>1.1-safe-online</wicket-javaee.version>
-		<wicketstuff-annotation.version>1.1</wicketstuff-annotation.version>
+		<wicket-javaee.version>1.1-safe-online
+		</wicket-javaee.version>
+		<wicketstuff-annotation.version>1.1
+		</wicketstuff-annotation.version>
 		<maven-compiler-plugin.version> 2.0.2 </maven-compiler-plugin.version>
 		<dumbster.version>1.6-safe-online</dumbster.version>
 		<javax-mail.version>1.4</javax-mail.version>
@@ -806,7 +967,7 @@
 		<rxtx.version>2.1.7</rxtx.version>
 		<maven-eclipse-plugin.version> 2.5.1 </maven-eclipse-plugin.version>
 		<commons-net.version>1.4.1</commons-net.version>
-		<netbeans-freeform-maven-plugin.version> 2.1-SNAPSHOT 
+		<netbeans-freeform-maven-plugin.version> 2.1-SNAPSHOT
 		</netbeans-freeform-maven-plugin.version>
 		<javafxrt.version>1531</javafxrt.version>
 		<swing-layout.version>1.0.2</swing-layout.version>
@@ -819,7 +980,8 @@
 		<ojdbc5.version>11.1.0.6.0</ojdbc5.version>
 		<maven-jdocbook-plugin.version> 2.1.1 </maven-jdocbook-plugin.version>
 		<maven-javadoc-plugin.version>2.4</maven-javadoc-plugin.version>
-		<maven-sources-plugin.version>2.0.4</maven-sources-plugin.version>
+		<maven-sources-plugin.version>2.0.4
+		</maven-sources-plugin.version>
 		<axis.version>1.4</axis.version>
 		<axis-jaxrpc.version>1.3</axis-jaxrpc.version>
 		<axistools-maven-plugin.version> 1.1 </axistools-maven-plugin.version>
@@ -827,11 +989,12 @@
 		<jgoodies-looks.version>2.1.4</jgoodies-looks.version>
 		<jtidy.version>r8-20060801</jtidy.version>
 		<jmimemagic.version>0.1.2</jmimemagic.version>
-		<xml-maven-plugin.version>1.0-beta-2</xml-maven-plugin.version>
+		<xml-maven-plugin.version>1.0-beta-2
+		</xml-maven-plugin.version>
 		<slf4j.version>1.4.3</slf4j.version>
 		<slf4j-log4j12.version>1.4.3</slf4j-log4j12.version>
 		<jboss-jsfunit-core.version> 1.0-beta-1 </jboss-jsfunit-core.version>
-		<jboss-jsfunit-richfaces.version> 1.0-beta-1 
+		<jboss-jsfunit-richfaces.version> 1.0-beta-1
 		</jboss-jsfunit-richfaces.version>
 		<itext.version>1.4.8</itext.version>
 		<xpp3.version>1.1.4c</xpp3.version>
@@ -856,14 +1019,16 @@
 		<module>safe-online-cli</module>
 		<module>safe-online-sdk</module>
 		<module>safe-online-ws-runtime</module>
-		<module>safe-online-auth-ws-runtime</module>
+		<module>safe-online-auth-ws-runtime
+		</module>
 		<module>safe-online-entity</module>
 		<module>safe-online-deploy</module>
 		<module>safe-online-test-util</module>
 		<module>safe-online-model-client</module>
 		<module>safe-online-model</module>
 		<module>safe-online-startup</module>
-		<module>safe-online-startup-runtime</module>
+		<module>safe-online-startup-runtime
+		</module>
 		<module>safe-online-documentation</module>
 		<module>safe-online-service</module>
 		<module>safe-online-j2ee-util</module>
@@ -874,19 +1039,24 @@
 		<module>safe-online-keystore</module>
 		<module>safe-online-app-console</module>
 		<module>safe-online-jpa-util</module>
-		<module>safe-online-saml-authn-context</module>
+		<module>safe-online-saml-authn-context
+		</module>
 		<module>safe-online-saml-common</module>
 		<module>safe-online-node-keystore</module>
 		<!--
 			TODO: Remove the following. Only here because of a test dependency in
 			s-o-model.
 		-->
-		<module>safe-online-beid-pkcs11-applet</module>
+		<module>safe-online-beid-pkcs11-applet
+		</module>
 
 		<!-- CORE WEB APPS -->
-		<module>safe-online-webapp-base-olas</module>
-		<module>safe-online-webapp-base-jsf</module>
-		<module>safe-online-webapp-base-wicket</module>
+		<module>safe-online-webapp-base-olas
+		</module>
+		<module>safe-online-webapp-base-jsf
+		</module>
+		<module>safe-online-webapp-base-wicket
+		</module>
 		<module>safe-online-webapp-common</module>
 		<module>safe-online-wicket-tools</module>
 		<module>safe-online-taglib</module>
@@ -903,9 +1073,12 @@
 		<module>safe-online-owner-service</module>
 		<module>safe-online-owner-keystore</module>
 		<module>safe-online-helpdesk</module>
-		<module>safe-online-helpdesk-webapp</module>
-		<module>safe-online-helpdesk-service</module>
-		<module>safe-online-helpdesk-keystore</module>
+		<module>safe-online-helpdesk-webapp
+		</module>
+		<module>safe-online-helpdesk-service
+		</module>
+		<module>safe-online-helpdesk-keystore
+		</module>
 		<module>safe-online-auth</module>
 		<module>safe-online-auth-webapp</module>
 		<module>safe-online-auth-service</module>
@@ -919,80 +1092,125 @@
 		<module>safe-online-data-ws</module>
 		<module>safe-online-data-ws-impl</module>
 		<module>safe-online-idmapping-ws</module>
-		<module>safe-online-idmapping-ws-impl</module>
+		<module>safe-online-idmapping-ws-impl
+		</module>
 		<module>safe-online-sts-ws</module>
 		<module>safe-online-sts-ws-impl</module>
 		<module>safe-online-ping-ws</module>
 		<module>safe-online-ping-ws-impl</module>
-		<module>safe-online-notification-consumer-ws</module>
-		<module>safe-online-notification-consumer-ws-abstract-impl</module>
-		<module>safe-online-notification-consumer-ws-impl</module>
-		<module>safe-online-notification-producer-ws</module>
-		<module>safe-online-notification-producer-ws-impl</module>
-		<module>safe-online-notification-subscription-manager-ws</module>
-		<module>safe-online-notification-subscription-manager-ws-impl</module>
+		<module>safe-online-notification-consumer-ws
+		</module>
+		<module>safe-online-notification-consumer-ws-abstract-impl
+		</module>
+		<module>safe-online-notification-consumer-ws-impl
+		</module>
+		<module>safe-online-notification-producer-ws
+		</module>
+		<module>safe-online-notification-producer-ws-impl
+		</module>
+		<module>safe-online-notification-subscription-manager-ws
+		</module>
+		<module>safe-online-notification-subscription-manager-ws-impl
+		</module>
 		<module>safe-online-auth-ws</module>
 		<module>safe-online-auth-ws-impl</module>
 
 		<!-- EXTERNAL DEVICES -->
-		<module>safe-online-model-beid-client</module>
+		<module>safe-online-model-beid-client
+		</module>
 		<module>safe-online-model-beid</module>
-		<module>safe-online-model-encap-client</module>
+		<module>safe-online-model-encap-client
+		</module>
 		<module>safe-online-model-encap</module>
-		<module>safe-online-model-digipass-client</module>
+		<module>safe-online-model-digipass-client
+		</module>
 		<module>safe-online-model-digipass</module>
 		<module>safe-online-encap-ws</module>
 		<module>safe-online-encap-ws-impl</module>
 		<module>safe-online-encap-sdk</module>
-		<module>safe-online-encap-ws-runtime</module>
+		<module>safe-online-encap-ws-runtime
+		</module>
 		<module>safe-online-encap-keystore</module>
 		<module>safe-online-encap-webapp</module>
-		<module>safe-online-encap-startup-runtime</module>
-		<module>safe-online-encap-auth-ws-impl</module>
-		<module>safe-online-encap-auth-ws-runtime</module>
+		<module>safe-online-encap-startup-runtime
+		</module>
+		<module>safe-online-encap-auth-ws-impl
+		</module>
+		<module>safe-online-encap-auth-ws-runtime
+		</module>
 		<module>safe-online-encap-deploy</module>
-		<module>safe-online-digipass-startup-runtime</module>
-		<module>safe-online-digipass-deploy</module>
-		<module>safe-online-digipass-keystore</module>
-		<module>safe-online-digipass-webapp</module>
+		<module>safe-online-digipass-startup-runtime
+		</module>
+		<module>safe-online-digipass-deploy
+		</module>
+		<module>safe-online-digipass-keystore
+		</module>
+		<module>safe-online-digipass-webapp
+		</module>
 		<module>safe-online-device-sdk</module>
-		<module>safe-online-java-version-applet</module>
-		<module>safe-online-java-version-applet-package</module>
+		<module>safe-online-java-version-applet
+		</module>
+		<module>safe-online-java-version-applet-package
+		</module>
 		<module>safe-online-pkcs11-sc</module>
 		<module>safe-online-pkcs11-sc-beid</module>
 		<!--module>safe-online-beid-pkcs11-applet</module-->
-		<module>safe-online-beid-pkcs11-applet-package</module>
-		<module>safe-online-beid-pcsc-applet</module>
-		<module>safe-online-beid-pcsc-applet-package</module>
-		<module>safe-online-beid-startup-runtime</module>
-		<module>safe-online-beid-auth-ws-impl</module>
-		<module>safe-online-beid-auth-ws-runtime</module>
+		<module>safe-online-beid-pkcs11-applet-package
+		</module>
+		<module>safe-online-beid-pcsc-applet
+		</module>
+		<module>safe-online-beid-pcsc-applet-package
+		</module>
+		<module>safe-online-beid-startup-runtime
+		</module>
+		<module>safe-online-beid-auth-ws-impl
+		</module>
+		<module>safe-online-beid-auth-ws-runtime
+		</module>
 		<module>safe-online-beid-deploy</module>
 		<module>safe-online-beid-keystore</module>
 		<module>safe-online-beid-webapp</module>
 		<module>safe-online-osgi</module>
 		<module>safe-online-osgi-plugin</module>
-		<module>safe-online-attrplugin-template-bundle</module>
+		<module>safe-online-attrplugin-template-bundle
+		</module>
 		<module>safe-online-osgi-sms</module>
-		<module>safe-online-sms-template-bundle</module>
-		<module>safe-online-sms-clickatell-bundle</module>
-		<module>safe-online-serial</module>
-		<module>safe-online-model-password-client</module>
+		<module>safe-online-sms-template-bundle
+		</module>
+		<module>safe-online-sms-clickatell-bundle
+		</module>
+		<module>safe-online-model-password-client
+		</module>
 		<module>safe-online-model-password</module>
-		<module>safe-online-password-keystore</module>
-		<module>safe-online-password-startup-runtime</module>
-		<module>safe-online-password-webapp</module>
-		<module>safe-online-password-deploy</module>
+		<module>safe-online-password-keystore
+		</module>
+		<module>safe-online-password-startup-runtime
+		</module>
+		<module>safe-online-password-webapp
+		</module>
+		<module>safe-online-password-deploy
+		</module>
 		<module>safe-online-device-auth-ws</module>
-		<module>safe-online-device-auth-ws-util</module>
-		<module>safe-online-password-auth-ws-impl</module>
-		<module>safe-online-password-auth-ws-runtime</module>
+		<module>safe-online-device-auth-ws-util
+		</module>
+		<module>safe-online-password-auth-ws-impl
+		</module>
+		<module>safe-online-password-auth-ws-runtime
+		</module>
 
-		<module>siemens-attrplugin-acceptance-bundle</module>
+		<module>siemens-attrplugin-acceptance-bundle
+		</module>
+		<module>siemens-metro-acceptance-ws
+		</module>
+		<module>siemens-attrplugin-acceptance-metro-bundle
+		</module>
+		<module>siemens-sms-ws</module>
+		<module>siemens-sms-ws-impl
+		</module>
+		<module>siemens-sms-ws-runtime
+		</module>
+		<module>siemens-sms-sdk</module>
 		<module>siemens-sms-bundle</module>
-		<module>siemens-metro-acceptance-ws</module>
-		<module>siemens-attrplugin-acceptance-metro-bundle</module>
-		<module>safe-online-otpoversms-sdk</module>
 	</modules>
 
 	<!-- DEFAULT BUILD CONFIGURATION -->
@@ -1053,11 +1271,14 @@
 				</excludes>
 			</testResource>
 		</testResources>
-		<scriptSourceDirectory>src/main/scripts</scriptSourceDirectory>
+		<scriptSourceDirectory>src/main/scripts
+		</scriptSourceDirectory>
 		<directory>target</directory>
 		<outputDirectory>target/classes</outputDirectory>
-		<testOutputDirectory>target/test-classes</testOutputDirectory>
-		<finalName>${pom.artifactId}-${pom.version}</finalName>
+		<testOutputDirectory>target/test-classes
+		</testOutputDirectory>
+		<finalName>${pom.artifactId}-${pom.version}
+		</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -1096,7 +1317,8 @@
 				<artifactId>xml-maven-plugin</artifactId>
 				<configuration>
 					<catalogs>
-						<catalog>src/main/catalog/catalog.xml</catalog>
+						<catalog>src/main/catalog/catalog.xml
+						</catalog>
 					</catalogs>
 					<validationSets>
 						<validationSet>
@@ -1143,7 +1365,8 @@
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>xml-maven-plugin</artifactId>
-					<version>${xml-maven-plugin.version}</version>
+					<version>${xml-maven-plugin.version}
+					</version>
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
@@ -1154,18 +1377,23 @@
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>keytool-maven-plugin</artifactId>
-					<version>${keytool-maven-plugin.version}</version>
+					<version>${keytool-maven-plugin.version}
+					</version>
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>jboss-packaging-maven-plugin</artifactId>
-					<version>${jboss-packaging-maven-plugin.version}</version>
+					<artifactId>jboss-packaging-maven-plugin
+					</artifactId>
+					<version>${jboss-packaging-maven-plugin.version}
+					</version>
 					<extensions>true</extensions>
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>jboss-sar-maven-plugin</artifactId>
-					<version>${jboss-sar-maven-plugin.version}</version>
+					<artifactId>jboss-sar-maven-plugin
+					</artifactId>
+					<version>${jboss-sar-maven-plugin.version}
+					</version>
 					<extensions>true</extensions>
 					<configuration>
 						<archive>
@@ -1176,12 +1404,14 @@
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>jboss-maven-plugin</artifactId>
-					<version>${jboss-maven-plugin.version}</version>
+					<version>${jboss-maven-plugin.version}
+					</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-ear-plugin</artifactId>
-					<version>${maven-ear-plugin.version}</version>
+					<version>${maven-ear-plugin.version}
+					</version>
 					<configuration>
 						<archive>
 							<addMavenDescriptor> false </addMavenDescriptor>
@@ -1191,7 +1421,8 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>${maven-surefire-plugin.version}</version>
+					<version>${maven-surefire-plugin.version}
+					</version>
 					<configuration>
 						<forkMode>always</forkMode>
 						<useSystemClassLoader> true </useSystemClassLoader>
@@ -1201,7 +1432,8 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-war-plugin</artifactId>
-					<version>${maven-war-plugin.version}</version>
+					<version>${maven-war-plugin.version}
+					</version>
 					<configuration>
 						<archive>
 							<addMavenDescriptor> false </addMavenDescriptor>
@@ -1211,17 +1443,20 @@
 				<plugin>
 					<groupId>org.codehaus.cargo</groupId>
 					<artifactId>cargo-maven2-plugin</artifactId>
-					<version>${cargo-maven2-plugin.version}</version>
+					<version>${cargo-maven2-plugin.version}
+					</version>
 				</plugin>
 				<plugin>
 					<groupId>com.sun.tools.xjc.maven2</groupId>
 					<artifactId>maven-jaxb-plugin</artifactId>
-					<version>${maven-jaxb-plugin.version}</version>
+					<version>${maven-jaxb-plugin.version}
+					</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
-					<version>${maven-jar-plugin.version}</version>
+					<version>${maven-jar-plugin.version}
+					</version>
 					<configuration>
 						<archive>
 							<addMavenDescriptor> false </addMavenDescriptor>
@@ -1231,22 +1466,26 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-assembly-plugin</artifactId>
-					<version>${maven-assembly-plugin.version}</version>
+					<version>${maven-assembly-plugin.version}
+					</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-dependency-plugin</artifactId>
+					<artifactId>maven-dependency-plugin
+					</artifactId>
 					<version> ${maven-dependency-plugin.version} </version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-antrun-plugin</artifactId>
-					<version>${maven-antrun-plugin.version}</version>
+					<version>${maven-antrun-plugin.version}
+					</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-ejb-plugin</artifactId>
-					<version>${maven-ejb-plugin.version}</version>
+					<version>${maven-ejb-plugin.version}
+					</version>
 					<configuration>
 						<archive>
 							<addMavenDescriptor> false </addMavenDescriptor>
@@ -1256,22 +1495,26 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-deploy-plugin</artifactId>
-					<version>${maven-deploy-plugin.version}</version>
+					<version>${maven-deploy-plugin.version}
+					</version>
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>taglist-maven-plugin</artifactId>
-					<version>${taglist-maven-plugin.version}</version>
+					<version>${taglist-maven-plugin.version}
+					</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>${maven-compiler-plugin.version}</version>
+					<version>${maven-compiler-plugin.version}
+					</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-eclipse-plugin</artifactId>
-					<version>${maven-eclipse-plugin.version}</version>
+					<version>${maven-eclipse-plugin.version}
+					</version>
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
@@ -1281,32 +1524,39 @@
 				<plugin>
 					<groupId>org.jboss.maven.plugins</groupId>
 					<artifactId>maven-jdocbook-plugin</artifactId>
-					<version>${maven-jdocbook-plugin.version}</version>
+					<version>${maven-jdocbook-plugin.version}
+					</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>${maven-javadoc-plugin.version}</version>
+					<version>${maven-javadoc-plugin.version}
+					</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-sources-plugin</artifactId>
-					<version>${maven-sources-plugin.version}</version>
+					<version>${maven-sources-plugin.version}
+					</version>
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>axistools-maven-plugin</artifactId>
-					<version>${axistools-maven-plugin.version}</version>
+					<artifactId>axistools-maven-plugin
+					</artifactId>
+					<version>${axistools-maven-plugin.version}
+					</version>
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>jaxws-maven-plugin</artifactId>
-					<version>${jaxws-maven-plugin.version}</version>
+					<version>${jaxws-maven-plugin.version}
+					</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>maven-bundle-plugin</artifactId>
-					<version>${maven-bundle-plugin.version}</version>
+					<version>${maven-bundle-plugin.version}
+					</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -1317,7 +1567,8 @@
 		<repository>
 			<id>nexus-javanet-legacy</id>
 			<name>Nexus java.net legacy repo mirror</name>
-			<url>http://buildserver:7070/nexus/content/repositories/java.net</url>
+			<url>http://buildserver:7070/nexus/content/repositories/java.net
+			</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
@@ -1328,7 +1579,8 @@
 		<repository>
 			<id>nexus</id>
 			<name>Nexus</name>
-			<url>http://buildserver:7070/nexus/content/groups/public</url>
+			<url>http://buildserver:7070/nexus/content/groups/public
+			</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
@@ -1343,7 +1595,8 @@
 		<pluginRepository>
 			<id>nexus-javanet-legacy</id>
 			<name>Nexus java.net legacy repo mirror</name>
-			<url>http://buildserver:7070/nexus/content/repositories/java.net</url>
+			<url>http://buildserver:7070/nexus/content/repositories/java.net
+			</url>
 			<snapshots>
 				<enabled>false</enabled>
 			</snapshots>
@@ -1354,7 +1607,8 @@
 		<pluginRepository>
 			<id>nexus</id>
 			<name>Nexus</name>
-			<url>http://buildserver:7070/nexus/content/groups/public</url>
+			<url>http://buildserver:7070/nexus/content/groups/public
+			</url>
 			<snapshots>
 				<enabled>true</enabled>
 			</snapshots>
@@ -1371,47 +1625,54 @@
 			<!-- OLAS -->
 			<dependency>
 				<groupId>net.lin-k.safe-online</groupId>
-				<artifactId>safe-online-container-as</artifactId>
+				<artifactId>safe-online-container-as
+				</artifactId>
 				<version>${safe-online.version}</version>
 				<scope>provided</scope>
 				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>net.lin-k.safe-online</groupId>
-				<artifactId>safe-online-container-jsf</artifactId>
+				<artifactId>safe-online-container-jsf
+				</artifactId>
 				<version>${safe-online.version}</version>
 				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>net.lin-k.safe-online</groupId>
-				<artifactId>safe-online-container-saml</artifactId>
+				<artifactId>safe-online-container-saml
+				</artifactId>
 				<version>${safe-online.version}</version>
 				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>net.lin-k.safe-online</groupId>
-				<artifactId>safe-online-container-test</artifactId>
+				<artifactId>safe-online-container-test
+				</artifactId>
 				<version>${safe-online.version}</version>
 				<scope>test</scope>
 				<type>pom</type>
 			</dependency>
 			<dependency>
 				<groupId>net.lin-k.safe-online</groupId>
-				<artifactId>safe-online-webapp-base-olas</artifactId>
+				<artifactId>safe-online-webapp-base-olas
+				</artifactId>
 				<version>${safe-online.version}</version>
 				<scope>runtime</scope>
 				<type>war</type>
 			</dependency>
 			<dependency>
 				<groupId>net.lin-k.safe-online</groupId>
-				<artifactId>safe-online-webapp-base-option</artifactId>
+				<artifactId>safe-online-webapp-base-option
+				</artifactId>
 				<version>${safe-online.version}</version>
 				<scope>runtime</scope>
 				<type>war</type>
 			</dependency>
 			<dependency>
 				<groupId>net.lin-k.safe-online</groupId>
-				<artifactId>safe-online-webapp-base-jsf</artifactId>
+				<artifactId>safe-online-webapp-base-jsf
+				</artifactId>
 				<version>${safe-online.version}</version>
 				<scope>runtime</scope>
 				<type>war</type>
@@ -1425,7 +1686,8 @@
 			</dependency>
 			<dependency>
 				<groupId>net.lin-k.safe-online</groupId>
-				<artifactId>safe-online-demo-sql-ddl</artifactId>
+				<artifactId>safe-online-demo-sql-ddl
+				</artifactId>
 				<version>${safe-online.version}</version>
 				<scope>provided</scope>
 				<type>jar</type>
@@ -1499,7 +1761,8 @@
 				<version>${saaj-api.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.sun.xml.messaging.saaj</groupId>
+				<groupId>com.sun.xml.messaging.saaj
+				</groupId>
 				<artifactId>saaj-impl</artifactId>
 				<version>${saaj-impl.version}</version>
 			</dependency>
@@ -1519,7 +1782,8 @@
 				<version>${stax-ex.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>com.sun.xml.stream.buffer</groupId>
+				<groupId>com.sun.xml.stream.buffer
+				</groupId>
 				<artifactId>streambuffer</artifactId>
 				<version>${streambuffer.version}</version>
 			</dependency>
@@ -1533,12 +1797,14 @@
 			<dependency>
 				<groupId>commons-httpclient</groupId>
 				<artifactId>commons-httpclient</artifactId>
-				<version>${commons-httpclient.version}</version>
+				<version>${commons-httpclient.version}
+				</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-logging</groupId>
 				<artifactId>commons-logging</artifactId>
-				<version>${commons-logging.version}</version>
+				<version>${commons-logging.version}
+				</version>
 			</dependency>
 			<dependency>
 				<groupId>concurrent</groupId>
@@ -1621,17 +1887,20 @@
 			<dependency>
 				<groupId>commons-collections</groupId>
 				<artifactId>commons-collections</artifactId>
-				<version>${commons-collections.version}</version>
+				<version>${commons-collections.version}
+				</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-httpclient</groupId>
 				<artifactId>commons-httpclient</artifactId>
-				<version>${commons-httpclient.version}</version>
+				<version>${commons-httpclient.version}
+				</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-logging</groupId>
 				<artifactId>commons-logging</artifactId>
-				<version>${commons-logging.version}</version>
+				<version>${commons-logging.version}
+				</version>
 			</dependency>
 			<dependency>
 				<groupId>dom4j</groupId>
@@ -1665,8 +1934,10 @@
 			</dependency>
 			<dependency>
 				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-entitymanager</artifactId>
-				<version>${hibernate-entitymanager.version}</version>
+				<artifactId>hibernate-entitymanager
+				</artifactId>
+				<version>${hibernate-entitymanager.version}
+				</version>
 			</dependency>
 			<dependency>
 				<groupId>org.jboss</groupId>
@@ -1791,7 +2062,8 @@
 			<dependency>
 				<groupId>jboss.messaging</groupId>
 				<artifactId>jboss-messaging</artifactId>
-				<version>${jboss-messaging.version}</version>
+				<version>${jboss-messaging.version}
+				</version>
 			</dependency>
 			<dependency>
 				<groupId>org.jboss</groupId>
@@ -1850,7 +2122,8 @@
 			</dependency>
 			<dependency>
 				<groupId>org.jboss</groupId>
-				<artifactId>jboss-transaction-client</artifactId>
+				<artifactId>jboss-transaction-client
+				</artifactId>
 				<version>${jboss.version}</version>
 			</dependency>
 			<dependency>
@@ -1905,7 +2178,8 @@
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-annotations</artifactId>
-				<version>${hibernate-annotations.version}</version>
+				<version>${hibernate-annotations.version}
+				</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
@@ -1929,8 +2203,10 @@
 			</dependency>
 			<dependency>
 				<groupId>org.easymock</groupId>
-				<artifactId>easymockclassextension</artifactId>
-				<version>${easymockclassextension.version}</version>
+				<artifactId>easymockclassextension
+				</artifactId>
+				<version>${easymockclassextension.version}
+				</version>
 			</dependency>
 			<dependency>
 				<groupId>log4j</groupId>
@@ -1940,7 +2216,8 @@
 			<dependency>
 				<groupId>commons-logging</groupId>
 				<artifactId>commons-logging-api</artifactId>
-				<version>${commons-logging-api.version}</version>
+				<version>${commons-logging-api.version}
+				</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
@@ -1950,7 +2227,8 @@
 			<dependency>
 				<groupId>commons-httpclient</groupId>
 				<artifactId>commons-httpclient</artifactId>
-				<version>${commons-httpclient.version}</version>
+				<version>${commons-httpclient.version}
+				</version>
 			</dependency>
 			<dependency>
 				<groupId>org.jboss</groupId>
@@ -1976,12 +2254,14 @@
 			<dependency>
 				<groupId>net.sourceforge</groupId>
 				<artifactId>shiftone-oocjndi</artifactId>
-				<version>${shiftone-oocjndi.version}</version>
+				<version>${shiftone-oocjndi.version}
+				</version>
 			</dependency>
 			<dependency>
 				<groupId>net.sourceforge</groupId>
 				<artifactId>shiftone-arbor</artifactId>
-				<version>${shiftone-arbor.version}</version>
+				<version>${shiftone-arbor.version}
+				</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-io</groupId>
@@ -2011,7 +2291,8 @@
 			<dependency>
 				<groupId>org.jboss.seam</groupId>
 				<artifactId>jboss-seam-debug</artifactId>
-				<version>${jboss-seam-debug.version}</version>
+				<version>${jboss-seam-debug.version}
+				</version>
 			</dependency>
 			<dependency>
 				<groupId>taglibs</groupId>
@@ -2059,33 +2340,40 @@
 				<version>${myfaces-api.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.apache.myfaces.tomahawk</groupId>
+				<groupId>org.apache.myfaces.tomahawk
+				</groupId>
 				<artifactId>tomahawk</artifactId>
 				<version>${tomahawk.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.apache.myfaces.tomahawk</groupId>
+				<groupId>org.apache.myfaces.tomahawk
+				</groupId>
 				<artifactId>tomahawk-facelets</artifactId>
-				<version>${tomahawk-facelets.version}</version>
+				<version>${tomahawk-facelets.version}
+				</version>
 			</dependency>
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-tools</artifactId>
-				<version>${hibernate-tools.version}</version>
+				<version>${hibernate-tools.version}
+				</version>
 			</dependency>
 			<dependency>
 				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-commons-annotations</artifactId>
+				<artifactId>hibernate-commons-annotations
+				</artifactId>
 				<version> ${hibernate-commons-annotations.version} </version>
 			</dependency>
 			<dependency>
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-validator</artifactId>
-				<version>${hibernate-validator.version}</version>
+				<version>${hibernate-validator.version}
+				</version>
 			</dependency>
 			<dependency>
 				<groupId>org.jboss</groupId>
-				<artifactId>jboss-annotations-ejb3</artifactId>
+				<artifactId>jboss-annotations-ejb3
+				</artifactId>
 				<version>${jboss.version}</version>
 			</dependency>
 			<dependency>
@@ -2105,12 +2393,14 @@
 			</dependency>
 			<dependency>
 				<groupId>org.jboss</groupId>
-				<artifactId>jboss-aspect-jdk50-client</artifactId>
+				<artifactId>jboss-aspect-jdk50-client
+				</artifactId>
 				<version>${jboss.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.jboss</groupId>
-				<artifactId>jboss-aop-jdk50-client</artifactId>
+				<artifactId>jboss-aop-jdk50-client
+				</artifactId>
 				<version>${jboss.version}</version>
 			</dependency>
 			<dependency>
@@ -2158,7 +2448,8 @@
 			<dependency>
 				<groupId>commons-digester</groupId>
 				<artifactId>commons-digester</artifactId>
-				<version>${commons-digester.version}</version>
+				<version>${commons-digester.version}
+				</version>
 
 				<!-- We use org.apache.* instead -->
 				<exclusions>
@@ -2171,7 +2462,8 @@
 			<dependency>
 				<groupId>commons-beanutils</groupId>
 				<artifactId>commons-beanutils</artifactId>
-				<version>${commons-beanutils.version}</version>
+				<version>${commons-beanutils.version}
+				</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-el</groupId>
@@ -2218,7 +2510,8 @@
 			<dependency>
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>jetty-servlet-tester</artifactId>
-				<version>${jetty-servlet-tester.version}</version>
+				<version>${jetty-servlet-tester.version}
+				</version>
 			</dependency>
 			<dependency>
 				<groupId>org.mortbay.jetty</groupId>
@@ -2226,12 +2519,14 @@
 				<version>${jetty.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.apache.myfaces.trinidad</groupId>
+				<groupId>org.apache.myfaces.trinidad
+				</groupId>
 				<artifactId>trinidad-api</artifactId>
 				<version>${trinidad-api.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.apache.myfaces.trinidad</groupId>
+				<groupId>org.apache.myfaces.trinidad
+				</groupId>
 				<artifactId>trinidad-impl</artifactId>
 				<version>${trinidad-impl.version}</version>
 			</dependency>
@@ -2336,8 +2631,10 @@
 			</dependency>
 			<dependency>
 				<groupId>org.wicketstuff</groupId>
-				<artifactId>wicketstuff-annotation</artifactId>
-				<version>${wicketstuff-annotation.version}</version>
+				<artifactId>wicketstuff-annotation
+				</artifactId>
+				<version>${wicketstuff-annotation.version}
+				</version>
 			</dependency>
 			<dependency>
 				<groupId>dumbster</groupId>
@@ -2372,7 +2669,8 @@
 			<dependency>
 				<groupId>org.richfaces.framework</groupId>
 				<artifactId>richfaces-impl</artifactId>
-				<version>${richfaces-impl.version}</version>
+				<version>${richfaces-impl.version}
+				</version>
 			</dependency>
 			<dependency>
 				<groupId>org.richfaces.ui</groupId>
@@ -2420,7 +2718,8 @@
 				<version>${javafxrt.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>net.java.dev.swing-layout</groupId>
+				<groupId>net.java.dev.swing-layout
+				</groupId>
 				<artifactId>swing-layout</artifactId>
 				<version>${swing-layout.version}</version>
 			</dependency>
@@ -2437,7 +2736,8 @@
 			<dependency>
 				<groupId>net.sourceforge</groupId>
 				<artifactId>BrowserLauncher2</artifactId>
-				<version>${BrowserLauncher2.version}</version>
+				<version>${BrowserLauncher2.version}
+				</version>
 			</dependency>
 			<dependency>
 				<groupId>com.google.code.kaptcha</groupId>
@@ -2447,7 +2747,8 @@
 			<dependency>
 				<groupId>mysql</groupId>
 				<artifactId>mysql-connector-java</artifactId>
-				<version>${mysql-connector-java.version}</version>
+				<version>${mysql-connector-java.version}
+				</version>
 			</dependency>
 			<dependency>
 				<groupId>postgresql</groupId>
@@ -2469,13 +2770,15 @@
 				<groupId>org.jboss</groupId>
 				<artifactId>jboss-messaging-dist</artifactId>
 				<type>zip</type>
-				<version>${jboss-messaging.version}</version>
+				<version>${jboss-messaging.version}
+				</version>
 			</dependency>
 			<dependency>
 				<groupId>org.jboss</groupId>
 				<artifactId>jboss-messaging-sar</artifactId>
 				<type>zip</type>
-				<version>${jboss-messaging.version}</version>
+				<version>${jboss-messaging.version}
+				</version>
 			</dependency>
 			<dependency>
 				<groupId>axis</groupId>
@@ -2510,12 +2813,14 @@
 			<dependency>
 				<groupId>com.jgoodies</groupId>
 				<artifactId>forms</artifactId>
-				<version>${jgoodies-forms.version}</version>
+				<version>${jgoodies-forms.version}
+				</version>
 			</dependency>
 			<dependency>
 				<groupId>com.jgoodies</groupId>
 				<artifactId>looks</artifactId>
-				<version>${jgoodies-looks.version}</version>
+				<version>${jgoodies-looks.version}
+				</version>
 			</dependency>
 			<dependency>
 				<groupId>jmimemagic</groupId>
@@ -2537,7 +2842,8 @@
 			<dependency>
 				<groupId>commons-modeler</groupId>
 				<artifactId>commons-modeler</artifactId>
-				<version>${commons-modeler.version}</version>
+				<version>${commons-modeler.version}
+				</version>
 
 				<!-- We use org.apache.* instead -->
 				<exclusions>
@@ -2560,12 +2866,15 @@
 			<dependency>
 				<groupId>org.jboss.jsfunit</groupId>
 				<artifactId>jboss-jsfunit-core</artifactId>
-				<version>${jboss-jsfunit-core.version}</version>
+				<version>${jboss-jsfunit-core.version}
+				</version>
 			</dependency>
 			<dependency>
 				<groupId>org.jboss.jsfunit</groupId>
-				<artifactId>jboss-jsfunit-richfaces</artifactId>
-				<version>${jboss-jsfunit-richfaces.version}</version>
+				<artifactId>jboss-jsfunit-richfaces
+				</artifactId>
+				<version>${jboss-jsfunit-richfaces.version}
+				</version>
 			</dependency>
 			<dependency>
 				<groupId>com.lowagie</groupId>
@@ -2594,8 +2903,10 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.felix</groupId>
-				<artifactId>org.apache.felix.fileinstall</artifactId>
-				<version>${felix.fileinstall.version}</version>
+				<artifactId>org.apache.felix.fileinstall
+				</artifactId>
+				<version>${felix.fileinstall.version}
+				</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.felix</groupId>
@@ -2605,7 +2916,14 @@
 			<dependency>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>org.osgi.compendium</artifactId>
-				<version>${osgi.compendium.version}</version>
+				<version>${osgi.compendium.version}
+				</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.apache.felix</groupId>
+						<artifactId>javax.servlet</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

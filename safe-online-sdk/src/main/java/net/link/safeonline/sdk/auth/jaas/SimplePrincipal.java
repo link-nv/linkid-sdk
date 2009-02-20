@@ -47,8 +47,18 @@ public class SimplePrincipal implements Principal {
             return true;
         if (!(obj instanceof Principal))
             return false;
+
         Principal rhs = (Principal) obj;
         return userId.equals(rhs.getName());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+
+        return userId.hashCode();
     }
 
     @Override

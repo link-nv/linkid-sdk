@@ -34,7 +34,7 @@ import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.osgi.OSGIService;
 import net.link.safeonline.osgi.OSGIStartable;
-import net.link.safeonline.osgi.OSGIHostActivator.OSGIServiceType;
+import net.link.safeonline.osgi.OSGIConstants.OSGIServiceType;
 import net.link.safeonline.osgi.exception.AttributeNotFoundException;
 import net.link.safeonline.osgi.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.osgi.plugin.PluginAttributeService;

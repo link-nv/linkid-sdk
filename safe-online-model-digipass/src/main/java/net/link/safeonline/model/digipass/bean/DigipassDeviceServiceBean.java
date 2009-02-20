@@ -7,6 +7,7 @@
 
 package net.link.safeonline.model.digipass.bean;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -15,6 +16,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
@@ -29,6 +31,7 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.DeviceDAO;
+import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.data.CompoundAttributeDO;
@@ -37,6 +40,7 @@ import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.HistoryEventType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.model.bean.AttributeManagerLWBean;
@@ -57,6 +61,9 @@ import org.jboss.annotation.ejb.LocalBinding;
 public class DigipassDeviceServiceBean implements DigipassDeviceService, DigipassDeviceServiceRemote {
 
     private static final Log       LOG = LogFactory.getLog(DigipassDeviceServiceBean.class);
+
+    @EJB(mappedName = HistoryDAO.JNDI_BINDING)
+    private HistoryDAO             historyDAO;
 
     @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService         subjectService;
@@ -92,8 +99,11 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
         attributeManager = new AttributeManagerLWBean(attributeDAO, attributeTypeDAO);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String authenticate(String userId, String token)
-            throws SubjectNotFoundException, PermissionDeniedException, DeviceDisabledException {
+            throws SubjectNotFoundException, PermissionDeniedException, DeviceDisabledException, DeviceRegistrationNotFoundException {
 
         // FIXME: Authenticate doesn't provide the serialNumber?!
         // That means we can't properly find the right device to authenticate against.
@@ -106,7 +116,7 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
             List<AttributeEntity> disableAttributes = attributeDAO.listAttributes(subject, device.getDisableAttributeType());
 
             if (attributes.isEmpty() || disableAttributes.isEmpty())
-                return null;
+                throw new DeviceRegistrationNotFoundException();
 
             if (true == disableAttributes.get(0).getBooleanValue()) {
                 securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, "device is disabled");
@@ -132,6 +142,9 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
         return subject.getUserId();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public String register(String nodeName, String userId, String serialNumber)
             throws ArgumentIntegrityException, NodeNotFoundException {
 
@@ -146,6 +159,10 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
         setSerialNumber(subject, serialNumber);
 
         subjectIdentifierDAO.addSubjectIdentifier(DigipassConstants.DIGIPASS_IDENTIFIER_DOMAIN, serialNumber, subject);
+
+        historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_REGISTRATION, Collections.singletonMap(
+                SafeOnlineConstants.DEVICE_PROPERTY, DigipassConstants.DIGIPASS_DEVICE_ID));
+
         return userId;
     }
 
@@ -162,6 +179,9 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public void remove(String serialNumber)
             throws DigipassException {
 
@@ -173,6 +193,9 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
             attributeManager.removeCompoundWhere(subject, DigipassConstants.DIGIPASS_DEVICE_ATTRIBUTE,
                     DigipassConstants.DIGIPASS_SN_ATTRIBUTE, serialNumber);
             subjectIdentifierDAO.removeSubjectIdentifier(subject, DigipassConstants.DIGIPASS_IDENTIFIER_DOMAIN, serialNumber);
+
+            historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_REMOVAL, Collections.singletonMap(
+                    SafeOnlineConstants.DEVICE_PROPERTY, DigipassConstants.DIGIPASS_DEVICE_ID));
         }
 
         catch (AttributeTypeNotFoundException e) {
@@ -182,6 +205,9 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public List<AttributeDO> getDigipasses(String userId, Locale locale)
             throws SubjectNotFoundException {
 
@@ -228,15 +254,6 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
     /**
      * {@inheritDoc}
      */
-    public void disable(String userId, String serialNumber)
-            throws SubjectNotFoundException, DeviceRegistrationNotFoundException {
-
-        SubjectEntity subject = subjectService.getSubject(userId);
-
-        AttributeEntity disableAttribute = getDisableAttribute(serialNumber, subject);
-        disableAttribute.setValue(true);
-    }
-
     public String enable(String userId, String serialNumber, String token)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException {
 
@@ -248,7 +265,25 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
         AttributeEntity disableAttribute = getDisableAttribute(serialNumber, subject);
         disableAttribute.setValue(false);
 
+        historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_ENABLE, Collections.singletonMap(SafeOnlineConstants.DEVICE_PROPERTY,
+                DigipassConstants.DIGIPASS_DEVICE_ID));
+
         return subject.getUserId();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void disable(String userId, String serialNumber)
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException {
+
+        SubjectEntity subject = subjectService.getSubject(userId);
+
+        AttributeEntity disableAttribute = getDisableAttribute(serialNumber, subject);
+        disableAttribute.setValue(true);
+
+        historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_DISABLE, Collections.singletonMap(SafeOnlineConstants.DEVICE_PROPERTY,
+                DigipassConstants.DIGIPASS_DEVICE_ID));
     }
 
     private AttributeEntity getDisableAttribute(String serialNumber, SubjectEntity subject)

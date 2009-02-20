@@ -35,7 +35,6 @@ import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
 import net.link.safeonline.jpa.annotation.UpdateMethod;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
@@ -202,8 +201,18 @@ public class SubscriptionEntity implements Serializable {
             return true;
         if (false == obj instanceof SubscriptionEntity)
             return false;
+
         SubscriptionEntity rhs = (SubscriptionEntity) obj;
-        return new EqualsBuilder().append(pk, rhs.pk).isEquals();
+        return pk.equals(rhs.pk);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+
+        return pk.hashCode();
     }
 
     @Override

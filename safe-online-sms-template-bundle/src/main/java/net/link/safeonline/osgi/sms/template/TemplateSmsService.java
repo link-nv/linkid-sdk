@@ -10,6 +10,7 @@ import java.net.ConnectException;
 
 import net.link.safeonline.osgi.sms.SmsService;
 
+import org.osgi.service.log.LogService;
 
 /**
  * <sub>Template sms service.</sub></h2>
@@ -36,7 +37,7 @@ public class TemplateSmsService implements SmsService {
     public void sendSms(String mobile, String message)
             throws ConnectException {
 
-        System.out.println("send sms to mobile " + mobile + " with message " + message);
+        TemplateSmsServiceActivator.LOG.log(LogService.LOG_INFO, "send sms to mobile " + mobile + " with message " + message);
 
     }
 

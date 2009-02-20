@@ -118,7 +118,7 @@ public class EnablePageTest {
 
         // stubs
         expect(mockOtpOverSmsDeviceService.isChallenged()).andReturn(true);
-        mockOtpOverSmsDeviceService.enable(userId, otp, pin);
+        mockOtpOverSmsDeviceService.enable(userId, pin, otp);
         expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
@@ -227,7 +227,7 @@ public class EnablePageTest {
 
         // stubs
         expect(mockOtpOverSmsDeviceService.isChallenged()).andReturn(true);
-        mockOtpOverSmsDeviceService.enable(userId, otp, pin);
+        mockOtpOverSmsDeviceService.enable(userId, pin, otp);
         expectLastCall().andThrow(new PermissionDeniedException("Incorrect PIN"));
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
