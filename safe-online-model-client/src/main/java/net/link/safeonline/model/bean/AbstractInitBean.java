@@ -545,8 +545,10 @@ public abstract class AbstractInitBean implements Startable {
             initAttributes();
             initNotificationTopics();
             initNotifications();
-        } catch (SafeOnlineException e) {
-            LOG.fatal("safeonline exception", e);
+        }
+
+        catch (SafeOnlineException e) {
+            LOG.fatal("exception during abstract init:", e);
             throw new EJBException(e);
         }
     }

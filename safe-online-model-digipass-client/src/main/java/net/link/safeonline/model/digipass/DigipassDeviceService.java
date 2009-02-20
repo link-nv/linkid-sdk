@@ -27,7 +27,7 @@ public interface DigipassDeviceService extends DigipassService {
 
 
     String authenticate(String userId, String token)
-            throws SubjectNotFoundException, PermissionDeniedException, DeviceDisabledException;
+            throws SubjectNotFoundException, PermissionDeniedException, DeviceDisabledException, DeviceRegistrationNotFoundException;
 
     String register(String nodeName, String userId, String serialNumber)
             throws ArgumentIntegrityException, NodeNotFoundException;

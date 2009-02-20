@@ -7,6 +7,7 @@
 
 package net.link.safeonline.model.encap.bean;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -33,6 +34,7 @@ import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.DeviceDAO;
+import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.data.CompoundAttributeDO;
@@ -41,6 +43,7 @@ import net.link.safeonline.entity.AttributeTypeDescriptionEntity;
 import net.link.safeonline.entity.AttributeTypeDescriptionPK;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DeviceEntity;
+import net.link.safeonline.entity.HistoryEventType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.model.bean.AttributeManagerLWBean;
@@ -64,6 +67,9 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
 
     @PersistenceContext(unitName = SafeOnlineConstants.SAFE_ONLINE_ENTITY_MANAGER)
     private EntityManager          entityManager;
+
+    @EJB(mappedName = HistoryDAO.JNDI_BINDING)
+    private HistoryDAO             historyDAO;
 
     @EJB(mappedName = SubjectService.JNDI_BINDING)
     private SubjectService         subjectService;
@@ -195,6 +201,9 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
 
             // Add the subject mapping.
             subjectIdentifierDAO.addSubjectIdentifier(EncapConstants.ENCAP_IDENTIFIER_DOMAIN, challengeMobile, subject);
+
+            historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_REGISTRATION, Collections.singletonMap(
+                    SafeOnlineConstants.DEVICE_PROPERTY, EncapConstants.ENCAP_DEVICE_ID));
         }
 
         catch (AttributeTypeNotFoundException e) {
@@ -218,6 +227,9 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
             attributeManager.removeCompoundWhere(subject, EncapConstants.ENCAP_DEVICE_ATTRIBUTE, EncapConstants.ENCAP_MOBILE_ATTRIBUTE,
                     mobile);
             subjectIdentifierDAO.removeSubjectIdentifier(subject, EncapConstants.ENCAP_IDENTIFIER_DOMAIN, mobile);
+
+            historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_REMOVAL, Collections.singletonMap(
+                    SafeOnlineConstants.DEVICE_PROPERTY, EncapConstants.ENCAP_DEVICE_ID));
         }
 
         catch (AttributeTypeNotFoundException e) {
@@ -286,17 +298,6 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
     /**
      * {@inheritDoc}
      */
-    public void disable(String userId, String mobile)
-            throws SubjectNotFoundException, DeviceRegistrationNotFoundException {
-
-        SubjectEntity subject = subjectService.getSubject(userId);
-        AttributeEntity disableAttribute = getDisableAttribute(subject, mobile);
-        disableAttribute.setValue(true);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public void enable(String userId, String mobileOTP)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException, MobileException, DeviceAuthenticationException {
 
@@ -308,6 +309,23 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
         SubjectEntity subject = subjectService.getSubject(userId);
         AttributeEntity disableAttribute = getDisableAttribute(subject, challengeMobile);
         disableAttribute.setValue(false);
+
+        historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_ENABLE, Collections.singletonMap(SafeOnlineConstants.DEVICE_PROPERTY,
+                EncapConstants.ENCAP_DEVICE_ID));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void disable(String userId, String mobile)
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException {
+
+        SubjectEntity subject = subjectService.getSubject(userId);
+        AttributeEntity disableAttribute = getDisableAttribute(subject, mobile);
+        disableAttribute.setValue(true);
+
+        historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_DISABLE, Collections.singletonMap(SafeOnlineConstants.DEVICE_PROPERTY,
+                EncapConstants.ENCAP_DEVICE_ID));
     }
 
     /**

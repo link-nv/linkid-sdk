@@ -11,6 +11,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getApplicationService;
+import static test.integ.net.link.safeonline.IntegrationTestUtils.getAttributeTypeService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getIdentityService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getPasswordDeviceService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getPkiService;
@@ -29,12 +30,15 @@ import java.util.UUID;
 import javax.naming.InitialContext;
 
 import net.link.safeonline.SafeOnlineConstants;
+import net.link.safeonline.authentication.exception.ExistingAttributeTypeException;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
 import net.link.safeonline.entity.ApplicationEntity;
+import net.link.safeonline.entity.AttributeTypeEntity;
+import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.IdScopeType;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.password.PasswordDeviceService;
@@ -42,6 +46,7 @@ import net.link.safeonline.pkix.service.PkiService;
 import net.link.safeonline.sdk.exception.RequestDeniedException;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClientImpl;
+import net.link.safeonline.service.AttributeTypeService;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
@@ -69,7 +74,7 @@ public class IdentifierMappingWebServiceTest {
 
     private PrivateKey       privateKey;
 
-    private String           nodeName = "olas-localhost";
+    private String           nodeName = "olas-192.168.5.11";
 
 
     @Before
@@ -103,11 +108,20 @@ public class IdentifierMappingWebServiceTest {
         SubjectEntity loginSubject = userRegistrationService.registerUser(login);
         passwordDeviceService.register(nodeName, loginSubject.getUserId(), password);
 
-        // operate: register certificate as application trust point
-        PkiService pkiService = getPkiService(initialContext);
+        AttributeTypeService attributeTypeService = getAttributeTypeService(initialContext);
 
+        // operate: register new attribute type
         String adminUserId = subjectService.getSubjectFromUserName(SafeOnlineConstants.ADMIN_LOGIN).getUserId();
         IntegrationTestUtils.login(adminUserId, "admin");
+        AttributeTypeEntity attributeType = new AttributeTypeEntity(IntegrationTestUtils.NAME_ATTRIBUTE, DatatypeType.STRING, true, true);
+        try {
+            attributeTypeService.add(attributeType);
+        } catch (ExistingAttributeTypeException e) {
+            // no worries
+        }
+
+        // operate: register certificate as application trust point
+        PkiService pkiService = getPkiService(initialContext);
         pkiService.addTrustPoint(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate.getEncoded());
 
         // operate: add application with certificate

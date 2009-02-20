@@ -5,8 +5,8 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.reset;
 import static org.easymock.EasyMock.verify;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -269,7 +269,7 @@ public class PasswordDeviceTest {
 
         assertTrue(testedInstance.isPasswordConfigured(testUserId));
         String resultUserId = testedInstance.authenticate(testUserId, testPassword);
-        assertNotNull(resultUserId);
+        assertEquals(testUserId, resultUserId);
 
         // verify
         verify(mockObjects);
@@ -281,7 +281,7 @@ public class PasswordDeviceTest {
                         SafeOnlineConstants.DEVICE_PROPERTY, PasswordConstants.PASSWORD_DEVICE_ID))).andReturn(new HistoryEntity());
 
         // operate
-        testedInstance.remove(resultUserId);
+        testedInstance.remove(testUserId);
 
         assertFalse(testedInstance.isPasswordConfigured(testUserId));
         try {
@@ -337,7 +337,7 @@ public class PasswordDeviceTest {
         testedInstance.update(testUserId, testPassword, testNewPassword);
 
         String resultUserId = testedInstance.authenticate(testUserId, testNewPassword);
-        assertNotNull(resultUserId);
+        assertEquals(testUserId, resultUserId);
 
         // verify
         verify(mockObjects);
@@ -384,7 +384,7 @@ public class PasswordDeviceTest {
         testedInstance.enable(testUserId, testPassword);
 
         String resultUserId = testedInstance.authenticate(testUserId, testPassword);
-        assertNotNull(resultUserId);
+        assertEquals(testUserId, resultUserId);
 
         // verify
         verify(mockObjects);

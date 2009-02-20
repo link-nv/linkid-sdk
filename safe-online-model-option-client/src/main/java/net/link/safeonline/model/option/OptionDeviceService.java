@@ -20,7 +20,7 @@ public interface OptionDeviceService extends OptionService {
     public static final String JNDI_BINDING = OptionService.JNDI_PREFIX + "OptionDeviceServiceBean/local";
 
 
-    public void register(String nodeName, String imei, String userId)
+    public void register(String nodeName, String userId, String imei)
             throws NodeNotFoundException;
 
     public void remove(String imei)
@@ -32,9 +32,9 @@ public interface OptionDeviceService extends OptionService {
     public String authenticate(String imei)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException;
 
-    public void enable(String imei, String userId)
+    public void enable(String userId, String imei)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException;
 
-    public void disable(String imei, String userId)
+    public void disable(String userId, String imei)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException;
 }

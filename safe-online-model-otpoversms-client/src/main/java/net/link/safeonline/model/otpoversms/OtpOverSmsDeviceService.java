@@ -30,13 +30,13 @@ public interface OtpOverSmsDeviceService extends OtpOverSmsService {
     void register(String nodeName, String userId, String pin, String otp)
             throws PermissionDeniedException, AuthenticationFailedException;
 
-    void update(String userId, String otp, String oldPin, String newPin)
+    void update(String userId, String oldPin, String newPin, String otp)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException, PermissionDeniedException;
 
     void remove(String userId, String mobile)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException;
 
-    void enable(String userId, String otp, String pin)
+    void enable(String userId, String pin, String otp)
             throws SubjectNotFoundException, AuthenticationFailedException, DeviceRegistrationNotFoundException, PermissionDeniedException;
 
     void disable(String userId, String mobile)
