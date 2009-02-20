@@ -249,7 +249,7 @@ public class UpdatePage extends TemplatePage {
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "update: device not registered",
                                 LogLevelType.ERROR);
                     } catch (DeviceDisabledException e) {
-                        password1Field.error(getLocalizer().getString("mobileDisabled", this));
+                        password1Field.error(getLocalizer().getString("errorDeviceDisabled", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: mobile " + protocolContext.getAttribute()
                                 + " disabled", LogLevelType.ERROR);
                     } catch (PermissionDeniedException e) {

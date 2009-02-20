@@ -242,7 +242,7 @@ public class AuthenticationPage extends TemplatePage {
                         VerifyOtpForm.this.error(localize("errorSubjectNotFound"));
                         HelpdeskLogger.add(localize("subject not found: %s", mobile.getObject()), LogLevelType.ERROR);
                     } catch (DeviceDisabledException e) {
-                        pinField.error(localize("mobileDisabled"));
+                        pinField.error(localize("errorDeviceDisabled"));
                         HelpdeskLogger.add(localize("login: mobile %s disabled", mobile.getObject()), LogLevelType.ERROR);
                     } catch (DeviceRegistrationNotFoundException e) {
                         VerifyOtpForm.this.error(localize("errorDeviceRegistrationNotFound"));
