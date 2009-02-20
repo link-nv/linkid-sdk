@@ -42,10 +42,10 @@ import net.link.safeonline.model.otpoversms.OtpOverSmsConstants;
 import net.link.safeonline.model.otpoversms.OtpOverSmsDeviceService;
 import net.link.safeonline.model.otpoversms.OtpOverSmsDeviceServiceRemote;
 import net.link.safeonline.model.otpoversms.OtpOverSmsManager;
-import net.link.safeonline.osgi.OSGIHostActivator;
+import net.link.safeonline.osgi.OSGIConstants;
 import net.link.safeonline.osgi.OSGIService;
 import net.link.safeonline.osgi.OSGIStartable;
-import net.link.safeonline.osgi.OSGIHostActivator.OSGIServiceType;
+import net.link.safeonline.osgi.OSGIConstants.OSGIServiceType;
 import net.link.safeonline.osgi.sms.SmsService;
 import net.link.safeonline.service.NodeMappingService;
 import net.link.safeonline.service.SubjectService;
@@ -91,7 +91,7 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
     @EJB(mappedName = SecurityAuditLogger.JNDI_BINDING)
     private SecurityAuditLogger    securityAuditLogger;
 
-    @Configurable(name = OSGIHostActivator.SMS_SERVICE_IMPL_NAME, group = OSGIHostActivator.SMS_SERVICE_GROUP_NAME, multipleChoice = true)
+    @Configurable(name = OSGIConstants.SMS_SERVICE_IMPL_NAME, group = OSGIConstants.SMS_SERVICE_GROUP_NAME, multipleChoice = true)
     private String                 smsServiceName;
 
     @EJB(mappedName = OSGIStartable.JNDI_BINDING)

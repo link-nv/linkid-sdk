@@ -65,7 +65,7 @@ shift "$(getArgs -c bmjosh "$@")"
 
 # Run the maven2 eclipse plugin.
 if (( maven )); then
-	mvn "$@" ${offline:+-o} ${source:+-DdownloadJavadocs=true -DdownloadSources=true} eclipse:eclipse \
+	mvn -fae "$@" ${offline:+-o} ${source:+-DdownloadJavadocs=true -DdownloadSources=true} eclipse:eclipse \
 		|| report "Maven eclipse plugin failed." || exit
 fi
 
