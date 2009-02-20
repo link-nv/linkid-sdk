@@ -42,6 +42,7 @@ import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.authentication.service.UsageAgreementService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
+import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.AttributeTypeEntity;
 import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.IdScopeType;
@@ -79,13 +80,13 @@ public class AuthenticationWebServiceTest {
 
     private static final Log        LOG        = LogFactory.getLog(AuthenticationWebServiceTest.class);
 
-    private static final String     wsLocation = "https://localhost:8443/safe-online-auth-ws";
+    private static final String     wsLocation = "https://192.168.5.11:8443/safe-online-auth-ws";
 
     private GetAuthenticationClient getAuthenticationClient;
 
     private AuthenticationClient    authenticationClient;
 
-    private String                  nodeName   = "olas-localhost";
+    private String                  nodeName   = "olas-192.168.5.11";
 
 
     @Before
@@ -234,6 +235,7 @@ public class AuthenticationWebServiceTest {
                                                         new IdentityAttributeTypeDO(testSingleStringAttributeName),
                                                         new IdentityAttributeTypeDO(testCompoundAttributeName) }), false, false, false,
                 null);
+        ApplicationEntity testApplication = applicationService.getApplication(testApplicationName);
 
         // operate: get instance of stateful authentication web service
         W3CEndpointReference endpoint = getAuthenticationClient.getInstance();
@@ -353,7 +355,7 @@ public class AuthenticationWebServiceTest {
         accountService.removeAccount(loginSubject.getUserId());
 
         // remove application
-        applicationService.removeApplication(testApplicationName);
+        applicationService.removeApplication(testApplication.getId());
 
         // remove attributes
         attributeTypeService.remove(testSingleStringAttributeType);

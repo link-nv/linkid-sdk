@@ -44,7 +44,7 @@ import net.link.safeonline.entity.audit.SecurityThreatType;
 import net.link.safeonline.model.bean.AttributeManagerLWBean;
 import net.link.safeonline.osgi.OSGIService;
 import net.link.safeonline.osgi.OSGIStartable;
-import net.link.safeonline.osgi.OSGIHostActivator.OSGIServiceType;
+import net.link.safeonline.osgi.OSGIConstants.OSGIServiceType;
 import net.link.safeonline.osgi.exception.AttributeNotFoundException;
 import net.link.safeonline.osgi.plugin.PluginAttributeService;
 import net.link.safeonline.sdk.exception.RequestDeniedException;

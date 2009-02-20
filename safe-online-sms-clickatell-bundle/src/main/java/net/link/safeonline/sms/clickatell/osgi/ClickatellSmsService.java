@@ -4,36 +4,30 @@
  * Copyright 2006-2008 Lin.k N.V. All rights reserved.
  * Lin.k N.V. proprietary/confidential. Use is subject to license terms.
  */
-package net.link.safeonline.osgi.sms.template;
+package net.link.safeonline.sms.clickatell.osgi;
 
 import java.net.ConnectException;
 
 import net.link.safeonline.osgi.sms.SmsService;
 
-import org.osgi.framework.BundleContext;
-
 
 /**
- * <sub>Template sms service.</sub></h2>
+ * <sub>Clickatell sms service.</sub></h2>
  * 
  * <p>
- * The template sms service implementation serves as an example to develop new sms service bundles.
+ * This class calls the clickatell service through their SOAP interface
  * </p>
  * 
  * <p>
- * <i>Dec 9, 2008</i>
+ * <i>Feb 18, 2009</i>
  * </p>
  * 
- * @author wvdhaute
+ * @author dhouthoo
  */
-public class TemplateSmsService implements SmsService {
+public class ClickatellSmsService implements SmsService {
 
-    private BundleContext bundleContext;
+    public ClickatellSmsService() {
 
-
-    public TemplateSmsService(BundleContext bundleContext) {
-
-        this.bundleContext = bundleContext;
     }
 
     /**
