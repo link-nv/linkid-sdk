@@ -1179,6 +1179,8 @@
 		</module>
 		<module>safe-online-sms-clickatell-ws
 		</module>
+		<module>safe-online-sms-clickatell-sdk
+		</module>
 		<module>safe-online-sms-clickatell-bundle
 		</module>
 		<module>safe-online-model-password-client
