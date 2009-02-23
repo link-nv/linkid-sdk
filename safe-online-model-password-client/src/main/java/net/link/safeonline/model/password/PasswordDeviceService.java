@@ -7,11 +7,12 @@
 package net.link.safeonline.model.password;
 
 import javax.ejb.Local;
+import javax.mail.AuthenticationFailedException;
 
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 
 
@@ -21,20 +22,20 @@ public interface PasswordDeviceService extends PasswordService {
     public static final String JNDI_BINDING = PasswordService.JNDI_PREFIX + "PasswordDeviceServiceBean/local";
 
 
-    String authenticate(String userId, String password)
-            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException;
+    void authenticate(String userId, String password)
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException, DeviceAuthenticationException;
 
     void register(String nodeName, String userId, String password)
             throws NodeNotFoundException;
 
     void update(String userId, String oldPassword, String newPassword)
-            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException, PermissionDeniedException;
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException, AuthenticationFailedException;
 
     void remove(String userId)
             throws SubjectNotFoundException;
 
     void enable(String userId, String password)
-            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, PermissionDeniedException;
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, AuthenticationFailedException;
 
     void disable(String userId)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException;

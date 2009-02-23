@@ -267,6 +267,9 @@ public class OptionDeviceTest {
                 mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_REMOVAL, Collections.singletonMap(
                         SafeOnlineConstants.DEVICE_PROPERTY, OptionConstants.OPTION_DEVICE_ID))).andReturn(new HistoryEntity());
 
+        // prepare
+        replay(mockObjects);
+
         // operate
         testedInstance.remove(testImei);
 
@@ -274,6 +277,7 @@ public class OptionDeviceTest {
             testedInstance.authenticate(testImei);
             fail("Device registration was still found after removing the device.");
         } catch (DeviceRegistrationNotFoundException e) {
+            // expected.
         }
     }
 
@@ -296,6 +300,7 @@ public class OptionDeviceTest {
             testedInstance.authenticate(testWrongImei);
             fail("Authentication passed even though IMEI was incorrect.");
         } catch (SubjectNotFoundException e) {
+            // expected.
         }
 
         // verify
@@ -325,6 +330,7 @@ public class OptionDeviceTest {
             testedInstance.authenticate(testImei);
             fail("Authentication didn't fail after disabling device.");
         } catch (DeviceDisabledException e) {
+            // expected.
         }
 
         // verify

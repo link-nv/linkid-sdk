@@ -15,6 +15,7 @@ import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
+import javax.mail.AuthenticationFailedException;
 
 import net.link.safeonline.audit.AccessAuditLogger;
 import net.link.safeonline.audit.AuditContextManager;
@@ -22,7 +23,6 @@ import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.InternalInconsistencyException;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.data.CompoundAttributeDO;
@@ -67,10 +67,10 @@ public class PasswordManagerBean implements PasswordManager {
      * {@inheritDoc}
      */
     public void updatePassword(SubjectEntity subject, String oldPassword, String newPassword)
-            throws DeviceRegistrationNotFoundException, PermissionDeniedException {
+            throws DeviceRegistrationNotFoundException, AuthenticationFailedException {
 
         if (!validatePassword(subject, oldPassword))
-            throw new PermissionDeniedException("password mismatch");
+            throw new AuthenticationFailedException("password mismatch");
 
         setPasswordWithForce(subject, newPassword);
     }

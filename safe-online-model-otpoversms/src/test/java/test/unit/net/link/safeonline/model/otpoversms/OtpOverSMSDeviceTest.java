@@ -29,6 +29,7 @@ import net.link.safeonline.audit.dao.bean.AuditAuditDAOBean;
 import net.link.safeonline.audit.dao.bean.AuditContextDAOBean;
 import net.link.safeonline.audit.dao.bean.ResourceAuditDAOBean;
 import net.link.safeonline.audit.dao.bean.SecurityAuditDAOBean;
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.service.bean.DevicePolicyServiceBean;
@@ -287,6 +288,9 @@ public class OtpOverSMSDeviceTest {
                 mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_REMOVAL, Collections.singletonMap(
                         SafeOnlineConstants.DEVICE_PROPERTY, OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID))).andReturn(new HistoryEntity());
 
+        // prepare
+        replay(mockObjects);
+
         // operate
         testedInstance.remove(testUserId, testMobile);
 
@@ -319,8 +323,12 @@ public class OtpOverSMSDeviceTest {
         testedInstance.register(testNode, testUserId, testValidPIN, getValidOTP());
 
         testedInstance.requestOtp(testMobile);
-        String resultUserId = testedInstance.authenticate(testInvalidPIN, getValidOTP());
-        assertNull(resultUserId);
+        try {
+            testedInstance.authenticate(testInvalidPIN, getValidOTP());
+            fail("Authentication didn't fail, even though the PIN was incorrect.");
+        } catch (DeviceAuthenticationException e) {
+            // expected.
+        }
 
         // verify
         verify(mockObjects);

@@ -2,6 +2,7 @@ package test.unit.net.link.safeonline.password.webapp;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
@@ -10,6 +11,7 @@ import java.security.cert.X509Certificate;
 import java.util.UUID;
 
 import junit.framework.TestCase;
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
@@ -122,7 +124,7 @@ public class AuthenticationPageTest extends TestCase {
         EJBTestUtils.inject(authenticationPage, mockSamlAuthorityService);
 
         // stubs
-        expect(mockPasswordDeviceService.authenticate(userId, password)).andStubReturn(userId);
+        mockPasswordDeviceService.authenticate(userId, password);
         expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
@@ -159,7 +161,8 @@ public class AuthenticationPageTest extends TestCase {
         jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
 
         // stubs
-        expect(mockPasswordDeviceService.authenticate(userId, password)).andThrow(new SubjectNotFoundException());
+        mockPasswordDeviceService.authenticate(userId, password);
+        expectLastCall().andThrow(new SubjectNotFoundException());
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
@@ -200,7 +203,8 @@ public class AuthenticationPageTest extends TestCase {
         jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
 
         // stubs
-        expect(mockPasswordDeviceService.authenticate(userId, password)).andThrow(new DeviceDisabledException());
+        mockPasswordDeviceService.authenticate(userId, password);
+        expectLastCall().andThrow(new DeviceDisabledException());
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
@@ -241,7 +245,8 @@ public class AuthenticationPageTest extends TestCase {
         jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
 
         // stubs
-        expect(mockPasswordDeviceService.authenticate(userId, password)).andStubReturn(null);
+        mockPasswordDeviceService.authenticate(userId, password);
+        expectLastCall().andThrow(new DeviceAuthenticationException());
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare

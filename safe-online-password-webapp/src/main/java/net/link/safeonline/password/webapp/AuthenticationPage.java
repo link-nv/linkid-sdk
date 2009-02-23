@@ -8,8 +8,8 @@
 package net.link.safeonline.password.webapp;
 
 import javax.ejb.EJB;
-import javax.mail.AuthenticationFailedException;
 
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -129,10 +129,9 @@ public class AuthenticationPage extends TemplatePage {
                     LOG.debug("login: " + login);
 
                     try {
-                        String userId = passwordDeviceService.authenticate(getUserId(), password.getObject());
-                        if (null == userId)
-                            throw new AuthenticationFailedException();
+                        String userId = getUserId();
 
+                        passwordDeviceService.authenticate(userId, password.getObject());
                         login(userId);
 
                         HelpdeskLogger.clear(WicketUtil.toServletRequest(getRequest()).getSession());
@@ -154,7 +153,7 @@ public class AuthenticationPage extends TemplatePage {
                         AuthenticationForm.this.error(getLocalizer().getString("errorDeviceRegistrationNotFound", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "Password Device not found",
                                 LogLevelType.ERROR);
-                    } catch (AuthenticationFailedException e) {
+                    } catch (DeviceAuthenticationException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("authenticationFailedMsg", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "login failed: " + login,
                                 LogLevelType.ERROR);

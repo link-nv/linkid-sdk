@@ -8,9 +8,9 @@
 package net.link.safeonline.password.webapp;
 
 import javax.ejb.EJB;
+import javax.mail.AuthenticationFailedException;
 
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.ProtocolContext;
@@ -104,7 +104,7 @@ public class EnablePage extends TemplatePage {
                         passwordField.error(getLocalizer().getString("errorSubjectNotFound", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: subject not found",
                                 LogLevelType.ERROR);
-                    } catch (PermissionDeniedException e) {
+                    } catch (AuthenticationFailedException e) {
                         passwordField.error(getLocalizer().getString("errorPasswordNotCorrect", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "enable: permission denied: "
                                 + e.getMessage(), LogLevelType.ERROR);

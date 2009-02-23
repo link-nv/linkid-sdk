@@ -5,9 +5,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.reset;
 import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -28,6 +26,7 @@ import net.link.safeonline.audit.dao.bean.AuditAuditDAOBean;
 import net.link.safeonline.audit.dao.bean.AuditContextDAOBean;
 import net.link.safeonline.audit.dao.bean.ResourceAuditDAOBean;
 import net.link.safeonline.audit.dao.bean.SecurityAuditDAOBean;
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.service.bean.DevicePolicyServiceBean;
@@ -272,8 +271,7 @@ public class DigipassDeviceTest {
         testedInstance.register(testNode, testUserId, testSerial);
 
         assertFalse(testedInstance.getDigipasses(testUserId, null).isEmpty());
-        String resultUserId = testedInstance.authenticate(testUserId, testValidToken);
-        assertEquals(testUserId, resultUserId);
+        testedInstance.authenticate(testUserId, testValidToken);
 
         // verify
         verify(mockObjects);
@@ -283,6 +281,9 @@ public class DigipassDeviceTest {
         expect(
                 mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_REMOVAL, Collections.singletonMap(
                         SafeOnlineConstants.DEVICE_PROPERTY, DigipassConstants.DIGIPASS_DEVICE_ID))).andReturn(new HistoryEntity());
+
+        // prepare
+        replay(mockObjects);
 
         // operate
         testedInstance.remove(testSerial);
@@ -311,8 +312,12 @@ public class DigipassDeviceTest {
         // operate
         testedInstance.register(testNode, testUserId, testSerial);
 
-        String resultUserId = testedInstance.authenticate(testUserId, testInvalidToken);
-        assertNull(resultUserId);
+        try {
+            testedInstance.authenticate(testUserId, testInvalidToken);
+            fail("Authentication didn't fail, even though the token was incorrect.");
+        } catch (DeviceAuthenticationException e) {
+            // expected.
+        }
 
         // verify
         verify(mockObjects);
@@ -358,9 +363,7 @@ public class DigipassDeviceTest {
 
         // operate
         testedInstance.enable(testUserId, testSerial, testValidToken);
-
-        String resultUserId = testedInstance.authenticate(testUserId, testValidToken);
-        assertEquals(testUserId, resultUserId);
+        testedInstance.authenticate(testUserId, testValidToken);
 
         // verify
         verify(mockObjects);

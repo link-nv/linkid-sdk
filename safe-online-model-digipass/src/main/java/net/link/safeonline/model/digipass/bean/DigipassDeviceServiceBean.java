@@ -21,6 +21,7 @@ import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
@@ -102,8 +103,9 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
     /**
      * {@inheritDoc}
      */
-    public String authenticate(String userId, String token)
-            throws SubjectNotFoundException, PermissionDeniedException, DeviceDisabledException, DeviceRegistrationNotFoundException {
+    public void authenticate(String userId, String token)
+            throws SubjectNotFoundException, PermissionDeniedException, DeviceDisabledException, DeviceRegistrationNotFoundException,
+            DeviceAuthenticationException {
 
         // FIXME: Authenticate doesn't provide the serialNumber?!
         // That means we can't properly find the right device to authenticate against.
@@ -123,7 +125,7 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
                 throw new DeviceDisabledException();
             }
 
-            return authenticate(subject, token);
+            authenticate(subject, token);
         }
 
         catch (DeviceNotFoundException e) {
@@ -131,15 +133,14 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
         }
     }
 
-    private String authenticate(SubjectEntity subject, String token) {
+    private void authenticate(SubjectEntity subject, String token)
+            throws DeviceAuthenticationException {
 
         if (Integer.parseInt(token) % 2 != 0) {
             LOG.debug("Invalid token: " + token);
             securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, subject.getUserId(), "incorrect digipass token");
-            return null;
+            throw new DeviceAuthenticationException();
         }
-
-        return subject.getUserId();
     }
 
     /**
@@ -254,21 +255,18 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
     /**
      * {@inheritDoc}
      */
-    public String enable(String userId, String serialNumber, String token)
-            throws SubjectNotFoundException, DeviceRegistrationNotFoundException {
+    public void enable(String userId, String serialNumber, String token)
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceAuthenticationException {
 
         SubjectEntity subject = subjectService.getSubject(userId);
 
-        if (null == authenticate(subject, token))
-            return null;
+        authenticate(subject, token);
 
         AttributeEntity disableAttribute = getDisableAttribute(serialNumber, subject);
         disableAttribute.setValue(false);
 
         historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_ENABLE, Collections.singletonMap(SafeOnlineConstants.DEVICE_PROPERTY,
                 DigipassConstants.DIGIPASS_DEVICE_ID));
-
-        return subject.getUserId();
     }
 
     /**

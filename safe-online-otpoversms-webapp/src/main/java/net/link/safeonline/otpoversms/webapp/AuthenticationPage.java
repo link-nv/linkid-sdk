@@ -8,8 +8,8 @@
 package net.link.safeonline.otpoversms.webapp;
 
 import javax.ejb.EJB;
-import javax.mail.AuthenticationFailedException;
 
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
@@ -228,14 +228,10 @@ public class AuthenticationPage extends TemplatePage {
 
                     try {
                         String userId = otpOverSmsDeviceService.authenticate(pin.getObject(), otp.getObject());
-                        if (null == userId) {
-                            throw new AuthenticationFailedException();
-                        }
-
                         login(userId);
                     }
 
-                    catch (AuthenticationFailedException e) {
+                    catch (DeviceAuthenticationException e) {
                         VerifyOtpForm.this.error(localize("authenticationFailedMsg"));
                         HelpdeskLogger.add(localize("login failed: %s", mobile.getObject()), LogLevelType.ERROR);
                     } catch (SubjectNotFoundException e) {

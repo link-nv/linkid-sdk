@@ -10,8 +10,8 @@ import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.UUID;
 
-import junit.framework.TestCase;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
+import javax.mail.AuthenticationFailedException;
+
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.helpdesk.HelpdeskManager;
@@ -36,7 +36,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class EnablePageTest extends TestCase {
+public class EnablePageTest {
 
     private PasswordDeviceService mockPasswordDeviceService;
 
@@ -49,12 +49,9 @@ public class EnablePageTest extends TestCase {
     private JndiTestUtils         jndiTestUtils;
 
 
-    @Override
     @Before
     public void setUp()
             throws Exception {
-
-        super.setUp();
 
         WicketUtil.setUnitTesting(true);
 
@@ -95,7 +92,6 @@ public class EnablePageTest extends TestCase {
 
     }
 
-    @Override
     @After
     public void tearDown()
             throws Exception {
@@ -161,7 +157,7 @@ public class EnablePageTest extends TestCase {
 
         // stubs
         mockPasswordDeviceService.enable(userId, password);
-        expectLastCall().andThrow(new PermissionDeniedException("error"));
+        expectLastCall().andThrow(new AuthenticationFailedException());
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare

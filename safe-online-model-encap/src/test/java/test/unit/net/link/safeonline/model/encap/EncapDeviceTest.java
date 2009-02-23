@@ -7,7 +7,6 @@ import static org.easymock.EasyMock.reset;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -28,8 +27,10 @@ import net.link.safeonline.audit.dao.bean.AuditAuditDAOBean;
 import net.link.safeonline.audit.dao.bean.AuditContextDAOBean;
 import net.link.safeonline.audit.dao.bean.ResourceAuditDAOBean;
 import net.link.safeonline.audit.dao.bean.SecurityAuditDAOBean;
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
+import net.link.safeonline.authentication.exception.MobileException;
 import net.link.safeonline.authentication.service.bean.DevicePolicyServiceBean;
 import net.link.safeonline.config.dao.bean.ConfigGroupDAOBean;
 import net.link.safeonline.config.dao.bean.ConfigItemDAOBean;
@@ -37,6 +38,7 @@ import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.dao.HistoryDAO;
+import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.dao.bean.AllowedDeviceDAOBean;
 import net.link.safeonline.dao.bean.ApplicationDAOBean;
 import net.link.safeonline.dao.bean.ApplicationIdentityDAOBean;
@@ -97,6 +99,7 @@ import net.link.safeonline.model.bean.IdGeneratorBean;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
 import net.link.safeonline.model.bean.UsageAgreementManagerBean;
 import net.link.safeonline.model.encap.EncapConstants;
+import net.link.safeonline.model.encap.MobileManager;
 import net.link.safeonline.model.encap.bean.EncapDeviceServiceBean;
 import net.link.safeonline.model.encap.bean.EncapStartableBean;
 import net.link.safeonline.model.encap.bean.MobileManagerBean;
@@ -140,7 +143,7 @@ public class EncapDeviceTest {
 
     private String                 testValidOTP;
 
-    private MobileManagerBean      mobileManager;
+    private MobileManager          mockMobileManager;
 
     private String                 testInvalidOTP;
 
@@ -151,6 +154,10 @@ public class EncapDeviceTest {
     private SubjectEntity          testSubject;
 
     private String                 testMobile;
+
+    private String                 testChallenge;
+
+    private String                 testActivationCode;
 
     private static Class<?>[]      container = new Class[] { SubjectDAOBean.class, ApplicationDAOBean.class, SubscriptionDAOBean.class,
             AttributeDAOBean.class, TrustDomainDAOBean.class, ApplicationOwnerDAOBean.class, AttributeTypeDAOBean.class,
@@ -225,11 +232,14 @@ public class EncapDeviceTest {
         DeviceDAO deviceDAO = EJBTestUtils.newInstance(DeviceDAO.class, container, entityManager);
         EJBTestUtils.inject(testedInstance, deviceDAO);
 
+        SubjectIdentifierDAO subjectIdentifierDAO = EJBTestUtils.newInstance(SubjectIdentifierDAO.class, container, entityManager);
+        EJBTestUtils.inject(testedInstance, subjectIdentifierDAO);
+
         SubjectService subjectService = EJBTestUtils.newInstance(SubjectService.class, container, entityManager);
         EJBTestUtils.inject(testedInstance, subjectService);
 
-        mobileManager = EJBTestUtils.newInstance(MobileManagerBean.class, container, entityManager);
-        EJBTestUtils.inject(testedInstance, mobileManager);
+        mockMobileManager = createMock(MobileManager.class);
+        EJBTestUtils.inject(testedInstance, mockMobileManager);
 
         mockNodeMappingService = createMock(NodeMappingService.class);
         EJBTestUtils.inject(testedInstance, mockNodeMappingService);
@@ -242,7 +252,7 @@ public class EncapDeviceTest {
 
         EJBTestUtils.init(testedInstance);
 
-        mockObjects = new Object[] { mockNodeMappingService, mockHistoryDAO, mockSecurityAuditLogger };
+        mockObjects = new Object[] { mockNodeMappingService, mockHistoryDAO, mockSecurityAuditLogger, mockMobileManager };
 
         // setup
         testUserId = UUID.randomUUID().toString();
@@ -251,6 +261,8 @@ public class EncapDeviceTest {
         testInvalidOTP = "test-invalid-otp";
         testNode = "test-node";
         testSubject = subjectService.addSubjectWithoutLogin(testUserId);
+        testChallenge = UUID.randomUUID().toString();
+        testActivationCode = "activation-code";
         expect(mockNodeMappingService.getSubject(testUserId, testNode)).andReturn(testSubject);
 
         EntityTransaction entityTransaction = entityManager.getTransaction();
@@ -266,6 +278,11 @@ public class EncapDeviceTest {
         expect(
                 mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_REGISTRATION, Collections.singletonMap(
                         SafeOnlineConstants.DEVICE_PROPERTY, EncapConstants.ENCAP_DEVICE_ID))).andReturn(new HistoryEntity());
+        expect(mockMobileManager.activate(testMobile, null)).andReturn(testActivationCode);
+        expect(mockMobileManager.requestOTP(testMobile)).andReturn(testChallenge);
+        expect(mockMobileManager.verifyOTP(testChallenge, testValidOTP)).andReturn(true);
+        expect(mockMobileManager.requestOTP(testMobile)).andReturn(testChallenge);
+        expect(mockMobileManager.verifyOTP(testChallenge, testValidOTP)).andReturn(true);
 
         // prepare
         replay(mockObjects);
@@ -273,6 +290,7 @@ public class EncapDeviceTest {
         // operate
         assertTrue(testedInstance.getMobiles(testUserId, null).isEmpty());
         testedInstance.register(testMobile);
+        testedInstance.requestOTP(testMobile);
         testedInstance.commitRegistration(testNode, testUserId, testValidOTP);
 
         assertFalse(testedInstance.getMobiles(testUserId, null).isEmpty());
@@ -288,16 +306,24 @@ public class EncapDeviceTest {
         expect(
                 mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_REMOVAL, Collections.singletonMap(
                         SafeOnlineConstants.DEVICE_PROPERTY, EncapConstants.ENCAP_DEVICE_ID))).andReturn(new HistoryEntity());
+        mockMobileManager.remove(testMobile);
+        expect(mockMobileManager.requestOTP(testMobile)).andThrow(new MobileException(""));
+
+        // prepare
+        replay(mockObjects);
 
         // operate
         testedInstance.remove(testUserId, testMobile);
 
         assertTrue(testedInstance.getMobiles(testUserId, null).isEmpty());
-        testedInstance.requestOTP(testMobile);
         try {
+            testedInstance.requestOTP(testMobile);
             testedInstance.authenticate(testValidOTP);
             fail("Device registration was still found after removing the device.");
         } catch (DeviceRegistrationNotFoundException e) {
+            fail("Encap service was expected to fail first.");
+        } catch (MobileException e) {
+            // expected.
         }
     }
 
@@ -309,18 +335,28 @@ public class EncapDeviceTest {
         expect(
                 mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_REGISTRATION, Collections.singletonMap(
                         SafeOnlineConstants.DEVICE_PROPERTY, EncapConstants.ENCAP_DEVICE_ID))).andReturn(new HistoryEntity());
-        mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, testUserId, "incorrect password");
+        mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, testUserId, "incorrect mobile token");
+        expect(mockMobileManager.activate(testMobile, null)).andReturn(testActivationCode);
+        expect(mockMobileManager.requestOTP(testMobile)).andReturn(testChallenge);
+        expect(mockMobileManager.verifyOTP(testChallenge, testValidOTP)).andReturn(true);
+        expect(mockMobileManager.requestOTP(testMobile)).andReturn(testChallenge);
+        expect(mockMobileManager.verifyOTP(testChallenge, testInvalidOTP)).andReturn(false);
 
         // prepare
         replay(mockObjects);
 
         // operate
         testedInstance.register(testMobile);
+        testedInstance.requestOTP(testMobile);
         testedInstance.commitRegistration(testNode, testUserId, testValidOTP);
 
         testedInstance.requestOTP(testMobile);
-        String resultUserId = testedInstance.authenticate(testInvalidOTP);
-        assertNull(resultUserId);
+        try {
+            testedInstance.authenticate(testInvalidOTP);
+            fail("Authentication didn't fail, even though the OTP was incorrect.");
+        } catch (DeviceAuthenticationException e) {
+            // expected.
+        }
 
         // verify
         verify(mockObjects);
@@ -335,14 +371,19 @@ public class EncapDeviceTest {
                 mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_REGISTRATION, Collections.singletonMap(
                         SafeOnlineConstants.DEVICE_PROPERTY, EncapConstants.ENCAP_DEVICE_ID))).andReturn(new HistoryEntity());
         expect(
-                mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_ENABLE, Collections.singletonMap(
+                mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_DISABLE, Collections.singletonMap(
                         SafeOnlineConstants.DEVICE_PROPERTY, EncapConstants.ENCAP_DEVICE_ID))).andReturn(new HistoryEntity());
+        expect(mockMobileManager.activate(testMobile, null)).andReturn(testActivationCode);
+        expect(mockMobileManager.requestOTP(testMobile)).andReturn(testChallenge);
+        expect(mockMobileManager.verifyOTP(testChallenge, testValidOTP)).andReturn(true);
+        expect(mockMobileManager.requestOTP(testMobile)).andReturn(testChallenge);
 
         // prepare
         replay(mockObjects);
 
         // operate
         testedInstance.register(testMobile);
+        testedInstance.requestOTP(testMobile);
         testedInstance.commitRegistration(testNode, testUserId, testValidOTP);
         testedInstance.disable(testUserId, testMobile);
 
@@ -351,6 +392,7 @@ public class EncapDeviceTest {
             testedInstance.authenticate(testValidOTP);
             fail("Authentication didn't fail after disabling device.");
         } catch (DeviceDisabledException e) {
+            // expected.
         }
 
         // verify
@@ -361,6 +403,10 @@ public class EncapDeviceTest {
         expect(
                 mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_ENABLE, Collections.singletonMap(
                         SafeOnlineConstants.DEVICE_PROPERTY, EncapConstants.ENCAP_DEVICE_ID))).andReturn(new HistoryEntity());
+        expect(mockMobileManager.requestOTP(testMobile)).andReturn(testChallenge);
+        expect(mockMobileManager.verifyOTP(testChallenge, testValidOTP)).andReturn(true);
+        expect(mockMobileManager.requestOTP(testMobile)).andReturn(testChallenge);
+        expect(mockMobileManager.verifyOTP(testChallenge, testValidOTP)).andReturn(true);
 
         // prepare
         replay(mockObjects);

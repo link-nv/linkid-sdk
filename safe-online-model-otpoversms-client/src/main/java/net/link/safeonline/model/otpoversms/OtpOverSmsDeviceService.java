@@ -9,6 +9,7 @@ package net.link.safeonline.model.otpoversms;
 import javax.ejb.Local;
 import javax.mail.AuthenticationFailedException;
 
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -24,7 +25,7 @@ public interface OtpOverSmsDeviceService extends OtpOverSmsService {
 
 
     String authenticate(String pin, String otp)
-            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException;
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException, DeviceAuthenticationException;
 
     void register(String nodeName, String userId, String pin, String otp)
             throws PermissionDeniedException, AuthenticationFailedException;

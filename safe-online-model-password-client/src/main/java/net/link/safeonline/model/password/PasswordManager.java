@@ -7,9 +7,9 @@
 package net.link.safeonline.model.password;
 
 import javax.ejb.Local;
+import javax.mail.AuthenticationFailedException;
 
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.entity.SubjectEntity;
 
 
@@ -22,7 +22,7 @@ public interface PasswordManager extends PasswordService {
     void registerPassword(SubjectEntity subject, String password);
 
     void updatePassword(SubjectEntity subject, String oldPassword, String newPassword)
-            throws DeviceRegistrationNotFoundException, PermissionDeniedException;
+            throws DeviceRegistrationNotFoundException, AuthenticationFailedException;
 
     boolean validatePassword(SubjectEntity subject, String password)
             throws DeviceRegistrationNotFoundException;

@@ -17,6 +17,7 @@ import net.lin_k.safe_online.auth.DeviceCredentialsType;
 import net.lin_k.safe_online.auth.NameValuePairType;
 import net.lin_k.safe_online.auth.WSAuthenticationRequestType;
 import net.lin_k.safe_online.auth.WSAuthenticationResponseType;
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
@@ -185,16 +186,14 @@ public class OtpOverSmsAuthenticationPortImpl implements DeviceAuthenticationPor
         try {
             String userId = deviceService.authenticate(pin, otp);
 
-            if (null != userId) {
-                response.setUserId(userId);
-                DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.SUCCESS, null);
-            } else {
-                LOG.debug("authentication failed");
-                DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.AUTHENTICATION_FAILED, null);
-            }
+            response.setUserId(userId);
+            DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.SUCCESS, null);
         }
 
-        catch (SubjectNotFoundException e) {
+        catch (DeviceAuthenticationException e) {
+            LOG.debug("authentication failed");
+            DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.AUTHENTICATION_FAILED, e.getMessage());
+        } catch (SubjectNotFoundException e) {
             LOG.error("subject not found: " + e.getMessage(), e);
             DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.SUBJECT_NOT_FOUND, e.getMessage());
         } catch (DeviceDisabledException e) {
