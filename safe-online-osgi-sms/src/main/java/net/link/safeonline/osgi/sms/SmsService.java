@@ -6,7 +6,7 @@
  */
 package net.link.safeonline.osgi.sms;
 
-import java.net.ConnectException;
+import net.link.safeonline.osgi.sms.exception.SmsServiceException;
 
 
 /**
@@ -26,6 +26,6 @@ import java.net.ConnectException;
 public interface SmsService {
 
     void sendSms(String mobile, String message)
-            throws ConnectException;
+            throws SmsServiceException;
 
 }

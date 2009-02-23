@@ -149,6 +149,8 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
         setAttributeValue(attributeName, attributeValue, attribute, false);
         newData.setAttribute(attribute);
 
+        SafeOnlineTrustManager.configureSsl();
+
         ModifyResponseType modifyResponse;
         try {
             modifyResponse = port.modify(modify);
@@ -347,6 +349,8 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
         newData.setAttribute(attribute);
         createItem.setNewData(newData);
 
+        SafeOnlineTrustManager.configureSsl();
+
         try {
             CreateResponseType createResponse = port.create(create);
             StatusType status = createResponse.getStatus();
@@ -483,6 +487,8 @@ public class DataClientImpl extends AbstractMessageAccessor implements DataClien
         if (null != attributeId) {
             select.getOtherAttributes().put(WebServiceConstants.COMPOUNDED_ATTRIBUTE_ID, attributeId);
         }
+
+        SafeOnlineTrustManager.configureSsl();
 
         DeleteResponseType deleteResponse;
         try {

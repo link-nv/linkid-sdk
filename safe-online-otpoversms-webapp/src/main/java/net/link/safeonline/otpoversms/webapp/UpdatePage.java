@@ -7,8 +7,6 @@
 
 package net.link.safeonline.otpoversms.webapp;
 
-import java.net.ConnectException;
-
 import javax.ejb.EJB;
 
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
@@ -21,6 +19,7 @@ import net.link.safeonline.custom.converter.PhoneNumber;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.model.otpoversms.OtpOverSmsDeviceService;
+import net.link.safeonline.osgi.sms.exception.SmsServiceException;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
@@ -132,7 +131,7 @@ public class UpdatePage extends TemplatePage {
                         OtpOverSmsSession.get().setDeviceBean(otpOverSmsDeviceService);
                     }
 
-                    catch (ConnectException e) {
+                    catch (SmsServiceException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorServiceConnection", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "update: failed to send otp to "
                                 + protocolContext.getAttribute(), LogLevelType.ERROR);

@@ -6,7 +6,6 @@
  */
 package net.link.safeonline.model.otpoversms.bean;
 
-import java.net.ConnectException;
 import java.security.SecureRandom;
 import java.util.Collections;
 
@@ -50,6 +49,7 @@ import net.link.safeonline.osgi.OSGIService;
 import net.link.safeonline.osgi.OSGIStartable;
 import net.link.safeonline.osgi.OSGIConstants.OSGIServiceType;
 import net.link.safeonline.osgi.sms.SmsService;
+import net.link.safeonline.osgi.sms.exception.SmsServiceException;
 import net.link.safeonline.service.NodeMappingService;
 import net.link.safeonline.service.SubjectService;
 
@@ -151,11 +151,13 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
             return null;
 
         SubjectEntity subject = subjectIdentifierDAO.findSubject(OtpOverSmsConstants.OTPOVERSMS_IDENTIFIER_DOMAIN, challengeMobile);
-        if (null == subject)
+        if (null == subject) {
             throw new SubjectNotFoundException();
+        }
 
-        if (true == getDisableAttribute(subject, challengeMobile).getBooleanValue())
+        if (true == getDisableAttribute(subject, challengeMobile).getBooleanValue()) {
             throw new DeviceDisabledException();
+        }
 
         if (false == otpOverSmsManager.validatePin(subject, challengeMobile, pin)) {
             securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, subject.getUserId(), "incorrect pin");
@@ -171,8 +173,9 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
     public void register(String nodeName, String userId, String pin, String otp)
             throws PermissionDeniedException, AuthenticationFailedException {
 
-        if (false == verifyOtp(otp))
+        if (false == verifyOtp(otp)) {
             throw new AuthenticationFailedException();
+        }
 
         LOG.debug("register otp over sms device for \"" + userId + "\" mobile=" + challengeMobile);
 
@@ -232,14 +235,17 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
         LOG.debug("update pin for otp over sms device for \"" + userId + "\" mobile=" + challengeMobile);
         SubjectEntity subject = subjectService.getSubject(userId);
 
-        if (false == verifyOtp(otp))
+        if (false == verifyOtp(otp)) {
             throw new PermissionDeniedException("Invalid OTP");
+        }
 
-        if (true == getDisableAttribute(subject, challengeMobile).getBooleanValue())
+        if (true == getDisableAttribute(subject, challengeMobile).getBooleanValue()) {
             throw new DeviceDisabledException();
+        }
 
-        if (!otpOverSmsManager.validatePin(subject, challengeMobile, oldPin))
+        if (!otpOverSmsManager.validatePin(subject, challengeMobile, oldPin)) {
             throw new PermissionDeniedException("Invalid PIN");
+        }
 
         otpOverSmsManager.updatePin(subject, challengeMobile, oldPin, newPin);
 
@@ -255,11 +261,13 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
 
         SubjectEntity subject = subjectService.getSubject(userId);
 
-        if (false == verifyOtp(otp))
+        if (false == verifyOtp(otp)) {
             throw new AuthenticationFailedException();
+        }
 
-        if (!otpOverSmsManager.validatePin(subject, challengeMobile, pin))
+        if (!otpOverSmsManager.validatePin(subject, challengeMobile, pin)) {
             throw new PermissionDeniedException("Invalid PIN");
+        }
 
         try {
             AttributeEntity deviceAttribute = attributeManager.getCompoundWhere(subject, OtpOverSmsConstants.OTPOVERSMS_DEVICE_ATTRIBUTE,
@@ -292,8 +300,9 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException {
 
         SubjectEntity subject = subjectIdentifierDAO.findSubject(OtpOverSmsConstants.OTPOVERSMS_IDENTIFIER_DOMAIN, mobile);
-        if (null == subject)
+        if (null == subject) {
             throw new SubjectNotFoundException();
+        }
 
         AttributeEntity disableAttribute = getDisableAttribute(subject, mobile);
         disableAttribute.setValue(true);
@@ -306,7 +315,7 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
      * {@inheritDoc}
      */
     public void requestOtp(String mobile)
-            throws ConnectException, SafeOnlineResourceException, SubjectNotFoundException, DeviceRegistrationNotFoundException {
+            throws SmsServiceException, SafeOnlineResourceException, SubjectNotFoundException, DeviceRegistrationNotFoundException {
 
         LOG.debug("request otp for mobile " + mobile + " using sms service: " + smsServiceName);
 

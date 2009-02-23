@@ -6,11 +6,11 @@
  */
 package net.link.safeonline.osgi.sms.template;
 
-import java.net.ConnectException;
-
 import net.link.safeonline.osgi.sms.SmsService;
+import net.link.safeonline.osgi.sms.exception.SmsServiceException;
 
 import org.osgi.service.log.LogService;
+
 
 /**
  * <sub>Template sms service.</sub></h2>
@@ -35,7 +35,7 @@ public class TemplateSmsService implements SmsService {
      * {@inheritDoc}
      */
     public void sendSms(String mobile, String message)
-            throws ConnectException {
+            throws SmsServiceException {
 
         TemplateSmsServiceActivator.LOG.log(LogService.LOG_INFO, "send sms to mobile " + mobile + " with message " + message);
 

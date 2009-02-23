@@ -10,8 +10,8 @@ package test.integ.net.link.safeonline.ws;
 import static org.junit.Assert.assertEquals;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getAccountService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getApplicationService;
-import static test.integ.net.link.safeonline.IntegrationTestUtils.getAttributeTypeService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getIdentityService;
+import static test.integ.net.link.safeonline.IntegrationTestUtils.getNodeMappingService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getPasswordDeviceService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getPkiService;
 import static test.integ.net.link.safeonline.IntegrationTestUtils.getSubjectService;
@@ -28,26 +28,21 @@ import javax.naming.InitialContext;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.authentication.exception.ApplicationNotFoundException;
-import net.link.safeonline.authentication.exception.ExistingAttributeTypeException;
 import net.link.safeonline.authentication.service.AccountService;
 import net.link.safeonline.authentication.service.ApplicationService;
 import net.link.safeonline.authentication.service.IdentityAttributeTypeDO;
 import net.link.safeonline.authentication.service.IdentityService;
 import net.link.safeonline.authentication.service.SubscriptionService;
 import net.link.safeonline.authentication.service.UserRegistrationService;
-import net.link.safeonline.data.AttributeDO;
 import net.link.safeonline.entity.ApplicationEntity;
-import net.link.safeonline.entity.AttributeTypeEntity;
-import net.link.safeonline.entity.DatatypeType;
 import net.link.safeonline.entity.IdScopeType;
+import net.link.safeonline.entity.NodeMappingEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.model.password.PasswordDeviceService;
 import net.link.safeonline.pkix.service.PkiService;
 import net.link.safeonline.sdk.ws.attrib.AttributeClient;
 import net.link.safeonline.sdk.ws.attrib.AttributeClientImpl;
-import net.link.safeonline.sdk.ws.data.DataClient;
-import net.link.safeonline.sdk.ws.data.DataClientImpl;
-import net.link.safeonline.service.AttributeTypeService;
+import net.link.safeonline.service.NodeMappingService;
 import net.link.safeonline.service.SubjectService;
 import net.link.safeonline.test.util.DomTestUtils;
 import net.link.safeonline.test.util.PkiTestUtils;
@@ -72,22 +67,16 @@ public class ProxyWebServiceTest {
 
     private X509Certificate  certificate;
 
-    private AttributeClient  attributeClient1;
-    private DataClient       dataClient1;
-
     private AttributeClient  attributeClient2;
-    private DataClient       dataClient2;
 
-    private String           location1           = "https://sebeco-dev-22:8443";
+    private String           location1           = "sebeco-dev-22";
     private String           nodeName1           = "olas-sebeco-dev-22";
 
-    private String           location2           = "https://192.168.5.11:8443";
+    private String           location2           = "192.168.5.11";
+    private String           wslocation2         = "https://" + location2 + ":8443";
     private String           nodeName2           = "olas-192.168.5.11";
 
-    private String           testApplicationName = UUID.randomUUID().toString();
-
-    private String           testAttributeName   = "urn:integration:test:attribute";
-    private String           testAttributeValue  = "test-value";
+    private String           testApplicationName = "integration-test-app";
 
 
     @Before
@@ -97,52 +86,106 @@ public class ProxyWebServiceTest {
         KeyPair keyPair = PkiTestUtils.generateKeyPair();
         certificate = PkiTestUtils.generateSelfSignedCertificate(keyPair, "CN=Test");
 
-        attributeClient1 = new AttributeClientImpl(location1, certificate, keyPair.getPrivate());
-        dataClient1 = new DataClientImpl(location1, certificate, keyPair.getPrivate());
-
-        attributeClient2 = new AttributeClientImpl(location2, certificate, keyPair.getPrivate());
-        dataClient2 = new DataClientImpl(location2, certificate, keyPair.getPrivate());
+        attributeClient2 = new AttributeClientImpl(wslocation2, certificate, keyPair.getPrivate());
+        attributeClient2.setCaptureMessages(true);
     }
 
+    /**
+     * This test will:
+     * <ol>
+     * <li>register application and its X5095 @ both locations
+     * <li>register subject @ location 1 ( also add password, needed to login )
+     * <li>subscribe subject to application @ location 2
+     * <li>create node mapping @ location 1
+     * <li>register password @ location2 using node mapping id from location 1( creates node mapping @ location 2 )
+     * <li>subscribe subject to application @ location 2
+     * <li>fetch attribute value @ location 2 through attribute ws ( proxies to location 1 )
+     * </ol>
+     * 
+     */
     @Test
     public void proxyService()
             throws Exception {
 
         // setup
-        InitialContext initialContext = IntegrationTestUtils.getInitialContext();
+        InitialContext initialContext1 = IntegrationTestUtils.getInitialContext(location1);
+        InitialContext initialContext2 = IntegrationTestUtils.getInitialContext(location2);
 
         IntegrationTestUtils.setupLoginConfig();
 
-        UserRegistrationService userRegistrationService = getUserRegistrationService(initialContext);
-        IdentityService identityService = getIdentityService(initialContext);
-        PasswordDeviceService passwordDeviceService = getPasswordDeviceService(initialContext);
-        SubjectService subjectService = getSubjectService(initialContext);
-        AttributeTypeService attributeTypeService = getAttributeTypeService(initialContext);
-        AccountService accountService = getAccountService(initialContext);
-        ApplicationService applicationService = getApplicationService(initialContext);
+        SubjectService subjectService1 = getSubjectService(initialContext1);
+        PkiService pkiService1 = getPkiService(initialContext1);
+        ApplicationService applicationService1 = getApplicationService(initialContext1);
+        UserRegistrationService userRegistrationService1 = getUserRegistrationService(initialContext1);
+        PasswordDeviceService passwordDeviceService1 = getPasswordDeviceService(initialContext1);
+        NodeMappingService nodeMappingService1 = getNodeMappingService(initialContext1);
+        AccountService accountService1 = getAccountService(initialContext1);
 
-        // operate: register new attribute type
-        String adminUserId = subjectService.getSubjectFromUserName(SafeOnlineConstants.ADMIN_LOGIN).getUserId();
-        IntegrationTestUtils.login(adminUserId, "admin");
-        AttributeTypeEntity attributeType = new AttributeTypeEntity(testAttributeName, DatatypeType.STRING, true, true);
-        try {
-            attributeTypeService.add(attributeType);
-        } catch (ExistingAttributeTypeException e) {
-            // no worries
-        }
+        SubjectService subjectService2 = getSubjectService(initialContext2);
+        PkiService pkiService2 = getPkiService(initialContext2);
+        ApplicationService applicationService2 = getApplicationService(initialContext2);
+        PasswordDeviceService passwordDeviceService2 = getPasswordDeviceService(initialContext2);
+        NodeMappingService nodeMappingService2 = getNodeMappingService(initialContext2);
+        SubscriptionService subscriptionService2 = getSubscriptionService(initialContext2);
+        IdentityService identityService2 = getIdentityService(initialContext2);
+        AccountService accountService2 = getAccountService(initialContext2);
 
-        // operate: register user
+        // operate: get admin user id's
+        String adminUserId1 = subjectService1.getSubjectFromUserName(SafeOnlineConstants.ADMIN_LOGIN).getUserId();
+        String adminUserId2 = subjectService2.getSubjectFromUserName(SafeOnlineConstants.ADMIN_LOGIN).getUserId();
+
+        // operate: register application @ both locations
+        ApplicationEntity testApplication1 = registerApplication(applicationService1, pkiService1, adminUserId1);
+        ApplicationEntity testApplication2 = registerApplication(applicationService2, pkiService2, adminUserId2);
+
+        // operate: register subject @ location 1
         String login = "login-" + UUID.randomUUID().toString();
         String password = "pwd-" + UUID.randomUUID().toString();
-        SubjectEntity loginSubject = userRegistrationService.registerUser(login);
-        passwordDeviceService.register(nodeName2, loginSubject.getUserId(), password);
+        SubjectEntity subject1 = userRegistrationService1.registerUser(login);
+        passwordDeviceService1.register(nodeName1, subject1.getUserId(), password);
 
-        // operate: register certificate as application trust point
-        PkiService pkiService = getPkiService(initialContext);
+        // operate: create node mapping @ location 1
+        NodeMappingEntity nodeMapping1 = nodeMappingService1.getNodeMapping(subject1.getUserId(), nodeName2);
+
+        // operate: register password @ location2 using node mapping id from location 1 ( creates node mapping and subject @ location 2 )
+        passwordDeviceService2.register(nodeName1, nodeMapping1.getId(), password);
+        NodeMappingEntity nodeMapping2 = nodeMappingService2.getNodeMapping(nodeMapping1.getId());
+        SubjectEntity subject2 = nodeMapping2.getSubject();
+
+        // operate: subscribe onto the application and confirm identity usage @ location 2
+        IntegrationTestUtils.login(subject2.getUserId(), password);
+        subscriptionService2.subscribe(testApplication2.getId());
+        identityService2.confirmIdentity(testApplication2.getId());
+
+        // operate: fetch attribute value @ location 2 ( should proxy to location 2 )
+        String resultValue = attributeClient2.getAttributeValue(subject2.getUserId(), SafeOnlineConstants.LOGIN_ATTRIBTUE, String.class);
+        assertEquals(login, resultValue);
+        Map<String, Object> resultAttributes = attributeClient2.getAttributeValues(subject2.getUserId());
+        LOG.debug("outbound message: " + DomTestUtils.domToString(attributeClient2.getOutboundMessage()));
+        LOG.info("resultAttributes: " + resultAttributes);
+        assertEquals(1, resultAttributes.size());
+        assertEquals(login, resultAttributes.get(SafeOnlineConstants.LOGIN_ATTRIBTUE));
+
+        // cleanup location 1
+        IntegrationTestUtils.login(adminUserId1, "admin");
+        accountService1.removeAccount(subject1.getUserId());
+        applicationService1.removeApplication(testApplication1.getId());
+
+        // cleanup location 2
+        IntegrationTestUtils.login(adminUserId2, "admin");
+        accountService2.removeAccount(subject2.getUserId());
+        applicationService2.removeApplication(testApplication2.getId());
+
+    }
+
+    private ApplicationEntity registerApplication(ApplicationService applicationService, PkiService pkiService, String adminUserId)
+            throws Exception {
+
+        // operate: register certificate as application trust point @ both locations
         IntegrationTestUtils.login(adminUserId, "admin");
         pkiService.addTrustPoint(SafeOnlineConstants.SAFE_ONLINE_APPLICATIONS_TRUST_DOMAIN, certificate.getEncoded());
 
-        // operate: add application with certificate
+        // operate: register new application @ both locations
         ApplicationEntity testApplication = null;
         try {
             testApplication = applicationService.getApplication(testApplicationName);
@@ -155,53 +198,9 @@ public class ProxyWebServiceTest {
         }
 
         applicationService.addApplication(testApplicationName, null, "owner", null, false, IdScopeType.USER, null, null,
-                certificate.getEncoded(), Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(testAttributeName) }),
-                false, false, false, null);
+                certificate.getEncoded(), Arrays.asList(new IdentityAttributeTypeDO[] { new IdentityAttributeTypeDO(
+                        SafeOnlineConstants.LOGIN_ATTRIBTUE) }), false, false, false, null);
         testApplication = applicationService.getApplication(testApplicationName);
-
-        // operate: subscribe onto the application and confirm identity usage
-        SubscriptionService subscriptionService = getSubscriptionService(initialContext);
-        IntegrationTestUtils.login(loginSubject.getUserId(), password);
-        subscriptionService.subscribe(testApplication.getId());
-        identityService.confirmIdentity(testApplication.getId());
-
-        // operate: set attribute
-        IntegrationTestUtils.login(loginSubject.getUserId(), password);
-        AttributeDO attributeDO = new AttributeDO(testAttributeName, DatatypeType.STRING);
-        attributeDO.setStringValue(testAttributeValue);
-        attributeDO.setEditable(true);
-        identityService.saveAttribute(attributeDO);
-
-        String resultValue = attributeClient2.getAttributeValue(loginSubject.getUserId(), testAttributeName, String.class);
-        assertEquals(testAttributeValue, resultValue);
-
-        // operate: retrieve all attributes
-        attributeClient2.setCaptureMessages(true);
-        Map<String, Object> resultAttributes = attributeClient2.getAttributeValues(loginSubject.getUserId());
-        LOG.debug("outbound message: " + DomTestUtils.domToString(attributeClient2.getOutboundMessage()));
-        LOG.info("resultAttributes: " + resultAttributes);
-        assertEquals(1, resultAttributes.size());
-        assertEquals(testAttributeValue, resultAttributes.get(testAttributeName));
-
-        // operate: retrieve all attributes through other OLAS node
-        attributeClient1.setCaptureMessages(true);
-        resultAttributes = attributeClient1.getAttributeValues(loginSubject.getUserId());
-        LOG.debug("outbound message: " + DomTestUtils.domToString(attributeClient1.getOutboundMessage()));
-        LOG.info("resultAttributes: " + resultAttributes);
-        assertEquals(1, resultAttributes.size());
-        assertEquals(testAttributeValue, resultAttributes.get(testAttributeName));
-
-        // cleanup
-        // login as admin
-        IntegrationTestUtils.login(adminUserId, "admin");
-
-        // remove user
-        accountService.removeAccount(loginSubject.getUserId());
-
-        // remove application
-        applicationService.removeApplication(testApplication.getId());
-
-        // remove attributes
-        attributeTypeService.remove(attributeType);
+        return testApplication;
     }
 }
