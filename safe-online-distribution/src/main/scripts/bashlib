@@ -43,7 +43,7 @@ shopt -s extglob
 
 # Variables for global internal operation.
 export bobber=(     '.' 'o' 'O' 'o' )
-export spinner=(    '-' '\' '|' '/' ) #'
+export spinner=(    '-' \\  '|' '/' )
 export crosser=(    '+' 'x' '+' 'x' )
 export runner=(     '> >'           \
                     '>> '           \
@@ -228,10 +228,10 @@ emit() {
     # Display the message or spinner.
     if (( cmd )); then
         # Don't let this Bash handle SIGINT.
-        trap : INT
+        #trap : INT
 
         # Create the spinner in the background.
-        spinPipe=$TMPDIR/bashlib.$$
+        spinPipe=${TMPDIR:-/tmp}/bashlib.$$
         { touch "$spinPipe" && rm -f "$spinPipe" && mkfifo "$spinPipe"; } 2>/dev/null \
             || unset spinPipe
         { spinner "${spinArgs[@]}" "$origtext" -- "$style" "$color" "$textstyle" "$textcolor" < "${spinPipe:-/dev/null}" & } 2>/dev/null
@@ -824,9 +824,9 @@ showHelp() {
     # Print out the help header.
     printf "$reset$bold\n"                                          >&$fd
     printf "\t\t%s\n" "$appName"                                    >&$fd
-    printf "$reset$green\n"                                         >&$fd
+    printf "$reset\n"                                               >&$fd
     printf "%s\n" "$appDesc" | fmt -w 70 | sed $'s/^/\t/'           >&$fd
-    printf "\t   $reset$bold~ $reset$yellow%s\n" "$appAuthor"       >&$fd
+    printf "\t   $reset$bold~ $reset$bold%s\n" "$appAuthor"         >&$fd
     printf "$reset\n"                                               >&$fd
 
     # Print out the application options and columnize them.
@@ -834,7 +834,7 @@ showHelp() {
         local optName=$1; shift
         local optDesc=$1; shift
         printf "    %s\t" "$optName"
-        printf "%s\n" "${optDesc//+( )/ }" | fmt -tw 70 | sed $'1!s/^/ \t/'
+        printf "%s\n" "${optDesc//+( )/ }" | fmt -w 70 | sed $'1!s/^/ \t/'
         printf "\n"
     done | column -t -s $'\t' \
          | sed "s/^\(    [^ ]*\)/$bold$green\1$reset/"              >&$fd

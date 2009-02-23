@@ -7,8 +7,6 @@
 
 package net.link.safeonline.otpoversms.webapp;
 
-import java.net.ConnectException;
-
 import javax.ejb.EJB;
 import javax.mail.AuthenticationFailedException;
 
@@ -22,6 +20,7 @@ import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.device.sdk.saml2.DeviceOperationType;
 import net.link.safeonline.helpdesk.HelpdeskLogger;
 import net.link.safeonline.model.otpoversms.OtpOverSmsDeviceService;
+import net.link.safeonline.osgi.sms.exception.SmsServiceException;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.webapp.components.ErrorComponentFeedbackLabel;
@@ -122,7 +121,7 @@ public class RegistrationPage extends TemplatePage {
                         OtpOverSmsSession.get().setDeviceBean(otpOverSmsDeviceService);
                     }
 
-                    catch (ConnectException e) {
+                    catch (SmsServiceException e) {
                         RequestOtpForm.this.error(getLocalizer().getString("errorServiceConnection", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "request: failed to send otp" + mobile.getObject(),
                                 LogLevelType.ERROR);
@@ -232,7 +231,8 @@ public class RegistrationPage extends TemplatePage {
                     try {
                         LOG.debug("register mobile " + mobile + " for " + protocolContext.getSubject());
 
-                        otpOverSmsDeviceService.register(protocolContext.getNodeName(), protocolContext.getSubject(), pin1.getObject(), otp.getObject());
+                        otpOverSmsDeviceService.register(protocolContext.getNodeName(), protocolContext.getSubject(), pin1.getObject(),
+                                otp.getObject());
 
                         protocolContext.setSuccess(true);
                         exit();

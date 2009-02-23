@@ -37,6 +37,7 @@ import net.link.safeonline.model.otpoversms.OtpOverSmsManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.util.encoders.Base64;
 import org.jboss.annotation.ejb.LocalBinding;
 
 
@@ -234,7 +235,7 @@ public class OtpOverSmsManagerBean implements OtpOverSmsManager {
             MessageDigest messageDigest = MessageDigest.getInstance(algorithm, new BouncyCastleProvider());
             messageDigest.update(plainText);
 
-            return new sun.misc.BASE64Encoder().encode(messageDigest.digest());
+            return new String(Base64.encode(messageDigest.digest()));
         }
 
         catch (UnsupportedEncodingException e) {

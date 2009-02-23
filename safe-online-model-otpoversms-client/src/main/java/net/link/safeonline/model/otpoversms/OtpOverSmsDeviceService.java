@@ -6,8 +6,6 @@
  */
 package net.link.safeonline.model.otpoversms;
 
-import java.net.ConnectException;
-
 import javax.ejb.Local;
 import javax.mail.AuthenticationFailedException;
 
@@ -16,6 +14,7 @@ import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundEx
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
+import net.link.safeonline.osgi.sms.exception.SmsServiceException;
 
 
 @Local
@@ -30,20 +29,20 @@ public interface OtpOverSmsDeviceService extends OtpOverSmsService {
     void register(String nodeName, String userId, String pin, String otp)
             throws PermissionDeniedException, AuthenticationFailedException;
 
-    void update(String userId, String otp, String oldPin, String newPin)
+    void update(String userId, String oldPin, String newPin, String otp)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException, PermissionDeniedException;
 
     void remove(String userId, String mobile)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException;
 
-    void enable(String userId, String otp, String pin)
+    void enable(String userId, String pin, String otp)
             throws SubjectNotFoundException, AuthenticationFailedException, DeviceRegistrationNotFoundException, PermissionDeniedException;
 
     void disable(String userId, String mobile)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException;
 
     void requestOtp(String mobile)
-            throws ConnectException, SafeOnlineResourceException, SubjectNotFoundException, DeviceRegistrationNotFoundException;
+            throws SmsServiceException, SafeOnlineResourceException, SubjectNotFoundException, DeviceRegistrationNotFoundException;
 
     /**
      * @return <code>true</code> when the OTP has been dispatched to the user.

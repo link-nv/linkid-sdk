@@ -33,6 +33,7 @@ import net.link.safeonline.model.password.PasswordConstants;
 import net.link.safeonline.model.password.PasswordManager;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.util.encoders.Base64;
 import org.jboss.annotation.ejb.LocalBinding;
 
 
@@ -103,6 +104,9 @@ public class PasswordManagerBean implements PasswordManager {
 
         try {
             AttributeEntity deviceAttribute = attributeDAO.findAttribute(subject, PasswordConstants.PASSWORD_DEVICE_ATTRIBUTE, 0);
+            if (deviceAttribute == null)
+                throw new DeviceRegistrationNotFoundException();
+
             AttributeEntity algorithmAttribute = attributeManager.getCompoundMember(deviceAttribute,
                     PasswordConstants.PASSWORD_ALGORITHM_ATTRIBUTE);
             AttributeEntity newAlgorithmAttribute = attributeManager.getCompoundMember(deviceAttribute,
@@ -141,6 +145,9 @@ public class PasswordManagerBean implements PasswordManager {
 
         try {
             AttributeEntity deviceAttribute = attributeDAO.findAttribute(subject, PasswordConstants.PASSWORD_DEVICE_ATTRIBUTE, 0);
+            if (deviceAttribute == null)
+                throw new DeviceRegistrationNotFoundException();
+
             AttributeEntity hashAttribute = attributeManager.getCompoundMember(deviceAttribute, PasswordConstants.PASSWORD_HASH_ATTRIBUTE);
             AttributeEntity seedAttribute = attributeManager.getCompoundMember(deviceAttribute, PasswordConstants.PASSWORD_SEED_ATTRIBUTE);
             AttributeEntity algorithmAttribute = attributeManager.getCompoundMember(deviceAttribute,
@@ -192,7 +199,7 @@ public class PasswordManagerBean implements PasswordManager {
             MessageDigest messageDigest = MessageDigest.getInstance(algorithm, new BouncyCastleProvider());
             messageDigest.update(plainText);
 
-            return new sun.misc.BASE64Encoder().encode(messageDigest.digest());
+            return new String(Base64.encode(messageDigest.digest()));
         }
 
         catch (UnsupportedEncodingException e) {

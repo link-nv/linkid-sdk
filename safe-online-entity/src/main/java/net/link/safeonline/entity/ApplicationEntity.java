@@ -38,7 +38,6 @@ import net.link.safeonline.entity.listener.SecurityApplicationEntityListener;
 import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
@@ -450,8 +449,18 @@ public class ApplicationEntity implements Serializable {
             return true;
         if (false == obj instanceof ApplicationEntity)
             return false;
+
         ApplicationEntity rhs = (ApplicationEntity) obj;
-        return new EqualsBuilder().append(id, rhs.id).isEquals();
+        return id == rhs.id;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+
+        return (int) id;
     }
 
     @Override

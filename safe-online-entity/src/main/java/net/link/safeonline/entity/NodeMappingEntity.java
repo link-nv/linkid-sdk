@@ -28,7 +28,6 @@ import net.link.safeonline.jpa.annotation.QueryMethod;
 import net.link.safeonline.jpa.annotation.QueryParam;
 import net.link.safeonline.jpa.annotation.UpdateMethod;
 
-import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
@@ -114,15 +113,25 @@ public class NodeMappingEntity implements Serializable {
             return true;
         if (false == obj instanceof NodeMappingEntity)
             return false;
+
         NodeMappingEntity rhs = (NodeMappingEntity) obj;
-        return new EqualsBuilder().append(id, rhs.id).isEquals();
+        return id == rhs.id;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+
+        return id.hashCode();
     }
 
     @Override
     public String toString() {
 
-        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("id", id).append("subject", subject.getUserId())
-                                                                    .append("node", node.getName()).toString();
+        return new ToStringBuilder(this, ToStringStyle.SIMPLE_STYLE).append("id", id).append("subject", subject.getUserId()).append("node",
+                node.getName()).toString();
     }
 
 

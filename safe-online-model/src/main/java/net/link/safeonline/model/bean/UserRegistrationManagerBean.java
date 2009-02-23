@@ -8,7 +8,6 @@
 package net.link.safeonline.model.bean;
 
 import javax.ejb.EJB;
-import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
@@ -19,6 +18,7 @@ import net.link.safeonline.dao.SubscriptionDAO;
 import net.link.safeonline.entity.ApplicationEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubscriptionOwnerType;
+import net.link.safeonline.model.IdGenerator;
 import net.link.safeonline.model.UserRegistrationManager;
 import net.link.safeonline.service.SubjectService;
 
@@ -42,6 +42,9 @@ public class UserRegistrationManagerBean implements UserRegistrationManager {
     @EJB(mappedName = SubscriptionDAO.JNDI_BINDING)
     private SubscriptionDAO  subscriptionDAO;
 
+    @EJB(mappedName = IdGenerator.JNDI_BINDING)
+    private IdGenerator      idGenerator;
+
 
     public SubjectEntity registerUser(String login)
             throws ExistingUserException, AttributeTypeNotFoundException {
@@ -49,11 +52,36 @@ public class UserRegistrationManagerBean implements UserRegistrationManager {
         LOG.debug("register user: " + login);
         checkExistingUser(login);
         SubjectEntity newSubject = subjectService.addSubject(login);
-        ApplicationEntity safeOnlineUserApplication = getSafeOnlineUserApplication();
-        /*
-         * Make sure the user can at least login into the SafeOnline user web application.
-         */
-        subscriptionDAO.addSubscription(SubscriptionOwnerType.APPLICATION, newSubject, safeOnlineUserApplication);
+        ApplicationEntity safeOnlineUserApplication = findSafeOnlineUserApplication();
+
+        if (null != safeOnlineUserApplication) {
+            /*
+             * Make sure the user can at least login into the SafeOnline user web application.
+             */
+            subscriptionDAO.addSubscription(SubscriptionOwnerType.APPLICATION, newSubject, safeOnlineUserApplication);
+        }
+        return newSubject;
+    }
+
+    public SubjectEntity registerUserWithoutLogin() {
+
+        String userId = idGenerator.generateId();
+        return registerUserWithoutLogin(userId);
+
+    }
+
+    public SubjectEntity registerUserWithoutLogin(String userId) {
+
+        LOG.debug("register user without login: " + userId);
+        SubjectEntity newSubject = subjectService.addSubjectWithoutLogin(userId);
+        ApplicationEntity safeOnlineUserApplication = findSafeOnlineUserApplication();
+
+        if (null != safeOnlineUserApplication) {
+            /*
+             * Make sure the user can at least login into the SafeOnline user web application.
+             */
+            subscriptionDAO.addSubscription(SubscriptionOwnerType.APPLICATION, newSubject, safeOnlineUserApplication);
+        }
         return newSubject;
     }
 
@@ -65,12 +93,9 @@ public class UserRegistrationManagerBean implements UserRegistrationManager {
             throw new ExistingUserException();
     }
 
-    private ApplicationEntity getSafeOnlineUserApplication() {
+    private ApplicationEntity findSafeOnlineUserApplication() {
 
-        ApplicationEntity safeOnlineUserApplication = applicationDAO
-                                                                         .findApplication(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
-        if (null == safeOnlineUserApplication)
-            throw new EJBException("SafeOnline user application not found");
+        ApplicationEntity safeOnlineUserApplication = applicationDAO.findApplication(SafeOnlineConstants.SAFE_ONLINE_USER_APPLICATION_NAME);
         return safeOnlineUserApplication;
     }
 }
