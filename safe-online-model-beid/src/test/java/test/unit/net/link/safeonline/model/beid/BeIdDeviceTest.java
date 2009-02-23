@@ -1,37 +1,29 @@
-package test.unit.net.link.safeonline.model.option;
+package test.unit.net.link.safeonline.model.beid;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.reset;
-import static org.easymock.EasyMock.verify;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
-import java.util.Collections;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
-import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.Startable;
+import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.audit.bean.ResourceAuditLoggerBean;
 import net.link.safeonline.audit.dao.bean.AccessAuditDAOBean;
 import net.link.safeonline.audit.dao.bean.AuditAuditDAOBean;
 import net.link.safeonline.audit.dao.bean.AuditContextDAOBean;
 import net.link.safeonline.audit.dao.bean.ResourceAuditDAOBean;
 import net.link.safeonline.audit.dao.bean.SecurityAuditDAOBean;
-import net.link.safeonline.authentication.exception.DeviceDisabledException;
-import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
-import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.bean.DevicePolicyServiceBean;
 import net.link.safeonline.config.dao.bean.ConfigGroupDAOBean;
 import net.link.safeonline.config.dao.bean.ConfigItemDAOBean;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
+import net.link.safeonline.dao.DeviceDAO;
 import net.link.safeonline.dao.HistoryDAO;
 import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.dao.bean.AllowedDeviceDAOBean;
@@ -69,8 +61,6 @@ import net.link.safeonline.entity.DeviceClassEntity;
 import net.link.safeonline.entity.DeviceDescriptionEntity;
 import net.link.safeonline.entity.DeviceEntity;
 import net.link.safeonline.entity.DevicePropertyEntity;
-import net.link.safeonline.entity.HistoryEntity;
-import net.link.safeonline.entity.HistoryEventType;
 import net.link.safeonline.entity.NodeEntity;
 import net.link.safeonline.entity.SubjectEntity;
 import net.link.safeonline.entity.SubjectIdentifierEntity;
@@ -92,9 +82,8 @@ import net.link.safeonline.model.bean.DevicesBean;
 import net.link.safeonline.model.bean.IdGeneratorBean;
 import net.link.safeonline.model.bean.SystemInitializationStartableBean;
 import net.link.safeonline.model.bean.UsageAgreementManagerBean;
-import net.link.safeonline.model.option.OptionConstants;
-import net.link.safeonline.model.option.bean.OptionDeviceServiceBean;
-import net.link.safeonline.model.option.bean.OptionStartableBean;
+import net.link.safeonline.model.beid.bean.BeIdDeviceServiceBean;
+import net.link.safeonline.model.beid.bean.BeIdStartableBean;
 import net.link.safeonline.notification.dao.bean.EndpointReferenceDAOBean;
 import net.link.safeonline.notification.dao.bean.NotificationMessageDAOBean;
 import net.link.safeonline.notification.dao.bean.NotificationProducerDAOBean;
@@ -119,29 +108,27 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class OptionDeviceTest {
+public class BeIdDeviceTest {
 
-    private OptionDeviceServiceBean testedInstance;
+    private BeIdDeviceServiceBean testedInstance;
 
-    private Object[]                mockObjects;
+    private Object[]              mockObjects;
 
-    private HistoryDAO              mockHistoryDAO;
+    private HistoryDAO            mockHistoryDAO;
 
-    private EntityTestManager       entityTestManager;
+    private SecurityAuditLogger   mockSecurityAuditLogger;
 
-    private String                  testUserId;
+    private EntityTestManager     entityTestManager;
 
-    private String                  testImei;
+    private String                testUserId;
 
-    private NodeMappingService      mockNodeMappingService;
+    private NodeMappingService    mockNodeMappingService;
 
-    private String                  testNode;
+    private String                testNode;
 
-    private SubjectEntity           testSubject;
+    private SubjectEntity         testSubject;
 
-    private String                  testWrongImei;
-
-    private static Class<?>[]       container = new Class[] { SubjectDAOBean.class, ApplicationDAOBean.class, SubscriptionDAOBean.class,
+    private static Class<?>[]     container = new Class[] { SubjectDAOBean.class, ApplicationDAOBean.class, SubscriptionDAOBean.class,
             AttributeDAOBean.class, TrustDomainDAOBean.class, ApplicationOwnerDAOBean.class, AttributeTypeDAOBean.class,
             ApplicationIdentityDAOBean.class, ConfigGroupDAOBean.class, ConfigItemDAOBean.class, TaskDAOBean.class,
             SchedulingDAOBean.class, TaskHistoryDAOBean.class, ApplicationIdentityManagerBean.class, TrustPointDAOBean.class,
@@ -200,10 +187,9 @@ public class OptionDeviceTest {
         Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class, container, entityManager);
         systemStartable.postStart();
 
-        Startable passwordStartable = EJBTestUtils.newInstance(OptionStartableBean.class, container, entityManager);
-        passwordStartable.postStart();
+        EJBTestUtils.newInstance(BeIdStartableBean.class, container, entityManager).postStart();
 
-        testedInstance = new OptionDeviceServiceBean();
+        testedInstance = new BeIdDeviceServiceBean();
 
         AttributeDAO attributeDAO = EJBTestUtils.newInstance(AttributeDAO.class, container, entityManager);
         EJBTestUtils.inject(testedInstance, attributeDAO);
@@ -211,11 +197,14 @@ public class OptionDeviceTest {
         AttributeTypeDAO attributeTypeDAO = EJBTestUtils.newInstance(AttributeTypeDAO.class, container, entityManager);
         EJBTestUtils.inject(testedInstance, attributeTypeDAO);
 
-        SubjectIdentifierDAO subjectIdentifierDAO = EJBTestUtils.newInstance(SubjectIdentifierDAO.class, container, entityManager);
-        EJBTestUtils.inject(testedInstance, subjectIdentifierDAO);
-
         SubjectService subjectService = EJBTestUtils.newInstance(SubjectService.class, container, entityManager);
         EJBTestUtils.inject(testedInstance, subjectService);
+
+        DeviceDAO deviceDAO = EJBTestUtils.newInstance(DeviceDAO.class, container, entityManager);
+        EJBTestUtils.inject(testedInstance, deviceDAO);
+
+        SubjectIdentifierDAO subjectIdentifierDAO = EJBTestUtils.newInstance(SubjectIdentifierDAO.class, container, entityManager);
+        EJBTestUtils.inject(testedInstance, subjectIdentifierDAO);
 
         mockNodeMappingService = createMock(NodeMappingService.class);
         EJBTestUtils.inject(testedInstance, mockNodeMappingService);
@@ -223,14 +212,15 @@ public class OptionDeviceTest {
         mockHistoryDAO = createMock(HistoryDAO.class);
         EJBTestUtils.inject(testedInstance, mockHistoryDAO);
 
+        mockSecurityAuditLogger = createMock(SecurityAuditLogger.class);
+        EJBTestUtils.inject(testedInstance, mockSecurityAuditLogger);
+
         EJBTestUtils.init(testedInstance);
 
-        mockObjects = new Object[] { mockNodeMappingService, mockHistoryDAO };
+        mockObjects = new Object[] { mockNodeMappingService, mockHistoryDAO, mockSecurityAuditLogger };
 
         // setup
         testUserId = UUID.randomUUID().toString();
-        testImei = "test-imei";
-        testWrongImei = "test-wrong-imei";
         testNode = "test-node";
         testSubject = subjectService.addSubjectWithoutLogin(testUserId);
         expect(mockNodeMappingService.getSubject(testUserId, testNode)).andReturn(testSubject);
@@ -241,120 +231,121 @@ public class OptionDeviceTest {
     }
 
     @Test
-    public void testRegisterAuthenticateAndRemove()
-            throws Exception {
+    public void testNothing() {
 
-        // expectations
-        expect(
-                mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_REGISTRATION, Collections.singletonMap(
-                        SafeOnlineConstants.DEVICE_PROPERTY, OptionConstants.OPTION_DEVICE_ID))).andReturn(new HistoryEntity());
-
-        // prepare
-        replay(mockObjects);
-
-        // operate
-        testedInstance.register(testNode, testUserId, testImei);
-
-        String resultUserId = testedInstance.authenticate(testImei);
-        assertEquals(testUserId, resultUserId);
-
-        // verify
-        verify(mockObjects);
-        reset(mockObjects);
-
-        // expectations
-        expect(
-                mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_REMOVAL, Collections.singletonMap(
-                        SafeOnlineConstants.DEVICE_PROPERTY, OptionConstants.OPTION_DEVICE_ID))).andReturn(new HistoryEntity());
-
-        // prepare
-        replay(mockObjects);
-
-        // operate
-        testedInstance.remove(testImei);
-
-        try {
-            testedInstance.authenticate(testImei);
-            fail("Device registration was still found after removing the device.");
-        } catch (DeviceRegistrationNotFoundException e) {
-            // expected.
-        }
-
-        // verify
-        verify(mockObjects);
     }
 
-    @Test
-    public void testRegisterAndAuthenticateWithWrongPassword()
-            throws Exception {
+    // TODO: Figure out how we're going to unit test the device service beans for BeId which relies largely on the applet.
 
-        // expectations
-        expect(
-                mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_REGISTRATION, Collections.singletonMap(
-                        SafeOnlineConstants.DEVICE_PROPERTY, OptionConstants.OPTION_DEVICE_ID))).andReturn(new HistoryEntity());
-
-        // prepare
-        replay(mockObjects);
-
-        // operate
-        testedInstance.register(testNode, testUserId, testImei);
-
-        try {
-            testedInstance.authenticate(testWrongImei);
-            fail("Authentication passed even though IMEI was incorrect.");
-        } catch (SubjectNotFoundException e) {
-            // expected.
-        }
-
-        // verify
-        verify(mockObjects);
-    }
-
-    @Test
-    public void testRegisterDisableAuthenticateEnableAuthenticate()
-            throws Exception {
-
-        // expectations
-        expect(
-                mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_REGISTRATION, Collections.singletonMap(
-                        SafeOnlineConstants.DEVICE_PROPERTY, OptionConstants.OPTION_DEVICE_ID))).andReturn(new HistoryEntity());
-        expect(
-                mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_DISABLE, Collections.singletonMap(
-                        SafeOnlineConstants.DEVICE_PROPERTY, OptionConstants.OPTION_DEVICE_ID))).andReturn(new HistoryEntity());
-
-        // prepare
-        replay(mockObjects);
-
-        // operate
-        testedInstance.register(testNode, testUserId, testImei);
-        testedInstance.disable(testUserId, testImei);
-
-        try {
-            testedInstance.authenticate(testImei);
-            fail("Authentication didn't fail after disabling device.");
-        } catch (DeviceDisabledException e) {
-            // expected.
-        }
-
-        // verify
-        verify(mockObjects);
-        reset(mockObjects);
-
-        // expectations
-        expect(
-                mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_ENABLE, Collections.singletonMap(
-                        SafeOnlineConstants.DEVICE_PROPERTY, OptionConstants.OPTION_DEVICE_ID))).andReturn(new HistoryEntity());
-
-        // prepare
-        replay(mockObjects);
-
-        // operate
-        testedInstance.enable(testUserId, testImei);
-
-        String resultUserId = testedInstance.authenticate(testImei);
-        assertEquals(testUserId, resultUserId);
-
-        // verify
-        verify(mockObjects);
-    }
+    // @Test
+    // public void testRegisterAuthenticateAndRemove()
+    // throws Exception {
+    //
+    // // expectations
+    // expect(
+    // mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_REGISTRATION, Collections.singletonMap(
+    // SafeOnlineConstants.DEVICE_PROPERTY, BeIdConstants.BEID_DEVICE_ID))).andReturn(new HistoryEntity());
+    //
+    // // prepare
+    // replay(mockObjects);
+    //
+    // // operate
+    // testedInstance.register(testNode, testUserId, testSerial);
+    //
+    // testedInstance.authenticate(testUserId, testValidToken);
+    //
+    // // verify
+    // verify(mockObjects);
+    // reset(mockObjects);
+    //
+    // // expectations
+    // expect(
+    // mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_REMOVAL, Collections.singletonMap(
+    // SafeOnlineConstants.DEVICE_PROPERTY, BeIdConstants.BEID_DEVICE_ID))).andReturn(new HistoryEntity());
+    //
+    // // prepare
+    // replay(mockObjects);
+    //
+    // // operate
+    // testedInstance.remove(testSerial);
+    //
+    // try {
+    // testedInstance.authenticate(testUserId, testSerial);
+    // fail("Device registration was still found after removing the device.");
+    // } catch (DeviceRegistrationNotFoundException e) {
+    // }
+    // }
+    //
+    // @Test
+    // public void testRegisterAndAuthenticateWithWrongToken()
+    // throws Exception {
+    //
+    // // expectations
+    // expect(
+    // mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_REGISTRATION, Collections.singletonMap(
+    // SafeOnlineConstants.DEVICE_PROPERTY, BeIdConstants.BEID_DEVICE_ID))).andReturn(new HistoryEntity());
+    // mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, testUserId, "incorrect digipass token");
+    //
+    // // prepare
+    // replay(mockObjects);
+    //
+    // // operate
+    // testedInstance.register(testNode, testUserId, testSerial);
+    //
+    // try {
+    // testedInstance.authenticate(testUserId, testInvalidToken);
+    // fail("Authentication didn't fail, even though the token was incorrect.");
+    // } catch (DeviceAuthenticationException e) {
+    // // expected.
+    // }
+    //
+    // // verify
+    // verify(mockObjects);
+    // }
+    //
+    // @Test
+    // public void testRegisterDisableAuthenticateEnableAuthenticate()
+    // throws Exception {
+    //
+    // // expectations
+    // expect(
+    // mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_REGISTRATION, Collections.singletonMap(
+    // SafeOnlineConstants.DEVICE_PROPERTY, BeIdConstants.BEID_DEVICE_ID))).andReturn(new HistoryEntity());
+    // expect(
+    // mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_DISABLE, Collections.singletonMap(
+    // SafeOnlineConstants.DEVICE_PROPERTY, BeIdConstants.BEID_DEVICE_ID))).andReturn(new HistoryEntity());
+    // mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, testUserId, "device is disabled");
+    //
+    // // prepare
+    // replay(mockObjects);
+    //
+    // // operate
+    // testedInstance.register(testNode, testUserId, testSerial);
+    // testedInstance.disable(testUserId, testSerial);
+    //
+    // try {
+    // testedInstance.authenticate(testUserId, testValidToken);
+    // fail("Authentication didn't fail after disabling device.");
+    // } catch (DeviceDisabledException e) {
+    // }
+    //
+    // // verify
+    // verify(mockObjects);
+    // reset(mockObjects);
+    //
+    // // expectations
+    // expect(
+    // mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_ENABLE, Collections.singletonMap(
+    // SafeOnlineConstants.DEVICE_PROPERTY, BeIdConstants.BEID_DEVICE_ID))).andReturn(new HistoryEntity());
+    //
+    // // prepare
+    // replay(mockObjects);
+    //
+    // // operate
+    // testedInstance.enable(testUserId, testSerial, testValidToken);
+    // testedInstance.authenticate(testUserId, testValidToken);
+    //
+    // // verify
+    // verify(mockObjects);
+    // }
 }

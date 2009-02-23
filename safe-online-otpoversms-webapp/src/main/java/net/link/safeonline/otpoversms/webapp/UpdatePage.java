@@ -9,9 +9,9 @@ package net.link.safeonline.otpoversms.webapp;
 
 import javax.ejb.EJB;
 
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
@@ -251,7 +251,7 @@ public class UpdatePage extends TemplatePage {
                         password1Field.error(getLocalizer().getString("errorDeviceDisabled", this));
                         HelpdeskLogger.add(WicketUtil.getHttpSession(getRequest()), "login: mobile " + protocolContext.getAttribute()
                                 + " disabled", LogLevelType.ERROR);
-                    } catch (PermissionDeniedException e) {
+                    } catch (DeviceAuthenticationException e) {
                         oldpinField.error(getLocalizer().getString("errorPinNotCorrect", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "update: device not found",
                                 LogLevelType.ERROR);

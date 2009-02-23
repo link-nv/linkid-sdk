@@ -7,7 +7,6 @@ import static org.easymock.EasyMock.reset;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -38,6 +37,7 @@ import net.link.safeonline.config.dao.bean.ConfigItemDAOBean;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
 import net.link.safeonline.dao.HistoryDAO;
+import net.link.safeonline.dao.SubjectIdentifierDAO;
 import net.link.safeonline.dao.bean.AllowedDeviceDAOBean;
 import net.link.safeonline.dao.bean.ApplicationDAOBean;
 import net.link.safeonline.dao.bean.ApplicationIdentityDAOBean;
@@ -105,6 +105,11 @@ import net.link.safeonline.notification.dao.bean.EndpointReferenceDAOBean;
 import net.link.safeonline.notification.dao.bean.NotificationMessageDAOBean;
 import net.link.safeonline.notification.dao.bean.NotificationProducerDAOBean;
 import net.link.safeonline.notification.service.bean.NotificationProducerServiceBean;
+import net.link.safeonline.osgi.OSGIService;
+import net.link.safeonline.osgi.OSGIStartable;
+import net.link.safeonline.osgi.OSGIConstants.OSGIServiceType;
+import net.link.safeonline.osgi.sms.SmsService;
+import net.link.safeonline.osgi.sms.exception.SmsServiceException;
 import net.link.safeonline.pkix.dao.bean.TrustDomainDAOBean;
 import net.link.safeonline.pkix.dao.bean.TrustPointDAOBean;
 import net.link.safeonline.service.NodeMappingService;
@@ -121,11 +126,15 @@ import net.link.safeonline.test.util.PkiTestUtils;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
 import net.link.safeonline.util.ee.IdentityServiceClient;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.Before;
 import org.junit.Test;
 
 
 public class OtpOverSMSDeviceTest {
+
+    protected static final Log          LOG       = LogFactory.getLog(OtpOverSMSDeviceTest.class);
 
     private OtpOverSmsDeviceServiceBean testedInstance;
 
@@ -152,6 +161,14 @@ public class OtpOverSMSDeviceTest {
     private SubjectEntity               testSubject;
 
     private String                      testMobile;
+
+    private OSGIStartable               mockOSGIStartable;
+
+    private OSGIService                 mockOSGIService;
+
+    private String                      testOsgiServiceName;
+
+    private SmsService                  testSmsService;
 
     private static Class<?>[]           container = new Class[] { SubjectDAOBean.class, ApplicationDAOBean.class,
             SubscriptionDAOBean.class, AttributeDAOBean.class, TrustDomainDAOBean.class, ApplicationOwnerDAOBean.class,
@@ -212,8 +229,8 @@ public class OtpOverSMSDeviceTest {
         Startable systemStartable = EJBTestUtils.newInstance(SystemInitializationStartableBean.class, container, entityManager);
         systemStartable.postStart();
 
-        Startable passwordStartable = EJBTestUtils.newInstance(OtpOverSmsStartableBean.class, container, entityManager);
-        passwordStartable.postStart();
+        Startable otpOverSmsStartable = EJBTestUtils.newInstance(OtpOverSmsStartableBean.class, container, entityManager);
+        otpOverSmsStartable.postStart();
 
         testedInstance = new OtpOverSmsDeviceServiceBean();
 
@@ -223,8 +240,16 @@ public class OtpOverSMSDeviceTest {
         AttributeTypeDAO attributeTypeDAO = EJBTestUtils.newInstance(AttributeTypeDAO.class, container, entityManager);
         EJBTestUtils.inject(testedInstance, attributeTypeDAO);
 
+        SubjectIdentifierDAO subjectIdentifierDAO = EJBTestUtils.newInstance(SubjectIdentifierDAO.class, container, entityManager);
+        EJBTestUtils.inject(testedInstance, subjectIdentifierDAO);
+
         SubjectService subjectService = EJBTestUtils.newInstance(SubjectService.class, container, entityManager);
         EJBTestUtils.inject(testedInstance, subjectService);
+
+        mockOSGIStartable = createMock(OSGIStartable.class);
+        EJBTestUtils.inject(testedInstance, mockOSGIStartable);
+
+        mockOSGIService = createMock(OSGIService.class);
 
         otpOverSmsManager = EJBTestUtils.newInstance(OtpOverSmsManagerBean.class, container, entityManager);
         EJBTestUtils.inject(testedInstance, otpOverSmsManager);
@@ -240,7 +265,7 @@ public class OtpOverSMSDeviceTest {
 
         EJBTestUtils.init(testedInstance);
 
-        mockObjects = new Object[] { mockNodeMappingService, mockHistoryDAO, mockSecurityAuditLogger };
+        mockObjects = new Object[] { mockNodeMappingService, mockHistoryDAO, mockSecurityAuditLogger, mockOSGIStartable, mockOSGIService };
 
         // setup
         testUserId = UUID.randomUUID().toString();
@@ -249,7 +274,21 @@ public class OtpOverSMSDeviceTest {
         testInvalidPIN = "test-invalid-pin";
         testNode = "test-node";
         testSubject = subjectService.addSubjectWithoutLogin(testUserId);
+        testOsgiServiceName = "test-otp-service";
+        testSmsService = new SmsService() {
+
+            public void sendSms(String mobile, String message)
+                    throws SmsServiceException {
+
+                LOG.debug("sendSms to " + mobile + ": " + message);
+            }
+        };
         expect(mockNodeMappingService.getSubject(testUserId, testNode)).andReturn(testSubject);
+        expect(mockOSGIStartable.getService(testOsgiServiceName, OSGIServiceType.SMS_SERVICE)).andStubReturn(mockOSGIService);
+
+        Field smsServiceName = testedInstance.getClass().getDeclaredField("smsServiceName");
+        smsServiceName.setAccessible(true);
+        smsServiceName.set(testedInstance, testOsgiServiceName);
 
         EntityTransaction entityTransaction = entityManager.getTransaction();
         entityTransaction.commit();
@@ -264,6 +303,10 @@ public class OtpOverSMSDeviceTest {
         expect(
                 mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_REGISTRATION, Collections.singletonMap(
                         SafeOnlineConstants.DEVICE_PROPERTY, OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID))).andReturn(new HistoryEntity());
+        expect(mockOSGIService.getService()).andReturn(testSmsService);
+        mockOSGIService.ungetService();
+        expect(mockOSGIService.getService()).andReturn(testSmsService);
+        mockOSGIService.ungetService();
 
         // prepare
         replay(mockObjects);
@@ -287,6 +330,9 @@ public class OtpOverSMSDeviceTest {
         expect(
                 mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_REMOVAL, Collections.singletonMap(
                         SafeOnlineConstants.DEVICE_PROPERTY, OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID))).andReturn(new HistoryEntity());
+        expect(mockOSGIStartable.getService(testOsgiServiceName, OSGIServiceType.SMS_SERVICE)).andStubReturn(mockOSGIService);
+        expect(mockOSGIService.getService()).andReturn(testSmsService);
+        mockOSGIService.ungetService();
 
         // prepare
         replay(mockObjects);
@@ -299,10 +345,13 @@ public class OtpOverSMSDeviceTest {
 
         assertTrue(testedInstance.isChallenged());
         try {
-            testedInstance.authenticate(testUserId, testValidPIN);
+            testedInstance.authenticate(testValidPIN, getValidOTP());
             fail("Device registration was still found after removing the device.");
         } catch (DeviceRegistrationNotFoundException e) {
         }
+
+        // verify
+        verify(mockObjects);
     }
 
     @Test
@@ -313,7 +362,11 @@ public class OtpOverSMSDeviceTest {
         expect(
                 mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_REGISTRATION, Collections.singletonMap(
                         SafeOnlineConstants.DEVICE_PROPERTY, OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID))).andReturn(new HistoryEntity());
-        mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, testUserId, "incorrect password");
+        mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, testUserId, "incorrect pin");
+        expect(mockOSGIService.getService()).andReturn(testSmsService);
+        mockOSGIService.ungetService();
+        expect(mockOSGIService.getService()).andReturn(testSmsService);
+        mockOSGIService.ungetService();
 
         // prepare
         replay(mockObjects);
@@ -342,7 +395,11 @@ public class OtpOverSMSDeviceTest {
         expect(
                 mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_REGISTRATION, Collections.singletonMap(
                         SafeOnlineConstants.DEVICE_PROPERTY, OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID))).andReturn(new HistoryEntity());
-        mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, testUserId, "incorrect password");
+        mockSecurityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, testUserId, "incorrect otp");
+        expect(mockOSGIService.getService()).andReturn(testSmsService);
+        mockOSGIService.ungetService();
+        expect(mockOSGIService.getService()).andReturn(testSmsService);
+        mockOSGIService.ungetService();
 
         // prepare
         replay(mockObjects);
@@ -352,8 +409,12 @@ public class OtpOverSMSDeviceTest {
         testedInstance.register(testNode, testUserId, testValidPIN, getValidOTP());
 
         testedInstance.requestOtp(testMobile);
-        String resultUserId = testedInstance.authenticate(testValidPIN, getInvalidOTP());
-        assertNull(resultUserId);
+        try {
+            testedInstance.authenticate(testValidPIN, getInvalidOTP());
+            fail("Authentication didn't fail, even though the OTP was incorrect.");
+        } catch (DeviceAuthenticationException e) {
+            // expected.
+        }
 
         // verify
         verify(mockObjects);
@@ -370,10 +431,16 @@ public class OtpOverSMSDeviceTest {
         expect(
                 mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_REGISTRATION, Collections.singletonMap(
                         SafeOnlineConstants.DEVICE_PROPERTY, OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID))).andReturn(new HistoryEntity());
-
         expect(
                 mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_UPDATE, Collections.singletonMap(
                         SafeOnlineConstants.DEVICE_PROPERTY, OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID))).andReturn(new HistoryEntity());
+        expect(mockOSGIService.getService()).andReturn(testSmsService);
+        mockOSGIService.ungetService();
+        expect(mockOSGIService.getService()).andReturn(testSmsService);
+        mockOSGIService.ungetService();
+        expect(mockOSGIService.getService()).andReturn(testSmsService);
+        mockOSGIService.ungetService();
+
         // prepare
         replay(mockObjects);
 
@@ -401,8 +468,12 @@ public class OtpOverSMSDeviceTest {
                 mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_REGISTRATION, Collections.singletonMap(
                         SafeOnlineConstants.DEVICE_PROPERTY, OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID))).andReturn(new HistoryEntity());
         expect(
-                mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_ENABLE, Collections.singletonMap(
+                mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_DISABLE, Collections.singletonMap(
                         SafeOnlineConstants.DEVICE_PROPERTY, OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID))).andReturn(new HistoryEntity());
+        expect(mockOSGIService.getService()).andReturn(testSmsService);
+        mockOSGIService.ungetService();
+        expect(mockOSGIService.getService()).andReturn(testSmsService);
+        mockOSGIService.ungetService();
 
         // prepare
         replay(mockObjects);
@@ -427,6 +498,11 @@ public class OtpOverSMSDeviceTest {
         expect(
                 mockHistoryDAO.addHistoryEntry(testSubject, HistoryEventType.DEVICE_ENABLE, Collections.singletonMap(
                         SafeOnlineConstants.DEVICE_PROPERTY, OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID))).andReturn(new HistoryEntity());
+        expect(mockOSGIStartable.getService(testOsgiServiceName, OSGIServiceType.SMS_SERVICE)).andStubReturn(mockOSGIService);
+        expect(mockOSGIService.getService()).andReturn(testSmsService);
+        mockOSGIService.ungetService();
+        expect(mockOSGIService.getService()).andReturn(testSmsService);
+        mockOSGIService.ungetService();
 
         // prepare
         replay(mockObjects);

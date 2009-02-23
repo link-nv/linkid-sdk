@@ -8,9 +8,8 @@ import static org.easymock.EasyMock.verify;
 
 import java.util.UUID;
 
-import javax.mail.AuthenticationFailedException;
-
 import net.link.safeonline.audit.SecurityAuditLogger;
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.ProtocolContext;
@@ -232,7 +231,7 @@ public class RegistrationPageTest {
 
         // stubs
         mockOtpOverSmsDeviceService.register(nodeName, userId, pin, otp);
-        expectLastCall().andThrow(new AuthenticationFailedException());
+        expectLastCall().andThrow(new DeviceAuthenticationException());
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare

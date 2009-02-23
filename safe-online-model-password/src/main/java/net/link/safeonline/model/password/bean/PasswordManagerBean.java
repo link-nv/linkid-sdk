@@ -15,12 +15,12 @@ import javax.ejb.EJB;
 import javax.ejb.EJBException;
 import javax.ejb.Stateless;
 import javax.interceptor.Interceptors;
-import javax.mail.AuthenticationFailedException;
 
 import net.link.safeonline.audit.AccessAuditLogger;
 import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.InternalInconsistencyException;
 import net.link.safeonline.dao.AttributeDAO;
@@ -67,10 +67,10 @@ public class PasswordManagerBean implements PasswordManager {
      * {@inheritDoc}
      */
     public void updatePassword(SubjectEntity subject, String oldPassword, String newPassword)
-            throws DeviceRegistrationNotFoundException, AuthenticationFailedException {
+            throws DeviceRegistrationNotFoundException, DeviceAuthenticationException {
 
         if (!validatePassword(subject, oldPassword))
-            throw new AuthenticationFailedException("password mismatch");
+            throw new DeviceAuthenticationException("password mismatch");
 
         setPasswordWithForce(subject, newPassword);
     }
@@ -105,7 +105,7 @@ public class PasswordManagerBean implements PasswordManager {
         try {
             AttributeEntity deviceAttribute = attributeDAO.findAttribute(subject, PasswordConstants.PASSWORD_DEVICE_ATTRIBUTE, 0);
             if (deviceAttribute == null)
-                throw new DeviceRegistrationNotFoundException();
+                throw new DeviceRegistrationNotFoundException("There is no device attribute type for the password device.");
 
             AttributeEntity algorithmAttribute = attributeManager.getCompoundMember(deviceAttribute,
                     PasswordConstants.PASSWORD_ALGORITHM_ATTRIBUTE);
@@ -133,7 +133,7 @@ public class PasswordManagerBean implements PasswordManager {
         } catch (AttributeTypeNotFoundException e) {
             throw new InternalInconsistencyException("Attribute types for OtpOverSMS device not defined.", e);
         } catch (AttributeNotFoundException e) {
-            throw new DeviceRegistrationNotFoundException();
+            throw new DeviceRegistrationNotFoundException(e);
         }
     }
 
@@ -146,7 +146,7 @@ public class PasswordManagerBean implements PasswordManager {
         try {
             AttributeEntity deviceAttribute = attributeDAO.findAttribute(subject, PasswordConstants.PASSWORD_DEVICE_ATTRIBUTE, 0);
             if (deviceAttribute == null)
-                throw new DeviceRegistrationNotFoundException();
+                throw new DeviceRegistrationNotFoundException("There is no device attribute type for the password device.");
 
             AttributeEntity hashAttribute = attributeManager.getCompoundMember(deviceAttribute, PasswordConstants.PASSWORD_HASH_ATTRIBUTE);
             AttributeEntity seedAttribute = attributeManager.getCompoundMember(deviceAttribute, PasswordConstants.PASSWORD_SEED_ATTRIBUTE);
@@ -176,7 +176,7 @@ public class PasswordManagerBean implements PasswordManager {
         } catch (AttributeTypeNotFoundException e) {
             throw new InternalInconsistencyException("Attribute types for OtpOverSMS device not defined.", e);
         } catch (AttributeNotFoundException e) {
-            throw new DeviceRegistrationNotFoundException();
+            throw new DeviceRegistrationNotFoundException(e);
         }
     }
 

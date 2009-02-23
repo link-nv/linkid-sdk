@@ -32,12 +32,32 @@ public class SafeOnlineException extends Exception {
 
     public SafeOnlineException() {
 
-        this(null, SharedConstants.UNDEFINED_ERROR);
+        this(null, (Throwable) null);
+    }
+
+    public SafeOnlineException(Throwable cause) {
+
+        this(null, cause);
+    }
+
+    public SafeOnlineException(String message) {
+
+        this(message, (Throwable) null);
+    }
+
+    public SafeOnlineException(String message, Throwable cause) {
+
+        this(message, cause, SharedConstants.UNDEFINED_ERROR);
     }
 
     public SafeOnlineException(String message, String errorCode) {
 
-        super(message);
+        this(message, null, errorCode);
+    }
+
+    public SafeOnlineException(String message, Throwable cause, String errorCode) {
+
+        super(message, cause);
         this.errorCode = errorCode;
     }
 }

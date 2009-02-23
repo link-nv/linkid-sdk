@@ -142,7 +142,7 @@ public class OptionDeviceServiceBean implements OptionDeviceService {
         catch (AttributeTypeNotFoundException e) {
             throw new InternalInconsistencyException("Attribute types for Option device not defined.", e);
         } catch (AttributeNotFoundException e) {
-            throw new DeviceRegistrationNotFoundException();
+            throw new DeviceRegistrationNotFoundException(e);
         }
     }
 
@@ -201,7 +201,7 @@ public class OptionDeviceServiceBean implements OptionDeviceService {
         catch (AttributeTypeNotFoundException e) {
             throw new InternalInconsistencyException("Attribute types for Option device not defined.", e);
         } catch (AttributeNotFoundException e) {
-            throw new DeviceRegistrationNotFoundException();
+            throw new DeviceRegistrationNotFoundException(e);
         }
     }
 }

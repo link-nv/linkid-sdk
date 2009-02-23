@@ -7,7 +7,6 @@
 package net.link.safeonline.model.password;
 
 import javax.ejb.Local;
-import javax.mail.AuthenticationFailedException;
 
 import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
@@ -29,13 +28,13 @@ public interface PasswordDeviceService extends PasswordService {
             throws NodeNotFoundException;
 
     void update(String userId, String oldPassword, String newPassword)
-            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException, AuthenticationFailedException;
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException, DeviceAuthenticationException;
 
     void remove(String userId)
             throws SubjectNotFoundException;
 
     void enable(String userId, String password)
-            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, AuthenticationFailedException;
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceAuthenticationException;
 
     void disable(String userId)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException;

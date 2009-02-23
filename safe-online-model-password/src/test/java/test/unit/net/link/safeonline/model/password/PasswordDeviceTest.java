@@ -290,6 +290,9 @@ public class PasswordDeviceTest {
             fail("Device registration was still found after removing the device.");
         } catch (DeviceRegistrationNotFoundException e) {
         }
+
+        // verify
+        verify(mockObjects);
     }
 
     @Test

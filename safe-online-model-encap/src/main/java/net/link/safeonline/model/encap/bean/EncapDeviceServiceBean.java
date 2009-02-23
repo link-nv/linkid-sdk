@@ -126,7 +126,7 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
         catch (AttributeTypeNotFoundException e) {
             throw new InternalInconsistencyException("Attribute types for Encap device not defined.", e);
         } catch (AttributeNotFoundException e) {
-            throw new DeviceRegistrationNotFoundException();
+            throw new DeviceRegistrationNotFoundException(e);
         }
     }
 
@@ -151,6 +151,10 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
             securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, subject.getUserId(), "incorrect mobile token");
             throw new DeviceAuthenticationException();
         }
+
+        // Success, reset the challenge data.
+        challengeMobile = null;
+        challengeCode = null;
 
         return subject.getUserId();
     }
@@ -204,6 +208,10 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
 
             historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_REGISTRATION, Collections.singletonMap(
                     SafeOnlineConstants.DEVICE_PROPERTY, EncapConstants.ENCAP_DEVICE_ID));
+            // Success, reset the challenge data.
+            challengeMobile = null;
+            challengeCode = null;
+
         }
 
         catch (AttributeTypeNotFoundException e) {
@@ -221,7 +229,7 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
 
         SubjectEntity subject = subjectIdentifierDAO.findSubject(EncapConstants.ENCAP_IDENTIFIER_DOMAIN, mobile);
         if (null == subject)
-            throw new DeviceRegistrationNotFoundException();
+            throw new SubjectNotFoundException();
 
         try {
             attributeManager.removeCompoundWhere(subject, EncapConstants.ENCAP_DEVICE_ATTRIBUTE, EncapConstants.ENCAP_MOBILE_ATTRIBUTE,
@@ -235,7 +243,7 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
         catch (AttributeTypeNotFoundException e) {
             throw new InternalInconsistencyException("Attribute types for Encap device not defined.", e);
         } catch (AttributeNotFoundException e) {
-            throw new DeviceRegistrationNotFoundException();
+            throw new DeviceRegistrationNotFoundException(e);
         }
     }
 
@@ -312,6 +320,10 @@ public class EncapDeviceServiceBean implements EncapDeviceService, EncapDeviceSe
 
         historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_ENABLE, Collections.singletonMap(SafeOnlineConstants.DEVICE_PROPERTY,
                 EncapConstants.ENCAP_DEVICE_ID));
+
+        // Success, reset the challenge data.
+        challengeMobile = null;
+        challengeCode = null;
     }
 
     /**

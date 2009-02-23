@@ -10,8 +10,7 @@ import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.UUID;
 
-import javax.mail.AuthenticationFailedException;
-
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.ProtocolContext;
 import net.link.safeonline.helpdesk.HelpdeskManager;
@@ -157,7 +156,7 @@ public class EnablePageTest {
 
         // stubs
         mockPasswordDeviceService.enable(userId, password);
-        expectLastCall().andThrow(new AuthenticationFailedException());
+        expectLastCall().andThrow(new DeviceAuthenticationException());
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare

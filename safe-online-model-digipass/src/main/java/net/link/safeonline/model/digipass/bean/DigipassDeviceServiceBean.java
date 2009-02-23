@@ -118,7 +118,7 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
             List<AttributeEntity> disableAttributes = attributeDAO.listAttributes(subject, device.getDisableAttributeType());
 
             if (attributes.isEmpty() || disableAttributes.isEmpty())
-                throw new DeviceRegistrationNotFoundException();
+                throw new DeviceRegistrationNotFoundException("No attributes or no disable attribute found for this device");
 
             if (true == disableAttributes.get(0).getBooleanValue()) {
                 securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, userId, "device is disabled");
@@ -299,7 +299,7 @@ public class DigipassDeviceServiceBean implements DigipassDeviceService, Digipas
         catch (AttributeTypeNotFoundException e) {
             throw new InternalInconsistencyException("Digipass device attribute types not defined.", e);
         } catch (AttributeNotFoundException e) {
-            throw new DeviceRegistrationNotFoundException();
+            throw new DeviceRegistrationNotFoundException(e);
         }
     }
 }

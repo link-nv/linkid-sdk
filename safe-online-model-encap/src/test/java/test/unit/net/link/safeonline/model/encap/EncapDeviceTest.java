@@ -325,6 +325,9 @@ public class EncapDeviceTest {
         } catch (MobileException e) {
             // expected.
         }
+
+        // verify
+        verify(mockObjects);
     }
 
     @Test

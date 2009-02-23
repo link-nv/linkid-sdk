@@ -8,8 +8,8 @@
 package net.link.safeonline.password.webapp;
 
 import javax.ejb.EJB;
-import javax.mail.AuthenticationFailedException;
 
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
@@ -128,7 +128,7 @@ public class UpdatePage extends TemplatePage {
                         password1Field.error(getLocalizer().getString("errorSubjectNotFound", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "update: subject not found",
                                 LogLevelType.ERROR);
-                    } catch (AuthenticationFailedException e) {
+                    } catch (DeviceAuthenticationException e) {
                         oldpasswordField.error(getLocalizer().getString("errorOldPasswordNotCorrect", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "register: device not found",
                                 LogLevelType.ERROR);

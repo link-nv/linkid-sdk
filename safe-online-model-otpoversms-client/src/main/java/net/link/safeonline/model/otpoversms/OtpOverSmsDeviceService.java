@@ -7,12 +7,10 @@
 package net.link.safeonline.model.otpoversms;
 
 import javax.ejb.Local;
-import javax.mail.AuthenticationFailedException;
 
 import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.osgi.sms.exception.SmsServiceException;
@@ -28,16 +26,16 @@ public interface OtpOverSmsDeviceService extends OtpOverSmsService {
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException, DeviceAuthenticationException;
 
     void register(String nodeName, String userId, String pin, String otp)
-            throws PermissionDeniedException, AuthenticationFailedException;
+            throws DeviceAuthenticationException;
 
     void update(String userId, String oldPin, String newPin, String otp)
-            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException, PermissionDeniedException;
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException, DeviceAuthenticationException;
 
     void remove(String userId, String mobile)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException;
 
     void enable(String userId, String pin, String otp)
-            throws SubjectNotFoundException, AuthenticationFailedException, DeviceRegistrationNotFoundException, PermissionDeniedException;
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceAuthenticationException;
 
     void disable(String userId, String mobile)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException;

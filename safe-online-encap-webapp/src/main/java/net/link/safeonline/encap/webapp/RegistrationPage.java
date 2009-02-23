@@ -23,6 +23,7 @@ import net.link.safeonline.sdk.ws.exception.WSClientTransportException;
 import net.link.safeonline.sdk.ws.idmapping.NameIdentifierMappingClient;
 import net.link.safeonline.shared.helpdesk.LogLevelType;
 import net.link.safeonline.util.ee.AuthIdentityServiceClient;
+import net.link.safeonline.util.ee.EjbUtils;
 import net.link.safeonline.webapp.components.ErrorFeedbackPanel;
 import net.link.safeonline.webapp.template.TemplatePage;
 import net.link.safeonline.wicket.tools.WicketUtil;
@@ -46,9 +47,6 @@ public class RegistrationPage extends TemplatePage {
     public static final String     ACTIVATE_BUTTON_ID  = "activate";
     public static final String     REGISTER_BUTTON_ID  = "register";
     public static final String     CANCEL_BUTTON_ID    = "cancel";
-
-    @EJB(mappedName = EncapDeviceService.JNDI_BINDING)
-    transient EncapDeviceService   encapDeviceService;
 
     @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
     transient SamlAuthorityService samlAuthorityService;
@@ -112,7 +110,10 @@ public class RegistrationPage extends TemplatePage {
                     LOG.debug("register mobile: " + mobile.getObject());
 
                     try {
+                        EncapDeviceService encapDeviceService = EjbUtils.getEJB(EncapDeviceService.JNDI_BINDING, EncapDeviceService.class);
+
                         activation.setObject(encapDeviceService.register(mobile.getObject()));
+                        EncapSession.get().setDeviceBean(encapDeviceService);
                     }
 
                     catch (DeviceRegistrationException e) {

@@ -11,7 +11,6 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.mail.AuthenticationFailedException;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.SecurityAuditLogger;
@@ -77,7 +76,7 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
         List<AttributeEntity> disableAttributes = attributeDAO.listAttributes(subject, disableAttributeType);
 
         if (disableAttributes.isEmpty())
-            throw new DeviceRegistrationNotFoundException();
+            throw new DeviceRegistrationNotFoundException(e);
 
         return disableAttributes.get(0);
     }
@@ -134,11 +133,9 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
 
     /**
      * {@inheritDoc}
-     * 
-     * @throws AuthenticationFailedException
      */
     public void update(String userId, String oldPassword, String newPassword)
-            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException, AuthenticationFailedException {
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException, DeviceAuthenticationException {
 
         LOG.debug("update password for \"" + userId + "\"");
         SubjectEntity subject = subjectService.getSubject(userId);
@@ -147,7 +144,7 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
             throw new DeviceDisabledException();
 
         if (false == passwordManager.validatePassword(subject, oldPassword))
-            throw new AuthenticationFailedException("Invalid password");
+            throw new DeviceAuthenticationException("Invalid password");
 
         passwordManager.updatePassword(subject, oldPassword, newPassword);
 
@@ -159,14 +156,14 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
      * {@inheritDoc}
      */
     public void enable(String userId, String password)
-            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, AuthenticationFailedException {
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceAuthenticationException {
 
         SubjectEntity subject = subjectService.getSubject(userId);
 
         LOG.debug("enable password for \"" + subject.getUserId() + "\"");
 
         if (!passwordManager.validatePassword(subject, password))
-            throw new AuthenticationFailedException("Invalid password");
+            throw new DeviceAuthenticationException("Invalid password");
 
         getDisableAttribute(subject).setValue(false);
 
