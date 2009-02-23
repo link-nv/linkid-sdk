@@ -58,7 +58,7 @@ public class AuthenticationPage extends TemplatePage {
     AuthenticationContext                        authenticationContext;
 
     @OlasService(keyStore = SafeOnlineNodeKeyStore.class)
-    transient public NameIdentifierMappingClient idMappingClient;
+    transient NameIdentifierMappingClient idMappingClient;
 
 
     public AuthenticationPage() {

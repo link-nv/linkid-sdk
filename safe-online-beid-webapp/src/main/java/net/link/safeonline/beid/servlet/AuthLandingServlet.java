@@ -61,5 +61,4 @@ public class AuthLandingServlet extends LandingServlet {
 
         super.invokePost(request, response);
     }
-
 }
