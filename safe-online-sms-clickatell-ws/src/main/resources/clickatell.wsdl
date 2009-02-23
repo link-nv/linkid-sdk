@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<definitions xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://api.clickatell.com/soap/webservice"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://api.clickatell.com/soap/webservice">
+	<types>
+		<xsd:schema targetNamespace="http://api.clickatell.com/soap/webservice">
+			<xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
+			<xsd:import namespace="http://schemas.xmlsoap.org/wsdl/" />
+			<xsd:complexType name="ArrayOfString">
+				<xsd:complexContent>
+					<xsd:restriction base="SOAP-ENC:Array">
+						<xsd:attribute ref="SOAP-ENC:arrayType"
+							wsdl:arrayType="xsd:string[]" />
+					</xsd:restriction>
+				</xsd:complexContent>
+			</xsd:complexType>
+		</xsd:schema>
+	</types>
+	<message name="authInput">
+		<part name="api_id" type="xsd:int" />
+		<part name="user" type="xsd:string" />
+		<part name="password" type="xsd:string" />
+	</message>
+	<message name="authOutput">
+		<part name="return" type="xsd:string" />
+	</message>
+	<message name="pingInput">
+		<part name="session_id" type="xsd:string" />
+	</message>
+	<message name="pingOutput">
+		<part name="return" type="xsd:string" />
+	</message>
+	<message name="sendmsgInput">
+
+		<part name="api_id" type="xsd:int" />
+		<part name="user" type="xsd:string" />
+		<part name="password" type="xsd:string" />
+		<part name="to" type="tns:ArrayOfString" />
+
+		<part name="text" type="xsd:string" />
+
+	</message>
+	<message name="sendmsgOutput">
+		<part name="return" type="tns:ArrayOfString" />
+	</message>
+	<message name="querymsgInput">
+		<part name="session_id" type="xsd:string" />
+		<part name="api_id" type="xsd:int" />
+		<part name="user" type="xsd:string" />
+		<part name="password" type="xsd:string" />
+		<part name="apimsgid" type="xsd:string" />
+		<part name="climsgid" type="xsd:string" />
+	</message>
+	<message name="querymsgOutput">
+		<part name="return" type="tns:ArrayOfString" />
+	</message>
+	<message name="delmsgInput">
+		<part name="session_id" type="xsd:string" />
+		<part name="api_id" type="xsd:string" />
+		<part name="user" type="xsd:string" />
+		<part name="password" type="xsd:string" />
+		<part name="apimsgid" type="xsd:string" />
+		<part name="climsgid" type="xsd:string" />
+	</message>
+	<message name="delmsgOutput">
+		<part name="return" type="tns:ArrayOfString" />
+	</message>
+	<message name="getbalanceInput">
+		<part name="session_id" type="xsd:string" />
+		<part name="api_id" type="xsd:int" />
+		<part name="user" type="xsd:string" />
+		<part name="password" type="xsd:string" />
+	</message>
+	<message name="getbalanceOutput">
+		<part name="return" type="xsd:string" />
+	</message>
+	<message name="routeCoverageInput">
+		<part name="session_id" type="xsd:string" />
+		<part name="api_id" type="xsd:int" />
+		<part name="user" type="xsd:string" />
+		<part name="password" type="xsd:string" />
+		<part name="msisdn" type="xsd:string" />
+	</message>
+	<message name="routeCoverageOutput">
+		<part name="return" type="xsd:string" />
+	</message>
+	<message name="si_pushInput">
+		<part name="session_id" type="xsd:string" />
+		<part name="api_id" type="xsd:int" />
+		<part name="user" type="xsd:string" />
+		<part name="password" type="xsd:string" />
+		<part name="to" type="tns:ArrayOfString" />
+		<part name="si_id" type="xsd:string" />
+		<part name="si_url" type="xsd:string" />
+		<part name="si_text" type="xsd:string" />
+		<part name="si_created" type="xsd:string" />
+		<part name="si_expires" type="xsd:string" />
+		<part name="si_action" type="xsd:string" />
+		<part name="from" type="xsd:string" />
+		<part name="concat" type="xsd:int" />
+		<part name="deliv_ack" type="xsd:int" />
+		<part name="callback" type="xsd:int" />
+		<part name="deliv_time" type="xsd:int" />
+		<part name="max_credits" type="xsd:float" />
+		<part name="req_feat" type="xsd:int" />
+		<part name="queue" type="xsd:int" />
+		<part name="escalate" type="xsd:int" />
+		<part name="mo" type="xsd:int" />
+		<part name="cliMsgId" type="xsd:string" />
+		<part name="validity" type="xsd:int" />
+	</message>
+	<message name="si_pushOutput">
+		<part name="return" type="tns:ArrayOfString" />
+	</message>
+	<message name="ind_pushInput">
+		<part name="session_id" type="xsd:string" />
+		<part name="api_id" type="xsd:int" />
+		<part name="user" type="xsd:string" />
+		<part name="password" type="xsd:string" />
+		<part name="to" type="tns:ArrayOfString" />
+		<part name="mms_subject" type="xsd:string" />
+		<part name="mms_class" type="xsd:string" />
+		<part name="mms_expire" type="xsd:string" />
+		<part name="mms_from" type="xsd:string" />
+		<part name="mms_url" type="xsd:string" />
+		<part name="from" type="xsd:string" />
+		<part name="concat" type="xsd:int" />
+		<part name="deliv_ack" type="xsd:int" />
+		<part name="callback" type="xsd:int" />
+		<part name="deliv_time" type="xsd:int" />
+		<part name="max_credits" type="xsd:float" />
+		<part name="req_feat" type="xsd:int" />
+		<part name="queue" type="xsd:int" />
+		<part name="escalate" type="xsd:int" />
+		<part name="mo" type="xsd:int" />
+		<part name="cliMsgId" type="xsd:string" />
+		<part name="validity" type="xsd:int" />
+	</message>
+	<message name="ind_pushOutput">
+		<part name="return" type="tns:ArrayOfString" />
+	</message>
+	<message name="token_payInput">
+		<part name="session_id" type="xsd:string" />
+		<part name="api_id" type="xsd:int" />
+		<part name="user" type="xsd:string" />
+		<part name="password" type="xsd:string" />
+		<part name="token" type="xsd:string" />
+	</message>
+	<message name="token_payOutput">
+		<part name="return" type="xsd:string" />
+	</message>
+	<message name="startbatchInput">
+		<part name="session_id" type="xsd:string" />
+		<part name="api_id" type="xsd:int" />
+		<part name="user" type="xsd:string" />
+		<part name="password" type="xsd:string" />
+		<part name="from" type="xsd:string" />
+		<part name="concat" type="xsd:int" />
+		<part name="template" type="xsd:string" />
+		<part name="deliv_ack" type="xsd:int" />
+		<part name="callback" type="xsd:int" />
+		<part name="deliv_time" type="xsd:int" />
+		<part name="max_credits" type="xsd:float" />
+		<part name="req_feat" type="xsd:int" />
+		<part name="queue" type="xsd:int" />
+		<part name="escalate" type="xsd:int" />
+		<part name="mo" type="xsd:int" />
+		<part name="cliMsgId" type="xsd:string" />
+		<part name="unicode" type="xsd:int" />
+		<part name="msg_type" type="xsd:string" />
+		<part name="udh" type="xsd:string" />
+		<part name="data" type="xsd:string" />
+		<part name="validity" type="xsd:int" />
+	</message>
+	<message name="startbatchOutput">
+		<part name="return" type="tns:ArrayOfString" />
+	</message>
+	<message name="senditemInput">
+		<part name="session_id" type="xsd:string" />
+		<part name="api_id" type="xsd:int" />
+		<part name="user" type="xsd:string" />
+		<part name="password" type="xsd:string" />
+		<part name="batch_id" type="xsd:string" />
+		<part name="to" type="tns:ArrayOfString" />
+		<part name="field1" type="xsd:string" />
+		<part name="field2" type="xsd:string" />
+		<part name="field3" type="xsd:string" />
+		<part name="field4" type="xsd:string" />
+	</message>
+	<message name="senditemOutput">
+		<part name="return" type="tns:ArrayOfString" />
+	</message>
+	<message name="quicksendInput">
+		<part name="session_id" type="xsd:string" />
+		<part name="api_id" type="xsd:int" />
+		<part name="user" type="xsd:string" />
+		<part name="password" type="xsd:string" />
+		<part name="batch_id" type="xsd:string" />
+		<part name="to" type="tns:ArrayOfString" />
+	</message>
+	<message name="quicksendOutput">
+		<part name="return" type="tns:ArrayOfString" />
+	</message>
+	<message name="endbatchInput">
+		<part name="session_id" type="xsd:string" />
+		<part name="api_id" type="xsd:int" />
+		<part name="user" type="xsd:string" />
+		<part name="password" type="xsd:string" />
+		<part name="batch_id" type="xsd:string" />
+	</message>
+	<message name="endbatchOutput">
+		<part name="return" type="tns:ArrayOfString" />
+	</message>
+	<message name="getmsgchargeInput">
+		<part name="session_id" type="xsd:string" />
+		<part name="api_id" type="xsd:int" />
+		<part name="user" type="xsd:string" />
+		<part name="password" type="xsd:string" />
+		<part name="apimsgid" type="xsd:string" />
+	</message>
+	<message name="getmsgchargeOutput">
+		<part name="return" type="tns:ArrayOfString" />
+	</message>
+	<portType name="PushServerWSPortType">
+		<operation name="auth">
+			<input message="tns:authInput" />
+			<output message="tns:authOutput" />
+		</operation>
+		<operation name="ping">
+			<input message="tns:pingInput" />
+			<output message="tns:pingOutput" />
+		</operation>
+		<operation name="sendmsg">
+			<input message="tns:sendmsgInput" />
+			<output message="tns:sendmsgOutput" />
+		</operation>
+		<operation name="querymsg">
+			<input message="tns:querymsgInput" />
+			<output message="tns:querymsgOutput" />
+		</operation>
+		<operation name="delmsg">
+			<input message="tns:delmsgInput" />
+			<output message="tns:delmsgOutput" />
+		</operation>
+		<operation name="getbalance">
+			<input message="tns:getbalanceInput" />
+			<output message="tns:getbalanceOutput" />
+		</operation>
+		<operation name="routeCoverage">
+			<input message="tns:routeCoverageInput" />
+			<output message="tns:routeCoverageOutput" />
+		</operation>
+		<operation name="si_push">
+			<input message="tns:si_pushInput" />
+			<output message="tns:si_pushOutput" />
+		</operation>
+		<operation name="ind_push">
+			<input message="tns:ind_pushInput" />
+			<output message="tns:ind_pushOutput" />
+		</operation>
+		<operation name="token_pay">
+			<input message="tns:token_payInput" />
+			<output message="tns:token_payOutput" />
+		</operation>
+		<operation name="startbatch">
+			<input message="tns:startbatchInput" />
+			<output message="tns:startbatchOutput" />
+		</operation>
+		<operation name="senditem">
+			<input message="tns:senditemInput" />
+			<output message="tns:senditemOutput" />
+		</operation>
+		<operation name="quicksend">
+			<input message="tns:quicksendInput" />
+			<output message="tns:quicksendOutput" />
+		</operation>
+		<operation name="endbatch">
+			<input message="tns:endbatchInput" />
+			<output message="tns:endbatchOutput" />
+		</operation>
+		<operation name="getmsgcharge">
+			<input message="tns:getmsgchargeInput" />
+			<output message="tns:getmsgchargeOutput" />
+		</operation>
+	</portType>
+	<binding name="PushServerWSBinding" type="tns:PushServerWSPortType">
+		<soap:binding style="rpc"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="auth">
+			<soap:operation soapAction="http://api.clickatell.com/soap/webservice.php/auth"
+				style="rpc" />
+			<input>
+				<soap:body use="encoded" namespace="http://api.clickatell.com/soap/webservice"
+					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+				<soap:body use="encoded" namespace="http://api.clickatell.com/soap/webservice"
+					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>
+		<operation name="ping">
+			<soap:operation soapAction="http://api.clickatell.com/soap/webservice.php/ping"
+				style="rpc" />
+			<input>
+				<soap:body use="encoded" namespace="http://api.clickatell.com/soap/webservice"
+					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+				<soap:body use="encoded" namespace="http://api.clickatell.com/soap/webservice"
+					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>
+		<operation name="sendmsg">
+			<soap:operation
+				soapAction="http://api.clickatell.com/soap/webservice.php/sendmsg"
+				style="rpc" />
+			<input>
+				<soap:body use="encoded" namespace="http://api.clickatell.com/soap/webservice"
+					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+				<soap:body use="encoded" namespace="http://api.clickatell.com/soap/webservice"
+					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>
+		<operation name="querymsg">
+			<soap:operation
+				soapAction="http://api.clickatell.com/soap/webservice.php/querymsg"
+				style="rpc" />
+			<input>
+				<soap:body use="encoded" namespace="http://api.clickatell.com/soap/webservice"
+					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+				<soap:body use="encoded" namespace="http://api.clickatell.com/soap/webservice"
+					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>
+		<operation name="delmsg">
+			<soap:operation
+				soapAction="http://api.clickatell.com/soap/webservice.php/delmsg"
+				style="rpc" />
+			<input>
+				<soap:body use="encoded" namespace="http://api.clickatell.com/soap/webservice"
+					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+				<soap:body use="encoded" namespace="http://api.clickatell.com/soap/webservice"
+					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>
+		<operation name="getbalance">
+			<soap:operation
+				soapAction="http://api.clickatell.com/soap/webservice.php/getbalance"
+				style="rpc" />
+			<input>
+				<soap:body use="encoded" namespace="http://api.clickatell.com/soap/webservice"
+					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+				<soap:body use="encoded" namespace="http://api.clickatell.com/soap/webservice"
+					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>
+		<operation name="routeCoverage">
+			<soap:operation
+				soapAction="http://api.clickatell.com/soap/webservice.php/routeCoverage"
+				style="rpc" />
+			<input>
+				<soap:body use="encoded" namespace="http://api.clickatell.com/soap/webservice"
+					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+				<soap:body use="encoded" namespace="http://api.clickatell.com/soap/webservice"
+					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>
+		<operation name="si_push">
+			<soap:operation
+				soapAction="http://api.clickatell.com/soap/webservice.php/si_push"
+				style="rpc" />
+			<input>
+				<soap:body use="encoded" namespace="http://api.clickatell.com/soap/webservice"
+					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+				<soap:body use="encoded" namespace="http://api.clickatell.com/soap/webservice"
+					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>
+		<operation name="ind_push">
+			<soap:operation
+				soapAction="http://api.clickatell.com/soap/webservice.php/ind_push"
+				style="rpc" />
+			<input>
+				<soap:body use="encoded" namespace="http://api.clickatell.com/soap/webservice"
+					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+				<soap:body use="encoded" namespace="http://api.clickatell.com/soap/webservice"
+					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>
+		<operation name="token_pay">
+			<soap:operation
+				soapAction="http://api.clickatell.com/soap/webservice.php/token_pay"
+				style="rpc" />
+			<input>
+				<soap:body use="encoded" namespace="http://api.clickatell.com/soap/webservice"
+					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+				<soap:body use="encoded" namespace="http://api.clickatell.com/soap/webservice"
+					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>
+		<operation name="startbatch">
+			<soap:operation
+				soapAction="http://api.clickatell.com/soap/webservice.php/startbatch"
+				style="rpc" />
+			<input>
+				<soap:body use="encoded" namespace="http://api.clickatell.com/soap/webservice"
+					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+				<soap:body use="encoded" namespace="http://api.clickatell.com/soap/webservice"
+					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>
+		<operation name="senditem">
+			<soap:operation
+				soapAction="http://api.clickatell.com/soap/webservice.php/senditem"
+				style="rpc" />
+			<input>
+				<soap:body use="encoded" namespace="http://api.clickatell.com/soap/webservice"
+					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+				<soap:body use="encoded" namespace="http://api.clickatell.com/soap/webservice"
+					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>
+		<operation name="quicksend">
+			<soap:operation
+				soapAction="http://api.clickatell.com/soap/webservice.php/quicksend"
+				style="rpc" />
+			<input>
+				<soap:body use="encoded" namespace="http://api.clickatell.com/soap/webservice"
+					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+				<soap:body use="encoded" namespace="http://api.clickatell.com/soap/webservice"
+					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>
+		<operation name="endbatch">
+			<soap:operation
+				soapAction="http://api.clickatell.com/soap/webservice.php/endbatch"
+				style="rpc" />
+			<input>
+				<soap:body use="encoded" namespace="http://api.clickatell.com/soap/webservice"
+					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+				<soap:body use="encoded" namespace="http://api.clickatell.com/soap/webservice"
+					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>
+		<operation name="getmsgcharge">
+			<soap:operation
+				soapAction="http://api.clickatell.com/soap/webservice.php/getmsgcharge"
+				style="rpc" />
+			<input>
+				<soap:body use="encoded" namespace="http://api.clickatell.com/soap/webservice"
+					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</input>
+			<output>
+				<soap:body use="encoded" namespace="http://api.clickatell.com/soap/webservice"
+					encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+			</output>
+		</operation>
+	</binding>
+	<service name="PushServerWS">
+		<port name="PushServerWSPort" binding="tns:PushServerWSBinding">
+			<soap:address location="http://api.clickatell.com/soap/webservice.php" />
+		</port>
+	</service>
+</definitions>
