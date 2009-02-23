@@ -37,7 +37,7 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = SafeOnlineKeyStoreStartableBean.JNDI_BINDING)
 public class SafeOnlineKeyStoreStartableBean implements Startable {
 
-    public static final String  JNDI_BINDING      = "SafeOnline/SafeOnlineKeyStoreStartableBean/local";
+    public static final String  JNDI_BINDING      = Startable.JNDI_PREFIX + "SafeOnlineKeyStoreStartableBean";
 
     private static final String OLAS_KEY_PASSWORD = "secret";
     private static final String OLAS_KEY_RESOURCE = "safe-online-keystore.jks";

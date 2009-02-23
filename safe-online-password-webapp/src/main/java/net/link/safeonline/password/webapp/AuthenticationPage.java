@@ -41,24 +41,24 @@ import org.apache.wicket.model.Model;
 
 public class AuthenticationPage extends TemplatePage {
 
-    private static final long          serialVersionUID       = 1L;
+    private static final long                    serialVersionUID       = 1L;
 
-    public static final String         AUTHENTICATION_FORM_ID = "authentication_form";
-    public static final String         LOGIN_NAME_FIELD_ID    = "loginName";
-    public static final String         PASSWORD_FIELD_ID      = "password";
-    public static final String         LOGIN_BUTTON_ID        = "login";
-    public static final String         CANCEL_BUTTON_ID       = "cancel";
+    public static final String                   AUTHENTICATION_FORM_ID = "authentication_form";
+    public static final String                   LOGIN_NAME_FIELD_ID    = "loginName";
+    public static final String                   PASSWORD_FIELD_ID      = "password";
+    public static final String                   LOGIN_BUTTON_ID        = "login";
+    public static final String                   CANCEL_BUTTON_ID       = "cancel";
 
     @EJB(mappedName = PasswordDeviceService.JNDI_BINDING)
-    transient PasswordDeviceService    passwordDeviceService;
+    transient PasswordDeviceService              passwordDeviceService;
 
     @EJB(mappedName = SamlAuthorityService.JNDI_BINDING)
-    transient SamlAuthorityService     samlAuthorityService;
+    transient SamlAuthorityService               samlAuthorityService;
 
-    AuthenticationContext              authenticationContext;
+    AuthenticationContext                        authenticationContext;
 
     @OlasService(keyStore = SafeOnlineNodeKeyStore.class)
-    public NameIdentifierMappingClient idMappingClient;
+    transient public NameIdentifierMappingClient idMappingClient;
 
 
     public AuthenticationPage() {

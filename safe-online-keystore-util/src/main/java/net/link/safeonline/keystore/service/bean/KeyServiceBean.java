@@ -18,6 +18,8 @@ import net.link.safeonline.keystore.entity.KeyConfig;
 import net.link.safeonline.keystore.entity.Type;
 import net.link.safeonline.keystore.service.KeyService;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jboss.annotation.ejb.LocalBinding;
 
 
@@ -39,8 +41,10 @@ import org.jboss.annotation.ejb.LocalBinding;
 @LocalBinding(jndiBinding = KeyService.JNDI_BINDING)
 public class KeyServiceBean implements KeyService {
 
+    private static final Log LOG = LogFactory.getLog(KeyServiceBean.class);
+
     @PersistenceContext(unitName = "KeyStoreEntityManager")
-    protected EntityManager em;
+    protected EntityManager  em;
 
 
     @SuppressWarnings("unchecked")
@@ -105,7 +109,10 @@ public class KeyServiceBean implements KeyService {
     @Deprecated
     public String getConfig(String keyStoreAccessor) {
 
+        LOG.debug("getConfig " + keyStoreAccessor);
+
         KeyConfig keyStoreConfig = em.find(KeyConfig.class, keyStoreAccessor);
+
         if (keyStoreConfig == null)
             return null;
 
@@ -125,6 +132,8 @@ public class KeyServiceBean implements KeyService {
      */
     @Deprecated
     public void configure(String keyStoreAccessor, Type type, String config) {
+
+        LOG.debug("configure " + keyStoreAccessor + " config=" + config);
 
         KeyConfig keyStoreConfig = em.find(KeyConfig.class, keyStoreAccessor);
 

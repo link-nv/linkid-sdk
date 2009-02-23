@@ -21,6 +21,7 @@ import net.link.safeonline.authentication.exception.ExistingAttributeTypeExcepti
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.common.SafeOnlineRoles;
 import net.link.safeonline.dao.ApplicationIdentityDAO;
+import net.link.safeonline.dao.AttributeCacheDAO;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeProviderDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
@@ -63,6 +64,9 @@ public class AttributeTypeServiceBean implements AttributeTypeService, Attribute
 
     @EJB(mappedName = AttributeDAO.JNDI_BINDING)
     private AttributeDAO           attributeDAO;
+
+    @EJB(mappedName = AttributeCacheDAO.JNDI_BINDING)
+    private AttributeCacheDAO      attributeCacheDAO;
 
     @EJB(mappedName = DeviceDAO.JNDI_BINDING)
     private DeviceDAO              deviceDAO;
@@ -233,6 +237,9 @@ public class AttributeTypeServiceBean implements AttributeTypeService, Attribute
 
         // remove attributes of this type
         attributeDAO.removeAttributes(attributeType);
+
+        // TODO: remove cached attribute values of this type
+        // attributeCacheDAO.removeAttributes(attributeType);
 
         if (attributeType.isCompounded()) {
             attributeTypeDAO.removeMemberEntries(attributeType);

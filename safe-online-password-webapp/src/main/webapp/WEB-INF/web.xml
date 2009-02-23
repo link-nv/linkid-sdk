@@ -38,7 +38,7 @@
 	</context-param>
 	<context-param>
 		<param-name>KeyStoreResource</param-name>
-		<param-value>safe-online-password-keystore.jks</param-value>
+		<param-value>safe-online-node-keystore.jks</param-value>
 	</context-param>
 	<context-param>
 		<param-name>KeyStoreType</param-name>

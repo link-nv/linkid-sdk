@@ -51,7 +51,8 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
     public static final String JNDI_BINDING = Startable.JNDI_PREFIX + "SystemInitializationStartableBean";
 
 
-    public SystemInitializationStartableBean() {
+    @Override
+    public void postStart() {
 
         // Load OLAS configuration.
         ResourceBundle properties = ResourceBundle.getBundle("config");
@@ -122,6 +123,9 @@ public class SystemInitializationStartableBean extends AbstractInitBean {
         // add available notification topics
         notificationTopics.add(SafeOnlineConstants.TOPIC_REMOVE_USER);
         notificationTopics.add(SafeOnlineConstants.TOPIC_UNSUBSCRIBE_USER);
+
+        // now initialize
+        super.postStart();
 
     }
 
