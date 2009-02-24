@@ -311,8 +311,6 @@ public abstract class AbstractInitBean implements Startable {
 
         final String              nodeName;
 
-        final X509Certificate     certificate;
-
         final String              authenticationPath;
 
         final String              authenticationWSPath;
@@ -336,7 +334,7 @@ public abstract class AbstractInitBean implements Startable {
 
         public Device(String deviceName, String deviceClassName, String nodeName, String authenticationPath, String authenticationWSPath,
                       String registrationPath, String removalPath, String updatePath, String disablePath, String enablePath,
-                      X509Certificate certificate, AttributeTypeEntity deviceAttribute, AttributeTypeEntity deviceUserAttribute,
+                      AttributeTypeEntity deviceAttribute, AttributeTypeEntity deviceUserAttribute,
                       AttributeTypeEntity deviceDisableAttribute) {
 
             this.deviceName = deviceName;
@@ -349,7 +347,6 @@ public abstract class AbstractInitBean implements Startable {
             this.updatePath = updatePath;
             this.disablePath = disablePath;
             this.enablePath = enablePath;
-            this.certificate = certificate;
             this.deviceAttribute = deviceAttribute;
             this.deviceUserAttribute = deviceUserAttribute;
             this.deviceDisableAttribute = deviceDisableAttribute;
@@ -905,6 +902,12 @@ public abstract class AbstractInitBean implements Startable {
         for (Device device : devices) {
             DeviceEntity deviceEntity = deviceDAO.findDevice(device.deviceName);
             if (deviceEntity == null) {
+                LOG.debug("creating device: " + device.deviceName + ", " + device.deviceClassName + ", " + device.nodeName + ", "
+                        + device.authenticationPath + ", " + device.authenticationWSPath + ", " + device.registrationPath + ", "
+                        + device.removalPath + ", " + device.updatePath + ", " + device.disablePath + ", " + device.enablePath + ", "
+                        + device.deviceAttribute.getName() + ", " + device.deviceUserAttribute.getName() + ", "
+                        + device.deviceDisableAttribute.getName());
+
                 DeviceClassEntity deviceClassEntity = deviceClassDAO.getDeviceClass(device.deviceClassName);
                 NodeEntity olasNode = null;
                 /*
@@ -913,10 +916,10 @@ public abstract class AbstractInitBean implements Startable {
                 if (null != device.nodeName) {
                     olasNode = olasDAO.getNode(device.nodeName);
                 }
+
                 deviceEntity = deviceDAO.addDevice(device.deviceName, deviceClassEntity, olasNode, device.authenticationPath,
                         device.authenticationWSPath, device.registrationPath, device.removalPath, device.updatePath, device.disablePath,
-                        device.enablePath, device.certificate, device.deviceAttribute, device.deviceUserAttribute,
-                        device.deviceDisableAttribute);
+                        device.enablePath, device.deviceAttribute, device.deviceUserAttribute, device.deviceDisableAttribute);
             }
         }
     }

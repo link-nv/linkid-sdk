@@ -12,12 +12,10 @@ import static net.link.safeonline.entity.DeviceEntity.QUERY_LIST_WHERE_CLASS;
 import static net.link.safeonline.entity.DeviceEntity.QUERY_LIST_WHERE_CLASS_AUTH_CTX;
 
 import java.io.Serializable;
-import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -77,8 +75,6 @@ public class DeviceEntity implements Serializable {
 
     private String                               enablePath;
 
-    private String                               certificateSubject;
-
     private AttributeTypeEntity                  attributeType;
 
     private AttributeTypeEntity                  userAttributeType;
@@ -97,7 +93,7 @@ public class DeviceEntity implements Serializable {
 
     public DeviceEntity(String name, DeviceClassEntity deviceClass, NodeEntity location, String authenticationPath,
                         String authenticationWSPath, String registrationPath, String removalPath, String updatePath, String disablePath,
-                        String enablePath, X509Certificate certificate) {
+                        String enablePath) {
 
         this.name = name;
         this.deviceClass = deviceClass;
@@ -111,9 +107,6 @@ public class DeviceEntity implements Serializable {
         this.enablePath = enablePath;
         properties = new HashMap<String, DevicePropertyEntity>();
         descriptions = new HashMap<String, DeviceDescriptionEntity>();
-        if (null != certificate) {
-            certificateSubject = certificate.getSubjectX500Principal().getName();
-        }
     }
 
     @Id
@@ -437,40 +430,6 @@ public class DeviceEntity implements Serializable {
     public boolean isEnablable() {
 
         return null != enablePath && enablePath.length() > 0;
-    }
-
-    /**
-     * The certificate subject is used during application authentication phase to associate a given certificate with it's corresponding
-     * application.
-     * 
-     */
-    @Column(unique = true)
-    public String getCertificateSubject() {
-
-        return certificateSubject;
-    }
-
-    /**
-     * Sets the certificate subject. Do not use this method directly. Use {@link #setCertificate(X509Certificate) setCertificate} instead.
-     * JPA requires this setter.
-     * 
-     * @param certificateSubject
-     * @see #setCertificate(X509Certificate)
-     */
-    public void setCertificateSubject(String certificateSubject) {
-
-        this.certificateSubject = certificateSubject;
-    }
-
-    /**
-     * Sets the X509 certificate subject of the application. Use this method to update the certificate subject for this application.
-     * 
-     * @param certificate
-     */
-    @Transient
-    public void setCertificate(X509Certificate certificate) {
-
-        setCertificateSubject(certificate.getSubjectX500Principal().getName());
     }
 
     /**

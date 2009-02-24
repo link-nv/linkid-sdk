@@ -53,18 +53,17 @@ public class DeviceDAOBean implements DeviceDAO {
     public void postConstructCallback() {
 
         queryObject = QueryObjectFactory.createQueryObject(entityManager, DeviceEntity.QueryInterface.class);
-        descriptionQueryObject = QueryObjectFactory
-                                                        .createQueryObject(entityManager, DeviceDescriptionEntity.QueryInterface.class);
+        descriptionQueryObject = QueryObjectFactory.createQueryObject(entityManager, DeviceDescriptionEntity.QueryInterface.class);
         propertyQueryObject = QueryObjectFactory.createQueryObject(entityManager, DevicePropertyEntity.QueryInterface.class);
     }
 
     public DeviceEntity addDevice(String name, DeviceClassEntity deviceClass, NodeEntity node, String authenticationPath,
                                   String authenticationWSPath, String registrationPath, String removalPath, String updatePath,
-                                  String disablePath, String enablePath, X509Certificate certificate, AttributeTypeEntity attributeType,
+                                  String disablePath, String enablePath, AttributeTypeEntity attributeType,
                                   AttributeTypeEntity userAttributeType, AttributeTypeEntity disableAttributeType) {
 
         DeviceEntity device = new DeviceEntity(name, deviceClass, node, authenticationPath, authenticationWSPath, registrationPath,
-                removalPath, updatePath, disablePath, enablePath, certificate);
+                removalPath, updatePath, disablePath, enablePath);
         device.setAttributeType(attributeType);
         device.setUserAttributeType(userAttributeType);
         device.setDisableAttributeType(disableAttributeType);
