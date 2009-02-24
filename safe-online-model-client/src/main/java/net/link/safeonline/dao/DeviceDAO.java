@@ -7,7 +7,6 @@
 
 package net.link.safeonline.dao;
 
-import java.security.cert.X509Certificate;
 import java.util.List;
 
 import javax.ejb.Local;
@@ -75,9 +74,4 @@ public interface DeviceDAO extends SafeOnlineService {
     DevicePropertyEntity findProperty(DevicePropertyPK propertyPK);
 
     List<DeviceEntity> listDevices(String authenticationContextClass);
-
-    DeviceEntity getDevice(X509Certificate certificate)
-            throws DeviceNotFoundException;
-
-    DeviceEntity findDevice(X509Certificate certificate);
 }

@@ -56,7 +56,6 @@ import net.link.safeonline.authentication.exception.ApplicationNotFoundException
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.ApplicationIdentifierMappingService;
 import net.link.safeonline.authentication.service.AttributeProviderService;
-import net.link.safeonline.authentication.service.DeviceAuthenticationService;
 import net.link.safeonline.authentication.service.NodeAttributeService;
 import net.link.safeonline.authentication.service.NodeAuthenticationService;
 import net.link.safeonline.config.model.ConfigurationManager;
@@ -111,8 +110,6 @@ public class DataServicePortImplTest {
 
     private ApplicationAuthenticationService    mockApplicationAuthenticationService;
 
-    private DeviceAuthenticationService         mockDeviceAuthenticationService;
-
     private NodeAuthenticationService           mockNodeAuthenticationService;
 
     private PkiValidator                        mockPkiValidator;
@@ -162,9 +159,6 @@ public class DataServicePortImplTest {
         mockApplicationAuthenticationService = createMock(ApplicationAuthenticationService.class);
         jndiTestUtils.bindComponent(ApplicationAuthenticationService.JNDI_BINDING, mockApplicationAuthenticationService);
 
-        mockDeviceAuthenticationService = createMock(DeviceAuthenticationService.class);
-        jndiTestUtils.bindComponent(DeviceAuthenticationService.JNDI_BINDING, mockDeviceAuthenticationService);
-
         mockNodeAuthenticationService = createMock(NodeAuthenticationService.class);
         jndiTestUtils.bindComponent(NodeAuthenticationService.JNDI_BINDING, mockNodeAuthenticationService);
 
@@ -181,8 +175,8 @@ public class DataServicePortImplTest {
         expect(mockApplicationIdentifierMappingService.findUserId(applicationId, targetIdentity)).andStubReturn(testSubjectId);
 
         mockObjects = new Object[] { mockWSSecurityConfigurationService, mockAttributeProviderService, mockNodeAttributeService,
-                mockApplicationAuthenticationService, mockDeviceAuthenticationService, mockNodeAuthenticationService, mockPkiValidator,
-                mockConfigurationManager, mockApplicationIdentifierMappingService };
+                mockApplicationAuthenticationService, mockNodeAuthenticationService, mockPkiValidator, mockConfigurationManager,
+                mockApplicationIdentifierMappingService };
 
         webServiceTestUtils = new WebServiceTestUtils();
 

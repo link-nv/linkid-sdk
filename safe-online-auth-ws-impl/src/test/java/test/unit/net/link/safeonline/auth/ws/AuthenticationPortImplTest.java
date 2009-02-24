@@ -280,7 +280,7 @@ public class AuthenticationPortImplTest {
         NodeEntity localNode = new NodeEntity();
         DeviceClassEntity testDeviceClass = new DeviceClassEntity("test-device-class", "test-device-auth-context-class");
         DeviceEntity testDevice = new DeviceEntity(DeviceTestAuthenticationClientImpl.testDeviceName, testDeviceClass, localNode, null,
-                null, null, null, null, null, null, null);
+                null, null, null, null, null, null);
         SubjectEntity testSubject = new SubjectEntity(DeviceTestAuthenticationClientImpl.testUserId);
         ApplicationOwnerEntity owner = new ApplicationOwnerEntity("owner", testSubject);
         ApplicationEntity application = new ApplicationEntity(testApplicationName, null, owner, null, null, null, null);
@@ -557,7 +557,7 @@ public class AuthenticationPortImplTest {
         NodeEntity localNode = new NodeEntity();
         DeviceClassEntity testDeviceClass = new DeviceClassEntity("test-device-class", "test-device-auth-context-class");
         DeviceEntity testDevice = new DeviceEntity(DeviceTestAuthenticationClientImpl.testDeviceName, testDeviceClass, localNode, null,
-                null, null, null, null, null, null, null);
+                null, null, null, null, null, null);
         SubjectEntity testSubject = new SubjectEntity(DeviceTestAuthenticationClientImpl.testUserId);
         ApplicationOwnerEntity owner = new ApplicationOwnerEntity("owner", testSubject);
         ApplicationEntity application = new ApplicationEntity(testApplicationName, null, owner, null, null, null, null);
@@ -680,7 +680,7 @@ public class AuthenticationPortImplTest {
         NodeEntity localNode = new NodeEntity();
         DeviceClassEntity testDeviceClass = new DeviceClassEntity("test-device-class", "test-device-auth-context-class");
         DeviceEntity testDevice = new DeviceEntity(DeviceTestAuthenticationClientImpl.testDeviceName, testDeviceClass, localNode, null,
-                null, null, null, null, null, null, null);
+                null, null, null, null, null, null);
         SubjectEntity testSubject = new SubjectEntity(DeviceTestAuthenticationClientImpl.testUserId);
         ApplicationOwnerEntity owner = new ApplicationOwnerEntity("owner", testSubject);
         ApplicationEntity application = new ApplicationEntity(testApplicationName, null, owner, null, null, null, null);

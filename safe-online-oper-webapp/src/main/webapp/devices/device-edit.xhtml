@@ -171,29 +171,6 @@
 						</table>
 					</rich:simpleTogglePanel>
 
-					<rich:simpleTogglePanel switchType="client"
-						styleClass="fullwidth" id="cert-tab" label="#{msgs.certificate}">
-
-						<table class="inner">
-							<colgroup class="third" />
-							<colgroup />
-
-							<tbody>
-								<tr>
-									<th>
-										<h:outputText value="#{msgs.certificate}" />
-									</th>
-									<td>
-										<s:decorate>
-											<t:inputFileUpload id="certificate"
-												styleClass="label" value="#{operDevice.certificate}" />
-										</s:decorate>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</rich:simpleTogglePanel>
-
 					<h:messages styleClass="error" globalOnly="true" />
 
 					<h:commandButton action="#{operDevice.save}" id="save"

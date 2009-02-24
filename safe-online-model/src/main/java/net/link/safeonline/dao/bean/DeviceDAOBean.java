@@ -7,7 +7,6 @@
 
 package net.link.safeonline.dao.bean;
 
-import java.security.cert.X509Certificate;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -210,24 +209,4 @@ public class DeviceDAOBean implements DeviceDAO {
 
         return queryObject.listDevices(authenticationContextClass);
     }
-
-    public DeviceEntity getDevice(X509Certificate certificate)
-            throws DeviceNotFoundException {
-
-        List<DeviceEntity> devices = queryObject.listDevicesWhereCertificateSubject(certificate.getSubjectX500Principal().getName());
-        if (devices.isEmpty())
-            throw new DeviceNotFoundException();
-        DeviceEntity device = devices.get(0);
-        return device;
-    }
-
-    public DeviceEntity findDevice(X509Certificate certificate) {
-
-        List<DeviceEntity> devices = queryObject.listDevicesWhereCertificateSubject(certificate.getSubjectX500Principal().getName());
-        if (devices.isEmpty())
-            return null;
-        DeviceEntity device = devices.get(0);
-        return device;
-    }
-
 }

@@ -44,7 +44,6 @@ public class CertificateValidatorHandler implements SOAPHandler<SOAPMessageConte
 
     public enum CertificateDomain {
         APPLICATION,
-        DEVICE,
         NODE
     }
 
@@ -104,14 +103,6 @@ public class CertificateValidatorHandler implements SOAPHandler<SOAPMessageConte
         }
         if (PkiResult.VALID != result) {
             try {
-                result = pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_DEVICES_TRUST_DOMAIN, certificate);
-                setCertificateDomain(CertificateDomain.DEVICE, context);
-            } catch (TrustDomainNotFoundException e) {
-                throw WSSecurityUtil.createSOAPFaultException("devices trust domain not found", "FailedAuthentication");
-            }
-        }
-        if (PkiResult.VALID != result) {
-            try {
                 result = pkiValidator.validateCertificate(SafeOnlineConstants.SAFE_ONLINE_OLAS_TRUST_DOMAIN, certificate);
                 setCertificateDomain(CertificateDomain.NODE, context);
             } catch (TrustDomainNotFoundException e) {
@@ -157,11 +148,6 @@ public class CertificateValidatorHandler implements SOAPHandler<SOAPMessageConte
         if (null == certificateDomain)
             throw new CertificateDomainException();
         return certificateDomain;
-    }
-
-    public static boolean isDeviceCertificate(SOAPMessageContext soapMessageContext) {
-
-        return getCertificateDomain(soapMessageContext).equals(CertificateDomain.DEVICE);
     }
 
     public static boolean isApplicationCertificate(SOAPMessageContext soapMessageContext) {

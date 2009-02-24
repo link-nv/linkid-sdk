@@ -181,7 +181,7 @@ public class DeviceOperationServiceBean implements DeviceOperationService, Devic
 
         DeviceOperationResponse response = DeviceOperationResponseUtil.validateResponse(now, request, expectedChallengeId,
                 expectedDeviceOperation, node.getLocation(), nodeKeyStore.getCertificate(), nodeKeyStore.getPrivateKey(),
-                TrustDomainType.DEVICE);
+                TrustDomainType.NODE);
         if (null == response)
             return null;
 

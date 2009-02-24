@@ -464,7 +464,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
         NodeEntity node = nodeAuthenticationService.getLocalNode();
 
         Response samlResponse = ResponseUtil.validateResponse(now, request, expectedDeviceChallengeId, expectedApplicationName,
-                node.getLocation(), nodeKeyStore.getCertificate(), nodeKeyStore.getPrivateKey(), TrustDomainType.DEVICE);
+                node.getLocation(), nodeKeyStore.getCertificate(), nodeKeyStore.getPrivateKey(), TrustDomainType.NODE);
         if (null == samlResponse)
             return null;
 
@@ -924,7 +924,7 @@ public class AuthenticationServiceBean implements AuthenticationService, Authent
 
         DeviceOperationResponse response = DeviceOperationResponseUtil.validateResponse(now, request, expectedDeviceChallengeId,
                 DeviceOperationType.NEW_ACCOUNT_REGISTER, node.getLocation(), nodeKeyStore.getCertificate(), nodeKeyStore.getPrivateKey(),
-                TrustDomainType.DEVICE);
+                TrustDomainType.NODE);
         if (null == response)
             return null;
 

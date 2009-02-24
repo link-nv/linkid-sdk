@@ -902,12 +902,6 @@ public abstract class AbstractInitBean implements Startable {
         for (Device device : devices) {
             DeviceEntity deviceEntity = deviceDAO.findDevice(device.deviceName);
             if (deviceEntity == null) {
-                LOG.debug("creating device: " + device.deviceName + ", " + device.deviceClassName + ", " + device.nodeName + ", "
-                        + device.authenticationPath + ", " + device.authenticationWSPath + ", " + device.registrationPath + ", "
-                        + device.removalPath + ", " + device.updatePath + ", " + device.disablePath + ", " + device.enablePath + ", "
-                        + device.deviceAttribute.getName() + ", " + device.deviceUserAttribute.getName() + ", "
-                        + device.deviceDisableAttribute.getName());
-
                 DeviceClassEntity deviceClassEntity = deviceClassDAO.getDeviceClass(device.deviceClassName);
                 NodeEntity olasNode = null;
                 /*
