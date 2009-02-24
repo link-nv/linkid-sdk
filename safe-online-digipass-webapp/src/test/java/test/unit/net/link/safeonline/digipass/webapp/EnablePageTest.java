@@ -2,12 +2,13 @@ package test.unit.net.link.safeonline.digipass.webapp;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 
 import java.util.UUID;
 
-import junit.framework.TestCase;
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.authentication.service.SamlAuthorityService;
 import net.link.safeonline.device.sdk.ProtocolContext;
@@ -27,7 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 
-public class EnablePageTest extends TestCase {
+public class EnablePageTest {
 
     private DigipassDeviceService mockDigipassDeviceService;
 
@@ -40,12 +41,9 @@ public class EnablePageTest extends TestCase {
     private JndiTestUtils         jndiTestUtils;
 
 
-    @Override
     @Before
     public void setUp()
             throws Exception {
-
-        super.setUp();
 
         WicketUtil.setUnitTesting(true);
 
@@ -61,7 +59,6 @@ public class EnablePageTest extends TestCase {
 
     }
 
-    @Override
     @After
     public void tearDown()
             throws Exception {
@@ -91,7 +88,7 @@ public class EnablePageTest extends TestCase {
         EJBTestUtils.inject(enablePage, mockSamlAuthorityService);
 
         // stubs
-        expect(mockDigipassDeviceService.enable(userId, serialNumber, token)).andStubReturn(userId);
+        mockDigipassDeviceService.enable(userId, serialNumber, token);
         expect(mockSamlAuthorityService.getAuthnAssertionValidity()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
@@ -128,7 +125,8 @@ public class EnablePageTest extends TestCase {
         jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
 
         // stubs
-        expect(mockDigipassDeviceService.enable(userId, serialNumber, token)).andThrow(new SubjectNotFoundException());
+        mockDigipassDeviceService.enable(userId, serialNumber, token);
+        expectLastCall().andThrow(new SubjectNotFoundException());
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare
@@ -169,7 +167,8 @@ public class EnablePageTest extends TestCase {
         jndiTestUtils.bindComponent(HelpdeskManager.JNDI_BINDING, mockHelpdeskManager);
 
         // stubs
-        expect(mockDigipassDeviceService.enable(userId, serialNumber, token)).andStubReturn(null);
+        mockDigipassDeviceService.enable(userId, serialNumber, token);
+        expectLastCall().andThrow(new DeviceAuthenticationException());
         expect(mockHelpdeskManager.getHelpdeskContextLimit()).andStubReturn(Integer.MAX_VALUE);
 
         // prepare

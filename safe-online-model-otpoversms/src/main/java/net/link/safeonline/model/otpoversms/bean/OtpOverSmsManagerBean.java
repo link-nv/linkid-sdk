@@ -22,7 +22,6 @@ import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.InternalInconsistencyException;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.common.Configurable;
 import net.link.safeonline.config.model.ConfigurationInterceptor;
 import net.link.safeonline.dao.AttributeDAO;
@@ -113,12 +112,11 @@ public class OtpOverSmsManagerBean implements OtpOverSmsManager {
         } catch (AttributeTypeNotFoundException e) {
             throw new InternalInconsistencyException("Attribute types for OtpOverSMS device not defined.", e);
         } catch (AttributeNotFoundException e) {
-            throw new DeviceRegistrationNotFoundException();
+            throw new DeviceRegistrationNotFoundException(e);
         }
     }
 
-    public void registerMobile(SubjectEntity subject, String mobile, String pin)
-            throws PermissionDeniedException {
+    public void registerMobile(SubjectEntity subject, String mobile, String pin) {
 
         try {
             String seed = subject.getUserId();
@@ -178,7 +176,7 @@ public class OtpOverSmsManagerBean implements OtpOverSmsManager {
         } catch (AttributeTypeNotFoundException e) {
             throw new InternalInconsistencyException("Attribute types for OtpOverSMS device not defined.", e);
         } catch (AttributeNotFoundException e) {
-            throw new DeviceRegistrationNotFoundException();
+            throw new DeviceRegistrationNotFoundException(e);
         }
     }
 
@@ -206,7 +204,7 @@ public class OtpOverSmsManagerBean implements OtpOverSmsManager {
         catch (AttributeTypeNotFoundException e) {
             throw new InternalInconsistencyException("Attribute types for OtpOverSMS device not defined.", e);
         } catch (AttributeNotFoundException e) {
-            throw new DeviceRegistrationNotFoundException();
+            throw new DeviceRegistrationNotFoundException(e);
         }
     }
 
@@ -221,7 +219,7 @@ public class OtpOverSmsManagerBean implements OtpOverSmsManager {
         catch (AttributeTypeNotFoundException e) {
             throw new InternalInconsistencyException("Attribute types for OtpOverSMS device not defined.", e);
         } catch (AttributeNotFoundException e) {
-            throw new DeviceRegistrationNotFoundException();
+            throw new DeviceRegistrationNotFoundException(e);
         }
     }
 

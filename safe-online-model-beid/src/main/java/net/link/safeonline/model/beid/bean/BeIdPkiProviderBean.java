@@ -190,7 +190,7 @@ public class BeIdPkiProviderBean implements PkiProvider {
         catch (AttributeTypeNotFoundException e) {
             throw new InternalInconsistencyException("Missing attribute type for BeID device", e);
         } catch (AttributeNotFoundException e) {
-            throw new DeviceRegistrationNotFoundException();
+            throw new DeviceRegistrationNotFoundException(e);
         }
     }
 
@@ -215,7 +215,7 @@ public class BeIdPkiProviderBean implements PkiProvider {
         catch (AttributeTypeNotFoundException e) {
             throw new InternalInconsistencyException("Missing attribute type for BeID device", e);
         } catch (AttributeNotFoundException e) {
-            throw new DeviceRegistrationNotFoundException();
+            throw new DeviceRegistrationNotFoundException(e);
         }
     }
 
@@ -240,7 +240,7 @@ public class BeIdPkiProviderBean implements PkiProvider {
         catch (AttributeTypeNotFoundException e) {
             throw new InternalInconsistencyException("Missing attribute type for BeID device", e);
         } catch (AttributeNotFoundException e) {
-            throw new DeviceRegistrationNotFoundException();
+            throw new DeviceRegistrationNotFoundException(e);
         }
     }
 
@@ -271,7 +271,7 @@ public class BeIdPkiProviderBean implements PkiProvider {
         catch (AttributeTypeNotFoundException e) {
             throw new InternalInconsistencyException("Missing attribute type for BeID device", e);
         } catch (AttributeNotFoundException e) {
-            throw new DeviceRegistrationNotFoundException();
+            throw new DeviceRegistrationNotFoundException(e);
         }
     }
 

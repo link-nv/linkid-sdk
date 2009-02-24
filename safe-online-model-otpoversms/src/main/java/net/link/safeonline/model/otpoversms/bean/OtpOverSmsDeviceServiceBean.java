@@ -13,7 +13,6 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Stateful;
 import javax.interceptor.Interceptors;
-import javax.mail.AuthenticationFailedException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -22,11 +21,11 @@ import net.link.safeonline.audit.ResourceAuditLoggerInterceptor;
 import net.link.safeonline.audit.SecurityAuditLogger;
 import net.link.safeonline.authentication.exception.AttributeNotFoundException;
 import net.link.safeonline.authentication.exception.AttributeTypeNotFoundException;
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.InternalInconsistencyException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SafeOnlineResourceException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.common.Configurable;
@@ -135,7 +134,7 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
         catch (AttributeTypeNotFoundException e) {
             throw new InternalInconsistencyException("Attribute types for OtpOverSMS device not defined.", e);
         } catch (AttributeNotFoundException e) {
-            throw new DeviceRegistrationNotFoundException();
+            throw new DeviceRegistrationNotFoundException(e);
         }
     }
 
@@ -143,26 +142,30 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
      * {@inheritDoc}
      */
     public String authenticate(String pin, String otp)
-            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException {
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException, DeviceAuthenticationException {
 
         LOG.debug("authenticate otp over sms device mobile=" + challengeMobile);
 
-        if (false == verifyOtp(otp))
-            return null;
-
         SubjectEntity subject = subjectIdentifierDAO.findSubject(OtpOverSmsConstants.OTPOVERSMS_IDENTIFIER_DOMAIN, challengeMobile);
-        if (null == subject) {
+        if (null == subject)
             throw new SubjectNotFoundException();
+
+        if (false == verifyOtp(otp)) {
+            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, subject.getUserId(), "incorrect otp");
+            throw new DeviceAuthenticationException();
         }
 
-        if (true == getDisableAttribute(subject, challengeMobile).getBooleanValue()) {
+        if (true == getDisableAttribute(subject, challengeMobile).getBooleanValue())
             throw new DeviceDisabledException();
-        }
 
         if (false == otpOverSmsManager.validatePin(subject, challengeMobile, pin)) {
             securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, subject.getUserId(), "incorrect pin");
-            return null;
+            throw new DeviceAuthenticationException();
         }
+
+        // Success, reset the challenge data.
+        challengeMobile = null;
+        expectedOtp = null;
 
         return subject.getUserId();
     }
@@ -171,11 +174,10 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
      * {@inheritDoc}
      */
     public void register(String nodeName, String userId, String pin, String otp)
-            throws PermissionDeniedException, AuthenticationFailedException {
+            throws DeviceAuthenticationException, DeviceAuthenticationException {
 
-        if (false == verifyOtp(otp)) {
-            throw new AuthenticationFailedException();
-        }
+        if (false == verifyOtp(otp))
+            throw new DeviceAuthenticationException();
 
         LOG.debug("register otp over sms device for \"" + userId + "\" mobile=" + challengeMobile);
 
@@ -199,7 +201,7 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
         try {
             subject = nodeMappingService.getSubject(userId, nodeName);
         } catch (NodeNotFoundException e) {
-            throw new AuthenticationFailedException(e.getMessage());
+            throw new DeviceAuthenticationException(e);
         }
 
         // Register the mobile with that subject and map the mobile to the subject.
@@ -208,6 +210,10 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
 
         historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_REGISTRATION, Collections.singletonMap(
                 SafeOnlineConstants.DEVICE_PROPERTY, OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID));
+
+        // Success, reset the challenge data.
+        challengeMobile = null;
+        expectedOtp = null;
     }
 
     /**
@@ -230,43 +236,48 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
      * {@inheritDoc}
      */
     public void update(String userId, String oldPin, String newPin, String otp)
-            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException, PermissionDeniedException {
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException, DeviceAuthenticationException {
 
         LOG.debug("update pin for otp over sms device for \"" + userId + "\" mobile=" + challengeMobile);
         SubjectEntity subject = subjectService.getSubject(userId);
 
-        if (false == verifyOtp(otp)) {
-            throw new PermissionDeniedException("Invalid OTP");
-        }
-
-        if (true == getDisableAttribute(subject, challengeMobile).getBooleanValue()) {
+        if (true == getDisableAttribute(subject, challengeMobile).getBooleanValue())
             throw new DeviceDisabledException();
+
+        if (false == verifyOtp(otp)) {
+            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, subject.getUserId(), "incorrect otp");
+            throw new DeviceAuthenticationException("Invalid OTP");
         }
 
         if (!otpOverSmsManager.validatePin(subject, challengeMobile, oldPin)) {
-            throw new PermissionDeniedException("Invalid PIN");
+            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, subject.getUserId(), "incorrect pin");
+            throw new DeviceAuthenticationException("Invalid PIN");
         }
 
         otpOverSmsManager.updatePin(subject, challengeMobile, oldPin, newPin);
 
         historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_UPDATE, Collections.singletonMap(SafeOnlineConstants.DEVICE_PROPERTY,
                 OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID));
+
+        // Success, reset the challenge data.
+        challengeMobile = null;
+        expectedOtp = null;
     }
 
     /**
      * {@inheritDoc}
      */
     public void enable(String userId, String pin, String otp)
-            throws SubjectNotFoundException, AuthenticationFailedException, DeviceRegistrationNotFoundException, PermissionDeniedException {
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceAuthenticationException {
 
         SubjectEntity subject = subjectService.getSubject(userId);
 
-        if (false == verifyOtp(otp)) {
-            throw new AuthenticationFailedException();
-        }
+        if (false == verifyOtp(otp))
+            throw new DeviceAuthenticationException("Invalid OTP");
 
         if (!otpOverSmsManager.validatePin(subject, challengeMobile, pin)) {
-            throw new PermissionDeniedException("Invalid PIN");
+            securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, subject.getUserId(), "incorrect pin");
+            throw new DeviceAuthenticationException("Invalid PIN");
         }
 
         try {
@@ -284,12 +295,16 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
 
             historyDAO.addHistoryEntry(subject, HistoryEventType.DEVICE_ENABLE, Collections.singletonMap(
                     SafeOnlineConstants.DEVICE_PROPERTY, OtpOverSmsConstants.OTPOVERSMS_DEVICE_ID));
+
+            // Success, reset the challenge data.
+            challengeMobile = null;
+            expectedOtp = null;
         }
 
         catch (AttributeTypeNotFoundException e) {
             throw new InternalInconsistencyException("Attribute types for OtpOverSMS device not defined.", e);
         } catch (AttributeNotFoundException e) {
-            throw new DeviceRegistrationNotFoundException();
+            throw new DeviceRegistrationNotFoundException(e);
         }
     }
 
@@ -300,9 +315,8 @@ public class OtpOverSmsDeviceServiceBean implements OtpOverSmsDeviceService, Otp
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException {
 
         SubjectEntity subject = subjectIdentifierDAO.findSubject(OtpOverSmsConstants.OTPOVERSMS_IDENTIFIER_DOMAIN, mobile);
-        if (null == subject) {
+        if (null == subject)
             throw new SubjectNotFoundException();
-        }
 
         AttributeEntity disableAttribute = getDisableAttribute(subject, mobile);
         disableAttribute.setValue(true);

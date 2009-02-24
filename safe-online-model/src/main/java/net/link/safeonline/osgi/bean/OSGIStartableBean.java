@@ -21,6 +21,7 @@ import net.link.safeonline.audit.AuditContextManager;
 import net.link.safeonline.audit.ResourceAuditLoggerInterceptor;
 import net.link.safeonline.osgi.OSGIHostActivator;
 import net.link.safeonline.osgi.OSGIService;
+import net.link.safeonline.osgi.OSGIServiceImpl;
 import net.link.safeonline.osgi.OSGIStartable;
 import net.link.safeonline.osgi.OSGIConstants.OSGIServiceType;
 import net.link.safeonline.util.ee.EjbUtils;
@@ -291,10 +292,10 @@ public class OSGIStartableBean implements OSGIStartable {
 
         switch (serviceType) {
             case PLUGIN_SERVICE:
-                return new OSGIService(hostActivator.getPluginServiceReferences(), serviceName);
+                return new OSGIServiceImpl(hostActivator.getPluginServiceReferences(), serviceName);
 
             case SMS_SERVICE:
-                return new OSGIService(hostActivator.getSmsServiceReferences(), serviceName);
+                return new OSGIServiceImpl(hostActivator.getSmsServiceReferences(), serviceName);
         }
 
         return null;

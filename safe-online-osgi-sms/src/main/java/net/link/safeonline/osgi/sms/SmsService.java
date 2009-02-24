@@ -27,5 +27,4 @@ public interface SmsService {
 
     void sendSms(String mobile, String message)
             throws SmsServiceException;
-
 }

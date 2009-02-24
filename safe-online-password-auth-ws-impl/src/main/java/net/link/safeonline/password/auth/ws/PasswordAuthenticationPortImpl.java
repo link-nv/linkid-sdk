@@ -19,6 +19,7 @@ import net.lin_k.safe_online.auth.DeviceCredentialsType;
 import net.lin_k.safe_online.auth.NameValuePairType;
 import net.lin_k.safe_online.auth.WSAuthenticationRequestType;
 import net.lin_k.safe_online.auth.WSAuthenticationResponseType;
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -147,17 +148,18 @@ public class PasswordAuthenticationPortImpl implements DeviceAuthenticationPort 
 
         try {
             PasswordDeviceService passwordDeviceService = EjbUtils.getEJB(PasswordDeviceService.JNDI_BINDING, PasswordDeviceService.class);
-            String userId = passwordDeviceService.authenticate(getUserId(loginName), password);
+            String userId = getUserId(loginName);
+            passwordDeviceService.authenticate(userId, password);
 
-            if (null != userId) {
-                response.setUserId(userId);
-                DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.SUCCESS, null);
-            } else {
-                LOG.debug("authentication failed");
-                DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.AUTHENTICATION_FAILED, null);
-            }
+            response.setUserId(userId);
+            DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.SUCCESS, null);
 
             return response;
+        }
+
+        catch (DeviceAuthenticationException e) {
+            LOG.debug("authentication failed");
+            DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.AUTHENTICATION_FAILED, e.getMessage());
         } catch (SubjectNotFoundException e) {
             LOG.error("subject not found: " + e.getMessage(), e);
             DeviceAuthenticationPortUtil.setStatus(response, WSAuthenticationErrorCode.SUBJECT_NOT_FOUND, e.getMessage());

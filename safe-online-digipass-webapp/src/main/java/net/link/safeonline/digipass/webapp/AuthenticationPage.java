@@ -9,6 +9,7 @@ package net.link.safeonline.digipass.webapp;
 
 import javax.ejb.EJB;
 
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.PermissionDeniedException;
@@ -133,37 +134,35 @@ public class AuthenticationPage extends TemplatePage {
                     LOG.debug("login: " + login);
 
                     try {
-                        String userId = digipassDeviceService.authenticate(getUserId(), token.getObject());
-                        if (null == userId) {
-                            AuthenticationForm.this.error(getLocalizer().getString("authenticationFailedMsg", this));
-                            HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "login failed: " + login,
-                                    LogLevelType.ERROR);
-                            return;
-                        }
+                        String userId = getUserId();
+
+                        digipassDeviceService.authenticate(userId, token.getObject());
                         login(userId);
+
+                        HelpdeskLogger.clear(WicketUtil.toServletRequest(getRequest()).getSession());
+                    }
+
+                    catch (DeviceAuthenticationException e) {
+                        AuthenticationForm.this.error(getLocalizer().getString("authenticationFailedMsg", this));
+                        HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "login failed: " + login,
+                                LogLevelType.ERROR);
                     } catch (DeviceRegistrationNotFoundException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("digipassNotRegistered", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "Digipass device not registered",
                                 LogLevelType.ERROR);
-                        return;
                     } catch (SubjectNotFoundException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("digipassNotRegistered", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "login: subject not found for " + login,
                                 LogLevelType.ERROR);
-                        return;
                     } catch (PermissionDeniedException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("digipassAuthenticationFailed", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(),
                                 "Failed to contact OLAS to retrieve device mapping for " + login, LogLevelType.ERROR);
-                        return;
                     } catch (DeviceDisabledException e) {
                         AuthenticationForm.this.error(getLocalizer().getString("digipassDisabled", this));
                         HelpdeskLogger.add(WicketUtil.toServletRequest(getRequest()).getSession(), "Digipass Device is disabled",
                                 LogLevelType.ERROR);
-                        return;
                     }
-                    HelpdeskLogger.clear(WicketUtil.toServletRequest(getRequest()).getSession());
-                    return;
                 }
 
             });

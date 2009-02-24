@@ -12,6 +12,7 @@ import java.util.Locale;
 import javax.ejb.Local;
 
 import net.link.safeonline.authentication.exception.ArgumentIntegrityException;
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
@@ -26,8 +27,9 @@ public interface DigipassDeviceService extends DigipassService {
     public static final String JNDI_BINDING = DigipassService.JNDI_PREFIX + "DigipassDeviceServiceBean/local";
 
 
-    String authenticate(String userId, String token)
-            throws SubjectNotFoundException, PermissionDeniedException, DeviceDisabledException, DeviceRegistrationNotFoundException;
+    void authenticate(String userId, String token)
+            throws SubjectNotFoundException, PermissionDeniedException, DeviceDisabledException, DeviceRegistrationNotFoundException,
+            DeviceAuthenticationException;
 
     String register(String nodeName, String userId, String serialNumber)
             throws ArgumentIntegrityException, NodeNotFoundException;
@@ -41,6 +43,6 @@ public interface DigipassDeviceService extends DigipassService {
     void disable(String userId, String serialNumber)
             throws SubjectNotFoundException, DeviceRegistrationNotFoundException;
 
-    String enable(String userId, String serialNumber, String token)
-            throws SubjectNotFoundException, DeviceRegistrationNotFoundException;
+    void enable(String userId, String serialNumber, String token)
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceAuthenticationException;
 }

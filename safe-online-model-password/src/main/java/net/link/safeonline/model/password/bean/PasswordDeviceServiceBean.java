@@ -14,10 +14,10 @@ import javax.ejb.Stateless;
 
 import net.link.safeonline.SafeOnlineConstants;
 import net.link.safeonline.audit.SecurityAuditLogger;
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.exception.DeviceRegistrationNotFoundException;
 import net.link.safeonline.authentication.exception.NodeNotFoundException;
-import net.link.safeonline.authentication.exception.PermissionDeniedException;
 import net.link.safeonline.authentication.exception.SubjectNotFoundException;
 import net.link.safeonline.dao.AttributeDAO;
 import net.link.safeonline.dao.AttributeTypeDAO;
@@ -76,7 +76,7 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
         List<AttributeEntity> disableAttributes = attributeDAO.listAttributes(subject, disableAttributeType);
 
         if (disableAttributes.isEmpty())
-            throw new DeviceRegistrationNotFoundException();
+            throw new DeviceRegistrationNotFoundException(e);
 
         return disableAttributes.get(0);
     }
@@ -84,8 +84,8 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
     /**
      * {@inheritDoc}
      */
-    public String authenticate(String userId, String password)
-            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException {
+    public void authenticate(String userId, String password)
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException, DeviceAuthenticationException {
 
         LOG.debug("authenticate \"" + userId + "\"");
 
@@ -95,10 +95,8 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
 
         if (false == passwordManager.validatePassword(subject, password)) {
             securityAuditLogger.addSecurityAudit(SecurityThreatType.DECEPTION, subject.getUserId(), "incorrect password");
-            return null;
+            throw new DeviceAuthenticationException();
         }
-
-        return subject.getUserId();
     }
 
     /**
@@ -137,7 +135,7 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
      * {@inheritDoc}
      */
     public void update(String userId, String oldPassword, String newPassword)
-            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException, PermissionDeniedException {
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceDisabledException, DeviceAuthenticationException {
 
         LOG.debug("update password for \"" + userId + "\"");
         SubjectEntity subject = subjectService.getSubject(userId);
@@ -146,7 +144,7 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
             throw new DeviceDisabledException();
 
         if (false == passwordManager.validatePassword(subject, oldPassword))
-            throw new PermissionDeniedException("Invalid password");
+            throw new DeviceAuthenticationException("Invalid password");
 
         passwordManager.updatePassword(subject, oldPassword, newPassword);
 
@@ -158,14 +156,14 @@ public class PasswordDeviceServiceBean implements PasswordDeviceService, Passwor
      * {@inheritDoc}
      */
     public void enable(String userId, String password)
-            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, PermissionDeniedException {
+            throws SubjectNotFoundException, DeviceRegistrationNotFoundException, DeviceAuthenticationException {
 
         SubjectEntity subject = subjectService.getSubject(userId);
 
         LOG.debug("enable password for \"" + subject.getUserId() + "\"");
 
         if (!passwordManager.validatePassword(subject, password))
-            throw new PermissionDeniedException("Invalid password");
+            throw new DeviceAuthenticationException("Invalid password");
 
         getDisableAttribute(subject).setValue(false);
 

@@ -9,6 +9,7 @@ package test.unit.net.link.safeonline.password.auth.ws;
 
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
 import static org.junit.Assert.assertEquals;
@@ -41,6 +42,7 @@ import net.lin_k.safe_online.auth.GetDeviceAuthenticationPort;
 import net.lin_k.safe_online.auth.GetDeviceAuthenticationService;
 import net.lin_k.safe_online.auth.WSAuthenticationRequestType;
 import net.lin_k.safe_online.auth.WSAuthenticationResponseType;
+import net.link.safeonline.authentication.exception.DeviceAuthenticationException;
 import net.link.safeonline.authentication.exception.DeviceDisabledException;
 import net.link.safeonline.authentication.service.ApplicationAuthenticationService;
 import net.link.safeonline.authentication.service.DeviceAuthenticationService;
@@ -238,8 +240,7 @@ public class PasswordAuthenticationPortImplTest {
                 PasswordConstants.PASSWORD_DEVICE_ID, testLanguage, nameValuePairs, testpublicKey);
 
         // expectations
-        expect(mockPasswordDeviceServce.authenticate(PasswordTestNameIdentifierMappingClientImpl.testUserId, testPassword)).andReturn(
-                PasswordTestNameIdentifierMappingClientImpl.testUserId);
+        mockPasswordDeviceServce.authenticate(PasswordTestNameIdentifierMappingClientImpl.testUserId, testPassword);
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(12345567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
@@ -278,7 +279,8 @@ public class PasswordAuthenticationPortImplTest {
                 PasswordConstants.PASSWORD_DEVICE_ID, testLanguage, nameValuePairs, testpublicKey);
 
         // expectations
-        expect(mockPasswordDeviceServce.authenticate(PasswordTestNameIdentifierMappingClientImpl.testUserId, testPassword)).andReturn(null);
+        mockPasswordDeviceServce.authenticate(PasswordTestNameIdentifierMappingClientImpl.testUserId, testPassword);
+        expectLastCall().andThrow(new DeviceAuthenticationException());
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(12345567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
@@ -317,8 +319,8 @@ public class PasswordAuthenticationPortImplTest {
                 PasswordConstants.PASSWORD_DEVICE_ID, testLanguage, nameValuePairs, testpublicKey);
 
         // expectations
-        expect(mockPasswordDeviceServce.authenticate(PasswordTestNameIdentifierMappingClientImpl.testUserId, testPassword)).andThrow(
-                new DeviceDisabledException());
+        mockPasswordDeviceServce.authenticate(PasswordTestNameIdentifierMappingClientImpl.testUserId, testPassword);
+        expectLastCall().andThrow(new DeviceDisabledException());
         expect(mockSamlAuthorityService.getIssuerName()).andStubReturn(testIssuerName);
         expect(mockApplicationAuthenticationService.authenticate(certificate)).andReturn(12345567890L);
         expect(mockWSSecurityConfigurationService.skipMessageIntegrityCheck(certificate)).andReturn(false);
